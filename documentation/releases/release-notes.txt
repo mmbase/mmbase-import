@@ -117,7 +117,9 @@ Generic Bug Fixes:
 - Logging: The mmbase logger now uses a wrapper so that at startup it first caches the messages until the
   logger is initialized
 
-- added java14patch target to patch mmbase to be able to compile under java 1.4
+- The HandleServlet now remove additional information left in jpeg file by PhotoShop 7 
+  This extra information crashes the image Thread of Internet Exploder. While this was 
+  not a bug it is very convenient
 
 - caching of Query results is done better. It is possible to cache everything. In 1.6 some queries
   accidentely where not cached. This fix is based on the new Query framework.
