@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.38 2003-12-29 15:33:36 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.39 2004-01-02 15:21:18 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -281,11 +281,25 @@ function doStartUpload(el) {
 //********************************
 
 function resizeEditTable() {
-    var docHeight = getDimensions().windowHeight;
     var divButtonsHeight = document.getElementById("commandbuttonbar").offsetHeight;
-    var divTop = findPosY(document.getElementById("edit_table"));
+    var divTop = findPosY(document.getElementById("editform"));
 
-    document.getElementById("edit_table").style.height = docHeight - (divTop + divButtonsHeight);
+    if ((navigator.appVersion.indexOf('MSIE')!=-1) 
+        && (navigator.appVersion.indexOf('Mac')!=-1)) {
+        
+      // IE on the Mac has some overflow problems. 
+      // These statements will move the button div to the right position and
+      // resizes the editform div.
+      var docHeight = getDimensions().documentHeight;
+      document.getElementById("editform").style.height = docHeight - (divTop + divButtonsHeight);
+      // The div is relative positioned to the surrounding table.
+      // +10, because we have a padding of 10 in the css.
+      document.getElementById("commandbuttonbar").style.top = docHeight - (divTop + 10);
+    }
+    else {
+       var docHeight = getDimensions().windowHeight;
+       document.getElementById("editform").style.height = docHeight - (divTop + divButtonsHeight);
+    }
 }
 
 function setParam(name, value) {
@@ -343,7 +357,7 @@ function restoreScroll() {
     var st = readCookie_general("scrollTop", 0);
     var pf = readCookie_general("prevForm", "-");
     if (pf == document.forms[0].id) {
-        document.getElementById("edit_table").scrollTop = st;
+        document.getElementById("editform").scrollTop = st;
     } else {
         form = document.forms["form"];
         for (var i=0; i<form.elements.length; i++) {
@@ -360,7 +374,7 @@ function restoreScroll() {
 
 function saveScroll() {
 	if (!cleanupScroll) {
-	    writeCookie_general("scrollTop", document.getElementById("edit_table").scrollTop);
+	    writeCookie_general("scrollTop", document.getElementById("editform").scrollTop);
 	    writeCookie_general("prevForm", document.forms[0].id);
 	} else {
 		writeCookie_general("scrollTop", 0);
