@@ -18,9 +18,9 @@ import org.mmbase.util.logging.*;
  * Transforms strings to identifiers, replacing punctuation and whitespace with
  * underscores.
  *
- * @author Michiel Meeuwissen
+ * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Identifier.java,v 1.1 2003-09-30 08:01:22 pierre Exp $
+ * @version $Id: Identifier.java,v 1.2 2004-04-15 14:10:07 michiel Exp $
  */
 
 public class Identifier extends ReaderTransformer implements CharTransformer {
