@@ -267,7 +267,8 @@ Database Layer Bug Fixes:
 ---------------------
 Editwizard Bug Fixes:
 ---------------------
-[1.7.1] 	
+[1.7.1] 
+- #6567 Could not trail path element with digit.    	
 - #6564 unable to make file upload mandatory  
 - #6563 popup wizards don't work in deprecated wizard look   	
 - #6508 editwizard pass incorrect origin parameter to subwizard  	
