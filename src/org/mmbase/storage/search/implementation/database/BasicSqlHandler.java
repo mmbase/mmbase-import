@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.17 2003-10-02 08:54:18 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.18 2003-11-26 09:37:46 robmaris Exp $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -396,7 +396,11 @@ public class BasicSqlHandler implements SqlHandler {
                         break;
 
                     case RelationStep.DIRECTIONS_BOTH:
-                        sbRelations.append("(((");
+                        if (relationStep.getRole() != null) {
+                            sbRelations.append("(((");
+                        } else {
+                            sbRelations.append("((");
+                        }
                         appendField(sbRelations, previousStep, "number", multipleSteps);
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
@@ -417,7 +421,11 @@ public class BasicSqlHandler implements SqlHandler {
                         appendField(sbRelations, nextStep, "number", multipleSteps);
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        sbRelations.append("))");
+                        if (relationStep.getRole() != null) {
+                            sbRelations.append("))");
+                        } else {
+                            sbRelations.append(")");
+                        }
                         break;
 
                     default: // Invalid directionality value.
