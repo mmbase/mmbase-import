@@ -17,18 +17,18 @@
 <table>
   <tr>
     <td valign="top">
-      <mm:list type="typedef" fields="name,description">
+      <mm:listnodes type="typedef" fields="name,description">
         <a href="nodemanagerinfo.jsp?nodemanager=<%=name%>"><%=name%></a><br>
-      </mm:list>
+      </mm:listnodes>
     </td>
     <td valign="top">
       <req:existsparameter name="nodemanager">
 
         <% String where = "name='" + request.getParameter("nodemanager") + "'"; %>
-        <mm:list type="typedef" fields="name,description" where="<%= where %>">
+        <mm:listnodes type="typedef" fields="name,description" where="<%= where %>">
           <p><b><%=name%></b></p>
           <p><%=description%></p>
-        </mm:list>
+        </mm:listnodes>
 
         <p><b>Names of all fields</b></p>
         <mm:fieldlist nodemanager='<%=request.getParameter("nodemanager")%>'>
