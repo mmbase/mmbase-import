@@ -196,10 +196,8 @@ several MMBase-checkouts.
 
     <!-- create build.properties needed for the srcdist -->
     <echo file="${build.dir}/mmbase-src/build.properties">
-source.dir=.
-source-config.dir=config
 source-documentation.dir=src/documentation
-build.dir=build
+documentation.home=src/documentation
 build.compiler=modern
 optimize=on
 debug=on
