@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.86 2005-02-04 13:45:05 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.87 2005-02-28 20:13:50 eduard Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1603,12 +1603,13 @@ public class DatabaseStorageManager implements StorageManager {
             }
             createCompositeIndices.append(compConstraintDef);
         }
+        String query = "";
         try {
             getActiveConnection();
             // create a rowtype, if a scheme has been given
             // Note that creating a rowtype is optional
             if (rowtypeScheme != null) {
-                String query = rowtypeScheme.format(new Object[] { this, builder, createFields.toString(), parentBuilder });
+                query = rowtypeScheme.format(new Object[] { this, builder, createFields.toString(), parentBuilder });
                 // remove parenthesis with empty field definitions -
                 // unfortunately Schems don't take this into account
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
@@ -1620,7 +1621,7 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
             }
             // create the table
-            String query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createCompositeIndices.toString(), parentBuilder });
+            query = tableScheme.format(new Object[] { this, builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createCompositeIndices.toString(), parentBuilder });
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
@@ -1634,6 +1635,7 @@ public class DatabaseStorageManager implements StorageManager {
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
         } catch (SQLException se) {
+            log.error("query:" + query);
             log.error(Logging.stackTrace(se));
             throw new StorageException(se);
         } finally {
@@ -1650,7 +1652,7 @@ public class DatabaseStorageManager implements StorageManager {
                     (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
                     field.getDBType() == FieldDefs.TYPE_NODE &&
                     ! field.getDBName().equals("number")) {
-                    String query = createIndex.format(new Object[] { this, builder, field.getDBName()});
+                    query = createIndex.format(new Object[] { this, builder, field.getDBName()});
                     try {
                         getActiveConnection();
                         Statement s = activeConnection.createStatement();
@@ -1658,6 +1660,7 @@ public class DatabaseStorageManager implements StorageManager {
                         s.executeUpdate(query);
                         s.close();
                     } catch (SQLException se) {
+                        log.error("query:" + query);
                         log.error(Logging.stackTrace(se));
                         throw new StorageException(se);
                     } finally {
