@@ -11,7 +11,7 @@ package org.mmbase.security.implementation.context;
 
 import org.mmbase.security.*;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.io.FileInputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -47,7 +47,7 @@ public abstract class ContextLoginModule {
         this.manager =manager;
     }
 
-    public abstract ContextUserContext login(HashMap userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException;
+    public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException;
 
     protected ContextUserContext getValidUserContext(String username, Rank rank) throws org.mmbase.security.SecurityException{
         return new ContextUserContext(username, rank, validKey, manager);

@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.context;
 
 import org.mmbase.security.*;
-import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in java.lang
+import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
+                                              // java.lang
+
 
 import java.util.*;
 import java.io.FileInputStream;
@@ -113,7 +115,7 @@ public class ContextAuthorization extends Authorization {
         if (node.getStringValue("owner").equals(context)) return;
 
         // check if is a valid context for us..
-        HashSet possible = getPossibleContexts(user, nodeNumber);
+        Set possible = getPossibleContexts(user, nodeNumber);
         if(!possible.contains(context)) {
             String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user;
             log.error(msg);
@@ -143,7 +145,7 @@ public class ContextAuthorization extends Authorization {
         return node.getStringValue("owner");
     }
 
-    public HashSet getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
+    public Set getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
         log.info("get possible context on node #"+nodeNumber+" by user: " +user);
 
@@ -434,14 +436,15 @@ public class ContextAuthorization extends Authorization {
             if(builder == null) {
                 String msg = "builder 'typedef' not found";
                 log.error(msg);
-                throw new SecurityException(msg);
+                //throw new NotFoundException(msg);
+          	throw new SecurityException(msg);
             }
         }
         MMObjectNode node = builder.getNode(n);
         if(node == null) {
             String msg = "node " + n + " not found";
             log.error(msg);
-            throw new SecurityException(msg);
+            throw new NotFoundException(msg);
         }
         return node;
     }
