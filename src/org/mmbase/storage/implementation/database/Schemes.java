@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.9 2003-09-18 12:20:27 pierre Exp $
+ * @version $Id: Schemes.java,v 1.10 2004-02-16 12:12:28 keesj Exp $
  */
 public final class Schemes {
 
@@ -138,7 +138,7 @@ public final class Schemes {
     public static final String CREATE_COMPOSITE_KEY = "create-composite-key-scheme";
 
     /**
-     *  The default scheme for selecting a node type.
+     *  The default scheme for creating a composite key.
      */
     public static final String CREATE_COMPOSITE_KEY_DEFAULT = "CONSTRAINT {1}_key UNIQUE ({2})";
 
@@ -159,6 +159,22 @@ public final class Schemes {
      *  The default scheme for selecting a node type.
      */
     public static final String CREATE_UNIQUE_KEY_DEFAULT = "CONSTRAINT {2} UNIQUE ({2})";
+
+    /**
+       *  Name of the scheme for creating an index.
+       *  The parameters accepted are:
+       *  <lu>
+       *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+       *    <li>{1} the builder to create the key for</li>
+       *    <li>{2} the field (or fieldlist) to create the key for</li>
+       *  </ul>
+       */
+    public static final String CREATE_INDEX = "create-index-scheme";
+
+    /**
+     *  The default scheme for creating an index
+     */
+    public static final String CREATE_INDEX_DEFAULT = null;
 
     /**
      *  Name of the scheme for creating a foreign (referential) key.
@@ -522,5 +538,3 @@ public final class Schemes {
     public static final String DELETE_SECONDARY_INDEX_DEFAULT = null;
 
 }
-
-
