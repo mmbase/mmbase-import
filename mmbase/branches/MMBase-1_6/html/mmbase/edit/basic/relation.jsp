@@ -1,7 +1,7 @@
 <%--
  Create tr-'s representing the relations
 --%>
- <% RelationManagerIterator relIterator = node.getNodeManager().getAllowedRelations((NodeManager) null, null, source ? "destination" : "source").relationManagerIterator(); 
+ <% RelationManagerIterator relIterator = node.getNodeManager().getAllowedRelations((NodeManager) null, null, source ? "destination" : "source").relationManagerIterator();
    while(relIterator.hasNext()) {
       RelationManager relationManager = relIterator.nextRelationManager();
       NodeManager otherManager;
@@ -11,13 +11,13 @@
         continue;
       }
 
-      String      role         =  source ? relationManager.getForwardRole()        : relationManager.getReciprocalRole();
+      String      role         =  relationManager.getForwardRole();
       String      guirole      =  source ? relationManager.getForwardGUIName()     : relationManager.getReciprocalGUIName();
       %>
 
 <mm:context>
 <tr>
-    <td class="data"> 
+    <td class="data">
         <%=otherManager.getGUIName()%> (<%=guirole%>)
     </td>
     <th colspan="3"><%=m.getString("relations.relations")%></th>
@@ -39,11 +39,12 @@
    while(relationIterator.hasNext()) {
        Relation relation = relationIterator.nextRelation();
        Node otherNode = source ? relation.getDestination() : relation.getSource();
-        if (otherNode.equals(node)) continue; // happens when relation between 2 the same types ??
+       if (otherNode.equals(node) &&
+           !relation.getSource().equals(relation.getDestination())) continue; // happens when relation between 2 the same types ??
 
        // only show on actual type, so, not on parents
        // Not sure that this is what we want
-       if (otherNode.getNodeManager().equals(otherManager)) 
+       if (otherNode.getNodeManager().equals(otherManager))
         {
 %>
 <tr>
