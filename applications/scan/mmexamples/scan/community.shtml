@@ -45,8 +45,7 @@
 			<LIF $ITEML==0>
 				<CENTER>Community-application NOT installed please install before using it.<BR>  can do that under ADMIN -> APPLICATIONS </CENTRER>
 			<ELSE>
-				This url will show the actual Community example: <A HREF="/mmexamples/scan/
-community/community.shtml" TARGET="community">http://yourhost:port/community</A>
+				This url will show the actual Community example: <A HREF="$MOD-INFO-SERVERCONTEXT^/mmexamples/scan/community/community.shtml" TARGET="community">community</A>
 			</IF>
 			<LISTLOOP>
 			</LISTLOOP>

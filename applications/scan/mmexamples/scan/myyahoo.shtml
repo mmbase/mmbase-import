@@ -43,7 +43,7 @@
 			<LIF $ITEML==0>
 				<CENTER>MyYahoo application NOT installed please install before using it.<BR>  can do that under ADMIN -> APPLICATIONS </CENTRER>
 			<ELSE>
-				This url will show the actual MyYahoo example: <A HREF="/yahoo" TARGET="yahoo">http://yourhost:port/yahoo</A>
+				This url will show the actual MyYahoo example: <A HREF="yahoo" TARGET="yahoo">yahoo</A>
 			</IF>
 			<LISTLOOP>
 			</LISTLOOP>
