@@ -25,12 +25,12 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.35 2004-02-17 10:02:15 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.36 2004-02-23 19:01:01 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
 public class BasicQuery implements Query  {
-    
+
 
     private static final Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
@@ -40,7 +40,7 @@ public class BasicQuery implements Query  {
 
     protected Authorization.QueryCheck secureConstraint = null;
 
-    private   HashMap  aliasSequences = new HashMap(); 
+    private   HashMap  aliasSequences = new HashMap();
     // to make unique table aliases. This is similar impl. as  in core. Why should it be at all....
 
     protected BasicSearchQuery query;
@@ -51,7 +51,7 @@ public class BasicQuery implements Query  {
 
     /**
      * The implicitely added 'extra' fields. These are removed if the query becomes 'distinct'. So,
-     * you can e.g. not do element= on a distinct query result.     
+     * you can e.g. not do element= on a distinct query result.
      */
     protected List implicitFields = new ArrayList();
 
@@ -132,7 +132,7 @@ public class BasicQuery implements Query  {
         }
     }
     public Query aggregatingClone() {
-        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_AGGREGATING); 
+        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_AGGREGATING);
         BasicQuery clone     = new BasicQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = true;
@@ -140,7 +140,7 @@ public class BasicQuery implements Query  {
     }
 
     public Query cloneWithoutFields() {
-        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS); 
+        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
         BasicQuery clone     = new BasicQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = false;
@@ -165,7 +165,7 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
 
         removeSecurityConstraint(); // if present
- 
+
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
         setAlias(step, ""); // "": generate alias
         if (! aggregating) {
@@ -178,35 +178,16 @@ public class BasicQuery implements Query  {
     public void setAlias(Step step, String alias) {
         if ("".equals(alias)) {
             alias = createAlias(step.getTableName());
-        } 
-        
+        }
+
         BasicStep basicStep = (BasicStep) step;
         basicStep.setAlias(alias);
     }
 
-
-    // similar constants to those of CluserBuilder but still different ?!
-    protected int getRelationStepDirection(String search) {
-        if (search == null) {
-            return RelationStep.DIRECTIONS_BOTH;
-        }
-        search = search.toUpperCase();
-        if ("DESTINATION".equals(search)) {
-            return RelationStep.DIRECTIONS_DESTINATION;
-        } else if ("SOURCE".equals(search)) {
-            return RelationStep.DIRECTIONS_SOURCE;
-        } else if ("BOTH".equals(search)) {
-            return RelationStep.DIRECTIONS_BOTH;
-        } else {
-            throw new BridgeException("'" + search + "' cannot be converted to a relation-step direction constant");
-        }
-    }
-
-
     protected BasicRelationStep addRelationStep(InsRel insrel, NodeManager otherNodeManager, int direction) {
-        MMObjectBuilder otherBuilder = ((BasicNodeManager) otherNodeManager).builder;        
+        MMObjectBuilder otherBuilder = ((BasicNodeManager) otherNodeManager).builder;
         BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
-        relationStep.setDirectionality(direction); 
+        relationStep.setDirectionality(direction);
         relationStep.setAlias(createAlias(relationStep.getTableName()));
         NodeManager relationManager = otherNodeManager.getCloud().getNodeManager(relationStep.getTableName());
         BasicStep next = (BasicStep) relationStep.getNext();
@@ -220,7 +201,7 @@ public class BasicQuery implements Query  {
         return relationStep;
     }
     public RelationStep addRelationStep(NodeManager otherNodeManager) {
-        return addRelationStep(otherNodeManager, null, "BOTH"); 
+        return addRelationStep(otherNodeManager, null, "BOTH");
     }
 
 
@@ -234,14 +215,13 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
 
         // a bit silly that two lookups are needed
-        int relationDir = getRelationStepDirection(direction); 
-        int searchDir   = ClusterBuilder.getSearchDir(direction);
+        int relationDir = Queries.getRelationStepDirection(direction);
 
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
             BasicRelationStep step = addRelationStep(insrel, otherNodeManager, relationDir);
-            if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, searchDir)) {
+            if (!typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), -1, relationDir)) {
                 if (warnOnImpossibleStep) {
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
                 }
@@ -260,7 +240,7 @@ public class BasicQuery implements Query  {
             if (! cloud.hasNodeManager(role)) {
                 step.setAlias(createAlias(role));
             }
-            if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, searchDir)) {
+            if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, relationDir)) {
                 if (warnOnImpossibleStep) {
                     log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
                 }
@@ -278,10 +258,10 @@ public class BasicQuery implements Query  {
             Step addedStep = sf.getStep();
             query.addField(addedStep, sf.getFieldDefs());
         }
-        
+
     }
 
-    
+
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         BasicStepField sf = query.addField(step, ((BasicField) field).field);
@@ -296,7 +276,7 @@ public class BasicQuery implements Query  {
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
-        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps()); 
+        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps());
         NodeManager nm = cloud.getNodeManager(step.getTableName());
         Field field = nm.getField(fieldName);
         return addField(step, field);
@@ -321,7 +301,7 @@ public class BasicQuery implements Query  {
         return createStepField(step, cloud.getNodeManager(step.getTableName()).getField(fieldName));
     }
 
-    
+
 
     public Step getStep(String stepAlias) {
         return Queries.searchStep(getSteps(), stepAlias);
@@ -333,7 +313,7 @@ public class BasicQuery implements Query  {
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
-        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps()); 
+        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps());
         NodeManager nm = cloud.getNodeManager(step.getTableName());
         Field field = nm.getField(fieldName);
         return createStepField(step, field);
@@ -342,11 +322,11 @@ public class BasicQuery implements Query  {
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
         BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField) field).field, aggregationType);
-        aggregatedField.setAlias(field.getName()); 
-        
+        aggregatedField.setAlias(field.getName());
+
         if (this instanceof NodeQuery) {
             NodeQuery nodeQuery = (NodeQuery) this;
-            ((BasicStep) step).setAlias(nodeQuery.getNodeManager().getName()); 
+            ((BasicStep) step).setAlias(nodeQuery.getNodeManager().getName());
             // Step needs alias, because otherwise clusterbuilder chokes.
             // And node-manager.getList is illogical, because a aggregated result is certainly not a 'real' node.
         }
@@ -355,8 +335,8 @@ public class BasicQuery implements Query  {
 
         return aggregatedField;
     }
-    
-    
+
+
 
     public Query setDistinct(boolean distinct) {
         if (used) throw new BridgeException("Query was used already");
@@ -365,7 +345,7 @@ public class BasicQuery implements Query  {
             query.removeFields();
             implicitFields.clear();
             Iterator i = explicitFields.iterator();
-            while (i.hasNext()) {                
+            while (i.hasNext()) {
                 BasicStepField sf = (BasicStepField) i.next();
                 query.addField(sf.getStep(), sf.getFieldDefs());
             }
@@ -403,7 +383,7 @@ public class BasicQuery implements Query  {
         return c;
     }
     public CompareFieldsConstraint     createConstraint(StepField f, int op, StepField  v) {
-        BasicCompareFieldsConstraint c = new BasicCompareFieldsConstraint(f, v);        
+        BasicCompareFieldsConstraint c = new BasicCompareFieldsConstraint(f, v);
         c.setOperator(op);
         return c;
     }
@@ -413,7 +393,7 @@ public class BasicQuery implements Query  {
     public FieldValueInConstraint      createConstraint(StepField f, SortedSet v) {
         if (v.size() == 0) { // make sure the query becomes empty!
             Step step = f.getStep();
-            StepField nf = createStepField(step, "number");            
+            StepField nf = createStepField(step, "number");
             BasicFieldValueInConstraint c = new BasicFieldValueInConstraint(nf);
             c.addValue(new Integer(-1));
             return c;
@@ -426,24 +406,24 @@ public class BasicQuery implements Query  {
             return c;
         }
     }
-    
+
     public Constraint                  setInverse(Constraint c, boolean i) {
         ((BasicConstraint) c).setInverse(i);
-        return c;        
+        return c;
     }
 
     public FieldConstraint             setCaseSensitive(FieldConstraint c, boolean s) {
         ((BasicFieldConstraint) c).setCaseSensitive(s);
         return c;
-        
+
     }
     public CompositeConstraint        createConstraint(Constraint c1, int operator, Constraint c2) {
         if (c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
             if (used) throw new BridgeException("Query was used already (so cannot modify composite constraints)");
             ((BasicCompositeConstraint) c1).addChild(c2);
             return (CompositeConstraint) c1;
-        } else {        
-            BasicCompositeConstraint c = new BasicCompositeConstraint(operator);        
+        } else {
+            BasicCompositeConstraint c = new BasicCompositeConstraint(operator);
             c.addChild(c1);
             c.addChild(c2);
             return c;
@@ -461,7 +441,7 @@ public class BasicQuery implements Query  {
         BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
         return s;
-        
+
     }
 
     public void addNode(Step  s, Node node) {
@@ -469,7 +449,7 @@ public class BasicQuery implements Query  {
         BasicStep step = (BasicStep) s;
         step.addNode(node.getNumber());
         return;
-        
+
     }
 
     public boolean isUsed() {
@@ -482,7 +462,7 @@ public class BasicQuery implements Query  {
     }
 
 
-    boolean isSecure() { 
+    boolean isSecure() {
         return secureConstraint != null && secureConstraint.isChecked();
     }
 
@@ -515,7 +495,7 @@ public class BasicQuery implements Query  {
                     query.setConstraint(newConstraint);
                 }
             }
-            secureConstraint = null;            
+            secureConstraint = null;
         }
     }
 
@@ -526,7 +506,7 @@ public class BasicQuery implements Query  {
     public boolean equals(Object obj) {
         return query.equals(obj);
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return query.hashCode();
@@ -535,9 +515,9 @@ public class BasicQuery implements Query  {
 
     public String toString() {
         return query.toString() + (used ? "(used)" : "");
-            
+
     }
-    
+
 
 
 }

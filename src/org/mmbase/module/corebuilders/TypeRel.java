@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.46 2004-02-09 15:12:06 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.47 2004-02-23 19:01:03 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -313,7 +313,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
            return n.getIntValue("rnumber");
         }
      }
-    
+
     /**
      *  Returns the display string for this node
      *  It returns a commbination of objecttypes and rolename : "source->destination (role)".
@@ -478,7 +478,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * Optimize as relation step by considering restrictions of TypeRel. TypeRel defines which type of relations may be created, ergo can exist. 
+     * Optimize as relation step by considering restrictions of TypeRel. TypeRel defines which type of relations may be created, ergo can exist.
      *
      * @since MMBase-1.7
      */
@@ -486,20 +486,20 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // Determine in what direction(s) this relation can be followed:
 
         // Check directionality is requested and supported.
-        if (searchDir != ClusterBuilder.SEARCH_ALL && InsRel.usesdir) {
+        if (searchDir != RelationStep.DIRECTIONS_ALL && InsRel.usesdir) {
             relationStep.setCheckedDirectionality(true);
         }
 
         // this is a bit confusing, can the simple cases like explicit 'source' or 'destination' not be handled first?
 
-        boolean sourceToDestination = searchDir != ClusterBuilder.SEARCH_SOURCE      && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
-        boolean destinationToSource = searchDir != ClusterBuilder.SEARCH_DESTINATION && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
+        boolean sourceToDestination = searchDir != RelationStep.DIRECTIONS_SOURCE      && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
+        boolean destinationToSource = searchDir != RelationStep.DIRECTIONS_DESTINATION && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
 
 
-        if (destinationToSource && sourceToDestination && (searchDir == ClusterBuilder.SEARCH_EITHER)) { // support old
+        if (destinationToSource && sourceToDestination && (searchDir == RelationStep.DIRECTIONS_EITHER)) { // support old
             destinationToSource= false;
         }
-        
+
         if (destinationToSource) {
             // there is a typed relation from destination to src
             if (sourceToDestination) {
@@ -516,7 +516,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             } else {
                 // no results possible, do something any way
 
-                if (searchDir == ClusterBuilder.SEARCH_SOURCE) { // explicitely asked for source, it would be silly to try destination now
+                if (searchDir == RelationStep.DIRECTIONS_SOURCE) { // explicitely asked for source, it would be silly to try destination now
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
                 } else {
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION); // the 'normal' way
