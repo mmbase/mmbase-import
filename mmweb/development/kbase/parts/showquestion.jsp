@@ -59,6 +59,8 @@
   </table>    
   </mm:relatednodes>
 </mm:node>
+<mm:maycreate type="kb_answer">
   <a href="javascript:goNewAnswer()"><h5><img src="<mm:write referid="realpath"/>/img/create.gif" border="0"/>add an answer to this question</h5></a>
+</mm:maycreate>
   </div>
   </mm:cloud>
