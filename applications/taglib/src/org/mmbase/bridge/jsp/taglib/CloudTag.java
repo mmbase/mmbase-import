@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.106 2005-02-06 20:42:25 andre Exp $
+ * @version $Id: CloudTag.java,v 1.107 2005-02-07 09:23:15 andre Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -1129,7 +1129,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         {
             String s = logonatt.getString(this);
             // logon = s.equals("") ? null : StringSplitter.split(s);
-            logon = s.equals("") ? null : Arrays.asList( s.replaceAll("\\s", "").split(",") );
+            logon = s.equals("") ? null : Arrays.asList( s.trim().split("\\s*,\\s*") );
         }
 
         if (checkReuse()) { // referid
