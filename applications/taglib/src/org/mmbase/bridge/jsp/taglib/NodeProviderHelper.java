@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.1 2004-01-14 22:06:15 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.2 2004-01-16 20:19:43 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -117,10 +117,7 @@ public class NodeProviderHelper implements NodeProvider {
         modified = true;
     }
 
-    /**
-     * @since MMBase-1.7
-     */
-    protected boolean getModified() {
+    public boolean getModified() {
         return modified;
     }
     /**
