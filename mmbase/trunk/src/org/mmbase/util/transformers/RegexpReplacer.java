@@ -12,7 +12,7 @@ package org.mmbase.util.transformers;
 import java.util.*;
 import java.io.*;
 import java.util.regex.*;
-import org.mmbase.util.WrappedFileWatcher;
+import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.UtilReader;
 
 import org.mmbase.util.logging.*;
@@ -34,7 +34,7 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
 
     protected static Map regexps = new LinkedHashMap();
 
-    protected static abstract class PatternWatcher extends WrappedFileWatcher {
+    protected static abstract class PatternWatcher extends ResourceWatcher {
         protected Map patterns;
         PatternWatcher(Map p) {
             patterns = p;
@@ -65,7 +65,12 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
     protected void readPatterns(Map patterns) {
         UtilReader utilReader = (UtilReader) utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
-            utilReader = new UtilReader(getConfigFile(), new PatternWatcher(patterns) { public void onChange(File file) { readPatterns(patterns); } });
+            utilReader = new UtilReader(getConfigFile(), 
+                                        new PatternWatcher(patterns) { 
+                                            public void onChange(String file) { 
+                                                readPatterns(patterns); 
+                                            } 
+                                        });
             utilReaders.put(this.getClass().getName(), utilReader);
         }
 

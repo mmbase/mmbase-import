@@ -7,6 +7,7 @@ import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 /**
  * Reads <config>/magic.xml
@@ -19,15 +20,17 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
     protected static final String MAGICXMLFILE = "magic.xml";
     // Name of the XML magic file - should reside in top config dir
 
-    private static FileWatcher watcher;
+    private static ResourceWatcher watcher;
 
-    private static void setReader(File file) throws IllegalArgumentException {
-        /*
-        if (!file.exists()) {
-            throw new IllegalArgumentException("magic file  " + file + " does not exist");
+    private static void setReader(String config) throws IllegalArgumentException {
+        try {
+            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(config);
+            if (is != null) {
+                reader = new MagicXMLReader(is);
+            }
+        } catch (IOException ie) {
+            log.warn(ie);
         }
-        */
-        reader = new MagicXMLReader(file.getAbsolutePath());
     }
 
     /**
@@ -37,34 +40,29 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
 
     public synchronized static MagicXMLReader getInstance() {
         if (reader == null) { // can only occur once.
-            String configPath = null;
-            try {
-                configPath = MMBaseContext.getConfigPath();
-            } catch (RuntimeException e) {
-                return null;
-            }
-            File magicxml = new File(configPath, MAGICXMLFILE);
-            log.info("Magic XML file is: " + magicxml);
-            setReader(magicxml);
 
-            if (magicxml.exists()) {
-                watcher = new FileWatcher(true) {
-                        protected void onChange(File file) {
-                            // reader is replaced on every change of magic.xml
-                            setReader(file);
-                        }
-                    };
-                watcher.add(magicxml);
-                watcher.start();
+            setReader(MAGICXMLFILE);
+
+            if (reader != null) {
+                log.info("Magic XML file is: " + reader.getFileName());
             }
+
+            ResourceWatcher watcher = new ResourceWatcher() {
+                    public void onChange(String file) {
+                        // reader is replaced on every change of magic.xml
+                        setReader(file);
+                    }
+                };
+            watcher.start();
+            watcher.add(MAGICXMLFILE);
 
         }
         return reader;
     }
     private List detectors = null;
 
-    private MagicXMLReader(String path) {
-        super(path, MagicXMLReader.class);
+    private MagicXMLReader(InputSource is) {
+        super(is, MagicXMLReader.class);
     }
 
     public String getVersion() {
@@ -88,7 +86,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
             detectors = new Vector();
             Element e = getElementByPath("magic.detectorlist");
             if (e == null) {
-                log.fatal("Could not find magic/detectorlist in magix.cml");
+                log.fatal("Could not find magic/detectorlist in magic.xml");
                 // aargh!
                 return detectors;
             }
