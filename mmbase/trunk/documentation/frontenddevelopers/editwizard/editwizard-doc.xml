@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article>
 	<articleinfo>
-		<date>2 september 2002</date>
 		<title>MMBase Editwizard Documentation</title>
+		<date>2 september 2002</date>
+		<edition>$Id: editwizard-doc.xml,v 1.8 2002-12-04 16:12:20 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
 				<surname>Veling</surname>
+				<affiliation>
+					<orgname>Q42</orgname>
+				</affiliation>
 			</author>
 			<author>
 				<firstname>Henk</firstname>
 				<surname>Hangyi</surname>
+				<affiliation>
+					<orgname>MMatch</orgname>
+				</affiliation>
 			</author>
 			<author>
 				<firstname>Pierre</firstname>
 				<surname>van Rooden</surname>
+				<affiliation>
+					<orgname>Publieke Omroep</orgname>
+				</affiliation>
 			</author>
 		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+		<releaseinfo>Version 1.0 is released with MMBase 1.6.</releaseinfo>
 	</articleinfo>
 	<section id="introduction">
 		<title>Introduction</title>

@@ -2,110 +2,113 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article>
-  <title>SearchQuery introduction</title>
+	<articleinfo>
+		<title>SearchQuery introduction</title>
+		<date>oct 23rd 2002</date>
+		<edition>$Id: dbsq.xml,v 1.2 2002-12-04 16:12:17 pierre Exp $</edition>
+		<authorgroup>
+			<author>
+				<firstname>Rob</firstname>
+				<surname>van Maris</surname>
+				<affiliation>
+					<orgname>Finalist IT Group</orgname>
+				</affiliation>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+	</articleinfo>
 
-  <articleinfo>
-    <date>oct 23rd 2002</date>
+	<section>
+		<title>background</title>
 
-    <author>
-      <firstname>Rob</firstname>
+		<para>The database search queries project addresses the following needs:</para>
 
-      <surname>van Maris</surname>
+		<itemizedlist>
+			<listitem>
+				<para>deliver search queries inside MMBase in a uniform and
+				device-independent manner</para>
+			</listitem>
 
-      <affiliation>
-        <orgname>Finalist IT Group</orgname>
-      </affiliation>
-    </author>
-  </articleinfo>
+			<listitem>
+				<para>provide mechanisms to process these queries in a device-specific
+				way that ensures optimal performance</para>
+			</listitem>
+		</itemizedlist>
 
-  <sect1>
-    <title>background</title>
+		<para>The plan of action for the project defines three stages:</para>
 
-    <para>The database search queries project addresses the following needs:</para>
+		<orderedlist>
+			<listitem>
+				<para>Create a SearchQuery object to represent all possible search
+				queries supported by standard relational databases.</para>
+			</listitem>
 
-    <itemizedlist>
-      <listitem>
-        <para>deliver search queries inside MMBase in a uniform and
-        device-independent manner</para>
-      </listitem>
+			<listitem>
+				<para>Create an extension mechanism to enable use of additional,
+				vendor specific, database functionality.</para>
+			</listitem>
 
-      <listitem>
-        <para>provide mechanisms to process these queries in a device-specific
-        way that ensures optimal performance</para>
-      </listitem>
-    </itemizedlist>
+			<listitem>
+				<para>Integrate of the SearchQuery into existing MMBase code.</para>
+			</listitem>
+		</orderedlist>
 
-    <para>The plan of action for the project defines three stages:</para>
+		<para>The current state of the project is that stage 1 has been completed.
+		This article introduces the resulting SearchQuery design and
+		implementation.</para>
+	</section>
 
-    <orderedlist>
-      <listitem>
-        <para>Create a SearchQuery object to represent all possible search
-        queries supported by standard relational databases.</para>
-      </listitem>
+	<section>
+		<title>resources</title>
 
-      <listitem>
-        <para>Create an extension mechanism to enable use of additional,
-        vendor specific, database functionality.</para>
-      </listitem>
+		<itemizedlist>
+			<listitem>
+				<para>Sourcecode is available from CVS module speeltuin\dbsq\src.</para>
+			</listitem>
 
-      <listitem>
-        <para>Integrate of the SearchQuery into existing MMBase code.</para>
-      </listitem>
-    </orderedlist>
+			<listitem>
+				<para>JUnit tests sourcecode is available from CVS module
+				speeltuin\dbsq\test\src.</para>
+			</listitem>
 
-    <para>The current state of the project is that stage 1 has been completed.
-    This article introduces the resulting SearchQuery design and
-    implementation.</para>
-  </sect1>
+			<listitem>
+				<para>UML diagrams including javadoc are available from the project
+				website at mmbase.org.</para>
+			</listitem>
+		</itemizedlist>
 
-  <sect1>
-    <title>resources</title>
+		<para></para>
+	</section>
 
-    <itemizedlist>
-      <listitem>
-        <para>Sourcecode is available from CVS module speeltuin\dbsq\src.</para>
-      </listitem>
+	<section>
+		<title>package descriptions</title>
 
-      <listitem>
-        <para>JUnit tests sourcecode is available from CVS module
-        speeltuin\dbsq\test\src.</para>
-      </listitem>
+		<para></para>
 
-      <listitem>
-        <para>UML diagrams including javadoc are available from the project
-        website at mmbase.org.</para>
-      </listitem>
-    </itemizedlist>
+		<section>
+			<title>org.mmbase.storage.search</title>
 
-    <para></para>
-  </sect1>
+			<para>Defines the SearchQuery interface along with all collaborating
+			interfaces. </para>
 
-  <sect1>
-    <title>package descriptions</title>
+			<para>SearchQuery objects are essentially container objects that hold
+			data describing query requests. The storage layer needs to retreive this
+			data from the objects in order to process the query. </para>
 
-    <para></para>
+			<para>The package contains the exact interfaces available to retrieve
+			this data from the query objects. </para>
 
-    <sect2>
-      <title>org.mmbase.storage.search</title>
+			<para>Note that these interfaces don&#39;t specify how query objects are
+			constructed, see next section.</para>
+		</section>
 
-      <para>Defines the SearchQuery interface along with all collaborating
-      interfaces. </para>
+		<section>
+			<title>org.mmbase.storage.search.implementation</title>
 
-      <para>SearchQuery objects are essentially container objects that hold
-      data describing query requests. The storage layer needs to retreive this
-      data from the objects in order to process the query. </para>
-
-      <para>The package contains the exact interfaces available to retrieve
-      this data from the query objects. </para>
-
-      <para>Note that these interfaces don&#39;t specify how query objects are
-      constructed, see next section.</para>
-    </sect2>
-
-    <sect2>
-      <title>org.mmbase.storage.search.implementation</title>
-
-      <para>Contains classes implementing the interfaces mentioned above.</para>
-    </sect2>
-  </sect1>
+			<para>Contains classes implementing the interfaces mentioned above.</para>
+		</section>
+	</section>
 </article>
