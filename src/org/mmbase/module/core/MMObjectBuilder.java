@@ -62,16 +62,21 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.280 2004-11-09 09:05:27 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.281 2004-11-09 13:57:39 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
-    public static final String FIELD_NUMBER  = "number";
-    public static final String FIELD_OWNER   = "owner";
-    public static final String FIELD_OTYPE   = "otype";
+    /** Name of the field containing the object number */
+    public static final String FIELD_NUMBER      = "number";
+    /** Name of the field containing the owner */
+    public static final String FIELD_OWNER       = "owner";
+    /** Name of the field containing the object type number */
+    public static final String FIELD_OTYPE       = "otype";
+    /** Name of the field containing the object type number */
+    public static final String FIELD_OBJECT_TYPE = FIELD_OTYPE;
 
+    /** Default (system) owner name for the owner field. */
     public static final String SYSTEM_OWNER   = "system";
-
 
     /** Max size of the object type cache */
     public final static int OBJ2TYPE_MAX_SIZE = 20000;
@@ -387,7 +392,7 @@ public class MMObjectBuilder extends MMTable {
                     node.setValue(FIELD_NUMBER, oType);
                     // for typedef, set otype explictly, as it wasn't set in getNewNode()
                     if (this == typeDef) {
-                        node.setValue(FIELD_OTYPE, oType);
+                        node.setValue(FIELD_OBJECT_TYPE, oType);
                     }
                     typeDef.insert(SYSTEM_OWNER, node, false);
                     // for typedef, call it's parents init again, as otype is only now set
@@ -624,7 +629,7 @@ public class MMObjectBuilder extends MMTable {
         MMObjectNode node = new MMObjectNode(this);
         node.setValue(FIELD_NUMBER, -1);
         node.setValue(FIELD_OWNER, owner);
-        node.setValue(FIELD_OTYPE, oType);
+        node.setValue(FIELD_OBJECT_TYPE, oType);
         setDefaults(node);
         return node;
     }
@@ -3535,7 +3540,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDBLayout_xml(Hashtable fields) {
         sortedDBLayout=new Vector();
-        sortedDBLayout.addElement(FIELD_OTYPE);
+        sortedDBLayout.addElement(FIELD_OBJECT_TYPE);
         sortedDBLayout.addElement(FIELD_OWNER);
 
         FieldDefs node;
@@ -3544,7 +3549,7 @@ public class MMObjectBuilder extends MMTable {
         for (Iterator i=orderedfields.iterator();i.hasNext();) {
             node=(FieldDefs)i.next();
             String name=node.getDBName();
-            if (name!=null && !name.equals(FIELD_NUMBER) && !name.equals(FIELD_OTYPE) && !name.equals(FIELD_OWNER)) {
+            if (name!=null && !name.equals(FIELD_NUMBER) && !name.equals(FIELD_OBJECT_TYPE) && !name.equals(FIELD_OWNER)) {
                 if(sortedDBLayout.contains(name)) {
                     log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");
                     continue;
@@ -4002,10 +4007,10 @@ public class MMObjectBuilder extends MMTable {
         }
 
         // should be TYPE_NODE ???
-        if (fields.get(FIELD_OTYPE) == null) {
+        if (fields.get(FIELD_OBJECT_TYPE) == null) {
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
-            FieldDefs def=new FieldDefs("Type","integer",-1,-1,FIELD_OTYPE,FieldDefs.TYPE_INTEGER,-1,3);
+            FieldDefs def=new FieldDefs("Type","integer",-1,-1,FIELD_OBJECT_TYPE,FieldDefs.TYPE_INTEGER,-1,3);
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setDBPos(2);
             // required field
@@ -4017,7 +4022,7 @@ public class MMObjectBuilder extends MMTable {
                 if (pos>1) field.setDBPos(pos+1);
             }
             def.setParent(this);
-            fields.put(FIELD_OTYPE,def);
+            fields.put(FIELD_OBJECT_TYPE,def);
         }
         updateFields();
     }
