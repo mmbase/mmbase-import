@@ -182,10 +182,12 @@ NetComponents can be found at:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <!-- use web.xml.sample as default -->
-    <copy file="${webapp.dir}/WEB-INF/web.xml.sample"
+    <!-- web.xml.sample contains other xml configurations
+
+			<copy file="${webapp.dir}/WEB-INF/web.xml.sample"
           tofile="${webapp.dir}/WEB-INF/web.xml" overwrite="yes"/>
-   <delete file="${webapp.dir}/WEB-INF/web.xml.sample" />
+      <delete file="${webapp.dir}/WEB-INF/web.xml.sample" />
+    -->
     <!-- copy builders/modules from application dir into default config dir -->
     <!-- Basics -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
