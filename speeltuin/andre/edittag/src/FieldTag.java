@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.1 2004-12-24 16:21:20 andre Exp $
+ * @version $Id: FieldTag.java,v 1.2 2005-02-21 22:16:38 andre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -108,8 +108,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 	 * @todo  EXPERIMENTAL
      * @since MMBase-1.8
      */
-    protected void handleEditTag() {
-        // Andre is busy with this.
+     protected void handleEditTag() {
+        // Andre is busy with this...
 		
 		Tag t = findAncestorWithClass(this, EditTag.class);
 		if (t == null) {
@@ -120,7 +120,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 			try {
 				query = nodeProvider.getGeneratingQuery();
 			} catch (JspTagException jte) {
-				log.info("JspTagException, no GeneratingQuery found : " + jte);
+				log.error("JspTagException, no GeneratingQuery found : " + jte);
 			}
 			
 			int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
@@ -136,18 +136,16 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 						nodenr = node.getIntValue("number");
 					} else {
 						String pref = step.getAlias();
-						if (pref == null) {
-							pref = step.getTableName();
-						}
+						if (pref == null) pref = step.getTableName();
 						nodenr = node.getIntValue(pref + ".number");                 
 					}
 				}
         	}
 			
 			if (fieldName == null) {
-				log.info("Image tag? URL tag? Attachment?");
+				log.debug("fieldName still null. Image tag? URL tag? Attachment?");
 				if (this instanceof ImageTag) {
-					log.info("Image !");
+					log.debug("Image! fieldName = handle");
 					fieldName = "handle";
 				}
 			}
@@ -156,12 +154,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 			}
 
 			// Register field and its node with EditTag
-			log.info("ET register: " + fieldName + " nodenr: " + nodenr );
-			
+			log.debug("ET register fieldName : " + fieldName + " with nodenr : " + nodenr );
 			et.registerField(query, nodenr, fieldName);
-			// Former implementation...
-			// startnode + path + nodenr field + field
-			// log.info("Registering startnode: " + startnode + ", pathstr: " + pathstr + ", nodenr: " + nodenr + ", fieldstr: " + fieldstr);
 		}
     }
 
