@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery {
@@ -117,7 +117,7 @@ public class BasicSearchQuery implements SearchQuery {
      * Adds new relationstep to this SearchQuery.
      * This adds the next step as well, it can be retrieved by calling <code>
      * {@link org.mmbase.storage.search.RelationStep#getNext getNext()}
-     * </code> on the relationstep.
+     * </code> on the relationstep, and cast to {@link BasicStep BasicStep}.
      *
      * @param builder The builder associated with the relation step.
      * @param nextBuilder The builder associated with the next step.
