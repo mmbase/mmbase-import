@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.30 2004-12-09 14:58:34 pierre Exp $
+ * @version $Id: Casting.java,v 1.31 2004-12-23 15:56:28 pierre Exp $
  */
 
 import java.util.*;
@@ -419,7 +419,7 @@ public class Casting {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
             String s = ((String)b).toLowerCase();
-            return s.equals("true") || s.equals("yes");
+            return s.equals("true") || s.equals("yes") || s.equals("1");
         } else {
             return false;
         }
