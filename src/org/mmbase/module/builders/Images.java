@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.72 2003-04-01 08:41:29 michiel Exp $
+ * @version $Id: Images.java,v 1.73 2003-04-02 11:33:16 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -75,7 +75,7 @@ public class Images extends AbstractImages {
         int itmp;
         String imageConvertClass  = DEFAULT_IMAGECONVERTCLASS.getName();
         tmp = getInitParameter("imageConvertClass");
-        if (tmp == null) imageConvertClass = tmp;
+        if (tmp != null) imageConvertClass = tmp;
         getimageConvertParams(getInitParameters());
         tmp = getInitParameter("maxConcurrentRequests");
         if (tmp!=null) {
@@ -181,7 +181,7 @@ public class Images extends AbstractImages {
         ImageConvertInterface ici=null;
 
         try {
-            cl=Class.forName(classname);
+            cl = Class.forName(classname);
             ici=(ImageConvertInterface)cl.newInstance();
             log.info("loaded '"+classname+"' for builder '" + getTableName() + "'");
         }
