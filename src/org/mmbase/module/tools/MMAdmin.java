@@ -1229,7 +1229,7 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBSize(i);
 			} catch (Exception e) {}
 		}
-		if (mmb.getDatabase().updateTable(bul)) {
+		if (mmb.getDatabase().changeField(bul,fieldname)) {
 			syncBuilderXML(bul,builder);
 		}
 	}
@@ -1261,7 +1261,7 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBType(FieldDefs.TYPE_LONG);
 			}
 		}
-		if (mmb.getDatabase().updateTable(bul)) {
+		if (mmb.getDatabase().changeField(bul,fieldname)) {
 			syncBuilderXML(bul,builder);
 		}
 	}
@@ -1287,7 +1287,7 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBState(FieldDefs.DBSTATE_SYSTEM);
 			}
 		}
-		if (mmb.getDatabase().updateTable(bul)) {
+		if (mmb.getDatabase().changeField(bul,fieldname)) {
 			syncBuilderXML(bul,builder);
 		}
 	}
@@ -1312,7 +1312,7 @@ public class MMAdmin extends ProcessorModule {
 		}
 		/* not needed at the moment since keys 
 		   are not done in the database layer
-		if (mmb.getDatabase().updateTable(bul)) {
+		if (mmb.getDatabase().changeField(bul,fieldname)) {
 			syncBuilderXML(bul,builder);
 		}
 		*/
@@ -1338,7 +1338,7 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBNotNull(false);
 			}
 		}
-		if (mmb.getDatabase().updateTable(bul)) {
+		if (mmb.getDatabase().changeField(bul,fieldname)) {
 			syncBuilderXML(bul,builder);
 		}
 	}
@@ -1413,7 +1413,7 @@ public class MMAdmin extends ProcessorModule {
 			def.setGUIType(value);
 
 			bul.addField(def);
-			if (mmb.getDatabase().updateTable(bul)) {
+			if (mmb.getDatabase().addField(bul,def.getDBName())) {
 				syncBuilderXML(bul,builder);
 			}
 		}
@@ -1431,8 +1431,9 @@ public class MMAdmin extends ProcessorModule {
 		MMObjectBuilder bul=mmb.getMMObject(builder);
 		if (bul!=null && value!=null && value.equals("Yes")) {
 			FieldDefs def=bul.getField(fieldname);
+			int dbpos=def.getDBPos();
 			bul.removeField(fieldname);
-			if (mmb.getDatabase().updateTable(bul)) {
+			if (mmb.getDatabase().removeField(bul,def.getDBName())) {
 				syncBuilderXML(bul,builder);
 			} else {
 				bul.addField(def);
