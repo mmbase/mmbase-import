@@ -301,12 +301,21 @@
             <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"></input></di:headercell>
             <di:headercell><fmt:message key="TYPE" /></di:headercell>
             <di:headercell><fmt:message key="TITLE" /></di:headercell>
-            <di:headercell><fmt:message key="DESCRIPTION" /></di:headercell>
-            <di:headercell><fmt:message key="FILENAME" /></di:headercell>
+            <di:headercell><fmt:message key="REACTIONS"/></di:headercell>
             <di:headercell><fmt:message key="DATE" /></di:headercell>
+            <di:headercell><fmt:message key="DESCRIPTION" /></di:headercell>
+
           </di:row>
 
           <mm:listnodes>
+
+            <mm:field name="number" id="itemnumber">
+                <mm:listnodes type="daymarks" constraints="mark <= $itemnumber" orderby="mark" directions="down" max="1">
+                    <mm:field name="daycount" jspvar="dayCount" vartype="Integer">
+                        <mm:import id="itemdate" reset="true"><%= dayCount.intValue()*60*60*24 %></mm:import>
+                    </mm:field>
+                </mm:listnodes>
+            </mm:field>
 
             <di:row>
               <di:cell><input type="checkbox" name="ids" value="<mm:field name="number"/>"></input></di:cell>
@@ -315,7 +324,6 @@
               <mm:import id="link"><a href="<mm:treefile page="/portfolio/showitem.jsp" objectlist="$includePath" referids="$referids">
                                   <mm:param name="currentitem"><mm:field name="number"/></mm:param>
                                   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		                          <mm:param name="callerpage">/portfolio/index.jsp</mm:param>
                                   <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
                                 </mm:treefile>">
               </mm:import>
@@ -325,9 +333,9 @@
               <mm:compare referid="objecttype" value="attachments">
                 <di:cell><img src="<mm:write referid="gfx_attachment"/>" alt="<fmt:message key="FOLDERITEMTYPEDOCUMENT" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="title" /></a></di:cell>
+                <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
-                <di:cell><mm:field name="filename" /></di:cell>
-                <di:cell><mm:field name="date"><mm:time format="d/M/yyyy"/></mm:field></di:cell>
               </mm:compare>
               <mm:compare referid="objecttype" value="urls">
                 <mm:import id="urllink" jspvar="linkText"><mm:field name="url"/></mm:import>
@@ -341,23 +349,23 @@
 			  	%>
                 <di:cell><img src="<mm:write referid="gfx_url"/>" alt="<fmt:message key="FOLDERITEMTYPEURL" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
+                 <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                 <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
-                <di:cell><a href="<mm:write referid="urllink" />" target="unknownframe"><mm:field name="url"/></a></di:cell>
-                <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
               </mm:compare>
               <mm:compare referid="objecttype" value="pages">
                 <di:cell><img src="<mm:write referid="gfx_page"/>" alt="<fmt:message key="FOLDERITEMTYPEPAGE" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="name" /></a></di:cell>
+                 <di:cell><mm:countrelations type="forummessages"/></di:cell>
+                 <di:cell><mm:write referid="itemdate"><mm:time format="d/M/yyyy"/></mm:write></di:cell>
                 <di:cell><mm:field name="text" /></di:cell>
-                <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
-                <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
               </mm:compare>
               <mm:compare referid="objecttype" value="chatlogs">
                 <di:cell><img src="<mm:write referid="gfx_chatlog"/>" alt="<fmt:message key="FOLDERITEMTYPECHATLOG" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><fmt:message key="FOLDERITEMTYPECHATLOG" /><mm:field name="number"/></a></di:cell>
-                <di:cell>&nbsp;</di:cell>
-                <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
+                  <di:cell><mm:countrelations type="forummessages"/></di:cell>
                 <di:cell><mm:field name="date"></mm:field></di:cell> <!-- TODO show correct date -->
+                <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
               </mm:compare>
 
   		    </di:row>
