@@ -15,8 +15,7 @@
   </xsl:template> 
 
   <xsl:template match = "br" >
-    <xsl:text>
-</xsl:text>
+<xsl:text>&#13;&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="text()">
