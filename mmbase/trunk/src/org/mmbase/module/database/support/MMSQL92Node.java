@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.33 2000-07-25 20:47:53 daniel Exp $
+$Id: MMSQL92Node.java,v 1.34 2000-07-25 21:02:53 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.33  2000/07/25 20:47:53  daniel
+added a clearChanged when nodes are inserted
+
 Revision 1.32  2000/07/24 16:09:58  install
 Daniel.. fixed virtual fields
 
@@ -140,7 +143,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.33 $ $Date: 2000-07-25 20:47:53 $
+* @$Revision: 1.34 $ $Date: 2000-07-25 21:02:53 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -844,62 +847,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 	}
-
- 	/**
- 	* insert a new object, normally not used (only subtables are used)
- 	*/
- 	public int fielddefInsert(String baseName, int oType, String owner,MMObjectNode node) {
- 		int dbtable=node.getIntValue("dbtable");
- 		String dbname=node.getStringValue("dbname");
- 		String dbtype=node.getStringValue("dbtype");
- 		String guiname=node.getStringValue("guiname");
- 		String guitype=node.getStringValue("guitype");
- 		int guipos=node.getIntValue("guipos");
- 		int guilist=node.getIntValue("guilist");
- 		int guisearch=node.getIntValue("guisearch");
- 		int dbstate=node.getIntValue("dbstate");
- 
- 		int number=getDBKey();
- 		try {
- 			MultiConnection con=mmb.getConnection();
- 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_fielddef values(?,?,?,?,?,?,?,?,?,?,?,?)");
- 			stmt.setInt(1,number);
- 			stmt.setInt(2,oType);
- 			stmt.setString(3,owner);
- 			stmt.setInt(4,dbtable);
- 			stmt.setString(5,dbname);
- 			stmt.setString(6,dbtype);
- 			stmt.setString(7,guiname);
- 			stmt.setString(8,guitype);
- 			stmt.setInt(9,guipos);
- 			stmt.setInt(10,guilist);
- 			stmt.setInt(11,guisearch);
- 			stmt.setInt(12,dbstate);
- 			stmt.executeUpdate();
- 			stmt.close();
- 			con.close();
- 		} catch (SQLException e) {
- 			e.printStackTrace();
- 			System.out.println("Error on : "+number+" "+owner+" fake");
- 			return(-1);
- 		}
- 			
- 		try {
- 			MultiConnection con=mmb.getConnection();
- 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
- 			stmt.setInt(1,number);
- 			stmt.setInt(2,oType);
- 			stmt.setString(3,owner);
- 			stmt.executeUpdate();
- 			stmt.close();
- 			con.close();
- 		} catch (SQLException e) {
- 			e.printStackTrace();
- 			System.out.println("Error on : "+number+" "+owner+" fake");
- 			return(-1);
- 		}
- 		return(number);
- 	}
 
 	/**
 	* will be removed once the xml setup system is done

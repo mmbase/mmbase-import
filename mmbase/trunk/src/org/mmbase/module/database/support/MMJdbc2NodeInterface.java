@@ -37,7 +37,6 @@ public interface MMJdbc2NodeInterface {
 	public byte[] getDBByte(ResultSet rs,int idx);
 	public String getDBText(ResultSet rs,int idx);
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node);
-	public int fielddefInsert(String baseName,int oType, String owner, MMObjectNode node);
 	public boolean commit(MMObjectBuilder bul,MMObjectNode node);
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node);
 	public int getDBKey();
