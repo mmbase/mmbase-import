@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.44.2.2 2003-05-28 12:31:43 vpro Exp $
+ * @version $Id: servdb.java,v 1.44.2.3 2003-05-28 12:41:50 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -277,7 +277,7 @@ public class servdb extends JamesServlet {
                         // --------
                         // rastream
                         // --------
-                        // cacheReq = false;
+                        cacheReq = false;
                         log.debug("service(rastream)");
 
                         boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
@@ -324,205 +324,17 @@ public class servdb extends JamesServlet {
                         // rmstream
                         // --------
 
-                        // cacheReq = false;
+                        cacheReq = false;
                         log.debug("service(rastream)");
 
                         // is it a audiopart or an episode ?
                         // ---------------------------------
 
-                            // ---
-                            // dtd
-                            // ---
-                            if (req.getRequestURI().indexOf("dtd")!=-1) {
-                                cline.buffer=getDTD(getParamVector(req));
-                                cline.mimetype="text/html";
-                                mimetype=cline.mimetype;
-                            } else
+                        Vector vec = getParamVector(req);
 
-                                // --------
-                                // rastream
-                                // --------
-                                if (req.getRequestURI().indexOf("rastream")!=-1) {
-						//cacheReq = false;
-                                    log.debug("service(rastream)");
-
-                                    boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
-
-                                    // is it a audiopart or an episode ?
-                                    // ---------------------------------
-
-                                    Vector vec = getParamVector(req);
-
-                                    if (vec.contains("a(session)")) {
-                                        vec=addRAMSpeed(sp,vec,res);
-                                    }
-
-                                    if ( getParamValue("ea", vec)  != null ) {
-                                        log.debug("service(rastream): episode found");
-
-                                        if( playlists != null )
-                                            cline.buffer = playlists.getRAMfile(vec);
-                                        else
-                                            log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-
-                                    } else {
-                                        log.debug("service(rastream): rastream found");
-                                        long time = System.currentTimeMillis();
-                                        cline.buffer = getRAStream(vec,sp,res);
-                                        log.info("service(): getRAStreams(): took "+(System.currentTimeMillis()-time)+" ms.");
-                                    }
-
-                                    if (cline.buffer!=null) {
-                                        //debug("Buffer not null, returning stream");
-                                        cline.mimetype ="audio/x-pn-realaudio";
-                                        mimetype=cline.mimetype;
-                                    } else {
-                                        String ur=getParamValue("url",getParamVector(req));
-                                        String n=getParamValue("n",getParamVector(req));
-                                        //debug("Buffer is null!!! Returning url("+ur+") and params("+n+").");
-                                        res.setStatus(302,"OK");
-                                        res.setContentType("text/html");
-                                        res.setHeader("Location",ur+"?"+n);
-                                        return;
-                                    }
-                                } else
-
-                                    // --------
-                                    // rmstream
-                                    // --------
-                                    if (req.getRequestURI().indexOf("rmstream")!=-1) {
-                                        //cacheReq = false;
-                                        log.debug("service(rastream)");
-
-                                        // is it a audiopart or an episode ?
-                                        // ---------------------------------
-
-                                        Vector vec = getParamVector(req);
-
-                                        if (vec.contains("a(session)")) {
-                                            vec=addRAMSpeed(sp,vec,res);
-                                        }
-
-                                        if ( getParamValue("ea", vec)  != null ) {
-                                            log.debug("service(rastream): episode found");
-                                            if( playlists != null )
-                                                cline.buffer = playlists.getRAMfile(vec);
-                                            else
-                                                log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-                                        } else {
-                                            log.debug("service(rastream): rastream found");
-                                            cline.buffer=getRMStream(vec,sp,res);
-                                        }
-
-                                        if (cline.buffer!=null) {
-                                            //debug("Buffer not null, returning stream");
-                                            cline.mimetype="audio/x-pn-realaudio";
-                                            mimetype=cline.mimetype;
-                                        } else {
-                                            String ur=getParamValue("url",getParamVector(req));
-                                            String n=getParamValue("n",getParamVector(req));
-                                            log.info("service(): --> Buffer is null!!! Returning url("+ur+") and params("+n+") <--");
-                                            res.setStatus(302,"OK");
-                                            res.setContentType("text/html");
-                                            res.setHeader("Location",ur+"?"+n);
-                                            return;
-                                        }
-                                        // ---
-
-                                        // --------
-                                        // playlist
-                                        // --------
-
-                                    }
-                                    else if (req.getRequestURI().indexOf("playlist")!=-1) {
-                                        // added to do enable Referer logging
-                                        ref=req.getHeader("Referer");
-                                        if (ref!=null && ref.indexOf("vpro.nl")==-1 && ref.indexOf("vpro.omroep.nl")==-1 && ref.indexOf(".58.169.")==-1) {
-                                            // second layer to make sure its valid/clean
-                                            int pos=ref.indexOf("?");
-                                            if (pos!=-1) {
-                                                // probably a search engine remove the keywords need to be
-                                                // counted in the future
-                                                ref=ref.substring(0,pos);
-                                            }
-                                            log.debug("servdb2 R="+ref);
-                                            if (ref.length()>70) ref=ref.substring(0,70);
-                                            // org.mmbase if (stats!=null) stats.countSimpleEvent("Desktop="+ref);
-                                        }
-                                        //debug("Playlist="+playlists);
-
-
-                                        if (playlists!=null) {
-                                            Vector vec=getParamVector(req);
-                                            vec=checkPostPlaylist(poster,sp,vec);
-                                            if (vec.contains("a(session)")) {
-                                                vec=addRAMSpeed(sp,vec,res);
-                                            }
-                                            // filter and replace the mods found if needed
-                                            vec=filterSessionMods(sp,vec,res);
-                                            vec=checkSessionJingle(sp,vec,res);
-                                            // call the playlist module for the playlist wanted
-                                            cline.buffer=playlists.getRAMfile(vec);
-                                            cline.mimetype="audio/x-pn-realaudio";
-                                            mimetype=cline.mimetype;
-                                            cacheReq=false;
-                                        } else {
-                                            log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-					}
-                                        // ----
-                                        // jump
-                                        // ----
-
-                                    }
-                                    else if (req.getRequestURI().indexOf("jump")!=-1) {
-                                        // do jumper
-                                        long begin=(long)System.currentTimeMillis();
-                                        Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
-                                        String key=(String)(getParamVector(req)).elementAt(0);
-                                        String url = (String)bul.getJump(key);
-                                        log.debug("jump.db Url="+url);
-                                        if (url!=null) {
-                                            // jhash.put(key,url);
-                                            res.setStatus(302,"OK");
-                                            res.setContentType("text/html");
-                                            res.setHeader("Location",url);
-                                            Date d=new Date(0);
-                                            String dt=RFC1123.makeDate(d);
-                                            res.setHeader("Expires",dt);
-                                            res.setHeader("Last-Modified",dt);
-                                            res.setHeader("Date",dt);
-                                        }
-                                        long end=(long)System.currentTimeMillis();
-                                        //debug("getUrl="+(end-begin)+" ms");
-
-                                    }
-                                    else
-                                        // ---
-                                        // downloading attachment
-                                        //   cjr@dds.nl, July 27th 2000
-                                        // ---
-                                        if (req.getRequestURI().indexOf("attachment")!=-1) {
-                                            cline.buffer=getAttachment(getParamVector(req));
-											cline.mimetype=getAttachmentMimeType(getParamVector(req));
-                                            //cline.mimetype="application/x-binary";
-                                            mimetype=cline.mimetype;
-                                            String savefilename=getAttachmentFileName(getParamVector(req));
-                                            if (savefilename!=null) {
-	                                            res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
-					    }
-                                        }
-									else
-										// flash
-										if (req.getRequestURI().indexOf("flash")!=-1) {
-                                            cline.buffer=getFlash(getParamVector(req));
-											cline.mimetype="application/x-shockwave-flash";
-                                            mimetype=cline.mimetype;
-                                        }
-                       Vector vec = getParamVector(req);
-//
-//                        if (vec.contains("a(session)")) {
-//                            vec=addRAMSpeed(sp,vec,res);
-//                        }
+                        if (vec.contains("a(session)")) {
+                            vec=addRAMSpeed(sp,vec,res);
+                        }
 
                         if ( getParamValue("ea", vec)  != null ) {
                             log.debug("service(rastream): episode found");
@@ -1342,7 +1154,7 @@ public class servdb extends JamesServlet {
         try {
             result = Integer.parseInt( number );
         } catch( NumberFormatException e ) {
-            log.error( method+"(): "+var+"("+number+") is not a real number! var="+var);
+            log.error( method+"(): ERROR: "+var+"("+number+") is not a real number!");
             result = -1;
         }
         return result;
