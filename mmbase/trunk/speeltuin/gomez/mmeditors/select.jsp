@@ -41,7 +41,7 @@
         <mm:fieldlist type="search" nodetype="<%=managerName%>">
         <tr>
           <td class="fieldsearchprompt"><mm:fieldinfo type="guiname" /></td>
-          <td class="fieldsearch"><input type="text" name="search_form_<mm:fieldinfo type="name" />" class="fieldsearch" /></td>
+          <td class="fieldsearch"><input type="text" name="search_form_<mm:fieldinfo type="name" />" class="fieldsearch" /><input type="hidden" name="search_form_<mm:fieldinfo type="name" />_search" value="true" /></td>
         </tr>
         </mm:fieldlist>
         <tr>
