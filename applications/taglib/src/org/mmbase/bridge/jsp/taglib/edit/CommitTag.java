@@ -31,7 +31,7 @@ public class CommitTag extends CloudReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
 
-    void setTransaction(String t) {
+    public void setTransaction(String t) {
         setCloud(t);
     }
 
