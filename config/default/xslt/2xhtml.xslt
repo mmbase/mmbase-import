@@ -3,14 +3,14 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.6 2002-06-14 19:31:48 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.7 2002-06-24 13:55:12 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1" 
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
   xmlns:mmxf="http://www.mmbase.org/mmxf"
-  exclude-result-prefixes="node" 
+  exclude-result-prefixes="node mmxf" 
 >
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
   <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
@@ -29,13 +29,13 @@
   
    <!-- how to present a node -->
    <xsl:template match="object">
-    <xsl:apply-templates select="field[not(@notfilled)]">
+    <xsl:apply-templates select="field">
     </xsl:apply-templates>
   </xsl:template>
   
   
    <!-- how to present a news node -->
-   <xsl:template match="object[@type=$newstype and not(field/@notfilled)]">
+   <xsl:template match="object[@type=$newstype and not(unfilledField)]">
      <xsl:apply-templates select="field[@name='title']"    />
      <xsl:apply-templates select="field[@name='subtitle']" />
      <xsl:apply-templates select="field[@name='body']" />
@@ -106,7 +106,7 @@
   
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
   <xsl:template match="mmxf:p|mmxf:a"> 
-    <xsl:copy>	 	 
+    <xsl:element name="{local-name()}">
       <!-- find the nodes which are related to this node (by means of a 'idrel' -->
       <xsl:variable name="relatednodes" select="//objects/object[@id=//objects/object[@type='idrel' and 
         field[@name='id']=current()/@id and
@@ -115,7 +115,7 @@
       <xsl:apply-templates select="." mode="sub">
         <xsl:with-param name="relatednodes" select="$relatednodes" />
       </xsl:apply-templates>
-    </xsl:copy>
+    </xsl:element>
   </xsl:template>
 
   <!-- A paragraph can handle images and urls links -->

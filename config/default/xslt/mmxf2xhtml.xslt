@@ -2,13 +2,14 @@
   This translates a mmbase XML field to XHTML. So if you have MMXF
   fields in your datbase, this describes how they are presented as XHTML.
  
-  @version $Id: mmxf2xhtml.xslt,v 1.3 2002-06-14 19:31:48 michiel Exp $  
+  @version $Id: mmxf2xhtml.xslt,v 1.4 2002-06-24 13:55:12 michiel Exp $  
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet 
   version = "1.0" 
   xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
   xmlns:mmxf="http://www.mmbase.org/mmxf"
+  exclude-result-prefixes="mmxf" 
 
 >
   <xsl:output 
