@@ -14,12 +14,12 @@ import org.mmbase.bridge.util.xml.DocumentConverter;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.fields.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.SizeMeasurable;
-import org.mmbase.util.SizeOf;
+import org.mmbase.util.*;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.110 2003-12-02 16:13:21 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.111 2003-12-21 17:42:03 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -112,7 +112,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param Cloud the cloud to which this node belongs
      */
     BasicNode(MMObjectNode node, Cloud cloud) {
-        this.cloud = (BasicCloud)cloud;
+        this.cloud = (BasicCloud) cloud;
         setNode(node);
         init();
     }
@@ -324,116 +324,206 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
+     * Setting value with default method (depending on field's type)
+     */
+    public void setValue(String fieldName, Object value) {
+        int type = nodeManager.getField(fieldName).getType();
+        switch(type) {
+        case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+        case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+        case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
+        case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+        case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+        case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+        case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
+        case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+        default:                 setValueWithoutProcess(fieldName, value);
+        }
+
+    }
+
+    /**
+     * Like setValue, but withouth the valueinterceptor, this is called by nthe other set-values.
      * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
      *       method such as setSource(), where applicable.
+     * @since MMBase-1.7
      */
-    public void setValue(String attribute, Object value) {
+    protected void setValueWithoutProcess(String fieldName, Object value) {
         edit(ACTION_EDIT);
-        if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)) {
-            throw new BridgeException("Not allowed to change field " + attribute + ".");
+        if ("number".equals(fieldName) || "otype".equals(fieldName) || "owner".equals(fieldName)) {
+            throw new BridgeException("Not allowed to change field " + fieldName + ".");
         }
         if (this instanceof Relation) {
-            if ("rnumber".equals(attribute)) {
-                throw new BridgeException("Not allowed to change field " + attribute + ".");
-            } else if ("snumber".equals(attribute) || "dnumber".equals(attribute)) {
+            if ("rnumber".equals(fieldName)) {
+                throw new BridgeException("Not allowed to change field " + fieldName + ".");
+            } else if ("snumber".equals(fieldName) || "dnumber".equals(fieldName)) {
                 BasicRelation relation = (BasicRelation)this;
                 relation.relationChanged = true;
             }
         }
-        _setValue(attribute, value);
+        setValueWithoutChecks(fieldName, value);
     }
 
-    // Protected method to be able to set rnumber when creating a relation.
-    protected void _setValue(String attribute, Object value) {
-        String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, attribute, value);
+    /**
+     * Protected method to be able to set rnumber when creating a relation.
+     * @since MMBase-1.7
+     */
+    protected void setValueWithoutChecks(String fieldName, Object value) {
+        String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
         if ("unknown".equals(result)) {
-            throw new BridgeException("Can't change unknown field '" + attribute + "'.");
+            throw new BridgeException("Can't change unknown field '" + fieldName + "'.");
         }
         changed = true;
     }
 
-    public void setBooleanValue(String attribute, boolean value) {
-        setValue(attribute, new Boolean(value));
+    public void setBooleanValue(String fieldName, boolean value) {
+        Boolean booleanValue = new Boolean(value);
+        setValue(fieldName, booleanValue);
+        //booleanValue = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), booleanValue);
+        //setValueWithoutProcess(fieldName, booleanValue);
     }
 
-    public void setNodeValue(String attribute, Node value) {
+    public void setNodeValue(String fieldName, Node value) {
+        value = (Node) ValueIntercepter.processSet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), value);
         if (value instanceof BasicNode) {
-            setValue(attribute, ((BasicNode)value).getNode());
+            setValueWithoutProcess(fieldName, ((BasicNode)value).getNode());
         } else {
-            setIntValue(attribute, value.getNumber());
+            setValueWithoutProcess(fieldName, new Integer(value.getNumber()));
         }
     }
 
-    public void setIntValue(String attribute, int value) {
-        setValue(attribute, new Integer(value));
+    public void setIntValue(String fieldName, int value) {
+        Integer intValue = new Integer(value);
+        intValue = (Integer) ValueIntercepter.processSet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), intValue);
+        setValueWithoutProcess(fieldName, intValue);
     }
 
-    public void setFloatValue(String attribute, float value) {
-        setValue(attribute, new Float(value));
+    public void setFloatValue(String fieldName, float value) {
+        Float floatValue = new Float(value);
+        floatValue = (Float) ValueIntercepter.processSet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), floatValue);
+        setValueWithoutProcess(fieldName, floatValue);
     }
 
-    public void setDoubleValue(String attribute, double value) {
-        setValue(attribute, new Double(value));
+    public void setDoubleValue(String fieldName, double value) {
+        Double doubleValue = new Double(value);
+        doubleValue = (Double) ValueIntercepter.processSet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), doubleValue);
+        setValueWithoutProcess(fieldName, doubleValue);
     }
 
-    public void setByteValue(String attribute, byte[] value) {
-        setValue(attribute, value);
+    public void setByteValue(String fieldName, byte[] value) {
+        value = (byte[]) ValueIntercepter.processSet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
     }
 
-    public void setLongValue(String attribute, long value) {
-        setValue(attribute, new Long(value));
+    public void setLongValue(String fieldName, long value) {
+        Long longValue = new Long(value);
+        longValue = (Long) ValueIntercepter.processSet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), longValue);
+        setValueWithoutProcess(fieldName, longValue);
     }
 
-    public void setStringValue(String attribute, String value) {
-        setValue(attribute, value);
+    public void setStringValue(String fieldName, String value) {
+        log.info("setString on node " + getNumber());
+        value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
     }
 
-    public Object getValue(String attribute) {
-        return getNode().getValue(attribute);
+
+    public void setXMLValue(String fieldName, Document value) {
+        value = (Document) ValueIntercepter.processSet(Field.TYPE_XML, this, nodeManager.getField(fieldName), value);
+        
+        // do conversion, if needed from doctype 'incoming' to doctype 'needed'
+        //DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
+        
+        //setValueWithoutProcess(fieldName, dc.convert(value, cloud));
+        setValueWithoutProcess(fieldName, value);
     }
 
-    public boolean getBooleanValue(String attribute) {
-        return getNode().getBooleanValue(attribute);
+
+    public Object getValue(String fieldName) {
+        int type = nodeManager.getField(fieldName).getType();
+        switch(type) {
+        case Field.TYPE_STRING:  return getStringValue(fieldName);
+        case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+        case Field.TYPE_BYTE:    return getByteValue(fieldName);
+        case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+        case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+        case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+        case Field.TYPE_XML:     return getXMLValue(fieldName);
+        case Field.TYPE_NODE:    return getNodeValue(fieldName);
+        default:                 getNode().getValue(fieldName);
+        }
+
+        return getNode().getValue(fieldName);
     }
 
-    public Node getNodeValue(String attribute) {
-        if (attribute == null || attribute.equals("number")) {
+    public boolean getBooleanValue(String fieldName) {
+        return getNode().getBooleanValue(fieldName);
+    }
+
+    public Node getNodeValue(String fieldName) {
+        if (fieldName == null || fieldName.equals("number")) {
             return this;
         }
-        MMObjectNode noderes = getNode().getNodeValue(attribute);
-        if (noderes != null) {
-            if (noderes.getBuilder() instanceof InsRel) {
-                return new BasicRelation(noderes, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+        Node result = null;
+        MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
+        if (mmobjectNode != null) {
+            if (mmobjectNode.getBuilder() instanceof InsRel) {
+                result =  new BasicRelation(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             } else {
-                return new BasicNode(noderes, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+                result = new BasicNode(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
-        } else {
-            return null;
         }
+        result = (Node) ValueIntercepter.processGet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), result);
+        return result;
     }
 
-    public int getIntValue(String attribute) {
-        return getNode().getIntValue(attribute);
+    public int getIntValue(String fieldName) {
+        Integer result = new Integer(getNode().getIntValue(fieldName));
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Integer) ValueIntercepter.processGet(Field.TYPE_INTEGER, this, nodeManager.getField(fieldName), result);
+        }
+        return result.intValue(); 
+        
     }
 
-    public float getFloatValue(String attribute) {
-        return getNode().getFloatValue(attribute);
+    public float getFloatValue(String fieldName) {
+        Float result = new Float(getNode().getFloatValue(fieldName));
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Float) ValueIntercepter.processGet(Field.TYPE_FLOAT, this, nodeManager.getField(fieldName), result);
+        }
+        return result.floatValue(); 
     }
 
-    public long getLongValue(String attribute) {
-        return getNode().getLongValue(attribute);
+    public long getLongValue(String fieldName) {
+        Long result = new Long(getNode().getLongValue(fieldName));
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Long) ValueIntercepter.processGet(Field.TYPE_LONG, this, nodeManager.getField(fieldName), result);
+        }
+        return result.longValue(); 
     }
 
-    public double getDoubleValue(String attribute) {
-        return getNode().getDoubleValue(attribute);
+    public double getDoubleValue(String fieldName) {
+        Double result = new Double(getNode().getDoubleValue(fieldName));
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (Double) ValueIntercepter.processGet(Field.TYPE_DOUBLE, this, nodeManager.getField(fieldName), result);
+        }
+        return result.doubleValue(); 
     }
 
-    public byte[] getByteValue(String attribute) {
-        return getNode().getByteValue(attribute);
+    public byte[] getByteValue(String fieldName) {
+        byte[] result = getNode().getByteValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (byte[]) ValueIntercepter.processGet(Field.TYPE_BYTE, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
     }
 
-    public String getStringValue(String attribute) {
-        return getNode().getStringValue(attribute);
+    public String getStringValue(String fieldName) {
+        String result = getNode().getStringValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            result = (String) ValueIntercepter.processGet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), result);
+        }
+        return result;
     }
 
     public FieldValue getFieldValue(String fieldName) throws NotFoundException {
@@ -458,12 +548,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             return null;
         }
         return (Element)tree.importNode(doc.getDocumentElement(), true);
-    }
-
-    public void setXMLValue(String fieldName, Document value) {
-        // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
-        setValue(fieldName, dc.convert(value, cloud));
     }
 
     public void commit() {
@@ -969,13 +1053,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (this instanceof NodeManager) {
             s1 = ((NodeManager)this).getGUIName();
         } else {
-            s1 = getStringValue("gui()");
+            s1 = getFunctionValue("gui", null).toString();
         }
         String s2 = "";
         if (n instanceof NodeManager) {
             s2 = ((NodeManager)n).getGUIName();
         } else {
-            s2 = n.getStringValue("gui()");
+            s2 = n.getFunctionValue("gui", null).toString();
         }
         int res = s1.compareTo(s2);
         if (res != 0) {
