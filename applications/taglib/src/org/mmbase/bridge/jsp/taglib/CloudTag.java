@@ -73,6 +73,8 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
     
     private String cloudName  = DEFAULT_CLOUD_NAME;
     private Cloud  cloud;
+
+    private static HashMap anonymousClouds = new HashMap(); 
     
     private String authenticate = "name/password"; 
     
@@ -175,6 +177,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         cloud = (Cloud)session.getAttribute("cloud_" + cloudName);
 
         log.debug("startTag " + cloud);
+
         if ("asIs".equals(method)) {
             // this is handy. 'logon' will be ignored, the cloud is as is was in the session
             log.debug("requested the cloud 'as is'");
