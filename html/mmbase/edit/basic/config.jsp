@@ -4,6 +4,7 @@
 
 <title><%= m.getString("config.config") %></title>
 </head>
+<mm:content language="$config.lang" country="$config.country" expires="0">
 <body class="basic">
 
   <mm:context referid="config" id="config">
@@ -109,9 +110,7 @@
       <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
     </table>
   </form>
-  
-  <mm:locale language="$config.lang">
-    <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
-      <%@ include file="foot.jsp"  %>      
-    </mm:cloud>
-  </mm:locale>
+  <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+    <%@ include file="foot.jsp"  %>      
+  </mm:cloud>
+</mm:content>
