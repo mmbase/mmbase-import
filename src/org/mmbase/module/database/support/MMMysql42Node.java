@@ -20,13 +20,31 @@ import org.mmbase.util.logging.*;
  * mysql.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMMysql42Node.java,v 1.20 2002-03-26 13:05:49 pierre Exp $
+ * @version $Id: MMMysql42Node.java,v 1.21 2002-11-10 21:15:52 michiel Exp $
  */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
     /**
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMMysql42Node.class.getName());
+
+
+    protected String decodeStringField(ResultSet rs, int i) throws SQLException {
+        String tmp = null;
+        try {
+            byte[] bytes = rs.getBytes(i);
+            if (bytes != null) {
+                tmp = new String(bytes, mmb.getEncoding());
+            }
+        } catch (java.io.UnsupportedEncodingException e) {
+            log.error("Getting encoded bytes: " + e.toString());
+            tmp = rs.getString(i);
+        } 
+
+        return tmp;
+    }
+
+
 
     /**
      * Returns an unique number.
