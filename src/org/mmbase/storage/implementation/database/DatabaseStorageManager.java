@@ -22,13 +22,15 @@ import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
+
+
 /**
  * A JDBC implementation of an object related storage manager.
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.11 2005-01-26 14:52:50 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.12 2005-02-03 09:20:40 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -78,6 +80,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Pool of changed nodes in a transaction
      */
     protected Map changes;
+    
 
     /**
      * Constructor
@@ -101,6 +104,8 @@ public class DatabaseStorageManager implements StorageManager {
         if (factory.supportsTransactions()) {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
         }
+
+        
         // determine generated key buffer size
         if (bufferSize==null) {
             bufferSize = new Integer(1);
@@ -341,6 +346,7 @@ public class DatabaseStorageManager implements StorageManager {
         if ( (field != null && field.getStorageType() == Types.CLOB) || 
              (field != null && field.getStorageType() == Types.BLOB) || 
              factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+
             InputStream inStream = result.getBinaryStream(index);
             if (result.wasNull()) {
                 return null;
@@ -353,16 +359,46 @@ public class DatabaseStorageManager implements StorageManager {
                     c = inStream.read();
                 }
                 inStream.close();
-                untrimmedResult = new String(bytes.toByteArray(), factory.getMMBase().getEncoding());
+                String encoding = factory.getMMBase().getEncoding();
+                if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                    // CP 1252 only fills in the 'blanks' of ISO-8859-1,
+                    // so it is save to upgrade the encoding, in case accidentily those bytes occur
+                    encoding = "CP1252";                    
+                }                
+
+                untrimmedResult = new String(bytes.toByteArray(), encoding);
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
         } else {
+            
             untrimmedResult = result.getString(index);
+            if (factory.hasOption(Attributes.LIE_CP1252) && untrimmedResult != null) {
+                try {                
+                    String encoding = factory.getMMBase().getEncoding();
+                    if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                        String ub = untrimmedResult;                        
+                        untrimmedResult = new String(untrimmedResult.getBytes("ISO-8859-1"), "CP1252");
+                    } else {
+                    }
+                    
+                 } catch(java.io.UnsupportedEncodingException uee) {
+                     // cannot happen
+                     log.warn(uee);                     
+                 }
+            }
         }
-        if(untrimmedResult!=null && factory.hasOption(Attributes.TRIM_STRINGS)) {
-             return untrimmedResult.trim();
+        if(untrimmedResult != null) {
+            if (factory.hasOption(Attributes.TRIM_STRINGS)) {
+                untrimmedResult = untrimmedResult.trim();
+            }
+            if (factory.getGetSurrogator() != null) {
+                untrimmedResult = factory.getGetSurrogator().transform(untrimmedResult);
+            }
+            
+            
         }
+
         return untrimmedResult;
     }
 
@@ -834,11 +870,11 @@ public class DatabaseStorageManager implements StorageManager {
             break;
             // Store strings
         case FieldDefs.TYPE_XML : 
-            setXMLValue(statement, index, value, field);
+            setXMLValue(statement, index, value, field, node);
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
-            setStringValue(statement, index, value, field);
+            node.storeValue(fieldName, setStringValue(statement, index, value, field, node));
             break;
             // Store binary data
         case FieldDefs.TYPE_BYTE : {
@@ -987,16 +1023,24 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;        
-        String value = Casting.toString(objectValue);
+    protected Object setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
 
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return objectValue;
+        String value = Casting.toString(objectValue);
+        if (factory.getSetSurrogator() != null) {
+            value = factory.getSetSurrogator().transform(value);
+        }
+        String encoding = factory.getMMBase().getEncoding();
         // Store data as a binary stream when the code is a clob or blob, or
         // when database-force-encode-text is true.
         if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             byte[] rawchars = null;
             try {
-                rawchars = value.getBytes(factory.getMMBase().getEncoding());
+                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {                    
+                    encoding = "CP1252";                    
+                } else {
+                }  
+                rawchars = value.getBytes(encoding);
                 ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
                 statement.setBinaryStream(index, stream, rawchars.length);
                 stream.close();
@@ -1004,8 +1048,34 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException(ie);
             }
         } else {
-            statement.setString(index, value);
+             String setValue = value;
+             if (factory.hasOption(Attributes.LIE_CP1252)) {
+                 try {
+                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                         log.info("Lying CP-1252");
+                         encoding = "CP1252";
+                         setValue = new String(value.getBytes("CP1252"), "ISO-8859-1");
+                     } else {
+                     }
+                 } catch(java.io.UnsupportedEncodingException uee) {
+                     // cannot happen
+                 }
+             } else {
+             }
+
+            statement.setString(index, setValue);
+
         }
+        if (! encoding.equalsIgnoreCase("UTF-8")) {                
+            try {
+                value = new String(value.getBytes(encoding), encoding);
+            } catch(java.io.UnsupportedEncodingException uee) {
+                log.error(uee);
+                // cannot happen
+            }
+        }            
+        if (objectValue == null) node.storeValue(field.getDBName(),value);
+        return value;
     }
     
     /**
@@ -1013,8 +1083,11 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @since MMBase-1.7.1
      */
-    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        setStringValue(statement, index, objectValue, field);
+    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (objectValue == null && field.getDBNotNull()) objectValue = "";
+        objectValue = Casting.toXML(objectValue, null, null);
+        node.storeValue(field.getDBName(),objectValue);
+        setStringValue(statement, index, objectValue, field, node);
     }
 
 
@@ -1166,23 +1239,21 @@ public class DatabaseStorageManager implements StorageManager {
     protected Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
         try {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
-            if (field != null)
+            if (field != null) {                
                 dbtype = field.getDBType();
+            }            
             switch (dbtype) {
                 // string-type fields
-                case FieldDefs.TYPE_XML :
-                case FieldDefs.TYPE_STRING :
-                    {
-                        return getStringValue(result, index, field);
-                    }
-                case FieldDefs.TYPE_BYTE :
-                    {
-                        return getBinaryValue(result, index, field);
-                    }
-                default :
-                    {
-                        return result.getObject(index);
-                    }
+            case FieldDefs.TYPE_XML :
+            case FieldDefs.TYPE_STRING : {
+                return getStringValue(result, index, field);
+            }
+            case FieldDefs.TYPE_BYTE : {
+                return getBinaryValue(result, index, field);
+            }
+            default : {
+                return result.getObject(index);
+            }
             }
         } catch (SQLException se) {
             throw new StorageException(se);
