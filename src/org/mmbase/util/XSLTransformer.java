@@ -20,16 +20,13 @@ import org.apache.xalan.xslt.*;
 /**
  * Make XSL Transformations
  *
- * XXX I don't know yet how to fit this into MMBase. I want to pass paths 
- * to both XML en XSL files and I don't think it looks good to do this
- * with the $MOD method calling syntax. On the other hand, I don't 
- * want a server doing the conversion as I want to be able to use the 
- * standard MMBase <SECURE> tag.
- *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.1 2000-08-09 12:45:24 case Exp $
+ * @version $Id: XSLTransformer.java,v 1.2 2000-08-10 19:53:54 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/08/09 12:45:24  case
+ * cjr: implements a transform(xmlPath,xslPath) method that returns a string
+ *
  */
 public class XSLTransformer {
     private XSLTProcessor processor;
