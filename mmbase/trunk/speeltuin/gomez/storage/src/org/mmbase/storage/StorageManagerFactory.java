@@ -11,8 +11,9 @@ package org.mmbase.storage;
 
 import java.util.List;
 import java.util.Map;
-import org.mmbase.storage.util.StorageReader;
-import org.mmbase.storage.util.Scheme;
+
+import org.mmbase.storage.util.*;
+
 import org.mmbase.module.core.MMBase;
 
 /**
@@ -21,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.10 2003-07-28 10:19:20 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.11 2003-07-30 10:19:40 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -170,5 +171,11 @@ public interface StorageManagerFactory {
      */
 	public boolean supportsTransactions();
     
+    /**
+     * Returns the ChangeManager utility instance, used to register and broadcast changes to nodes
+     * in the storage layer.
+     * This method is for use by the StorageManager
+     */
+    public ChangeManager getChangeManager();
 }
 
