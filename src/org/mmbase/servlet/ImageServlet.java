@@ -22,7 +22,7 @@ import org.mmbase.bridge.Node;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.10 2002-07-24 19:43:18 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.11 2002-11-06 22:04:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -44,7 +44,7 @@ public class ImageServlet extends HandleServlet {
     }
 
     protected String getMimeType(Node node) {
-        return node.getStringValue("mimetype()");
+        return node.getFunctionValue("mimetype", null).toString();
     }
 
     
@@ -64,7 +64,7 @@ public class ImageServlet extends HandleServlet {
         // still not found a sensible fileName? Give it up then.
         if (fileName == null || fileName.equals("")) fileName = "mmbase-image";
 
-        res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getStringValue("format()") + "\"");
+        res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getFunctionValue("format", null).toString() + "\"");
         return true;
     }
 
