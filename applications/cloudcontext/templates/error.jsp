@@ -7,7 +7,7 @@
 <mm:cloud method="asis" jspvar="cloud">
   <html>
     <head>
-    <title>Cloud Context Users Administration - Error page</title>
+    <title><%=getPrompt(m, "title")%> - Error page</title>
     <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
@@ -85,22 +85,21 @@
     log.error(ticket+":\n"+msg);
 %>
   <div id="content">
-	<h1>Oeps, er is een fout opgetreden!</h1>
+	<h1><%=getPrompt(m, "oops")%></h1>
 	<p>
-    Er is iets misgegaan: <%= exception.getMessage() %>.
+    <%=getPrompt(m, "wentwrong")%> <%= exception.getMessage() %>.
   </p>
   <p>
-    <a href="<mm:url page="index.jsp" />">terug</a>
+    <a href="<mm:url referids="language" page="index.jsp" />">terug</a>
   </p>
   <p>
-    Als het niet duidelijk is wat er aan de hand is, kunt u het beste de beheerder van deze site
-    benaderen, onder vermelding van het volgende nummer:
+    <%=getPrompt(m, "doaftererror")%>
 	</p>
 	<p>
 	    <font color="red"><big><%= ticket %></big></font>
 	</p>
 	<p>
-   Of eventeel zelfs met deze rommel erbij:
+    <%=getPrompt(m, "doaftererror2")%>
 	</p>
 <textarea rows="100" style="width: 100%;">
 <%= Encode.encode("ESCAPE_XML",msg) %>

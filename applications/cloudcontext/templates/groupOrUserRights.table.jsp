@@ -30,6 +30,6 @@
       </tr>
     </mm:listnodes>
   </mm:functioncontainer>
-  <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
+  <tr><td><input type="submit"  name="submit" value="<%=getPrompt(m, "submit")%>" /></td></tr>
   <tr><td class="text"><a href="<mm:url referids="back@url,parameters,$parameters" />"><%=getPrompt(m,"back")%></a></td></tr>
 </table>

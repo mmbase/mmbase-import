@@ -16,7 +16,7 @@
    </mm:fieldlist>
    
    <tr>
-     <td>Groups</td>
+     <td><%=getPrompt(m, "groups")%></td>
      <td>
       <select name="_groups" size="4" multiple="multiple">
         <mm:listnodes type="mmbasegroups">
@@ -26,7 +26,7 @@
      </td>
     </tr>
     <tr>
-     <td>Rank</td>
+     <td><%=getPrompt(m, "rang")%></td>
      <td>
       <select name="_rank" size="4">
         <mm:listnodes type="mmbaseranks">
@@ -35,11 +35,11 @@
       </select>
      </td>
     </tr>
-    <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
+    <tr><td><input type="submit"  name="submit" value="<%=getPrompt(m, "submit")%>" /></td></tr>
     <input type="hidden" name="user" value="new" />
 
    </table>
    </form>
   </mm:cloud>
-  <a href="<mm:url referids="parameters,$parameters" page="." ><mm:param name="url">index_users.jsp</mm:param></mm:url>">Back</a>
+  <a href="<mm:url referids="parameters,$parameters" page="." ><mm:param name="url">index_users.jsp</mm:param></mm:url>"><%=getPrompt(m, "back")%></a>
 

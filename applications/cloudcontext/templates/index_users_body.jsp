@@ -19,7 +19,7 @@
       <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" title="create user"  /></a>
     </mm:maycreate>
     <mm:maycreate type="mmbaseusers" inverse="true">
-      You are not allowed to create new users.
+      <%=getPrompt(m, "notallowedtocreateusers")%>
     </mm:maycreate>
   </p>
 

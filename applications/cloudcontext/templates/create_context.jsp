@@ -18,7 +18,7 @@
     </mm:fieldlist>
     <input type="hidden" name="context" value="new" />
     <tr>
-      <td>Create associated security group</td>
+      <td><%=getPrompt(m, "createassociatedgroup")%></td>
       <td>
         <input type="checkbox" name="creategroup" />
         <input name="groupname" />

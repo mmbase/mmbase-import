@@ -20,7 +20,7 @@
    </table>
     <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
    <table class="rights">
-    <tr><th>Groups</th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
+    <tr><th><%=getPrompt(m, "groups")%></th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
     <mm:functioncontainer>
     <mm:listnodes id="thisgroup" type="mmbasegroups">
       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
@@ -50,7 +50,7 @@
     </mm:listnodes>
     </mm:functioncontainer>
     <tr><td class="text"><input type="submit"  name="submit" value="<%=getPrompt(m,"submit")%>" /></td></tr>
-    <tr><td class="text"><a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>">back</a></td></tr>
+    <tr><td class="text"><a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>"><%=getPrompt(m, "back")%></a></td></tr>
    </table>
    </form>
 </div>

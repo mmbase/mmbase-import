@@ -21,7 +21,7 @@
     <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create context"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasecontexts" inverse="true">
-    You are not allowed to create new security contexts.
+      <%=getPrompt(m, "notallowedtocreatecontexts")%>
   </mm:maycreate>
 </p>
 <mm:notpresent referid="context">
