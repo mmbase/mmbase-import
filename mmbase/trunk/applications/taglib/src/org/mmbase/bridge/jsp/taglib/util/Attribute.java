@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.6 2003-03-24 18:15:13 michiel Exp $
+ * @version $Id: Attribute.java,v 1.7 2003-03-25 17:55:14 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -45,7 +45,7 @@ public class Attribute {
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
      */
-    public static Attribute getAttribute(Object at) throws AttributeException {
+    public static Attribute getAttribute(Object at) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("Getting attribute " + at);
         return cache.getAttribute(at);
     }
@@ -55,21 +55,27 @@ public class Attribute {
      */
     private boolean containsVars;
 
+    boolean containsVars() {
+        return containsVars;
+    }
+
     /**
      * The unparsed attribute.
      */
     private Object attribute;
 
     /**
-     * List of AttributeParts (the parsed attribute). This can be null if containsVars is false.
+     * List of AttributeParts (the parsed attribute). This can be null
+     * if containsVars is false (then simply 'attribute' can be return
+     * as value).
      */
     private List    attributeParts;
 
     /**
      * The constructor is protected, construction is done by the cache.
      */
-    protected Attribute(Object at) throws AttributeException {
-        attribute    = at;
+    protected Attribute(Object at) throws JspTagException {
+        attribute = at;
         parse();
     }
 
@@ -89,7 +95,7 @@ public class Attribute {
         if (! containsVars) buffer.append(attribute.toString());
         Iterator i = attributeParts.iterator();
         while (i.hasNext()) {
-            AttributePart ap = (AttributePart) i.next();
+            Part ap = (Part) i.next();
             ap.appendValue(tag, buffer);
         }
     }
@@ -98,12 +104,9 @@ public class Attribute {
      * Returns the evaluated Attribute as an Object. Can also be null.
      */
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("Evaluating " + this);
-        }
         if (! containsVars) return attribute;
         if (attributeParts.size() == 1) {
-            AttributePart ap = (AttributePart) attributeParts.get(0);
+            Part ap = (Part) attributeParts.get(0);
             return ap.getValue(tag);
         }
         StringBuffer result = new StringBuffer();
@@ -148,15 +151,13 @@ public class Attribute {
     }
 
     /**
-     * Parses this attribute into list of 'attributeparts'.
-     * The method {@link #getValue} will concatenate them together again (after evaluation).
+     * Parses this attribute into list of 'attributeparts'. This is
+     * the heart of the Attribute class.  The method {@link #getValue}
+     * will concatenate them together again (after evaluation).
      */
 
-    protected void parse() throws AttributeException {
+    protected void parse() throws JspTagException {
         String attr = (String) attribute;
-        if (log.isDebugEnabled()) {
-            log.debug("Parsing " + attribute);
-        }
         // search all occurences of $
         int foundpos     = attr.indexOf('$');
         if (foundpos == -1) {
@@ -171,7 +172,7 @@ public class Attribute {
         while (foundpos >= 0) { // we found a variable!
             String npart = attr.substring(pos,foundpos);
             if (npart.length() > 0) {
-                attributeParts.add(new AttributePart(npart));
+                attributeParts.add(new StringPart(npart));
             }
             // piece of string until now is ready.
             foundpos ++;
@@ -200,15 +201,15 @@ public class Attribute {
                 }
                 if (attr.charAt(foundpos) != '+') {
                     Attribute var = getAttribute(attr.substring(foundpos, pos - 1));
-                    attributeParts.add(new AttributePart(var));
+                    attributeParts.add(new VariablePart(var));
                 } else {
                     Attribute var = getAttribute(attr.substring(foundpos + 1, pos - 1));
-                    attributeParts.add(new AttributePart(AttributePart.EXPRESSION, var));
+                    attributeParts.add(new ExpressionPart(var));
                 }
             } else { // not using parentheses.
                 char c = attr.charAt(pos = foundpos);
                 if (c == '$') { // make escaping of $ possible
-                    attributeParts.add(new AttributePart("$"));
+                    attributeParts.add(new StringPart("$"));
                     pos++;
                 } else {        // search until non-identifier
                     StringBuffer varName = new StringBuffer();
@@ -219,7 +220,7 @@ public class Attribute {
                         c = attr.charAt(pos);
                     }
                    Attribute var = getAttribute(varName.toString());
-                   attributeParts.add(new AttributePart(var));
+                   attributeParts.add(new VariablePart(var));
                 }
             }
             // ready with this $, search next occasion;
@@ -228,124 +229,105 @@ public class Attribute {
         // no more $'es, add rest of string
         String rest = attr.substring(pos);
         if (rest.length() > 0) {
-            attributeParts.add(new AttributePart(rest));
+            attributeParts.add(new StringPart(rest));
         }
         return;
     }
 
-    static class AttributePart {
-        private static Logger log = Logging.getLoggerInstance(Attribute.class.getName()+".AttributePart");
-        final static int STRING      = 0;
-        final static int DOUBLE      = 1;
-        final static int VAR         = 10;
-        final static int ATTRIBUTE   = 11;
-        final static int EXPRESSION  = 12;
-        private int type;
-        private Object part;
+    /**
+     * An Part represents one part of an Attribute. 
+     */   
 
-        static String getType(int t) {
-            switch(t) {
-            case STRING: return "String";
-            case DOUBLE: return "Double";
-            case VAR:    return "Variable";
-            case ATTRIBUTE: return "Attribute";
-            case EXPRESSION: return "Expression";
-            default: return "????";
-            }
-        }
-
-        AttributePart(int t, Object p) throws AttributeException {
-            type = t;
-            part = p;
-            check();
-       }
-        AttributePart(Attribute att) throws AttributeException {
-            if(att.containsVars) {
-                type = ATTRIBUTE;
-                part = att;
-            } else {
-                type = VAR;
-                part = (String)  att.attribute;
-            }
-            check();
-        }
-        AttributePart(String att) throws AttributeException {
-            this(STRING, att);
-        }
-
+    abstract class Part {
+        protected Object part;
+        abstract protected String getType();
         /**
          * String representation of this AttributePart (for debugging)
          */
         public String toString() {
-            return "(" + getType(type) + "/" + part.toString() + ")";
+            return "(" + getType() + "/" + part.toString() + ")";
         }
 
-        /**
-         * After construction some basic checks can be done.
-         */
-        void check() throws AttributeException {
-            if (log.isDebugEnabled()) log.trace("Checking new AttributePart '" + part + "'/" + getType(type));
-            switch(type) {
-            case VAR: {
-                String var =  part.toString();
+        abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
+        void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
+            buffer.append(getValue(tag).toString());
+        }
+    }
+
+    /**
+     * A part containing a $-variable.
+     */
+    class VariablePart extends Part {
+        protected boolean containsVars; //wether the name of variable itself contains variables.
+        VariablePart(Attribute a) throws JspTagException { 
+            containsVars = a.containsVars();
+            if (containsVars) {
+                part = a;
+            } else {
+                String var =  (String) a.getValue(null);               
                 if (var.length() < 1) throw new AttributeException("Expression too short");
-                return;
+                part = var;
+            } 
+        }
+        protected String getType() { return "Variable"; }
+        Object getValue(ContextReferrerTag tag) throws JspTagException {
+            String v;
+            if (containsVars) {
+                v = (String) ((Attribute) part).getValue(tag);
+            } else {
+                v = (String) part;
             }
-            case EXPRESSION: {
-                if (part instanceof Attribute) {
-                    Attribute att = (Attribute) part;
-                    if (! att.containsVars) {
-                        log.debug("Expression does not contain vars, casting to double");
-                        ExprCalc cl = new ExprCalc(att.attribute.toString());
-                        part = new Double(cl.getResult());
-                        type = DOUBLE;
-                    }
-                }
-            }
+            if ("_".equals(v)) {
+                return tag.findWriter().getWriterValue();
+            } else {
+                return tag.getObject(v); 
             }
         }
+    }
 
+    /**
+     * A ${+ } part containing an 'expression'.  This is in fact an
+     * undocumented feature of the taglib. It is based on ExprCalc of
+     * org.mmbase.util.
+     */
+
+    class ExpressionPart extends Part {
+        protected boolean evaluated;
+        protected String getEvaluated() {
+            return evaluated ? "evaluated" : "not evaluated";
+        }
+
+        ExpressionPart(Attribute a) throws JspTagException { 
+            if (a.containsVars()) {
+                evaluated = false;
+                part = a;
+            } else {
+                evaluated = true;
+                ExprCalc cl = new ExprCalc((String) a.getValue(null));
+                part = new Double(cl.getResult());
+            }
+        }
+        protected String getType() { return "Expression (" + getEvaluated() + ")"; }
         Object getValue(ContextReferrerTag tag) throws JspTagException {
-            if(log.isDebugEnabled()) {
-                log.trace("Evaluating part '" + part + "' of  type " + getType(type));
-            }
-            switch(type) {
-            case DOUBLE:
-            case STRING: return  part;
-            case VAR:{
-                if ("_".equals(part)) {
-                    return tag.findWriter().getWriterValue();
-                } else {
-                    return tag.getObject((String) part);
-                }
-            }
-            case ATTRIBUTE:
-                return ((Attribute) part).getValue(tag);
-            case EXPRESSION: {
+            if (evaluated) {
+                return part;
+            } else {
                 ExprCalc cl = new ExprCalc( ((Attribute) part).getString(tag));
                 return new Double(cl.getResult());
             }
-            default: throw new AttributeException("Found an unknown Attribute Part type");
-            }
         }
+    }
 
+    /**
+     * A simple 'string' part, wich does need any evaluating or parsing any more.
+     *
+     */
 
-        void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
-            if (log.isDebugEnabled()) {
-                log.trace("Appending part '" + part + "' of  type " + getType(type));
-            }
-            switch(type) {
-            case STRING:
-            case DOUBLE:
-            case VAR:
-            case EXPRESSION:
-            case ATTRIBUTE:
-                buffer.append(getValue(tag).toString());
-                return;
-                // case ATTRIBUTE:   ((Attribute) part).appendValue(tag, buffer); return;
-            default: throw new AttributeException("Found an unknown Attribute Part type");
-            }
-
+    class StringPart extends Part {
+        StringPart(String o) {  part = o; }
+        protected String getType() { return "String"; }
+        Object getValue(ContextReferrerTag tag) throws JspTagException {
+            return part;
         }
     }
 }
@@ -355,12 +337,13 @@ public class Attribute {
  * Cache which relates unparsed Attribute Strings with parsed `Attribute' objects.
  */
 class AttributeCache extends Cache {
+    private static Logger log = Logging.getLoggerInstance(AttributeCache.class.getName());
     AttributeCache() {
         super(1000);
     }
     public String getName()        { return "TagAttributeCache"; }
     public String getDescription() { return "Cache for parsed Tag Attributes"; }
-    public Attribute getAttribute(Object att) throws AttributeException {
+    public Attribute getAttribute(Object att) throws JspTagException {
         Attribute res;
         res = (Attribute) super.get(att);
         if (res == null) res = new Attribute(att);
