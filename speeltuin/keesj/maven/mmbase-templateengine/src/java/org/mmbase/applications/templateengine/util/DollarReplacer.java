@@ -13,7 +13,7 @@ import java.util.*;
 import java.io.*;
 /**
  * @author keesj
- * @version $Id: DollarReplacer.java,v 1.1.1.1 2004-04-02 14:58:48 keesj Exp $
+ * @version $Id: DollarReplacer.java,v 1.2 2004-04-05 11:52:33 keesj Exp $
  */
 public class DollarReplacer {
     Properties properties = new Properties();
@@ -27,7 +27,7 @@ public class DollarReplacer {
         while ( (c =  in.read()) >= 0) {
             if (c == '$') { // we have a dollar statement
                 StringBuffer sb = new StringBuffer();
-                //TODO:keesj redifine what a keyword is and do something like while(char.isAlfa)
+                //TODO:keesj redefiine  what a keyword is and do something like while(char.isAlfa)
                 while ((c = in.read()) >= 0 && c != ' ' && c != ';' && c!= '$') {
                 	sb.append((char)c);
                 }

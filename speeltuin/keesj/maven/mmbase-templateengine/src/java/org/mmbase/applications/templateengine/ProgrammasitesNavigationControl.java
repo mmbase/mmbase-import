@@ -28,8 +28,7 @@ public class ProgrammasitesNavigationControl extends NavigationControl implement
     Navigation navigation;
     String config = null;
 
-    public ProgrammasitesNavigationControl() {
-    }
+    public ProgrammasitesNavigationControl() {}
 
     public Navigation getNavigation() {
         return navigation;
@@ -56,11 +55,10 @@ public class ProgrammasitesNavigationControl extends NavigationControl implement
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(MMBaseContext.getConfigPath() + "/te", name + ".xml"))));
         } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
             String message = "can not find template " + MMBaseContext.getConfigPath() + "/te/" + name + ".xml";
             log.warn(message);
             //throw new RuntimeException(message, e1); 1.4
-			throw new RuntimeException(message + Logging.stackTrace(e1));
+            throw new RuntimeException(message + Logging.stackTrace(e1));
         }
         StringWriter sw = new StringWriter();
         String data = null;
@@ -74,7 +72,7 @@ public class ProgrammasitesNavigationControl extends NavigationControl implement
         String xmlData = sw.toString();
         XMLStorage store = new XMLStorage();
         Component c = store.stringToComponent(xmlData);
-        return (Template) c;
+        return (Template)c;
     }
 
     /* (non-Javadoc)
