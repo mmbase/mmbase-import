@@ -19,7 +19,7 @@
 
 <%-- determin which player to use --%>
 <mm:write referid="config.player">
-  <mm:compare value="real">
+  <mm:compare value="wm" inverse="true"><%-- ram ? --%>
       <mm:field name="format(ram)">
          <mm:compare value="wmp">
             <mm:write id="player" value="wm" write="false" />
