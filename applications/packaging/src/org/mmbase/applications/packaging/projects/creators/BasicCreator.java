@@ -923,6 +923,7 @@ public class BasicCreator implements CreatorInterface {
 	    if (f2.exists()) {
 		f2.delete();
 	    }
+            f2 = new File(filename + ".mmp");
             if (f1.renameTo(f2)) {
 		return true;
             } else {
