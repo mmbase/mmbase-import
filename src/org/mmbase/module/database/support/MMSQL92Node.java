@@ -8,153 +8,17 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.46 2001-01-29 14:29:02 daniel Exp $
+$Id: MMSQL92Node.java,v 1.47 2001-03-03 23:11:02 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.46  2001/01/29 14:29:02  daniel
+added optional blob to disk support
+
 Revision 1.45  2000/12/28 22:22:20  daniel
 added updateTable (with warning)
 
 Revision 1.44  2000/11/25 12:43:07  daniel
 number mapping support : added calls for Number, implemented the methods
-
-Revision 1.43  2000/11/20 14:18:33  install
-Rob removed ugly code line
-
-Revision 1.42  2000/11/19 00:59:54  daniel
-added a check to make sure we start getDBKey at 1
-
-Revision 1.41  2000/11/19 00:00:56  daniel
-removed the lock its not part of sql92, find a new trick !
-
-Revision 1.40  2000/11/15 09:19:23  install
-Rob Changed getDBKey multiple mmbases can synchronize their keys
-
-Revision 1.39  2000/11/14 12:27:31  install
-Rob : added some comments
-
-Revision 1.38  2000/11/07 14:32:27  vpro
-Rico: removed debug
-
-Revision 1.37  2000/11/07 14:28:55  vpro
-Rico: removed TYPE_TEXT
-
-Revision 1.36  2000/10/18 16:39:40  gerard
-gerard: added support for keys/primary keys, not completly checked.
-You can try it by setting keysSupported to true in this file
-
-Revision 1.35  2000/08/31 21:27:48  gerard
-gerard: fixed broadcast of inserting a new node into the database. If a node is inserted an 'n' (new) must be broadcasted instead of a 'c' (changed).
-
-Revision 1.34  2000/07/25 21:02:53  daniel
-removed Fielddefs database code since well its not in the database anymore
-
-Revision 1.33  2000/07/25 20:47:53  daniel
-added a clearChanged when nodes are inserted
-
-Revision 1.32  2000/07/24 16:09:58  install
-Daniel.. fixed virtual fields
-
-Revision 1.31  2000/07/18 12:27:49  install
-Rob:turned debug off
-
-Revision 1.30  2000/07/15 19:18:38  daniel
-Fixed a bug with new DBType
-
-Revision 1.29  2000/07/15 13:06:21  daniel
-removed some debug
-
-Revision 1.28  2000/07/15 10:02:15  daniel
-Changed getDBType to int
-
-Revision 1.24  2000/07/06 10:19:58  daniel
-Daniel.. started to add more mmbase types (not done yet)
-
-Revision 1.23  2000/06/30 09:30:59  install
-Rob: select max(number) from [table].object returned 0 while using jdbc 1 but it returns null while using jdbc 2
-
-Revision 1.22  2000/06/28 10:24:18  daniel
-Daniel .. removed some methods
-
-Revision 1.21  2000/06/26 19:25:40  wwwtech
-Daniel.. removed create debug
-
-Revision 1.20  2000/06/26 14:10:10  wwwtech
-Daniel.. small fix in convertor
-
-Revision 1.19  2000/06/26 11:50:35  wwwtech
-Daniel.. added methods for disallowed/allowed conversion
-
-Revision 1.18  2000/06/25 13:11:44  wwwtech
-Daniel.. changed/added method for getConnection
-
-Revision 1.17  2000/06/25 00:39:14  wwwtech
-Daniel... removed some debug
-
-Revision 1.16  2000/06/24 23:19:29  wwwtech
-Daniel.. changed init call for XML parser
-
-Revision 1.15  2000/06/24 18:42:46  wwwtech
-Daniel.. added auto convertor for illegal fieldnames
-
-Revision 1.14  2000/06/23 09:52:29  wwwtech
-Daniel. fix for handle BYTE
-
-Revision 1.13  2000/06/22 22:32:44  wwwtech
-Daniel : added byte support
-
-Revision 1.12  2000/06/22 13:29:45  wwwtech
-daniel
-
-Revision 1.11  2000/06/22 12:56:37  wwwtech
-Daniel
-
-Revision 1.10  2000/06/22 12:21:04  install
-Daniel, if something goes wrong blame me
-
-Revision 1.9  2000/06/20 14:32:26  install
-Rob: turned off some debug information
-
-Revision 1.8  2000/06/20 09:32:46  wwwtech
-fixed otype first run bug for xml config
-
-Revision 1.7  2000/06/20 08:49:16  wwwtech
-better config loading
-
-Revision 1.6  2000/06/20 08:20:14  wwwtech
-changed create calls to xml
-
-Revision 1.5  2000/06/06 20:36:25  wwwtech
-added XML create and convert code
-
-Revision 1.4  2000/05/15 14:47:48  wwwtech
-Rico: fixed double close() bug in getDBText en getDBBtye()
-
-Revision 1.3  2000/04/18 23:16:17  wwwtech
-new decodefield routine
-
-Revision 1.2  2000/04/15 21:31:33  wwwtech
-daniel: removed overrriden methods
-
-Revision 1.1  2000/04/15 20:42:44  wwwtech
-fixes for informix and split in sql92 poging 2
-
-Revision 1.9  2000/04/12 11:34:57  wwwtech
-Rico: built type of builder detection in create phase
-
-Revision 1.8  2000/03/31 16:01:49  wwwtech
-Davzev: Fixed insert() for when node builder is typedef
-
-Revision 1.7  2000/03/31 15:15:27  wwwtech
-Davzev: Changend insert() debug code for DBState checking
-
-Revision 1.6  2000/03/30 13:11:43  wwwtech
-Rico: added license
-
-Revision 1.5  2000/03/29 10:44:51  wwwtech
-Rob: Licenses changed
-
-Revision 1.4  2000/03/20 16:16:43  wwwtech
-davzev: Changed insert method, now insert will be done depending on DBState.
 
 */
 package org.mmbase.module.database.support;
@@ -180,7 +44,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.46 $ $Date: 2001-01-29 14:29:02 $
+* @$Revision: 1.47 $ $Date: 2001-03-03 23:11:02 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -297,7 +161,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			if (pos!=-1) {
 				String fieldname=part.substring(0,pos);
 				int dbtype=bul.getDBType(fieldname);
-				//System.out.println("TYPE="+dbtype);
 				result+=parseFieldPart(fieldname,dbtype,part.substring(pos+1));
 				if (cmd!=null) {
 					if (cmd.equals("+")) {
@@ -376,7 +239,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			String result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// System.out.println("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
 			if (rs.next()) {
 				result=getDBText(rs,1);
@@ -1078,41 +940,140 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(true);
 	}
 
-	public boolean updateTable(MMObjectBuilder bul) {
-		System.out.println("Starting a updateTable on : "+bul.getTableName());
-
+	public boolean addField(MMObjectBuilder bul,String fieldname) {
+		System.out.println("Starting a addField : "+bul.getTableName()+" field="+fieldname);
 		String tableName=bul.getTableName();
-		
 		if (create_real(bul,tableName+"_tmp")) {
 			System.out.println("created tmp  table : "+tableName+"_tmp");
-			/*
-			Enumeration e=bul.search("");
-			while (e.hasMoreElements()) {
-				MMObjectNode node=(MMObjectNode)e.nextElement();
-				insert_real(bul,node.get
-				System.out.println("node="+node);
+			copyJDBCTable(tableName,tableName+"_tmp",bul);
+			if (checkJDBCTable(tableName,tableName+"_tmp",bul,fieldname,true)) {
+				System.out.println("checked tmp table passed");
+			} else {
+				System.out.println("ERROR: checked tmp table failed");
+				return(false);
 			}
-			*/
 		} else {
+			System.out.println("ERROR: tmp create table failed");
+			return(false);
 		}
-
 		if (drop(bul)) {
 			System.out.println("drop of old table done : "+bul.getTableName());
 			if (create(bul)) {
 				System.out.println("create of new table done : "+bul.getTableName());
-				if (drop_real(bul,tableName+"_tmp")) {
-					System.out.println("dropping tmp  table : "+tableName+"_tmp");
-				} 
-
+				copyJDBCTable(tableName+"_tmp",tableName,bul);
+				if (checkJDBCTable(tableName+"_tmp",tableName,bul)) {
+					if (drop_real(bul,tableName+"_tmp")) {
+						System.out.println("dropping tmp  table : "+tableName+"_tmp");
+					} else {
+						System.out.println("ERROR: tmp table  drop failed");
+						return(false);
+					} 
+				} else {
+					System.out.println("ERROR: checked new table failed");
+					return(false);
+				}
 				return(true);
 			} else {
-				System.out.println("create of new table failed : "+bul.getTableName());
+				System.out.println("ERROR: create of new table failed : "+bul.getTableName());
 				return(false);
 			}
 		}  else {
-			System.out.println("drop of old table failed : "+bul.getTableName());
+			System.out.println("ERROR: drop of old table failed : "+bul.getTableName());
 			return(false);
 		}
+	}
+
+	public boolean removeField(MMObjectBuilder bul,String fieldname) {
+
+		System.out.println("Starting a removefield : "+bul.getTableName()+" field="+fieldname);
+
+		String tableName=bul.getTableName();
+		if (create_real(bul,tableName+"_tmp")) {
+			System.out.println("created tmp  table : "+tableName+"_tmp");
+			copyJDBCTable(tableName,tableName+"_tmp",bul);
+			if (checkJDBCTable(tableName,tableName+"_tmp",bul,fieldname,false)) {
+				System.out.println("checked tmp table passed");
+			} else {
+				System.out.println("ERROR: checked tmp table failed");
+				return(false);
+			}
+		} else {
+			System.out.println("ERROR: tmp create table failed");
+			return(false);
+		}
+		if (drop(bul)) {
+			System.out.println("drop of old table done : "+bul.getTableName());
+			if (create(bul)) {
+				System.out.println("create of new table done : "+bul.getTableName());
+				copyJDBCTable(tableName+"_tmp",tableName,bul);
+				if (checkJDBCTable(tableName+"_tmp",tableName,bul)) {
+					if (drop_real(bul,tableName+"_tmp")) {
+						System.out.println("dropping tmp  table : "+tableName+"_tmp");
+					} else {
+						System.out.println("ERROR: tmp table  drop failed");
+						return(false);
+					} 
+				} else {
+					System.out.println("ERROR: checked new table failed");
+					return(false);
+				}
+				return(true);
+			} else {
+				System.out.println("ERROR: create of new table failed : "+bul.getTableName());
+				return(false);
+			}
+		}  else {
+			System.out.println("ERROR: drop of old table failed : "+bul.getTableName());
+			return(false);
+		}
+	}
+
+	public boolean changeField(MMObjectBuilder bul,String fieldname) {
+
+		System.out.println("Starting a changeField : "+bul.getTableName()+" field="+fieldname);
+		String tableName=bul.getTableName();
+		if (create_real(bul,tableName+"_tmp")) {
+			System.out.println("created tmp  table : "+tableName+"_tmp");
+			copyJDBCTable(tableName,tableName+"_tmp",bul);
+			if (checkJDBCTable(tableName,tableName+"_tmp",bul)) {
+				System.out.println("checked tmp table passed");
+			} else {
+				System.out.println("ERROR: checked tmp table failed");
+				return(false);
+			}
+		} else {
+			System.out.println("ERROR: tmp create table failed");
+			return(false);
+		}
+		if (drop(bul)) {
+			System.out.println("drop of old table done : "+bul.getTableName());
+			if (create(bul)) {
+				System.out.println("create of new table done : "+bul.getTableName());
+				copyJDBCTable(tableName+"_tmp",tableName,bul);
+				if (checkJDBCTable(tableName+"_tmp",tableName,bul)) {
+					if (drop_real(bul,tableName+"_tmp")) {
+						System.out.println("dropping tmp  table : "+tableName+"_tmp");
+					} else {
+						System.out.println("ERROR: tmp table  drop failed");
+						return(false);
+					} 
+				} else {
+					System.out.println("ERROR: checked new table failed");
+					return(false);
+				}
+				return(true);
+			} else {
+				System.out.println("ERROR: create of new table failed : "+bul.getTableName());
+				return(false);
+			}
+		}  else {
+			System.out.println("ERROR: drop of old table failed : "+bul.getTableName());
+			return(false);
+		}
+	}
+
+	public boolean updateTable(MMObjectBuilder bul) {
+		return(false);
 	}
 
 
@@ -1306,5 +1267,225 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		System.out.println("error getfile : "+filename);
  	} catch(IOException e) {}
 	return(buffer);
+    }
+
+    private boolean checkJDBCTable(String tablename,String tmptable,MMObjectBuilder bul) {
+	return(checkJDBCTable(tablename,tmptable,bul,null,false));
+    }
+
+    private boolean checkJDBCTable(String tablename,String tmptable,MMObjectBuilder bul,String ignorefield,boolean add) {
+
+	// performs several checks to make sure our copy is valid
+
+	// first check the size of each table using a count
+	try {
+		// get result 1
+		int size1=-1;
+		MultiConnection con=mmb.getConnection();
+		Statement stmt=con.createStatement();
+		ResultSet rs=stmt.executeQuery("select count(*) from "+mmb.baseName+"_"+tablename);
+		if (rs.next()) {
+			size1=rs.getInt(1);
+		}
+		stmt.close();
+		con.close();
+
+		// get result 2
+		int size2=-1;
+		con=mmb.getConnection();
+		stmt=con.createStatement();
+		rs=stmt.executeQuery("select count(*) from "+mmb.baseName+"_"+tmptable);
+		if (rs.next()) {
+			size2=rs.getInt(1);
+		}
+		stmt.close();
+		con.close();
+		
+		if (size1!=size2) {
+			System.out.println("ERROR: tmp table have same number of rows !!!");
+		}
+
+
+		// first check the size of each table using a count
+		// get result 1 
+		con=mmb.getConnection();
+		stmt=con.createStatement();
+		rs=stmt.executeQuery("select * from "+mmb.baseName+"_"+tablename);
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int colsize1=rsmd.getColumnCount();
+		stmt.close();
+		con.close();
+
+		// first check the size of each table using a count
+		// get result 2
+		con=mmb.getConnection();
+		stmt=con.createStatement();
+		rs=stmt.executeQuery("select * from "+mmb.baseName+"_"+tmptable);
+		rsmd = rs.getMetaData();
+		int colsize2=rsmd.getColumnCount();
+		stmt.close();
+		con.close();
+
+		if (ignorefield==null) {
+			if (colsize1!=colsize2) {
+				System.out.println("ERROR: tmp table have same number of cols !!!");
+				return(false);
+			}
+		} else {
+			if (add) {
+				if (colsize1!=(colsize2-1)) {
+					System.out.println("ERROR: tmp table should have one more cols then org !!!");
+					return(false);
+				}
+			} else {
+				if (colsize1!=(colsize2+1)) {
+					System.out.println("ERROR: tmp table should have one less cols then org !!!");
+					return(false);
+				}
+			}
+		}
+	
+		// now lets check the data in the table compare the two
+		
+		// get the first data set...
+		con=mmb.getConnection();
+		stmt=con.createStatement();
+		rs=stmt.executeQuery("select * from "+mmb.baseName+"_"+tablename);
+		rsmd = rs.getMetaData();
+		int colcount1=rsmd.getColumnCount();
+
+		MultiConnection con2=mmb.getConnection();
+		Statement stmt2=con2.createStatement();
+		ResultSet rs2=stmt2.executeQuery("select * from "+mmb.baseName+"_"+tmptable);
+		ResultSetMetaData rsmd2 = rs2.getMetaData();
+		int colcount2=rsmd2.getColumnCount();
+
+		while (rs.next()) {
+			Hashtable values1=new Hashtable(colcount1);
+			for (int i=1;i<colcount1+1;i++) {
+				Object o=rs.getObject(i);
+				String colname=rsmd.getColumnName(i);	
+				colname=colname.toLowerCase();
+				values1.put(colname,o);
+			}
+
+			rs2.next();
+			Hashtable values2=new Hashtable(colcount1);
+			for (int i=1;i<colcount2+1;i++) {
+				Object o=rs2.getObject(i);
+				String colname=rsmd2.getColumnName(i);	
+				colname=colname.toLowerCase();
+				values2.put(colname,o);
+			}
+
+			for (Enumeration e=values1.keys();e.hasMoreElements();) {
+				String key1=(String)e.nextElement();
+				if (ignorefield==null || !key1.equals(ignorefield)) {
+					Object value1=values1.get(key1);	
+					Object value2=values2.get(key1);	
+					/*
+					System.out.println("SET1="+value1.toString());
+					System.out.println("SET2="+value2.toString());
+					*/
+					if (!(value1.toString()).equals((value2.toString()))) {
+						System.out.println("ERROR: data check error on field : "+key1);
+						return(false);
+					}
+				} else {
+					// System.out.println("IGNORED="+key1);
+				}
+			}
+
+		}
+		stmt2.close();
+		con2.close();
+		stmt.close();
+		con.close();
+	} catch(SQLException e) {
+		e.printStackTrace();	
+		return(false);
+	}
+	return(true);
+    }
+
+    private boolean copyJDBCTable(String tablename,String tmptable,MMObjectBuilder bul) {
+	System.out.println("Starting JBDC copy to temp table");
+	try {
+		MultiConnection con=mmb.getConnection();
+		Statement stmt=con.createStatement();
+		ResultSet rs=stmt.executeQuery("select * from "+mmb.baseName+"_"+tablename);
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int colcount=rsmd.getColumnCount();
+		String fieldAmounts="?";
+
+		Vector newfields=bul.getFields();
+		for (int i=0;i<newfields.size();i++) {
+			fieldAmounts+=",?";
+		}
+
+  		while(rs.next()) {
+			MultiConnection con2=mmb.getConnection();
+			PreparedStatement stmt2=con2.prepareStatement("insert into "+mmb.baseName+"_"+tmptable+" values("+fieldAmounts+")");
+			Hashtable oldvalues=new Hashtable(colcount);
+			for (int i=1;i<colcount+1;i++) {
+				Object o=rs.getObject(i);
+				String colname=rsmd.getColumnName(i);	
+				colname=colname.toLowerCase();
+				oldvalues.put(colname,o);
+			}
+			newfields=bul.getFields();
+			
+			Object o=oldvalues.get(getAllowedField("number"));
+			stmt2.setInt(1,((Integer)o).intValue());
+			for (Enumeration e=newfields.elements();e.hasMoreElements();) {
+				FieldDefs def=(FieldDefs)e.nextElement();
+				String newname=def.getDBName();
+				int dbpos=def.getDBPos()+1;
+				if (newname.equals("otype")) dbpos=2;
+				if (newname.equals("number")) dbpos=1;
+
+				o=oldvalues.get(getAllowedField(newname));
+
+				if (o==null) {
+					int type=def.getDBType();
+					System.out.println(" ETYPE="+type);
+					switch (type) {
+						case FieldDefs.TYPE_STRING:
+							stmt2.setString(dbpos,new String());
+							break;
+						case FieldDefs.TYPE_INTEGER:
+							stmt2.setInt(dbpos,-1);
+							break;
+						case FieldDefs.TYPE_DOUBLE:
+							stmt2.setDouble(dbpos,-1);
+							break;
+					}
+				} else {
+					int type=def.getDBType();
+					System.out.println("TYPE="+type);
+					switch (type) {
+						case FieldDefs.TYPE_STRING:
+							stmt2.setString(dbpos,(String)o);
+							break;
+						case FieldDefs.TYPE_INTEGER:
+							stmt2.setInt(dbpos,((Integer)o).intValue());
+							break;
+						case FieldDefs.TYPE_DOUBLE:
+							stmt2.setDouble(dbpos,((Double)o).doubleValue());
+							break;
+					}
+				}
+			}
+			stmt2.executeUpdate();
+			stmt2.close();
+			con2.close();
+		}
+		stmt.close();
+		con.close();
+	} catch(SQLException e) {
+		e.printStackTrace();	
+		return(false);
+	}
+	return(true);
     }
 }

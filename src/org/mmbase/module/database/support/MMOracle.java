@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.3 2001-01-21 20:37:07 daniel Exp $
+$Id: MMOracle.java,v 1.4 2001-03-03 23:11:32 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2001/01/21 20:37:07  daniel
+95% done, small problems with BYTE, but ill leave that upto the real oracle cracks
+
 Revision 1.2  2001/01/21 20:01:25  daniel
 Version 0.9, crude and BYTE support is broken
 
@@ -186,9 +189,9 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.3 $ $Date: 2001-01-21 20:37:07 $
+* @$Revision: 1.4 $ $Date: 2001-03-03 23:11:32 $
 */
-public class MMOracle implements MMJdbc2NodeInterface {
+public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = false;
