@@ -10,11 +10,12 @@
 
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel(Parent)" guitargetname="PosRel(Child)" />
   </neededreldeflist>
 
   <allowedrelationlist>
     <relation from="aa" to="bb" type="related" />
-    <relation from="bb" to="cc" type="related" />
+    <relation from="bb" to="cc" type="posrel" />
   </allowedrelationlist>
 
   <datasourcelist>
@@ -25,6 +26,7 @@
 
   <relationsourcelist>
     <relationsource builder="insrel" path="BridgeTest/insrel.xml" />
+    <relationsource builder="posrel" path="BridgeTest/posrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>
