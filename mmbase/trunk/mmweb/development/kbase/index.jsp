@@ -1,30 +1,45 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@page language="java" contentType="text/html; charset=utf-8"%>
 <%@include file="parts/basics.jsp"%>
-<mm:cloud method="asis" jspvar="wolk">
+<mm:cloud jspvar="wolk" method="asis" >
+
 <mm:import externid="node" jspvar="node" vartype="String">
   <mm:node number="kbase.root"><mm:field name="number"/></mm:node>
 </mm:import>
-
-
-<h3>Under construction</h3>
-<html>
-<head>
-  <link rel="stylesheet" type="text/css" href="<%=getRealPath(request)%>/css/mmbase.css" />
-  <link rel="stylesheet" type="text/css" href="<%=getRealPath(request)%>/css/treeview.css" />
-  <link rel="stylesheet" type="text/css" href="<%=getRealPath(request)%>/css/kbase-form.css" />
-  <script type="text/javascript" language="javascript" src="<%=getRealPath(request)%>/js/callbacks.js"></script>
-  <script type="text/javascript" language="javascript" src="<%=getRealPath(request)%>/js/treeview.js"></script>
-</head>
-<body onload="setImageDir('<%=getRealPath(request)%>/img/') ; setCurrentFolder(<%=node.trim()%>) ; setEditor('<%=isEditor(wolk)%>') ">
-<%--; setExtraParams('<%=getParamsFormatted(request,"url",getExtraParams(request))%>') --%>
-<%
+<mm:import externid="qnode" jspvar="qnode" vartype="String"/>
+<mm:import externid="expanded" jspvar="expanded" vartype="String"/>
+	
+  <%@include file="/includes/getids.jsp"%>
+ <%
+   //linkjes voor javascript toevoegen
+        String realpath=getRealPath(request);
+ 	 List l=new ArrayList();
+	 l.add(realpath+"/js/callbacks.js");
+ 	 l.add(realpath+"/js/treeview.js");
+	 pageContext.setAttribute("jScripts",l);
+	 
+	 //body onload event toevoegen
+	 List l1=new ArrayList();
+   l1.add("setImageDir('"+realpath+"/img/')");
+	 l1.add("setCurrentFolder("+node.trim()+")");
+	 l1.add("setEditor("+isEditor(wolk)+")");
+	 pageContext.setAttribute("bLoadEvs",l1);
+   
   Set extraParams=new HashSet();
-  extraParams.add("koek");
-  extraParams.add("zopie"); 
-  setExtraParams(request, extraParams);
+  extraParams.add("portal");
+  extraParams.add("page"); 
+  setExtraParams(request,extraParams);
+
 %>
-<mm:include page="index_real.jsp"/>
-</body>
-</html>
-</mm:cloud>
+	
+<%@include file="/includes/header.jsp"%>
+
+%><td colspan="2" valign="top">
+
+<mm:include page="index_real.jsp" />
+</td>
+<%@include file="/includes/footer.jsp"
+%></mm:cloud>
+
+
+
