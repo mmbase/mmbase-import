@@ -9,8 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.logging.*;
+import java.util.*;
+
+import org.mmbase.module.core.*;
+import org.mmbase.module.*;
+
+import org.mmbase.util.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * handler for email one shot and keep
@@ -28,8 +34,8 @@ public class EmailHandlerOneShotKeep extends EmailHandler {
     * finished.
     */
     public static void mail(MMObjectNode node) {
-        log.info("email handler oneshotkeep mail() called");
-        sendMailNode(node);
+	log.info("email handler oneshotkeep mail() called");
+	sendMailNode(node);
     }
 
     /**
@@ -38,7 +44,13 @@ public class EmailHandlerOneShotKeep extends EmailHandler {
     * directly (while mailing is still going on).
     */
     public static void startmail(MMObjectNode node) {
-        log.info("email handler oneshotkeep startmail() called");
-        EmailBackgroundHandler mailer = new EmailBackgroundHandler(node);
+	log.info("email handler oneshotkeep startmail() called");
+	EmailBackgroundHandler mailer=new EmailBackgroundHandler(node);
     }
 }
+
+
+
+
+
+
