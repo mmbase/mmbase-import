@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.30 2004-01-22 10:17:26 nico Exp $
+ * @version  $Id: validator.js,v 1.31 2004-02-04 15:28:07 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -14,7 +14,7 @@ var validator = new Validator();
 
 //constructor
 function Validator() {
-	this.invalidFields = new Array();
+        this.invalidFields = new Array();
 }
 
 function start_validator() {
@@ -89,17 +89,17 @@ Validator.prototype.validateEvent = function (evt) {
     if (evt) {
         var elem = getTargetElement(evt)
         if (elem) {
-		    this.validate(elem);
+                    this.validate(elem);
         }
     }
 
 }
 
 Validator.prototype.validate = function (el) {
-	var element = el;
+        var element = el;
     var superId = el.getAttribute("super");
     if (superId != null) {
-	    var form = document.forms[0];
+            var form = document.forms[0];
         element = form[superId];
     }
 
@@ -178,7 +178,7 @@ Validator.prototype.removeInvalidField = function(element) {
 Validator.prototype.validateElement = function (el, silent) {
     var err = "";
     var v = getValue(el);
-    
+
     dtpattern = el.getAttribute("dtpattern");
     if (!isEmpty(dtpattern)) {
         var re = new RegExp(dtpattern);
@@ -191,7 +191,7 @@ Validator.prototype.validateElement = function (el, silent) {
     var dttype = el.getAttribute("dttype");
     switch (dttype) {
         case "string":
-			err += validateString(el, form, v);
+            err += validateString(el, form, v);
             break;
         case "int":
             err += validateInt(el, form, v);
@@ -221,12 +221,12 @@ function requiresValidation(element) {
 
     dtpattern = element.getAttribute("dtpattern");
     if (!isEmpty(dtpattern)) {
-    	return true;
+        return true;
     }
 
-	required = element.getAttribute("dtrequired");
+        required = element.getAttribute("dtrequired");
     if (!isEmpty(required) && (required == "true")) {
-    	return true;
+        return true;
     }
 
     var required = false;
@@ -245,20 +245,20 @@ function requiresValidation(element) {
         case "datetime":
         // Validation should always happen because the hidden date field
         // will be updated when the input boxes are valid.
-        	required = true;
+                required = true;
             break;
         case "enum":
             break;
         default:
             required = requiresUnknown(element, form);
-            break;        
+            break;
     }
-    
-	return required;
+
+        return required;
 }
 
 function requiresUnknown(el, form) {
-	return false;
+        return false;
 }
 
 //********************************
@@ -269,7 +269,7 @@ function validateString(el, form, v) {
     minlength = el.getAttribute("dtminlength");
     if (!isEmpty(minlength) && (v.length < minlength)) {
         return getToolTipValue(form,'message_minlength', "value must be at least {0} characters", minlength);
-    }				
+    }
     maxlength = el.getAttribute("dtmaxlength");
     if (!isEmpty(maxlength) && (v.length > maxlength)) {
         return getToolTipValue(form,'message_maxlength', "value must be at most {0} characters", maxlength);
@@ -282,12 +282,12 @@ function validateInt(el, form, v) {
        return "value '" + v + "' is not a valid integer number";
     }
     else {
-    	minvalue = el.getAttribute("dtmin");
+        minvalue = el.getAttribute("dtmin");
         if (!isEmpty(minvalue) && (parseInt(v) < minvalue))
            return getToolTipValue(form,'message_min',
                    "value must be at least {0}", minvalue);
 
-    	maxvalue = el.getAttribute("dtmax");
+        maxvalue = el.getAttribute("dtmax");
         if (!isEmpty(maxvalue) && (parseInt(v) > maxvalue))
             return getToolTipValue(form,'message_max',
                    "value must be at most {0}", maxvalue);
@@ -296,7 +296,7 @@ function validateInt(el, form, v) {
 }
 
 function validateEnum(el, form, v) {
-	required = el.getAttribute("dtrequired");
+        required = el.getAttribute("dtrequired");
     if (!isEmpty(required) && (required == "true")) {
         if (el.options[el.selectedIndex].value == "-")
             return getToolTipValue(form,'message_required',
@@ -310,21 +310,25 @@ function validateDatetime(el, form, v) {
     var id = el.name;
     ftype = el.getAttribute("ftype");
 
+    var month = 0;
+    var day = 1;
+    var year = 1970;
+    var hours = 0;
+    var minutes = 0;
+    var seconds = 0;
     if ((ftype == "datetime") || (ftype == "date")) {
-        var month = form.elements["internal_" + id + "_month"].selectedIndex;
-        var day = form.elements["internal_" + id + "_day"].selectedIndex+1;
-        var year = form.elements["internal_" + id + "_year"].value;
-    } else {
-        var month = 0;
-        var day = 1;
-        var year = 1970;
+        month = form.elements["internal_" + id + "_month"].selectedIndex;
+        day = form.elements["internal_" + id + "_day"].selectedIndex+1;
+        year = form.elements["internal_" + id + "_year"].value;
     }
     if ((ftype == "datetime") || (ftype == "time")) {
-        var hours = form.elements["internal_" + id + "_hours"].selectedIndex;
-        var minutes = form.elements["internal_" + id + "_minutes"].selectedIndex;
-    } else {
-        var hours = 0;
-        var minutes = 0;
+        hours = form.elements["internal_" + id + "_hours"].selectedIndex;
+        minutes = form.elements["internal_" + id + "_minutes"].selectedIndex;
+        seconds = 0;
+    } else if (ftype == "duration") {
+        hours = form.elements["internal_" + id + "_hours"].selectedIndex;
+        minutes = form.elements["internal_" + id + "_minutes"].selectedIndex;
+        seconds = form.elements["internal_" + id + "_seconds"].selectedIndex;
     }
 
     // We don't want -1 = 2 BC, 0 = 1 BC,  -1 = 2 BC but
@@ -339,7 +343,7 @@ function validateDatetime(el, form, v) {
         leap = 1;
     } else {
         leap = 0;
-    }		  
+    }
 
     if ((month < 0) || (month > 11)) {
         errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid (wrong month)");
@@ -362,42 +366,46 @@ function validateDatetime(el, form, v) {
     }
 
     if (errormsg.length == 0) {
-	    var date = new Date();
-	    date.setFullYear(year);
-	    date.setMonth(month, day);
-	    date.setHours(hours, minutes);
-	
-	    var ms = date.getTime();
-	
-	    /* Date is lenient which means that it accepts a wider range of values than it produces.
-	     * January 32 = February 1
-	     * This check should always fail
-	     */
-	    if (date.getDate() != day) {
-	        errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
-	    } else {
-	    	minvalue = el.getAttribute("dtmin");
-	        // checks min/max. note: should use different way to determine outputformat (month)
-	        if ((ftype != "time") && (!isEmpty(minvalue)) && (ms < 1000*minvalue)) {
-	            var d = new Date();
-	            d.setTime(1000*minvalue);
-	            errormsg += getToolTipValue(form,"message_datemin",
-	                   "date must be at least {0}",
-	                   d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
-	        }
-	        else {
-		    	maxvalue = el.getAttribute("dtmax");
-		        if ((ftype != "time") && (!isEmpty(maxvalue)) && (ms > 1000*maxvalue)) {
-		            var d = new Date();
-		            d.setTime(1000*maxvalue);
-		            errormsg += getToolTipValue(form,"message_datemax",
-		                   "date must be at most {0}",
-		                   d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
-		        }
-		    }
-	    }
-	}
-    
+            var date = new Date();
+            date.setFullYear(year);
+            date.setMonth(month, day);
+            if (ftype == "duration") {
+                date.setUTCHours(hours, minutes, seconds, 0);
+            } else {
+                date.setHours(hours, minutes, seconds, 0);
+            }
+
+            var ms = date.getTime();
+
+            /* Date is lenient which means that it accepts a wider range of values than it produces.
+             * January 32 = February 1
+             * This check should always fail
+             */
+            if (date.getDate() != day) {
+                errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
+            } else {
+                minvalue = el.getAttribute("dtmin");
+                // checks min/max. note: should use different way to determine outputformat (month)
+                if ((ftype != "time") && (ftype != "duration") && (!isEmpty(minvalue)) && (ms < 1000*minvalue)) {
+                    var d = new Date();
+                    d.setTime(1000*minvalue);
+                    errormsg += getToolTipValue(form,"message_datemin",
+                           "date must be at least {0}",
+                           d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
+                }
+                else {
+                    maxvalue = el.getAttribute("dtmax");
+                    if ((ftype != "time") && (ftype != "duration") && (!isEmpty(maxvalue)) && (ms > 1000*maxvalue)) {
+                        var d = new Date();
+                        d.setTime(1000*maxvalue);
+                        errormsg += getToolTipValue(form,"message_datemax",
+                               "date must be at most {0}",
+                               d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
+                    }
+                }
+            }
+        }
+
     /** VERY UGLY TO USE THE VALIDATOR TO CHANGE AN ELEMENT VALUE, BUT I HAVE NO IDEA HOW TO SOLVE IT.
      * THIS IS THE ONLY PLACE IN THE VALIDATOR WHERE AN ELEMENT VALUE IS CHANGED.
      */
@@ -470,7 +478,7 @@ function updateButtons(allvalid) {
         var usetext = getToolTipValue(savebut,"titlesave", "Stores all changes.");
         savebut.title = usetext;
         savebut.disabled = false;
-		if (saveonlybut != null) {
+                if (saveonlybut != null) {
           saveonlybut.className = "bottombutton";
           var usetext = getToolTipValue(saveonlybut, "titlesave", "Stores all changes.");
           saveonlybut.title = usetext;
@@ -483,7 +491,7 @@ function updateButtons(allvalid) {
         var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
         savebut.title = usetext;
         savebut.disabled = true;
-		if (saveonlybut != null) {
+                if (saveonlybut != null) {
            saveonlybut.className = "bottombutton-disabled";
            var usetext = getToolTipValue(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
            saveonlybut.title = usetext;
@@ -543,7 +551,7 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
 }
 
 function isEmpty(value) {
-	return (value == null) || (value == "");
+        return (value == null) || (value == "");
 }
 
 function getTargetElement(evt) {
