@@ -120,6 +120,7 @@
 <!ELEMENT default ( #PCDATA ) >
 
 <!ELEMENT search-fields ( #PCDATA ) >
+<!ATTLIST search-fields search-type ( like | equals | notequals | greaterthan | lessthan | notgreaterthan | notlessthan | string ) #IMPLIED >
 
 <!ELEMENT prefix ( #PCDATA ) >
 
