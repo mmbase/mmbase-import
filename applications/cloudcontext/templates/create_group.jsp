@@ -5,7 +5,7 @@
 <mm:content language="$language">
 <mm:import id="url">create_group.jsp</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
- <h1><%=m.getString("create_group")%></h1>
+ <h1><%=getPrompt(m,"create_group")%></h1>
 
  <%@include file="you.div.jsp" %>
 

@@ -10,6 +10,6 @@
  <mm:deletenode deleterelations="true" />
 </mm:node>
 <hr />
-<a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_users.jsp</mm:param></mm:url>"><%=m.getString("back")%></a>
+<a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_users.jsp</mm:param></mm:url>"><%=getPrompt(m,"back")%></a>
 </mm:cloud>
 </mm:content>

@@ -5,7 +5,7 @@
 <mm:import id="url">edit_user.jsp</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
-<h1><%=m.getString("create_user")%></h1>
+<h1><%=getPrompt(m,"create_user")%></h1>
 
  <%@include file="you.div.jsp" %>
 

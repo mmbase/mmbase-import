@@ -46,7 +46,7 @@
             <mm:include  page="$extrauserlink" />
           </mm:present>
         </th>
-        <th><%=m.getString("rank")%></th>
+        <th><%=getPrompt(m,"rank")%></th>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
           <th>
             <a title="order" href='<mm:url referids="search,parameters,$parameters" ><mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
@@ -100,13 +100,13 @@
 
         <td class="commands">
           <mm:maywrite>
-            <a href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=m.getString("update")%>" title="<%=m.getString("update")%>" /></a>
+            <a href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           </mm:maywrite>
           <mm:field name="rank" >
             <mm:compare value="<%="" + org.mmbase.security.Rank.ADMIN.getInt()%>" inverse="true">
               <mm:maydelete>
-                <a onclick="return confirm('<%=m.getString("reallydeleteusers")%>');"
-                href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=m.getString("delete")%>" title="<%=m.getString("delete")%>" /></a>
+                <a onclick="return confirm('<%=getPrompt(m,"reallydeleteusers")%>');"
+                href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
               </mm:maydelete>
             </mm:compare>
           </mm:field>
