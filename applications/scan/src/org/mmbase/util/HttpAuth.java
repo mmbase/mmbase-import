@@ -16,6 +16,7 @@ import java.net.*;
 import javax.servlet.http.*;
 
 import org.mmbase.util.logging.*;
+import org.mmbase.module.core.*;
 
 /**
  * 
@@ -53,7 +54,7 @@ public class HttpAuth {
                         }
                         accountconfig=curdir+"/config";
                 } else {
-                        accountconfig=System.getProperty("mmbase.config");
+                        accountconfig=MMBaseContext.getConfigPath();
                 }
 
 		Hashtable accounts = Reader.readProperties(accountconfig+"/accounts.properties");
