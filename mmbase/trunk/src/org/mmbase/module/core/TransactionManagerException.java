@@ -11,17 +11,17 @@ package org.mmbase.module.core;
 
 /**
  * This Exception is thrown when something goes wrong the MMBase transaction manager.
- * 
+ *
  * @author John Balder, 3MPS
- * @version $Id: TransactionManagerException.java,v 1.5 2003-08-29 09:36:53 pierre Exp $
+ * @version $Id: TransactionManagerException.java,v 1.6 2003-09-04 11:05:33 pierre Exp $
  */
 public class TransactionManagerException extends Exception {
 
     //javadoc is inherited
-	public TransactionManagerException () {
-		super();
-	}
-	
+    public TransactionManagerException () {
+        super();
+    }
+
     //javadoc is inherited
     public TransactionManagerException(String message) {
         super(message);
