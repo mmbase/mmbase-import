@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeHandler.java,v 1.13 2000-08-01 09:53:32 install Exp $
+$Id: EncodeHandler.java,v 1.14 2001-01-12 13:27:29 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/08/01 09:53:32  install
+changed imports
+
 Revision 1.12  2000/08/01 09:11:32  vpro
 Rico: removed CDTrack references
 
@@ -53,7 +56,7 @@ import org.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.13 $ $Date: 2000-08-01 09:53:32 $
+ * @version $Revision: 1.14 $ $Date: 2001-01-12 13:27:29 $
  */
 public class EncodeHandler implements Runnable {
 
@@ -80,7 +83,6 @@ public class EncodeHandler implements Runnable {
 		if( debug ) debug("init()");
 		this.start();	
 	}
-
 
 	/**
 	 * Starts the admin Thread.
@@ -112,6 +114,14 @@ public class EncodeHandler implements Runnable {
 		}
 	}
 
+	/**
+	 * Handles the audio file ripping by finding the cdplayersnode that was claimed by the owner
+	 * of the current audiopartsnode and setting the cdplayersnode state to 'record'.
+	 * Also a wav rawaudio node will be created for the wav and will be set to a done state when
+	 * recording is done and a g2 rawaudio will be created (creation will startup encode process).
+	 * Right now it's assumed that recording succeeds so even when recording fails the rawaudio
+	 * will get a done state.
+	 */
 	public void doNewCdTrack() {
 		int id=node.getIntValue("number");	
 		if( debug ) debug("doNewCdtrack(): started for node("+id+")");
@@ -121,31 +131,31 @@ public class EncodeHandler implements Runnable {
 		// by recording it using a cdplayer allready 'claimed'
 		// by the user.
 
-		// get the owner of the cdtrack to find the cdplayer he has claimed !
+		// Get the cdplayersnode through the owner value of the current audiopartnode.
 		String owner=node.getStringValue("owner");	
 		debug("doNewCdtrack(): control cdplayer claimed by owner("+owner+")");
-
 		cdplayers bul=(cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");	
-		MMObjectNode playernode=bul.getClaimedBy(owner);
+		MMObjectNode cdplayersnode=bul.getClaimedBy(owner);
 
 		// if we have found the player record it
-		if (playernode!=null) {
+		if (cdplayersnode!=null) {
 			// create a new RawAudio to signal we have a wav
 			MMObjectNode wavnode=addRawAudio(id,RawAudioDef.STATUS_ONDERWEG,RawAudioDef.FORMAT_WAV,RawAudioDef.WAV_MAXSPEED,2); 
 
-			// setup the player & start the player  
+			// Set the cdplayers node state to 'record',
+			// The node change will eventually signal remote builder to start ripping
 			String stracknr = (String) node.getValue("info");
+			debug("doNewCdtrack(): Found cdplayersnode "+cdplayersnode.getStringValue("name")+" that was claimed by owner"+owner+", setting state to 'record' to record tracknr "+stracknr);
+			cdplayersnode.setValue("state","record");
+			cdplayersnode.setValue("info","tracknr="+stracknr+" id="+id);
+			cdplayersnode.commit();
 
-			debug("doNewCdtrack(): found playernode("+node+"), tracknr("+stracknr+")");
-			playernode.setValue("state","record");
-			playernode.setValue("info","tracknr="+stracknr+" id="+id);
-			playernode.commit();
-
+			// Wait for cdplayersnode to change again to a waiting state.
 			boolean changed=false;
 			MMObjectNode newnode=null;
 			while (!changed) {	
-				parent.Vwms.mmb.mmc.waitUntilNodeChanged(playernode);
-				newnode=bul.getNode(playernode.getIntValue("number"));
+				parent.Vwms.mmb.mmc.waitUntilNodeChanged(cdplayersnode);
+				newnode=bul.getNode(cdplayersnode.getIntValue("number"));
 				debug("doNewCdtrack(): newnode("+newnode+")");
 				String state=newnode.getStringValue("state");
 				if (state.equals("waiting")||state.equals("error")) changed=true;
