@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 * @author Mark Huijser
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.35 $ $Date: 2002-04-18 14:42:59 $
+* @$Revision: 1.36 $ $Date: 2002-05-27 10:50:08 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -372,7 +372,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             stmt.setDouble(i, node.getDoubleValue(key));
         } else if (type==FieldDefs.TYPE_LONG) {
             stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING) {
+        } else if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
                 setDBText(i, stmt,tmp);
@@ -434,6 +434,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             int type=node.getDBType(prefix+fieldname);
 
             switch (type) {
+            case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING:
 
                 /* Note by Mark:
@@ -829,6 +830,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                         stmt.setDouble(i,node.getDoubleValue(key));
                     } else if (type==FieldDefs.TYPE_LONG) {
                         stmt.setLong(i,node.getLongValue(key));
+                    } else if (type==FieldDefs.TYPE_XML) {
+                        setDBText(i,stmt,node.getStringValue(key));
                     } else if (type==FieldDefs.TYPE_STRING) {
                         setDBText(i,stmt,node.getStringValue(key));
                     } else if (type==FieldDefs.TYPE_BYTE) {
