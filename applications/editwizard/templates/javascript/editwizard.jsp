@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.20 2002-09-03 18:49:47 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.21 2002-09-06 13:30:34 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -54,7 +54,7 @@ function doOnLoad_ew() {
                     }
                     if ((ftype == "datetime") || (ftype == "time")) {
                         form.elements["internal_" + id + "_hours"].value = d.getHours();
-                        form.elements["internal_" + id + "_minutes"].value = leadingZeros(d.getMinutes());
+                        form.elements["internal_" + id + "_minutes"].value = d.getMinutes();
                     }
                 }
                 break;
@@ -73,13 +73,6 @@ function doOnLoad_ew() {
     }
 
     doValidateAndUpdateButtons();
-}
-
-function leadingZeros(value, positions) {
-    if (!positions) positions = 2;
-    value = value + "";
-    while (value.length<positions) value = "0" + value;
-    return value;
 }
 
 function doOnSubmit(form) {
