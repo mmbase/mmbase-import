@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.4 2000-03-08 14:53:30 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.5 2000-03-09 13:10:40 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/03/08 14:53:30  wwwtech
+	Rico: added caching for Multilevel (128 entries) this should increase performance for HTML pages a bit
+	
 */
 package org.mmbase.module.gui.html;
 
@@ -41,7 +44,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.4 2000-03-08 14:53:30 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.5 2000-03-09 13:10:40 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -83,6 +86,7 @@ public class HtmlBase extends ProcessorModule {
 		mmb=(MMBase)getModule("MMBASEROOT");		
 		debug("init(): mmbase="+mmb);
 		// is there a basename defined in MMBASE.properties ?
+		sessions=(sessionsInterface)getModule("SESSION");		
 
 		// get size from properties
 		multilevel_cache=new LRUHashtable(multilevel_cachesize);
@@ -777,6 +781,7 @@ public class HtmlBase extends ProcessorModule {
 		Integer hash;
 		Vector results=null,nodes,wherevector=null;
 		Enumeration e,f;
+		boolean reload=getReload(sp);
 
 		Vector type=tagger.Values("TYPE");
 		Vector dbsort=tagger.Values("DBSORT");
@@ -791,8 +796,14 @@ public class HtmlBase extends ProcessorModule {
 		hash=calcHashMultiLevel(tagger);
 		results=(Vector)multilevel_cache.get(hash);
 	
-		if (results==null) {
-			if (debug) debug("doMultiLevel cache MISS "+hash);
+		if (results==null || reload) {
+			if (debug) {
+				if (reload) {
+					debug("doMultiLevel cache RELOAD "+hash);
+				} else {
+					debug("doMultiLevel cache MISS "+hash);
+				}
+			}
 	        MultiRelations bul=(MultiRelations)mmb.getMMObject("multirelations");
 			long begin=(long)System.currentTimeMillis(),len;
 			
@@ -884,10 +895,29 @@ public class HtmlBase extends ProcessorModule {
 		return(null);
 	}
 
+	private boolean getReload(scanpage sp) {
+		boolean rtn=false;
+		if (sessions!=null) {
+			if( sp.sname == null || sp.sname.equals("")) {
+				sp.sname = "james/1234";
+			}
+			sessionInfo session=sessions.getSession(sp,sp.sname);
+			String cachetype=session.getValue("CACHE");
+			if (cachetype!=null && cachetype.equals("PAGE")) {
+				rtn=true;
+			}
+			String reloadtype=session.getValue("RELOAD");
+			if (reloadtype!=null && reloadtype.equals("R")) {
+				rtn=true;
+			}
+		} else {
+			debug("getReload no session module loaded ? ");
+		}
+		return rtn;
+	}
 
 	public sessionInfo getPageSession(scanpage sp) {
 		if (sessions!=null) {
-			debug("COOKIE PROBLEM IN MMBASE");
 			// org.mmbase sessionInfo session=sessions.getSession(rq,rq.getSessionName());
 			//sessionInfo session=sessions.getSession(sp.req,"james/1234");
 			if( sp.sname == null || sp.sname.equals("")) {
@@ -896,7 +926,7 @@ public class HtmlBase extends ProcessorModule {
 			sessionInfo session=sessions.getSession(sp,sp.sname);
 			String cachetype=session.getValue("CACHE");
 			if (cachetype!=null && cachetype.equals("PAGE")) {
-				return(session);
+				// return(session);
 			}
 		}
 		return(null);
