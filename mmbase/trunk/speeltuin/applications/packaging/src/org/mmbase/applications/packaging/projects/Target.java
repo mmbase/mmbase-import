@@ -332,6 +332,9 @@ public class Target {
 	if (getDescription().equals("")) return true;
 	if (getMaintainer().equals("")) return true;
 	if (getDescription().equals("")) return true;
+	if (getRelatedPeople("initiators")==null || getRelatedPeople("initiators").size()==0) return true;
+	if (getRelatedPeople("developers")==null || getRelatedPeople("developers").size()==0) return true;
+	if (getRelatedPeople("contacts")==null || getRelatedPeople("contacts").size()==0) return true;
 	return false;
    }
     
