@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.18 2002-08-30 19:12:54 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.19 2002-09-02 20:20:27 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -205,6 +205,7 @@ function doSearch(el, cmd, sessionkey) {
     var obj = getRect(stel);
     stbcrTop = obj.top + ycorr;
     stbcrLeft = obj.left + xcorr - 400 + stel.offsetWidth;
+    if (stbcrLeft < 0) stbcrLeft = 0;
     stbcrBottom = stbcrTop + stel.offsetHeight;
     if (stbcrTop + mif.offsetHeight > windowinfo.clientHeight + windowinfo.scrollTop) {
         var t = stbcrBottom - 2 - mif.offsetHeight;
