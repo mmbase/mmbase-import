@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.3 2003-05-12 14:58:34 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.4 2004-02-11 20:00:08 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1"
@@ -107,13 +107,13 @@
 
 
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="section">
-    <xsl:if test="count(ancestor::section)=0">
-       <xsl:if test="string(title)"><h3><xsl:value-of select="title" /></h3></xsl:if>
+  <xsl:template match="h">
+    <xsl:if test="count(ancestor::section)=1">
+       <xsl:if test="string(.)"><h3><xsl:value-of select="." /></h3></xsl:if>
     </xsl:if>
-    <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="title" /></b></p></xsl:if>
-    <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="title" /></p></xsl:if>
-    <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="title" /><br /></xsl:if>
+    <xsl:if test="count(ancestor::section)=2"><p><b><xsl:value-of select="." /></b></p></xsl:if>
+    <xsl:if test="count(ancestor::section)=3"><p><xsl:value-of select="." /></p></xsl:if>
+    <xsl:if test="count(ancestor::section)>3"><xsl:value-of select="." /><br /></xsl:if>
 
     <xsl:copy>
 
