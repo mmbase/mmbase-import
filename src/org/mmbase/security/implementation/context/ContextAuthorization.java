@@ -35,10 +35,11 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.31 2003-08-06 10:00:22 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.32 2003-08-27 19:37:12 michiel Exp $
+ * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
-    private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class);
+    private static final Logger   log = Logging.getLoggerInstance(ContextAuthorization.class);
     private Document 	    document;
     private ContextCache    cache = new ContextCache();
 
