@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.10 2000-08-01 09:11:32 vpro Exp $
+$Id: EncodeCop.java,v 1.11 2000-08-01 09:53:31 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/08/01 09:11:32  vpro
+Rico: removed CDTrack references
+
 Revision 1.9  2000/08/01 08:53:32  install
 Rob: removed method that was not needed antmore
 
@@ -39,12 +42,12 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 
-import nl.vpro.mmbase.util.media.audio.*;
-import nl.vpro.mmbase.util.media.audio.audioparts.*;
+import org.mmbase.util.media.audio.*;
+import org.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.10 $ $Date: 2000-08-01 09:11:32 $
+ * @version $Revision: 1.11 $ $Date: 2000-08-01 09:53:31 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {

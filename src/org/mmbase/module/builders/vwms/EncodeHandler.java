@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeHandler.java,v 1.12 2000-08-01 09:11:32 vpro Exp $
+$Id: EncodeHandler.java,v 1.13 2000-08-01 09:53:32 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/08/01 09:11:32  vpro
+Rico: removed CDTrack references
+
 Revision 1.11  2000/06/05 10:56:56  wwwtech
 Rico: added support for new 3voor12
 
@@ -45,12 +48,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 
-import nl.vpro.mmbase.util.media.audio.*;
-import nl.vpro.mmbase.util.media.audio.audioparts.*;
+import org.mmbase.util.media.audio.*;
+import org.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.12 $ $Date: 2000-08-01 09:11:32 $
+ * @version $Revision: 1.13 $ $Date: 2000-08-01 09:53:32 $
  */
 public class EncodeHandler implements Runnable {
 
