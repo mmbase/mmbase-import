@@ -300,7 +300,19 @@ public class MMObjectNode {
 		// this are used for functions for example
 		// its implemented per builder so lets give this
 		// request to our builder
-		if (o==null) return(parent.getValue(this,fieldname));
+
+
+		if (o==null) { 
+			// well maybe its a propertie lets automap that
+			o=getProperty(fieldname);
+			if (o!=null) {
+				System.out.println("o="+o);
+				MMObjectNode altnode=(MMObjectNode)o;
+				o=altnode.getStringValue("value");
+				return(o);
+			}
+			return(parent.getValue(this,fieldname));
+		}
 		
 		// return the found object
 		return(o);
@@ -439,6 +451,48 @@ public class MMObjectNode {
 			return(new Integer(-1));
 		}
 	}
+
+
+	/** 
+	* get a value by its given key, will be returned must be Long
+	*/
+	public Long getLongValue(String fieldname) {
+		Long i=(Long)values.get(prefix+fieldname);
+		if (i!=null) {
+			return(i);
+		} else {
+			return(new Long(-1));
+		}
+	}
+
+
+	/** 
+	* get a value by its given key, will be returned must be Float
+	*/
+	public Float getFloatValue(String fieldname) {
+		Float i=(Float)values.get(prefix+fieldname);
+		if (i!=null) {
+			return(i);
+		} else {
+			return(new Float(-1));
+		}
+	}
+
+
+	/** 
+	* get a value by its given key, will be returned must be Float
+	*/
+	public Double getDoubleValue(String fieldname) {
+		Double i=(Double)values.get(prefix+fieldname);
+		if (i!=null) {
+			return(i);
+		} else {
+			return(new Double(-1));
+		}
+	}
+
+
+
 
 	/** 
 	* Get a string or int value as String by its given fieldname
