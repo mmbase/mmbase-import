@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.237 2004-02-16 14:59:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.238 2004-02-16 16:06:08 keesj Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2046,7 +2046,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
 				If some attribute wants to use the value of an object in the
 				context, and it is an attribute which can refer to the context
 				(which most attributes are), then you can use something like
-				${&lt;context-id;&gt;.&lt;object-id&gt;}. The 'context-id' is
+				&lt;context-id;&gt;.&lt;object-id&gt;. The 'context-id' is
 				optional when you are in the same context, or sub-context. The
 				value of a context variable can be written to the page with the
 				`write' tag. The {}-parentheses are optional too.
