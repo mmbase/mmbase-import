@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.41 2004-05-28 09:48:09 pierre Exp $
+ * @version $Id: InsRel.java,v 1.42 2004-09-17 09:59:47 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -182,18 +182,18 @@ public class InsRel extends MMObjectBuilder {
                     if (log.isDebugEnabled()) {
                         log.debug("insert(" + owner + ","  + node + ")");
                     }
-                    result=super.insert(owner,node);
+                    result = super.insert(owner,node);
                     // remove cache for these nodes (enforce update)
                     deleteRelationCache(snumber);
                     deleteRelationCache(dnumber);
-                            // Gerard: temporary removed here, should be removed from databaselayer!!!!
-                            /*
-                            MMObjectNode n1=getNode(snumber);
-                            MMObjectNode n2=getNode(dnumber);
-
-                            mmb.mmc.changedNode(n1.getNumber(),n1.getTableName(),"r");
-                            mmb.mmc.changedNode(n2.getNumber(),n2.getTableName(),"r");
-                                  */
+                    // Gerard: temporary removed here, should be removed from databaselayer!!!!
+                    /*
+                      MMObjectNode n1=getNode(snumber);
+                      MMObjectNode n2=getNode(dnumber);
+                      
+                      mmb.mmc.changedNode(n1.getNumber(),n1.getTableName(),"r");
+                      mmb.mmc.changedNode(n2.getNumber(),n2.getTableName(),"r");
+                    */
                 } else {
                     log.error("insert("+owner+","+node+"): rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
                 }
@@ -211,8 +211,8 @@ public class InsRel extends MMObjectBuilder {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-        int snumber=node.getIntValue("snumber");
-        int dnumber=node.getIntValue("dnumber");
+        int snumber = node.getIntValue("snumber");
+        int dnumber = node.getIntValue("dnumber");
         super.removeNode(node);
         deleteRelationCache(snumber);
         deleteRelationCache(dnumber);
@@ -312,8 +312,7 @@ public class InsRel extends MMObjectBuilder {
             constraint.addChild(constraint1).addChild(constraint2);
 
             q.setConstraint(constraint);
-
-            return (count(q) != 0);
+            return count(q) != 0;
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage()); // should not happen
             return true; // perhaps yes?
@@ -579,6 +578,7 @@ public class InsRel extends MMObjectBuilder {
         }
         return results;
     }
+
     public String getGUIIndicator(MMObjectNode node) {
         return node.getStringValue("snumber") + "->" + node.getStringValue("dnumber");
     }
