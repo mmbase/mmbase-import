@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MMObjectBuilderTest extends TestCase {
     
@@ -72,7 +72,7 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < NR_TEST_NODES; i++) {
             MMObjectNode node = instance.getNewNode(JUNIT_USER);
             node.setValue("title", TEST_NAME + (NR_TEST_NODES - 1 - i));
-            node.setValue("description", "News created for testing only.");
+            node.setValue("body", "News created for testing only.");
             instance.insert(JUNIT_USER, node);
             testNodes.add(node);
         }
