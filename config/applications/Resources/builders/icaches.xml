@@ -32,7 +32,6 @@
   </descriptions>
 
   <properties>
-    <property name="max-nodes-from-query">200</property>
   </properties>
 
 
