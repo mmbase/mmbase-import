@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.121.2.6 2004-05-27 08:32:11 johannes Exp $
+ * @version $Id: Wizard.java,v 1.121.2.7 2004-09-30 08:44:06 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -2328,15 +2328,43 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * With this method you can store a binary in the wizard.
      *
      * @param       did     This is the dataid what points to in what field the binary should be stored, once commited.
-     * @param       data    This is a bytearray with the data to be stored.
+     * @param       bytes    This is a bytearray with the data to be stored.
      * @param       name    This is the name which will be used to show what file is uploaded.
      * @param       path    The (local) path of the file placed.
      */
-    public void setBinary(String did, byte[] data, String name, String path) {
-        binaries.put(did, data);
+    public void setBinary(String did, byte[] bytes, String name, String path) {
+        setBinary(did, bytes, name, path, null);
+    }
+
+    /**
+     * 
+     * @param type Content-type of the byte (or null). If not null, then the fields 'mimetype',
+     *             'size' and 'filename' are filled as well.
+     * @since MMBase-1.7.2
+     */
+    public void setBinary(String did, byte[] bytes, String name, String path, String type) {
+        binaries.put(did, bytes);
         binaryNames.put(did, name);
         binaryPaths.put(did, path);
+
+        if (type != null) {
+            Node mimetypeField = Utils.selectSingleNode(data, "//object[field/@did = '" + did + "']/field[@name='mimetype']");
+            if (mimetypeField != null) {            
+                Utils.storeText(mimetypeField, type);            
+            } 
+            Node sizeField = Utils.selectSingleNode(data, "//object[field/@did = '" + did + "']/field[@name='size']");
+            if (sizeField != null && bytes != null) {   
+                Utils.storeText(sizeField, "" + bytes.length);
+            } 
+            Node fileNameField = Utils.selectSingleNode(data, "//object[field/@did = '" + did + "']/field[@name='filename']");
+            if (fileNameField != null && name != null) {   
+                Utils.storeText(fileNameField, name);
+            } 
+        }
+        
     }
+
+
 
     /**
      * This method allows you to retrieve the data of a temporarily stored binary.
