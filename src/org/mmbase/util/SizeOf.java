@@ -128,7 +128,9 @@ public class SizeOf {
     private int sizeof(org.w3c.dom.Node node) {
         log.debug("sizeof Node");
         // a little hackish...
-        return sizeof(org.mmbase.applications.editwizard.Utils.getSerializedXML(node));
+        //return sizeof(org.mmbase.applications.editwizard.Utils.getSerializedXML(node));
+        log.warn("NOT GOOD NOT GOOD"); // FIXME FIXME
+        return 0;
     }
 
     private int sizeof(String m) {
