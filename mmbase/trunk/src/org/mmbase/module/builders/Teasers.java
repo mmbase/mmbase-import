@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.16 $ $Date: 2001-04-05 12:23:08 $ 
+ * @version $Revision: 1.17 $ $Date: 2001-05-04 16:19:44 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -319,8 +319,8 @@ public class Teasers extends MMObjectBuilder {
 		return(true);	
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
+	public boolean nodeLocalChanged(String machine, String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine, number,builder,ctype);
 		log.info("Teasers -> change detected in "+number+" "+builder+" "+ctype);
 		if (builder.equals(tableName)) {
 			int nr = Integer.parseInt(number);

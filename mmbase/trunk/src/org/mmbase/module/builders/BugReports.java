@@ -31,7 +31,7 @@ public class BugReports extends MMObjectBuilder {
 	}
 
 	
-	private boolean nodeChanged(String number,String builder,String ctype) {
+	private boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		int nowtime=(int)(System.currentTimeMillis()/1000);
 		if ((nowtime-starttime)>30) {
 			log.debug("BugReport ="+number+" "+ctype);
@@ -40,14 +40,14 @@ public class BugReports extends MMObjectBuilder {
 		return(true);
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-	        super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged( number, builder, ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+	        super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine, number, builder, ctype));
 	}
 
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-       		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged( number, builder, ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+       		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine, number, builder, ctype));
 	}
 
 	private void changedReport(String number) {

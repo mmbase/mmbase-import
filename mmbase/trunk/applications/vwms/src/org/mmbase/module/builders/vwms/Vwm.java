@@ -291,25 +291,25 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 
     /**
     * Called when a local node is changed.
+	* @param machine Name of the machine that changed the node.
     * @param number Number of the changed node as a <code>String</code>
     * @param builder type of the changed node
     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
     */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype)
-    {
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
         return false;
     }
 
     /**
     * Called when a remote node is changed.
+	* @param machine Name of the machine that changed the node.
     * @param number Number of the changed node as a <code>String</code>
     * @param builder type of the changed node
     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
     */
-    public boolean nodeLocalChanged(String number,String builder,String ctype)
-    {
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         return false;
     }
 }

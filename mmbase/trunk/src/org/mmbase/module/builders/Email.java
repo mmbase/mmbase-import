@@ -54,7 +54,7 @@ public class Email extends MMObjectBuilder {
 	* this message has changed so lets see if we need to do
 	* something.
 	*/
-	public boolean nodeChanged(String number,String builder,String ctype) {
+	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		// check the type of change on the object
 		if (ctype.equals("d")) {
 			return(true);
@@ -361,18 +361,18 @@ public class Email extends MMObjectBuilder {
 	/**
 	* local change reroute to nodeChange
 	*/
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
 
 	/**
 	* remote change reroute to nodeChange
 	*/
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 	
 
