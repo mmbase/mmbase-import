@@ -39,10 +39,10 @@ public class SpaceReducer extends AbstractCharTransformer implements CharTransfo
                     if (nl == 0) w.write(c);                    
                     space++;
                     nl++;
-                    l++;
+                    l = 0;
                 } else if (Character.isWhitespace((char) c)) {
                     if (space == 0 && l > 0) w.write(' ');
-                    if (l == 0) indent.append(c);
+                    if (l == 0) indent.append((char) c);
                     space ++;
                 } else {                
                     if (l == 0 && space > 0) {
@@ -55,7 +55,7 @@ public class SpaceReducer extends AbstractCharTransformer implements CharTransfo
                 }
             }            
         } catch (java.io.IOException e) {
-            System.out.println("w" + e.toString());
+            // System.out.println("w" + e.toString());
         }
         return w;
     }
