@@ -15,6 +15,12 @@
 
 <%
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+
+   String mlstate = request.getParameter("multilevelstate");
+   if (mlstate!=null && !mlstate.equals("")) {
+        mmAdmin.getInfo("MULTILEVELCACHESTATE-"+mlstate,request,response);
+   }
+
 %>
 
 <tr align="left">
@@ -22,6 +28,20 @@
 </tr>
 <tr>
   <td class="multidata" colspan="2"><p>This tools hows the performance of the various MMBase caches.</p></td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+<tr align="left">
+  <th class="header" colspan="2">Multi Level Cache Status</th>
+</tr>
+<tr>
+  <td class="data" colspan="2">
+  <% if("On".equals(mmAdmin.getInfo("MULTILEVELCACHESTATE",request,response))) { %>
+  <a href="cache.jsp?multilevelstate=off">On</a>
+  <% } else { %>
+  <a href="cache.jsp?multilevelstate=on">Off</a>
+  <% } %>
+  </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
