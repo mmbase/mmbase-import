@@ -17,10 +17,13 @@ package org.mmbase.storage.search;
  * Note that tables can also be joined using FieldCompareConstraints.
  *
  * @author Rob van Maris
- * @version $Id: RelationStep.java,v 1.5 2003-03-10 11:50:49 pierre Exp $
+ * @version $Id: RelationStep.java,v 1.6 2003-09-02 19:56:19 michiel Exp $
  * @since MMBase-1.7
  */
 public interface RelationStep extends Step {
+
+
+    // MM: Are the SEARCH_-constants from ClusterBuilder not very similar?
     /** 
      * Directionality following relations from destination to source. 
      * E.g. where the previous step is destination and the next step is source.
@@ -45,9 +48,10 @@ public interface RelationStep extends Step {
      * name: "source", "destination" or "both".
      */
      String[] DIRECTIONALITY_NAMES = new String[] {
-            "source",
-            "destination",
-            "both"
+         "source",
+         "destination",
+         "both"
+
     };
     
     /**
