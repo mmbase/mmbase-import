@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.10 2002-09-23 13:53:44 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.11 2002-10-03 07:24:54 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -94,7 +94,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else {
             throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
         }
-        
+
     }
 
     // logging variable
@@ -829,6 +829,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a condition as a <code>String</code>
      */
     protected String getRelationString(Vector alltables, int searchdir, HashMap roles) {
+
         StringBuffer result=new StringBuffer("");
         int siz;
         String src,dst;
@@ -845,7 +846,6 @@ public class ClusterBuilder extends VirtualBuilder {
         siz=alltables.size()-2;
 
         log.debug("SEARCHDIR="+searchdir);
-
 
         for (int i=0;i<siz;i+=2) {
             boolean desttosrc=false;
@@ -875,7 +875,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     desttosrc= (searchdir!=SEARCH_DESTINATION) &&
                                (desttosrc ||
                                 (ro==rootnr) || // ignore root 'object' type
-                                typenode.getIntValue("snumber")==ro);
+                                typenode.getIntValue("dnumber")==ro);
                     srctodest= (searchdir!=SEARCH_SOURCE) &&
                                (srctodest ||
                                (so==rootnr) || // ignore root 'object' type
