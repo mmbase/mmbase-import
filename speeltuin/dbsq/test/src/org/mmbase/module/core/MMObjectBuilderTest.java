@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MMObjectBuilderTest extends TestCase {
     
@@ -738,7 +738,9 @@ public class MMObjectBuilderTest extends TestCase {
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
             String fieldName = field.getDBName();
-            if (!node1.getValue(fieldName).equals(node2.getValue(fieldName))) {
+            Object value1 = node1.getValue(fieldName);
+            Object value2 = node2.getValue(fieldName);
+            if (!(value1 == null? value2 == null: value1.equals(value2))) {
                 return false;
             }
         }
