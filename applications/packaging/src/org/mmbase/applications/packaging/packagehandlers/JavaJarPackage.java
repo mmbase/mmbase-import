@@ -28,7 +28,6 @@ import org.w3c.dom.*;
  * JavaJarPackage, Handler for installing jar files
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class JavaJarPackage extends BasicPackage implements PackageInterface {
 

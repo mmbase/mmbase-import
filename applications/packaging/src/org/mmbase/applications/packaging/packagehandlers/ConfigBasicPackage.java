@@ -29,7 +29,6 @@ import org.xml.sax.*;
  * ConfigBasicPackage, Handler for configuration files
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class ConfigBasicPackage extends BasicPackage implements PackageInterface {
 

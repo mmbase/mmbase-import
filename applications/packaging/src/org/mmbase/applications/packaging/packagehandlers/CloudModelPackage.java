@@ -31,7 +31,6 @@ import org.xml.sax.*;
  * DisplayHtmlPackage, Handler for html packages
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class CloudModelPackage extends BasicPackage implements PackageInterface {
 
