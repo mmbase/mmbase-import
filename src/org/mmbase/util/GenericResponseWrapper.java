@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.6 2004-06-15 17:33:35 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.7 2004-06-29 09:19:49 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -92,7 +92,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      */
     public GenericResponseWrapper(HttpServletResponse resp) {
         super(resp);        
-        wrappedResponse = resp;
+        wrappedResponse = resp; // I don't understand why this object is not super.getResponse();
 
     }
 
@@ -101,8 +101,40 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * redirect or so.
      * @since MMBase-1.7.1
      */
-    public HttpServletResponse getWrappedResponse() {
-        return wrappedResponse;
+    public HttpServletResponse getHttpServletResponse() {
+        //return (HttpServletResponse) getResponse(); // shoudl work, I think, but doesn't
+        HttpServletResponse response = wrappedResponse;
+        while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
+            response = ((GenericResponseWrapper) response).wrappedResponse;
+        } 
+        return response;
+    }
+
+
+    public void sendRedirect(String location) throws IOException  {
+        checkWritten();
+        getHttpServletResponse().sendRedirect(location);
+    }
+    public void setStatus(int s) {
+        checkWritten();
+        getHttpServletResponse().setStatus(s);
+    }
+
+    public void addCookie(Cookie c) {
+        checkWritten();
+        getHttpServletResponse().addCookie(c);
+    }
+    public void setHeader(String header, String value) {
+        getHttpServletResponse().setHeader(header,value);
+    }
+
+
+    protected void checkWritten() { 
+        if (writer != null || outputStream != null) {
+            log.error("Allready written headers, perhaps you need to increase the 'buffer' of your JSP (with the @page directive)");
+            log.debug(Logging.stackTrace());
+            //throw new RuntimeException("Allready written");
+        }
     }
 
     /**
@@ -110,7 +142,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      */
     public ServletOutputStream getOutputStream() throws IOException {
         if (writer != null) {
-            throw new RuntimeException("Should use getOutputStream or getWriter");
+            throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
         if (outputStream == null) {
             bytes        = new ByteArrayOutputStream();
@@ -124,7 +156,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      */
     public PrintWriter getWriter() throws IOException {
         if (outputStream != null) {
-            throw new RuntimeException("Should use getOutputStream or getWriter");
+            throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
         if (writer == null) {
             string = new StringWriter();
@@ -214,6 +246,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
     */
 
+    
     
 }
 
