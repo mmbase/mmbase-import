@@ -12,7 +12,6 @@ package org.mmbase.util;
 import java.util.Locale;
 import java.util.Vector;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -26,7 +25,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
 
-public class XMLRelationNodeReader {
+public class XMLRelationNodeReader extends XMLBasicReader {
 
    /**
    * Logger routine
@@ -34,40 +33,17 @@ public class XMLRelationNodeReader {
    private static Logger log =
       Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
 
-   Document document;
-   DOMParser parser;
 
-   public XMLRelationNodeReader(String filename, MMBase mmbase) {
-      try {
-         parser = new DOMParser();
-         parser.setFeature(
-            "http://apache.org/xml/features/dom/defer-node-expansion",
-            true);
-         parser.setFeature(
-            "http://apache.org/xml/features/continue-after-fatal-error",
-            true);
-         //Errors errors = new Errors();
-         //parser.setErrorHandler(errors);
-
-         EntityResolver resolver = new XMLEntityResolver();
-         parser.setEntityResolver(resolver);
-         filename = "file:///" + filename;
-         parser.parse(filename);
-         document = parser.getDocument();
-
-         /*
-         log.debug("*** START XML RELATION READER FOR : "+filename);
-         log.debug("ExportSource="+getExportSource());
-         log.debug("TimeStamp="+getTimeStamp());
-         log.debug("Nodes nodes="+getNodes(mmbase));
-         log.debug("*** END XML RELATION READER FOR : "+filename);
-         */
-      }
-      catch (Exception e) {
-         log.error(e);
-         log.error(Logging.stackTrace(e));
-      }
-   }
+	/**
+	 * Constructor
+	 * @param filename from the file to read from
+	 * @param applicationpath the path where this application was exported to
+	 * @param mmbase
+	 */
+	public XMLRelationNodeReader(String filename, MMBase mmbase) 
+	{
+		super(filename);
+	}
 
    /**
    * get the name of this application
