@@ -25,7 +25,7 @@ void showDir(File baseDir, String dirName, javax.servlet.jsp.JspWriter out) thro
   out.println("<table>");
   for (int i=0; i< content.length ; i++) {
     File f = (File) content[i];
-       out.println("<tr><td class='link'><nobr><a href='builds/" + dirName + "/" + f.getName() +"'>" + f.getName() + "</a></nobr></td></tr>");
+       out.println("<tr><td class='link'><nobr><a href='" + dirName + "/" + f.getName() +"'>" + f.getName() + "</a></nobr></td></tr>");
   }
   out.println("</table>");
 }
