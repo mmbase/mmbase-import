@@ -25,9 +25,9 @@
 </tr>
 
 <tr><td>&nbsp;</td></tr>
-<tr>
-  <td class="header">Multi Level Cache Property</td>
-  <td class="header">Value</td>
+<tr align="left">
+  <th class="header">Multi Level Cache Property</th>
+  <th class="header">Value</th>
 </tr>
 <tr>
   <td class="data">Requests</td>
@@ -57,9 +57,9 @@
 </tr>
 
 <tr><td>&nbsp;</td></tr>
-<tr>
-  <td class="header">Node Cache Property</td>
-  <td class="header">Value</td>
+<tr align="left">
+  <th class="header">Node Cache Property</th>
+  <th class="header">Value</th>
 </tr>
 <tr>
   <td class="data">Requests</td>
@@ -89,9 +89,9 @@
 </tr>
 
 <tr><td>&nbsp;</td></tr>
-<tr>
-  <td class="header">Relation Cache Property</td>
-  <td class="header">Value</td>
+<tr align="left">
+  <th class="header">Relation Cache Property</th>
+  <th class="header">Value</th>
 </tr>
 <tr>
   <td class="data">Requests</td>
