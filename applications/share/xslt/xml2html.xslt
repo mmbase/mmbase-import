@@ -108,16 +108,18 @@
           <xsl:apply-templates select="bodycontentinfo"/>
         </td>
       </tr>
-    </xsl:if>
-    <xsl:if test="example">
-      <tr>
-        <td width="100" valign="top">example</td>
-        <td>
-          <pre><xsl:value-of select="example"/></pre>
-        </td>
-      </tr>
-    </xsl:if>
+    </xsl:if>       
+    <xsl:apply-templates select="example" />
   </table>
+</xsl:template>
+
+<xsl:template match="example">
+   <tr>
+     <td width="100" valign="top">example</td>
+     <td>
+        <pre><xsl:value-of select="."/></pre>
+     </td>
+   </tr>
 </xsl:template>
 
 <xsl:template match="attribute">
