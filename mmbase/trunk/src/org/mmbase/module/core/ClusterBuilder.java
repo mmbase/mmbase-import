@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.23 2002-12-24 18:17:01 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.24 2002-12-27 13:53:34 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -315,6 +315,7 @@ public class ClusterBuilder extends VirtualBuilder {
             Vector snodes,Vector fields,String pdistinct,
             Vector tables,String where, Vector orderVec,Vector direction,
             int searchdir) {
+        
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
         MMObjectNode basenode;
@@ -1438,7 +1439,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Adds sorting orders to a search query.
      *
      * @param query The query.
-     * @param orders The fieldnames prefixed by the table aliases.
+     * @param fieldNames The fieldnames prefixed by the table aliases.
      * @param directions The corresponding sorting directions ("UP"/"DOWN").
      * @param fieldsByAlias Map, mapping field aliases (fieldname prefixed by 
      *        table alias) to the stepfields in the query. 
@@ -1448,6 +1449,11 @@ public class ClusterBuilder extends VirtualBuilder {
     void addSortOrders(BasicSearchQuery query, List fieldNames, 
             List directions, Map fieldsByAlias) {
                 
+        // Test if fieldnames are specified.
+        if (fieldNames == null || fieldNames.size() == 0) {
+            return;
+        }
+        
         int defaultSortOrder = SortOrder.ORDER_ASCENDING;
         if (directions != null && directions.size() != 0) {
             if (((String) directions.get(0)).trim().equalsIgnoreCase("DOWN")) {
