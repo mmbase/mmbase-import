@@ -40,11 +40,12 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.26.2.5 2003-06-13 13:28:19 vpro Exp $
+ * @version $Id: Utils.java,v 1.26.2.6 2003-08-08 08:13:39 michiel Exp $
  */
+
 public class Utils {
 
-    private static Logger log = Logging.getLoggerInstance(Utils.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Utils.class);
     /**
      * This method returns a new instance of a DocumentBuilder.
      *
@@ -652,9 +653,9 @@ public class Utils {
      * if the name/value: username --> kars is in the hashtable, all $username occurences will be replaced with kars.
      * Note: #multipleReplace method is used for replacements.
      *
-     * @param       text    the source text to be used
-     * @param       params  the table with params (name/value pairs)
-     * @return     The resulting string
+     * @param     text    the source text to be used
+     * @param     params  the table with params (name/value pairs)
+     * @return    The resulting string
      */
     public static String fillInParams(String text, Map params) {
         if (params==null) return text;
@@ -662,8 +663,8 @@ public class Utils {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             // accept both $xxx and {$xxx}
-            text = multipleReplace(text,"{$"+entry.getKey()+"}", (String) entry.getValue());
-            text = multipleReplace(text,"$"+entry.getKey(), (String) entry.getValue());
+            text = multipleReplace(text, "{$" + entry.getKey() + "}", (String) entry.getValue());
+            text = multipleReplace(text, "$" + entry.getKey(), (String) entry.getValue());
         }
         return text;
     }

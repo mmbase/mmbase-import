@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetRelations.java,v 1.4.2.1 2003-06-13 13:30:48 vpro Exp $
+ * @version $Id: ConnectorCommandGetRelations.java,v 1.4.2.2 2003-08-08 08:13:39 michiel Exp $
  */
 
 public class ConnectorCommandGetRelations extends ConnectorCommand {

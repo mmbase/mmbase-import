@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.4.2.1 2003-04-16 08:57:17 vpro Exp $
+ * @version $Id: Validator.java,v 1.4.2.2 2003-08-08 08:13:39 michiel Exp $
  */
 
 public class Validator {
@@ -89,7 +89,6 @@ public class Validator {
         val = field.getOwnerDocument().createElement("validator");
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
-
         int valueLength = value.length();
         boolean required = Utils.getAttribute(field,"dtrequired", "false").equals("true");
         if (required && valueLength==0) {

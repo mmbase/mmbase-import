@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.10 2002-07-16 17:37:15 michiel Exp $
+ * @version $Id: WizardCommand.java,v 1.10.2.1 2003-08-08 08:13:40 michiel Exp $
  */
 public class WizardCommand {
 
@@ -43,8 +43,7 @@ public class WizardCommand {
     private final static String[] COMMANDS =
     {"add-item", "cancel", "commit", "delete-item", "goto-form", "move-down", "move-up", "start-wizard", "update-item"};
 
-    // logging
-    private static Logger log = Logging.getLoggerInstance(WizardCommand.class.getName());
+    private static Logger log = Logging.getLoggerInstance(WizardCommand.class);
 
     private String commandname="unknown";
     private int type = UNKNOWN_COMMAND;
