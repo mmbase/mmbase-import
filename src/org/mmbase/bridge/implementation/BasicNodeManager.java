@@ -33,7 +33,7 @@ import org.mmbase.storage.search.legacy.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.62 2003-08-13 16:36:18 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.63 2003-08-27 08:24:00 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
@@ -162,6 +162,22 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             return builder.getTableName();
         } else {
             return getStringValue("name");
+        }
+    }
+
+    public String getProperty(String name) {
+        if (builder!=null) {
+            return builder.getInitParameter(name);
+        } else {
+            return null;
+        }
+    }
+
+    public Map getProperties() {
+        if (builder!=null) {
+            return new HashMap(builder.getInitParameters());
+        } else {
+            return new HashMap();
         }
     }
 
