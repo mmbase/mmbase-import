@@ -48,6 +48,7 @@ public class XMLContextDepthWriter  {
 
 	// write relationSources
 	writeRelationSources(app,nodes,targetpath,mmb);
+
 	return(true);
     }
 
@@ -229,4 +230,15 @@ public class XMLContextDepthWriter  {
 		return(true);
 	}
 
+    public static boolean writeContextXML(XMLContextDepthReader capp,String filename) {
+	String body="<contextdepth>\n";
+	body+="\t<startnode>\n";
+	body+="\t\t<builder>"+capp.getStartBuilder()+"</builder>\n";
+	body+="\t\t<where>"+capp.getStartWhere()+"</where>\n";
+	body+="\t</startnode>\n\n";
+	body+="\t<depth>"+capp.getDepth()+"</depth>\n";
+	body+="</contextdepth>\n";
+	saveFile(filename,body);
+	return(true);
+    }
 }
