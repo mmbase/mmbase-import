@@ -166,54 +166,28 @@ NetComponents can be found at:
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="jar,web">
+          depends="lib.release,jar,web">
     <!-- copy a readme from somewhere -->
     <!-- not in cvs yet -->
     <!-- copy the config -->
-    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
-    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config">
+    <mkdir dir="${web.dir}/config"/>
+    <copy todir="${web.dir}/config">
       <fileset dir="${source-config.dir}/default">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the html -->
-    <copy todir="${build.dir}/mmbase/mmbase-webapp">
+    <copy todir="${webapp.dir}">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <!-- web.xml.sample contains other xml configurations
-
-			<copy file="${webapp.dir}/WEB-INF/web.xml.sample"
-          tofile="${webapp.dir}/WEB-INF/web.xml" overwrite="yes"/>
-      <delete file="${webapp.dir}/WEB-INF/web.xml.sample" />
-    -->
-    <!-- copy builders/modules from application dir into default config dir -->
-    <!-- Basics -->
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/Basics/builders">
+    <!-- copy the libraries -->
+    <copy todir="${release.lib.dir}">
+      <fileset dir="${compile.lib.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <!-- BasicAuth -->
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/BasicAuth/builders">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    <!-- MyNews -->
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    <!-- MyYahoo -->
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/MyYahoo/builders">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip"
          basedir="${build.dir}/mmbase"/>
@@ -1486,7 +1460,7 @@ Version: MMBase build ${version}
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
-    
+
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-documentation.dir}" >
@@ -1546,7 +1520,7 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <!--  Create the Builder documentation                                   -->
   <!-- =================================================================== -->
-  <target name="documentation.builders"        
+  <target name="documentation.builders"
           depends="doc.resources,xsltransformer"
           description="Generate builder-documentation from the builder config files">
     <mkdir dir="${mmdocs.dir}/templaters/builders"/>
