@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 public class XMLModuleReader extends XMLBasicReader {
     // logger
-    private static Logger log = Logging.getLoggerInstance(XMLBuilderReader.class.getName());
+    private static Logger log = Logging.getLoggerInstance(XMLModuleReader.class.getName());
 
     /** Public ID of the Module DTD version 1.0 */
     public static final String PUBLIC_ID_MODULE_1_0 = "-//MMBase//DTD module config 1.0//EN";
