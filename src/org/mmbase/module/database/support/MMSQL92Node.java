@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.1 2000-04-15 20:42:44 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.2 2000-04-15 21:31:33 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2000/04/15 20:42:44  wwwtech
+fixes for informix and split in sql92 poging 2
+
 Revision 1.9  2000/04/12 11:34:57  wwwtech
 Rico: built type of builder detection in create phase
 
@@ -49,13 +52,15 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.1 $ $Date: 2000-04-15 20:42:44 $
+* @$Revision: 1.2 $ $Date: 2000-04-15 21:31:33 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	String createString="CREATETABLE_SQL92";
+
 	MMBase mmb;
 
 	public MMSQL92Node() {
@@ -75,7 +80,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			String root=System.getProperty("mmbase.config");
 			Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
 		
-			String createtable=(String)prop.get("CREATETABLE_SQL92");
+			String createtable=(String)prop.get(createString);
 
 
 			if (createtable!=null && !createtable.equals("")) {	
