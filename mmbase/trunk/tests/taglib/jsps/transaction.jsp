@@ -3,11 +3,13 @@
 <body>
 <h1>Testing taglib</h1>
 <h2>cloud, transaction</h2>
+<mm:log>0</mm:log>
 <mm:import id="curtime"><%= System.currentTimeMillis()%></mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud">
 
 This number must increase on reload: <mm:write referid="curtime" />
 <h3>Canceling transaction</h3>
+<mm:log>0</mm:log>
 <mm:transaction name="mytrans" commitonclose="false">
   <mm:createnode type="news">
     <mm:setfield name="title">Test node, created in transaction, canceled</mm:setfield>
@@ -15,6 +17,7 @@ This number must increase on reload: <mm:write referid="curtime" />
   </mm:createnode>
   <mm:cancel />
 </mm:transaction>
+<mm:log>1</mm:log>
 Transaction was canceled, following should not result anything:
 <mm:listnodes id="l" type="news" constraints="subtitle = '$curtime'">
   <mm:field name="gui()" />
@@ -36,9 +39,14 @@ transaction was commited, following should result anything:
         <mm:write referid="nodenumber" session="testnodenumber" />         
         <mm:write referid="node" session="testnode" />         
     </mm:compare>
+    <mm:compare referid2="curtime" inverse="true">
+        NOOOOO!
+       <mm:write id="nodenumber" value="NNOTFOUNFDNODE" />
+    </mm:compare>
   </mm:field>
    <mm:field name="title" />
 </mm:listnodes>
+<mm:log>5</mm:log>
 <br />
 <h3>Creating relation in transaction</h3>
 <mm:transaction name="mytranc">
