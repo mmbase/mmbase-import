@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.18 2002-11-07 07:17:10 kees Exp $
+ * @version $Id: MultiPool.java,v 1.19 2002-11-07 14:00:02 kees Exp $
  */
 public class MultiPool {
     
@@ -93,8 +93,6 @@ public class MultiPool {
         
         int nowTime = (int) (System.currentTimeMillis() / 1000);
         
-        List putBacks = new Vector();
-        int releases = 0;
         synchronized (semaphore) {
             //lock semaphore, so during the checks, no connections can be acquired or put back
             // (because the methods of semaphore are synchronized)
@@ -105,22 +103,26 @@ public class MultiPool {
                 
                 if (diff > 5) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Checking a busy connection "+con +" time = "+ diff);
+                        log.debug("Checking a busy connection "+con +" time = "+ diff + " seconds");
                     }
                 }
                 
                 if (diff < 30) {
-                    // below 30 we still wait
+                    
+                    
                 } else if (diff < 120) {
+                    
                     // between 30 and 120 we putback 'zero' connections
                     if (con.lastSql==null || con.lastSql.length()==0) {
                         log.warn("null connection putBack");
-                        putBacks.add(con);
+                        pool.add(con);
+                        i.remove();
+                        semaphore.release();
                     }
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newcon = null;
-                    log.debug("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
+                    log.warn("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
                     try {
                         Connection realcon = DriverManager.getConnection(url,name,password);
                         initConnection(realcon);
@@ -133,8 +135,8 @@ public class MultiPool {
                     }
                     if (newcon != null) {
                         pool.add(newcon);
-                        busyPool.remove(con);
-                        releases++;
+                        i.remove();
+                        semaphore.release();
                         try {
                             con.realclose();
                         } catch(Exception re) {
@@ -168,12 +170,6 @@ public class MultiPool {
                     }
                 }
                 
-            }
-            
-            semaphore.release(releases);
-            for (Iterator i = putBacks.iterator(); i.hasNext();) {
-                MultiConnection pb = (MultiConnection) i.next();
-                putBack(pb);
             }
         } // synchronized(semaphore)
         if (log.isDebugEnabled()){

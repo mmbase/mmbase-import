@@ -70,7 +70,7 @@ public class DijkstraSemaphore {
         while (count == 0) {
             long startwait = System.currentTimeMillis();
             wait();
-            log.debug("Waited " + (System.currentTimeMillis() - startwait) + " for a connection");
+            log.debug("Waited " + (System.currentTimeMillis() - startwait) + " ms for a connection");
         }
         count--;
         synchronized (starvationLock) {
