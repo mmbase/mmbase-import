@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.26 2004-02-25 15:38:17 michiel Exp $
+ * @version $Id: Version.java,v 1.27 2004-02-25 20:17:45 michiel Exp $
  */
 public class Version {
 
@@ -64,7 +64,7 @@ public class Version {
         if (builddate != null) {
             try {
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(builddate));
-                resource = "." + buffer.readLine();
+                resource =  buffer.readLine();
                 buffer.close();
             } catch (IOException e) {
                 // error
