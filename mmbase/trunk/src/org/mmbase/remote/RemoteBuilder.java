@@ -7,6 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote;
 
 import java.net.*;
@@ -16,7 +19,7 @@ import java.util.*;
 
 
 /**
- * @version  3 Okt 1999
+ * @version $Revision: 1.6 $ $Date: 2000-11-22 14:22:25 $  
  * @author Daniel Ockeloen
  */
 public class RemoteBuilder {
