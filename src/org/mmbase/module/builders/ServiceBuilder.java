@@ -8,8 +8,11 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: ServiceBuilder.java,v 1.13 2001-02-22 13:41:13 vpro Exp $
+$Id: ServiceBuilder.java,v 1.14 2001-03-22 16:10:25 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.13  2001/02/22 13:41:13  vpro
+Davzev: Fixed otype 0 bug when getNewNode was done here, by adding super.init() to the init().
+
 Revision 1.12  2001/02/15 14:59:46  vpro
 Davzev: Added debug and comments and changed doClaim() which now retrieves the selected tracknr from the SESSION variable name:serviceobj#TRACKNR.
 
@@ -37,7 +40,7 @@ import org.mmbase.module.sessionInfo;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.13 $ $Date: 2001-02-22 13:41:13 $
+ * @version $Revision: 1.14 $ $Date: 2001-03-22 16:10:25 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -235,9 +238,12 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super.");
 		super.nodeRemoteChanged(number,builder,ctype);
 		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Node Remote Changed!?,do nothing");
-		// Disabled since the localchanged already sends signal to remote side 
-		//sendToRemote(number,builder,ctype); 
-		return(true);
+		//DISABLED since the localchanged already sends signal to remote side 
+		// You can't signal new or delete changes because there's no mmserver related when these changes occur.
+		//if (!(ctype.equals("n") || ctype.equals("d")) )
+		//	sendToRemoteBuilder(number,builder,ctype);
+
+		return true;
 	}
 
 	/**
@@ -250,10 +256,12 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
 		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super.");
-		super.nodeRemoteChanged(number,builder,ctype);
+		super.nodeLocalChanged(number,builder,ctype);
 		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling sendToRemoteBuilder, to send node change to remote side.");
-		sendToRemoteBuilder(number,builder,ctype);
-		return(true);
+		// You can't signal new or delete changes because there's no mmserver related when these changes occur.
+		if (!(ctype.equals("n") || ctype.equals("d")) )
+			sendToRemoteBuilder(number,builder,ctype);
+		return true;
 	}
 
 	/**
