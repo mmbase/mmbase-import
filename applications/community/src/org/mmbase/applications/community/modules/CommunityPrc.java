@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.10 2004-01-07 15:11:19 pierre Exp $
+ * @version $Id: CommunityPrc.java,v 1.11 2004-01-08 11:09:00 pierre Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -104,7 +104,7 @@ public class CommunityPrc extends ProcessorModule {
      * These fields are currently not configurable.
      */
     private void initializeTreeBuilder() {
-        treeBuilder = new VirtualRefererBuilder(messageBuilder);
+        treeBuilder = new VirtualReferrerBuilder(messageBuilder);
         treeBuilder.addField(new FieldDefs("list head","string", -1,-1,"listhead",FieldDefs.TYPE_STRING));
         treeBuilder.addField(new FieldDefs("list tail","string", -1,-1,"listtail",FieldDefs.TYPE_STRING));
         treeBuilder.addField(new FieldDefs("depth","integer", -1,-1,"depth",FieldDefs.TYPE_INTEGER));
