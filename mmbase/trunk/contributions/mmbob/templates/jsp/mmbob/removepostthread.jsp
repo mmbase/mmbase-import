@@ -41,11 +41,11 @@
   <tr><td colspan="3"><mm:write referid="mlg_Are_you_sure"/></td></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
-	<input type="hidden" name="admincheck" value="true">
+	<input type="hidden" name="moderatorcheck" value="true">
 	<input type="hidden" name="action" value="removepostthread">
 	<p />
 	<center>
-	<input type="submit" value="Ja, Verwijderen">
+	<input type="submit" value="<mm:write referid="mlg_Yes_delete"/>">
   	</form>
 	</td>
 	<td>
@@ -56,7 +56,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Oops, Nee">
+	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
   	</form>
 	</td>
 	</tr>
