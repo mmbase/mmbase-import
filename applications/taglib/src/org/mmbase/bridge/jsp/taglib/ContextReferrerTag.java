@@ -324,24 +324,27 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     /**
-     * Finds the parent context tag.
-     *
+     * Finds the parent context provider.
      */
+
+    public ContextProvider getContextProvider() throws JspTagException {
+        return getContextProvider((String) contextId.getValue(this), ContextProvider.class);
+    }
 
     public ContextTag getContextTag() throws JspTagException {
-        return getContextTag((String) contextId.getValue(this));
+        return (ContextTag) getContextProvider((String) contextId.getValue(this), ContextTag.class);
     }
+
     /**
      * Finds a parent context tag using an id. 
-     *
      */
 
-    private ContextTag getContextTag(String contextid) throws JspTagException {
+    private ContextProvider getContextProvider(String contextid, Class cl) throws JspTagException {
 
         if(log.isDebugEnabled()) {
             log.debug("Searching context " + contextid);
         }
-        ContextTag contextTag = (ContextTag) findParentTag(ContextTag.class, contextid, false);
+        ContextProvider contextTag = (ContextProvider) findParentTag(cl, contextid, false);
         if (contextTag == null) {
             log.debug("Didn't find one, take the pageContextTag");
             contextTag = pageContextTag;
@@ -364,7 +367,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * Gets an object from the Context.
      *
      */
-
     public Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
         if (log.isDebugEnabled()) { 

@@ -51,7 +51,8 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
  * @see    WriteTag
  */
 
-public class ContextTag extends ContextReferrerTag {
+public class ContextTag extends ContextReferrerTag implements ContextProvider {
+    private static Logger log = Logging.getLoggerInstance(ContextTag.class);
 
     public static final int LOCATION_NOTSET         = -10;
     public static final int LOCATION_PAGE           = 0;
@@ -62,28 +63,26 @@ public class ContextTag extends ContextReferrerTag {
     public static final int LOCATION_COOKIE         = 40;
     public static final int LOCATION_ATTRIBUTES     = 50;
 
-    private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
-
     public static int stringToLocation(String s) throws JspTagException {
         int location;
         if ("parent".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_PARENT;
+            location = LOCATION_PARENT;
         } else if ("page".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_PAGE;
+            location = LOCATION_PAGE;
         } else if ("session".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_SESSION;
+            location = LOCATION_SESSION;
         } else if ("parameters".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_PARAMETERS;
+            location = LOCATION_PARAMETERS;
         } else if ("parameter".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_PARAMETERS;
+            location = LOCATION_PARAMETERS;
         } else if ("postparameters".equalsIgnoreCase(s)) { // backward compatible
-            location = ContextTag.LOCATION_MULTIPART;
+            location = LOCATION_MULTIPART;
         } else if ("multipart".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_MULTIPART;
+            location = LOCATION_MULTIPART;
         } else if ("cookie".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_COOKIE;
+            location = LOCATION_COOKIE;
         } else if ("attributes".equalsIgnoreCase(s)) {
-            location = ContextTag.LOCATION_ATTRIBUTES;
+            location = LOCATION_ATTRIBUTES;
         } else {
             throw new JspTagException("Unknown location '" + s + "'");
         }
@@ -102,6 +101,7 @@ public class ContextTag extends ContextReferrerTag {
         default:                   return "<>";
         }
     }
+
 
 
     private ContextContainer container = null;
@@ -281,14 +281,7 @@ public class ContextTag extends ContextReferrerTag {
         return parent;
     }
 
-
-    /**
-     * Precisely like 'register', only it wants a Node.
-     *
-     * @param key the key (id) of the node to register
-     * @param node the node to put in the hashmap
-     */
-
+    //javadoc inherited
     public void  registerNode(String key, Node n) throws JspTagException {
         register(key, n);
     }
@@ -405,13 +398,7 @@ public class ContextTag extends ContextReferrerTag {
         return result;
     }
 
-    /**
-     * Searches a key in request, postparameters, session, parent
-     * context and registers it in this one.
-     *
-     *  Returns null if it could not be found.
-     */
-
+    // javadoc inherited
     public Object findAndRegister(String externid, String newid) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("searching to register object " + externid + " in context " + getId());
@@ -458,11 +445,8 @@ public class ContextTag extends ContextReferrerTag {
         return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility?
     }
 
-    /**
-     * Register an Object with a key in the context. If the Context is
-     * a session context, then it will be put in the session, otherwise in the hashmap.
-     */
 
+    // javadoc inherited
     public void register(String newid, Object n, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + getId());
@@ -520,22 +504,15 @@ public class ContextTag extends ContextReferrerTag {
         container.remove(key);
     }
 
-    /**
-     * Registers an variable again. This can be used to change the type of a variable, e.g.
-     *
-     * @since MMBase-1.6
-     */
+    // javadoc inhertied
     public void reregister(String id, Object n) throws JspTagException {
         unRegister(id);
         register(id, n);
     }
 
 
-    /**
-     * 'present' means 'not null'. 'null' means 'registered, but not present'.
-     *  Not registered is not present, of course.
-     */
 
+    // javadoc inherited
     public boolean isPresent(String key) throws JspTagException {
         //if (! isRegisteredSomewhere(key)) {
         //    log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
