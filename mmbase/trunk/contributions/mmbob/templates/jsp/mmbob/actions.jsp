@@ -205,13 +205,33 @@
         </mm:booleanfunction>
 </mm:compare>
 
+</mm:compare>
+
 <mm:compare value="removepost" referid="action">
+   <%-- moderators may alway remove postings --%>
+   <mm:compare value="true" referid="moderatormode">
         <mm:import externid="postareaid" />
         <mm:import externid="postthreadid" />
         <mm:import externid="postingid" />
         <mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid">
         </mm:booleanfunction>
-</mm:compare>
+   </mm:compare>
+
+   <%-- users may remove their own postings --%>
+   <mm:compare value="true" referid="moderatormode" inverse="true">
+        <mm:import externid="postareaid" />
+        <mm:import externid="postthreadid" />
+        <mm:import externid="postingid" />
+        <mm:node referid="postingid">
+          <mm:import id="postingowner"><mm:field name="c_poster"/></mm:import> 
+          <mm:node referid="posterid">
+            <mm:import id="currentaccount"><mm:field name="account" /></mm:import> 
+             <mm:compare referid="postingowner" referid2="currentaccount"> 
+               <mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid"></mm:booleanfunction>
+             </mm:compare>
+          </mm:node>
+        </mm:node> 
+   </mm:compare>
 </mm:compare>
 
 <mm:compare value="newforum" referid="action">

@@ -35,7 +35,14 @@
 </head>
 
 <body>
-<center>
+
+<div class="header">
+ <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
+  <jsp:include page="<%=headerpath%>"/>
+</div>
+
+<div class="bodypart">
+
 <mm:include page="path.jsp?type=$pathtype" />
 <table cellpadding="0" cellspacing="0" style="margin-top : 20px;" width="95%">
  <tr>
@@ -107,8 +114,7 @@
                          <img align="left" width="50" border="0" src="../img.db?<mm:field name="avatar" />" style="margin-top: 5px; margin-right: 10px;">
                         </mm:compare></mm:field>
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-			<%-- TODO: not yet implemented
-                        <mm:write referid="mlg_Level"/> : <mm:field name="level" /> <br />--%>
+			<mm:write referid="mlg_Level"/> : <mm:field name="level" /> <br />
 			<mm:write referid="mlg_Posts"/> : <mm:field name="accountpostcount" /><br />
 			<mm:write referid="mlg_Gender"/> : <mm:field name="gender" /><br />
 			<mm:write referid="mlg_Location"/> : <mm:field name="location" /><br /><br />
@@ -150,7 +156,14 @@
    </td>
  </tr>
 </table>
-</center>
+
+</div>
+<div class="footer">
+  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
+  <jsp:include page="<%=footerpath%>"/>
+
+</div>
+
 </body>
 </html>
 
