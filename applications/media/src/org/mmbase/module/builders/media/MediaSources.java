@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.28 2003-01-24 09:14:03 rob Exp $
+ * @version $Id: MediaSources.java,v 1.29 2003-01-24 10:38:33 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -59,9 +59,6 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_CODEC       = "codec";
     public static final String FUNCTION_MIMETYPE    = "mimetype";
 
-    // formats
-    public static final int RM_FORMAT = 6;
-    
     // Codecs
     public final static int VORBIS_CODEC = 1;
     public final static int G2_CODEC     = 2;
