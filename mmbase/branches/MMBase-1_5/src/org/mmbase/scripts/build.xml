@@ -178,8 +178,54 @@ compilation process.
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
+    <!-- copy builders/modules from application dir into default config dir -->
+    <!-- Basics -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/Basics/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>   
+    <!-- BasicAuth -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/BasicAuth/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- BugTracker -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/BugTracker/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- Community-builders -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/Community/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- Community-module -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/Community/modules">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- MyNews -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- MyYahoo -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/MyYahoo/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+
     <!-- remove servlet.jar from lib-dir otherwise it might be giving problems -->
-    <delete file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/${servlet.jar}" />
+    <delete file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/servlet.jar" />
+    <!-- remove junit.jar from lib-dir because it isn't used in the bindist -->
+    <delete file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/junit.jar" />
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip"
          basedir="${build.dir}/mmbase"/>
@@ -212,6 +258,12 @@ compilation process.
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+
+    <!-- copy licenses for included jars -->
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
+      <fileset dir="${source-src.dir}/org/mmbase/scripts/legal"/>
+    </copy>
+
   </target>
 
   
@@ -533,8 +585,10 @@ compilation process.
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
     <delete file="${web.dir}/taglib.tld" />
-    <delete file="${web.dir}/mmbase-taglib.tld" />
-    <delete file="${web.dir}/mmcommunity-taglib.tld" />
+    <!-- don't delete these, because multiple tld's inside a jar, -->
+    <!-- can cause problems on certain servlet-engines -->
+    <!--<delete file="${web.dir}/mmbase-taglib.tld" />-->
+    <!--<delete file="${web.dir}/mmcommunity-taglib.tld" />-->
 
   </target>
 
@@ -594,7 +648,7 @@ compilation process.
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             bottom="MMBase 2001">
+             bottom="MMBase 2002">
     </javadoc>
   </target>
 
