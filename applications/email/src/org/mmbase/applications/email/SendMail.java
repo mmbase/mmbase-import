@@ -152,6 +152,11 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
         if (headers.get("BCC") != null) {
             msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("BCC")));
         }
+
+        if (headers.get("Reply-To") != null) {
+            msg.setReplyTo(InternetAddress.parse((String) headers.get("Reply-To")));
+        }
+
         msg.setSubject((String) headers.get("Subject"));
 
         return msg;
