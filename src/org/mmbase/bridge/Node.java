@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.35 2002-10-14 15:41:40 pierre Exp $
+ * @version $Id: Node.java,v 1.36 2002-10-16 10:02:22 pierre Exp $
  */
 public interface Node {
 
@@ -311,6 +311,23 @@ public interface Node {
      */
     public String getStringValue(String fieldName);
 
+
+    /**
+     * Returns the value of the specified field as a <code>FieldValue</code> object.
+     *
+     * @param fieldName  the name of the field whose value to return
+     * @return           the value of the specified field
+     * @throws NotFoundException is the field does not exist
+     */
+    public FieldValue getFieldValue(String fieldName) throws NotFoundException;
+
+    /**
+     * Returns the value of the specified field as a <code>FieldValue</code> object.
+     *
+     * @param field  the Field object whose value to return
+     * @return       the value of the specified field
+     */
+    public FieldValue getFieldValue(Field field);
 
     /**
      * Returns the value of the specified function on the node.  A

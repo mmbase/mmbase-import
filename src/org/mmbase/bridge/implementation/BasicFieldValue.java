@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * This is the basic implementation of the Field Value interface.
  *
  * @author   Pierre van Rooden
- * @version $Id: BasicFieldValue.java,v 1.3 2002-10-03 12:28:10 pierre Exp $
+ * @version $Id: BasicFieldValue.java,v 1.4 2002-10-16 10:02:22 pierre Exp $
  * @since    MMBase-1.6
  */
 public class BasicFieldValue implements FieldValue {
@@ -27,7 +27,7 @@ public class BasicFieldValue implements FieldValue {
         this.node=node;
         this.field=field;
     }
-    
+
     public boolean canModify() {
         // rather simple... should maybe ask Node
         return (field!=null) ||
@@ -58,39 +58,39 @@ public class BasicFieldValue implements FieldValue {
     public byte[] toByte() {
         return node.getByteValue(field.getName());
     }
-    
+
     public float toFloat() {
         return node.getFloatValue(field.getName());
     }
-    
+
     public double toDouble() {
         return node.getDoubleValue(field.getName());
     }
-    
+
     public long toLong() {
         return node.getLongValue(field.getName());
     }
-    
+
     public int toInt() {
         return node.getIntValue(field.getName());
     }
-    
+
     public Node toNode() {
         return node.getNodeValue(field.getName());
     }
-    
+
     public String toString() {
         return node.getStringValue(field.getName());
     }
-    
+
     public org.w3c.dom.Document toXML() throws IllegalArgumentException {
         return node.getXMLValue(field.getName());
     }
-    
+
     public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) throws IllegalArgumentException {
         return node.getXMLValue(field.getName(), tree);
     }
-    
+
     public void set(Object value) {
         node.setValue(field.getName(),value);
     }
@@ -103,32 +103,32 @@ public class BasicFieldValue implements FieldValue {
     public void setFLoat(float value) {
         node.setFloatValue(field.getName(),value);
     }
-    
+
     public void setDouble(double value) {
         node.setDoubleValue(field.getName(),value);
     }
-    
+
     public void setLong(long value) {
         node.setLongValue(field.getName(),value);
     }
-    
+
     public void setInt(int value) {
         node.setIntValue(field.getName(),value);
     }
-    
+
     public void setByte(byte[] value) {
         node.setByteValue(field.getName(),value);
     }
-    
+
     public void setString(String value) {
         node.setStringValue(field.getName(),value);
     }
-    
+
     public void setNode(Node value) {
 //  xxx: needs implementation
 //        node.setNodeValue(field.getName(),value);
     }
-    
+
     public void setXML(org.w3c.dom.Document value) {
         node.setXMLValue(field.getName(),value);
     }
