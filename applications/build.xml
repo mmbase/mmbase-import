@@ -138,13 +138,40 @@ Applications build file
     <ant dir="editwizard"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="community"     target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="rmmci"         target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="fullinstall" depends="install">
+    <ant dir="media"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="cloudcontext"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="email"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="crontab"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="community"     target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="bugtracker"     target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="vwms"        target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="scan"        target="dependent.install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
