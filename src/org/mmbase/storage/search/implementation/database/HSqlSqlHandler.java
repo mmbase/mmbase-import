@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.3 2003-12-11 12:32:00 michiel Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.4 2004-09-17 09:57:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -40,16 +40,16 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
-            case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-
-            case SearchQueryHandler.FEATURE_OFFSET:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-
-            default:
-                result = super.getSupportLevel(feature, query);
+        case SearchQueryHandler.FEATURE_MAX_NUMBER:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            
+        case SearchQueryHandler.FEATURE_OFFSET:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            
+        default:
+            result = super.getSupportLevel(feature, query);
         }
         return result;
     }
@@ -97,7 +97,7 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
         String strSQL = sbQuery.toString();
         if (log.isDebugEnabled()) {
-            log.debug("generated SQL: " + strSQL);
+            log.debug("generated SQL: " + query + " -- >" + strSQL);
         }
         return strSQL;
     }
