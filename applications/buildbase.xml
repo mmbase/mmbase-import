@@ -34,22 +34,30 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
 
   <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
-  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
   <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
 
 
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="project.name" value="a-mmbase-project" />
+  <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
   <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
 
-  <property name="test.class"   value="org.mmbase.Version" />
+  <property name="tests.source.dir"   location="../../tests" />
+  <property name="tests.build.dir" value="${tests.source.dir}/build" />
+  <property name="tests.work.dir"    value="${tests.source.dir}/work" />
+
+  <property name="tests.lib"       value="${tests.build.dir}/lib" />
+  <property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
+  <property name="ui.class" value="junit.textui.TestRunner" />
+
+  <property name="test.class"   value="${project.name}test.Test" />
   <property name="test.arg"     value="" />
-  <property name="compile.excludes" value="" />
 
   <property name="project.jar.dir" value="${project.build.dir}" />
-  <property name="project.jar" value="${project.jar.dir}/${project.name}.jar"/>
+  <property name="project.jar" value="${project.jar.dir}/${project.jar.name}.jar"/>
 
   <target name="init" depends="">
     <tstamp/>
@@ -178,7 +186,8 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="test">   
+  <target name="test" depends="jar">   
+    <ant dir="${tests.source.dir}"   target="jar" />
     <java classname="${test.class}"
       classpathref="run.classpath"
       fork="true"
@@ -193,6 +202,10 @@ Build-compiler: ${build.compiler}
           <include name="*.jar"/>
         </fileset>
         <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+        <fileset dir="${tests.lib}">
           <include name="*.jar"/>
           <include name="*.zip"/>
         </fileset>
