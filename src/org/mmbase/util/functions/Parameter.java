@@ -22,7 +22,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.13 2005-03-16 15:59:51 michiel Exp $
+ * @version $Id: Parameter.java,v 1.14 2005-03-16 19:13:45 michiel Exp $
  * @see Parameters
  */
 
@@ -37,6 +37,21 @@ public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
+
+    public static final String STRINGS = "org.mmbase.util.functions.resources.parameters";
+
+    static {
+        try {
+            LANGUAGE.setBundle(STRINGS);
+            LOCALE.setBundle(STRINGS);
+            USER.setBundle(STRINGS);
+            REQUEST.setBundle(STRINGS);
+            RESPONSE.setBundle(STRINGS);
+            CLOUD.setBundle(STRINGS);
+        } catch (Exception e) {
+            // should not happen
+        }
+    }
 
     /**
      * An empty Parameter array.
