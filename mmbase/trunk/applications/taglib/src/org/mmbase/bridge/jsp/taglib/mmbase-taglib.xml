@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.194 2003-08-18 14:13:46 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.195 2003-09-02 17:26:22 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1205,6 +1205,7 @@ See mmexamples/taglib for more elaborated examples.
       <name>role</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="role" />
     </attribute>
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
@@ -2291,6 +2292,7 @@ transaction was commited, following should result anything:
     <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.FieldProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
       A list of fields. A fieldlist can be inside a NodeProvider in
@@ -2327,8 +2329,7 @@ transaction was commited, following should result anything:
       <possiblevalue>
         <value>create</value>
         <info>
-          Defined in NodeManager from the bridge classes, but not used in
-          BasicNodeManager. Currently it does nothing special.
+          This results in a list of all 'real' fields.
         </info>
       </possiblevalue>
       <possiblevalue>
@@ -2364,6 +2365,31 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="searchdir" />
+      <since>MMBase-1.7</since>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        You can make a jspvar of type 'Field' of 'FieldValue' (only if that is logicly possible) available to the body
+      </info> 
+      <since>MMBase-1.7</since>
+    </attribute>
+    <attribute>
+      <name>vartype</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        The type of the variable to be created.
+      </info> 
+      <possiblevalue>
+        <value>field</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>fieldvalue</value>
+      </possiblevalue>
+
       <since>MMBase-1.7</since>
     </attribute>
     <example>See the example for tag 'nodeinfo'.</example>
