@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.1 2002-03-26 12:45:20 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.2 2002-03-26 15:19:22 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -73,15 +73,15 @@ public class BuilderWriter extends DocumentWriter  {
         // status
         addComment("builder.status",root);
         addContentElement("status","active",root);
-        // classname
+        // classfile
         String data=builder.getClass().getName();
         if ((parent==null) || (!parent.getClass().getName().equals(data))) {
             // strip - do we want it like this?
             if (data.startsWith("org.mmbase.module.builders.")) {
                 data=data.substring(27);
             }
-            addComment("builder.classname",root);
-            addContentElement("classname",data,root);
+            addComment("builder.classfile",root);
+            addContentElement("classfile",data,root);
         }
         //searchage
         data=builder.getSearchAge();

@@ -52,9 +52,9 @@ public class ModuleWriter extends DocumentWriter  {
         // status
         addComment("module.status",root);
         addContentElement("status","active",root);
-        // classname
-        addComment("module.classname",root);
-        addContentElement("classname",module.getClass().getName(),root);
+        // classfile
+        addComment("module.classfile",root);
+        addContentElement("classfile",module.getClass().getName(),root);
         // properties
         Element properties=document.createElement("properties");
         addComment("module.properties",root);
