@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.9 2002-11-14 16:22:11 robmaris Exp $
+ * @version $Id: MMMckoiNode.java,v 1.9.2.1 2004-01-08 16:35:28 robmaris Exp $
  */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 
@@ -720,8 +720,8 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
         }
     }
     else {
-        log.warn("tried to update a node without any changes,..");
-        return false;
+        // tried to update a node without any changes,..
+        return true;
     }
 
     // done database update, so clear changed flags..
