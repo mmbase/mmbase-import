@@ -24,9 +24,9 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.3 2004-03-24 00:59:01 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.4 2004-05-26 11:40:01 michiel Exp $
  */
-public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
+public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
     private static final Logger log = Logging.getLoggerInstance(ListFunctionTag.class);
 
@@ -119,7 +119,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     public void doInitBody() throws JspTagException {
         if (iterator.hasNext()){
             currentItemIndex ++;
-            helper.setValue("" + iterator.next());
+            helper.setValue(iterator.next());
             if (getId() != null) {
                 getContextProvider().getContextContainer().register(getId(), helper.getValue());
             }

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.254 2004-05-18 17:25:48 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.255 2004-05-26 11:39:59 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -130,13 +130,13 @@ version: $Id: mmbase-taglib.xml,v 1.254 2004-05-18 17:25:48 michiel Exp $
 	</info>
 	</type>
 	<type name="tree">
-	<description>tree related tags</description>
-	<info>
-		<p>
-			These are the MMBase tags which do relate to trees.
-		</p>
-	</info>
-	</type>
+    <description>tree related tags</description>
+    <info>
+      <p>
+        These are the MMBase tags which do relate to trees.
+      </p>
+    </info>
+  </type>
 	</tagtypes>
 	<taginterface>
 		<name>contextreferrer</name>
@@ -611,9 +611,27 @@ version: $Id: mmbase-taglib.xml,v 1.254 2004-05-18 17:25:48 michiel Exp $
 	</taginterface>
 	<taginterface>
 		<name>functiontag</name>
+		<extends>nodereferrer</extends>
 		<info>
-			Evaluates 'function' on e.g. a node.
-		</info>
+      <p>
+        Evaluates 'function' on e.g. a node or something else. It is determined from which the
+        function must be taken by the 'nodemanager', 'set' and 'module' attributes, of which precisely one
+        or none must be present. If none of those is present, the function is supposed to be a
+        'node' function and the tag works as a 'node referrer'. Otherwise it works as a function
+        from a 'nodemanager' 'set' or 'module' respectively.
+      </p>
+      <p>
+        Parameters of the function are supplied with the 'referids' attribute, or by a surrounding
+        'functioncontainer' tag with param sub-tags.
+      </p>
+      <p>
+        The several tags of these type differ only in the way they deal with the function
+        value. E.g. a 'boolean' function works as a 'condition' tag (evaluating the body if the function
+        value is 'true' and not evaluating the body if it is false).
+      </p>
+    </info>
+    <see tag="functioncontainer" />
+    <see tag="param" />
 		<since>MMBase-1.7</since>
 		<attribute>
 			<name>name</name>
@@ -629,23 +647,33 @@ version: $Id: mmbase-taglib.xml,v 1.254 2004-05-18 17:25:48 michiel Exp $
 			<name>nodemanager</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+      <info>
+        The name of the nodemanager on which the function must be evaluated.
+      </info>
 		</attribute>
 		<attribute>
 			<name>set</name>
 			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>      
+      <info>
+        The 'set' from which the function must be taken. These are a kind of static functions (no
+        object is associated with them). These 'sets' of functions are a bit like namespaces.
+      </info>
 		</attribute>
 		<attribute>
 			<name>module</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+      <info>
+        The name of the module on which the function must be evaluated.
+      </info>
 		</attribute>
 		<attribute>
 			<name>referids</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				Similar to 'referids' attribute of mm:url
+				Similar to 'referids' attribute of mm:url, a simply way to provide (named) arguments to the function.
 			</info>
 			<see tag="url" attribute="referids" />
 		</attribute>
@@ -1844,7 +1872,6 @@ access the value of title:
 		<name>function</name>
 		<extends>writer</extends>
 		<extends>functiontag</extends>
-		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
@@ -1865,7 +1892,6 @@ access the value of title:
 	<tag>
 		<name>voidfunction</name>
 		<extends>functiontag</extends>
-		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
@@ -1883,7 +1909,6 @@ access the value of title:
 	<tag>
 		<name>booleanfunction</name>
 		<extends>condition</extends>
-		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
     <extends>containerreferrer</extends>
@@ -1901,27 +1926,37 @@ access the value of title:
 	<tag>
 		<name>listfunction</name>
 		<extends>listprovider</extends>
-		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
 		<extends>containerreferrer</extends>
+		<extends>writer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.ListFunctionTag</tagclass>
+		<teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
 		<info>
-			Gets the function value from surrounding functionprovider.  The function value is supposed to be Collection, and this tags acts as a 'listprovider' tag.
+      Gets the function value from surrounding functionprovider.  The function value is supposed to be Collection, and this tags acts as a 'listprovider' and 'writer' tag.
 		</info>
 		<since>MMBase-1.7</since>
 		<see tag="node" />
 		<see tag="booleanfunction" />
 		<see tag="function" />
 		<see tag="functioncontainer" />
-		<see tag="nodelistfunction" />
+		<see tag="nodelistfunction" />    
+		<example><![CDATA[
+<mm:listnodes type="mediasources" max="10">
+  <mm:function name="mimetype" />:  <mm:function name="format" />
+  <ul>
+    <mm:listfunction name="urls" jspvar="uc">
+      <li><%= ((org.mmbase.applications.media.urlcomposers.URLComposer)uc).getURL() %></li>
+    </mm:listfunction>
+  </ul>
+</mm:listnodes> 
+]]></example>
 	</tag>
 
 	<tag>
 		<name>nodelistfunction</name>
 		<extends>listprovider</extends>
-		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
 		<extends>nodeprovider</extends>
@@ -1956,7 +1991,6 @@ access the value of title:
 	<tag>
 		<name>nodefunction</name>
 		<extends>nodeprovider</extends>
-		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
 		<extends>containerreferrer</extends>
@@ -4787,6 +4821,7 @@ The 0 is just counter, which starts at 0 on every page.
 		<info>
 			Surrounds a function tag, provides a container for parameters and function results.
 		</info>
+    <see tag="param"  />
 		<since>MMBase-1.7</since>
 		<attribute>
 			<name>referids</name>
@@ -4797,6 +4832,35 @@ The 0 is just counter, which starts at 0 on every page.
 			</info>
 			<see tag="url" attribute="referids" />
 		</attribute>
+		<example><![CDATA[
+<mm:functioncontainer>
+  <mm:listnodes id="thisgroup" type="mmbasegroups">
+     <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
+     <tr>
+     <mm:stringlist referid="operations">
+        <mm:param name="operation"><mm:write /></mm:param>
+        <td <mm:booleanfunction node="currentcontext" name="parentsallow">
+               class="parent"
+           </mm:booleanfunction>
+          >
+          <mm:booleanfunction  node="currentcontext" name="maygrant">
+          <input type="checkbox" name="<mm:write />:<mm:field name="number" />"
+             <mm:booleanfunction node="currentcontext" name="allows">
+               checked="checked"
+             </mm:booleanfunction>
+          />
+          </mm:booleanfunction>
+          <mm:booleanfunction node="currentcontext" name="maygrant" inverse="true">
+            <mm:booleanfunction node="currentcontext" name="allows">
+            X
+             </mm:booleanfunction>
+          </mm:booleanfunction>
+        </td>
+        </mm:stringlist>
+      </tr>
+  </mm:listnodes>
+</mm:functioncontainer>
+]]></example>
 	</tag>
 	<tag>
 		<name>listnodescontainer</name>
