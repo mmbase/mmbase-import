@@ -9,14 +9,14 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicCompareFieldsConstraintTest extends TestCase {
     
     private final static String BUILDER_NAME = "images";
     private final static String STRING_FIELD_NAME = "owner";
     private final static String INTEGER_FIELD_NAME = "number";
-    private final static String BUILDER_NAME2 = "pools";
+    private final static String BUILDER_NAME2 = "news";
     private final static String STRING_FIELD_NAME2 = "owner";
     private final static String INTEGER_FIELD_NAME2 = "number";
     

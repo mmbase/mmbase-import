@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -17,7 +17,7 @@ public class BasicStepFieldTest extends TestCase {
     private final static String TEST_TABLE_ALIAS = "efgh";
     
     private final static String BUILDER_NAME1 = "images";
-    private final static String BUILDER_NAME2 = "pools";
+    private final static String BUILDER_NAME2 = "news";
     private final static String FIELD_NAME1 = "title";
     
     /** Test instance. */
