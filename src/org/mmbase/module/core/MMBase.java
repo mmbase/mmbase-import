@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.75 2002-10-10 12:04:05 eduard Exp $
+ * @version $Id: MMBase.java,v 1.76 2002-10-25 18:44:15 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -100,7 +100,7 @@ public class MMBase extends ProcessorModule  {
     /**
      * Reference to the TypeDef builder.
      * Should be made private and accessed instead using getTypeDef()
-     * @scope private
+     * @scope private     
      */
     public TypeDef TypeDef;
     /**
@@ -302,6 +302,7 @@ public class MMBase extends ProcessorModule  {
         tmp=getInitParameter("LANGUAGE");
         if (tmp!=null && !tmp.equals("")) {
             locale = new Locale(tmp, "");
+            log.info("mmbase default locale  : " + locale);
         }
 
         tmp = getInitParameter("ENCODING");
