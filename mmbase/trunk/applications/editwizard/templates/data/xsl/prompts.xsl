@@ -5,7 +5,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.4 2002-06-10 12:37:44 pierre Exp $
+  @version $Id: prompts.xsl,v 1.5 2002-07-02 21:17:37 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -118,4 +118,5 @@
 <xsl:variable name="message_dateformat" >date/time format is invalid</xsl:variable>
 <xsl:variable name="message_thisnotvalid" >This field is not valid</xsl:variable>
 <xsl:variable name="message_notvalid" >{0} is not valid</xsl:variable>
+<xsl:variable name="message_listtooshort" >List {0} has too few entries</xsl:variable>
 </xsl:stylesheet>
