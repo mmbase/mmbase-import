@@ -7,7 +7,7 @@
     "<html xmlns=\"http://www.w3.org/TR/xhtml\">\n"+
     "<head>\n"+
     "<title>"+title+"</title>\n"+
-    "<link rel=\"stylesheet\" type=\"text/css\" href=\"/jspadmin/css/mmbase.css\" />\n"+
+    "<link rel=\"stylesheet\" type=\"text/css\" href=\"/mmadmin/jsp/css/mmbase.css\" />\n"+
     "</head>\n"+
     "<body class=\"basic\" >\n";
 }
