@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.33 2003-05-07 12:18:01 pierre Exp $
+     * @version  $Id: list.jsp,v 1.34 2003-05-12 14:27:23 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -314,7 +314,11 @@ if (multilevel) { params.put("objecttype",mainObjectName); }
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
 if (title != null) params.put("wizardtitle", title);
-if (listConfig.title != null) params.put("title", listConfig.title);
+if (listConfig.title != null) {
+    params.put("title", listConfig.title);
+} else {
+    params.put("title", manager.getGUIName(2));
+}
 
 // is all of this really needed?
 params.put("age", listConfig.age+"");
