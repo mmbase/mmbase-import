@@ -29,7 +29,7 @@ import org.mmbase.util.FileWatcher;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.85 2003-06-11 17:45:48 michiel Exp $
+ * @version $Id: Wizard.java,v 1.86 2003-06-12 09:40:16 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -800,15 +800,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private void loadSchema(File wizardSchemaFile) throws WizardException {
 
         
-        schema = (Document) wizardSchemaCache.get(wizardSchemaFile);
+        schema = wizardSchemaCache.getDocument(wizardSchemaFile);
 
         if (schema == null) {
             schema = Utils.loadXMLFile(wizardSchemaFile);
 
-            resolveIncludes(schema.getDocumentElement());
+            List files = resolveIncludes(schema.getDocumentElement());
             resolveShortcuts(schema.getDocumentElement(), true);
 
-            wizardSchemaCache.put(wizardSchemaFile, schema);
+            wizardSchemaCache.put(wizardSchemaFile, schema, files);
 
             log.debug("Schema loaded (and resolved): " + wizardSchemaFile);
         } else {
@@ -831,9 +831,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * This method is a recursive one. Included files are also scanned again for includes.
      *
      * @param       node    The node from where to start searching for include and extends attributes.
+     * @returns    A list of included files.
      *
      */
-    private void resolveIncludes(Node node) throws WizardException {
+    private List resolveIncludes(Node node) throws WizardException {
+        List result = new ArrayList();
         // Resolve references to elements in other wizards. This can be by inclusion
         // or extension.
         NodeList externalReferences = Utils.selectNodeList(node, "//*[@include or @extends]");
@@ -854,6 +856,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         externalId = includeUrl.substring(includeUrl.indexOf('#') + 1);
                     }
                     File file = uriResolver.resolveToFile(url);
+                    result.add(file);
 
                     // Load the external file.
                     Document externalDocument = Utils.loadXMLFile(file);
@@ -877,7 +880,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     }
 
                     // recurse!
-                    resolveIncludes(externalPart);
+                    result.addAll(resolveIncludes(externalPart));
 
                     // place loaded external part in parent...
                     Node parent = referer.getParentNode();
@@ -899,6 +902,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 }
             }
         }
+        return result;
     }
 
     /**
@@ -2141,8 +2145,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         WizardSchemaCache() {
             super(100);
-            fileWatcher.setDelay(10 * 1000); // check every 10 secs
-            fileWatcher.start();
         }
         public String getName() { 
             return "Editwizard schemas";
@@ -2151,34 +2153,51 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "File -> Editwizard schema Document (resolved includes/shortcuts)";
         }
     
-        public Object put(Object key, Object value) {
-            throw new RuntimeException("wrong types in cache");
+        synchronized public Object put(File f, Document doc, List dependencies) {
+            return super.put(f, new Entry(f, doc, dependencies));
         }
-        synchronized public Object put(File f, Document doc) {
-            Object res = super.put(f, doc);
-            fileWatcher.add(f);
-            return res;
+
+        synchronized public Object remove(Object key) {
+            File file = (File) key;
+            Entry entry = (Entry) get(file);
+            entry.fileWatcher.exit();
+            return super.remove(key);
+        }
+
+        synchronized public Document  getDocument(File key) {
+            Entry entry = (Entry) super.get(key);
+            if (entry == null) return null;
+            return entry.doc;
         }
 
 
-        public Object remove(Object key) {
-            throw new RuntimeException("wrong types in cache");
-        }
-
-        synchronized public Object remove(File f) {
-            return super.remove(f);
-        }
-
-        /**
-         * The Source-s which are based on a file, are added to this FileWatcher, which wil invalidate
-         * the corresponding cache entry when the file changes.
-         */
-        private FileWatcher fileWatcher = new FileWatcher (true) {
-                protected void onChange(File file) {
-                    // invalidate cache.
-                    WizardSchemaCache.this.remove(file);
-                    this.remove(file); 
+        class Entry {
+            Document doc; // the document.
+            File file;    // the file belonging to this document (key of cache)
+            Entry(File f, Document doc, List dependencies) {
+                this.file = f;
+                this.doc = doc; 
+                fileWatcher.add(f);
+                Iterator i = dependencies.iterator();
+                while (i.hasNext()) {
+                    File ff = (File) i.next();
+                    fileWatcher.add(ff);
                 }
-            };
+                fileWatcher.setDelay(10 * 1000); // check every 10 secs
+                fileWatcher.start();
+            }
+
+            /**
+             * Cache entries must be invalidated if (one of the) file(s) changes.
+             */
+            FileWatcher fileWatcher = new FileWatcher (true) {
+                    protected void onChange(File f) {
+                        // invalidate this cache entry
+                        WizardSchemaCache.this.remove(WizardSchemaCache.Entry.this.file);
+                        // stop watching files
+                    }
+                };
+        }
+
     }
 }
