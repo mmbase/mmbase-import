@@ -174,8 +174,7 @@ public class ImportTag extends WriteTag {
 
     public int doEndTag() throws JspTagException {
         if (value != null && jspvar != null) {
-            log.debug("Setting variable " + jspvar + " to " + value);
-            pageContext.setAttribute(jspvar, value);
+            setJspVar(value);
         }
         id = null;
         return EVAL_PAGE;
