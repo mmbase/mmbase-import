@@ -247,7 +247,9 @@ public class AudioUtils extends MediaUtils
 				}
 				if (author==null) author="";
 				debug2("getAudioUrl("+number+","+speed+","+channels+"): for audiopart: found author("+author+").");
-				url += "&author=\""+author+"\"";
+				//url += "&author=\""+author+"\"";
+				//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
+				url += "&author="+author;
 			}
 		} else
 			debug2("getAudioUrl("+number+","+speed+","+channels+"): ERROR: Could not find a best match speed("+speed+")/channels("+channels+") for this audiopart!"); 
@@ -279,7 +281,9 @@ public class AudioUtils extends MediaUtils
 				}
 				if (author==null) author="";
 				if( debug )debug2("getAudioUrl("+number+","+speed+","+channels+"): for cdtrack: found author("+author+") for this cdtrack.");
-				url += "&author=\""+author+"\"";
+				//url += "&author=\""+author+"\"";
+				//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
+				url += "&author="+author;
 			}
 		}
 		else
