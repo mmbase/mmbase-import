@@ -17,28 +17,28 @@ import org.mmbase.util.logging.*;
 /**
  * Support class for scanparser to calculate pages in the background.
  * @author Rico Jansen
- * @verison $Id: PageProcess.java,v 1.2 2002-03-28 09:33:51 johannes Exp $
+ * @verison $Id: PageProcess.java,v 1.3 2002-11-12 16:57:49 pierre Exp $
  */
 public class PageProcess implements Runnable {
 
     private static Logger log =  Logging.getLoggerInstance(PageProcess.class.getName());
 
-	String uri;
-	scanpage sp;
-	scanparser parser;
+    String uri;
+    scanpage sp;
+    scanparser parser;
 
-	Thread kicker=null;
+    Thread kicker=null;
 
-	/**
-  	 * Create a thread and fire it up to calculate 1 page.
-	 * After that die.
-	 */
-	PageProcess(scanparser parser,scanpage sp,String uri) {
-		this.sp=sp;
-		this.uri=uri;
-		this.parser=parser;
-		this.start();
-	}
+    /**
+     * Create a thread and fire it up to calculate 1 page.
+     * After that die.
+     */
+    PageProcess(scanparser parser,scanpage sp,String uri) {
+        this.sp=sp;
+        this.uri=uri;
+        this.parser=parser;
+        this.start();
+    }
 
     /**
      * Starts the main Thread.
@@ -61,28 +61,27 @@ public class PageProcess implements Runnable {
 
     /**
      * Main loop, exception protected
-     * @see doWork
      */
     public void run () {
-		log.debug("Starting calc "+uri);
+        log.debug("Starting calc "+uri);
         try {
            doWork();
         } catch(Exception e) {
            log.error(e.getMessage());
            log.error(Logging.stackTrace(e));
         }
-		parser.removeProcess(uri);
-		log.debug("Done calc "+uri);
+        parser.removeProcess(uri);
+        log.debug("Done calc "+uri);
     }
 
-	/**
-	 * Calculate a page using scanparser
-	 */
-	private void doWork() {
-		parser.calcPage(uri,sp,0);
-	}
+    /**
+     * Calculate a page using scanparser
+     */
+    private void doWork() {
+        parser.calcPage(uri,sp,0);
+    }
 
-	public String toString() {
-		return(uri);
-	}
+    public String toString() {
+	return uri;
+    }
 }

@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.3 2002-11-08 10:20:16 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.4 2002-11-12 16:57:51 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -132,7 +132,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
     /**
      * Returns the filepath where binary objects are stored.
-     * Only applies if {@link #getStoreBinaryAsFile()} returns true.
+     * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @return the file path
      */
     public String getBinaryFilePath() {
@@ -141,7 +141,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
     /**
      * Sets the filepath where binary objects are stored.
-     * Only applies if {@link #getStoreBinaryAsFile()} returns true.
+     * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @param path the file path
      */
     public void setBinaryFilePath(String path) {
@@ -171,7 +171,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Returns the current mapping of disallowed fieldsnames (typically reserved words)
      * and their replacement names.
      * Note that this is a copy. Changes made to this map will not affect the databse until
-     * set with {@link #setDisallowedFieldNames()}.
+     * set with {@link #setFieldNameMap}.
      * @return a Map of field mappings.
      */
     public Map getFieldNameMap() {
@@ -191,7 +191,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Obtains the type map.
      * The type map is used to convert MMBase types to database types (needed for creating tables).
      * Note that this is a copy. Changes made to this map will not affect the database until
-     * set with {@link #setTypeMap()}.
+     * set with {@link #setTypeMap}.
      * However, the individual map elements are not copies - changing the dTypeInfo objects wil
      * affect the database layer directly.
      * @return a Map of MMBase types and their database type.

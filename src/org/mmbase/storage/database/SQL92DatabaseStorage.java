@@ -22,22 +22,22 @@ import org.mmbase.util.logging.*;
 /**
  * SQL92DatabaseStorage extends AbstractDatabaseStorage to implement the basic functionality for creating and
  * updating databse tables, using SQL.
- * Most statements created here are ANSI SQL 92, with teh exception of statements for creating
- * extended tables (see {@link #createTable()}).
+ * Most statements created here are ANSI SQL 92, with the exception of statements for creating
+ * extended tables (see {@link #create}).
  * It does not take into account db-specific effects of inheritance - as various databases have their own
- * methods, it may be necessary to override the {@link #createTable()}, {@link #insertIntoTable()},
- * {@link #commitToTable()}, and {@link #deleteFromTable()} methods.
+ * methods, it may be necessary to override the {@link #create}, {@link #insertIntoTable},
+ * {@link #commitToTable}, and {@link #deleteFromTable} methods.
  * The basic implementation of these methods assumes an OO-database that does not require the use of
  * specific database routines (i.e. alternate SQL syntax).
  *
  * Furthermore, most sql statements are now contained in their own wrapper methods:
- * {@link #createSQL()}, {@link #insertSQL()}, {@link #updateSQL()}, {@link #deleteSQL()} and various
+ * {@link #createSQL}, {@link #insertSQL}, {@link #updateSQL}, {@link #deleteSQL} and various
  * methods for returning SQL SELECT statements.
  * You can override these method to change the sql statements used by the database layer.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.3 2002-11-07 12:30:38 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.4 2002-11-12 16:57:54 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -427,7 +427,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
 
     /**
      * This method inserts a new object in a specified builder table.
-     * It performs a simple insert statement (obtained with {@link  #insertSQL()},
+     * It performs a simple insert statement (obtained with {@link  #insertSQL},
      * using the name and fields of the specified builder.
      * Override this method to add required code, such as recursive updates for relational databases.
      * Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored in the database tables.
@@ -741,7 +741,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Create the object table (the basic table for all objects) within a transaction
      * @param trans the transaction to perform the insert in
      * @return true if the table was succesfully created
-     * @throws StorageException if an error occurred during craete
+     * @throws StorageException if an error occurred during create
      */
     public boolean createObjectStorage(Transaction trans) throws StorageException {
         // should we use TYPE_NODE instead of TYPE_INTEGER here?

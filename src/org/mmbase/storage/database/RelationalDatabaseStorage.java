@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.3 2002-11-07 12:30:38 pierre Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.4 2002-11-12 16:57:53 pierre Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -50,7 +50,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
     /**
      * Prepares the database layer.
      * This code creates a 'numbertable' for MMBase to track number generation
-     * by the {@link #createKey()} method.
+     * by the {@link #createKey} method.
      * Override this method if you use a different way of generating keys,
      * or if you need to make other preparations for your database.
      */
@@ -282,7 +282,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
 
     /**
      * This method inserts a new object in the object table.
-     * Called by {@link #insert()} to maintain consistency.
+     * Called by {@link #insert} to maintain consistency.
      * @param node The node to insert
      * @param trans the transaction to perform the insert in
      * @return The (new) number for this node, or -1 if an error occurs.

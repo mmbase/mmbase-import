@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.1 2002-09-16 15:07:38 pierre Exp $
+ * @version $Id: Support2Storage.java,v 1.2 2002-11-12 16:57:54 pierre Exp $
  */
 public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -82,7 +82,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Maps a MMBase fieldname to a fieldname acceptable to the database.
-     * @deprecated use {@link #mapToMMBaseFieldName() }
+     * @deprecated use {@link #mapToMMBaseFieldName }
      * @param fieldname the fieldname to map
      */
     public String getDisallowedField(String allowedfield) {
@@ -91,7 +91,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Maps a database fieldname to a fieldname as used by the MMbase system.
-     * @deprecated use {@link #mapToTableFieldName() }
+     * @deprecated use {@link #mapToTableFieldName }
      * @param fieldname the fieldname to map
      */
     public String getAllowedField(String disallowedfield) {
@@ -114,13 +114,13 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Stores a field in a table ResultSet in a MMObjectNode.
-     * @deprecated use {@link #loadFieldFromTable() }
+     * @deprecated use {@link #loadFieldFromTable }
      * @param node the node to store the field in
      * @param fieldname the name of the field as it is known in the ResultSet
      * @param rs the ResultSet containing the table row
      * @param i the index of the field in the ResultSet
      * @return the MMObjectNode
-     * @see #loadFieldFromTable()
+     * @see #loadFieldFromTable(MMObjectNode,String, ResultSet,int)
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
         fieldname=mapToMMBaseFieldName(fieldname);
@@ -130,7 +130,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Stores a field in a table ResultSet in a MMObjectNode.
-     * @deprecated use {@link #loadFieldFromTable() }
+     * @deprecated use {@link #loadFieldFromTable }
      * @param node the node to store the field in
      * @param fieldname the name of the field as it is known in the ResultSet
      * @param rs the ResultSet containing the table row
@@ -179,7 +179,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
      * Obtain a connection to the database using the passed JDBC engine.
      * @deprecated Obsolete as the database should not connect to any other engine
      * than the one loaded by the associated (known) MMBase instance.
-     * Use {@link #createTransaction()} or {@link #getConnection()} instead.
+     * Use {@link #createTransaction} instead.
      * @param jdbc the JDBC engineto use
      * @throws SQLException if the connection could not be made
      */
@@ -190,7 +190,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
     /**
      * This method inserts a new object in a specified builder table.
      * Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored in the database tables.
-     * @deprecated use {@link insert(MMObjectNode) }
+     * @deprecated use {@link #insert }
      * @param owner The nodes' owner. Ignored
      * @param node The node to insert
      * @return The (new) number for this node, or -1 if an error occurs.
@@ -201,7 +201,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Commit this node to the specified builder table.
-     * @deprecated use {@link commit(MMObjectNode) }
+     * @deprecated use {@link #commit }
      * @param builder the builder to commit the node to. This can be a parentbuilder of the node's actual builder
      * @param node The node to commit
      * @return true of succesful, false otherwise
@@ -212,7 +212,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Remove a node from the specified builder table.
-     * @deprecated use {@link delete(MMObjectNode) }
+     * @deprecated use {@link #delete }
      * @param builder the builder to remove the node from. This can be a parentbuilder of the node's actual builder
      * @param node The node to delete
      */
@@ -222,7 +222,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Create the object table (the basic table for all objects) for the specified basename.
-     * @deprecated use {@link #createObjectStorage()}
+     * @deprecated use {@link #createObjectStorage}
      * @param baseName the basename of the table to create. This parameter is already known and is ignored.
      * @return true if the table was succesfully created
      */
@@ -233,7 +233,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
     /**
      * Gives an unique number for a node to be inserted.
      * This method will work with multiple mmbases
-     * @deprecated use {@link #createKey()}
+     * @deprecated use {@link #createKey}
      * @return unique number
      */
     public int getDBKey(){
@@ -242,7 +242,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     /**
      * Changes the table of a builder to match its new configuration.
-     * @deprecated use {@link #updateStorage() }
+     * @deprecated use {@link #updateStorage }
      * @param builder the builder whose table to change
      * @return true if succesful
      */

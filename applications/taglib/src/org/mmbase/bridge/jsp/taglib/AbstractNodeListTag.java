@@ -42,7 +42,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected String orderby = null;
 
     /**
-     * Holds the direction to sort the list on (per field in {@link orderby}).
+     * Holds the direction to sort the list on (per field in {@link #orderby}).
      * The sort itself is implementation specific.
      */
     protected String directions = null;

@@ -40,10 +40,10 @@ import java.io.File;
  * configure of DOMConfigurator, in this way log4j classes are used
  * only here, and the rest of MMBase can use only `Logger'.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  */
 
-public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger { 
+public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger {
     // class is final, perhaps then its methods can be inlined when compiled with -O?
 
     // It's enough to instantiate a factory once and for all.
@@ -53,8 +53,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     private static final String classname = Log4jImpl.class.getName();
 
-    /** 
-     * Constructor, like the constructor of {@link Category}.
+    /**
+     * Constructor, like the constructor of {@link org.apache.log4j.Logger}.
      */
 
     protected Log4jImpl(String name) {
@@ -63,8 +63,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
 
-  
-    /** 
+
+    /**
      * As getLogger, but casted to MMBase Logger already. And the possible
      * ClassCastException is caught.
      */
@@ -73,7 +73,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             return (Log4jImpl) repository.getLogger(name);
         } catch (ClassCastException e) {
             Log4jImpl root =  (Log4jImpl) getRootLogger(); // make it log on root, and log a huge error, that something is wrong.
-            root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\""); 
+            root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\"");
             return root;
         }
     }
@@ -91,8 +91,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      * absolute, or relative to the Logging configuration file.
      **/
 
-    public static void configure(String s) {        
-        configurationFile = new File(s); 
+    public static void configure(String s) {
+        configurationFile = new File(s);
         if (! configurationFile.isAbsolute()) { // make it absolute
             configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
         }
@@ -102,13 +102,13 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
         log = getLoggerInstance(Log4jImpl.class.getName());
-       
+
         Log4jImpl err = getLoggerInstance("STDERR");
         // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
         if(err.getLevel() != Log4jLevel.FATAL) {
             log.service("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
             System.setErr(new LoggerStream(err));
-        }       
+        }
     }
     /**
      * Performs the actual parsing of the log4j configuration file and handles the errors
@@ -132,7 +132,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
                 log.error(error);
             }
         }
-        
+
     }
 
     private static FileWatcher configWatcher = new FileWatcher (true) {
@@ -164,15 +164,15 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         case Level.ERROR_INT:   setLevel(Level.ERROR);   break;
         case Level.FATAL_INT:   setLevel(Level.FATAL);
         }
-  
+
     }
 
     /**
-     *  This method overrides {@link Category#getInstance} by supplying
-     *  its own factory type as a parameter.    
+     *  This method overrides {@link org.apache.log4j.Logger#getInstance} by supplying
+     *  its own factory type as a parameter.
      */
     public static org.apache.log4j.Category getInstance(String name) {
-        return getLogger(name); 
+        return getLogger(name);
     }
     public static org.apache.log4j.Logger  getLogger(String name) {
         return repository.getLogger(name);
@@ -181,7 +181,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     /**
      * A new logging method that takes the TRACE priority.
      */
-    public final void trace(Object message) {       
+    public final void trace(Object message) {
         // disable is defined in Category
         if (repository.isDisabled(Log4jLevel.TRACE_INT)) {
             return;
@@ -194,7 +194,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     /**
      *  A new logging method that takes the SERVICE priority.
      */
-    public final void service(Object message) {  
+    public final void service(Object message) {
         // disable is defined in Category
         if (repository.isDisabled(Log4jLevel.SERVICE_INT)) {
             return;
@@ -206,7 +206,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     public final boolean isServiceEnabled() {
         if(repository.isDisabled( Log4jLevel.SERVICE_INT))
-            return false;   
+            return false;
         return Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
@@ -222,7 +222,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     /**
      * Catches stderr and sends it also to the log file (with category `stderr').
-     *  
+     *
      * In this way, things producing standard output, such as uncatch
      * exceptions, will at least appear in the log-file.
      *
@@ -248,33 +248,33 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             super(System.out);
         }
         // simply overriding all methods that possibly could be used (forgotten some still)
-        public void print   (char[] s) { log.warn(new String(s)); } 
-        public void print   (String s) { log.warn(s); }  
+        public void print   (char[] s) { log.warn(new String(s)); }
+        public void print   (String s) { log.warn(s); }
         public void print   (Object s) { log.warn(s.toString()); }
         public void println (char[] s) { log.warn(new String(s)); }
-        public void println (String s) { 
+        public void println (String s) {
             // if something goes wrong log4j write to standard error
-            // we don't want to go in an infinite loop then, if LoggerStream is stderr too.            
-            if (checkCount > 0) { 
-                System.out.println(s); 
+            // we don't want to go in an infinite loop then, if LoggerStream is stderr too.
+            if (checkCount > 0) {
+                System.out.println(s);
             } else {
                 checkCount++;
-                log.trace("6"); log.warn(s); 
+                log.trace("6"); log.warn(s);
                 checkCount--;
             }
-        }  
-        public void println (Object s) { 
-            // it seems that exception are written to log in this way, so we can check 
+        }
+        public void println (Object s) {
+            // it seems that exception are written to log in this way, so we can check
             // if s is an exception, in which case we want to log with FATAL.
             if (Exception.class.isAssignableFrom(s.getClass())) {
                 log.fatal(s.toString()); // uncaught exception, that's a fatal error
             } else {
                 log.warn(s.toString());
             }
-        }  
-        //public void write(byte[] buf) { }  
+        }
+        //public void write(byte[] buf) { }
         //public void write(byte[] b, int off, int len) { }
- 
+
     }
 
 }
