@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Application <%=app%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -42,7 +42,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data">Return to Application Administration</td>
 </tr>
 
