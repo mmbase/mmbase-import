@@ -14,8 +14,14 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.util.Encode;
+import org.mmbase.util.StringBufferWriter;
 import org.mmbase.util.logging.Logging;
+import java.io.*;
+import javax.xml.transform.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.mmbase.util.transformers.*;
 
 /**
  * @javadoc
@@ -23,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.4 2003-11-25 21:31:55 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.5 2004-01-05 17:35:03 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -56,26 +62,32 @@ public class XmlHandler extends StringHandler {
                     // org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
                     org.w3c.dom.Document xml = node.getXMLValue(field.getName());
 
-                    if(xml!=null) {
+                    if(xml != null) {
                         // make a string from the XML
-                        javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
+                        TransformerFactory tfactory = TransformerFactory.newInstance();
                         //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-                        javax.xml.transform.Transformer serializer = tfactory.newTransformer();
-                        serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-                        serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
-                        java.io.StringWriter str = new java.io.StringWriter();
+                        Transformer serializer = tfactory.newTransformer();
+                        serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+                        serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                        StringBufferWriter str = new StringBufferWriter(buffer);
+                        ChainedCharTransformer ct = new ChainedCharTransformer();
+                        ct.add(new TabToSpacesTransformer(2));
+                        Xml x = new Xml();
+                        x.configure(Xml.ESCAPE);
+                        ct.add(x);
+                        Writer w = new TransformingWriter(str, new TabToSpacesTransformer(3));
                         // there is a <field> tag placed around it,... we hate it :)
                         // change this in the bridge?
-                        serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
+                        serializer.transform(new DOMSource(xml),  new StreamResult(w));
 
-                        // fill the field with it....
-                        buffer.append(Encode.encode("ESCAPE_XML", str.toString()));
+                        w.close();
+
                     }
-                }
-                catch(javax.xml.transform.TransformerConfigurationException tce) {
+                } catch(IOException ioe) {
+                    throw new JspTagException(ioe.toString() + " " + Logging.stackTrace(ioe));
+                } catch(TransformerConfigurationException tce) {
                     throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
-                }
-                catch(javax.xml.transform.TransformerException te) {
+                } catch(TransformerException te) {
                     throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
                 }
             }
@@ -86,5 +98,6 @@ public class XmlHandler extends StringHandler {
         }
 
     }
+
 
 }
