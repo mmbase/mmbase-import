@@ -24,6 +24,7 @@
 
 <mm:node number="$number">
 <mm:nodeinfo type="type" id="node_type" jspvar="nodeType">
+<mm:field name="layout" jspvar="layout">
 
 <% System.err.println("rendering node "+number+" of type "+nodeType+" at level "+level); %>
 <mm:compare referid="node_type" value="learnblocks">
@@ -43,15 +44,22 @@
     <br/>
     <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/><mm:field name="text" escape="none"/></mm:import>
  <%
-    System.err.println("Cleaning up '"+text+"'");
+//    System.err.println("Cleaning up '"+text+"'");
         //
         // remove some of the annoying html that messes up the PDFs
         // 
         text = text.replaceAll("</?(font|style)[^>]*>","");
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
         text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
-        text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='100%'>");
+        
+        if (nodeType.equals("pages") && layout != null && ( "2".equals("layout") || "3".equals("layout"))) {
+            text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='50%'>");
+       }
+        else {
+            text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='100%'>");
+        }
         text = text.replaceAll("<p\\s*/>","");
+        text = text.replaceAll("<p\\s*>\\s*</p>\\s*","");
         text = text.replaceFirst("\\A\\s*","");
         text = text.replaceFirst("\\s*\\z","");
         if (!text.startsWith("<p>")) {
@@ -60,7 +68,8 @@
         if (!text.endsWith("</p>")) {
             text = text+"</p>";
         }
-    System.err.println("Result: '"+text+"'");
+//    System.err.println("Result: '"+text+"'");
+
 %><%= text %>  
     <mm:compare referid="node_type" value="learnblocks">
        <%= text %>
@@ -73,27 +82,27 @@
 
         <mm:compare referid="layout" value="0">
         <%= text %>
-        <table><tr>
+        <table width="100%"><tr>
         <%@include file="pdfimages.jsp"%>
         </tr></table>
         </mm:compare>
         <mm:compare referid="layout" value="1">
-        <table><tr>
+        <table  width="100%"><tr>
         <%@include file="pdfimages.jsp"%>
         </tr></table>
         <%= text %>
         </mm:compare>
         <mm:compare referid="layout" value="2">
-        <table><tr>
+        <table width="100%"><tr>
         <%@include file="pdfimages.jsp"%>
-        <td>
+        <td width="100%">
         <%= text %>
         </td></tr>
         </mm:compare>
         <mm:compare referid="layout" value="3">
-        <table><tr>
+        <table width="100%"><tr>
         <%@include file="pdfimages.jsp"%>
-        <td>
+        <td width="100%">
         <%= text %>
         </td></tr>
         </table>
@@ -189,6 +198,7 @@
     <% } %>
 
 </mm:present>
+</mm:field>
 </mm:nodeinfo>
 </mm:node>
 </mm:cloud>
