@@ -23,10 +23,11 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
-// TODO: invalid tablenames should not be replaced like fieldnames, the must be left untouched.
+// TODO: (later) must wildcard characters be escaped?
+
 public class BasicSqlHandler implements SqlHandler {
     
     /** Empty StepField array. */
