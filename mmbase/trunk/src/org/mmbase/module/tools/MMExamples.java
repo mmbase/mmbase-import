@@ -91,11 +91,13 @@ public class MMExamples extends ProcessorModule {
 
 	public void doInstall(Hashtable cmds, Hashtable vars) {
 
-		if ((String)vars.get("NAME-Basics")!=null) installBasics();
-		if ((String)vars.get("NAME-MyYahoo")!=null) installMyYahoo();
-		if ((String)vars.get("NAME-MyYahoo2")!=null) installApplication("MyYahoo");
+		//if ((String)vars.get("NAME-Basics")!=null) installBasics();
+		//if ((String)vars.get("NAME-MyYahoo")!=null) installMyYahoo();
+		if ((String)vars.get("NAME-MyYahoo")!=null) installApplication("MyYahoo");
+		if ((String)vars.get("NAME-Basics")!=null) installApplication("Basics");
+		if ((String)vars.get("NAME-BasicAuth")!=null) installApplication("BasicAuth");
 		if ((String)vars.get("NAME-MyNews")!=null) installMyNews();
-		if ((String)vars.get("NAME-BasicAuth")!=null) installBasicAuth();
+		//if ((String)vars.get("NAME-BasicAuth")!=null) installBasicAuth();
 	}
 
 	private void installApplication(String applicationname) {
@@ -103,8 +105,8 @@ public class MMExamples extends ProcessorModule {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
 		if (app!=null) {
-			//System.out.println(app.getApplicationName());
-			//System.out.println(app.getApplicationVersion());
+			System.out.println(app.getApplicationName());
+			System.out.println(app.getApplicationVersion());
 			if (areBuildersLoaded(app.getNeededBuilders())) {
 				if (checkRelDefs(app.getNeededRelDefs())) {
 					if (checkAllowedRelations(app.getAllowedRelations())) {
@@ -150,7 +152,7 @@ public class MMExamples extends ProcessorModule {
 						System.out.println("node allready installed : "+exportnumber);
 					} else {
 						newnode.setValue("number",-1);
-						int localnumber=newnode.insert("import");
+						int localnumber=doKeyMergeNode(newnode);
 						if (localnumber!=-1) {
 							MMObjectNode syncnode=syncbul.getNewNode("import");
 							syncnode.setValue("exportsource",exportsource);
@@ -168,13 +170,54 @@ public class MMExamples extends ProcessorModule {
 		return(true);
 	}
 
+	private int doKeyMergeNode(MMObjectNode newnode) {
+		MMObjectBuilder bul=newnode.parent;
+		if (bul!=null) {
+			String checkQ="";
+			Vector vec=bul.getFields();
+			for (Enumeration h = vec.elements();h.hasMoreElements();) {
+				FieldDefs def=(FieldDefs)h.nextElement();	
+				if (def.isKey) {
+					String type=def.getDBType();
+					String name=def.getDBName();
+					if (type.equals("varchar")) {
+						String value=newnode.getStringValue(name);
+						if (checkQ.equals("")) {
+							checkQ+=name+"=='"+value+"'";
+						} else {
+							checkQ+="+"+name+"=='"+value+"'";
+						}
+					}
+				}
+			}
+			System.out.println("Check Query : "+checkQ);
+			if (!checkQ.equals("")) {
+				Enumeration r=bul.search(checkQ);
+				if (r.hasMoreElements()) {
+					MMObjectNode oldnode=(MMObjectNode)r.nextElement();	
+					System.out.println(oldnode);
+					return(oldnode.getIntValue("number"));
+				}
+
+			} else {
+				int localnumber=newnode.insert("import");
+				return(localnumber);
+			} 
+		} else {
+			System.out.println("Application installer can't find builder for : "+newnode);
+		}	
+		return(-1);
+	}
 
 	boolean installRelationSources(Vector ds) {
+		System.out.println("START RELATION ADDER");
+		System.out.println("AAA1="+ds.size());
 		for (Enumeration h = ds.elements();h.hasMoreElements();) {
 			Hashtable bh=(Hashtable)h.nextElement();	
 			String path=(String)bh.get("path");
 			path=MMBaseContext.getConfigPath()+("/applications/")+path;
 			XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
+			System.out.println("AAA2");
 			
 			String exportsource=nodereader.getExportSource();
 			int timestamp=nodereader.getTimeStamp();
@@ -189,6 +232,7 @@ public class MMExamples extends ProcessorModule {
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
 						System.out.println("node allready installed : "+exportnumber);
 					} else {
+						System.out.println("AAA3="+newnode);
 						newnode.setValue("number",-1);
 						
 						// find snumber
