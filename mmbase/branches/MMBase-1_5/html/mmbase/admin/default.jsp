@@ -3,6 +3,7 @@
 <head>
    <title>MMBase Administration</title>
    <link rel="stylesheet" href="css/mmbase.css" type="text/css">
+    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </head>
 <%
     String menu=request.getParameter("menu");
@@ -21,7 +22,7 @@
    		<% if (subcategory==null) { %>
 	  	  <frame src="<%=category%>/main.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else if (category.equals("demos")) { %>
-		  <frame src="/mmexamples/" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+		  <frame src="<mm:url page="/mmexamples/index.html" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
 		  <frame src="<%=category%>/<%=subcategory%>.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } %>		
@@ -54,7 +55,7 @@
   <th class="header">Demos</td>
 </tr>
 <tr>
-  <td class="data"><a href="/mmexamples/">Demos</a></td>
+  <td class="data"><a href="<mm:url page="/mmexamples/index.html" />">Demos</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
