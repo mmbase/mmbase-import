@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.1 2003-08-21 09:59:29 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.2 2003-08-21 12:52:54 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -64,11 +64,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
       "sum,system_user,table,temporary,then,time,timestamp,timezone_hour,timezone_minute,to,trailing,transaction,translate,translation,"+
       "trim,true,union,unique,unknown,update,upper,usage,user,using,value,values,varchar,varying,view,when,whenever,where,with,work,"+
       "write,year,zone";
-    
+
     // Default query handler class.
     private final static Class DEFAULT_QUERY_HANDLER_CLASS =
         org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
-    
+
     // Default storage manager class
     private final static Class DEFAULT_STORAGE_MANAGER_CLASS =
         org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager.class;
@@ -90,12 +90,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * Whether transactions and rollback are supported by this database
      */
     protected boolean supportsTransactions = false;
-    
+
     public double getVersion() {
         return 0.1;
     }
 
-	public boolean supportsTransactions() {
+    public boolean supportsTransactions() {
         return supportsTransactions;
     }
 
@@ -126,7 +126,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // store the datasource as an attribute
         setAttribute(Attributes.DATA_SOURCE, dataSource);
 
-        // test the datasource and retrieves options, 
+        // test the datasource and retrieves options,
         // which are stored as options in the factory's attribute
         // this allows for easy retrieval of database options
         try {
@@ -134,6 +134,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             DatabaseMetaData metaData = con.getMetaData();
             // set transaction options
             supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
+            setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
             setOption(Attributes.SUPPORTS_DATA_MANIPULATION_TRANSACTIONS_ONLY, metaData.supportsDataManipulationTransactionsOnly());
             // determine transactionlevels
             if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
@@ -144,7 +145,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 transactionIsolation = Connection.TRANSACTION_READ_UNCOMMITTED;
             } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
                 transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
-            }                 
+            }
             setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
             // alter table support options
             setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_ADD_COLUMN,metaData.supportsAlterTableWithAddColumn());
@@ -172,15 +173,18 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         } catch (SQLException se) {
             throw new StorageInaccessibleException(se);
         }
-        
+
         // default storagemanager class
         queryHandlerClass = DEFAULT_STORAGE_MANAGER_CLASS;
 
         // default searchquery handler class
         queryHandlerClass = DEFAULT_QUERY_HANDLER_CLASS;
-        
+
         // load configuration data.
         super.load();
+
+        // determine transaction support again (may be manually switched off)
+        supportsTransactions = hasOption(Attributes.SUPPORTS_TRANSACTIONS);
     }
 
     /**
@@ -221,7 +225,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     throw new StorageInaccessibleException(sqle);
                 } finally {
                     // close connection
-                    if (con != null) { 
+                    if (con != null) {
                         try { con.close(); } catch (SQLException sqle) {}
                     }
                 }
@@ -234,7 +238,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         }
         return reader;
     }
-        
+
 }
 
 

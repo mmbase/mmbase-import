@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.1 2003-08-21 09:59:29 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.2 2003-08-21 12:52:54 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -71,7 +71,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Pool of changed nodes in a transaction
      */
     protected Map changes;
-    
+
     /**
      * Constructor
      */
@@ -80,14 +80,14 @@ public class DatabaseStorageManager implements StorageManager {
 
     // for debug purposes
     protected final void debug(String msg) {
-        if (log.isDebugEnabled()) log.debug(msg);            
+        if (log.isDebugEnabled()) log.debug(msg);
     }
-    
+
     // javadoc is inherited
     public double getVersion() {
         return 1.0;
     }
-    
+
     // javadoc is inherited
     public void init(StorageManagerFactory factory) throws StorageException {
         this.factory = factory;
@@ -214,7 +214,7 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     //  create key using number table
-    //  maybe we should use schemes ??? 
+    //  maybe we should use schemes ???
     //
     //  UPDATE_SEQUENCE  =  UPDATE {0}_{1} SET {1} = {1} +1
     //  GET_SEQUENCE == SELECT {1} FROM {0}_{1}
@@ -224,11 +224,11 @@ public class DatabaseStorageManager implements StorageManager {
             String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number") });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);            
+            debug("query:"+query);
             s.executeUpdate(query);
             scheme = new Scheme(factory, "SELECT MAX({2}) FROM {0}_{1}");
             query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number") });
-            debug("query:"+query);            
+            debug("query:"+query);
             ResultSet result = s.executeQuery(query);
             if (result.next()) {
                 return result.getInt(1);
@@ -421,6 +421,7 @@ public class DatabaseStorageManager implements StorageManager {
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
         create(node,builder);
+        commitChange(node,"n");
         return nodeNumber;
     }
 
@@ -473,7 +474,7 @@ public class DatabaseStorageManager implements StorageManager {
                     FieldDefs field = (FieldDefs) fields.get(fieldNumber);
                     setValue(ps, fieldNumber+1, node, field);
                 }
-                debug("query:"+query);            
+                debug("query:"+query);
                 ps.executeUpdate();
             } catch (SQLException se) {
                 throw new StorageException(se);
@@ -481,7 +482,6 @@ public class DatabaseStorageManager implements StorageManager {
                 releaseActiveConnection();
             }
         }
-        commitChange(node,"n");
     }
 
     // javadoc is inherited
@@ -491,6 +491,7 @@ public class DatabaseStorageManager implements StorageManager {
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
         change(node,builder);
+        commitChange(node,"c");
     }
 
     /**
@@ -545,7 +546,7 @@ public class DatabaseStorageManager implements StorageManager {
                     FieldDefs field = (FieldDefs) fields.get(fieldNumber);
                     setValue(ps, fieldNumber+1, node, field);
                 }
-                debug("query:"+query);            
+                debug("query:"+query);
                 ps.executeUpdate();
             } catch (SQLException se) {
                 throw new StorageException(se);
@@ -553,7 +554,6 @@ public class DatabaseStorageManager implements StorageManager {
                 releaseActiveConnection();
             }
         }
-        commitChange(node,"c");
     }
 
     /**
@@ -732,6 +732,7 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public void delete(MMObjectNode node) throws StorageException {
         delete(node,node.getBuilder());
+        commitChange(node,"d");
     }
 
     /**
@@ -752,14 +753,13 @@ public class DatabaseStorageManager implements StorageManager {
             String query = scheme.format(new Object[] { this, builder, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);            
+            debug("query:"+query);
             s.executeUpdate(query);
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
             releaseActiveConnection();
         }
-        commitChange(node,"d");
     }
 
     // javadoc is inherited
@@ -873,10 +873,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    
+
     // temporary 'object' builder
     private MMObjectBuilder rootBuilder;
-    
+
     // instantiate a 'object' builder
     // we only really need to know the field definitions and the
     // object table name
@@ -911,7 +911,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
         return rootBuilder;
     }
-    
+
     /**
      * Returns the parent builder of the specified builder.
      * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder
@@ -948,8 +948,8 @@ public class DatabaseStorageManager implements StorageManager {
         List compositeIndices = new ArrayList();
         // obtain the parentBuilder
         MMObjectBuilder parentBuilder = getParentBuilder(builder);
-        // XXX: should be:  
-        // MMObjectBuilder parentBuilder = builder.getParentBuilder(); 
+        // XXX: should be:
+        // MMObjectBuilder parentBuilder = builder.getParentBuilder();
 
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
@@ -975,11 +975,11 @@ public class DatabaseStorageManager implements StorageManager {
                     // test on other indices
                     String indexDef = getIndexDefinition(field);
                     if (indexDef != null) {
-//                        if (createIndices.length() > 0) createIndices.append(", "); 
+//                        if (createIndices.length() > 0) createIndices.append(", ");
                         createIndices.append(", ");
                         createIndices.append(indexDef);
                         if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
-                        createFieldsAndIndices.append(fieldDef+" "+indexDef);
+                        createFieldsAndIndices.append(fieldDef+", "+indexDef);
                     } else {
                         if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
                         createFieldsAndIndices.append(fieldDef);
@@ -1015,7 +1015,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (rowtypeScheme!=null) {
                 String query = rowtypeScheme.format(new Object[] { this, builder, createFields.toString(), parentBuilder });
                 Statement s = activeConnection.createStatement();
-                debug("query:"+query);           
+                debug("query:"+query);
                 s.executeUpdate(query);
             }
             // create the table
@@ -1030,7 +1030,7 @@ public class DatabaseStorageManager implements StorageManager {
                                                         createCompositeIndices.toString(),
                                                         parentBuilder });
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);            
+            debug("query:"+query);
             s.executeUpdate(query);
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1056,7 +1056,7 @@ public class DatabaseStorageManager implements StorageManager {
         mapping.setFixedSize(size);
         // search type mapping
         List typeMappings = factory.getTypeMappings();
-        
+
         debug("Map:"+mapping);
 
         int found = typeMappings.indexOf(mapping);
@@ -1117,10 +1117,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void change(MMObjectBuilder builder) throws StorageException {
-        // test if you can make changes 
+        // test if you can make changes
         // iterate through the fields,
-        // use metadata.getColumns(...)  to select fields  
-        //      (incl. name, datatype, size, null) 
+        // use metadata.getColumns(...)  to select fields
+        //      (incl. name, datatype, size, null)
         // use metadata.getImportedKeys(...) to get foreign keys
         // use metadata.getIndexInfo(...) to get composite and other indexes
         // determine changes and run them
@@ -1138,13 +1138,13 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
             String query = scheme.format(new Object[] { this, builder });
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);            
+            debug("query:"+query);
             s.executeUpdate(query);
             scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
             if (scheme!=null) {
                 query = scheme.format(new Object[] { this, builder });
                 s = activeConnection.createStatement();
-            debug("query:"+query);            
+            debug("query:"+query);
                 s.executeUpdate(query);
             }
         } catch (Exception e) {
@@ -1157,7 +1157,7 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public void create() throws StorageException {
         MMBase mmbase = factory.getMMBase();
-        create(getRootBuilder()); 
+        create(getRootBuilder());
         createSequence();
     }
 
@@ -1172,10 +1172,10 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     //  create sequence using a number table
-    //  maybe we should use schemes ??? 
+    //  maybe we should use schemes ???
     //
     //  CREATE_SEQUENCE = CREATE TABLE {0}_{1} {2}
-    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_{1} ({2}) VALUES ({3,number}) 
+    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_{1} ({2}) VALUES ({3,number})
     private void createSequenceFromNumberTable() throws StorageException {
         try {
             getActiveConnection();
@@ -1194,12 +1194,12 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_{1} ({2}, PRIMARY KEY(number))");
             String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), fieldDef });
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);            
+            debug("query:"+query);
             s.executeUpdate(query);
 
             scheme = new Scheme(factory, "INSERT INTO {0}_{1} ({2}) VALUES ({3,number})");
             query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number"), new Integer(1) });
-            debug("query:"+query);            
+            debug("query:"+query);
             s.executeUpdate(query);
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1263,7 +1263,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void create(FieldDefs field) throws StorageException {
-        // test if you can make changes 
+        // test if you can make changes
         // test if this is a field to add (persistent/nobinary)
         // if the field is a key, remove the composite key : Scheme: DROP_INDEX
         // get the field,
@@ -1275,7 +1275,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void change(FieldDefs field) throws StorageException {
-        // test if you can make changes 
+        // test if you can make changes
         // test if this is a field to remove (persistent/nobinary)
         // if the field is a key, remove the composite key Scheme: DROP_INDEX
         // get the field,
@@ -1287,7 +1287,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void delete(FieldDefs field) throws StorageException {
-        // test if you can make changes 
+        // test if you can make changes
         // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
         // get the field
         // get the field index
