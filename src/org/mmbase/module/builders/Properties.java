@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: Properties.java,v 1.2 2000-02-24 14:14:49 wwwtech Exp $
+	$Id: Properties.java,v 1.3 2000-03-24 14:34:00 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/02/24 14:14:49  wwwtech
+	Rico: debug changed
+	
 */
 package org.mmbase.module.builders;
 
@@ -24,13 +27,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Id: Properties.java,v 1.2 2000-02-24 14:14:49 wwwtech Exp $
+ * @version $Id: Properties.java,v 1.3 2000-03-24 14:34:00 wwwtech Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
-	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("name");

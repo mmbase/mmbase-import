@@ -16,6 +16,7 @@ import java.io.*;
 
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.vwms.*;
 import org.mmbase.util.*;
 
 /**
@@ -204,6 +205,7 @@ public class RawAudiosProbe implements Runnable {
 
 	private boolean encodeMP3(MMObjectNode node) {
 		boolean needbreak=false;
+		/*
 		int id;
 
 		try {
@@ -226,6 +228,7 @@ public class RawAudiosProbe implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 		return(needbreak);
 	}
 
@@ -233,7 +236,7 @@ public class RawAudiosProbe implements Runnable {
 		boolean needbreak=false;
 		boolean encoded=false;
 		int id,rt;
-
+		/*
 		try {
 			// we want to create a RA file
 			raencoderInterface ra=parent.mmb.raenc.getFree();
@@ -278,6 +281,7 @@ public class RawAudiosProbe implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 		return(needbreak);
 	}
 

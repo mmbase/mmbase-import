@@ -1,5 +1,5 @@
 /*
-$Id: EncodeHandler.java,v 1.4 2000-03-21 15:36:57 wwwtech Exp $
+$Id: EncodeHandler.java,v 1.5 2000-03-24 14:34:04 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/21 15:36:57  wwwtech
+- (marcel) Removed debug (globally declared in MMOBjectNode)
+
 */
 package org.mmbase.module.builders.vwms;
 
@@ -21,9 +24,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 
+import nl.vpro.mmbase.util.media.audio.*;
+import nl.vpro.mmbase.util.media.audio.cdtracks.*;
+import nl.vpro.mmbase.util.media.audio.audioparts.*;
+
 /**
  * @author Rico Jansen
- * @version $Revision: 1.4 $ $Date: 2000-03-21 15:36:57 $
+ * @version $Revision: 1.5 $ $Date: 2000-03-24 14:34:04 $
  */
 public class EncodeHandler implements Runnable {
 
@@ -33,10 +40,11 @@ public class EncodeHandler implements Runnable {
 
 	Thread kicker = null;
 	EncodeCop parent;
-	MMObjectNode node;
+	public  MMObjectNode node;
 	String task;
 
 	public EncodeHandler(EncodeCop parent,String task,MMObjectNode node) {
+		if( debug ) debug( "EncodeHandler("+parent+","+task+","+node.getIntValue("number")+")");
 		this.parent=parent;
 		this.node=node;
 		this.task=task;
@@ -44,6 +52,7 @@ public class EncodeHandler implements Runnable {
 	}
 
 	public void init() {
+		if( debug ) debug("init()");
 		this.start();	
 	}
 
@@ -79,26 +88,25 @@ public class EncodeHandler implements Runnable {
 	}
 
 	public void doNewCdTrack() {
+		int id=node.getIntValue("number");	
+		if( debug ) debug("doNewCdtrack(): started for node("+id+")");
+
 		// called when a new cdtrack is made
 		// its task is to create a wav file (rawaudio)
 		// by recording it using a cdplayer allready 'claimed'
 		// by the user.
 
-		debug("EncodeHandler newcdtrack started");
-
-		// get the cdtrack id that will be used in the rawaudio node
-		int id=node.getIntValue("number");	
-
 		// get the owner of the cdtrack to find the cdplayer he has claimed !
 		String owner=node.getStringValue("owner");	
-		debug("EncodeCop -> hunt cdplayer claimed by : "+owner);
+		debug("doNewCdtrack(): control cdplayer claimed by owner("+owner+")");
+
 		cdplayers bul=(cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");	
 		MMObjectNode playernode=bul.getClaimedBy(owner);
 
 		// if we have found the player record it
 		if (playernode!=null) {
 			// create a new RawAudio to signal we have a wav
-			MMObjectNode wavnode=addRawAudio(id,2,3,441000,2); 
+			MMObjectNode wavnode=addRawAudio(id,RawAudioDef.STATUS_ONDERWEG,RawAudioDef.FORMAT_WAV,RawAudioDef.WAV_MAXSPEED,2); 
 
 			// setup the player & start the player  
 			debug("encodeHandler -> "+playernode);
@@ -120,11 +128,12 @@ public class EncodeHandler implements Runnable {
 			// asume all went oke for now
 
 			// put wav node in done state
-			wavnode.setValue("status",3);
+			wavnode.setValue("status",RawAudioDef.STATUS_GEDAAN);
 			wavnode.commit();
 		
 			// create the needed g2 node
-			addRawAudio(id,1,6,96000,2);   
+			addRawAudio(id,RawAudioDef.STATUS_VERZOEK,RawAudioDef.FORMAT_G2,RawAudioDef.G2_MAXSPEED,2);   
+			parent.removeEncodeHandler( this );
 
 		} else {
 			debug("EncodeCop -> problem : can't find cdplayer claimed by : "+owner);
@@ -187,7 +196,7 @@ public class EncodeHandler implements Runnable {
 		if( g2node != null )
 		{
 			if (g2node.getStringValue("state").equals("waiting")) {
-				node.setValue("status",2);
+				node.setValue("status",RawAudioDef.STATUS_ONDERWEG);
 				node.commit();
 	
 				int id=node.getIntValue("id");	
@@ -220,9 +229,11 @@ public class EncodeHandler implements Runnable {
 	
 				// asume all went oke for now
 				node.setValue("url","F=/"+id+"/surestream.rm H1=station.vpro.nl");
-				node.setValue("status",3);
+				node.setValue("status",RawAudioDef.STATUS_GEDAAN);
 				node.setValue("cpu","twohigh");
 				node.commit();
+		
+				parent.removeEncodeHandler( this );
 			}
 			debug("doG2Encode(): EncodeHandler done ");
 		}

@@ -214,17 +214,15 @@ public class VideoParts extends MMObjectBuilder {
 								mulfac 	 = calcList[ tttt ];
 								tot 	 = mulfac * tot;	
 								tttt--;
-								//debug("calctime("+time+"): ["+mulfac+"*"+ttt+"] = "+tot);
 							}
 							r += tot;
-							//debug("calctime("+time+"): adding("+tot+"), making total of("+r+")");
 							i++;
 						}
 					}
 				}
 				catch( NumberFormatException e )
 				{
-					debug("calcTime("+time+"): ERROR: Cannot convert pos("+(total-i)+") to a number("+tt+")!" + e.toString());
+					System.out.println("calcTime("+time+"): ERROR: Cannot convert pos("+(total-i)+") to a number("+tt+")!" + e.toString());
 				}
 			}
 
@@ -249,11 +247,10 @@ public class VideoParts extends MMObjectBuilder {
 					int t2 = Integer.parseInt( s2 );
 		
 					r += (t1*100) + t2; 
-					//debug("calctime("+time+"): adding("+(t1*100 + t2)+"), making total("+r+")");	
 				}
 				catch( NumberFormatException e )
 				{
-					debug("calctime("+time+"): ERROR: Cannot convert s1("+s1+") or s2("+s2+")!");
+					System.out.println("calctime("+time+"): ERROR: Cannot convert s1("+s1+") or s2("+s2+")!");
 				} 
 			}
 
@@ -269,11 +266,10 @@ public class VideoParts extends MMObjectBuilder {
 			}
 			catch( NumberFormatException e )
 			{
-				debug("calctime("+time+"): ERROR: Cannot convert time("+time+")!");
+				System.out.println("calctime("+time+"): ERROR: Cannot convert time("+time+")!");
 			}
 		}
 
-		//debug("calctime("+time+"): result("+result+")");
 		return result;
 	}
 
@@ -564,11 +560,6 @@ public class VideoParts extends MMObjectBuilder {
 	public String getVideopartUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
 	{
         	return VideoUtils.getVideoUrl( mmbase, sp, number, speed, channels);
-	}
-
-	public static void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
 	}
 
 	public static void main( String args[] )

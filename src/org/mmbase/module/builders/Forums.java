@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: Forums.java,v 1.2 2000-02-24 13:44:23 wwwtech Exp $
+	$Id: Forums.java,v 1.3 2000-03-24 14:33:58 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/02/24 13:44:23  wwwtech
+	Rico: Total rebuild
+	
 */
 package org.mmbase.module.builders;
 
@@ -25,13 +28,12 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: Forums.java,v 1.2 2000-02-24 13:44:23 wwwtech Exp $
+ * @version $Id: Forums.java,v 1.3 2000-03-24 14:33:58 wwwtech Exp $
  */
 public class Forums extends MMObjectBuilder {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	/*
 	public Forums(MMBase m) {

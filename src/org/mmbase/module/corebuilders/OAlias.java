@@ -33,7 +33,7 @@ public class OAlias extends MMObjectBuilder {
 		this.mmb=m;
 		this.tableName="oalias";
 		this.description="Object Aliases name substitution for objects";
-		this.dutchSName="Object Alias";
+		this.dutchSName="ObjectAlias";
 		init();
 		m.mmobjs.put(tableName,this);
 	}

@@ -53,25 +53,6 @@ public class RAStatistics extends MMObjectBuilder {
 	}
 
 
-	/**
-	* insert a new object, normally not used (only subtables are used)
-	*/
-	public int insert(String owner,MMObjectNode node) {
-		String ip=node.getStringValue("ip");
-		int startTime=node.getIntValue("startTime");
-		String raName=node.getStringValue("raName");
-		int bytesSent=node.getIntValue("bytesSent");
-		int timeSent=node.getIntValue("timeSent");
-		int id=super.insert(owner,"'"
-						+ip+"','"
-						+startTime+"','"
-						+raName+"','"
-						+bytesSent+"','"
-						+timeSent+"'");
-		// get it back for its id
-		return(id);	
-	}
-
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("title");
 		if (str.length()>15) {

@@ -22,18 +22,6 @@ import org.mmbase.util.*;
  */
 public class ImageAliases extends MMObjectBuilder {
 
-/*
-"(name varchar(32) not null, commands char(1024) not null)"
-"(unique (name), primary key(number))"
-*/
-
-	public int insert(String owner,MMObjectNode node) {
-		String name=node.getStringValue("name");
-		String commands=node.getStringValue("commands");
-		return(super.insert(owner,"'"+name+"','"+commands+"'"));
-	}
-
-
 	public String getDefaultUrl(int src) {
 		MMObjectNode node=getNode(src);
 		String url=node.getStringValue("url");

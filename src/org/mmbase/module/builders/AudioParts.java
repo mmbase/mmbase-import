@@ -1,5 +1,5 @@
 /*
-$Id: AudioParts.java,v 1.3 2000-02-28 17:13:48 wwwtech Exp $
+$Id: AudioParts.java,v 1.4 2000-03-24 14:33:56 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/02/28 17:13:48  wwwtech
+- (marcel) Added getAudiopartUrl()
+
 Revision 1.2  2000/02/24 13:40:03  wwwtech
 Davzev activated replace() method and GETURL and fixed GETURL related methods.
 
@@ -197,16 +200,14 @@ public class AudioParts extends MMObjectBuilder {
 								mulfac 	 = calcList[ tttt ];
 								tot 	 = mulfac * tot;	
 								tttt--;
-								//debug("calctime("+time+"): ["+mulfac+"*"+ttt+"] = "+tot);
 							}
 							r += tot;
-							//debug("calctime("+time+"): adding("+tot+"), making total of("+r+")");
 							i++;
 						}
 					}
 				}
 				catch( NumberFormatException e ) {
-					debug("calcTime("+time+"): ERROR: Cannot convert pos("+(total-i)+") to a number("+tt+")!" + e.toString());
+					System.out.println("calcTime("+time+"): ERROR: Cannot convert pos("+(total-i)+") to a number("+tt+")!" + e.toString());
 				}
 			}
 
@@ -228,10 +229,9 @@ public class AudioParts extends MMObjectBuilder {
 					int t2 = Integer.parseInt( s2 );
 		
 					r += (t1*100) + t2; 
-					//debug("calctime("+time+"): adding("+(t1*100 + t2)+"), making total("+r+")");	
 
 				} catch( NumberFormatException e ) {
-					debug("calctime("+time+"): ERROR: Cannot convert s1("+s1+") or s2("+s2+")!");
+					System.out.println("calctime("+time+"): ERROR: Cannot convert s1("+s1+") or s2("+s2+")!");
 				} 
 			}
 
@@ -243,11 +243,10 @@ public class AudioParts extends MMObjectBuilder {
 				r = Integer.parseInt( time );
 				result = r * 100;
 			} catch( NumberFormatException e ) {
-				debug("calctime("+time+"): ERROR: Cannot convert time("+time+")!");
+				System.out.println("calctime("+time+"): ERROR: Cannot convert time("+time+")!");
 			}
 		}
 
-		//debug("calctime("+time+"): result("+result+")");
 		return result;
 	}
 
@@ -802,10 +801,6 @@ public class AudioParts extends MMObjectBuilder {
         	return AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
 	}
 
-
-	public static void debug( String msg ) {
-		System.out.println( classname +":"+ msg );
-	}
 
 	public static void main( String args[] ) {
 		String time = "05:04:03:02.01";

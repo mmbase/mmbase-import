@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: Images.java,v 1.5 2000-03-14 12:50:16 wwwtech Exp $
+	$Id: Images.java,v 1.6 2000-03-24 14:33:58 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/03/14 12:50:16  wwwtech
+	Rico: changed gamma params from / seperator to , due to image cache problems
+	
 	Revision 1.4  2000/03/09 10:02:01  wwwtech
 	Rico: added extra debug in case of failure
 	
@@ -38,13 +41,12 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.5 2000-03-14 12:50:16 wwwtech Exp $
+ * @version $Id: Images.java,v 1.6 2000-03-24 14:33:58 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
-	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
 
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("number");
