@@ -25,14 +25,14 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.2 2002-03-25 15:56:19 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.3 2002-03-25 16:03:57 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(AbstractImages.class.getName());
 
 
-    public final static String IMGDB = "imgdb?";
+    public final static String IMGDB = "img.db?";
     /**
      * Returns paths to the image serlvet.
      */
