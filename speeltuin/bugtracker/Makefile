@@ -1,6 +1,6 @@
 all:
 	javac -d classes src/nanoxml/*.java
-	javac -d classes src/org/mmbase/applications/bugtracker/*.java
+	javac -d classes -classpath lib/rmmci.jar src/org/mmbase/applications/bugtracker/*.java
 	javac -d classes -classpath classes src/org/mmbase/applications/config/*.java
 	javac -d classes -classpath .:$(JAVA_HOME)/lib/tools.jar:classes src/org/mmbase/applications/mmbasedoclet/*.java
 app:
@@ -13,7 +13,10 @@ app:
 javadoc:
 	javadoc -d docs \
 		-sourcepath src \
-		nanoxml
+		nanoxml \
+		org.mmbase.applications.config \
+		org.mmbase.applications.mmbasedoclet \
+		org.mmbase.applications.bugtracker
 
 clean:
 	find . -name *~ -exec rm \{\} \;
