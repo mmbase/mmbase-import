@@ -112,8 +112,8 @@ public class InsRel extends MMObjectBuilder {
 	public int insert(String owner,int snumber,int dnumber, int rnumber) {
 		int result = -1;
 		if( owner != null ) { 
-			if( snumber > 0 ) {
-				if( dnumber > 0 ) { 
+			if( snumber >= 0 ) {
+				if( dnumber >= 0 ) { 
 					if( rnumber > 0 ) { 
 						MMObjectNode node=getNewNode(owner);
 						if( node != null ) {
@@ -320,7 +320,7 @@ public class InsRel extends MMObjectBuilder {
 			e.printStackTrace();
 			return(null);
 		}
-		} 
+		} else if (debug) debug("Retrieved relations for node "+src+" from relation cache");
 		// oke got the Vector now lets get the correct otypes
 		Vector results=new Vector();
 		for (Enumeration e=list.elements();e.hasMoreElements();) {
