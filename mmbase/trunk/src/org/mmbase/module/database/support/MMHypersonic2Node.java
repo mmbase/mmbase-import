@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHypersonic2Node.java,v 1.3 2000-06-25 13:12:09 wwwtech Exp $
+$Id: MMHypersonic2Node.java,v 1.4 2000-07-15 15:33:38 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/06/25 13:12:09  wwwtech
+Daniel.. changed/added method for getConnection
+
 Revision 1.17  2000/06/25 00:39:14  wwwtech
 Daniel... removed some debug
 
@@ -103,45 +106,14 @@ import org.xml.sax.*;
 * needed for mmbase for each database.
 *
 * @author Daniel Ockeloen
-* @$Revision: 1.3 $ $Date: 2000-06-25 13:12:09 $
+* @$Revision: 1.4 $ $Date: 2000-07-15 15:33:38 $
 */
 public class MMHypersonic2Node extends MMSQL92Node {
 
 
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
-		try {
-
+	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
 		fieldname=fieldname.toLowerCase();
-
-		// is this fieldname disallowed ? ifso map it back
-		if (allowed2disallowed.containsKey(fieldname)) {
-			fieldname=(String)allowed2disallowed.get(fieldname);
-		}
-		int type=((Integer)typesmap.get(fieldtype)).intValue();
-		switch (type) {
-			case TYPE_STRING:
-				String tmp=rs.getString(i);
-				if (tmp==null) { 
-					node.setValue(prefix+fieldname,"");
-				} else {
-					node.setValue(prefix+fieldname,tmp);
-				}
-				return(node);
-			case TYPE_INTEGER:
-				node.setValue(prefix+fieldname,rs.getInt(i));
-				return(node);
-			case TYPE_BLOB:
-				node.setValue(prefix+fieldname,"$SHORTED");
-				return(node);
-			case TYPE_TEXT:
-				node.setValue(prefix+fieldname,"$SHORTED");
-				return(node);
-			}
-		} catch(SQLException e) {
-			System.out.println("MMSQL92Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
-			e.printStackTrace();	
-		}
-		return(node);
+		return(super.decodeDBnodeField(node,fieldname,rs,i,prefix));
 	}
 
 
