@@ -199,65 +199,72 @@ public class HttpProvider extends BasicProvider implements ProviderInterface, Ru
             BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
             XMLBasicReader reader = new XMLBasicReader(new InputSource(input), HttpProvider.class);
             if (reader != null) {
-                for (Enumeration ns = reader.getChildElements("sharedpackages", "package"); ns.hasMoreElements(); ) {
-                    Element e = (Element) ns.nextElement();
+                try {
+                    for (Enumeration ns = reader.getChildElements("sharedpackages", "package"); ns.hasMoreElements(); ) {
+                        Element e = (Element) ns.nextElement();
 
-                    NamedNodeMap nm = e.getAttributes();
-                    if (nm != null) {
-                        String name = null;
-                        String type = null;
-                        String version = null;
-                        String date = null;
+                        NamedNodeMap nm = e.getAttributes();
+                        if (nm != null) {
+                            String name = null;
+                            String type = null;
+                            String version = null;
+                            String date = null;
 
-                        // decode name
-                        org.w3c.dom.Node n2 = nm.getNamedItem("name");
-                        if (n2 != null) {
-                            name = n2.getNodeValue();
-                        }
+                            // decode name
+                            org.w3c.dom.Node n2 = nm.getNamedItem("name");
+                            if (n2 != null) {
+                                name = n2.getNodeValue();
+                            }
 
-                        // decode the type
-                        n2 = nm.getNamedItem("type");
-                        if (n2 != null) {
-                            type = n2.getNodeValue();
-                        }
+                            // decode the type
+                            n2 = nm.getNamedItem("type");
+                            if (n2 != null) {
+                                type = n2.getNodeValue();
+                            }
 
-                        // decode the maintainer
-                        n2 = nm.getNamedItem("maintainer");
-                        if (n2 != null) {
-                            maintainer = n2.getNodeValue();
-                        }
+                            // decode the maintainer
+                            n2 = nm.getNamedItem("maintainer");
+                            if (n2 != null) {
+                                maintainer = n2.getNodeValue();
+                            }
 
-                        // decode the version
-                        n2 = nm.getNamedItem("version");
-                        if (n2 != null) {
-                            version = n2.getNodeValue();
-                        }
+                            // decode the version
+                            n2 = nm.getNamedItem("version");
+                            if (n2 != null) {
+                                version = n2.getNodeValue();
+                            }
 
-                        // decode the creation date
-                        n2 = nm.getNamedItem("creation-date");
-                        if (n2 != null) {
-                            date = n2.getNodeValue();
-                        }
+                            // decode the creation date
+                            n2 = nm.getNamedItem("creation-date");
+                            if (n2 != null) {
+                                date = n2.getNodeValue();
+                            }
 
-                        Element e2 = reader.getElementByPath(e, "package.path");
-                        org.w3c.dom.Node pathnode = e2.getFirstChild();
-                        String pkgpath = pathnode.getNodeValue();
-                        if (type.indexOf("bundle/") == 0) {
-                            BundleInterface bun = BundleManager.foundBundle(this, e, name, type, maintainer, version, date, pkgpath);
-                            // check for included packages in the bundle
-                            findIncludedPackages(bun, e, pkgpath, date);
-                        } else {
-                            PackageManager.foundPackage(this, e, name, type, maintainer, version, date, pkgpath);
+                            Element e2 = reader.getElementByPath(e, "package.path");
+                            org.w3c.dom.Node pathnode = e2.getFirstChild();
+                            String pkgpath = pathnode.getNodeValue();
+                            if (type.indexOf("bundle/") == 0) {
+                                BundleInterface bun = BundleManager.foundBundle(this, e, name, type, maintainer, version, date, pkgpath);
+                                // check for included packages in the bundle
+                                findIncludedPackages(bun, e, pkgpath, date);
+                            } else {
+                                PackageManager.foundPackage(this, e, name, type, maintainer, version, date, pkgpath);
+                            }
                         }
                     }
+                } catch (Exception f) {
+                    log.error("something went wrong while decoding sharedpackagefile : " + url);
+                    f.printStackTrace();
                 }
+            } else {
+                log.error("can't get a valid reader for sharedpackagefile : " + url);
             }
             setState("up");
         } catch (Exception e) {
             // ignoring errors since well that servers are down is
             // not a error in this concept.
-            //log.error("can't get sharedpackagefile : "+url);
-            //e.printStackTrace();
+            log.error("can't get sharedpackagefile : " + url);
+            e.printStackTrace();
             setState("down");
         }
     }
