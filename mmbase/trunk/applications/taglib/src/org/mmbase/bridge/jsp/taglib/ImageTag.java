@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class ImageTag extends FieldTag {
         } else {
             url = servletPath + fileName + "?" + number;
         }
-        helper.setValue(url);
+        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(url));
         helper.setPageContext(pageContext);
         helper.setJspvar();
         if (getId() != null) {
