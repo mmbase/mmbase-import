@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.15 2004-02-13 13:36:43 pierre Exp $
+ * @version $Id: LinkChecker.java,v 1.16 2004-02-13 13:38:34 pierre Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -166,7 +166,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
      * @return <code>false</code> if the url does not exist, <code>true</code> if the url exists
      */
     protected boolean checkUrl(String url) throws MalformedURLException, IOException {
-        if (url.indexOf("http") != -1 || url.indexOf("ftp") != -1) {
+        if (url.indexOf("http") == 0 || url.indexOf("ftp") == 0) {
             URL urlToCheck = new URL(url);
             URLConnection uc = urlToCheck.openConnection();
             String header = uc.getHeaderField(0);
