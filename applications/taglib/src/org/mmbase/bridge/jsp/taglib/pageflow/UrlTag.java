@@ -92,14 +92,19 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
-    protected String getUrl(boolean writeamp) throws JspTagException {
+    /**
+     * Returns url with the extra parameters (of referids and sub-param-tags).
+     */
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         StringBuffer show = new StringBuffer(page);
         String amp = (writeamp ? "&amp;" : "&");
 
         if (show.charAt(0) == '/') { // absolute on servercontex
             log.debug("'absolute' url");
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            show.insert(0,  req.getContextPath());
+            //String thisDir = new java.io.File(req.getServletPath()).getParent().toString();
+            //show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
+            show.insert(0,  req.getContextPath());            
         }
 
         String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
@@ -127,13 +132,20 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         }
 
         {
-            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
-            return response.encodeURL(show.toString());
+            if (encode) {
+                javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+                return response.encodeURL(show.toString());
+            } else {
+                return show.toString();
+            }
         }
 
     }
     protected String getUrl() throws JspTagException {
         return getUrl(escapeAmps);
+    }
+    protected String getUrl(boolean e) throws JspTagException {
+        return getUrl(e, true);
     }
 
     protected void doAfterBodySetValue() throws JspTagException {
