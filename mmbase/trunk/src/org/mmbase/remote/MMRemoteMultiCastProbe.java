@@ -36,7 +36,7 @@ public class MMRemoteMultiCastProbe implements Runnable {
 	String ctype;
 	boolean remote;
 
-	public MMRemoteMultiCastProbe(MMRemoteMultiCast parent,RemoteBuilder serv,String id,String tb, String ctype, boolean remote) {
+	public MMRemoteMultiCastProbe(MMRemoteMultiCast parent,RemoteBuilder serv,String id,String tb, String ctype, boolean remote) throws Exception {
 		this.parent=parent;
 		this.serv=serv;
 		this.id=id;
