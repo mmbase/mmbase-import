@@ -17,7 +17,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.1 2004-10-09 10:51:07 nico Exp $
+ * @version $Id: MessageProbe.java,v 1.1.2.1 2004-10-09 10:51:45 nico Exp $
  */
 public class MessageProbe implements Runnable {
 

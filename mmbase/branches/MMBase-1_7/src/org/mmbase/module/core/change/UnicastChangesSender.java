@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  * 
  * @author Nico Klasens
- * @version $Id: UnicastChangesSender.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: UnicastChangesSender.java,v 1.1.2.1 2004-10-09 10:51:43 nico Exp $
  */
 public class UnicastChangesSender implements Runnable {
 

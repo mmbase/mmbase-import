@@ -59,31 +59,11 @@
 	<!-- property name="database">mysql</property -->
 
 	<!--
-	name="multicasthost" mmbase nodes in a cluster use multicast to talk to
-	eachother this defines what 'channel' we are talking to its now set
-	to the default local network so unless you know what you are doing
-	leave it to ALL-SYSTEMS.MCAST.NET.
-
-				When you want to disable the communication between different MMBase-instances,
-				(log message builder xxx not found, can be annoying), leave the value empty:
-	else use a multicat IP address like this
-	<property name="multicasthost">224.0.0.1</property>
+	name="sharedstorage" the MMBaseChangeInterface which communicates with
+	other MMBase instance which use the same storage
 	-->
-	<property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
-
-	<!--
-	name="multicastport" on what port does this multicast talking between nodes
-	take place, This can be set to any port but check if something else on
-	your network is allready using multicast when you have problems.
-	-->
-	<property name="multicastport">16080</property>
-
-	<!--
-	name="multicastttl" sets the Time To Live for a datapackage send by a Multicast.
-        Time to live determines the number of hops a package can make.
-        The default, 1, is generally enough, but higher values may be needed on some networks.
-	-->
-	<property name="multicastttl">1</property>
+	<!-- property name="sharedstorage">org.mmbase.module.core.change.Multicast</property -->
+	<!-- property name="sharedstorage">org.mmbase.module.core.change.Uniicast</property -->
 
 	<!--
 	name="host" the host or ip number of the machine this mmbase node is
