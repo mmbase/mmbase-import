@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.15 2003-08-06 19:39:51 michiel Exp $
+ * @version $Id: Query.java,v 1.16 2003-08-07 14:33:38 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -41,7 +41,6 @@ public interface Query extends SearchQuery, Cloneable {
     Step addStep(NodeManager nodeManager);
     
     
-
     /**
      * Adds new Relation step to the query.  Adds the next step as well, it can be retrieved by
      * calling <code> {@link org.mmbase.storage.search.RelationStep#getNext getNext()} </code> on
@@ -50,7 +49,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      * @throws IllegalStateException when there is no previous step.
      */
-    RelationStep addRelationStep(NodeManager nodeManager, String role, int searchDir);
+    RelationStep addRelationStep(NodeManager nodeManager, String role, String searchDir);
 
     /*
      * If you need to add a 'related' NodeManager without specifying a role/searchDir
@@ -59,11 +58,6 @@ public interface Query extends SearchQuery, Cloneable {
 
     RelationStep addRelationStep(NodeManager otherManager);
 
-    /**
-     * Also explicitely state the direction of the relation. This can be needed if the
-     * RelationManager has two equals sides.
-     */
-    RelationStep addRelationStep(NodeManager otherManager, int searchDir);
 
     /**
      * Adds a field to a step.
