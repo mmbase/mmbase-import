@@ -14,7 +14,7 @@
    <mm:createnode id="newnode" type="mmbaseusers">
       <mm:fieldlist type="edit">
         <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
-      </mm:fieldlist>    
+      </mm:fieldlist>
     </mm:createnode>
    <tr>
      <td>Groups</td>
@@ -43,4 +43,5 @@
    </table>
    </form>
   </mm:cloud>
-  <a href="<mm:url referids="parameters,$parameters" page="." />">Back</a>
+  <a href="<mm:url referids="parameters,$parameters" page="." ><mm:param name="url">index_users.jsp</mm:param></mm:url>">Back</a>
+
