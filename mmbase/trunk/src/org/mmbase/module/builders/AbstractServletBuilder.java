@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.20 2003-12-17 20:59:37 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.21 2004-05-26 09:04:24 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -44,11 +44,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
 
     public final static Parameter[] SERVLETPATH_PARAMETERS = { 
-        new Parameter("session", String.class), // For read-protection
-        new Parameter("field",   String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-        new Parameter("context", String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+        new Parameter("session",  String.class), // For read-protection
+        new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+        new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
         new Parameter("argument", String.class) // Parameter to use for the argument, overrides 'field'
     };
+    public final static Parameter[] FORMAT_PARAMETERS   = {};
+    public final static Parameter[] MIMETYPE_PARAMETERS = {};
+
+
+
 
     /**
      * In this string the path to the servlet is stored.
@@ -180,6 +185,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
         return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(Attachments.class, function);
     }
 
 
