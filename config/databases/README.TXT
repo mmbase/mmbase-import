@@ -1,6 +1,21 @@
-Tags to be used in database descriptions
+================================================================================
 
-$Id: README.TXT,v 1.1 2003-04-18 13:48:36 michiel Exp $
+This directory is _DEPRECATED_ and can be removed if you use the 'new' storage.
+
+You use the new storage if there is something like this in your config/modules/mmbaseroot.xml:
+
+<property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
+
+The equivalent XML's for the 'new' storage are available as resource in mmbase.jar in
+org.mmbase.storage.implementation.database.resources (so can be overriden by copying them under
+WEB-INF/classes)
+
+
+================================================================================
+
+Tags to be used in the database descriptions of this directory (used by 'old' storage of MMBase 1.6)
+
+$Id: README.TXT,v 1.2 2004-02-06 22:11:54 michiel Exp $
 --------------------------------------------------------------------------------
 	 <mmbasedriver>
 				Defines the database driver that handles the abstraction between
