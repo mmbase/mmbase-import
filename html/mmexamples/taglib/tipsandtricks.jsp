@@ -12,6 +12,18 @@
 <h1>Tips and Tricks</h1>
 
 <ul>
+  <li><a name="iterate" /><em>How can divide my list result in columns?</em>
+     <p>
+       You need some simple escaping to jsp and some basic aritmetic
+       for this.
+     </p>
+     <table>
+      <tr valign="top">
+      <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/listcolumns.jsp" /></mm:formatter></pre></td>
+      <td width="50%"><%@include file="codesamples/listcolumns.jsp" %></td>
+      </tr>
+      </table>
+  </li>
   <li><a name="iterate" /><em>How can I iterate?</em>
      <p>
        Of course you can iterate over MMBase lists by use of the
