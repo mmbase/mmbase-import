@@ -11,25 +11,18 @@
 <mm:node referid="channelnode">
  <mm:field id="channel" name="number" write="false" />
 </mm:node>
-<% System.err.println("aaaa"); %>
 <mmcommunity:testchannel channel="$channel" condition="readonly" reverse="true">
 
-<% System.err.println("aaaa1"); %>
 <mmcommunity:post jspvar="msg">
-<% System.err.println("aaaa0"); %>
   <mm:present referid="thread">
-<% System.err.println("aaaa00"); %>
     <mm:setfield name="thread"><mm:write referid="thread" /></mm:setfield>
   </mm:present>
-<% System.err.println("aaaa2"); %>
     <mm:setfield name="channel"><mm:write referid="channel" /></mm:setfield>
     <mm:setfield name="username"><mm:write referid="username" /></mm:setfield>
-<% System.err.println("aaaa3"); %>
     <mm:setfield name="subject"><mm:write referid="subject" /></mm:setfield>
     <mm:setfield name="body"><mm:write referid="body" /></mm:setfield>
 </mmcommunity:post>
 
-<% System.err.println("aaaa"); %>
 <mm:node number="<%=msg%>">
 <h2><mm:field name="html(subject)" /></h2>
      <mmcommunity:getinfo key="name">
