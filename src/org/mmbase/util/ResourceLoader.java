@@ -94,7 +94,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.7 2004-11-26 15:09:48 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.8 2004-11-26 19:51:04 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -296,6 +296,9 @@ public class ResourceLoader extends ClassLoader {
             }
 
             configRoot.roots.add(configRoot.new ClassLoaderURLStreamHandler(CLASSLOADER_ROOT));
+
+            //last fall back: fully qualified class-name
+            configRoot.roots.add(configRoot.new ClassLoaderURLStreamHandler("/"));
 
         }
         return configRoot;
@@ -1120,7 +1123,7 @@ public class ResourceLoader extends ClassLoader {
         }
         public void connect() throws IOException {
             if (ResourceLoader.resourceBuilder == null) {
-                throw new IOException("No such builder");
+                throw new IOException("No resources builder available.");
             }
             connected = true;
         }
@@ -1172,7 +1175,7 @@ public class ResourceLoader extends ClassLoader {
             if (node != null) {
                 return new ByteArrayInputStream(node.getByteValue(Resources.HANDLE_FIELD));
             } else {
-               throw new IOException("No such resource");
+               throw new IOException("No such (node) resource for " + name);
             }
         }
         public OutputStream getOutputStream() throws IOException {
@@ -1311,31 +1314,6 @@ public class ResourceLoader extends ClassLoader {
         }
 
 
-        /**
-         * Add a package name prefix if the name is not absolute Remove leading "/"
-         * if name is absolute
-         * Stolen from java.lang.Class. It is private there, but needed to implemetn {@link #getResources}
-         */
-        private String resolveName(String name) {
-            if (name == null) {
-                return name;
-            }
-            if (!name.startsWith("/")) {
-                Class c = ResourceLoader.class;
-                while (c.isArray()) {
-                    c = c.getComponentType();
-                }
-                String baseName = c.getName();
-                int index = baseName.lastIndexOf('.');
-                if (index != -1) {
-                    name = baseName.substring(0, index).replace('.', '/') +"/"+name;
-                }
-            } else {
-
-            }
-            return name;
-        }
-
         private ClassLoader getClassLoader() {
             ClassLoader cl = ResourceLoader.class.getClassLoader();
             if (cl == null) {
@@ -1351,7 +1329,9 @@ public class ResourceLoader extends ClassLoader {
         }
         private String getClassResourceName(final String name) {
             String res = root + ResourceLoader.this.context.getPath() + name;
-            res = res.substring(1);
+            while (res.startsWith("/")) {
+                res = res.substring(1);
+            }
             return res;
         }
 
@@ -1361,7 +1341,9 @@ public class ResourceLoader extends ClassLoader {
         public URLConnection openConnection(String name) {
             try {
                 URL u = getClassLoader().getResource(getClassResourceName(name));
-                if (u == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
+                if (u == null) {
+                    return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
+                }
                 return u.openConnection();
             } catch (IOException ioe) {
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
