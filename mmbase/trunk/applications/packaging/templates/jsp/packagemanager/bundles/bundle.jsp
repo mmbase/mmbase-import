@@ -200,19 +200,8 @@ function refresh()
 			</td>
 		  </mm:compare>
 
-                  <mm:compare value="upgrade available">  
- 	    		<tr><th>Upgrade</th>
-			<td>
-			<A HREF="<mm:url page="index.jsp">
-					<mm:param name="main" value="$main" />
-					<mm:param name="sub" value="bundle" />
-					<mm:param name="id" value="$id" />
-					<mm:param name="mode" value="askinstall" />
-					<mm:param name="provider"><mm:field name="provider" /></mm:param>
-					<mm:param name="version"><mm:field name="version" /></mm:param>
-				</mm:url>"><IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
-			</td>
-		  </mm:compare>
+
+
                   <mm:compare value="installed">  
  	    		<tr><th>Uninstall</th>
 			<td>
@@ -400,6 +389,46 @@ function refresh()
 		<p />
 	</td>
 </tr>
+<mm:nodelistfunction set="mmpm" name="getBundleScreenshots" referids="id,version,provider">
+<mm:first>
+<tr>
+	<td valign="top" align="left" colspan=2">
+		<br />
+		<b>Screenshots</b><p />
+		<table>
+		<tr>
+</mm:first>
+			<th>
+			<a href="<mm:field name="file" />" target="_new" title="<mm:field name="description" />"><img src="<mm:field name="file" />" width="150"></a><br />
+			<mm:field name="name" />
+			</th>
+<mm:last>
+		</tr>
+		</table>
+		<br />
+		<br />
+	</td>
+</tr>
+</mm:last>
+</mm:nodelistfunction>
+
+
+<mm:nodelistfunction set="mmpm" name="getBundleStarturls" referids="id,version,provider">
+<mm:first>
+<tr>
+	<td valign="top" align="left" colspan=2">
+		<br />
+		<b>Starturls</b><p />
+</mm:first>
+		<mm:field name="name" /> : <a href="<mm:field name="link" />"><mm:field name="link" /></a> (<mm:field name="description" />)
+<mm:last>
+		<br />
+		<br />
+	</td>
+</tr>
+</mm:last>
+</mm:nodelistfunction>
+
 <tr>
 	<td valign="top" align="left">
 		<br />
