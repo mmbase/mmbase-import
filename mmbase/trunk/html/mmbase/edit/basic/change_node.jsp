@@ -7,8 +7,6 @@
 <mm:context id="change_node">
 <mm:import externid="node_number" required="true" from="parameters"/>
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
-<mm:import externid="backpage_cancel"><mm:url referids="node_number"/>#relations</mm:import>
-<mm:import externid="backpage_ok"><mm:url referids="node_number" />#relations</mm:import>
 
 <mm:node id="this_node" referid="node_number" notfound="skipbody">
 <mm:import id="found" />
@@ -24,7 +22,7 @@
      by the way, it is not necessary to indicate that
      enctype="multipart/form-data", this will be automatic if there is
      a input type="file". But lynx will also work like this (except for images) --%>
-<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
+<form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp?pop=url" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
   <mm:nodeinfo type="gui" />:
