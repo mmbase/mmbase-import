@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.52 2002-07-19 13:16:08 michiel Exp $
+  @version $Id: wizard.xsl,v 1.53 2002-07-19 14:17:50 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -132,13 +132,24 @@
         <!-- all steps -->
         <p class="step">        
         <xsl:for-each select="step">
-           <xsl:call-template name="step" />
+           <xsl:call-template name="steptemplate" />
            <br />
         </xsl:for-each>
         </p>
       </td>
     </tr>
   </xsl:template>
+
+
+
+  <xsl:template name="step">
+    <a>
+      <xsl:call-template name="stepaattributes" />
+      <xsl:call-template name="prompt_step" />
+    </a>
+    <xsl:value-of select="/*/form[@id=current()/@form-schema]/title" />
+  </xsl:template>
+
 
   
   <xsl:template name="javascript"><!-- you probably don't want to override this. -->
@@ -789,7 +800,15 @@
   </xsl:template>
 
 
-  <xsl:template name="step">
+  <xsl:template name="stepaattributes">
+    <xsl:attribute name="href">javascript:doGotoForm('<xsl:value-of select="@form-schema" />');</xsl:attribute>
+    <xsl:attribute name="titlevalid"><xsl:value-of select="$tooltip_valid" /></xsl:attribute>
+    <xsl:attribute name="titlenotvalid"><xsl:value-of select="$tooltip_not_valid" /></xsl:attribute>
+    <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=current()/@form-schema]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
+  </xsl:template>
+
+
+  <xsl:template name="steptemplate">
     <xsl:variable name="schemaid" select="@form-schema" />      
     <span>
       <xsl:attribute name="class">
@@ -803,12 +822,7 @@
          <xsl:if test="@valid='true'">valid</xsl:if>
          <xsl:if test="@valid='false'">notvalid</xsl:if>
        </xsl:attribute>
-      <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
-        titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"> 
-      <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=current()/@form-schema]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
-      <xsl:call-template name="prompt_step" />
-      </a>
-      <xsl:value-of select="/*/form[@id=$schemaid]/title" />
+       <xsl:call-template name="step" />
       </span>
     </span>
   </xsl:template>
