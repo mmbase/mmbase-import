@@ -60,17 +60,24 @@ How to use jspvars and taglib vars.
   <td width="50%"><%@include file="codesamples/timeenv.jsp" %></td>
 </tr>
 <tr><td colspan="2"> 
-Using a field of a node that is a time.
+Using a field of a node that is a time. The time tag is working as a writerreferrer then.
 </td></tr>
 <tr valign="top">
   <td width="50%">
     <pre>
-        &lt;mm:field name="mmevents.start" >
-               &lt;mm:time format="yyyy MM dd" />
-        &lt;/mm:field>
+&lt;mm:field name="mmevents.start" >
+       &lt;mm:time format="yyyy MM dd" />
+&lt;/mm:field>
     </pre>
   </td>
   <td width="50%">2002 03 12</td>
+</tr>
+<tr><td colspan="2"> 
+A more generic demonstration of the 'Writer' and 'WriterReferrer' properties of the time tag can be like this.
+</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/timewriter.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/timewriter.jsp" %></td>
 </tr>
 </table>
 </mm:cloud>
