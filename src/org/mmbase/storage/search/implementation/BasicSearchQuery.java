@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.14 2003-09-03 18:23:44 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.15 2003-12-02 13:54:01 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -264,9 +264,23 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         } else if (c instanceof FieldValueInConstraint) {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
             BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
+            int type =  constraint.getField().getType();
+
             Iterator k = constraint.getValues().iterator();
             while (k.hasNext()) {
-                newConstraint.addValue(k.next());
+                Object value = k.next();
+                switch(type) {
+                case FieldDefs.TYPE_INTEGER:
+                case FieldDefs.TYPE_LONG:
+                case FieldDefs.TYPE_NODE:
+                    value = new Long((String) value);
+                    break;
+                case FieldDefs.TYPE_FLOAT:
+                case FieldDefs.TYPE_DOUBLE:
+                    value = new Double((String) value);
+                    break;
+                }
+                newConstraint.addValue(value);
             }
             newConstraint.setInverse(constraint.isInverse());
             newConstraint.setCaseSensitive(constraint.isCaseSensitive());
