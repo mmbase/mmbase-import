@@ -13,7 +13,6 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.*;
-import org.mmbase.module.gui.html.scanparser;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @application Mail
  * @deprecated use the Mail application code instead
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.26 2004-10-04 11:30:31 pierre Exp $
+ * @version $Id: Email.java,v 1.27 2004-10-09 13:54:12 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -485,28 +484,10 @@ public class Email extends MMObjectBuilder {
     }
 
     /**
-     * getPage, using the scanparser. (remember this is a hack to be
-     * replaced by a new version soon).
+     * @deprecated don't use
      */
     public String getPage(String url) {
-        // get the scanparser
-        scanparser m=(scanparser)mmb.getBaseModule("SCANPARSER");
-        if (m!=null) {
-            // found module, create a empty
-            // context since we don't have a user
-            scanpage sp=new scanpage();
-
-            // setup a session so we can use sessions
-
-            String sname="emailuser";
-            sp.sname=sname;
-            sessionInfo session=sessions.getSession(sp,sname);
-            sp.session=session;
-
-            // get the page and return it
-            return m.calcPage(url,sp,0);
-        }
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**

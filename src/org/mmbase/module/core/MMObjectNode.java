@@ -13,7 +13,6 @@ import java.util.*;
 
 import org.mmbase.cache.*;
 import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.module.gui.html.EditState;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -32,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.129 2004-09-22 14:56:50 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.130 2004-10-09 13:54:16 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -367,35 +366,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         return parent.getMMBase().getMMBaseCop().getAuthorization().getPossibleContexts(user, getNumber());
     }
-
-    /**
-     * Once an insert is done in the editors, this method is called.
-     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *        'settings' and 'parameters' - value pairs that have been set during the edit process.
-     * @return An <code>int</code> value. It's meaning is undefined.
-     *        The basic routine returns -1.
-     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *    endangering the separation between content and layout, and has an undefined return value.
-     */
-    public int insertDone(EditState ed) {
-        return parent.insertDone(ed, this);
-    }
-
-    /**
-     * Check and make last changes before calling {@link #commit} or {@link #insert}.
-     * This method is called by the editor. This differs from {@link MMObjectBuilder#preCommit}, which is called by the database system
-     * <em>during</em> the call to commit or insert.
-     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
-     * @return An <code>int</code> value. It's meaning is undefined.
-     *        The basic routine returns -1.
-     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *    endangering the separation between content and layout. It also has an undefined return value (as well as a confusing name).
-     */
-    public int preEdit(EditState ed) {
-        return parent.preEdit(ed,this);
-    }
-
 
     /**
      * Returns the core of this node in a string.
