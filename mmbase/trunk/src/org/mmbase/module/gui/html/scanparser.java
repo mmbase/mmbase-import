@@ -1,10 +1,13 @@
 /*
+$Id: scanparser.java,v 1.5 2000-03-09 16:39:22 wwwtech Exp $
 
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
+
+$Log: not supported by cvs2svn $
 
 */
 package org.mmbase.module.gui.html;
@@ -29,6 +32,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
+ * @$Revision: 1.5 $ $Date: 2000-03-09 16:39:22 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -519,16 +523,25 @@ public class scanparser extends ProcessorModule {
 		return(newbody.toString());
 	}
 
+	/**
+	 * do_counter: This method retrieves the counter value for this page. 
+	 * It also checks for any $ attribs used in the COUNTER tag. 
+	 *
+	 * $param part A string containing the remaining COUNTER part.
+	 * $param session The sessionInfo object.
+	 * $param sp The current scanpage object.
+	 * $return A String containing the counter value.
+	 */
 	private String do_counter( String part, sessionInfo session, scanpage sp )
 	{
 		String result = null;
 
-		/*
-			String parsedPart = dodollar(part2,session,sp);
-		*/
-		if( debug ) debug("do_counter("+part+"): inserting tag in page.");
+		// Scan & Parse all $ attributes used in the tag.
+		String parsedPart = dodollar(part,session,sp);
+
+		if( debug ) debug("do_counter("+parsedPart+"): inserting tag in page.");
 		long time = System.currentTimeMillis();
-		result = counter.getTag( part, session, sp );
+		result = counter.getTag(parsedPart, session, sp);
 		debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
 
 		return result;
