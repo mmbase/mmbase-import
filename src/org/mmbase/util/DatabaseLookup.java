@@ -165,7 +165,7 @@ public class DatabaseLookup {
 	    }
 	    current = current.getNextSibling();
 	}
-	log.info("Selected database: '"+database+"' based on #" + i + " rules in it's filter.");
+	log.info("Selected database: '"+database+"' based on #" + i + " rules in it's filter.("+connection.getClass().getName() + ")");
 	if(i<=1) { log.warn("Please add additional filter,  add filter-rules and/or change the order in file: config/databases/lookup.xml, database lookup information:\n"+databaseInformation(connection));
 	}
 	return true;
