@@ -17,8 +17,8 @@
 <article class="specification">
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
-		<date>2 September 2002</date>
-		<edition>$Id: editwizard-reference.xml,v 1.9 2003-06-30 11:41:45 johannes Exp $</edition>
+		<date>2002-09-02</date>
+		<edition>$Id: editwizard-reference.xml,v 1.10 2003-07-27 17:47:51 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>

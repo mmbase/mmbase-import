@@ -5,8 +5,8 @@
   <article>
     <articleinfo>
     <title>MMBase Configuration documentation</title>
-    <date>4 December 2002</date>
-    <edition>$Id: configuration.xml,v 1.18 2003-06-30 13:04:10 johannes Exp $</edition>
+    <date>2002-12-04</date>
+    <edition>$Id: configuration.xml,v 1.19 2003-07-27 17:47:50 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>

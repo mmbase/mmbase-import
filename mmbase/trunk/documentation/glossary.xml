@@ -2,13 +2,15 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
-  <title>MMBase Glossary</title>
+  
 
   <articleinfo>
+  	<title>MMBase Glossary</title>
+	<edition>$Id: glossary.xml,v 1.13 2003-07-27 17:47:49 henk Exp $</edition>
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
-
+	<date>2003-03</date>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -27,7 +29,7 @@
       <revision>
         <revnumber>0.0</revnumber>
 
-        <date>June 2003</date>
+        <date>2003-06-01</date>
 
         <revremark>First draft</revremark>
       </revision>

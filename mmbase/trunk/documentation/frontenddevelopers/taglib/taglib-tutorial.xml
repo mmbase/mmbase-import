@@ -2,13 +2,15 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
-  <title>Creating webpages with the MMBase Tag Library</title>
+  
 
   <articleinfo>
+  	<title>Creating webpages with the MMBase Tag Library</title>
+	<date>2003-07</date>
+ 	<edition>$Id: taglib-tutorial.xml,v 1.9 2003-07-27 17:47:52 henk Exp $</edition>
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
-
     <authorgroup>
       <author>
         <firstname>Rogier</firstname>
@@ -27,7 +29,7 @@
       <revision>
         <revnumber>0.1</revnumber>
 
-        <date>august 2002</date>
+        <date>2002-08</date>
 
         <revremark>First draft</revremark>
       </revision>
@@ -35,7 +37,7 @@
       <revision>
         <revnumber>0.2</revnumber>
 
-        <date>march 2003</date>
+        <date>2003-03</date>
 
         <revremark>Changed tutorial to use the MyNews application from the
         MMBase distro.</revremark>
@@ -43,9 +45,9 @@
 
       <revision>
         <revnumber>0.3</revnumber>
-
-        <date>Completed tutorial for MyNews application and reworked comments
-        from Documentation projectgroup.</date>
+		<date>2003-07</date>
+        <revremark>Completed tutorial for MyNews application and reworked comments
+        from Documentation projectgroup.</revremark>
       </revision>
     </revhistory>
 

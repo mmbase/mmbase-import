@@ -5,9 +5,9 @@
   <articleinfo>
     <title>SearchQuery introduction</title>
 
-    <date>5 December 2002</date>
+    <date>2002-12-05</date>
 
-    <edition>$Id: dbsq.xml,v 1.10 2003-07-01 14:37:00 johannes Exp $</edition>
+    <edition>$Id: dbsq.xml,v 1.11 2003-07-27 17:47:50 henk Exp $</edition>
 
     <authorgroup>
       <author>
@@ -743,7 +743,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
@@ -923,7 +923,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
