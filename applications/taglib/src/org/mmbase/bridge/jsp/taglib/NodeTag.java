@@ -128,7 +128,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             default: node = getNode(referString);
             }
 
-            if(referid.equals(id)) {
+            if(referString.equals(id)) {
                 getContextTag().unRegister(referString);
                 // register it again, but as node
                 // (often referid would have been a string).                
