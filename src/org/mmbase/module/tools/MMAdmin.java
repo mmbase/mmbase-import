@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools;
 
@@ -19,6 +19,8 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.tools.MMAppTool.MMAppTool;
 import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.StorageException;
+import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
@@ -28,7 +30,7 @@ import org.mmbase.util.xml.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.76 2003-09-03 19:09:59 nico Exp $
+ * @version $Id: MMAdmin.java,v 1.77 2003-09-18 12:19:01 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -604,12 +606,12 @@ public class MMAdmin extends ProcessorModule {
             String name = app.getApplicationName();
             String maintainer = app.getApplicationMaintainer();
             if (requiredMaintainer != null && !maintainer.equals(requiredMaintainer)) {
-                return result.error("Install error: " + name + " requires maintainer '" + requiredMaintainer + 
+                return result.error("Install error: " + name + " requires maintainer '" + requiredMaintainer +
                                     "' but found maintainer '" + maintainer + "'");
             }
             int version = app.getApplicationVersion();
             if (requiredVersion != -1 && version != requiredVersion) {
-                return result.error("Install error: " + name + " requires version '" + requiredVersion + 
+                return result.error("Install error: " + name + " requires version '" + requiredVersion +
                                     "' but found version '" + version + "'");
             }
             int installedVersion = ver.getInstalledVersion(name, "application");
@@ -742,10 +744,10 @@ public class MMAdmin extends ProcessorModule {
                                 syncnode.setValue("timestamp", timestamp);
                                 syncnode.setValue("localnumber", localnumber);
                                 syncnode.insert("import");
-                                
+
                                 if (localnumber == newNode.getNumber()) {
                                     // && (newNode.parent instanceof Message)) { terrible stuff
-                                    
+
                                     // determine if there were NODE fields, which need special treatment later.
                                     List fields = newNode.parent.getFields();
                                     Iterator i = fields.iterator();
@@ -753,11 +755,11 @@ public class MMAdmin extends ProcessorModule {
                                         FieldDefs def = (FieldDefs) i.next();
 
                                         // Fields with type NODE and notnull=true will be handled
-                                        // by the doKeyMergeNode() method. 
-                                        if (def.getDBType() == FieldDefs.TYPE_NODE 
+                                        // by the doKeyMergeNode() method.
+                                        if (def.getDBType() == FieldDefs.TYPE_NODE
                                             && ! def.getDBName().equals("number")
                                             && ! def.getDBNotNull()) {
-                                               
+
                                             newNode.values.put("__exportsource", exportsource);
                                             nodeFieldNodes.add(newNode);
                                             break;
@@ -773,18 +775,18 @@ public class MMAdmin extends ProcessorModule {
             // treat NODE fields now.
             Iterator i = nodeFieldNodes.iterator();
             while (i.hasNext()) {
-                MMObjectNode importedNode = (MMObjectNode) i.next();           
+                MMObjectNode importedNode = (MMObjectNode) i.next();
                 String exportsource = (String) importedNode.values.get("__exportsource");
                 // clean it up
                 importedNode.values.remove("__exportsource");
-               
+
                 List fields = importedNode.parent.getFields();
-                Iterator j = fields.iterator();                
-                while (j.hasNext()) { 
+                Iterator j = fields.iterator();
+                while (j.hasNext()) {
                     FieldDefs def = (FieldDefs) j.next();
                     if (def.getDBType() == FieldDefs.TYPE_NODE && ! (def.getDBName().equals("number"))) {
                         String fieldName = def.getDBName();
-                       
+
                         updateFieldWithTypeNode(
                            syncbul,
                            importedNode,
@@ -796,10 +798,10 @@ public class MMAdmin extends ProcessorModule {
                     importedNode.commit();
                 }
             }
- 
+
             return result.isSuccess();
         } else {
-            return result.error("Application installer : can't reach syncnodes builder"); // 
+            return result.error("Application installer : can't reach syncnodes builder"); //
         }
     }
 
@@ -814,11 +816,11 @@ public class MMAdmin extends ProcessorModule {
             for (Enumeration h = vec.elements(); h.hasMoreElements();) {
                 FieldDefs def = (FieldDefs)h.nextElement();
                 // check for notnull fields with type NODE.
-                if (def.getDBType() == FieldDefs.TYPE_NODE 
+                if (def.getDBType() == FieldDefs.TYPE_NODE
                     && ! def.getDBName().equals("number")
                     && def.getDBNotNull()) {
-                       
-                    // Dangerous territory here. 
+
+                    // Dangerous territory here.
                     // The node contains a reference to another node.
                     // The referenced node has to exist when this node is inserted.
                     // trying to update the node.
@@ -828,11 +830,12 @@ public class MMAdmin extends ProcessorModule {
                                             def.getDBName());
                     if (newnode.getIntValue(def.getDBName()) == -1) {
                        // guess that failed
-                       result.error("Insert of node " + newnode + " failed. A field with type NODE is not allowed to have a null value. " +                                    "The referenced node is not found. Try to reorder the nodes so the referenced node is imported before this one.");
+                       result.error("Insert of node " + newnode + " failed. A field with type NODE is not allowed to have a null value. " +
+                                    "The referenced node is not found. Try to reorder the nodes so the referenced node is imported before this one.");
                        return -1;
                     }
                 }
-                
+
                 // generation of key constraint to check if there is a node already present.
                 // if a node is present then we can't insert this one.
                 if (def.isKey()) {
@@ -855,7 +858,7 @@ public class MMAdmin extends ProcessorModule {
                     return oldnode.getIntValue("number");
                 }
             }
-            
+
             int localnumber = newnode.insert("import");
             if (localnumber == -1) {
                 result.error("Insert of node " + newnode + " failed.");
@@ -869,7 +872,7 @@ public class MMAdmin extends ProcessorModule {
     }
 
    /** update the field with the real node number of the referenced node
-    * 
+    *
     * @param syncbul syncnode builder
     * @param importedNode Node to update
     * @param exportsource export source of the node to update
@@ -880,17 +883,17 @@ public class MMAdmin extends ProcessorModule {
       MMObjectNode importedNode,
       String exportsource,
       String fieldname) {
-         
+
       int exportnumber;
       try {
           exportnumber = Integer.parseInt((String) importedNode.values.get("__" + fieldname));
       } catch (Exception e) {
           exportnumber = -1;
       }
-      
+
       // clean it up (don't know if this is necessary, but don't risc anything!)
       importedNode.values.remove("__" + fieldname);
-                                                    
+
       int localNumber = -1;
       String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
       Enumeration b = syncbul.search(query);
@@ -1831,13 +1834,30 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         FieldDefs def = bul.getField(fieldname);
         if (def != null) {
+            int oldSize = def.getDBSize();
             try {
-                int i = Integer.parseInt(value);
-                def.setDBSize(i);
-            } catch (Exception e) {}
-        }
-        if (mmb.getDatabase().changeField(bul, fieldname)) {
-            syncBuilderXML(bul, builder);
+                int newSize = Integer.parseInt(value);
+                if (newSize != oldSize) {
+                    def.setDBSize(newSize);
+                    StorageManagerFactory factory = mmb.getStorageManagerFactory();
+                    if (factory!=null) {
+                        try {
+                            // make change in storage
+                            factory.getStorageManager().change(def);
+                            syncBuilderXML(bul, builder);
+                        } catch (StorageException se) {
+                            def.setDBSize(oldSize);
+                            throw new RuntimeException(se);
+                        }
+                    } else {
+                        if (mmb.getDatabase().changeField(bul, fieldname)) {
+                            syncBuilderXML(bul, builder);
+                        }
+                    }
+                }
+            } catch (NumberFormatException nfe)  {
+                throw new RuntimeException(nfe);
+            }
         }
     }
 
@@ -1856,10 +1876,26 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         FieldDefs def = bul.getField(fieldname);
         if (def != null) {
-            def.setDBType(value);
-        }
-        if (mmb.getDatabase().changeField(bul, fieldname)) {
-            syncBuilderXML(bul, builder);
+            int oldType = def.getDBType();
+            int newType = FieldDefs.getDBTypeId(value);
+            if (oldType != newType) {
+                def.setDBType(newType);
+                StorageManagerFactory factory = mmb.getStorageManagerFactory();
+                if (factory!=null) {
+                    try {
+                        // make change in storage
+                        factory.getStorageManager().change(def);
+                        syncBuilderXML(bul, builder);
+                    } catch (StorageException se) {
+                        def.setDBType(oldType);
+                        throw new RuntimeException(se);
+                    }
+                } else {
+                    if (mmb.getDatabase().changeField(bul, fieldname)) {
+                        syncBuilderXML(bul, builder);
+                    }
+                }
+            }
         }
     }
 
@@ -1878,10 +1914,34 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         FieldDefs def = bul.getField(fieldname);
         if (def != null) {
-            def.setDBState(value);
-        }
-        if (mmb.getDatabase().changeField(bul, fieldname)) {
-            syncBuilderXML(bul, builder);
+            int oldState = def.getDBState();
+            int newState = FieldDefs.getDBStateId(value);
+            if (oldState != newState) {
+                def.setDBState(newState);
+                StorageManagerFactory factory = mmb.getStorageManagerFactory();
+                if (factory!=null) {
+                    // add field if it was not persistent before
+                    if ((newState == FieldDefs.DBSTATE_PERSISTENT || newState == FieldDefs.DBSTATE_SYSTEM) &&
+                        (oldState != FieldDefs.DBSTATE_PERSISTENT && oldState != FieldDefs.DBSTATE_SYSTEM)) {
+                        try {
+                            // make change in storage
+                            factory.getStorageManager().create(def);
+                            // only then add to builder
+                            bul.addField(def);
+                            syncBuilderXML(bul, builder);
+                        } catch (StorageException se) {
+                            def.setDBState(oldState);
+                            throw new RuntimeException(se);
+                        }
+                    }
+                    // TODO:  remove field if no longer persistent ???
+                } else {
+                    // TODO: should be ADD or REMOVE, not CHANGE
+                    if (mmb.getDatabase().changeField(bul, fieldname)) {
+                        syncBuilderXML(bul, builder);
+                    }
+                }
+            }
         }
     }
 
@@ -1906,6 +1966,7 @@ public class MMAdmin extends ProcessorModule {
                 def.setDBKey(false);
             }
         }
+        // TODO: when changing key, shoudl call CHANGE
         syncBuilderXML(bul, builder);
     }
 
@@ -1924,14 +1985,26 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         FieldDefs def = bul.getField(fieldname);
         if (def != null) {
-            if (value.equals("true")) {
-                def.setDBNotNull(true);
-            } else {
-                def.setDBNotNull(false);
+            boolean oldNotNull = def.getDBNotNull();
+            boolean newNotNull = value.equals("true");
+            if (oldNotNull != newNotNull) {
+                def.setDBNotNull(newNotNull);
+                StorageManagerFactory factory = mmb.getStorageManagerFactory();
+                if (factory!=null) {
+                    try {
+                        // make change in storage
+                        factory.getStorageManager().change(def);
+                        syncBuilderXML(bul, builder);
+                    } catch (StorageException se) {
+                        def.setDBNotNull(oldNotNull);
+                        throw new RuntimeException(se);
+                    }
+                } else {
+                    if (mmb.getDatabase().changeField(bul, fieldname)) {
+                        syncBuilderXML(bul, builder);
+                    }
+                }
             }
-        }
-        if (mmb.getDatabase().changeField(bul, fieldname)) {
-            syncBuilderXML(bul, builder);
         }
     }
 
@@ -1952,6 +2025,7 @@ public class MMAdmin extends ProcessorModule {
             int pos = bul.getFields(FieldDefs.ORDER_CREATE).size() + 1;
 
             FieldDefs def = new FieldDefs();
+            def.setParent(bul);
             def.setDBPos(pos);
 
             def.setGUIPos(pos);
@@ -1987,11 +2061,25 @@ public class MMAdmin extends ProcessorModule {
             value = (String)vars.get("guitype");
             def.setGUIType(value);
 
-            bul.addField(def);
-            if (mmb.getDatabase().addField(bul, def.getDBName())) {
-                syncBuilderXML(bul, builder);
+            StorageManagerFactory factory = mmb.getStorageManagerFactory();
+            if (factory!=null) {
+                try {
+                    // make change in storage
+                    factory.getStorageManager().create(def);
+                    // only then add to builder
+                    bul.addField(def);
+                    syncBuilderXML(bul, builder);
+                } catch (StorageException se) {
+                    throw new RuntimeException(se);
+                }
             } else {
-                log.warn("Could not sync builder XML because addField returned false (tablesizeprotection?)");
+                // for old support classes, need to add field to builder first
+                bul.addField(def);
+                if (mmb.getDatabase().addField(bul, def.getDBName())) {
+                    syncBuilderXML(bul, builder);
+                } else {
+                    log.warn("Could not sync builder XML because addField returned false (tablesizeprotection?)");
+                }
             }
         } else {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
@@ -2013,11 +2101,25 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         if (bul != null && value != null && value.equals("Yes")) {
             FieldDefs def = bul.getField(fieldname);
-            bul.removeField(fieldname);
-            if (mmb.getDatabase().removeField(bul, def.getDBName())) {
-                syncBuilderXML(bul, builder);
+            StorageManagerFactory factory = mmb.getStorageManagerFactory();
+            if (factory!=null) {
+                try {
+                    // make change in storage
+                    factory.getStorageManager().delete(def);
+                    // only then delete in builder
+                    bul.removeField(fieldname);
+                    syncBuilderXML(bul, builder);
+                } catch (StorageException se) {
+                    throw new RuntimeException(se);
+                }
             } else {
-                bul.addField(def);
+                // for old support classes, need to delete field from builder first
+                bul.removeField(fieldname);
+                if (mmb.getDatabase().removeField(bul, def.getDBName())) {
+                    syncBuilderXML(bul, builder);
+                } else {
+                    bul.addField(def);
+                }
             }
         }
     }
