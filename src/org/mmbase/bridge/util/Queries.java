@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.17 2003-12-17 08:47:27 michiel Exp $
+ * @version $Id: Queries.java,v 1.18 2003-12-19 12:56:39 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -404,6 +404,7 @@ public class Queries {
      * @param query      The query to create the constraint for
      * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
      * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
+     * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
      * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
@@ -424,6 +425,13 @@ public class Queries {
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
             
+            if (fieldName.equals("number")) {
+                if (value instanceof String) { // it might be an alias!
+                    Node node = cloud.getNode((String) value);
+                    value = new Integer(node.getNumber());
+                }
+            }
+
             Object compareValue = getCompareValue(fieldType, operator, value);
 
             if (operator > 0 && operator < OPERATOR_IN) {
