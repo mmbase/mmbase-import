@@ -64,21 +64,14 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 	        step=getNextPackageStep();
         	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"..");
                 rt.createPackage(nv);
+		ProviderManager.discoverPackages();
                 ProviderManager.resetSleepCounter();
-		PackageInterface pa = PackageManager.getPackage(rt.getId());
-		//log.info("PA="+pa+" v="+pa.getVersion());
-		while (!pa.getVersion().equals(""+nv)) {
-			// really weird way to delay until provider has found
-			// the new package
-			try {
-				Thread.sleep(1000);
-			} catch(Exception e) {}
-			//log.info("PA="+pa+" v="+pa.getVersion());
-		}
                 target.setIncludedVersion(rt.getId(),""+nv);
                 ProviderManager.resetSleepCounter();
         	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"...done");
 	}
+	relatedtargetcreate = new ArrayList();
+	
 
 	String newfilename=getBuildPath()+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_bundle_basic_"+newversion;
 
@@ -95,13 +88,16 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         	for (Iterator i = packages.iterator(); i.hasNext();) {
                		IncludedPackage ip=(IncludedPackage)i.next();
 			if (ip.getIncluded()) {
-				//log.info("Included IP="+ip.getId()+" "+ip.getVersion());
+				// sometimes it seems to take a while before
+				// the bundle to show up so wait a while for it
 				PackageInterface p=PackageManager.getPackage(ip.getId(),ip.getVersion());
-				while (p == null) {
+				int d=0;
+				while (p == null && d<10) {
 					try {
 						Thread.sleep(1000);
 					} catch(Exception e) {}
 					p=PackageManager.getPackage(ip.getId(),ip.getVersion());
+					d = d +1;
 				}
 				JarFile jf=p.getJarFile();
 				if (jf!=null) {
