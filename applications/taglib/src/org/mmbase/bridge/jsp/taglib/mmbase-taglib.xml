@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.197 2003-09-05 16:32:37 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.198 2003-09-08 14:01:10 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2097,6 +2097,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <attribute>
       <name>makeuniques</name>     
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         Whether the unique keys must be filled on creation.
       </info>
@@ -2702,7 +2703,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <name>id</name>
       <required>false</required>
       <requirednote>Either `id' or `externid' or both must be supplied.</requirednote>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         This is the key by which the object will be registered in the
         context. This key may not already exist. You must use the
@@ -2734,6 +2735,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <attribute>
       <name>required</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
     If this object is required to be present. If it has to be
     present, then the present tag will always evaluate. If nothing
@@ -2746,6 +2748,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <name>reset</name>
       <!-- Should this be a contextwriter attribute? -->
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         <p>
           On default, this tag will throw an exception if the id to be
@@ -2838,7 +2841,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <attribute>
       <name>escape</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <see tag="writer" attribute="escape" />
       <info>
         The import tag does not write anything to the page, so for that the 'escape' attribute is not
@@ -3386,6 +3389,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <attribute>
       <name>type</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <example>
 &lt;mm:maycreate type="list"&gt;
@@ -3407,16 +3411,19 @@ like the parameter list or the session (where ever it is available) --&gt;
     <attribute>
       <name>role</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <see tag="createrelation" attribute="role" />
     </attribute>
     <attribute>
       <name>source</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <see tag="createrelation" attribute="source" />
     </attribute>
     <attribute>
       <name>destination</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <see tag="createrelation" attribute="destination" />
     </attribute>
     <see tag="createrelation" />
@@ -4294,7 +4301,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>postprocessor</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         If this attribute is set the complete body-result is piped through this.
       </info>
@@ -4319,7 +4326,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>escaper</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The default value of the escape attribute of all writer tags in the body. The values are
         defined in taglibcontent.xml.
@@ -4552,6 +4559,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>field</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The field to which the constraint must be applied.
       </info>
@@ -4559,6 +4567,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>value</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The value to which the field is be compared with.
       </info>
@@ -4566,6 +4575,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>value2</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         Needed for BETWEEN operator.
       </info>
@@ -4573,6 +4583,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>operator</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The operator to be used in the comparison. Defaults to '='
       </info>
@@ -4625,6 +4636,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>field</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         If the surrounding nodelist container is a list container then the constraint can be on the
         several elements from the path. With this attribute you must indicate to wich. This is not
@@ -4636,6 +4648,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>minage</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
           Minimal age of the object in days.
       </info>
@@ -4644,6 +4657,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>maxage</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
           Maximal age of the object in days.
       </info>
@@ -4666,6 +4680,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>value</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         An integer.
       </info>
@@ -4688,6 +4703,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>value</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         An integer.
       </info>
@@ -4708,6 +4724,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>value</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         'true' (default) or 'false'.
       </info>
@@ -4729,6 +4746,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>field</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         
       </info>
@@ -4736,6 +4754,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>direction</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         
       </info>
@@ -4757,16 +4776,19 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>role</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="role" />
     </attribute>
     <attribute>
       <name>searchdir</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <see tag="searchdir" attribute="searchdir" />
     </attribute>
     <attribute>
       <name>excludeself</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         If the node is not related to itself, it still is not listed by this tag if you set this attribute to true.
       </info>
@@ -4790,6 +4812,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>referid</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
 
       </info>
@@ -4842,6 +4865,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>max</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
          The maximum number of batches to be produces. For really huge result, even the number of
          batches can be too large, so you want to limit it. You should also use it (max="1") if you
@@ -4871,6 +4895,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>max</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         Maximul number of batches to be produces. If more 'previous' batches are available than this
         number, the list is truncated from the beginning (of course).
