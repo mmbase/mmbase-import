@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.9 2004-07-13 12:05:51 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.10 2004-07-29 14:04:33 michiel Exp $
  */
 public class UtilReader {
 
@@ -48,6 +48,25 @@ public class UtilReader {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
+    private static final Map utilReaders = new HashMap();     // file-name -> utilreader
+
+    /**
+     * Returns a UtilReader for the given fileName. When you use this, the UtilReader instance will be cached.
+     *
+     * @since MMBase-1.8
+     */
+
+    public static UtilReader get(String fileName) {
+        UtilReader utilReader = (UtilReader) utilReaders.get(fileName);
+        if (utilReader == null) {
+            synchronized(utilReaders) {
+                utilReader = new UtilReader(fileName);
+                utilReaders.put(fileName, utilReader);
+            }
+        }
+        return utilReader;
+    }
+
     private class UtilFileWatcher extends FileWatcher {
         private WrappedFileWatcher wrappedFileWatcher;
         public UtilFileWatcher(WrappedFileWatcher f) {
@@ -66,7 +85,11 @@ public class UtilReader {
     private Map properties;
     private FileWatcher watcher;
 
+
     /**
+     * Instantiates a UtilReader for a given configuration file in <config>/utils. If the configuration file is used on more spots, then you may consider
+     * using the static method {@link #get(String)} in stead.
+     *
      * @param filename The name of the property file (e.g. httppost.xml).
      */
     public UtilReader(String filename) {
@@ -93,8 +116,8 @@ public class UtilReader {
     /**
      * Get the properties of this utility.
      */
-    public Map getProperties() {
-        return Collections.unmodifiableMap(properties);
+    public PropertiesMap getProperties() {
+        return new PropertiesMap(properties);
     }
 
     protected void readProperties(File f) {
@@ -141,6 +164,70 @@ public class UtilReader {
             }
         } else {
             log.debug("File " + f + " does not exist");
+        }
+    }
+
+    /**
+     * A unmodifiable Map, with extra 'Properties'-like methods.
+     * @since MMBase-1.8
+     */
+
+    public static class PropertiesMap extends AbstractMap {
+
+        private Map wrappedMap;
+
+        /**
+         * Creates an empty Map (not very useful since this Map is unmodifiable).
+         */
+        public PropertiesMap() {
+            wrappedMap = new HashMap();
+        }
+
+        /**
+         * Wrapping the given map.
+         */
+        public PropertiesMap(Map map) {
+            wrappedMap = map;
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public Set entrySet() {
+            return new EntrySet();
+        
+        }
+
+        /**
+         * Returns the object mapped with 'key', or defaultValue if there is none.
+         */
+        public Object getProperty(Object key, Object defaultValue) {
+            Object result = get(key);
+            return result == null ? defaultValue : result;
+        }
+
+        private class  EntrySet extends AbstractSet {
+            EntrySet() {}
+            public int size() {
+                return PropertiesMap.this.wrappedMap.size();
+            }
+            public Iterator iterator() {
+                return new EntrySetIterator();                
+            }
+        }
+        private class EntrySetIterator implements Iterator {
+            private Iterator i;
+            EntrySetIterator() {
+                i = PropertiesMap.this.wrappedMap.entrySet().iterator();
+            }
+            public boolean hasNext() {
+                return i.hasNext();
+            }
+            public Object next() {
+                return i.next();
+            }
+            public void remove() {
+                throw new UnsupportedOperationException("Unmodifiable");
+            }
         }
     }
 
