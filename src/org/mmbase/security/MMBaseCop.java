@@ -19,10 +19,10 @@ import org.mmbase.util.logging.Logging;
  * and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.16 2004-03-10 14:08:14 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.17 2004-03-26 15:48:26 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
-    private static Logger log = Logging.getLoggerInstance(MMBaseCop.class);
+    private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
     /** 
      * The configuration used by our system 
