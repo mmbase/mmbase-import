@@ -9,23 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.classsecurity;
 
-import org.mmbase.security.SecurityException;
-import org.mmbase.security.*;
-
-
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.util.xml.*;
-
-
+import java.io.FileInputStream;
 import java.util.*;
-import java.util.regex.*;
-import java.io.*;
+
+import org.mmbase.security.*;
+import org.mmbase.security.SecurityException;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -35,7 +28,7 @@ import org.xml.sax.*;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.2 2004-04-20 10:54:06 michiel Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.3 2004-05-04 09:43:23 keesj Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
@@ -87,8 +80,8 @@ public class ClassAuthenticationWrapper extends Authentication {
             
             wrappedAuthentication = getAuthenticationInstance(wrappedClass);
             wrappedAuthentication.load(manager, fileWatcher, wrappedUrl);
-            classAuthentication.stopWatching();
-            classAuthentication.load(configFile);
+            ClassAuthentication.stopWatching();
+            ClassAuthentication.load(configFile);
 
 
         } catch (Exception fnfe) {

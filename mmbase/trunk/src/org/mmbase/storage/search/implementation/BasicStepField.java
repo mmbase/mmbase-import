@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
@@ -19,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.9 2004-03-15 14:54:26 robmaris Exp $
+ * @version $Id: BasicStepField.java,v 1.10 2004-05-04 09:43:23 keesj Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {

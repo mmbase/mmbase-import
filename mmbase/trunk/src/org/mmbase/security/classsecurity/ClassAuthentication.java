@@ -9,24 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.classsecurity;
 
-import org.mmbase.security.SecurityException;
-import org.mmbase.security.*;
-
+import java.io.*;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.logging.*;
+import org.mmbase.security.SecurityException;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.*;
-
-
-import java.util.*;
-import java.util.regex.*;
-import java.io.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -35,7 +28,7 @@ import org.xml.sax.*;
  * its configuration file, contains this configuration.
  * 
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.2 2004-04-20 10:54:06 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.3 2004-05-04 09:43:23 keesj Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
