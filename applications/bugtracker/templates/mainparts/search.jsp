@@ -24,9 +24,9 @@
       <mm:import id="sstatus_list" vartype="list">open,accepted,rejected,pending,integrated,closed</mm:import>
       <mm:import id="sstatustest" externid="sstatus"/>
 	<select name="sstatus">
-              <option value="">any</option>
+           <option value="">any</option>
               <mm:stringlist id="sstatusitem" referid="sstatus_list">
-             <mm:index id="index">
+             <mm:index>
               <mm:compare referid2="sstatustest"><option value="<mm:write/>" selected="true"><mm:write referid="sstatusitem"/></option></mm:compare>
               <mm:compare referid2="sstatustest" inverse="true"><option value="<mm:write/>"><mm:write referid="sstatusitem"/></option></mm:compare>
              </mm:index>
@@ -54,9 +54,8 @@
         <mm:import id="spriority_list" vartype="list">high,medium,low</mm:import>
         <mm:import id="sprioritytest" externid="spriority"/>
 	<select name="spriority">
-              <option value="">any</option>
               <mm:stringlist id="spriorityitem" referid="spriority_list">
-             <mm:index id="index">
+             <mm:index>
               <mm:compare referid2="sprioritytest"><option value="<mm:write/>" selected="true"><mm:write referid="spriorityitem"/></option></mm:compare>
               <mm:compare referid2="sprioritytest" inverse="true"><option value="<mm:write/>"><mm:write referid="spriorityitem"/></option></mm:compare>
              </mm:index>
@@ -72,7 +71,7 @@
 	</td>
 	<td width="50">
 	<select name="sarea">
-		<option value="">
+		<option value="">any</option>
 		<mm:listnodes type="areas">
 		<option <mm:field name="number"><mm:compare value="$sarea">selected="selected"</mm:compare>  value="<mm:write />" </mm:field>><mm:field name="substring(name,15,.)" />
 		</mm:listnodes>
@@ -138,7 +137,7 @@
     <mm:isnotempty><mm:constraint field="areas.number" value="$_" /></mm:isnotempty>
   </mm:write>
   <mm:write referid="spriority">
-    <mm:isnotempty><mm:constraint field="bugreports.bpriority" value="$_" /></mm:isnotempty>
+    <mm:isnotempty><mm:constraint field="bugreports.bpriority" value="$_" operator="<=" /></mm:isnotempty>
   </mm:write>
 
   <mm:size id="total" write="false" />
