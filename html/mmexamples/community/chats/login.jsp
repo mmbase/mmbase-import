@@ -49,7 +49,7 @@
    <tr><td>Login:</td><td><input type="text" name="login" size="10" value="<mm:write referid="login" />"></td></tr>
    <tr><td>Pasword:</td><td><input type="password" name="pwd" size="10"></td></tr>
    </table>
-   <input type="submit" value="Aanmelden">   
+   <input type="submit" value="Submit">   
    </form>
   </mm:present>
   <mm:notpresent referid="usernamefound">
@@ -62,7 +62,7 @@
    <tr><td>Login:</td><td><mm:write referid="login" /></td></tr>
    <tr><td>Password:</td><td><input type="password" name="pwd" size="10"></td></tr>
    </table>
-      <input type="submit" value="Aanmelden">
+      <input type="submit" value="Submit">
    </p>
    </form>
   </mm:notpresent>
