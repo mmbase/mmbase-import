@@ -52,8 +52,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -79,8 +79,9 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Owner</guiname>
+			<guiname xml:lang="nl">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -106,8 +107,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Subject</name>
-			<type>string</type>
+			<guiname xml:lang="us">Subject</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -134,8 +135,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Body</name>
-			<type>field</type>
+			<guiname xml:lang="us">Body</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -157,12 +158,12 @@
 		</db>
 	</field>
 
-	<!-- POS 5 : <field> 'timestampl'  -->
+	<!-- POS 5 : <field> 'timestamp'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Timestampl</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Timestamp</guiname>
+			<guitype>long</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -178,45 +179,18 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>timestampl</name>
+			<name>timestamp</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true">LONG</type>
 		</db>
 	</field>
 
-	<!-- POS 6 : <field> 'timestamph'  -->
+	<!-- POS 6 : <field> 'thread'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Timestamph</name>
-			<type>integer</type>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>-1</input>
-				<!-- position in list area of the editor -->
-				<list>5</list>
-				<!-- position in search area of the editor -->
-				<search>-1</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>timestamph</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
-		</db>
-	</field>
-
-	<!-- POS 7 : <field> 'thread'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<name xml:lang="us">Thread</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Thread</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -238,12 +212,12 @@
 		</db>
 	</field>
 
-	<!-- POS 8 : <field> 'sequence'  -->
+	<!-- POS 7 : <field> 'sequence'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Volgordenr</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Volgordenr</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -265,12 +239,12 @@
 		</db>
 	</field>
 
-	<!-- POS 9 : <field> 'info'  -->
+	<!-- POS 8 : <field> 'info'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Info</name>
-			<type>string</type>
+			<guiname xml:lang="us">Info</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>

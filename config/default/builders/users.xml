@@ -22,11 +22,6 @@
 
 <searchage>7</searchage>
 
-
-<properties>
-    <property name="useproperties">false</property>
-</properties>
-
 <!-- <names>
 	names defines the different names used in user visible parts, singular for
 	for talking about 1 object (Url,Person) and plurar for talking about multiple
@@ -52,6 +47,10 @@
 	<description xml:lang="en">undefined users of our website(s)</description>
 	<description xml:lang="us">undefined users of our website(s)</description>
 </descriptions>
+
+<properties>
+    <property name="useproperties">false</property>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
