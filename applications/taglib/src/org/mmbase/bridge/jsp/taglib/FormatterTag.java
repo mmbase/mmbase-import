@@ -35,6 +35,8 @@ import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.cache.xslt.*;
+
 
 /**
  * The formatter can reformat its body. It usually uses XSL for this.
@@ -46,9 +48,6 @@ import org.mmbase.util.logging.Logging;
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(FormatterTag.class.getName());
-
-    private static int cacheSize = 50;
-    private static org.mmbase.util.LRUHashtable xsltCache;
 
     // standard Writer properties:
     protected WriterHelper helper = new WriterHelper(); 
@@ -75,10 +74,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     protected String   options = null;
 
     protected Source   xsltSource = null;
-    protected String   xsltSourceSubKey;
   
     private static javax.xml.parsers.DocumentBuilder        documentBuilder;
-    private static org.mmbase.util.LRUHashtable             tfactoryCache;
     private File cwd;
     
 
@@ -107,9 +104,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     static {
         log.service("static init of FormatterTag.");    
-        //readConfiguration();
-        xsltCache = new org.mmbase.util.LRUHashtable(cacheSize, 0);
-        tfactoryCache = new org.mmbase.util.LRUHashtable(cacheSize, 0);
 
         try {
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
@@ -172,9 +166,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     /**
      * The  Xslt tag will call this, to inform this tag about the XSLT which must be done.
      */
-    public void setXsltSource(Source xs, String subKey) {
+    public void setXsltSource(Source xs) {
         xsltSource = xs;
-        xsltSourceSubKey = subKey;
     }
 
     /**
@@ -261,9 +254,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         if (log.isDebugEnabled()) {
             if (wantXML()) {
-                log.debug("XSL converting document: " + xmlGenerator.toStringFormatted());
+                log.trace("XSL converting document: " + xmlGenerator.toStringFormatted());
             } else {
-                log.debug("Converting: " + body);
+                log.trace("Converting: " + body);
             }
         }
 
@@ -283,19 +276,19 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             }
             switch(format) {
             case FORMAT_XHTML:
-                helper.setValue(XSLTransform("xslt/2xhtml.xslt"));
+                helper.setValue(xslTransform("xslt/2xhtml.xslt"));
                 break;
             case FORMAT_PRESENTXML:
-                helper.setValue(XSLTransform("xslt/2xml.xslt"));
+                helper.setValue(xslTransform("xslt/2xml.xslt"));
                 break;
             case FORMAT_CODE:
-                helper.setValue(XSLTransform("xslt/code2xml.xslt"));
+                helper.setValue(xslTransform("xslt/code2xml.xslt"));
                 break;
             case FORMAT_TEXTONLY:
-                helper.setValue(XSLTransform("xslt/2ascii.xslt"));
+                helper.setValue(xslTransform("xslt/2ascii.xslt"));
                 break;
             case FORMAT_RICH:
-                helper.setValue(XSLTransform("xslt/mmxf2rich.xslt"));
+                helper.setValue(xslTransform("xslt/mmxf2rich.xslt"));
                 break;
             case FORMAT_ESCAPEXMLPRETTY:
                 helper.setValue(Encode.encode("ESCAPE_XML", xmlGenerator.toStringFormatted()));
@@ -322,12 +315,12 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 }
                 if (log.isDebugEnabled()) log.debug("Transforming with " + xslt);
                                                                                  
-                helper.setValue(XSLTransform(xslt));
+                helper.setValue(xslTransform(xslt));
             } else {
                 if (xsltSource == null) {
                     throw new JspTagException("No 'format' attribute, no 'xslt' attribute and no 'xslt' subtag. Don't know what to do.");
                 }
-                helper.setValue(XSLTransform(xsltSource, xsltSourceSubKey));
+                helper.setValue(xslTransform(xsltSource));
             }
         }
 
@@ -350,11 +343,12 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      *
      * It returns a String, even if it goes wrong, in which case the string contains the error message.
      *
+     * @param A name of an XSLT file.
      */
-    private String XSLTransform(String xsl) {
+    private String xslTransform(String xsl) {
         try {
-            return XSLTransform(getFactory().getURIResolver().resolve(xsl, null), xsl);
-        } catch (Exception e) {
+            return xslTransform(getFactory().getURIResolver().resolve(xsl, null));
+         } catch (Exception e) {
             String msg =  "XSL transformation did not succeed: " + e.toString();
             log.service(msg); // don't log this as warning or error, because web site builders can generate their own XSLT, which can contain errors.
             log.error(Logging.stackTrace(e));
@@ -362,34 +356,27 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
     }
 
+    /*
     private String xsltCacheKey(String subKey) {
         return cwd.toString() + "." + subKey;
     }
+    */
 
     private TransformerFactory getFactory() {
-        TransformerFactory tfactory = (TransformerFactory) tfactoryCache.get(cwd);
-        if (tfactory == null) {
-            URIResolver uriResolver = new URIResolver(cwd);
-            tfactory = TransformerFactory.newInstance();
-            tfactory.setURIResolver(uriResolver);
-            // you must set the URIResolver in the tfactory, because it will not be called everytime, when you uses Templates-caching.
-            tfactoryCache.put(cwd, tfactory);
-        }
-        return tfactory;
+        return FactoryCache.getCache().getFactory(cwd);
     }
 
-    private String XSLTransform(Source xsl, String subKey) {
+    private String xslTransform(Source xsl) {
         log.debug("transforming");
-        try {
-            String key = xsltCacheKey(subKey);
+        try {     
+            TemplateCache cache= TemplateCache.getCache();
             //Transformer trans = cachedXSLT.newTransformer();
-            Templates cachedXslt = (Templates) xsltCache.get(key);
-            if (cachedXslt == null) {                
-                log.service("Put xslt in cache with key " + key);
+            Templates cachedXslt = cache.getTemplates(xsl);
+            if (cachedXslt == null) {                                
                 cachedXslt = getFactory().newTemplates(xsl);
-                xsltCache.put(key, cachedXslt);
+                cache.put(xsl, cachedXslt);
             } else {
-                log.service("Used xslt from cache with " + key);
+                if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
             }
             javax.xml.transform.Transformer transformer = cachedXslt.newTransformer();
           
@@ -398,8 +385,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             // necessary when extending XSLT's (this will problably not be used yet)
             // no idea if I get that working.
            
-            transformer.setParameter("formatter_requestcontext",  
-                                     ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath()); 
+            String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath(); 
+            transformer.setParameter("formatter_requestcontext",  context);
+                             
+            transformer.setParameter("formatter_imgdb", context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);
             // necessary to generate Image urls.
 
             // getting the language from the locale, this is perhaps not a very good idea, 
