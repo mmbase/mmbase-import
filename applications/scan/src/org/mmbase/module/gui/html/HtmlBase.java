@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.19 2000-04-14 12:12:15 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.20 2000-06-06 20:54:08 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.19  2000/04/14 12:12:15  wwwtech
+	- (marcel) Made nicer output when LIST RELATIONS fails in logfile
+	
 	Revision 1.18  2000/04/03 09:03:38  wwwtech
 	Rico: added tag for multilevel "MEMCACHE=NO" to bypass memory cache
 	
@@ -86,7 +89,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.19 2000-04-14 12:12:15 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.20 2000-06-06 20:54:08 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -140,6 +143,8 @@ public class HtmlBase extends ProcessorModule {
 	public HtmlBase() {
 		debug("HtmlBase(): constructed");
 	}
+
+
 
 	/**
 	 * Generate a list of values from a command to the processor

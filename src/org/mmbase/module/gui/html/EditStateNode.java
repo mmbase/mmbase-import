@@ -186,7 +186,7 @@ public class EditStateNode {
 			{
 				mmObjectBuilder = mmBase.getMMObject(name);
 				if( mmObjectBuilder != null )
-					dutchEditor= mmObjectBuilder.dutchSName;
+					dutchEditor= mmObjectBuilder.getDutchSName();
 				else
 					debug("setBuilder("+name+"): ERROR: No MMObjectBuilder found with this name!");
 				editor = name;
