@@ -573,9 +573,14 @@ public class MMBase extends ProcessorModule  {
  	    			 	 loadBuilders(ipath +  bname + File.separator);
  		    	    }
                 }
-            }
-        }
-		
+            } else {
+				// Logging type = error
+				debug ("Cannot find modules in "+path);
+			}
+        } else {
+			// Logging type = error
+			debug (path+" is not a directory");
+		}
     }
      	     	
      	/**
@@ -608,7 +613,10 @@ public class MMBase extends ProcessorModule  {
  				    	}
  				    }
  				}
- 			}
+ 			} else {
+				// Logging type = error
+				debug("Cannot find builder files in "+path);
+			}	
  			return(null);
  		}
     }
