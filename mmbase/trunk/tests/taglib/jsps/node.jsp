@@ -124,19 +124,20 @@ notfound="skip"<br />
    countrelations (specified role): <mm:countrelations  role="posrel" /> (should be 1)<br />
    countrelations (specified role): <mm:countrelations  role="related" /> (should be 0)<br />
   gui of the relation node (with listrelations),
-  should see gui of a relations (number -> number): 
-  <mm:listrelations id="listrelations">
-     <mm:field name="gui()" /><br />
-     Should see url (with relatednode):
+  should see gui of a relations (number -> number): <br />
+  <mm:listrelations id="listrelations" type="urls">
+     Relation: <mm:field name="gui()" /> /  Should see url (with relatednode):
      <mm:relatednode>
-          <mm:field name="url" />
-      </mm:relatednode>
+       <mm:field name="number" /> <mm:field name="url" /> 
+     </mm:relatednode>
+     <br />
   </mm:listrelations>  
   <p>
     Reusing the listrelations (inside the node):
   </p>
   <mm:listrelations referid="listrelations">
      <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+     <br />
   </mm:listrelations>
 </mm:node>
   <p>
@@ -144,6 +145,7 @@ notfound="skip"<br />
   </p>
   <mm:listrelations referid="listrelations">
      <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+     <br />
   </mm:listrelations>
 
 <mm:log>element/related nodes</mm:log>
