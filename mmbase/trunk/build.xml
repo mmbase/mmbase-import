@@ -1493,7 +1493,7 @@ Version: MMBase build ${version}
         <include name="org/mmbase/bridge/remote/**"/>
       </fileset>
     </copy>
-    <jar destfile="build/rmmci.jar" basedir="${build.dir}/rmmcitmp"/>
+    <jar jarfile="build/rmmci.jar" basedir="${build.dir}/rmmcitmp"/>
     <delete dir="${build.dir}/rmmcitmp"/>
   </target>
 
