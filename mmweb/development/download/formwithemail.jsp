@@ -43,7 +43,7 @@
 			<mm:present referid="email">
 			<mm:cloud logon="site" password="przw2lsk1" method="pagelogon">
 			<mm:createnode type="email">
-			  <mm:setfield name="to">andre@mmbase.org</mm:setfield>
+			  <mm:setfield name="to">jo@mmbase.org</mm:setfield>
 			  <mm:setfield name="from"><mm:write referid="email" /></mm:setfield>
 			  <mm:setfield name="replyto"><mm:write referid="email" /></mm:setfield>
 			  <mm:setfield name="subject">Keep me posted on <mm:write referid="urlname" /></mm:setfield>
