@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.62 2002-06-17 15:30:30 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.63 2002-07-25 13:30:33 pierre Exp $
  */
 public class BasicNode implements Node {
 
@@ -479,6 +479,10 @@ public class BasicNode implements Node {
             e = getNode().getRelations();
         }
         if (e!=null) {
+            while (e.hasMoreElements()) {
+                MMObjectNode node = (MMObjectNode)e.nextElement();
+                cloud.assert(Operation.DELETE,node.getNumber());
+            }
             while (e.hasMoreElements()) {
                 MMObjectNode node = (MMObjectNode)e.nextElement();
                 if ((type==-1) || (node.getIntValue("rnumber")==type)) {
