@@ -23,13 +23,16 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * @author Daniel Ockeloen
- * 
+ * @javadoc
+ * @author Daniel Ockeloen 
  */
 public class MimeBodyTagger {
 
     static private final Logger log = Logging.getLoggerInstance(MimeBodyTagger.class); 
 
+    /**
+     * @javadoc
+     */
     public static Enumeration getMimeBodyParts(String body) {
 	String startkey="<multipart ";
 	String endkey="</multipart>";

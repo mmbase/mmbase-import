@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,11 +27,23 @@ import org.mmbase.util.logging.Logging;
  * mail action. The delayed and repeat mail will be handled with
  * the upcomming crontab builder
  *
+ * @javadoc is a bit lame
+ *
  * @author Daniel Ockeloen
+ * @author Michiel Meeuwissen
  */
 public class EmailBuilder extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(EmailBuilder.class);
+
+    public final static Parameter[] MAIL_PARAMETERS = {
+        new Parameter("type",    String.class)
+    };
+
+
+    public final static Parameter[] STARTMAIL_PARAMETERS = MAIL_PARAMETERS;
+    public final static Parameter[] SETTYPE_PARAMETERS   = MAIL_PARAMETERS;
+
 
 
     // defined values for state ( node field "mailstatus" )
@@ -46,6 +59,12 @@ public class EmailBuilder extends MMObjectBuilder {
     public final static int TYPE_ONESHOT     = 1; // Email will be sent and removed after sending.
     public final static int TYPE_REPEATMAIL  = 2; // Email will be sent and scheduled after sending for a next time
     public final static int TYPE_ONESHOTKEEP = 3; // Email will be sent and will not be removed.
+
+
+    static String usersBuilder;
+    static String usersEmailField;
+    static String groupsBuilder;
+
 
     // number of emails send sofar since startup
     private int numberofmailsend = 0;
@@ -69,17 +88,37 @@ public class EmailBuilder extends MMObjectBuilder {
         // oneshot email nodes after the defined expiretime 
         // check every defined sleeptime
         expirehandler = new EmailExpireHandler(this, 60, 30 * 60);
-        
+
+        usersBuilder = getInitParameter("users-builder");
+        if (usersBuilder == null) usersBuilder = "users";
+
+        usersEmailField = getInitParameter("users-email-field");
+        if (usersEmailField == null) usersEmailField = "email";
+
+        groupsBuilder = getInitParameter("groups-builder");
+        if (groupsBuilder == null) usersBuilder = "groups";
+
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(EmailBuilder.class, function);
     }
 
  
     /**
-    * override the function call to receive the functions called from
-    * the outside world (mostly from the taglibs)
-    */
+     * {@inheritDoc}
+     *
+     * Override the function call to receive the functions called from
+     * the outside world (mostly from the taglibs)
+     */
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
-        log.debug("function=" + function);
+        if (log.isDebugEnabled()) {
+            log.debug("function=" + function);
+        }
 
         // function setType(type) called, normally not used
         if (function.equals("setType") || function.equals("settype") ) {
@@ -88,7 +127,7 @@ public class EmailBuilder extends MMObjectBuilder {
         } else  if (function.equals("mail")) {  // function mail(type) called            
             // check if we have arguments ifso call setType()
             if (arguments.size() > 0) {
-                setType(node,arguments);
+                setType(node, arguments);
             }
             
             // get the mailtype so we can call the correct handler/method
@@ -106,7 +145,7 @@ public class EmailBuilder extends MMObjectBuilder {
             
             // check if we have arguments ifso call setType()
             if (arguments.size() > 0) {
-                setType(node,arguments);
+                setType(node, arguments);
             }
             
             // get the mailtype so we can call the correct handler/method
@@ -129,19 +168,21 @@ public class EmailBuilder extends MMObjectBuilder {
     /**
      * return the sendmail module
      */
-    public static SendMailInterface getSendMail() {
+    static SendMailInterface getSendMail() {
         return sendmail;
     }
     
     /**
      * set the mailtype based on the first argument in the list
      */
-    private static void setType(MMObjectNode node,List arguments) {
-        String type=(String)arguments.get(0);
-        if (type.equals("oneshot")) {
+    private static void setType(MMObjectNode node, List arguments) {
+        String type = (String) arguments.get(0);
+        if ("oneshot".equals(type)) {
             node.setValue("mailtype", TYPE_ONESHOT);
-        } else if (type.equals("oneshotkeep")) {
+        } else if ("oneshotkeep".equals(type)) {
             node.setValue("mailtype", TYPE_ONESHOTKEEP);
+        } else {
+            node.setValue("mailtype", TYPE_ONESHOT);
         }
     }
     
