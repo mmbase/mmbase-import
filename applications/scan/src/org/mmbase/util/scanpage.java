@@ -9,17 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Vector;
 
-import org.mmbase.module.*;
-import org.mmbase.util.logging.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.mmbase.module.ProcessorInterface;
+import org.mmbase.module.sessionInfo;
+import org.mmbase.module.sessionsInterface;
 import org.mmbase.servlet.JamesServlet;
-
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The scanpage is a container class.
@@ -31,7 +35,7 @@ import org.mmbase.servlet.JamesServlet;
  *
  * @rename Scanpage
   * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.19 2002-05-14 12:03:14 eduard Exp $
+ * @version $Id: scanpage.java,v 1.20 2003-02-10 23:44:40 nico Exp $
  */
 public class scanpage {
     // logger

@@ -8,10 +8,10 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.logging;
+
+import java.io.File;
 import java.lang.reflect.Method;
-import java.io.*;
-import java.util.Set;
-import java.util.HashSet;
+
 import java.net.URL;
 import org.mmbase.util.XMLBasicReader;
 import org.xml.sax.InputSource;

@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import java.io.*;
+import java.io.File;
 
 /**
  * Retrieves the file properties from a File object and stores them as fields.

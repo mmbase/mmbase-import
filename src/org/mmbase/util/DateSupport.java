@@ -9,9 +9,19 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util;
 
-import java.util.*;
-import java.text.*;
-import org.mmbase.util.logging.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 
 /**
  * Some routines to support dates better<br><br>
@@ -26,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.10 2003-01-07 10:28:27 kees Exp $
+ * @version $Id: DateSupport.java,v 1.11 2003-02-10 23:44:41 nico Exp $
  * @deprecated java.util is powerful enough. Most used functions from Date are deprecated.
  */
 public class DateSupport {
@@ -496,7 +506,6 @@ public class DateSupport {
             val+=offset;
         }
         Date v=new Date((long)val*1000);
-        String result;
         int m=v.getMonth();
         return m;
     }

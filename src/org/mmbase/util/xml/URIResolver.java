@@ -12,10 +12,12 @@ package org.mmbase.util.xml;
 import javax.xml.transform.Source;
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
 import org.mmbase.module.core.MMBaseContext;
-
-
+import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -40,10 +42,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.12 2003-01-17 17:11:06 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.13 2003-02-10 23:44:46 nico Exp $
  */
 
-public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
+public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
     
     private static Logger log = Logging.getLoggerInstance(URIResolver.class.getName());
 

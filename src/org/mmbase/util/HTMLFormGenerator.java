@@ -9,12 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import org.mmbase.module.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.module.ProcessorInterface;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+//import java.util.*;
+//import javax.servlet.*;
+//import javax.servlet.http.*;
+//
+//import org.mmbase.module.*;
+//import org.mmbase.util.logging.*;
 
 /**
 * <strong>input</strong> Macro Vector of Strings, Proc Processor.<br>
@@ -169,7 +176,8 @@ public class HTMLFormGenerator {
         Enumeration e = vector.elements();
         if (e.hasMoreElements()) {
             //We don't want the first one ....
-            Object dummy = e.nextElement();
+            // Object dummy = 
+            e.nextElement();
 
             Vector tailToReturn = new Vector();
             //We only want the tail

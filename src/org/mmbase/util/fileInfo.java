@@ -9,11 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
 /**
  * Object for storing file information.
  * Stores content and lastmodified date.

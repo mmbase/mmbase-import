@@ -9,9 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
-import org.mmbase.util.logging.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 
 /**
 * This is a flexible Properties version, it can handle saving of Properties with
@@ -81,7 +98,6 @@ public class ExtendedProperties extends Properties {
             String s = (String) e.nextElement();
             propsToReturn.put(s,get(s));
         }
-//        return (Hashtable) propsToReturn;
         return propsToReturn;
     }
 
@@ -137,7 +153,7 @@ public class ExtendedProperties extends Properties {
             load(bufferedInputStream);
             bufferedInputStream.close();
         } catch (FileNotFoundException e ) {
-            //log.debug("ExtendedProperties:: file " + filename + " niet gevonden");
+            log.debug("ExtendedProperties:: file " + filename + " not found");
         }
     }
 
@@ -266,8 +282,6 @@ public class ExtendedProperties extends Properties {
             String newlines = "";
             String lines = readOldProps(file);
 
-            String comment = "";
-
             StringTokenizer tok = new StringTokenizer(lines,"\n",true);
             while(tok.hasMoreTokens()) {
                 String line =(String) tok.nextElement();
@@ -286,7 +300,6 @@ public class ExtendedProperties extends Properties {
                     } else {
                         //we found a new property value in the props file
                         String name = line.substring(0,index);
-                        String value = line.substring(index+1,line.length());
 
                         if (containsKey(name)) {
                             //this Property is in memory so get this one from memory
@@ -376,7 +389,6 @@ public class ExtendedProperties extends Properties {
         b.append('#');
         b.append(new Date());
         b.append('\n');
-        int ch;
 
         for (Enumeration e = keys() ; e.hasMoreElements() ;) {
             String key = (String)e.nextElement();

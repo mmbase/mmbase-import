@@ -9,7 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * A hashtable which has a maximum of entries.  Old entries are
@@ -18,7 +22,7 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.11 2002-08-21 18:26:31 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.12 2003-02-10 23:44:41 nico Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -379,18 +383,17 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * 
      * @since MMBase-1.6
      */
-
-    public List getOrderedEntries(int maxNumber) {
-	List results = new Vector();
-	LRUEntry current = root.next;
-        int i = 0;
-        while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
-            results.add(0, current); 
-            current = current.next;
-            i++;
-        }
-	return results;
-    }
+   public List getOrderedEntries(int maxNumber) {
+      List results = new Vector();
+      LRUEntry current = root.next;
+      int i = 0;
+      while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
+         results.add(0, current); 
+         current = current.next;
+         i++;
+      }
+      return results;
+   }
 
     /**
      * Enumerator for the LRUHashtable.
