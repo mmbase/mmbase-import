@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Configuration File of <%=targettype%>/<%=target%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
