@@ -11,7 +11,8 @@ package org.mmbase.util.xml;
 
 import javax.xml.transform.Source;
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -42,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.16 2004-02-19 16:36:05 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.17 2004-05-09 14:53:34 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
@@ -234,9 +235,8 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             if (! path.isAbsolute()) { // an opportunity to use base of cwd
                 if (base.startsWith("file:/")) {
                     try {
-                        path = new File(new File(new URL(base).getFile()).getParent(), href); 
-                        // would like java.net.URI, but only in 1.4
-                    } catch (java.net.MalformedURLException e) {
+                        path = new File(new File(new URI(base).getPath()).getParent(), href); 
+                    } catch (URISyntaxException e) {
                         throw new IllegalArgumentException("base: " + base + " is not a valid file: " + e.toString());
                     }
                 } else { // I don't know what is in base, but I do know that I don't know how to use it. Use cwd.
