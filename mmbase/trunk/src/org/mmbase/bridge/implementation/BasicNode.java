@@ -458,37 +458,69 @@ public class BasicNode implements Node {
         }
     };
 
-    private RelationList getRelations(int type) {
+    public RelationList getRelations() {
+        return getRelations(-1,-1);
+    };
+
+    private RelationList getRelations(int role) {
+        return getRelations(role,-1);
+    };
+
+    private RelationList getRelations(int role, int otype) {
+        InsRel relbuilder=mmb.getInsRel();
         Vector relvector=new Vector();
-        Enumeration e=getNode().getRelations() ;
-        NodeManager insrelman = cloud.getNodeManager("insrel");
+        Enumeration e=null;
+        if ((role!=1) || (otype!=-1)) {
+            if (role!=-1) {
+                relbuilder=mmb.getRelDef().getBuilder(role);
+            }
+            e=relbuilder.getRelations(getNumber(),otype, role);
+        } else {
+            e=getNode().getRelations();
+        }
         if (e!=null) {
             while (e.hasMoreElements()) {
                 MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-                if ((type==-1) || (mmnode.getIntValue("rnumber")==type)) {
-                    if (cloud.check(Operation.READ, mmnode.getNumber())) {
-                        relvector.add(mmnode);
-                    }
+                if (cloud.check(Operation.READ, mmnode.getNumber())) {
+                    relvector.add(mmnode);
                 }
             }
         }
-        return new BasicRelationList(relvector,cloud,insrelman);
+        return new BasicRelationList(relvector,cloud,cloud.getNodeManager(relbuilder.getTableName()));
     };
 
-    public RelationList getRelations() {
-        return getRelations(-1);
-    };
-
-    public RelationList getRelations(String type) {
-        int rType=mmb.getRelDef().getNumberByName(type);
-        if (rType==-1) {
+    public RelationList getRelations(String role) {
+        int rolenr=mmb.getRelDef().getNumberByName(role);
+        if (rolenr==-1) {
             String message;
-            message = "Relation type " + type + " does not exist.";
+            message = "Relation type " + role + " does not exist.";
             log.error(message);
             throw new BridgeException(message);
         } else {
-            return getRelations(rType);
+            return getRelations(rolenr);
         }
+    };
+
+    public RelationList getRelations(String role, String nodeManager) {
+        if (nodeManager==null) return getRelations(role);
+        int otype=mmb.getTypeDef().getIntValue(nodeManager);
+        if (otype==-1) {
+            String message;
+            message = "NodeManager " + nodeManager + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
+        }
+        int rolenr=-1;
+        if (role!=null) {
+            rolenr=mmb.getRelDef().getNumberByName(role);
+            if (rolenr==-1) {
+                String message;
+                message = "Relation type " + role + " does not exist.";
+                log.error(message);
+                throw new BridgeException(message);
+            }
+        }
+        return getRelations(rolenr,otype);
     };
 
     public boolean hasRelations() {
