@@ -1,7 +1,5 @@
 <%@ include file="settings.jsp"
-%><%@ page import="com.jspsmart.upload.*"
-%><jsp:useBean id="mySmartUpload" scope="page" class="com.jspsmart.upload.SmartUpload"
-/><%@ page import="java.io.ByteArrayOutputStream"
+%><%@ page import="org.apache.commons.fileupload.*"
 %><%@ page import="org.mmbase.applications.editwizard.*" %>
 %><%@ page import="org.mmbase.applications.editwizard.Config" %>
 <html>
@@ -14,7 +12,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.11 2003-12-11 11:57:52 vpro Exp $
+     * @version  $Id: processuploads.jsp,v 1.12 2004-01-06 13:20:38 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -57,34 +55,29 @@ if (! ewconfig.subObjects.empty()) {
     } catch (Exception e) {}
 
     // Initialization
-    mySmartUpload.initialize(pageContext);
+    DiskFileUpload fu = new DiskFileUpload();
+    // maximum size before a FileUploadException will be thrown
+    fu.setSizeMax(maxsize);
 
-    mySmartUpload.setTotalMaxFileSize(maxsize);
+    // maximum size that will be stored in memory --- what shoudl this be?
+    // fu.setSizeThreshold(maxsize);
+
+    // the location for saving data that is larger than getSizeThreshold()
+    // where to store?
+    // fu.setRepositoryPath("/tmp");
 
     // Upload
     try {
-        mySmartUpload.upload();
-
-        Files flist = mySmartUpload.getFiles();
-
-        for (int i=0; i<flist.getCount(); i++) {
-            com.jspsmart.upload.File f = flist.getFile(i);
-            String fieldname = f.getFieldName();
-            if (!f.isMissing()) {
-                // is uploaded!
-
-                ByteArrayOutputStream bos = new ByteArrayOutputStream(f.getSize());
-                for (int p=0; p<f.getSize(); p++) {
-                    bos.write(f.getBinaryData(p));
-                }
-
-                byte[] buf = bos.toByteArray();
-                wizardConfig.wiz.setBinary(fieldname, buf, f.getFileName(), f.getFilePathName());
+        List fileItems = fu.parseRequest(request);
+        int fileCount = 0;
+        for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
+            FileItem fi = (FileItem)i.next();
+            if (!fi.isFormField()) {
+                wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fi.getName(), fi.getName());
+                fileCount++;
             }
-
         }
-        out.println("Uploaded files:"+flist.getCount());
-
+        out.println("Uploaded files:"+fileCount);
         %>
             <script language="javascript">
                 try { // Mac IE doesn't always support window.opener.
@@ -93,13 +86,13 @@ if (! ewconfig.subObjects.empty()) {
                 } catch (e) {}
             </script>
         <%
-    } catch (java.lang.SecurityException e) {
+    } catch (FileUploadBase.SizeLimitExceededException e) {
   %>
       Uploaded file exceeds maximum file size of <%=maxsize%> bytes.<br />
       <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
       <a href="javascript:window.close();">abandon upload</a>.
   <%
-    } catch (Exception e) {
+    } catch (FileUploadException e) {
   %>
       An error ocurred while uploading this file (<%=e.toString()%>).<br />
       <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
