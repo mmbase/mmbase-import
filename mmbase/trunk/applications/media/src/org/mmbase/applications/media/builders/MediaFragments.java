@@ -7,8 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
  */
-package org.mmbase.module.builders.media;
-
+package org.mmbase.applications.media.builders;
+import org.mmbase.applications.media.filters.MediaSourceFilter;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
 import java.net.URL;
 import org.mmbase.module.core.*;
@@ -39,7 +40,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.27 2003-01-28 12:51:26 rob Exp $
+ * @version $Id: MediaFragments.java,v 1.1 2003-02-03 17:50:18 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -87,7 +88,7 @@ public class MediaFragments extends MMObjectBuilder {
     static protected Map translateURLArguments(List arguments, Map info) {
         if (info == null) info = new HashMap();
         if (arguments != null) {
-            info.put("format", arguments);
+            info.put("format",  arguments);
         }
         return info;
     }
@@ -104,7 +105,7 @@ public class MediaFragments extends MMObjectBuilder {
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put("longurl", "(<format>) ");
-            info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.ResponseInfo's)");
+            info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.URLComposer's)");
             info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
             info.put(FUNCTION_SUBFRAGMENT, "() Wether this fragment is a subfragment (returns a Boolean)");
             info.put(FUNCTION_AVAILABLE, "() Wether this fragment is 'available'. A fragment can be unaivable when there is a related publishtimes which defines it 'unpublished'");
@@ -183,7 +184,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param node the mediapart node
      * @return the title of the mediapart
      */
-    public String getGUIIndicator(MMObjectNode node) {
+    public String getGUIMIndicator(MMObjectNode node) {
         String url = node.getFunctionValue(FUNCTION_URL, null).toString();
         String title = node.getStringValue("title");
         if ("".equals(title)) title = "***";
@@ -197,7 +198,7 @@ public class MediaFragments extends MMObjectBuilder {
     public String getGUIIndicator(String field, MMObjectNode node) {
         if ("start".equals(field) || "stop".equals(field)) {
             StringBuffer buf = new StringBuffer();
-            FragmentResponseInfo.appendTime(node.getIntValue(field), buf);
+            org.mmbase.applications.media.urlcomposers.FragmentURLComposer.appendTime(node.getIntValue(field), buf);
             return buf.toString();
         }
         return super.getGUIIndicator(field, node);
@@ -225,7 +226,7 @@ public class MediaFragments extends MMObjectBuilder {
     */
 
     /** 
-     * Returns a List of all possible (unfiltered) ResponseInfo's for this Fragment.
+     * Returns a List of all possible (unfiltered) URLComposer's for this Fragment.
      * A list of arguments can be supplied, which is currently unused (but should not be null).
      * It could contain a Map with preferences, or other information about the client.
      *
@@ -266,7 +267,7 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("Getting url of a fragment.");        
         List urls = getSortedURLs(fragment, info);
         if (urls.size() > 0) {
-            return ((ResponseInfo) urls.get(0)).getURL();
+            return ((URLComposer) urls.get(0)).getURL();
         } else {
             return ""; //no sources 
         }
@@ -276,7 +277,7 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("Getting format of a fragment.");        
         List urls = getSortedURLs(fragment, info);
         if (urls.size() > 0) {
-            return ((ResponseInfo) urls.get(0)).getFormat().toString();
+            return ((URLComposer) urls.get(0)).getFormat().toString();
         } else {
             return ""; //no sources 
         }

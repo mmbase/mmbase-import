@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
   
 */
 
-package org.mmbase.module.builders.media;
+package org.mmbase.applications.media.builders;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -21,7 +21,7 @@ import java.util.*;
  * (or extensions) must be related to it. Those will perform the actual task of creating an URL.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.9 2003-01-21 17:46:24 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.1 2003-02-03 17:50:19 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -32,12 +32,13 @@ public class MediaProviders extends MMObjectBuilder {
 
     /**
      * A MediaProvider can provide one or more URL's for every source
-     * @returns A List of ResponseInfo's
+     * @returns A List of URLComposer's
      */
 
     public List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         List result = new ArrayList();
-        // todo: consider posrel
+        // todo: use URLComposerFactory
+        /*
         Iterator composers =  provider.getRelatedNodes("mediaurlcomposers").iterator();
 
         while (composers.hasNext()) {
@@ -48,6 +49,7 @@ public class MediaProviders extends MMObjectBuilder {
             result.addAll(composerurls);
         }
 
+        */
         return result;
 
     }

@@ -8,10 +8,10 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
-import org.mmbase.module.builders.media.Format;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.Format;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.XMLBasicReader;
@@ -25,7 +25,7 @@ import java.util.*;
  * between two values (configured in mediasourcefilter.xml).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.7 2003-02-03 11:06:34 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.1 2003-02-03 17:50:24 michiel Exp $
  */
 public class RealComparator extends  ChainComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
@@ -33,11 +33,11 @@ public class RealComparator extends  ChainComparator {
     public static final String CONFIG_TAG          = "config.realAudio";
     /**
      * Prefer real a little if this filter is used?
-     * Other possibility: Impelmeent it that if one of both ResponseInfo are no reals, that they are equal then.
+     * Other possibility: Impelmeent it that if one of both URLComposer are no reals, that they are equal then.
      */
 
     class RealFormatComparator extends PreferenceComparator {        
-        protected int getPreference(ResponseInfo ri) {           
+        protected int getPreference(URLComposer ri) {           
             if (ri.getFormat() != Format.RM) return 0; 
             return 1;
         }
@@ -69,7 +69,7 @@ public class RealComparator extends  ChainComparator {
          * @param mediaSources the list of appropriate mediasources
          * @return the best realaudio mediasource
          */
-        protected int getPreference(ResponseInfo ri) {
+        protected int getPreference(URLComposer ri) {
             Map info           = ri.getInfo();
             int wantedSpeed    = -1;
 
@@ -126,7 +126,7 @@ public class RealComparator extends  ChainComparator {
          * @param mediaSources the list of appropriate mediasources
          * @return the best realaudio mediasource
          */
-        protected int getPreference(ResponseInfo ri) {
+        protected int getPreference(URLComposer ri) {
             Map info           = ri.getInfo();
             int wantedChannels = -1;
 

@@ -8,13 +8,14 @@ See http://www.MMBase.org/license
   
 */
 
-package org.mmbase.module.builders.media;
+package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.applications.media.Format;
 import java.util.Map;
 
 /**
- * ResponseInfo is a wrapper/container class  around an URL.  It contains besides the
+ * URLComposer is a wrapper/container class  around an URL.  It contains besides the
  * URL some extra meta information about it, like the original source
  * boject of the resource it represents and if it is currently
  * available or not.  An URL can be unavailable because of two
@@ -25,11 +26,10 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResponseInfo.java,v 1.4 2003-01-21 17:46:24 michiel Exp $
- * @todo    Move to org.mmbase.util.media, I think
+ * @version $Id: URLComposer.java,v 1.1 2003-02-03 17:50:34 michiel Exp $
  */
 
-abstract public class ResponseInfo  {
+abstract public class URLComposer  {
     protected MMObjectNode source;
     protected Map          info;
     abstract public String       getURL();

@@ -8,24 +8,24 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 
 /**
  * Facilitates implementing Comparator by defining the 'preference' of one object.
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class PreferenceComparator extends ResponseInfoComparator {
+abstract public class PreferenceComparator extends URLComposerComparator {
     /**
-     *  Implement a preference for this ResponseInfo
+     *  Implement a preference for this URLComposer
      */
 
-    abstract protected int getPreference(ResponseInfo o); 
+    abstract protected int getPreference(URLComposer o); 
     
     
-    final protected int compareResponseInfo(ResponseInfo o1, ResponseInfo o2) {
+    final protected int compareURLComposer(URLComposer o1, URLComposer o2) {
         return getPreference(o2) - getPreference(o1);
     }
 

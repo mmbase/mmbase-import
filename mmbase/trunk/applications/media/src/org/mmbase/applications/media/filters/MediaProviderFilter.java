@@ -8,10 +8,10 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.media.*;
+import org.mmbase.applications.media.builders.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.XMLBasicReader;
