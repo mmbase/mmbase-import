@@ -53,5 +53,5 @@ if [ "$JAVA_HOME" != "" ] ; then
   fi
 fi
 
-$JAVACMD -classpath $LOCALCLASSPATH -Dant.home=${ANT_HOME} $ANT_OPTS org.apache.tools.ant.Main $@
+$JAVACMD -classpath $LOCALCLASSPATH -mx100M -Dant.home=${ANT_HOME} $ANT_OPTS org.apache.tools.ant.Main $@
 
