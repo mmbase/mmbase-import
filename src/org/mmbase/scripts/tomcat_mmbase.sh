@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.6 2000-10-16 22:22:18 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.7 2000-10-16 22:37:14 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -120,12 +120,14 @@ fi
 # Backdoor classpath setting for development purposes when all classes
 # are compiled into a /classes dir and are not yet jarred.
 if [ -d ${TOMCAT_HOME}/classes ]; then
-    CLASSPATH=${TOMCAT_HOME}/classes:${JDBC_CLASSPATH}:${MMBASE_JAR}:${CLASSPATH}
+    CLASSPATH=${TOMCAT_HOME}/classes:${CLASSPATH}
 fi
 
 if [ "$oldCP" != "" ]; then
     CLASSPATH=${CLASSPATH}:${oldCP}
 fi
+
+CLASSPATH=${JDBC_CLASSPATH}:${MMBASE_JAR}:${CLASSPATH}
 
 export CLASSPATH
 
