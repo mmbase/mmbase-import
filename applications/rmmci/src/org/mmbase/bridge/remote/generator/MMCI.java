@@ -102,7 +102,21 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.RelationStep",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.StepField",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SortOrder",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldNullConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompareFieldsConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueInConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueBetweenConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
+
+
+
     }
 
     public static void main(String [] argv) throws Exception{
