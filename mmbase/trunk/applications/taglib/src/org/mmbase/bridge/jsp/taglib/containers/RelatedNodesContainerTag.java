@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.1 2003-09-03 19:40:04 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.2 2003-09-16 18:58:56 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -49,23 +49,29 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
         Step step = query.addStep(node.getNodeManager());
         query.addNode(step, node);
 
-        if (nodeManager != Attribute.NULL) {
-            RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManager.getString(this)), 
+        if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
+
+            String nodeManagerName;
+            if (nodeManager == Attribute.NULL) {
+                nodeManagerName = "object";
+            } else {
+                nodeManagerName = nodeManager.getString(this); 
+            }
+            RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
                                                               (String) role.getValue(this), (String) searchDirs.getValue(this));
             query.setNodeStep(relationStep.getNext());
-            if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
+            if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
             if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
         } else {
-            if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
-            if (role != Attribute.NULL) throw new JspTagException("'role' can only be used in combination with 'type' attribute");
+            if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
 
-            Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+            List newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
             
             if (element != Attribute.NULL) {
                 String alias = element.getString(this);
-                Step nodeStep = query.getStep(alias);
+                Step nodeStep = Queries.searchStep(newSteps, alias);
                 if (nodeStep == null) { 
-                    throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
+                    throw new JspTagException("Could not set element to '" + alias + "' (no such (new) step)");
                 }
                 query.setNodeStep(nodeStep);
             } else {
