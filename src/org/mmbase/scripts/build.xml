@@ -56,7 +56,8 @@ about the Ant build tool.
 
     <!-- distribution dirs -->
     <property name="dist.root" value="${top.dir}/dist"/>
-    <property name="dist.dir" value="${dist.root}/${name}-${version}"/>
+    <property name="dist.version" value="${dist.root}/${name}-${version}"/> 
+    <property name="dist.dir" value="${dist.version}/mmbase"/>
     <property name="dist.lib" value="${dist.dir}/lib"/>
     <property name="dist.src" value="${dist.dir}/src"/>
     <property name="dist.log" value="${dist.dir}/log"/>
@@ -273,9 +274,11 @@ about the Ant build tool.
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
 
-  <target name="dist" depends="compile,jar,javadocs">
+  <!--<target name="dist" depends="compile,jar,javadocs">-->
+<target name="dist" depends="compile,jar">
 
     <mkdir dir="${dist.root}"/>
+    <mkdir dir="${dist.version}"/>
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.lib}"/>
     <mkdir dir="${dist.src}"/>
@@ -327,7 +330,7 @@ about the Ant build tool.
     <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
 
     <!-- zip -->
-    <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.dir}" includes="**"/>
+    <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.version}"/>
 
   </target>
 
