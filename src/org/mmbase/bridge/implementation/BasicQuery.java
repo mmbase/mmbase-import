@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.39 2004-06-26 16:01:03 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.40 2004-07-09 17:24:29 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -445,12 +445,20 @@ public class BasicQuery implements Query  {
 
     }
 
-    public void addNode(Step  s, Node node) {
+    /**
+     * @todo should this method be in the interface?
+     * @since MMBase-1.7.1
+     */
+    public void addNode(Step  s, int nodeNumber) {
         if (used) throw new BridgeException("Query was used already");
         BasicStep step = (BasicStep) s;
-        step.addNode(node.getNumber());
+        step.addNode(nodeNumber);
         return;
+    }
 
+
+    public void addNode(Step  s, Node node) {
+        addNode(s, node.getNumber());
     }
 
     public boolean isUsed() {
