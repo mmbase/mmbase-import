@@ -21,10 +21,16 @@ import org.mmbase.util.*;
  * @version 12 Mar 1997
  */
 public class MMEvents extends MMObjectBuilder {
-
 	MMEventsProbe probe;
+	DateStrings datestrings;
 
 	public MMEvents() {
+	}
+
+	public boolean init() {
+		super.init();
+		datestrings = new DateStrings(mmb.getLanguage());
+		return true;
 	}
 
 	
@@ -68,16 +74,16 @@ public class MMEvents extends MMObjectBuilder {
 			return(DateSupport.getTimeSec(str));
 		} else if (field.indexOf("longmonth_")!=-1) {
 			int str=(int)node.getIntValue(field.substring(10));
-			return(DateStrings.Dutch_longmonths[DateSupport.getMonthInt(str)]);
+			return(datestrings.longmonth[DateSupport.getMonthInt(str)]);
 		} else if (field.indexOf("month_")!=-1) {
 			int str=(int)node.getIntValue(field.substring(6));
-			return(DateStrings.Dutch_months[DateSupport.getMonthInt(str)]);
+			return(datestrings.month[DateSupport.getMonthInt(str)]);
 		} else if (field.indexOf("weekday_")!=-1) {
 			int str=(int)node.getIntValue(field.substring(8));
-			return(DateStrings.Dutch_longdays[DateSupport.getWeekDayInt(str)]);
+			return(datestrings.longday[DateSupport.getWeekDayInt(str)]);
 		} else if (field.indexOf("shortday_")!=-1) {
 			int str=(int)node.getIntValue(field.substring(8));
-			return(DateStrings.Dutch_days[DateSupport.getWeekDayInt(str)]);
+			return(datestrings.day[DateSupport.getWeekDayInt(str)]);
 		} else if (field.indexOf("day_")!=-1) {
 			int str=(int)node.getIntValue(field.substring(4));
 			return(""+DateSupport.getDayInt(str));
