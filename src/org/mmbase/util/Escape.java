@@ -12,6 +12,8 @@ package org.mmbase.util;
 /**
  * Class for escaping single quotes in a string, so that they can be safely
  * included in a SQL statement.
+ * 
+ * @deprecated Use org.mmbase.util.Encode
  */
 public class Escape {
 
