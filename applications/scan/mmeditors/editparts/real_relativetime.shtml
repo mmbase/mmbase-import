@@ -25,6 +25,9 @@
             <CENTER>
             <FONT FACE="Arial,Helvetica">
             <FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/annotcalc.shtml?$PARAM1+$PARAM2+$PARAM3" TARGET="Content">
+  		<INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
+  		<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
+		<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
 				Time:
 				<BR>
 				<table border="1"><tr><td>
