@@ -4,7 +4,7 @@
   <property name="cvspasswd" value="guest"/>
   <property name="cvsmethod" value="pserver"/>
   <property name="mmbaseroot" value="tmp/mmbase-core"/>
-  <property name="cvsroot" value=":${cvsmethod}:${cvsuser}@www.mmbase.org:/usr/local/cvs"/>
+  <property name="cvsroot" value=":${cvsmethod}:${cvsuser}@cvs.mmbase.org:/var/cvs "/>
   <target name="init">
     <cvspass cvsroot="${cvsroot}" password="${cvspasswd}"/>
     <cvs cvsRoot="${cvsroot}" package="mmbase-core" dest="tmp"/>
