@@ -1968,8 +1968,8 @@ public class MMObjectBuilder extends MMTable {
             obj.replace(">","&gt;");
             obj.replace("$","&#36;");
 
-            obj.replace("\r\n\r\n","<p></p>");
-            obj.replace("\n\n","<p></p>");
+            obj.replace("\r\n\r\n","<p> </p>");
+            obj.replace("\n\n","<p> </p>");
             obj.replace("\r\n","<br />");
             obj.replace("\n","<br />");
             rtn=obj.toString();
