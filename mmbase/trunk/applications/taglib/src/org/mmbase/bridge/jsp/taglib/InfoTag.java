@@ -9,85 +9,80 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-//import javax.servlet.*;
-//import javax.servlet.http.*;
 import javax.servlet.jsp.JspTagException;
-//import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.*;
 
 /**
-* Calls 'doInfo' from NodeManager or from Module.
-*
-* @author Michiel Meeuwissen
-*/
-public class InfoTag extends  CloudReferrerTag {
+ * Calls 'doInfo' from NodeManager or from Module.
+ *
+ * @author Michiel Meeuwissen
+ * @deprecated
+ */
+public class InfoTag extends  CloudReferrerTag implements Writer {
     
-    public static boolean debug = true;
     private String nodeManager = null;
     private String module      = null;
+    private String command     = null;
     
-    public void setNodemanager(String nm){
-        nodeManager = nm;
-    }
-    public void setModule(String nm){
-        module = nm;
-    }
-    
-    public int doStartTag() throws JspTagException{
-        return EVAL_BODY_TAG;
-    }
-    
-    /**
-    * implementation of TagExtraInfo return values declared here
-    * should be filled at one point, currently fillVars is responsible for
-    * that ant gets called before every
-    *
-    public VariableInfo[] getVariableInfo(TagData data){
-        VariableInfo[] variableInfo = new VariableInfo[1];;
-        
-        String id = "";
-        if (data.getAttribute("id") != null){
-            id = "" + data.getAttribute("id");
-        }
-        
-        variableInfo[0] = new VariableInfo(id,
-            "java.lang.String",
-            true,
-            VariableInfo.AT_END);
-        return variableInfo;
-    }
-    // tag does not define TEI, now, I think it is need though...
+    protected WriterHelper helper = new WriterHelper(); 
+    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    */
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+
+    public void setNodemanager(String nm) throws JspTagException {
+        nodeManager = getAttributeValue(nm);
+    }
+    public void setModule(String m) throws JspTagException {
+        module = getAttributeValue(m);
+    }
+    public void setCommand(String c) throws JspTagException {
+        command = getAttributeValue(c);
+    }
+
     
-    /**
-    *
-    **/
-    public int doAfterBody() throws JspTagException {
-        
-        //command is in the body of the tag
-        String command = bodyContent.getString();
+    public int doStartTag() throws JspTagException {
         String result;
-        
         if (nodeManager != null) {
             if (module != null) {
                 throw new JspTagException("Cannot give both module and nodemanager");
             }
             result = getCloud().getNodeManager(nodeManager).getInfo(command,
-                                                                           pageContext.getRequest(),
-                pageContext.getResponse());
+                                                                    pageContext.getRequest(),
+                                                                    pageContext.getResponse());
         } else if (module != null) {
             result = getCloudContext().getModule(module).getInfo(command,
-                pageContext.getRequest(),
-                pageContext.getResponse());
+                                                                 pageContext.getRequest(),
+                                                                 pageContext.getResponse());
         } else {
             throw new JspTagException("Must give module or nodemanager");
         }
         
-        //pageContext.getOut().print(retval);
-        pageContext.setAttribute(getId(), result);
-        return SKIP_BODY;        
+        helper.setValue(result);
+        helper.setJspvar(pageContext);  
+        if (getId() != null) {
+            getContextTag().register(getId(), helper.getValue());
+        }
+        return EVAL_BODY_TAG;
+    }
+    
+    /**
+    *
+    **/
+    public int doAfterBody() throws JspTagException {
+        helper.setBodyContent(bodyContent);
+        return helper.doAfterBody();
     }
 
 }
