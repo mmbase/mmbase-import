@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.69 2002-10-03 12:28:10 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.70 2002-10-04 14:47:14 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -88,7 +88,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Instantiates a node, linking it to a specified node manager.
-     * Use this constructor if the node you create uses a NodeManager that is not readily available 
+     * Use this constructor if the node you create uses a NodeManager that is not readily available
      * from the cloud (such as a temporary nodemanager for a result list).
      * @param node the MMObjectNode to base the node on
      * @param nodeManager the NodeManager to use for administrating this Node
@@ -152,8 +152,31 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             temporaryNodeId=noderef.getNumber();
         }
     }
-    
-    
+
+    public boolean isRelation() {
+        return this instanceof Relation;
+    }
+
+    public Relation toRelation() {
+        return (Relation)this;
+    }
+
+    public boolean isNodeManager() {
+        return this instanceof NodeManager;
+    }
+
+    public NodeManager toNodeManager() {
+        return (NodeManager)this;
+    }
+
+    public boolean isRelationManager() {
+        return this instanceof RelationManager;
+    }
+
+    public RelationManager toRelationManager() {
+        return (RelationManager)this;
+    }
+
     public int getByteSize() {
         return getByteSize(new SizeOf());
     }
@@ -317,6 +340,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setBooleanValue(String attribute, boolean value) {
         setValue(attribute,new Boolean(value));
+    }
+
+    public void setNodeValue(String attribute, Node value) {
+        if (value instanceof BasicNode) {
+            setValue(attribute,((BasicNode)value).getNode());
+        } else {
+            setIntValue(attribute,value.getNumber());
+        }
     }
 
     public void setIntValue(String attribute, int value) {
@@ -711,16 +742,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
 
         Enumeration e = getNode().getRelations();
-        
+
         if (e != null) {
             while(e.hasMoreElements()) {
                 MMObjectNode relNode = (MMObjectNode) e.nextElement();
-                log.debug("Found relation node '" + relNode + "'" ); 
+                log.debug("Found relation node '" + relNode + "'" );
                 int rnumber = relNode.getIntValue("rnumber");
-                
+
                 if (rnumber == requestedRole) {
                     int number = relNode.getIntValue("dnumber");
-                    if (number == getNumber()) {           
+                    if (number == getNumber()) {
                         if (dir == ClusterBuilder.SEARCH_DESTINATION) {
                             continue;
                         }
@@ -951,7 +982,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof Node) && 
+        return (o instanceof Node) &&
                getNumber()==((Node)o).getNumber() &&
                cloud.equals(((Node)o).getCloud());
     }
