@@ -10,12 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
-
+import java.util.Map;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.6 2003-07-15 12:36:13 michiel Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.7 2003-07-15 13:02:52 vpro Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
