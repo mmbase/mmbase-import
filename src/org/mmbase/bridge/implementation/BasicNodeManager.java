@@ -51,7 +51,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
     protected void init(MMObjectBuilder builder, Cloud cloud) {
         this.cloud=(BasicCloud)cloud;
         this.builder=builder;
-        if (!builder.tableName.equals("multirelations")) {
+        if (!builder.isVirtual()) {
             for(Iterator i=builder.getFields().iterator(); i.hasNext();){
                 FieldDefs f=(FieldDefs)i.next();
                 Field ft= new BasicField(f,this);

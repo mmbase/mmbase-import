@@ -147,7 +147,7 @@ public class BasicCloud implements Cloud, Cloneable {
             throw new BasicBridgeException("Node with number "+nodenumber+" does not exist.");
         } else {
             assert(Operation.READ,node.getNumber());
-            if (node.getNumber()==-1) {
+            if (node.getIntValue("number")==-1) {
                 return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(nodenumber));
             } else {
                 return new BasicNode(node, getNodeManager(node.parent.getTableName()));
@@ -169,7 +169,8 @@ public class BasicCloud implements Cloud, Cloneable {
         Vector nodeManagers = new Vector();
         for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
-            if (!(bul instanceof org.mmbase.module.builders.MultiRelations)) {
+            if(!bul.isVirtual()) {
+//            if (!(bul instanceof org.mmbase.module.builders.MultiRelations)) {
                 nodeManagers.add(bul.getTableName());
             }
         }
@@ -477,7 +478,7 @@ public class BasicCloud implements Cloud, Cloneable {
             }
             return new BasicNodeList(v,this,tempNodeManager);
         } else {
-            throw new BasicBridgeException("getList failed, parameters are invalid :" +pars);
+            throw new BasicBridgeException("getList failed, parameters are invalid :" +pars+" - "+constraints);
         }
     }
 }
