@@ -1,6 +1,6 @@
 /*
 
-$Id: MMServers.java,v 1.2 2000-02-24 14:03:24 wwwtech Exp $
+$Id: MMServers.java,v 1.3 2000-03-07 16:25:25 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 14:03:24  wwwtech
+- (marcel) Changed System.out into debug and added headers
+
 */
 
 package org.mmbase.module.builders;
@@ -25,12 +28,12 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.2 $ $Date: 2000-02-24 14:03:24 $
+ * @version $Revision: 1.3 $ $Date: 2000-03-07 16:25:25 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	private String  classname = getClass().getName();
-	private boolean debug	  = false;
+	private boolean debug	  = true;
 	private void	debug(String msg){System.out.println(classname+":"+msg);}
 
 	private String javastr;
@@ -109,18 +112,23 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 	private boolean checkMySelf(MMObjectNode node) {
 		boolean state=true;
 		String tmphost=node.getStringValue("host");
+		/* Why ?
 		if (!tmphost.equals(host)) {
 			debug("MMServers-> Running on a new HOST possible problem");
 		}
+		*/
+		if (debug) debug("checkMySelf() updating timestamp");
 		node.setValue("state",1);
 		node.setValue("atime",(int)(System.currentTimeMillis()/1000));
 		node.commit();	
+		if (debug) debug("checkMySelf() updating timestamp done");
 		return(state);
 	}	
 
 	private void checkOther(MMObjectNode node) {
 		int now=(int)(System.currentTimeMillis()/1000);
 		int then=node.getIntValue("atime");
+		if (debug) debug("checkOther() updating state for "+node);
 		if ((now-then)>(60*2)) {
 			if (node.getIntValue("state")!=2) {
 				node.setValue("state",2);
@@ -146,6 +154,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	private void setServicesDown(MMObjectNode node) {
 		Enumeration f=possibleServices.elements();
+		if (debug) debug("setServicesDown() for "+node);
 		while (f.hasMoreElements()) {
 			String type=(String)f.nextElement();
 			Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),type);
@@ -159,6 +168,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 				//node2.commit();
 			}		
 		}
+		if (debug) debug("setServicesDown() for "+node+" done");
 	}
 
 
