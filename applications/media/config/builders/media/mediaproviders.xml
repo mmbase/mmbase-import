@@ -134,7 +134,7 @@
 			<!-- name of the field in the database -->
 			<name>rootpath</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="i200" notnull="false">STRING</type>
+			<type state="persistent" size="200" notnull="false">STRING</type>
 		</db>
 	</field>
 
