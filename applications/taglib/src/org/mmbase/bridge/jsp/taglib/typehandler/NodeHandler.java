@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.Encode;
 import java.util.*;
@@ -22,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.11 2003-07-31 15:57:13 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.12 2003-07-31 20:30:23 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -149,10 +151,15 @@ public class NodeHandler extends IntegerHandler {
             if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
                 return "";
             } else {
-                return super.whereHtmlInput(field, query);
+                String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+                if (search == null || "".equals(search)) {
+                    return null;
+                }
+                NodeListConstraintTag.addConstraint(query, fieldName, getOperator(), search);
+                return "";
             }
         }                
-        return super.whereHtmlInput(field);
+        return super.whereHtmlInput(field, query);
     }
 
 }
