@@ -2020,12 +2020,33 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
   </tag>
   <tag>
+    <name>maycreaterelation</name>
+    <extends>cloudreferrer</extends>
+    <extends>condition</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
+    <info>
+    Check if a relation may be created.
+    </info>
+    <attribute>
+        <name>type</name>
+        <required>true</required>
+    </attribute>
+    <attribute>
+        <name>source</name>
+        <required>true</required>
+    </attribute>
+    <attribute>
+        <name>destination</name>
+        <required>true</required>
+    </attribute>
+  </tag>
+  <tag>
     <name>maylink</name>
     <extends>nodereferrer</extends>
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
     <info>
-    Check if it's allowed to link to this node.
+    This tag will be removed!
     </info>
   </tag>
   <tag>

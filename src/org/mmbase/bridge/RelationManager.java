@@ -82,5 +82,13 @@ public interface RelationManager extends NodeManager {
 
     public RelationList getRelations(Node node);
 
+    /**
+     * Check if the current user may create a new relation of this type between
+     * the specified nodes.
+     *
+     * @return  Check if the current user may create a new relation of this type
+     *          between the specified nodes.
+     */
+    public boolean mayCreateRelation(Node sourceNode, Node destinationNode);
 
 }

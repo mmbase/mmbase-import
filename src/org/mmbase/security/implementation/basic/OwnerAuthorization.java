@@ -93,10 +93,6 @@ public class OwnerAuthorization extends Authorization {
         switch(operation.getInt()) {
     	    // say we may always create, if we are authenticated.	
             case Operation.CREATE_INT:
-	    // nah, we always except links from other nodes.....		
-            case Operation.LINK_INT:            	
-            	permitted = !(user.getRank() == Rank.ANONYMOUS);
-            	break;
     	    // nah, we may always view other nodes.,....		
             case Operation.READ_INT:         
             	permitted = true;
@@ -135,6 +131,28 @@ public class OwnerAuthorization extends Authorization {
         // hmm, we can use check :)
         if(manager.getActive()){
             if (!check(user, node, operation)) {               
+                throw new org.mmbase.security.SecurityException(
+                    "Operation '" + operation + "' on " + node + " was NOT permitted to " + user.getIdentifier());
+            }
+        }
+    }
+
+    public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) {        
+        if(manager.getActive()){
+            // nah, we always except links from other nodes if not anonymous
+            if (user.getRank() == Rank.ANONYMOUS) {
+                log.info(" user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber  + "   operation was NOT permitted");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void assert(UserContext user, int node, int srcNode, int dstNode, Operation operation) 
+        throws org.mmbase.security.SecurityException {
+        // hmm, we can use check :)
+        if(manager.getActive()){
+            if (!check(user, node, srcNode, dstNode, operation)) {               
                 throw new org.mmbase.security.SecurityException(
                     "Operation '" + operation + "' on " + node + " was NOT permitted to " + user.getIdentifier());
             }
