@@ -46,7 +46,7 @@ one or more examplevalue tags is you want to give some example values.
     <p>
     MMBase consists of a cloud of nodes (objects) wich can be related to each other. Relations can
     be seen as nodes with two arms which they use to connect two other nodes. Nodes of a specific
-    type (like a person node who holds a person's data) have their own nodemanager. A node manager
+	  type (like a person node who holds a person's data) have their own nodemanager. A node manager
     can have functions wich are specific for the type of nodes it is managing. Just like a cloud can
     contain different type of nodes it can contain different type of relations. And just like
     specific type of nodes have their own nodemanager, relations of a specific type have their own
@@ -2025,10 +2025,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
     <info>
-    Check if a relation may be created.
+    Check if a relation between two nodes may be created.
     </info>
     <attribute>
-        <name>type</name>
+        <name>role</name>
         <required>true</required>
     </attribute>
     <attribute>
@@ -2039,6 +2039,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>destination</name>
         <required>true</required>
     </attribute>
+    <see>createrelation</see>
   </tag>
   <tag>
     <name>maylink</name>

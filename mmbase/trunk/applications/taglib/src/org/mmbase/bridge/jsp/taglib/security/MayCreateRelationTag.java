@@ -10,40 +10,40 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.security;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.jsp.taglib.Condition;
 
 
 /**
-* A very simple tag to check if a relation may be created.
+* A very simple tag to check if a relation may be created. It needs two nodes.
 * 
 * @author Jaco de Groot
+* @author Michiel Meeuwissen
 */
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
-    private String type;
+    private String role;
     private String source;
     private String destination;
 
-    public void setType(String type) {
-        this.type = type;
+    public void setRole(String r) throws JspTagException {
+        role = getAttributeValue(r);
     }
 
-    public void setSourceNode(String source) {
-        this.source = source;
+    public void setSource(String s) throws JspTagException {
+        source = getAttributeValue(s);
     }
 
-    public void setDestinationNode(String destination) {
-        this.destination = destination;
+    public void setDestination(String d) throws JspTagException {
+        destination = getAttributeValue(d);
     }
                
-    public int doStartTag() throws JspTagException {
-        Cloud cloud = getCloud();
-        RelationManager rm = cloud.getRelationManager(type);
-        Node src = cloud.getNode(source);
-        Node dst = cloud.getNode(destination);
-        if (rm.mayCreateRelation(src, dst) != inverse) {
+    public int doStartTag() throws JspTagException { 
+        RelationManager rm   = getCloud().getRelationManager(role);
+        Node sourceNode      = getNode(source);
+        Node destinationNode = getNode(destination);        
+
+        if (rm.mayCreateRelation(sourceNode, destinationNode) != inverse) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
