@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import org.mmbase.bridge.util.xml.DocumentConverter;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
@@ -30,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.114 2003-12-23 20:00:32 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.115 2003-12-30 09:14:17 nico Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -428,7 +427,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setStringValue(String fieldName, String value) {
-        log.info("setString on node " + getNumber());
+//        log.info("setString on node " + getNumber());
         value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, value);
     }
@@ -661,7 +660,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
                 }
                 MMObjectNode node = getNode();
-                int number = getNumber();
                 //node.getBuilder().removeNode(node);
                 node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                 //cloud.removeSecurityInfo(number);
@@ -683,7 +681,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param type  the type of relation (-1 = don't care)
      */
     private void deleteRelations(int type) {
-        RelDef reldef = mmb.getRelDef();
         List relations = null;
         if (type == -1) {
             relations = mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
@@ -707,7 +704,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
-                        int number = node.getNumber();
                         node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                     }
                 }
@@ -741,7 +737,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
         InsRel relbuilder = mmb.getInsRel();
-        Enumeration e = null;
         if ((role != 1) || (otype != -1)) {
             if (role != -1) {
                 relbuilder = mmb.getRelDef().getBuilder(role);
@@ -978,8 +973,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         String oMmbaseId = "" + node.getValue("number");
                         String currentObjectContext =
                             BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
-                        ((BasicTransaction)cloud).add(currentObjectContext);
-                        ((BasicTransaction)cloud).delete(currentObjectContext);
+                        tran.add(currentObjectContext);
+                        tran.delete(currentObjectContext);
                     } else {
                         node.remove( ((BasicUser)cloud.getUser()).getUserContext());
                     }
