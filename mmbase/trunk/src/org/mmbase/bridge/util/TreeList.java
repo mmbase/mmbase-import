@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.4 2003-12-19 12:56:03 michiel Exp $
+ * @version $Id: TreeList.java,v 1.5 2003-12-24 16:35:16 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -253,8 +253,16 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
                 int i = 0;
                 while (prepare(i)) {
                     NodeIterator iterator = (NodeIterator) nodeIterators.get(i);
-                    if (iterator.hasNext()) return true;
-                    i++;
+                    if (iterator == null) {
+                        return false;
+                    }
+                    Node nextNode = (Node) nextNodes.get(i);
+
+                    if (nextNode != null) {
+                        return true;
+                    } else {
+                        i++;
+                    }
                 }
                 return false;
             }
@@ -322,7 +330,7 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
         public int currentDepth() {
             int depth = (((Query) TreeList.this.queries.get(currentIterator)).getSteps().size() + 1) / 2; 
             if (nextIndex == 0) { 
-                return depth -1;
+                return depth - 1;
             } else {
                 return depth;
             }
@@ -381,6 +389,9 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
 
             List steps = ((Query) TreeList.this.queries.get(currentIterator)).getSteps();
 
+            if (log.isDebugEnabled()) {
+                log.debug("comparing " + lastNode + " with " + nextListNextNode);
+            }
             boolean contains = true;
             Iterator i = steps.iterator();
             while (i.hasNext()) {
@@ -473,30 +484,52 @@ public  class TreeList extends AbstractSequentialBridgeList implements NodeList 
 
         NodeManager object = cloud.getNodeManager("object");
 
-        NodeQuery q = object.createQuery();
+        NodeQuery q = cloud.createNodeQuery();
+        Step step = q.addStep(object);
+        q.setNodeStep(step);
+        RelationStep relationStep = q.addRelationStep(object, null, "destination");
+        q.setNodeStep(relationStep.getNext());
+
+        object.getList(q);
+
+
         Queries.addStartNodes(q, startNodes);
         return q;
     }
 
-    public static void  main(String[] args) {
-
-        NodeQuery q = getQuery(args);
+    public static void doTest(java.io.Writer writer, NodeQuery q) {
         Cloud    cloud = q.getCloud();
 
         NodeManager object = cloud.getNodeManager("object");
+        try {
+            
+            long startTime = System.currentTimeMillis();
 
-        TreeList tree = new TreeList(q);
-
-        tree.grow(object, null, "destination");
-        tree.grow(object, null, "destination");
-
-        Iterator i = tree.iterator();
-        while (i.hasNext()) {
-            Node n = (Node) i.next();
-            System.out.println(n.toString());
+            TreeList tree = new TreeList(q);
+            
+            tree.grow(object, null, "destination");
+            tree.grow(object, null, "destination");
+            
+            TreeIterator i = tree.treeIterator();
+            writer.write("initial depth " + i.currentDepth() + "\n");
+            while (i.hasNext()) {
+                Node n = (Node) i.next();
+                writer.write(i.currentDepth() + "   " + " " + n.toString() + "\n");
+                writer.flush();
+            }
+            writer.write("size: " + tree.size() + "\n");
+            writer.write("duration: " + (System.currentTimeMillis() - startTime) + " ms\n");
+            writer.write("finish depth: " + i.currentDepth());
+            writer.flush();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + e.getMessage() + Logging.stackTrace(e));
         }
+            
+    }
 
-        
+    public static void  main(String[] args) {
+        NodeQuery q = getQuery(args);
+        doTest(new java.io.OutputStreamWriter(System.out), q);
         
     }
 
