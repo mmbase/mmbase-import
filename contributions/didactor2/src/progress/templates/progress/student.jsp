@@ -44,6 +44,24 @@
     </mm:node>
   </div>
   <div class="contentBodywit">
+
+
+<mm:import externid="showfeedback"/>
+<mm:present referid="showfeedback">
+    <mm:import externid="madetest" required="true"/>
+    <mm:import externid="tests" required="true"/>
+    <mm:node number="$tests">
+    <b>Uitslag van test <mm:field name="name"/></b><br>
+    </mm:node>
+    <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids" >
+            <mm:param name="madetes"><mm:write referid="madetest"/></mm:param>
+            <mm:param name="tests"><mm:write referid="tests"/></mm:param>
+    </mm:treeinclude>
+</mm:present>
+<mm:notpresent referid="showfeedback">
+ 
+
+  
 <table class="Font">
 <tr>
     <td>Percentage doorlopen:</td><td>
@@ -171,9 +189,10 @@
             <mm:field name="name"/>
         </mm:compare>
         <mm:compare  referid="teststatus" value="incomplete" inverse="true">
-        <a href="<mm:treefile page="/education/tests/feedback.jsp" objectlist="$includePath" referids="$referids" >
+        <a href="<mm:treefile page="/progress/student.jsp" objectlist="$includePath" referids="$referids" >
             <mm:param name="madetest"><mm:write referid="madetestNo"/></mm:param>
             <mm:param name="tests"><mm:write referid="testNo"/></mm:param>
+            <mm:param name="showfeedback">true</mm:param>
         </mm:treefile>"/><mm:field name="name"/></a>
         </mm:compare>
         
@@ -221,6 +240,8 @@
 </mm:node> <%-- education --%>
 <mm:remove referid="copybookNo"/>
 </mm:node>
+
+</mm:notpresent>
 </table>
  </div>
 </div>
