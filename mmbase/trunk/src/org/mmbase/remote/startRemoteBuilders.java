@@ -28,7 +28,7 @@ import java.util.*;
 public class startRemoteBuilders {
 
 	private	String 	classname 	= getClass().getName();
-	private boolean	debug		= RemoteBuilder.debug;
+	private boolean	debug		= true;
 	private void	debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	static Vector runningServices=new Vector();
