@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ConstraintParserTest extends TestCase {
     
@@ -538,6 +538,12 @@ public class ConstraintParserTest extends TestCase {
             new BasicLegacyConstraint("abc DEF ghi");
         constraint = instance.toConstraint("abc DEF ghi");
         assertTrue(constraint.toString(), constraint.equals(constraint2));
+        
+        // Legacy constraint - format "WHERE ...." not supported
+        BasicLegacyConstraint constraint3 =
+            new BasicLegacyConstraint("WHERE step1.title = 'abc def'");
+        constraint = instance.toConstraint("WHERE step1.title = 'abc def'");
+        assertTrue(constraint.toString(), constraint.equals(constraint3));
     }
     
     public static Test suite() {
