@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.31 2000-07-17 12:22:36 install Exp $
+	$Id: Images.java,v 1.32 2000-07-20 14:30:32 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.31  2000/07/17 12:22:36  install
+	Rob
+	
 	Revision 1.30  2000/07/13 15:57:31  install
 	Rob: Dynamic scanner support almost finished
 	
@@ -104,7 +107,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.31 2000-07-17 12:22:36 install Exp $
+ * @version $Id: Images.java,v 1.32 2000-07-20 14:30:32 daniel Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -326,6 +329,10 @@ public class Images extends MMObjectBuilder {
 
 
             if (cmd.equals("devices")) {
+				// hi, rob don't should me was missing
+				//a method so changed it not sure if its
+				//valid, daniel.
+				/*
 				Vector activeBuilders = mmb.getTypeDef().activeBuilders();
 
 				// Get all images devices.
@@ -338,6 +345,17 @@ public class Images extends MMObjectBuilder {
 				if(activeBuilders.contains("pccards")) {
 					getDevices("pccards",devices);
 				} 
+				*/
+				if(mmb.getMMObject("scanners")!=null) {
+					getDevices("scanners",devices);
+				} 
+				if(mmb.getMMObject("cameras")!=null) {
+					getDevices("cameras",devices);
+				} 
+				if(mmb.getMMObject("pccards")!=null) {
+					getDevices("pccards",devices);
+				} 
+
 		        tagger.setValue("ITEMS","2");
 				return devices;	
 			}
