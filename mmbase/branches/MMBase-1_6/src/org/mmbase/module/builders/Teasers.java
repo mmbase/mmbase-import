@@ -20,15 +20,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @application Teaser [builder]
- * @javadoc
- * @deprecation-used remove commented-out code
- * @code-conventions
- * @vpro in various methods
- * @sql in various methods
- * @author Daniel Ockeloen
- * @author Rico Jansen
- * @version $Id: Teasers.java,v 1.20 2002-01-29 10:57:15 pierre Exp $
+ * @deprecated Class is only in use by the vpro and will be removed from the MMBase repository
+ * @version $Id: Teasers.java,v 1.20.4.1 2003-03-04 15:00:39 vpro Exp $
  */
 public class Teasers extends MMObjectBuilder {
 

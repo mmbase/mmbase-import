@@ -20,11 +20,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @application Basic [builder]
- * @rename Pools (compliant with other builder names)
- * @javadoc
- * @code-conventions
- * @sql in various methods
+ * @deprecated class will be removed from the 1.7 distro (its methods are not used).
  * @author Hans Speijer
  */
 public class PoolBuilder extends MMObjectBuilder {
