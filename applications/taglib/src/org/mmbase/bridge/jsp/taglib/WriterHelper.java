@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.41 2003-12-24 00:33:17 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.42 2004-01-19 13:32:11 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -205,7 +205,7 @@ public class WriterHelper extends BodyTagSupport {
     }
 
     /**
-     * @deprecated use 'setTag' in doStartTag. Jspvar will be set by setValue then
+     * @deprecated jspvar will be set by setValue then
      */
     public void setJspvar(PageContext p) throws JspTagException {
         pageContext = p;
