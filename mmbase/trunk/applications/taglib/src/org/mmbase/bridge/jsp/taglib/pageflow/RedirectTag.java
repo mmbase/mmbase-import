@@ -27,14 +27,13 @@ import org.mmbase.util.logging.Logging;
  * Does a redirect, using the features of UrlTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RedirectTag.java,v 1.2 2004-05-10 12:51:01 michiel Exp $
+ * @version $Id: RedirectTag.java,v 1.3 2004-05-17 19:51:39 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class RedirectTag extends UrlTag  {
 
     private static final Logger log = Logging.getLoggerInstance(RedirectTag.class); 
-
 
     /**
      * Method called at end of Tag used to send redirect,
@@ -50,9 +49,13 @@ public class RedirectTag extends UrlTag  {
             while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
                 response = ((GenericResponseWrapper) response).getWrappedResponse();
             } 
-            String url = response.encodeRedirectURL(getUrl(false, false));
-            log.info("Redirecting to " + url);
-            response.sendRedirect(url);
+
+            String url = getUrl(false, false);
+            String encodedUrl = response.encodeRedirectURL(url);
+            if (log.isDebugEnabled()) {
+                log.debug("Redirecting to " + url + " / " + encodedUrl);
+            }
+            response.sendRedirect(encodedUrl);
         } catch (java.io.IOException io) {
             throw new TaglibException(io);
         }
