@@ -21,6 +21,8 @@ import javax.servlet.jsp.tagext.*;
 import sun.misc.BASE64Decoder;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.CloudContext;
+import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.BridgeException;
 import org.mmbase.security.Rank; // hmm.
 
@@ -28,13 +30,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* MMCloud
+* CloudTag
 * Creates a cloud object (pulling it from if session necessary)
 *
 * @author Pierre van Rooden
+* @author Michiel Meeuwissen
 *
 **/
-public class CloudTag extends BaseTag implements BodyTag{
+public class CloudTag extends BodyTagSupport {
     /*
         keesj: This class is full of ugly authentication code
         we should create an authenticationFactory. An other problem
@@ -47,8 +50,12 @@ public class CloudTag extends BaseTag implements BodyTag{
         One other question we should have answer to is if the tags are created once and reused
         or are created for every page etc...
     */
+
+    public  static String DEFAULT_CLOUD_NAME = "mmbase";
     
     private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
+
+    private static CloudContext cloudContext;
     
     private String cloudName  = DEFAULT_CLOUD_NAME;
     private Cloud  cloud;
@@ -58,31 +65,30 @@ public class CloudTag extends BaseTag implements BodyTag{
     private String method = null; // how to log on, method can only be 'http'.
     private String logon = null;  
     private String pwd = null;
+
+    private BodyContent bodyContent; 
+
+    private boolean success = true;
+    private String  failMessage = "<h1>CloudTag</h1>";
     
     private HttpSession session;
     private HttpServletRequest  request;
     private HttpServletResponse response;
     
-    
+        
     /**
-    * Implementation of TagExtraInfo return values declared here
-    * should be filled at one point, in this case with setPageCloud.
+    * @return the default cloud context 
     **/
-    public VariableInfo[] getVariableInfo(TagData data){      
-        VariableInfo[] variableInfo = null;
-        if (data.getAttribute("name") != null) {
-            cloudName= "" + data.getAttribute("name");
-        } else {
-            cloudName = DEFAULT_CLOUD_NAME;
-        }
-        variableInfo    =  new VariableInfo[1];
-        variableInfo[0] =  new VariableInfo("cloud", "org.mmbase.bridge.Cloud", true, VariableInfo.NESTED);
-        return variableInfo;
+    public CloudContext getDefaultCloudContext(){
+        if (cloudContext == null){
+            cloudContext=LocalContext.getCloudContext();
+        } 
+        return cloudContext;
     }
     
     
     public void setName(String name){
-        cloudName = name;
+        cloudName = name;        
     }
     
     public void setLogon(String logon){
@@ -133,8 +139,9 @@ public class CloudTag extends BaseTag implements BodyTag{
         session  = (HttpSession)pageContext.getSession();
         request  = (HttpServletRequest)pageContext.getRequest();
         response = (HttpServletResponse)pageContext.getResponse();
-        cloud = (Cloud)session.getAttribute("cloud_"+cloudName);
-        
+        cloud = (Cloud)session.getAttribute("cloud_" + cloudName);
+
+        log.debug("startTag " + cloud);
         if ("asIs".equals(method)) {
             // this is handy. 'logon' will be ignored, the cloud is as is was in the session
             log.debug("requested the cloud 'as is'");
@@ -148,6 +155,7 @@ public class CloudTag extends BaseTag implements BodyTag{
         if (cloud != null) {         
             // we have a cloud, check if it is a desired one
             // otherwise make it null.
+            log.debug("found cloud in session m: " + method + " l: " + logon);
             
             if ("anonymous".equals(method)) { 
                 // explicity anonymous. 'logon' will be ignored
@@ -161,17 +169,21 @@ public class CloudTag extends BaseTag implements BodyTag{
                 }
             } else if (logon == null && method != null) { 
                 // authorisation was requested, but not indicated for whom 
+                log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());                
                 if (cloud.getUser().getRank() == Rank.ANONYMOUS) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
                     session.setAttribute("cloud_" + cloudName, null);
                 }
             } else  if (logon != null) { 
+                log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
                 // a logon name was given, check if logged on as the right one
                 if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
                     log.debug("logged on, but as wrong user. log out first.");
                     cloud = null;
                     session.setAttribute("cloud_" + cloudName, null);
+                } else {
+                    log.debug("Cloud is ok already");
                 }
             }
         }
@@ -206,14 +218,23 @@ public class CloudTag extends BaseTag implements BodyTag{
                     log.debug("http with username");
                     if (! logon.equals(username)) {
                         log.debug("username not correct");
-                        logon = null;
                         deny(response);
+                        // if cancel
+
+                        // this cannot be done with an exception, because the page must 
+                        // flow ahead, to give the popup opportunity to pop up.
+                        success = false;
+                        failMessage += "<h2>Wrong username</h2> must be " + logon + "";
+                        logon = null;                       
+                        
                     }
-                } else {
+                } else { // logon == null
                     log.debug("http without username");
                     if (username == null) { // there must be at least known a username...
                         log.debug("no username known");
                         deny(response);
+                        success = false;
+                        failMessage += "<h2>No username given</h2>";
                     }
                     logon = username;
                 }
@@ -232,15 +253,16 @@ public class CloudTag extends BaseTag implements BodyTag{
                     // did not succeed, so problably the password was wrong.
                     if ( "http".equals(method)) { // give a deny, people can retry the password then.
                         deny(response);                    
-                        // in case they give up, give an anonymous cloud:
-                        logon = null; 
-                        cloud = getDefaultCloudContext().getCloud(cloudName);
-                    } else { // strange, no method given, password wrong (or missing), that's really wrong.
+                        // if people cancel:
+                        success = false;
+                        failMessage = "<h2>This page requires authentication</h2>"; 
+                     } else { // strange, no method given, password wrong (or missing), that's really wrong.
                         throw new JspTagException("Logon of user " + logon + " failed." + 
                             (pwd == null ? " (no password given)" : " (wrong password)"));
                     }
                 }
             } else { 
+                log.debug("no login given, creating anonymous cloud");
                 // no logon, create an anonymous cloud.
                 cloud = getDefaultCloudContext().getCloud(cloudName);
             }
@@ -252,21 +274,31 @@ public class CloudTag extends BaseTag implements BodyTag{
                 session.setAttribute("cloud_" + cloudName, cloud);
             }
         }        
-        //pageContext.setAttribute("cloud", pageCloud);
+        pageContext.setAttribute("cloud", cloud);
         return EVAL_BODY_TAG;
     }
     
     public void doInitBody() throws JspException {
-        pageContext.setAttribute("cloud",getPageCloud());
+        pageContext.setAttribute("cloud", cloud);
     }
     
     public int doAfterBody() throws JspException {
         try {
-            bodyOut.writeOut(bodyOut.getEnclosingWriter());
-            return Tag.SKIP_BODY;
+            bodyContent = getBodyContent();
+            if (success) {                
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } else {
+                bodyContent.getEnclosingWriter().write(failMessage);
+            }
+            return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
+    }
+
+    public int doEndTag() throws JspException {
+        log.debug("end tag");
+        return EVAL_PAGE;
     }
 
 }
