@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ReturnType.java,v 1.5 2004-12-15 16:08:24 daniel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends AbstractDataType {
@@ -68,6 +68,11 @@ public class ReturnType extends AbstractDataType {
      * The return type of a function is unknown.
      */
     public static final ReturnType UNKNOWN = new ReturnType(Object.class, "unknown");
+
+    /**
+     * The return type of a function is None
+     */
+    public static final ReturnType NONE = new ReturnType(Object.class, "none");
 
     /**
      * Can be return by functions that don't want to return anything. (The function framework
