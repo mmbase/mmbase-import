@@ -147,12 +147,12 @@ public class MessageNode implements Node {
         invalidOperation();  // not implemented
         return null;
     }
-    
+
     public org.w3c.dom.Document getXMLValue(String fieldname) {
         invalidOperation();  // not implemented
         return null;
-    }    
-    
+    }
+
     public void setXMLValue(java.lang.String field, org.w3c.dom.Document value) {
         invalidOperation();  // not implemented
 
@@ -228,7 +228,7 @@ public class MessageNode implements Node {
     public void deleteAlias(String alias) { invalidOperation(); }
 
     public Relation createRelation(Node destinationNode,
-                                   RelationManager relationManager) {
+                                   Node relationManager) {
         invalidOperation();
         return null;
     }
