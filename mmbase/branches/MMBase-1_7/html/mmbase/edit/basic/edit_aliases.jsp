@@ -22,7 +22,7 @@
 
 <form name="add_alias" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" />'>
 <table class="edit" summary="alias editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
-<tr><th>Aliases of node <mm:field name="gui()" /></th></tr>
+<tr><th>Aliases of node <mm:nodeinfo type="gui" /></th></tr>
 <tr><td>
 <table width="100%">
 <mm:aliaslist id="alias"> 
