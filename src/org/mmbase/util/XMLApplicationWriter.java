@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @move org.mmbase.util.xml
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it?
- * @version $Id: XMLApplicationWriter.java,v 1.22 2003-03-18 16:21:47 pierre Exp $
+ * @version $Id: XMLApplicationWriter.java,v 1.23 2003-04-10 07:59:42 pierre Exp $
  */
 public class XMLApplicationWriter  {
 
@@ -297,7 +297,7 @@ public class XMLApplicationWriter  {
                 try {
                     BuilderWriter builderOut=new BuilderWriter(bul);
                     builderOut.setIncludeComments(true);
-                    builderOut.setExpandBuilder(true);
+                    builderOut.setExpandBuilder(false);
                     builderOut.writeToFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml");
                 } catch (Exception ex) {
                     log.error(Logging.stackTrace(ex));
