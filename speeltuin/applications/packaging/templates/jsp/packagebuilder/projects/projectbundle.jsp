@@ -29,9 +29,9 @@
 	</tr>
 	  <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
  	    <tr><th>Target</th><td><mm:field name="name" /></td>
- 	    <tr><th>Bundle</th><td><mm:field name="bundlename" /></td>
+ 	    <tr><th>Bundle</th><td><mm:field name="bundlename"><mm:compare value=""><font color="red">missing name</font></mm:compare></mm:field><mm:field name="bundlename" /></td>
  	    <tr><th>Type</th><td><mm:field name="type" /></td>
- 	    <tr><th>Maintainer</th><td><mm:field name="maintainer" /></td>
+ 	    <tr><th>Maintainer</th><td><mm:field name="maintainer"><mm:compare value=""><font color="red">missing name</font></mm:compare></mm:field><mm:field name="maintainer" /></td>
 	  </mm:nodefunction>
 </table>
 </td>
@@ -272,7 +272,7 @@
 <tr>    
 <form action="<mm:url page="index.jsp" referids="main,name,bundle"><mm:param name="sub" value="project" /></mm:url>" method="post">
         <th colspan="2">Delete this target </th>
-	<input type="hidden" name="action" value="delproject" />
+	<input type="hidden" name="action" value="deltarget" />
 <tr><td height="30"><center><input type="submit" value="Yes, delete"></center></td>
 	</form>
 	<form action="<mm:url page="index.jsp" referids="main,sub,name,bundle"><mm:param name="mode" value="none" /></mm:url>" method="post">
@@ -294,7 +294,7 @@
 <tr>
 <form action="<mm:url page="index.jsp" referids="main,sub,name,bundle,mode" />" method="post">
 	<td  valign="top">
-		<b>Bundle Name</b><p />
+                <b><mm:field name="bundlename"><mm:compare value=""><font color="red">Bundle Name</font></mm:compare><mm:compare value="" inverse="true">Bundle Name</mm:compare></mm:field></b><p />
 		<input type="hidden" name="action" value="setpackagename" />
 		&nbsp;&nbsp;<input name="newname" size="30" value="<mm:field name="bundlename" />">
 		<input type="submit" value="save">
@@ -302,7 +302,7 @@
 </form>
 <form action="<mm:url page="index.jsp" referids="main,sub,name,bundle,mode" />" method="post">
 	<td  valign="top">
-		<b>Bundle Maintainer</b><p />
+                <b><mm:field name="maintainer"><mm:compare value=""><font color="red">Bundle Maintainer</font></mm:compare><mm:compare value="" inverse="true">Bundle Maintainer</mm:compare></mm:field></b><p />
 		<input name="newmaintainer" size="30" value="<mm:field name="maintainer" />" >
 		<input type="hidden" name="action" value="setpackagemaintainer" />
 		<input type="submit" value="save">
@@ -312,7 +312,7 @@
 <tr>
 <form action="<mm:url page="index.jsp" referids="main,sub,name,bundle,mode" />" method="post">
 	<td colspan="2" valign="top">
-		<b>Package Description</b><p />
+                <b><mm:field name="description"><mm:compare value=""><font color="red">Bundle Description</font></mm:compare><mm:compare value="" inverse="true">Bundle Description</mm:compare></mm:field></b><p />
 		<center><textarea name="newdescription" rows="7" style="width: 98%"><mm:field name="description" /></textarea></center>
 		<p />
 		 <input type="hidden" name="action" value="setpackagedescription" />
@@ -362,7 +362,7 @@
 	</td>
 	<td valign="top">
 		<br />
-		<b>Licence info</b><p />
+                <b><mm:field name="licensetype"><mm:compare value=""><font color="red">License Info</font></mm:compare><mm:compare value="" inverse="true">License Info</mm:compare></mm:field></b><p />
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,bundle,mode" />" method="post">
 		Type : <select name="newlicensetype">
 			<option><mm:field name="licensetype" />

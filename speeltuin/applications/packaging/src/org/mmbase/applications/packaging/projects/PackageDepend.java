@@ -60,7 +60,6 @@ public class PackageDepend {
    }
 
    public void setVersionMode(String versionmode) {
-	log.info("HUH="+versionmode);
 	this.versionmode=versionmode;
    }
 

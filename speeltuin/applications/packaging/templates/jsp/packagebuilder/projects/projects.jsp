@@ -22,7 +22,7 @@
 <tr>
 		<td width="200">
 			<mm:field name="name">
-			<A HREF="<mm:url page="index.jsp"><mm:param name="main" value="$main" /><mm:param name="sub" value="project" /><mm:param name="name" value="$_" /></mm:url>"><mm:field name="name" /></a>
+			<A HREF="<mm:url page="index.jsp"><mm:param name="main" value="$main" /><mm:param name="sub" value="project" /><mm:param name="name" value="$_" /></mm:url>"><mm:field name="syntaxerrors"><mm:compare value="true"><font color="red"><mm:field name="name" /></font></mm:compare><mm:compare value="false"><mm:field name="name" /></mm:compare></mm:field></a>
 			</mm:field>
 		</td>
 		<td>

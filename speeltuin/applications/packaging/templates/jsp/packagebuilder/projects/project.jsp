@@ -76,7 +76,7 @@
 <tr>
 		<td width="200">
 			<mm:field name="name">
-			<A HREF="<mm:url referid="baseurl" referids="name"><mm:param name="sub" value="projectbundle" /><mm:param name="bundle" value="$_" /></mm:url>"><mm:field name="name" /></a>
+			<A HREF="<mm:url referid="baseurl" referids="name"><mm:param name="sub" value="projectbundle" /><mm:param name="bundle" value="$_" /></mm:url>"><mm:field name="syntaxerrors"><mm:compare value="true"><font color="red"><mm:field name="name" /></font></mm:compare><mm:compare value="false"><mm:field name="name" /></mm:compare></mm:field></a>
 			</mm:field>
 		</td>
 		<td>
@@ -129,7 +129,7 @@
 <TR>
 		<td width="200">
 			<mm:field name="name">
-			<A HREF="<mm:url referid="baseurl" referids="name"><mm:param name="sub" value="projectpackage" /><mm:param name="package" value="$_" /></mm:url>"><mm:field name="name" /></a>
+			<A HREF="<mm:url referid="baseurl" referids="name"><mm:param name="sub" value="projectpackage" /><mm:param name="package" value="$_" /></mm:url>"><mm:field name="syntaxerrors"><mm:compare value="true"><font color="red"><mm:field name="name" /></font></mm:compare><mm:compare value="false"><mm:field name="name" /></mm:compare></mm:field></a>
 			</mm:field>
 		</td>
 		<td>
