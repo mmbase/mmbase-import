@@ -35,10 +35,9 @@ table   {
 
 
 td {
-    color: #42BDAD;
-    vertical-align : top;
-    horizontal-align : left;	
-    border-width: 1;		
+  color: #42BDAD;
+  vertical-align : top;
+  border-width: 1;		
 }	
 
 table.list td {
@@ -56,8 +55,15 @@ table.list td.navigate {
 th {
    background-color: #42BDAD;
    color: black;
-   font-weight:bold
+   font-weight: bold;
+   white-space: nowrap;
 }
+
+th a:link    { color: black; }
+th a:visited { color: black; }
+th a:active  { color: yellow; }
+th a:hover   { color: yellow; }
+
 
 textarea.small {
      height: 6em;
