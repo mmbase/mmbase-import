@@ -13,7 +13,7 @@ for the MMBase node --%>
   <%-- we are in the news node  we can ask
   for fields of this magazine --%>
   <title><mm:field  name="title"/></title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
 <body>
 <center>
@@ -58,7 +58,9 @@ for the MMBase node --%>
 </center>
 <hr />
 <mm:import externid="magid">default.mags</mm:import>
-<a href="<mm:url referids="magid" page="index.jsp" /> ">back</a><br />
+<div class="link">
+ <a href="<mm:url referids="magid" page="index.jsp" /> "><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" /></a><br />
+</div>
 <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
