@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.34 2005-01-20 16:52:24 pierre Exp $
+ * @version $Id: Casting.java,v 1.35 2005-01-23 22:04:57 michiel Exp $
  */
 
 import java.util.*;
@@ -228,7 +228,9 @@ public class Casting {
             try {
                 return new String((byte[])o, MMBase.getMMBase().getEncoding());
             } catch (java.io.UnsupportedEncodingException uee) {
-                throw new UnsupportedOperationException(uee);
+                // should never happen
+                log.error(uee);
+                return o;
             }
         } else {
             return o;
