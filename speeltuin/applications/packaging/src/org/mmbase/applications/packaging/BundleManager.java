@@ -37,7 +37,7 @@ public class BundleManager {
     private static boolean state = false;
     
     // Contains all bundles key=bundlename/maintainer value=reference to bundle
-    private static Hashtable bundles = new Hashtable();
+    private static HashMap bundles = new HashMap();
 
     /**
     * init this manager
@@ -58,8 +58,8 @@ public class BundleManager {
      * get all the bundles available to this MMBase
      * @return bundle list
      */
-    public static Enumeration getBundles() {
-        return bundles.elements();
+    public static Iterator getBundles() {
+        return bundles.values().iterator();
     }
 
     /**
@@ -216,9 +216,9 @@ public class BundleManager {
         // this checks all the bundles if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last bundle update
-        Enumeration e = bundles.elements();
-        while (e.hasMoreElements()) {
-            BundleContainer pc = (BundleContainer)e.nextElement();
+        Iterator e = bundles.values().iterator();
+        while (e.hasNext()) {
+            BundleContainer pc = (BundleContainer)e.next();
             Enumeration e2 = pc.getVersions();
             while (e2.hasMoreElements()) {
                BundleVersionContainer pvc = (BundleVersionContainer)e2.nextElement();
