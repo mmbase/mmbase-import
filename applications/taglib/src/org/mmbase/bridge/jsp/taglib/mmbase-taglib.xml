@@ -1940,4 +1940,82 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       </info>
     </attribute>
   </tag>
+  <tag>
+    <name>listrelations</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListRelationsTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+	   List the relations belonging to this nodes. Relations are nodes too.
+    </info>
+    <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The node attribute overrides the default node for a related tag,
+        using instead the node tag referenced by the attribute.
+      </info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+	  <info>Only list the relations where the other node is of this type.</info>
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+	  <info>Only list the relations which are of this role.</info>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>relatednode</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+	   For use under listrelations tag. With this you can easily find
+	   the other node (it uses the 'snumber' and 'dnumber' fields for you.
+    </info>
+    <attribute>
+        <name>listrelations</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+	<info>
+	  To refer to another listrelations tag then the direct parent.
+	</info>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  With the `id' attribute you define an unique identifier for
+	  this node. Nested tags can refer to this directly and other
+	  tags by means of a context.
+    </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  Create a JSP variable with this in the body. If you have defined `fields' too,
+	  then these fields will have jsp-variables prefixed with
+	  jspvar and an underscore.
+	</info>
+    </attribute>
+  </tag>
 </taglib>
