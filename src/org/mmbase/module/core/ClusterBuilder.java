@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.37 2003-05-07 13:02:56 kees Exp $
+ * @version $Id: ClusterBuilder.java,v 1.38 2003-06-16 08:46:36 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1598,7 +1598,10 @@ public class ClusterBuilder extends VirtualBuilder {
                 String direction= (String)iDirections.next();
                 if (direction.trim().equalsIgnoreCase("DOWN")) {
                     sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
+                } else if (!direction.trim().equalsIgnoreCase("UP")) {
+                    throw new IllegalArgumentException("Parameter directions contains an invalid value ("+direction+"), should be UP or DOWN.");
                 }
+
             } else {
                 sortOrder.setDirection(defaultSortOrder);
             }
