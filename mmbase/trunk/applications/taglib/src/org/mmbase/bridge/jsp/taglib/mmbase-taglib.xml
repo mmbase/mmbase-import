@@ -1700,4 +1700,29 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
   </tag>
+  <tag>
+    <name>compare</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
+    <info>
+    Compares the value of a context variable to a String value. Only if
+    they are equal the body is evaluated.
+    </info>
+    <attribute>
+        <name>referid</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	The context variable to compare to.
+	 </info>
+    </attribute>
+    <attribute>
+        <name>value</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+	<info>
+	The value which the context variable must have.
+	</info>
+    </attribute>
+  </tag>
 </taglib>
