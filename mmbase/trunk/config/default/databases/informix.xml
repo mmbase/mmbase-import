@@ -32,6 +32,7 @@
 	-->
 	<mapping>
      	  <type-mapping mmbase-type="INTEGER">integer</type-mapping>
+	  <type-mapping mmbase-type="LONG">int8</type-mapping>
        	  <type-mapping mmbase-type="VARCHAR" min-size="1" max-size="255">nvarchar(size)</type-mapping>
 	  <type-mapping mmbase-type="VARCHAR" min-size="256" max-size="32776">nchar(size)</type-mapping>
        	  <type-mapping mmbase-type="VARCHAR" min-size="32777" max-size="16577216">clob</type-mapping>
