@@ -5,7 +5,7 @@
 
 <head>
   <title>Node manager info</title>
-  <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>

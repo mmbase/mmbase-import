@@ -3,7 +3,7 @@
 %><%-- @ taglib uri="oscache" prefix="cache" --%><html>
 <head>
  <title>The formatter tag mm:formatter</title>
-<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+<link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <%@ include file="menu.jsp"%>
@@ -96,7 +96,7 @@
 <tr><td colspan="2">Perhaps you are curious about the intermediate XML which was generated in the last step? No problem.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelationsxml.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><textarea class="huge"><%@include file="codesamples/shownoderelationsxml.jsp" %></textarea></td>
+  <td width="50%"><textarea><%@include file="codesamples/shownoderelationsxml.jsp" %></textarea></td>
 </tr>
 <tr><td colspan="2">If you want to generate your XML yourself with MMBase data, then you need to inform the tag that it should be
                     'dumb'. If the 'wants' attribute is 'string' then every tag in the

@@ -2,7 +2,7 @@
 %><html>
 <head>
  <title>A simple editor</title>
- <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+ <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <%@ include file="menu.jsp"%>

@@ -3,6 +3,7 @@
     <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
     <%@ page contentType="text/html;charset=UTF-8" %>
     <title>What is MMBase taglib</title>
+    <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
   </head>
   <body>
    <mm:timer>

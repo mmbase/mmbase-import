@@ -1,5 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html>
+<head>
+  <title>context 2</title>
+  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css" media="screen"  />
+</head>
 <body>
 <h1>context 2</h1>
 <p>
