@@ -41,7 +41,7 @@
         Small example of a news/magazine system
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/mynews.jsp" />"><img src="../mmbase/style/default/images/next.gif" /></a>
+        <a href="<mm:url page="jsp/mynews.jsp" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif" /></a>
       </td>
     </tr>
     
@@ -51,7 +51,7 @@
         A lot of different examples for the MMBase taglib.
       </td>
       <td class="link" >
-        <a href="<mm:url page="taglib/" />"><img src="../mmbase/style/default/images/next.gif"  /></a>
+        <a href="<mm:url page="taglib/" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif"  /></a>
       </td>
     </tr>
     
@@ -61,7 +61,7 @@
         Alternative generic editors
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/my_editors/" />"><img src="../mmbase/style/default/images/next.gif"/></a>
+        <a href="<mm:url page="jsp/my_editors/" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif"/></a>
       </td>
     </tr>
     
@@ -71,7 +71,7 @@
         Example of the community-features of MMBase (forum &amp; chat)
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/community.jsp" />"><img src="../mmbase/style/default/images/next.gif" /></a>
+        <a href="<mm:url page="jsp/community.jsp" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif" /></a>
       </td>
     </tr>
     
@@ -93,7 +93,7 @@
         Different editwizard-examples. TODO: you need editwizards installed!
       </td>
       <td class="link" >
-        <a href="<mm:url page="editwizard/" />"><img src="../mmbase/style/default/images/next.gif"  /></a>
+        <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif"  /></a>
       </td>
     </tr>
     
@@ -104,7 +104,7 @@
         Shows text in different encodings.
       </td>
       <td class="link" >
-        <a href="<mm:url page="codings/" />"><img src="../mmbase/style/default/images/next.gif" /></a>
+        <a href="<mm:url page="codings/" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif" /></a>
       </td>
     </tr>
     
