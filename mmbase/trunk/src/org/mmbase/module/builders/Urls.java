@@ -16,16 +16,16 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @applicatie Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.16 2004-10-08 12:04:24 pierre Exp $
+ * @version $Id: Urls.java,v 1.17 2004-10-08 12:13:40 pierre Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Urls.class.getName());
 
     public String getGUIIndicator(MMObjectNode node) {
-        String str=node.getStringValue("url");
-        if (str!=null) {
+        String str = node.getStringValue("url");
+        if (str != null) {
             if (str.indexOf("http://")==0) {
-                str=str.substring(7);
+                str = str.substring(7);
             }
         }
         return str;
@@ -33,17 +33,16 @@ public class Urls extends MMObjectBuilder {
 
     public String getGUIIndicator(String field,MMObjectNode node) {
         if (field.equals("url")) {
-            String url=node.getStringValue("url");
-            if (url!=null) return("<A HREF=\""+url+"\" TARGET=\"extern\">"+url+"</A>");
+            String url = node.getStringValue("url");
+            if (url != null) return "<A HREF=\""+url+"\" TARGET=\"extern\">"+url+"</A>";
         }
         return null;
     }
 
 
     public String getDefaultUrl(int src) {
-        MMObjectNode node=getNode(src);
-        String url=node.getStringValue("url");
-        return url;
+        MMObjectNode node = getNode(src);
+        return node.getStringValue("url");
     }
 
 
@@ -51,7 +50,7 @@ public class Urls extends MMObjectBuilder {
         if (builder.equals(tableName)) {
             int nr = Integer.parseInt(number);
             Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
-            if (jumpers==null) {
+            if (jumpers == null) {
                 log.debug("Urls builder - Could not get Jumper builder");
             } else {
                 jumpers.delJumpCache(number);
@@ -62,7 +61,7 @@ public class Urls extends MMObjectBuilder {
 
     public boolean nodeLocalChanged(String machine, String number,String builder,String ctype) {
             super.nodeLocalChanged(machine, number,builder,ctype);
-        return nodeChanged( number, builder, ctype);
+        return nodeChanged(number, builder, ctype);
     }
 
     public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
