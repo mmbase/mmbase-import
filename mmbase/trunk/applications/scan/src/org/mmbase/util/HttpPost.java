@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * HttpPost handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.24 2003-10-17 14:51:36 keesj Exp $
+ * @version $Id: HttpPost.java,v 1.25 2003-11-10 13:29:52 keesj Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -338,10 +338,10 @@ public class HttpPost {
                 if (elem instanceof String) {
                     return (String)elem;
                 } else {
-                    return new String((byte[])v.elementAt(0), 0);
+                    return new String((byte[])v.elementAt(0));
                 }
             } else {
-                return new String((byte[])obj, 0);
+                return new String((byte[])obj);
             }
         } else {
             return null;
@@ -637,7 +637,8 @@ public class HttpPost {
 
             i3 = indexOf(postbuffer, marker3, start2 + 2) + 2;
             i4 = indexOf(postbuffer, marker4, i3 + 2);
-            r = new String(postbuffer, 0, i3, (i4 - i3)); // extraction of fieldname
+            //r =  new String(postbuffer,)
+            r = new String(postbuffer, i3, (i4 - i3)); // extraction of fieldname
             // log.debug("readPostFormData(): r="+r);
             // copy it to a buffer
             dest = new byte[filesize];
@@ -704,7 +705,7 @@ public class HttpPost {
                 // Get keyword
                 i3 = indexOf(postbuffer, marker3, start2 + 2) + 2;
                 i4 = indexOf(postbuffer, marker4, i3 + 2);
-                r = new String(postbuffer, 0, i3, (i4 - i3));
+                r = new String(postbuffer, i3, (i4 - i3));
                 log.debug("readPostFormData(): postName=" + r);
 
                 // hunt second one
@@ -818,7 +819,7 @@ public class HttpPost {
         int i = 0, idx;
         char letter;
 
-        String buffer = new String(postbuffer, 0);
+        String buffer = new String(postbuffer);
         buffer = buffer.replace('+', ' ');
         StringTokenizer tok = new StringTokenizer(buffer, "&");
         int z = 0;
