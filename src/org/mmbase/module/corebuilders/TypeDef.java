@@ -1,4 +1,4 @@
-/*
+t/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * object types (builders)
  *
  * @author Daniel Ockeloen
- * @version $Id: TypeDef.java,v 1.33 2003-03-12 20:12:50 michiel Exp $
+ * @version 12 Mar 1997
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -43,7 +43,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * List of known builders.
      */
-    private Vector typedefsLoaded = new Vector();	// Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
 
     /**
      * Constructor
@@ -171,7 +171,6 @@ public class TypeDef extends MMObjectBuilder {
         }
         return result;
     }
-
 
     /**
      * Obtain the buildername of the requested type
@@ -342,7 +341,6 @@ public class TypeDef extends MMObjectBuilder {
         return rtn;
     }
 
-
     /**
      * @javadoc
      */
@@ -403,10 +401,10 @@ public class TypeDef extends MMObjectBuilder {
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;
             }
+        } else if (function.equals("defaultsearchage")) {
+            return new Integer(getBuilder(node).getSearchAge());
         } else {
             return super.executeFunction(node, function, args);
         }
     }
-
-
 }
