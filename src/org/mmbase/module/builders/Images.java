@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.80 2003-08-15 15:52:41 michiel Exp $
+ * @version $Id: Images.java,v 1.81 2003-09-19 09:04:28 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -41,7 +41,7 @@ public class Images extends AbstractImages {
         public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
 
-    public final static Argument[] CACHE_ARGUMENTS = { 
+    public final static Argument[] CACHE_ARGUMENTS = {
         new Argument("template",  String.class)};
 
 
@@ -52,18 +52,18 @@ public class Images extends AbstractImages {
 
     protected Map imageConvertParams = new Hashtable();
 
-    /** 
+    /**
      * The ImageConvertInterface implementation to be used (defaults to ConvertImageMagic)
      */
     protected static final Class DEFAULT_IMAGECONVERTCLASS = ConvertImageMagick.class;
 
     protected int maxConcurrentRequests = 2;
-    
+
     /**
      * Supposed image type if not could be determined (configurable)
      */
     protected String defaultImageType = "jpg";
-    
+
     protected static final int maxRequests = 32;
     protected Queue imageRequestQueue     = new Queue(maxRequests);
     protected Hashtable imageRequestTable = new Hashtable(maxRequests);
@@ -101,9 +101,7 @@ public class Images extends AbstractImages {
 
         ImageCaches bul = (ImageCaches)mmb.getMMObject("icaches");
         if(bul==null) {
-            String msg = "builder with name icache wasnt loaded";
-            log.error(msg);
-            throw new RuntimeException(msg);
+            throw new RuntimeException("builder with name 'icaches' wasnt loaded");
         }
         // Startup parrallel converters
         ireqprocessors = new ImageRequestProcessor[maxConcurrentRequests];
@@ -135,7 +133,7 @@ public class Images extends AbstractImages {
                 return info.get(args.get(0));
             }
         } else if ("cache".equals(function)) {
-            if (args == null || args.size() != 1) 
+            if (args == null || args.size() != 1)
                 throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
             return new Integer(cacheImage(node, (String) args.get(0)));
         } else {
@@ -165,7 +163,7 @@ public class Images extends AbstractImages {
 
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) args.get("request");
-        if (req != null) {            
+        if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), null));
         } else {
             servlet.append(getServletPath());
@@ -194,7 +192,7 @@ public class Images extends AbstractImages {
      * called by init..used to retrieve all settings
      */
     private void getImageConvertParams(Hashtable params) {
-        String key; 
+        String key;
         for (Iterator e=params.keySet().iterator();e.hasNext();) {
             key = (String)e.next();
             if (key.startsWith("ImageConvert.")) {
@@ -304,8 +302,8 @@ public class Images extends AbstractImages {
             for (; i < template.length(); i++) {
                 char c = template.charAt(i);
                 switch(c) {
-                case '\'': 
-                case '"':  
+                case '\'':
+                case '"':
                     if (quoteState == c) {
                         quoteState = NOQUOTING;
                     } else if (quoteState == NOQUOTING) {
@@ -314,7 +312,7 @@ public class Images extends AbstractImages {
                     break;
                 case '(': if (quoteState == NOQUOTING) bracketDepth++; break;
                 case ')': if (quoteState == NOQUOTING) bracketDepth--; break;
-                case '+': // command separator                    
+                case '+': // command separator
                     if (bracketDepth == 0  // ignore if between brackets
                         && quoteState == NOQUOTING // ignore if between quotes
                         ) {
@@ -325,13 +323,13 @@ public class Images extends AbstractImages {
                     }
                     break;
                 }
-                
+
                 buf.append(c);
             }
             if (bracketDepth != 0) log.warn("Unbalanced brackets in " + template);
             if (quoteState != NOQUOTING) log.warn("Unbalanced quotes in " + template);
 
-            removeSurroundingQuotes(buf);     
+            removeSurroundingQuotes(buf);
             if (! buf.toString().equals("")) params.add(buf.toString());
         }
         return params;
@@ -341,7 +339,7 @@ public class Images extends AbstractImages {
      * @since MMBase-1.7
      */
     protected void removeSurroundingQuotes(StringBuffer buf) {
-        // remove surrounding quotes --> "+contrast" will be changed to +contrast 
+        // remove surrounding quotes --> "+contrast" will be changed to +contrast
         if (buf.length() >= 2 && (buf.charAt(0) == '"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
             buf.deleteCharAt(0);
             buf.deleteCharAt(buf.length() - 1);
@@ -363,7 +361,7 @@ public class Images extends AbstractImages {
             return i.intValue();
         }
 
-        List params = parseTemplate(node, template);       
+        List params = parseTemplate(node, template);
         i = new Integer(cacheImage(params));
         templateCacheNumberCache.put(cacheKey, i);
         return i.intValue();
@@ -379,7 +377,7 @@ public class Images extends AbstractImages {
      * @since MMBase-1.6
      */
     public int cacheImage(List params) {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("Caching image " + params);
         }
 
@@ -705,7 +703,7 @@ public class Images extends AbstractImages {
             // when cache is invalide, invalidate
             if(imageCacheInvalid) {
                 invalidateImageCache(node);
-                templateCacheNumberCache.remove(node.getNumber());                
+                templateCacheNumberCache.remove(node.getNumber());
             }
             return true;
         }
