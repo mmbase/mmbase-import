@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.15 2000-11-13 15:56:11 vpro Exp $
+ $Id: sessions.java,v 1.16 2000-11-19 00:23:04 daniel Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.15  2000/11/13 15:56:11  vpro
+ Dirk-Jan: added CLEARSESSIONINFO This command clears the SessionInfo
+
  Revision 1.14  2000/10/15 22:37:23  gerard
  gerard: added some javadocs
  submitted by Jaco de Groot
@@ -76,7 +79,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.15 2000-11-13 15:56:11 vpro Exp $
+ * @version $Id: sessions.java,v 1.16 2000-11-19 00:23:04 daniel Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -101,7 +104,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 	
 	public sessionInfo getSession(scanpage sp,String wanted) {
-	debug("getSession(): wanted=" + wanted);
+		if (debug) debug("getSession(): wanted=" + wanted);
 		if (sessions!=null && wanted!=null) {
 			sessionInfo session=(sessionInfo)sessions.get(wanted);
 			if (session==null) {
