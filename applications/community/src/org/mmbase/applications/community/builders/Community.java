@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.11 2003-11-10 13:28:33 pierre Exp $
+ * @version $Id: Community.java,v 1.12 2004-01-07 15:11:19 pierre Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -40,6 +40,8 @@ public class Community extends MMObjectBuilder {
 
     private Channel channelBuilder;
     private MMObjectBuilder mapBuilder;
+    // indicates whether this builder has been activated for the community application
+    private boolean active = false;
 
     /**
      * Constructor
@@ -47,16 +49,23 @@ public class Community extends MMObjectBuilder {
     public Community() {
     }
 
-    /**
-     * Initializes the builder.
-     * Retrieves associated builders.
-     * @return Always true.
-     */
     public boolean init() {
         boolean result = super.init();
-        mapBuilder = mmb.getMMObject("maps");
-        channelBuilder = (Channel)mmb.getMMObject("channel");
+        activate();
         return result;
+    }
+
+    /**
+     * Activates the community builder for the community application by associating it with other community builders
+     * @return true if activation worked
+     */
+    public boolean activate() {
+        if (!active) {
+            mapBuilder = mmb.getMMObject("maps");
+            channelBuilder = (Channel)mmb.getMMObject("channel");
+            active = channelBuilder!=null;
+        }
+        return active;
     }
 
     /**
