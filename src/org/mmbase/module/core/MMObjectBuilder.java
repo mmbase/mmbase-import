@@ -1477,6 +1477,29 @@ public class MMObjectBuilder extends MMTable {
         return rtn;
     }
 
+    protected Vector grabFunctionParameters(String fields) {
+        int commapos=0;
+        int nested=0;
+        Vector v= new Vector();
+        for(int i = 0; i<fields.length(); i++) {
+            if (fields.charAt(i)==',') {
+                if(nested==0) {
+                    v.add(fields.substring(commapos,i));
+                    commapos=i+1;
+                }
+            }
+            if (fields.charAt(i)=='(') {
+                nested++;
+            }
+            if (fields.charAt(i)==')') {
+                nested--;
+            }
+        }
+        v.add(fields.substring(commapos));
+        return v;
+    }
+
+
     /**
     * Executes a function on the field of a node, and returns the result.
     * This method is called by the builder's {@link #getValue} method.
@@ -1487,7 +1510,6 @@ public class MMObjectBuilder extends MMTable {
     */
     protected Object executeFunction(MMObjectNode node,String function,String field) {
         Object rtn=null;
-
         // time functions
         if(function.equals("date")) {					// date
             int v=node.getIntValue(field);
@@ -1545,6 +1567,14 @@ public class MMObjectBuilder extends MMTable {
             String val=node.getStringValue(field);
             try {
                 int wrappos=Integer.parseInt(function.substring(5));
+                log.debug("WRAPPOS="+wrappos);
+                rtn=wrap(val,wrappos);
+            } catch(Exception e) {}
+        } else if (function.equals("wrap")) {
+            Vector v=grabFunctionParameters(field);
+            try {
+                int wrappos=Integer.parseInt((String)v.get(0));
+                String val=node.getStringValue((String)v.get(1));
                 log.debug("WRAPPOS="+wrappos);
                 rtn=wrap(val,wrappos);
             } catch(Exception e) {}
