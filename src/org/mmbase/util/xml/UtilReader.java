@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.7 2004-02-09 13:50:36 pierre Exp $
+ * @version $Id: UtilReader.java,v 1.8 2004-05-07 09:33:42 michiel Exp $
  */
 public class UtilReader {
 
@@ -68,13 +68,9 @@ public class UtilReader {
     public UtilReader(String filename) {
         File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
         readProperties(file);
-        if (file.exists()) {
-            watcher = new UtilFileWatcher();
-            watcher.add(file);
-            watcher.start();
-        } else {
-            log.warn(file.getName() + " does not exist:" + Logging.stackTrace());
-        }
+        watcher = new UtilFileWatcher();
+        watcher.add(file);
+        watcher.start();
     }
 
     /**
@@ -105,7 +101,7 @@ public class UtilReader {
                 }
             }
         } else {
-            log.warn("File " + f + " does not exist");
+            log.debug("File " + f + " does not exist");
         }
     }
 
