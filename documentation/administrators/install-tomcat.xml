@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase installation on Apache Tomcat</title>
     <date>2002-12-05</date>
-    <edition>$Id: install-tomcat.xml,v 1.9 2003-09-02 12:19:30 michiel Exp $</edition>
+    <edition>$Id: install-tomcat.xml,v 1.10 2003-09-17 07:13:31 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -131,11 +131,7 @@
           <ResourceParams name="mail/Session">
             <parameter>
               <name>mail.smtp.host</name>
-              <value>smtp.bestuur.omroep.nl</value>
-            </parameter>
-            <parameter>
-              <name>mail.smtp.from</name>
-              <value>test@omroep.nl</value>
+              <value>localhost</value>
             </parameter>
           </ResourceParams>
         </Context>
