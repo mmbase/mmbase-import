@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 public class LocaleTag extends ContextReferrerTag  {
     private static Logger log = Logging.getLoggerInstance(LocaleTag.class.getName());
 
-    private String language;
+    private String language = null;
     private String country = "";
 
     private Locale locale;
@@ -45,13 +45,17 @@ public class LocaleTag extends ContextReferrerTag  {
      * Child tags can call this function to obtain the Locale they must use.
      */
     public Locale getLocale() {
-        log.debug("lang: " + locale.getLanguage() + " country: " + locale.getCountry());
+        if (log.isDebugEnabled()) log.debug("lang: " + locale.getLanguage() + " country: " + locale.getCountry());
         return locale;
     }
     
     
     public int doStartTag() throws JspTagException {
-        locale = new Locale(language, country);
+        if (language != null && (! language.equals(""))) {
+            locale = new Locale(language, country);
+        } else {
+            locale = null; // default;
+        }
         return EVAL_BODY_BUFFERED;
     }
     public int doAfterBody() throws JspTagException {
@@ -60,7 +64,7 @@ public class LocaleTag extends ContextReferrerTag  {
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
-        }
+        }        
     }
 
 }
