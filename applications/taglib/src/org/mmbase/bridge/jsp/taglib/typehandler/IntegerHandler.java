@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.24 2004-07-26 20:18:01 nico Exp $
+ * @version $Id: IntegerHandler.java,v 1.25 2004-08-05 14:14:16 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -156,7 +156,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.htmlInput(node, field, search);
         } else {
-            EnumHandler eh = new EnumHandler(tag, guiType);
+            EnumHandler eh = new EnumHandler(tag, field);
             if (eh.isAvailable()) {
                 return eh.htmlInput(node, field, search);
             }
@@ -188,7 +188,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.useHtmlInput(node, field);
         } else {
-            EnumHandler eh = new EnumHandler(tag, guiType);
+            EnumHandler eh = new EnumHandler(tag, field);
             if (eh.isAvailable()) {
                 return eh.useHtmlInput(node, field);
             }
@@ -215,7 +215,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field);
         } else {
-            EnumHandler eh = new EnumHandler(tag, guiType);
+            EnumHandler eh = new EnumHandler(tag, field);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field);
             }
@@ -238,7 +238,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field, query);
         } else {
-            EnumHandler eh = new EnumHandler(tag, guiType);
+            EnumHandler eh = new EnumHandler(tag, field);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field, query);
             }
