@@ -194,6 +194,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } else {
             c.setValue(r);            
         }
+        if (cookies.length == 0 ){
+            cookies = new Cookie[1];
+        }
         cookies[0] = c;
         response.addCookie(c); 
     }
