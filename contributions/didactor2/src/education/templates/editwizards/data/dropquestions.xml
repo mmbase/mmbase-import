@@ -5,15 +5,16 @@
 
     <action type="create">
        <object type="dropquestions">
-            <field name="layout">0</field>
-        </object> 
+          <relation destination="$origin" role="posrel" createdir="source"/>
+          <field name="layout">0</field>
+       </object>
     </action>
-    
+
     <action type="load">
-	<relation destination="images" role="dragimagerel" />
-	<relation destination="images" role="dropimagerel" />
+   <relation destination="images" role="dragimagerel" />
+   <relation destination="images" role="dropimagerel" />
         <relation destination="feedback" role="related" />
-	<relation destination="dropanswers" role="related" />
+   <relation destination="dropanswers" role="related" />
         <relation destination="metadata" role="related">
           <object type="metadata">
            <relation destination="metalangstring" role="posrel">
@@ -45,7 +46,7 @@
     </action>
 
     <action type="delete" />
-    
+
     <steps>
         <step form-schema="step1" />
         <!-- step form-schema="step2" / -->
@@ -59,13 +60,13 @@
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
         </field>
-	<title>Sleep afbeeldingen</title>
-	<list role="dragimagerel" extends="dragimages.xml"/>
-	<title>Doel afbeeldingen</title>
-	<list role="dropimagerel" extends="dropimages.xml"/>
-	
-	<list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='dragnumber']" role="related" destination="dropanswers">
-	<title>Goede combinaties</title>
+   <title>Sleep afbeeldingen</title>
+   <list role="dragimagerel" extends="dragimages.xml"/>
+   <title>Doel afbeeldingen</title>
+   <list role="dropimagerel" extends="dropimages.xml"/>
+
+   <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='dragnumber']" role="related" destination="dropanswers">
+   <title>Goede combinaties</title>
             <item>
                 <field name="dragnumber" ftype="line">
                     <prompt>Sleepafbeelding</prompt>
@@ -73,7 +74,7 @@
                 </field>
                 <field name="dropnumber" ftype="line">
                     <prompt>Doelafbeelding</prompt>
-		    <description>Geef hier het volgordenummer van de doelafbeelding</description>
+          <description>Geef hier het volgordenummer van de doelafbeelding</description>
                 </field>
             </item>
 
@@ -83,11 +84,11 @@
 
             <command name="startwizard" inline="true" wizardname="dropanswers" objectnumber="new">
                 <prompt>Nieuwe combinatie</prompt>
-            </command> 
+            </command>
 
         </list>
- 
-	
+
+
         <list role="related" extends="list/feedback.xml" />
 
 

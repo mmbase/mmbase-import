@@ -3,10 +3,13 @@
 <wizard-schema id="empty">
     <title>Pagina Editor</title>
 
+
     <action type="create">
-        <object type="pages">
-        </object>
+       <object type="pages">
+          <relation destination="$origin" role="posrel" createdir="source"/>
+       </object>
     </action>
+
 
     <action type="load">
         <relation destination="mmevents" role="related" />

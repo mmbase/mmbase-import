@@ -3,11 +3,14 @@
 <wizard-schema id="empty">
     <title>Rangorde vraag Editor</title>
 
+
     <action type="create">
-        <object type="rankingquestions">
-            <field name="layout">0</field>
-        </object>
+       <object type="rankingquestions">
+          <relation destination="$origin" role="posrel" createdir="source"/>
+          <field name="layout">0</field>
+       </object>
     </action>
+
 
     <action type="load">
         <relation destination="rankinganswers" role="posrel" />
