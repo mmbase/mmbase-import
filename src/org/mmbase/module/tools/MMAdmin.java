@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.54.2.6 2003-04-03 16:18:07 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.54.2.7 2003-04-09 08:50:34 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -267,12 +267,12 @@ public class MMAdmin extends ProcessorModule {
                             moduleOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
-                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
+                            lastmsg="Writing finished, problems occurred\n\n"+
+                                    "Error encountered="+e.getMessage()+"\n\n";
                             return false;
                         }
-                        lastmsg="Writing finished, no problems.<br /><br />\n"+
-                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"<br /><br />\n";
+                        lastmsg="Writing finished, no problems.\n\n"+
+                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"\n\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
@@ -290,18 +290,33 @@ public class MMAdmin extends ProcessorModule {
                             builderOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
-                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
+                            lastmsg="Writing finished, problems occurred\n\n"+
+                                    "Error encountered="+e.getMessage()+"\n\n";
                             return false;
                         }
-                        lastmsg="Writing finished, no problems.<br /><br />\n"+
-                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"<br /><br />\n";
+                        lastmsg="Writing finished, no problems.\n\n"+
+                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"\n\n";
                     }
                 }
             }
 
         }
         return false;
+    }
+
+    // basically replaces linefeeds and some characters.
+    private String escape(String s) {
+        if (s==null) {
+            return "";
+        } else {
+            StringObject obj=new StringObject(s);
+            obj.replace("&","&amp;");
+            obj.replace(">","&gt;");
+            obj.replace("<","&lt;");
+            obj.replace("\"","&quot;");
+            obj.replace("\n","<br />");
+            return obj.toString();
+        }
     }
 
     /**
@@ -316,21 +331,10 @@ public class MMAdmin extends ProcessorModule {
             if (cmd.equals("VERSION")) {
                 return ""+getVersion(tok.nextToken());
             } else if (cmd.equals("DESCRIPTION")) {
-                return getDescription(tok.nextToken());
+                return escape(getDescription(tok.nextToken()));
             } else if (cmd.equals("LASTMSG")) {
                 // return lastmsg in html-format.
-                // basically replaces linefeeds and some characters.
-                if (lastmsg==null) {
-                    return "";
-                } else {
-                    StringObject obj=new StringObject(lastmsg);
-                    obj.replace(">","&gt;");
-                    obj.replace("<","&lt;");
-                    obj.replace("\"","&quot;");
-                    obj.replace("&","&amp;");
-                    obj.replace("\n","<br />");
-                    return obj.toString();
-                }
+                return escape(lastmsg);
             } else if (cmd.equals("BUILDERVERSION")) {
                 return ""+getBuilderVersion(tok.nextToken());
             } else if (cmd.equals("BUILDERCLASSFILE")) {
@@ -570,7 +574,13 @@ public class MMAdmin extends ProcessorModule {
     }
 
     /**
-     * @javadoc
+     * Installs the application
+     * @param applicationName Name of the application file, without the xml extension
+     *                        This is also assumed to be the name of teh application itself
+     *                        (if not, a warning will be issued)
+     * @param result the result object, containing error messages when the installation fails,
+     *               or the installnotice if succesfull or already installed
+     * @return true if succesfull, false otherwise
      */
     private boolean installApplication(String applicationname, ApplicationResult result) {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
@@ -1663,7 +1673,6 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * @javadoc
-     * @deprecation contains code taht is commented-out, can be removed (?)
      */
     public void setBuilderDBKey(Hashtable vars) {
         if (kioskmode) {
@@ -1683,12 +1692,6 @@ public class MMAdmin extends ProcessorModule {
                 def.setDBKey(false);
             }
         }
-        /* not needed at the moment since keys
-           are not done in the database layer
-        if (mmb.getDatabase().changeField(bul,fieldname)) {
-            syncBuilderXML(bul,builder);
-        }
-        */
         syncBuilderXML(bul,builder);
     }
 
@@ -1913,20 +1916,23 @@ public class MMAdmin extends ProcessorModule {
         boolean error(String message) {
             success=false;
             adminModule.log.error(message);
-            resultMessage += "\n"+message;
+            if (!resultMessage.equals("")) resultMessage += "\n";
+            resultMessage += message;
             return false;
         }
 
         boolean warn(String message) {
             success=false;
             adminModule.log.warn(message);
-            resultMessage += "\n"+message;
+            if (!resultMessage.equals("")) resultMessage += "\n";
+            resultMessage += message;
             return false;
         }
 
         boolean success(String message) {
             success=true;
-            resultMessage += "\n"+message;
+            if (!resultMessage.equals("")) resultMessage += "\n";
+            resultMessage += message;
             return true;
         }
 
