@@ -93,7 +93,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.20 2004-11-01 15:45:21 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.21 2004-11-02 18:29:11 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -195,7 +195,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * Initializes the Resourceloader using a servlet-context (makes e.g. resolving relatively to WEB-INF/config possible).
+     * Initializes the Resourceloader using a servlet-context (makes resolving relatively to WEB-INF/config possible).
      * @param sc The ServletContext used for determining the mmbase configuration directory. Or <code>null</code>.
      */
     public static  void init(ServletContext sc) {
@@ -283,8 +283,8 @@ public class ResourceLoader extends ClassLoader {
                 if (s != null) {
                     configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), true));
                 }
+                configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
             }
-            configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
 
             if (servletContext != null) {
                 String s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
@@ -461,7 +461,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns the 'parent' ResourceLoader. Or <code>null</code> if this ClassLoader has no parent. You can create a ResourceLoader with a parent by
-     * {@link getChildResourceLoader(String)}.
+     * {@link #getChildResourceLoader(String)}.
      */
     public ResourceLoader getParentResourceLoader() {
         return parent;
@@ -469,7 +469,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns a 'child' ResourceLoader, or a parent if the context is "..".
-     * the {@link ResourceLoader(ResourceLoader, String)} constructor.
+     * the {@link #ResourceLoader(ResourceLoader, String)} constructor.
      */
     public ResourceLoader getChildResourceLoader(String context) {
         if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
@@ -500,7 +500,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getResourceContext(Pattern, boolean)}
+     * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getResourceContexts(Pattern, boolean)}
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
      * @param recursive If true, then also subdirectories are searched.
      * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
@@ -688,7 +688,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns an abstract URL for a resource with given name. findResource(name).toString() would give an 'external' form.
+     * Returns an abstract URL for a resource with given name, <code>findResource(name).toString()</code> would give an 'external' form.
      */
     public String toInternalForm(String name) {
        return toInternalForm(findResource(name));
