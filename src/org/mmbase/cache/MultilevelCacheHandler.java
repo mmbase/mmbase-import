@@ -16,17 +16,17 @@ import org.mmbase.util.StringTagger;
 
 
 /**
- * This object handles cache multilevel tag
- * cache requests. it removed invalid lines
- * adding listeners to builders used in the
- * multilevel query's
- * @javadoc
+ * This object handles cache multilevel tag cache requests. it removed
+ * invalid lines adding listeners to builders used in the multilevel
+ * query's
+
  *
- * @rename MultiLevelCacheHandler
+ * @rename MultiLevelCache
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheHandler.java,v 1.5 2002-03-22 13:11:02 pierre Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: MultilevelCacheHandler.java,v 1.6 2002-03-29 21:26:55 michiel Exp $
  */
-public class MultilevelCacheHandler extends LRUHashtable {
+public class MultilevelCacheHandler extends Cache {
 
     // listeners, keeps a list of entry's per objectmanager
     private Hashtable listeners = new Hashtable();
@@ -34,18 +34,30 @@ public class MultilevelCacheHandler extends LRUHashtable {
     // reference to main MMBase class
     private static MMBase mmb;
 
-    // reference to itself needed to give instance back in a static (weird)
-    private static Hashtable caches=new Hashtable();
 
-    // the state, true is active
-    private static boolean state=true;
+    private static MultilevelCacheHandler multiCache;
+
+    public static MultilevelCacheHandler getCache() {
+        return multiCache;
+    }
+
+    static {
+        multiCache = new MultilevelCacheHandler(300);
+        putCache(multiCache);
+    }
+
+    public String getName() {
+        return "MultilevelCache";
+    }
+    public String getDescription() {
+        return "A cache for the results of multilevel lists";
+    }
 
     /**
-     * @javadoc
+     * Creates the MultiLevel  Cache.
      */
-    public MultilevelCacheHandler(String name,int size) {
+    private MultilevelCacheHandler(int size) {
         super(size);
-        caches.put(name,this);
     }
 
     /**
@@ -71,15 +83,10 @@ public class MultilevelCacheHandler extends LRUHashtable {
      * @javadoc
      * @badliteral default size of cache should be configurable
      * @todo needs MMbase parameter for initialization
+     * @deprecated use getCache
      */
-    public static MultilevelCacheHandler getCache(String name) {
-        Object result=caches.get(name);
-        if (result==null) {
-            MultilevelCacheHandler nc=new MultilevelCacheHandler(name,300);
-            return nc;
-        } else {
-            return (MultilevelCacheHandler)result;
-        }
+    public static Cache getCache(String name) {
+        return getCache();
     }
 
 
@@ -109,9 +116,9 @@ public class MultilevelCacheHandler extends LRUHashtable {
             if (lastchar>='1' && lastchar<='9') {
                 type=type.substring(0,type.length()-1);
             }
-            MultilevelSubscribeNode l=(MultilevelSubscribeNode)listeners.get(type);
-            if (l==null) {
-                l=new MultilevelSubscribeNode(mmb,type);
+            MultilevelSubscribeNode l = (MultilevelSubscribeNode)listeners.get(type);
+            if (l == null) {
+                l = new MultilevelSubscribeNode(mmb,type);
                 listeners.put(type,l);
             }
             l.addCacheEntry(n);
@@ -169,18 +176,4 @@ public class MultilevelCacheHandler extends LRUHashtable {
         return new Integer(hash);
     }
 
-    /**
-     * @javadoc
-     * @rename setActive()
-     */
-    public static void setState(boolean s) {
-        state=s;
-    }
-
-    /**
-     * @javadoc
-     */
-    public static boolean isActive() {
-        return state;
-    }
 }
