@@ -7,7 +7,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint 
 implements CompareFieldsConstraint {
@@ -78,8 +78,10 @@ implements CompareFieldsConstraint {
 
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("CompareFieldsConstraint(field:");
-        sb.append(getField().getAlias()).
+        StringBuffer sb = new StringBuffer("CompareFieldsConstraint(inverse:").
+        append(isInverse()).
+        append(", field:").
+        append(getField().getAlias()).
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", operator:").

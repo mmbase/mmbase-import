@@ -11,7 +11,7 @@ import org.mmbase.module.corebuilders.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
     
@@ -161,15 +161,26 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
     public void testToString() {
         assert(instance.toString(),
-        instance.toString().equals("FieldValueInConstraint(field:"
+        instance.toString().equals("FieldValueInConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ", values:"
         + instance.getValues() + ")"));
         
+         // Reverse inverse flag.
+        instance.setInverse(!instance.isInverse());
+        assert(instance.toString(),
+        instance.toString().equals("FieldValueInConstraint(inverse:"
+        + instance.isInverse() + ", field:"
+        + instance.getField().getAlias() + ", casesensitive:"
+        + instance.isCaseSensitive() + ", values:"
+        + instance.getValues() + ")"));
+ 
         // Set field alias.
         stringField.setAlias("yyuiwe");
         assert(instance.toString(),
-        instance.toString().equals("FieldValueInConstraint(field:"
+        instance.toString().equals("FieldValueInConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ", values:"
         + instance.getValues() + ")"));
@@ -177,7 +188,8 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         // Reverse case sensitive.
         instance.setCaseSensitive(!instance.isCaseSensitive());
         assert(instance.toString(),
-        instance.toString().equals("FieldValueInConstraint(field:"
+        instance.toString().equals("FieldValueInConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ", values:"
         + instance.getValues() + ")"));
@@ -186,7 +198,8 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         instance.addValue(STRING_TEST_VALUE1);
         instance.addValue(STRING_TEST_VALUE2);
         assert(instance.toString(),
-        instance.toString().equals("FieldValueInConstraint(field:"
+        instance.toString().equals("FieldValueInConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ", values:"
         + instance.getValues() + ")"));

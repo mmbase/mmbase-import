@@ -12,7 +12,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldNullConstraintTest extends TestCase {
     
@@ -73,23 +73,35 @@ public class BasicFieldNullConstraintTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicFieldNullConstraint. */
     public void testToString() {
         assert(instance.toString(),
-        instance.toString().equals("FieldNullConstraint(field:"
+        instance.toString().equals("FieldNullConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ")"));
         
+        // Reverse inverse flag.
+        instance.setInverse(!instance.isInverse());
+        assert(instance.toString(),
+        instance.toString().equals("FieldNullConstraint(inverse:"
+        + instance.isInverse() + ", field:"
+        + instance.getField().getAlias() + ", casesensitive:"
+        + instance.isCaseSensitive() + ")"));
+       
         // Set field alias.
         stringField.setAlias("yyuiwe");
         assert(instance.toString(),
-        instance.toString().equals("FieldNullConstraint(field:"
+        instance.toString().equals("FieldNullConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ")"));
         
         // Reverse case sensitive.
         instance.setCaseSensitive(!instance.isCaseSensitive());
         assert(instance.toString(),
-        instance.toString().equals("FieldNullConstraint(field:"
+        instance.toString().equals("FieldNullConstraint(inverse:"
+        + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
         + instance.isCaseSensitive() + ")"));
+        
     }
     
     public static Test suite() {

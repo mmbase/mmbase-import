@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicCompositeConstraintTest extends TestCase {
     
@@ -141,7 +141,16 @@ public class BasicCompositeConstraintTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicCompositeConstraint. */
     public void testToString() {
         assert(instance.toString(),
-        instance.toString().equals("CompositeConstraint(operator:"
+        instance.toString().equals("CompositeConstraint(inverse:"
+        + instance.isInverse() + ", operator:"
+        + instance.getLogicalOperator() + ", childs:"
+        + instance.getChilds() + ")"));
+
+        // Reverse inverse flag.
+        instance.setInverse(!instance.isInverse());
+        assert(instance.toString(),
+        instance.toString().equals("CompositeConstraint(inverse:"
+        + instance.isInverse() + ", operator:"
         + instance.getLogicalOperator() + ", childs:"
         + instance.getChilds() + ")"));
     }
