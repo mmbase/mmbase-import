@@ -25,6 +25,10 @@ import org.mmbase.service.implementations.*;
  */
 public class cdplayers extends RemoteBuilder {
 
+	private String _classname = getClass().getName();
+	private boolean _debug = true;
+	private void debug( String msg ) { System.out.println( _classname +":"+ msg ); }
+
 	private cdplayerInterface impl;
 	private String classname;
 	StringTagger tagger;
@@ -35,40 +39,51 @@ public class cdplayers extends RemoteBuilder {
 		// and put us in ready/waiting state
 		String state=getStringValue("state");
 		getConfig();
-		System.out.println("STATE="+state);
+		debug("init(): state("+state+")");
 		if (!state.equals("waiting")) {
+
 			// maybe add 'what' happened code ? but for now
 			// just put the service on waiting state
+
 			setValue("state","waiting");
 			commit();
 		}
 	}
 
 	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {		
-		nodeChanged(nodenr,buildername,ctype);
+		if( _debug ) debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
+		 nodeChanged(nodenr,buildername,ctype);
 	}
 
 	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {		
+		if( _debug ) debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
 	public void nodeChanged(String nodenr,String buildername,String ctype) {		
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
 		// get the node
 		getNode();
 				
 		String state=getStringValue("state");
-		System.out.println("STATE="+state);
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
 		if (state.equals("version")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("record")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doRecord()");
 			doRecord();
 		} else if (state.equals("getdir")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doGetDir()");
 			doGetDir();
 		} else if (state.equals("restart")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doRestart()");
 			doRestart();
 		} else if (state.equals("version")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("claimed")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doClaimed()");
 			setClaimed();
 		}
 	}
@@ -85,6 +100,7 @@ public class cdplayers extends RemoteBuilder {
 		if (impl!=null) {
 			setValue("info",impl.getVersion());	
 		} else {
+			debug("doVersion(): ERROR: no implementation!");
 			setValue("info","result=err reason=nocode");	
 		}
 
@@ -102,6 +118,7 @@ public class cdplayers extends RemoteBuilder {
 		if (impl!=null) {
 			setValue("info",impl.getInfoCDtoString());	
 		} else {
+			debug("doGetDir(): ERROR: no implementation!");
 			setValue("info","result=err reason=nocode");	
 		}
 
@@ -124,15 +141,19 @@ public class cdplayers extends RemoteBuilder {
 				int tracknr=Integer.parseInt(tmp);
 				tmp=tagger.Value("id");
 				int cdid=Integer.parseInt(tmp);
-		    	System.out.println("getTrack("+tracknr+" /data/audio/wav/"+cdid+".wav");	
+		    	debug("doRecord(): getTrack("+tracknr+" /data/audio/wav/"+cdid+".wav");	
 		    	boolean result=impl.getTrack(tracknr,"/data/audio/wav/"+cdid+".wav");	
 				if (result) {
 		   		 	setValue("info","result=ok");	
 				} else {
+					debug("doRecord(): ERROR: result("+result+")");
 					setValue("info","result=err reason=recordfailed");	
 				}
-			} catch(Exception e) {}
+			} catch(Exception e){
+				debug("doRecord(): ERROR: Got exception: " + e);
+			}
 		} else {
+			debug("doRecord(): ERROR: no implementation!");
 			setValue("info","result=err reason=nocode");	
 		}
 
@@ -143,12 +164,12 @@ public class cdplayers extends RemoteBuilder {
 
 	void getConfig() {
 		classname=(String)props.get("implementation");
-		System.out.println("impl="+classname);
+		debug("getConfig(): loading("+classname+")");
 		try {
 			Class newclass=Class.forName(classname);
 			impl = (cdplayerInterface)newclass.newInstance();
 		} catch (Exception f) {
-			System.out.println("cdplayer -> Can't load class : "+classname);
+			debug("getConfig(): ERROR: Can't load class("+classname+")");
 		}
 	}
 
