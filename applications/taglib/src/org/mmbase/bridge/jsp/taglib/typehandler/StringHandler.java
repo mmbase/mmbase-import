@@ -18,6 +18,8 @@ import org.mmbase.util.Encode;
 import org.mmbase.util.transformers.Sql;
 import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A TypeHandler for strings. textareas, text-input. Search values are SQL escaped.
@@ -25,11 +27,12 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.8 2003-07-31 15:57:14 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.9 2003-08-01 14:13:24 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
 
+    private static Logger log = Logging.getLoggerInstance(StringHandler.class);
     
     /**
      * Constructor for StringHandler.
@@ -87,7 +90,7 @@ public class StringHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
-        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
         fieldValue = context.encode(fieldValue, field);
         if (fieldValue != null) {
             node.setValue(fieldName,  fieldValue);
@@ -99,9 +102,10 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        
         String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        log.debug("where " + fieldName);
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
+        log.debug("a");
         if (search == null) {
             return null;
         }
@@ -115,7 +119,8 @@ public class StringHandler extends AbstractTypeHandler {
 
     public String whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
+        log.debug("found search '" + search + "'");
         if (search == null || "".equals(search)) {
             return null;
         }

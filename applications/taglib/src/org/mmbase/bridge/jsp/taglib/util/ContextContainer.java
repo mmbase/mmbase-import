@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.7 2003-06-18 11:12:38 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.8 2003-08-01 14:13:22 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -288,14 +288,16 @@ public class ContextContainer extends HashMap {
         log.debug("Valid");
         //pageContext.setAttribute(id, n);
         if (check && isRegistered(newid)) {
-            String mes;
+            JspTagException e;
 	    if(id == null) {
-		mes = "Object with id " + newid + " was already registered in the context without id (root?).";
+		e = new JspTagException("Object with id " + newid + " was already registered in the context without id (root?).");
 	    } else {
-		mes = "Object with id " + newid + " was already registered in Context '" + id  + "'.";
+		e = new JspTagException("Object with id " + newid + " was already registered in Context '" + id  + "'.");
 	    }
-            log.debug(mes);
-            throw new JspTagException(mes);
+            if (log.isDebugEnabled()) {
+                log.debug(Logging.stackTrace(e));
+            }
+            throw e;
         }
         if (log.isDebugEnabled()) {
             log.debug("putting '" + newid + "'/'" + n + "' in " + this);
@@ -312,7 +314,8 @@ public class ContextContainer extends HashMap {
         Iterator i = map.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            register((String) entry.getKey(), entry.getValue());
+            String key = (String) entry.getKey();
+            register(key, entry.getValue(), ! key.startsWith("__")); // 'system var's like those produces by fieldinfo, should never raise exceptions 'id already registerd'). Therefore they are prefixed with '__'.
         }
         
     }
@@ -455,12 +458,14 @@ public class ContextContainer extends HashMap {
         return result;
     }
 
-    // javadoc inherited
     public Object findAndRegister(PageContext pageContext, String externid, String newid) throws JspTagException {
+        return findAndRegister(pageContext, externid, newid, true);
+    }
+    public Object findAndRegister(PageContext pageContext, String externid, String newid, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.debug("searching to register object " + externid + " in context " + getId());
+            log.debug("searching to register object " + externid + " in context " + getId() + " check: " + check);
         }
-        if (isRegistered(newid)) {
+        if (check && isRegistered(newid)) {
 	    String mes;
 	    if(getId() == null) {
 		mes = "Object with id " + newid + " was already registered in the root context.";
@@ -497,7 +502,11 @@ public class ContextContainer extends HashMap {
         return findAndRegister(pageContext, id, id);
     }
     public String findAndRegisterString(PageContext pageContext, String id) throws JspTagException {
-        return (String) findAndRegister(pageContext, id, id);
+        return (String) findAndRegisterString(pageContext, id, true);
+    }
+
+    public String findAndRegisterString(PageContext pageContext, String id, boolean check) throws JspTagException {
+        return (String) findAndRegister(pageContext, id, id, check);
     }
 
     public boolean isPresent(String key) throws JspTagException {
