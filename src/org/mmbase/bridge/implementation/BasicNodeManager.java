@@ -136,11 +136,11 @@ public class BasicNodeManager implements NodeManager, Comparable {
     public NodeList getList(String constraints, String orderby,
             String directions) {
         String where = null;
-          if ((constraints != null) && (!constraints.trim().equals(""))) {
+        if ((constraints != null) && (!constraints.trim().equals(""))) {
             where = "WHERE " + constraints;
-          }
-          Vector v;
-          if (orderby != null) {
+        }
+        Vector v;
+        if (orderby != null && (!orderby.trim().equals(""))) {
             v = builder.searchVector(where, orderby, directions);
         } else {
             v = builder.searchVector(where);

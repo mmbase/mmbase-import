@@ -255,11 +255,12 @@ public interface Cloud {
      * directions)}.
      *
      * @param startNodes    A comma separated list of node numbers that should
-     *                      be used as a
-     *                      starting point for zero or more traversals.
+     *                      be used as a starting point for all traversals
+     *                      or <code>null</code> if all nodes of the first node
+     *                      manager in <code>nodePath</code> should be used.
      *                      The nodes specified as start nodes have to be a
-     *                      member of the first node manager
-     *                      listed in the path parameter.
+     *                      member of the first node manager in the
+     *                      <code>nodePath</code> parameter.
      * @param nodePath      A comma seperated list of node manager names
      *                      which specifies the path that should be followed.
      *                      It is possible to explicitly specify a relation
