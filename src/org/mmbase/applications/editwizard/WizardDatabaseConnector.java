@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.7 2002-03-08 14:20:13 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.8 2002-03-15 09:52:37 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -167,7 +167,7 @@ public class WizardDatabaseConnector {
 
         if (!cmd.hasError()) {
             // place object in targetNode
-            Node result = cmd.responsexml.getFirstChild().cloneNode(true);
+            Node result = cmd.getResponseXML().getFirstChild().cloneNode(true);
             return result;
         } else {
             throw new Exception("getConstraints command not succesful, for objecttype " + objecttype);
@@ -184,8 +184,8 @@ public class WizardDatabaseConnector {
 
         if (!cmd.hasError()) {
            // place object in targetNode
-            if (log.isDebugEnabled()) log.debug(Utils.getSerializedXML(cmd.responsexml));
-            Node result = cmd.responsexml.cloneNode(true);
+            if (log.isDebugEnabled()) log.debug(Utils.getSerializedXML(cmd.getResponseXML()));
+            Node result = cmd.getResponseXML().cloneNode(true);
             return result;
         } else {
             throw new Exception("getList command not succesful");
@@ -218,7 +218,7 @@ public class WizardDatabaseConnector {
 
         if (!cmd.hasError()) {
             // place object in targetNode
-            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
+            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
             tagDataNode(objectnode);
             targetNode.appendChild(objectnode);
             return objectnode;
@@ -245,7 +245,7 @@ public class WizardDatabaseConnector {
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
-            NodeList relations = Utils.selectNodeList(cmd.responsexml, "/*/object/relation");
+            NodeList relations = Utils.selectNodeList(cmd.getResponseXML(), "/*/object/relation");
             for (int i=0; i<relations.getLength(); i++) {
                 tagDataNode(relations.item(i));
             }
@@ -268,7 +268,7 @@ public class WizardDatabaseConnector {
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
-            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
+            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
             tagDataNode(objectnode);
             targetNode.appendChild(objectnode);
             return objectnode;
@@ -292,7 +292,7 @@ public class WizardDatabaseConnector {
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
-            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/relation").cloneNode(true), true);
+            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/relation").cloneNode(true), true);
             tagDataNode(objectnode);
             targetNode.appendChild(objectnode);
             return objectnode;
@@ -523,13 +523,13 @@ public class WizardDatabaseConnector {
             ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
 
             // find response for this command
-            Node resp = Utils.selectSingleNode(response, "/*/"+cmd.name +"[@id]");
+            Node resp = Utils.selectSingleNode(response, "/*/"+cmd.getName() +"[@id]");
             if (resp!=null) {
                 // yes we found a response
-                cmd.setResponseXML(resp);
+                cmd.setResponse(resp);
             } else {
-                log.error("Could NOT store response "+cmd.id+" in a ConnectorCommand");
-                log.error(cmd.responsexml);
+                log.error("Could NOT store response "+cmd.getId()+" in a ConnectorCommand");
+                log.error(cmd.getResponseXML());
             }
         }
         return response;

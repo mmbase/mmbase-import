@@ -17,31 +17,23 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetRelations.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommandGetRelations.java,v 1.3 2002-03-15 09:52:37 pierre Exp $
  */
 
 public class ConnectorCommandGetRelations extends ConnectorCommand {
 
-  String objecttype, objectnumber;
-  Document cmd;
-
-  public ConnectorCommandGetRelations(String aobjectnumber, NodeList queryrelations) {
-    super("getrelations");
-    addObject(aobjectnumber, queryrelations);
-  }
-
-  public void addObject(String objectnumber) {
-        addObject(objectnumber, null);
-  }
-
-  public void addObject(String objectnumber, NodeList queryrelations) {
-    String nr = objectnumber;
-    Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
-
-    if (queryrelations!=null) {
-    Utils.appendNodeList(queryrelations, obj.getDocumentElement());
+    public ConnectorCommandGetRelations(String aobjectnumber, NodeList queryrelations) {
+        super("getrelations");
+        addObject(aobjectnumber, queryrelations);
     }
 
-    addCommandNode(obj.getDocumentElement());
-  }
+    public void addObject(String objectnumber, NodeList queryrelations) {
+        String nr = objectnumber;
+        Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
+
+        if (queryrelations!=null) {
+            Utils.appendNodeList(queryrelations, obj.getDocumentElement());
+        }
+        addCommandNode(obj.getDocumentElement());
+    }
 }

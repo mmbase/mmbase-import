@@ -17,18 +17,19 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.3 2002-03-15 09:52:37 pierre Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {
 
-  String objecttype;
-
-  public ConnectorCommandGetNewRelation(String role, String sourceobjectnumber, String destinationobjectnumber) {
-    super("getnewrelation");
-    addCommandAttr("role", role);
-    addCommandAttr("source", sourceobjectnumber);
-    addCommandAttr("destination", destinationobjectnumber);
-  }
+    /**
+     * @javadoc
+     */
+     public ConnectorCommandGetNewRelation(String role, String sourceobjectnumber, String destinationobjectnumber) {
+         super("getnewrelation");
+         addCommandAttr("role", role);
+         addCommandAttr("source", sourceobjectnumber);
+         addCommandAttr("destination", destinationobjectnumber);
+     }
 
 }
