@@ -211,7 +211,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     */
     public boolean performTask(MMObjectNode node) {
         log.error("Vwm : performTask not implemented in : "+name);
-        node.setValue("status",5);
+        node.setValue("status",Vwmtasks.STATUS_ERROR);
         node.commit();
 
         Vwms.sendMail(name,"performTask not implemented","");
