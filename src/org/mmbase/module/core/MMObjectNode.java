@@ -324,6 +324,24 @@ public class MMObjectNode {
 	}
 
 	/**
+	* Retrieve an object's number.
+	* In case of a new node that is not committed, this will return -1.
+	* @return the number of the node
+	*/
+	public int getNumber() {
+	    return getIntValue("number");
+	}
+	
+	/**
+	* Retrieve an object's object type.
+	* This is a number (an index in the typedef builer), rather than a name.
+	* @return the object type number of the node
+	*/
+	public int getOType() {
+	    return getIntValue("otype");
+	}
+	
+	/**
 	* Get a value of a certain field.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as an <code>Object</code>
@@ -386,7 +404,7 @@ public class MMObjectNode {
 				MMObjectBuilder bul;
 				String tmptable="";
 
-				int number=getIntValue("number");
+				int number=getNumber();
 				// check if its in a multilevel node (than we have no node number and
 				if (prefix!=null && prefix.length()>0) {
 					int pos=prefix.indexOf('.');
@@ -395,7 +413,7 @@ public class MMObjectNode {
 					} else {
 						tmptable=prefix;
 					}
-//					number=getIntValue("number");
+//					number=getNumber();
 					bul=parent.mmb.getMMObject(tmptable);
 					log.debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldname);
 				} else {
@@ -452,7 +470,7 @@ public class MMObjectNode {
 
 			// call our builder with the convert request this will probably
 			// map it to the database we are running.
-			byte[] b=parent.getShortedByte(fieldname,getIntValue("number"));
+			byte[] b=parent.getShortedByte(fieldname,getNumber());
 
 			
 			// we could in the future also leave it unmapped in the values
@@ -683,7 +701,7 @@ public class MMObjectNode {
 			if (properties==null) {
 				properties=new Hashtable();
 				MMObjectBuilder bul=parent.mmb.getMMObject("properties");
-				Enumeration e=bul.search("parent=="+getIntValue("number"));
+				Enumeration e=bul.search("parent=="+getNumber());
 				while (e.hasMoreElements()) {
 					MMObjectNode pnode=(MMObjectNode)e.nextElement();
 					String key=pnode.getStringValue("key");
@@ -796,7 +814,7 @@ public class MMObjectNode {
 	public boolean hasRelations() {
 	    return getRelationCount()>0;
 	    // to be replaced in future releases with:
-	    // return parent.mmb.getInsRel().hasRelations(getIntValue("number"));
+	    // return parent.mmb.getInsRel().hasRelations(getNumber());
 	}
 
 	/**
@@ -806,32 +824,34 @@ public class MMObjectNode {
 	*/	
 	public Enumeration getRelations() {
 		if (relations==null) {	
-			Vector re=parent.getRelations_main(this.getIntValue("number"));
-			if (re!=null) {
-				relations=re;
-				return relations.elements();
-			}
-			return null;
+            relations=parent.getRelations_main(getNumber());
+        }
+		if (relations!=null) {
+		    return relations.elements();
 		} else {
-			return relations.elements();
+			return null;
 		}
 	}
 
-
+    /**
+    * Remove the relations of the node.
+    */
+    public void removeRelations() {
+        parent.removeRelations(this);
+    }
+	
 	/**
 	* Returns the number of relations of this node.
 	* @return An <code>int</code> indicating the number of nodes found
 	*/	
 	public int getRelationCount() {
 		if (relations==null) {	
-			Vector re=parent.getRelations_main(this.getIntValue("number"));
-			if (re!=null) {
-				relations=re;
-				return relations.size();
-			}
-			return 0;
+            relations=parent.getRelations_main(getNumber());
+        }
+		if (relations!=null) {
+		    return relations.size();
 		} else {
-			return relations.size();
+			return 0;
 		}
 	}
 
@@ -847,7 +867,7 @@ public class MMObjectNode {
 		Vector result=new Vector();
 		while (e.hasMoreElements()) {
 			MMObjectNode tnode=(MMObjectNode)e.nextElement();
-			if (tnode.getIntValue("otype")==otype) {
+			if (tnode.getOType()==otype) {
 				result.addElement(tnode);
 			}
 		}
@@ -878,17 +898,14 @@ public class MMObjectNode {
 		int otype=parent.mmb.getTypeDef().getIntValue(wantedtype);
 		if (otype!=-1) {
 		    if (relations==null) {	
-			    Vector re=parent.getRelations_main(this.getIntValue("number"));
-			    if (re!=null) {
-				    relations=re;
-			    }
+                relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
 		    }
 		    if (relations!=null) {
 		        for(Enumeration e=relations.elements();e.hasMoreElements();) {
 			        MMObjectNode tnode=(MMObjectNode)e.nextElement();
 			        int snumber=tnode.getIntValue("snumber");
 			        int nodetype =0;
-			        if (snumber==this.getIntValue("number")) {
+			        if (snumber==getNumber()) {
 				        nodetype=parent.getNodeType(tnode.getIntValue("dnumber"));
 			        } else {
 				        nodetype=parent.getNodeType(snumber);
@@ -960,7 +977,7 @@ public class MMObjectNode {
         for (Enumeration e = getRelations(); e.hasMoreElements();) {
             MMObjectNode relNode = (MMObjectNode)e.nextElement();
             int number = relNode.getIntValue("dnumber");
-            if (number == getIntValue("number")) {
+            if (number == getNumber()) {
                 number = relNode.getIntValue("snumber");
             }
             MMObjectNode destNode = (MMObjectNode)parent.getNode(number);

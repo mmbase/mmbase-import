@@ -22,7 +22,7 @@ public class MMBaseMultiCastWaitNode {
 
 	public MMBaseMultiCastWaitNode(MMObjectNode node) {
 		this.node=node;
-		this.number=node.getIntValue("number");
+		this.number=node.getNumber();
 	}
 
 	public synchronized void doWait(int time) {

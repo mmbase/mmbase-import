@@ -470,7 +470,7 @@ public class MMObjectBuilder extends MMTable {
         			String sNumber = (String)nameCache.get(name);
         			try {
         				int number = Integer.parseInt( sNumber );	
-        				if( number == node.getIntValue("number")) {
+        				if( number == node.getNumber()) {
         					nameCache.remove( name );	
         				} 
         			} catch( NumberFormatException e ) {
@@ -491,28 +491,19 @@ public class MMObjectBuilder extends MMTable {
     * @param node The node whose relations to remove.
     */
     public void removeRelations(MMObjectNode node) {
-        int number=node.getIntValue("number");
-        if (number!=-1) {
-            removeRelations(number);
-        }
-    }
-
-    /**
-    * Remove the relations of a node
-    * @param number The number of the node whose relations to remove.
-    */
-    public void removeRelations(int number) {
-        Vector relvector=getRelations_main(number);
-        for (Iterator rels=relvector.iterator(); rels.hasNext(); ) {
+        Vector relsv=getRelations_main(node.getNumber());
+        if (relsv!=null) {
+            for(Enumeration rels=relsv.elements(); rels.hasMoreElements(); ) {
                 // get the relation node
-                MMObjectNode node=(MMObjectNode)rels.next();
+                MMObjectNode relnode=(MMObjectNode)rels.nextElement();
                 // determine the true builder for this node
                 // (node.parent is always InsRel, but otype
                 //  indicates any derived builders, such as AuthRel)
-                MMObjectBuilder bul = mmb.getMMObject(mmb.getTypeDef().getValue(node.getIntValue("otype")));
+                MMObjectBuilder bul = mmb.getMMObject(mmb.getTypeDef().getValue(relnode.getOType()));
                 // remove the node using this builder
                 // circumvent problem in database layers
-                bul.removeNode(node);
+                bul.removeNode(relnode);
+            }
         }
     }
 
@@ -1109,9 +1100,9 @@ public class MMObjectBuilder extends MMTable {
                 node.clearChanged(); // huh ?
                 results.addElement(node);
 
-                if (oType==node.getIntValue("otype")) {
+                if (oType==node.getOType()) {
                     // huge trick to fill the caches does it make sense ?
-                    number=new Integer(node.getIntValue("number"));
+                    number=new Integer(node.getNumber());
                     if (!nodeCache.containsKey(number) || replaceCache) {
                         nodeCache.put(number,node);
                     } else {
@@ -1639,7 +1630,7 @@ public class MMObjectBuilder extends MMTable {
     * @return a <code>Vector</code> with InsRel nodes
     */
     public Vector getRelations_main(int src) {
-        InsRel bul=(InsRel)mmb.getMMObject("insrel");
+        InsRel bul=mmb.getInsRel();
         if (bul==null) {
             log.error("getMMObject(): InsRel not yet loaded");
             return null;
@@ -1697,7 +1688,7 @@ public class MMObjectBuilder extends MMTable {
         for (Enumeration e=nodeCache.elements();e.hasMoreElements();) {
             MMObjectNode n=(MMObjectNode)e.nextElement();
             int c=n.getIntValue("CacheCount");
-            if (n.getIntValue("otype")==i && c!=-1) j++;
+            if (n.getOType()==i && c!=-1) j++;
         }
         return j;
     }
@@ -1712,9 +1703,9 @@ public class MMObjectBuilder extends MMTable {
             int c=n.getIntValue("CacheCount");
             if (c!=-1) {
                 if (!results.equals("")) {
-                    results+=","+n.getIntValue("number");
+                    results+=","+n.getNumber();
                 } else {
-                    results+=n.getIntValue("number");
+                    results+=n.getNumber();
                 }
             }
         }
@@ -2183,8 +2174,8 @@ public class MMObjectBuilder extends MMTable {
             // should be mapped to the builder
         }
 
-        fieldLocalChanged(""+node.getIntValue("number"),tableName,fieldname,value);
-        //mmb.mmc.changedNode(node.getIntValue("number"),tableName,"f");
+        fieldLocalChanged(""+node.getNumber(),tableName,fieldname,value);
+        //mmb.mmc.changedNode(node.getNumber(),tableName,"f");
         return true;
     }
 
@@ -2212,7 +2203,7 @@ public class MMObjectBuilder extends MMTable {
         String body="<?xml version=\""+version+"\"?>\n";
         body+="<!DOCTYPE mmnode."+tableName+" SYSTEM \""+mmb.getDTDBase()+"/mmnode/"+tableName+".dtd\">\n";
         body+="<"+tableName+">\n";
-        body+="<number>"+node.getIntValue("number")+"</number>\n";
+        body+="<number>"+node.getNumber()+"</number>\n";
         for (Enumeration e=sortedDBLayout.elements();e.hasMoreElements();) {
             String key=(String)e.nextElement();
             int type=node.getDBType(key);
@@ -2359,7 +2350,7 @@ public class MMObjectBuilder extends MMTable {
         Enumeration e=search("name=='"+name+"'");
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
-            number=""+node.getIntValue("number");
+            number=""+node.getNumber();
             //nameCache.put(name,number);
         }
         //}
