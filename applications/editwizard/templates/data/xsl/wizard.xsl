@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.142 2005-01-30 17:02:52 nico Exp $
+    @version $Id: wizard.xsl,v 1.143 2005-03-01 09:55:36 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -566,6 +566,9 @@
       <xsl:when test="@ftype=&apos;checkbox&apos;">
          <xsl:call-template name="ftype-checkbox"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;boolean&apos;">
+         <xsl:call-template name="ftype-checkbox"/>
+      </xsl:when>
       <xsl:when test="@ftype=&apos;realposition&apos;">
         <xsl:call-template name="ftype-realposition"/>
       </xsl:when>
@@ -586,11 +589,13 @@
   </xsl:template>
 
   <xsl:template name="ftype-startwizard">
-    <span class="imgbutton">
-      <a href="javascript:doStartWizard('{../../../@fid}','{../../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-        <xsl:call-template name="prompt_edit_wizard"/>
-      </a>
-    </span>
+    <xsl:if test="@objectnumber!=''">
+      <span class="imgbutton">
+        <a href="javascript:doStartWizard('{../../../@fid}','{../../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+          <xsl:call-template name="prompt_edit_wizard"/>
+        </a>
+      </span>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="ftype-function">
@@ -668,7 +673,7 @@
             <xsl:when test="optionlist/option[@selected=&apos;true&apos;]"/>
             <xsl:when test="@dtrequired=&apos;true&apos;"/>
             <xsl:otherwise>
-              <option value="-">
+              <option value="">
                 <xsl:call-template name="prompt_select"/>
               </option>
             </xsl:otherwise>
