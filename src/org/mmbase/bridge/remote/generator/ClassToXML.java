@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.remote.generator;
 import java.lang.reflect.*;
-import nanoxml.*;
+import org.w3c.dom.*;
 import java.util.*;
 
 /**
@@ -19,22 +19,20 @@ import java.util.*;
  * @author Kees Jongenburger <keesj@framfab.nl>
  **/
 public class ClassToXML {
-    
-    
-    public static XMLElement classToXML(String className,String original) throws Exception{
-        XMLElement e = ClassToXML.classToXML(className);
-        e.addProperty("originalname",original);
+
+    public static Element classToXML(String className,String original, Document document) throws Exception{
+        Element e = ClassToXML.classToXML(className, document);
+        e.setAttribute("originalname",original);
         return e;
     }
-    
-    public static XMLElement classToXML(String className) throws Exception{
+
+    public static Element classToXML(String className, Document document) throws Exception{
         Hashtable methodHash = new Hashtable();
-        XMLElement xmle = new XMLElement();
-        xmle.setTagName("class");
-        xmle.addProperty("name", className);
+        Element xmle = document.createElement("class");
+        xmle.setAttribute("name", className);
         int shortIndex = className.lastIndexOf(".");
-        xmle.addProperty("shortname",  className.substring(shortIndex +1 ));
-        
+        xmle.setAttribute("shortname",  className.substring(shortIndex +1 ));
+
         Class clazz = Class.forName(className);
         Class[] interfaceClasses = clazz.getInterfaces();
         String implementsString = "";
@@ -44,7 +42,7 @@ public class ClassToXML {
             }
             implementsString += interfaceClasses[counter].getName();
         }
-        xmle.addProperty("implements",implementsString);
+        xmle.setAttribute("implements",implementsString);
         Method[] methods = clazz.getMethods();
         for (int i =0 ; i < methods.length ; i++){
             boolean createMethod = true;
@@ -53,7 +51,7 @@ public class ClassToXML {
             if (! methods[i].getDeclaringClass().getName().equals(className)){
                 createMethod = false;
                 String name = methods[i].getDeclaringClass().getName();
-                
+
                 if (methods[i].getDeclaringClass().isInterface()){
                     createMethod = true;
                 }
@@ -63,86 +61,85 @@ public class ClassToXML {
             }
             if (createMethod) {
                 String key ="";
-                XMLElement method = new XMLElement();
-                
-                method.setTagName("method");
+                Element method = document.createElement("method");
                 key += "method";
-                method.addProperty("name", methods[i].getName());
+                method.setAttribute("name", methods[i].getName());
                 key +=  methods[i].getName();
-                
-                XMLElement parameters = new XMLElement();
-                parameters.setTagName("input");
+
+                Element parameters = document.createElement("input");
                 Class[] parameterClasses = methods[i].getParameterTypes();
                 key +=  "(" ;
                 for (int x =0 ; x < parameterClasses.length; x++){
                     Class parameterClass = parameterClasses[x];
-                    parameters.addChild(ClassToXML.classToXML(parameterClass));
+                    parameters.appendChild(ClassToXML.classToXML(parameterClass,document));
                     key +=  parameterClass.getName();
                 }
                 key += ")";
-                method.addChild(parameters);
-                
-                XMLElement returValue = new XMLElement();
-                returValue.setTagName("output");
+                method.appendChild(parameters);
+
+                Element returValue = document.createElement("output");
                 Class returnType = methods[i].getReturnType();
-                returValue.addChild(ClassToXML.classToXML(returnType));
-                method.addChild(returValue);
+                returValue.appendChild(ClassToXML.classToXML(returnType,document));
+                method.appendChild(returValue);
                 if (methodHash.get(key) == null){
-                    xmle.addChild(method);
+                    xmle.appendChild(method);
                     methodHash.put(key,"true");
                 }
             }
         }
         return xmle;
     }
-    
-    
-    public static XMLElement classToXML(Class c){
-        XMLElement retval = new XMLElement();
+
+    public static Element classToXML(Class c, Document document){
+        return classToXML(c,document,false);
+    }
+
+    public static Element classToXML(Class c, Document document, boolean isinarray){
+        Element retval=null;
         if(c.isArray()){
-            retval.setTagName("array");
+            // retval= document.createElement("array");
             Class arr = c;
             while(arr.isArray()){
                 arr = arr.getComponentType();
             }
-            XMLElement e =ClassToXML.classToXML(arr);
-            e.setTagName("array");
+            Element e =ClassToXML.classToXML(arr,document,true);
 	    String className = arr.getName();
        	    int shortIndex = className.lastIndexOf(".");
-            e.addProperty("shortname",  className.substring(shortIndex +1 ));
+            e.setAttribute("shortname",  className.substring(shortIndex +1 ));
             return e;
-        } else {
-            
-            if (c.isPrimitive()){
-                retval.setTagName("primitiveclass");
-                retval.addProperty("name",c.getName());
-                retval.addProperty("shortname",c.getName());
-               String name = c.getName();
-               if (name.equals("int")){
-                   retval.addProperty("classname","java.lang.Integer");
-               } else if (name.equals("char")){
-                   retval.addProperty("classname","java.lang.Character");
-               } else {
-                   String first = name.substring(0,1);
-                   retval.addProperty("classname","java.lang." + first.toUpperCase() + name.substring(1));
-               }
+        } else if (c.isPrimitive()){
+            if (isinarray) {
+                retval=document.createElement("array");
             } else {
-		if (c.getName().startsWith("java.") || c.getName().startsWith("javax.")  ){
-			retval.setTagName("sunclass");
-			retval.addProperty("name",c.getName());
-		} else {
-			retval.setTagName("classReference");
-			retval.addProperty("name",c.getName());
-		}
+                retval=document.createElement("primitiveclass");
             }
+            retval.setAttribute("name",c.getName());
+            retval.setAttribute("shortname",c.getName());
+            String name = c.getName();
+            if (name.equals("int")){
+                retval.setAttribute("classname","java.lang.Integer");
+            } else if (name.equals("char")){
+                retval.setAttribute("classname","java.lang.Character");
+            } else {
+                String first = name.substring(0,1);
+                retval.setAttribute("classname","java.lang." + first.toUpperCase() + name.substring(1));
+            }
+        } else if (c.getName().startsWith("java.") || c.getName().startsWith("javax.")) {
+            if (isinarray) {
+                retval=document.createElement("array");
+            } else {
+                retval=document.createElement("sunclass");
+            }
+            retval.setAttribute("name",c.getName());
+        } else {
+            if (isinarray) {
+                retval=document.createElement("array");
+            } else {
+                retval=document.createElement("classReference");
+            }
+            retval.setAttribute("name",c.getName());
         }
         return retval;
     }
-    
-    /**
-     *
-     **/
-    public static void main(String [] argv) throws Exception{
-        System.out.println(ClassToXML.classToXML(argv[0]));
-    }
+
 }
