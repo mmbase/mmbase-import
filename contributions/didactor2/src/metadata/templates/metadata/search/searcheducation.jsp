@@ -14,14 +14,15 @@
   
 
 
-<mm:list nodes="$education" path="educations,metadata">
+<mm:list nodes="$education" path="educations,metadata,metavalue">
 
-<mm:import jspvar="metaValue" reset="true" vartype="String"><mm:field name="metadata.value"/></mm:import>
+<mm:import jspvar="metaValue" reset="true" vartype="String"><mm:field name="metavalue.value"/></mm:import>
 <%
 
 metaValue=metaValue.toUpperCase();
 try {
-//    System.err.println("matching '"+metaValue+"' against '"+query+"' (learnobject="+ request.getParameter("learnobject")+")");
+    
+//    System.err.println("matching '"+metaValue+"' against '"+query+"' (education="+ request.getParameter("education")+")");
     boolean hit = false;
     if ("exact".equals(qtype)) {
 	hit = metaValue.indexOf(query) > -1;

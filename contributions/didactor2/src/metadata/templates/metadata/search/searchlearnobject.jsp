@@ -16,9 +16,9 @@
 
 
 <% if (level.intValue() < 10) { %>
-<mm:list nodes="$learnobject" path="learnobjects,metadata">
+<mm:list nodes="$learnobject" path="learnobjects,metadata,metavalue">
 
-<mm:import jspvar="metaValue" reset="true" vartype="String"><mm:field name="metadata.value"/></mm:import>
+<mm:import jspvar="metaValue" reset="true" vartype="String"><mm:field name="metavalue.value"/></mm:import>
 <%
 
 metaValue=metaValue.toUpperCase();
@@ -65,7 +65,8 @@ try {
 		    </mm:node>
 		    </td>
 	    </tr>
-<%   } 
+<%       
+    } 
 }
 catch (Exception e) {
     System.err.println(e);
