@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.17 2003-04-03 16:53:05 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.18 2003-04-03 17:00:03 vpro Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -282,9 +282,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
      public int getAllowedRelationType(int snum,int dnum) {
         Set set = new HashSet(typeRelNodes.getBySourceDestination(snum, dnum));
-	    set.addAll(inverseTypeRelNodes.getByDestinationSource(dnum, snum));
+        set.addAll(inverseTypeRelNodes.getByDestinationSource(dnum, snum));
 
-	    log.error(set);
         if (set.size() != 1) {
             return -1;
         } else {
