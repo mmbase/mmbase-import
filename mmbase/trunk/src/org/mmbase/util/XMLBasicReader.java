@@ -49,12 +49,22 @@ public class XMLBasicReader  {
     }
     
     /**
-     * @param path Dot-separated list of tags describing path from root element to requested element
+     * @param path Dot-separated list of tags describing path from root element to requested element. 
+     *             NB the path starts with the name of the root element.
      * @return Leaf element of the path
      */
     public Element getElementByPath(String path) {
+	return getElementByPath(document.getDocumentElement(),path);
+    }
+
+    /**
+     * @param e Element from which the "relative" path is starting. 
+     *          NB the path starts with the name of the root element.
+     * @param path Dot-separated list of tags describing path from root element to requested element
+     * @return Leaf element of the path
+     */
+    public Element getElementByPath(Element e,String path) {
 	StringTokenizer st = new StringTokenizer(path,".");
-	Element e = document.getDocumentElement();
 	if (!st.hasMoreTokens()) {
 	    // faulty path
 	    System.err.println("no tokens in path");
