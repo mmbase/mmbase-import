@@ -16,6 +16,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * @javadoc
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -30,7 +31,9 @@ public class BasicRelation extends BasicNode implements Relation {
     private int snumtype = 0;
     private int dnumtype = 0;
 
-
+    /**
+     * @javadoc
+     */
     BasicRelation(MMObjectNode node, NodeManager nodeManager) {
         super(node,nodeManager);
         if (nodeManager instanceof RelationManager) {
@@ -38,11 +41,14 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         snum = node.getIntValue("snumber");
         dnum = node.getIntValue("dnumber");
-        
+
         snumtype = mmb.getTypeDef().getNodeType(snum);
         dnumtype = mmb.getTypeDef().getNodeType(dnum);
     }
 
+    /**
+     * @javadoc
+     */
     BasicRelation(MMObjectNode node, NodeManager nodeManager, int id) {
         super(node,nodeManager,id);
         isnew=true;
@@ -53,7 +59,7 @@ public class BasicRelation extends BasicNode implements Relation {
         temporaryNodeId=id;
     }
 
-    
+
     public Node getSource() {
         // Note that this will not return an accurate value when the field is
         // edited during a transaction.
@@ -118,12 +124,15 @@ public class BasicRelation extends BasicNode implements Relation {
         return relationManager;
     }
 
+    /**
+     * @javadoc
+     */
     void checkValid() {
         if (log.isDebugEnabled()) {
             log.debug("s : " + snum + " d: " + dnum);
         }
-        //int snumber = snumtype.getNumber(); 
-        //int dnumber = dnumtype.getNumber(); 
+        //int snumber = snumtype.getNumber();
+        //int dnumber = dnumtype.getNumber();
         int rnumber = getNode().getIntValue("rnumber");
         if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
             if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
@@ -137,7 +146,7 @@ public class BasicRelation extends BasicNode implements Relation {
                 throw new BridgeException(message);
             }
         }
-        
+
     }
 
     public void commit() {
