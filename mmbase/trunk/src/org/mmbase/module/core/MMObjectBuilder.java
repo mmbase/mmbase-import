@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.261 2004-02-20 18:11:22 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.262 2004-03-03 14:46:49 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -821,7 +821,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void safeCache(Integer n, MMObjectNode node) {
         synchronized(nodeCache) {
-            if(cacheLocked==0) {
+            if(cacheLocked == 0) {
                 nodeCache.put(n, node);
             }
         }
@@ -1084,16 +1084,16 @@ public class MMObjectBuilder extends MMTable {
      * @sql uses sql statements. will be removed once the new storage layer is in use
      * @param number The number of the node to search for
      * @param useCache If true, the node is retrieved from the node cache if possible.
-     * @return <code>null</code> if the node does not exist or the key is invalid, or a
-     *       <code>MMObjectNode</code> containign the contents of the requested node.
+     * @return <code>null</code> if the node does not exist, the key is invalid,or a
+     *       <code>MMObjectNode</code> containing the contents of the requested node.
      * @throws RuntimeException If the node does not exist (not always true!)
      */
     public synchronized MMObjectNode getNode(int number, boolean useCache) {
-        if (number==-1) {
-            log.warn(" ("+tableName+") nodenumber == -1");
+        if (number ==- 1) {
+            log.warn(" (" + tableName + ") nodenumber == -1");
             return null;
         }
-        MMObjectNode node=null;
+        MMObjectNode node = null;
         Integer numberValue = new Integer(number);
         // try cache if indicated to do so
         if (useCache) {
@@ -1108,7 +1108,7 @@ public class MMObjectBuilder extends MMTable {
         // test otype.
         // XXX todo: getNodeType() should throw a NotFound exception.
         if (nodeType < 0) {
-            String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + nodeType + ")";
+            String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + nodeType + ")" + Logging.stackTrace();
             throw new RuntimeException(msg);
         }
         // if the type is not for the current buidler, determine the real builder
@@ -1120,8 +1120,9 @@ public class MMObjectBuilder extends MMTable {
             }
             builder = mmb.getBuilder(builderName);
             if (builder == null) {
-                log.warn("Node #" + number + " builder " + builderName + "(" + nodeType + ")) is not loaded");
-                return null;
+                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'.");
+                builder = mmb.getBuilder("object");                
+                //return null; Used to return null in MMBase < 1.7.0, but that gives troubles, e.g. that the result not gets cached.
             }
         }
         // use storage factory if present
@@ -1130,7 +1131,7 @@ public class MMObjectBuilder extends MMTable {
                 node = mmb.getStorageManager().getNode(builder, number);
                 // store in cache if indicated to do so
                 if (useCache) {
-                    safeCache(numberValue,node);
+                    safeCache(numberValue, node);
                 }
                 return node;
             } catch(StorageException se) {
@@ -1166,7 +1167,7 @@ public class MMObjectBuilder extends MMTable {
                         }
                         // store in cache if indicated to do so
                         if (useCache) {
-                            safeCache(numberValue,node);
+                            safeCache(numberValue, node);
                         }
                         // clear the changed signal
                         node.clearChanged();
