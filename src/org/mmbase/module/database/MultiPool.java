@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.19 2002-11-07 14:00:02 kees Exp $
+ * @version $Id: MultiPool.java,v 1.20 2002-11-15 13:24:41 robmaris Exp $
  */
 public class MultiPool {
     
@@ -91,12 +91,12 @@ public class MultiPool {
             log.debug("JDBC -> Starting the pool check (" + this + ") : busy=" + busyPool.size() + " free=" + pool.size());
         }
         
-        int nowTime = (int) (System.currentTimeMillis() / 1000);
-        
         synchronized (semaphore) {
             //lock semaphore, so during the checks, no connections can be acquired or put back
             // (because the methods of semaphore are synchronized)
             
+            int nowTime = (int) (System.currentTimeMillis() / 1000);
+        
             for (Iterator i = busyPool.iterator(); i.hasNext();) {
                 MultiConnection con = (MultiConnection) i.next();
                 int diff = nowTime - con.getStartTime();
