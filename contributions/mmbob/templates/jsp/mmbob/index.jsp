@@ -24,6 +24,7 @@
 <!-- end login part -->
 
 <mm:locale language="$lang"> 
+<%@ include file="loadtranslations.jsp" %>
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -91,11 +92,11 @@
             <br />
           </mm:compare>
           <mm:compare referid="image_logo" value="">
-            <h4>Welcome <mm:field name="active_firstname" /> <mm:field name="active_lastname" /> (<mm:field name="active_account" />) <br /> to the <mm:field name="name" /> forum !</h4>
+            <h4><mm:write referid="mlg_Welcome" /> <mm:field name="active_firstname" /> <mm:field name="active_lastname" /> (<mm:field name="active_account" />) <br /> <mm:write referid="mlg_on_the" /> <mm:field name="name" /> <mm:write referid="mlg_forum" /> !</h4>
             <p />
           </mm:compare>
 
-          Last time logged in : 
+          <mm:write referid="mlg_last_time_logged_in" /> : 
           <mm:field name="active_lastseen">
             <mm:compare value="" inverse="true">
               <mm:field name="active_lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
@@ -103,7 +104,7 @@
           </mm:field>
 
           <br />
-          Member since : 
+          <mm:write referid="mlg_member_since" /> : 
           <mm:field name="active_firstlogin">
             <mm:compare value="" inverse="true">
               <mm:field name="active_firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
@@ -111,7 +112,7 @@
           </mm:field>
  
           <br />
-          Number of messages : <mm:field name="active_postcount" /> 
+          <mm:write referid="mlg_number_of_messages" /> : <mm:field name="active_postcount" /> 
           Level : <mm:field name="active_level" />
 
           <p>
@@ -126,9 +127,9 @@
         </mm:compare>
       </td>
       <th width="250" align="left" valign="top">
-        <b>Areas</b> : <mm:field name="postareacount" /> <b>Topics </b> : <mm:field name="postthreadcount" /><br />
-        <b>Messages</b> : <mm:field name="postcount" /> <b>Views </b> : <mm:field name="viewcount" /><br />
-        <b>Members</b> : <mm:field name="posterstotal" /> <b>New</b> : <mm:field name="postersnew" /> <b>Online</b> : <mm:field name="postersonline" /><p />
+        <b><mm:write referid="mlg_Areas" /></b> : <mm:field name="postareacount" /> <b><mm:write referid="mlg_Topics" /></b> : <mm:field name="postthreadcount" /><br />
+        <b><mm:write referid="mlg_Messages" /></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg_Views" /> </b> : <mm:field name="viewcount" /><br />
+        <b><mm:write referid="mlg_Members" /></b> : <mm:field name="posterstotal" /> <b>New</b> : <mm:field name="postersnew" /> <b>Online</b> : <mm:field name="postersonline" /><p />
         <b>Last posting</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> door <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1">nog geen berichten</mm:compare></mm:field>
       </th>
     </tr>
