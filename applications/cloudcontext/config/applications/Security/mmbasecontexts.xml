@@ -23,7 +23,7 @@
 	</node>
 
 	<node number="1001" owner="security">
-		<name>imageconvert</name>
+		<name>imagesmodule</name>
 		<description></description>
 	</node>
 
