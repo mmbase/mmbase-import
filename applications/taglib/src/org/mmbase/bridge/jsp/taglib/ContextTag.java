@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Enumeration;
+import java.util.Set;
+import java.util.HashSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -173,6 +175,14 @@ class ContextContainer extends HashMap {
         return get(key, true);
     }
 
+    public Set keySet() {
+        HashSet result = new HashSet(super.keySet());
+        if (parent != null) {
+            result.addAll(parent.keySet());
+        }
+        return result;
+    }
+
     /**
      * Container class, to store results of 'getPair' function.
      *
@@ -220,14 +230,38 @@ class ContextContainer extends HashMap {
 
 public class ContextTag extends ContextReferrerTag {
 
-    public static final int TYPE_NOTSET         = -10;
-    public static final int TYPE_PAGE           = 0;
-    public static final int TYPE_PARENT         = 5; // uses parent Contex, if there is one.
-    public static final int TYPE_PARAMETERS     = 10;
-    public static final int TYPE_MULTIPART      = 20;
-    public static final int TYPE_SESSION        = 30;
+    public static final int LOCATION_NOTSET         = -10;
+    public static final int LOCATION_PAGE           = 0;
+    public static final int LOCATION_PARENT         = 5; // uses parent Contex, if there is one.
+    public static final int LOCATION_PARAMETERS     = 10;
+    public static final int LOCATION_MULTIPART      = 20;
+    public static final int LOCATION_SESSION        = 30;
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
+
+
+    public static int stringToLocation(String s) throws JspTagException {
+        int location;
+        if ("parent".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_PARENT;
+        } else if ("page".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_PAGE;
+        } else if ("session".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_SESSION;
+        } else if ("parameters".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_PARAMETERS;
+        } else if ("parameter".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_PARAMETERS;
+        } else if ("postparameters".equalsIgnoreCase(s)) { // backward compatible
+            location = ContextTag.LOCATION_MULTIPART;
+        } else if ("multipart".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_MULTIPART;
+        } else {
+            throw new JspTagException("Unknown context-type " + s);
+        }
+        return location;
+    }
+
 
     private ContextContainer container = null; 
 
@@ -410,10 +444,10 @@ public class ContextTag extends ContextReferrerTag {
         // if it cannot be found, then 'null' will be put in the hashmap ('not present')
 
         switch (from) {
-        case TYPE_SESSION:
+        case LOCATION_SESSION:
             result = getSession().getAttribute(referid);
             break;
-        case TYPE_MULTIPART: 
+        case LOCATION_MULTIPART: 
             if (isMultipart()) {
                 log.debug("searching " + referid + " in multipart post");
                 result = getMultipartRequest().getParameterValues(referid);
@@ -421,7 +455,7 @@ public class ContextTag extends ContextReferrerTag {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
             break;
-        case TYPE_PARAMETERS: {
+        case LOCATION_PARAMETERS: {
             log.debug("searching parameter " + referid);
             Object[] resultvec = getHttpRequest().getParameterValues(referid);
             if (resultvec != null) {
@@ -437,7 +471,7 @@ public class ContextTag extends ContextReferrerTag {
             }
         }
         break;
-        case TYPE_PARENT:
+        case LOCATION_PARENT:
             if (getParentContext() != null) {
                 if (parent.isRegistered(referid)) {
                     result = parent.container.get(referid);
@@ -447,7 +481,7 @@ public class ContextTag extends ContextReferrerTag {
                 }
             }
             break;
-        case TYPE_PAGE:
+        case LOCATION_PAGE:
             //result = pageContext.getAttribute(referid);
             break;
         default:
@@ -469,24 +503,24 @@ public class ContextTag extends ContextReferrerTag {
 
     public Object findAndRegister(String externid, String newid) throws JspTagException {
         log.debug("searching to register object " + externid + " in context " + getId());
-        // if (findAndRegister(TYPE_PAGE, referid, id)) return true;
+        // if (findAndRegister(LOCATION_PAGE, referid, id)) return true;
         log.debug("searching in parent");
         Object result; 
-        result = findAndRegister(TYPE_PARENT, externid, newid);
+        result = findAndRegister(LOCATION_PARENT, externid, newid);
         if (result != null) return result;
         unRegister(newid); // unregister the 'null' value
         log.debug("searching in parameters");
-        result = findAndRegister(TYPE_PARAMETERS, externid, newid);
+        result = findAndRegister(LOCATION_PARAMETERS, externid, newid);
         if (result != null) return result;
         unRegister(newid);
         if (isMultipart()) {
             log.debug("searching in multipart post");
-            result = findAndRegister(TYPE_MULTIPART, externid, newid);
+            result = findAndRegister(LOCATION_MULTIPART, externid, newid);
             if (result != null) return result;
             unRegister(newid);
         }
         log.debug("searching in session");
-        result = findAndRegister(TYPE_SESSION, externid, newid);
+        result = findAndRegister(LOCATION_SESSION, externid, newid);
         // don't unregister now, it stays registered as a null value,t hat is registerd, but not found.
         return result;
     }
@@ -547,7 +581,7 @@ public class ContextTag extends ContextReferrerTag {
 
     public Object getContainerObject(String key) throws JspTagException {
         if (! isRegisteredSomewhere(key)) {
-            throw new JspTagException("Object '" + key + "' is not registered");            
+            throw new JspTagException("Object '" + key + "' is not registered. Registered are " + container.keySet());
         }
         return container.get(key);
     }
