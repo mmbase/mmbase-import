@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.19 2000-12-15 22:28:57 daniel Exp $
+ $Id: sessions.java,v 1.20 2001-01-16 13:16:12 install Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.19  2000/12/15 22:28:57  daniel
+ added fallback/forward for new cookie/user system
+
  Revision 1.18  2000/12/13 11:18:31  install
  Rob: redirect keywords through database mapper
 
@@ -89,7 +92,7 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.19 2000-12-15 22:28:57 daniel Exp $
+ * @version $Id: sessions.java,v 1.20 2001-01-16 13:16:12 install Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -155,11 +158,18 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 	
 	public String getValue(sessionInfo session,String wanted) {
-		if (session!=null) {
-			return(session.getValue(wanted));
-		} else {
+
+		if (session==null) {
 			debug("getValue("+wanted+"): ERROR: session is null!");
 			return(null);
+		}
+
+		if(wanted.indexOf("-xmlescape")!=-1) {
+			wanted = wanted.substring(0,wanted.length()-10);
+			String ret = session.getValue(wanted);
+			return "<![CDATA["+ret+"]]>";
+		} else {
+			return(session.getValue(wanted));
 		}
 	}
 
