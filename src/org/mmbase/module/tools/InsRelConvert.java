@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools;
 
@@ -15,14 +15,21 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 
+/**
+ * Used to convert very old versions of InsRel (sets the dir field).
+ *
+ * @deprecated Applies to MMBase 1.4 and earlier. Not needed anymore.
+ * @author Pierre van Rooden
+ * @version $Id: InsRelConvert.java,v 1.4 2004-10-07 12:22:24 pierre Exp $
+ */
 public class InsRelConvert extends Object {
     /**
      * Logger routine
      */
     private static Logger log = Logging.getLoggerInstance(InsRelConvert.class.getName());
-    
+
     private static MMBase mmbaseRoot;
-    
+
     InsRelConvert() {
         // get the mmbaseRoot, when not already there, it will be started....
         mmbaseRoot=(MMBase)Module.getModule("MMBASEROOT");
@@ -31,7 +38,7 @@ public class InsRelConvert extends Object {
             throw new RuntimeException("Could not find MMBASEROOT Module : Property 'mmbase.config' == <?incorrect?>");
         }
     }
-    
+
     public static void main(String[] argv) {
         // check if the property has been set for config dir....
         if (MMBaseContext.getConfigPath() == null) {
@@ -72,7 +79,7 @@ public class InsRelConvert extends Object {
             } catch(Exception e) {
                 log.fatal( e.toString() ); e.printStackTrace();
             }
-            
+
         }
         System.exit(0);
     }

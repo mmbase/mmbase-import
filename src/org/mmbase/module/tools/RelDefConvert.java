@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools;
 
@@ -15,14 +15,21 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
 
+/**
+ * Used to convert very old versions of RelDef (sets the builder field).
+ *
+ * @deprecated Applies to MMBase 1.4 and earlier. Not needed anymore.
+ * @author Daniel ockeloen
+ * @version $Id: RelDefConvert.java,v 1.5 2004-10-07 12:22:24 pierre Exp $
+ */
 public class RelDefConvert {
     /**
      * Logger routine
      */
     private static Logger log = Logging.getLoggerInstance(RelDefConvert.class.getName());
-    
+
     private static MMBase mmbaseRoot;
-    
+
     public RelDefConvert() throws Exception {
         // get the mmbaseRoot, when not already there, it will be started....
         mmbaseRoot=(MMBase)Module.getModule("MMBASEROOT");
@@ -31,7 +38,7 @@ public class RelDefConvert {
             throw new Exception("Could not find MMBASEROOT Module : Property 'mmbase.config' == <?incorrect?>");
         }
     }
-    
+
     public static void main(String[] argv) {
         // check if the property has been set for config dir....
         if (MMBaseContext.getConfigPath() == null) {
@@ -44,16 +51,16 @@ public class RelDefConvert {
                 if (reldef==null) {
                     throw new Exception("RelDef does not exist ("+mmbaseRoot.baseName+"_reldef)");
                 }
-                
+
                 if (!reldef.usesbuilder) {
                     throw new Exception("RelDef does not have a builder field defined ("+mmbaseRoot.baseName+"_reldef)");
                 }
-                
+
                 int insRelID = mmbaseRoot.getTypeDef().getIntValue("insrel");
                 if (insRelID<=0) {
                     throw new Exception("insrel does not exist in ("+mmbaseRoot.baseName+"_typedef)");
                 }
-                
+
                 int i=0;
                 int ie=0;
                 for (Enumeration nodes=reldef.search(""); nodes.hasMoreElements();) {
@@ -77,7 +84,7 @@ public class RelDefConvert {
             } catch(Exception e) {
                 log.fatal( e.toString() );
             }
-            
+
         }
         System.exit(0);
     }
