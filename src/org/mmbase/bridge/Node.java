@@ -328,4 +328,31 @@ public interface Node {
      */
     public Relation createRelation(Node destinationNode,
                                    RelationManager relationManager);
+				   
+    /**
+     * set the Context of the current Node
+     *
+     * @param context	    	    The context to which the current node should belong,
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (change context)
+     */
+    public void setContext(String context);
+    
+    /**
+     * get the Context of the current Node
+     *
+     * @return the current context of the node
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (read rights)
+     */    
+    public String getContext();
+        
+    /**
+     * get the Contextes which can be set to this specific node
+     *
+     * @return the contextes from which can be chosen
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (read rights)
+     */        
+    public StringList getPossibleContexts();
 }
