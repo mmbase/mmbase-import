@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.2 2004-05-03 14:55:48 keesj Exp $
+ * @version $Id: ReloadableModule.java,v 1.3 2004-11-11 17:12:58 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -37,16 +37,20 @@ public abstract class ReloadableModule extends Module {
      * 
      * @return Whether successful.
      */
-    protected boolean  reloadConfiguration(File file) {
-        // reload parameters
-        XMLModuleReader parser  = new XMLModuleReader(file.getAbsolutePath());
+
+    protected boolean reloadConfiguration(String s) {
+        XMLModuleReader parser  = new XMLModuleReader(s);
+        return reloadConfiguration(parser);
+    }
+
+    protected boolean reloadConfiguration(XMLModuleReader parser) {
         if (parser.getStatus().equals("inactive")) {
-            log.error("Cannot set module to inactive. " + file + " Canceling reload");
+            log.error("Cannot set module to inactive. " + parser.getFileName() + " Canceling reload");
             return false;
         }
         String className = parser.getClassFile();
         if (! className.equals(getClass().getName())) {
-            log.error("Cannot change the class of a module. " + className + " != " + getClass().getName() + " " + file + ". Canceling reload.");
+            log.error("Cannot change the class of a module. " + className + " != " + getClass().getName() + " " + parser.getFileName()  + ". Canceling reload.");
             return false;
         }
         
