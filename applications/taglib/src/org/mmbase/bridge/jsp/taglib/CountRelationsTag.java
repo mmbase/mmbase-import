@@ -8,11 +8,10 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,55 +21,58 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.17 2003-08-11 15:27:16 michiel Exp $ 
  */
-
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
-    private static Logger log   = Logging.getLoggerInstance(CountRelationsTag.class);
-    private Attribute type      = Attribute.NULL;
-    private Attribute searchDir = Attribute.NULL;
-    private Attribute role      = Attribute.NULL;
+    // Writer implementation:
+    protected WriterHelper helper = new WriterHelper();
+    public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+    public void haveBody() { helper.haveBody(); }
+
+    private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
+    private String type;
 
     /**
      * Set the type of related nodes wich should be counted. If not set all
      * related nodes are counted.
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttribute(type);
-    }
-
-    public void setSearchdir(String s) throws JspTagException {
-        searchDir = getAttribute(s);
-    }
-
-    public void setRole(String r) throws JspTagException {
-        role = getAttribute(r);
+        this.type = getAttributeValue(type);
     }
 
     public int doStartTag() throws JspTagException {
-        helper.setTag(this);
         if (getReferid() != null) {
-            helper.setValue(getContextProvider().getContextContainer().getObject(getReferid()));
+            helper.setValue(getContextTag().getObject(getReferid()));
         } else {
             log.debug("Search the node.");
             Node node = getNode();
-            NodeManager other = 
-                type == Attribute.NULL ? 
-                getCloud().getNodeManager("object") : 
-                getCloud().getNodeManager(type.getString(this));
-            String direction = (String) searchDir.getValue(this);
-            if (direction == null) direction = "BOTH";
-            helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), direction)));
+            if (type == null) {
+                helper.setValue(new Integer(node.countRelations()));
+            } else {
+            helper.setValue(new Integer(node.countRelatedNodes(type)));
+            }
         }
+        helper.setJspvar(pageContext);
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspException {
-        return helper.doAfterBody();
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
     }
 
     public int doEndTag() throws JspTagException {

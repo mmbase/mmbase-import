@@ -9,15 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.io.DataInputStream;
+import java.util.*;
+import java.util.Date;
+import java.sql.*;
+import java.io.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: CDs.java,v 1.8 2003-03-10 11:50:16 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class CDs extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(CDs.class.getName());

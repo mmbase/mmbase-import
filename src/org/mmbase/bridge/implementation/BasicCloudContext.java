@@ -11,7 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.security.*;
 import java.util.*;
+import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.*;
@@ -22,10 +24,10 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.31 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.27.2.1 2002-11-18 12:28:29 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
-    private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
+    private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
 
     /**
     * Link to the mmbase root
@@ -71,7 +73,8 @@ public class BasicCloudContext implements CloudContext {
         // set all the names of all accessable clouds..
         localClouds.add("mmbase");
 
-        } else {
+        }
+    else {
         // why dont we start mmbase, when there isnt a running instance, just change the check...
             String message = "MMBase has not been started, and cannot be started by "
                       + "this Class. (" + getClass().getName() + ")";
@@ -116,17 +119,17 @@ public class BasicCloudContext implements CloudContext {
      * Create a temporary scanpage object.
      */
     static scanpage getScanPage(ServletRequest rq, ServletResponse resp) {
-        scanpage sp = new scanpage();
+    scanpage sp = new scanpage();
         if (rq instanceof HttpServletRequest) {
             HttpServletRequest req=(HttpServletRequest)rq;
             sp.setReq(req);
-            sp.setRes((HttpServletResponse)resp);
+        sp.setRes((HttpServletResponse)resp);
             if (req!=null) {
-                sp.req_line=req.getRequestURI();
+            sp.req_line=req.getRequestURI();
                 sp.querystring=req.getQueryString();
             }
         }
-        return sp;
+    return sp;
     }
     /**
      * @return String describing the encoding.
@@ -168,4 +171,5 @@ public class BasicCloudContext implements CloudContext {
     public StringList createStringList() {
         return new BasicStringList();
     }
+
 }

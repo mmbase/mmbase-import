@@ -12,10 +12,16 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 
 import java.util.Map;
+import java.io.FileInputStream;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
+
+import org.xml.sax.InputSource;
 
 import org.apache.xpath.XPathAPI;
+import org.apache.xerces.parsers.DOMParser;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.9 2003-05-08 06:09:24 kees Exp $
+ * @version $Id: ContextLoginModule.java,v 1.7 2002-10-29 23:19:48 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -94,7 +100,7 @@ public abstract class ContextLoginModule {
         NodeList nl = found.getChildNodes();
         for (int i=0;i<nl.getLength();i++) {
             Node n = nl.item(i);
-            if (n.getNodeType() == Node.TEXT_NODE) {
+            if (n.getNodeType() == n.TEXT_NODE) {
                 String value = n.getNodeValue();
                 log.debug("retrieved the value for user:" + username + " in module: " + name + " value: " + value);
                 return value;

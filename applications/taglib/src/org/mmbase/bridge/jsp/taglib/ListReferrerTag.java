@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -21,22 +20,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen 
  *
- * @version $Id: ListReferrerTag.java,v 1.6 2003-08-07 17:21:06 michiel Exp $ 
  */
 
 public abstract class ListReferrerTag extends ContextReferrerTag  {
     
     private static Logger log = Logging.getLoggerInstance(ListReferrerTag.class.getName()); 
-    protected Attribute  parentListId = Attribute.NULL;
-
+    private String  parentListId;
     
     public void setList(String l) throws JspTagException {
-        parentListId = getAttribute(l);
+        parentListId = getAttributeValue(l);
     }
 
     protected ListProvider getList() throws JspTagException {
         // find the parent list:
-        return (ListProvider) findParentTag(ListProvider.class, (String) parentListId.getValue(this));
+        return (ListProvider)findParentTag("org.mmbase.bridge.jsp.taglib.ListProvider", parentListId);
     }
 
 }

@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
 import java.io.*;
 
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.builders.vwms.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -49,7 +53,6 @@ public class CopyServicesProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"CopyServices");
-			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -59,14 +62,17 @@ public class CopyServicesProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.interrupt();
+		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.suspend();
+		kicker.stop();
 		kicker = null;
 	}
 
 	/**
 	 * admin probe, try's to make a call to all the maintainance calls.
 	 */
-	public void run() {  
+	public void run() {
+		kicker.setPriority(Thread.MIN_PRIORITY+1);  
 		String from=node.getStringValue("from");
 		String to=node.getStringValue("to");
 		String fromroot=node.getStringValue("fromroot");

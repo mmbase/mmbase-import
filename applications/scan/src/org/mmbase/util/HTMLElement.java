@@ -9,27 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-import org.mmbase.module.ParseException;
-import org.mmbase.module.ProcessorInterface;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.module.*;
+import org.mmbase.util.logging.*;
 
 /**
-* Class which is the super-class for ALL the HTMLElements.
-*
+* Class which is the super-class for ALL the HTMLElements.<br>
+*<br>
 * Includes a parser wich fills all the variables
-* and calls the abstract function generate which will be
+* and calls the abstract function generate which will be <br>
 * implemented in a HTMLElement
-*
+*<br>
 * @author Jan van Oosterom
-* @version $Id: HTMLElement.java,v 1.7 2003-03-07 08:50:30 pierre Exp $
+* @version 23-Sep-1996
 *
 */
-public abstract class HTMLElement {
+public abstract class HTMLElement
+{
     // logger
     private static Logger log = Logging.getLoggerInstance(HTMLElement.class.getName());
 
@@ -347,9 +346,7 @@ public abstract class HTMLElement {
     protected String getValue(String str) {
         StringTokenizer tok = new StringTokenizer(str,"=");
         if (tok.hasMoreTokens()) {
-            // nextToken() would only return a Object dummy, becaue we are only
-            // interested in the value after the =
-            tok.nextElement();
+            Object dummy = tok.nextElement();
             if (tok.hasMoreTokens()) {
                 return (String) tok.nextElement();
             }

@@ -14,14 +14,15 @@ import java.util.Hashtable;
 import java.io.File;
 import java.io.IOException;
 
-import org.mmbase.util.xml.BuilderReader;
+import org.mmbase.util.XMLBuilderReader;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @author  Case Roole, cjr@dds.nl
- * @version $Id: BuilderReport.java,v 1.6 2003-07-21 12:19:05 pierre Exp $
+ * @author    Case Roole, cjr@dds.nl
+ * @version   $Id: BuilderReport.java,v 1.4 2002-03-15 15:29:45 pierre Exp $
  */
 public class BuilderReport extends AbstractReport {
 
@@ -86,7 +87,7 @@ public class BuilderReport extends AbstractReport {
                     }
                 }
                 if (!foundXMLError) {
-                    BuilderReader reader  = new BuilderReader(path);
+                    XMLBuilderReader reader  = new XMLBuilderReader(path);
                     res = res + "status = " + reader.getStatus();
 
                     builderStatus.put(buildername, reader.getStatus());
@@ -126,7 +127,7 @@ public class BuilderReport extends AbstractReport {
      * @return true if the whether builder is active
      */
     private boolean builderIsActive(String path) {
-        BuilderReader reader  = new BuilderReader(path);
+        XMLBuilderReader reader  = new XMLBuilderReader(path);
         return reader.getStatus().equalsIgnoreCase("active");
     }
 

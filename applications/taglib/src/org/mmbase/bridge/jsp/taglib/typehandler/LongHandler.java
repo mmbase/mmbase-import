@@ -17,14 +17,10 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 
 /**
- * @javadoc
- *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
  */
-
 public class LongHandler extends AbstractTypeHandler {
 
     private DateHandler dateHandler;
@@ -33,9 +29,9 @@ public class LongHandler extends AbstractTypeHandler {
      * Constructor for LongHandler.
      * @param context
      */
-    public LongHandler(FieldInfoTag tag) {
-        super(tag);
-        dateHandler = new DateHandler(tag);
+    public LongHandler(FieldInfoTag context) {
+        super(context);
+        dateHandler = new DateHandler(context);
     }
     
     /**

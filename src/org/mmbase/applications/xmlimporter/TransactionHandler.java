@@ -1,12 +1,15 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
-*/
+ * ClassName: TransactionHandler.java
+ *
+ * Date: dec. 1st. 2001
+ *
+ * Copyright notice:
+ * This software is OSI Certified Open Source Software.
+ * OSI Certified is a certification mark of the Open Source Initiative.
+ *
+ * The license (Mozilla version 1.0) can be read at the MMBase site.
+ * See http://www.MMBase.org/license
+ */
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
@@ -17,9 +20,15 @@ import org.mmbase.module.sessionInfo;
 import org.mmbase.module.sessionsInterface;
 
 import org.mmbase.module.TransactionHandlerInterface;
+import org.mmbase.module.Upload;
 
+import org.mmbase.module.core.*;
 import org.mmbase.util.scanpage;
 
+import org.apache.xerces.parsers.DOMParser;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.mmbase.util.logging.*;
 
@@ -33,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.8 2003-03-07 08:50:03 pierre Exp $
+ * @version $Id: TransactionHandler.java,v 1.4.2.2 2003-01-09 14:39:31 robmaris Exp $
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
@@ -56,7 +65,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
    private final String xmlHeader =
    "<?xml version='1.0'?>\n"
       + "<!DOCTYPE transactions "
-      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' "
+      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' " 
       + "'http://www.mmbase.org/dtd/transactions_1_0.dtd'>\n";
 
    /**

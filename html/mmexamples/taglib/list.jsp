@@ -19,7 +19,6 @@
 
 <head>
   <title>Taglib examples</title>
-  <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
 </head>
 
 <body>
@@ -29,7 +28,7 @@
 <h1>Using the list tag</h1>
 
 <form method="POST">
-  <table>
+  <table bgcolor="EEEEEE">
     <tr>
       <td>nodes</td>
       <td><input type="text" size="60" name="nodes" value="<mm:write referid="nodes"/>"></td>

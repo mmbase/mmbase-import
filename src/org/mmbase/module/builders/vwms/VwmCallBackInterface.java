@@ -15,7 +15,7 @@ package org.mmbase.module.builders.vwms;
  * The only method in this interface is a notification method used when a vwm 'unloads'.
  *
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmCallBackInterface.java,v 1.5 2003-03-10 11:50:25 pierre Exp $
+ * @version 5-Apr-2001
  */
 
 public interface VwmCallBackInterface {

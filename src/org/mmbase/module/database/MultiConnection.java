@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.28 2003-08-26 08:17:37 pierre Exp $
+ * @version $Id: MultiConnection.java,v 1.16 2002-11-07 07:17:10 kees Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -52,7 +52,7 @@ public class MultiConnection implements Connection {
     /**
      * @javadoc
      */
-    Connection con;
+    Connection con=null;
     /**
      * @javadoc
      */
@@ -70,14 +70,16 @@ public class MultiConnection implements Connection {
      * protected constructor for extending classes, so they can use
      * this with for example only a connection..
      */
-    protected MultiConnection() {       
+    protected MultiConnection() {
+        this.con = con;
+        this.parent = null;
         state=CON_UNUSED;
     }
     
     /**
      * @javadoc
      */
-    public MultiConnection(MultiPool parent,Connection con) {
+    MultiConnection(MultiPool parent,Connection con) {
         this.con=con;
         this.parent=parent;
         state=CON_UNUSED;
@@ -164,7 +166,7 @@ public class MultiConnection implements Connection {
      * get AutoCommit mode
      */
     public boolean getAutoCommit() throws SQLException {
-        return con.getAutoCommit();
+        return(con.getAutoCommit());
     }
     
     /**
@@ -185,26 +187,9 @@ public class MultiConnection implements Connection {
      * Close connections
      */
     public void close() throws SQLException {
-        if (log.isDebugEnabled()) {
-            StringBuffer mes = new StringBuffer();
-            long time = System.currentTimeMillis() - getStartTimeMillis();
-            if (time < 10) mes.append(' ');
-            if (time < 100) mes.append(' ');
-            if (time < 1000) mes.append(' ');
-            mes.append(time);
-            mes.append(" ms: ").append(getLastSQL());
-            log.debug(mes.toString());
-        }
+        log.debug("SQL querytimer measures " + (System.currentTimeMillis() - getStartTimeMillis()) + " mSec for query: " + getLastSQL());
         state=CON_FINISHED;
-        // If there is a parent object, this connection belongs to a pool and should not be closed,
-        // but placed back in the pool
-        // If there is no parent, the connection belongs to a datasource (thus pooling is done by the appserver)
-        // and should be closed normally
-        if (parent != null) {
-            parent.putBack(this);
-        } else {
-            realclose();
-        }
+        parent.putBack(this);
     }
     
     /**
@@ -301,7 +286,7 @@ public class MultiConnection implements Connection {
      */
     public boolean checkSQLError(Exception e) {
         log.error("JDBC CHECK ERROR="+e.toString());
-        return true;
+        return(true);
     }
     
     /**

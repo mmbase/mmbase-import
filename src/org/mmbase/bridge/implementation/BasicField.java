@@ -9,15 +9,15 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.13 2003-08-27 10:21:42 pierre Exp $
+ * @version $Id: BasicField.java,v 1.11 2002-10-24 12:56:07 pierre Exp $
  */
 public class BasicField implements Field, Comparable {
 
@@ -69,10 +69,6 @@ public class BasicField implements Field, Comparable {
         return field.isKey();
     }
 
-    public boolean hasIndex() {
-        return (field.getDBType() == FieldDefs.TYPE_NODE) || field.getDBName().equals("number");
-    }
-    
     /**
      * Compares this field to the passed object.
      * Returns 0 if they are equal, -1 if the object passed is a Field and larger than this field,

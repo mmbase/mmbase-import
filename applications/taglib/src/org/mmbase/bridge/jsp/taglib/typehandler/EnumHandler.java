@@ -11,8 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.Constraint;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 import java.util.*;
@@ -25,43 +25,38 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.13 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.2.2.1 2003-07-15 12:29:55 pierre Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
-    private static Logger log = Logging.getLoggerInstance(EnumHandler.class);
+    private static Logger log = Logging.getLoggerInstance(EnumHandler.class.getName());
     private ResourceBundle bundle;
     private boolean available;
     /**
      * @param context
      */
-    public EnumHandler(FieldInfoTag tag,  String enumType) throws JspTagException {
-        super(tag);
+    public EnumHandler(FieldInfoTag context, String enumType) throws JspTagException {
+        super(context);
         try {
-            Class.forName(enumType);
-        } catch (Exception ee) {
-            try {
-                String resource;            
-                if (enumType.indexOf('.') == -1 ) {
-                    resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
-                } else {
-                    resource = enumType;
-                    
-                }
-                bundle    = ResourceBundle.getBundle(resource, tag.getCloud().getLocale(), getClass().getClassLoader());
-                available = true;
-            } catch (java.util.MissingResourceException e) {
-                log.warn(e.toString());
-                available = false;
+            String resource;
+            if (enumType.indexOf('.') == -1 ) {
+                resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
+            } else {
+                resource = enumType;
+
             }
+            bundle    = ResourceBundle.getBundle(resource, context.getCloud().getLocale(), getClass().getClassLoader());
+            available = true;
+        } catch (java.util.MissingResourceException e) {
+            log.warn(e.toString());
+            available = false;
         }
     }
 
     public boolean isAvailable() {
         return available;
     }
-
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();
@@ -88,15 +83,6 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             buffer.append("\"");
             if ((node != null) && (key.intValue() == value)) {
                 buffer.append(" selected=\"selected\"");
-            } else if (search) {
-                try {
-                    int searchi = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName())));
-                    if (searchi == key.intValue()) {
-                        buffer.append(" selected=\"selected\"");
-                    }
-                } catch (NumberFormatException nfe) {
-                    // never mind. perhaps was not yet present in post --> java.lang.NumberFormatException: null
-                }
             }
             buffer.append(">");
             buffer.append(enumValues.get(key));
@@ -104,15 +90,9 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         }
         buffer.append("</select>");
         if (search) {
-            String name = prefix(field.getName()) + "_search";
-            String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
             buffer.append("<input type=\"checkbox\" name=\"");
-            buffer.append(name);            
-            buffer.append("\" ");
-            if (searchi != null) {
-                buffer.append(" checked=\"checked\"");
-            }
-            buffer.append(" />\n");
+            buffer.append(prefix(field.getName() + "_search"));
+            buffer.append("\" />\n");
         }
         return buffer.toString();        
     }
@@ -124,24 +104,12 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+        if (context.getContextTag().findAndRegister(id, id) == null) {
             return "";
         } else {
             return super.whereHtmlInput(field);
         }
     }        
-
-
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-        String fieldName = field.getName();
-        String id = prefix(fieldName + "_search");
-        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
-            return null;
-        } else {
-            return super.whereHtmlInput(field, query);
-        }
-    }        
-
 
 
 }

@@ -10,8 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
+import java.sql.*;
+import org.mmbase.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.*;
+import org.mmbase.module.database.*;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.36 2003-08-13 12:43:40 michiel Exp $
+ * @version 3 jan 2001
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -45,7 +50,6 @@ public class InsRel extends MMObjectBuilder {
     /**
      *  Cache system, holds the relations from the 25
      *  most used relations
-     * @todo Is this cache still used?
      */
 
     private Cache relatedCache = new Cache(25) {
@@ -61,7 +65,10 @@ public class InsRel extends MMObjectBuilder {
         };
     */
 
-    private static Logger log = Logging.getLoggerInstance(InsRel.class);
+    /**
+     * Logger routine
+     */
+    private static Logger log = Logging.getLoggerInstance(InsRel.class.getName());
 
     /**
      * needed for autoload
@@ -134,17 +141,16 @@ public class InsRel extends MMObjectBuilder {
      * @return A <code>integer</code> value identifying the newly inserted relation
      * @deprecated Use insert(String, MMObjectNode) instead.
      */
-    public int insert(String owner, int snumber, int dnumber, int rnumber) {
+    public int insert(String owner,int snumber,int dnumber, int rnumber) {
         int result = -1;
-        MMObjectNode node = getNewNode(owner);
+        MMObjectNode node=getNewNode(owner);
         if( node != null ) {
             node.setValue("snumber",snumber);
             node.setValue("dnumber",dnumber);
             node.setValue("rnumber",rnumber);
             result = insert(owner,node);
-        } else {
+        } else
             log.error("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): Cannot create new node("+node+")!");
-        }
         return result;
     }
 
@@ -158,7 +164,7 @@ public class InsRel extends MMObjectBuilder {
     public int insert(String owner, MMObjectNode node) {
         int result = -1;
         int snumber=node.getIntValue("snumber");
-        if( snumber >= 0 ) {
+            if( snumber >= 0 ) {
             int dnumber=node.getIntValue("dnumber");
             if( dnumber >= 0 ) {
                 int rnumber=node.getIntValue("rnumber");
@@ -170,9 +176,7 @@ public class InsRel extends MMObjectBuilder {
                         node.setValue("dir",dir);
                     }
                     node=alignRelNode(node);
-                    if (log.isDebugEnabled()) {
-                        log.debug("insert(" + owner + ","  + node + ")");
-                    }
+                    log.debug("insert("+owner+","+node+")");
                     result=super.insert(owner,node);
                     // remove cache for these nodes (enforce update)
                     deleteRelationCache(snumber);
@@ -185,15 +189,12 @@ public class InsRel extends MMObjectBuilder {
                             mmb.mmc.changedNode(n1.getNumber(),n1.getTableName(),"r");
                             mmb.mmc.changedNode(n2.getNumber(),n2.getTableName(),"r");
                                   */
-                } else {
+                } else
                     log.error("insert("+owner+","+node+"): rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
-                }
-            } else {
+            } else
                 log.error("insert("+owner+","+node+"): dnumber("+dnumber+" is not greater than 0! (something is seriously wrong)");
-            }
-        } else {
+        } else
             log.error("insert("+owner+","+node+"): snumber("+snumber+") is not greater than 0! (something is seriously wrong)");
-        }
         return result;
     }
 
@@ -236,7 +237,7 @@ public class InsRel extends MMObjectBuilder {
      * @param src this is the number of the MMObjectNode requesting the relations
      * @param otype the object type of the nodes you want to have. -1 means any node.
      * @param rnumber Identifying number of the role (reldef)
-     * @return An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     * @returns An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
      */
     public Enumeration getRelations(int src,int otype, int rnumber) {
@@ -251,7 +252,7 @@ public class InsRel extends MMObjectBuilder {
      * @param usedirectionality if <code>true</code> teh result si filtered on unidirectional relations.
      *                          specify <code>false</code> if you want to show unidoerctional relations
      *                          from destination to source.
-     * @return An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     * @returns An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
      */
     public Enumeration getRelations(int src,int otype, int rnumber, boolean usedirectionality) {
@@ -276,7 +277,7 @@ public class InsRel extends MMObjectBuilder {
                 MMObjectBuilder nodeBuilder = mmb.getBuilder(typedef.getValue(getNodeType(nodenr)));
                 if (nodeBuilder != null && (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder))) {
                     list.add(node);
-                }
+                }                 
             }
             return list.elements();
         }
@@ -424,7 +425,7 @@ public class InsRel extends MMObjectBuilder {
     * Get MMObjectNodes of a specified type related to a specified MMObjectNode
     * @param src this is the number of the source MMObjectNode
     * @param otype the object type of the nodes you want to have
-    * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
+    * @returns An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
     public Enumeration getRelated(int src,int otype) {
         Vector se=getRelatedVector(src,otype);
@@ -468,7 +469,7 @@ public class InsRel extends MMObjectBuilder {
     * @param src this is the number of the source MMObjectNode
     * @param otype the object type of the nodes you want to have
     * @param rnumber Identifying number of the role (reldef)
-    * @return An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
+    * @returns An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
     */
     public Enumeration getRelated(int src,int otype, int rnumber) {
         Vector se=getRelatedVector(src,otype,rnumber);
@@ -480,7 +481,7 @@ public class InsRel extends MMObjectBuilder {
     * Get MMObjectNodes related to a specified MMObjectNode
     * @param src this is the number of the MMObjectNode requesting the relations
     * @param otype the object type of the nodes you want to have. -1 means any node.
-    * @return A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+    * @returns A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
     *   according to the specified filter(s).
     **/
     public Vector getRelatedVector(int src,int otype) {
@@ -492,7 +493,7 @@ public class InsRel extends MMObjectBuilder {
      * @param src this is the number of the MMObjectNode requesting the relations
      * @param otype the object type of the nodes you want to have. -1 means any node.
      * @param rnumber Identifying number of the role (reldef)
-     * @return A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     * @returns A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
      */
     public Vector getRelatedVector(int src,int otype, int rnumber) {

@@ -13,7 +13,11 @@ import org.mmbase.cache.Cache;
 
 import javax.xml.transform.*;
 import java.util.*;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.8 2003-07-17 17:01:17 michiel Exp $
+ * @version $Id: ResultCache.java,v 1.5 2002-10-30 00:05:03 michiel Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {
 
-    private static Logger log = Logging.getLoggerInstance(ResultCache.class);
+    private static Logger log = Logging.getLoggerInstance(ResultCache.class.getName());
 
     private static int cacheSize = 50;
     private static ResultCache cache;
@@ -76,49 +80,24 @@ public class ResultCache extends Cache {
         throw new RuntimeException("wrong types in cache");
     }
 
-
-    /**
-     * Generating a key for a document. Keep it simple...
-     *
-     * @todo Generate this key faster and smaller
-     */
-    private StringBuffer append(StringBuffer buf, Node node) {
-        switch(node.getNodeType()) {
-        case Node.ATTRIBUTE_NODE: 
-            buf.append(node.getNodeName()).append(node.getNodeValue());
-            break;
-        case Node.ELEMENT_NODE: {
-            NodeList nl = node.getChildNodes();
-            for (int i = 0; i < nl.getLength(); i++) {
-                append(buf, nl.item(i));
-            }
-        }
-        case Node.ENTITY_NODE:
-        case Node.ENTITY_REFERENCE_NODE:
-            buf.append(node.getNodeName());
-            break;
-        case Node.CDATA_SECTION_NODE:
-        case Node.TEXT_NODE:
-            buf.append(node.getNodeValue().hashCode());
-            break;
-        }
-        
-        return buf;
-    }
     /** 
      * Generates the key which is to be used in the Cache Map.
      *
      * @todo Generate this key faster and smaller
      */
     private String getKey(Source xsl, Map params, Properties props, Document src) {        
-        StringBuffer key = new StringBuffer(""+(xsl.getSystemId() + "/" + (params != null ? params.toString() : "")  + "/" + (props != null ? props.toString() : "")+ "/"));
-        
-        return append(key, src.getDocumentElement()).toString();
+        java.io.StringWriter result = new java.io.StringWriter();
+        XMLSerializer xml = new XMLSerializer(result, null);
+        try {
+            xml.serialize(src);
+            return ""+(xsl.getSystemId() + "/" + (params != null ? params.toString() : "")  + "/" + (props != null ? props.toString() : "")+ "/" + result.toString()).hashCode();
+        } catch (java.io.IOException e) {
+            return "KEYCOULDNOTBEGENERATED";
+        }
     }
       
     /**
-     * This is an intelligent get, which also does the put if it
-     * cannot find the requested result. So, it never returns null.
+     * This is an intelligent get, which also does the put if it cannot find the requested result.
      *
      * @param temp The Templates from which the transformer must be created (if necessary)
      * @param xsl  The XSL Source. This only used to produce the key, because with the Templates it
@@ -128,18 +107,12 @@ public class ResultCache extends Cache {
      * @return The transformation result. It does not return null.
      */
     public String get(Templates temp, Source xsl, Map params, Properties props, Document src) {
-        String key = null;
-        String result = null;
-        if (isActive()) { 
-            key = getKey(xsl, params, props, src);
-            if (log.isDebugEnabled()) {
-                log.debug("Getting result of XSL transformation: " + key);
-            }
-            result = (String) get(key);
-        }
+        String key = getKey(xsl, params, props, src);
+        log.debug("Getting result of XSL transformation: " + key);
+        String result = (String) get(key);
         if (result == null) {
             try {
-                // do the transformation, and cache the result if cache is active:
+                // do the transformation, and cache the result:
                 Transformer transformer = temp.newTransformer();
                 // add the params:
                 if (params != null) {
@@ -163,13 +136,11 @@ public class ResultCache extends Cache {
             // if result is not too big, then it can be cached:
             if (isActive()) {
                 if (result.length() < getMaxEntrySize()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Put xslt Result in cache with key " + key);
-                    }
+                    log.service("Put xslt Result in cache with key " + key);
                     super.put(key, result);
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug("xslt Result of key " + key.substring(100) + " is too big to put in cache. " + result.length() + " >= " +  getMaxEntrySize());
+                        log.debug("xslt Result of key " + key + " is too big to put in cache. " + result.length() + " >= " +  getMaxEntrySize());
                     }
                 }
             }

@@ -18,12 +18,9 @@ import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
- *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.3 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -32,8 +29,8 @@ public class XmlHandler extends StringHandler {
      * Constructor for XmlHandler.
      * @param context
      */
-    public XmlHandler(FieldInfoTag tag) {
-        super(tag);
+    public XmlHandler(FieldInfoTag context) {
+        super(context);
     }
 
     /**

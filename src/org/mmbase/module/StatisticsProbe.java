@@ -9,6 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: StatisticsProbe.java,v 1.7 2003-05-08 06:09:32 kees Exp $
+ * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {
@@ -47,7 +51,6 @@ public class StatisticsProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"StatisticsProbe");
-			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -57,7 +60,9 @@ public class StatisticsProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.interrupt();
+		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.suspend();
+		kicker.stop();
 		kicker = null;
 	}
 

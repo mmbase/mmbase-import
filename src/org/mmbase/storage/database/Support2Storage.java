@@ -9,11 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import java.sql.*;
+import java.io.File;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 
-import org.mmbase.module.core.*;
+import org.mmbase.module.database.JDBCInterface;
+
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
+import org.mmbase.storage.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Support2Storage implements a number of methods that allow a DatabaseStorage class to also implement
@@ -22,9 +28,9 @@ import org.mmbase.module.database.support.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.6 2003-07-02 06:20:46 keesj Exp $
+ * @version $Id: Support2Storage.java,v 1.2 2002-11-12 16:57:54 pierre Exp $
  */
-public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseStorage, MMJdbc2NodeInterface {
+public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInterface {
 
     /**
      * Constructs the Support2Storage database layer support class
@@ -39,26 +45,28 @@ public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseS
 
     abstract public boolean getStoreBinaryAsFile();
 
-    abstract public String mapToMMBaseFieldName(String allowedField);
+    abstract public String getBinaryFilePath();
 
-    abstract public String mapToTableFieldName(String disallowedField);
+    abstract public String mapToMMBaseFieldName(String allowedfield);
 
-    abstract public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs, int i);
+    abstract public String mapToTableFieldName(String disallowedfield);
 
-    /**
-     * Utility method, defined in AbstractDatabaseStorage
-     */
-    abstract protected String getText(String tableName, String fieldName, int number);
+    abstract public void loadFieldFromTable(MMObjectNode node,String fieldname, ResultSet rs,int i);
 
     /**
      * Utility method, defined in AbstractDatabaseStorage
      */
-    abstract protected byte[] getBytes(String tableName, String fieldName, int number);
+    abstract protected String getText(String tableName,String fieldname,int number);
+
+    /**
+     * Utility method, defined in AbstractDatabaseStorage
+     */
+    abstract protected byte[] getBytes(String tableName,String fieldname,int number);
 
     /**
      * Utility method, defined in SQL92DatabaseStorage
      */
-    abstract protected byte[] readBytesFromFile(String tableName, String fieldName, int number);
+    abstract protected byte[] readBytesFromFile(String path);
 
     abstract public int insert(MMObjectNode node);
 
@@ -141,30 +149,29 @@ public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseS
      * @deprecated This is not supported by this database layer, and only included due to
      * the interface requirements.
      */
-    public String getMMNodeSearch2SQL(String where, MMObjectBuilder builder) {
+    public String getMMNodeSearch2SQL(String where,MMObjectBuilder builder) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Get text from blob
-     * @deprecated use getText(MMObjectNode, fieldname);
+     * @deprecated use getText(MMObjectNode,fieldname);
      * @javadoc
      */
-    final public String getShortedText(String tableName, String fieldName, int number) {
-        return getText(getFullTableName(tableName), fieldName, number);
+    public String getShortedText(String tableName,String fieldname,int number) {
+        return getText(getFullTableName(tableName),fieldname,number);
     }
 
     /**
-     * Get byte of a database blob.  It is unclear why this function is called 'getShorted..'.  
-     * This function is final because if you extend Support2Storage, you should override storage
-     * interface functions, not support functions.
-     * @deprecated use /override getBytes(MMObjectNode, fieldname)
+     * Get byte of a database blob
+     * @deprecated use getBytes(MMObjectNode,fieldname)
+     * @javadoc
      */
-    final public byte[] getShortedByte(String tableName, String fieldName, int number) {
+    public byte[] getShortedByte(String tableName,String fieldname,int number) {
         if (getStoreBinaryAsFile()) {
-            return readBytesFromFile(tableName, fieldName, number);
+            return readBytesFromFile(getBinaryFilePath()+tableName+File.separator+number+"."+fieldname);
         } else {
-            return getBytes(getFullTableName(tableName), fieldName, number);
+            return getBytes(getFullTableName(tableName),fieldname,number);
         }
     }
 

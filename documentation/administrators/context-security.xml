@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>Context Security Configuration</title>
-    <date>2003-02-12</date>
-    <edition>$Id: context-security.xml,v 1.10 2003-07-27 17:47:50 henk Exp $</edition>
+    <date>12 February 2003</date>
+    <edition>$Id: context-security.xml,v 1.1.2.7 2003-02-27 15:47:12 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -36,19 +36,19 @@
       </revision>
       <revision>
         <revnumber>0.2</revnumber>
-        <date>2002-10-25</date>
+        <date>25 October 2002</date>
         <authorinitials>SdH</authorinitials>
       </revision>
       <revision>
         <revnumber>0.3</revnumber>
-        <date>2003-01-30</date>
+        <date>30 January 2003</date>
         <authorinitials>HH</authorinitials>
       </revision>
       <revision>
         <revnumber>0.4</revnumber>
-        <date>2003-02-07</date>
+        <date>07 February 2003</date>
         <authorinitials>PvR</authorinitials>
-        <revremark>Placed security framework and xml how-to in separate documents</revremark>
+        <revremark>Placed security farmework and xml how-to in separate documents</revremark>
       </revision>
     </revhistory>
   </articleinfo>
@@ -119,7 +119,7 @@
       </section>
       <section>
         <title>Groups</title>
-        <para>A group is a collection of users and groups. In this way you can represent your organization in the security system. If used properly in combination with contexts for each group.</para>
+        <para>A group is a collection of users and groups. In this way you can represent your organisation in the security system. If used properly in combination with contexts for each group.</para>
       </section>
       <section>
         <title>Users</title>

@@ -12,13 +12,9 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
 /**
- * Interface designed to make it possible for child tags
- * to access a node defined in a tag
- *
- * @author Michiel Meeuwissen 
- * @version $Id: NodeProvider.java,v 1.5 2003-06-06 10:03:09 pierre Exp $ 
- */
-
+* Interface designed to make it possible for child tags
+* to access a node defined in a tag
+**/
 public interface NodeProvider extends TagIdentifier {
     /**
      * @return the node contained in the tag

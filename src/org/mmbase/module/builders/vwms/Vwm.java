@@ -11,7 +11,8 @@ package org.mmbase.module.builders.vwms;
 
 import java.util.*;
 import java.io.*;
-
+import java.lang.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
@@ -27,7 +28,7 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwm.java,v 1.14 2003-05-08 06:01:23 kees Exp $
+ * @version 5-Apr-2001
  */
 
 public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
@@ -109,7 +110,6 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"Vwm : "+name);
-            kicker.setDaemon(true);
             kicker.start();
         }
     }
@@ -120,7 +120,9 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
      */
     public void stop() {
         /* Stop thread */
-        kicker.interrupt();
+        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker.suspend();
+        kicker.stop();
         kicker = null;
     }
 
@@ -129,6 +131,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
      * Calls the {@link #probeCall} method, after which the thread sleeps for a number of seconds as set in {@link #sleeptime}.
      */
     public void run() {
+        kicker.setPriority(Thread.MIN_PRIORITY+1);
         while (kicker!=null) {
             try {
                 probeCall();

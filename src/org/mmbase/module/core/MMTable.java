@@ -9,9 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.util.*;
 import java.sql.*;
 
+import org.mmbase.module.*;
 import org.mmbase.module.database.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.8 2003-06-18 15:22:41 kees Exp $
+ * @version 31 januari 2001
  */
 public class MMTable {
 
@@ -67,13 +72,17 @@ public class MMTable {
             String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
 			log.info(query);
 			ResultSet rs=stmt.executeQuery(query);
-			int i=-1;
-			while(rs.next()) {
-				i=rs.getInt(1);
-			}	
-			stmt.close();
-			con.close();
-			return i;
+            try {
+                int i=-1;
+                while(rs.next()) {
+                    i=rs.getInt(1);
+                }	
+                stmt.close();
+                con.close();
+                return i;
+            } finally {
+                rs.close();
+            }
 		} catch (Exception e) {
 			return(-1);
 		}
@@ -90,10 +99,10 @@ public class MMTable {
     */
 	public boolean created() {
 		if (size()==-1) {
-			log.debug("TABLE "+tableName+" NOT FOUND");
+			log.error("TABLE "+tableName+" NOT FOUND");
 			return(false);
 		} else {
-			log.debug("TABLE "+tableName+" FOUND");
+			log.error("TABLE "+tableName+" FOUND");
 			return(true);
 		}
 		// better:

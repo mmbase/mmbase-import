@@ -12,19 +12,19 @@ package org.mmbase.module.builders;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.Arguments;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.21 2003-06-03 10:59:38 kees Exp $
+ * @version $Id: AbstractImages.java,v 1.15.2.2 2003-03-06 16:46:18 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
 
-    private static Logger log = Logging.getLoggerInstance(AbstractImages.class);
+    private static Logger log = Logging.getLoggerInstance(AbstractImages.class.getName());
 
     /** 
      * Cache with 'ckey' keys.
@@ -42,7 +42,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         void   remove(int originalNodeNumber) {
             String prefix = "" + originalNodeNumber;
             log.debug("removing " + prefix);
-            Iterator keys  = keySet().iterator();
+            java.util.Iterator keys  = keySet().iterator();
             List removed = new ArrayList();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
@@ -78,19 +78,18 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * An image's gui-indicator is of course some &lt;img src&gt;, but it depends on what kind of image
      * (cached, original) what excactly it must be.
      */
-    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a);
+    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName);
 
     /**
-     * Returns GUI Indicator for node
+     * Gui indicator of a whole node.
      */
-    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments a) {
-        return getGUIIndicatorWithAlt(node, "*", a); /// Gui indicator of a whole node.
+    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, "*", res, session);
     }
 
-    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
-        String field = a.getString("field");
+    protected String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {
         if (field.equals("handle") || field.equals("")) {
-            return getSGUIIndicatorForNode(node, a);
+            return getSGUIIndicator(session, res, node);
         }
         // other fields can be handled by the orignal gui function...
         return getSuperGUIIndicator(field, node);
@@ -102,7 +101,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     abstract protected String getImageFormat(MMObjectNode node);
 
     /**
-     * Determine the MIME type of this image node, baseImagd on the image format.
+     * Determine the MIME type of this image node, based on the image format.
      */
     public String getImageMimeType(MMObjectNode node) {
         return mmb.getMimeType(getImageFormat(node));

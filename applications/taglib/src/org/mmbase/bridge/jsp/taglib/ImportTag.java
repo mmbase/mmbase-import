@@ -8,32 +8,37 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.*;
+
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.util.transformers.CharTransformer;
+
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
+
 /**
- * The importtag puts things in the context. It can find them from the
- * environment or from its body.
- *
- * @author Michiel Meeuwissen
- * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.34 2003-08-11 15:27:18 michiel Exp $
- */
+* The importtag puts things in the context. It can find them from the
+* environment or from its body.
+*
+* @author Michiel Meeuwissen
+* @see    ContextTag
+*/
 
 public class ImportTag extends WriteTag {
-    private static Logger log = Logging.getLoggerInstance(ImportTag.class);
 
-    protected Attribute required = Attribute.NULL;
-    protected Attribute from     = Attribute.NULL; 
+    private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName());
 
-    protected Attribute externid = Attribute.NULL;
-    private   Attribute reset    = Attribute.NULL;
+    protected boolean required     = false;
+    protected int     from         = ContextTag.LOCATION_NOTSET;
+
+    protected String  externid      = null;
 
     private   boolean found = false;
+    private   boolean reset = false;
     private   String  useId = null;
 
 
@@ -43,8 +48,8 @@ public class ImportTag extends WriteTag {
     public void release() {
         log.debug("releasing" );
         super.release();
-        externid = Attribute.NULL;
-        id = Attribute.NULL;
+        externid = null;
+        id = null;
     }
 
     /**
@@ -52,7 +57,7 @@ public class ImportTag extends WriteTag {
      */
 
     public void setExternid(String e) throws JspTagException {
-        externid = getAttribute(e);
+        externid = getAttributeValue(e);
     }
 
     /**
@@ -60,8 +65,8 @@ public class ImportTag extends WriteTag {
      * external source, otherwise exception.
      *
      */
-    public void setRequired(String b) throws JspTagException {
-        required = getAttribute(b);
+    public void setRequired(boolean b) {
+        required = b;
     }
 
 
@@ -70,8 +75,8 @@ public class ImportTag extends WriteTag {
      * external source, otherwise exception.
      *
      */
-    public void setReset(String b) throws JspTagException {
-        reset = getAttribute(b);
+    public void setReset(boolean b) {
+        reset = b;
     }
 
     /**
@@ -79,40 +84,34 @@ public class ImportTag extends WriteTag {
      */
 
     public void setFrom(String s) throws JspTagException {
-        from = getAttribute(s);
-    }
-
-    protected int getFrom() throws JspTagException {
-        if (from == Attribute.NULL) return ContextContainer.LOCATION_NOTSET;
-        return ContextContainer.stringToLocation(from.getString(this));
+        from = ContextTag.stringToLocation(getAttributeValue(s));
     }
 
     public int doStartTag() throws JspTagException {
         Object value = null;
         log.trace("dostarttag of import");
-        helper.setTag(this);
         if (getId() == null) {
             log.trace("No id was given, using externid ");
-            useId = (String) externid.getValue(this);
+            useId = externid;
         } else {
-            useId = getId();
+            useId = id;
             if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
         }
-        if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
+        if (reset) { // should this be more general? Also in other contextwriters?
             if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
-            getContextProvider().getContextContainer().unRegister(useId);
+            getContextTag().unRegister(useId);
         }
 
-        if (externid != Attribute.NULL) {            
-            if (log.isDebugEnabled()) log.trace("Externid was given " + externid.getString(this));
-            if (from == Attribute.NULL) {
-                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId) != null);
+        if (externid != null) {            
+            log.trace("Externid was given " + externid);
+            if (from == ContextTag.LOCATION_NOTSET) {
+                found = (getContextTag().findAndRegister(externid, useId) != null);
             } else {
-                found = (getContextProvider().getContextContainer().findAndRegister(pageContext, getFrom(), externid.getString(this), useId) != null);
+                found = (getContextTag().findAndRegister(from, externid, useId) != null);
             }
 
-            if (! found && required.getBoolean(this, false)) {
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + ContextContainer.locationToString(getFrom()));
+            if (! found && required) {
+                throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
             }
             if (found) {
                 value = getObject(useId);
@@ -122,9 +121,9 @@ public class ImportTag extends WriteTag {
             }
         }
         if (found) {
-            helper.setValue(value, WriterHelper.NOIMPLICITLIST); 
+            helper.setValue(value, helper.NOIMPLICITLIST); 
             if (useId != null) {
-                getContextProvider().getContextContainer().reregister(useId, getValue());
+                getContextTag().reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
         } else {
@@ -134,36 +133,19 @@ public class ImportTag extends WriteTag {
 
     }
 
-    /**
-     * Retrieves the value from the writer-helper, but escapes if necessary (using 'escape' attribute)
-     * @since MMBase-1.7
-     */
-    protected Object getValue() throws JspTagException {
-        Object value = helper.getValue();
-        if (helper.getEscape() != null) {
-            CharTransformer escaper  = ContentTag.getCharTransformer(helper.getEscape());
-            value = escaper.transform((String) value);
-        }
-        return value;
-    }
-
     public int doEndTag() throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid.getString(this));
-        if (externid != Attribute.NULL) {
+        if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid);
+        if (externid != null) {
             if (! found ) {
-                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found");
+                if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
                 // try to find a default value in the body.
                 Object body = bodyContent != null ? bodyContent.getString() : "";
                 if (! "".equals(body)) { // hey, there is a body content!
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    helper.setValue(body);       
-                    getContextProvider().getContextContainer().reregister(useId, getValue());
-                }  else {
-                    //  might be vartype="list" or so, still need to set
-                    helper.setValue(null);    
-                    getContextProvider().getContextContainer().reregister(useId, getValue());
+                    helper.setValue(body);
+                    getContextTag().reregister(useId, helper.getValue());
                 }
             }
         } else { // get value from the body of the tag.
@@ -172,7 +154,7 @@ public class ImportTag extends WriteTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                getContextProvider().getContextContainer().register(useId, getValue());
+                getContextTag().register(useId, helper.getValue());
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time
@@ -181,6 +163,7 @@ public class ImportTag extends WriteTag {
                 }
             }
         }
+        helper.setJspvar(pageContext);
         found = false; // for use next time
         useId = null;
         bodyContent = null;

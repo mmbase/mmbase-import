@@ -10,24 +10,24 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import javax.servlet.jsp.JspTagException;
+
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
- * @javadoc
- *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: DefaultTypeHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
  */
-
 public class DefaultTypeHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for DefaultTypeHandler.
      */
-    public DefaultTypeHandler(FieldInfoTag tag) {
-        super(tag);
+    public DefaultTypeHandler(FieldInfoTag context) {
+        super(context);
     }
         
 }

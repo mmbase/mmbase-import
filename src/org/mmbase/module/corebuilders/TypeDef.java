@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.36 2003-05-13 08:15:33 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.30.2.5 2003-05-13 08:22:53 vpro Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 

@@ -9,37 +9,32 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A very simple tag to change the context of the node
- * 
- * @author Michiel Meeuwissen
- * @version $Id: SetContextTag.java,v 1.6 2003-06-06 10:03:34 pierre Exp $
- */
-
+* A very simple tag to change the context of the node
+* 
+* @author Michiel Meeuwissen
+*/
 public class SetContextTag extends NodeReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(SetContextTag.class.getName());
-    private Attribute name = Attribute.NULL;
+    private String name = null;
 
     public void setName(String n) throws JspTagException {
-        name = getAttribute(n);
+        name = getAttributeValue(n);
     }
 
     public int doEndTag() throws JspTagException {        
-        String n;
-        if (name == Attribute.NULL) {
-            n = bodyContent.getString();
-        } else {
-            n = name.getString(this);
+        if (name == null) {
+            name = bodyContent.getString();
         }
-        if (log.isDebugEnabled()) log.debug("Setting context to " + n);
-        getNode().setContext(n);
+        if (log.isDebugEnabled()) log.debug("Setting context to " + name);
+        getNode().setContext(name);
+        name = null;
         return EVAL_PAGE;
     }   
 

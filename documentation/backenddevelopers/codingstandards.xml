@@ -4,8 +4,8 @@
 <article>
   <articleinfo>
     <title>Summary of Coding Standards</title>
-    <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.5 2003-07-27 17:47:50 henk Exp $</edition>
+    <date>14 February 2003</date>
+    <edition>$Id: codingstandards.xml,v 1.1.2.1 2003-02-14 14:51:05 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -56,7 +56,7 @@
         </listitem>
         <listitem>
           <simpara>Use Single line documentation (// ...) for in-code documentation.</simpara>
-          <simpara>Single line comments should be on their own line, preceding the statement concerned. The exception is local variables declaration, where the line comment may follow directly behind the declaration.</simpara>
+          <simpara>Single line comments should be on their own line, preceding the statement concerned. The excption is local variables declaration, where the line comment may follow directly behind the declaration.</simpara>
         </listitem>
         <listitem>
           <simpara>Required javadoc tags:</simpara>
@@ -64,7 +64,7 @@
             <listitem>
               <simpara>For a class/interface:</simpara>
               <simpara><token>@author</token> (by alphabetical order)</simpara>
-              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.5 2003-07-27 17:47:50 henk Exp $ , so that CVS can insert the correct version number.)</simpara>
+              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.1.2.1 2003-02-14 14:51:05 pierre Exp $ , so that CVS can insert the correct version number.)</simpara>
             </listitem>
             <listitem>
               <simpara>For a member function:</simpara>
@@ -77,10 +77,10 @@
               <simpara>The version to use during development will be defined by the MMC.</simpara>
             </listitem>
             <listitem>
-              <simpara>Deprecated member functions should be indicated as such with <token>@deprecated</token>, and the reason should be given</simpara>
+              <simpara>Deprecated member functions should be indiicated as such with <token>@deprecated</token>, and the reason should be given</simpara>
             </listitem>
             <listitem>
-              <simpara>Important member function or class dependencies should be documented with <token>@see</token></simpara>
+              <simpara>Important member function or class depedencies should be documented with <token>@see</token></simpara>
             </listitem>
             <listitem>
               <simpara>Special targeted javadoc tags are documented in the Cleaning Project Notification Plan (see the Cleaning project on the MMBase website for more information)</simpara>
@@ -181,7 +181,7 @@ Note: Collections should use Iterator (preferred) or Enumeration for loops, not 
           <simpara>A method and it's parameter list should NOT be separated by a space.</simpara>
         </listitem>
         <listitem>
-          <simpara>A space should be inserted after a comma in a list, or a semicolon in a for-statement.</simpara>
+          <simpara>A space should be inserted after a comma ina list, or a semicolon in a for-statement.</simpara>
         </listitem>
         <listitem>
           <simpara>All binary operators should be separated by spaces.</simpara>
@@ -253,7 +253,7 @@ Note: Collections should use Iterator (preferred) or Enumeration for loops, not 
           <simpara>Each class should contain the Mozilla license text.</simpara>
         </listitem>
         <listitem>
-          <simpara>New java objects are made using member functions that start with <token>create</token>, i,e <methodname>createAlias()</methodname>, <methodname>createObject()</methodname>. The prefixes <token>add</token> and <token>insert</token> are only used for Collections.</simpara>
+          <simpara>New java objects are made using member functions that start wth <token>create</token>, i,e <methodname>createAlias()</methodname>, <methodname>createObject()</methodname>. The prefixes <token>add</token> and <token>insert</token> are only used for Collections.</simpara>
         </listitem>
         <listitem>
           <simpara>Remove java objects with member functions starting with <token>delete</token> (i.e. <methodname>deleteAlias</methodname>, <methodname>deleteRelations</methodname>).</simpara>

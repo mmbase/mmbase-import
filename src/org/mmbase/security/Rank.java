@@ -25,9 +25,9 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.12 2003-07-08 09:28:44 michiel Exp $
+ * @version $Id: Rank.java,v 1.5.2.3 2003-06-30 13:29:32 michiel Exp $
  */
-public final class Rank implements Comparable {
+public final class Rank {
     private static Logger log = Logging.getLoggerInstance(Rank.class);
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
@@ -130,14 +130,14 @@ public final class Rank implements Comparable {
      * should never remove them.
      * @since MMBase-1.6.4
      */
-    public static SortedSet getRanks() {
-        return new TreeSet(ranks.values());
+    public static Set getRanks() {
+        return new HashSet(ranks.values());
     }
 
     /**
      * @since MMBase-1.6.4
      */
-    // see javadoc of Object
+
     public boolean equals(Object o) {
         if (o instanceof Rank) {
             Rank r = (Rank) o;
@@ -145,14 +145,5 @@ public final class Rank implements Comparable {
         } else {
             return false;
         }
-    }
-
-    /**
-     * @since MMBase-1.6.4
-     */
-    // see javadoc of Comparable
-    public int compareTo (Object o) {
-        Rank r = (Rank) o;
-        return rank - r.rank;
     }
 }

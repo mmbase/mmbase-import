@@ -31,11 +31,16 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
+import java.sql.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.module.database.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -126,7 +131,7 @@ public class Stats extends ProcessorModule implements StatisticsInterface {
 		int curnr=getSliceNr(number);
 		int curval=node.getIntValue("count");
 		//int curtime=(int)(System.currentTimeMillis()/1000); // datefix
-		int curtime=(int)(System.currentTimeMillis()/1000);
+		int curtime=(int)(DateSupport.currentTimeMillis()/1000);
 
 		// first find max to be able to resize
 		int max=curval;
@@ -396,7 +401,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 					 *  hits          = number of hits in last interval
 					 */
 					//int hitTime    = (int)(new java.util.Date().getTime() / 1000); // datefix
-					int hitTime=(int)(System.currentTimeMillis()/1000);
+					int hitTime=(int)(DateSupport.currentTimeMillis()/1000);
 			
 					int statsStart = stats.getIntValue ("start");
 					int nrOfSlices = stats.getIntValue ("timeslices");

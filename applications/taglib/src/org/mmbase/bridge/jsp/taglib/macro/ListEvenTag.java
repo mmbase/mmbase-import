@@ -12,12 +12,11 @@ package org.mmbase.bridge.jsp.taglib.macro;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
- *  Macro tag for listContdition even
- *
- * @version $Id: ListEvenTag.java,v 1.4 2003-06-06 10:03:23 pierre Exp $
- */
+*  shortcut for listContdition even
+*/
 public class ListEvenTag extends ListConditionTag{
-    protected int getValue() throws JspTagException {
-        return CONDITION_EVEN;
-    }
+	public int doStartTag() throws JspTagException{
+		setValue("even");
+		return super.doStartTag();
+	}
 }

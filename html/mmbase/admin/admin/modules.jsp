@@ -10,8 +10,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="modules">
-<tr>
+<table summary="modules" width="93%" cellspacing="1" cellpadding="3" border="0">
+<tr align="left">
 <th class="header" colspan="5">Module Overview
 </th>
 </tr>
@@ -22,17 +22,17 @@
   </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr>
+<tr align="left">
   <th class="header">Name</th>
   <th class="header">Version</th>
   <th class="header">Installed</th>
   <th class="header">Maintainer</th>
-  <th class="navigate">Manage</th>
+  <th class="header">&nbsp;</th>
 </tr>
 <%
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
-   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
    NodeList modules=mmAdmin.getList("MODULES",params,request,response);
    for (int i=0; i<modules.size(); i++) {
     Node module=modules.getNode(i);
@@ -43,14 +43,14 @@
   <td class="data"><%=module.getStringValue("item3")%></td>
   <td class="data"><%=module.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="module/actions.jsp?module="+module.getStringValue("item1")%>"/>"><img src="../images/next.gif" border="0" alt="next" /></a>
+    <a href="<mm:url page='<%="module/actions.jsp?module="+module.getStringValue("item1")%>'/>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
 <tr><td>&nbsp;</td></tr>
 
-<tr class="footer">
-    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
+  <tr>
+    <td class="navigate"><a href="<mm:url page='../default.jsp' />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
     <td class="data" colspan="4">Return to home page</td>
   </tr>
 </table>

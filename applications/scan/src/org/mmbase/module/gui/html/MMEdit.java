@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.10 2003-07-03 13:15:10 pierre Exp $
+ * @version $Id: MMEdit.java,v 1.8.6.1 2003-07-03 13:13:18 vpro Exp $
  */
 public class MMEdit extends ProcessorModule {
 

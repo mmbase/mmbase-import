@@ -3,8 +3,8 @@
 <article>
 	<articleinfo>
 		<title>How To Use XML</title>
-		<date>2003-02-12</date>
-		<edition>$Id: xml-how-to.xml,v 1.6 2003-07-27 17:47:49 henk Exp $</edition>
+		<date>12 February 2003</date>
+		<edition>$Id: xml-how-to.xml,v 1.1.2.3 2003-02-14 14:51:03 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Henk</firstname>
@@ -23,13 +23,13 @@
 		<revhistory>
 			<revision>
 				<revnumber>0.3</revnumber>
-				<date>2003-01-30</date>
+				<date>30 January 2003</date>
 				<authorinitials>HH</authorinitials>
 				<revremark>Part of the context-security document</revremark>
 			</revision>
 			<revision>
 				<revnumber>0.4</revnumber>
-				<date>2003-02-07</date>
+				<date>07 February 2003</date>
 				<authorinitials>PvR</authorinitials>
 				<revremark>Turned this into a separate document</revremark>
 			</revision>
@@ -79,7 +79,7 @@
 	<section id="more_info">
 		<title>More information</title>
 		<itemizedlist>
-			<title>For more information on how to read DTDs, see:</title>
+			<title>For more information on how to read DTD's, see:</title>
 			<listitem>
 				<para>W3 Schools: <ulink url="http://www.w3schools.com/dtd/default.asp">http://www.w3schools.com/dtd/default.asp</ulink>
 				</para>

@@ -9,7 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+import org.mmbase.module.builders.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,69 +33,63 @@ public class PerformProbe implements Runnable {
     private MMObjectNode node;
     private int status;
 
-    Thread kicker = null;
+	Thread kicker = null;
 
-    public PerformProbe(VwmProbeInterface vwm, MMObjectNode node) {
-        this.vwm = vwm;
-        this.node = node;
-        this.status = 1;
-        init();
-    }
+	public PerformProbe(VwmProbeInterface vwm,MMObjectNode node) {
+		this.vwm=vwm;
+		this.node=node;
+		this.status=1;
+		init();
+	}
 
-    public void init() {
-        this.start();
-    }
+	public void init() {
+		this.start();
+	}
 
-    /**
-     * Starts the admin Thread.
-     */
-    public void start() {
-        /* Start up the main thread */
-        log.service(
-            "Creating and starting new thread for tasknr "
-                + node.getIntValue("number")
-                + " task "
-                + node.getStringValue("task"));
-        if (kicker == null) {
-            kicker = new Thread(this, "Performprobe tasknr " + node.getIntValue("number"));
-            kicker.setDaemon(true);
-            kicker.start();
-        }
-    }
 
-    /**
-     * Stops the admin Thread.
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.interrupt();
-        kicker = null;
-    }
+	/**
+	 * Starts the admin Thread.
+	 */
+	public void start() {
+		/* Start up the main thread */
+		log.service("Creating and starting new thread for tasknr "+node.getIntValue("number")
+		        +" task "+node.getStringValue("task"));
+		if (kicker == null) {
+			kicker = new Thread(this,"Performprobe tasknr "+node.getIntValue("number"));
+			kicker.start();
+		}
+	}
 
-    /**
-     * admin probe, try's to make a call to all the maintainance calls.
-     */
-    public void run() {
-        try {
-            status = 2;
-            log.service(
-                "Calling vwm "
-                    + vwm.getName()
-                    + " performTask for tasknr "
-                    + node.getIntValue("number")
-                    + " task "
-                    + node.getStringValue("task"));
-            vwm.performTask(node);
-            status = 3;
-        } catch (Exception e) {
-            log.error("performTask failed" + e);
-            log.error(e.getMessage());
-            log.error(Logging.stackTrace(e));
-            status = 5;
-        }
-    }
+	/**
+	 * Stops the admin Thread.
+	 */
+	public void stop() {
+		/* Stop thread */
+		kicker.setPriority(Thread.MIN_PRIORITY);
+		kicker.suspend();
+		kicker.stop();
+		kicker = null;
+	}
 
-    public int getStatus() {
-        return (status);
-    }
+	/**
+	 * admin probe, try's to make a call to all the maintainance calls.
+	 */
+	public void run () {
+		try {
+			status=2;
+			log.service("Calling vwm "+vwm.getName()+" performTask for tasknr "+node.getIntValue("number")
+		            +" task "+node.getStringValue("task"));
+			vwm.performTask(node);
+			status=3;
+		} catch (Exception e) {
+			log.error("performTask failed" + e);
+			log.error(e.getMessage());
+			log.error(Logging.stackTrace(e));
+			status=5;
+		}
+	}
+
+	public int getStatus() {
+		return(status);
+	}
 }

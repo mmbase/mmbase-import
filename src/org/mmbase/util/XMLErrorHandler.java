@@ -9,17 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import java.io.*;
+import java.util.*;
+
+import org.xml.sax.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
+
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.13 2003-07-18 14:57:50 michiel Exp $
+ * @version $Revision: 1.7.2.1 $ $Date: 2002-12-03 21:22:34 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -28,7 +32,7 @@ public class XMLErrorHandler implements ErrorHandler {
     public static int FATAL_ERROR = 3;
     public static int NEVER = 4;
 
-    private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class);
+    private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
     private int exceptionLevel;
     private boolean logMessages;
     private boolean warning = false;
@@ -36,6 +40,14 @@ public class XMLErrorHandler implements ErrorHandler {
     private boolean fatal = false;
 
     private StringBuffer messages = new StringBuffer();
+
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    static void reinitLogger() {
+        log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
+    }
 
 
     public XMLErrorHandler() {
@@ -67,7 +79,6 @@ public class XMLErrorHandler implements ErrorHandler {
         error = true;
         if(logMessages) {
             log.error(message);
-            log.debug(Logging.stackTrace(new Throwable()));
         }
         if(exceptionLevel<=ERROR) {
             throw ex;
@@ -114,10 +125,9 @@ public class XMLErrorHandler implements ErrorHandler {
         String systemId = ex.getSystemId();
         if (systemId != null) {
             int index = systemId.lastIndexOf('/');
-            if (index != -1) {
+            if (index != -1)
                 systemId = systemId.substring(index + 1);
-            }
-            str.append(systemId);
+                str.append(systemId);
         }
         str.append(" line:");
         str.append(ex.getLineNumber());

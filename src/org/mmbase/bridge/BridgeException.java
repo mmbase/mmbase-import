@@ -18,7 +18,7 @@ package org.mmbase.bridge;
  * initCause() and getCause();
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeException.java,v 1.11 2003-08-26 08:17:36 pierre Exp $
+ * @version $Id: BridgeException.java,v 1.7 2002-10-10 14:45:43 eduard Exp $
  */
 public class BridgeException extends RuntimeException {
 

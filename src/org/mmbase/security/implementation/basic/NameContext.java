@@ -18,37 +18,35 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A UserContext implementation based only on user name, which serves as the identifier for the
- * user.
- * 
+ *  This UserContext class provides a storage for the authentication
+ *  and authorization, so that information can be shared.
+ *  This class is NOT a container class for client related stuff, altrough
+ *  this is possible.
+ * @javadoc
  * @author Eduard Witteveen
- * @version $Id: NameContext.java,v 1.3 2003-07-09 10:12:41 michiel Exp $
+ * @version $Id: NameContext.java,v 1.2 2002-06-07 12:56:57 pierre Exp $
  */
 public class NameContext extends UserContext {
-    private static Logger log = Logging.getLoggerInstance(NameContext.class);
+    private static Logger log = Logging.getLoggerInstance(NameContext.class.getName());
 
-    private String identifier = null;
-    private Rank   rank       = null;
+    private String ident = null;
+    private Rank rank= null;
 
     public NameContext(Rank rank) {
         this.rank = rank;
     }
 
     public String getIdentifier() {
-        if(identifier == null) {
-            throw new SecurityException("No user name was set by the security implementation. This is required.");
-        }
-        return identifier;
+        if(ident == null) throw new SecurityException("Dont know who we are, was not set by the system. This is required");
+    return ident;
     }
 
     public Rank getRank() {
-        if(rank == null) {
-            throw new SecurityException("No rank was provider by the security implementation. This is required.");
-        }
-        return rank;
+        if(rank == null) throw new SecurityException("Dont know who we are, was not set by the system. This is required");
+    return rank;
     }
 
     void setIdentifier(String ident) {
-        this.identifier = ident;
+        this.ident = ident;
     }
 }

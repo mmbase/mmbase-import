@@ -17,6 +17,8 @@ import org.mmbase.bridge.*;
 
 import java.io.IOException;
 
+import java.util.*;
+
 import org.mmbase.util.StringObject;
 
 import org.mmbase.util.logging.Logger;
@@ -36,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.10 2003-05-08 06:09:23 kees Exp $
+ * @version $Id: BridgeServlet.java,v 1.6.2.1 2003-02-20 12:09:29 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -65,7 +67,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             
             int plus = query.indexOf("+", 8);
             if (plus == -1) {
-                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Malformed URL");
+                res.sendError(res.SC_NOT_FOUND, "Malformed URL");
                 return null;
             }
             sessionName = query.toString().substring(8, plus);
@@ -89,7 +91,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         if (cloud == null) {
             // try anonymous
             try {
-                cloud = ContextProvider.getDefaultCloudContext().getCloud(getCloudName());
+                cloud = LocalContext.getCloudContext().getCloud(getCloudName());
             } catch (org.mmbase.security.SecurityException e) {
                 log.debug("could not generate anonymous cloud");
                 // give it up
@@ -130,13 +132,13 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 if (c.hasNode(qs)) {
                     node = c.getNode(qs);
                 } else {                    
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node " + query + " does not exist" );
+                    res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist" );
                 }
             }
         } catch (org.mmbase.security.SecurityException e) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied: " + e.toString());
+            res.sendError(res.SC_FORBIDDEN, "Permission denied: " + e.toString());
         } catch (Exception e) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
+            res.sendError(res.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
         }
         return node;
     }

@@ -9,12 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
-
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.RelationList;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,15 +21,13 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.7 2003-08-15 11:17:43 michiel Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(ListRelationsTag.class);
+    private static Logger log = Logging.getLoggerInstance(ListRelationsTag.class.getName());
 
-    private Attribute type = Attribute.NULL;
-    private Attribute role = Attribute.NULL;
-    private Attribute searchDir = Attribute.NULL;
+    private String type = null;
+    private String role = null;
 
     
     Node getRelatedfromNode() {
@@ -42,17 +38,13 @@ public class ListRelationsTag extends AbstractNodeListTag {
      * @param type a nodeManager
      */
     public void setType(String t) throws JspTagException {
-        type  = getAttribute(t);
+        type  = getAttributeValue(t);
     }
     /**
      * @param role a role
      */
     public void setRole(String r) throws JspTagException {
-        role  = getAttribute(r);
-    }
-
-    public void setSearchdir(String s) throws JspTagException {
-        searchDir = getAttribute(s);
+        role  = getAttributeValue(r);
     }
 
     public int doStartTag() throws JspTagException{
@@ -61,17 +53,20 @@ public class ListRelationsTag extends AbstractNodeListTag {
             return superresult;
         }
         // obtain a reference to the node through a parent tag
-        Node relatedFromNode = getNode();
-        if (relatedFromNode == null) {
+        Node relatedfromNode = getNode();
+        if (relatedfromNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
 
-        NodeManager nm = null;
-        if (type != Attribute.NULL) {
-            nm = getCloud().getNodeManager(type.getString(this));
+        RelationList nodes;
+        if (type == null && role == null) {
+            nodes = relatedfromNode.getRelations();
+        } else if (type == null) {
+            nodes = relatedfromNode.getRelations(role);
+        } else {
+            nodes = relatedfromNode.getRelations(role, type);
         }
-        RelationList nodes = relatedFromNode.getRelations((String) role.getValue(this), nm, (String) searchDir.getValue(this));
-        nodes.setProperty("relatedFromNode", relatedFromNode);
+        nodes.setProperty("relatedFromNode", relatedfromNode);
         return setReturnValues(nodes, true);
     }
 

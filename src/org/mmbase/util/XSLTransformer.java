@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.19 2003-07-18 14:56:53 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.12.2.2 2003-02-11 17:04:08 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -96,10 +96,10 @@ public class XSLTransformer {
      * @since MMBase-1.6
      **/
 
-    public void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(DOMSource xml, File xslFile, StreamResult result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         transform(xml, xslFile, result, params, true);
     }
-    public void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(DOMSource xml, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
 
         if (log.isDebugEnabled()) {
             Runtime rt = Runtime.getRuntime();
@@ -150,7 +150,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlFile, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -189,14 +189,9 @@ public class XSLTransformer {
         if (! resultDir.isDirectory()) {
             throw  new TransformerException("" + resultDir + " is not a directory");
         }
-        if (params == null) params = new HashMap();
-
-        List exclude = (List) params.get("exclude");
 
         File[] files = xmlDir.listFiles();
         for (int i = 0; i < files.length; i++) {
-            if (exclude.contains(files[i].getName())) continue;
-
             if (recurse && files[i].isDirectory()) {
                 if ("CVS".equals(files[i].getName())) continue;
                 File resultSubDir = new File(resultDir, files[i].getName());
@@ -222,25 +217,17 @@ public class XSLTransformer {
                 if (! files[i].getName().endsWith(".xml")) continue;
                 String fileName = files[i].getName();
                 fileName = fileName.substring(0, fileName.length() - 4);
-                params.put("filename", fileName);
-                String extension = (String) params.get("extension");
-                if (extension == null) extension = "html";
-                File resultFile = new File(resultDir, fileName  + "." + extension);
+                if (params == null) params = new HashMap();                
+                params.put("filename", fileName);        
+             File resultFile = new File(resultDir, fileName  + ".html");
                 if (resultFile.lastModified() > files[i].lastModified()) {
                     log.info("Not transforming " + files[i] + " because " + resultFile + " is up to date");
                 } else {
                     log.info("Transforming file " + files[i] + " to " + resultFile);
                     try {
-                        Result res;
-                        if ("true".equals(params.get("dontopenfile"))) {
-                            res = new StreamResult(System.out);
-                        } else {
-                            res = new StreamResult(resultFile);
-                        }
-                        transform(files[i], xslFile, res, params, considerDir);
+                        transform(files[i], xslFile, new StreamResult(resultFile), params, considerDir);
                     } catch (Exception e) {
                         log.error(e.toString());
-                        log.error(Logging.stackTrace(e));
                     }
                 }
             }
@@ -255,13 +242,7 @@ public class XSLTransformer {
         // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
             log.info("Use with two arguments: xslt-file xml-inputfile [xml-outputfile]");
-            log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir [key=value options]");
-            log.info("special options can be:");
-            log.info("   usecache=true:     Use the Template cache or not (to speed up)");
-            log.info("   exclude=<filename>:  File/directory name to exclude (can be used multiple times");
-            log.info("   extension=<file extensions>:  File extensions to use in transformation results (defaults to html)");
-            log.info("Other options are passed to XSL-stylesheet as parameters.");
-
+            log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir");
         } else {
             HashMap params=null;
             if (argv.length > 3) {
@@ -271,19 +252,13 @@ public class XSLTransformer {
                     String value = "";
                     int p = key.indexOf("=");
                     if (p > 0) {
-                        if (p<key.length()-1) value = key.substring(p+1);
+                        if (p<key.length()-1) value=key.substring(p+1);
                         key = key.substring(0, p);
                     }
                     if (key.equals("usecache")) {
                         TemplateCache.getCache().setActive(value.equals("true"));
-                    } else if (key.equals("exclude")) {
-                        if (params.get("exclude") == null) {
-                            params.put("exclude", new ArrayList());
-                        }
-                        List excludes = (List) params.get("exclude");
-                        excludes.add(value);
                     } else {
-                        params.put(key, value);
+                        params.put(key,value);
                     }
                 }
             }
@@ -302,8 +277,8 @@ public class XSLTransformer {
                 log.info("Transforming file " + argv[1]);
                 if (argv.length > 2) {
                     try {
-                        FileOutputStream stream = new FileOutputStream(argv[2]);
-                        Writer f = new OutputStreamWriter(stream,"utf-8");
+                        FileOutputStream stream=new FileOutputStream(argv[2]);
+                        Writer f=new OutputStreamWriter(stream,"utf-8");
                         t.transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
                         f.close();
                     } catch (Exception e) {

@@ -9,25 +9,59 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.bridge.Query;
-import org.mmbase.storage.search.Constraint;
+import java.io.File;
 import java.util.Set;
+import org.mmbase.util.FileWatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
- * The abstract implementation of the Authorization. To make your own implementation of
- * authorization, you have to extend this class, and implement the abstract methods.
- *
+ *  This class is a empty implementation of the Authorization, it will only
+ *  return that operations are valid. To make your own implementation of
+ *  authorization, you have to extend this class.
+ * @javadoc
  * @author Eduard Witteveen
- * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.18 2003-08-05 21:23:37 michiel Exp $
+ * @version $Id: Authorization.java,v 1.13 2002-07-26 08:47:33 vpro Exp $
  */
-public abstract class Authorization extends Configurable {
-    private static Logger log = Logging.getLoggerInstance(Authorization.class);
+public abstract class Authorization {
+    private static Logger log=Logging.getLoggerInstance(Authorization.class.getName());
+
+    /** The SecurityManager, who created this instance */
+    protected MMBaseCop manager;
+
+    /** The absolute file which is the config file */
+    protected File configFile;
+
+    /** The file watcher */
+    protected FileWatcher fileWatcher;
 
     /**
-     *	This method should be overrided by an extending class.
+     *	The method which sets the settings of this class. This method is
+     *	shouldn't be overrided.
+     *	This class will set the member variables of this class and then
+     *	call the member function load();
+     *	@param manager The class that created this instance.
+     *	@param fileWatcher checks the files
+     *	@param configPath The url which contains the config information for.
+     *	    the authorization.
+     */
+    public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
+        log.debug("Calling load() with as config file:" + configPath);
+        this.manager = manager;
+    this.fileWatcher = fileWatcher;
+    if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
+    load();
+    }
+
+    /**
+     *	This method could be overrided by an extending class.
+     *	It should set the settings for this class, and when needed
+     *	retrieve them from the file at location configPath.
+     */
+    protected abstract void load();
+
+    /**
+     *	This method could be overrided by an extending class.
      *	It has to be called, when a new Node has been created.
      *	This way, the authentication can create default rights
      *	for this object, depending on the UserContext and generate
@@ -40,18 +74,19 @@ public abstract class Authorization extends Configurable {
     public abstract void create(UserContext user, int nodeid);
 
     /**
-     *	This method should be overrided by an extending class.
+     *	This method could be overrided by an extending class.
      *	It has to be called, when a Node has been changed.
      *	This way, the authentication can generate log information
      *	for this object, which can be used for accountability
-     *	@param user The UserContext, containing the information about the user.
+     *	@param user The UserContext, containing the information
+     *	    about the user.
      *	@param nodeid The id of the MMObjectNode, which has just been changed
      *	    in the cloud.
      */
     public abstract void update(UserContext user, int nodeid);
 
     /**
-     *	This method should be overrided by an extending class.
+     *	This method could be overrided by an extending class.
      *	It has to be called, when a Node has been removed from
      *	the cloud.
      *	This way, the authentication can generate log information
@@ -65,28 +100,28 @@ public abstract class Authorization extends Configurable {
     public abstract void remove(UserContext user, int nodeid);
 
     /**
-     *	This method should be overrided by an extending class.
+     *	This method could be overrided by an extending class.
      *	This method checks if an operation is permitted on a certain node done
      *	by a certain user.
-     *	@param user The UserContext, containing the information the user.
+     *	@param user The UserContext, containing the information
+     *	    about the user.
      *	@param nodeid The id of the MMObjectNode, which has to be checked.
-     *                It the action is CREATE then this will be interpreted as a typedef node.
      *	@param operation The operation which will be performed.
      *	@return <code>true</code> if the operation is permitted,
      *	    	<code>false</code> if the operation is not permitted,
      */
     public abstract boolean check(UserContext user, int nodeid, Operation operation);
 
-
-
     /**
-     * This method wraps the check-method with the same arguments. The only difference being that it
-     * throws on exception if the specified operation is not permitted. 
-     *
-     * It is wise to override check, and not verify (And I wonder why this method is not simply final).
-     *
-     * @exception org.mmbase.SecurityException  If the assertion fails
-     * @see #check(UserContext, int, Operation)
+     *	This method could be overrided by an extending class.
+     *	This method asserts that an operation is permitted on a
+     *	certain node done by a certain user. If not, a exception is thrown
+     *	@param user The UserContext, containing the information
+     *	    about the user.
+     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
+     *	@param operation The operation which will be performed.
+     *	@exception org.mmbase.SecurityException
+     *	    If the assertion fails
      */
     public void verify(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (!check(user, nodeid, operation)) {
@@ -95,15 +130,13 @@ public abstract class Authorization extends Configurable {
     }
 
     /**
-     * This method should be overrided by an extending class.
+     * This method could be overrided by an extending class.
      * This method checks if the creation of a certain relation or changing
      * the source or destination of a certain relation done by a certain
      * user is permitted.
      *
-     * @param user      The UserContext, containing the information about the user.
-     * @param nodeid    The id of the relation which has to be checked.  If the operation is CREATE
-     * then this will be interpreted as the typedef node (extending insrel) for the relation to be
-     * created.
+     * @param user The UserContext, containing the information about the user.
+     * @param nodeid The id of the relation which has to be checked.
      * @param srcnodeid The id of the (new) source node of the relation.
      * @param dstnodeid The id of the (new) destination node of the relation.
      * @param operation The operation which will be performed (CREATE (create
@@ -115,13 +148,19 @@ public abstract class Authorization extends Configurable {
     public abstract boolean check(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation);
 
     /**
-     * This method wraps the check-method with the same arguments. The only difference being that it
-     * throws on exception if the specified operation is not permitted. 
+     * This method could be overrided by an extending class.
+     * This method asserts that creation of a certain relation or changing
+     * the source or destination of a certain relation done by a certain
+     * user is permitted. If not, an exception is thrown
      *
-     * It is wise to override check, and not verify (And I wonder why this method is not simply final).
-     *
+     * @param user The UserContext, containing the information about the user.
+     * @param nodeid The id of the relation which has to be asserted.
+     * @param srcnodeid The id of the (new) source node of the relation.
+     * @param dstnodeid The id of the (new) destination node of the relation.
+     * @param operation The operation which will be performed (CREATE (create
+     *                  relation) or CHANGE_RELATION (source and/or destination
+     *                  are changed).
      * @exception org.mmbase.SecurityException  If the assertion fails
-     * @see #check(UserContext, int, int, int, Operation)
      */
     public void verify(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException {
         if (!check(user, nodeid, srcnodeid, dstnodeid, operation)) {
@@ -165,66 +204,4 @@ public abstract class Authorization extends Configurable {
      *	@exception org.mmbase.SecurityException maybe
      */
     public abstract Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException ;
-
-
-    /**
-     * Checks rights on a query. This means that the query will be changed (if possible) to return
-     * only checked results for the given user. Of course, this will normally only be implemented for the
-     * 'READ' operation.
-     *
-     * @param user The UserContext, for which the query must be considered
-     * @param query The query to be adapted.
-     * @return true of the query now will certainly give only readable results, false if 'check' still has to be called on every individual result.
-     * 
-     * @since MMBase-1.7
-     */
-
-    public QueryCheck check(UserContext user, Query query, Operation operation) {
-        return NO_CHECK;
-    }
-
-        
-    /**
-     * Constant which can be used as a result for the check query function. It means: 'No extra
-     * contraints to be added, and the query's result will have to be postprocessed for security.
-     *
-     * @since MMBase-1.7
-     */
-    public static QueryCheck NO_CHECK       = new QueryCheck(false, null);
-
-    /**
-     * Constant which can be used as a result for the check query function. It means: 'No extra
-     * contraints to be added, but the query's result will <em>not</em> have to be postprocessed for
-     * security. This means that there are no restrictions on the given operation at all (normally:
-     * 'read' is permit to everybody).
-     *
-     * @since MMBase-1.7
-     */
-    public static QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
-
-
-    /**
-     * Defines the result of a security check on a query. Such a result has two members: A
-     * 'Constraint' which has to be added to the query and a boolean which sais if the query (with
-     * the given Constraint) has now been fully checked and that it's result does not need further
-     * postprocessing.
-     *
-     * @since MMBase-1.7
-     */
-    
-    public static class QueryCheck {
-        Constraint constraint;
-        boolean    check;
-        public QueryCheck(boolean ch, Constraint co) {
-            check = ch; constraint = co;
-        }
-        public boolean isChecked() {
-            return check;
-        }
-        public Constraint getConstraint() {
-            return constraint;
-        }
-                
-        
-    }
 }

@@ -17,24 +17,21 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.17 2003-05-02 20:57:18 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.11.2.1 2003-04-03 15:58:22 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
-
-    private static final String ROOT = "root";
-    private static final String DANGLING = "dangling";
     /**
      * First (virtual) element of the table.
      * The element that follows root is the oldest element in the table
      * (and thus first to be removed if size maxes out).
      */
-    private final LRUEntry root     = new LRUEntry(ROOT, ROOT);
+    private LRUEntry root = new LRUEntry("root", "root");
     /**
      * Last (virtual) element of the table.
      * The element that precedes dangling is the latest element in the table
      */
-    private final LRUEntry dangling = new LRUEntry(DANGLING, DANGLING);
+    private LRUEntry dangling = new LRUEntry("dangling", "dangling");
 
     /**
      * Maximum size (capacity) of the table
@@ -308,7 +305,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * Returns an <code>Enumeration</code> on the table's element values.
      */
     public synchronized Enumeration elements() {
-        return new LRUHashtableEnumeration();
+        return new LRUHashtableEnumerator(this);
     }
 
 
@@ -421,11 +418,11 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Enumerator for the LRUHashtable.
      */
-    private class LRUHashtableEnumeration implements Enumeration {
+    private static class LRUHashtableEnumerator implements Enumeration {
         private Enumeration superior;
 
-        LRUHashtableEnumeration() {
-            superior = LRUHashtable.this.elements();
+        LRUHashtableEnumerator(Hashtable entries) {
+            superior = entries.elements();
         }
 
         public boolean hasMoreElements() {
@@ -433,7 +430,9 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         }
 
         public Object nextElement() {
-            LRUEntry entry = (LRUEntry) superior.nextElement();
+            LRUEntry entry;
+
+            entry=(LRUEntry) superior.nextElement();
             return entry.value;
         }
     }
@@ -442,7 +441,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Element used to store information from the LRUHashtable.
      */
-    public class LRUEntry implements Map.Entry, SizeMeasurable {
+    public static class LRUEntry implements Map.Entry, SizeMeasurable {
         /**
          * The element value
          */
@@ -495,7 +494,9 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             return sizeof.sizeof(value);
         }
         public String toString() {
-            return  value == LRUHashtable.this ? "[this lru]" : String.valueOf(value);
+            // THis goes seriously wrong if a cache contains itself. (StackOverFlow)
+            // TODO: should be fixed.
+            return "" + value;
         }
 
     }

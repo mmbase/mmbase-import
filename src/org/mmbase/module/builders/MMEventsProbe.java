@@ -9,51 +9,61 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.util.Date;
+import java.sql.*;
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
+
 /**
- * @version $Id: MMEventsProbe.java,v 1.6 2003-05-08 06:01:22 kees Exp $
+ * @version 23 Dec 1998
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {
 
-    Thread kicker = null;
-    MMEvents parent = null;
+	Thread kicker = null;
+	MMEvents parent=null;
 
-    public MMEventsProbe(MMEvents parent) {
-        this.parent = parent;
-        init();
-    }
+	public MMEventsProbe(MMEvents parent) {
+		this.parent=parent;
+		init();
+	}
 
-    public void init() {
-        this.start();
-    }
+	public void init() {
+		this.start();	
+	}
 
-    /**
-     * Starts the admin Thread.
-     */
-    public void start() {
-        /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this, "mmevents");
-            kicker.setDaemon(true);
-            kicker.start();
-        }
-    }
+	/**
+	 * Starts the admin Thread.
+	 */
+	public void start() {
+		/* Start up the main thread */
+		if (kicker == null) {
+			kicker = new Thread(this,"mmevents");
+			kicker.start();
+		}
+	}
+	
+	/**
+	 * Stops the admin Thread.
+	 */
+	public void stop() {
+		/* Stop thread */
+		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.suspend();
+		kicker.stop();
+		kicker = null;
+	}
 
-    /**
-     * Stops the admin Thread.
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.interrupt();
-        kicker = null;
-    }
-
-    /**
-     * admin probe, try's to make a call to all the maintainance calls.
-     */
-    public void run() {
-        while (kicker != null) {
-            parent.probeCall();
-        }
-    }
+	/**
+	 * admin probe, try's to make a call to all the maintainance calls.
+	 */
+	public void run () {
+		kicker.setPriority(Thread.MIN_PRIORITY+1);  
+		while (kicker!=null) {
+			parent.probeCall();
+		}
+	}
 }

@@ -10,33 +10,30 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.List;
-import java.util.Iterator;
+import java.util.Enumeration;
+
+import java.sql.*;  // sql
+import org.mmbase.module.database.*;  // sql
+
 import org.mmbase.module.core.*;
-import org.mmbase.util.Arguments;
-import org.mmbase.util.UriParser;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 /**
- * ImageCaches (aka as 'icaches') is a system-like builder used by
- * builders with the 'Images' class. It contains the converted images. 
- *
+ * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.32 2003-05-19 09:59:13 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.25.2.1 2003-03-04 20:05:32 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
-    private static Logger log = Logging.getLoggerInstance(ImageCaches.class);
-
-    static final String GUI_IMAGETEMPLATE = "s(100x60)";
+    private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
 
     private CKeyCache handleCache = new CKeyCache(128) {  // a few images are in memory cache.
             public String getName()        { return "ImageHandles"; }
-            public String getDescription() { return "Handles of Images (ckey -> handle)"; }           
+            public String getDescription() { return "Handles of Images (ckey -> handle)"; }
+
         };
 
     public ImageCaches() {
@@ -57,81 +54,77 @@ public class ImageCaches extends AbstractImages {
      *
      * @since MMBase-1.6
      **/
-
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a) {
-        StringBuffer servlet = new StringBuffer();
-        HttpServletRequest req = (HttpServletRequest) a.get("request");
-        if (req != null) {            
-            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), null));
-        } else {
-            servlet.append(getServletPath());
-        }
-        String ses = (String) a.get("session");
-        servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName) {
+        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
-        HttpServletResponse res = (HttpServletResponse) a.get("response");
         if (origNode != null) {
-            List cacheArgs =  new Arguments(Images.CACHE_ARGUMENTS).set("template", GUI_IMAGETEMPLATE);
-            imageThumb = servlet.toString() + origNode.getFunctionValue("cache", cacheArgs);
+            List args = new java.util.Vector();
+            args.add("s(100x60)");
+            imageThumb = servlet + origNode.getFunctionValue("cache", args);
             if (res != null) imageThumb = res.encodeURL(imageThumb);
         } else {
             imageThumb = "";
         }
-        String image      = servlet.toString() + node.getNumber();
+        String image      = servlet + node.getNumber();
         if (res != null) image = res.encodeURL(image);
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
-    // javadoc inherited
-    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
         MMObjectNode origNode = originalImage(node);
-        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
+        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), res, session);
     }
 
+    /*
+    public String getTitle(MMObjecNode node) {
+        return originalImage(node).getStringValue("title");
+    }
+    public String getDescription(MMObjectNode node) {
+        return originalImage(node);
+    }
+    */
 
     /**
      * Given a certain ckey, return the cached image node number, if there is one, otherwise return -1.
      * This functions always does a query. The caching must be done somewhere else.
      * This is done because caching on ckey is not necesarry when caching templates.
+     * @sql
      * @since MMBase-1.6
      **/
-    protected int getCachedNodeNumber(String ckey) {
-        List nodes;
+    int getCachedNodeNumber(String ckey) {
+        int number = -1;
+        MultiConnection con = null;
+        Statement stmt = null;
         try {
-            NodeSearchQuery query = new NodeSearchQuery(this);
-            query.setMaxNumber(2); // to make sure this is a cheap query.
-            StepField ckeyField = query.getField(getField("ckey"));
-            query.setConstraint(new BasicFieldValueConstraint(ckeyField, ckey));            
-            nodes = getNodes(query);
-        } catch (SearchQueryException e) {
-            log.error(e.toString());
-            return -1;
+            con = mmb.getConnection();
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT " + mmb.getDatabase().getNumberString()+" FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
+            if (rs.next()) {
+                number = rs.getInt(1);
+            }
+        } catch (java.sql.SQLException e) {
+            log.error("getCkeyNode error " + ckey + ":" + toHexString(ckey));
+            log.error(Logging.stackTrace(e));
+        } finally {
+            mmb.closeConnection(con, stmt);
         }
-
-        if (nodes.size() == 0) {
-            log.debug("Did not find cached images with key ("+ ckey +")");
-            return -1 ;
-        }
-        if (nodes.size() > 1) {
-            log.warn("found more then one cached image with key ("+ ckey +")");
-        }
-        MMObjectNode node = (MMObjectNode) nodes.get(0);
-        return node.getNumber();
+        return number;
     }
 
     /**
      * Gets the handle bytes from a node.
      * @param n The node to receive the bytes from. It might be null, then null is returned.
      */
-    private  byte[] getImageBytes(MMObjectNode n) {
+    private  synchronized byte[] getImageBytes(MMObjectNode n) {
         if (n == null) {
-            log.warn("method called with null MMObjectNode, returing null");
+            log.debug("node was not found");
             return null;
         } else {
+            if (log.isDebugEnabled()) log.debug("node was found " + n.getNumber());
             byte[] bytes = n.getByteValue("handle");
             if (bytes == null) {
-                log.warn("handle was null for node with number ("+ n.getNumber() +")!");
+                log.debug("handle was null!");
                 return null;
             }
             if (log.isDebugEnabled()) log.debug("found " + bytes.length + " bytes");
@@ -139,11 +132,11 @@ public class ImageCaches extends AbstractImages {
         }
     }
 
-    private  byte[] getImageBytes(int number) {
+    private  synchronized byte[] getImageBytes(int number) {
         return getImageBytes(getNode(number));
     }
 
-    private byte[] getImageBytes(String number) {
+    private synchronized byte[] getImageBytes(String number) {
         return getImageBytes(getNode(number));
     }
     /**
@@ -156,14 +149,14 @@ public class ImageCaches extends AbstractImages {
      *
      * If the node does not exists, it returns empty byte array
      */
-    public byte[] getImageBytes(List params) {
+    public synchronized byte[] getImageBytes(List params) {
         return getImageBytes("" + params.get(0));
     }
 
     /**
      * Return the bytes for the cached image with a certain ckey, or null, if not cached.
      */
-    public byte[] getCkeyNode(String ckey) {
+    public synchronized byte[] getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
 	if(handleCache.contains(ckey)) {
 	    // found the node in the cache..
@@ -174,7 +167,7 @@ public class ImageCaches extends AbstractImages {
 
 	if (number == -1) {
 	    // we dont have a cachednode yet, return null	    
-	    log.debug("cached node not found for key ("+ ckey +"), returning null");
+	    log.info("cached node not found, returning null");
 	    return null;
 	}
 
@@ -201,7 +194,6 @@ public class ImageCaches extends AbstractImages {
     }
 
     /**
-     * It is unknown where this is good for.
      * @javadoc
      */
     private String toHexString(String str) {
@@ -220,32 +212,18 @@ public class ImageCaches extends AbstractImages {
      *
      * @param node The image node, which is the original of the cached modifications
      */
-    protected void invalidate(MMObjectNode imageNode) {
-        if (log.isDebugEnabled()) {
-            log.debug("Going to invalidate the node, where the original node # " + imageNode.getNumber());
-        }
+    void invalidate(MMObjectNode node) {
+        log.debug("gonna invalidate the node, where the original node # " + node.getNumber());
         // first get all the nodes, which are currently invalid....
         // this means all nodes from icache where the field 'ID' == node it's number
-        List nodes;
-        try {
-            NodeSearchQuery query = new NodeSearchQuery(this);
-            StepField idField = query.getField(getField("id"));
-            query.setConstraint(new BasicFieldValueConstraint(idField, new Integer(imageNode.getNumber())));
-            nodes = getNodes(query);
-        } catch (SearchQueryException e) {
-            log.error(e.toString());
-            nodes = new java.util.ArrayList(); // do nothing
-        }
-        Iterator i = nodes.iterator();
-        while(i.hasNext()) {
+        Enumeration invalidNodes = search("WHERE id=" + node.getNumber());
+        while(invalidNodes.hasMoreElements()) {
             // delete the icache node
-            MMObjectNode invalidNode = (MMObjectNode) i.next();
+            MMObjectNode invalidNode = (MMObjectNode) invalidNodes.nextElement();
             removeNode(invalidNode);
-            if (log.isDebugEnabled()) {
-                log.debug("deleted node with number#" + invalidNode.getNumber());
-            }
+            log.debug("deleted node with id#" + node.getNumber());
         }
-        handleCache.remove(imageNode.getNumber());
+        handleCache.remove(node.getNumber());
     }
 
     /**

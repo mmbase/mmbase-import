@@ -33,7 +33,7 @@ import java.sql.*;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.12 2003-08-26 08:17:37 pierre Exp $
+ * @version $Id: MultiStatement.java,v 1.8 2002-03-04 09:50:43 pierre Exp $
  */
 public class MultiStatement implements Statement {
 

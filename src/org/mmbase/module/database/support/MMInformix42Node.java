@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.49 2003-08-26 08:17:37 pierre Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.5 2003-04-24 13:04:08 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 

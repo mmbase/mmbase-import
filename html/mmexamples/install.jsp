@@ -5,7 +5,34 @@
 <html>
 <head>
 <title>MMBase Demo installation</title>
-<link rel="stylesheet" href="../css/mmbase.css" type="text/css">
+<style>
+<!--
+ body {  background-color: white;
+         color:42BDAD;
+       font-size:medium;}
+ a:link { color: black; }
+ a:visited { color: #555555; }
+ a:active { color: #555555; }
+
+ th {  background-color: #44BDAD;
+       color:#00425A;
+     font-size:medium;
+     font-weight:bold; }
+ th.main {  background-color: #44BDAD;
+       color:#00425A;
+     font-size:large;
+     font-weight:bold; }
+ td    {  background-color: #00425A;
+         color:#44BDAD;
+     font-size:medium;
+     font-weight:normal; }
+ td.link {  background-color: #44BDAD;
+       color:#00425A;
+     font-size:medium;
+     font-weight:normal;
+     width:14; }
+-->
+</style>
 </head>
 
 <body >
@@ -46,7 +73,7 @@ You can return to this installation script any time.<br />
            boolean first=true;
            boolean installed=false;
            NodeManager versions=cloud.getNodeManager("versions");
-           Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+           Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 
            for (int step=0; step<steps.length; step++) {
              String app=steps[step];

@@ -1,12 +1,12 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
- */
+
+*/
 package org.mmbase.module.builders;
 
 import java.util.Map;
@@ -23,20 +23,18 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.12 2003-05-05 08:34:33 kees Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.10 2002-04-12 08:53:00 pierre Exp $
  */
 public class ImageRequestProcessor implements Runnable {
-    
+
     private static Logger log = Logging.getLoggerInstance(ImageRequestProcessor.class.getName());
-    private static int idCounter =0;
-    private int processorId;
     private Thread kicker=null;
-    
+
     private MMObjectBuilder images;
     private ImageConvertInterface convert;
     private Queue queue;
     private Map table;
-    
+
     /**
      * @javadoc
      */
@@ -45,30 +43,28 @@ public class ImageRequestProcessor implements Runnable {
         this.convert = convert;
         this.queue = queue;
         this.table = table;
-        processorId = idCounter++;
         start();
     }
-    
+
     /**
      * @javadoc
      */
     public void start() {
         if (kicker == null) {
-            kicker = new Thread(this, "ImageConvert["+processorId +"]");
-            kicker.setDaemon(true);
+            kicker = new Thread(this, "ImageConvert");
             kicker.start();
         }
     }
-    
+
     /**
      * @javadoc
      */
     public void stop() {
         /* Stop thread */
-        kicker.interrupt();
+        kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
-    
+
     /**
      * @javadoc
      */
@@ -86,7 +82,7 @@ public class ImageRequestProcessor implements Runnable {
             log.error(Logging.stackTrace(e));
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -95,12 +91,12 @@ public class ImageRequestProcessor implements Runnable {
         String ckey;
         byte[] picture,inputpicture;
         int id;
-        
+
         inputpicture = req.getInput();
         params = req.getParams();
         ckey = req.getKey();
         id = req.getId();
-        
+
         if (inputpicture == null || inputpicture.length == 0) {
             if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + id);
             picture = new byte[0];
@@ -123,11 +119,9 @@ public class ImageRequestProcessor implements Runnable {
             }
             if (log.isDebugEnabled()) log.debug("processRequest : converting done : " + id);
         }
-        synchronized (table){
-            if (log.isDebugEnabled()) log.debug("Setting output " + id);
-            req.setOutput(picture);
-            if (log.isDebugEnabled()) log.debug("Removing key " + id);
-            table.remove(ckey);
-        }
+        if (log.isDebugEnabled()) log.debug("Setting output " + id);
+        req.setOutput(picture);
+        if (log.isDebugEnabled()) log.debug("Removing key " + id);
+        table.remove(ckey);
     }
 }

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.26 2003-07-04 14:36:32 pierre Exp $
+ * @version $Id: sessions.java,v 1.23.4.2 2003-07-04 14:34:29 vpro Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 

@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import javax.servlet.ServletException;
-
+import javax.servlet.*;
+import java.lang.Exception;
 
 /**
  * This exception gets thrown when a Cyclic Redundancy Check

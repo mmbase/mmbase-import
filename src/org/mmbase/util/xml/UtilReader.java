@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.5 2003-06-27 09:55:38 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.1.2.3 2003-06-27 09:58:09 michiel Exp $
  */
 public class UtilReader {
 
@@ -46,7 +46,7 @@ public class UtilReader {
      * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
+        // org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
     private class UtilFileWatcher extends FileWatcher {

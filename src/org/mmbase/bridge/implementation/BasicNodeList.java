@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.20 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.17 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
@@ -107,18 +108,17 @@ public class BasicNodeList extends BasicList implements NodeList {
      *
      */
     public NodeIterator nodeIterator() {
-        return new BasicNodeIterator();
+        return new BasicNodeIterator(this);
     }
 
 
-    protected class BasicNodeIterator extends BasicIterator implements NodeIterator {
+    public class BasicNodeIterator extends BasicIterator implements NodeIterator {
+        BasicNodeIterator(BasicList list) {
+            super(list);
+        }
 
         public Node nextNode() {
             return (Node)next();
-        }
-
-        public Node previousNode() {
-            return (Node)previous();
         }
     }
 }

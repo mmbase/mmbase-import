@@ -26,11 +26,10 @@ import java.util.*;
 
 
 /**
- * Base servlet for nodes with a 'handle' field. It serves as a basic implementation for more
- * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
+ * As AttachmentServlet, but the mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.9 2003-07-09 20:51:20 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.5.2.1 2002-12-02 17:40:23 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -53,7 +52,7 @@ public class HandleServlet extends BridgeServlet {
 
     public void init() throws ServletException {
         super.init();
-        log = Logging.getLoggerInstance(HandleServlet.class);
+        log = Logging.getLoggerInstance(BridgeServlet.class.getName());
 
         String expiresParameter = getInitParameter("expire");
         if (expiresParameter == null) {
@@ -109,26 +108,6 @@ public class HandleServlet extends BridgeServlet {
         return true;
     }
 
-
-    /**
-     * Sets cache-controlling headers. Only nodes which are to be served to 'anonymous' might be
-     * (front proxy) cached. To other nodes there might be read restrictions, so they should not be
-     * stored in front-proxy caches.
-     * 
-     * @return true if cacheing is disabled.
-     * @since MMBase-1.7
-     */
-    protected boolean setCacheControl(HttpServletResponse res, Node node) {
-        if (! node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {            
-            res.setHeader("Cache-Control", "private,no-store");
-            res.setHeader("Pragma", "no-cache"); // for http 1.0
-            return true;
-        } else {
-            res.setHeader("Cache-Control", "public");
-            return false;
-        }
-    }
-
     /**
      * Serves a node with a byte[] handle field as an attachment.
      */
@@ -140,7 +119,7 @@ public class HandleServlet extends BridgeServlet {
             return;
         }
         if (! node.getNodeManager().hasField("handle")) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
+            res.sendError(res.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
             return;
         }
         byte[] bytes = node.getByteValue("handle"); 
@@ -152,8 +131,8 @@ public class HandleServlet extends BridgeServlet {
         res.setContentType(mimeType);
 
         if (!setContent(res, node, mimeType)) return;
-        setExpires(res, node);
-        setCacheControl(res, node);
+        setExpires(res, node);                           
+
         sendBytes(res, bytes);
     }
 

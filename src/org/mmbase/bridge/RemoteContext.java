@@ -11,14 +11,19 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.rmi.*;
+import java.rmi.registry.*;
 import java.lang.reflect.*;
 
+
+
 // import org.mmbase.bridge.remote.RemoteCloudContext;
+
+import org.mmbase.bridge.*;
 
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.5 2003-03-07 09:31:00 pierre Exp $
+ * @version $Id: RemoteContext.java,v 1.3 2002-03-14 10:47:04 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {
@@ -30,7 +35,7 @@ public class RemoteContext {
      * @todo should throw a Bridge Exception (?)
      * @param uri rmi uri like rmi://www.mmbase.org:1111/remotecontext
      * @return the remote cloud context named remotecontext
-     * @throws RuntimeException if anything goes wrong
+     * @throw RuntimeException if anything goes wrong
      */
     public static CloudContext getCloudContext(String uri) {
         try {

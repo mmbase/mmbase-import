@@ -12,12 +12,11 @@ package org.mmbase.bridge.jsp.taglib.macro;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
- * Macro tag for listContdition odd
- *
- * @version $Id: ListOddTag.java,v 1.4 2003-06-06 10:03:24 pierre Exp $
- */
+*  shortcut for listContdition odd
+*/
 public class ListOddTag extends ListConditionTag{
-    protected int getValue() throws JspTagException {
-        return CONDITION_ODD;
-    }
+	public int doStartTag() throws JspTagException{
+		setValue("odd");
+		return super.doStartTag();
+	}
 }

@@ -3,12 +3,11 @@
        - DTD for MMBase builder definitions
 -->
 
-<!ELEMENT module ( status,url?, classfile, properties ) >
+<!ELEMENT module ( status, classfile, properties ) >
 <!ATTLIST module maintainer NMTOKEN #IMPLIED >
 <!ATTLIST module version NMTOKEN #IMPLIED >
 
 <!ELEMENT status ( #PCDATA ) >
-<!ELEMENT url ( #PCDATA ) >
 
 <!ELEMENT classfile ( #PCDATA ) >
 

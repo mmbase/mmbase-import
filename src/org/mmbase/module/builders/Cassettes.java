@@ -9,12 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import org.mmbase.module.core.*;
+import java.util.*;
+import java.util.Date;
+import java.sql.*;
+import java.io.*;
 
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Cassettes.java,v 1.7 2003-03-10 11:50:16 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class Cassettes extends MMObjectBuilder {
 

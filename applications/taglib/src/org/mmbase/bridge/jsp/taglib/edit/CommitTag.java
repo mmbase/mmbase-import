@@ -9,31 +9,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.CloudProvider;
 import org.mmbase.bridge.Transaction;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This tag can be used inside a transaction tag, to commit it. It also
- * serves as a baseclass for e.g. CancelTag
- *
- * @author Michiel Meeuwissen 
- * @version $Id: CommitTag.java,v 1.15 2003-08-11 15:27:26 michiel Exp $
- */
+* This tag can be used inside a transaction tag, to commit it. It also
+* serves as a baseclass for e.g. CancelTag
+*
+* @author Michiel Meeuwissen 
+**/
 
 public class CommitTag extends CloudReferrerTag { 
     // perhaps it would be nicer to extend CloudReferrer to TransactionReferrer first.
 
     private static Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
 
-    private Attribute transaction = Attribute.NULL;
+    private String transaction = null;
     public void setTransaction(String t) throws JspTagException {
-        transaction = getAttribute(t);
+        transaction = getAttributeValue(t);
     }
 
     protected void doAction(Transaction t) {
@@ -42,13 +42,13 @@ public class CommitTag extends CloudReferrerTag {
 
     public int doStartTag() throws JspTagException{
         // find the parent transaction:        
-        TransactionTag tt = (TransactionTag)  findParentTag(TransactionTag.class, (String) transaction.getValue(this), true);
+        TransactionTag tt = (TransactionTag)  findParentTag("org.mmbase.bridge.jsp.taglib.edit.TransactionTag", transaction, true);
         Transaction trans = (Transaction) tt.getCloudVar();
         doAction(trans);
         /*
           why should we do this??
         if (tt.getId() != null) {
-            getContextProvider().getContextContainer().unRegister(tt.getId());
+            getContextTag().unRegister(tt.getId());
         }
         */
         return SKIP_BODY;    

@@ -1,5 +1,6 @@
  package org.mmbase.util.logging.log4j;
 
+import org.apache.log4j.*;
 import org.apache.log4j.helpers.FormattingInfo;
 import org.apache.log4j.helpers.PatternConverter;
 import org.apache.log4j.helpers.PatternParser;
@@ -9,7 +10,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Adds the  conversion pattern 'q' which returns a truncated level (from the _end_, not from the beginning as log4j itself would do) . To 3 chars. So it is like 'p'. Also add 'k' which give the currently memory in use (in kb).
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternParser.java,v 1.6 2003-03-04 13:28:50 nico Exp $
+ * @version $Id: MMPatternParser.java,v 1.2.2.1 2003-02-18 12:03:05 michiel Exp $
  */
 public class MMPatternParser extends PatternParser {
 
@@ -36,7 +37,7 @@ public class MMPatternParser extends PatternParser {
         }
         
         public String convert(LoggingEvent event) {
-            return event.getLevel().toString().substring(0, 3);
+            return event.level.toString().substring(0, 3);
         }
     }  
     

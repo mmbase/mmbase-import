@@ -10,25 +10,24 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import javax.servlet.jsp.JspTagException;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
- * @javadoc
- *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: FloatHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
  */
-
 public class FloatHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for FloatHandler.
      * @param context
      */
-    public FloatHandler(FieldInfoTag tag) {
-        super(tag);
+    public FloatHandler(FieldInfoTag context) {
+        super(context);
     }
 
 }

@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.14 2003-06-02 12:21:59 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.9.2.1 2003-06-02 12:20:56 vpro Exp $
  */
 
 public abstract class AbstractDove {

@@ -22,17 +22,9 @@ import java.util.Map;
  * @author Michiel Meeuwissen 
  */
 
-public class Sql extends ConfigurableReaderTransformer implements CharTransformer {
+public class Sql extends AbstractTransformer implements CharTransformer {
     private final static String ENCODING     = "ESCAPE_SINGLE_QUOTE";
-    public final static int ESCAPE_QUOTES    = 1;     
-
-    public Sql() {
-        super(ESCAPE_QUOTES);
-    }
-
-    public Sql(int conf) {
-        super(conf);
-    }
+    private final static int ESCAPE_QUOTES    = 1;     
 
     /**
      * Escapes single quotes in a string.
@@ -42,17 +34,20 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
      * @param str the string to escape
      * @return the escaped string
      */
-    static public Writer singleQuote(Reader r, Writer w) {
-        try {
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                if(c == '\'') w.write(c);
-                w.write(c);
+    static public String singlequote(String str) {
+        String line=null,obj;
+        int idx;
+        if (str!=null) {
+            /* Single ' protection */
+            line=new String("");
+            obj=new String(str);
+            while((idx=obj.indexOf('\''))!=-1) {
+                line += obj.substring(0,idx)+"''";
+                obj=obj.substring(idx+1);
             }
-        } catch (java.io.IOException e) {
+            line=line+obj;
         }
-        return w;
+        return line;
     }
 
     /**
@@ -65,13 +60,20 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
         return h;
     }
 
-    public Writer transform(Reader r, Writer w) {
-        switch(to){
-        case ESCAPE_QUOTES:           return singleQuote(r, w);
-        default: throw new UnsupportedOperationException("Cannot transform");
-        }    
+    public Writer transform(Reader r) {
+        throw new UnsupportedOperationException("transform(Reader) is not yet supported");
     }
-    public Writer transformBack(Reader r, Writer w) {
+    public Writer transformBack(Reader r) {
+        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
+    } 
+
+    public String transform(String r) {
+        switch(to){
+        case ESCAPE_QUOTES:           return singlequote(r);
+        default: throw new UnsupportedOperationException("Cannot transform");
+        }
+    }
+    public String transformBack(String r) {
         switch(to){
         case ESCAPE_QUOTES:           throw new UnsupportedOperationException("Not needed to revert this at anytime it tinks");
         default: throw new UnsupportedOperationException("Cannot transform");

@@ -11,10 +11,10 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
-import org.mmbase.module.*;
-import org.mmbase.module.builders.vwms.*;
+import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.*;
-import org.mmbase.util.Mail;
+import org.mmbase.module.builders.vwms.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.18 2003-07-02 06:20:45 keesj Exp $
+ * @version $Id: Vwms.java,v 1.16.2.1 2002-11-21 13:42:02 pierre Exp $
  */
 
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
@@ -232,7 +232,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      */
     public boolean sendMail(String who,String to,String subject, String msg) {
 
-        SendMailInterface sendmail=(SendMailInterface)Module.getModule("sendmail");
+        SendMailInterface sendmail=mmb.getSendMail();
         if (sendmail==null) {
             log.warn("sendmail module not active, cannot send email");
             return false;

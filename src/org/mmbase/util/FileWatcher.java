@@ -52,10 +52,10 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.18 2003-07-18 14:57:46 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.9.2.3 2003-06-12 10:01:13 vpro Exp $
  */
 public abstract class FileWatcher  {
-    private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
+    private static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
 
     private static FileWatcherRunner fileWatchers = new FileWatcherRunner();
     static {
@@ -93,6 +93,13 @@ public abstract class FileWatcher  {
         continueAfterChange = c;
     }
 
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    public static void reinitLogger() {
+        log = Logging.getLoggerInstance(FileWatcher.class.getName());
+    }
 
     public void start() {        
         fileWatchers.add(this);

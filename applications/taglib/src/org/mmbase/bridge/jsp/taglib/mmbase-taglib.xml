@@ -38,12 +38,9 @@ The following additional tags are possible between <attribute> and </attribute>:
 
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
-
-version: $Id: mmbase-taglib.xml,v 1.194 2003-08-18 14:13:46 michiel Exp $
-
 -->
 <taglib author="MMBase community">
-  <tlibversion>1.1.0</tlibversion>
+  <tlibversion>1.0.1</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
@@ -172,7 +169,7 @@ See mmexamples/taglib for more elaborated examples.
     <p>
       These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
       in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
-   </p>
+    </p>
   </info>
   </type>
   <type name="mmbase">
@@ -216,8 +213,8 @@ See mmexamples/taglib for more elaborated examples.
   <description>list related tags</description>
   <info>
     <p>
-      These are the MMBase tags which do relate to lists (lists,
-      sub-tags of lists, and constainers of list).
+      These are the MMBase tags which do relate to lists (lists and
+      sub-tags of lists).
     </p>
   </info>
   </type>
@@ -529,10 +526,6 @@ See mmexamples/taglib for more elaborated examples.
         <value>Float</value>
         <info>java.lang.Float</info>
       </possiblevalue>
-      <possiblevalue>
-        <value>Date</value>
-        <info>java.util.Date</info>
-      </possiblevalue>
     </attribute>
     <attribute>
       <name>write</name>
@@ -545,102 +538,6 @@ See mmexamples/taglib for more elaborated examples.
       <possiblevalue>
         <value>false</value>
       </possiblevalue>
-    </attribute>
-    <attribute>
-      <name>escape</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>Override the default escape behaviour determined by the surrounding Content-tag.</info>
-      <see tag="content" />
-      <possiblevalue>
-        <value>text/html</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>text/xml</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>text/plain</value>
-        <info>This equals no escaping</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>p</value>
-        <info>Interpret as 'enriched' ASCII for 'block' HTML parts. It normally generates one or more p-tags.</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>...</value>
-        <info>All possible values are defined in taglibcontent.xml</info>
-      </possiblevalue>
-    </attribute>
-  </taginterface>
-  <taginterface>
-    <name>container</name>
-    <info>
-       Container tags can be referrenced by container-refferers.
-    </info>
-    <since>MMBase-1.7</since>
-  </taginterface>
-  <taginterface>
-    <name>containerreferrer</name>
-    <info>
-  
-    </info>
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>container</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        Refer to the container with this id.
-      </info>
-    </attribute>
-  </taginterface>
-  <taginterface>
-    <name>nodelistcontainer</name>
-    <extends>container</extends>
-    <info>
-      A 'NodeList' container is a container for one of the 'node list' tags (listproviders that are
-      nodeprovider too). A nodelist container is actually a wrapper for a 'Query' on the
-      database. If a 'node list tag' (a tag that is both listprovider as nodeprovider) is inside a
-      corresponding 'nodelist container', it will use the query. 
-    </info>
-    <see tag="listprovider" />
-    <see tag="nodeprovider" />
-    <see tag="list" />
-    <see tag="listnodes" />
-    <since>MMBase-1.7</since>
-  </taginterface>
-  <taginterface>
-    <name>nodelistcontainerreferrer</name>
-    <extends>containerreferrer</extends>
-    <info>
-      Refers to a nodelist container. Normally these kind of tags are 'query modifiers'. 
-    </info>
-    <since>MMBase-1.7</since>
-  </taginterface>
-  <taginterface>
-    <name>functiontag</name>
-    <info>
-    </info>
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>name</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        <p>
-          The name of the function to evaluate.
-        </p>
-      </info>
-    </attribute>
-    <attribute>
-      <name>parameters</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        <p>
-           parameters
-        </p>
-      </info>
     </attribute>
   </taginterface>
   <tag>
@@ -668,8 +565,6 @@ See mmexamples/taglib for more elaborated examples.
       want to refer to them.
     </info>
     <see tag="listnodes" />
-    <see tag="listcontainer" />
-    <see tag="nodelistcontainerreferrer" />
     <see tag="node" attribute="element"/>
     <attribute>
       <name>nodes</name>
@@ -743,14 +638,11 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Constraints to prevent records from being included in the returned list.
-        These constraints follow the syntax of the SQL where clause. It's a good
-        practice to use uppercase letters for the operators and lowercase letters
-        for the field names. There are also a (new) 'constraint' tags, which are more flexible
-        (especially when constructing the constraints automaticly).
-      </info>
-      <see tag="constraint" />
-      <see tag="nodelistcontainerreferrers" />
+      Constraints to prevent records from being included in the returned list.
+      These constraints follow the syntax of the SQL where clause. It's a good
+      practice to use uppercase letters for the operators and lowercase letters
+      for the field names.
+    </info>
       <examplevalue>
         <value>url.number = 100</value>
         <info>!=, &lt;, &gt;, &lt;= and &gt;= can also be used</info>
@@ -860,15 +752,13 @@ See mmexamples/taglib for more elaborated examples.
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The maximum number of records to return. Can do it also with the maxnumber tag in the container.</info>
-      <see tag="maxnumber" />
+      <info>The maximum number of records to return.</info>
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The first number of records to skip. Can do it also with the 'offset' tag in the container</info>
-      <see tag="offset" />
+      <info>The first number of records to skip.</info>
     </attribute>
     <attribute>
       <name>searchdir</name>
@@ -885,39 +775,6 @@ See mmexamples/taglib for more elaborated examples.
         relations the way they are defined (either source to destination,
         destination to source or both).
       </info>
-    </attribute>
-    <attribute>
-      <name>comparator</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        Applies a java-comparator to sort the list.
-      </info>
-      <since>MMBase-1.7</since>
-      <possiblevalue>
-        <value>SHUFFLE</value>
-        <info>
-          For shuffling you don't need to implement a comparator (which is principally
-          possible). This will use Collections.shuffle in stead.
-        </info> 
-      </possiblevalue>
-      <examplevalue>
-        <value>MyCollator</value>
-        <info>
-          If you use a value like this, then it will be supposed that this Comparator is implemented
-          in this jsp. E.g.:
-          <pre><![CDATA[
-<%! public class MyCollator extends java.text.RuleBasedCollator("a<c<b") {} %>
-]]>
-        </pre>
-        </info> 
-      </examplevalue>
-      <examplevalue>
-        <value>nl.myorganisation.mmbase.util.OurComparator</value>
-        <info>
-          You can also use a fully qualified class name.
-        </info> 
-      </examplevalue>
     </attribute>
     <example>&lt;mm:list nodes="123" path="mags,news"
                 fields="mags.title,news.number"&gt;
@@ -1026,13 +883,6 @@ See mmexamples/taglib for more elaborated examples.
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="searchdir" />
     </attribute>
-    <attribute>
-      <name>comparator</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="comparator" />
-      <since>MMBase-1.7</since>
-    </attribute>
     <example>&lt;mm:node number="123"&gt;
   &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
     &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -1065,8 +915,6 @@ See mmexamples/taglib for more elaborated examples.
     </info>
     <see tag="list" />
     <see tag="relatednodes" />
-    <see tag="listnodescontainer" />
-    <see tag="nodelistcontainerreferrer" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -1085,11 +933,9 @@ See mmexamples/taglib for more elaborated examples.
         See constraints attribute of list, but notice that it is not necessary to prefix the
         field names with `node manager' names. You can put the field names in [] to enable 'key word
         escaping'. E.g. in some databases 'status' is not a valid field name. [status] will
-        translate the field name in the right way. Consider using 'constraint' tags and
-        listnodescontainer for more flexibility.
+        translate the field name in the right way.
       </info>
       <see tag="list" attribute="constraints" />
-      <see tag="constraint" />
     </attribute>
     <attribute>
       <name>orderby</name>
@@ -1108,21 +954,12 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="max" />
-      <see tag="maxnumber" />
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="offset" />
-      <see tag="offset" />
-    </attribute>
-    <attribute>
-      <name>comparator</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
-      <since>MMBase-1.7</since>
     </attribute>
     <example>&lt;mm:listnodes type="mags"  &gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -1149,7 +986,6 @@ See mmexamples/taglib for more elaborated examples.
     <see tag="list" />
     <see tag="listnodes" />
     <see tag="related" />
-    <see tag="unrelatednodes" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -1311,22 +1147,14 @@ See mmexamples/taglib for more elaborated examples.
       </examplevalue>
     </attribute>
     <attribute>
-      <name>username</name>
+      <name>logon</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>The authentication name to use (account). When used together with
       e.g. the method="http" option, validation only succeeds if
-      the username equals this attribute. In this case it is also possible to
+      the username equals logon. In this case it is also possible to
       supply a list of usernames here (comma separated)</info>
-    </attribute>
-    <attribute>
-      <name>logon</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>Synonym to 'username'</info>
-      <see tag="cloud" attribute="username" />
     </attribute>
     <attribute>
       <name>rank</name>
@@ -1369,8 +1197,8 @@ See mmexamples/taglib for more elaborated examples.
 
 
             cloud: similar to the cloudtag's 'name' attribute
-            username: similar to the  cloudtag's 'username' attribute
-            password: similar to the  cloudtag's 'password' attribute
+            username: similar to the  cloudtag's 'logon' attribute
+            password: similar to the  cloudtag's 'pwd' attribute
 
             If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
             This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
@@ -1452,19 +1280,11 @@ See mmexamples/taglib for more elaborated examples.
       </info>
     </attribute>
     <attribute>
-      <name>password</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>The password to use to logon to the cloud.</info>
-    </attribute>
-    <attribute>
       <name>pwd</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>Synonym to 'password'</info>
-      <see tag="cloud" attribute="password" />
+      <info>The password to use to logon to the cloud.</info>
     </attribute>
     <attribute>
       <name>method</name>
@@ -1477,9 +1297,9 @@ See mmexamples/taglib for more elaborated examples.
         <value>http</value>
         <info>
           Use http protocol to ask name and password
-          from the user. If the `username' attribute is specified too, then
+          from the user. If the `logon' attribute is specified too, then
           logging on will fail if the user does not use that
-          username. The `password' (or 'pwd')  attribute will be ignored.
+          username. The `pwd' attribute will be ignored.
         </info>
       </possiblevalue>
       <possiblevalue>
@@ -1767,65 +1587,6 @@ access the value of title:
     <example>See the example for tag 'node'.</example>
   </tag>
   <tag>
-    <name>function</name>
-    <extends>writer</extends>
-    <extends>functiontag</extends>
-    <extends>nodereferrer</extends>
-    <extends>contextreader</extends>
-    <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.FunctionTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
-    <info>
-      Gets the function value of function `name' from node `node', the function value is available as a writer.
-    </info>
-    <since>MMBase-1.7</since>
-    <see tag="node" />
-    <see tag="booleanfunction" />
-    <see tag="listfunction" />
-
-  </tag>
-  <tag>
-    <name>booleanfunction</name>
-    <extends>condition</extends>
-    <extends>nodereferrer</extends>
-    <extends>contextreader</extends>
-    <extends>functiontag</extends>
-    <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.BooleanFunctionTag</tagclass>
-    <info>
-      Gets the function value of function `name' from node `node', the function value is available as a writer.
-    </info>
-    <since>MMBase-1.7</since>
-    <see tag="node" />
-    <see tag="function" />
-    <see tag="listfunction" />
-  </tag>
-
-  <tag>
-    <name>listfunction</name>
-    <extends>listprovider</extends>
-    <extends>nodereferrer</extends>
-    <extends>contextreader</extends>
-    <extends>functiontag</extends>
-    <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ListFunctionTag</tagclass>
-    <info>
-      Gets the function value of function `name' from node `node', the function value is available as a writer.
-    </info>
-    <since>MMBase-1.7</since>
-    <see tag="node" />
-    <see tag="booleanfunction" />
-    <see tag="function" />
-    <attribute>
-      <name>comparator</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
-      <since>MMBase-1.7</since>
-    </attribute>
-  </tag>
-
-  <tag>
     <name>createalias</name>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateAliasTag</tagclass>
@@ -2093,14 +1854,6 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         <value>people</value>
       </examplevalue>
     </attribute>
-    <attribute>
-      <name>makeuniques</name>     
-      <required>false</required>
-      <info>
-        Whether the unique keys must be filled on creation.
-      </info>
-      <since>MMBase-1.7</since>
-    </attribute>
     <example>
     &lt;mm:createnode type="news" id="new_news"&gt;
         &lt;mm:setfield name="title"&gt;Create node example&lt;/mm:setfield&gt;
@@ -2311,9 +2064,8 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        You can specify a comma separated list of fields you want to list too. If you specify this
-        together with the type attribute, these fields will be added (to the end) of the ones
-        defined in that way.
+        You can specify a comma separated list of fields you want to
+        list too. Use this attribute or the type attribute.
       </info>
     </attribute>
     <attribute>
@@ -2358,13 +2110,6 @@ transaction was commited, following should result anything:
           Return all fields.
         </info>
       </possiblevalue>
-    </attribute>
-    <attribute>
-      <name>comparator</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
-      <since>MMBase-1.7</since>
     </attribute>
     <example>See the example for tag 'nodeinfo'.</example>
   </tag>
@@ -2471,7 +2216,7 @@ transaction was commited, following should result anything:
         Specify additional parameters for the presentation/manipulation of the field. [***EXPERIMENTAL***]
       </info>
       <examplevalue>
-        <value>datetime</value>
+        <value>daytime</value>
         <info>If the value is a date-time, treat it as a date time combination [***EXPERIMENTAL***]</info>
       </examplevalue>
       <examplevalue>
@@ -2809,18 +2554,6 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>false</rtexprvalue>
       <see tag="writer" attribute="vartype" />
     </attribute>
-    <attribute>
-      <name>escape</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <see tag="writer" attribute="escape" />
-      <info>
-        The import tag does not write anything to the page, so for that the 'escape' attribute is not
-        usefull. The escape attribute from the import tag is therefore used to escape the actual
-        value of the generated taglib variable. You can for example use it to uppercase an URL
-        parameter or so (for searching).
-      </info>
-    </attribute>
     <example>&lt;!-- Create a variable `hoi' from the parameter `haj',
      Generate an exception if this parameter is not present --&gt;
 &lt;mm:import id="hoi" externid="haj" from="parameters" required="true" /&gt;</example>
@@ -3134,27 +2867,16 @@ like the parameter list or the session (where ever it is available) --&gt;
       <name>value</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value' or `referid2' must be present.</requirednote>
       <info>
         The value to which you want to compare, this is always a String.
       </info>
     </attribute>
     <attribute>
-      <name>valueset</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
-      <info>
-          List of values. Compare is done with each, and total result if one of them evaluates true.
-          The value to which you want to compare, this is always a String.
-      </info>
-      <since>MMBase-1.7</since>
-    </attribute>
-    <attribute>
       <name>referid2</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value' or `referid2' must be present.</requirednote>
       <see tag="writer" attribute="vartype" />
       <info>
         The value can also be another context variable, which is not
@@ -3454,22 +3176,6 @@ like the parameter list or the session (where ever it is available) --&gt;
         specified by this attribute are returned.
       </info>
     </attribute>
-    <attribute>
-      <name>searchdir</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-      </info>
-      <since>MMBase-1.7</since>
-    </attribute>
-    <attribute>
-      <name>role</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-      </info>
-      <since>MMBase-1.7</since>
-    </attribute>
     <example>
 &lt;mm:listnodes type="list"&gt;
     &lt;mm:field name="html(title)" /&gt; has &lt;mm:countrelations /&gt; relation(s)&lt;br/&gt;
@@ -3500,13 +3206,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>Only list the relations which are of this role.</info>
-    </attribute>
-    <attribute>
-      <name>searchdir</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>Only list the relations in this direction.</info>
-      <since>MMBase-1.7</since>
     </attribute>
     <example>
 &lt;mm:listnodes type="news"&gt;
@@ -3549,29 +3248,18 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <extends>listreferrer</extends>
-    <extends>containerreferrer</extends>
-    <extends>nodelistcontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.SizeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
-      The size of the current list. It can also act as a 'nodelistcontainerreferrer' in which case
-      the query of it is used to perform a database count.
+      The size of the current list.
     </info>
     <example>
-&lt;mm:listnodes type="news"&gt;
+&lt;mm:listnodes type="list"&gt;
     &lt;mm:first&gt;&lt;mm:size /&gt;&lt;/mm:first&gt;
 &lt;/mm:listnodes&gt;
     </example>
     <example>
-&lt;mm:listnodescontainer type="news"&gt;
-    number of news items: &lt;mm:size /&gt;
-    &lt;mm:listnodes &gt;
-       ....
-    &lt;/mm:listnodes&gt;
-&lt;/mm:listnodescontainer&gt;
-    </example>
-    <example>
-&lt;mm:list path="news"&gt;
+&lt;mm:list path="list"&gt;
     &lt;mm:first&gt;&lt;mm:size /&gt;&lt;/mm:first&gt;
 &lt;/mm:list&gt;
     </example>
@@ -3594,12 +3282,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-         Where do you want to start counting. The default is determined by the list it is in, and
-         for most lists this is 1. It is not one for example in the 'batches' lists, because for
-         them 'index' is the page.
-       </info>
-       <see tag="previousbatches" />
-       <see tag="nextbatches" />
+         Where do you want to start counting. Default this is 1.
+        </info>
     </attribute>
     <example>See the example for tag 'first'.</example>
   </tag>
@@ -3797,7 +3481,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
   <tag>
     <name>param</name>
     <type>util</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ParamTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.ParamTag</tagclass>
     <info>
     Adds a parameter to the parent URL Tag.
     </info>
@@ -3993,12 +3677,14 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <rtexprvalue>true</rtexprvalue>
       <info>
         The time attribute specifies the time to be used, this can be
-        done in multiple ways, in order of preference: 1) If the
-        'inputformat' attribute is used, this is used to parse the
-        content of the 'time' attribute, one can define 'human
-        readable format' like this. 2) Specify the time in seconds
-        from EPOC (this is the way how MMBase handles times). 3) By
-        using keywords, such as: yesterday, tomorrow, today, now.
+        done in multiple ways. 1) When the time attribute is not
+        specified the current time will be taken. 2) Specify the time
+        in seconds from EPOC (this is the way how MMBase handles
+        times). 3) By using keywords, such as: yesterday, tomorrow,
+        today, now. 4) By specifying the time in a human readable way,
+        such as: Friday 10 January 2002. In the last case the
+        attribute inputformat should be used to tell the time taglib
+        how to read the human readable time.
       </info>
     </attribute>
     <attribute>
@@ -4006,9 +3692,9 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The inputformat attribute cat be used to specify how the time
-        attribute should be parsed. The comprehensive syntax for this
-        attribute can be found at
+        The inputformat attribute should only be used when the time
+        attribute contains a human readable time. The comprehensive
+        syntax for this attribute can be found at
         http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html. Notice
         that if times have the following form they will be parsed
         automatically, and this attribute can be omitted: yyyy/mm/dd
@@ -4036,43 +3722,6 @@ Of course, the default behavior of getSmartPath can still be overridden.
         of using the format attribute you can also use the MMBase
         formatter taglib.
       </info>
-    </attribute>
-    <attribute>
-      <name>precision</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        Specifies the 'precision' of the produced time. Times are rounded off to the beginning of
-        the specified unit. This can have several purposes. One of them being that such a rounded of
-        time can be used in queries, without resulting to much different queries ('now' with a
-        precision of minutes, will e.g. result a new 'now' only once a minute, so a query with a
-        constraint containing 'now' has to be redone only once a minute (in stead of every
-        second)).
-      </info>
-      <possiblevalue>
-        <value>seconds</value>
-        <info>
-          This is the default. Times are produced to 'second' accuracy (the maximum in MMBase).
-        </info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>minutes</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>hours</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>days</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>weeks</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>months</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>years</value>
-      </possiblevalue>
     </attribute>
     <example>
       &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
@@ -4182,554 +3831,4 @@ The 0 is just counter, which starts at 0 on every page.
       <include base="examples.taglib" href="codesamples/timelocale.jsp" />
     </example>
   </tag>
-  <tag>
-    <name>content</name>
-    <see tag="cloud" />
-    <see tag="time" />
-    <tagclass>org.mmbase.bridge.jsp.taglib.ContentTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
-    <info>
-       The content tag is meant to put around your whole page, and set general properties, like
-       language, taglib behaviour, content type.
-    </info>
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>language</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The language in which this page is supposed to be written. This information is available to
-        sub-tags (like cloud-tag).
-      </info>
-      <see tag="locale" attribute="language" />
-    </attribute>
-    <attribute>
-      <name>country</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="locale" attribute="country" />
-    </attribute>
-    <attribute>
-      <name>jspvar</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>type</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        The Content-Type of this page.
-      </info>
-      <examplevalue>
-        <value>text/html (default)</value>
-      </examplevalue>
-      <examplevalue>
-        <value>text/xml</value>
-      </examplevalue>
-    </attribute>
-    <attribute>
-      <name>encoding</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        The output text encoding.
-      </info>
-      <examplevalue>
-        <value>UTF-8</value>
-      </examplevalue>
-    </attribute>
-    <attribute>
-      <name>postprocessor</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        If this attribute is set the complete body-result is piped through this.
-      </info>
-      <possiblevalue>
-        <value>reducespace</value>
-        <info>
-          Replaces groups of one and more newlines by one new line, and one or more space by one
-          space. This spares bandwidth and makes the result better readable.
-        </info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>perl</value>
-        <info>
-          Interpret the complete body as a perl program, and write the result.
-        </info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>...</value>
-        <info>See your taglibcontext.xml (default available in jar)</info>
-      </possiblevalue>
-    </attribute>
-    <attribute>
-      <name>escaper</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        The default value of the escape attribute of all writer tags in the body. The values are
-        defined in taglibcontent.xml.
-      </info>
-      <possiblevalue>
-        <value>text/html</value>
-        <info>Escape for this content-type</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>inline</value>
-        <info>Interpret as 'enriched' ASCII for 'inline' HTML parts (so no blocks)</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>...</value>
-        <info>See your taglibcontext.xml (default available in jar)</info>
-      </possiblevalue>
-      <see tag="writer" attribute="escape" />
-    </attribute>
-  </tag>
-  <tag>
-    <name>functioncontainer</name>
-    <see tag="function" />
-    <extends>container</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.FunctionContainerTag</tagclass>
-    <info>
-      Surrounds a function tag, provides a container for parameters and function results.
-    </info>
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>argumentsdefinition</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        Fully qualified name of the Argument[] constant defining the arguments of this
-        function. This is probably a temporary solution, because principally it should be possible
-        to obtain this information using only the name of the function.
-      </info>
-    </attribute>
-  </tag>
-  <tag>
-    <name>listnodescontainer</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
-    <info>
-      Surrounds a listnodes tag and provides a query object.
-    </info>
-    <see tag="listnodes" />
-    <see tag="nodelistcontainerreferrer" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>type</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-
-      </info>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-         Id for reference by subtags and reuse.
-      </info>
-    </attribute>
-  </tag>
-  <tag>
-    <name>listcontainer</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
-    <info>
-      Surrounds a list tag and  provides a query object.
-    </info>
-    <see tag="list" />
-    <see tag="nodelistcontainerreferrer" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>path</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-
-      </info>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-         Id for reference by subtags and reuse.
-      </info>
-    </attribute>
-  </tag>
-  <tag>
-    <name>relatedcontainer</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainer</extends>
-    <extends>nodereferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedContainerTag</tagclass>
-    <info>
-      Surrounds a list tag and  provides a query object.
-    </info>
-    <see tag="related" />
-    <see tag="listcontainer" />
-    <see tag="nodelistcontainerreferrer" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>path</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-
-      </info>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-         Id for reference by subtags and reuse.
-      </info>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>constraint</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainerreferrer</extends>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag</tagclass>
-    <info>
-      Applies a constraint to the query of the surrounding nodelist container.
-    </info>
-    <see tag="nodelistcontainer" />
-    <see tag="ageconstraint" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>field</name>
-      <required>true</required>
-      <info>
-        The field to which the constraint must be applied.
-      </info>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>true</required>
-      <info>
-        The value to which the field is be compared with.
-      </info>
-    </attribute>
-    <attribute>
-      <name>value2</name>
-      <required>false</required>
-      <info>
-        Needed for BETWEEN operator.
-      </info>
-    </attribute>
-    <attribute>
-      <name>operator</name>
-      <required>true</required>
-      <info>
-        The operator to be used in the comparison.
-      </info>
-      <possiblevalue>
-        <value>LESS</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>&lt;</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>LESS_EQUAL</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>&lt;=</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>GREATER</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>&gt;</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>GREATER_EQUAL</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>&gt;=</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>LIKE</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>BETWEEN</value>
-        <info>Should also use value2</info>
-      </possiblevalue>
-    </attribute>
-  </tag>
-  <tag>
-    <name>ageconstraint</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainerreferrer</extends>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListAgeConstraintTag</tagclass>
-    <info>
-      In MMBase object on default do not have a 'creation time' field. But the 'number' field can be
-      used to estimate the age (in days), because for every day a 'day mark' is remembered. This
-      tags give easy access to this functionality.
-    </info>
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>field</name>
-      <required>false</required>
-      <info>
-        If the surrounding nodelist container is a list container then the constraint can be on the
-        several elements from the path. With this attribute you must indicate to wich. This is not
-        needed for listnodes container.
-      </info>
-      <see tag="listcontainer" />
-      <see tag="listnodescontainer" />
-    </attribute>
-    <attribute>
-      <name>minage</name>
-      <required>false</required>
-      <info>
-          Minimal age of the object in days.
-      </info>
-    <since>MMBase-1.7</since>
-    </attribute>
-    <attribute>
-      <name>maxage</name>
-      <required>false</required>
-      <info>
-          Maximal age of the object in days.
-      </info>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>maxnumber</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainerreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListMaxNumberTag</tagclass>
-    <info>
-      Limits the node list number of iterations, by applying a 'limit' to the surrounding query.
-    </info>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <see tag="offset" />    
-    <see tag="nextbatches" />   
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>value</name>
-      <required>true</required>
-      <info>
-        An integer.
-      </info>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>offset</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainerreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListOffsetTag</tagclass>
-    <info>
-      Offset the list by applying an 'offset' to the surrounding query.
-    </info>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <see tag="maxnumber" />    
-    <see tag="nextbatches" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>value</name>
-      <required>true</required>
-      <info>
-        An integer.
-      </info>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>sortorder</name>
-    <type>mmbase.list</type>
-    <extends>nodelistcontainerreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListSortOrderTag</tagclass>
-    <info>
-        
-    </info>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <see tag="list" attribute="orderby" />    
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>field</name>
-      <required>true</required>
-      <info>
-        
-      </info>
-    </attribute>
-    <attribute>
-      <name>direction</name>
-      <required>false</required>
-      <info>
-        
-      </info>
-    </attribute>
-  </tag>
-
-
-  <tag>
-    <name>unrelatednodes</name>
-    <type>mmbase.list</type>
-    <extends>listnodes</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.UnRelatedNodesTag</tagclass>
-    <info>
-      The same as 'listnodes' only the results of a 'relatednodes' (without attributes) are subtracted.
-    </info>
-    <see tag="listnodes" />
-    <see tag="relatednodes" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>role</name>
-      <required>false</required>
-      <see tag="list" attribute="role" />
-    </attribute>
-    <attribute>
-      <name>searchdir</name>
-      <required>false</required>
-      <see tag="searchdir" attribute="searchdir" />
-    </attribute>
-    <attribute>
-      <name>excludeself</name>
-      <required>false</required>
-      <info>
-        If the node is not related to itself, it still is not listed by this tag if you set this attribute to true.
-      </info>
-    </attribute>
-
-  </tag>
-
-
-  <tag>
-    <name>stringlist</name>
-    <type>list</type>
-    <extends>nodereferrer</extends>
-    <extends>writer</extends>
-    <extends>listprovider</extends>
-    <extends>contextreader</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.StringListTag</tagclass>
-    <info>
-      
-    </info>
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>referid</name>
-      <required>true</required>
-      <info>
-
-      </info>
-    </attribute>
-    <attribute>
-      <name>comparator</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
-      <since>MMBase-1.7</since>
-    </attribute>
-  </tag>
-
-
-  <tag>
-    <name>nextbatches</name>
-    <type>mmbase.list</type>
-    <extends>nodereferrer</extends>
-    <extends>writer</extends>
-    <extends>listprovider</extends>
-    <extends>contextreader</extends>
-    <extends>nodelistcontainerreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListNextBatchesTag</tagclass>
-    <info>
-      <p>
-        This 'listprovider' tag provides a way to implement 'paging' or 'batching' for large search
-        results. It requests the 'offset' and 'maxnumber' settings of the surrounding
-        nodelistcontainer and calculates the next possible 'offsets'. This is done by counting the
-        query result without 'maxnumber'. You get an exception if the 'maxnumber' or 'offset' tags are
-        not used.
-      </p>
-      <p>
-        As a list, this tag produces Strings, which you could for example use in its body with
-        &lt;write /&gt;. These string represents 'offsets' which you can use in an url. You can of
-        course also in the normal way give the list an id, and use the 'referids' attribute of the
-        url tag.
-      </p>
-      <p>
-        If you prefer to have a 'page' rather then an offset, then the 'index' tag can be used. The
-        default 'offset' for the index tag is set to let it be 'batch numbers'.
-      </p>
-    </info>
-    <see tag="previousbatches" />
-    <see tag="offset" />
-    <see tag="maxnumber" />
-    <see tag="url" attribute="referids" />
-    <see tag="write" />
-    <see tag="index" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>max</name>
-      <required>false</required>
-      <info>
-         The maximum number of batches to be produces. For really huge result, even the number of
-         batches can be too large, so you want to limit it. You should also use it (max="1") if you
-         only want to implement a 'next page' button.
-      </info>
-    </attribute>
-  </tag>
-
-
-  <tag>
-    <name>previousbatches</name>
-    <type>mmbase.list</type>
-    <extends>nodereferrer</extends>
-    <extends>writer</extends>
-    <extends>listprovider</extends>
-    <extends>contextreader</extends>
-    <extends>nodelistcontainerreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListPreviousBatchesTag</tagclass>
-    <info>
-      This is the counterpart of the next-batches tag, which can e.g. be used to implement a
-      'previous page' button.
-    </info>
-    <see tag="nextbatches" />
-    <see tag="offset" />
-    <see tag="maxnumber" />
-    <since>MMBase-1.7</since>
-    <attribute>
-      <name>max</name>
-      <required>false</required>
-      <info>
-        Maximul number of batches to be produces. If more 'previous' batches are available than this
-        number, the list is truncated from the beginning (of course).
-      </info>
-    </attribute>
-
-  </tag>
-
-
-  <tag>
-    <name>removeitem</name>
-    <type>mmbase.list</type>
-    <extends>listreferrer</extends>
-    <extends>contextreader</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.RemoveItemTag</tagclass>
-    <info>
-      Remove the current item from the surrounding list. Of course this has only effect when the list is 'reused' (with referid).
-    </info>
-    <since>MMBase-1.7</since>
-  </tag>
-
-
-
 </taglib>

@@ -10,7 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import java.sql.*;
+import org.mmbase.module.*;
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.database.*;
+import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -22,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.7 2003-03-10 11:50:34 pierre Exp $
+ * @version 11 May 2001
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -155,17 +161,4 @@ public class VirtualBuilder extends MMObjectBuilder {
         return null;
     }
 
-    /**
-     * Performs some necessary postprocessing on nodes retrieved from a 
-     * search query.
-     * Since virtual nodes are not real nodes, this method is empty, 
-     * overriding the behaviour defined in 
-     * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)
-     * MMObjectBuilder}.
-     * 
-     * @param results The (virtual) nodes.
-     */
-    protected void processSearchResults(List results) {
-        // empty!
-    }
 }

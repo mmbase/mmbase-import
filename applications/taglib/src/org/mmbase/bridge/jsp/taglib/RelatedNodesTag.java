@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
@@ -26,38 +26,31 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.23 2003-08-11 15:27:19 michiel Exp $ 
  */
-
 public class RelatedNodesTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
-    protected Attribute type      = Attribute.NULL;
-    protected Attribute role      = Attribute.NULL;
-    protected Attribute searchDir = Attribute.NULL;
+    private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
+    protected String type = null;
+    protected String role = null;
+    protected String searchDir = null;
 
     /**
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttribute(type);
+        this.type = getAttributeValue(type);
     }
     /**
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttribute(role);
+        this.role = getAttributeValue(role);
     }
 
     /**
-     * The search parameter, determines how directionality affects the search.
-     * Possible values are <code>both</code>, <code>destination</code>,
-     * <code>source</code>, and <code>all</code>
-     * @param search the swerach value
      */
     public void setSearchdir(String search) throws JspTagException {
-        searchDir = getAttribute(search);
+        searchDir = getAttributeValue(search);
     }
-
 
     /**
      * Performs the search
@@ -73,18 +66,28 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             throw new JspTagException("Could not find parent node!!");
         }
 
-        
         NodeList nodes;
-        if ( (!constraints.getString(this).equals("")) || (!orderby.getString(this).equals("")) ) { 
-            log.debug("given orderby or constraints"); // start hacking:
-            
-            if (type == Attribute.NULL) {
-                throw new JspTagException("Constraints attribute can only be given in combination with type attribute");
+        if ( (constraints != null && !constraints.equals(""))
+             ||
+             (orderby != null && !orderby.equals(""))
+             ) { // given orderby or constraints, start hacking:
+
+            if (type == null) {
+                throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             }
-            NodeManager manager = getCloud().getNodeManager(type.getString(this));
+            NodeManager manager = getCloud().getNodeManager(type);
             NodeList initialnodes;
 
-            initialnodes = parentNode.getRelatedNodes(type.getString(this), (String) role.getValue(this), (String) searchDir.getValue(this));
+            if (role == null && searchDir == null) {
+                initialnodes = parentNode.getRelatedNodes(type);
+            } else {
+                if (searchDir == null && directions != null) {
+                    log.error("WRONG use of 'directions' attribute of relatednodes (should be searchdir). Fix this page before 1.7!");
+                    initialnodes = parentNode.getRelatedNodes(type, role, directions);
+                } else {
+                    initialnodes = parentNode.getRelatedNodes(type, role, searchDir);
+                }
+            }
 
             StringBuffer where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
@@ -99,24 +102,26 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 nodes = initialnodes;
             } else {
                 where.insert(0, "[number] in (").append(")");
-                if (! constraints.getString(this).equals("")) where.insert(0, "(" + constraints.getString(this) + ") AND ");
-                nodes = manager.getList(where.toString(), orderby.getString(this), directions.getString(this));
+                if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
+                nodes = manager.getList(where.toString(), orderby, directions);
             }
         } else {
-            log.debug("no orderby or constraints attributes");
-            if (type == Attribute.NULL) {
-                if (role != Attribute.NULL) {
+            if (type == null) {
+                if (role != null) {
                     throw new JspTagException("Must specify type attribute when using 'role'");
                 }
-                log.debug("no nodetype given");
                 nodes = parentNode.getRelatedNodes();
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Getting relatednodes type: " + type.getString(this) + " role: " + role.getValue(this) + " searchDir: " + searchDir.getValue(this));
+                if (role == null && searchDir == null) {
+                    nodes = parentNode.getRelatedNodes(type);
+                } else {
+                    if (searchDir == null && directions != null) {
+                        log.error("WRONG use of 'directions' attribute of relatednodes (should be searchdir). Fix this page before 1.7");
+                        nodes = parentNode.getRelatedNodes(type, role, directions);
+                    } else {
+                        nodes = parentNode.getRelatedNodes(type, role, searchDir);
+                    }
                 }
-                nodes = parentNode.getRelatedNodes(type.getString(this), 
-                                                   (String) role.getValue(this), 
-                                                   (String) searchDir.getValue(this));
             }
         }
         return setReturnValues(nodes, true);

@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since MMBase 1.6.3
  * @author Gerard van de Looi
- * @version $Id: ConvertDummy.java,v 1.2 2003-04-01 14:03:28 pierre Exp $
+ * @version $Id: ConvertDummy.java,v 1.1.2.1 2003-04-01 13:47:00 pierre Exp $
  */
 public class ConvertDummy implements ImageConvertInterface {
 

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * It allows for emailing on time, repeat mail, stats
  * and using urls as input for subject and body.
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.24 2003-07-02 07:51:33 keesj Exp $
+ * @version $Id: Email.java,v 1.19.2.1 2002-11-21 13:42:01 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -94,7 +94,7 @@ public class Email extends MMObjectBuilder {
         // start the EmailSendProbe
         sendprobe=new EmailSendProbe(this);
         // obtain the session module
-        sessions=(sessionsInterface)Module.getModule("SESSION");
+        sessions=(sessionsInterface)mmb.getModule("SESSION");
         return true;
     }
 
@@ -110,7 +110,7 @@ public class Email extends MMObjectBuilder {
         if (i==-1) {
             // set value to current time+2
             // the +2 is give the queue some time to react
-            node.setValue("mailtime",((int)((System.currentTimeMillis()/1000))+2));
+            node.setValue("mailtime",((int)((DateSupport.currentTimeMillis()/1000))+2));
         }
 
         // insert it into the database
@@ -124,7 +124,7 @@ public class Email extends MMObjectBuilder {
             // check if we need to queue this mail, it does
             // this by checking if it needs to be put into
             // STATE_QUEUED mode
-            int ttime=(int)((System.currentTimeMillis()/1000));
+            int ttime=(int)((DateSupport.currentTimeMillis()/1000));
             ttime=node.getIntValue("mailtime")-ttime;
 
             // ttime hold the time in seconds until we want
@@ -210,7 +210,7 @@ public class Email extends MMObjectBuilder {
                 node.commit();
 
                 // well try putting it in the queue
-                int ttime=(int)((System.currentTimeMillis()/1000));
+                int ttime=(int)((DateSupport.currentTimeMillis()/1000));
                 int ntime=node.getIntValue("mailtime");
                 if (ntime<(ttime+sendprobe.maxtasktime)) {
                     sendprobe.putTask(node);
@@ -229,7 +229,7 @@ public class Email extends MMObjectBuilder {
      * @javadoc
      */
     public int sendMailNode(MMObjectNode node) {
-        SendMailInterface sendmail=(SendMailInterface)Module.getModule("sendmail");
+        SendMailInterface sendmail=mmb.getSendMail();
         if (sendmail==null) {
             log.error("sendmail module not active, cannot send email");
             return -1; // STATE_FAILED ?
@@ -323,7 +323,7 @@ public class Email extends MMObjectBuilder {
                     System.out.println("FAKE SEND");
                     node.setValue("mailstatus",STATE_DELIVERED);
                 } else {
-                if (to==null || ((SendMailInterface)Module.getModule("sendmail")).sendMail(mail)==false) {
+                if (to==null || mmb.getSendMail().sendMail(mail)==false) {
                     log.debug("Email -> mail failed");
                     node.setValue("mailstatus",STATE_FAILED);
                     // add one to the sendmail counter
@@ -553,7 +553,7 @@ public class Email extends MMObjectBuilder {
             MMObjectNode node=(MMObjectNode)enum.nextElement();
             results.addElement(""+node.getIntValue("number"));
             int ntime=node.getIntValue("mailtime");
-            int ttime=(int)((System.currentTimeMillis()/1000));
+            int ttime=(int)((DateSupport.currentTimeMillis()/1000));
             results.addElement(""+(ntime-ttime));
             results.addElement(node.getStringValue("to"));
             results.addElement(node.getStringValue("from"));

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
+import java.util.Vector; 
 import javax.servlet.jsp.tagext.*;
 import org.mmbase.util.logging.*;
 
@@ -16,9 +17,7 @@ import org.mmbase.util.logging.*;
  * The TEI class for SetFieldTag to export the fieldname.
  *
  * @author Jaco de Groot
- * @version $Id: SetFieldTEI.java,v 1.3 2003-06-06 10:03:21 pierre Exp $ 
  */
-
 public class SetFieldTEI extends TagExtraInfo {
     private static Logger log = Logging.getLoggerInstance(SetFieldTEI.class.getName());
 

@@ -9,7 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.gui.html.EditState;
@@ -18,10 +26,7 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.storage.search.*;
 import org.w3c.dom.Document;
-
-import org.mmbase.cache.RelatedNodesCache;
 
 /**
  * MMObjectNode is the core of the MMBase system.
@@ -34,39 +39,20 @@ import org.mmbase.cache.RelatedNodesCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.106 2003-08-13 08:58:16 vpro Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.18 2003-08-13 08:55:00 vpro Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
-    private static Logger log = Logging.getLoggerInstance(MMObjectNode.class);
-    
+    private static Logger log = Logging.getLoggerInstance(MMObjectNode.class.getName());
+
     /**
      * Holds the name - value pairs of this node (the node's fields).
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
      * This collection should not be directly queried or changed -
      * use the SetValue and getXXXValue methods instead.
-     * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values. 
-     * It should then be made private, and methods that change the map (storeValue) be made synchronized. 
-     * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
      * @scope private
      */
-    public Hashtable values = new Hashtable();
-    // private Map values = Collections.synchronizedMap(new HashMap());
-
-    /**
-     * You cannot store real 'null's in a hashtable, so this constant can be used for this.
-     * @since MMBase-1.7
-     */
-    public final static Object VALUE_NULL = new Object() {
-            public String toString() { return "[FIELD VALUE NULL]"; }
-        };
-
-
-    /**
-     * Results of getRelatedNodes
-     * @since 1.7
-     */
-    protected static RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
+    public Hashtable values=new Hashtable();
 
     /**
      * Holds the 'extra' name-value pairs (the node's properties)
@@ -170,7 +156,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public void testValidData() throws InvalidDataException {
         parent.testValidData(this);
-    };
+    }
 
     /**
      * Commit the node to the database or other storage system.
@@ -218,7 +204,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return parent.preEdit(ed,this);
     }
 
-
     /**
      * Returns the core of this node in a string.
      * Used for debugging.
@@ -237,26 +222,23 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6.2
      */
     String defaultToString() {
-        StringBuffer result = new StringBuffer("prefix='" + prefix + "'");
+            StringBuffer result=new StringBuffer("prefix='"+prefix+"'");
         try {
-            Set entrySet = values.entrySet();
-            synchronized(values) {
-                Iterator i = entrySet.iterator();
-                while (i.hasNext()) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    String key = (String) entry.getKey();
-                    int dbtype = getDBType(key);
-                    String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
-                    if (result.equals("")) {
-                        result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
-                    } else {
-                        result.append(","+key+"="+dbtype+":'"+value+"'");
-                    }
+            Enumeration e=values.keys();
+            while (e.hasMoreElements()) {
+                String key=(String)e.nextElement();
+                int dbtype=getDBType(key);
+                String value=""+values.get(key);  // XXX:should be retrieveValue ?
+                if (result.equals("")) {
+                    result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
+                } else {
+                    result.append(","+key+"="+dbtype+":'"+value+"'");
                 }
             }
         } catch(Exception e) {}
         return result.toString();
     }
+
 
     /**
      * Return the node as a string in XML format.
@@ -275,8 +257,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Stores a value in the values hashtable.
-     * @todo This should become a synchronized method, once values becomes a private HashMap instead of a 
-     * public Hashtable.
      *
      * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
@@ -432,56 +412,56 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return false;
         }
         switch (type) {
-        case FieldDefs.TYPE_XML:
-            setValue(fieldName, toXML(value, fieldName));
-            break;
-        case FieldDefs.TYPE_STRING:
-            setValue( fieldName, value);
-            break;
-        case FieldDefs.TYPE_NODE:
-        case FieldDefs.TYPE_INTEGER:
-            Integer i;
-            try {
-                i = new Integer(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
+            case FieldDefs.TYPE_XML:
+                setValue(fieldName, toXML(value, fieldName));
+                break;
+            case FieldDefs.TYPE_STRING:
+                setValue( fieldName, value);
+                break;
+            case FieldDefs.TYPE_NODE:
+            case FieldDefs.TYPE_INTEGER:
+                Integer i;
+                try {
+                    i = new Integer(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
+                setValue( fieldName, i );
+                break;
+            case FieldDefs.TYPE_FLOAT:
+                Float f;
+                try {
+                    f = new Float(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
+                setValue( fieldName, f );
+                break;
+            case FieldDefs.TYPE_LONG:
+                Long l;
+                try {
+                    l = new Long(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
+                setValue( fieldName, l );
+                break;
+            case FieldDefs.TYPE_DOUBLE:
+                Double d;
+                try {
+                    d = new Double(value);
+                } catch (NumberFormatException e) {
+                    log.error( e.toString() ); log.error(Logging.stackTrace(e));
+                    return false;
+                }
+                setValue( fieldName, d );
+                break;
+            default:
+                log.error("unsupported fieldtype: "+type+" for field "+fieldName);
                 return false;
-            }
-            setValue( fieldName, i );
-            break;
-        case FieldDefs.TYPE_FLOAT:
-            Float f;
-            try {
-                f = new Float(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue( fieldName, f );
-            break;
-        case FieldDefs.TYPE_LONG:
-            Long l;
-            try {
-                l = new Long(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue( fieldName, l );
-            break;
-        case FieldDefs.TYPE_DOUBLE:
-            Double d;
-            try {
-                d = new Double(value);
-            } catch (NumberFormatException e) {
-                log.error( e.toString() ); log.error(Logging.stackTrace(e));
-                return false;
-            }
-            setValue( fieldName, d );
-            break;
-        default:
-            log.error("unsupported fieldtype: "+type+" for field "+fieldName);
-            return false;
         }
         return true;
     }
@@ -644,7 +624,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
-
     public byte[] getByteValue(String fieldName) {
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
@@ -652,7 +631,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // call below also allows for byte[] type of
         // formatting functons.
-        Object obj = getValue(fieldName);
+        Object obj=getValue(fieldName);
 
         // well same as with strings we only unmap byte values when
         // we really use them since they mean a extra request to the
@@ -661,13 +640,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // we signal with a empty byte[] that its not obtained yet.
         if (obj instanceof byte[]) {
             // was allready unmapped so return the value
-            return (byte[]) obj;
+            return (byte[])obj;
         } else {
             byte[] b;
             if (getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
                 // call our builder with the convert request this will probably
                 // map it to the database we are running.
-                b = parent.getShortedByte(fieldName, getNumber());
+                b=parent.getShortedByte(fieldName,getNumber());
                 if (b == null) {
                     b = new byte[0];
                 }
@@ -686,8 +665,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             return b;
         }
     }
-
-
 
     /**
      * Get a value of a certain field.
@@ -764,7 +741,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return Casting.toLong(getValue(fieldName));
     }
 
-
     /**
      * Get a value of a certain field.
      * The value is returned as a float value. Values of non-float, numeric fields are converted if possible.
@@ -778,7 +754,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return Casting.toFloat(getValue(fieldName));
     }
 
-
     /**
      * Get a value of a certain field.
      * The value is returned as a double value. Values of non-double, numeric fields are converted if possible.
@@ -791,6 +766,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public double getDoubleValue(String fieldName) {
         return Casting.toDouble(getValue(fieldName));
     }
+
     /**
      * Returns the DBType of a field.
      * @param fieldName the name of the field who's type to return
@@ -849,10 +825,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return always <code>true</code>
      */
     public boolean clearChanged() {
-        changed = new Vector();
+        changed=new Vector();
         return true;
     }
 
+    /**
+     * Return the values of this node as a hashtable (name-value pair).
+     * Note that this is a direct reference. Changes will affect the node.
+     * Used by various export routines.
+     * @return the values as a <code>Hashtable</code>
+     */
+    public Hashtable getValues() {
+        return values;
+    }
 
     /**
      * Deletes the propertie cache for this node.
@@ -863,12 +848,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             properties=null;
         }
     }
-
-    public Hashtable getValues() {
-        return values;
-    }
-    
-
 
     /**
      * Return a the properties for this node.
@@ -1069,9 +1048,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount(String wt) {
-        int count = 0;
-        MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
-        if (wantedType != null) {
+         int count = 0;
+         MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
+         if (wantedType != null) {
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
                 relation_cache_miss++;
@@ -1090,7 +1069,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     }
                     MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
                     if (nodeType!=null && (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType))) {
-                        count++;
+                         count++;
                     }
                 }
             }
@@ -1099,7 +1078,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         return count;
     }
-
 
     /**
      * Returns the node's age
@@ -1145,7 +1123,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return alias;
     }
 
-
     /**
      * Get all related nodes. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
@@ -1153,7 +1130,54 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes() {
-        return getRelatedNodes("object", null, ClusterBuilder.SEARCH_EITHER);        
+        Vector result = new Vector();
+        String type ="object";
+        MMObjectBuilder builder = (MMObjectBuilder)parent.mmb.getMMObject(type);
+
+        // example: we want a thisnode.relatedNodes(mediaparts) where mediaparts are of type
+        // audioparts and videoparts. This method will return the real nodes (thus of type audio/videoparts)
+        // when asked to get nodes of type mediaparts.
+        //
+        // - get a list of virtual nodes from a multilevel("this.parent.name, type") ordered on otype
+        //   (this will return virtual audio- and/or videoparts ordered on their *real* parent)
+        // - construct a list of nodes for each parentbuilder seperately
+        // - ask the parentbuilder for each list of virtual nodes to get a list of the real nodes
+
+        // 'object' is not a valid builder, but it is accepted in this query
+
+        if( builder != null || type.equals("object")) {
+            ClusterBuilder clusterBuilder = parent.mmb.getClusterBuilder();
+
+            // multilevel from table this.parent.name -> type
+            Vector tables = new Vector();
+            tables.addElement(parent.getTableName());
+            tables.addElement(type);
+
+            // return type.number (and otype for sorting)
+            Vector fields = new Vector();
+            fields.addElement(type + ".number");
+            fields.addElement(type + ".otype");
+
+            // order list UP
+            Vector directions = new Vector();
+            directions.addElement("UP");
+
+            // and order on otype
+            Vector ordered = new Vector();
+            ordered.addElement(type + ".otype");
+
+            // retrieve the related nodes (these are virtual)
+            Vector v = clusterBuilder.searchMultiLevelVector(getNumber(),fields,"NO",tables,"",ordered,directions);
+
+            result = new Vector(getRealNodes(v, type));
+
+        } else {
+            log.error("This type("+type+") is not a valid buildername!");
+        }
+
+        log.debug("related("+parent.getTableName()+"("+getNumber()+")) = size("+result.size()+")");
+
+        return result;
     }
 
     /**
@@ -1167,6 +1191,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             MMObjectNode node = (MMObjectNode) i.next();
             result.put(node.getStringValue("number"), node);
         }
+
         return result;
     }
 
@@ -1199,21 +1224,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             destin.putAll(source);
             return new Vector(destin.values());
         }
+
     }
 
     /**
-     * If you query from this_node_type(type) (typex, insrel, typey where typex == typey) {
-     *   if the insrel table is directional, use the multirelations.SEARCH_BOTH
-     *   if the insrel table is not directional, use the multirelations.SEARCH_SOURCE + multirelations.SEARCH_DESTINATION
-     * }
-     * Otherwise the SEARCH_BOTH will result in an OR on insrel which will never return in
-     * (huge) databases.
-     * @param type the type of teh realted node to return
-     * @param search_type the type of directionality to use
-     * @since MMBase-1.6.3
+     * @javadoc
+     * @since MMBase-1.6.2
      */
     public Vector getRelatedNodes(String type, int search_type) {
-        return getRelatedNodes(type, "insrel",  search_type);
+        return getRelatedNodes(type, null, search_type);
     }
 
     /**
@@ -1229,8 +1248,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6.3
      */
     public Vector getRelatedNodes(String type, String role, int search_type) {
-        Vector result = null;
+        log.debug("getRelatedNodes("+type+","+search_type+")");
 
+        Vector result;
         MMObjectBuilder builder = (MMObjectBuilder) parent.mmb.getBuilder(type);
 
         // example: we want a thisnode.relatedNodes(mediaparts) where mediaparts are of type
@@ -1244,50 +1264,43 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
         if( builder != null ) {
-            
-            ClusterBuilder clusterBuilder = parent.mmb.getClusterBuilder();
-            
+            ClusterBuilder clusterBuilder = this.parent.mmb.getClusterBuilder();
 
             // multilevel from table this.parent.name -> type
-            List tables = new ArrayList();
+            Vector tables = new Vector();
             tables.add(parent.getTableName() + "1");
-            if (role != null) {
+            if (role!=null) {
                 tables.add(role);
             }
             tables.add(type + "2");
 
             // return type.number (and otype for sorting)
-            List fields = new ArrayList();
+            Vector fields = new Vector();
             fields.add(type + "2.number");
             fields.add(type + "2.otype");
 
             // order list UP
-            List directions = new ArrayList();
-            directions.add("UP");
+//            Vector directions = new Vector();
+//            directions.add("UP");
 
             // and order on otype
-            List ordered = new ArrayList();
-            ordered.add(type + "2.otype");
+//            Vector ordered = new Vector();
+//            ordered.add(type + "2.otype");
 
-            List snodes = new ArrayList();
-            snodes.add("" + getNumber());
+//            String where = "WHERE " + parent.getTableName() +"1.number != " + type + "2.number";
 
-            SearchQuery query = clusterBuilder.getMultiLevelSearchQuery(snodes, fields, "NO", tables,  null, ordered, directions, search_type);
-            List v = (List) relatedCache.get(query);
-            if (v == null) {
-                try {                    
-                    v = clusterBuilder.getClusterNodes(query);
-                    relatedCache.put(query, v);
-                } catch (SearchQueryException sqe) {
-                    log.error(sqe.toString());
-                    v = null;
-                }
-            }
-            if(v == null) {
-                result = new Vector();
-            } else {
-                result = new Vector(getRealNodes(v, type + "2"));
-            }
+            Vector vnode = new Vector();
+            vnode.add("" + getNumber());
+
+            // retrieve the related nodes (these are virtual)
+
+//            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
+
+            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,null,null,null,search_type);
+
+            if(v == null) v = new Vector();
+            result = new Vector(getRealNodes(v, type + "2"));
+
         } else {
             log.error("This type(" + type + ") is not a valid buildername!");
             result = new Vector(); // return empty vector
@@ -1296,7 +1309,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         if (log.isDebugEnabled()) {
             log.debug("related("+parent.getTableName()+"("+getNumber()+")) -> "+type+" = size("+result.size()+")");
         }
-        
+
         return result;
     }
 
@@ -1310,55 +1323,55 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @see getRelatedNodes(String type)
      * @since MMBase-1.6.2
      */
-    private List getRealNodes(List virtuals, String type) {
+    private List getRealNodes(Vector virtuals, String type) {
 
-        log.debug("Getting real nodes");
+        log.debug("getRealNodes("+virtuals.size()+","+type+"): Converting "+virtuals.size()+" virtual nodes to real MMObjectNodes");
         List            result  = new ArrayList();
 
         MMObjectNode    node    = null;
         MMObjectNode    convert = null;
-        Iterator     i       = virtuals.iterator();
+        Enumeration     e       = virtuals.elements();
         List            list    = new ArrayList();
         int             otype   = -1;
         int             ootype  = -1;
 
         // fill the list
-        while(i.hasNext()) {
-            node    = (MMObjectNode)i.next();
+        while(e.hasMoreElements()) {
+            node    = (MMObjectNode)e.nextElement();
             otype   = node.getIntValue(type + ".otype");
             // convert the nodes of type ootype to real numbers
             if(otype != ootype) {
-            // if we have nodes return real values
-            if(ootype != -1) {
-                result.addAll(getRealNodesFromBuilder(list, ootype));
-                list = new ArrayList();
+                // if we have nodes return real values
+                if(ootype != -1) {
+                    result.addAll(getRealNodesFromBuilder(list, ootype));
+                    list = new ArrayList();
+                }
+                ootype  = otype;
             }
-            ootype  = otype;
+            // convert current node type.number and type.otype to number and otype
+            convert = new MMObjectNode(parent.mmb.getMMObject(parent.mmb.TypeDef.getValue(otype)));
+            // parent needs to be set or else mmbase does nag nag nag on a setValue()
+            convert.setValue("number", node.getValue(type + ".number"));
+            convert.setValue("otype", otype);
+            list.add(convert);
+            // first and only list or last list, return real values
+            if(!e.hasMoreElements()) {
+                // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
+                result.addAll(getRealNodesFromBuilder(list, otype));
+            }
         }
-        // convert current node type.number and type.otype to number and otype
-        convert = new MMObjectNode(parent.mmb.getMMObject(parent.mmb.TypeDef.getValue(otype)));
-        // parent needs to be set or else mmbase does nag nag nag on a setValue()
-        convert.setValue("number", node.getValue(type + ".number"));
-        convert.setValue("otype", otype);
-        list.add(convert);
-        // first and only list or last list, return real values
-        if(!i.hasNext()) {
-        // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
-            result.addAll(getRealNodesFromBuilder(list, otype));
+
+        // check that we didnt loose any nodes
+
+        // Java 1.4
+        // assert(virtuals.size() == result.size());
+
+        // Below Java 1.4
+        if(virtuals.size() != result.size()) {
+            log.error("We lost a few nodes during conversion from virtualnodes("+virtuals.size()+") to realnodes("+result.size()+")");
         }
-    }
 
-    // check that we didnt loose any nodes
-
-    // Java 1.4
-    // assert(virtuals.size() == result.size());
-
-    // Below Java 1.4
-    if(virtuals.size() != result.size()) {
-        log.error("We lost a few nodes during conversion from virtualnodes("+virtuals.size()+") to realnodes("+result.size()+")");
-    }
-
-    return result;
+        return result;
     }
 
     /**
@@ -1422,16 +1435,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         return false;
     }
+
     /**
      * @since MMBase-1.6.2
      */
     public boolean defaultEquals(MMObjectNode n) {
         /*
-          if (getNumber() >= 0) {  // we know when real nodes are equal
-          return n.getNumber() == getNumber();
-          } else { // I don't know about others
-          return super.equals(n); // compare as objects.
-          }
+        if (getNumber() >= 0) {  // we know when real nodes are equal
+            return n.getNumber() == getNumber();
+        } else { // I don't know about others
+            return super.equals(n); // compare as objects.
+        }
         */
         return super.equals(n); // compare as objects.
     }

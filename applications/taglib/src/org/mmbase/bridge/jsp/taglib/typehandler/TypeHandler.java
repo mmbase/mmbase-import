@@ -10,45 +10,21 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
-import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 
-import java.util.*;
-import org.mmbase.bridge.Query;
-import org.mmbase.storage.search.Constraint;
-
 /**
- * @javadoc
- *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.6 2003-08-08 12:11:12 michiel Exp $
  */
-
 public interface TypeHandler {
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException;
     
     public String useHtmlInput(Node node, Field field) throws JspTagException;
 
-
-    /**
-     * @return Piece of SQL. null if no constraint.
-     * 
-     */
     public String whereHtmlInput(Field field) throws JspTagException;
-
-    /**
-     * @since MMBase-1.7
-     */
-    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException;
-
-    /**
-     * @since MMBase-1.7
-     */
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException;
 
 }

@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.9 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.1.2.3 2003-05-09 15:13:37 vpro Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -34,8 +34,8 @@ public class DateHandler extends AbstractTypeHandler {
      * Constructor for LongHandler.
      * @param context
      */
-    public DateHandler(FieldInfoTag tag) {
-        super(tag);
+    public DateHandler(FieldInfoTag context) {
+        super(context);
     }
 
     private void yearFieldValue(Calendar cal, StringBuffer buffer) {
@@ -60,7 +60,7 @@ public class DateHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        // todo implement search
+
         StringBuffer buffer = new StringBuffer();
         Calendar cal = Calendar.getInstance();
         if (node !=null) {
@@ -75,7 +75,7 @@ public class DateHandler extends AbstractTypeHandler {
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
 
-        String options = tag.getOptions();
+        String options = context.getOptions();
         if (options == null || options.indexOf("date") > -1) {
             buffer.append("<select name=\"" + prefix(field.getName() + "_day") + "\">\n");
             for (int i = 1; i <= 31; i++) {
@@ -180,12 +180,12 @@ public class DateHandler extends AbstractTypeHandler {
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
         try {
-            Integer day    = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day")));
-            Integer month  = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_month")));
-            Integer year   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_year")));
-            Integer hour   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour")));
-            Integer minute = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute")));
-            Integer second = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second")));
+            Integer day    = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_day")));
+            Integer month  = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_month")));
+            Integer year   = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_year")));
+            Integer hour   = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_hour")));
+            Integer minute = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_minute")));
+            Integer second = new Integer(context.getContextTag().findAndRegisterString(prefix(fieldName + "_second")));
             cal.set(checkYear(year, fieldName), month.intValue() - 1, day.intValue(), hour.intValue(), minute.intValue(), second.intValue());
             node.setLongValue(fieldName, cal.getTime().getTime() / DATE_FACTOR);
         } catch (java.lang.NumberFormatException e) {
@@ -204,12 +204,12 @@ public class DateHandler extends AbstractTypeHandler {
         String guitype = field.getGUIType();
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
-        String input_day    =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day"));
-        String input_month  =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_month"));
-        String input_year   =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_year"));
-        String input_hour   =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour"));
-        String input_minute =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute"));
-        String input_second =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second"));
+        String input_day    = context.getContextTag().findAndRegisterString(prefix(fieldName + "_day"));
+        String input_month  = context.getContextTag().findAndRegisterString(prefix(fieldName + "_month"));
+        String input_year   = context.getContextTag().findAndRegisterString(prefix(fieldName + "_year"));
+        String input_hour   = context.getContextTag().findAndRegisterString(prefix(fieldName + "_hour"));
+        String input_minute = context.getContextTag().findAndRegisterString(prefix(fieldName + "_minute"));
+        String input_second = context.getContextTag().findAndRegisterString(prefix(fieldName + "_second"));
         if (input_day==null || input_hour==null) {
             return null;
         }
@@ -225,7 +225,7 @@ public class DateHandler extends AbstractTypeHandler {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
         }
         // check if changed:
-        if (! tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName)).equals("" + cal.getTime().getTime() / DATE_FACTOR)) {
+        if (! context.getContextTag().findAndRegisterString(prefix(fieldName)).equals("" + cal.getTime().getTime() / DATE_FACTOR)) {
             buffer.append("( [" + fieldName + "] >" + (cal.getTime().getTime() / DATE_FACTOR) + ")");
         } else {
             return null;

@@ -9,7 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.sql.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -17,8 +22,8 @@ import org.mmbase.util.logging.*;
  * to other servers.
  * It is used in the CACHE PAGE routine, that is used to cache SCAN pages.
  * Information in NetFiles is used by a number of VWMs (i.e. PageMaster and ImageMaster), which schedules the transfer
- * of the files.<br />
- * Each NetFile entry contains the following information:<br />
+ * of the files.<br>
+ * Each NetFile entry contains the following information:<br>
  * <ul>
  * <li><code>filename</code> : the name of the file</li>
  * <li><code>mmserver</code> : the server that should handle the file transfer</li>
@@ -41,7 +46,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Daniel Ockeloen
- * @version $Id: Netfiles.java,v 1.11 2003-03-10 11:50:20 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class Netfiles extends MMObjectBuilder {
     /**

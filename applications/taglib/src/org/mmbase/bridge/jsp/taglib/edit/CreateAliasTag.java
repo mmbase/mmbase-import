@@ -9,48 +9,46 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
 /**
- * To call the method createAlias from Node.
- * 
- * @author Michiel Meeuwissen
- * @version $Id: CreateAliasTag.java,v 1.8 2003-06-06 10:03:19 pierre Exp $
- */
-
+* To call the method createAlias from Node.
+* 
+* @author Michiel Meeuwissen
+*/
 public class CreateAliasTag extends NodeReferrerTag {    
 
-    private Attribute alias = Attribute.NULL;
+    private String alias = null;
 
     public void setName(String n) throws JspTagException {
-        alias = getAttribute(n);
+        alias = getAttributeValue(n);
     }
 
-    protected void doJob(Node n, String a) {
-        n.createAlias(a);
+    protected void doJob(Node n, String alias) {
+        n.createAlias(alias);
     }
 
     /**
-     * Add the alias.
-     * 
-     * @todo I think doEndTag is not always called if no body!!
-     **/
+    * Add the alias.
+    **/
     public int doEndTag() throws JspTagException {        
         // search the node:
         Node node = getNode();
         
-        String a = alias.getString(this);
         // alias name is in the body if no attribute name is given
-        if (a.equals("") && bodyContent != null) {
-            a = bodyContent.getString();
+        if (alias == null && bodyContent != null) {
+            alias = bodyContent.getString();
         } 
-        if (! "".equals(a)) {
-            doJob(node, a);
+
+        if (alias != null) {
+            if (! "".equals(alias)) {
+                doJob(node, alias);
+            }
         }
+        alias = null; // set back to null for tag-reusers..
         return EVAL_PAGE;
     }
 }

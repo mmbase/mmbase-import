@@ -9,47 +9,50 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-
+import org.mmbase.util.transformers.*;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
+import java.util.Iterator;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.transformers.*;
-
-
 /**
  *
  * Class to convert from/to a string (byte[]) from/to a encoded string (byte[])
  *
+ * @author Eduard Witteveen
+ * @author Michiel Meeuwissen
+ * @code-conventions rename to Encoder
+ *
  *  Supported encodings are at this moment:
- *  <ul>
- *  <li>BASE64</li>
- *  <li>ESCAPE_XML</li>
- *  <li>ESCAPE_HTML</li>
- *  <li>ESCAPE_HTML_ATTRIBUTE</li>
- *  <li>ESCAPE_WML</li>
- *  <li>ESCAPE_WML_ATTRIBUTE</li>
- *  <li>ESCAPE_URL</li>
- *  <li>ESCAPE_URL_PARAM</li>
- *  <li>ESCAPE_SINGLE_QUOTE</li>
- *  </ul>
+ *  <UL>
+ *  <LI>BASE64</LI>
+ *  <LI>ESCAPE_XML</LI>
+ *  <LI>ESCAPE_HTML</LI>
+ *  <LI>ESCAPE_HTML_ATTRIBUTE</LI>
+ *  <LI>ESCAPE_WML</LI>
+ *  <LI>ESCAPE_WML_ATTRIBUTE</LI>
+ *  <LI>ESCAPE_URL</LI>
+ *  <LI>ESCAPE_URL_PARAM</LI>
+ *  <LI>ESCAPE_SINGLE_QUOTE</LI> 
+ *  </UL>
  *
  *  A list of supported encodings can be gotten by java
  *  org.mmbase.util.Encode, and you add your own encodings by calling
  *  the static function 'register' of this class.
+ *
  *
  *  Usage:
  *  <pre>
  *  Encode encoder = new Encode("ESCAPE_XML");
  *  System.out.println(  encoder.decode( encoder.encode("& \" < >") )  );
  *  </pre>
- *
- * @rename Encoder
- * @author Eduard Witteveen
- * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.18 2003-05-14 18:10:15 michiel Exp $
  **/
-public class Encode {
+public class Encode {  
 
     private static Logger log;
 
@@ -61,7 +64,7 @@ public class Encode {
     static {
         log = Logging.getLoggerInstance(Encode.class.getName());
         encodings = new HashMap();
-
+        
         // a few Encoding are avaible by default:
         try {
             register("org.mmbase.util.transformers.MD5");
@@ -88,18 +91,16 @@ public class Encode {
         if (encodings.containsKey(encoding.toUpperCase())) { // it must be known.
             Config e  = (Config)encodings.get(encoding.toUpperCase()); // get the info.
             try {
-                trans = (Transformer) e.clazz.newInstance();
+                trans = (Transformer) e.clazz.newInstance(); 
             } catch (InstantiationException ex) {
                 throw new IllegalArgumentException("encoding: '" + encoding + "' could not be instantiated");
             } catch (IllegalAccessException ex) {
             }
-            if (trans instanceof ConfigurableTransformer) {
-                ((ConfigurableTransformer) trans).configure(e.config);
-            }
+            trans.configure(e.config);
         } else {
             throw new IllegalArgumentException("encoding: '" + encoding + "' unknown");
         }
-
+        
     }
 
 
@@ -115,30 +116,27 @@ public class Encode {
             log.info("registering encode class " + clazz);
             try {
                 Class atrans = Class.forName(clazz);
-                if(Transformer.class.isAssignableFrom(atrans)) { // make sure it is of the right type.
-                    if (ConfigurableTransformer.class.isAssignableFrom(atrans)) {
-                        log.debug("A configurable transformer");
-                        // Instantiate it, just once, to call the method 'transformers'
-                        // In this way we find out what this class can do.
-                        ConfigurableTransformer transformer = (ConfigurableTransformer) atrans.newInstance();                       
-                        Map newencodings = (Map) transformer.transformers();
-                        encodings.putAll(newencodings); // add them all to our encodings.
-                    } else {
-                        log.debug("Non configurable");
-                        Transformer transformer = (Transformer) atrans.newInstance();
-                        encodings.put(transformer.toString(), new Config(atrans, -1, "Transformer: " + clazz));
-                    }
+                Class trans  = Class.forName("org.mmbase.util.transformers.Transformer");
+
+                if(trans.isAssignableFrom(atrans)) { // make sure it is of the right type.
+                    // Instantiate it, just once, to call the method 'transformers'
+                    // In this way we find out what this class can do.
+                    Object transformer = atrans.newInstance();
+                    java.lang.reflect.Method transformers = atrans.getMethod("transformers", new Class [] {});
+                    Map newencodings = (Map) transformers.invoke(transformer, new Object[] {});
+                    encodings.putAll(newencodings); // add them all to our encodings.
+
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
                     // same string to identify a transformation.
 
                 } else {
-                    throw new IllegalArgumentException("The class " + clazz + " does not implement " + Transformer.class.getName());
+                    throw new IllegalArgumentException("The class " + clazz + " does not implement " + trans.getName()); 
                 }
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e.toString());
-            } catch (Exception e) { // yeah, yeah, it can throw a lot more.
+                throw new IllegalArgumentException(e.toString());            
+            } catch (Exception e) { // yeah, yeah, it can throw a lot more. 
                 // TODO perhaps make better distinction between exceptions...
-                throw new IllegalArgumentException(e.toString());
+                throw new IllegalArgumentException(e.toString());            
             }
             registered.add(clazz);
         }
@@ -155,7 +153,7 @@ public class Encode {
      *	@param	toEncode    a string which is the value which should be encoded.
      *                      This can also be a byte[].
      *
-     *	@return     	    a string which is the encoded representation of toEncode
+     *	@return     	    a string which is the encoded representation of toEncode 
      *	    	    	    with the given encoding
      **/
     public static String encode(String encoding, String toEncode) {
@@ -163,39 +161,37 @@ public class Encode {
         return e.encode(toEncode);
     }
 
-
+    
     public static String encode(String encoding, byte[] bytes) {
         Encode e = new Encode(encoding);
         return e.encode(bytes);
     }
-
-
+   
     /**
-     *	This function will decode a given string to it's decoded variant.
+     *	This function will decode a given string to it's decoded variant. 
      *  @see #encode
      *	@param	decoding    a string that describes which decoding should be used.
      *	@param	toDecode    a string which is the value which should be encoded.
-     *	@return     	    a string which is the encoded representation of toEncode
+     *	@return     	    a string which is the encoded representation of toEncode 
      *	    	    	    with the given encoding
      **/
-
+    
     public static String decode(String encoding, String toDecode) {
         Encode e = new Encode(encoding);
-        return e.decode(toDecode);
+        return e.decode(toDecode); 
     }
-    
     public static byte[] decodeBytes(String encoding, String toDecode) {
         Encode e = new Encode(encoding);
-        return e.decodeBytes(toDecode);
+        return e.decodeBytes(toDecode); 
     }
-
+    
 
     /**
-     *	This function will encode a given string to it's encoded variant.
-     *	@param	toEncode    A string which is the value which should be encoded.
+     *	This function will encode a given string to it's encoded variant. 
+     *	@param	toEncode    A string which is the value which should be encoded. 
                             If the transformer does transform bytes, then first getBytes is done on the String.
      *
-     *	@return     	    a string which is the encoded representation of toEncode
+     *	@return     	    a string which is the encoded representation of toEncode 
      *	    	    	    with the given encoding
      **/
     public String encode(String toEncode) {
@@ -206,32 +202,32 @@ public class Encode {
         }
     }
     /**
-     * Encodes a byte array.
+     * Encodes a byte array. 
      *
-     * @return a string;;
+     * @return a string;;    
      */
     public String encode(byte[] bytes) {
-        return ((ByteToCharTransformer)trans).transform(bytes);
+    	return ((ByteToCharTransformer)trans).transform(bytes);
     }
 
     /**
      *	This function will decode a given string to it's decoded variant
      *	@param	toDecode    a string which is the value which should be encoded.
-     *	@return     	    a string which is the encoded representation of toEncode
+     *	@return     	    a string which is the encoded representation of toEncode 
      *	    	    	    with the given encoding
      **/
     public String decode(String toDecode) {
         if (isByteToCharEncoder()) {
             return new String(((ByteToCharTransformer)trans).transformBack(toDecode));
         } else {
-            return ((CharTransformer)trans).transformBack(toDecode);
+            return ((CharTransformer)trans).transformBack(toDecode); 
         }
     }
     public byte[] decodeBytes(String toDecode) {
         if (isByteToCharEncoder()) {
             return ((ByteToCharTransformer)trans).transformBack(toDecode);
         } else {
-            return ((CharTransformer)trans).transformBack(toDecode).getBytes();
+            return ((CharTransformer)trans).transformBack(toDecode).getBytes(); 
         }
     }
     /**
@@ -268,14 +264,16 @@ public class Encode {
      * @return An String representing the coding that is currently used.
      */
     public String getEncoding() {
-        return trans.toString();
+        return trans.getEncoding();
     }
     /**
      * Invocation of the class from the commandline for testing.
+     *
+     * @author Michiel Meeuwissen
      */
-    public static void  main(String[] argv) {
+    public static void  main(String[] argv) {        
         try {
-            org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false);
+            org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false); 
         } catch (Exception e) {
             System.err.println(e.toString());
         }
@@ -288,7 +286,7 @@ public class Encode {
             while (cur < argv.length) {
                 if ("-decode".equals(argv[cur])) {
                     decode = true;
-                } else if ("-encode".equals(argv[cur])) {
+                } else if ("-encode".equals(argv[cur])) {                    
                 } else if ("-class".equals(argv[cur])) {
                     register(argv[++cur]);
                 } else {
@@ -304,14 +302,14 @@ public class Encode {
                         string += " " + argv[cur];
                     }
                 }
-                cur++;
-            }
+                cur++;                                            
+            }            
         }
 
         if (coding == null) { // supply help
             System.out.println("org.mmbase.util.Encode main is for testing purposes only\n");
             System.out.println("   use: java -Dmmbase.config=... org.mmbase.util.Encode [-class <classname> [-class ..]] [-encode|-decode] <coding> [string]\n\n");
-            System.out.println("On default it encodes and gets the string from STDIN\n\n");
+            System.out.println("On default it encodes and gets the string from STDIN\n\n"); 
             System.out.println("possible decoding are");
             Vector v = new Vector(possibleEncodings());
             java.util.Collections.sort(v);
@@ -335,16 +333,16 @@ public class Encode {
                     System.out.println("----------------");
                 } catch (java.io.IOException e) {
                     System.err.println(e.toString());
-                }
+                }                
             }
 
             // do the job:
-            if (decode) {
+            if (decode) {              
                 System.out.println(new String(decodeBytes(coding, string)));
                 // decode bytes, then also byte decoding go ok... (I think).
             } else {
                 System.out.println(encode(coding, string));
-            }
-        }
+            }                                
+        }        
     }
 }

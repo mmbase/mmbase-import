@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -24,20 +25,35 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.39 2003-08-11 15:27:17 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class);
+    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
+
+    // Writer implementation:
+    protected WriterHelper helper = new WriterHelper();
+    public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+    public void haveBody() {  helper.haveBody(); }
 
     protected Node   node;
     protected NodeProvider nodeProvider;
     protected Field  field;
     protected String fieldName;
-    protected Attribute name = Attribute.NULL;
+    protected   String name;
 
     public void setName(String n) throws JspTagException {
-        name = getAttribute(n);
+        name = getAttributeValue(n);
     }
 
     // NodeProvider Implementation
@@ -85,7 +101,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
     }
     protected void setFieldVar() throws JspTagException {
-        setFieldVar((String) name.getValue(this));
+        setFieldVar(name);
     }
 
     /**
@@ -99,18 +115,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
     public int doStartTag() throws JspTagException {
-        node = null;
-        fieldName = (String) name.getValue(this);
-        if ("number".equals(fieldName)) {
-            if (nodeProvider instanceof org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag) {
-                // WHY can't it simply return the number it _will_ get?
-                throw new JspTagException("It does not make sense to ask 'number' field on uncommited node");
-            }
-        }
+        log.debug("Field.doStartTag()" );
+        node= null;
+        fieldName = name;
         setFieldVar(fieldName); // set field and node
-        if (log.isDebugEnabled()) {
-            log.debug("Field.doStartTag(); '"  + fieldName + "'");
-        }
 
         // found the node now. Now we can decide what must be shown:
         Object value;
@@ -118,12 +126,12 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         if (field == null) { // some function, or 'referid' was used.
             if (getReferid() != null) { // referid
                 value = getObject(getReferid());
-            } else {         // function
+            } else {     // function
                 value = getNodeVar().getValue(fieldName);
             }
-        } else {        // a field was found!
+        } else {  // a field was found!
             // if direct parent is a Formatter Tag, then communicate
-            FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
+            FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
             if (f != null && f.wantXML()) {
                 if (log.isDebugEnabled()) log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
                 f.getGenerator().add(node, field); // add the field
@@ -156,10 +164,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
-        helper.setTag(this);
         helper.setValue(value);
+        helper.setPageContext(pageContext);
+        helper.setJspvar();
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
         log.debug("end of doStartTag");
         return EVAL_BODY_BUFFERED;
@@ -167,7 +176,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
 
     public int doAfterBody() throws JspException {
-        return helper.doAfterBody();
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
     }
        
     /**

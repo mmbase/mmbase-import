@@ -6,25 +6,17 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
- */
+*/
 package org.mmbase.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import java.util.*;
+import java.text.*;
+import org.mmbase.util.logging.*;
 
 /**
- * Some routines to support dates better<br /><br />
+ * Some routines to support dates better<br><br>
  *
- * The problem that generally occurs is with timezones. Therefore, we have made the following structure:<br />
+ * The problem that generally occurs is with timezones. Therefore, we have made the following structure:<br>
  * <ul>
  * <li> If a date is stored in a database, it is in GMT
  * <li> If a date is displayed, it happens in the timezone of the machine that is calling.
@@ -34,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.14 2003-07-01 09:56:29 keesj Exp $
+ * @version $Id: DateSupport.java,v 1.9 2002-07-24 19:44:52 michiel Exp $
  * @deprecated java.util is powerful enough. Most used functions from Date are deprecated.
  */
 public class DateSupport {
@@ -45,14 +37,24 @@ public class DateSupport {
     /**
      * The offset for date conversions for the current zone, in seconds
      */
-    static int offset = 0;
+    static int offset=0;
     /**
      * Whether to sue the offset.
      * Set to <code>true</code> when initialization of this class succeeds.
      */
-    static boolean dooffset =true;
+    static boolean dooffset=false;
 
-     /**
+    // Determines the offset, then clears it again (yeah, that makes sense...)
+    //
+    static {
+        Calendar cal = Calendar.getInstance();
+        dooffset = true;
+        offset = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET))/ 1000;
+        offset = 0;
+        // log.debug("Using offset " + offset);
+    }
+
+    /**
      * Return the number of days in the month in a specified year.
      * Leap years have to be taken into account
      *
@@ -64,14 +66,13 @@ public class DateSupport {
      * @see DateSupport#weekInYear
      */
     static public int daysInMonth(int year, int month) {
-        int months[] = { 31, 28, 31, 30, 31, 30, 30, 31, 30, 31, 30, 31 };
+        int months[]={ 31,28,31,30,31,30,30,31,30,31,30,31 };
         int days = months[month];
-        year = (year < 90) ? year + 2000 : year + 1900;
+        year = (year<90) ? year+2000 : year+1900;
 
         // Make an exception for the intercalary day.
-        if (month == 1) {
-            if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
-                days = 29;
+        if (month==1) {
+                if(year%4==0 && year%100!=0 || year%400==0) days=29;
         }
         return days;
     }
@@ -86,11 +87,8 @@ public class DateSupport {
      * @see DateSupport#weekInYear
      */
     static public int secondInYear(Date d) {
-        Calendar c = Calendar.getInstance();
-        c.set(d.getYear(), 0, 0);
-
-        Date b = c.getTime();
-        return (int) ((d.getTime() - b.getTime()) / 1000);
+        Date b = new Date ((d.getYear()),0,0);
+        return (int)((d.getTime()-b.getTime())/1000);
     }
 
     /**
@@ -103,7 +101,7 @@ public class DateSupport {
      * @see DateSupport#weekInYear
      */
     static public int dayInYear(Date d) {
-        return (int) (secondInYear(d) / (3600 * 24));
+        return (int)(secondInYear(d)/(3600*24));
     }
 
     /**
@@ -116,7 +114,7 @@ public class DateSupport {
      * @see DateSupport#dayInYear
      */
     static public int weekInYear(Date d) {
-        return (dayInYear(d) / 7) + 1;
+        return (dayInYear(d)/7)+1;
     }
 
     /**
@@ -126,15 +124,14 @@ public class DateSupport {
      * @param week The number of the week
      * @return The number of milliseconds between 1-Jan-1970 and the begin of the given week.
      */
-    static public long milliDate(int year, int week) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, 0, 0);
-        Date d = calendar.getTime();
-        return d.getTime() + (((long) (week - 1)) * 7 * 24 * 3600 * 1000);
+    static public long milliDate(int year,int week) {
+        Date d;
+        d=new Date(year,0,0);
+        return d.getTime()+(((long)(week-1))*7*24*3600*1000);
     }
 
     /**
-     * Return a date, based on a year, a week and the day of that week  <br />
+     * Return a date, based on a year, a week and the day of that week  <br>
      * For instance: 1999, 40, 4 = The 4th day of the 40th week of 1999
      *
      * @param year The year
@@ -142,48 +139,53 @@ public class DateSupport {
      * @param day The number of the day in the week
      * @return A date-object for the given date
      */
-    static public Date Date(int year, int week, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.WEEK_OF_YEAR, week);
-        cal.set(Calendar.DAY_OF_WEEK, day);
-        return cal.getTime();
+    static public Date Date(int year,int week,int day) {
+        Date d;
+        int dag;
+        d=new Date(milliDate(year,week));
+        day%=7;
+        dag=d.getDay();
+        while (day!=dag) {
+                d=new Date(milliDate(year,week)+((day-dag)*24*3600*1000));
+                dag=d.getDay();
+        }
+        return d;
     }
 
     /**
      * Create date strings in the form yyyy-mm-dd for a given Date object
-     * <br />This format is used in several database (dbm's)
+     * <br>This format is used in several database (dbm's)
      * @param da The date input
      * @return A string in the form yyyy-mm-dd
      * @see DateSupport#parsedbmdate
      */
     public static String makedbmdate(Date da) {
-        int m, d, y;
-        m = da.getMonth() + 1;
-        d = da.getDate();
-        y = da.getYear() + 1900;
-        return "" + y + "-" + (m < 10 ? "0" + m : "" + m) + "-" + (d < 10 ? "0" + d : "" + d);
+        int m,d,y;
+        m=da.getMonth()+1;
+        d=da.getDate();
+        y=da.getYear()+1900;
+        return ""+y+"-"+(m<10 ? "0"+m : ""+m)+"-"+(d<10 ? "0"+d : ""+d);
     }
 
     /**
      * Parse date strings in the form yyyy-mm-dd
-     *  <br />This format is used in several database (dbm's)
+     *  <br>This format is used in several database (dbm's)
      * @param wh The string representing the date in 'yyyy-mm-dd' format
      * @return A Date object for the given date
      * @see DateSupport#makedbmdate
      */
     public static Date parsedbmdate(String wh) {
         Date thedate;
-        int y = 0, m = 0, d = 0;
-        StringTokenizer tok = new StringTokenizer(wh, "- /");
+        int y=0,m=0,d=0;
+        StringTokenizer tok=new StringTokenizer(wh,"- /");
         // The date is in the form yyyy-mm-dd
         try {
-            y = Integer.parseInt(tok.nextToken()) - 1900;
-            m = Integer.parseInt(tok.nextToken()) - 1;
-            d = Integer.parseInt(tok.nextToken());
-            thedate = new Date(y, m, d);
+            y=Integer.parseInt(tok.nextToken())-1900;
+            m=Integer.parseInt(tok.nextToken())-1;
+            d=Integer.parseInt(tok.nextToken());
+            thedate=new Date(y,m,d);
         } catch (Exception e) {
-            thedate = new Date();
+            thedate=new Date();
         }
         return thedate;
     }
@@ -195,8 +197,8 @@ public class DateSupport {
      * @return A string with an extra colon
      */
     public static String colontime(String time) {
-        if (time.length() == 4) {
-            return time.substring(0, 2) + ":" + time.substring(2, 4);
+        if (time.length()==4) {
+            return time.substring(0,2)+":"+time.substring(2,4);
         }
         return time;
     }
@@ -209,23 +211,26 @@ public class DateSupport {
      * @see DateSupport#parsetime
      * @see DateSupport#parsedatetime
      */
-    public static int parsedate(String sDate) {
+    public static int parsedate( String sDate ){
         SimpleDateFormat df = (SimpleDateFormat)DateFormat.getDateTimeInstance();
         TimeZone tz;
         df.applyLocalizedPattern("yyyyMMdd");
 
-        tz = TimeZone.getDefault();
+        tz=TimeZone.getDefault() ;
         df.setTimeZone(tz);
 
         Date date = null;
-        try {
+        try
+        {
             date = df.parse(sDate);
-        } catch (java.text.ParseException e) {
+        }
+        catch( java.text.ParseException e )
+        {
             log.error(e.toString());
         }
 
-        if (date != null)
-            return (int) ((date.getTime() - getMilliOffset()) / 1000);
+        if( date != null)
+            return  (int)((date.getTime()-getMilliOffset())/1000);
         else
             return -1;
     }
@@ -239,15 +244,15 @@ public class DateSupport {
      * @see DateSupport#parsedatetime
      */
     public static int parsetime(String wh) {
-        int h = 0, m = 0, s = 0;
+        int h=0,m=0,s=0;
         try {
-            h = Integer.parseInt(wh.substring(0, 2));
-            m = Integer.parseInt(wh.substring(2, 4));
-            s = Integer.parseInt(wh.substring(4, 6));
+            h=Integer.parseInt(wh.substring(0,2));
+            m=Integer.parseInt(wh.substring(2,4));
+            s=Integer.parseInt(wh.substring(4,6));
         } catch (Exception e) {
-            log.error("DateSupport: maketime (" + wh + ")");
+            log.error("DateSupport: maketime ("+wh+")");
         }
-        return s + 60 * (m + 60 * h);
+        return s+60*(m+60*h);
     }
 
     /**
@@ -259,8 +264,9 @@ public class DateSupport {
      * @see DateSupport#parsetime
      */
     public static int parsedatetime(String wh) {
-        return parsedate(wh.substring(0, 8)) + parsetime(wh.substring(8, 14));
+        return parsedate(wh.substring(0,8))+parsetime(wh.substring(8,14));
     }
+
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the time as a string
@@ -276,23 +282,23 @@ public class DateSupport {
      * @see DateSupport#getWeekDayInt
      * @see DateSupport#getDayInt
      */
-    public static String getTime(int val) {
+    public static String  getTime(int val) {
         if (dooffset) {
-            val += offset;
+            val+=offset;
         }
-        Date v = new Date((long)val * 1000);
+        Date v=new Date((long)val*1000);
         String result;
-        int h = v.getHours();
-        if (h < 10) {
-            result = "0" + h;
+        int h=v.getHours();
+        if (h<10) {
+            result="0"+h;
         } else {
-            result = "" + h;
+            result=""+h;
         }
-        int m = v.getMinutes();
-        if (m < 10) {
-            result += ":0" + m;
+        int m=v.getMinutes();
+        if (m<10) {
+            result+=":0"+m;
         } else {
-            result += ":" + m;
+            result+=":"+m;
         }
         return result;
     }
@@ -315,35 +321,37 @@ public class DateSupport {
         Date v;
         if (val == -1) {
             // WHY? This behaviour leads to incorrect displaying of MMEvents!!
-            v = new Date();
-        } else {
+            v = new Date ();
+        }
+        else {
             if (dooffset) {
-                val += offset;
+                val+=offset;
             }
-            v = new Date((long)val * 1000);
+            v = new Date((long)val*1000);
         }
 
         String result;
-        int h = v.getHours();
-        if (h < 10) {
-            result = "0" + h;
+        int h=v.getHours();
+        if (h<10) {
+            result="0"+h;
         } else {
-            result = "" + h;
+            result=""+h;
         }
-        int m = v.getMinutes();
-        if (m < 10) {
-            result += ":0" + m;
+        int m=v.getMinutes();
+        if (m<10) {
+            result+=":0"+m;
         } else {
-            result += ":" + m;
+            result+=":"+m;
         }
-        int s = v.getSeconds();
-        if (s < 10) {
-            result += ":0" + s;
+        int s=v.getSeconds();
+        if (s<10) {
+            result+=":0"+s;
         } else {
-            result += ":" + s;
+            result+=":"+s;
         }
         return result;
     }
+
 
     /**
      * Takes an integer representing the number of seconds from 00:00:00 and returns the time as a string
@@ -359,32 +367,34 @@ public class DateSupport {
      * @see DateSupport#getWeekDayInt
      * @see DateSupport#getDayInt
      */
-    public static String getTimeSecLen(int val) {
+    public static String  getTimeSecLen(int val) {
         String result;
-        int h = (val / 3600);
-        if (h < 10) {
-            result = "0" + h;
+        int h=(val/3600);
+        if (h<10) {
+            result="0"+h;
         } else {
-            result = "" + h;
+            result=""+h;
         }
-        val -= (h * 3600);
+        val-=(h*3600);
 
-        int m = (val / 60);
-        if (m < 10) {
-            result += ":0" + m;
+
+        int m=(val/60);
+        if (m<10) {
+            result+=":0"+m;
         } else {
-            result += ":" + m;
+            result+=":"+m;
         }
-        val -= (m * 60);
+        val-=(m*60);
 
-        int s = val;
-        if (s < 10) {
-            result += ":0" + s;
+        int s=val;
+        if (s<10) {
+            result+=":0"+s;
         } else {
-            result += ":" + s;
+            result+=":"+s;
         }
         return result;
     }
+
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the day in the month
@@ -402,15 +412,15 @@ public class DateSupport {
      */
     public static String getMonthDay(int val) {
         if (dooffset) {
-            val += offset;
+            val+=offset;
         }
-        Date v = new Date((long)val * 1000);
+        Date v=new Date((long)val*1000);
         String result;
-        int d = v.getDate();
-        if (d < 10) {
-            result = "0" + d;
+        int d=v.getDate();
+        if (d<10) {
+            result="0"+d;
         } else {
-            result = "" + d;
+            result=""+d;
         }
         return result;
     }
@@ -430,19 +440,19 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static String getMonth(int val) {
-        if (dooffset) {
-            val += offset;
-        }
-        Date v = new Date((long)val * 1000);
-        String result;
-        int m = v.getMonth();
-        m++;
-        if (m < 10) {
-            result = "0" + m;
-        } else {
-            result = "" + m;
-        }
-        return result;
+            if (dooffset) {
+                    val+=offset;
+            }
+            Date v=new Date((long)val*1000);
+            String result;
+            int m=v.getMonth();
+            m++;
+            if (m<10) {
+                    result="0"+m;
+            } else {
+                    result=""+m;
+            }
+            return result;
     }
 
     /**
@@ -460,14 +470,15 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static String getYear(int val) {
-        //log.debug(val);
-        if (dooffset) {
-            val += offset;
-        }
-        Date v = new Date(((long)val) * 1000);
-        int m = v.getYear();
-        return "" + (m + 1900);
+            //log.debug(val);
+            if (dooffset) {
+                    val+=offset;
+            }
+            Date v=new Date(((long)val)*1000);
+            int m=v.getYear();
+            return ""+(m+1900);
     }
+
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the month as an integer
@@ -484,13 +495,15 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static int getMonthInt(int val) {
-        if (dooffset) {
-            val += offset;
-        }
-        Date v = new Date((long)val * 1000);
-        int m = v.getMonth();
-        return m;
+            if (dooffset) {
+                    val+=offset;
+            }
+            Date v=new Date((long)val*1000);
+            String result;
+            int m=v.getMonth();
+            return m;
     }
+
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00
@@ -509,10 +522,10 @@ public class DateSupport {
      */
     public static int getWeekDayInt(int val) {
         if (dooffset) {
-            val += offset;
+            val+=offset;
         }
-        Date v = new Date((long)val * 1000);
-        int m = v.getDay();
+        Date v=new Date((long)val*1000);
+        int m=v.getDay();
         return m;
     }
 
@@ -533,10 +546,10 @@ public class DateSupport {
      */
     public static int getDayInt(int val) {
         if (dooffset) {
-            val += offset;
+            val+=offset;
         }
-        Date v = new Date((long)val * 1000);
-        int m = v.getDate();
+        Date v=new Date((long)val*1000);
+        int m=v.getDate();
         return m;
     }
 
@@ -549,26 +562,29 @@ public class DateSupport {
         if (!dooffset) {
             // Do not worry about the code below, since it will never be called
 
-            TimeZone tz1, tz2;
-            long off = 5400;
-            int off1, off2;
-            Date d = new Date();
+            TimeZone tz1,tz2;
+            long off=5400;
+            int off1,off2;
+            Date d=new Date();
 
-            tz1 = TimeZone.getDefault(); // This is MET but they think it's the Middle East
-            tz2 = TimeZone.getTimeZone("ECT"); //Apparently we live there ?
-            off1 = tz1.getRawOffset();
-            off2 = tz2.getRawOffset();
+            tz1=TimeZone.getDefault(); // This is MET but they think it's the Middle East
+            tz2=TimeZone.getTimeZone("ECT"); //Apparently we live there ?
+            off1=tz1.getRawOffset();
+            off2=tz2.getRawOffset();
             if (tz1.inDaylightTime(d)) {
-                off1 += (3600 * 1000); // Activate before sunday morning
+                if (System.getProperty("os.name").equals("Linux")) {
+                    off1+=(3600*1000); // Activate before sunday morning
+                } else {
+                    off1+=(3600*1000);
+                }
             }
-            
             if (tz2.inDaylightTime(d)) {
-                off2 += (3600 * 1000);
+                off2+=(3600*1000);
             }
-            off = off1 - off2;
+            off=off1-off2;
             return off;
         } else {
-            return (long)offset * 1000;
+            return (long)offset*1000;
         }
     }
 
@@ -578,68 +594,71 @@ public class DateSupport {
      * @return Integer containing the number of milliseconds representing the current time
      */
     public static long currentTimeMillis() {
-        return System.currentTimeMillis() - getMilliOffset();
+        return System.currentTimeMillis()-getMilliOffset();
     }
 
     /**
-     * Convert a string (like "12:42:15 1/2/97") to milliseconds from 1970
-     * The timezone used is 'GMT'
-     * @param date String which contains the date and time in the format "hour:minutes:sec day/month/year"
-     * @return the elapsed milliseconds since 1970 from this date
-     */
+    * Convert a string (like "12:42:15 1/2/97") to milliseconds from 1970
+    * The timezone used is 'GMT'
+    * @param date String which contains the date and time in the format "hour:minutes:sec day/month/year"
+    * @return the elapsed milliseconds since 1970 from this date
+    */
     public static long convertDateToLong(String date) {
         // Next line was the old code:
         // return (convertStringToLong(date));
         log.debug("Converting " + date);
         Calendar cal = Calendar.getInstance();
-        TimeZone tz = TimeZone.getDefault();
+        TimeZone tz  = TimeZone.getDefault();
 
         cal.setTimeZone(tz);
-        cal = parseDate(cal, date);
+        cal = parseDate( cal, date );
 
-        Date d = cal.getTime();
-        long l = d.getTime();
+        Date d = cal.getTime ();
+        long l = d.getTime ();
 
         return l;
-    }
+     }
 
     /**
-     * Convert date to long with timezone-offset <br />
-     * example : <br />convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br />
-     *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
-     * @param date Date to be converted in format:  hour:minute:second day/month/year
-     * @param hour Hour-part of the timezone-offset (int)
-     * @param minutes Minutes-part of the timezone-offset (int)
-     * @deprecated-now Do not use this code ever!
-     */
-    public static long convertDateToLongWithTimeZone(String date, int hour, int minutes) {
-        return convertStringToLongWithTimeZone(date, hour, minutes);
+    * Convert date to long with timezone-offset <br>
+    * example : <br>convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br>
+    *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
+    * @param date Date to be converted in format:  hour:minute:second day/month/year
+    * @param hour Hour-part of the timezone-offset (int)
+    * @param minutes Minutes-part of the timezone-offset (int)
+    * @obsolete Do not use this code ever!
+    */
+    public static long convertDateToLongWithTimeZone( String date, int hour, int minutes ) {
+        return convertStringToLongWithTimeZone( date, hour, minutes );
     }
 
+
+
     /*
-     * ----- private functions used by convertDateToLong --------
-     */
+    * ----- private functions used by convertDateToLong --------
+    */
+
 
     /**
      * Convert a string with a fixed (3:30) timezone offset
      * @obsolete Do not use this method ever!!
      */
-    private static long convertStringToLong(String date) {
+    private static long convertStringToLong( String date ) {
         // Set timezone to local timezone (Netherlands = 3:30 difference)
         // NEVER, NEVER CALL THIS METHOD!!! IT IS OBSOLETE!!!
         log.warn("DateSupport::converStringToLong   Obsolete code!");
-        return convertDateToLongWithTimeZone(date, 3, 30);
+        return convertDateToLongWithTimeZone(date,3,30);
     }
 
     /**
      * @obsolete Do not use this method ever!!
      */
-    private static long convertStringToLongWithTimeZone(String date, int hour, int minutes) {
+    private static long convertStringToLongWithTimeZone( String date , int hour, int minutes)       {
         // Set timezone
-        Calendar calendar = setTimeZone(hour, minutes);
+        Calendar calendar = setTimeZone(hour,minutes);
 
         // Now convert the datestring to calendardate
-        calendar = parseDate(calendar, date);
+        calendar = parseDate( calendar, date);
 
         // calculate the milliseconds since 1970
         Date mydate = calendar.getTime();
@@ -658,14 +677,14 @@ public class DateSupport {
         String[] ids = TimeZone.getAvailableIDs((hours * 60 + minutes) * 60 * 1000);
 
         // if no ids were returned, something is wrong. get out.
-        if (ids.length == 0) {
+        if (ids.length == 0){
             log.error("Timezone is wrong...");
             System.exit(0); /// XXX should be return null!
         }
         System.out.println("Current Time");
 
         // create a Pacific Standard Time time zone
-        SimpleTimeZone pdt = new SimpleTimeZone((hours * 60 + minutes) * 60 * 1000, ids[0]);
+        SimpleTimeZone pdt = new SimpleTimeZone((hours * 60+minutes) * 60 * 1000, ids[0]);
 
         // set up rules for daylight savings time
         pdt.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
@@ -699,7 +718,7 @@ public class DateSupport {
         token = tok.nextToken();
         cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
+        cal.set(Calendar.MONTH, new Integer(token).intValue()-1);
         token = tok.nextToken();
         cal.set(Calendar.YEAR, new Integer(token).intValue());
         return (cal);
@@ -719,17 +738,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, new Integer(token).intValue());
+        cal.set(Calendar.YEAR,         new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
+        cal.set(Calendar.MONTH,        new Integer(token).intValue()-1);
         token = tok.nextToken();
         cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY,         new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, new Integer(token).intValue());
+        cal.set(Calendar.MINUTE,      new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, new Integer(token).intValue());
+        cal.set(Calendar.SECOND,      new Integer(token).intValue());
         return (cal);
     }
 
@@ -740,8 +759,8 @@ public class DateSupport {
      * @see DateSupport#date2day
      * @see DateSupport#date2date
      */
-    public static String date2string(int time) {
-        return getTimeSec(time) + " " + getMonthDay(time) + "/" + getMonth(time) + "/" + getYear(time);
+    public static String date2string (int time) {
+        return getTimeSec(time)+" "+getMonthDay(time)+"/"+getMonth(time)+"/"+getYear(time);
     }
 
     /**
@@ -752,7 +771,7 @@ public class DateSupport {
      * @see DateSupport#date2date
      */
     public static String date2day(int time) {
-        return getYear(time) + "-" + getMonth(time) + "-" + getMonthDay(time);
+        return getYear(time)+"-"+getMonth(time)+"-"+getMonthDay(time);
     }
 
     /**
@@ -763,7 +782,7 @@ public class DateSupport {
      * @see DateSupport#date2day
      */
     public static String date2date(int time) {
-        return getYear(time) + "-" + getMonth(time) + "-" + getMonthDay(time) + " " + getTimeSec(time);
+        return getYear(time)+"-"+getMonth(time)+"-"+getMonthDay(time)+" "+getTimeSec(time);
     }
 
     /**
@@ -772,17 +791,17 @@ public class DateSupport {
      * @return String with a date
      */
     private static String dumpdate(int d) {
-        Date dd = new Date((long)d * 1000);
-        StringBuffer b = new StringBuffer();
+        Date dd=new Date((long)d*1000);
+        StringBuffer b=new StringBuffer();
 
-        b.append(" Year " + dd.getYear());
-        b.append(" Month " + (dd.getMonth() + 1));
-        b.append(" Day " + dd.getDate());
-        b.append(" Weekday " + dd.getDay());
-        b.append(" Hours " + dd.getHours());
-        b.append(" Minutes " + dd.getMinutes());
-        b.append(" Seconds " + dd.getSeconds());
-        b.append(" Time " + dd.getTime());
+        b.append(" Year "+dd.getYear());
+        b.append(" Month "+(dd.getMonth()+1));
+        b.append(" Day "+dd.getDate());
+        b.append(" Weekday "+dd.getDay());
+        b.append(" Hours "+dd.getHours());
+        b.append(" Minutes "+dd.getMinutes());
+        b.append(" Seconds "+dd.getSeconds());
+        b.append(" Time "+dd.getTime());
         return b.toString();
     }
 
@@ -791,12 +810,20 @@ public class DateSupport {
      * @param args[] Array of arguments
      */
     public static void main(String args[]) {
-        log.info("Date (without corr)" + date2string((int) (System.currentTimeMillis() / 1000)) + " " + System.currentTimeMillis() / 1000);
-        log.info("Date (with corr)" + date2string((int) (DateSupport.currentTimeMillis() / 1000)) + " : " + DateSupport.currentTimeMillis() / 1000);
-        log.info("Date " + args[0] + " " + date2string(Integer.parseInt(args[0])));
-        log.info("Date " + args[0] + " " + dumpdate(Integer.parseInt(args[0])));
+        log.info("Date (without corr)"+date2string((int)(System.currentTimeMillis()/1000))+
+                           " "+System.currentTimeMillis()/1000);
+        log.info("Date (with corr)"+date2string((int)(DateSupport.currentTimeMillis()/1000))+
+                           " : "+DateSupport.currentTimeMillis()/1000);
+        log.info("Date "+args[0]+" "+date2string(Integer.parseInt(args[0])));
+        log.info("Date "+args[0]+" "+dumpdate(Integer.parseInt(args[0])));
         String ID = System.getProperty("user.timezone", "GMT");
-        log.info("ID " + ID + " : " + getMilliOffset());
-        log.info("ParseDate " + parsedate(args[1]));
+        log.info("ID "+ID+" : "+getMilliOffset());
+        log.info("ParseDate "+parsedate(args[1]));
     }
 }
+
+
+
+
+
+

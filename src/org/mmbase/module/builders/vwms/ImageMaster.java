@@ -11,8 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
+import java.sql.*;
 import java.io.*;
 
+import javax.servlet.http.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
@@ -29,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.24 2003-03-10 11:50:23 pierre Exp $
+ * @version 9 Apr 2001
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -74,7 +78,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * This routine handles a maximum of 10 page/main, and 50 page/mirror service
      * calls each time it is called.
      * The first time this method is call, nothing happens (?)
-     * <br />
+     * <br>
      * Very similar to {@link #probeCall}.
      *
      * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise
@@ -117,7 +121,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a remote node is changed.
-         * @param machine Name of the machine that changed the node.
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -129,7 +133,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a local node is changed.
-         * @param machine Name of the machine that changed the node.
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -142,7 +146,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Called when a local or remote node is changed.
      * Does not take any action.
-         * @param machine Name of the machine that changed the node.
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
@@ -311,7 +315,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Handles a images/main service request.
-     * Schedules requests to mirror the file using {@link #doMainRequest}<br />
+     * Schedules requests to mirror the file using {@l;ink #doMainRequest}<br />
      * @param node the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)

@@ -8,62 +8,81 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import  org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
+
+import org.mmbase.bridge.*;
 
 /**
  * Calls 'doInfo' from NodeManager or from Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InfoTag.java,v 1.21 2003-08-11 15:27:18 michiel Exp $ 
  * @deprecated
  */
-
 public class InfoTag extends  CloudReferrerTag implements Writer {
 
-    private Attribute nodeManager = Attribute.NULL;
-    private Attribute module      = Attribute.NULL;
-    private Attribute command     = Attribute.NULL;
+    private String nodeManager = null;
+    private String module      = null;
+    private String command     = null;
+
+    protected WriterHelper helper = new WriterHelper();
+    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
+
+    public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+    public void haveBody() { helper.haveBody(); }
 
     public void setNodemanager(String nm) throws JspTagException {
-        nodeManager = getAttribute(nm);
+        nodeManager = getAttributeValue(nm);
     }
     public void setModule(String m) throws JspTagException {
-        module = getAttribute(m);
+        module = getAttributeValue(m);
     }
     public void setCommand(String c) throws JspTagException {
-        command = getAttribute(c);
+        command = getAttributeValue(c);
     }
+
 
     public int doStartTag() throws JspTagException {
         String result;
-        if (nodeManager != Attribute.NULL) {
-            if (module != Attribute.NULL) {
+        if (nodeManager != null) {
+            if (module != null) {
                 throw new JspTagException("Cannot give both module and nodemanager");
             }
-            result = getCloud().getNodeManager(nodeManager.getString(this)).getInfo(command.getString(this),
-                                                                                    pageContext.getRequest(),
-                                                                                    pageContext.getResponse());
-        } else if (module != Attribute.NULL) {
-            result = getCloudContext().getModule(module.getString(this)).getInfo(command.getString(this),
-                                                                                 pageContext.getRequest(),
-                                                                                 pageContext.getResponse());
+            result = getCloud().getNodeManager(nodeManager).getInfo(command,
+                                                                    pageContext.getRequest(),
+                                                                    pageContext.getResponse());
+        } else if (module != null) {
+            result = getCloudContext().getModule(module).getInfo(command,
+                                                                 pageContext.getRequest(),
+                                                                 pageContext.getResponse());
         } else {
             throw new JspTagException("Must give module or nodemanager");
         }
 
-        helper.setTag(this);
         helper.setValue(result);
+        helper.setJspvar(pageContext);
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
 
 
     public int doAfterBody() throws JspException {
-        return helper.doAfterBody();
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
     }
 
 

@@ -9,9 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
 import java.sql.*;
 
 import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -20,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: PropertiesProbe.java,v 1.8 2003-05-08 06:01:22 kees Exp $
+ * @version 28 Nov 1998
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
@@ -47,7 +54,6 @@ public class PropertiesProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"cdplayer");
-			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -57,7 +63,9 @@ public class PropertiesProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.interrupt();
+		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.suspend();
+		kicker.stop();
 		kicker = null;
 	}
 
@@ -74,9 +82,10 @@ public class PropertiesProbe implements Runnable {
 
 	/**
 	 */
-	public void doWork() {  
+	public void doWork() {
+		kicker.setPriority(Thread.MIN_PRIORITY+1);  
 		while (kicker!=null) {
-			try {Thread.sleep(10000);} catch (InterruptedException e){ return ;}
+			try {Thread.sleep(10000);} catch (InterruptedException e){}
 			if (parent.getMachineName().equals("test1")) doExpire();
 		}
 	}

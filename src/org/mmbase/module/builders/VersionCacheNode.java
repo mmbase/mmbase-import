@@ -10,13 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.sql.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheNode.java,v 1.3 2003-03-10 11:50:21 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class VersionCacheNode extends Object {
 

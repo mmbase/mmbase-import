@@ -1,17 +1,16 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
- */
+
+*/
 package org.mmbase.module;
 
 import java.util.*;
 import java.io.*;
-import java.net.*;
 
 import javax.servlet.*;
 
@@ -28,53 +27,54 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.46 2003-07-02 06:20:44 keesj Exp $
+ * @version $Revision: 1.40.2.2 $ $Date: 2003-04-04 21:24:21 $
  */
 public abstract class Module {
-    
-    // logging
+
     static private Logger log = null;
-    
     static Map modules;
     static String mmbaseconfig;
     static ModuleProbe mprobe;
-    
+
     Object SecurityObj;
     String moduleName=null;
+    //protected final Hashtable state=new Hashtable();
     Hashtable state=new Hashtable();
+    // org.mmbase private UsersInterface users;
     Hashtable mimetypes;
     Hashtable properties;
     String maintainer;
     int    version;
-    
+
+    private String className;
     // startup call.
     private boolean started = false;
-    
+
     /**
      * variable to synchronize SecurityObj
      */
     private Object synobj=new Object();
-    
+
     public Module() {
-        String StartedAt=(new Date(System.currentTimeMillis())).toString();
+        String StartedAt=(new Date(DateSupport.currentTimeMillis())).toString();
         //String StartedAt=(new Date()).toString();
         state.put("Start Time",StartedAt);
         // org.mmbase mimetypes=Environment.getProperties(this,"mimetypes");
-        
+
     }
-    
+
     public final void setName(String name) {
         if (moduleName==null) {
             moduleName=name;
         }
     }
-    
+
     /**
      * Starts the module.
      * This module calls the {@link #init()} of a module exactly once.
      * In other words, once the init() is called, it does not call it again.
      * This method is final and cannot be overridden.
-     * It is used to safely initialize modules during startup, and allows other modules
+     * It is used to safely intilaize modules during startup, amd allows other modules
      * to force the 'startup' of another module without risk.
      */
     public final synchronized void startModule() {
@@ -82,7 +82,7 @@ public abstract class Module {
         started=true;
         init();
     }
-    
+
     /**
      * Returns whether the module has started (has been initialized or is in
      * its initialization fase).
@@ -90,36 +90,29 @@ public abstract class Module {
     public final boolean hasStarted() {
         return started;
     }
-    
+
     /**
      * Initializes the module.
-     * Init must be overridden to read the environment variables it needs.
+     * Init can be overridden to read the environment variables it needs.
      * <br />
      * This method is called by {@link #startModule()}, which makes sure it is not called
      * more than once. You should not call init() directly, call startModule() instead.
      */
     public abstract void init();
+
     
-    /**
-     * prepares the module when loaded.
-     * Onload must be overridden to execute methods that need to be performed when the module
-     * is loaded but before any other modules are initailized.
-     * <br />
-     * This method is called by {@link #startModules()}. You should not call onload() directly.
-     */
+
     public abstract void onload();
+
     
     /**
-     * Shuts down the module. This method is called by shutdownModules.
-     *
+     * Shuts down the module.
      * @since MMBase-1.6.2
      */
-    protected void shutdown() {
-        // on default, nothing needs to be done.
+    public void shutdown() {
+        // on default, nothing needs to be done.        
     }
-    
-    
-    
+
     /**
      * state, returns the state hashtable that is/can be used to debug. Should
      * be overridden when live state should be done.
@@ -127,18 +120,15 @@ public abstract class Module {
     public Hashtable state() {
         return state;
     }
-    
-    /**
-     * Sets an init-parameter key-value pair
-     */
+
     public void setInitParameter(String key,String value) {
         if (properties!=null) {
             properties.put(key,value);
         }
     }
-    
+
     /**
-     * Gets an init-parameter  key-value pair
+     * Gets his init-parameters
      */
     public String getInitParameter(String key) {
         if (properties!=null) {
@@ -153,7 +143,8 @@ public abstract class Module {
         }
         return null;
     }
-    
+
+
     /**
      * Returns the properties to the subclass.
      */
@@ -163,21 +154,48 @@ public abstract class Module {
         return null;
         //return Environment.getProperties(this,propertytable);
     }
-    
+
     /**
      * Returns one propertyvalue to the subclass.
      */
+    /* daniel, org.mmbase needs fix
+    */
     protected String getProperty(String name, String var) {
+        //return Environment.getProperty(this,name,var);
         return "";
     }
-    
+
+    /* daniel, org.mmbase
+       protected Object removeProperty(String propertytable, String key) {
+        return Environment.removeProperty(this,propertytable,key);
+    }
+    */
+
+    /**
+     * Adds a property to the propertytabel
+     */
+    /* daniel, org.mmbase
+    protected String putProperty(String propertytable, String key, String value) {
+        return (String)Environment.putProperty(this,propertytable,key,value);
+    }
+    */
+
+    /**
+     * Adds a property to the propertytabel
+     */
+    /* daniel, org.mmbase
+    protected String putInitProperty(String key, String value) {
+        return (String)Environment.putProperty(this,"module/"+moduleName,key,value);
+    }
+    */
+
     /**
      * Gets own modules properties
      */
-    public Hashtable getInitParameters() {
+       public Hashtable getInitParameters() {
         return properties;
     }
-    
+
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
@@ -191,7 +209,62 @@ public abstract class Module {
             return modules.values().iterator();
         }
     }
-    
+
+
+    /**
+     *    Get user Module property
+     */
+    /* daniel, org.mmbase
+    protected final String getUserModuleProperty(String userName,String name,int type) {
+        if (users!=null && userName!=null) {
+            return users.getModuleProperty(moduleName,userName,name,type);
+        } else {
+            return null;
+        }
+    }
+    */
+
+    /**
+     *    Get user Module property
+     */
+    /* daniel, org.mmbase
+    protected final String getUserModuleProperty(String userName,String name) {
+        return getUserModuleProperty(userName,name,1);
+    }
+    */
+
+    /**
+     *    Get user Module property
+     */
+    /* daniel, org.mmbase
+    protected final boolean setUserModuleProperty(String userName,String name,String value, int type) {
+        if (users!=null && userName!=null) {
+            return users.setModuleProperty(moduleName,userName,name,value,type);
+        } else {
+            return false;
+        }
+    }
+    */
+
+    /**
+     *    Get user Module property
+     */
+    /* daniel, org.mmbase
+    protected final boolean setUserModuleProperty(String userName,String name,String value) {
+        return setUserModuleProperty(userName,name,value,1);
+    }
+    */
+
+    /**
+     * getName
+     */
+    /* daniel, org.mmbase
+    protected final String getName(Object asker) {
+        return Environment.getName(asker);
+    }
+    */
+
+
     /**
      *  Returns the name of the module
      * @return the module name
@@ -199,20 +272,20 @@ public abstract class Module {
     public final String getName() {
         return moduleName; // org.mmbase
     }
-    
+
     /**
      * provide some info on the module
      */
     public String getModuleInfo() {
         return "No module info provided";
-    }
-    
+     }
+
     /**
      * maintainance call called by the admin module every x seconds.
      */
     public void maintainance() {
     }
-    
+
     /**
      * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * which is set when servscan is loaded.
@@ -224,7 +297,7 @@ public abstract class Module {
     public String getMimeType(String ext) {
         return getMimeTypeFile("dummy."+ext);
     }
-    
+
     public String getMimeTypeFile(String filename) {
         ServletContext sx=MMBaseContext.getServletContext();
         String mimetype=sx.getMimeType(filename);
@@ -234,28 +307,15 @@ public abstract class Module {
         }
         return mimetype;
     }
-    
-    /**
-     * Calls shutdown of all registered modules.
-     *
-     * @since MMBase-1.6.2
-     */
-    public static synchronized final void shutdownModules() {
-        Iterator i = getModules();
-        while (i.hasNext()) {
-            Module m = (Module) i.next();
-            log.service("Shutting down " + m.getName());
-            m.shutdown();
-        }
-        modules = null;
-    }
-    
-    
-    
+
+
+
     public static synchronized final void startModules() {
-        // call the onload to get properties
         if (log == null) log = Logging.getLoggerInstance(Module.class.getName());
+        // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
+
+    
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
             Module mod = (Module)i.next();
             if( log.isDebugEnabled() ) {
@@ -286,7 +346,23 @@ public abstract class Module {
             }
         }
     }
-    
+
+
+    /**
+     * Calls shutdown of all registered modules.
+     *
+     * @since MMBase-1.6.2
+     */
+    public static synchronized final void shutdownModules() {
+        Iterator i = getModules();
+        while (i.hasNext()) {
+            Module m = (Module) i.next();
+            log.service("Shutting down " + m.getName());
+            m.shutdown();
+        }
+        modules = null;
+    }
+
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.
@@ -315,7 +391,7 @@ public abstract class Module {
      *      module does not exist or is inactive.
      */
     synchronized public static Object getModule(String name, boolean startOnLoad) {
-        // are the modules loaded yet ? if not load them
+        // are the modules loaded yet ? if not load them       
         if (modules == null) {
             if (log == null) log = Logging.getLoggerInstance(Module.class.getName());
             log.service("Loading MMBase modules...");
@@ -329,11 +405,11 @@ public abstract class Module {
         }
         String orgname=name;
         name=name.toLowerCase();
-        
+
         // try to obtain the ref to the wanted module
         Object obj=modules.get(name);
         if (obj==null) obj=modules.get(orgname);
-        
+
         if (obj!=null) {
             // make sure the module is started, as this method could
             // have been called from the init() of another Module
@@ -343,23 +419,39 @@ public abstract class Module {
             return null;
         }
     }
-    
+
     public String getMaintainer() {
         return maintainer;
     }
-    
+
     public void setMaintainer(String m) {
         maintainer=m;
     }
-    
+
     public void setVersion(int v) {
         version=v;
     }
-    
+
     public int getVersion() {
         return version;
     }
-    
+
+
+    /**
+     * set classname of the builder
+     */
+    public void setClassName(String d) {
+        this.className=d;
+    }
+
+    /**
+     * return classname of this builder
+     */
+    public String getClassName() {
+        return className;
+    }
+
+
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results=new Hashtable();
         mmbaseconfig = MMBaseContext.getConfigPath();
@@ -378,21 +470,11 @@ public abstract class Module {
                             // try starting the module and give it its properties
                             try {
                                 log.service("Loading module " + bname + " with class " + cname);
-                                Hashtable modprops = parser.getProperties();
-                                Object mod;
-                                if (parser.getURLString() != null){
-                                    log.service("loading module from jar " + parser.getURLString());
-                                    URL url = new URL(parser.getURLString());
-                                    URLClassLoader c =new URLClassLoader(new URL[]{url},Module.class.getClassLoader());
-                                    Class newclass = c.loadClass(cname);
-                                    mod = newclass.newInstance();
-                                } else {
-                                    Class newclass = Class.forName(cname);
-                                    mod = newclass.newInstance();
-                                }
+                                Class newclass = Class.forName(cname);
+                                Object mod = newclass.newInstance();
                                 if (mod!=null) {
                                     results.put(bname,mod);
-                                    
+                                    Hashtable modprops = parser.getProperties();
                                     if (modprops!=null) {
                                         ((Module)mod).properties=modprops;
                                     }
@@ -401,10 +483,12 @@ public abstract class Module {
                                     ((Module)mod).setName(bname);
                                     ((Module)mod).setMaintainer(parser.getModuleMaintainer());
                                     ((Module)mod).setVersion(parser.getModuleVersion());
+                                    ((Module)mod).setClassName(parser.getClassFile());
+
                                 }
                             } catch (java.lang.ClassNotFoundException cnfe) {
                                 log.error("Could not load class with name '" + cname + "', " +
-                                "which was specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
+                                          "which was specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
                             } catch (Exception e) {
                                 log.error("Error while loading module class" + Logging.stackTrace(e));
                             }
@@ -415,5 +499,5 @@ public abstract class Module {
         }
         return results;
     }
-    
+
 }

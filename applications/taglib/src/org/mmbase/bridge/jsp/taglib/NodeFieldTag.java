@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.Node;
 
 import javax.servlet.jsp.JspTagException;
@@ -20,25 +19,28 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: NodeFieldTag.java,v 1.9 2003-06-06 10:03:09 pierre Exp $ 
  */
 
 public class NodeFieldTag extends FieldTag {
 
-    private Attribute number = Attribute.NULL;
+    private String number = null;
 
     /**
      * @deprecated use setName
      */
-    public void setField(String f) throws JspTagException {
+    public void setField(String f) {
         // dammit, why is this attribute not named 'name' as in FieldTag?
-        setName(f);
+        try {
+            setName(f);
+        } catch (JspTagException e) {
+            throw new RuntimeException(e.toString());
+        }
     }
     public void setNumber(String number) throws JspTagException {
-        this.number = getAttribute(number);    
+        this.number = getAttributeValue(number);    
     }
     
     public Node getNodeVar() throws JspTagException {
-        return getCloud().getNode(number.getString(this));
+        return getCloud().getNode(number);
     }
 }

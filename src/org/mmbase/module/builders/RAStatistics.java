@@ -9,11 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.sql.*;
+import java.io.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 /**
  * @author Rob Vermeulen  
- * @version $Id: RAStatistics.java,v 1.7 2003-03-10 11:50:20 pierre Exp $
+ * @version March 22, 1998
  */
 public class RAStatistics extends MMObjectBuilder {
 

@@ -10,24 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import javax.servlet.jsp.JspTagException;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
- * @javadoc
- *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: DoubleHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
  */
-
 public class DoubleHandler extends AbstractTypeHandler {
 
 	/**
 	 * Constructor for DoubleHandler.
 	 * @param context
 	 */
-	public DoubleHandler(FieldInfoTag tag) {
-		super(tag);
+	public DoubleHandler(FieldInfoTag context) {
+		super(context);
 	}
 }

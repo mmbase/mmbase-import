@@ -1,12 +1,17 @@
 /*
+ * ClassName: TmpObject.java
+ *
+ * Date: dec. 1st. 2001
+ *
+ * Copyright notice:
+ * This software is OSI Certified Open Source Software.
+ * OSI Certified is a certification mark of the Open Source Initiative.
+ *
+ * The license (Mozilla version 1.0) can be read at the MMBase site.
+ * See http://www.MMBase.org/license
+ *
+ */
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
-*/
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
@@ -23,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.6 2003-03-07 09:30:59 pierre Exp $
+ * @version $Id: TmpObject.java,v 1.3.2.2 2003-01-09 17:50:17 robmaris Exp $
  */
 public class TmpObject {
 
@@ -130,7 +135,7 @@ public class TmpObject {
 
     /**
      * Sets field of the temporary node represented by this TmpObject instance.
-     * If the value is a <code>String</code> and the type of the field is
+     * If the value is a <code>String</code> and the type of the field is 
      * {@link org.mmbase.module.corebuilders.FieldDefs#TYPE_BYTE TYPE_BYTE},
      * the string is decoded to bytes using Base64.
      * @param name The field name.
@@ -138,7 +143,7 @@ public class TmpObject {
      */
     public void setField(String name, Object value) {
        // Decode string for binary field to byte-array using Base64.
-       if (node.getDBType(name) == FieldDefs.TYPE_BYTE
+       if (node.getDBType(name) == FieldDefs.TYPE_BYTE 
        && value instanceof String) {
           String strValue = (String) value;
           value = Base64.decodeToBytes(strValue);
@@ -198,7 +203,7 @@ public class TmpObject {
 
     /**
      * Tests if this object is an accessed object
-     * (representing an object that already exists
+     * (e.g. representing an object that already exists
      * in the persistent cloud) or an input object.
      * @return true if this is an access object, false otherwise.
      */
@@ -334,7 +339,7 @@ public class TmpObject {
     }
 
     /**
-     * Displays XML representation of this object, such as the XML code
+     * Displays XML representation of this object, e.g. the XML code
      * necessary to create this object in a transaction.
      * @return XML representation of this object.
      */

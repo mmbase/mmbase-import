@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import  org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -21,7 +21,6 @@ import javax.xml.transform.Source;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.9 2003-08-11 15:27:24 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -29,7 +28,7 @@ public class XsltTag extends ContextReferrerTag  {
 
     private static Logger log = Logging.getLoggerInstance(XsltTag.class.getName());
 
-    private Attribute ext = Attribute.NULL;
+    private String ext;
     private FormatterTag formatter;
 
 
@@ -37,15 +36,15 @@ public class XsltTag extends ContextReferrerTag  {
      * If you use the extends attribute in stead of inline <xsl:import />
      * then the caches can be invalidated (without parsing of xslt beforehand)
      *
-     * @todo This has to be implemented still
+     * @todo This has to be implemented.
      */
     public void setExtends(String e) throws JspTagException {
-        ext = getAttribute(e);
+        ext = getAttributeValue(e);
     }
 
     public int doStartTag() throws JspTagException{
         // Find the parent formatter.
-        formatter = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
+        formatter = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
         if (formatter == null && getId() == null) {
             throw new JspTagException("No parent formatter found");
             // living outside a formatter tag can happen the xslttag has an id.
@@ -76,7 +75,7 @@ public class XsltTag extends ContextReferrerTag  {
         }
         if (log.isDebugEnabled()) log.debug("Found xslt: " + xsltString);
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), xsltString);
+            getContextTag().register(getId(), xsltString);
         }
         if (formatter != null) { 
             String totalString;

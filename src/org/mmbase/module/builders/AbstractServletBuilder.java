@@ -13,10 +13,10 @@ import java.util.*;
 
 import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.servlet.BridgeServlet;
+import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.Arguments;
-import org.mmbase.util.Argument;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Some builders are associated with a servlet. Think of images and attachments.
@@ -25,28 +25,12 @@ import org.mmbase.util.Argument;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.18 2003-07-03 09:04:55 pierre Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.11.2.2 2003-07-03 09:02:07 vpro Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(AbstractServletBuilder.class);
-
-    /**
-     * Can be used to construct a List for executeFunction argument
-     * (new Arguments(GUI_ARGUMENTS))
-     */
-    public final static Argument[] GUI_ARGUMENTS = { 
-        new Argument.Wrapper(MMObjectBuilder.GUI_ARGUMENTS) // example, does not make too much sense :-)
-    };
-
-
-    public final static Argument[] SERVLETPATH_ARGUMENTS = { 
-        new Argument("session", String.class), // For read-protection
-        new Argument("field",   String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-        new Argument("context", String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-        new Argument("argument", String.class) // Argument to use for the argument, overrides 'field'
-    };
+    private static Logger log = Logging.getLoggerInstance(AbstractServletBuilder.class.getName());
 
     /**
      * In this string the path to the servlet is stored.
@@ -81,12 +65,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      */
     abstract protected String getDefaultPath();
 
-    /**
-     * @param association e.g. 'images' or 'attachments'
-     * @param root        Path to root of appliciation (perhaps relative).
-     */
-
-    private String getServletPathWithAssociation(String association, String root) {
+    private String getServletPathWithAssociation(String association, String context) {
         String result;
         List ls = MMBaseServlet.getServletMappingsByAssociation(association);
         if (ls.size()>0) {
@@ -107,11 +86,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
         if (result.startsWith("/")) {
             // if it not starts with / then no use adding context.
-            if (root != null) {
-                if (root.endsWith("/")) {
-                    result = root + result.substring(1);
+            if (context != null) {
+                if (context.endsWith("/")) {
+                    result = context + result.substring(1);
                 } else {
-                    result = root + result;
+                    result = context + result;
                 }
             }
         }
@@ -123,25 +102,23 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * are present in the servlet-mappings. You can put the argument(s)
      * directly after this string.
      *
-     * @param root The path to the application's root.
+     * @param context The context (empty string, or starting with /). Will be ignored if determined already.
      * @param fileName Optional fileName. Will be added to the url, but it will not influence the servlet.
      */
 
-    protected String getServletPath(String root, String fileName) {
+    protected String getServletPath(String context, String fileName) {
         if (servletPath == null) {
-            servletPath = getServletPathWithAssociation(getAssociation(), "");
-            if (log.isServiceEnabled()) {
-                log.service(getAssociation() + " are served on: " + servletPath + "  root: " + root);
-            }
+            servletPath = getServletPathWithAssociation(getAssociation(), context);
+            log.service(getAssociation() + " are served on: " + servletPath);
         }
         String result;
         if (fileName == null) {
-            result = root + servletPath;
+            result = servletPath;
         } else {
             if (servletPath.endsWith("/")) {
-                result =  root + servletPath + fileName;
+                result =  servletPath + fileName;
             } else {
-                result =  root + servletPath;
+                result = servletPath;
             }
         }
 
@@ -167,7 +144,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * they have to implement the 'SGUIIndicators'
      */
 
-    abstract protected String getSGUIIndicator(MMObjectNode node,  Arguments a);
+    abstract protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node);
+    abstract protected String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node);
 
 
     /**
@@ -183,14 +161,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
     final public String getGUIIndicator(MMObjectNode node) {
-        return getSGUIIndicator(node, new Arguments(GUI_ARGUMENTS));
+        return getSGUIIndicator("", null, node);
     }
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
-        return getSGUIIndicator(node, new Arguments(GUI_ARGUMENTS).set("field", field));
+        return getSGUIIndicator("", null, field, node);
     }
 
 
@@ -205,13 +183,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executefunction of abstractservletbuilder");
         if (function.equals("info")) {
-            List empty = new ArrayList();
-            Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("servletpath", "" + SERVLETPATH_ARGUMENTS + " Returns the path to a the servlet presenting this node. All arguments are optional");
+            List empty = new Vector();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            info.put("servletpath", "(session information,number,context) Returns the path to a the servlet presenting this node. All arguments are optional");
             info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
             info.put("mimetype", "Returns the mimetype associated with this object");
-            info.put("gui", "" + GUI_ARGUMENTS + "Gui representation of this object.");
+            info.put("gui", "Gui representation of this object.");
 
             if (args == null || args.size() == 0) {
                 return info;
@@ -220,52 +198,38 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
         } else if (function.equals("servletpath")) {
             if (log.isDebugEnabled()) {
-                log.debug("getting servletpath with args " + args);
+                log.debug("getting servletpath with args " +args);
             }
-            // wrap the argument List into an 'Arguments', which makes
-            // it easier to deal with.
-            Arguments a;
-            if (args instanceof Arguments) {
-                a = (Arguments) args;
-            } else {
-                a = new Arguments(SERVLETPATH_ARGUMENTS, args);
-            }
-            // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
-            String session = a.getString("session");
 
-            String argument = (String) a.get("argument");
-           
-            if (argument == null) {                                
-                // second argument, which field to use, can for example be 'number' (the default)
-                String fieldName   = (String) a.get("field");
-                if (fieldName == null) {
-                    argument = node.getStringValue("number");
-                } else {
-                    if (log.isDebugEnabled()) log.debug("Getting 'field' '" + fieldName + "'");
-                    argument = node.getStringValue(fieldName);
-                }
+            // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
+            String session = "";
+            if(args.size() > 0) {
+                session = (String) args.remove(0);
             }
-            // third argument, the servlet context, can use a relative path here, as an argument
-            String context = (String) a.get("context");
+
+            // second argument, which field to use, can for example be 'number' (optional)
+            String field = node.getStringValue("number");
+            if(args.size() > 0 ) {
+                field = node.getStringValue((String) args.remove(0)); // for example cache(s(100))
+            }
+
+            // third argument, the servlet context, should not be needed, but shouldn't harm either.
+            String context = null; // hack to be able to supply the context, should be superflouous.
+            if (args.size() > 0) {
+                context = (String) args.remove(0);
+            }
 
             // ok, make the path.
             StringBuffer servlet = new StringBuffer();
-            if (context == null) { 
-                servlet.append(getServletPath()); // use 'absolute' path (starting with /)
+            if (context == null) { // context argument is the last, for easy removal later
+                servlet.append(getServletPath());
             } else {
                 servlet.append(getServletPath(context, null));
             }
             if (usesBridgeServlet && ! session.equals("")) {
                 servlet.append("session=" + session + "+");
             }
-
-            String fileName = node.getStringValue("filename");            
-            if (servlet.toString().endsWith("?") ||  "".equals(fileName)) {
-                return servlet.append(argument).toString();
-            } else {
-                servlet.append(fileName).append('?').append(argument);
-                return servlet.toString();
-            }
+            return servlet.append(field).toString();
         } else if (function.equals("servletpathof")) {
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
             return getServletPathWithAssociation((String) args.get(0), MMBaseContext.getHtmlRootUrlPath());
@@ -274,23 +238,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         } else if (function.equals("mimetype")) { // don't issue a warning, builders can override this.
             // images, attachments and so on
         } else if (function.equals("gui")) {
-            if (log.isDebugEnabled()) {
-                log.debug("GUI of servlet builder with " + args);
-            }
-            if (args == null || args.size() == 0) {
+            log.debug("GUI of servlet builder with " + args);
+            if (args == null || args.size() ==0) {
                 return getGUIIndicator(node);
             } else {
-                Arguments a;
-                if (args instanceof Arguments) {
-                    a = (Arguments) args;
+                String rtn;
+                if (args.size() <= 3) {
+                    rtn = getGUIIndicator((String) args.get(0), node);
                 } else {
-                    a = new Arguments(GUI_ARGUMENTS, args);
+                    // language is ignored
+                    rtn = getSGUIIndicator("session=" + args.get(2) + "+", (HttpServletResponse) args.get(3), (String) args.get(0), node);
                 }
-                
-                String  rtn = getSGUIIndicator(node, a);
                 if (rtn == null) return super.executeFunction(node, function, args);
-                return rtn;                
-            }            
+                return rtn;
+            }
         } else {
             return super.executeFunction(node, function, args);
         }

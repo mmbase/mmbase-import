@@ -10,16 +10,25 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: EmailQueueProbe.java,v 1.5 2003-05-07 21:06:47 kees Exp $
+ * @version0 $Revision: 1.2 $ $Date: 2001-05-21 11:27:23 $ 
  */
 public class EmailQueueProbe implements Runnable {
 
-    static private Logger log = Logging.getLoggerInstance(EmailQueueProbe.class.getName());
+    static private Logger log = Logging.getLoggerInstance(EmailQueueProbe.class.getName()); 
 
     Thread kicker = null;
     int sleeptime;
@@ -32,7 +41,7 @@ public class EmailQueueProbe implements Runnable {
     }
 
     public void init() {
-        this.start();
+        this.start();    
     }
 
 
@@ -43,17 +52,18 @@ public class EmailQueueProbe implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"emailqueueprobe");
-            kicker.setDaemon(true);
             kicker.start();
         }
     }
-
+    
     /**
      * Stops the main Thread.
      */
     public void stop() {
         /* Stop thread */
-        kicker.interrupt();
+        kicker.setPriority(Thread.MIN_PRIORITY);  
+        kicker.suspend();
+        kicker.stop();
         kicker = null;
     }
 
@@ -61,6 +71,7 @@ public class EmailQueueProbe implements Runnable {
      * Main loop, exception protected
      */
     public void run () {
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
         while (kicker!=null) {
             try {
                 doWork();
@@ -75,7 +86,7 @@ public class EmailQueueProbe implements Runnable {
      * Main work loop
      */
     public void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
 
         while (kicker!=null) {
             parent.checkQueue();

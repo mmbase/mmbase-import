@@ -18,9 +18,9 @@ import javax.servlet.jsp.JspTagException;
  * Tags implementing this interface can (should?) use 'WriterHelper'
  * for a quick implementation.
  *
- * @author Michiel Meeuwissen
- * @version $Id: Writer.java,v 1.10 2003-06-06 10:03:10 pierre Exp $ 
- */
+ * @author Michiel Meeuwissen 
+ **/
+
 
 public interface Writer {
 
@@ -30,13 +30,6 @@ public interface Writer {
      *
      */
     public void setWrite(String t) throws JspTagException;
-
-
-    /**
-     * (Override) escape behaviour
-     *
-     */
-    public void setEscape(String e) throws JspTagException;
 
     /**
      * JspVar to Create, and write to

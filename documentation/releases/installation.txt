@@ -1,5 +1,5 @@
-b===================================================================
-                     MMBase 1.7.0 - Installation
+===================================================================
+                     MMBase 1.6 - Installation
 ===================================================================  
   
 MMBase is distributed as a webapplication, it's not packaged as a .war
@@ -15,46 +15,85 @@ MMBase running, you must do the following:
 3. Download and install ImageMagick. See note below if you're having
    problems with Imagemagick or don't want to use it.
 
-4. Copy the subdir mmbase-webapp into the servlet-engine's webapps
-   dir, you have to use it as your ROOT webapp if you'd like to use
-   scan. MMBase in combination with jsp/taglib can run in another context
-   than ROOT, the only thing that doesn't work is the gui-functions
-   for images (because they produce a wrong link to
-   img.db). MMBase-1.6 will have better support for this.
+4. Copy (not in all cases symlinking would work) the subdir
+   mmbase-webapp into the servlet-engine's
+   webapp dir. Most 'SCAN' applications would require this webapp to
+   be the ROOT webapp (the SCAN editors of this version also work in
+   another contextes).
 
-5. Edit <mmbase-webapp/WEB-INF/config/builders/images.xml> for the
-   location of ImageMagick's convert tool. 
+   Some details can't autodetect the context in which MMBase is
+   running (like gui-functions of images), so it adviced to
+   explicitely inform MMBase with the mmbase.htmlrooturlpath context
+   parameter from web.xml (This is not necessary for modern
+   app-servers like Tomcat 4.1)
 
-6. Start servlet-engine if you want to use the default MMBase-config
-   (uses a hsqldb-database), or goto step 9 for changing default
+5. Edit
+   <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+   for the location of ImageMagick's convert tool. If it is your PATH
+   it will perhaps also work with default settings.  
+
+6. The directory <mmbase-webapp/WEB-INF/config/builders/applications>
+   must be writable for the Servlet Engine if you want to auto-install
+   builders. 
+
+7. Start servlet-engine if you want to use the default MMBase-config
+   (uses a hsqldb-database), or goto step 10 for changing default
    configuration. 
 
-7. Check if mmbase is running using the following url:
+8. Check if mmbase is running using the following url:
    <http://localhost:port/version> 
 
-8. If this is running, goto <http://localhost:port> to see an infopage
+9. If this is running, goto <http://localhost:port> to see an infopage
    about MMBase and links to editors, admin, examples, etc. Use
    admin/admin2k when you're asked to login (see notes below how to
-   change this).`
+   change this).
 
-9. Edit jdbc.xml and mmbaseroot.xml (both are in
+10. Edit jdbc.xml and mmbaseroot.xml (both are in
    <mmbase-webapp/WEB-INF/config/modules>) for using a different
    database (see releasenotes for tested databases), or change other
    settings (servername, multicast, etc). 
    Other interesting settings can be found in
-   <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users, groups, and contextes),
-   and in <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration and so on)
+   <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users,
+   groups, and contextes), and in
+   <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration
+   and so on)
 
-10. If you have any kind of problem goto:
+11. If you have any kind of problem goto:
    website: <http://www.mmbase.org/>
    irc: #mmbase at slashnet
 
 
 Some final notes:
 =================
+Scan: 
+Scan has been 'turned off' by default in this release because it has
+been deprecated. It can be used and this is what needs to be done to
+get it working:
+
+ - Make the following MMBase modules active:
+    * calc (math)
+    * info (system info commands)
+    * mmbase (basic SCAN commands)
+    * mmedit (for the SCAN editors)
+    * mmlanguage (prompts for the SCAN editors)
+    * scanparser (essential parser)
+    * session (maintain user info)
+ - Optionally, you can activate the modules:
+    * scancache (caching of SCAN pages)
+    * transactionhandler (transactions through xml)
+
+ - In the web.xml, add the SCAN servlet (scanserv). Also add the
+   mapping for SCAN pages (*.shtml).
+   The default web.xml of MMBase contains example code which you can
+   uncomment. 
+ - Restart your server.
+
+To make a module active, find the modulename.xml file in the modules
+directory of the MMBase configuration. In the file, change the
+'status' from inactive to active, and save the file.
 
 Jikes:
-If you'd like to develop jsp's and taglib's at a usable speed it is
+If you'd like to develop jsp and taglib pages at a usable speed it is
 recommended to install jikes for compiling jsp. See your
 Servlet-engine's documentation about how to do this.
 
@@ -79,7 +118,9 @@ this by changing the properties in
 <mmbase-webapp/WEB-INF/config/builders/images.xml> into:
 
 <properties> 
-  <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> 
+  <property name="ImageConvertClass">
+    org.mmbase.module.builders.ConvertJAI 
+  </property> 
   <property name="MaxConcurrentRequests">20</property> 
 </properties>
 

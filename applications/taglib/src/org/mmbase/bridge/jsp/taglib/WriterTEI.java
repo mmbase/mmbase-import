@@ -19,9 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.7 2003-06-06 10:03:10 pierre Exp $ 
- */
-
+ **/
 public class WriterTEI extends TagExtraInfo {
     
     protected int scope() {
@@ -67,8 +65,6 @@ public class WriterTEI extends TagExtraInfo {
                 type = "java.util.Vector"; break;
             case WriterHelper.TYPE_LIST:
                 type = "java.util.List"; break;
-            case WriterHelper.TYPE_DATE:
-                type = "java.util.Date"; break;
             case WriterHelper.TYPE_BYTES:
                 type = "[B"; break; 
                 // this doesn't work like this...

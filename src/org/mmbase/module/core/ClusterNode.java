@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import java.sql.*;
 
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
@@ -35,7 +37,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.7 2003-03-10 11:50:30 pierre Exp $
+ * @version 26 Apr 2001
  */
 public class ClusterNode extends VirtualNode {
     /**
@@ -86,8 +88,8 @@ public class ClusterNode extends VirtualNode {
     };
 
      /**
-      * commit : commits the node to the database or other storage system.
-      * This can only be done on a existing (inserted) node. it will use the
+      * commit : commits the node to the database or other storage system
+      * this can only be done on a existing (inserted) node. it will use the
       * changed Vector as its base of what to commit/changed
       * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
       */
@@ -204,10 +206,10 @@ public class ClusterNode extends VirtualNode {
             MMObjectNode n=getRealNode(buildername);
             if (n!=null) {
                 o = n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldname));
-            } else {
+            } else { 
                 // fall back to builder if this node doesn't contain a number to fetch te original
                 MMObjectBuilder bul = parent.mmb.getMMObject(buildername);
-                if (bul != null) {
+                if (bul != null) {                    
                     o = bul.getValue(this,fieldname);
                 }
             }
@@ -298,13 +300,13 @@ public class ClusterNode extends VirtualNode {
       }
       return res;
     }
-
+    
     /**
      * Return the relations of this node.
      * This is not allowed on a cluster node
      * @throws <code>RuntimeException</code>
      */
-    public Enumeration getRelations() {
+    public Enumeration getRelations() {    
         throw new RuntimeException("Cannot follow relations on a cluster node. ");
     }
 

@@ -1,19 +1,9 @@
 package org.mmbase.util;
 
-// necessary for SizeOf
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.*; // necessary for SizeOf
+import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
+import org.mmbase.util.logging.*;
 /**
  * Implementation of sizeof.
  *
@@ -128,7 +118,7 @@ public class SizeOf {
     private int sizeof(org.w3c.dom.Node node) {
         log.debug("sizeof Node");
         // a little hackish...
-        return sizeof(org.mmbase.util.xml.XMLWriter.write(node, false));
+        return sizeof(org.mmbase.applications.editwizard.Utils.getSerializedXML(node));
     }
 
     private int sizeof(String m) {

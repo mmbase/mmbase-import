@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.44 2003-08-13 16:33:32 michiel Exp $
+ * @version $Id: Node.java,v 1.38.2.1 2002-12-05 09:41:29 kees Exp $
  */
 public interface Node {
 
@@ -352,11 +352,6 @@ public interface Node {
     public FieldValue getFunctionValue(String functionName, List arguments);
 
     /**
-     * @since MMBase-1.7
-     */
-    // public FieldValue getFunctionValue(String functionName, Arguments arguments);
-
-    /**
     * Commit the node to the database.
     * Makes this node and/or the changes made to this node visible to the cloud.
     * If this method is called for the first time on this node it will make
@@ -494,12 +489,6 @@ public interface Node {
      */
     public RelationList getRelations(String role, NodeManager nodeManager);
 
-    
-    /**
-     * @since MMBase-1.7
-     */
-    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
-
     /**
      * Returns the number of relations this node has with other nodes.
      *
@@ -515,7 +504,6 @@ public interface Node {
      *         specific relation manager
      */
     public int countRelations(String relationManager);
-
 
     /**
      * Returns all related nodes.
@@ -560,10 +548,10 @@ public interface Node {
      * @param nodeManager  the name of the node manager the returned nodes
      *                     should have
      * @param role         the role of the relation
-     * @param searchDir    the direction of the relation
+     * @param direction    the direction of the relation
      * @return             a list of related nodes
      */
-    public NodeList getRelatedNodes(String nodeManager, String role, String searchDir);
+    public NodeList getRelatedNodes(String nodeManager, String role, String direction);
 
     /**
      * Returns all related nodes that have a specific node manager and role.
@@ -574,22 +562,10 @@ public interface Node {
      * @since MMBase-1.6
      * @param nodeManager  the node manager the returned nodes should have
      * @param role         the role of the relation
-     * @param searchDir    the direction of the relation
+     * @param direction    the direction of the relation
      * @return             a list of related nodes
      */
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir);
-
-
-
-    /**
-     * Returns a query to reretrieve this node. It is not very usefull 'as is' because you already
-     * have the node. The result can however be changed (with addRelationsStep), to find 'related nodes'. 
-     *
-     * @since MMBase-1.7.
-     * @see   NodeManager#getList
-     * @see   Query#addRelationStep
-     */
-    //public Query    createQuery();
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction);
 
     /**
      * Returns the number of related nodes that have a specific node manager.
@@ -603,14 +579,6 @@ public interface Node {
      *                     manager
      */
     public int countRelatedNodes(String type);
-
-
-    /**
-     * @since MMBase-1.7
-     */
-    public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir);
-
-
 
     /**
      * Returns all aliases for this node.
@@ -648,34 +616,36 @@ public interface Node {
                                    RelationManager relationManager);
 
     /**
-     * Sets the security context of this Node (AKA the 'owner' field)
+     * set the Context of the current Node
      *
-     * @param context	    	   The security context to which this node should belong,
-     * @throws SecurityException   When appropriate rights to perform this are lacking (write / change context rights)
+     * @param context	    	    The context to which the current node should belong,
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (change context)
      */
     public void setContext(String context);
 
     /**
-     * Get the security context of the current Node
+     * get the Context of the current Node
      *
-     * @return the current context of the node (as a String)
-     * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
+     * @return the current context of the node
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (read rights)
      */
     public String getContext();
 
     /**
-     * Contacts the security implementation to find out to which other possible contextes the
-     * context of this node may be set.
+     * get the Contextes which can be set to this specific node
      *
-     * @return A StringList containing the contextes which can be used in setContext on this node.
-     * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
+     * @return the contextes from which can be chosen
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (read rights)
      */
     public StringList getPossibleContexts();
 
     /**
      * Check write rights on this node.
      *
-     * @return                      Whether the node may be changed by the current user
+     * @return                      whether the node may be changed by the current user
      */
 
     public boolean mayWrite();
@@ -683,7 +653,7 @@ public interface Node {
     /**
      * Check delete rights on this node.
      *
-     * @return                      Whether the node may be deleted by the current user
+     * @return                      whether the node may be deleted by the current user
      */
 
     public boolean mayDelete();
@@ -692,7 +662,7 @@ public interface Node {
      * Check link rights on this node.
      *
      * @deprecated  As of 20020123, replaced by {@link RelationManager#mayCreateRelation(Node,Node)}
-     * @return                      Whether the current user may link to this node
+     * @return                      whether the current user may link to this node
      */
 
     public boolean mayLink();
@@ -701,7 +671,7 @@ public interface Node {
     /**
      * Check context-change rights on this node.
      *
-     * @return                      Whether the current user may change the context of this node
+     * @return                      whether the current user may change the context of this node
      */
     public boolean mayChangeContext();
 

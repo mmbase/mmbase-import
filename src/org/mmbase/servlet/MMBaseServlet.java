@@ -36,13 +36,13 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.25 2003-07-21 20:04:04 keesj Exp $
+ * @version $Id: MMBaseServlet.java,v 1.16.2.4 2003-07-03 08:49:34 vpro Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class MMBaseServlet extends  HttpServlet {
 
-    private   static Logger log = Logging.getLoggerInstance(MMBaseServlet.class);
+    private   static Logger log;
     protected static MMBase mmbase;
     // private   static String context;
 
@@ -74,7 +74,7 @@ public class MMBaseServlet extends  HttpServlet {
 
     private static int servletInstanceCount = 0;
     // servletname -> servletmapping
-    // obtained from web.xml
+    // obtained from web.xml  
     private static Map servletMappings    = new Hashtable();
     // topic -> servletname
     // set by isntantiated servlets
@@ -84,7 +84,7 @@ public class MMBaseServlet extends  HttpServlet {
     private static Map associatedServletMappings = new Hashtable();
     // mapping to servlet instance
     private static Map mapToServlet = new Hashtable();
-
+    
     /**
      * On default, servlets are not associated with any function.
      *
@@ -122,6 +122,10 @@ public class MMBaseServlet extends  HttpServlet {
             ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
             MMBaseContext.initHtmlRoot();
+        }
+        if (log == null) {
+            // Initializing log here because log4j has to be initialized first.
+            log = Logging.getLoggerInstance(MMBaseServlet.class.getName());
         }
 
         log.info("Init of servlet " + getServletName() + ".");
@@ -164,11 +168,9 @@ public class MMBaseServlet extends  HttpServlet {
         }
         if (mmbase == null) {
             log.service("Creating MMBase module in " + getServletName());
-            try {
-                mmbase = MMBase.getMMBase();
-            } catch (Throwable e) {
+            mmbase = MMBase.getMMBase();
+            if (mmbase == null) {
                 log.error("Could not find module with name 'MMBASEROOT'!");
-                log.error(Logging.stackTrace(e));
             }
         }
         log.debug("Associating this servlet with functions");
@@ -226,7 +228,7 @@ public class MMBaseServlet extends  HttpServlet {
         ServletEntry mapping = (ServletEntry)associatedServletMappings.get(function);
         if (mapping != null) {
             List mappings = new ArrayList();
-            mappings.add(mapping.name);
+            mappings.add(mapping.name); 
             return mappings;
         }
         // otherwise, get the associated servet
@@ -275,8 +277,8 @@ public class MMBaseServlet extends  HttpServlet {
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
         log.service("Associating function '" + function + "' with servletname " + servletName + 
-           (e == null ? ""  : " (previous assosation was with " + e.name +")")+
-           (m == null ? ""  : " (previous assosation was with " + m.name +")"));
+           (e == null ? ""  : " (removing " + e.name +")")+
+           (m == null ? ""  : " (removing " + m.name +")"));
         associatedServlets.put(function, new ServletEntry(servletName, priority));
         if (m != null) {
             associatedServletMappings.remove(function);
@@ -298,9 +300,9 @@ public class MMBaseServlet extends  HttpServlet {
         if (m != null && (priority.intValue() < m.priority)) return;
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
-        log.service("Associating function '" + function + "' with servletmapping " + servletMapping +
-           (e == null ? ""  : " (previous assosation was with " + e.name +")")+
-           (m == null ? ""  : " (previous assosation was with " + m.name +")"));
+        log.service("Associating function '" + function + "' with servletmapping " + servletMapping + 
+           (e == null ? ""  : " (removing " + e.name +")")+
+           (m == null ? ""  : " (removing " + m.name +")"));
         associatedServletMappings.put(function, new ServletEntry(servletMapping, priority));
         if (e != null) {
             associatedServlets.remove(function);
@@ -420,7 +422,7 @@ public class MMBaseServlet extends  HttpServlet {
         while (i.hasNext()) {
             String mapping=(String)i.next();
             mapToServlet.remove(mapping);
-        }
+        }       
         super.destroy();
          // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
@@ -433,6 +435,7 @@ public class MMBaseServlet extends  HttpServlet {
                 Module.shutdownModules();
                 Logging.shutdown();
                 mmbase = null;
+                log    = null;
             }
         }
    }

@@ -22,7 +22,7 @@ import org.mmbase.module.corebuilders.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.8 2003-07-03 13:15:10 pierre Exp $
+ * @version $Id: FieldSelector.java,v 1.7.8.1 2003-07-03 13:13:18 vpro Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 	

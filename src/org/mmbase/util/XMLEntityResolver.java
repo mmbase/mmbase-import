@@ -9,35 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
+
+import org.xml.sax.*;
 import java.util.Map;
 import java.util.Hashtable;
 
+
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.xml.BuilderReader;
-import org.mmbase.util.xml.DatabaseReader;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import org.mmbase.util.logging.*;
 
 /**
  * Take the systemId and converts it into a local file, using the MMBase config path
  *
- * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.37 2003-07-21 12:19:06 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.18.2.10 2003-04-10 08:28:50 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
-    private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class);
+    private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
 
     private static final String MMRESOURCES = "/org/mmbase/resources/";
 
@@ -49,10 +40,10 @@ public class XMLEntityResolver implements EntityResolver {
     /**
      * Container for dtd resources information
      */
-    static class Resource {
+    public static class Resource {
         private Class clazz;
         private String file;
-        Resource(Class c, String f) {
+        public Resource(Class c, String f) {
             clazz = c; file = f;
         }
 
@@ -70,34 +61,25 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     static {
-        // ask known (core) xml readers to register their public ids and dtds
-        XMLBasicReader.registerPublicIDs();
-        BuilderReader.registerPublicIDs();
-        XMLApplicationReader.registerPublicIDs();
-        DatabaseReader.registerPublicIDs();
-        XMLModuleReader.registerPublicIDs();
-        org.mmbase.util.xml.UtilReader.registerPublicIDs();
-        org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
-        // Manually register transaction dtd
-        // This has to be placed in registerPublicIDs() in the TransactionHandler class, but which one?
-        // There are two:
-        // - org.mmbase.module.TransactionHandler
-        // - org.mmbase.applications.xmlimporter.TransactionHandler
-        // If the latter, TransactionHandler is an application and should not be called from here.
-        registerPublicID("-//MMBase//DTD builder transactions 1.0//EN", "transactions_1_0.dtd", org.mmbase.module.TransactionHandler.class);
+
+        // Most current Public IDs
+        publicIDtoResource.put("-//MMBase//DTD builder config 1.1//EN",  new Resource(XMLBasicReader.class, "builder_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD module config 1.0//EN",  new Resource(XMLModuleReader.class, "module_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD util config 1.0//EN",    new Resource(org.mmbase.util.xml.UtilReader.class, "util_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD application config 1.0//EN", new Resource(XMLApplicationReader.class, "application_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD builder transactions 1.0//EN", new Resource(org.mmbase.module.TransactionHandler.class, "transactions_1_0.dtd"));
+
+        // Legacy Public IDs
+        publicIDtoResource.put("-//MMBase/DTD builder config 1.1//EN",  new Resource(XMLBasicReader.class, "builder_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD builder config 1.0//EN",  new Resource(XMLBasicReader.class, "builder_1_0.dtd"));
+        publicIDtoResource.put("//MMBase - builder//",                  new Resource(XMLBasicReader.class, "builder_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD module config 1.0//EN",   new Resource(XMLModuleReader.class, "module_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase/ DTD module config 1.0//EN",  new Resource(XMLModuleReader.class, "module_1_0.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase/DTD application config 1.0//EN", new Resource(XMLApplicationReader.class, "application_1_0.dtd"));
     }
 
-    /**
-     * Register a given publicID, binding it to a resource determined by a given class and resource filename
-     * @param publicID the Public ID to register
-     * @param dtd the name of the resourcefile
-     * @param c the class indicating the location of the resource in the pacakage structure. The
-     *          resource is to be found in the 'resources' package under the package of the class.
-     */
-    public static void registerPublicID(String publicID, String dtd, Class c) {
-        publicIDtoResource.put(publicID, new Resource(c,dtd));
-        if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
-    }
 
     private String dtdpath;
 
@@ -106,6 +88,14 @@ public class XMLEntityResolver implements EntityResolver {
     private boolean  validate;
     private Class    resolveBase;
 
+
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    static void reinitLogger() {
+        log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
+    }
 
 
     /**

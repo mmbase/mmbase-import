@@ -18,10 +18,6 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.legacy.*;
-
 
 /**
  * This class represents a node's type information object - what used to be the 'builder'.
@@ -33,17 +29,16 @@ import org.mmbase.storage.search.legacy.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.63 2003-08-27 08:24:00 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.54.2.2 2003-04-08 14:32:22 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
-    private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
+    private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
 
     // builder on which the type is based
     protected MMObjectBuilder builder;
 
     // field types
     protected Map fieldTypes = new Hashtable();
-
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -81,7 +76,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
-        super(builder.isVirtual() ? new VirtualNode(BasicCloudContext.mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
+        super(builder.isVirtual() ? new VirtualNode(((BasicCloudContext)cloud.getCloudContext()).mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
         this.builder=builder;
         initManager();
     }
@@ -126,7 +121,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public Node createNode() {
         // create object as a temporary node
-        int id = BasicCloud.uniqueId();
+        int id = cloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
         // if we are in a transaction, add the node to the transaction;
         if (cloud instanceof BasicTransaction) {
@@ -165,32 +160,24 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
     }
 
-    public String getProperty(String name) {
-        if (builder!=null) {
-            return builder.getInitParameter(name);
-        } else {
-            return null;
-        }
-    }
-
-    public Map getProperties() {
-        if (builder!=null) {
-            return new HashMap(builder.getInitParameters());
-        } else {
-            return new HashMap();
-        }
-    }
-
     public String getGUIName() {
         return getGUIName(1);
     }
 
     public String getGUIName(int plurality) {
         if (builder!=null) {
+            Hashtable names;
             if (plurality==1) {
-                return builder.getSingularName(cloud.getLocale().getLanguage());
+                names=builder.getSingularNames();
             } else {
-                return builder.getPluralName(cloud.getLocale().getLanguage());
+                names=builder.getPluralNames();
+            }
+            if (names!=null) {
+                String lang=cloud.getLocale().getLanguage();
+                String tmp=(String)names.get(lang);
+                if (tmp!=null) {
+                    return tmp;
+                }
             }
         }
         return getName();
@@ -198,9 +185,18 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public String getDescription() {
         if (builder!=null) {
-            return builder.getDescription(cloud.getLocale().getLanguage());
-        } 
-        return "";
+            Hashtable descriptions=builder.getDescriptions();
+            if (descriptions!=null) {
+                String lang=cloud.getLocale().getLanguage();
+                String tmp=(String)descriptions.get(lang);
+                if (tmp!=null) {
+                    return tmp;
+                }
+            }
+            return builder.getDescription();
+        } else {
+            return "";
+        }
     }
 
     public FieldList getFields() {
@@ -215,8 +211,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f = (Field)fieldTypes.get(fieldName);
-        if (f == null) throw new NotFoundException("Field " + fieldName + " does not exist.");
+        Field f= (Field)fieldTypes.get(fieldName);
+        if (f==null) throw new NotFoundException("Field "+fieldName+" does not exist.");
         return f;
     }
 
@@ -224,161 +220,56 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return fieldTypes.get(fieldName)!=null;
     }
 
-    /**
-     * Based on NodeSearchQuery
-     *
-     * @since MMBase-1.7
-     */
-    protected NodeList getSecureList(NodeQuery query) {
-
-        Authorization auth = cloud.mmbaseCop.getAuthorization();
-        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
-
-        if (query instanceof BasicQuery) {
-            BasicQuery bquery = (BasicQuery) query;
-            if (bquery.isSecure()) {
-                checked = true;
-            } else {
-                Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
-                bquery.setSecurityConstraint(check);
-                checked = bquery.isSecure();
-            }
-        }
-
-        List resultList;
-        try {
-            resultList = builder.getNodes((NodeSearchQuery)((BasicNodeQuery) query).getQuery()); // result with all MMObjectNodes (without security)
-            // cached in MMObjectBuilder.
-
-        } catch (SearchQueryException sqe) {
-            throw new BridgeException(sqe);
-        }
-        query.markUsed();
-
-        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
-        if (! checked) {
-            log.debug("checking read rights");
-            list.autoConvert = false;
-
-            ListIterator i = list.listIterator();
-            while (i.hasNext()) {
-                if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
-                    i.remove();
-                }
-            }
-        }
-        list.setProperty("query", query);
-        list.autoConvert = true;
-        return list;
-
-    }
-
-
-    /**
-     * Based on multi-level query. Returns however 'normal' nodes based on the last step.
-     *
-     * @todo implement
-     * @since MMBase-1.7
-     */
-    protected NodeList getLastStepList(Query query) {
-        
-        // add all fields
-        List resultList = cloud.getList(query);
-
-
-        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
-        list.autoConvert = false;
-
-        list.setProperty("query", query);
-        list.autoConvert = true;
-        return list;
-
-    }
-
-    public NodeList getList(NodeQuery query) {
-        if (query instanceof BasicNodeQuery) {
-            return getSecureList(query);
-        } else {
-            return getLastStepList(query); // not working yet
-        }
-
-    }
-
-
-    // javadoc inherited
-    public NodeQuery createQuery() {
-        return new BasicNodeQuery(this);
-    }
-
-
-
-    public NodeList getList(String constraints, String sorted, String directions) {
+    public NodeList getList(String constraints, String orderby, String directions) {
         MMObjectBuilder builder = getMMObjectBuilder();
 
         // begin of check invalid search command
-        /*
         org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
-        if(orderby != null)    orderby     = encoder.encode(orderby);
+        if(orderby != null) orderby  = encoder.encode(orderby);
         if(directions != null) directions  = encoder.encode(directions);
         if(constraints != null && !cloud.validConstraints(constraints)) {
             throw new BridgeException("invalid contrain:" + constraints);
         }
-        */
         // end of check invalid search command
 
 
-        NodeSearchQuery query = new NodeSearchQuery(builder);
-        if (constraints != null) {
-            query.setConstraint(new ConstraintParser(query).toConstraint(constraints));
+        String where = null;
+        if ((constraints != null) && (!constraints.trim().equals(""))) {
+            where=cloud.convertClauseToDBS(constraints);
         }
-
-
-        // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
-        if (directions == null) {
-            directions = "";
+        List v;
+        try {
+            if (orderby != null && (!orderby.trim().equals(""))) {
+                v = builder.searchList(where, orderby, directions);
+            } else {
+                v = builder.searchList(where);
+            }
+        } catch (java.sql.SQLException e) {
+            throw new BridgeException(e);
         }
-        
-        if (sorted != null) {
-            StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
-            StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
-            
-            String direction = "UP";
-            while (sortedTokenizer.hasMoreElements()) {
-                String fieldName = sortedTokenizer.nextToken().trim();
-                FieldDefs fieldDefs = builder.getField(fieldName);
-                if (fieldDefs == null) {
-                    throw new IllegalArgumentException("Not a known field of builder " + builder.getTableName() + ": '" + fieldName + "'");
-                }
-                StepField field = query.getField(fieldDefs);
-                BasicSortOrder sortOrder = query.addSortOrder(field);
-                if (directionsTokenizer.hasMoreElements()) {
-                    direction = directionsTokenizer.nextToken().trim();
-                }
-                if (direction.equalsIgnoreCase("DOWN")) {
-                    sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
-                } else {
-                    sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
-                }
+        // remove all nodes that cannot be accessed
+        for(int i = v.size() - 1; i >= 0; i--) {
+            if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getNumber())) {
+                v.remove(i);
             }
         }
-        NodeQuery q = new BasicNodeQuery(this, query);
-        NodeList list = getList(q);
-        list.setProperty("constraints", constraints);
-        list.setProperty("orderby",     sorted);
-        list.setProperty("directions",  directions);
+        NodeList list= new BasicNodeList(v,this);
+        list.setProperty("constraints",constraints);
+        list.setProperty("orderby",orderby);
+        list.setProperty("directions",directions);
         return list;
 
     }
 
     public RelationManagerList getAllowedRelations() {
-       return getAllowedRelations((NodeManager) null, null, null);
+       return getAllowedRelations((NodeManager)null,null,null);
     }
 
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) {
         if (nodeManager==null) {
-            return getAllowedRelations((NodeManager)null, role, direction);
+            return getAllowedRelations((NodeManager)null,role,direction);
         } else {
-            return getAllowedRelations(cloud.getNodeManager(nodeManager), role, direction);
+            return getAllowedRelations(cloud.getNodeManager(nodeManager),role,direction);
         }
     }
 
@@ -401,7 +292,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         } else {
             typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType);
         }
-        List nodes = new ArrayList();
+        List nodes=new Vector();
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n= (MMObjectNode)typerelNodes.nextElement();
             if ((requestedRole==-1) || (requestedRole==n.getIntValue("rnumber"))) {
@@ -509,5 +400,4 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         super.delete(deleteRelations);
         builder=null;  // invalidate (builder does not exist any more)
     }
-
 }

@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -21,7 +24,7 @@ import org.mmbase.util.logging.*;
  * a way to block until the next event or notify of
  * a possible queue change.
  *
- * @version $Id: EmailSendProbe.java,v 1.8 2003-05-07 21:06:47 kees Exp $
+ * @version 15 May 2001
  * @author Daniel Ockeloen
  */
 public class EmailSendProbe implements Runnable {
@@ -86,7 +89,6 @@ public class EmailSendProbe implements Runnable {
 		// Start up the main thread 
 		if (kicker == null) {
 			kicker = new Thread(this,"emailsendprobe");
-			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -96,7 +98,9 @@ public class EmailSendProbe implements Runnable {
 	 */
 	public void stop() {
 		// stop the thread
-		kicker.interrupt();
+		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.suspend();
+		kicker.stop();
 		kicker = null;
 	}
 
@@ -110,7 +114,8 @@ public class EmailSendProbe implements Runnable {
 	 * a call on our parent and remove ourselfs from the queue
 	 */
 	public synchronized void run() {
-		// this is a lowlevel thingie  
+		// this is a lowlevel thingie
+		kicker.setPriority(Thread.MIN_PRIORITY+1);  
 		while (kicker!=null) {
 				// try to select a new first node
 				if (tasks.size()>0) {
@@ -127,7 +132,7 @@ public class EmailSendProbe implements Runnable {
 						wait(3600*1000);
 					} else {
 						// get the current time
-						int ttime=(int)((System.currentTimeMillis()/1000)); 
+						int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
 						// het the wanted time
 						int ntime=anode.getIntValue("mailtime");
 						// are we ready or do we need to wait some more ?
@@ -143,7 +148,7 @@ public class EmailSendProbe implements Runnable {
 								log.error("emailsendprobe : performTask failed"+anode);
 								tasks.removeElement(anode);
 								// oke set node on error
-								anode.setValue("mailstatus",Email.STATE_FAILED);
+								anode.setValue("mailstate",parent.STATE_FAILED);
 								anode.commit();
 							}
 				
@@ -162,19 +167,17 @@ public class EmailSendProbe implements Runnable {
 							}
 						}
 					}
-				} catch (InterruptedException e){
-					return;
-				}
+				} catch (InterruptedException e){}
 		}
 	}
 
 	public synchronized boolean putTask(MMObjectNode node) {
-		if (node.getIntValue("mailstatus")!=Email.STATE_QUEUED) {
-			node.setValue("mailstatus",Email.STATE_QUEUED);	
+		if (node.getIntValue("mailstatus")!=parent.STATE_QUEUED) {
+			node.setValue("mailstatus",parent.STATE_QUEUED);	
 			node.commit();
 		}
 		
-		if (node.getIntValue("mailstatus")==Email.STATE_SPAMGARDE) {
+		if (node.getIntValue("mailstatus")==parent.STATE_SPAMGARDE) {
 			return(true);
 		}
 
@@ -221,7 +224,7 @@ public class EmailSendProbe implements Runnable {
 	}
 
 	public synchronized void checkQueue() {
-		int ttime=(int)((System.currentTimeMillis()/1000)); 
+		int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
 
 		// get the events for the next 5 min so we can place them
 		// in the queue if needed

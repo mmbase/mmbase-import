@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.basic;
 
-import org.mmbase.bridge.Query;
+import java.util.HashMap;
+import java.io.File;
+
 import org.mmbase.util.ExtendedProperties;
 
 import org.mmbase.module.core.MMObjectNode;
@@ -21,10 +23,10 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: OwnerAuthorization.java,v 1.9 2003-08-05 19:05:21 michiel Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.7 2002-07-26 08:47:34 vpro Exp $
  */
 public class OwnerAuthorization extends Authorization {
-    private static Logger log=Logging.getLoggerInstance(OwnerAuthorization.class);
+    private static Logger log=Logging.getLoggerInstance(OwnerAuthorization.class.getName());
 
     private static org.mmbase.module.core.MMObjectBuilder builder = null;
 
@@ -76,7 +78,7 @@ public class OwnerAuthorization extends Authorization {
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) {
         // if we don't do security, then we are allowed to do everything.
-       if (!manager.getActive()) {
+        if (!manager.getActive()) {
             log.trace("security is not active. permitting operation");
             return true;
         }
@@ -188,16 +190,5 @@ public class OwnerAuthorization extends Authorization {
     log.debug("returning possible contexts, amount of entries is:" + set.size() + " the following entries where found:" );
     // for(java.util.Iterator i= set.iterator(); i.hasNext(); log.debug("\t"+i.next()) );
     return set;
-    }
-
-    public QueryCheck check(UserContext user, Query query, Operation operation) {
-        if(user.getRank().getInt() >= Rank.ADMIN.getInt()) {
-            return COMPLETE_CHECK;
-        }
-        if(operation == Operation.READ) {
-            return COMPLETE_CHECK;
-        } else {
-            return NO_CHECK;
-        }
     }
 }

@@ -13,6 +13,8 @@ import java.util.*;
 import java.sql.*;
 import java.sql.DriverManager;
 
+import javax.servlet.http.*;
+
 import org.mmbase.util.*;
 import org.mmbase.module.*;
 
@@ -24,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.36 2003-06-05 09:13:07 michiel Exp $
+ * @version $Id: JDBC.java,v 1.29.2.2 2003-03-16 17:47:02 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -33,13 +35,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
     private Class  classdriver;
     private Driver driver;
-    private String jdbcDriver;
-    private String jdbcURL;
-    private String jdbcHost;
-    private int  jdbcPort;
+    private String JDBCdriver;
+    private String JDBCurl;
+    private String JDBChost;
+    private int JDBCport;
     private int maxConnections;
     private int maxQueries;
-    private String jdbcDatabase;
+    private String JDBCdatabase;
     private String databasesupportclass;
     private DatabaseSupport databasesupport;
     private MultiPoolHandler poolHandler;
@@ -71,7 +73,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public void reload() {
         getProps();
 
-       /* This doesn't work, have to figure out why
+        /* This doesn't work, have to figure out why
         try {
         DriverManager.deregisterDriver(driver);
         } catch (SQLException e) {
@@ -84,7 +86,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
     public void unload() {
     }
-    protected void shutdown() {
+    public void shutdown() {
         poolHandler.shutdown();
     }
 
@@ -96,31 +98,31 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
         driver=null;
         try {
-            classdriver=Class.forName(jdbcDriver);
+            classdriver=Class.forName(JDBCdriver);
 
             // marmaa@vpro.nl:
             // This is how McKoi's JDBC drivers wants itself
             // to be registered; should have no affect on other drivers
-            Class.forName(jdbcDriver).newInstance();
+            Class.forName(JDBCdriver).newInstance();
 
-            log.info("Loaded JDBC driver: "+jdbcDriver);
+            log.info("Loaded JDBC driver: "+JDBCdriver);
 
         } catch (Exception e) {
-            log.fatal("JDBC driver not found: "+jdbcDriver+"\n" + Logging.stackTrace(e));
+            log.fatal("JDBC driver not found: "+JDBCdriver+"\n" + Logging.stackTrace(e));
         }
 
-        log.debug("makeUrl(): " + makeUrl());
+    log.debug("makeUrl(): " + makeUrl());
 
         /* Also get the instance to unload it later */
         for (Enumeration e=DriverManager.getDrivers();e.hasMoreElements();) {
             d=(Driver)e.nextElement();
-            log.debug("Driver " + d);
-            if (classdriver == d.getClass()) {
+            log.debug("Driver "+d);
+            if (classdriver==d.getClass()) {
                 driver=d;
                 break;
             }
         }
-        if (driver == null) {
+        if (driver==null) {
             log.warn("getDriver(): the jdbc driver specified in jdbc.xml does not match the actual loaded driver ");
         }
     }
@@ -146,9 +148,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     private void getProps() {
 
-        jdbcDriver=getInitParameter("driver");
-        jdbcURL=getInitParameter("url");
-        jdbcHost=getInitParameter("host");
+        JDBCdriver=getInitParameter("driver");
+        JDBCurl=getInitParameter("url");
+        JDBChost=getInitParameter("host");
         defaultname=getInitParameter("user");
         defaultpassword=getInitParameter("password");
         databasesupportclass=getInitParameter("supportclass");
@@ -162,9 +164,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         }
 
         /*
-        log.trace("jdbcDriver="+jdbcDriver +
-                  "\njdbcURL="+jdbcURL +
-                  "\njdbcHost="+jdbcHost +
+        log.trace("JDBCdriver="+JDBCdriver +
+                  "\nJDBCurl="+JDBCurl +
+                  "\nJDBChost="+JDBChost +
                   "\ndefaultname="+defaultname +
                   "\ndefaultpassword="+defaultpassword +
                   "\ndatabasesupportclass="+databasesupportclass);
@@ -179,10 +181,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             log.warn("name was not set, using default: '" + defaultpassword +"'");
         }
         try {
-            jdbcPort=Integer.parseInt(getInitParameter("port"));
+            JDBCport=Integer.parseInt(getInitParameter("port"));
         } catch (NumberFormatException e) {
-            jdbcPort=0;
-            log.warn("portnumber was not set or a invalid integer :" + e + "(using default " + jdbcPort + ")");
+            JDBCport=0;
+            log.warn("portnumber was not set or a invalid integer :" + e + "(using default " + JDBCport + ")");
         }
         try {
             maxConnections=Integer.parseInt(getInitParameter("connections"));
@@ -200,7 +202,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQueries + ")");
             }
         }
-        jdbcDatabase=getInitParameter("database");
+        JDBCdatabase=getInitParameter("database");
         if (databasesupportclass==null || databasesupportclass.length()==0) {
             databasesupportclass="org.mmbase.module.database.DatabaseSupportShim";
             log.warn("database supportclass was not known, using default: " + databasesupportclass);
@@ -214,7 +216,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl() {
-        return makeUrl(jdbcHost, jdbcPort, jdbcDatabase);
+        return(makeUrl(JDBChost,JDBCport,JDBCdatabase));
     }
 
     /**
@@ -224,7 +226,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String dbm) {
-        return makeUrl(jdbcHost, jdbcPort, dbm);
+        return(makeUrl(JDBChost,JDBCport,dbm));
     }
 
     /**
@@ -234,7 +236,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String host,String dbm) {
-        return makeUrl(host, jdbcPort, dbm);
+        return(makeUrl(host,JDBCport,dbm));
     }
 
     /**
@@ -243,47 +245,47 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * doesn't need to care about what database it talks to.
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
-    public String makeUrl(String host, int port, String dbm) {
-        String pre, post;
+    public String makeUrl(String host,int port,String dbm) {
+        String pre,post;
         int pos;
-        String end = jdbcURL;
+        String end=new String(JDBCurl);
         // $HOST $DBM $PORT
 
-        pos = end.indexOf("$DBM");
-        if (pos != -1) {
-            pre  = end.substring(0,pos);
-            post = end.substring(pos + 4);
-            end = pre + dbm + post;
+        pos=end.indexOf("$DBM");
+        if (pos!=-1) {
+            pre=end.substring(0,pos);
+            post=end.substring(pos+4);
+            end=pre+dbm+post;
         } else {
             log.service("Database name is static, can't select other databases within this databaseserver");
         }
-        pos = end.indexOf("$HOST");
-        if (pos !=- 1) {
-            pre = end.substring(0,pos);
-            post = end.substring(pos+5);
-            end = pre + host + post;
+        pos=end.indexOf("$HOST");
+        if (pos!=-1) {
+            pre=end.substring(0,pos);
+            post=end.substring(pos+5);
+            end=pre+host+post;
         }
         pos=end.indexOf("$PORT");
-        if (pos != -1) {
-            pre = end.substring(0,pos);
-            post = end.substring(pos+5);
-            end = pre + port + post;
+        if (pos!=-1) {
+            pre=end.substring(0,pos);
+            post=end.substring(pos+5);
+            end=pre+port+post;
         }
-        return end;
+        return(end);
     }
 
     /**
      * @javadoc
      */
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-        return poolHandler.getConnection(url,name,password);
+        return(poolHandler.getConnection(url,name,password));
     }
 
     /**
      * @javadoc
      */
     public MultiConnection getConnection(String url) throws SQLException {
-        return poolHandler.getConnection(url,defaultname,defaultpassword);
+        return(poolHandler.getConnection(url,defaultname,defaultpassword));
     }
 
     /**
@@ -291,14 +293,15 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public Connection getDirectConnection(String url,String name,String password) throws SQLException {
 
-        return DriverManager.getConnection(url,name,password);
+        return(DriverManager.getConnection(url,name,password));
     }
 
     /**
      * @javadoc
      */
     public Connection getDirectConnection(String url) throws SQLException {
-        return DriverManager.getConnection(url, defaultname, defaultpassword);
+
+        return(DriverManager.getConnection(url,defaultname,defaultpassword));
     }
 
     /**
@@ -386,28 +389,28 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         tagger.setValue("ITEMS","4");
-        return results;
+        return(results);
     }
 
     /**
      * @javadoc
      */
     public String getUser() {
-        return defaultname;
+        return(defaultname);
     }
 
     /**
      * @javadoc
      */
     public String getPassword() {
-        return defaultpassword;
+        return(defaultpassword);
     }
 
     /**
      * @javadoc
      */
     public String getDatabaseName() {
-        return getInitParameter("database");
+        return(getInitParameter("database"));
     }
 
     /**
@@ -415,7 +418,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @return a <code>String</code> whith some information about the connection
      */
      public String toString() {
-            if (driver == null) return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultname + "'";
-            return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
+            if(driver==null) return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "'";
+            return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
      }
 }
