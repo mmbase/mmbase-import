@@ -1,7 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@page language="java" contentType="text/html; charset=UTF-8"
-%><%@include file="import.jsp" %><%@include file="settings.jsp" %>
-<mm:content language="$language" postprocessor="reducespace">
+%><%@include file="import.jsp"
+%><%@include file="settings.jsp"
+%><mm:content language="$language" postprocessor="reducespace">
 <mm:import id="url">index_users.jsp</mm:import>
 
 <mm:import externid="orderby">username</mm:import>
