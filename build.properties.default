@@ -6,7 +6,13 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.7 2004-11-03 20:34:14 keesj Exp $
+# Should files appear to be missing, consult
+#
+#  - http://www.filewatcher.org
+#
+# for possible mirrors.
+#
+# $Id: build.properties.default,v 1.8 2004-11-09 10:15:05 marcel Exp $
 # -----------------------------------------------------------------------------
 
 
