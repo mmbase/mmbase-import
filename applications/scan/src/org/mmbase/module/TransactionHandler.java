@@ -33,26 +33,23 @@ import org.xml.sax.*;
  *
  */
  
-public class TransactionHandler 
-	extends Module 
-	implements TransactionHandlerInterface {
+public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-	private boolean _debug=true;
+	private static boolean _debug=true;
+	private MMBase mmbase;
+
+	// Cashes all transaction belonging to one user.
+	private static Hashtable cashUser = new Hashtable();
+	// Handle to the transaction manager.
+	private TransactionManagerInterface transactionManager;
+	// Handle to the temporary object manager.
+	private TemporaryNodeManagerInterface tmpObjectManager;
+
 	private void debug( String msg, int indent) {
 		System.out.print("TR: ");
 		for (int i = 1; i < indent; i++) System.out.print("\t");
 		System.out.println(msg);
 	}
-
-	// hashtable used to cache per user for thread safety
-	// the construct ((UserTransactionInfo) cashUser.get(currentUser))
-	// this is hided if function userInfo(), just for readability
-	// is used to refer to the current info indexed per user
-	private static Hashtable cashUser = new Hashtable();
-	
-	private MMBase mmbase;
-	private TransactionManagerInterface transactionManager;
-	private TemporaryNodeManagerInterface tmpObjectManager;
 	
 	public TransactionHandler() {
 	}
@@ -91,7 +88,7 @@ public class TransactionHandler
 		
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
-		// get handle to transactions of user
+		// get handle to all transactions of a user.
 		String user = session.getCookie();
 		UserTransactionInfo uti = userInfo(user); 
 		parse(null, is, uti);
@@ -191,7 +188,7 @@ public class TransactionHandler
 				anonymousTransaction = false;
 			}
 			if (commit==null) commit="true";
-			if (time==null) time="6";
+			if (time==null) time="60";
 
 			if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 		
@@ -203,7 +200,7 @@ public class TransactionHandler
 				}
 				// actually create and administrate if not anonymous
 				currentTransactionContext = transactionManager.create(userTransactionInfo.user, id);
-				transactionInfo = new TransactionInfo(currentTransactionContext);
+				transactionInfo = new TransactionInfo(currentTransactionContext,time,id,userTransactionInfo);
 				if (!anonymousTransaction) {
 					userTransactionInfo.knownTransactionContexts.put(id, transactionInfo);
 				}
@@ -232,6 +229,7 @@ public class TransactionHandler
 			if (tName.equals("createTransaction") || tName.equals("openTransaction")) {
 				if(commit.equals("true")) {
 					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
+					transactionInfo.stop();	
 				}
 			} 
 			if (tName.equals("commitTransaction")) {
@@ -459,17 +457,55 @@ public class TransactionHandler
 	/**
 	 * container class for objects per transaction
 	 */
-	class TransactionInfo {
-		// The transaction 
+	class TransactionInfo implements Runnable{
+		// The transactionname 
 		String transactionContext = null;		
 		// All objects belonging to a certain transaction
 		Hashtable knownObjectContexts = new Hashtable();
 		// Needed to timeout transaction
-		long startTime = 0;		
+		long timeout =0;
+		// id of the transaction
+		String id = "";
+		// thread to monitor timeout
+		Thread kicker = null;
+		// List of transaction of a user
+		UserTransactionInfo uti = null;
 
-		TransactionInfo (String t) {
+		TransactionInfo (String t, String timeout, String id, UserTransactionInfo uti) {
 			this.transactionContext = t;
-			startTime = java.lang.System.currentTimeMillis();
+			this.timeout=Long.parseLong(timeout)*1000;
+			this.id=id;
+			this.uti=uti;
+			start();
+		}
+
+  		public void start() {
+        	if (kicker == null) {
+            	kicker = new Thread(this,"TR "+transactionContext);
+            	kicker.start();
+        	}
+    	}
+
+    	public void stop() {
+			uti.knownTransactionContexts.remove(id);
+        	kicker.setPriority(Thread.MIN_PRIORITY);
+        	kicker.suspend();
+        	kicker.stop();
+        	kicker = null;
+    	}
+
+    	public void run () {
+        	try {
+				Thread.sleep(timeout);
+				System.out.println("Transaction with id="+id +" is timed out after "+timeout/1000+" seconds.");
+				stop();
+        	} catch (Exception e) {
+            	System.out.println("Transaction with id="+id+" has a problem.");
+        	}
+    	}
+
+		public String toString() {
+			return "TranactionInfo => transactionContext="+transactionContext+" id="+id+" timeout="+timeout+".";	
 		}
 	}
 }
