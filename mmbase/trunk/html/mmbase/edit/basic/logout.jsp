@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"  
 %><mm:cloud method="logout" sessionname="${SESSION}" jspvar="cloud">
-<mm:write referid="style" />
+<mm:write referid="config.style" />
 <title>Logging out</title>
 </head>
 <body class="basic"><% 

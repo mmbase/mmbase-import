@@ -5,8 +5,7 @@
 </head>
 <mm:context id="edit">
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
-<mm:import externid="hidesearch" from="parameters">false</mm:import>
-<body class="basic" <mm:present referid="node_type"><mm:compare referid="hidesearch" value="false"> onLoad="document.search.elements[0].focus();"</mm:compare></mm:present>>
+<body class="basic" <mm:present referid="node_type"><mm:compare referid="config.hide_search" value="false"> onLoad="document.search.elements[0].focus();"</mm:compare></mm:present>>
     <table summary="node editors" width="100%" cellspacing="1" cellpadding="0" border="0">
     	<tr align="left">
     	    <th width="20%">Node Type</th>
@@ -37,7 +36,7 @@
       	    	    	</td>												
       	    	    	<td class="navigate">
 			    <% if (! nt.getName().equals(node_type)) { %>
-            	    	    <a href='<mm:url referids="hidesearch" ><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>' >
+            	    	    <a href='<mm:url><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>' >
 			    	<img src="images/select.gif" alt="[list]" width="20" height="20" border="0" />
 			    </a>
 			    <% } else { %>

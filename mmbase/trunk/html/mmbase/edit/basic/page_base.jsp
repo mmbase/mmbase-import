@@ -11,10 +11,22 @@ response.setHeader("Expires",  "0");
 <%@ page import="org.mmbase.bridge.*"    
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm" 
 %>
-<!-- some configuration -->
-<mm:context id="config">
-<mm:import id="page_size">20</mm:import>
-</mm:context>
 
-<mm:import id="style"><link href="css/mmbase.css" rel="stylesheet" type="text/css" media="screen" /></mm:import>
+<!-- some configuration -->
+
+<!-- first try if it is in the session -->
+<mm:import id="config" externid="mmeditors_config" from="session" />
+
+<!-- if not, fill it with default -->
+<mm:notpresent referid="config">
+<mm:remove referid="config" /><!-- it is not possible to overwrite existing var -->
+<mm:context id="config">
+  <mm:import id="page_size">20</mm:import>
+  <mm:import id="hide_search">false</mm:import>
+  <mm:import id="style_sheet">mmbase.css</mm:import>
+</mm:context>
+<mm:write referid="config" session="mmeditors_config" />
+</mm:notpresent>
+
+<mm:import id="style"><link href="css/<mm:write referid="config.style_sheet" />" rel="stylesheet" type="text/css" media="screen"  /></mm:import>
 <mm:import id="SESSION">mmbase_editors_cloud</mm:import>

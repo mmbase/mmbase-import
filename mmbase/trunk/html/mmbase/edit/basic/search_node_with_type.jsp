@@ -2,9 +2,6 @@
     <!-- for selecting next page with listings -->
     <mm:import externid="page" vartype="decimal" from="parameters">0</mm:import>
     
-    <!-- you can specify the parameter 'hidesearch' to hide the search functionality -->    
-    <mm:import externid="hidesearch" from="parent">false</mm:import>
-
     <mm:import externid="node_type"  required="true" from="parent"/>
     <mm:import externid="to_page"    required="true" from="parent"/>
     
@@ -15,7 +12,7 @@
     <mm:import externid="maylink"    from="parameters" />
     
     <!-- you can specify the parameter 'hidesearch' to hide the search functionality -->    
-    <mm:compare referid="hidesearch" value="false">
+    <mm:compare referid="config.hide_search" value="false">
     	<form name="search" method="post" action='<mm:url referids="node,node_type,role_name" />'>
     	    <table class="search" width="100%" border="0" cellspacing="1">
 	    	<!-- search table -->
@@ -68,7 +65,7 @@
     	    	<th>&nbsp;</th>
     	    </tr>
     	    <mm:listnodes id="sn" type="${node_type}" directions="DOWN"   orderby="number"
-            	offset="${+$page*$page_size}"  max="${+$page_size +1}"
+            	offset="${+$page*$config.page_size}"  max="${+$config.page_size +1}"
             	jspvar="sn"
             	constraints="${where}">
             <mm:last inverse="true">
@@ -102,7 +99,7 @@
     	    </tr>	
             </mm:last>
             <mm:last>
-              <mm:index><mm:compare value="${+$page_size+1}">
+              <mm:index><mm:compare value="${+$config.page_size+1}">
                   <mm:import id="next_page">jes</mm:import>
               </mm:compare>
               </mm:index>
