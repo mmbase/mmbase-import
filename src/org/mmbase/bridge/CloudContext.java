@@ -16,43 +16,54 @@ import java.util.List;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @author Jaco de Groot
  */
 public interface CloudContext {
 
 	/**
-	 * Retrieves all the modules available in this context
+	 * Returns all modules available in this context.
+     *
 	 * @return all available modules
 	 */
 	public ModuleList getModules();
 	
 	/**
-	 * Retrieves a Module
-	 * @param modulename name of the module
-	 * @return the requested module
+	 * Returns the module with the specified name.
+     *
+	 * @param name                      the name of the module to be returned
+	 * @return                          the requested module
+     * @throws ModuleNotFoundException  if the specified module could not be
+     *                                  found
 	 */
-	public Module getModule(String modulename);
+	public Module getModule(String name);
 
 	/**
-	 * Retrieves the names of all clouds within this context
-	 * @return a <code>List</code> of all Cloudnames within this contextas a <code>String</code>
+	 * Returns all clouds available in this context.
+     *
+	 * @return  all available clouds
 	 */
 	public CloudList getClouds();
 
 	/**
-	 * Retrieves a Cloud.
-	 * @param cloudname name of the Cloud
-	 * @return all Clouds
+	 * Returns the cloud with the specified name.
+     *
+	 * @param name                     the name of the cloud to be returned
+	 * @return                         the requested cloud
+     * @throws CloudNotFoundException  if the specified cloud could not be found
 	 */
-	public Cloud getCloud(String cloudname);
+	public Cloud getCloud(String name);
 
 	/**
-	 * Retrieves a Cloud.
-	 * @param cloudname name of the Cloud
-	 * @param readonly if <code>true</code>, the cloud returned is read-only.
-	 *          No transactions are possible, nor any edits/changes to the cloud.
-	 *          This can be used for optimization.
-	 * @return all Clouds
+	 * Returns the cloud with the specified name in readonly mode if requested.
+     * If a cloud is in readonly mode no transactions are possible, nor any
+     * edits/changes to the cloud. This can be used for optimization.
+     *
+	 * @param name                     the name of the cloud to be returned
+	 * @param readonly                 <code>true</code> if the returned cloud
+     *                                 should be in readonly mode
+	 * @return                         the requested cloud
+     * @throws CloudNotFoundException  if the specified cloud could not be found
 	 */
-	public Cloud getCloud(String cloudname, boolean readonly);
+	public Cloud getCloud(String name, boolean readonly);
 
  }
