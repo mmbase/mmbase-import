@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.11 2001-04-20 14:15:48 michiel Exp $
+$Id: MMHttpHandler.java,v 1.12 2001-05-08 13:50:07 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2001/04/20 14:15:48  michiel
+michiel: replaced Logging system in remote directory with old style system (with a script)
+
 Revision 1.10  2001/04/11 15:31:23  michiel
 michiel: new logging system
 
@@ -45,7 +48,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.11 $ $Date: 2001-04-20 14:15:48 $
+ * @version $Revision: 1.12 $ $Date: 2001-05-08 13:50:07 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable { 
@@ -53,7 +56,7 @@ public class MMHttpHandler implements Runnable {
     private static String __classname = MMHttpHandler.class.getName();
 
 
-    boolean __debug = false;
+    boolean __debug = true;
     private static void __debug(String s) { System.out.println(__classname + ":" + s); }
     //private static Logger log = Logging.getLoggerInstance(MMHttpHandler.class.getName()); 
 
@@ -105,14 +108,14 @@ public class MMHttpHandler implements Runnable {
 				StringTokenizer tok=new StringTokenizer(line," \n\r\t");
 
 				/**
-	 			 * checking here if the shared secret is correct .
+				 * checking here if the shared secret is correct .
 				 */
 				
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
-                    if (__debug) {
-                        /*log.debug*/__debug("run(): Got method: "+method);
-                    }
+					if (__debug) {
+						/*log.debug*/__debug("run(): Got method: "+method);
+					}
 					if (method.equals("GET"))
 						doGet(tok,in,out);
 					if (method.equals("POST")) 
@@ -121,21 +124,21 @@ public class MMHttpHandler implements Runnable {
 			}
 			// Read all remaining data that was sent with request.
 			line = in.readLine();
-            if (__debug) {
-                /*log.debug*/__debug("run: Reading lines of remaining data sent with request value: "+line);
-            }
-			while (line.equals("")) {
+			if (__debug) {
+				/*log.debug*/__debug("run: First line of date that was sent with request, line: "+line);
+			}
+			while (!line.equals("")) {
 				line = in.readLine();
-                if (__debug) {
-                    /*log.debug*/__debug("run: Reading lines of remaining data sent with request value: "+line);
-                }
+				if (__debug) {
+					/*log.debug*/__debug("run: Remaining line of data that was sent with request, line: "+line);
+				}
 			}
 
 			// Close socket.
-            if (__debug) {
-                /*log.debug*/__debug("run: Closing socket.");
-            }
-            clientsocket.close();	
+			if (__debug) {
+				/*log.debug*/__debug("run: Closing socket.");
+			}
+			clientsocket.close();	
 		} catch(Exception e) {
 			/*log.error*/__debug("run(): exception: "+e);
 			/*log.error*/e.printStackTrace();
@@ -154,29 +157,29 @@ public class MMHttpHandler implements Runnable {
 			String requestUrl=tok.nextToken();
 			int filePos = requestUrl.indexOf(REMOTE_REQUEST_URI_FILE);
 			if (filePos!=-1){               
-                if (__debug) {
-                    /*log.debug*/__debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
-                }
+				if (__debug) {
+					/*log.debug*/__debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
+				}
 				int queryPos = requestUrl.indexOf("?");
 				if (queryPos!=-1){
 					String queryString=requestUrl.substring(queryPos+1); //+1 ='?' char.
-                    if (__debug) {
-                        /*log.debug*/__debug("doGet: Retrieved querystring: "+queryString);
-                    }
+					if (__debug) {
+						/*log.debug*/__debug("doGet: Retrieved querystring: "+queryString);
+					}
 					doXMLSignal(queryString);
 					statusCode = "200 OK";
 				} else {
-				    /*log.error*/__debug("doGet: No querystring: "+requestUrl);
+					/*log.error*/__debug("doGet: No querystring: "+requestUrl);
 					statusCode = "400 Bad Request"; 
 				}
 			}else {
-                /*log.warn*/__debug("doGet: WARNING: unknown requesturl:"+requestUrl);
+				/*log.warn*/__debug("doGet: WARNING: unknown requesturl:"+requestUrl);
 				statusCode = "404 Not Found"; 
 			}
 		}
-        if (__debug) {
-            /*log.debug*/__debug("doGet: Returning "+statusCode);
-        }
+		if (__debug) {
+			/*log.debug*/__debug("doGet: Returning "+statusCode);
+		}
 		out.println(statusCode);
 		out.flush();
 	}
