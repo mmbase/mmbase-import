@@ -15,6 +15,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import org.mmbase.util.Arguments;
+import org.mmbase.util.Argument;
 
 /**
  * If this class is used as the class for your builder, then an
@@ -28,11 +30,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.75 2003-05-05 08:33:18 kees Exp $
+ * @version $Id: Images.java,v 1.76 2003-05-19 09:00:15 michiel Exp $
  */
 public class Images extends AbstractImages {
 
-    private static Logger log = Logging.getLoggerInstance(Images.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Images.class);
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
@@ -40,6 +42,11 @@ public class Images extends AbstractImages {
         public String getName()        { return "CkeyNumberCache"; }
         public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
+
+    public final static Argument[] CACHE_ARGUMENTS = { 
+        new Argument("template",  String.class)};
+
+
 
     public Images() {
         templateCacheNumberCache.putCache();
@@ -119,8 +126,8 @@ public class Images extends AbstractImages {
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executeFunction of images builder");
         if ("cache".equals(function)) {
-            if (args == null || args.size() != 1) throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
-
+            if (args == null || args.size() != 1) 
+                throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
             return new Integer(cacheImage(node, (String) args.get(0)));
         } else {
             return super.executeFunction(node, function, args);
@@ -131,24 +138,25 @@ public class Images extends AbstractImages {
      * @javadoc
      */
     public void setDefaults(MMObjectNode node) {
-        node.setValue("description","");
+        node.setValue("description", "");
     }
 
     /**
      * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
      */
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req, String sessionName) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments args) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
             return "...";
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
-        List args = new ArrayList();
-        args.add("s(100x60)");
-        String imageThumb = servlet + executeFunction(node, "cache", args);
+        String ses = (String) args.get("session");
+        String servlet    = getServletPath() + (usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
+        List cacheArgs =  new Arguments(CACHE_ARGUMENTS).set("template", ImageCaches.GUI_IMAGETEMPLATE);
+        String imageThumb = servlet + executeFunction(node, "cache", cacheArgs);
         String image      = servlet + node.getNumber();
+        HttpServletResponse res = (HttpServletResponse) args.get("response");
         if (res != null) {
             imageThumb = res.encodeURL(imageThumb);
             image      = res.encodeURL(image);
@@ -157,10 +165,8 @@ public class Images extends AbstractImages {
     }
 
     // javadoc copied from parent
-    protected String getSGUIIndicator(String session, HttpServletResponse res, 
-                                      // HttpServletRequest req, 
-                                      MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), res, null, session);
+    protected String getSGUIIndicator(MMObjectNode node, Arguments args) {
+        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
     }
 
     /**

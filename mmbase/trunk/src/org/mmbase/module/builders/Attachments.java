@@ -11,6 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.23 2003-03-04 14:12:19 nico Exp $
+ * @version $Id: Attachments.java,v 1.24 2003-05-19 09:00:15 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -58,11 +59,11 @@ public class Attachments extends AbstractServletBuilder {
         return false;
     }
 
-    public String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
-        return getSGUIIndicator(session, res, "handle", node);
+    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
+        return getSGUIIndicator("handle", node, a);
     }
 
-    public String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {
+    protected String getSGUIIndicator(String field, MMObjectNode node, Arguments a) {
         if (field.equals("handle") || field.equals("")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
@@ -79,8 +80,12 @@ public class Attachments extends AbstractServletBuilder {
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
                 return title;               
             } else {
-                log.info("brdge: " + usesBridgeServlet + " ses: " + session);
-                String url = getServletPath(filename) + (usesBridgeServlet ? session : "") + num;
+                String ses = (String) a.get("session");
+                if (log.isDebugEnabled()) {
+                    log.debug("brdge: " + usesBridgeServlet + " ses: " + ses);
+                }
+                String url = getServletPath(filename) + (usesBridgeServlet && ses != null ? "session=" + ses + "+" : "") + num;
+                HttpServletResponse res = (HttpServletResponse) a.get("response");
                 if (res != null) {
                     url = res.encodeURL(url);
                 }
