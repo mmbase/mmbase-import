@@ -32,7 +32,7 @@ public class Users extends MMObjectBuilder {
     LRUHashtable cache = new LRUHashtable(100);
 
     // rico's funkie password generator
-    private PasswordGeneratorInterface pwgen = new PasswordGenerator ();
+    protected PasswordGeneratorInterface pwgen = new PasswordGenerator ();
     
     /**
     * replace call, when called in format MMBASE-BUILDER-users-xxxxx
@@ -123,7 +123,7 @@ public class Users extends MMObjectBuilder {
     /**
     * get acount name of active (cookie defined) user
     */
-    private String getAccount(String key) {
+    protected String getAccount(String key) {
         int number=getNumber(key);
         if (number!=-1) {
             MMObjectNode node=getNode(number);
@@ -137,7 +137,7 @@ public class Users extends MMObjectBuilder {
     /**
     * get email of active (cookie defined) user
     */
-    private String getEmail(String key) {
+    protected String getEmail(String key) {
         int number=getNumber(key);
         if (number!=-1) {
             MMObjectNode node=getNode(number);
@@ -151,7 +151,7 @@ public class Users extends MMObjectBuilder {
     /**
     * get password of active (cookie defined) user
     */
-    private String getPassword(String key) {
+    protected String getPassword(String key) {
         int number=getNumber(key);
         if (number!=-1) {
             MMObjectNode node=getNode(number);
