@@ -32,6 +32,9 @@ public class DocletFieldConfiguration implements FieldConfiguration{
     }
     
     public String getSize(){
+	if (size == null && type.equalsIgnoreCase("string")){
+		return "127";
+	}
         return size;
     }
     
