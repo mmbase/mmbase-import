@@ -72,8 +72,23 @@ public class InsRel extends MMObjectBuilder {
      * @see #usesdir
      */
     public boolean init() {
+        if (!created()) {
+            // check whether directionality is in use, and whether a dir field is present.
+            // if a non-dir supporting builder is attempted to be used, a fatal error is logged.
+            // the table is not created. MMbase continues, but anny atept to use this builder will fail
+            // (one way or the other).
+            // If the builder to be created is insrel (the basic builder), the system ignores the error
+            // and continues without directionality (backward compatibility).
+            //
+            if (usesdir && (getField("dir")==null) && (!getTableName().equals("insrel"))) {
+                log.fatal("FATAL ERROR: Builder "+getTableName()+" has no dir field but directionality support was turned on.");
+                log.fatal("Table for "+getTableName()+" was NOT created.");
+                log.fatal("MMBase continues, but use of the "+getTableName()+" builder will fail.");
+                return false;
+            }
+        }
         boolean res=super.init();
-        if (usesdir && (getField("dir")==null)) {
+        if (res && usesdir && (getField("dir")==null)) {
             log.warn("No dir field. Directionality support turned off.");
             usesdir = false;
         }
