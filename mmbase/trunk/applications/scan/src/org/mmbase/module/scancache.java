@@ -353,10 +353,10 @@ public class scancache extends Module implements scancacheInterface {
 					scan.flush();
 					scan.close();
 				} else {
-					// debug("scandisk cache -> making "+dirname+" failed ");
+					debug("scandisk cache -> making "+dirname+" failed ");
 				}
 			} catch (Exception f) {
-					//debug("scandisk cache -> Saving file "+filename+" failed "+f);
+				debug("scandisk cache -> Saving file "+filename+" failed "+f);
 			}
 			return(false);
 		}
