@@ -3,7 +3,7 @@
 %><html>
 <head>
 <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
-<style type="text/css">@import url(css/<mm:write referid="style_sheet" />);</style></mm:import>
+<style type="text/css">@import url(css/<mm:write referid="style_sheet" />);</style>
 <title>MMBase editors - Error</title>
 </head>
 <body class="basic">
