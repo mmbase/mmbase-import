@@ -5,7 +5,7 @@
  * (c) Q42, 2001
  *
  * @since    MMBase-1.6
- * @version  $Id: wysiwyg.js,v 1.1 2003-11-30 19:53:50 nico Exp $
+ * @version  $Id: wysiwyg.js,v 1.2 2003-12-17 09:26:14 nico Exp $
  * @author   Kars Veling
  * @author   Nico Klasens
  * @author   Peter Reitsma
@@ -29,6 +29,13 @@ if (browserutils.ie5560win) {
 }
 
 var imagedir = "../media/wysiwyg/";
+
+// overrides editwizard.jsp
+function doCheckHtml() {
+    try {
+        if (wysiwyg) wysiwyg.blur();
+    } catch (e) {}
+}
 
 function start_wysiwyg() {
     wysiwyg=new Wysiwyg();

@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.2 2003-12-01 09:30:45 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.3 2003-12-17 09:26:14 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -194,7 +194,7 @@ function showSearchScreen(cmd, url) {
 }
 
 function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
-    doCheckWysiwyg();
+    doCheckHtml();
     
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/start-wizard/"+fieldid+"/"+dataid+"/"+objectnumber+"/"+origin+"/";
@@ -203,8 +203,8 @@ function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
 }
 
 function doGotoForm(formid) {
-    doCheckWysiwyg();
-    
+    doCheckHtml();
+        
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/goto-form//"+formid+"//";
     fld.value = "";
@@ -213,8 +213,8 @@ function doGotoForm(formid) {
 }
 
 function doSendCommand(cmd, value) {
-    doCheckWysiwyg();
-
+    doCheckHtml();
+    
     var fld = document.getElementById("hiddencmdfield");
     fld.name = cmd;
     fld.value = "";
@@ -234,6 +234,8 @@ function doCancel() {
 }
 
 function doSave() {
+    doCheckHtml();
+    
     var savebut = document.getElementById("bottombutton-save");
     if (!savebut.disabled) {
         setButtonsInactive();
@@ -243,6 +245,8 @@ function doSave() {
 }
 
 function doSaveOnly() {
+    doCheckHtml();
+    
     var savebut = document.getElementById("bottombutton-save");
     if (!savebut.disabled) {
         setButtonsInactive();
@@ -291,10 +295,7 @@ function setButtonsInactive() {
    }
 }
 
-function doCheckWysiwyg() {
-    try {
-        if (wysiwyg) wysiwyg.blur();
-    } catch (e) {}
+function doCheckHtml() {
 }
 
 //********************************

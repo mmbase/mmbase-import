@@ -4,12 +4,14 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.1 $
+   Version: $Revision: 1.2 $
 -->
 <xsl:stylesheet 
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction">
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
+  extension-element-prefixes="node date">
 
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/wizard.xsl"/>
