@@ -111,7 +111,11 @@ Generic Bug Fixes:
 - caching of Query results is done better. It is possible to cache everything. In 1.6 some queries
   accidentely where not cached. This fix is based on the new Query framework.
 
-- when exporting builder xmls, the state propery of a field is now in lowercase (as defined by the dtd)
+- when exporting builder xmls, the state propery of a field is now in lowercase (as defined by the
+  dtd)
+
+- More robust in case Database not up yet if MMBase starts, or if database restart when MMBase
+  remains up.
 
 ------------------
 Security Bug Fixes:
@@ -201,21 +205,12 @@ Know Issues and Problems:
 
   (I'm not sure where the last line has to be: web.xml or orion-web.xml).
 
-- MMBase doesn't compile when using J2SE 1.4, you have to change 2
-  files by hand: MultiConnection.java and MultiStatement.java (both in
-  the <org/mmbase/modules/database>-dir). Uncomment the methods for
-  J2SE 1.4, more information is provided in the javadocs in these files.
-
-  You can also run the ant java14patch target to perform the changes using
-  patch
-
-  When using 1.4 the ant build will inform you about this.
 
 - Length of email field inside Users and People builder isn't
   rfc-complient, but with 255 it stays beyond a limit some databases
   use before switching to a bigger string-type (eg clob).
 
-- Html isn't html4 or xhtml valid
+- Not all HTML is html4 or xhtml valid
 
 - Sometimes it is needed to copy xml-apis.jar to
   <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
@@ -243,7 +238,7 @@ Know Issues and Problems:
 
 - Jumpers jump to /index.html by default, which can e.g. shield the
   image servlet (if 'dotlessly' mapped). Remove the setting from
-  jumpers.xml if you prefer nice 404's.
+  jumpers.xml if you prefer nice 404's (this is like this on default)
 
 - Hsqldb uses the current dir for writing the database-files. This can
   be the bin dir from where you're starting the servlet-engine. You
@@ -276,13 +271,13 @@ the list is probably a lot bigger :-)
 -------------
 Java versions
 -------------
-- J2SE 1.3
+- J2SE 1.4.2
 
 -------------
 Java compilers
 -------------
 
-- sun jdk 1.3 (javac)
+- sun jdk 1.4.2 (javac)
 
 - jikes version 1.18
 
@@ -299,6 +294,7 @@ Applicationservers
 - Jetty 4.0.0
 - Resin 2.1.0, 2.1.8
 - Tomcat 4.1.12, 4.1.21
+- Tomcat 5.0.16
 
 ---------
 Databases
