@@ -18,7 +18,7 @@
     <mm:import id="tn" vartype="Integer" jspvar="thisnumber"><mm:write referid="thisnumber" /></mm:import>
     <table class="edit" summary="relation overview" width="100%" cellspacing="1" cellpadding="3" border="0">
         <tr>
-            <th colspan="8"><%=m.getString("relations.to")%></th>
+            <th colspan="8"><%=m.getString("relations.from")%></th>
         </tr>
         <mm:context>
             <!-- list all relation types, where we are the source -->
@@ -112,7 +112,7 @@
 
         <mm:import id="destinationWhereClause">dnumber=<mm:write referid="thisnumber" /></mm:import>
         <tr>
-            <th colspan="8"><%=m.getString("relations.from")%></th>
+            <th colspan="8"><%=m.getString("relations.to")%></th>
         </tr>
         <mm:context>
             <!-- list all relation types, where we are the source -->
