@@ -1,5 +1,6 @@
-<link type="text/css" href="css/treeview.css" rel="stylesheet"/>
-<link type="text/css" href="css/mmbase.css" rel="stylesheet"/>
+
+<link type="text/css" href="<%=localPath%>/css/treeview.css" rel="stylesheet"/>
+<link type="text/css" href="<%=localPath%>/css/mmbase.css" rel="stylesheet"/>
 <style type="text/css">
   .small, .big{
     background:     white;
@@ -10,5 +11,11 @@
   }
 </style>
 
-<script type="text/javascript" language="javascript" src="js/treeview.js"></script>
-<script type="text/javascript" language="javascript" src="js/callbacks.js"></script>
+<script language="javascript">
+  //deze variabel kan overal gebruikt worden om de portal en page velden in url's te plakken
+  var portalpage="page=<mm:write referid="page"/>&portal=<mm:write referid="portal"/>";
+  alert(portalpage);
+</script>
+
+<script type="text/javascript" language="javascript" src="<%=localPath%>/js/treeview.js"></script>
+<script type="text/javascript" language="javascript" src="<%=localPath%>/js/callbacks.js"></script>

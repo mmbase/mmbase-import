@@ -3,6 +3,7 @@
   
   //deze variabel wordt bij body.onLoad gezet.
   var isEditor=false;
+  var extraParamsUrl="";
 
 
 //******************************************
@@ -11,7 +12,7 @@
  function selectLeaf(title, code) {
       //dit is de callback functie voor als er op een vraag wordt geklikt
       //roep pagina aan zodat vraag wordt getoond
-      document.location="index.jsp?node="+currentFolder.getAttribute("node")+"&qnode="+code+"&expanded="+getExpandedFolders();
+      document.location="index.jsp?"+extraParamsUrl+"&node="+currentFolder.getAttribute("node")+"&qnode="+code+"&expanded="+getExpandedFolders();
   }
   
   
@@ -19,7 +20,7 @@
     //dit is de callback functie voor als er op een folder wordt geklikt
     //om de complete staat van de tree bij te kunnen houden
     // en om de current node een andere image te geven
-    if(node.getAttribute("expanded")=="true"){
+	if(node.getAttribute("expanded")=="true"){
       node.setAttribute("expanded","false");
     }else{
       node.setAttribute("expanded","true");
@@ -50,7 +51,11 @@
 //einde callbacks
 //*********************************************
 
-
+/*
+function setExtraParams(params){
+  extraParamsUrl=params;
+}
+*/
 /*****************************************************************************
 Name : getExpandedFolders
 Parameters  :  none
@@ -69,23 +74,8 @@ function getExpandedFolders(){
       }
       return foldersToString;
 }
-/*****************************************************************************
-Name : setCurrentFolder
-Parameters :  String number, containing number of node (DOM node of <a> tag)
-Description : is being called by 'body.onload' event and wil init the currentFolder var
-Author : Ernst Bunders
-*****************************************************************************/
-	function setCurrentFolder(number){
-    //alert("currentFolder wordt gezet: "+number);
-    currentFolder=findNode(number);
-    getImageNode(currentFolder).setAttribute("src",IMGDIR+CURRENTFOLDERIMAGE);
-    
-    //en nu nog even de toolbar weer aanzetten. de catch is voor ed edit en add
-    //pagina's die geen toolbar hebben
-    try{
-      document.getElementById("toolbar").style.display="block";
-    }catch(hoi){}
-  }
+
+
   
 /*****************************************************************************
 Name : setEditor
@@ -99,6 +89,12 @@ Author : Ernst Bunders
     isEditor=loginStatus  ; 
   }
 
+/*****************************************************************************
+Name : setCurrentFolder
+Parameters :  String  nodenumber of current folder
+Description : is being called by 'body.onload', shows correct icon for acrive folder
+Author : Ernst Bunders
+*****************************************************************************/
 	function setCurrentFolder(number){
     //alert("currentFolder wordt gezet: "+number);
     currentFolder=findNode(number);
@@ -110,7 +106,18 @@ Author : Ernst Bunders
       document.getElementById("toolbar").style.display="block";
     }catch(hoi){}
   }  
-  
+ 
+/*****************************************************************************
+Name : setImageDir
+Parameters :  String  containing the real location of the imagefolder on the server
+Description : is being called by 'body.onload', sets the var IMGDIR
+Author : Ernst Bunders
+*****************************************************************************/
+  function setImageDir(path){
+    //alert("imagedir :"+path);
+    IMGDIR=path  ; 
+  }
+ 
 /*****************************************************************************
 Name : findNode
 Parameters  :  number String containing nodeNumber
