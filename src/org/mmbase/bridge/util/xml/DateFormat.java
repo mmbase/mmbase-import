@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @author Martijn Houtman
- * @version $Id: DateFormat.java,v 1.5 2004-05-02 15:01:59 nico Exp $
+ * @version $Id: DateFormat.java,v 1.6 2004-05-09 09:59:44 nico Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -52,7 +52,11 @@ public class DateFormat {
         if (timeZone == null || "".equals(timeZone.trim())) {
             return TimeZone.getDefault();
         } else {
-            return TimeZone.getTimeZone(timeZone);
+            TimeZone tz = TimeZone.getTimeZone(timeZone);
+            if (!tz.getID().equals(timeZone)) {
+                tz = TimeZone.getDefault();
+            }
+            return tz;
         }
     }
 
