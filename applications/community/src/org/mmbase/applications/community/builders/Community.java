@@ -73,15 +73,23 @@ public class Community extends MMObjectBuilder {
             log.error("No channel builder");
             return;
         }
-        for (Enumeration communities=search(null); communities.hasMoreElements(); ) {
-            MMObjectNode community = (MMObjectNode)communities.nextElement();
-            Enumeration relatedChannels = mmb.getInsRel().getRelated(community.getNumber(), channelBuilder.oType);
-            while (relatedChannels.hasMoreElements()) {
-                MMObjectNode channel=(MMObjectNode)relatedChannels.nextElement();
-                int open=channel.getIntValue("open");
-                if ((open==channelBuilder.OPEN) || (open==channelBuilder.WANT_OPEN)) {
-                    channelBuilder.open(channel,community);
-                }
+        ClusterBuilder cluster=mmb.getClusterBuilder();
+
+        Vector builders = new Vector();
+        builders.add("community");
+        builders.add("channel");
+
+        Vector fields = new Vector();
+        fields.add("community.number");
+        fields.add("channel.number");
+        Vector allchannels=cluster.searchMultiLevelVector(null,fields,"YES",builders,
+               "WHERE channel.open = "+channelBuilder.OPEN+" OR channel.open = "+channelBuilder.WANT_OPEN,
+               null,null,ClusterBuilder.SEARCH_EITHER);
+        if (allchannels!=null) {
+            for (Iterator channels=allchannels.iterator(); channels.hasNext(); ) {
+                MMObjectNode channel = (MMObjectNode)channels.next();
+                log.info("open channel"+channel);
+                channelBuilder.open(channel.getNodeValue("channel"),channel.getNodeValue("community"));
             }
         }
     }
