@@ -22,6 +22,7 @@
     <relation from="mags"   to="news"     type="posrel" />
     <relation from="news"   to="urls"     type="posrel" />
     <relation from="news"   to="images"   type="posrel" />
+    <relation from="news"   to="news"     type="posrel" />
     <relation from="news"   to="attachments"  type="posrel" />
     <relation from="news"   to="mmevents" type="related" />
     <relation from="news"   to="people"   type="related" />
