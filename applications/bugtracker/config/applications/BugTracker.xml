@@ -35,6 +35,8 @@
 		<relation from="releases" to="pools" type="related" />
 		<relation from="bugreports" to="urls" type="related" />
 		<relation from="pools" to="bugreports" type="related" />
+		<relation from="pools" to="areas" type="related" />
+		<relation from="pools" to="groups" type="related" />
 		<relation from="bugreports" to="users" type="rolerel" />
 		<relation from="bugreports" to="mmevents" type="related" />
 		<relation from="users" to="cookies" type="related" />
@@ -64,13 +66,9 @@
 		<contextsource path="BugTracker/backup.xml" type="depth" goal="backup"/>
 	</contextsourcelist>
 
-	<description>
-		BugTracking application for www.mmbase.org, before deploying this make sure all the 
+	<description><![CDATA[BugTracking application for www.mmbase.org, before deploying this make sure all the 
         builders from the BugTracker/builders dir are also in your config/builders dir and the
-        state of these builders is active.
-	</description>
+        state of these builders is active.]]></description>
 
-	<install-notice>
-		BugTracker installed, don't forget to install the html pages
-	</install-notice>
+	<install-notice><![CDATA[BugTracker installed, don't forget to install the html pages]]></install-notice>
 </application>
