@@ -186,7 +186,9 @@ public class MMEdit extends ProcessorModule {
 			token = tok.nextToken();
 			handler = (CommandHandlerInterface)commandHandlers.get(token);
 
-			if (handler != null) handler.process(sp,tok, cmds, vars);
+			if (handler != null) {
+				handler.process(sp, tok, cmds, vars);
+			}
 		}
 
 		return (true);
