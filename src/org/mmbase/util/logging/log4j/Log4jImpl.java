@@ -147,7 +147,9 @@ public final class Log4jImpl extends Category  implements Logger {
     }
 
     public final boolean isServiceEnabled() {
-        return(! hierarchy.isDisabled(Log4jPriority.SERVICE_INT));
+        if(hierarchy.isDisabled( Log4jPriority.SERVICE_INT))
+            return false;   
+        return Log4jPriority.SERVICE.isGreaterOrEqual(this.getChainedPriority());
     }
 
     // **** SUBCLASSES ****
