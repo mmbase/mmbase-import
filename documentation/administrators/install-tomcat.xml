@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase installation on Apache Tomcat</title>
     <date>5 december 2002</date>
-    <edition>$Id: install-tomcat.xml,v 1.3 2002-12-06 20:31:09 michiel Exp $</edition>
+    <edition>$Id: install-tomcat.xml,v 1.4 2003-02-26 18:34:09 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -41,7 +41,7 @@
       test (yet).
     </para>
     <para>
-      So <ulink url="http://jakarta.apache.org/site/binindex.html">download</ulink> a binary Tomcat 4.1 (e.g. 4.1.17), and install it (i.e. unpack it somewhere). You
+      So <ulink url="http://jakarta.apache.org/site/binindex.html">download</ulink> a binary Tomcat 4.1 (e.g. 4.1.18), and install it (i.e. unpack it somewhere). You
       also need jdk 1.3 installed. Make sure the current working directory and the 'conf', 'logs',
       'temp' and 'work' of the tomcat installation are writable for the user who is going to run it
       (and the rest is readable at least)
@@ -72,7 +72,7 @@
     </para>
     <para>
       To 'server.xml' of Tomcat's 'conf' directory add the following:
-      <programlisting id="server.xml"><![CDATA[
+      <programlisting id="contextserver.xml"><![CDATA[
 <Context path="/mm" docBase="/home/michiel/mmbase/1.6/mmbase/build/mmbase/mmbase-webapp" debug="0">
   <!-- if you want symlinks to work: -->
   <Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" />
@@ -84,17 +84,68 @@
      -->
       Be sure to fill in the right docBase, of course.
     </para>
+     <para>
+     A complete server.xml might look like this then.
+      <programlisting id="server.xml"><![CDATA[
+<?xml version="1.0"?>
+<Server port="8889" shutdown="SHUTDOWN" debug="0">
+  <Service name="Tomcat-Standalone-MMBase">
+    <Connector className="org.apache.catalina.connector.http.HttpConnector" 
+      port="8070" 
+      address="michiel.omroep.nl" 
+      minProcessors="5" maxProcessors="75" 
+      enableLookups="false" 
+      redirectPort="8443" 
+      acceptCount="10" 
+      debug="0" 
+      connectionTimeout="60000"
+      proxyPort="80"
+      proxyName="michiel.omroep.nl"
+    />
+    <Engine name="Standalone" defaultHost="localhost" debug="0">
+      <Logger className="org.apache.catalina.logger.FileLogger" 
+        directory="log"
+        prefix="catalina." 
+        suffix=".log" 
+        timestamp="true"
+        />
+      <Host name="localhost" debug="0" appBase="webapps" unpackWARs="true" autoDeploy="true">
+        <Valve className="org.apache.catalina.valves.AccessLogValve" 
+          directory="log" 
+          prefix="access." 
+          suffix=".log" 
+          pattern="common"
+        />
+        <Logger className="org.apache.catalina.logger.FileLogger" 
+          directory="log" 
+          prefix="tomcat." 
+          suffix=".log" 
+          timestamp="false"
+        />
+        <Context path="/mm" docBase="/home/mmbase/mmbase-app" debug="0">
+          <Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" />
+          <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
+          <ResourceParams name="mail/Session">
+            <parameter>
+              <name>mail.smtp.host</name>
+              <value>smtp.bestuur.omroep.nl</value>
+            </parameter>
+            <parameter>
+              <name>mail.smtp.from</name>
+              <value>test@omroep.nl</value>
+            </parameter>
+          </ResourceParams>
+        </Context>
+      </Host>
+    </Engine>
+  </Service>
+</Server>
+
+]]></programlisting>
+    </para>
     <para>
-      Make sure this is in 'web.xml' of mmbase-webapp/WEB-INF/:
-      <programlisting id="web.xml"><![CDATA[
-<context-param>
-  <param-name>mmbase.htmlrooturlpath</param-name>
-  <param-value>/mm</param-value>
-</context-param>
-]]></programlisting> 
-      You see, the '/mm' must correspond. It can be considered a bug though, of
-      MMBase, that this must also be configured in web.xml (mosts thing will work if you don't, but
-      not <emphasis>everything</emphasis>.
+      Make sure 'context-param' mmbase.htmlrooturlpath in 'web.xml' of
+      mmbase-webapp/WEB-INF/, is not set, or set to the right value.
     </para>
     <para>
       Now you can start Tomcat again (make sure the current working directory is writable: hsql is
