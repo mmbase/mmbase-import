@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.28 2003-12-02 11:28:24 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.29 2003-12-02 11:41:34 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -474,7 +474,8 @@ public class BasicQuery implements Query  {
 
 
     public String toString() {
-        return (used ? "used: " : "unused: ") + query.toString();
+        return query.toString() + (used ? "(used)" : "");
+            
     }
     
 
