@@ -129,33 +129,6 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     /**
-     * @deprecated-now will be removed
-     */
-    public String getDutchSName(String name) {
-        if (name==null) return "ERROR";
-        MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(name);
-        if (bul!=null) {
-            return bul.getSingularName();
-        } else {
-            return "inactive ("+name+".xml)";
-        }
-    }
-
-    /**
-     * @deprecated-now will be removed
-     */
-    public String getEnglishName(String dutchname) {
-        Enumeration enum = mmb.mmobjs.elements();
-        while (enum.hasMoreElements()){
-            MMObjectBuilder bul=(MMObjectBuilder)enum.nextElement();
-            if (bul.getSingularName().equals(dutchname)) {
-                return bul.tableName;
-            }
-        }
-        return "inactive ("+dutchname+".xml)";
-    }
-
-    /**
      * @javadoc
      */
     public String getSingularName(String builderName, String country) {
@@ -244,26 +217,11 @@ public class TypeDef extends MMObjectBuilder {
             bul.setClassName(classname);
             bul.init();
             mmb.mmobjs.put(objectname,bul);
-            } catch (Exception e) {
-                log.error(Logging.stackTrace(e));
-                return false;
-            }
-            return true;
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+            return false;
         }
-
-    /**
-     * @deprecated-now will be removed
-     */
-    public String replace(scanpage sp, StringTokenizer tok) {
-        if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
-            if (cmd.equals("D2E")) {
-                if (tok.hasMoreTokens()) {
-                    return getEnglishName(tok.nextToken());
-                }
-            }
-        }
-        return "";
+        return true;
     }
 
     /**
