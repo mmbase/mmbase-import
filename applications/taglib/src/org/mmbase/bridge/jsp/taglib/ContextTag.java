@@ -539,15 +539,15 @@ public class ContextTag extends ContextReferrerTag {
         //    log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
         //    return false;
         //}
-        return (container.get(key) != null);
+        return container.get(key) != null;
     }
 
 
     private boolean isRegistered(String key) throws JspTagException {
-        return (container.containsKey(key, false)); // don't check parent.
+        return container.containsKey(key, false); // don't check parent.
     }
     private boolean isRegisteredSomewhere(String key) throws JspTagException {
-        return (container.containsKey(key, true)); // do check parent.
+        return container.containsKey(key, true); // do check parent.
     }
 
     public Object findAndRegister(String id) throws JspTagException {
@@ -742,8 +742,7 @@ class MMultipartRequest {
         }
         try {
             return new String(data, coding);
-        }
-        catch(java.io.UnsupportedEncodingException e) {
+        } catch(java.io.UnsupportedEncodingException e) {
             log.warn(Logging.stackTrace(e));
             throw new JspTagException(Logging.stackTrace(e));
         }
