@@ -1548,7 +1548,7 @@ Version: MMBase build ${version}
           fork="yes"
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
-      <jvmarg value="-mx100m" />
+      <jvmarg value="-mx150m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
