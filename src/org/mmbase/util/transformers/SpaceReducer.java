@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @todo 'pre' stuff not yet implemented.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
 
@@ -36,18 +36,17 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         int space = 1;  // 'open' spaces (on this line)
         int nl    = 1;  // 'open' newlines
         // we start at 1, rather then 0, because in that way, all leading space is deleted too
-        
+
         StringBuffer indent = new StringBuffer();  // 'open' indentation of white-space
         int l = 0; // number of non-white-space (letter) on the current line
 
         int lines = 0; // for debug: the total number of lines read.
         try {
             log.debug("Starting spacereducing");
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                if (c == '\n') {
-                    if (nl == 0) w.write(c);                    
+            int c = r.read();
+            while (c != -1) {
+                if (c == '\n' || c == '\r' ) {
+                    if (nl == 0) w.write('\n');
                     nl++;
                     l = 0;
                     space = 0; indent.setLength(0);
@@ -55,15 +54,15 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
                     if (space == 0 && l > 0) w.write(' ');
                     if (l == 0) indent.append((char) c);
                     space++;
-                } else {                
+                } else {
                     if (l == 0 && space > 0) {
                         w.write(indent.toString());
                         indent.setLength(0);
                     }
                     space = 0; lines += nl; nl = 0; l++;
-                    
                     w.write(c);
                 }
+                c = r.read();
             }
             log.debug("Finished: read " + lines + " lines");
         } catch (java.io.IOException e) {
@@ -71,7 +70,6 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         }
         return w;
     }
-
 
     public String toString() {
         return "SPACEREDUCER";
