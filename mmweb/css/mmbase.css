@@ -123,17 +123,20 @@ b
 strong
 {
 	font-weight: bold;
-	color: #CCEB6F;
+	color: #003333;
 }
+
+#pagecontent { margin: 0 0 20px 150px; }
 
 .layout { width: 100%; }
 
 .layout, .layout th, .layout td
 {
 	border: 0px;
+/*
 	padding: 0px;
 	margin: 0px;
-	background-color: white;
+*/	background-color: white;
 	text-align: left;
 	vertical-align: top;
 	font-size: 11px;
