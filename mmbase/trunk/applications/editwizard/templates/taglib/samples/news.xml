@@ -61,6 +61,10 @@
 				</relation>
 			</action>
 		</list>
+
+
+    <list include="lib/addimages.xml" defaultdisplaymode="add" />
+
 		<list role="related" destination="images">
 			<command name="search" nodepath="images" fields="title" age="-1">
         <prompt>Images</prompt>
