@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page language="java" contentType="text/html; charset=utf-8"
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
 %><mm:cloud
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/header.jsp"
@@ -27,7 +27,7 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	offset="<%= offStr %>" max="<%= maxStr %>">
 	<mm:first>
 	<mm:present referid="eventnr"><h4>More events</h4></mm:present>
-	<mm:notpresent referid="eventnr"><p>Latest events of interest for MMBase developers.</p></mm:notpresent>
+	<mm:notpresent referid="eventnr"><p>Latest events of interest.</p></mm:notpresent>
 	<!-- previous and next -->
 	<div align="center">
 	<table border="0" cellspacing="0" cellpadding="0" class="newsnextprev">
@@ -44,10 +44,10 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	  </td>
 	  <td><a href="<mm:url referids="portal,page" />">index</a></td>
 	  <td><%
-		if (offset < listsize && offset > 0) {
-			int next_ones = offset + max;
+	    int next = offset + max;
+		if (next < listsize && offset >= 0) {
 		%>
-		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next_ones %></mm:param></mm:url>">next &gt;&gt;</a>
+		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next %></mm:param></mm:url>">next &gt;&gt;</a>
 		<% } else { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
 		</td>
 	</tr>
@@ -79,10 +79,10 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	  </td>
 	  <td><a href="<mm:url referids="portal,page" />">index</a></td>
 	  <td><%
-		if (offset < listsize && offset > 0) {
-			int next_ones = offset + max;
+	    int next = offset + max;
+		if (next < listsize && offset >= 0) {
 		%>
-		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next_ones %></mm:param></mm:url>">next &gt;&gt;</a>
+		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next %></mm:param></mm:url>">next &gt;&gt;</a>
 		<% } else { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
 		</td>
 	</tr>
