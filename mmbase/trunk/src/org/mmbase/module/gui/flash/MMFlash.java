@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.19 2003-03-07 08:50:23 pierre Exp $
+ * @version $Id: MMFlash.java,v 1.20 2003-05-23 10:57:33 pierre Exp $
  */
 public class MMFlash extends Module {
 
@@ -436,6 +436,7 @@ public class MMFlash extends Module {
                 }
                 String src=(String)rep.get("src");
                 if (src!=null) {
+                    // bad way to test for MMBase images! 
                     if (src.startsWith("/img.db?")) {
                         String result=mapImage(src.substring(8),tempFiles);
                         part+=" \""+result+"\"";
@@ -699,13 +700,13 @@ public class MMFlash extends Module {
             StringTokenizer tok = new StringTokenizer(imageline,"+\n\r");
             while (tok.hasMoreTokens()) {
                 params.addElement(tok.nextToken());
-                scanpage sp=new scanpage();
-                byte[] bytes=bul.getImageBytes(sp,params);
-                File tempFile = createTemporaryFile("image", ".jpg");
-                saveFile(tempFile.getAbsolutePath(), bytes);
-                tempFiles.add(tempFile);
-                return tempFile.getAbsolutePath();
             }
+            scanpage sp=new scanpage();
+            byte[] bytes=bul.getImageBytes(sp,params);
+            File tempFile = createTemporaryFile("image", ".jpg");
+            saveFile(tempFile.getAbsolutePath(), bytes);
+            tempFiles.add(tempFile);
+            return tempFile.getAbsolutePath();
         } else {
             log.error("Cannot locate images builder, make sure you activated it!");
         }
