@@ -69,7 +69,7 @@ int list_index = 0;		// Index value of the list
 </mm:listnodes>
 <!-- search_str for node_type with daymarker: <%= search_str %> -->
 <mm:fieldlist type="list" nodetype="$ntype"><% colspan++; %></mm:fieldlist>
-<table width="100%" border="0" cellspacing="0" cellpadding="4">
+<table width="100%" border="0" cellspacing="0" cellpadding="4" class="table-search">
 <tr bgcolor="#CCCCCC">
   <td align="right" class="title-s" colspan="2"><%= total_found %></td>
   <td colspan="<%= colspan - 2 %>" class="title-s">	
