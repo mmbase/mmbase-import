@@ -34,7 +34,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.8 2003-11-18 15:00:21 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.9 2003-12-29 16:41:36 nico Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -58,6 +58,9 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
       "trim,true,union,unique,unknown,update,upper,usage,user,using,value,values,varchar,varying,view,when,whenever,where,with,work,"+
       "write,year,zone";
 
+    /** Prefix used to escape disallowed fields */
+    private final static String ESCAPE_PREFIX = "m_";
+    
     // Default query handler class.
     private final static Class DEFAULT_QUERY_HANDLER_CLASS =
         org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
@@ -170,7 +173,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             StringTokenizer tokens = new StringTokenizer(STANDARD_SQL_KEYWORDS,", ");
             while (tokens.hasMoreTokens()) {
                 String tok = tokens.nextToken();
-                disallowedFields.put(tok,null);
+                disallowedFields.put(tok, ESCAPE_PREFIX + tok);
             }
 
             // get the extra reserved sql keywords (according to the JDBC driver)
@@ -179,7 +182,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             tokens = new StringTokenizer(sqlKeywords,", ");
             while (tokens.hasMoreTokens()) {
                 String tok = tokens.nextToken();
-                disallowedFields.put(tok,null);
+                disallowedFields.put(tok, ESCAPE_PREFIX + tok);
             }
 
             con.close();
