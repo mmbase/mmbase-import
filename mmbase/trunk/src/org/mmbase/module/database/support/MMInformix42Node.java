@@ -26,12 +26,12 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.16 $ $Date: 2000-08-10 14:14:50 $
+* @$Revision: 1.17 $ $Date: 2000-08-10 14:21:46 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +": "+ msg ); }
 
 	private int currentdbkey=-1;
@@ -766,7 +766,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* Method: getDBKey()
 	*
 	*/
-	/*
+	/* Commented out because it doesn't work very well. getDBKey() is not overridden, MMSQL92node is used
         public synchronized int getDBKey() {
 		if (debug) debug("Method: getDBKey()");
                 // get a new key
