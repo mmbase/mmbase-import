@@ -99,12 +99,14 @@
 
       <!-- a not-inline startwizard will pop-up a window to create the new object -->
       <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" >
-			 <prompt>Add a url in a popup window</prompt>
+        <prompt xml:lang="en">Add a url in a popup window</prompt>
+        <prompt xml:lang="nl">Voeg URL toe in een popup</prompt>
 			</command>
 
       <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
       <command name="startwizard" inline="true" wizardname="tasks/myurls" objectnumber="new" >
-			 <prompt>Add a url on a new page</prompt>
+        <prompt xml:lang="en">Add a url on a new page</prompt>
+        <prompt xml:lang="nl">Voeg URL toe op een aparte pagina</prompt>
 			</command>
 
 			<action type="add">
