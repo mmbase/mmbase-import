@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van het leerobject</description>
         </field>
-	<field fdatapath="field[@name='pos']" ftype="data" />
+   <field fdatapath="field[@name='pos']" ftype="data" />
     </item>
 
     <action type="create">
@@ -31,13 +31,13 @@
     </command>
 
 
-    <command name="search" nodepath="learnobjects" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="learnobjects" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Leerobjecten</prompt>
         <search-filter>
             <name>Naam bevat</name>
             <search-fields>name</search-fields>
         </search-filter>
-    </command> 
+    </command>
 
-   
+
 </list>

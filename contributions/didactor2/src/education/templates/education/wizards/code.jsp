@@ -26,8 +26,8 @@
                 font-size: 8px;
             }
         </style>
- 
-        
+
+
         <script type="text/javascript" src="<mm:treefile page="/education/wizards/mtmcode.jsp" objectlist="$includePath" referids="$referids" write="true"/>"></script>
 
 
@@ -45,13 +45,13 @@
 
 //if (parent.frames.length == 0)
 //{
-//	if(document.images)
-//	{
-//    	location.replace(relocateURL);
-//	}
-//	else
-//	{
-//    	location = relocateURL;
+// if(document.images)
+// {
+//       location.replace(relocateURL);
+// }
+// else
+// {
+//       location = relocateURL;
 //    }
 //}
   </mm:compare>
@@ -152,28 +152,28 @@ var comptree = new MTMenu();
 comptree.addItem("Competenties",
                "<mm:write referid="listjsp"/>?wizard=competencies&nodepath=competencies&searchfields=name&fields=name",
               null,
-                "Competenties edit",
-                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+                "Bewerk competenties",
+                "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
 comptree.addItem("Preassessments",
                "<mm:write referid="listjsp"/>?wizard=preassessments&nodepath=preassessments&searchfields=name&fields=name",
               null,
-                "Preassessments edit",
-                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+                "Bewerk preassessments",
+                "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
 comptree.addItem("Postassessments",
                "<mm:write referid="listjsp"/>?wizard=postassessments&nodepath=postassessments&searchfields=name&fields=name",
               null,
-                "Postassessments edit",
-                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+                "Bewerk postassessments",
+                "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
 comptree.addItem("Profielen",
                "<mm:write referid="listjsp"/>?wizard=profiles&nodepath=profiles&searchfields=name&fields=name",
               null,
-                "Profielen edit",
-                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+                "Bewerk profielen",
+                "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
 comptree.addItem("P.O.P.",
                "<mm:write referid="listjsp"/>?wizard=pop&nodepath=pop&searchfields=name&fields=name",
               null,
-                "P.O.P. edit",
-                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+                "Bewerk persoonlijk opleidingplan",
+                "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
 menu.makeLastSubmenu(comptree, true);
 
 
@@ -184,7 +184,7 @@ menu.makeLastSubmenu(comptree, true);
 
 
 
-menu.addItem("<fmt:message key="metadata"/>","",null,"");
+menu.addItem("<fmt:message key="metadata"/>","<mm:write referid="listjsp"/>?wizard=metastandard&nodepath=metastandard&fields=name&orderby=name",null,"");
 var metatree = new MTMenu();
 
 <%-- create new metadata standard --%>
@@ -213,7 +213,7 @@ metadeftree<%= metatreeCount %>.addItem("<fmt:message key="createNewMetadefiniti
                 "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
 
 
-<mm:related path="metadefinition"><%-- orderby="metadefinition.name" directions="up" searchdir="destination">--%>
+<mm:related path="metadefinition" orderby="metadefinition.name"><%-- orderby="metadefinition.name" directions="up" searchdir="destination">--%>
 <mm:first>
 
 </mm:first>
