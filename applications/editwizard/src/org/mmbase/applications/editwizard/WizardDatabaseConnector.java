@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.36 2003-12-08 12:08:18 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.37 2003-12-12 12:47:24 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -85,19 +85,20 @@ public class WizardDatabaseConnector {
      */
     private void loadRelations(Node object, String objectnumber, Node loadaction) throws WizardException {
         // loads relations using the loadaction rules
-        NodeList reldefs = Utils.selectNodeList(loadaction, ".//relation");
-        // complete reldefs: add empty <object> tag where there is none.
-        for (int i=0; i<reldefs.getLength(); i++) {
-            Node rel = reldefs.item(i);
+        NodeList allRelations = Utils.selectNodeList(loadaction, ".//relation");
+        // complete relations: add empty <object> tag where there is none.
+        for (int i=0; i<allRelations.getLength(); i++) {
+            Node relation = allRelations.item(i);
             // if there is not yet an object attached, load it now
-            NodeList objs = Utils.selectNodeList(rel, "object");
-            if (objs.getLength()==0) {
-                Element obj = rel.getOwnerDocument().createElement("object");
-                rel.appendChild(obj);
+            NodeList objects = Utils.selectNodeList(relation, "object");
+            if (objects.getLength()==0) {
+                relation.appendChild(relation.getOwnerDocument().createElement("object"));
             }
         }
+        // root list of relations
+        NodeList relations = Utils.selectNodeList(loadaction, "relation");
         // load relations (automatically loads related objects and 'deep' relations)
-        if (reldefs.getLength()>0) getRelations(object, objectnumber, reldefs);
+        if (relations.getLength()>0) getRelations(object, objectnumber, relations);
     }
 
     /**
@@ -260,11 +261,11 @@ public class WizardDatabaseConnector {
      */
     public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws WizardException {
         // fires getRelations command and places results targetNode
+
         ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, queryrelations);
         fireCommand(cmd);
         if (!cmd.hasError()) {
             NodeList relations = Utils.selectNodeList(cmd.getResponseXML(), "/*/object/relation");
-
             for (int i=0; i<relations.getLength(); i++) {
                 tagDataNode(relations.item(i));
             }
