@@ -26,6 +26,11 @@ import org.mmbase.module.*;
  * @see org.mmbase.module.servlets.JDBCServlet
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
+
+ 	private String classname = getClass().getName();
+ 	private boolean debug = true;
+ 	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
+
 Class  classdriver;
 Driver driver;
 String JDBCdriver;
@@ -66,7 +71,7 @@ private String defaultpassword;
 		try {
 			DriverManager.deregisterDriver(driver);
 		} catch (SQLException e) {
-			System.out.println("JDBC Module: Can't deregister driver");
+			debug("reload(): JDBC Module: Can't deregister driver");
 		}
 		*/
 		getdriver();
@@ -86,21 +91,21 @@ private String defaultpassword;
 		driver=null;
 		try {
 			classdriver=Class.forName(JDBCdriver);
-			//System.out.println("JDBC Module: Loaded load class : "+JDBCdriver);
+			debug("getDriver(): Loaded load class : "+JDBCdriver);
 		} catch (ClassNotFoundException e) {
-			System.out.println("JDBC Module: Can't load class : "+JDBCdriver);
+			debug("getDriver(): Can't load class : "+JDBCdriver);
 		}
 		/* Also get the instance to unload it later */
 		for (Enumeration e=DriverManager.getDrivers();e.hasMoreElements();) {
 			d=(Driver)e.nextElement();
-			//System.out.println("Driver "+d);
+			//debug("Driver "+d);
 			if (classdriver==d.getClass()) {
 				driver=d;
 				break;
 			}
 		}
 		if (driver==null) {
-			System.out.println("JDBC Module : Can't get driver from DriverManager");
+			debug("getDriver(): Can't get driver from DriverManager");
 		}
 	}
 
@@ -221,7 +226,8 @@ private String defaultpassword;
 		try {
 			if (poolHandler!=null) poolHandler.checkTime();
 		} catch(Exception e) {
-			System.out.println("JDBC->checkTime Exception");
+			debug("checkTime(): Exception");
+			e.printStackTrace();
 		}
 	}
 
