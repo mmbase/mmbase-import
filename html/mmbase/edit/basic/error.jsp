@@ -10,7 +10,14 @@
 </head>
 <body class="basic">
   <h1>Sorry, an error happened</h1>
-
+  <% String referrer = request.getHeader("Referer");
+     if (referrer != null) {
+  %>
+  <p class="navigate">
+    <a href="<%= referrer %>"><span class="previous"></span><span class="alt">[back to node]</span></a> Back
+  </p>
+  <% } %>
+  <p class="navigate">Continue <a href="<%=response.encodeURL("search_node.jsp")%>"><span class="next"></span><span class="alt">[->]</span></a></p>
   Stacktrace:
   <% java.util.Stack stack = new java.util.Stack();
      Throwable e = exception;
@@ -30,7 +37,7 @@
   <% 
 
      intro = "Wrapped in: ";   } %>
-  <p class="navigate">Continue <a href="<%=response.encodeURL("search_node.jsp")%>"><span class="next"></span><span class="alt">[->]</span></a></p>
+
   
   <hr />
   Please contact your system administrator about this.
