@@ -28,6 +28,16 @@ import org.mmbase.util.logging.*;
 public class VirtualNodeManager extends BasicNodeManager {
     private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
 
+    VirtualNodeManager(MMObjectBuilder builder, Cloud cloud) {
+        this.cloud=(BasicCloud)cloud;
+        this.builder=builder;
+        for(Iterator i=builder.getFields().iterator(); i.hasNext();){
+            FieldDefs f=(FieldDefs)i.next();
+            Field ft= new BasicField(f,this);
+            fieldTypes.put(ft.getName(),ft);
+        }
+    }
+
     VirtualNodeManager(MMObjectNode node, Cloud cloud) {
         this.cloud=(BasicCloud)cloud;
         this.builder=node.parent;
