@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MediaFragments extends MMObjectBuilder {
     
     // logging
-    private static Logger log = Logging.getLoggerInstance(MediaFragment.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
     
     // Sources from which the media is (will be) recorded.
     private final static int SOURCE_DEFAULT=0;
