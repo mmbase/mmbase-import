@@ -1,14 +1,10 @@
-<mm:import externid="o" jspvar="ofs_str" vartype="String">0</mm:import>
-<mm:import from="cookie" id="conf_max"  externid="my_editors_maxitems" jspvar="conf_max" vartype="String">25</mm:import>
-<mm:import from="cookie" id="conf_list" externid="my_editors_typelist" jspvar="conf_list" vartype="String">editable</mm:import>
-<mm:import from="cookie" id="maxdays"   externid="my_editors_maxdays">99</mm:import>
-<mm:import from="parameters" externid="conf_days" jspvar="conf_days" vartype="String"><mm:write referid="maxdays" /></mm:import>
-<% // Set and get some values
-int max = Integer.parseInt(conf_max);
-int ofs = Integer.parseInt(ofs_str);
-%>
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<mm:import externid="ofs" id="ofs">0</mm:import
+><mm:import from="cookie" id="conf_max"  externid="my_editors_maxitems" jspvar="conf_max" vartype="String">25</mm:import
+><mm:import from="cookie" id="conf_list" externid="my_editors_typelist" jspvar="conf_list" vartype="String">editable</mm:import
+><mm:import from="cookie" id="searchbox" externid="my_editors_searchbox">after</mm:import
+><mm:import from="cookie" id="maxdays"   externid="my_editors_maxdays">99</mm:import
+><mm:import from="parameters" externid="conf_days" jspvar="conf_days" vartype="String"><mm:write referid="maxdays" /></mm:import
+><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>

@@ -88,9 +88,9 @@ for (int i = 0; i < l.size(); i++) {
 <td valign="top" width="80%">
 
 <!-- Search and search results -->
+<mm:compare referid="searchbox" value="after" inverse="true"><%@ include file="inc_searchform.jsp" %></mm:compare>
 <%@ include file="inc_searchresults.jsp" %>
-<p><a name="search">&nbsp;</a></p>
-<%@ include file="inc_searchform.jsp" %>
+<mm:compare referid="searchbox" value="after"><%@ include file="inc_searchform.jsp" %></mm:compare>
 
 </td>
 </tr>

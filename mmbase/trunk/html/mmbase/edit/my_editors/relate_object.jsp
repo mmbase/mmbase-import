@@ -41,11 +41,11 @@
   </td>
   <td valign="top" width="80%">
   	<!-- ### Search results -->	
-
 	<mm:notpresent referid="rnr">
-  		<%@ include file="inc_searchresults.jsp" %>
+	  <mm:compare referid="searchbox" value="after" inverse="true"><%@ include file="inc_searchform.jsp" %></mm:compare>
+  	  <%@ include file="inc_searchresults.jsp" %>
   	</mm:notpresent>
-
+  	
   	<!-- ### Relate nodes -->
 	<%@ include file="inc_relate.jsp" %>
 
@@ -105,8 +105,7 @@
   <td width="80%" valign="top">
   	<!-- ### Search form -->
 	<mm:notpresent referid="rnr">
-	  <a name="search"></a>
-	  <%@ include file="inc_searchform.jsp" %>
+	  <mm:compare referid="searchbox" value="after"><%@ include file="inc_searchform.jsp" %></mm:compare>
 	</mm:notpresent>
   </td>
 </tr>
