@@ -61,5 +61,11 @@ public class Url extends AbstractTransformer implements CharTransformer {
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
-
+    public String getEncoding() {
+        switch(to){
+        case ESCAPE:        return "ESCAPE_URL";
+        case PARAM_ESCAPE:  return "ESCAPE_URL_PARAM";
+        default: throw new UnsupportedOperationException("unknown encoding");
+        }
+    }
 }

@@ -24,5 +24,4 @@ public abstract class AbstractTransformer implements Transformer {
         to = t;
     }
     public abstract HashMap transformers();
-
 }
