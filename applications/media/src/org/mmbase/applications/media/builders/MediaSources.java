@@ -14,13 +14,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.io.*;
 
-//import org.mmbase.module.builders.AbstractServletBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBaseContext;
 import javax.servlet.http.*;
-//import org.mmbase.storage.search.implementation.*;
-//import org.mmbase.storage.search.*;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.StringObject;
@@ -39,7 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 /**
- * The MediaSource class describes pieces of media (audio / video). Information about
+ * The MediaSource builder describes a specific type of media that can be retrieved (real/mp3/etc). Information about
  * format, quality, and status will be maintained in this object. A MediaSource belongs
  * to a MediaFragement that describes the piece of media, the MediaSource is the
  * real audio/video itself. A MediaSource is connected to provider objects that indicate
@@ -47,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.5 2003-02-04 17:43:32 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.6 2003-02-05 15:39:34 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
