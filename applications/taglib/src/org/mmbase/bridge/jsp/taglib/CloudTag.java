@@ -148,6 +148,9 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
     public void  registerNode(String id, Node n) {        
         // does nothing.
     }
+    public void  register(String id, Object n) {        
+        // does nothing.
+    }
     
     public Node getNode(String id) throws JspTagException {
         throw new JspTagException("Cannot get Nodes directly from Cloud (use a context tag)");
@@ -202,6 +205,12 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
             anonymousClouds.put(cloudName, cloud);
             log.debug("put in hashMap");
         }
+        // check if cloud was expired:
+        if (! cloud.getUser().isValid()) {
+            log.debug("cloud was expired, create a new one");
+            cloud = getDefaultCloudContext().getCloud(cloudName);
+            anonymousClouds.put(cloudName, cloud);
+        }
         pageContext.setAttribute("cloud", cloud);        
     }
 
@@ -242,11 +251,20 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         if ("".equals(logon)) {
             logon = null;   // that also means to ignore the logon name
         }
-        
+
+        if (cloud != null && (! cloud.getUser().isValid())) { 
+            // cloud expired (security changed)
+            log.debug("found a cloud in the session, but is was expired, throwing it away");
+            cloud = null;            
+        }
+                             
         if (cloud != null) {         
             // we have a cloud, check if it is a desired one
             // otherwise make it null.
-            log.debug("found cloud in session m: " + method + " l: " + logon);
+            if (log.isDebugEnabled()) {
+                log.debug("found cloud in session m: " + method + " l: " + logon);
+            }
+
             /*
             if ("anonymous".equals(method)) { 
                 // explicity anonymous. 'logon' will be ignored
