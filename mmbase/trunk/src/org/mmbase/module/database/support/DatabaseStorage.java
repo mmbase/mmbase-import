@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.1 2002-04-08 12:21:31 pierre Exp $
+ * @version $Id: DatabaseStorage.java,v 1.2 2002-04-17 10:29:27 pierre Exp $
  */
 public interface DatabaseStorage extends Storage  {
 
@@ -239,5 +239,16 @@ public interface DatabaseStorage extends Storage  {
      */
     public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
         throws SQLException;
+
+    /**
+     * Registers the change to a node.
+     * Clears the change status of a ndoe, then broadcasts changes to the
+     * node's parent builder. If the node is a relation, it also updates the relationcache and
+     * broadcasts these changes to the relation' s source and destination.
+     * @todo should pass Transaction!
+     * @param node the node to register
+     * @param change the type of change: "n": new, "c": commit, "d": delete
+     */
+    public void registerChanged(MMObjectNode node, String change);
 
 }

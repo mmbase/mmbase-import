@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.1 2002-04-08 12:21:32 pierre Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.2 2002-04-17 10:29:27 pierre Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -357,17 +357,18 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      * @param trans the transaction to perform the insert in
      * @throws StorageException if an error occurred during delete
      */
-    public void deleteFromTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException {
+    public boolean deleteFromTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException {
         super.deleteFromTable(builder,node,trans);
         // obtain the parent builder, if any
         MMObjectBuilder parent=getParentBuilder(builder);
         // call the database to update the parent table
         if (parent!=null) {
-            deleteFromTable(parent,node,trans);
+            return deleteFromTable(parent,node,trans);
         } else if (!builder.getTableName().equals("object")) {
             // parent is object table
-            deleteObjectTable(node,trans);
+            return deleteObjectTable(node,trans);
         }
+        return true;
     }
 
     /**
@@ -376,9 +377,10 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      * @param trans the transaction to perform the insert in
      * @throws StorageException if an error occurred during delete
      */
-    protected void deleteObjectTable(MMObjectNode node, DatabaseTransaction trans) throws StorageException {
+    protected boolean deleteObjectTable(MMObjectNode node, DatabaseTransaction trans) throws StorageException {
         String sqldelete=deleteSQL(getFullTableName("object"),node.getNumber());
         trans.executeUpdate(sqldelete);
+        return true;
     }
 
 }

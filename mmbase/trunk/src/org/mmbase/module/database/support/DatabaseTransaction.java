@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.1 2002-04-08 12:21:31 pierre Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.2 2002-04-17 10:29:27 pierre Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -39,6 +39,7 @@ public class DatabaseTransaction implements Transaction {
     private ResultSet res = null;
     private DatabaseStorage database = null;
     private boolean supportsRollback=false;
+    private Map changes = new HashMap();
 
     /**
      * Instantiate a database transaction.
@@ -147,6 +148,14 @@ public class DatabaseTransaction implements Transaction {
                     result=false;
                 }
             }
+            if (result) {
+                // register all changes...
+                for(Iterator i=changes.keySet().iterator(); i.hasNext(); ) {
+                    MMObjectNode changedNode=(MMObjectNode)i.next();
+                    database.registerChanged(changedNode,(String)changes.get(changedNode));
+                }
+                changes.clear();
+            }
             try {
                 con.close();
             } catch (SQLException e) {
@@ -155,6 +164,27 @@ public class DatabaseTransaction implements Transaction {
             }
         }
         return result;
+    }
+
+    /**
+     * Register changes for broadcasting after commit
+     * @param node the node to register
+     * @param change the type of change: "n": new, "c": commit, "d": delete
+     */
+    public void registerChanged(MMObjectNode node, String change)  {
+        String oldval=(String)changes.get(node);
+        if (oldval!=null) {
+            // don't register extra changes
+            if (change.equals("c")) {
+                return;
+            }
+            // if removed, remove prior reference if it's an insert and then leave.
+            if (change.equals("d") && oldval.equals("n")) {
+                changes.remove(node);
+                return;
+            }
+        }
+        changes.put(node,change);
     }
 
     /**
