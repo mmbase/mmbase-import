@@ -21,7 +21,7 @@ import java.util.*;
  * (or extensions) must be related to it. Those will perform the actual task of creating an URL.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.7 2003-01-08 22:23:07 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.8 2003-01-14 20:36:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -43,7 +43,7 @@ public class MediaProviders extends MMObjectBuilder {
         while (composers.hasNext()) {
             MMObjectNode composer = (MMObjectNode) composers.next();
             MediaURLComposers bul = (MediaURLComposers) composer.parent; // cast everytime, because it can be extended
-            result.addAll(bul.getResponseInfos(composer, provider, source, fragment, info));
+            result.addAll(bul.getURLs(composer, provider, source, fragment, info));
         }
 
         return result;

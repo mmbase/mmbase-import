@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.20 2003-01-08 22:23:07 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.21 2003-01-14 20:36:20 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -55,6 +55,7 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_PARENT      = "parent";    
     public static final String FUNCTION_SUBFRAGMENT = "subfragment";
     public static final String FUNCTION_AVAILABLE   = "available";
+    public static final String FUNCTION_FORMAT      = "format";
 
     
     // This filter is able to find the best mediasource by a mediafragment.
@@ -153,11 +154,9 @@ public class MediaFragments extends MMObjectBuilder {
                 return available;
             }
         } else if (FUNCTION_URL.equals(function)) {
-            try {
-                return getURL(node, translateURLArguments(args, null));
-            } catch (java.net.MalformedURLException e) {
-                return "";
-            }
+            return getURL(node, translateURLArguments(args, null));
+        } else if (FUNCTION_FORMAT.equals(function)) {
+            return getFormat(node, translateURLArguments(args, null));
         } else if (function.equals("longurl")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
             return getLongURL(node, new Hashtable());
@@ -198,10 +197,12 @@ public class MediaFragments extends MMObjectBuilder {
      */
     public String getGUIIndicator(MMObjectNode node) {
         String url = node.getFunctionValue(FUNCTION_URL, null).toString();
+        String title = node.getStringValue("title");
+        if ("".equals(title)) title = "***";
         if (! "".equals(url)) {
-            return "<a href=\"" + url + "\" alt=\"\" >" + node.getStringValue("title") + "</a>";
+            return "<a href=\"" + url + "\" alt=\"\" >" + title + "</a>";
         } else {
-            return "[" + node.getStringValue("title") + "]";
+            return "[" + title + "]";
         }        
     }
     
@@ -243,9 +244,9 @@ public class MediaFragments extends MMObjectBuilder {
     }   
 
     protected List getSortedURLs(MMObjectNode fragment, Map info) {
+        log.debug("getsortedurls");
         List urls =  getURLs(fragment, info);
-        Collections.sort(urls, mediaSourceFilter);
-        return urls;
+        return mediaSourceFilter.filter(urls);
     }
 
       
@@ -257,23 +258,24 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
      */
-    protected URL getURL(MMObjectNode fragment, Map info) throws java.net.MalformedURLException  {
+    protected  String getURL(MMObjectNode fragment, Map info)   {
         log.debug("Getting url of a fragment.");        
         List urls = getSortedURLs(fragment, info);
         if (urls.size() > 0) {
             return ((ResponseInfo) urls.get(0)).getURL();
         } else {
-            return new URL(""); //no sources 
+            return ""; //no sources 
         }
+    }
 
-        /*
-        MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
-        if(mediaSource == null) {
-            log.error("Cannot determine url");
-            return new URL("");
+    protected  String getFormat(MMObjectNode fragment, Map info)   {
+        log.debug("Getting format of a fragment.");        
+        List urls = getSortedURLs(fragment, info);
+        if (urls.size() > 0) {
+            return ((ResponseInfo) urls.get(0)).getFormat().toString();
+        } else {
+            return ""; //no sources 
         }
-        return mediaSourceBuilder.getURL(mediaSource, info);
-        */
     }
     
 

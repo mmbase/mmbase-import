@@ -26,31 +26,24 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResponseInfo.java,v 1.2 2003-01-08 22:23:07 michiel Exp $
+ * @version $Id: ResponseInfo.java,v 1.3 2003-01-14 20:36:20 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
-public class ResponseInfo  {
-    private URL          url;
-    private MMObjectNode source;
-    private boolean      available;
-    private Map          info;
-    ResponseInfo(URL u, MMObjectNode s,  boolean a, Map i) {
-        url = u; source = s; info = i; available = a;
-    }
-    ResponseInfo(URL u, MMObjectNode s) {
-        this(u, s, true, null);
-    }
-    public URL          getURL()      { return url;  }
+abstract public class ResponseInfo  {
+    protected MMObjectNode source;
+    protected Map          info;
+    abstract public String       getURL();
+    abstract public boolean      isAvailable();
     public MMObjectNode getSource()   { return source;  }
-    public boolean      isAvailable() { return available; }
     public Map          getInfo()     { return info; }
+    public Format       getFormat()   { return Format.get(source.getIntValue("format")); } 
     
     public String toString() {
-        if (available) {
-            return url.toString();
+        if (isAvailable()) {
+            return getFormat().toString() + ": " + getURL();
         } else {
-            return "{" + url.toString() + "}";
+            return "{" +  getFormat().toString() + ": " + getURL() + "}";
         }
     }
 }
