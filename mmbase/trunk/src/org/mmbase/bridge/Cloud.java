@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.47 2004-10-09 09:46:35 nico Exp $
+ * @version $Id: Cloud.java,v 1.48 2004-11-01 16:00:00 michiel Exp $
  */
 public interface Cloud {
 
@@ -507,7 +507,7 @@ public interface Cloud {
 
     /**
      * Executes a query and returns the result as a Cluster Node List (also if the query is a {@link NodeQuery}).
-     * @param query, Query to execute
+     * @param query Query to execute
      * @return Cluster Node List
      * 
      * @see org.mmbase.storage.search.SearchQuery
