@@ -1,5 +1,5 @@
 /*
-i
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.123 2002-03-26 12:34:13 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.124 2002-04-08 11:59:28 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -267,46 +267,62 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Initializes this builder
      * The property 'mmb' needs to be set for the builder before this method can be called.
-     * The method retrieves data from the TypeDef builder, or adds data to thet builder if the
-     * current builder si not yet registrered.
-     * @return Always true.
+     * The method retrieves data from the TypeDef builder, or adds data to that builder if the
+     * current builder is not yet registered.
+     * @return true if init was completed, false if uncompleted.
      * @see #create
      */
     public boolean init() {
-        if (!created()) {
-            log.info("init(): Create "+tableName);
-            create();
-        }
+        // skip initialisation if oType has been set (happend at end if init)
+        // note that init can be called twice
+        if (oType!=-1) return true;
+
         // first make sure parent builder is initalized
         if (parentBuilder!=null) {
             parentBuilder.init();
         }
-        if (// !tableName.equals("object") &&
-            mmb.getTypeDef()!=null) {
-            oType=mmb.getTypeDef().getIntValue(tableName);
+        if (!created()) {
+            log.info("init(): Create "+tableName);
+            create();
+        }
+        TypeDef typeDef=mmb.getTypeDef();
+        // only deteremine otype if typedef is available,
+        // or this is typedef itself (have to start somewhere)
+        if (((typeDef!=null)  && (typeDef.getObjectType()!=-1)) ||
+            (this==typeDef)) {
+            oType=typeDef.getIntValue(tableName);
             if (oType==-1) {
-                MMObjectNode node=mmb.getTypeDef().getNewNode("system");
-                node.setValue("number",database.getDBKey());
-                if (this==mmb.getTypeDef()) {
-                    node.setValue("otype",node.getNumber());
-                } else {
-                    node.setValue("otype",mmb.getTypeDef().getObjectType());
-                }
+                MMObjectNode node=typeDef.getNewNode("system");
                 node.setValue("name",tableName);
                 if (description==null) description="not defined in this language";
                 node.setValue("description",description);
-                oType=node.insert("system");
+                oType=database.getDBKey();
+                node.setValue("number",oType);
+                // for typedef, set otype explictly, as it wasn't set in getNewNode()
+                if (this==typeDef) {
+                    node.setValue("otype",oType);
+                }
+                node.insert("system");
+                // for typedef, call it's parents init again, as otype is only now set
+                if (this==typeDef) {
+                    if (parentBuilder!=null) {
+                        parentBuilder.init();
+                    }
+                }
             }
         } else {
             // warn if typedef was not created
             // except for the 'object' and 'typedef' basic builders
             if(!tableName.equals("typedef") && !tableName.equals("object")) {
                 log.warn("init(): for tablename("+tableName+") -> can't get to typeDef");
+                return false;
             }
         }
-        if (obj2type==null) init_obj2type(); // RICO switched ON
+        // should this be here??
+        if (obj2type==null) init_obj2type();
         return true;
     }
+
 
     /**
      * Creates a new builder table in the current database.
@@ -473,7 +489,7 @@ public class MMObjectBuilder extends MMTable {
      *
      * @since MMBase-1.6
      */
-    public void setParentBuilder(MMObjectBuilder parent) {
+    public void setParentBuilder(MMObjectBuilder parent) throws StorageException {
         database.registerParentBuilder(parent,this);
         parentBuilder=parent;
     }
