@@ -6,13 +6,16 @@
 %>
 
 <mm:compare referid="imagelayout" value="0">
+     <table width="100%">
+        <tr>
+
    <mm:related path="sizerel,images" orderby="sizerel.pos">
    <mm:import id="imwidth" reset="true"><mm:field name="sizerel.width"/></mm:import>
    <mm:import id="imheight" reset="true"><mm:field name="sizerel.height"/></mm:import>
    <mm:import id="imnum" reset="true"><mm:field name="images.number"/></mm:import>
    <mm:node number="$imnum">
-   
-      <td width="100%">
+  
+      <td valign="top" width="100%" height="100%">
       <mm:field name="title"/>
       <br/>
        <mm:isgreaterthan referid="imwidth" value="0">
@@ -32,22 +35,28 @@
       </mm:islessthan>
 
       
-        <br clear="all"/>
+        <br/>
         
       <mm:field name="description"/>
      </td>
-     </mm:node>
+    </mm:node>
     </mm:related>
+
+       </tr>
+     </table>
+ 
     </mm:compare>
     
     <mm:compare referid="imagelayout" value="1">
-    <td width="100%">
-   <mm:related path="sizerel,images" orderby="sizerel.pos">
+      <table width="100%">
+  <mm:related path="sizerel,images" orderby="sizerel.pos">
+        <tr>
+       <td valign="top" width="100%" height="100%">
+ 
    <mm:import id="imwidth" reset="true"><mm:field name="sizerel.width"/></mm:import>
    <mm:import id="imheight" reset="true"><mm:field name="sizerel.height"/></mm:import>
    <mm:import id="imnum" reset="true"><mm:field name="images.number"/></mm:import>
    <mm:node number="$imnum">
-   
       <mm:field name="title"/>
       <br/>
        <mm:isgreaterthan referid="imwidth" value="0">
@@ -67,12 +76,15 @@
       </mm:islessthan>
              
        
-        <br clear="all"/>
+        <br/>
         
       <mm:field name="description"/>
-        <br clear="all"/>
+        <br/>
      </mm:node>
+        </td>
+        </tr>
+ 
     </mm:related>
-    </td>
+   </table>
     </mm:compare>
 
