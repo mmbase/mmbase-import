@@ -26,7 +26,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.86 2003-04-29 21:15:07 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.87 2003-05-02 21:11:03 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -684,10 +684,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         return resultNodeList;
     }
-    /*
-    new implementation of getList based on the above version (to be tested)
 
-      
     //javadoc inherited
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
@@ -736,145 +733,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         return getList(query);
     }
-    */    
 
-    public NodeList getList(String startNodes, String nodePath, String fields,
-            String constraints, String orderby, String directions,
-            String searchDir, boolean distinct) {
-
-
-        MultilevelCacheHandler multilevelCache = MultilevelCacheHandler.getCache(); // this hides
-                                                                                    // the member
-                                                                                    // (for now)
-        // begin of check invalid search command
-        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
-        // if(startNodes != null) startNodes = encoder.encode(startNodes);
-        // if(nodePath != null) nodePath = encoder.encode(nodePath);
-        // if(fields != null) fields = encoder.encode(fields);
-        if(orderby != null) orderby  = encoder.encode(orderby);
-        if(directions != null) directions  = encoder.encode(directions);
-        if(searchDir != null) searchDir  = encoder.encode(searchDir);
-        if(constraints != null && !validConstraints(constraints)) {
-            throw new BridgeException("invalid contrain:" + constraints);
-        }
-        // end of check invalid search command
-
-        String sdistinct="";
-        int search = ClusterBuilder.SEARCH_BOTH;
-        String pars ="";
-
-        if (startNodes!=null) {
-            pars+=" NODES='"+startNodes+"'";
-        }
-        if (nodePath != null && (!nodePath.trim().equals(""))) {
-            pars+=" TYPES='"+nodePath+"'";
-        } else {
-            throw new BridgeException("No nodePath specified.");
-        }
-
-        if (fields == null) fields = "";
-        pars += " FIELDS='"+fields+"'";
-
-        if (orderby!=null) {
-            pars+=" SORTED='"+orderby+"'";
-        }
-        if (directions!=null) {
-          pars+=" DIR='"+directions+"'";
-        }
-
-        if (constraints!=null) {
-          pars+=" WHERE='"+constraints.replace(' ','_')+"'";
-        }
-
-        if (distinct) {
-            sdistinct="YES";
-            pars+=" DISTINCT='YES'";
-        }
-
-        if (searchDir!=null) {
-          pars+=" SEARCH='"+searchDir+"'";
-        }
-
-        org.mmbase.util.StringTagger tagger= new org.mmbase.util.StringTagger(pars,' ','=',',','\'');
-        if (searchDir != null) {
-            search = ClusterBuilder.getSearchDir(searchDir);
-        }
-
-        Vector snodes  =  tagger.Values("NODES");
-        Vector sfields = tagger.Values("FIELDS");
-        Vector tables = tagger.Values("TYPES");
-        Vector orderVec = tagger.Values("SORTED");
-        Vector sdirection =tagger.Values("DIR"); // minstens een : UP
-        if (sdirection==null) {
-            sdirection=new Vector();
-            sdirection.addElement("UP"); // UP == ASC , DOWN =DESC
-        }
-        ClusterBuilder clusters = cloudContext.mmb.getClusterBuilder();
-        if (constraints!=null) {
-            if (constraints.trim().equals("")) {
-                constraints = null;
-            } else {
-                constraints=convertClauseToDBS(constraints);
-            }
-        }
-
-        Integer hash = null; // result hash for cache
-        Vector resultlist=null; // result vector
-        // check multilevel cache if needed
-       if (multilevelCache.isActive()) {
-            hash = multilevelCache.calcHashMultiLevel(tagger);
-            resultlist = (Vector) multilevelCache.get(hash);
-        }
-        // if unavailable, obtain from database
-        if (resultlist==null) {
-            log.debug("result list is null, getting from database");
-            resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
-            // store result in cache if needed
-            if (hash != null && resultlist != null) {
-                multilevelCache.put(hash, resultlist, tables, tagger);
-            }
-        }
-
-        if (resultlist != null) {
-            // clone Vector, since the resultlist may
-            // be altered based on security settings
-            resultlist = (Vector) resultlist.clone();
-            // get authorization for this call only
-            Authorization auth=mmbaseCop.getAuthorization();
-            for (int i=resultlist.size()-1; i>=0; i--) {
-                boolean check=true;
-                MMObjectNode node=(MMObjectNode)resultlist.get(i);
-                for (int j=0; check && (j<tables.size()); j++) {
-                    int nodenr = node.getIntValue(tables.get(j)+".number");
-                    if (nodenr!=-1) {
-                        check=auth.check(userContext.getUserContext(),nodenr,Operation.READ);
-                    }
-                }
-                if (!check) resultlist.remove(i);
-            }
-            NodeManager tempNodeManager = null;
-            if (resultlist.size()>0) {
-                tempNodeManager = new VirtualNodeManager((MMObjectNode)resultlist.get(0),this);
-            } else {
-                tempNodeManager = new VirtualNodeManager(this);
-            }
-            NodeList list=new BasicNodeList(resultlist,tempNodeManager);
-            list.setProperty("nodes",startNodes);
-            list.setProperty("path",nodePath);
-            list.setProperty("fields",fields);
-            list.setProperty("constraints",constraints);
-            list.setProperty("orderby",orderby);
-            list.setProperty("directions",directions);
-            list.setProperty("searchdir",searchDir);
-            list.setProperty("distinct",new Boolean(distinct));
-            return list;
-
-        } else {
-            throw new BridgeException("Parameters are invalid :" + pars + " - " + constraints);
-        }
-    }
-
-    
 
     /**
      * set the Context of the current Node
