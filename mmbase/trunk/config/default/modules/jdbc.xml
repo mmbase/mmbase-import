@@ -37,7 +37,7 @@
 	<!--    
             <property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
         -->
-        <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
+        <property name="url">jdbc:hsqldb://$DBM</property>
 			
       	<!--
 	    name="user", what is the user we will use to login to the database, if set to 'url' it
@@ -98,9 +98,10 @@
             MySQL:          org.gjt.mm.mysql.Driver (http://www.mysql.com/Downloads/Contrib/mm.mysql-2.0.4-bin.jar)
             PostgreSQL:     org.postgresql.Driver   (http://jdbc.postgresql.org/download.html)
             Hypersonic:     org.hsql.jdbcDriver     (http://hsqldb.sourceforge.net/)
+            HsqlDB:         org.hsqldb.jdbcDriver   (http://hsqldb.sourceforge.net/)
             
         -->
-        <property name="driver">org.hsql.jdbcDriver</property>
+        <property name="driver">org.hsqldb.jdbcDriver</property>
 
       	<!--
 	    name="port" what port is this database engine running on ? you can find the is
@@ -110,7 +111,7 @@
             MySQL:          3306
             PostgreSQL      5432
         -->
-        <property name="port">3306</property>
+        <property name="port">0</property>
         
 						
       	<!--
