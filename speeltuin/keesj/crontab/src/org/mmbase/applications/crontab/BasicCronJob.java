@@ -10,7 +10,7 @@ public abstract class BasicCronJob implements JCronJob {
         init();
     }
 
-    protected init() {
+    protected void init() {
     }
 
     public void stop() {
