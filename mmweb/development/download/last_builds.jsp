@@ -1,4 +1,4 @@
-<%@page import="java.util.*, java.io.*, java.text.* " session="false"%>
+<%@page import="java.util.*, java.io.*, java.text.* " session="true"%>
 
 <%! class DirSorter implements Comparator {
      public int compare(Object o1, Object o2) {
