@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.132 2004-09-20 16:39:01 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.133 2004-09-24 13:06:25 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -474,7 +474,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 case Field.TYPE_NODE:    return getNodeValue(fieldName);
                 case Field.TYPE_BOOLEAN: return new Boolean(getBooleanValue(fieldName));
                 case Field.TYPE_DATETIME:return getDateValue(fieldName);
-                case Field.TYPE_LIST:    return getDateValue(fieldName);
+                case Field.TYPE_LIST:    return getListValue(fieldName);
                 default:
                     log.error("Unknown fieldtype '" + type + "'");
                     return value;
