@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.11 2004-04-20 10:53:09 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.12 2005-03-01 14:11:13 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -47,7 +47,7 @@ public abstract class ContextLoginModule {
     public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws SecurityException;
 
     protected ContextUserContext getValidUserContext(String username, Rank rank) throws SecurityException{
-        return new ContextUserContext(username, rank, validKey, manager);
+        return new ContextUserContext(username, rank, validKey, manager, name);
     }
 
 

@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.basic;
 
 import org.mmbase.security.Rank;
-import org.mmbase.security.UserContext;
+import org.mmbase.security.BasicUser;
 import org.mmbase.security.SecurityException;
 
 /**
@@ -19,14 +19,15 @@ import org.mmbase.security.SecurityException;
  * user.
  * 
  * @author Eduard Witteveen
- * @version $Id: NameContext.java,v 1.5 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: NameContext.java,v 1.6 2005-03-01 14:08:33 michiel Exp $
  */
-public class NameContext extends UserContext {
+public class NameContext extends BasicUser {
 
     private String identifier = null;
     private Rank   rank       = null;
 
-    public NameContext(Rank rank) {
+    public NameContext(Rank rank, String authenticationType) {
+        super(authenticationType);
         this.rank = rank;
     }
 

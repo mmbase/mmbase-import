@@ -18,9 +18,9 @@ import org.mmbase.security.*;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.5 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ContextUserContext.java,v 1.6 2005-03-01 14:11:13 michiel Exp $
  */
-public class ContextUserContext extends UserContext {
+public class ContextUserContext extends BasicUser {
 
     private String  username;
     private Rank    rank;
@@ -28,7 +28,8 @@ public class ContextUserContext extends UserContext {
     /** The SecurityManager, who (eventually) created this instance */
     protected MMBaseCop manager;
 
-    public ContextUserContext(String username, Rank rank, long key, MMBaseCop manager) {
+    public ContextUserContext(String username, Rank rank, long key, MMBaseCop manager, String app) {
+        super(app);
         this.rank = rank;
         this.username = username;
         this.key = key;
