@@ -34,7 +34,7 @@ public class PostersHandler extends Handler {
     private String inforum;
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(PostersHandler.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(PostersHandler.class); 
     public PostersHandler(int generatecount, int delaytime, String inforum) {
 	this.generatecount=generatecount;
 	this.delaytime=delaytime;

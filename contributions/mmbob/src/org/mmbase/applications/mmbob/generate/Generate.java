@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 public class Generate {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(Generate.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(Generate.class); 
 
    private static int state=0;
    private static String livefeedback="";

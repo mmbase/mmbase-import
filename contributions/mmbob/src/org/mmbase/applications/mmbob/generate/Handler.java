@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 public class Handler implements Runnable {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(Handler.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(Handler.class); 
    private static ArrayList words=new ArrayList();
    private static ArrayList firstnames=new ArrayList();
    private static ArrayList surnames=new ArrayList();

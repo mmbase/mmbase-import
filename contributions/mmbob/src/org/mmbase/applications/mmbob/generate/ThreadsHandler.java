@@ -35,7 +35,7 @@ public class ThreadsHandler extends Handler {
     private String inpostarea;
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(ThreadsHandler.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ThreadsHandler.class); 
 
     public ThreadsHandler(int generatecount, int delaytime, String inforum,String inpostarea) {
 	this.generatecount=generatecount;
