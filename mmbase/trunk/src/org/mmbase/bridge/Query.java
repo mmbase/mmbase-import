@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.21 2003-12-02 11:28:24 michiel Exp $
+ * @version $Id: Query.java,v 1.22 2003-12-09 22:51:38 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -115,7 +115,7 @@ public interface Query extends SearchQuery, Cloneable {
 
     /**
      * Limits the query-result to maxNumber records.
-     * @see org.mmbase.storage.search.implementation.BasicSearchQuery#setMaxNumber
+     * @see org.mmbase.storage.search.implementation.BasicSearchQuery#setMaxNumber 
      * @see #getMaxNumber
      */
     Query setMaxNumber(int maxNumber);
@@ -171,7 +171,11 @@ public interface Query extends SearchQuery, Cloneable {
 
     /**
      * Create a contraint (for use with this Query object). The given field value must be contained
-     * by the given set of values.
+     * by the given set of values. If the given set is empty, a FieldValueInConstraint will be
+     * constructed for the number field in stead ('number IN (-1)'), which ensures that also in that
+     * case the logical thing will happen. ('<field> IN ()' fails in most databases).
+     *
+     * @return the new Constraint.
      */
     FieldValueInConstraint      createConstraint(StepField f, SortedSet v);
 
@@ -230,11 +234,18 @@ public interface Query extends SearchQuery, Cloneable {
     Object clone();
 
     /**
+     * Clones this object, only without the fields
+     */
+    Query cloneWithoutFields();
+
+    /**
      * Creates an unused aggregate clone of this query. If this query is not itself aggregated, all
      * fields are removed (but the contraints on them remain), and you can add aggregated fields
      * then.
      */
     Query aggregatingClone();
+
+
 
 
 }
