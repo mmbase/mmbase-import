@@ -158,6 +158,10 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
    <tr><th><mm:write referid="mlg_area_name" /></th><th><mm:write referid="mlg_topics" /></th><th><mm:write referid="mlg_messages" /></th><th><mm:write referid="mlg_views" /></th><th><mm:write referid="mlg_last_posting" /></th></tr>
   		  <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+		        <mm:import id="guestreadmodetype" reset="true"><mm:field name="guestreadmodetype" /></mm:import>
+		        <mm:compare referid="posterid" value="-1" inverse="true">
+		        <mm:import id="guestreadmodetype" reset="true">open</mm:import>  </mm:compare>
+			<mm:compare referid="guestreadmodetype" value="open">
 			<tr><td align="left"><a href="postarea.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:field name="id" />"><mm:field name="name" /></a>
 			<p/>
 			<mm:field name="description" />
@@ -177,6 +181,7 @@
   </mm:field>
   <p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages" /></mm:compare></mm:field></td>
 			</tr>
+			</mm:compare>
 		  </mm:nodelistfunction>
 </table>
   <mm:compare referid="adminmode" value="true">

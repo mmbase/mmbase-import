@@ -739,4 +739,8 @@
 		<translation language="nl" value="E-mail" />
 		<translation language="df" value="Email" />
 	</keyword>
+	<keyword name="guest">
+		<translation language="nl" value="gast" />
+		<translation language="df" value="guest" />
+	</keyword>
 </languageguiset>
