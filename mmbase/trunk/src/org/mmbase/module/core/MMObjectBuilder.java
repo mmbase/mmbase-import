@@ -465,6 +465,7 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public Vector searchVector(String where) {
 		// do the query on the database
+		if (where==null) where="";
 		if (where.indexOf("MMNODE")!=-1) {
 			where=convertMMNode2SQL(where);
 		} else {
