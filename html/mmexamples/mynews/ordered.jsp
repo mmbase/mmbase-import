@@ -1,7 +1,7 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content language="en" postprocessor="reducespace">
 <mm:import externid="magid">default.mags</mm:import>
-
 <mm:cloud>
 <mm:node number="$magid" id="mag">
 <html>
@@ -47,3 +47,4 @@
 </html>
 </mm:node>
 </mm:cloud>
+</mm:content>
