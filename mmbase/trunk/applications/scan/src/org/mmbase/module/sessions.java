@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.14 2000-10-15 22:37:23 gerard Exp $
+ $Id: sessions.java,v 1.15 2000-11-13 15:56:11 vpro Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.14  2000/10/15 22:37:23  gerard
+ gerard: added some javadocs
+ submitted by Jaco de Groot
+
  Revision 1.13  2000/10/09 12:12:46  vpro
  Rico: added comments
 
@@ -68,10 +72,11 @@ import org.mmbase.module.core.*;
  * SETSTRING-NAME : This command gives all values of the session variable NAME, comma separated.
  * SETCOUNT-NAME : This command gives the number of values contained by the session variable NAME.
  * AVGSET-NAME : This command returns the average of a set numbers.
+ * CLEARSESSIONINFO : This command clears the SessionInfo.
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.14 2000-10-15 22:37:23 gerard Exp $
+ * @version $Id: sessions.java,v 1.15 2000-11-13 15:56:11 vpro Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -96,6 +101,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 	
 	public sessionInfo getSession(scanpage sp,String wanted) {
+	debug("getSession(): wanted=" + wanted);
 		if (sessions!=null && wanted!=null) {
 			sessionInfo session=(sessionInfo)sessions.get(wanted);
 			if (session==null) {
@@ -220,7 +226,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				sid=session.getCookie();
 				if (mmbase!=null) {
 					props=mmbase.getMMObject("properties");
-					Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
+					// MOET ANDERS
+					// Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
+					Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
 					if( debug ) debug("loadProperties(): got SID("+sid+")"); 
 					if (res.hasMoreElements()) {
 						MMObjectNode snode = (MMObjectNode)res.nextElement();
@@ -428,14 +436,15 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
 			
-			if (cmd.equals("CLEARSET")) 	return(doClearSet(sp,tok));
+			if (cmd.equals("CLEARSET")) 		return(doClearSet(sp,tok));
 			if (cmd.equals("ADDSET")) 		return(doAddSet(sp,tok));
 			if (cmd.equals("PUTSET")) 		return(doPutSet(sp,tok));
 			if (cmd.equals("DELSET")) 		return(doDelSet(sp,tok));
-			if (cmd.equals("CONTAINSSET")) 	return(getContainsSet(sp,tok));
-			if (cmd.equals("SETSTRING")) 	return(getSetString(sp,tok));
-			if (cmd.equals("SETCOUNT")) 	return(getSetCount(sp,tok));
+			if (cmd.equals("CONTAINSSET")) 		return(getContainsSet(sp,tok));
+			if (cmd.equals("SETSTRING")) 		return(getSetString(sp,tok));
+			if (cmd.equals("SETCOUNT")) 		return(getSetCount(sp,tok));
 			if (cmd.equals("AVGSET")) 		return(getAvgSet(sp,tok));
+			if (cmd.equals("CLEARSESSIONINFO"))	return(doClearSessionInfo(sp,tok));
 			
 			debug("replace("+cmds+"): WARNING: Unknown command("+cmd+")!");
 		}
@@ -500,6 +509,11 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		}
 		return("");
 	} 
+
+	public String doClearSessionInfo(scanpage sp, StringTokenizer tok)
+	{	forgetSession(sp.sname);
+		return ("forgetSession " + sp.name);
+	}
 
 	public String doDelSet(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
