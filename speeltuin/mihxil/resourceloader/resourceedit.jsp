@@ -50,14 +50,20 @@
 
     while (i.hasNext()) {
     String res = (String) i.next();
+    URL url = resourceLoader.findResource(res);
+    URLConnection con = url.openConnection();
+    boolean editable = con.getDoOutput();
 %>
-<tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="<%=res%>" /></mm:url>">Edit</a></td>
+<tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="<%=res%>" /></mm:url>"><%= editable ? "Edit" : "View"%></a></td>
 <%
-      out.println("<td>"  + res + "</td><td>" + resourceLoader.findResource(res) + "</td></tr>");
+      out.println("<td>"  + res + "</td><td>" + url  + "</td></tr>");
 }
 %>
 </mm:notpresent>
    <mm:present referid="resource">
+   <%  URL url = resourceLoader.findResource(resource); 
+       URLConnection con = url.openConnection();
+   %>
   <tr>
     <td colspan="3">
       <mm:import externid="save" />
@@ -67,7 +73,11 @@
         Resource: 
         <input type="text" name="resource" style="width: 200px;" value="<%=resource%>" />
         <input type="submit" name="load" value="load" />
-        <input type="submit" name="save" value="save" />
+	<% if (con.getDoOutput()) { %>
+          <input type="submit" name="save" value="save" />
+        <% } else { %>
+           READONLY
+        <% } %>
 	<a href="<mm:url referids="search" />">Back</a>
         <mm:compare referid="xml" value="XML">          
           <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
@@ -111,9 +121,7 @@
         <mm:import externid="text" jspvar="text" vartype="string" />
         <%
          {
-         URL url = resourceLoader.findResource(resource);
-         OutputStream stream = resourceLoader.createResourceAsStream(resource);
-         PrintWriter writer = new PrintWriter(stream);
+         PrintWriter writer = new PrintWriter(resourceLoader.getWriter(resource));
          writer.write(text);
          writer.close();
 }
@@ -123,11 +131,10 @@
           <input type="submit" name="xml" value="XML" />
           <textarea name="text" style="width: 100%" rows="30"><%
           {
-          URL url = resourceLoader.findResource(resource);
           if (url != null) {
-             InputStream stream = url.openStream();
-             if (stream != null) {
-             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+             Reader r = resourceLoader.getReader(resource);
+             if (r != null) {
+             BufferedReader reader = new BufferedReader(r);
               while(true) {
                 String line = reader.readLine();
                 if (line == null) break;
