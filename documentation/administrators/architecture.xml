@@ -7,7 +7,7 @@
 ><date
 >20 March 2003</date
 ><edition
->$Id: architecture.xml,v 1.1 2003-04-03 11:45:12 pierre Exp $</edition
+>$Id: architecture.xml,v 1.2 2003-04-08 05:57:42 henk Exp $</edition
 ><authorgroup
 ><author
 ><firstname
@@ -40,7 +40,7 @@ url="http://www.mmbase.org/license"
 ><title
 >Introduction</title
 ><para
->MMBase is a generic object oriented content magement system, which is implemented in Java. MMBase operates as a web-application which can be plugged-in at an application server like Tomcat, Orion, Resin, WebSphere, Jetty or IIS.</para
+>MMBase is a general purpose object oriented content magement system, which is implemented in Java. MMBase operates as a web-application which can be plugged-in at an application server like Tomcat, Orion, Resin, WebSphere, Jetty or IIS.</para
 ><note
 ><para
 >The main difference between a webserver like Apache and an application server is that an application server is capable of executing server-side functionality like programs written in Java. The application servers on which MMBase can be plugged in have to support Java and Java Server Pages.</para
@@ -81,14 +81,6 @@ fileref="../security/media/architecture.png"
 ><itemizedlist
 ><listitem
 ><para
->Oracle</para
-></listitem
-><listitem
-><para
->DB2</para
-></listitem
-><listitem
-><para
 >Informix</para
 ></listitem
 ><listitem
@@ -98,6 +90,14 @@ fileref="../security/media/architecture.png"
 ><listitem
 ><para
 >MySQL</para
+></listitem
+><listitem
+><para
+>Oracle</para
+></listitem
+><listitem
+><para
+>DB2</para
 ></listitem
 ><listitem
 ><para
@@ -117,11 +117,11 @@ fileref="../security/media/architecture.png"
 ><para
 >Automatic index generation</para
 ><para
->When MMBase fills your database with tables it automatically creates indices for columns, which are known to be frequently used in database queries. This will guarantee that the database layer operates in an efficient way right from the start.[</para
+>When MMBase fills your database with tables it automatically creates indices for columns, which are known to be frequently used in database queries. This will guarantee that the database layer operates in an efficient way right from the start.</para
 ></listitem
 ></itemizedlist
 ><para
->[TO DO: what do we have to sqy about Query, Storage and Support ? ]</para
+>[TO DO: what do we have to say about Query and Storage ? ]</para
 ></section
 ><section
 ><title
@@ -133,13 +133,15 @@ fileref="../security/media/architecture.png"
 ><para
 >configuring objects and relations.</para
 ><para
->MMBase objects are configured by XML-configuration files called builders. These builders describe the fields an object has and its functionality. The field names for use in the Graphical User Interfaces can be stored in multiple languages to make your MMBase implementation ready for use in different languages. After a builder is placed in the MMBase installation, the corresponding table in the database is automatically generated. To learn more about using builders check out the Administrators/MMBase Builder Configuration documentation . In the MMBase standard builders document under the Templaters and Designers section you can find info on the builders shipped with the MMBase release. [TO DO: should the buider docs not be in the same section ]</para
+>MMBase objects are configured by XML-configuration files called builders. These builders describe the fields an object has and its functionality. The field names for use in the Graphical User Interfaces can be stored in multiple languages to make your MMBase implementation ready for use in different languages. After a builder is placed in the MMBase installation, the corresponding table in the database is automatically created. To learn more about using builders check out the Administrators/MMBase Builder Configuration documentation . In the MMBase standard builders document under the Templaters and Designers section you can find info on the builders shipped with the MMBase release. [TO DO: should both builder docs not be in the same section ? ]</para
 ></listitem
 ><listitem
 ><para
 >creating objects and relations.</para
 ><para
->When an object, or node, is created the functionality added to the object can dictate that some action has to be taken. E.g. an email which is stored in MMBase is posted. The creations of relations is a four-step procedure:</para
+>When an object, or node, is created the functionality added to the object can dictate that some action has to be taken. E.g. an email which is stored in MMBase is posted.</para
+><para
+>The creation of relations is a four-step procedure:</para
 ><orderedlist
 ><listitem
 ><para
@@ -158,12 +160,14 @@ fileref="../security/media/architecture.png"
 >Create relations.</para
 ></listitem
 ></orderedlist
+><para
+>[TO DO: create documentation on relations]</para
 ></listitem
 ><listitem
 ><para
 >updating objects and relations.</para
 ><para
->TO DO: what functionality does exist in updating objects</para
+>MMBase contains observers that listen to changes in objects and relations. When a change occurs, an observer can carry out some appropriate actions. Most observers are used to keep the MMBase caches up to date. Examples of such MMBase caches are the cache with converted images and the query cache.</para
 ></listitem
 ><listitem
 ><para
@@ -173,7 +177,7 @@ fileref="../security/media/architecture.png"
 ></listitem
 ></itemizedlist
 ><para
->TO DO: do we have to say something about Transactions and Multicast.</para
+>TO DO: write document on Transactions and Multicast.</para
 ></section
 ><section
 ><title
@@ -187,7 +191,7 @@ fileref="../security/media/architecture.png"
 ><para
 >MMBaseusers are administrated in the MMBase object cloud. This security model offers a basic ranking system in Anonymous, Users and Admin.</para
 ><para
->The Cloud Security advantages are that you can do your user administration via the webinterface and that you are able to integrate the MMBase users into your object model.</para
+>An advantage of the Cloud Security are that you can do your user administration via the webinterface and that you are able to integrate the MMBase users into your object model.</para
 ></listitem
 ><listitem
 ><para
@@ -233,15 +237,15 @@ fileref="../security/media/architecture.png"
 ><para
 >The taglib provides a set of tags which facilitate communication between MMBase and JSP-templates. See the MMBase taglib reference and the Creating webpages with the MMBase Tag Library in the Templaters and Designers section.</para
 ><para
->On widely used tool build with the taglib are the JSP-editors for MMBase. With MMBase 1.6 to versions of the JSP-editors are included \mmeditors\jsp and \mmexamples\jsp\my_editors . </para
+>One widely used tool build with the taglib are the JSP-editors for MMBase. With MMBase 1.6 to versions of the JSP-editors are included \mmeditors\jsp and \mmexamples\jsp\my_editors . </para
 ></listitem
 ><listitem
 ><para
 >Dove</para
 ><para
->Dove facilitates communication between MMBase and XML-files. With Dove you can use XML and XSLT to build dynamic websites in MMBase. See the Dove XML API under the section developers to learn more about this topic.</para
+>Dove facilitates communication between MMBase and XML-files. You can use Dove to build dynamic MMBase websites based on XML and XSLT. See the Dove XML API under the section developers to learn more about this topic.</para
 ><para
->An important application of Dove are the MMBase editwizards. The editwizards let you create task-oriented user-friendly forms, which can be a big help for editors in working with MMBase. See the Editwizards documentation under the Templaters and Designers section for more information on creating and using editwizard forms.</para
+>An important application that uses Dove are the MMBase editwizards. The editwizards let you create task-oriented user-friendly forms, which can be a big help for editors in working with MMBase. See the Editwizards documentation under the Templaters and Designers section for more information on creating and using editwizard forms.</para
 ></listitem
 ><listitem
 ><para
