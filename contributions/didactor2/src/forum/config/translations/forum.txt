@@ -104,7 +104,6 @@ forum=Forum
 newforum=nieuw forum
 newtopic=nieuw onderwerp
 closeforum=sluit forum voor studenten
-message=Plaats bericht
 openforum=open forum voor studenten
 table_name=onderwerp
 table_no_posts=aantal posts

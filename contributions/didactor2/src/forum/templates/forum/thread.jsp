@@ -82,19 +82,6 @@ This message is also create by this page.
 <div class="folders">
   <div class="folderHeader">
         <!-- kop -->
-        <mm:node referid="forum">
-            <a href="<mm:treefile write="true" page="/forum/forum.jsp"
-			objectlist="$includePath" referids="$referids">
-                  <mm:param name="forum"><mm:write referid="forum" /></mm:param>
-               </mm:treefile>" class="tableheader">
-              <mm:field name="name" /></a>
-            <mm:field name="name" />
-        </mm:node>
-        &gt;
-        <mm:node referid="thread">
-          <mm:field name="name" />
-        </mm:node>
-
   </div>
   <div class="folderBody">
     <mm:notpresent referid="print">
@@ -107,10 +94,7 @@ This message is also create by this page.
                   method="post">
             <input type="hidden" name="delthread" value="<mm:write referid="thread" />">
             <input type="hidden" name="forum" value="<mm:write referid="forum" />">
-            <mm:treeinclude write="true" page="/forum/default.jsp" objectlist="$includePath" referids="$referids">
-              <mm:param name="caption"><di:translate id="remove_thread" >Remove All</di:translate></mm:param>
-              <mm:param name="onclick">javascript:submitForm('delthread<mm:write referid="thread" />');</mm:param>
-            </mm:treeinclude>
+              <input type="submit" value="<di:translate id="remove_thread" >Remove All</di:translate>" class="formbutton">
             </form>
           </mm:compare>
         </td>
@@ -124,9 +108,23 @@ This message is also create by this page.
 
 <div class="mainContent">
   <div class="contentHeader">
+
+        <mm:node referid="forum">
+            <a href="<mm:treefile write="true" page="/forum/forum.jsp"
+			objectlist="$includePath" referids="$referids">
+                  <mm:param name="forum"><mm:write referid="forum" /></mm:param>
+               </mm:treefile>" class="tableheader">
+              <mm:field name="name" /></a>
+        </mm:node>
+        &gt;
+        <mm:node referid="thread">
+          <mm:field name="name" />
+        </mm:node>
+
+
     &nbsp;
   </div>
-  <div class="contentBody">
+  <div class="contentBodywit">
 
    <mm:node referid="thread">
       <mm:import jspvar="includePath" vartype="String"><mm:write referid="includePath"/></mm:import>
@@ -164,10 +162,7 @@ This message is also create by this page.
               <mm:compare referid="isTeacher" value="true">
                 <form name="del<mm:field name="number" />" method="post">
                 <input type="hidden" name="delnr" value="<mm:field name="number" />">
-                <mm:treeinclude write="true" page="/forum/default.jsp" objectlist="$includePath" referids="$referids">
-                  <mm:param name="caption"><di:translate id="remove" >Remove</di:translate></mm:param>
-                  <mm:param name="onclick">javascript:submitForm('del<mm:field name="number" />');</mm:param>
-                </mm:treeinclude>
+                <input type="submit" value="<di:translate id="remove" >Remove</di:translate>" class="formbutton">
                 </form>
               </mm:compare>
     
