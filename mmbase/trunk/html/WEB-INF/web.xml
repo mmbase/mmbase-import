@@ -23,7 +23,7 @@
   
   <servlet-mapping>
     <servlet-name>version</servlet-name>
-    <url-pattern>version</url-pattern>
+    <url-pattern>/version</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
