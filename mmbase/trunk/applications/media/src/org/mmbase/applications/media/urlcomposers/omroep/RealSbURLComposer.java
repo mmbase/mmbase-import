@@ -22,15 +22,15 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.4 2003-02-19 20:50:26 michiel Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.5 2003-07-11 13:57:02 vpro Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
     
     private static Logger log = Logging.getLoggerInstance(RealSbURLComposer.class.getName());
 
-    public RealSbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public RealSbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
     }
 
     public boolean canCompose() {

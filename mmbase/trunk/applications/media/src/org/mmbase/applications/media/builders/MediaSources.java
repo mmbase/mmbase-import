@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.io.*;
 
+import org.mmbase.applications.media.cache.URLCache;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBaseContext;
@@ -44,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.16 2003-07-04 17:23:41 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.17 2003-07-11 13:57:01 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -287,7 +288,7 @@ public class MediaSources extends MMObjectBuilder {
             if (FUNCTION_FILTEREDURLS.equals(function)) {
                 return getFilteredURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
             } else {
-                return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null), null);
+                return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null), null,null);
             }
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, MediaFragments.translateURLArguments(args, null));
@@ -375,7 +376,7 @@ public class MediaSources extends MMObjectBuilder {
      * @author mm
      */
     
-    protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
+    protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, List cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
         log.debug("Getting urls for source " + source.getNumber());
         Iterator i = getProviders(source).iterator();
@@ -385,7 +386,7 @@ public class MediaSources extends MMObjectBuilder {
                 log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
             }
             MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
-            bul.getURLs(provider, source, fragment, info, urls);
+            bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
         }
         return urls;
     }
@@ -394,7 +395,7 @@ public class MediaSources extends MMObjectBuilder {
      * @author mm
      */
     protected List getFilteredURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
-        List urls = getURLs(source, fragment, info, null);
+        List urls = getURLs(source, fragment, info, null, null);
         return MainFilter.getInstance().filter(urls);
     }
     
@@ -500,5 +501,4 @@ public class MediaSources extends MMObjectBuilder {
         checkFields(node);
         return super.insert(owner, node);
     }
-
 }

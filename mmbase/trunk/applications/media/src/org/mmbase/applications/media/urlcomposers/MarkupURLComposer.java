@@ -29,14 +29,14 @@ import java.net.*;
  * its parent fragments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MarkupURLComposer.java,v 1.4 2003-02-25 23:54:31 michiel Exp $
+ * @author Rob Vermeulen (VPRO)
  * @since MMBase-1.7
  */
 public class MarkupURLComposer extends FragmentURLComposer { 
     private static Logger log = Logging.getLoggerInstance(MarkupURLComposer.class.getName());
     
-    public MarkupURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public MarkupURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
      
     }
 

@@ -11,16 +11,17 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers.omroep;
 
 import org.mmbase.module.core.MMObjectNode;
-import java.util.Map;
+import java.util.*;
+
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmBbURLComposer.java,v 1.3 2003-02-18 00:11:16 michiel Exp $
+ * @version $Id: WmBbURLComposer.java,v 1.4 2003-07-11 13:57:02 vpro Exp $
  * @since MMBase-1.7
  */
 public class WmBbURLComposer extends WmSbURLComposer {
-    public WmBbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public WmBbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
     }
     protected String getBandPrefix() {
         return "bb.";

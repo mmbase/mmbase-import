@@ -15,6 +15,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.Format;
 import java.util.Map;
 import java.util.Locale;
+import java.util.List;
 
 /**
  * URLComposer is a wrapper/container class  around an URL.  It contains besides the
@@ -28,19 +29,32 @@ import java.util.Locale;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.11 2003-06-13 10:40:08 michiel Exp $
+ * @author Rob Vermeulen (VPRO)
  */
-
 public class URLComposer  {
     protected MMObjectNode  source;
     protected MMObjectNode  provider;
     protected Map           info;
 
-    public URLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        this(provider, source, info); // no frament necessary on default
+    public URLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        this(provider, source, info, cacheExpireObjects); // no fragment necessary on default
+
+	if(cacheExpireObjects!=null) {
+	synchronized (cacheExpireObjects) {
+		if (!cacheExpireObjects.contains(provider)) {
+			cacheExpireObjects.add(provider);
+		}
+		if (!cacheExpireObjects.contains(source)) {
+			cacheExpireObjects.add(source);
+		}
+		if (!cacheExpireObjects.contains(fragment)) {
+			cacheExpireObjects.add(fragment);
+		}
+	}
+	}
     }
 
-    protected URLComposer(MMObjectNode provider, MMObjectNode source, Map info) { 
+    protected URLComposer(MMObjectNode provider, MMObjectNode source, Map info, List cacheExpireObjects) { 
         if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
         if (provider == null) throw new RuntimeException("Provider may not be null in a URLComposer object");
         this.provider = provider;
