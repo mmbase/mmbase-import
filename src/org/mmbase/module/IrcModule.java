@@ -280,28 +280,32 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 		}
 
 		private void encodeMessage(String message) {
-			StringTokenizer st = new StringTokenizer(message,"[],",true);
-			while (st.hasMoreTokens()) {
-				String token = st.nextToken();
-				if(token.indexOf("server")==0) {
-					server=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
-				} else
-				if(token.indexOf("to")==1) {
-					to=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
-				} else
-				if(token.indexOf("from")==1) {
-					from=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
-					try {
-						fromNick=from.substring(0,from.indexOf('!'));
-					} catch (Exception e) {
+			try {
+				StringTokenizer st = new StringTokenizer(message,"[],",true);
+				while (st.hasMoreTokens()) {
+					String token = st.nextToken();
+					if(token.indexOf("server")==0) {
+						server=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
+					} else
+					if(token.indexOf("to")==1) {
+						to=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
+					} else
+					if(token.indexOf("from")==1) {
+						from=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
+						try {
+							fromNick=from.substring(0,from.indexOf('!'));
+						} catch (Exception e) {
+						}
+					} else
+					if(token.indexOf("]")==0) {
+						if(st.hasMoreTokens()) {
+							this.message = st.nextToken();	
+						}
 					}
-				} else
-				if(token.indexOf("]")==0) {
-					if(st.hasMoreTokens()) {
-						this.message = st.nextToken();	
-					}
-				}
-			} 
+				} 
+			} catch (Exception e) {
+				debug("IrcModule failed to encode message "+message);
+			}
 		}
 
 		public String getServer() {
