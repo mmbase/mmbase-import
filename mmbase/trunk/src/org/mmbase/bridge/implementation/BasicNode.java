@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.80 2002-12-05 09:50:32 kees Exp $
+ * @version $Id: BasicNode.java,v 1.81 2003-02-10 12:14:31 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -733,8 +733,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     }
                 }
                 MMObjectNode newNode = bul.getNode(number);
-                if (type != null && ! newNode.getBuilder().getTableName().equals(type)) continue;
-                result.add(newNode);
+                if (type == null || newNode.parent.equals(bul) || newNode.parent.isExtensionOf(bul)) {
+                    result.add(newNode);
+                }
             }
         }
         if (type != null) {
