@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.100 2003-08-06 19:41:36 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.101 2003-08-07 18:01:17 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -707,19 +707,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public int countRelations() {
-        return countRelatedNodes(cloud.getNodeManager("object"), null, RelationStep.DIRECTIONS_BOTH);
+        return countRelatedNodes(cloud.getNodeManager("object"), null, "BOTH");
     }
 
     public int countRelations(String type) {
         //err
-        return countRelatedNodes(cloud.getNodeManager("object"), type, RelationStep.DIRECTIONS_BOTH); 
+        return countRelatedNodes(cloud.getNodeManager("object"), type, "BOTH"); 
     }
 
 
-    public int countRelatedNodes(NodeManager otherNodeManager, String role, int searchDir) {
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         Query count = cloud.createAggregatedQuery();
         count.addStep(nodeManager);
-        Step step = count.addRelationStep(otherNodeManager, role, searchDir).getPrevious();
+        Step step = count.addRelationStep(otherNodeManager, role, direction).getPrevious();
         count.addNode(step, this);
         count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
         Node result = (Node) cloud.getList(count).get(0);
