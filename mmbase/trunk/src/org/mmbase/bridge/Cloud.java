@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.43 2003-12-17 20:50:26 michiel Exp $
+ * @version $Id: Cloud.java,v 1.44 2004-03-05 15:19:17 michiel Exp $
  */
 public interface Cloud {
 
@@ -441,7 +441,7 @@ public interface Cloud {
      *                      be used as a starting point for all traversals
      *                      or <code>null</code> if all nodes of the first node
      *                      manager in <code>nodePath</code> should be used.
-     * @param nodePath      A comma seperated list of node manager names
+     * @param nodePath      A comma separated list of node manager names
      *                      which specifies the path that should be followed.
      *                      It is possible to explicitly specify a relation
      *                      manager that should be used to go from one node to
