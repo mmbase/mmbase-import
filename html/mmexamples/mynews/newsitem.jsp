@@ -1,6 +1,6 @@
 <%@page session="false" errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content language="en" escaper="inline" postprocessor="reducespace">
+%><mm:content language="en" type="text/html" escaper="inline">
 <mm:cloud>
 <%-- magazine node --%>
 <%-- the page is called with a parameter newsid
