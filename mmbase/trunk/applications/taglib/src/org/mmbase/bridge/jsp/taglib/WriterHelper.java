@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.54 2005-01-03 18:11:31 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.55 2005-01-03 18:25:16 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -449,7 +449,7 @@ public class WriterHelper extends BodyTagSupport {
         if (_Stack != null) {
             Object pop = _Stack.pop();
             if (log.isDebugEnabled()) {
-                log.debug("Removed " + pop +  "( " + pop.getClass().getName() + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
+                log.debug("Removed " + pop +  "( " + (pop == null ? "NULL" : pop.getClass().getName()) + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
             }
             if (_Stack.empty()) {
                 pageContext.removeAttribute("_");
@@ -467,6 +467,7 @@ public class WriterHelper extends BodyTagSupport {
     public int doAfterBody() throws JspTagException {
         bodyContent = thisTag.getBodyContent();
         pop_Stack();
+        pushed = false;
         return SKIP_BODY;
     }
 
