@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.19 2005-01-31 11:47:27 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.20 2005-03-17 18:22:44 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -14,7 +14,7 @@
       <para>The license (Mozilla version 1.0) can be read at the MMBase site.
       See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
     </legalnotice>
-    <date>2003-03</date>
+    <date>2005-03</date>
 
     <authorgroup>
       <author>
@@ -30,72 +30,61 @@
 
 
     <abstract>
-      <para>This glossary tries to provide an overview of the terms used in
-      MMBase and their meaning. As MMBase has evolved during the last years,
-      its language evolved with it. This means that sometimes one term refers
-      to two concepts, whereas in other occasions two terms are synonyms for
-      one and the same thing. Therefore this document tries to describe the
-      meaning of the terms used in MMBase in the different contexts. Next to
-      this, the glossary tries to provide a list preferred terms.</para>
+      <para>
+        This glossary tries to provide an overview of the terms used in
+        MMBase and their meaning. As MMBase has evolved during the last years,
+        its language evolved with it. This means that sometimes one term refers
+        to two concepts, whereas in other occasions two terms are synonyms for
+        one and the same thing. Therefore this document tries to describe the
+        meaning of the terms used in MMBase in the different contexts. Next to
+        this, the glossary tries to provide a list preferred terms.
+      </para>
     </abstract>
   </articleinfo>
 
-  <section>
-    <title>Introduction</title>
-
-    <para>Below you see how a term is explained in this glossary. First an
-    example of the term MMBase is given.</para>
-
-    <glosslist>
-      <glossentry>
-        <glossterm>Multi Media Base</glossterm>
-
-        <abbrev>MMBase</abbrev>
-
-        <glossdef><orderedlist><listitem><para>for managers: open source
-        content management system, with strong multi-media features </para></listitem><listitem><para>for
-        dummies: a tool by which you can build intelligent web sites </para></listitem><listitem><para>for
-        techies: java based web-application, which acts as an object oriented
-        interface to relational databases </para></listitem><listitem><para>for
-        information analysts: content management system by which text, images
-        and other content can be managed in an object oriented way </para></listitem></orderedlist><remark>
-        It is not clear whether MMBase really stands for Multi Media Base.
-        <emphasis>The preferred term is MMBase</emphasis></remark></glossdef>
-
-        <glossseealso>open source</glossseealso>
-        <glossseealso>content management</glossseealso>
-      </glossentry>
-    </glosslist>
-
-    <para>The different elements in the definition of a term are described
-    below.</para>
-
-    <glosslist>
-      <glossentry>
-        <glossterm>head word and inflected forms, like plurals</glossterm>
-
-        <acronym>acronym of the term</acronym>
-
-        <abbrev>abbreviation of the term</abbrev>
-
-        <glossdef><orderedlist><listitem><para>first definition with
-        information about who uses the term or expression, and in what
-        situation</para></listitem><listitem><para>second definition with
-        information about who uses the term or expression, and in what
-        situation</para></listitem></orderedlist><example><title>title of
-        example</title><para>an example of use of the term</para></example><remark>A
-        remark or background story about the term.<emphasis>Preferred use or
-        whether the term is deprecated.</emphasis></remark></glossdef>
-
-        <glossseealso>cross-reference</glossseealso>
-      </glossentry>
-    </glosslist>
-  </section>
-
-  <section>
+  <section id="glossary">
     <title>MMBase Glossary</title>
 
     <glosslist>
+      <glossentry id="mmbase">
+        <glossterm>Multi Media Base</glossterm>
+        <abbrev>MMBase</abbrev>
+        
+        <glossdef>
+          <!-- MM: I doubt if this is the correct use of ordered list.
+               I think that it makes more sense to use multible glossdef entries, but:
+               - It is not very clearly defined in the docbook reference 
+               - It looks ugly when converted to HTML
+          -->
+          <orderedlist>
+            <listitem>
+              <para>
+                for managers: open source content management system, with strong multi-media
+                features
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                for dummies: a tool by which you can build intelligent web sites </para>
+            </listitem>
+            <listitem><para>for
+            techies: java based web-application, which acts as an object oriented
+              interface to relational databases </para></listitem><listitem><para>for
+              information analysts: content management system by which text, images
+              and other content can be managed in an object oriented way.</para></listitem>
+
+              </orderedlist><remark>
+              It is not clear whether MMBase really stands for Multi Media Base.
+              <emphasis>The preferred term is MMBase</emphasis>
+              </remark>
+              <glossseealso otherterm="opensource" />
+              <glossseealso otherterm="contentmanagement" />
+              <glossseealso>Everywhere else</glossseealso>
+        </glossdef>
+        
+        
+      </glossentry>
+
       <glossentry id="builder">
         <glossterm>builder</glossterm>
 
@@ -333,14 +322,17 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>An MMBase Node defining a link between to other MMBase
-              Nodes. A relation can contain other data. A relation instance.</para>
+              <para>
+                An MMBase Node defining a link between to other MMBase
+                Nodes. A relation can contain other data. A relation instance.
+              </para>
             </listitem>
-
             <listitem>
-              <para>An allowed relation. Sometimes also 'typerel'
-              entries are referred to as simply 'relations'. It would
-              perhaps be clearer to call these 'allowed relations'</para>
+              <para>
+                An allowed relation. Sometimes also 'typerel'
+                entries are referred to as simply 'relations'. It would
+              perhaps be clearer to call these 'allowed relations'
+              </para>
             </listitem>
 
             <listitem>
@@ -547,17 +539,6 @@
         </glossdef>
       </glossentry>
 
-      <glossentry id="mmbase">
-        <glossterm>MMBase</glossterm>
-
-        <glossdef>
-          <para>Very object oriented open source content management system
-          based (a.o) on java servlet technology.</para>
-
-          <glossseealso>Everywhere else</glossseealso>
-        </glossdef>
-      </glossentry>
-
       <glossentry id="bridge">
         <glossterm>bridge</glossterm>
 
@@ -665,9 +646,14 @@
 
         <glossdef>
           <para>
-            MMBase committers who are supposed to meet every Thursday to
-            talk about MMBase.
+            This used to be a small group of MMBase committers who are supposed to meet every
+            Thursday to talk about MMBase. Originally it were 4 or 5 people, from which in the last
+            year a few were democraticly elected. In march 2005 the MMC in this form was abolished,
+            and the committors divided the tasks of the MMC among them, so it can be said that the
+            MMC now consists of all committors. It has also be suggested that the subgroup for
+            external communication can be referred to as MMC now.
           </para>
+          <glossseealso otherterm="committer"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -784,9 +770,20 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>An piece of (MMBase) functionality which is configured by
-              a XML file in &#60;config&#62;/modules/. MMBase itself can be
-              seen as a group of such modules.</para>
+              <para>
+                An piece of (MMBase) functionality which is configured by
+                a XML file in &lt;config&gt;/modules/. MMBase itself can be
+                seen as a group of such modules.
+              </para>
+              <para>
+                An extension from org.mmbase.module.Module, such as MMBase.java itself.
+                In MMBase modules are started on initizalization, and are configured by
+                an XML in &lt;config&gt;/modules (which contains only key/value properties).
+                Modules were more important in the SCAN era, where they provided all
+                kind of auxiliary functionality. Nowadays they mainly provide a way to
+                plug things in the bootstrap of MMBase accompanied with a convenient
+                way of customization.
+              </para>
             </listitem>
 
             <listitem>
@@ -1049,6 +1046,164 @@
             is also much used to get help for installation and implementation issues.
           </para>
           <glossseealso otherterm="devlist"></glossseealso>
+        </glossdef>
+      </glossentry>
+      <glossentry id="application">
+        <glossterm>application</glossterm>
+        <glossdef>
+          <orderedlist>
+            <listitem>
+              
+              <para>
+                An 'mmbase application' is a modular piece of functionality, which can
+                contain code (jars, classes), templates and a piece of an object model,
+                with possbily some data, and other resources. A tool implemented with
+                MMBase means.
+              </para>
+              <para>
+                This thing is also called 'package' by some.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In the 'apps1' framework, 'application' refers to only the object model
+                and data.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                An 'authentication application' is one of the handlers - identified by
+                a string - of a certain security {authentication} implementation, to
+                deal with a authentication request. Most security implementations
+                support a 'name/password', a 'class' and an 'anonymous' authentication
+                application, but these modules can be pluggable, and some
+                implementations allow for a unlimited number of these. In taglib this
+                is shorthanded to 'authentication' rather then to 'application' (meant
+                is the attribute of the mm:cloud tag).
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                Copied from WordNet: a program that gives a computer instructions that provide the user
+                with tools to accomplish a task; "he has tried several different word processing
+                applications" [syn: {application program}, {applications programme}]
+              </para>
+            </listitem>
+          </orderedlist>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
+          <glossseealso otherterm="contribution" />
+        </glossdef>
+      </glossentry>
+      <glossentry id="package">
+        <glossterm>package</glossterm>
+        <glossdef>
+          <orderedlist>
+            <listitem>
+              <para>
+                Functional unit of software.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                A package is the concretization of an application (1). It is the thing
+                which you can download and install, or burn on a CD.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In java a package is like a directory of classes. It is the part of a
+                fully qualified class name until the last dot. All MMBase classes are
+                in the org.mmbase package or subpackages of that.
+              </para>
+            </listitem>
+          </orderedlist>
+          <glossseealso otherterm="application" />
+        </glossdef>
+      </glossentry>
+      <glossentry id="bundle">
+        <glossterm>bundle</glossterm>
+        <glossdef>
+          <orderedlist>
+            <listitem>
+              <para>
+                A bundle is a special kind of package (1) containing other packages,
+                and distributed as a unit.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                A resource bundle is generally a bunch of property files (or something
+                functionally similar) , see java.util.ResourceBundle.
+              </para>
+            </listitem>
+          </orderedlist>
+          <glossseealso otherterm="package" />
+        </glossdef>
+      </glossentry>
+      <glossentry id="component">
+        <glossterm>component</glossterm>
+        <glossdef>
+          <para>
+            Has no MMBase specific meanings.
+            It means approximately 'one part of a whole', 'something that can be
+            installed in some program to make it more powerful'.
+          </para>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
+          <glossseealso otherterm="application" />
+        </glossdef>
+      </glossentry>
+      <glossentry id="extension">
+        <glossterm>extension</glossterm>
+        <glossdef>
+          <para>
+            Has no MMBase specific meanings.
+            In java you can 'extend' classes, and extensions of classes are therefore
+            specializations of some kind of functionality.
+          </para>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
+          <glossseealso otherterm="application" />
+        </glossdef>
+      </glossentry>     
+      <glossentry id="template">
+        <glossterm>template</glossterm>
+        <glossdef>
+          <para>
+            A JSP-file with belonging css, javascript and images, also XSL's are
+            templates. The customized pieces of front-end code which arrange
+            presentation of MMBase data.
+          </para>
+        </glossdef>
+      </glossentry>
+      <glossentry id="opensource">
+        <glossterm>open source</glossterm>
+        <glossdef>
+          <para>
+            MMBase is open source. This means that the MMBase source code can be downloaded freely. The licence is quite free.
+          </para>
+        </glossdef>
+      </glossentry>     
+      <glossentry id="contentmanagement">
+        <glossterm>content management</glossterm>
+        <glossdef>
+          <para>
+            MMBase is described as a 'content managment system', which means that it is used to manage the content of normally web-sites.
+          </para>
+        </glossdef>
+      </glossentry>
+      <glossentry id="contribution">
+        <glossterm>contribution</glossterm>
+        <glossdef>
+          <para>
+            In the `contributions' CVS module you find MMBase applicitions and other MMBase related
+            code, which is contributed by third parties to MMBase, and are not maintained by the
+            `community' but individual commitors are responsible.
+          </para>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
+          <glossseealso otherterm="application" />
         </glossdef>
       </glossentry>
     </glosslist>
