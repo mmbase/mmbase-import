@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.8 2002-06-24 12:36:23 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.9 2002-07-08 10:02:13 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -34,11 +34,9 @@ function doOnLoad_ew() {
 
         //handle complex data types
         var dttype = elem.getAttribute("dttype");
-        if (dttype==null || dttype=="") dttype=elem.getAttribute("ftype");
+        var ftype = elem.getAttribute("ftype");
         switch (dttype) {
             case "datetime":
-            case "date":
-            case "time":
                 if ((elem.value == "") || (elem.value <= 0)) {
                     var d = new Date();
                     elem.value = Math.round(d.getTime()/1000);
@@ -49,12 +47,12 @@ function doOnLoad_ew() {
                     var d = new Date();
                     d.setTime(1000*elem.value);
 
-                    if ((dttype == "datetime") || (dttype == "date")) {
+                    if ((ftype == "datetime") || (ftype == "date")) {
                         form.elements["internal_" + id + "_day"].selectedIndex = d.getDate() - 1;
                         form.elements["internal_" + id + "_month"].selectedIndex = d.getMonth();
                         form.elements["internal_" + id + "_year"].value = d.getFullYear();
                     }
-                    if ((dttype == "datetime") || (dttype == "time")) {
+                    if ((ftype == "datetime") || (ftype == "time")) {
                         form.elements["internal_" + id + "_hours"].value = d.getHours();
                         form.elements["internal_" + id + "_minutes"].value = leadingZeros(d.getMinutes());
                     }
