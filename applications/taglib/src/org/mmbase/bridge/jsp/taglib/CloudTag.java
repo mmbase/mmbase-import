@@ -512,6 +512,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     /**
      * Checks wether the cloud is requested 'as is', meaning that is must be tried to get it from the session.
      *
+     * return false if method is not asis.
+     *
      */
 
     private final boolean checkAsis() throws JspTagException {
@@ -522,7 +524,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             if (cloud == null) {
                 setAnonymousCloud();
-            }
+            } 
+            if (cloud != null) checkValid();
+            checkCloud();
             return true;
         }
         return false;
@@ -551,6 +555,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * cloud member variable is made null.
      */
     private final void checkCloud() {
+        if (cloud == null) return;
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
         if (log.isDebugEnabled()) {
@@ -815,7 +820,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             // no logon, create an anonymous cloud.
             setAnonymousCloud();
         }
-
+        checkCloud(); // perhaps the just created cloud does not satifisfy other conditions? (rank)
         if (cloud == null) { // stil null, give it up then...
             log.debug("Could not create Cloud.");
             // throw new JspTagException("Could not create cloud (even not anonymous)");
@@ -845,12 +850,17 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
     public int doStartTag() throws JspTagException {
         checkLocale();
-
         logon = logonatt != null ? StringSplitter.split(logonatt) : null;
         if (logon != null && logon.size() == 0) logon = null;
         if (checkReuse())     return evalBody();
         if (checkAnonymous()) return evalBody();
-        if (checkAsis())      return evalBody();
+        if (checkAsis()) {
+            if (cloud == null) {
+                return SKIP_BODY;
+            } else {
+                return evalBody();
+            }
+        }
         setupSession();
         if(log.isDebugEnabled()) log.debug("startTag " + cloud);
         if (checkLogoutLoginPage()) {
