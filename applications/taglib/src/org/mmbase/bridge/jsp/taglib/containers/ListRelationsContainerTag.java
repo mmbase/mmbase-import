@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.1 2004-02-26 22:11:50 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.2 2004-03-24 09:49:20 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -81,17 +81,19 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
         query = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
         relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
 
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
-    // if EVAL_BODY == EVAL_BODY_BUFFERED
+
     public int doAfterBody() throws JspTagException {
-        try {
-            if (bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            }
-        } catch (java.io.IOException ioe){
-            throw new JspTagException(ioe.toString());
-        } 
+        if(EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (java.io.IOException ioe){
+                throw new JspTagException(ioe.toString());
+            } 
+        }
         return SKIP_BODY;        
     }
 
