@@ -75,7 +75,7 @@
           <mm:param name="operation"    value="write" />
           <mm:param name="usertocheck"  value="$usertocheck" />
           <mm:booleanfunction inverse="true" name="may">
-            <%=getPrompt(m, "maynoteditself")%>.
+            <%=getPrompt(m, "maynoteditself")%>. (<mm:field name="name" />)
           </mm:booleanfunction>
         </mm:functioncontainer>
       </mm:node>

@@ -86,19 +86,20 @@
              </mm:booleanfunction>
            </mm:functioncontainer>             
          </mm:node>
-         <!-- if a group with alias 'mayreadallgroup" exists, 'read' rights will be switched on automaticly -->
-         <mm:node id="group" number="mayreadallgroup" notfound="skip">
-           <mm:node referid="context" id="context">
-             <mm:functioncontainer>
-               <mm:param name="grouporuser"><mm:field node="group" name="number" /></mm:param>
-               <mm:param name="operation">read</mm:param>
-               <mm:booleanfunction name="maygrant">
-                 <mm:voidfunction name="grant" />
-               </mm:booleanfunction>
-             </mm:functioncontainer>
-           </mm:node>
+         <mm:node referid="context" id="context">
+           <mm:functioncontainer>
+             <mm:param name="grouporuser"><mm:field node="group" name="number" /></mm:param>
+             <mm:param name="operation">read</mm:param>
+             <mm:booleanfunction name="maygrant">
+               <mm:voidfunction name="grant" />
+             </mm:booleanfunction>
+           </mm:functioncontainer>
          </mm:node>
        </mm:present>
+       <!-- if a group with alias 'mayreadallgroup" exists, this group is automiticly including this -->
+       <mm:node id="allgroup" number="mayreadallgroup" notfound="skip">
+         <mm:createrelation source="allgroup" destination="group" role="contains" />
+       </mm:node>
      </mm:present>
      <mm:notpresent referid="wasnew">
        <%@include file="commitGroupOrUserRights.jsp" %>
