@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import java.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
@@ -25,9 +27,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.39 2003-11-03 13:12:53 michiel Exp $
+ * @version $Id: InsRel.java,v 1.40 2003-12-15 18:21:00 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
+
+    private static final Logger log = Logging.getLoggerInstance(InsRel.class);
 
     /*
      * Indicates whether the relations use the 'dir' field (that is, whether the
@@ -61,7 +65,6 @@ public class InsRel extends MMObjectBuilder {
         };
     */
 
-    private static Logger log = Logging.getLoggerInstance(InsRel.class);
 
     /**
      * needed for autoload
@@ -297,7 +300,22 @@ public class InsRel extends MMObjectBuilder {
      * @return <code>true</code> if any relations exist, <code>false</code> otherwise.
      */
     public boolean hasRelations(int src) {
-        return count("WHERE snumber=" + src + " OR dnumber=" + src) != 0;
+        try {
+            NodeSearchQuery q = new NodeSearchQuery(this);
+            Integer s = new Integer(src);
+            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), s);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), s);
+            
+            BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
+            constraint.addChild(constraint1).addChild(constraint2);
+            
+            q.setConstraint(constraint);
+            
+            return (count(q) != 0);
+        } catch (SearchQueryException sqe) {
+            log.error(sqe.getMessage()); // should not happen
+            return true; // perhaps yes?
+        }
     }
 
     /**
@@ -311,7 +329,22 @@ public class InsRel extends MMObjectBuilder {
      *       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
      */
     public Vector getAllRelationsVector(int src) {
-        return searchVector("WHERE snumber="+src+" OR dnumber="+src);
+        try {
+            NodeSearchQuery q = new NodeSearchQuery(this);
+            Integer s = new Integer(src);
+            BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), s);
+            BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), s);
+        
+            BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
+            constraint.addChild(constraint1).addChild(constraint2);
+
+            q.setConstraint(constraint);
+            
+            return new Vector(getNodes(q));
+        } catch (SearchQueryException  sqe) {
+            log.error(sqe.getMessage()); // should not happen
+            return new Vector(); //
+        }
     }
 
     /**
