@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.47 2003-12-17 18:22:08 michiel Exp $
+ * @version $Id: Module.java,v 1.48 2004-02-06 10:42:58 michiel Exp $
  */
 public abstract class Module {
     
@@ -77,9 +77,9 @@ public abstract class Module {
      * It is used to safely initialize modules during startup, and allows other modules
      * to force the 'startup' of another module without risk.
      */
-    public final synchronized void startModule() {
+    public final void startModule() {
         if (started) return;
-        started=true;
+        started = true;
         init();
     }
     
@@ -254,7 +254,7 @@ public abstract class Module {
     
     public static synchronized final void startModules() {
         // call the onload to get properties
-        if (log == null) log = Logging.getLoggerInstance(Module.class.getName());
+        if (log == null) log = Logging.getLoggerInstance(Module.class);
         log.service("Starting modules " + modules.keySet());
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
             Module mod = (Module)i.next();
@@ -297,7 +297,7 @@ public abstract class Module {
      *      module does not exist or is inactive.
      */
     public static Object getModule(String name) {
-        return getModule(name,false);
+        return getModule(name, false);
     }
     /**
      * Retrieves a reference to a Module.
@@ -310,31 +310,31 @@ public abstract class Module {
      * XXX: return type Object in stead of Module?
      *
      * @param name the name of the module to retrieve
-     * @param startOnLoad whetehr to make sure the module has been staretd or not.
+     * @param startOnLoad whetehr to make sure the module has been started or not.
      * @return a reference to a <code>Module</code>, or <code>null</code> if the
      *      module does not exist or is inactive.
      */
-    synchronized public static Object getModule(String name, boolean startOnLoad) {
+    public static Object getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules == null) {
-            if (log == null) log = Logging.getLoggerInstance(Module.class.getName());
+            if (log == null) log = Logging.getLoggerInstance(Module.class);
             log.service("Loading MMBase modules...");
             modules = loadModulesFromDisk();
             if (log.isDebugEnabled()) {
                 log.debug("getModule(" + name + "): Modules not loaded, loading them..");
             }
             startModules();
-            // also start the maintaince thread that calls all modules every x seconds
+            // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
             mprobe = new ModuleProbe(modules);
         }
-        String orgname=name;
-        name=name.toLowerCase();
+        String orgname = name;
+        name = name.toLowerCase();
         
         // try to obtain the ref to the wanted module
         Object obj=modules.get(name);
         if (obj==null) obj=modules.get(orgname);
         
-        if (obj!=null) {
+        if (obj != null) {
             // make sure the module is started, as this method could
             // have been called from the init() of another Module
             if (startOnLoad) ((Module)obj).startModule();
