@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.4 2004-03-24 00:59:01 michiel Exp $ 
+ * @version $Id: NodeListHelper.java,v 1.5 2004-03-24 01:37:22 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -208,7 +208,7 @@ public class NodeListHelper implements ListProvider {
     public void doStartTagHelper() throws JspTagException {
 
         // make a (temporary) container
-        collector = new ContextCollector((ListProvider) thisTag);
+        collector = new ContextCollector(thisTag.getContextProvider());
 
         // serve parent timer tag:
         TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
