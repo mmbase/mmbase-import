@@ -1,5 +1,5 @@
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
-<application name="Media" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="true">
+<!DOCTYPE application PUBLIC "//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<application name="Media" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="false">
   <neededbuilderlist>
     <builder maintainer="mediaproject.mmbase.org" version="1">mediafragments</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">audiofragments</builder>
@@ -23,7 +23,7 @@
 
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
-    <reldef source="parent"  target="parent"  direction="bidirectional" guisourcename="Parent"  guitargetname="Child" builder="insrel" />
+    <reldef source="parent"  target="child"  direction="bidirectional" guisourcename="Parent"  guitargetname="Child" builder="insrel" />
     <reldef source="previous" target="previous"    direction="bidirectional" guisourcename="Next"  guitargetname="Previous" builder="insrel" /><!-- relation is a little strange, but this is because of editwizard limitation -->
     <reldef source="posrel"  target="posrel"  direction="bidirectional" guisourcename="Posrel"  guitargetname="Posrel" builder="posrel" />
   </neededreldeflist>
