@@ -4,8 +4,17 @@
 <article>
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
-		<date>3 december 2002</date>
-		<edition>$Id: documentation.xml,v 1.3 2002-12-04 16:12:16 pierre Exp $</edition>
+		<date>December 5, 2002</date>
+		<edition>$Id: documentation.xml,v 1.4 2002-12-05 14:33:20 michiel Exp $</edition>
+		<authorgroup>
+			<author>
+				<firstname>Michiel</firstname>
+				<surname>Meeuwissen</surname>
+				<affiliation>
+					<orgname>Publieke Omroep</orgname>
+				</affiliation>
+			</author>
+		</authorgroup>
 		<legalnotice>
 			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
 			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -37,8 +46,76 @@
 	<section id="docbook">
 	 <title>Docbook</title>
 		<para>
-			Forthcoming
-			http://www.docbook.org/
-		</para>
+      Documentation is set up in articles. An article needs an articleinfo object that describes the content.
+      Article info should contain :
+	<itemizedlist>
+			<listitem>
+				<para>
+            A title.  you do not need to specify the title in article if you   
+            specify it in articleinfo. (it's not wrong but it's not
+            needed either)
+          </para>
+        </listitem>
+        <listitem>
+          <para>A date. Lets use one format for dates. The current format in most
+            documentation is of the type 'December 5, 2002'.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            An edition tag with a  &dollar;Id:&dollar; content, for versioning of
+            the data.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            An author group, with the authors. You can add an affiliation
+            (organisation) and your own name. Please do not add editors, links, or
+            other stuff, as it will all be displayed in the documentation header and
+            that may be a bit overkill (maybe we have to override the
+            docbook xsl).
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            the following legalnotice:
+            <programlisting>
+          <![CDATA[
+<legalnotice>  
+  <para>
+    This software is OSI Certified Open Source Software. OSI
+    Certified is a certification mark of the Open Source Initiative.
+  </para>
+  <para>
+    The license (Mozilla version 1.0) can be read at the MMBase
+    site. See 
+    <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+  </para>
+</legalnotice>
+]]>
+            </programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>    
+      Use section, not sect1, sect2...
+      And, if possible, use CDATA sections in your &lt;programlisting&gt;. This
+      makes it easier to read when editing. CDATA sections look like this:
+     <programlisting>
+&lt;programlisting format="linespecific"&gt;&lt;![CDATA[
+
+  &lt;sample code&gt;
+
+]]&gt;&lt;/programlisting&gt;
+      </programlisting>
+    </para>
 	</section>
+	<section id="docbookeditors">
+    <title>Docbook editors</title>
+    <para>
+      Several docbook-editors are available. The MMBase team is using
+      XXE and emacs.
+    </para>
+  </section>
 </article>
