@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.15 2003-07-03 14:29:32 pierre Exp $
+ * @version $Id: EditState.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
  */
 public class EditState {
 
@@ -318,6 +318,12 @@ public class EditState {
         return curNode.isChanged();
     }
 
+    /**
+     * Add a relation (insrel) to the cloud.
+     * Does not change the editstate.
+     * @vpro 14 is a hardcoded value for the vpro reldef type
+     * @deprecated-now this code should not be called
+     */
     public boolean addRelation(String owner) {
         boolean result=false;
         // relations are not saved by themself but saved or dropped
