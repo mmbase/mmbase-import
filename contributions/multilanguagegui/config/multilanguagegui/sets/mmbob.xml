@@ -21,6 +21,10 @@
 		<translation language="nl" value="bericht" />
 		<translation language="df" value="message" />
 	</keyword>
+	<keyword name="guest">
+		<translation language="nl" value="gast" />
+		<translation language="df" value="guest" />
+	</keyword>
 	<keyword name="Upload">
 		<translation language="nl" value="Upload" />
 		<translation language="df" value="Upload" />
