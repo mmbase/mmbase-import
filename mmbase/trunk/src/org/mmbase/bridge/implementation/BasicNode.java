@@ -268,6 +268,7 @@ public class BasicNode implements Node {
     }
 
     public Node getNodeValue(String attribute) {
+        if (attribute==null || attribute.equals("number")) return this;
         MMObjectNode noderes=noderef.getNodeValue(attribute);
         if (noderes!=null) {
             return new BasicNode(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
@@ -552,7 +553,7 @@ public class BasicNode implements Node {
         }
     }
 
-    /*
+    /**
      * Delete one or all aliases of this node
      * @param aliasName the name of the alias (null means all aliases)
      */
