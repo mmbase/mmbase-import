@@ -22,11 +22,9 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.EntityResolver;
 
 /**
  * This class reads a node from an exported application
@@ -132,14 +130,14 @@ public class XMLNodeReader extends XMLBasicReader {
                      }
                      Node n5 = n2.getFirstChild();
                      while (n5 != null) {
-                        if (n5.getNodeType() == n5.ELEMENT_NODE) {
+                        if (n5.getNodeType() == Node.ELEMENT_NODE) {
                            String key = n5.getNodeName();
                            NodeList nl = n5.getChildNodes();
                            StringBuffer res = new StringBuffer("");
                            for (int i = 0; i < nl.getLength(); i++) {
                               Node n = nl.item(i);
-                              if ((n.getNodeType() == n.TEXT_NODE)
-                                 || (n.getNodeType() == n.CDATA_SECTION_NODE)) {
+                              if ((n.getNodeType() == Node.TEXT_NODE)
+                                 || (n.getNodeType() == Node.CDATA_SECTION_NODE)) {
                                  res.append(n.getNodeValue().trim());
                               }
                            }

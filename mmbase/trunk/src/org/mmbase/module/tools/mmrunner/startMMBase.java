@@ -7,6 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
  */
+package org.mmbase.module.tools.mmrunner;
 
 import java.io.*;
 

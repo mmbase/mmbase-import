@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @rename Scanpage
   * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.21 2003-03-07 09:31:17 pierre Exp $
+ * @version $Id: scanpage.java,v 1.22 2003-05-08 06:09:25 kees Exp $
  */
 public class scanpage {
     // logger
@@ -140,7 +140,7 @@ public class scanpage {
                 if (s!=null) {
                         try {
                                 int then=Integer.parseInt(s);
-                                int now= (int)(DateSupport.currentTimeMillis()/1000);
+                                int now= (int)(System.currentTimeMillis()/1000);
                                 if ((now-then)<EXPIRE) {
                                         reload = true;
                                         if (log.isDebugEnabled()) {

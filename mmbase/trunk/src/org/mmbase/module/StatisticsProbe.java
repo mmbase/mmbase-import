@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: StatisticsProbe.java,v 1.6 2003-03-10 11:50:12 pierre Exp $
+ * @version $Id: StatisticsProbe.java,v 1.7 2003-05-08 06:09:32 kees Exp $
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {
@@ -47,6 +47,7 @@ public class StatisticsProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"StatisticsProbe");
+			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -56,9 +57,7 @@ public class StatisticsProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
+		kicker.interrupt();
 		kicker = null;
 	}
 

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.46 2003-03-07 09:31:10 pierre Exp $
+ * @version $Id: servdb.java,v 1.47 2003-05-08 06:09:22 kees Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -185,7 +185,7 @@ public class servdb extends JamesServlet {
                 if (1==2 && templine!=null  && templine2.indexOf("no-cache")==-1 && !(lastmod.getTime()>nowdate)) {
 
                     // logAccess(304,""+cline.filesize);
-                    res.setStatus(res.SC_NOT_MODIFIED); // 304, "Not Modified"
+                    res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
                     res.setContentType(mimetype);
                     res.setContentLength(cline.filesize);
                     res.setHeader("Date",RFC1123.makeDate(new Date()));
@@ -314,7 +314,7 @@ public class servdb extends JamesServlet {
                             String ur=getParamValue("url",getParamVector(req));
                             String n=getParamValue("n",getParamVector(req));
                             //debug("Buffer is null!!! Returning url("+ur+") and params("+n+").");
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType("text/html");
                             res.setHeader("Location",ur+"?"+n);
                             return;
@@ -355,7 +355,7 @@ public class servdb extends JamesServlet {
                             String ur=getParamValue("url",getParamVector(req));
                             String n=getParamValue("n",getParamVector(req));
                             log.info("service(): --> Buffer is null!!! Returning url("+ur+") and params("+n+") <--");
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType("text/html");
                             res.setHeader("Location",ur+"?"+n);
                             return;
@@ -414,7 +414,7 @@ public class servdb extends JamesServlet {
                         log.debug("jump.db Url="+url);
                         if (url!=null) {
                             // jhash.put(key,url);
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType("text/html");
                             res.setHeader("Location",url);
                             Date d=new Date(0);
