@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.12 2003-07-29 15:07:40 michiel Exp $
+ * @version $Id: Attribute.java,v 1.13 2003-08-12 15:26:19 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -250,7 +250,7 @@ public class Attribute {
         void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
             Object value = getValue(tag);
             if (value != null) {
-                buffer.append(value.toString());
+                buffer.append(Casting.toString(value));
             }
         }
     }
