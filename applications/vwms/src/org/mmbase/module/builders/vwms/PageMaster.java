@@ -27,6 +27,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 
 	Hashtable properties;
 	boolean first=true;
+	Object syncobj=new Object();
 
 	public PageMaster() {
 		System.out.println("PageMaster ready for action");
@@ -126,7 +127,9 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
 				SCPcopy scpcopy=new SCPcopy(sshpath,dstuser,dsthost,dstpath);
 
-				scpcopy.copy(srcpath,filename);
+				synchronized(syncobj) {
+					scpcopy.copy(srcpath,filename);
+				}
 
 				System.out.println("PageMaster-> doing mirror stuff");
 				filenode.setValue("status",3);
