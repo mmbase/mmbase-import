@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.13 2001-02-15 13:29:30 vpro Exp $
+$Id: EncodeCop.java,v 1.14 2001-02-28 13:56:49 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2001/02/15 13:29:30  vpro
+Davzev: Renamed methods comments etc...
+
 Revision 1.12  2000/10/09 12:03:43  vpro
 Rico: added marcel comments
 
@@ -67,17 +70,20 @@ import org.mmbase.util.media.audio.audioparts.*;
  * x: some xml notify?
  * 
  * @author Daniel Ockeloen
- * @version $Revision: 1.13 $ $Date: 2001-02-15 13:29:30 $
+ * @version $Revision: 1.14 $ $Date: 2001-02-28 13:56:49 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
 
 	private	String classname 	= getClass().getName();
 	private boolean	debug		= true;
+
 	// private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Vector EncoderHandlers		= new Vector();
 	Vector waitingEncodeHandlers= new Vector();
+
+	private boolean firstProbeCall = true;
 
 	public EncodeCop() {
 		debug("EncodeCop(): EncodeCop started...");
@@ -88,18 +94,22 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return true, always.
 	 */	
 	public boolean probeCall() {
-		if (debug) debug("probeCall(): Adding types: audioparts, rawaudios, g2encoders to observer list.");
+		if (firstProbeCall) {
+			firstProbeCall = false;	
+			if (debug) debug("probeCall(): Adding types: audioparts, rawaudios, g2encoders to observer list.");
 
-		Vwms.mmb.addLocalObserver("audioparts",this);
-		Vwms.mmb.addRemoteObserver("audioparts",this);
+			Vwms.mmb.addLocalObserver("audioparts",this);
+			Vwms.mmb.addRemoteObserver("audioparts",this);
 
-		Vwms.mmb.addLocalObserver("rawaudios",this);
-		Vwms.mmb.addRemoteObserver("rawaudios",this);
+			Vwms.mmb.addLocalObserver("rawaudios",this);
+			Vwms.mmb.addRemoteObserver("rawaudios",this);
 
-		Vwms.mmb.addLocalObserver("g2encoders",this);
-		Vwms.mmb.addRemoteObserver("g2encoders",this);
+			Vwms.mmb.addLocalObserver("g2encoders",this);
+			Vwms.mmb.addRemoteObserver("g2encoders",this);
+		}
 		return true;
 	}
+
 
 	/**
 	 * Called when node was changed by remote mmbase, inturn this method calls nodeChanged method.
