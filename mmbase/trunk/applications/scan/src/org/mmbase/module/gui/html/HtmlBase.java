@@ -38,9 +38,11 @@ import org.mmbase.module.database.support.*;
  */
 public class HtmlBase extends ProcessorModule {
 
-	MMBase mmb=null;
+	private String classname = getClass().getName();
+	private boolean debug = true;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 
-	private boolean debug=false;
+	MMBase mmb=null;
 
 	private SendMailInterface sendmail;
 	public MMBaseMultiCast mmc;
@@ -71,7 +73,7 @@ public class HtmlBase extends ProcessorModule {
 
 	public void init() {
 		mmb=(MMBase)getModule("MMBASEROOT");		
-		//System.out.println("MMEDIT init-> mmbase="+mmb);
+		debug("init(): mmbase="+mmb);
 		// is there a basename defined in MMBASE.properties ?
 	}
 
@@ -79,7 +81,7 @@ public class HtmlBase extends ProcessorModule {
 	/**
 	 */
 	public HtmlBase() {
-		//System.out.println("HtmlBase constructed");
+		debug("HtmlBase(): constructed");
 	}
 
 	/**
@@ -101,7 +103,7 @@ public class HtmlBase extends ProcessorModule {
 				if (bul!=null) {
 					return(bul.doTSearch(sp,tagger));
 				} else {
-					System.out.println("MMBASE -> can't use teasers");
+					debug("getList(): can't use teasers");
 					return(null);
 				}
 			}
@@ -157,7 +159,7 @@ public class HtmlBase extends ProcessorModule {
 		}
 		tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
 		long end=(long)System.currentTimeMillis();
-		if (debug) System.out.println("MMbase -> doObject ("+type+")="+(end-begin)+" ms");
+		if (debug) debug("doObjects("+type+")="+(end-begin)+" ms");
 		return(results);
 	}
 
@@ -192,7 +194,7 @@ public class HtmlBase extends ProcessorModule {
 			snode=Integer.parseInt(tagger.Value("NODE"));
 			int otype=mmb.TypeDef.getIntValue(type);
 			bul=mmb.getMMObject(type);
-//			System.out.println("2="+type+" "+bul);
+//			debug("2="+type+" "+bul);
 			Enumeration e=null;
 
 
@@ -209,34 +211,34 @@ public class HtmlBase extends ProcessorModule {
 				wherevector=bul.searchNumbers(where);
 			}
 
-		for (;e.hasMoreElements();) {
-			node=(MMObjectNode)e.nextElement();
-
-			// oke find out who is the other
-			onode=node.getIntValue("snumber");	
-			if (snode==onode) {
-				onode=node.getIntValue("dnumber");
-			}
-			// so we found the other one get that node
-			node=bul.getNode(onode);
-			// if node not null than we have a match
-			if (node!=null && node.getIntValue("otype")==otype && (where==null || wherevector.contains(new Integer(node.getIntValue("number"))))) {
-			Enumeration f=tagger.Values("FIELDS").elements();
-			for (;f.hasMoreElements();) {
-				// hack hack this is way silly Strip needs to be fixed
-				tmp=node.getValue(Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH));
-				if (tmp!=null && !tmp.equals("null")) {
-    				results.addElement(""+tmp); 
-				} else {
-    				results.addElement(""); 
+			for (;e.hasMoreElements();) {
+				node=(MMObjectNode)e.nextElement();
+	
+				// oke find out who is the other
+				onode=node.getIntValue("snumber");	
+				if (snode==onode) {
+					onode=node.getIntValue("dnumber");
+				}
+				// so we found the other one get that node
+				node=bul.getNode(onode);
+				// if node not null than we have a match
+				if (node!=null && node.getIntValue("otype")==otype && (where==null || wherevector.contains(new Integer(node.getIntValue("number"))))) {
+					Enumeration f=tagger.Values("FIELDS").elements();
+					for (;f.hasMoreElements();) {
+						// hack hack this is way silly Strip needs to be fixed
+						tmp=node.getValue(Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH));
+						if (tmp!=null && !tmp.equals("null")) {
+   		 				results.addElement(""+tmp); 
+						} else {
+   		 				results.addElement(""); 
+						}
+					}
 				}
 			}
-			}
-		}
-		tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
+			tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
 		} catch(Exception g) {
 			if (bul==null) {
-				System.out.println("MMHtmlBase -> asking relations on a unkown builder : "+type);
+				debug("doRealations(): ERROR: asking relations on a unkown builder : "+type);
 			} else {
 				g.printStackTrace();
 			}
@@ -283,12 +285,12 @@ public class HtmlBase extends ProcessorModule {
 		//obtain field name
 		if (tok.hasMoreTokens()) {
 			String fieldname=tok.nextToken();
-			System.out.println("S="+snumber+" D="+dnumber+" F="+fieldname);
+			debug("S="+snumber+" D="+dnumber+" F="+fieldname);
 			MMObjectNode snode=Teasers.getNode(""+snumber);
 			if (snode!=null) {
 				for (Enumeration e=snode.getRelations();e.hasMoreElements();) {
 					MMObjectNode inode=(MMObjectNode)e.nextElement();
-					System.out.println("I="+inode);
+					debug("I="+inode);
 					int s=inode.getIntValue("snumber");
 					int d=inode.getIntValue("dnumber");
 					if (d==dnumber || s==dnumber) {
@@ -397,12 +399,12 @@ public class HtmlBase extends ProcessorModule {
 		//obtain field name
 		if (tok.hasMoreTokens()) {
 			String fieldname=tok.nextToken();
-			System.out.println("S="+snumber+" D="+dnumber+" F="+fieldname);
+			debug("S="+snumber+" D="+dnumber+" F="+fieldname);
 			MMObjectNode snode=Teasers.getNode(""+snumber);
 			if (snode!=null) {
 				for (Enumeration e=snode.getRelations();e.hasMoreElements();) {
 					MMObjectNode inode=(MMObjectNode)e.nextElement();
-					System.out.println("I="+inode);
+					debug("I="+inode);
 					int s=inode.getIntValue("snumber");
 					int d=inode.getIntValue("dnumber");
 					if (d==dnumber || s==dnumber) {
@@ -503,7 +505,7 @@ public class HtmlBase extends ProcessorModule {
 			StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
 			token = tok.nextToken();
 			if (token.equals("CACHEDELETE")) {
-				System.out.println("DELETE ON CACHES");
+				debug("process(): DELETE ON CACHES");
 				InsRel.deleteNodeCache();
 				InsRel.deleteRelationCache();
 
@@ -547,7 +549,7 @@ public class HtmlBase extends ProcessorModule {
 				if (bul!=null) {
 					return(""+bul.doTSearchSize(sp,tok));
 				} else {
-					System.out.println("MMBASE -> can't use teasers");
+					debug("MMBASE -> can't use teasers");
 					return(null);
 				}
 			} else if (cmd.equals("CACHE")) {
@@ -704,7 +706,7 @@ public class HtmlBase extends ProcessorModule {
         Date lastmod;
         String rtn=null;
 
-		//System.out.println("MMBase -> Opening file:"+file); 
+		//debug("MMBase -> Opening file:"+file); 
         scanfile = new File(file);
         filesize = (int)scanfile.length();
         lastmod=new Date(scanfile.lastModified());
@@ -776,10 +778,10 @@ public class HtmlBase extends ProcessorModule {
 		// fix in types needed because of a problem with VPRO site will be
 		// removed soon ! it remaps (programs,episodes,mmevents,bcastrel to
 		// programs,episodes,bcastrel,mmevents)
-		type=fixVPROTypesBug(type);
+		type=fixVPROTypesBug(sp, type);
 		
         MultiRelations bul=(MultiRelations)mmb.getMMObject("multirelations");
-//        System.out.println("MULBUL="+bul);
+//        debug("MULBUL="+bul);
 
 		long begin=(long)System.currentTimeMillis(),len;
 		
@@ -822,9 +824,9 @@ public class HtmlBase extends ProcessorModule {
 		len=(end-begin);
 		if (len>200) {
 			if (debug) {
-				System.out.println("MMBase -> doMultilevel ("+type+")="+(len)+" ms URI ");
+				debug("doMultilevel("+type+")="+(len)+" ms URI for page("+sp.req_line+")");
 			} else {
-				System.out.println("MMBase -> doMultilevel ("+type+")="+(len)+" ms");
+				debug("doMultilevel("+type+")="+(len)+" ms for page("+sp.req_line+")");
 			}
 		}
 		return(results);
@@ -857,7 +859,7 @@ public class HtmlBase extends ProcessorModule {
 
 	public sessionInfo getPageSession(scanpage sp) {
 		if (sessions!=null) {
-			System.out.println("COOKIE PROBLEM IN MMBASE");
+			debug("COOKIE PROBLEM IN MMBASE");
 			// org.mmbase sessionInfo session=sessions.getSession(rq,rq.getSessionName());
 			//sessionInfo session=sessions.getSession(sp.req,"james/1234");
 			if( sp.sname == null || sp.sname.equals("")) {
@@ -905,7 +907,7 @@ public class HtmlBase extends ProcessorModule {
 		String where=tagger.Value("WHERE");
 		String dbsort=tagger.Value("DBSORT");
 		String dbdir=tagger.Value("DBDIR");
-		//System.out.println("TYPE="+type);
+		//debug("TYPE="+type);
 		MMObjectBuilder bul=mmb.getMMObject(type);
 		long begin=(long)System.currentTimeMillis(),len;
 		Enumeration e=null;
@@ -939,7 +941,7 @@ public class HtmlBase extends ProcessorModule {
 			results+="\n";
 		}
 		long end=(long)System.currentTimeMillis();
-		//System.out.println("MMbase -> doObject ("+type+")="+(end-begin)+" ms");
+		//debug("MMbase -> doObject ("+type+")="+(end-begin)+" ms");
 		return(results);
 	}
 
@@ -968,12 +970,13 @@ public class HtmlBase extends ProcessorModule {
 				}
 			}
 		}
-//		System.out.println("FIELDS="+results);
+//		debug("FIELDS="+results);
 		return(results);
 	}
 
 	public String getSearchAge(StringTokenizer tok) {
 		String builder=tok.nextToken();
+		debug("getSeachAge(): BUILDER="+builder);
 		MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(builder);
 		if (bul!=null) {
 			return(bul.getSearchAge());
@@ -982,19 +985,20 @@ public class HtmlBase extends ProcessorModule {
 		}	
 	}
 
-	private Vector fixVPROTypesBug(Vector type) {
+	private Vector fixVPROTypesBug(scanpage sp, Vector type) {
 		try {
 			if (type.size()>3) {
-			String last=(String)type.elementAt(3);
-			System.out.println("TYPE="+last);
-			if (last.equals("bcastrel\"")) {
-				// a relation as last ? can never be good so lets claim its the bug
-				type.setElementAt("bcastrel",2);
-				type.setElementAt("mmevents\"",3);
-			}		
-			System.out.println("TYPEFIXED="+type);
+				String last=(String)type.elementAt(3);
+				if (last.equals("bcastrel\"")) {
+					debug("fixVPROTypesBug("+sp.req_line+"): fixing type("+last+")");
+					// a relation as last ? can never be good so lets claim its the bug
+					type.setElementAt("bcastrel",2);
+					type.setElementAt("mmevents\"",3);
+					debug("fixVPROTypesBug("+sp.req_line+"): fixed("+type+")");
+				}		
 			}
-			} catch(Exception e) {
+		} catch(Exception e) {
+
 		}
 		return(type);
 	}
