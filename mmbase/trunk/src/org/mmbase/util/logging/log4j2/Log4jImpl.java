@@ -105,13 +105,13 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
     public void setLevel(Level p) {
         switch (p.toInt()) {
-        case Level.TRACE_INT:   setLevel(Log4jLevel.TRACE);   break;
-        case Level.DEBUG_INT:   setLevel(Log4jLevel.DEBUG);   break;
+        case Level.TRACE_INT:   setLevel(Level.TRACE);   break;
+        case Level.DEBUG_INT:   setLevel(Level.DEBUG);   break;
         case Level.SERVICE_INT: setLevel(Log4jLevel.SERVICE); break;
-        case Level.INFO_INT:    setLevel(Log4jLevel.INFO);    break;
-        case Level.WARN_INT:    setLevel(Log4jLevel.WARN);    break;
-        case Level.ERROR_INT:   setLevel(Log4jLevel.ERROR);   break;
-        case Level.FATAL_INT:   setLevel(Log4jLevel.FATAL);
+        case Level.INFO_INT:    setLevel(Level.INFO);    break;
+        case Level.WARN_INT:    setLevel(Level.WARN);    break;
+        case Level.ERROR_INT:   setLevel(Level.ERROR);   break;
+        case Level.FATAL_INT:   setLevel(Level.FATAL);
         }
   
     }
@@ -120,10 +120,10 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      *  This method overrides {@link Category#getInstance} by supplying
      *  its own factory type as a parameter.    
      */
-    public static org.apache.log4j.Logger getInstance(String name) {
+    public static org.apache.log4j.Category getInstance(String name) {
         return getLogger(name); 
     }
-    public static org.apache.log4j.Logger getLogger(String name) {
+    public static org.apache.log4j.Logger  getLogger(String name) {
         return LogManager.getLogger(name, factory);
     }
 
