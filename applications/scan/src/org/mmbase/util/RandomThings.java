@@ -10,13 +10,17 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
- * Class for doing random things
+ * Class for doing random things.
  * @author Rico Jansen
  */
 public class RandomThings {
+
     private static RandomPlus rnd = new RandomPlus();
+    // logger
+    private static Logger log = Logging.getLoggerInstance(RandomThings.class.getName());
 
     /**
      * Shuffle a Vector until it is a Random mess
@@ -40,7 +44,7 @@ public class RandomThings {
 
         newv=(Vector)v.clone();
         shuffleVector(newv);
-        return(newv);
+        return newv;
     }
 
     /**
@@ -90,7 +94,7 @@ public class RandomThings {
                 newv.addElement(ob);
             }
         }
-        return(newv);
+        return newv;
     }
 
     /**
@@ -107,16 +111,16 @@ public class RandomThings {
             v.addElement(new Integer(i));
             idx[i]=i;
         }
-        System.out.println("shuffleCloneVector "+shuffleCloneVector(v));
-        System.out.println("giveRandomFrom "+giveRandomFrom(v,64));
+        log.info("shuffleCloneVector "+shuffleCloneVector(v));
+        log.info("giveRandomFrom "+giveRandomFrom(v,64));
         shuffleArray(idx);
-        System.out.println("shuffleArray "+idx);
+        log.info("shuffleArray "+idx);
         for (i=0;i<siz;i++) {
             if (i==0)
-                System.out.print(""+idx[i]);
+                log.info(""+idx[i]);
             else
-                System.out.print(","+idx[i]);
+                log.info(","+idx[i]);
         }
-        System.out.println("");
+        log.info("");
     }
 }
