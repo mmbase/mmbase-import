@@ -30,7 +30,7 @@ import java.util.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.8 2003-07-09 20:27:32 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.9 2003-07-09 20:51:20 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -119,7 +119,7 @@ public class HandleServlet extends BridgeServlet {
      * @since MMBase-1.7
      */
     protected boolean setCacheControl(HttpServletResponse res, Node node) {
-        if (! node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
+        if (! node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {            
             res.setHeader("Cache-Control", "private,no-store");
             res.setHeader("Pragma", "no-cache"); // for http 1.0
             return true;
