@@ -48,6 +48,7 @@
 <!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST relation role NMTOKEN #IMPLIED >
 <!ATTLIST relation searchdir (source | destination | both | all | either) #IMPLIED >
+<!ATTLIST relation createdir (source | destination | either) #IMPLIED >
 
 <!ELEMENT list ( title | description | action | command | item )* >
 <!ATTLIST list maxoccurs CDATA #IMPLIED >
@@ -63,7 +64,9 @@
 <!ATTLIST list type NMTOKEN #IMPLIED >
 <!ATTLIST list fields CDATA #IMPLIED >
 <!ATTLIST list include CDATA #IMPLIED >
-<!ATTLIST list directions CDATA #IMPLIED > <!-- ?? -->
+<!ATTLIST list directions CDATA #IMPLIED >
+<!ATTLIST list searchdir (source | destination | both | all | either) #IMPLIED >
+
 
 <!ELEMENT item ( title | description | field | fieldset | list )* >
 <!ATTLIST item displaytype NMTOKEN #IMPLIED >
@@ -93,8 +96,8 @@
 <!ATTLIST field fdatapath CDATA #IMPLIED >
 <!ATTLIST field dttype NMTOKEN #IMPLIED >
 <!ATTLIST field ftype NMTOKEN #IMPLIED >
-<!ATTLIST field name CDATA #IMPLIED >
 <!ATTLIST field size NMTOKEN #IMPLIED >
+<!ATTLIST field name CDATA #IMPLIED >
 <!ATTLIST field rows NMTOKEN #IMPLIED >
 <!ATTLIST field inline NMTOKEN #IMPLIED >
 <!ATTLIST field wizardname CDATA #IMPLIED >
