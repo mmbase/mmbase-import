@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
   %><%@ page import="java.util.*,org.mmbase.util.*,org.mmbase.cache.Cache" %>
 <html>
+<mm:cloud rank="basic user" method="http">
 <head><title>MMBase Caches</title></head>
 <body>
 <mm:import externid="cache" from="parameters" />
@@ -27,6 +28,10 @@
 %>
 </table>
 <a href="<mm:url ><mm:param name="bytesize"><%= "true".equals(bytesize) ? "false": "true"%></mm:param></mm:url>">Toggle byte calculation</a>
+<br />
+<mm:compare referid="bytesize" value="true">
+  Total size: <%= Cache.getTotalByteSize() %> bytes ?<br />
+</mm:compare>
 </mm:notpresent>
 
 <mm:present referid="cache">
@@ -50,14 +55,16 @@
 %>
 </table>
 <hr />
+<mm:compare referid="bytesize" value="true">
+  Total size: <%= cache.getByteSize() %> bytes<br />
+</mm:compare>
+<hr />
 </mm:write>
 <a href="<mm:url referids="bytesize" />">Back</a><br />
 <a href="<mm:url referids="cache"><mm:param name="bytesize"><%= "true".equals(bytesize) ? "false": "true"%></mm:param></mm:url>">Toggle byte calculation</a><br />
 </mm:present>
   <br />
-<mm:compare referid="bytesize" value="true">
-  Total size: <%= Cache.getTotalByteSize() %><br />
-</mm:compare>
+
  Size of <a href="session.jsp">session:</a> <%= SizeOf.getByteSize(session) %> byte<br />
  <%
       Runtime rt = Runtime.getRuntime();
@@ -69,4 +76,5 @@
 <a href="<mm:url page="/" />">Home </a>
 
 </body>
+</mm:cloud>
 </html>
