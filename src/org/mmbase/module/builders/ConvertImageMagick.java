@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.5 2000-10-04 13:36:47 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.6 2000-11-14 11:41:57 eduard Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/10/04 13:36:47  vpro
+	Rico: added fix for transparancy parameters
+	
 	Revision 1.4  2000/08/06 16:02:43  daniel
 	changed some debug
 	
@@ -36,7 +39,7 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.5 2000-10-04 13:36:47 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.6 2000-11-14 11:41:57 eduard Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
@@ -44,20 +47,43 @@ public class ConvertImageMagick implements ImageConvertInterface {
 	private boolean debug = false;
 	private void debug(String msg) { System.out.println(classname+":"+msg); }
 
-	// Currenctly only ImageMagick works
-	private static String ConverterRoot = "/usr/local/";
+	// Currenctly only ImageMagick works, this are the default value's
+	private static String ConverterRoot = "/usr/local/"; 
 	private static String ConverterCommand = "bin/convert";
 
+	/** This function initalises this class
+		* @param params a <code>Hashtable</code> of <code>String</string>s containing informationn, this should contina the key's  
+		*	ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root....
+		*/
 	public void init(Hashtable params) {
 		String tmp;
 		tmp=(String)params.get("ImageConvert.ConverterRoot");
-		if (tmp!=null) ConverterRoot=tmp;
+		if (tmp!=null) ConverterRoot = tmp;
+		
+		// now check if the specified ImageConvert.ConverterRoot does exist and is a directory
+		File checkConvDir = new File(ConverterRoot);
+		if(!checkConvDir.exists()) System.err.println("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot("+ConverterRoot+") does not exist");
+		if(!checkConvDir.isDirectory()) System.err.println("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot("+ConverterRoot+") is not a directory");		
+		
 		tmp=(String)params.get("ImageConvert.ConverterCommand");
 		if (tmp!=null) ConverterCommand=tmp;
+		
+		// now check if the specified ImageConvert.ConverterRoot does exist and is a directory
+		String command = ConverterRoot + ConverterCommand;
+		File checkConvCom = new File(command);
+		if(!checkConvCom.exists()) System.err.println("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand("+ConverterCommand+"), "+command+" does not exist");
+		// Cant do more checking then this, i think....
+	
 		if (debug) debug("Root="+ConverterRoot);
 		if (debug) debug("Command="+ConverterCommand);
 	}
 
+	/** This functions converts an image by the given parameters
+		* @param 	input an array of <code>byte</code> which represents the original image
+		* @param 	commands a <code>Vector</code> of <code>String</code>s containing commands which are operations on the image which will be returned.		
+		*	ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root....
+		*	@return an array of <code>byte</code>s containing the new converted image.
+		*/
 	public byte[] ConvertImage(byte[] input,Vector commands) {	
 		String cmd,format;
 		byte[] pict=null;
