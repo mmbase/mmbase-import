@@ -20,14 +20,14 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* This tag can be used inside the list tag. The body will be
-* evaluated depending on the value of the index of the list.
-*
-*
-* @author Michiel Meeuwissen 
-**/
+ * This tag can be used inside the list tag. The body will be
+ * evaluated depending on the value of the index of the list.
+ *
+ *
+ * @author Michiel Meeuwissen 
+ **/
 
-public class ListConditionTag extends ContextReferrerTag implements ConditionTag {
+public class ListConditionTag extends ListReferrerTag implements ConditionTag {
     
     private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName()); 
     
@@ -39,29 +39,25 @@ public class ListConditionTag extends ContextReferrerTag implements ConditionTag
         value = getAttributeValue(v);
     }
     
-    public void setList(String l) {
-        parentListId = l;
-    }
-    
     public void setInverse(Boolean b) {
         inverse = b.booleanValue();
     }
     
     public int doStartTag() throws JspTagException{
         // find the parent list:
-        ListItemInfo nodeListItemInfo = (ListItemInfo)findParentTag("org.mmbase.bridge.jsp.taglib.ListItemInfo", parentListId);
+        ListProvider list = getList();
 
         boolean result;
         if        ("first".equalsIgnoreCase(value)) {  
-            result = (nodeListItemInfo.getIndex() == 0 ) != inverse;
+            result = (list.getIndex() == 0 ) != inverse;
         } else if ("last".equalsIgnoreCase(value))  {  
-            result = (nodeListItemInfo.getIndex() == nodeListItemInfo.size()-1 )  != inverse;
+            result = (list.getIndex() == list.size()-1 )  != inverse;
         } else if ("even".equalsIgnoreCase(value)) {
-            result = ((nodeListItemInfo.getIndex() + 1) % 2 == 0) != inverse;
+            result = ((list.getIndex() + 1) % 2 == 0) != inverse;
         } else if ("odd".equalsIgnoreCase(value)) {
-            result = ((nodeListItemInfo.getIndex() + 1) % 2 != 0) != inverse;
+            result = ((list.getIndex() + 1) % 2 != 0) != inverse;
         } else if ("changed".equalsIgnoreCase(value)) {
-            result = nodeListItemInfo.isChanged() != inverse;
+            result = list.isChanged() != inverse;
         } else {
             throw new JspTagException ("Don't know what do (" + value +")");  
         }
