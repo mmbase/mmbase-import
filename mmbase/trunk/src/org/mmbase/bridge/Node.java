@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.43 2003-08-07 18:01:17 michiel Exp $
+ * @version $Id: Node.java,v 1.44 2003-08-13 16:33:32 michiel Exp $
  */
 public interface Node {
 
@@ -494,7 +494,11 @@ public interface Node {
      */
     public RelationList getRelations(String role, NodeManager nodeManager);
 
-    //public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
+    
+    /**
+     * @since MMBase-1.7
+     */
+    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
 
     /**
      * Returns the number of relations this node has with other nodes.

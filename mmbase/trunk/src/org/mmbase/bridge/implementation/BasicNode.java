@@ -29,7 +29,8 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.101 2003-08-07 18:01:17 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: BasicNode.java,v 1.102 2003-08-13 16:33:32 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -656,7 +657,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     private RelationList getRelations(int role, int otype) {
         Enumeration e = getRelationEnumeration(role, otype, true);
-        Vector relvector = new Vector();
+        List relvector = new ArrayList();
         if (e != null) {
             while (e.hasMoreElements()) {
                 MMObjectNode mmnode = (MMObjectNode)e.nextElement();
@@ -700,6 +701,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         } else {
             return getRelations(role, nodeManager.getName());
         }
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
+        throw new UnsupportedOperationException("not yet implemnted");
     }
 
     public boolean hasRelations() {
@@ -780,15 +785,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public StringList getAliases() {
-        List aliasvector = new ArrayList();
-        OAlias alias = mmb.OAlias;
-        if (alias != null) {
-            for (Enumeration e = alias.search("WHERE destination=" + getNumber()); e.hasMoreElements();) {
-                MMObjectNode node = (MMObjectNode)e.nextElement();
-                aliasvector.add(node.getStringValue("name"));
-            }
+        NodeManager oalias = cloud.getNodeManager("oalias");
+        Query q = cloud.createQuery();
+        Step s = q.addStep(oalias);
+        StepField sf = q.addField(s, oalias.getField("name"));
+        Constraint c = q.createConstraint(q.createStepField(s, "destination"), new Integer(getNumber()));
+        q.setConstraint(c);        
+        NodeList aliases = cloud.getList(q);
+        StringList result = new BasicStringList();
+        NodeIterator i = aliases.nodeIterator();
+        while (i.hasNext()) {
+            result.add(i.nextNode().getStringValue("oalias.name"));
         }
-        return new BasicStringList(aliasvector);
+        return result;
     }
 
     public void createAlias(String aliasName) {
@@ -808,13 +817,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 Node otherNode = cloud.getNode(aliasName);
                 if (otherNode != null) {
                     throw new BridgeException(
-                        "Alias "
-                            + aliasName
-                            + " could not be created. It is an alias for "
-                            + otherNode.getNodeManager().getName()
-                            + " node "
-                            + otherNode.getNumber()
-                            + " already");
+                        "Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName()
+                            + " node " + otherNode.getNumber() + " already");
                 } else {
                     throw new BridgeException("Alias " + aliasName + " could not be created.");
                 }
