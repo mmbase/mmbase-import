@@ -44,7 +44,7 @@
       </editor>
       <db>
         <name>value</name>
-        <type state="virtual" size="1023" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="1023" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <field>
