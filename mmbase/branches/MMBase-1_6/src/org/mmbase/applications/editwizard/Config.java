@@ -16,7 +16,7 @@ import org.mmbase.applications.editwizard.SecurityException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 /**
  * This struct contains configuration information for the jsps. This
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26.2.9 2003-06-02 13:22:21 vpro Exp $
+ * @version $Id: Config.java,v 1.26.2.10 2003-06-11 07:55:14 vpro Exp $
  */
 
 public class Config {
@@ -140,6 +140,16 @@ public class Config {
     }
 
     static public class ListConfig extends SubConfig {
+
+        // constants for 'search' parameter. Order of value matters (force must be bigger then yes)
+        public static final int SEARCH_NO   = 0;
+
+        public static final int SEARCH_AUTO = 5; // search if searchfields given.
+
+        public static final int SEARCH_YES  = 10;
+        public static final int SEARCH_FORCE  = 11; // like 'yes', but searching occurs only if not searching empty string.
+        
+
         public String title;
         public File   template;
         public String fields;
@@ -155,7 +165,7 @@ public class Config {
         public String searchValue="";
         public String searchType="like";
         public String baseConstraints;
-        public boolean forceSearch = false;
+        public int    search = SEARCH_AUTO;
 
         public int    age = -1;
         public int    start = 0;
@@ -166,6 +176,19 @@ public class Config {
         public boolean multilevel = false;
         public String mainObjectName = null;
         public List fieldList = null;
+
+        protected Cloud cloud;
+
+        ListConfig(Cloud cloud) {
+            this.cloud = cloud;
+        }
+
+        /**
+         * @deprecated
+         */
+        ListConfig() { // for backwards compatibility
+            this.cloud = null;
+        }
         
         private boolean parsed = false;
         
@@ -199,19 +222,19 @@ public class Config {
          */
         public void configure(Config.Configurator configurator) throws WizardException {
             super.configure(configurator);
-            title       = configurator.getParam("title", title);
+            title        = configurator.getParam("title", title);
             pagelength   = configurator.getParam("pagelength", new Integer(pagelength)).intValue();
-            maxpagecount   = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
-            startNodes  = configurator.getParam("startnodes", startNodes);
+            maxpagecount = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
+            startNodes   = configurator.getParam("startnodes", startNodes);
             
             // Get nodepath parameter. if a (new) parameter was passed,
             // re-parse the node path and field list
             // This allows for custom list stylesheets to make a query more or less complex through 
             // user interaction
             String parameter  = configurator.getParam("nodepath");
-            if (parameter!=null) {
-                nodePath=parameter;
-                parsed=false;
+            if (parameter != null) {
+                nodePath = parameter;
+                parsed = false;
             }
             if (nodePath == null) {
                 throw new WizardException("The parameter 'nodepath' is required but not given.");
@@ -222,102 +245,153 @@ public class Config {
             // This allows for custom list stylesheets to make a query more or less complex through 
             // user interaction
             parameter  = configurator.getParam("fields");
-            if (parameter!=null) {
-                fields=parameter;
-                parsed=false;
+            if (parameter != null) {
+                fields = parameter;
+                parsed = false;
             }
-            if (fields==null) {
-                throw new WizardException("The parameter 'fields' is required but not given."); 
+            if (fields == null) {
+                //throw new WizardException("The parameter 'fields' is required but not given."); 
+                log.debug("The parameter 'fields' is  not given, going to take the first field"); 
+                // this will happen during parsing.
+                
             }
             
             age = configurator.getParam("age", new Integer(age)).intValue();
-            if (age>=99999) age=-1;
+            if (age >= 99999) age=-1;
             
-            start = configurator.getParam("start", new Integer(start)).intValue();
-            searchType=configurator.getParam("searchtype", searchType);
-            searchFields=configurator.getParam("searchfields", searchFields);
-            searchValue=configurator.getParam("searchvalue", searchValue);
-            searchDir=configurator.getParam("searchdir",searchDir);
-            baseConstraints=configurator.getParam("constraints", baseConstraints);
-            forceSearch=configurator.getParam("forcesearch", forceSearch);
-            realSearchField=configurator.getParam("realsearchfield", realSearchField);
+            start           = configurator.getParam("start", new Integer(start)).intValue();
+            searchType      = configurator.getParam("searchtype", searchType);
+            searchFields    = configurator.getParam("searchfields", searchFields);
+            searchValue     = configurator.getParam("searchvalue", searchValue);
+            searchDir       = configurator.getParam("searchdir",searchDir);
+            baseConstraints = configurator.getParam("constraints", baseConstraints);
+            String searchString =  configurator.getParam("search", (String) null);
+            if (searchString != null) {                
+                searchString = searchString.toLowerCase();
+                if (searchString.equals("auto")) {
+                    search = SEARCH_AUTO;
+                } else if (searchString.equals("no")) {
+                    search = SEARCH_NO;
+                } else if (searchString.equals("yes")) {
+                    search = SEARCH_YES;
+                } else if (searchString.equals("force")) {
+                    search = SEARCH_FORCE;
+                } else {
+                    throw new WizardException("Unknown value for search parameter '" + searchString + "'");
+                }
+            }
+
+            /// what the heck is this.
+            realSearchField = configurator.getParam("realsearchfield", realSearchField);
             
-            if (searchFields==null) {
+            if (searchFields == null) {
                 constraints = baseConstraints;
             } else {
                 // search type: default
-                String sType=searchType;
+                String sType = searchType;
                 // get the actual field to search on.
                 // this can be 'owner' or 'number' instead of the original list of searchfields,
-                // in which case searchtype may change
-                String sFields=realSearchField;
-                if (sFields==null) sFields=searchFields;
+                // in which case searchtype may change 
+                String sFields = realSearchField;
+                if (sFields == null) sFields = searchFields;
                 if (sFields.equals("owner") || sFields.endsWith(".owner")) {
-                    sType="string";
+                    sType = "string";
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
-                    sType="equals";
+                    sType = "equals";
                 }
-                String search=searchValue;
-                constraints=null;
+                String where = searchValue;
+                constraints = null;
                 if (sType.equals("like")) {
                     // actually we should unquote search...
-                    search=" LIKE '%"+search.toLowerCase()+"%'";
+                    where = " LIKE '%" + where.toLowerCase() + "%'";
                 } else if (sType.equals("string")) {
-                    search=" = '"+search+"'";
+                    where = " = '" + where + "'";
                 } else {
-                    if (search.equals("")) {
-                        search="0";
+                    if (where.equals("")) {
+                        where = "0";
                     }
                     if (sType.equals("greaterthan")) {
-                        search=" > "+search;
+                        where = " > " + where;
                     } else if (sType.equals("lessthan")) {
-                        search=" < "+search;
+                        where = " < " + where;
                     } else if (sType.equals("notgreaterthan")) {
-                        search=" <= "+search;
+                        where = " <= " + where;
                     } else if (sType.equals("notlessthan")) {
-                        search=" >= "+search;
+                        where = " >= " + where;
                     } else if (sType.equals("notequals")) {
-                        search=" != "+search;
+                        where = " != " + where;
                     } else { // equals
-                        search=" = "+search;
+                        where = " = " + where;
                     }
                 }
-                StringTokenizer searchtokens= new StringTokenizer(sFields,",");
-                while (searchtokens.hasMoreTokens()) {
-                    String tok=searchtokens.nextToken();
-                    if (constraints!=null) {
-                        constraints+=" OR ";
+                StringTokenizer searchTokens= new StringTokenizer(sFields, ",");
+                while (searchTokens.hasMoreTokens()) {
+                    String tok = searchTokens.nextToken();
+                    if (constraints != null) {
+                        constraints += " OR ";
                     } else {
-                        constraints="";
+                        constraints = "";
                     }
                     if (sType.equals("like")) {
-                        constraints+="lower(["+tok+"])"+search;
+                        constraints += "lower([" + tok + "])" + where;
                     } else {
-                        constraints+="["+tok+"]"+search;
+                        constraints += "[" + tok + "]" + where;
                     }
                 }
                 if (baseConstraints!=null) {
-                    constraints="("+baseConstraints+") and ("+constraints+")";
+                    constraints = "(" + baseConstraints + ") and (" + constraints + ")";
                 }
             }
-            searchDir  = configurator.getParam("searchdir", searchDir);
+            searchDir   = configurator.getParam("searchdir",  searchDir);
             directions  = configurator.getParam("directions", directions);
-            orderBy     = configurator.getParam("orderby", orderBy);
-            distinct    = configurator.getParam("distinct", new Boolean(true)).booleanValue();
+            orderBy     = configurator.getParam("orderby",    orderBy);
+            distinct    = configurator.getParam("distinct",   new Boolean(true)).booleanValue();
             
             // only perform the following is there was no prior parsing
             if (!parsed) {
-
-                String templatePath = configurator.getParam("template","xsl/list.xsl");
+                String templatePath = configurator.getParam("template", "xsl/list.xsl");
                 template = configurator.resolveToFile(templatePath);
 
                 // determine mainObjectName from main parameter
-                mainObjectName = configurator.getParam("main",mainObjectName);
-    
+                mainObjectName = configurator.getParam("main", (String) null); // mainObjectName);
+
+                boolean mainPresent = mainObjectName != null;
+
+                // parse the nodePath.
+                StringTokenizer stok = new StringTokenizer(nodePath, ",");
+                int nodecount = stok.countTokens();
+                if (nodecount == 0) {
+                    throw new WizardException("The parameter 'nodepath' should be passed with a comma-separated list of nodemanagers.");
+                }
+                multilevel = nodecount > 1;
+                if (mainObjectName == null) {
+                    // search last manager - default 'main' object.
+                    while (stok.hasMoreTokens()) {
+                        mainObjectName = stok.nextToken(); 
+                    }
+                }
+                // now we always have a mainObjectName already (the last from nodePath)
+
+                // so we can make up a nice default for fields.
+                if (fields == null) {
+                    if (cloud != null) {
+                        StringBuffer fieldsBuffer = new StringBuffer();
+                        FieldIterator i = cloud.getNodeManager(mainObjectName).
+                            getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
+                        while (i.hasNext()) {                            
+                            fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
+                            if (i.hasNext()) fieldsBuffer.append(',');
+                        }
+                        fields = fieldsBuffer.toString();
+                    } else {                       
+                        // the list.jsp _does_ provide a cloud, but well, perhaps people have old list.jsp's?
+                        throw new WizardException("The parameter 'fields' is required but not given (or make sure there is a cloud)");
+                    }
+                }
+
                 // create fieldlist
-                StringTokenizer stok = new StringTokenizer(fields, ",");
-                int fieldcount = stok.countTokens();
-                if (fieldcount == 0) {
+                stok = new StringTokenizer(fields, ",");
+                if (stok.countTokens() == 0) {
                     throw new WizardException("The parameter 'fields' should be passed with a comma-separated list of fieldnames.");
                 }
             
@@ -327,34 +401,55 @@ public class Config {
                     fieldList.add(token);
                     // Check if the number field for a multilevel object was specified 
                     // (determine mainObjectName from fieldlist)
-                    if (mainObjectName == null && token.endsWith(".number")) {
-                        mainObjectName = token.substring(0,token.length() - 7);
+
+                    // MM: so, there are several ways to specify the 'main' object.
+                    // 1. defaults to last in nodePath
+                    // 2. with 'main' parameter
+                    // 3. with the first 'number' field of the fields parameter.
+
+                    // I think 2 & 3 serve the same goal and 3 must be deprecated.
+
+                    if (! mainPresent && token.endsWith(".number")) {
+                        mainObjectName = token.substring(0, token.length() - 7);
+                        mainPresent = true; 
+                        // Only to avoid reentering this 'if'. Of course the 'main' parameter actually is still not present.
                     }
                 }
-    
-                stok = new StringTokenizer(nodePath, ",");
-                int nodecount = stok.countTokens();
-                if (nodecount == 0) {
-                    throw new WizardException("The parameter 'nodepath' should be passed with a comma-separated list of nodemanagers.");
-                }
-                multilevel = nodecount>1;
-                if (mainObjectName == null) {
-                    // search last manager - default 'main' object.
-                    while (stok.hasMoreTokens()) {
-                        mainObjectName = stok.nextToken();
+
+                if (search >= SEARCH_YES && searchFields == null) {
+                    if (cloud != null) {
+                        StringBuffer searchFieldsBuffer = new StringBuffer();
+                        FieldIterator i = cloud.getNodeManager(mainObjectName).
+                            getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
+                        while (i.hasNext()) {
+                            Field f = i.nextField();
+                            if (f.getType() == f.TYPE_STRING && ! f.getName().equals("owner")) {
+                                if (searchFieldsBuffer.length() > 0) searchFieldsBuffer.append(',');
+                                searchFieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(f.getName());
+                            }
+                        }
+                        searchFields = searchFieldsBuffer.toString();
+                    } else {                       
+                        // the list.jsp _does_ provide a cloud, but well, perhaps people have old list.jsp's?
+                        throw new WizardException("Cannot auto-determin search-fields without a cloud (use a newer list.jsp");
                     }
                 }
+
+                if (search == SEARCH_NO && searchFields != null) {
+                    log.debug("Using searchfields and explicitiy no search");
+                    searchFields = null;
+                }    
     
                 // add the main object's numberfield to fields
                 // this ensures the field is retrieved even if distinct weas specified
                 String numberField = "number"; 
                 if (multilevel) {
-                    numberField = mainObjectName+".number";
+                    numberField = mainObjectName + ".number";
                 }
                 if (fieldList.indexOf(numberField) == -1) {
                     fields = numberField + "," + fields;
                 }
-                parsed=true;
+                parsed = true;
             }
 
         }
@@ -398,7 +493,7 @@ public class Config {
         protected PageContext page;
         protected HttpServletRequest request;
         protected HttpServletResponse response;
-        private Config config;
+        private   Config config;
 
         public Configurator(PageContext pageContext, Config c) throws WizardException {
             page = pageContext;
@@ -408,6 +503,7 @@ public class Config {
 
             config.sessionId = response.encodeURL("test.jsp").substring(8);
             log.debug("Sessionid : " + config.sessionId);
+
             
 
             if (config.language == null) {
@@ -520,8 +616,8 @@ public class Config {
         }
 
         protected String getParam(String paramName, String defaultValue) {
-            String value=getParam(paramName);
-            if (value==null) value=defaultValue;
+            String value = getParam(paramName);
+            if (value == null) value = defaultValue;
             return value;
         }
         
@@ -557,10 +653,17 @@ public class Config {
             }
         }
 
-        public  ListConfig createList() {
-            ListConfig l = new ListConfig();
+        public  ListConfig createList(Cloud cloud) {
+            ListConfig l = new ListConfig(cloud);
             l.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             return l;
+        }
+
+        /**
+         * @deprecated use createList(cloud)
+         */
+        public  ListConfig createList() {
+            return createList(null);
         }
         
         public Config.WizardConfig createWizard(Cloud cloud) throws SecurityException, WizardException {
