@@ -187,7 +187,7 @@
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="3">
 			<select name="newcommitor">
-			<mm:node number="BugTracker.Users">
+			<mm:node number="BugTracker.Interested">
 			<mm:relatednodes type="users">
 				<option value="<mm:field name="number" />"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)
 			</mm:relatednodes>
