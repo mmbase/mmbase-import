@@ -145,16 +145,34 @@
       </tr>
     </table><table class="editlist">
       <%
-         List allowed=manager.getAllowedRelations();
-         for(Iterator allrel=allowed.iterator(); allrel.hasNext();) {
+         // basic security shortcut, add type-based security
+         String authtype=null;
+         Module mmbase = cloud.getCloudContext().getModule("mmbase");
+         if (mmbase!=null) authtype = mmbase.getInfo("GETAUTHTYPE");
+
+         for(Iterator allrel=manager.getAllowedRelations().iterator(); allrel.hasNext();) {
            RelationManager relman=(RelationManager)allrel.next();
-           if (relman.mayCreateNode()) {
-             NodeManager mn=relman.getDestinationManager();
-             String relrole=relman.getForwardGUIName();
-             if (mn.equals(manager)) {
-               mn=relman.getSourceManager();
-               relrole=relman.getReciprocalGUIName();
-             }
+           NodeManager mn = null;
+           String relrole = null;
+           boolean allowed = relman.mayCreateNode();
+           if (allowed) {
+              try {
+                mn = relman.getDestinationManager();
+                relrole = relman.getForwardGUIName();
+                if (mn.equals(manager)) {
+                  mn = relman.getSourceManager();
+                  relrole = relman.getReciprocalGUIName();
+                }
+              } catch (Exception e) {}
+              
+              // check for older code
+              if ("basic".equals(authtype)) {
+                allowed = mn.mayCreateNode();
+              } else {
+                allowed = true;
+              }
+           }                
+           if (allowed) {
       %>
       <tr>
         <td class="<%=relationlink%>">
@@ -176,26 +194,32 @@
       </tr>
 
       <mm:list nodes="<%=nodeID%>" path="<%=managerName+","+relman.getForwardRole()+","+mn.getName()%>">
-      <tr>
-        <td class="<%=relationlink%>">
-        <% if ("none".equals(currentState)) { %>
-          <a href="<mm:url page="editor.jsp">
-              <mm:param name="node"><mm:field name="<%=relman.getForwardRole()+".number"%>" /></mm:param>
-              <mm:param name="manager"><%=relman.getName()%></mm:param>
-              <mm:param name="depth"><%=states.size()%></mm:param>
-            </mm:url>" target="_top">##</a>
-        <% } else { %>##<% } %>
-        </td>
-        <td class="<%=fieldprompt%>">
-          <%=mn.getGUIName()%>
-            <br />(<%=relrole%>)
-        </td>
-        <td class="<%=edittext%>"><mm:field name="<%=mn.getName()+".gui()"%>" /></td>
-      </tr>
+        <% boolean mayeditrel=false; %>
+        <mm:node element="<%=relman.getForwardRole()%>">
+           <mm:maywrite><% mayeditrel=true; %></mm:maywrite>
+        </mm:node>
+        <% if (mayeditrel) { %>
+        <tr>
+          <td class="<%=relationlink%>">
+          <% if ("none".equals(currentState)) { %>
+            <a href="<mm:url page="editor.jsp">
+                <mm:param name="node"><mm:field name="<%=relman.getForwardRole()+".number"%>" /></mm:param>
+                <mm:param name="manager"><%=relman.getName()%></mm:param>
+                <mm:param name="depth"><%=states.size()%></mm:param>
+              </mm:url>" target="_top">##</a>
+          <% } else { %>##<% } %>
+          </td>
+          <td class="<%=fieldprompt%>">
+            <%=mn.getGUIName()%>
+              <br />(<%=relrole%>)
+          </td>
+          <td class="<%=edittext%>"><mm:field name="<%=mn.getName()+".gui()"%>" /></td>
+        </tr>
+        <% } %>
       </mm:list>
-      <%    }
-          }
-        }
+      <%     }
+           }
+         }
       %>
     </table>
 
