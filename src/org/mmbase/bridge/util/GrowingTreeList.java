@@ -23,34 +23,68 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.3 2004-06-17 11:35:50 johannes Exp $
+ * @version $Id: GrowingTreeList.java,v 1.4 2004-07-23 14:43:57 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public  class GrowingTreeList extends TreeList {
     private static final Logger log = Logging.getLoggerInstance(GrowingTreeList.class);
 
-    protected PathElement  pathElement;
+    protected NodeQuery pathElementTemplate;
     protected int maxNumberOfSteps;
 
     /**
      * @param q              The 'base' query defining the minimal depth of the tree elements
-     * @param pathElement    The pathElement structure defines one 'relationStep', an array of them
-     *                       defines by which the branches will grow everytime
      * @param maxDepth       You must supply a maximal depth of the nodes, because MMBase is basicly a network rather then a tree, so
      *                        tree representations could be infinitely deep.
+     * @param NodeManager
+     * @param role
+     * @param searchDir
+     * @since MMBase-1.7.1
      */
 
-    public GrowingTreeList(NodeQuery q, PathElement pathElement, int maxDepth) {
-
+    public GrowingTreeList(NodeQuery q, int maxDepth, NodeManager nodeManager, String role, String searchDir) {
         super(q);
 
-        this.pathElement = pathElement;
+        pathElementTemplate = cloud.createNodeQuery();
+        Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
+        pathElementTemplate.setAlias(step, "object0");
+        pathElementTemplate.setNodeStep(pathElementTemplate.addRelationStep(nodeManager, role, searchDir).getNext());
+
+        setMaxDepth(maxDepth);
+    }
+
+    public GrowingTreeList(NodeQuery q, int maxDepth) {
+        super(q);
+        pathElementTemplate = cloud.createNodeQuery();
+        Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
+        pathElementTemplate.setAlias(step, "object0");
+
+        setMaxDepth(maxDepth);
+    }
+
+    /**
+     * As long as the tree is not 'started' yet, max depth can still be changed.
+     * @since MMBase-1.7.1
+     */
+
+    public void setMaxDepth(int maxDepth) {
         maxNumberOfSteps = 2 * maxDepth - 1; // dont consider relation steps.
 
         if (maxNumberOfSteps < numberOfSteps) {
             throw new IllegalArgumentException("Query is already deeper than maxdepth");
         }
+    }
+
+    /**
+     * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before 
+     * the tree is 'started'.
+     * All but the first step of this query are added. This query itself is never used.
+     * @since MMBase-1.7.1
+     */
+
+    public Query getTemplate() {
+        return pathElementTemplate;
     }
 
    
@@ -70,72 +104,54 @@ public  class GrowingTreeList extends TreeList {
     }
 
     /**
-     * Generates a new query (and does a count on it)
+     * 
      */
     protected void addPathElement() {
+        if (! pathElementTemplate.isUsed()) {
+            Queries.sortUniquely(pathElementTemplate);
+            pathElementTemplate.markUsed();
+        }
         if (numberOfSteps + 2  > maxNumberOfSteps) {
             foundEnd = true;
         } else {
-            RelationStep step = grow(pathElement.nodeManager, pathElement.role, pathElement.searchDir);
-            if (step != null) {
-                // add sortorder to the query
-                Step nextStep = step.getNext();
+            Iterator steps = pathElementTemplate.getSteps().iterator();;
+            steps.next(); // ignore first step
+            while (steps.hasNext()) {
+                RelationStep relationStepTemplate = (RelationStep) steps.next();
+                Step         stepTemplate         = (Step)         steps.next();
+                String role;
+                {   // it's a pity but role cannot be requested directly from RelationStep
+                    // some hackery
+                    Integer      reldef = relationStepTemplate.getRole();
+                    if (reldef == null) {
+                        role = null;
+                    } else {
+                        role = cloud.getNode(reldef.intValue()).getStringValue("sname");
+                    }
+                }
 
+                RelationStep newStep = grow(cloud.getNodeManager(stepTemplate.getTableName()), 
+                                            role,
+                                            RelationStep.DIRECTIONALITY_NAMES[relationStepTemplate.getDirectionality()]);
+                if (newStep == null) {
+                    foundEnd = true;
+                    break;
+                }
                 // Step doesn't have a .getQuery() method, so we'll have to fall back to this:
                 Query newQuery = (Query)queries.get(queries.size() - 1);
 
-                if (pathElement.sortFieldRelation != null && !"".equals(pathElement.sortFieldRelation)) {
-                    if (pathElement.sortOrderRelation != SortOrder.ORDER_ASCENDING && pathElement.sortOrderRelation != SortOrder.ORDER_DESCENDING)
-                        pathElement.sortOrderRelation = SortOrder.ORDER_DESCENDING;
-                    StepField sf1 = newQuery.createStepField(step, pathElement.sortFieldRelation);
-                    newQuery.addSortOrder(sf1, pathElement.sortOrderRelation);
-                }
+                // add sortorder to the query
+                Step nextStep = newStep.getNext();
 
-                if (pathElement.sortFieldNodes != null && !"".equals(pathElement.sortFieldNodes)) {
-                    if (pathElement.sortOrderNodes != SortOrder.ORDER_ASCENDING && pathElement.sortOrderNodes != SortOrder.ORDER_DESCENDING)
-                        pathElement.sortOrderNodes = SortOrder.ORDER_DESCENDING;
-
-                    StepField sf2 = newQuery.createStepField(nextStep, pathElement.sortFieldNodes);
-                    newQuery.addSortOrder(sf2, pathElement.sortOrderNodes);
-                }
+                Constraint newStepConstraint         = Queries.copyConstraint(pathElementTemplate.getConstraint(), stepTemplate, newQuery, nextStep);
+                Constraint newRelationStepConstraint = Queries.copyConstraint(pathElementTemplate.getConstraint(), relationStepTemplate, newQuery, newStep);
+                Queries.addConstraint(newQuery, newStepConstraint);
+                Queries.addConstraint(newQuery, newRelationStepConstraint);
                 
-                // Always add a sort on number fields, because the sort order
-                // needs to be unique and consistent every time
-                StepField sf1 = newQuery.createStepField(step, "number");
-                newQuery.addSortOrder(sf1, SortOrder.ORDER_DESCENDING);
-                StepField sf2 = newQuery.createStepField(nextStep, "number");
-                newQuery.addSortOrder(sf2, SortOrder.ORDER_DESCENDING);
-            }
-        }
-    }
 
-    public static class PathElement {
-        NodeManager nodeManager;
-        String      role;
-        String      searchDir;
-        String      fields;
-        String      sortFieldNodes = null;
-        int         sortOrderNodes = 0;
-        String      sortFieldRelation = null;
-        int         sortOrderRelation = 0;
+                Queries.copySortOrders(pathElementTemplate.getSortOrders(), stepTemplate, newQuery, nextStep);
+                Queries.copySortOrders(pathElementTemplate.getSortOrders(), relationStepTemplate, newQuery, newStep);
 
-        public PathElement(NodeManager nm, String r, String sd) {
-            nodeManager = nm;
-            role = r;
-            searchDir = sd;
-        }
-
-        public PathElement(NodeManager nm, String r, String sd, String so, int sdir) {
-            nodeManager = nm;
-            role = r;
-            searchDir = sd;
-            if (so != null && so.startsWith(r + ".")) {
-                // Change 'posrel.pos' to 'pos'
-                sortFieldRelation = so.substring(r.length() + 1, so.length());
-                sortOrderRelation = sdir;
-            } else {
-                sortFieldNodes = so;
-                sortOrderNodes = sdir;
             }
         }
     }
@@ -148,7 +164,7 @@ public  class GrowingTreeList extends TreeList {
 
         NodeManager object = cloud.getNodeManager("object");
 
-        TreeList tree = new GrowingTreeList(q, new PathElement(object, null, "destination"), 5);
+        TreeList tree = new GrowingTreeList(q, 5, object, null, "destination");
 
         Iterator i = tree.iterator();
         while (i.hasNext()) {
