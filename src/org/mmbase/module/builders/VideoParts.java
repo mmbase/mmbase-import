@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -7,9 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 */
 /*
-$Id: VideoParts.java,v 1.14 2000-12-14 16:22:16 vpro Exp $
+$Id: VideoParts.java,v 1.15 2001-04-10 12:20:39 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2000/12/14 16:22:16  vpro
+davzev: AudioParts and VideoParts now extend from MediaParts
+
 Revision 1.13  2000/12/14 15:52:04  vpro
 davzev: Added methods getMinSpeed,getMinChannels and doGetUrl.
 
@@ -33,14 +36,16 @@ import org.mmbase.module.sessionInfo;
 import org.mmbase.util.media.video.*;
 import org.mmbase.module.builders.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Daniel Ockeloen
- * @version $Id: VideoParts.java,v 1.14 2000-12-14 16:22:16 vpro Exp $
+ * @version $Id: VideoParts.java,v 1.15 2001-04-10 12:20:39 michiel Exp $
  */
 public class VideoParts extends MediaParts {
-	private String classname = getClass().getName();
-	private boolean debug = false;
 
+    private static Logger log = Logging.getLoggerInstance(VideoParts.class.getName()); 
 
 	public int insertDone(EditState ed,MMObjectNode node) {
 		String sourcepath=ed.getHtmlValue("sourcepath");
@@ -49,7 +54,7 @@ public class VideoParts extends MediaParts {
 		String devname = null;
 
 		if(devtype==7) {		//Check if source is from a jazzdrive -> 7
-			debug("jazzdrives aren't supported at this moment");
+			log.info("jazzdrives aren't supported at this moment");
 			/* See Audioparts for comment 
            	//sourcepath contains  eg. /Drivename/Dir/File
            	String delim = "/";
@@ -110,8 +115,10 @@ public class VideoParts extends MediaParts {
 			String starttime = ed.getHtmlValue("starttime");
 			String stoptime  = ed.getHtmlValue("stoptime");
 	
-			debug("preEdit("+node.getName()+"):starttime("+starttime+")");
-			debug("preEdit("+node.getName()+"): stoptime("+stoptime+")");
+            if (log.isDebugEnabled()) {
+                log.debug("preEdit(" + node.getName() + "):starttime(" + starttime + ")");
+                log.debug("preEdit(" + node.getName() + "): stoptime(" + stoptime + ")");
+            }
 
 			// check if (stop - start) == lengthOfPart, if lengthOfPart != -1
 
@@ -128,10 +135,11 @@ public class VideoParts extends MediaParts {
 					// no, maybe we have to remove it (when its empty or '-1')
 					// -------------------------------------------------------
 
-					if (starttime.equals("") || starttime.equals("-1"))
+					if (starttime.equals("") || starttime.equals("-1")) {
 						removeProperty( node, "starttime" );
-					else
-						debug("preEdit("+node+","+starttime+"): ERROR: Dont know what to do with this starttime for this node!");
+					} else {
+						log.error("preEdit(" + node + "," + starttime + "): Dont know what to do with this starttime for this node!");
+                    }
 				}
 			}
 			else {
@@ -150,18 +158,19 @@ public class VideoParts extends MediaParts {
 					// not a valid time, maybe we have tot remove this property
 					// --------------------------------------------------------
 
-					if(stoptime.equals("") || stoptime.equals("-1"))
+					if(stoptime.equals("") || stoptime.equals("-1")) {
 						removeProperty(node, "stoptime");	
-					else
-						debug("preEdit("+node+","+stoptime+"): ERROR: Dont know what to do this this stoptime for this node!");
+					} else {
+						log.error("preEdit("+node+","+stoptime+"): Dont know what to do this this stoptime for this node!");
+                    }
 				}
 			}
 			else {
 				// error ? daniel	putProperty( node, "stoptime" , "-1");
 			}
-		}
-		else
-			debug("preEdit(): ERROR: node is null!");
+		} else {
+			log.error("preEdit(): node is null!");
+        }
 
 		return(-1);	
 	}
@@ -296,8 +305,9 @@ public class VideoParts extends MediaParts {
 					break;
 				}
 		}
-		else
-			debug("checktime("+time+"): ERROR: Time is not valid!");
+		else {
+			log.error("checktime("+time+"): Time is not valid!");
+        }
 		
 		//debug("checktime("+time+"): simpleTimeCheck(" + result+")");
 		return result;
@@ -316,19 +326,19 @@ public class VideoParts extends MediaParts {
 					result = true;
 				else
 				{
-					debug("checktimeint("+time+"): ERROR: this part is higher than 100!"); 
+					log.error("checktimeint(" + time + "): this part is higher than 100!"); 
 					result = false;
 				}
 			}
 			else
 			{
-				debug("checktimeint("+time+"): ERROR: Time is negative!");
+				log.error("checktimeint(" + time + "): Time is negative!");
 				result = false;
 			}
 		}
 		catch( NumberFormatException e )
 		{
-			debug("checktimeint("+time+"): ERROR: Time is not a number!");
+			log.error("checktimeint(" + time + "): Time is not a number!");
 			result = false;
 		}
 
@@ -354,11 +364,12 @@ public class VideoParts extends MediaParts {
 			}
 			else
 			{
-				debug("getProperty("+node.getName()+","+key+"): ERROR: No prop found for this item("+id+")!");
+				log.error("getProperty(" + node.getName() + "," + key + "): No prop found for this item(" + id + ")!");
 			}
 		}
-		else
-			debug("getProperty("+"null"+","+key+"): ERROR: Node is null!");
+		else {
+			log.error("getProperty(" + "null" + "," + key + "): Node is null!");
+        }
 
 		//debug("getProperty("+key+"): end("+result+")");
 		return result;
@@ -408,8 +419,9 @@ public class VideoParts extends MediaParts {
 				}
 			}
 		}
-		else
-			debug("putProperty("+"null"+","+key+","+value+"): ERROR: Node is null!");
+		else {
+			log.error("putProperty(" + "null" + "," + key + "," + value + "): Node is null!");
+        }
 
 		//debug("putProperty("+key+","+value+"): end");
 	}
@@ -423,7 +435,7 @@ public class VideoParts extends MediaParts {
             if (pnode!=null) 
 				pnode.parent.removeNode( pnode );
 			else
-				debug("removeNode("+node+","+key+"): ERROR: Property not found( and cannot remove )");
+				log.error("removeNode(" + node + "," + key + "): Property not found( and cannot remove )");
 		}
 	}
 

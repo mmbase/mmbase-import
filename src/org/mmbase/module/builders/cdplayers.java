@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.8 2001-02-15 13:37:34 vpro Exp $
+$Id: cdplayers.java,v 1.9 2001-04-10 12:20:39 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/02/15 13:37:34  vpro
+Davzev: Removed empty constructor and changed and added debug
+
 Revision 1.7  2001/01/11 13:33:29  vpro
 Davzev: Changed systemouts to debugs in method getValue and added more method comments
 
@@ -42,15 +45,18 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 // import org.module.hardware.linux.cdrom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.8 $ $Date: 2001-02-15 13:37:34 $ 
+ * @version $Revision: 1.9 $ $Date: 2001-04-10 12:20:39 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
-	private boolean debug=true;
+    private static Logger log = Logging.getLoggerInstance(Users.class.getName()); 
 
 	/**
 	 * Calls its super method and than calls nodeChanged. 
@@ -60,7 +66,10 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @return result value of nodeChanged call.
 	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super.");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeRemoteChanged(" + number + "," + builder +
+                      "," + ctype + "): Calling super.");
+        }
 		super.nodeRemoteChanged(number,builder,ctype);
 		return(nodeChanged(number,builder,ctype));
 	}
@@ -73,7 +82,10 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @return result value of nodeChanged call.
 	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super.");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeLocalChanged(" + number + "," + builder +
+                      "," + ctype + "): Calling super.");
+        }
 		super.nodeLocalChanged(number,builder,ctype);
 		return(nodeChanged(number,builder,ctype));
 	}
@@ -86,8 +98,13 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @return true, always.
 	 */
 	public boolean nodeChanged(String number,String builder,String ctype) {
-		MMObjectNode node=getNode(number);
-		if (debug) debug("nodeChanged("+number+","+builder+","+ctype+"): Printing state="+node.getStringValue("state")+" and info="+node.getStringValue("info")+" , returning.");
+		MMObjectNode node = getNode(number);
+		if (log.isDebugEnabled()) {
+            debug("nodeChanged(" + number + "," + builder + "," +
+                  ctype + "): Printing state=" +
+                  node.getStringValue("state") + " and info=" +
+                  node.getStringValue("info") + " , returning.");
+        }
 		return true;
 	}
 
@@ -106,7 +123,9 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 			// send the command to get the dir
 			node.setValue("state","getdir");
 			node.commit();
-			if (debug) debug("getValue: State set to getdir, now wait until node is changed sothat dir is available.");
+			if (log.isDebugEnabled()) {
+                log.debug("getValue: State set to getdir, now wait until node is changed sothat dir is available.");
+            }
 			boolean changed=false;
 			MMObjectNode newnode=null;
 			while (!changed) {	
@@ -116,10 +135,17 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 				if (state.equals("waiting"))
 					changed=true;
 				else 
-					if (debug) debug("getValue: Retrieved node "+newnode.getStringValue("name")+" ("+newnode.getIntValue("number")+"), state is "+state+"!=waiting, entering waitUntilNodeChanged again");
+					if (log.isDebugEnabled()) {
+                        log.debug("getValue: Retrieved node " + 
+                                  newnode.getStringValue("name") + " ("+newnode.getIntValue("number") + 
+                                  "), state is " + state + "!=waiting, entering waitUntilNodeChanged again");
+                    }
 			}
 			String val=newnode.getStringValue("info");
-			if (debug) debug("getValue: "+newnode.getStringValue("name")+"("+newnode.getIntValue("number")+") State is waiting again, returning: "+val);
+			if (log.isDebugEnabled()) {
+                log.debug("getValue: " + newnode.getStringValue("name") + "("+newnode.getIntValue("number") + 
+                          ") State is waiting again, returning: " + val);
+            }
 			return(val);
 		} else return super.getValue(node, field);
 	}
@@ -163,11 +189,11 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 					result.addElement(trlen);
 				}
 			} catch(Exception e) {
-				debug("getHTMLDir: Error, NROFTRACKS doesn't contain an integer! "+e);
+				log.error("getHTMLDir: Error, NROFTRACKS doesn't contain an integer! " + e);
 			}
 		}
 		tagger.setValue("ITEMS","3");
-		debug("getHTMLDir: returning result: "+result);
+		log.service("getHTMLDir: returning result: " + result);
 		return result;
 	}
 
@@ -181,9 +207,13 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	public String replace(scanpage sp, StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
-			if (debug) debug("replace: Token is "+cmd);
+			if (log.isDebugEnabled()) {
+                log.debug("replace: Token is " + cmd);
+            }
 			if (cmd.equals("claim")) {
-				if (debug) debug("replace: Command is 'claim', calling doClaim(sp,tok)");
+				if (log.isDebugEnabled()) { 
+                    log.debug("replace: Command is 'claim', calling doClaim(sp,tok)");
+                }
 				doClaim(sp,tok);
 			}
 		}

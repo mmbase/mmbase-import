@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -20,6 +20,9 @@ import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * The pccard builder contains pccard that MMBase can use.
  * These pccard will implement the ImageInterface so that the Image builder
@@ -34,6 +37,7 @@ import org.mmbase.util.*;
  */
 public class PCCards extends MMObjectBuilder implements MMBaseObserver {
 
+    private static Logger log = Logging.getLoggerInstance(PCCards.class.getName()); 
 	public final static String buildername = "pccard";
 	public static java.util.Properties driveprops= null;
 
@@ -48,7 +52,7 @@ public class PCCards extends MMObjectBuilder implements MMBaseObserver {
 		try {
 			pccard = tok.nextToken();
 		} catch (Exception e) {
-			debug("Syntax of LIST commando = <LIST BUILDER-pccard-[pccardname]");	
+			log.error("Syntax of LIST commando = <LIST BUILDER-pccard-[pccardname]");	
 		}
 
        	String comparefield = "modtime";
@@ -66,7 +70,9 @@ public class PCCards extends MMObjectBuilder implements MMBaseObserver {
             sorted = imglister.sortDirectories(unsorted,comparefield);
         	result = imglister.createThreeItems(sorted,tagger);
 		} catch (Exception e) {
-			debug("Something went wrong in the directory listner, probably "+path+" does not exists needed by "+pccard);
+			log.error("Something went wrong in the directory listner,  probably "+path+" does not exists needed by "+pccard);
+            log.error(Logging.stackTrace(e));
+
 		}
         tagger.setValue("ITEMS", "3");
         String reverse = tagger.Value("REVERSE");
