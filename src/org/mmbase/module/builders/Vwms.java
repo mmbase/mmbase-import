@@ -278,13 +278,14 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Passes a remote change of a vwms node to the appropriate (active) vwm.
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, not very well documented
      * @return always <code>true</code>
      */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-        super.nodeRemoteChanged(number,builder,ctype);
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
         if (ctype.equals("c")) {
             MMObjectNode node=getNode(number);
             if (node!=null) {
@@ -292,7 +293,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
                 if (name!=null) {
                     VwmInterface vwm=getVwm(name);
                     if (vwm!=null) {
-                        vwm.nodeRemoteChanged(number,builder,ctype);
+                        vwm.nodeRemoteChanged(machine,number,builder,ctype);
                     }
                 }
             }
@@ -302,13 +303,14 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Passes a local change of a vwms node to the appropriate (active) vwm.
+	 * @param machine Name of the machine that changed the node.
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, not very well documented
      * @return always <code>true</code>
      */
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
         if (ctype.equals("c")) {
             MMObjectNode node=getNode(number);
             if (node!=null) {
@@ -316,12 +318,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
                 if (name!=null) {
                     VwmInterface vwm=getVwm(name);
                     if (vwm!=null) {
-                        vwm.nodeLocalChanged(number,builder,ctype);
+                        vwm.nodeLocalChanged(machine,number,builder,ctype);
                     }
                 }
             }
         }
         return true;
     }
-
 }
