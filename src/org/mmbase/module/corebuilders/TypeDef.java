@@ -25,7 +25,7 @@ import org.mmbase.util.*;
 public class TypeDef extends MMObjectBuilder {
 
 	Hashtable nameCache;
-	Hashtable numberCache;
+	Hashtable numberCache=new Hashtable();
 	Hashtable descriptionCache;
 	public boolean broadcastChanges=false;
 
@@ -65,7 +65,7 @@ public class TypeDef extends MMObjectBuilder {
 			//System.out.println("SELECT * FROM "+mmb.baseName+"_"+tableName);
 			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName);
 			nameCache=new Hashtable();
-			numberCache=new Hashtable();
+			//numberCache=new Hashtable();
 			descriptionCache=new Hashtable();
 			Integer number;String name,desc;
 			while(rs.next()) {
