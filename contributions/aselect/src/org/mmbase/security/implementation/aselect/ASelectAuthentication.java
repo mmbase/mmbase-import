@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.1 2005-03-16 20:04:04 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.2 2005-03-16 23:47:05 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -520,15 +520,16 @@ public class ASelectAuthentication extends Authentication {
                 return false;
             }
             ASelectCloudContextUser user = (ASelectCloudContextUser) userContext;
-            boolean flag = user.isValidNode() && user.getKey() == uniqueNumber;
-            if (flag) {
-                log.debug(user.toString() + " was valid");
-            } else if (user.isValidNode()) {
-                log.debug(user.toString() + " was NOT valid (different unique number)");
-            } else {
-                log.debug(user.toString() + " was NOT valid (node was different)");
+            if (user.getKey() != uniqueNumber) {
+                log.service(user.toString() + " was NOT valid (different unique number, " + user.getKey() + " != " + uniqueNumber);
+                return false;
             }
-            return flag;
+            if (! user.isValidNode()) {
+                log.service(user.toString() + " was NOT valid (node " + user.getNode());
+                return false;
+            }
+            log.debug(user.toString() + " was valid");
+            return true;
         } else {
             return ((ASelectUser) userContext).key == uniqueNumber;
         }
