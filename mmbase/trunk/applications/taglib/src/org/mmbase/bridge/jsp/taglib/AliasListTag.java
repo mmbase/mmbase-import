@@ -52,7 +52,7 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
     **/
     public int doStartTag() throws JspTagException{       
         currentItemIndex= -1;  // reset index        
-        Node node = findNodeProvider().getNodeVar();
+        Node node = getNode();
 
         returnValues = node.getAliases().stringIterator();        
         // if we get a result from the query

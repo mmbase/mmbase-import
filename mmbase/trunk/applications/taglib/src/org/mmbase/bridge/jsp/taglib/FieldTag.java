@@ -54,10 +54,6 @@ public class FieldTag extends NodeReferrerTag {
         return s;
     }
 
-    protected Node getNode() throws JspTagException {
-        return findNodeProvider().getNodeVar();
-    }
-    
     /**
     * write the value of the field.
     **/

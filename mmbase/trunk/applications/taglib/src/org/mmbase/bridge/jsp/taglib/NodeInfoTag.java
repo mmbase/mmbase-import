@@ -54,7 +54,7 @@ public class NodeInfoTag extends NodeReferrerTag {
     */
     public int doAfterBody() throws JspTagException {
 
-        Node node = findNodeProvider().getNodeVar();
+        Node node = getNode();
 
         String show = "";
 

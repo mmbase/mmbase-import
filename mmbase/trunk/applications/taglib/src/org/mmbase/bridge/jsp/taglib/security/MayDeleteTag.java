@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
 public class MayDeleteTag extends MayWriteTag implements ConditionTag {
                
     public int doStartTag() throws JspTagException {
-        if ((findNodeProvider().getNodeVar().mayDelete()) != inverse) {
+        if ((getNode().mayDelete()) != inverse) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;

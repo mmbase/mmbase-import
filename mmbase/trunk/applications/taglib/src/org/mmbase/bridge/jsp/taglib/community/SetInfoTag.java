@@ -39,7 +39,7 @@ public class SetInfoTag extends NodeReferrerTag {
 
     public int doStartTag() throws JspTagException{
         // firstly, search the node:
-        node = findNodeProvider().getNodeVar();
+        node = getNode();
 
         if (key == null) { // name not null
             throw new JspTagException ("Should use 'key' attribute");
