@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.145 2002-06-27 14:42:59 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.146 2002-06-30 19:22:18 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1003,7 +1003,7 @@ public class MMObjectBuilder extends MMTable {
             return results;
         } catch (Exception e) {
             // something went wrong print it to the logs
-            log.error("basicSearch(): ERROR in search "+query);
+            log.error("basicSearch(): ERROR in search " + query + " : " + Logging.stackTrace(e));
             mmb.closeConnection(con,stmt);
         }
 
@@ -1510,7 +1510,9 @@ public class MMObjectBuilder extends MMTable {
         FieldDefs node=getField(fieldName);
         if (node==null) {
             // log warning, except for virtual builders
-            if (!virtual) log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
+            if (!virtual) { 
+                log.warn("getDBType(): Can't find fielddef on field '"+fieldName+"' of builder "+tableName);
+            }
             return FieldDefs.TYPE_UNKNOWN;
         }
         return node.getDBType();
@@ -1564,7 +1566,7 @@ public class MMObjectBuilder extends MMTable {
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(String field,MMObjectNode node) {
+    public String getGUIIndicator(String field, MMObjectNode node) {
         return null;
     }
 
@@ -1842,14 +1844,14 @@ public class MMObjectBuilder extends MMTable {
              NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
              rtn=""+nf.format(val);
         } else if (function.equals("gui")) {
-            String val=null;
+            String val = null;
             if (field.equals("")) {
-                val=getGUIIndicator(node);
+                val = getGUIIndicator(node);
             } else {
-                val = getGUIIndicator(field,node);
+                val = getGUIIndicator(field, node);
                 if (val == null) {
                     FieldDefs fdef = getField(field);
-                    if ("eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
+                    if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
                         val = new java.text.SimpleDateFormat().format(new java.util.Date((long) node.getIntValue(field) * 1000));
                     } else {
                         val = node.getStringValue(field);
@@ -1871,6 +1873,16 @@ public class MMObjectBuilder extends MMTable {
                 rtn = getSmartPath(documentRoot, path, "" + node.getNumber(), version);
             } catch(Exception e) {
                 log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
+            }
+        } else if (function.equals("sgui")) {
+            // 'ServletBuilders' can need a first argument (to store a reference to a logged-on
+            // cloud). Other builders could simply give gui().
+            // See AbstractServletBuilder.
+            int comma = field.indexOf(',');
+            if (comma == -1) {
+                rtn = executeFunction(node, "gui", field);
+            } else {
+                rtn = executeFunction(node, "gui", field.substring(comma + 1));
             }
         } else {
             log.warn("Builder ("+tableName+") unknown function '"+function+"'");
