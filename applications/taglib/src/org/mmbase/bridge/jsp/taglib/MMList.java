@@ -94,7 +94,7 @@ public class MMList extends MMTaglib
 		String field = (String)fields.elementAt(i);
 		//it would be nice to return Integer is a field is of that type
 		variableInfo[j++] = new VariableInfo(prefix + getSimpleReturnValueName(field),"java.lang.String",true,VariableInfo.NESTED);
-		variableInfo[j++] = new VariableInfo("item"+(i+1),"java.lang.String",true,VariableInfo.NESTED);
+		variableInfo[j++] = new VariableInfo(prefix + "item"+(i+1),"java.lang.String",true,VariableInfo.NESTED);
 		    
 	    }
 	    //add the Hashtable , name it node to confuse people :)
@@ -299,7 +299,7 @@ public class MMList extends MMTaglib
 	    while (returnFieldEnum.hasMoreElements()){
 		String field = (String)returnFieldEnum.nextElement();
 	    	pageContext.setAttribute(getPrefix() + getSimpleReturnValueName(field) ,"" + node.getValue(field));
-	    	pageContext.setAttribute("item"+(j++) ,"" + node.getValue(field));
+	    	pageContext.setAttribute(getPrefix() + "item"+(j++) ,"" + node.getValue(field));
 	    }
     	    pageContext.setAttribute(getPrefix() + "node" ,node);
 	}
