@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.21 2003-08-13 14:29:00 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.22 2003-08-13 14:52:37 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -121,7 +121,7 @@ public class MediaSources extends MMObjectBuilder {
         source.setValue("status", status);
         source.setValue("format", format);
         source.setValue("codec", Codec.UNKNOWN.toInt());
-        source.setValue("speed", speed);
+        source.setValue("bitrate", speed);
         source.setValue("channels",channels);
         source.setValue("url",url);
         source.insert(owner);
