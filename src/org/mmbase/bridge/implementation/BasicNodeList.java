@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.30 2004-01-16 14:48:11 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.31 2004-12-09 14:58:34 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
@@ -31,7 +31,8 @@ public class BasicNodeList extends BasicList implements NodeList {
         super();
     }
 
-    BasicNodeList(Collection c, Cloud cloud) {
+    // public, for util.Casting
+    public BasicNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud = cloud;
     }
@@ -45,7 +46,7 @@ public class BasicNodeList extends BasicList implements NodeList {
 
 
     /**
-     *
+     * @todo This code should probably use Casting.toNode() instead
      */
     protected Object convert(Object o, int index) {
         if (o instanceof Node || o == null) {
@@ -80,7 +81,7 @@ public class BasicNodeList extends BasicList implements NodeList {
                     if (cloud == null) {
                         throw new BridgeException("Could not create a Node from object '" + o + "' because this List has no Cloud,");
                         // otherwise init of BasicNode throws NPE.
-                        
+
                     }
                     node = new BasicNode(coreNode, cloud);
                 } else {
