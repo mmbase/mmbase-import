@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.46 2004-01-19 17:22:08 michiel Exp $
+ * @version $Id: ListTag.java,v 1.47 2004-02-17 09:40:06 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -119,11 +119,6 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         }
         QueryContainer c = getListContainer();
 
-        String distinctString = distinct.getString(this).toLowerCase();
-        boolean searchDistinct = false;
-        if ("true".equals(distinctString) || "yes".equals(distinctString)) {
-            searchDistinct = true;
-        }
 
         Query query;
         if (c == null || path != Attribute.NULL) {
@@ -131,6 +126,13 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory if referid not speficied");
             }
+
+            String distinctString = distinct.getString(this).toLowerCase();
+            boolean searchDistinct = false;
+            if ("true".equals(distinctString) || "yes".equals(distinctString)) {
+                searchDistinct = true;
+            }
+
 
             String searchString = search.getString(this).toUpperCase();
             if (searchString.equals("")) {
@@ -171,11 +173,14 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             if (orderby != Attribute.NULL) {
                 Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
             }
-            query.setDistinct(searchDistinct);
+
             if (fields != Attribute.NULL) {
+                query.removeFields();
                 Queries.addFields(query, fields.getString(this));
             }
-
+            if (distinct != Attribute.NULL) {
+                query.setDistinct(distinct.getBoolean(this, false));
+            }
             if (nodes != Attribute.NULL) {
                 Queries.addStartNodes(query, nodes.getString(this));
             }
