@@ -79,7 +79,6 @@ public class ContextTag extends ContextReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
-
     public static int stringToLocation(String s) throws JspTagException {
         int location;
         if ("parent".equalsIgnoreCase(s)) {
@@ -328,17 +327,18 @@ public class ContextTag extends ContextReferrerTag {
         case LOCATION_COOKIE:
             javax.servlet.http.Cookie[] cookies = getHttpRequest().getCookies();
             if (cookies == null) {
-                log.error("Cannot use cookies");
+                log.debug("Cannot use cookies");
             } else {
+                log.debug("Found cookies");
                 for (int i=0; i< cookies.length; i++) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(cookies[i].getName() + "/" + cookies[i].getValue());
+                    }
                     if (cookies[i].getName().equals(referid)) {
                         // simply return the first value found.
                         // this is probably a little to simple...
                         // since a cookie can e.g. also have another path.
                         result = cookies[i].getValue();
-                        // touch cookie
-                        cookies[i].setMaxAge(WriteTag.MAX_COOKIE_AGE);
-                        ((HttpServletResponse) (pageContext.getResponse())).addCookie(cookies[i]);
                         break;
                     }
                 }
