@@ -1,22 +1,22 @@
-<HTML>
-<HEAD>
-<TITLE>mmbase index page</TITLE>
-</HEAD>
+<html>
+<head>
+<title>mmbase index page</title>
+</head>
 
-<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+<body background="beeld/back.gif" text="#42BDAD" bgcolor="#00425B" link="#42BDAD" alink="#42BDAD" vlink="#42BDAD">
 <IF $MOD-INFO-EXISTS-FILE-/mmdemo/key.txt^==YES>
 
-<TABLE width=97% cellspacing=1 cellpadding=3 border=0>
-<TR>
-	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="#44BDAD">
-		<FONT COLOR="#000000">
-		<B>MMBase 1.5</B>
-		</FONT>
-	</TD>
-</TR>
-<TR>
-		<TD></TD>
+<table width="97%" cellspacing="1" cellpadding="3" border="0">
+<tr>
+	<td><img src="beeld/trans.gif" width="50" height="1"></td>
+	<td bgcolor="#44BDAD">
+		<font color="#000000">
+		<b>MMBase 1.5</b>
+		</font>
+	</td>
+</tr>
+<tr>
+<td></td>
 		<TD BGCOLOR="#00425A">
 			<BR>
 			Welcome to Runner the quick unzip & go version of the MMBase Content management system.<BR><BR>
@@ -74,25 +74,29 @@ irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/server
 <TR>
 		<TD></TD>
 		<TD BGCOLOR="#00425A">
-			<BR>
-			Welcome to MMBase Content management system.
+<br />
+Welcome to MMBase Content management system.
 <br /><br />
+
 The Binary distro includes a database. Since we wanted a simple and 100% java solution we used Hsqldb, but MMBase itself supports many more both commercial and opensource products.
 <br /><br />
-The Source distro includes all the sources to build your own MMBase.
 
-			<BR><BR>
-If you run into problems you can get help from the following sources :<BR><BR>
-readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />
-website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
-mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
-irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
-bugreporting - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a><br />
-<BR>
-			The MMBase Release Team.
-			<BR><BR>
-		</TD>
-</TR>
+The Source distro includes all the sources to build your own MMBase.
+<br /><br />
+
+If you run into problems you can get help from the following sources :<br /><br />
+<ul>
+	<li>readme/releasenotes/installation docs - These documents are in the root of the binary distro</li>
+	<li>website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A></li>
+	<li>mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A></li>
+	<li>irc channel - for details about the channel see <a href="http://www.mmbase.org/irc" target="_ext">irc info page of mmbase</a></li>
+	<li>bugreporting - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a></li>
+</ul>
+<br />
+The MMBase Release Team.
+<br /><br />
+</td>
+</tr>
 <TR>
 	<TD>
 	</TD>
