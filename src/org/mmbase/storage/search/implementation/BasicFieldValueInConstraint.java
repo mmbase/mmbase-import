@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -67,6 +67,7 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
                 && getField().getStep().getAlias().equals(
                     constraint.getField().getStep().getAlias())
+                // TODO: compare values based on numerical value, ignoring type.
                 && values.equals(constraint.values);
         } else {
             return false;
