@@ -139,8 +139,8 @@ public class Logging {
 
                     //logclass = Logging.class.getClassLoader().loadClass(classtouse);
                     //logclass = Class.forName(classtouse, true, ClassLoader.getSystemClassLoader());  
-                    //logclass = Class.forName(classtouse);
-                    logclass = Thread.currentThread().getContextClassLoader().loadClass(classtouse);
+                    logclass = Class.forName(classtouse);
+                    // logclass = Thread.currentThread().getContextClassLoader().loadClass(classtouse);
 
                     // It's a little tricky to find the right classloader, but as it is now, it works for me.
 
