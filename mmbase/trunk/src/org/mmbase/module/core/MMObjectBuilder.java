@@ -1462,6 +1462,12 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("shorted")) {
             String val=node.getStringValue(field);
             rtn=getShort(val,32);
+        } else if (function.equals("uppercase")) {
+            String val=node.getStringValue(field);
+            rtn=val.toUpperCase();
+        } else if (function.equals("lowercase")) {
+            String val=node.getStringValue(field);
+            rtn=val.toLowerCase();
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
 	     NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
