@@ -89,7 +89,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (where == null) { // empty list, so use that one.
                 nodes = initialnodes;
             } else {
-                where = where.insert(0, "number in (").append(")");
+                where.insert(0, "number in (").append(")");
                 if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
                 nodes = manager.getList(where.toString(), orderby, directions);
             }
