@@ -47,6 +47,13 @@
 <!ATTLIST option name CDATA #REQUIRED>
 <!ATTLIST option set (true|false) #IMPLIED>
 
+<!--
+	Specifies one scheme. The value is in the tag body
+-->
+<!ELEMENT scheme (#PCDATA)>
+<!ATTLIST scheme name CDATA #REQUIRED>
+
+
 <!-- 
 	Contains the type mappings for MMBase
 	These map the MMBase types to expressions that the storage manager can use.

@@ -12,6 +12,7 @@ package org.mmbase.storage;
 import java.util.List;
 import java.util.Map;
 import org.mmbase.storage.util.StorageReader;
+import org.mmbase.storage.util.Scheme;
 import org.mmbase.module.core.MMBase;
 
 /**
@@ -20,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.7 2003-07-24 12:29:04 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.8 2003-07-25 12:42:05 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -69,8 +70,8 @@ public interface StorageManagerFactory {
     /**
      * Obtain an attribute from this factory.
      * Attributes are the configuration parameters for the storagefactory.
-     * @return the attribute value, or null if it is unknown
      * @param key the key of the attribute
+     * @return the attribute value, or null if it is unknown
      */
     public Object getAttribute(Object key);
 
@@ -83,6 +84,34 @@ public interface StorageManagerFactory {
      * @param value the value of the attribute
      */
     public void setAttribute(Object key, Object value);
+
+    /**
+     * Obtain a scheme from this factory.
+     * Schemes are special attributes, consisting of patterned strings that can be 
+     * expanded with arguments.
+     * @param key the key of the attribute
+     * @return the scheme value, or null if it is unknown
+     */
+    public Scheme getScheme(Object key);
+
+    /**
+     * Set a scheme of this factory.
+     * Schemes are special attributes, consisting of patterned strings that can be 
+     * expanded with arguments.
+     * To invalidate a scheme, use setAttribute(), and pass the <code>null</code> value.
+     * @param key the key of the scheme
+     * @param value the value of the scheme
+     */
+    public void setScheme(Object key, Scheme value);
+
+    /**
+     * Set a scheme of this factory, using a string pattern to base the Scheme on.
+     * Schemes are special attributes, consisting of patterned strings that can be 
+     * expanded with arguments.
+     * @param key the key of the scheme
+     * @param value the pattern to use for the scheme
+     */
+    public void setScheme(Object key, String pattern);
 
     /**
      * Check whether an option was set.

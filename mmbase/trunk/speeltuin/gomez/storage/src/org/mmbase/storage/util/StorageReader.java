@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.4 2003-07-23 14:11:34 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.5 2003-07-25 12:42:07 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -45,32 +45,42 @@ public class StorageReader extends DocumentReader  {
     public static void registerPublicIDs() {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_STORAGE_1_0, DTD_STORAGE_1_0, StorageReader.class);
     }
+    
+    /**
+     * The factory for which the reader reads the document.
+     * The factory is used to verify whether the document is compatible, and is used to instantiate objects
+     * that depend on factory information (such as schemes)
+     */
+    protected StorageManagerFactory factory; 
 
     /**
      * Constructor
+     * @param factory the factory for which to read the storage configuration
      * @param path the filename
      */
-    public StorageReader(String path) {
+    public StorageReader(StorageManagerFactory factory, String path) {
         super(path, DocumentReader.validate(), StorageReader.class);
+        this.factory = factory;
     }
 
     /**
      * Constructor.
      *
+     * @param factory the factory for which to read the storage configuration
      * @param Inputsource to the xml document.
      * @since MMBase-1.7
      */
-    public StorageReader(InputSource source) {
+    public StorageReader(StorageManagerFactory factory, InputSource source) {
         super(source, DocumentReader.validate(), StorageReader.class);
+        this.factory = factory;
     }
 
     /**
      * Attempt to load a StorageManager class, using the classname as given in the configuration.
      * The method verifies whether the instantiated class is of the correct version.
-     * @param, factory the factory used to load the manager, used to verify whether the factory class and version are compatible
      * @return the storage manager Class
      */
-    public Class getStorageManagerClass(StorageManagerFactory factory) throws StorageConfigurationException {
+    public Class getStorageManagerClass() throws StorageConfigurationException {
         Element root = document.getDocumentElement();
         if (factory != null) {
             // verify if the storagemanagerfactory is of the correct class, and
@@ -168,6 +178,16 @@ public class StorageReader extends DocumentReader  {
                         value = new Boolean(optionValue);
                     }
                     attributes.put(optionName,value);
+                }
+            }
+            NodeList schemeTagList = attributesTag.getElementsByTagName("scheme");
+            for (int i=0; i<schemeTagList.getLength(); i++) {
+                Element schemeTag = (Element)schemeTagList.item(i);
+                String schemeName = schemeTag.getAttribute("name");
+                // require a scheme name. 
+                // if not given, skip the option. 
+                if (schemeName != null) {
+                    attributes.put(schemeName, new Scheme(factory,getNodeTextValue(schemeTag)));
                 }
             }
         }
