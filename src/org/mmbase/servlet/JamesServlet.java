@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.26 2001-06-23 16:16:13 daniel Exp $
+* @version $Id: JamesServlet.java,v 1.27 2001-07-02 06:39:06 daniel Exp $
 */
 
 
@@ -369,6 +369,7 @@ public class JamesServlet extends HttpServlet {
      * @param req The HttpServletRequest.
      */
     public void decRefCount(HttpServletRequest req) {
+	/*
         String URL = getRequestURL(req);
         URL += " " + req.getMethod();
         synchronized (servletCountLock) {
@@ -383,6 +384,7 @@ public class JamesServlet extends HttpServlet {
                 }
             }
         }//sync
+	*/
     }
 
     /**
@@ -390,15 +392,18 @@ public class JamesServlet extends HttpServlet {
      * @param req The HttpServletRequest.
      */
     public void incRefCount(HttpServletRequest req) {
+	/*
         String URL = getRequestURL(req);
         URL += " " + req.getMethod();
         int curCount;
+	System.out.println("WANT LOCK");
         synchronized (servletCountLock)    {
             servletCount++; curCount=servletCount; printCount++;
             DebugServlet s = (DebugServlet) runningServlets.get(this);
             if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
             else { s.refCount++; s.URIs.addElement(URL); }
         }// sync
+	System.out.println("GOT LOCK");
         
         if ((printCount & 31)==0) {
 			if (curCount>0) {
@@ -408,6 +413,7 @@ public class JamesServlet extends HttpServlet {
 				}
 			}
         }
+	*/
     }
 
     /**
@@ -653,6 +659,7 @@ class DebugServlet {
         this.servlet = servlet;
         URIs.addElement(URI);
         this.refCount = refCount;
+	System.out.println("DEB="+toString());
     }
 
     /**
