@@ -50,11 +50,12 @@
             MyQSL:          mysql
             PostgrSQL:      postgresql71
             HyperSonic:     hypersonic
+            HsqlDB:         hsqldb
 	-->
         <!--
             TODO: Why is this setting not in the jdbc.xml?
         -->
-	<property name="database">hypersonic</property>
+	<property name="database">hsqldb</property>
 
 	<!--
 	name="multicasthost" mmbase nodes in a cluster use multicast to talk to
@@ -137,4 +138,3 @@
 	
   </properties>
 </module>
-
