@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.27 2003-11-19 17:25:49 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.28 2003-12-02 11:28:24 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -198,7 +198,7 @@ public class BasicQuery implements Query  {
         return relationStep;
     }
     public RelationStep addRelationStep(NodeManager otherNodeManager) {
-        return addRelationStep(otherNodeManager, null, "BOTH"); // would 'DESTINATION' not be better?
+        return addRelationStep(otherNodeManager, null, "BOTH"); 
     }
 
 
@@ -251,6 +251,19 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
         return query.addField(step, ((BasicField) field).field);
     }
+    public StepField addField(String fieldIdentifier) {
+
+        // code copied from createStepField, should be centralized
+        if (used) throw new BridgeException("Query was used already");
+        int dot = fieldIdentifier.indexOf('.');
+        String stepAlias = fieldIdentifier.substring(0, dot);
+        String fieldName = fieldIdentifier.substring(dot + 1);
+        Step step = getStep(stepAlias);
+        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps()); 
+        NodeManager nm = cloud.getNodeManager(step.getTableName());
+        Field field = nm.getField(fieldName);
+        return addField(step, field);
+    }
 
     public StepField createStepField(Step step, Field field) {
         return new BasicStepField(step, ((BasicField) field).field);
@@ -267,6 +280,7 @@ public class BasicQuery implements Query  {
     }
 
     public StepField createStepField(String fieldIdentifier) {
+        // code copied from addField, should be centralized
         int dot = fieldIdentifier.indexOf('.');
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
