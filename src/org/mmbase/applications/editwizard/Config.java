@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.12 2002-07-09 14:11:35 pierre Exp $
+ * @version $Id: Config.java,v 1.13 2002-07-10 11:54:01 pierre Exp $
  */
 
 public class Config {
@@ -34,8 +34,6 @@ public class Config {
 
     public String      sessionKey        = null;
     public URIResolver uriResolver       = null;
-    public int         list_pagelength   = 50;
-    public int         list_maxpagecount = 10;
     public int         maxupload = 4 * 1024 * 1024; // 1 MByte max uploadsize
     public Stack       subObjects = new Stack(); // stores the Lists and Wizards.
     public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
@@ -64,6 +62,8 @@ public class Config {
         public int    age = -1;
         public int    start = 0;
         public boolean distinct;
+        public int pagelength   = 50;
+        public int maxpagecount = 10;
     }
 
     /**
