@@ -18,5 +18,29 @@
 		<div class="menuItemApplicationMenubar">
 			<a title="<fmt:message key="CONFIGURATION" />" href="<mm:url page="/admin/" />" class="menubar"><fmt:message key="CONFIGURATION" /></a>
 		</div>
+
+                <div class="menuSeperatorApplicationMenubar"></div>
+                <div class="menuItemApplicationMenubar">
+                <a title="<fmt:message key="PRINT" />" href="javascript:printThis();"  class="menubar"><fmt:message key="PRINT"/></a>
+                </div>
+ <script language="JavaScript">
+<!--
+function printThis() {
+    if (frames && frames['content']) {
+        if (frames['content'].focus) 
+            frames['content'].focus(); 
+        if (frames['content'].print)
+            frames['content'].print();
+    }
+    else if (window.print) {
+        window.print();
+    }
+}
+//-->
+</script>
+
+
+
+                
 	</div>
 </mm:cloud>

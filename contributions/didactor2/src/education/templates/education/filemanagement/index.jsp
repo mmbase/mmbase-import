@@ -57,6 +57,10 @@
 <%
     File dir = new File(directory);
     File[] farray = dir.listFiles();
+    if (farray == null) {
+         throw new ServletException("'"+directory+"' does not appear to be a directory! Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
+    }
+    
     List files = new ArrayList();
     for (int i = 0; i < farray.length; i++) {
         files.add(farray[i]);

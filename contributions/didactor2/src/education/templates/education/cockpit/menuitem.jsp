@@ -4,7 +4,7 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 	<%@include file="/shared/setImports.jsp" %>
-
+        
 	<mm:import id="roleId" jspvar="roleId" />
 	<mm:remove referid="roleId" />
 
@@ -62,5 +62,7 @@
         </option>
       </mm:compare>
     </di:hasrole>
+
+
 </mm:cloud>
 </mm:content>

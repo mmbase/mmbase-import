@@ -62,7 +62,6 @@
 </head>
 <body>
 
-<mm:treeinclude page="/education/print.jsp" objectlist="$includePath" referids="$referids"/>
 
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 <form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
