@@ -2,8 +2,10 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
   <articleinfo>
-    <date>27 february 2003</date>
     <title>MMBase Applications</title>
+    <date>27 february 2003</date>
+    <edition>$Id: applications.xml,v 1.4 2003-02-28 11:54:43 pierre Exp $</edition>
+    <authorgroup>
       <author>
         <firstname>Henk</firstname>
         <surname>Hangyi</surname>
@@ -12,6 +14,7 @@
         <firstname>Pierre</firstname>
         <surname>van Rooden</surname>
       </author>
+    </authorgroup>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -71,7 +74,7 @@
     <title>The Application Configuration Files</title>
     <para>All configuration files of the applications present in your MMBase installation are located in the directory /WEB-INF/config/applications. If you have a look at this directory, you will see that it contains a file called MyNews.xml and a directory MyNews. All MMBase applications follow this structure: an XML-file with the name of the application and a directory with the name of the application.</para>
     <section>
-      <title>description of the cloud-structure: [application].xml</title>
+      <title>The Application Description File</title>
       <para>The XML-file with the name of the application contains the description of the cloud-structure used by that application. We will have a closer look at MyNews.xml to see the different parts: </para>
       <itemizedlist>
         <listitem>
@@ -192,7 +195,7 @@
     </section>
   </section>
   <section>
-    <title>Content Exported in XML-format</title>
+    <title>Content XML-format</title>
     <para>The application configuration files can be used to backup the content of the website in XML-files. When you look at the <filename>/WEB-INF/applications/MyNews/</filename> directory, you see the XML files with the content of the MyNews application. If you open for instance <filename>mags.xml</filename> with a text-editor, you find:</para>
     <itemizedlist>
       <listitem>
@@ -207,76 +210,76 @@
         </note>
       </listitem>
     </itemizedlist>
-    <section>
-      <title>How to Backup an MMBase Application</title>
-      <para>Ones you finished the [application].xml of your MMBase application, you can use it to make a backup of the  content in your website in XML. To this end:
-        <orderedlist>
-          <listitem>
-            <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on "admin" and log on (in a fresh MMBase install the loginname is admin and the password is admin2k)</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on  "applications"</simpara>
-          </listitem>
-          <listitem>
-            <simpara>select your application by clicking one of the triangles at the right side of the table</simpara>
-          </listitem>
-          <listitem>
-            <simpara>find the  "Save [application]" action in the middle of the page</simpara>
-          </listitem>
-          <listitem>
-            <simpara>specifiy the location where you want the backup to be stored</simpara>
-          </listitem>
-          <listitem>
-            <simpara>select the goal of the backup in the combobox. This goals selects the contextsource to use for the backup - most of the time you will have only one choice, which will be preselected.</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on  "Yes" to make a backup of the application</simpara>
-          </listitem>
-        </orderedlist>
-      </para>
-      <para>After you clicked the  "Yes" button, MMBase shows some statistics of the backup procedure. When using the configuration files of your application for the first time, it is recommended to examine these statistics closely. It might be that you forgot to specify a relation or that some parts of the content can not be reached from the startnodes. This is the first spot to notice such errors!</para>
-    </section>
-    <section>
-      <title>How to Install a MMBase application</title>
-      <note>
-        <para>Instead of installing an MMBase application the term "restoring" (for a backup) or "loading" an MMBase application is frequently used.</para>
-      </note>
-      <para>You can install (or restore) a MMBase application as follows:
-        <orderedlist>
-          <listitem>
-            <simpara>put the application configuration files in the <filename>/WEB-INF/config/applications/</filename> directory</simpara>
-          </listitem>
-          <listitem>
-            <simpara>put the XML content files in the <filename>/WEB-INF/config/applications/[applicationname]</filename> directory</simpara>
-          </listitem>
-          <listitem>
-            <simpara>place the builders of the application in <filename>/WEB-INF/config/builders/</filename> or one of its subdirectories. You can also place the buidlers in the <filename>/WEB-INF/config/applications/[applicationname]/builders</filename> directory, and let the application install your builders. Note that this requires that MMBase has the right to write in the configuration directory</simpara>
-          </listitem>
-          <listitem>
-            <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on "admin" and log on (in a fresh MMBase install the loginname is admin and the password is admin2k)</simpara>
-          </listitem>
-          <listitem>
-            <simpara>click on  "applications"</simpara>
-          </listitem>
-          <listitem>
-            <simpara>select your application by clicking one of the triangles at the right side of the table</simpara>
-          </listitem>
-          <listitem>
-            <simpara>find the action  "Install [application] " at the top of the page and click on  "Yes"</simpara>
-          </listitem>
-          <listitem>
-            <simpara>MMBase will respond with the install-notice as specified in the [applicationname].xml</simpara>
-          </listitem>
-        </orderedlist>
-      </para>
-      <para>Another way to restore an MMBase application is set auto-deploy to  "true " after step (3) and restart  MMBase. You can view the log file to see of the restore of the application was carried out correctly.</para>
-    </section>
+  </section>
+  <section>
+    <title>How to Backup an MMBase Application</title>
+    <para>Ones you finished the [application].xml of your MMBase application, you can use it to make a backup of the  content in your website in XML. To this end:
+      <orderedlist>
+        <listitem>
+          <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
+        </listitem>
+        <listitem>
+          <simpara>click on "admin" and log on (in a fresh MMBase install the loginname is admin and the password is admin2k)</simpara>
+        </listitem>
+        <listitem>
+          <simpara>click on  "applications"</simpara>
+        </listitem>
+        <listitem>
+          <simpara>select your application by clicking one of the triangles at the right side of the table</simpara>
+        </listitem>
+        <listitem>
+          <simpara>find the  "Save [application]" action in the middle of the page</simpara>
+        </listitem>
+        <listitem>
+          <simpara>specifiy the location where you want the backup to be stored</simpara>
+        </listitem>
+        <listitem>
+          <simpara>select the goal of the backup in the combobox. This goals selects the contextsource to use for the backup - most of the time you will have only one choice, which will be preselected.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>click on  "Yes" to make a backup of the application</simpara>
+        </listitem>
+      </orderedlist>
+    </para>
+    <para>After you clicked the  "Yes" button, MMBase shows some statistics of the backup procedure. When using the configuration files of your application for the first time, it is recommended to examine these statistics closely. It might be that you forgot to specify a relation or that some parts of the content can not be reached from the startnodes. This is the first spot to notice such errors!</para>
+  </section>
+  <section>
+    <title>How to Install a MMBase application</title>
+    <note>
+      <para>Instead of installing an MMBase application the term "restoring" (for a backup) or "loading" an MMBase application is frequently used.</para>
+    </note>
+    <para>You can install (or restore) a MMBase application as follows:
+      <orderedlist>
+        <listitem>
+          <simpara>put the application configuration files in the <filename>/WEB-INF/config/applications/</filename> directory</simpara>
+        </listitem>
+        <listitem>
+          <simpara>put the XML content files in the <filename>/WEB-INF/config/applications/[applicationname]</filename> directory</simpara>
+        </listitem>
+        <listitem>
+          <simpara>place the builders of the application in <filename>/WEB-INF/config/builders/</filename> or one of its subdirectories. You can also place the buidlers in the <filename>/WEB-INF/config/applications/[applicationname]/builders</filename> directory, and let the application install your builders. Note that this requires that MMBase has the right to write in the configuration directory</simpara>
+        </listitem>
+        <listitem>
+          <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
+        </listitem>
+        <listitem>
+          <simpara>click on "admin" and log on (in a fresh MMBase install the loginname is admin and the password is admin2k)</simpara>
+        </listitem>
+        <listitem>
+          <simpara>click on  "applications"</simpara>
+        </listitem>
+        <listitem>
+          <simpara>select your application by clicking one of the triangles at the right side of the table</simpara>
+        </listitem>
+        <listitem>
+          <simpara>find the action  "Install [application] " at the top of the page and click on  "Yes"</simpara>
+        </listitem>
+        <listitem>
+          <simpara>MMBase will respond with the install-notice as specified in the [applicationname].xml</simpara>
+        </listitem>
+      </orderedlist>
+    </para>
+    <para>Another way to restore an MMBase application is set auto-deploy to  "true " after step (3) and restart  MMBase. You can view the log file to see of the restore of the application was carried out correctly.</para>
   </section>
   <section>
     <title>Necessary Java Functionality</title>
