@@ -65,9 +65,9 @@ public class ContextAuthorization extends Authorization {
     	// notify, well actually we ony have to set the context to the default of the user...
 	log.info("create on node #"+nodeNumber+" by user: " +user);		
     	String xpath = "/config/accounts/user[@name='"+user.getIdentifier()+"']";
-	log.debug("gonna execute the query:" + xpath + " on file : " + configFile);
 	Node found;
 	try {
+	    log.debug("gonna execute the query:" + xpath + " on file : " + configFile);	
 	    found = XPathAPI.selectSingleNode(document, xpath);
 	}
 	catch(javax.xml.transform.TransformerException te) {
@@ -206,19 +206,56 @@ public class ContextAuthorization extends Authorization {
 	}
 	
     	String xpath = "/config/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']/contains";
-	log.debug("gonna execute the query:" + xpath );
-	NodeIterator found;
+	NodeList found;
 	try {
-	    found = XPathAPI.selectNodeIterator(document, xpath);
+    	    log.debug("gonna execute the query:" + xpath );	
+	    found = XPathAPI.selectNodeList(document, xpath);
 	}
 	catch(javax.xml.transform.TransformerException te) {
 	    log.error("error executing query: '"+xpath+"' ");
 	    log.error( Logging.stackTrace(te));
 	    throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
 	}
-	Node contains;
-	HashSet allowedGroups = new HashSet();	
-	for(contains = found.nextNode(); contains != null; contains = found.nextNode()) {
+	
+	// say our context isnt found... do the same query but now on the default context...
+	if(found.getLength() == 0) {
+    	    // well our context wasnt found, give a warning...
+	    log.warn("context with name :'"+context+"' was not found in the configuration.");
+
+    	    // retrieve the default context...
+	    String defaultNodeXPath = "/config/contexts[@default]";
+	    Node foundDefaultNode;
+	    try {
+	    	log.debug("gonna execute the query:" + defaultNodeXPath + " on file : " + configFile);	
+	    	foundDefaultNode = XPathAPI.selectSingleNode(document, defaultNodeXPath);
+	    }
+	    catch(javax.xml.transform.TransformerException te) {
+	    	log.error("error executing query: '"+defaultNodeXPath+"' on file: '"+configFile+"'" );
+	    	log.error( Logging.stackTrace(te));
+	    	throw new java.lang.SecurityException("error executing query: '"+defaultNodeXPath+"' on file: '"+configFile+"'");
+	    }	    
+	    NamedNodeMap nnm = foundDefaultNode.getAttributes();
+	    Node defaultContextNode = nnm.getNamedItem("default");
+	    String defaultContext = defaultContextNode.getNodeValue();
+            if (log.isDebugEnabled()) {
+            	log.debug("context with name: " + context + " uses the default context: " + defaultContext);	
+            }
+	    // now do the same query with the default context...
+    	    xpath = "/config/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/contains";
+	    try {
+    	    	log.debug("gonna execute the query:" + xpath );	
+	    	found = XPathAPI.selectNodeList(document, xpath);
+	    }
+	    catch(javax.xml.transform.TransformerException te) {
+	    	log.error("error executing query: '"+xpath+"' ");
+	    	log.error( Logging.stackTrace(te));
+	    	throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
+	    }
+    	}
+	
+    	HashSet allowedGroups = new HashSet();	    	
+	for(int currentNode = 0; currentNode < found.getLength(); currentNode++) {
+	    Node contains = found.item(currentNode);
 	    NamedNodeMap nnm = contains.getAttributes();
 	    Node contextNameNode = nnm.getNamedItem("group");
     	    allowedGroups.add(contextNameNode.getNodeValue());
