@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.113.2.4 2004-10-09 10:51:46 nico Exp $
+ * @version $Id: MMBase.java,v 1.113.2.5 2004-10-15 11:40:10 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -444,7 +444,8 @@ public class MMBase extends ProcessorModule {
 
 
     /**
-     * @param initParameter
+     * @param sharedStorageClass
+     * @since MMBase-1.7.2
      */
     private void initializeSharedStorage(String sharedStorageClass) {
         if (sharedStorageClass != null) {
