@@ -778,18 +778,18 @@ See mmexamples/taglib for more elaborated examples.
     <example>&lt;mm:list nodes="123" path="mags,news"
                 fields="mags.title,news.number"&gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
-  &lt;mm:field name="mags.title" /&gt;
+  &lt;mm:field name="html(mags.title)" /&gt;
 &lt;/mm:list&gt;</example>
     <example>&lt;mm:list nodes="123" path="mags,posrel,news"
                 orderby="posrel.pos" fields="news.title"&gt;
   &lt;mm:first&gt;news in this magazine, ordered&lt;/mm:first&gt;
-  &lt;mm:field name="news.title" /&gt;
+  &lt;mm:field name="html(news.title)" /&gt;
 &lt;/mm:list&gt;</example>
     <example>&lt;mm:list path="pools,pools0,urls"
                 fields="pools.name,pools0.name,urls.url"&gt;
-  &lt;mm:field name="pools.name" /&gt;
-  &lt;mm:field name="pools0.name" /&gt;
-  &lt;mm:field name="urls.url" /&gt;
+  &lt;mm:field name="html(pools.name)" /&gt;
+  &lt;mm:field name="html(pools0.name)" /&gt;
+  &lt;mm:field name="html(urls.url)" /&gt;
 &lt;/mm:list&gt;</example>
   </tag>
   <tag>
@@ -885,14 +885,14 @@ See mmexamples/taglib for more elaborated examples.
     <example>&lt;mm:node number="123"&gt;
   &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
     &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
-    &lt;mm:field name="mags.title" /&gt;
+    &lt;mm:field name="html(mags.title)" /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;</example>
     <example>&lt;mm:node number="456"&gt; &lt;!-- node 456 is of type mags --&gt;
-  &lt;mm:field name="title" /&gt;
+  &lt;mm:field name="html(title)" /&gt;
   &lt;mm:related path="news0" fields="mags0.title"&gt;
     &lt;mm:first&gt;related magazines&lt;/mm:first&gt;
-    &lt;mm:field name="mags0.title" /&gt;
+    &lt;mm:field name="html(mags0.title)" /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;</example>
   </tag>
@@ -962,7 +962,7 @@ See mmexamples/taglib for more elaborated examples.
     </attribute>
     <example>&lt;mm:listnodes type="mags"  &gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
-  &lt;mm:field name="title" /&gt;
+  &lt;mm:field name="html(title)" /&gt;
 &lt;/mm:listnodes&gt;</example>
   </tag>
   <tag>
@@ -1033,7 +1033,7 @@ See mmexamples/taglib for more elaborated examples.
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
   &lt;mm:first&gt;news in this magazine&lt;/mm:first&gt;
-  &lt;mm:field name="title" /&gt;
+  &lt;mm:field name="html(title)" /&gt;
 &lt;/mm:relatednodes&gt;</example>
   </tag>
   <tag>
@@ -1093,7 +1093,7 @@ See mmexamples/taglib for more elaborated examples.
 &lt;mm:listnodes type="typedef"&gt;
  &lt;mm:first&gt;&lt;ul&gt;&lt;/mm:first&gt;
  &lt;li&gt;
-   &lt;mm:field name="name"/&gt; is: &lt;mm:field name="description"/&gt;
+   &lt;mm:field name="html(name)"/&gt; is: &lt;mm:field name="html(description)"/&gt;
    Index: &lt;mm:index /&gt;
    &lt;mm:odd&gt;(odd item)&lt;/mm:odd&gt;
    &lt;mm:even&gt;(even item)&lt;/mm:even&gt;
@@ -1225,7 +1225,7 @@ See mmexamples/taglib for more elaborated examples.
         </html>
         ]]>
         </pre>
-        When a user is logged in, a call in that page, with parameter 'command' and value 'attribute' causes the user to be logged out.
+        When a user is logged in, a call in that page, with parameter 'command' and value 'logout' causes the user to be logged out.
         </p>
         <p>
             There are different situations on which the cloud tag with the attibute loginpage can react, they are:
@@ -1381,11 +1381,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         &lt;mm:field name="number" /&gt;
             &lt;mm:fieldinfo type="guiname" /&gt;
         &lt;/mm:field&gt;:
-        &lt;mm:field name="title" /&gt;
+        &lt;mm:field name="html(title)" /&gt;
             &lt;mm:fieldinfo type="guiname" /&gt;
         &lt;/mm:field&gt;:
      &lt;/mm:first&gt;
-     &lt;mm:field name="number" /&gt;: &lt;mm:field name="title" /&gt;&lt;br /&gt;
+     &lt;mm:field name="number" /&gt;: &lt;mm:field name="html(title)" /&gt;&lt;br /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;
 &lt;/mm:list&gt;
@@ -1510,7 +1510,7 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
 Then the following code can be used to
 access the value of title:
 &lt;mm:node number="456"&gt;
-    &lt;mm:field name="title" write="true" /&gt;
+    &lt;mm:field name="html(title)" write="true" /&gt;
 &lt;/mm:node&gt;
      </example>
   </tag>
@@ -1942,14 +1942,14 @@ Transaction was canceled, following should not result anything:
 &lt;/mm:transaction&gt;
 transaction was commited, following should result anything:
 &lt;mm:listnodes id="node" type="news" constraints="subtitle = '$curtime'" max="1"&gt;
-  &lt;mm:field name="subtitle"&gt;
+  &lt;mm:field name="html(subtitle)"&gt;
     &lt;mm:compare referid2="curtime"&gt;
         YES (created node was &lt;mm:field id="nodenumber" name="number" /&gt;)
         &lt;mm:write referid="nodenumber" session="testnodenumber" /&gt;
         &lt;mm:write referid="node" session="testnode" /&gt;
     &lt;/mm:compare&gt;
   &lt;/mm:field&gt;
-   &lt;mm:field name="title" /&gt;
+   &lt;mm:field name="html(title)" /&gt;
 &lt;/mm:listnodes&gt;
 &lt;br /&gt;
 &lt;h3&gt;Creating relation in transaction&lt;/h3&gt;
@@ -2702,7 +2702,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     &lt;/mm:node&gt;
     </example>
   </tag>
-  <!-- tag>
+  <tag>
     <name>attachment</name>
     <extends>nodereferrer</extends>
     <extends>writer</extends>
@@ -2721,7 +2721,7 @@ like the parameter list or the session (where ever it is available) --&gt;
         attachment servlet works.
       </p>
     </info>
-  </tag -->
+  </tag>
   <tag>
     <name>include</name>
     <type>util</type>
@@ -2857,7 +2857,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <see tag="compare" attribute="referid" />
     </attribute>
     <example>         
-          &lt;mm:field name="title"&gt;
+          &lt;mm:field name="html(title)"&gt;
             &lt;mm:isempty&gt;
               No title!
             &lt;/mm:isempty&gt;
@@ -2883,7 +2883,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <see tag="compare" attribute="referid" />
     </attribute>
     <example>
-          &lt;mm:field name="title"&gt;
+          &lt;mm:field name="html(title)"&gt;
             &lt;mm:isempty&gt;
               No title!
             &lt;/mm:isempty&gt;
@@ -2893,7 +2893,7 @@ like the parameter list or the session (where ever it is available) --&gt;
           &lt;/mm:field&gt;
      </example>
     <example>
-        &lt;mm:field name="title" write="true"&gt;
+        &lt;mm:field name="html(title)" write="true"&gt;
           &lt;mm:isempty&gt;
             No title!
           &lt;/mm:isempty&gt;
@@ -2953,7 +2953,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     </info>
     <example>
 &lt;mm:listnodes type="list"&gt;
-  &lt;mm:field name="title" /&gt;
+  &lt;mm:field name="html(title)" /&gt;
   has the following aliases:
   &lt;mm:aliaslist&gt;
      &lt;mm:write /&gt; &lt;mm:last inverse="true"&gt;,&lt;/mm:last&gt;
@@ -3125,7 +3125,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     </attribute>
     <example>
 &lt;mm:listnodes type="list"&gt;
-    &lt;mm:field name="title" /&gt; has &lt;mm:countrelations /&gt; relation(s)&lt;br/&gt;
+    &lt;mm:field name="html(title)" /&gt; has &lt;mm:countrelations /&gt; relation(s)&lt;br/&gt;
 &lt;/mm:listnodes&gt;
     </example>
   </tag>
@@ -3156,10 +3156,10 @@ like the parameter list or the session (where ever it is available) --&gt;
     </attribute>
     <example>
 &lt;mm:listnodes type="news"&gt;
-    &lt;mm:field name="title" /&gt;
+    &lt;mm:field name="html(title)" /&gt;
     &lt;mm:listrelations role="posrel" type="page"&gt;
         is news item &lt;mm:field name="pos" /&gt; on page
-        &lt;mm:relatednode&gt;&lt;mm:field name="title" /&gt;&lt;/mm:relatednode&gt;
+        &lt;mm:relatednode&gt;&lt;mm:field name="html(title)" /&gt;&lt;/mm:relatednode&gt;
     &lt;/mm:listrelations&gt;
     &lt;br/&gt;
 &lt;/mm:listnodes&gt;
