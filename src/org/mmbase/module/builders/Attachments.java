@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.11 2002-06-28 20:53:13 michiel Exp $ 
+ * @version $Id: Attachments.java,v 1.12 2002-06-28 22:36:11 michiel Exp $ 
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -38,7 +38,7 @@ public class Attachments extends AbstractServletBuilder {
         return "attachments";
     }
     protected String getDefaultPath() {
-        return "attachment.db";
+        return "/attachment.db";
     }
 
     /**
@@ -81,7 +81,7 @@ public class Attachments extends AbstractServletBuilder {
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
                 return "[" + filename + "]";
             } else {
-                return "<a href=\"" + getServletPath(null, filename) + "?" + num + "\" target=\"extern\">[" + filename + "]</a>";
+                return "<a href=\"" + getServletPath(filename) + num + "\" target=\"extern\">[" + filename + "]</a>";
             }            
         }
         return super.getGUIIndicator(field, node);
