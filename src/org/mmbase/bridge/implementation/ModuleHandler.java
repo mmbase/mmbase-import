@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.13 2002-02-19 10:50:42 eduard Exp $
+ * @version $Id: ModuleHandler.java,v 1.14 2002-08-14 19:08:07 michiel Exp $
  */
 public class ModuleHandler implements Module {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -110,17 +110,17 @@ public class ModuleHandler implements Module {
         process(command, parameter, null, null,null);
     }
 
-    public void process(String command, Object parameter, Hashtable auxparameters) {
+    public void process(String command, Object parameter, Map auxparameters) {
         process(command, parameter, auxparameters, null,null);
     }
 
-    public void process(String command, Object parameter, Hashtable auxparameters, ServletRequest req,  ServletResponse resp){
+    public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp){
         if (mmbase_module instanceof ProcessorInterface) {
-                Hashtable cmds=new Hashtable();
+                Hashtable cmds = new Hashtable();
                 if (parameter==null) { parameter="-1"; }
                 cmds.put(command,parameter);
             ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
-                        cmds,auxparameters);
+                        cmds,  new Hashtable(auxparameters));
         } else {
             String message;
                 message = "process() is not supported by this module.";
@@ -129,15 +129,15 @@ public class ModuleHandler implements Module {
         }
     }
 
-    public NodeList getList(String command, Hashtable parameters){
+    public NodeList getList(String command, Map parameters){
         return getList(command,parameters,null,null);
     }
 
-    public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
         if (mmbase_module instanceof ProcessorInterface) {
             Cloud cloud=null;
             if (parameters!=null) {
-                cloud=(Cloud)parameters.get("CLOUD");
+                cloud = (Cloud) parameters.get("CLOUD");
             }
             if (cloud==null) {
                 // anonymous access on the cloud....
