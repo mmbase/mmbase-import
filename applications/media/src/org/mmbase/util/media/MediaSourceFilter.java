@@ -39,6 +39,7 @@ import java.lang.Integer;
  * A specific method for RealAudio is implemented. More of these can follow.
  *
  * @author Rob Vermeulen (VPRO)
+ * @author Michiel Meeuwissen
  */
 public class MediaSourceFilter {
     
@@ -68,7 +69,7 @@ public class MediaSourceFilter {
     };
     
     /**
-     * construct the MediaSourceFilter
+     * Construct the MediaSourceFilter
      */
     public MediaSourceFilter(MediaFragments mf, MediaSources ms) {
         mediaFragmentBuilder = mf;
@@ -89,20 +90,22 @@ public class MediaSourceFilter {
      * read the MediaSourceFilter configuration
      */
     private synchronized void readConfiguration(File configFile) {
+        if (log.isServiceEnabled()) {
+            log.service("Reading " + configFile);
+        }
 
-        log.service("Reading " + configFile);
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         
         // reading filterchain information
         externFilters = new Hashtable();
         filterChain   = new Vector();
-        for(Enumeration e = reader.getChildElements("mediasourcefilter.chain","filter");e.hasMoreElements();) {
+        for(Enumeration e = reader.getChildElements("mediasourcefilter.chain","filter"); e.hasMoreElements();) {
             Element chainelement=(Element)e.nextElement();
             String chainvalue = reader.getElementValue(chainelement);
             if(!chainvalue.equals("preferredSource")) {
                 
                 try {
-                    Class newclass=Class.forName(chainvalue);
+                    Class newclass = Class.forName(chainvalue);
                     externFilters.put(chainvalue,(MediaSourceFilterInterface)newclass.newInstance());
                     filterChain.add(chainvalue);
                 } catch (Exception exception) {
@@ -126,24 +129,24 @@ public class MediaSourceFilter {
         }
         
         try {
-            minSpeed = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minspeed"));
-            maxSpeed = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxspeed"));
+            minSpeed    = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minspeed"));
+            maxSpeed    = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxspeed"));
             minChannels = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minchannels"));
             maxChannels = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxchannels"));
         } catch (Exception e) {
             log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information");
         }
         if(log.isDebugEnabled()) {
-            log.debug("Minspeed="+minSpeed);
-            log.debug("Maxspeed="+maxSpeed);
-            log.debug("Minchannels="+minChannels);
-            log.debug("Maxchannels="+maxChannels);
+            log.debug("Minspeed="   + minSpeed);
+            log.debug("Maxspeed="   + maxSpeed);
+            log.debug("Minchannels="+ minChannels);
+            log.debug("Maxchannels="+ maxChannels);
         }
     }
     
     
     /**
-     * filter the most appropriate mediasource. This method is invoked from MediaFragment.
+     * Filter the most appropriate mediasource. This method is invoked from MediaFragment.
      * The mediaSource will be found by passing a list of mediaSources through a chain
      * of mediaSources filters.
      * @param mediaFragment the given media fragment
@@ -253,8 +256,8 @@ public class MediaSourceFilter {
      * @return the best realaudio mediasource
      */
     private MMObjectNode getRealAudio(List mediaSources, Map info) {
-        int wantedspeed=0;
-        int wantedchannels=0;
+        int wantedspeed   = 0;
+        int wantedchannels= 0;
         if(info.containsKey("wantedspeed")) {
             wantedspeed=Integer.parseInt(""+info.get("wantedspeed"));
         }
