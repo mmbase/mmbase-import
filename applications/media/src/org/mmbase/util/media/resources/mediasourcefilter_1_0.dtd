@@ -4,7 +4,7 @@
 <!ELEMENT chain (filter+)>
 <!ELEMENT filter (#PCDATA)>
 
-<!ELEMENT preferedSource (source+)>
+<!ELEMENT preferredSource (source+)>
 <!ELEMENT source (#PCDATA)>
 <!ATTLIST source
   format CDATA #REQUIRED
