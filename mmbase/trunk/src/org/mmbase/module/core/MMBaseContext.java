@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.31 2002-09-25 14:36:15 eduard Exp $
+ * @version $Id: MMBaseContext.java,v 1.32 2002-10-24 15:02:22 michiel Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.31 $ $Date: 2002-09-25 14:36:15 $
+ * @$Revision: 1.32 $ $Date: 2002-10-24 15:02:22 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -267,6 +267,7 @@ public class MMBaseContext {
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
         rt.gc();
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
+        log.info("system locale     : " + Locale.getDefault());
                  
     }
 
