@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.23 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.24 2003-11-10 16:43:38 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -70,8 +70,18 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
             snum=typeRelNode.getIntValue("snumber");
             dnum=typeRelNode.getIntValue("dnumber");
             relDefNode= typeRelNode.getBuilder().getNode(typeRelNode.getIntValue("rnumber"));
+
         }
-        builder=((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
+        if (relDefNode == null) {
+            log.warn("No node found for 'rnumber'" + typeRelNode.getIntValue("rnumber"));
+        } else {
+            RelDef relDef = (RelDef) relDefNode.getBuilder();
+            if (relDef != null) {
+                builder = relDef.getBuilder(relDefNode.getNumber());
+            } else {
+                log.warn("builder of " + relDefNode + " was  null");
+            }
+        }
         super.initManager();
     }
 
