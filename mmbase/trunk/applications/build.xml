@@ -30,7 +30,7 @@ Applications build file
     <mkdir dir="${applications.build.dir}" />
   </target>
 
-  <target name="all" depends="init,editwizard,media,rmmci" />
+  <target name="all" depends="init,editwizard,media,rmmci,cloudcontext" />
 
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
@@ -51,10 +51,15 @@ Applications build file
      <ant dir="editwizard" target="jspsmartupload" />
   </target>
 
+  <target name="cloudcontext" depends="mmbase">
+     <ant dir="cloudcontext"  />
+  </target>
+
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
-     <ant dir="rmmci" target="clean" />
+     <ant dir="rmmci"      target="clean" />
+     <ant dir="cloudcontext"      target="clean" />
     <delete dir="${applications.build.dir}" />
   </target>
 
