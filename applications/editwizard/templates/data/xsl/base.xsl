@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.23 2004-01-05 11:12:34 nico Exp $
+    @version $Id: base.xsl,v 1.24 2004-01-20 16:07:44 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -97,7 +97,7 @@
 
   <xsl:variable name="wizardtitle">
     <xsl:call-template name="i18n">
-      <xsl:with-param name="nodes" select="/*/title" />
+      <xsl:with-param name="nodes" select="//wizard/form[@id=/wizard/curform]/title"/>
     </xsl:call-template>
     <!-- We need this xsl:text, because some browsers don't understand <title/> -->
     <xsl:text> </xsl:text>
@@ -113,7 +113,7 @@
 
   <!-- ================================================================================ -->
 
-  <!-- this it the entry-point, I suppose -->
+  <!-- this is the entry-point, I suppose -->
   <xsl:template match="/">
     <html>
       <head>

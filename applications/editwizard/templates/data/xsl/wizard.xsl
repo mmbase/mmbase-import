@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.115 2004-01-20 15:01:59 nico Exp $
+    @version $Id: wizard.xsl,v 1.116 2004-01-20 16:07:44 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -132,7 +132,7 @@
     <xsl:value-of select="$wizardtitle"/>
     <xsl:text> - </xsl:text>
     <xsl:call-template name="i18n">
-      <xsl:with-param name="nodes" select="form[@id=/wizard/curform]/title"/>
+      <xsl:with-param name="nodes" select="//wizard/form[@id=/wizard/curform]/title"/>
     </xsl:call-template>
   </xsl:template>
 
@@ -163,7 +163,7 @@
   <xsl:template name="subtitle">
     <td colspan="2">
       <xsl:call-template name="i18n">
-        <xsl:with-param name="nodes" select="/wizard/form[@id=/wizard/curform]/subtitle"/>
+        <xsl:with-param name="nodes" select="//wizard/form[@id=/wizard/curform]/subtitle"/>
       </xsl:call-template>
     </td>
   </xsl:template>
