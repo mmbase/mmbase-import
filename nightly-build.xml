@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.22 2004-11-26 19:47:03 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.23 2004-12-06 12:52:45 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -153,7 +153,7 @@ nightly-build.xml                           Used to generate all this with ant. 
   <target name="storejavadocs" depends="javadocs">
 		<!-- the java docs -->
 		<copy todir="${destination.dir}">
-			<fileset dir="${build.dir}/mmbase-src/docs"/>
+			<fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs"/>
     </copy>
   </target>
 
