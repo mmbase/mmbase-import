@@ -255,7 +255,8 @@ public class VideoUtils extends MediaUtils
                             //url += "&author=\""+author+"\"";
                 			//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
                 			//url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
-							//Our realserver can't handle URLEncoded strings .
+							//Our realserver can't handle URLEncoded strings.
+							author=makeRealCompatible(author);
                 			url += "&author="+author; 
 
                         }
