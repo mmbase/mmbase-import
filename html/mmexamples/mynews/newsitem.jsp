@@ -5,7 +5,7 @@
 <%-- the page is called with a parameter newsid
 we can use the parameter attribute of node to create a context 
 for the MMBase node --%>
-<mm:import externid="newsid"/>
+<mm:import externid="newsid" required="true" />
 <mm:node number="$newsid">
 <html>
  <head>
@@ -53,7 +53,8 @@ for the MMBase node --%>
   </table>
 </center>
 <hr />
-<a href="index.jsp">back</a><br />
+<mm:import externid="magid">default.mags</mm:import>
+<a href="<mm:url referids="magid" page="index.jsp" /> ">back</a><br />
 <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
