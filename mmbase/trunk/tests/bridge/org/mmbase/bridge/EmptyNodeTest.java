@@ -101,9 +101,9 @@ public class EmptyNodeTest extends NodeTest {
 
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            String value = node.getStringValue(fieldTypes[i] + "field");
-            assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but " + value,
-                        "".equals(value));
+            Object value = node.getStringValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but " + value, "".equals(value));
+
         }
     }
 
