@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.8 2000-03-30 13:11:29 wwwtech Exp $
+$Id: AudioParts.java,v 1.9 2000-05-18 15:10:28 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/03/30 13:11:29  wwwtech
+Rico: added license
+
 Revision 1.7  2000/03/30 12:42:57  wwwtech
 Rico: added warning to these VPRO dependent builders
 
@@ -36,15 +39,15 @@ Davzev activated replace() method and GETURL and fixed GETURL related methods.
  * machines. Do NOT use before that, also ignore all errors stemming from
  * this builder
  *************************************************************************/
-package org.mmbase.module.builders;
+package nl.vpro.mmbase.module.builders;
 
 import java.util.*;
-import java.sql.*;
 import java.io.*;
 
 import org.mmbase.module.gui.html.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.*;
 import org.mmbase.util.*;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
@@ -53,16 +56,18 @@ import nl.vpro.mmbase.util.media.audio.*;
 import nl.vpro.mmbase.module.builders.*;
 
 /**
- * @author Daniel Ockeloen, David van Zeventer
- * @version 12 Mar 1997
- * @$Revision $Date
- *
- * 16 Dec 1999 davzev Added $MOD Command to retrieve Url to the Audiofiles.
- * NOTE: Only Audiofiles of type RA_FORMAT and SURESTREAM_FORMAT will be retrieved.
+ * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
+ * @version $Id: AudioParts.java,v 1.9 2000-05-18 15:10:28 wwwtech Exp $
+ * 
  */
 public class AudioParts extends MMObjectBuilder {
 
-	private static String classname = "org.mmbase.module.builders.AudioParts"; //getClass().getName();
+	public final static int AUDIOSOURCE_DEFAULT=0;
+	public final static int AUDIOSOURCE_DROPBOX=4;
+	public final static int AUDIOSOURCE_UPLOAD=5;
+	public final static int AUDIOSOURCE_CD=6;
+	public final static int AUDIOSOURCE_JAZZ=7;
+	public final static int AUDIOSOURCE_VWM=8;
 
 	/**
 	* pre commit from the editor
@@ -124,6 +129,16 @@ public class AudioParts extends MMObjectBuilder {
 		return(-1);	
 	}
 
+	public Object getValue(MMObjectNode node, String field) {
+		if (field.equals("showsource")) {
+			return getAudioSourceString( node.getIntValue("source") );
+		} else if (field.equals("showclass")) {
+			return getAudioClassificationString( node.getIntValue("class") );
+		} else {
+			return super.getValue( node, field );
+		}
+	}
+
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("title");
 		if (str.length()>15) {
@@ -143,8 +158,82 @@ public class AudioParts extends MMObjectBuilder {
 				case RawAudioDef.STORAGE_MONO_NOBACKUP: return("Mono no backup");
 				default: return("Unknown");
 			}
+		} else if (field.equals("source")) {
+			return(getAudioSourceString(node.getIntValue("source")));
+			
+		} else if (field.equals("class")) {
+			return(getAudioClassificationString(node.getIntValue("class")));
 		}
 		return(null);
+	}
+
+	private String getAudioClassificationString(int classification) {
+		String rtn="";
+
+		switch(classification) {
+			case 0:
+				rtn="";					// Default
+				break;
+			case 1:
+				rtn="Track";			// Recording of a studio track
+				break;
+			case 2:
+				rtn="Studio Session";	// Recording of a live session in a Studio
+				break;
+			case 3:
+				rtn="Live Recording";	// Recording of a live performance
+				break;
+			case 4:
+				rtn="DJ Set";			// Recording of a DJ-set
+				break;
+			case 5:
+				rtn="Remix";			// Remixed by
+				break;
+			case 6:
+				rtn="Interview";		// Interview of
+				break;
+			case 7:
+				rtn="Report";			// Report of
+				break;
+			case 8:
+				rtn="Jingle";			// Jingle
+				break;
+			case 9:
+				rtn="Program";			// Broadcast of a program
+				break;
+			default:
+				rtn="Unknown";			// Unknown
+				break;
+		}
+		return(rtn);
+	}
+
+	private String getAudioSourceString(int source) {
+		String rtn="";
+
+		switch(source) {
+			case AUDIOSOURCE_DEFAULT:
+				rtn="default";
+				break;
+			case AUDIOSOURCE_DROPBOX:
+				rtn="dropbox";
+				break;
+			case AUDIOSOURCE_UPLOAD:
+				rtn="upload";
+				break;
+			case AUDIOSOURCE_CD:
+				rtn="cd";
+				break;
+			case AUDIOSOURCE_JAZZ:
+				rtn="jazz";
+				break;
+			case AUDIOSOURCE_VWM:
+				break;
+			default:
+				rtn="unknown";
+				break;
+		}
+		return(rtn);
 	}
 
 	public void addRawAudio(RawAudios bul,int id, int status, int format, int speed, int channels) {
@@ -185,6 +274,15 @@ public class AudioParts extends MMObjectBuilder {
   		debug("replace: No command defined.");
   		return("No command defined, says the AudioParts builder.");
     }
+
+
+
+
+	/*
+		------------------------------------------------------------
+		Duplicate code, should move to mediautils and be generalized
+		------------------------------------------------------------
+	*/
 
 	/**
 	 * doGetUrl: Retrieve the Url of the audiofile of this AudioParts or cdtracks node.
@@ -375,7 +473,7 @@ public class AudioParts extends MMObjectBuilder {
 
 	/**
 	 * getSongInfo: Gets the song info for this audiopart/cdtrack number.
-	 * @param apNumber An integer which is either an audioparts number or cdtracks number.
+	 * @param apNumber An integer which is either an audiopart number or cdtracks number.
 	 * @return The song info in a RealFormat compliant String.
 	 */
 	String getSongInfo(int apNumber) {
@@ -393,7 +491,7 @@ public class AudioParts extends MMObjectBuilder {
 		}
 
 		// Get the author info by finding the related groups node.
-		Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),1573);
+		Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),"groups");
 		if (e.hasMoreElements()) {
 			MMObjectNode groupsNode = (MMObjectNode) e.nextElement();
 			author = groupsNode.getStringValue("name");
@@ -447,11 +545,23 @@ public class AudioParts extends MMObjectBuilder {
 		debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
 		return startstoptimes;
 	}
+
+	/*
+		------------------------------------------------------------
+	*/
+
+
+
+
 	public String getAudiopartUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
 	{
         	return AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
 	}
 
+
+	/*
+		Time stuff should be in util class
+	*/
 
 	public static long calcTime( String time ) {
 		long result = -1;
@@ -599,15 +709,18 @@ public class AudioParts extends MMObjectBuilder {
 		return result;
 	}
 
+
+
+	/*
+		Property stuff should either be easier or moved to MMObjectNode
+	*/
+
 	private String getProperty( MMObjectNode node, String key ) {
 		String result = null;
-
-		//debug("getProperty("+key+"): start");
 
 		int id = -1;
 		if( node != null ) {
 			id = node.getIntValue("number");
-			
 			MMObjectNode pnode = node.getProperty( key );
 			if( pnode != null ) {
 				result = pnode.getStringValue( "value" );
@@ -617,18 +730,13 @@ public class AudioParts extends MMObjectBuilder {
 		} else {
 			debug("getProperty("+"null"+","+key+"): ERROR: Node is null!");
 		}
-
-		//debug("getProperty("+key+"): end("+result+")");
 		return result;
 	}
 
-	private void putProperty( MMObjectNode node, String key, String value )
-	{
-		//debug("putProperty("+key+","+value+"): start");
+	private void putProperty( MMObjectNode node, String key, String value ) {
 		int id = -1;
 		if ( node != null ) {
 			id = node.getIntValue("number");
-
         	MMObjectNode pnode=node.getProperty(key);
             if (pnode!=null) {
 				if (value.equals("") || value.equals("null") || value.equals("-1")) {
@@ -645,26 +753,22 @@ public class AudioParts extends MMObjectBuilder {
 				} else {
 					// insert
 					MMObjectBuilder properties = mmb.getMMObject("properties");
-					MMObjectNode snode = properties.getNewNode ("audioparts");
-					 //snode.setValue ("otype", 9712);
+					MMObjectNode snode = properties.getNewNode ("audiopart");
    		             snode.setValue ("ptype","string");
    		             snode.setValue ("parent",id);
    		             snode.setValue ("key",key);
    		             snode.setValue ("value",value);
-   		             int id2=properties.insert("audioparts", snode); // insert db
+   		             int id2=properties.insert("audiopart", snode); // insert db
    		             snode.setValue("number",id2);
-   		             node.putProperty(snode); // insert hash
+   		             node.putProperty(snode); // insert property into node
 				}
 			}
 		} else {
 			debug("putProperty("+"null"+","+key+","+value+"): ERROR: Node is null!");
 		}
-
-		//debug("putProperty("+key+","+value+"): end");
 	}
 
 	private void removeProperty( MMObjectNode node, String key ) {
-		//debug("removeProperty("+key+","+value+"): start");
 		if ( node != null ) {
         	MMObjectNode pnode=node.getProperty(key);
             if (pnode!=null) 
@@ -674,6 +778,10 @@ public class AudioParts extends MMObjectBuilder {
 		}
 	}
 
+
+	/*
+		Test
+	*/
 	public static void main( String args[] ) {
 		String time = "05:04:03:02.01";
 		System.out.println("calcTime("+time+") = " + AudioParts.calcTime( time ));	
