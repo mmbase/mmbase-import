@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
-
+import org.mmbase.util.logging.*;
 
 /**
  * servjumpers is a 'filter' servlet a concept found in james and orion and we are
@@ -24,9 +24,9 @@ import javax.servlet.http.*;
  * servjumpers 'filters' all url's to see if it has a jumper it wants to redirect
  * (like www.vpro.nl/3voor12) its controlled by the jumpers builder.
  */
-public class servjumpers extends JamesServlet
-{ 
+public class servjumpers extends JamesServlet {
 
+    private static Logger log = Logging.getLoggerInstance(servjumpers.class.getName());
 	static MMBase mmbase;
 
 	public void init() {
@@ -37,8 +37,8 @@ public class servjumpers extends JamesServlet
  	* service call will be called by the server when a request is done
 	* by a user.
  	*/
-	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
-	{	
+	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {	
+
 		incRefCount(req);
 		try {
 			String url=null;
@@ -66,9 +66,8 @@ public class servjumpers extends JamesServlet
 			}
 			if (url!=null) return(url);
 		} else {
-			System.out.println("servjumpers -> can't access mmbase/jumpers");
+			log.error("servjumpers -> can't access NodeManager jumpers (check jumpers.xml)");
 		}
 		return(null);
 	}
-
 }
