@@ -135,7 +135,6 @@ Create a build.xml with a DOCTYPE like this:
 
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
-    <property name="name"            value="${project.name}"/>
     <property name="builddate"       value="${DSTAMP}"/>
 
     <property name="zip.name"      value="mmbase-${distro.version}.${builddate}-${project.name}" />
@@ -230,29 +229,29 @@ web-app/*                All kind of templates. They problably can (need?) to be
 </echo>
 
   <zip zipfile="${project.zip}">
-    <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="${zip.prefix}/web-app/WEB-INF/lib" />
-    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="${zip.prefix}/web-app/WEB-INF" />
-    <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="${zip.prefix}/documentation" />
+    <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="${zip.name}/web-app/WEB-INF/lib" />
+    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="${zip.name}/web-app/WEB-INF" />
+    <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="${zip.name}/documentation" />
     <zipfileset dir="${project.build.dir}"
-    includes="documentation/**" prefix="${zip.prefix}/documentation" />
-    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}/src">
+    includes="documentation/**" prefix="${zip.name}/documentation" />
+    <zipfileset dir="${project.source.dir}" prefix="${zip.name}/src">
       <include name="documentation/**"/>
       <exclude name="documentation/**.html" />
     </zipfileset>
     <zipfileset dir="${project.build.dir}"
-                includes="README-PACKAGE.txt" prefix="${zip.prefix}" />
-    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}">
+                includes="README-PACKAGE.txt" prefix="${zip.name}" />
+    <zipfileset dir="${project.source.dir}" prefix="${zip.name}">
       <patternset id="readmes">
         <include name="README*"/>
       </patternset>
     </zipfileset>
-    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}">
+    <zipfileset dir="${project.source.dir}" prefix="${zip.name}">
       <patternset id="root.package.files" >
         <include name="src/**"/>
       </patternset>
     </zipfileset>
     <!-- the rest are templates -->
-    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}/web-app">
+    <zipfileset dir="${project.source.dir}" prefix="${zip.name}/web-app">
       <patternset id="web-app.package.files" >
         <include name="**"/>
         <exclude name="*.xml" />
