@@ -14,7 +14,7 @@ package org.mmbase.security;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.8 2002-08-30 14:05:52 eduard Exp $
+ * @version $Id: Operation.java,v 1.9 2003-08-27 19:29:20 michiel Exp $
  */
 public final class Operation {
     /** int value for the read Operation*/
@@ -56,7 +56,10 @@ public final class Operation {
     /** Identifier for remove operation, which is used when removing a node */
     public final static Operation DELETE = new Operation(DELETE_INT, "delete");
 
-    /** Identifier for change context operation, which is used when changing the context of a node */
+    /** 
+     *   Identifier for change context operation, which is used when changing the context of a node 
+     * @todo why is this not CHANGE_CONTEXT, like CHANGE_RELATION
+     */
     public final static Operation CHANGECONTEXT = new Operation(CHANGECONTEXT_INT, "change context");
 
     /**
