@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.13 2005-03-22 15:02:05 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.14 2005-03-23 15:14:28 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
@@ -38,10 +38,8 @@ public class  ContextCollector extends StandaloneContextContainer {
         backing = new BasicBacking(parent instanceof PageContextContainer ? null : pageContext) {
                 public Object put(Object key, Object value) {
                     if (parentCheckedKeys.contains(key)) {
-                        log.info("Reputting " + key + " => " + value + " in parent " + parent);
                         parent.put(key, value);
                     } else {
-                        log.info("Putting " + key + " => " + value + " in parent " + parent);
                         parentCheckedKeys.add(key);
                         try {
                             parent.register((String) key, value);
