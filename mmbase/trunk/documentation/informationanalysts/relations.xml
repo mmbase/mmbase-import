@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Relations in MMBase</title>
     <date>14 may 2003</date>
-    <edition>$Id: relations.xml,v 1.4 2003-06-11 14:01:06 michiel Exp $</edition>
+    <edition>$Id: relations.xml,v 1.5 2003-06-30 13:16:07 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -35,7 +35,7 @@
       but the relation itself does not contain any content. This relation which does not contain any
       additional information is normally called &quot;related&quot;. Often it is not enough to make
       a relation between two objects. For instance, when adding news items to a magazine one also
-      needs a way of telling in which sequence the newsitems should occure. In MMBase one can use
+      needs a way of telling in which sequence the newsitems should occur. In MMBase one can use
       the &quot;posrel&quot; relation for this purpose. The &quot;posrel&quot; not only connects two
       objects, but it also allows you to store an integer value in this relation. To this end you
       use the &quot;pos&quot; field of the relation. In general, you can create relations with
@@ -62,12 +62,12 @@
           Assign a `role' to the relation in the list of relation definitions (`reldef'). The same
           builder could be assigned to more than one role. Normally the role 'related' exists and is
           assigned to the base relation object type (`insrel'). The role 'posrel' is normally
-          assigned to a relation object type `posrel' which exteneds the base relation type insrel.
+          assigned to a relation object type `posrel' which extends the base relation type insrel.
         </para>
       </listitem>
       <listitem>
         <para>
-          It must be defined wich source-type/role/destination-type combinations are allowed by
+          It must be defined which source-type/role/destination-type combinations are allowed by
           MMBase. You do this by entering`typrel' entries. You can define e.g. here that relations
           from `news' to `people' with the role `author' is possible.          
         </para>
@@ -140,8 +140,8 @@
           </para>
           <note>
             <para>
-              Since also a object type is an object in MMBase also the objechas a unique
-              objectnumber assigned to it. Use the MMeditors to view the objectnumbers of the
+              Since also a object type is an object in MMBase also the object type has a unique
+              objectnumber assigned to it. Use the MMEditors to view the objectnumbers of the
               builders in your MMBase installation by listing the objects of type &quot;typedef
               &quot;
             </para>
@@ -196,7 +196,7 @@
       <listitem>
         <para>dir</para>
         <para>
-          Wether the relation is visible both from the source and the target (bidirectional) or the
+          Whether the relation is visible both from the source and the target (bidirectional) or the
           relation is only visible from the source (unidirectional)
         </para>
       </listitem>
@@ -252,9 +252,9 @@
       <para>
          As you see, a single builder can be used to define more than one relation. In the example
          above, both the Related and the Parent/Child relation are based on insrel.xml. Defining
-         relations with different names is handy when two objects are connected to eachother for
+         relations with different names is handy when two objects are connected to each-other for
          different reasons. E.g. a magazine is connected to a person via an author and via a
-         publisher relation, where both author and publisher are defined by uising the
+         publisher relation, where both author and publisher are defined by using the
          insrel.xml.
       </para>
     </example>
@@ -323,8 +323,8 @@
       <para>As you see, a single builder can be used to define more than one relation. In the
       example above, both the Related and the Parent/Child relation are based on
       insrel.xml. Defining relations with different names is handy when two objects are connected to
-      eachother for different reasons. E.g. a magazine is connected to a person via an author and
-      via a publisher relation, where both author and publisher are defined by uising the
+      each-other for different reasons. E.g. a magazine is connected to a person via an author and
+      via a publisher relation, where both author and publisher are defined by using the
       insrel.xml.</para>
     </example>
     <note>
@@ -355,7 +355,7 @@
     <orderedlist>
       <listitem>
         <para>JSP-templates</para> <para>See the &lt;mm:maycreaterelation /&gt; and
-        &lt;mm:createrelation /&gt; in the MMBase taglib refernce in the Templaters and Designers
+        &lt;mm:createrelation /&gt; in the MMBase taglib reference in the Templaters and Designers
         section.</para>
       </listitem>
       <listitem>
@@ -366,7 +366,7 @@
         <para>Editwizards</para>
         <para>
           See the &lt;action type= &quot;create &quot; /&gt; in the &lt;list /&gt; tag in the
-          Editwizard documation under the Templaters and Designers section.</para>
+          Editwizard documentation under the Templaters and Designers section.</para>
       </listitem>
     </orderedlist>
   </section>
@@ -386,7 +386,7 @@
       <listitem>
         <para>JSP-templates</para>
         <para>
-          See the &lt;mm:list /&gt; and &lt;mm:listrelations /&gt; in the MMBase taglib refernce in
+          See the &lt;mm:list /&gt; and &lt;mm:listrelations /&gt; in the MMBase taglib reference in
           the Templaters and Designers section.</para>
       </listitem>
       <listitem>
@@ -395,7 +395,7 @@
       </listitem>
       <listitem>
         <para>Editwizards</para>
-        <para>See the &lt;list /&gt; tag in the Editwizard documation under the Templaters and Designers section.</para>
+        <para>See the &lt;list /&gt; tag in the Editwizard documentation under the Templaters and Designers section.</para>
       </listitem>
     </orderedlist>
   </section>
