@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.67 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.68 2005-03-17 00:08:34 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -95,8 +95,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {
                 log.debug("'absolute' url, not making relative");
-                show.deleteCharAt(0);
-                show.insert(0, req.getContextPath());
+                if (addContext()) {
+                    show.deleteCharAt(0);
+                    show.insert(0, req.getContextPath());
+                }
             } else {
                 log.debug("'absolute' url");
                 String thisDir = new java.io.File(req.getServletPath()).getParent();
@@ -120,6 +122,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
         return makeRelative.booleanValue();
+    }
+
+    protected boolean addContext() {
+        return true;
     }
 
     /**
@@ -157,7 +163,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             if (doMakeRelative()) { 
                 makeRelative(show);
             } else {
-                if (show.charAt(0) == '/') { // absolute on servletcontex
+                if (addContext() && show.charAt(0) == '/') { // absolute on servletcontex
                     show.insert(0, req.getContextPath());
                 }
             }
