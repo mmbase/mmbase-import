@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.27 2000-07-12 10:41:36 install Exp $
+	$Id: Images.java,v 1.28 2000-07-12 12:39:50 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.27  2000/07/12 10:41:36  install
+	Rob: Image knows which devices it can use to gain images
+	
 	Revision 1.26  2000/07/11 12:27:45  install
 	Rob: support for different image devices
 	
@@ -92,7 +95,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.27 2000-07-12 10:41:36 install Exp $
+ * @version $Id: Images.java,v 1.28 2000-07-12 12:39:50 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -308,26 +311,44 @@ public class Images extends MMObjectBuilder {
 	}
 
  	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
-		System.out.println("Images -> getlist");
-		Vector ret = new Vector();
+		Vector devices = new Vector();
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
+
+
             if (cmd.equals("devices")) {
 				Vector activeBuilders = mmb.getTypeDef().activeBuilders();
-				if(activeBuilders.contains("scanner")) {
-					ret.addElement("scanner");
-				} else 
+
+				// Get all images devices.
+				if(activeBuilders.contains("scanners")) {
+					getDevices("scanners",devices);
+				} 
 				if(activeBuilders.contains("camera")) {
-					ret.addElement("camera");
+					getDevices("camera",devices);
 				} else 
 				if(activeBuilders.contains("pccard")) {
-					ret.addElement("pccard");
+					getDevices("pccard",devices);
 				} 
-				return ret;	
+				return devices;	
 			}
         }
         return(null);
     }
 
+	/**
+	 * get all devices of given devicetype
+	 * e.g. give all scanners.
+	 */
+	private void getDevices(String devicetype, Vector devices) {
+
+		MMObjectBuilder mmob = mmb.getMMObject(devicetype);
+		Vector v = mmob.searchVector("");	
+		Enumeration e = v.elements();
+		while (e.hasMoreElements()) {
+			MMObjectNode mmon = (MMObjectNode)e.nextElement();
+			String name  = ""+mmon.getValue("name");
+			devices.addElement(name);
+		}
+	}
 }
 		
