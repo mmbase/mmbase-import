@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.12 2003-08-05 19:05:21 michiel Exp $
+ * @version $Id: Verify.java,v 1.13 2003-11-24 15:30:12 robmaris Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class);
@@ -164,7 +164,7 @@ public class Verify extends Authorization {
 	// retrieve all the users....
 	org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
 	builder =  (UserBuilder)mmb.getMMObject("mmbaseusers");
-	java.util.Enumeration e = builder.search("WHERE 42=42 ");
+	java.util.Enumeration e = builder.search(null);
 	java.util.HashSet contexts = new java.util.HashSet();
 	while(e.hasMoreElements()) {
 	    contexts.add(((MMObjectNode) e.nextElement()).getStringValue("username"));
