@@ -313,6 +313,12 @@ one or more examplevalue tags is you want to give some example values.
           By default this is the node or list which is enclosing this field.</info>
     </attribute>
     <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>See the 'id' attribute of the Node tag.</info>
+    </attribute>
+    <attribute>
       <name>key</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
