@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.2 2002-08-01 20:20:07 pierre Exp $
+ * @version $Id: ContextContainer.java,v 1.3 2002-10-23 17:41:06 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -49,8 +49,17 @@ public class ContextContainer extends HashMap {
      */
 
     public Object put(Object key, Object value) {
-        throw new RuntimeException("Error, key should be string in ContextContainers!");
+        if (key instanceof String) {
+            try {
+                return put((String) key, value);
+            } catch (JspTagException e) {
+                throw new RuntimeException(e.toString());
+            }
+        } else {
+            throw new RuntimeException("Error, key should be string in ContextContainers! (Tried " + key.getClass().getName() + ")");
+        }
     }
+        
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
      *
