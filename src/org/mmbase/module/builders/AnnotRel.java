@@ -9,35 +9,33 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.DateSupport;
-import org.mmbase.util.scanpage;
-import org.mmbase.util.RelativeTime;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-
 
 /**
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.16 2003-03-07 08:50:07 pierre Exp $
+ * @version $Id: AnnotRel.java,v 1.17 2003-07-01 14:21:23 keesj Exp $
  */
 public class AnnotRel extends InsRel {
 
     // Defining possible annotation types
-    public final static int HOURS   = 0;
+    public final static int HOURS = 0;
     public final static int MINUTES = 1;
     public final static int SECONDS = 2;
-    public final static int MILLIS  = 3;
-/*
-    public final static int LINES   = 4;
-    public final static int WORDS   = 5;
-    public final static int CHARS   = 6;
-    public final static int PIXELS  = 7;
-    public final static int ROWS    = 8;
-    public final static int COLS    = 9;
-*/
+    public final static int MILLIS = 3;
+    /*
+        public final static int LINES   = 4;
+        public final static int WORDS   = 5;
+        public final static int CHARS   = 6;
+        public final static int PIXELS  = 7;
+        public final static int ROWS    = 8;
+        public final static int COLS    = 9;
+    */
     // logger
     private static Logger log = Logging.getLoggerInstance(AnnotRel.class.getName());
 
@@ -49,11 +47,11 @@ public class AnnotRel extends InsRel {
     public void setDefaults(MMObjectNode node) {
         super.setDefaults(node);
         // Set the default value for pos and length to 0 (0:0:0.0)
-        node.setValue("pos",0);
-        node.setValue("end",0);
-        node.setValue("length",0);
+        node.setValue("pos", 0);
+        node.setValue("end", 0);
+        node.setValue("length", 0);
         // All time values are default stored in milliseconds.
-        node.setValue("type",MILLIS);
+        node.setValue("type", MILLIS);
     }
 
     /**
@@ -64,26 +62,26 @@ public class AnnotRel extends InsRel {
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        if (field.equals("pos")){
+    public String getGUIIndicator(String field, MMObjectNode node) {
+        if (field.equals("pos")) {
             int time = node.getIntValue("pos");
             return RelativeTime.convertIntToTime(time);
-        } else if (field.equals("end")){
+        } else if (field.equals("end")) {
             int time = node.getIntValue("end");
             return RelativeTime.convertIntToTime(time);
         } else if (field.equals("length")) {
             int time = node.getIntValue("length");
             return RelativeTime.convertIntToTime(time);
         } else if (field.equals("type")) {
-            int val=node.getIntValue("type");
-            if (val==HOURS) {
+            int val = node.getIntValue("type");
+            if (val == HOURS) {
                 return "Hours";
-            } else if (val==MINUTES) {
-                return "Minuten";         // return "Minutes";
-            } else if (val==SECONDS) {
-                return "Seconden";        // return "Seconds";
-            } else if (val==MILLIS) {
-                return "Milliseconden";   // return "Milliseconds";
+            } else if (val == MINUTES) {
+                return "Minuten"; // return "Minutes";
+            } else if (val == SECONDS) {
+                return "Seconden"; // return "Seconds";
+            } else if (val == MILLIS) {
+                return "Milliseconden"; // return "Milliseconds";
             }
 
             /*
@@ -139,41 +137,41 @@ public class AnnotRel extends InsRel {
      * @param field the fieldname that is changed
      * @return <code>true</code> if the call was handled.
      */
-    public boolean setValue(MMObjectNode node,String field) {
+    public boolean setValue(MMObjectNode node, String field) {
         if (field.equals("end")) {
-            int pos=node.getIntValue("pos");
-            int end=node.getIntValue("end");
-            if (end!=-1) node.setValue("length",(end-pos));
+            int pos = node.getIntValue("pos");
+            int end = node.getIntValue("end");
+            if (end != -1)
+                node.setValue("length", (end - pos));
         } else if (field.equals("pos")) {
-            int pos=node.getIntValue("pos");
-            int end=node.getIntValue("end");
-            if (end!=-1) node.setValue("length",(end-pos));
+            int pos = node.getIntValue("pos");
+            int end = node.getIntValue("end");
+            if (end != -1)
+                node.setValue("length", (end - pos));
         } else if (field.equals("length")) {
             // extra check needed to make sure we don't create a loop !
             // XXX: ???
-            int pos=node.getIntValue("pos");
-            int end=node.getIntValue("end");
-            int len=node.getIntValue("length");
+            int pos = node.getIntValue("pos");
+            int end = node.getIntValue("end");
+            int len = node.getIntValue("length");
         }
         return true;
     }
 
-
-        public Object getValue(MMObjectNode node,String field) {
-                if (field.equals("ms_pos")) {
-                        int pos=node.getIntValue("pos");
-                        String value=DateSupport.getTime((int)(pos/1000));
-                        return(value+".0");
-                } else if (field.equals("ms_length")) {
-                        int len=node.getIntValue("length");
-                        String value=DateSupport.getTime((int)(len/1000));
-                        return(value);
-                } else if (field.equals("end")) {
-                        int pos=node.getIntValue("pos");
-                        int len=node.getIntValue("length");
-                        int end=pos+len;
-                        return(""+end);
-                }
-                return(null);
+    public Object getValue(MMObjectNode node, String field) {
+        if (field.equals("ms_pos")) {
+            int pos = node.getIntValue("pos");
+            //format to pos is in ms
+            return new SimpleDateFormat("hh:mm.0").format(new Date(pos));
+        } else if (field.equals("ms_length")) {
+            int len = node.getIntValue("length");
+            return new SimpleDateFormat("hh:mm").format(new Date(len));
+        } else if (field.equals("end")) {
+            int pos = node.getIntValue("pos");
+            int len = node.getIntValue("length");
+            int end = pos + len;
+            return ("" + end);
         }
+        return (null);
+    }
 }
