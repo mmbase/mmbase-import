@@ -1,0 +1,12 @@
+<SECURE><BR>
+
+<PROCESSOR MMBASE>
+<H3> This pages creates < LIST OBJECTS TAGS ><BR><BR>
+
+Current LIST: <B>&lt;LIST OBJECTS TYPE="...
+<BR><BR>
+
+Which object do you want to list?<BR>
+<LIST OBJECTS TYPE=typedef" FIELDS="number,name">
+<A HREF="object2.shtml?$ITEM1">$ITEM2</A><BR>
+</LIST>
