@@ -74,7 +74,12 @@ public class XMLContextDepthWriter  {
 				String owner=node.getStringValue("owner");
 
 				// start the node
-				body+="\t<node number=\""+number+"\" owner=\""+owner+"\">\n";
+				String tm=mmb.OAlias.getAlias(number);
+				if (tm!=null) {
+					body+="\t<node number=\""+number+"\" owner=\""+owner+"\">\n";
+				} else {
+					body+="\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n";
+				}
 				// write the values of the node
 				Hashtable values=node.getValues();	
 				Enumeration nd=values.keys();
