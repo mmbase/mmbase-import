@@ -29,11 +29,12 @@ import org.mmbase.util.logging.Logging;
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
-    private String nodeString;
-    protected String typeString;
+    private String parentNodeId = null;
+    private String number    = null;
+    protected String typeString = null;
 
     public void setNode(String node) throws JspTagException {
-        nodeString = node;
+        parentNodeId=node;
     }
 
     /**
@@ -43,19 +44,25 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         typeString = getAttributeValue(type);
     }
 
+    public void setNumber(String number) throws JspTagException {
+        this.number = getAttributeValue(number);
+    }
+
     /**
      * Performs the search
      */
     public int doStartTag() throws JspTagException {
-        Node node;
-        if (nodeString != null && !nodeString.equals("")) {
-            node = getCloudProviderVar().getNode(nodeString);
+
+        // obtain a reference to the node through a parent tag
+        Node node = null;
+        if ((number!=null) && !number.equals("")) {
+            node=getCloudProviderVar().getNode(number);
         } else {
-            NodeProvider nodeProvider;
             String classname = "org.mmbase.bridge.jsp.taglib.NodeProvider";
-            nodeProvider = (NodeProvider)findParentTag(classname, null);
-            node = nodeProvider.getNodeVar();
+            NodeProvider nodeProvider = (NodeProvider)findParentTag(classname,parentNodeId);
+            node=nodeProvider.getNodeVar();
         }
+
         NodeList nodes;
         if ((whereString != null && !whereString.equals(""))
                 || (sortedString != null && !sortedString.equals(""))) {
