@@ -183,6 +183,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <exclude name="documentation/**" />
         <exclude name="src/**" />
         <exclude name="build/**" />
+        <exclude name="build${project.build.postfix}/**" />
       </patternset>
     </zipfileset>
   </zip>          
