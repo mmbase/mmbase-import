@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.37 2003-12-02 21:16:40 michiel Exp $
+ * @version $Id: Utils.java,v 1.38 2004-04-15 10:55:00 michiel Exp $
  */
 
 public class Utils {
@@ -127,7 +127,12 @@ public class Utils {
      * @param        writer  The writer where the stream should be written to.
      */
     public static void printXML(Node node, Writer writer) {
+
         try {
+            if (node == null) {
+                writer.write("NULL");
+                return;
+            }
             Transformer serializer = FactoryCache.getCache().getDefaultFactory().newTransformer();
             // shouldn't this tranformer be cached?
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -145,7 +150,7 @@ public class Utils {
      * @param        node    The node to serialize
      */
     public static String getSerializedXML(Node node)  {
-        StringWriter str=new StringWriter();
+        StringWriter str = new StringWriter();
         printXML(node, str);
         return str.toString();
     }
@@ -159,6 +164,19 @@ public class Utils {
     public static String getXML(Node node)  {
         StringWriter writer = new StringWriter();
         printXML(node, writer);
+        return writer.toString();
+    }
+
+    /***
+     * Serialize a nodelist and returns the resulting String (for debugging).
+     * @since MMBase-1.7.1
+     */
+    public static String getXML(NodeList nodeList)  {
+        StringWriter writer = new StringWriter();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            writer.write("" + i + ":");
+            printXML(nodeList.item(i), writer);
+        }
         return writer.toString();
     }
 
@@ -339,15 +357,20 @@ public class Utils {
     }
 
     /**
-     * This method clones, imports and places all nodes in the list and places it
+     * This method clones, imports and places all nodes in the list.
+     *
+     * @return  Collection with the new nodes.
      */
-    public static void appendNodeList(NodeList list, Node dest) {
-        if (list==null) return;
+    public static Collection appendNodeList(NodeList list, Node dest) {
+
+        Collection result = new ArrayList();
+        if (list == null) return result;
         Document ownerdoc = dest.getOwnerDocument();
         for (int i=0; i<list.getLength(); i++) {
             Node n = list.item(i).cloneNode(true);
-            dest.appendChild(ownerdoc.importNode(n, true));
+            result.add(dest.appendChild(ownerdoc.importNode(n, true)));
         }
+        return result;
     }
 
 
@@ -490,6 +513,7 @@ public class Utils {
             serializer.transform(domSource, streamResult);
             return result.toString();
         } catch (Exception e) {
+            log.error(e + Logging.stackTrace(e));
             return e.toString();
         }
     }
@@ -703,8 +727,7 @@ public class Utils {
         out.println("xml=" + URLEncoder.encode(inputString));
         out.close();
 
-        BufferedReader in2 = new BufferedReader(new
-                                                InputStreamReader(c.getInputStream()));
+        BufferedReader in2 = new BufferedReader(new InputStreamReader(c.getInputStream()));
 
         String outputstr = "";
         String inputLine;
