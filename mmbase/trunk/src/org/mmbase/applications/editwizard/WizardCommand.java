@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.7 2002-05-15 12:04:44 pierre Exp $
+ * @version $Id: WizardCommand.java,v 1.8 2002-05-22 13:44:34 pierre Exp $
  */
 public class WizardCommand {
 
@@ -34,6 +34,7 @@ public class WizardCommand {
     public final static short GOTO_FORM = 4;
     public final static short MOVE_DOWN = 5;
     public final static short MOVE_UP = 6;
+    public final static short UPDATE_ITEM = 7;
 
     /**
      * Array with the command strings, as they are parsed.
@@ -41,7 +42,7 @@ public class WizardCommand {
      * index in the array.
      */
     private final static String[] COMMANDS =
-    {"add-item", "cancel", "commit", "delete-item", "goto-form", "move-down", "move-up"};
+    {"add-item", "cancel", "commit", "delete-item", "goto-form", "move-down", "move-up", "update-item"};
 
     // logging
     private static Logger log = Logging.getLoggerInstance(WizardCommand.class.getName());
