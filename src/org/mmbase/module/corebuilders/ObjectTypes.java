@@ -22,11 +22,12 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.5 2002-05-06 14:52:22 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.6 2002-05-06 15:05:45 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
     private java.io.File defaultDeploy = null;
+    private boolean creationEnabled = true;
     
 
     /**
@@ -36,7 +37,7 @@ public class ObjectTypes extends TypeDef {
     public boolean init() {
         boolean result = super.init();        
         if(defaultDeploy != null) {
-            log.error("This method should only be called once!");
+            log.warn("This method should only be called once! FIXME B4 1.6");
             return result;
         }        
         // look if we have a property set, where to deploy default our builders...
@@ -53,13 +54,13 @@ public class ObjectTypes extends TypeDef {
         if(!defaultDeploy.exists()) {
             // try to create the directory for deployment....
             if(!defaultDeploy.mkdirs()) {
-                log.error("Could not create directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
-                defaultDeploy = null;
+                log.warn("Could not create directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
+                creationEnabled = false;
             }
             // check if we may write in the specified dir
             else if(!defaultDeploy.canWrite()) {
                 log.error("Could not write in directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
-                defaultDeploy = null;
+                creationEnabled = false;
             }
         }
         defaultDeploy = defaultDeploy.getAbsoluteFile();
@@ -127,7 +128,7 @@ public class ObjectTypes extends TypeDef {
         log.info("[insert of builder-node with name '" + node.getStringValue("name") + "' ]");
         
         // look if we can store to file...
-        if(defaultDeploy == null) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
+        if(!creationEnabled) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
         
         // first store our config....
         storeBuilderFile(node);
