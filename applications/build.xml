@@ -35,7 +35,7 @@ Applications build file
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,scan" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all"   depends="init,all17" />
+  <target name="all"   depends="init,all17,crontab" />
 
 
   <target name="jars" depends="all">
@@ -120,6 +120,12 @@ Applications build file
      </ant>
   </target>
 
+  <target name="crontab" depends="mmbase">
+     <ant dir="crontab"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+     </ant>
+  </target>
+
   <target name="install">
     <ant dir="taglib"        target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -155,6 +161,7 @@ Applications build file
      <ant dir="email"      target="clean" inheritAll="false" />
      <ant dir="xmlimporter"   target="clean" inheritAll="false" />
      <ant dir="scan"      target="clean" inheritAll="false" />
+     <ant dir="crontab"      target="clean" inheritAll="false" />
      <delete dir="${applications.build.dir}" />
   </target>
 
