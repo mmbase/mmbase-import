@@ -94,11 +94,15 @@
 	</mm:related>
 	<mm:related path="posrel,news" searchdir="destination"
 		orderby="posrel.pos" directions="UP" max="5">
-		<mm:first><h4>Latest websites build with MMBase</h4></mm:first>
-		&raquo; <a href="<mm:url page="index.jsp" referids="portal,page">
+		<mm:first><h4>Latest websites build with MMBase</h4>
+		<table border="0" cellspacing="0"></mm:first>
+		<tr valign="top">
+		  <td>&raquo;</td>
+		  <td><a href="<mm:url page="index.jsp" referids="portal,page">
 			<mm:param name="news"><mm:field name="news.number" /></mm:param>
-		</mm:url>"><mm:field name="news.title" /></a><br />
-		<mm:last><p><a href="<mm:url page="index.jsp" referids="portal">
+		    </mm:url>"><mm:field name="news.title" /></a></td>
+		</tr>
+		<mm:last></table><p><a href="<mm:url page="index.jsp" referids="portal">
 			<mm:param name="page">page_mmbasewebsites</mm:param>
 		</mm:url>">More MMBase websites &raquo;&raquo;</a></p></mm:last>
 	</mm:related>
@@ -110,9 +114,12 @@
 	<table cellspacing="0" cellpadding="0" width="100%" border="0">
 	<tr>
 	  <td>
-		<form name="searchform" method="get" action="<mm:url page="/development/search/search_results.jsp" />">
-		<h4>Search</h4>
-		<input name="words" size="13" type="text" /> | <a href="javascript:void(document.searchform.submit())">go</a> 
+	    <h4>Search</h4>
+		<form name="searchform" id="searchhome" method="post" action="<mm:url page="/development/search/search.jsp" />">
+		<input type="hidden" name="exclude" value="testing" />
+		<input type="text" name="keywords" size="13" />&nbsp;<strong>|&nbsp;<a href="javascript:void(document.searchform.submit())">search</a></strong><br />
+		<input type="radio" name="restrict" value="" checked="checked" /> full site
+		<input type="radio" name="restrict" value="mmdocs" /> documentation
 		</form>
 	  </td>
 	</tr><tr>
@@ -129,7 +136,7 @@
 		  <mm:field name="category.number" id="cat_nr" write="false" />
 		  <%-- what is the agendapage of this category --%>
 		  <mm:list nodes="$cat_nr" path="category,pages" max="1"><mm:field name="pages.number" write="false" id="event_page" /></mm:list>
-		  <b>Coming soon:</b><br />
+		  <h5>Coming soon</h5>
 		</mm:first>
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field><br />
 		<a href="<mm:url page="index.jsp" referids="portal"><mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present><mm:param name="item"><mm:field name="event.number" /></mm:param></mm:url>"><mm:field name="event.title" /></a><br />
@@ -139,8 +146,7 @@
 	  <td><img src="media/spacer.gif" width="140" height="4" alt="" /></td>
 	</tr><tr>
 	  <td>
-	  <b>Bugs this week :</b>
-          <p>
+	  <h5>Bugs this week</h5>
 	  <mm:time time="today" id="lastweek" offset="-604800" write="false" />
 	  <mm:listnodescontainer type="bugreports">
 	      <mm:sortorder field="time"  direction="DOWN" />
@@ -155,7 +161,7 @@
               <mm:constraint field="bstatus" operator="<" value="2" />
 	      <a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=1" />">New : <mm:size /></a>
 	  </mm:listnodescontainer>
-	  </p>
+	  <p><a href="/bug">Bugtracker &raquo;&raquo;</a></p>
 	  </td>
 	</tr>
 <%--	<tr><td><img src="media/spacer.gif" width="140" height="4" alt="" /></td></tr><tr>
