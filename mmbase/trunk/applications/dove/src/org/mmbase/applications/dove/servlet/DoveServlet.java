@@ -23,11 +23,6 @@ import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import org.mmbase.util.*;
 
-//import org.apache.xerces.parsers.DOMParser;
-//import org.apache.xml.serialize.XMLSerializer;
-//import org.apache.xml.serialize.OutputFormat;
-//import org.mmbase.util.XMLEntityResolver;
-
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
 import org.mmbase.applications.dove.*;
@@ -39,7 +34,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.8 2003-04-25 13:56:29 kees Exp $
+ * @version $Id: DoveServlet.java,v 1.9 2003-05-01 08:25:24 kees Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
     
