@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/11/29 13:29:03  vpro
+davzev: Changed debug info
+
 Revision 1.8  2000/11/28 16:44:38  vpro
 davzev: Added some method comments and debug to figure out what goes on...
 
@@ -28,7 +31,7 @@ import java.util.*;
 
 
 /**
- * @version $Revision: 1.9 $ $Date: 2000-11-29 13:29:03 $  
+ * @version $Revision: 1.10 $ $Date: 2000-12-20 16:31:45 $  
  * @author Daniel Ockeloen
  */
 public class RemoteBuilder {
@@ -124,7 +127,7 @@ public class RemoteBuilder {
 			String value=nodedata.substring(nodedata.indexOf(begintoken)+begintoken.length());
 			value=value.substring(0,value.indexOf(endtoken));
 
-			if (debug) debug("gotXMLValues: Storing in hashtable with key:"+key+", value:"+value);
+			if (debug) debug("gotXMLValues: Storing field in hashtable as key:"+key+", value:"+value);
 			values.put(key,value);
 
 			nodedata=nodedata.substring(nodedata.indexOf(endtoken)+endtoken.length());
@@ -166,7 +169,7 @@ public class RemoteBuilder {
 	 * @return a String with XML contents.
 	 */
 	public String toXML() {
-		if (debug) debug("toXML(): Read out the hashtable(=node) and write it in XML format.");
+		if (debug) debug("toXML(): Converting node(=hashtable) to XML.");
 		String body="<?xml version=\"1.0\"?>\n";
 		// body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";
 		body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";

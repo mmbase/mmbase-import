@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.11 2000-12-19 17:10:54 vpro Exp $
+$Id: MMHttpAcceptor.java,v 1.12 2000-12-20 16:31:45 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/12/19 17:10:54  vpro
+Davzev: Still managed to add some debug and comment
+
 Revision 1.10  2000/12/19 10:57:07  vpro
 Davzev: Added some debug in commitNode
 
@@ -30,7 +33,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.11 $ $Date: 2000-12-19 17:10:54 $
+ * @version $Revision: 1.12 $ $Date: 2000-12-20 16:31:45 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
@@ -252,7 +255,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			out.flush();
 			DataInputStream in=new DataInputStream(connect.getInputStream());
 			String line=readline(in);
-			if (debug) debug("getNode("+nodename+","+tableName+"): Return value on GET request:"+line);
+			if (debug) debug("getNode("+nodename+","+tableName+"): Return value received on GET request:"+line);
 			if (line!=null && !line.equals("")) {
 				if (line.indexOf("200 OK")!=-1) {
 					if (debug) debug("getNode("+nodename+","+tableName+"): Reading XML data from header of requested file");
