@@ -14,6 +14,8 @@
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
 
+  <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
+
   <property name="tests.source.dir"   value="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
 
@@ -31,6 +33,8 @@
         <include name="*.zip"/>
       </fileset>
     </copy>
+    <copy file="${hsqldb.jar}" todir="${tests.lib}" />
+
 
     <available property="dummy" classname="dummy">
       <classpath id="compile.classpath">
@@ -52,6 +56,7 @@
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
     <ant dir="${source.dir}" target="lib.compile" />
+    <ant dir="${source.dir}" target="expand.hsqldb" />
   </target>
   
 
@@ -178,6 +183,7 @@
       <src path="${tests.source.dir}/bridge"/>
       <src path="${tests.source.dir}/typerel"/>
       <src path="${tests.source.dir}/convertimage"/>
+      <src path="${tests.source.dir}/dbsq"/>
       <include name="**/*.java"/>
     </javac>
   </target>
@@ -209,7 +215,7 @@ Build-compiler: ${build.compiler}
 </echo>
     <jar jarfile="${mmbasetest.jar}"
          basedir="${tests.build.dir}/classes"
-       includes="org/mmbase/**"
+       includes="**"
        update="false"
        manifest="${tests.build.dir}/manifest.mf" >
     </jar>
@@ -225,6 +231,7 @@ Build-compiler: ${build.compiler}
       classpathref="run.classpath"      
       >
       <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
     </java>
   </target>
 
@@ -246,6 +253,18 @@ Build-compiler: ${build.compiler}
       classpathref="run.classpath"      
       >
       <arg value="org.mmbase.module.builders.ConvertTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+    </java>
+  </target>
+
+
+  <target name="run.dbsq" depends="jar,init">
+    <java 
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"      
+      >
+      <arg value="BaseSuite" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
     </java>
   </target>
