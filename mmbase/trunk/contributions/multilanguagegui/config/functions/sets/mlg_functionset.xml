@@ -120,4 +120,16 @@
 		</return> 
 	</function>
 
+
+	<function name="getKeywordPerLanguage">
+		<description>List all the keywords within a language set</description>
+		<type>class</type>
+		<class>org.mmbase.applications.multilanguagegui.MultiLanguageGui</class>
+		<method>getKeywordPerLanguage</method>
+		<param name="setname" type="String" description="Name of the language set" />
+		<param name="lang" type="String" description="Langauge we want" />
+		<return type="NodeList"> 
+		</return> 
+	</function>
+
 </functionset>
