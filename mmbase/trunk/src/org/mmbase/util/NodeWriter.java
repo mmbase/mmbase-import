@@ -203,7 +203,7 @@ public class NodeWriter{
                 saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);
                 return body;
             } else {
-                String body="\t\t<"+key+">"+Encode.XMLEscape("" + node.getValue(key)) +"</"+key+">\n";
+                String body="\t\t<"+key+">"+Encode.encode("ESCAPE_XML", "" + node.getValue(key)) +"</"+key+">\n";
                 return body;
            }
         }
