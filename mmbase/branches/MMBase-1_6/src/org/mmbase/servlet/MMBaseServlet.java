@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.16 2002-11-04 16:01:47 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.16.2.1 2003-03-16 17:47:04 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -158,7 +159,7 @@ public class MMBaseServlet extends  HttpServlet {
         }
         if (mmbase == null) {
             log.service("Creating MMBase module in " + getServletName());
-            mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");
+            mmbase = MMBase.getMMBase();
             if (mmbase == null) {
                 log.error("Could not find module with name 'MMBASEROOT'!");
             }
@@ -353,13 +354,16 @@ public class MMBaseServlet extends  HttpServlet {
         super.destroy();
          // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
-           servletInstanceCount -= 1;
+           servletInstanceCount--;
             if (servletInstanceCount == 0) {
                 log.info("Unloaded servlet mappings");
                 associatedServlets.clear();
                 servletMappings.clear();
-                log.info("No servlets left, MMBase can be shut down");
-                mmbase.shutdown();
+                log.info("No MMBase servlets left; modules can be shut down");
+                Module.shutdownModules();
+                Logging.shutdown();
+                mmbase = null;
+                log    = null;
             }
         }
    }

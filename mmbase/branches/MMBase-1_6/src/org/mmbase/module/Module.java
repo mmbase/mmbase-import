@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.40 $ $Date: 2002-10-10 17:20:42 $
+ * @version $Revision: 1.40.2.1 $ $Date: 2003-03-16 17:47:00 $
  */
 public abstract class Module {
 
@@ -100,7 +100,18 @@ public abstract class Module {
      */
     public abstract void init();
 
+    
+
     public abstract void onload();
+
+    
+    /**
+     * Shuts down the module.
+     * @since MMBase-1.6.2
+     */
+    public void shutdown() {
+        // on default, nothing needs to be done.        
+    }
 
     /**
      * state, returns the state hashtable that is/can be used to debug. Should
@@ -333,6 +344,22 @@ public abstract class Module {
                 log.error(Logging.stackTrace(f));
             }
         }
+    }
+
+
+    /**
+     * Calls shutdown of all registered modules.
+     *
+     * @since MMBase-1.6.2
+     */
+    public static synchronized final void shutdownModules() {
+        Iterator i = getModules();
+        while (i.hasNext()) {
+            Module m = (Module) i.next();
+            log.service("Shutting down " + m.getName());
+            m.shutdown();
+        }
+        modules = null;
     }
 
     /**
