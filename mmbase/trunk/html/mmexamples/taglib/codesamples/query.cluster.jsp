@@ -1,5 +1,5 @@
 <!-- 'cluster' nodes -->
-<mm:listcontainer path="news,urls">
+<mm:listcontainer path="news,posrel,urls">
   Total number of nodes before constraint: <mm:size /><br />
   <mm:constraint field="news.title" operator="LIKE" value="%XML%" />
   Total number of found nodes: <mm:size /><br />
