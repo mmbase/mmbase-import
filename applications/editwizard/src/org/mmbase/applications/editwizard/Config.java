@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.43 2003-12-02 14:15:25 michiel Exp $
+ * @version $Id: Config.java,v 1.44 2003-12-03 06:56:49 keesj Exp $
  */
 
 public class Config {
@@ -425,7 +425,7 @@ public class Config {
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
                             Field f = i.nextField();
-                            if (f.getType() == f.TYPE_STRING && ! f.getName().equals("owner")) {
+                            if (f.getType() == Field.TYPE_STRING && ! f.getName().equals("owner")) {
                                 if (searchFieldsBuffer.length() > 0) searchFieldsBuffer.append(',');
                                 searchFieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(f.getName());
                             }

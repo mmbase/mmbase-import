@@ -9,31 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.Query;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.logging.*;
 
 /**
  * ResultListTag, provides functionality for obtaining a list using a nodemanager command
  *
  * @author Pierre van Rooden
- * @version $Id: ResultListTag.java,v 1.2 2003-11-06 17:55:00 michiel Exp $
+ * @version $Id: ResultListTag.java,v 1.3 2003-12-03 06:57:39 keesj Exp $
  * @todo compare with functioncontainer/functioncontainerreferrers
  */
 
 public class ResultListTag extends AbstractNodeListTag {
     private static final Logger log = Logging.getLoggerInstance(ResultListTag.class);
 
-    protected Attribute command    = Attribute.NULL;
+    protected Attribute command = Attribute.NULL;
     protected Attribute nodemanager = Attribute.NULL;
     protected Attribute module = Attribute.NULL;
 
@@ -56,8 +51,8 @@ public class ResultListTag extends AbstractNodeListTag {
      * Performs the list command
      */
     public int doStartTag() throws JspTagException {
-        javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-        javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+        javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+        javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) pageContext.getResponse();
 
         Map attributes = new HashMap();
 
@@ -79,4 +74,3 @@ public class ResultListTag extends AbstractNodeListTag {
     }
 
 }
-

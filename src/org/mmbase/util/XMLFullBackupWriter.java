@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.util.logging.*;
 
 /**
  * This is used to export a full backup, by writing all nodes to XML.
@@ -41,18 +40,15 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      * @param resultmsgs Storage for messages which can be displayed to the user.
      * @return Returns true if succesful, false otherwise.
      */
-    public static boolean writeContext(
-        XMLApplicationReader app, String targetpath,
-        MMBase mmb, Vector resultmsgs) {
+    public static boolean writeContext(XMLApplicationReader app, String targetpath, MMBase mmb, Vector resultmsgs) {
 
         try {
             // Create directory for data files.
-            String subTargetPath
-                = targetpath + "/" + app.getApplicationName() + "/";
+            String subTargetPath = targetpath + "/" + app.getApplicationName() + "/";
             File file = new File(subTargetPath);
             try {
                 file.mkdirs();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 log.error("Failed to create dir " + subTargetPath + ": " + e);
             }
 
@@ -61,10 +57,10 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
 
             resultmsgs.addElement("Full backup finished.");
 
- //            // write DataSources
-//            writeDataSources(app,nodes,targetpath,mmb,resultmsgs);
-//            // write relationSources
-//            writeRelationSources(app,relnodes,targetpath,mmb,resultmsgs);
+            //            // write DataSources
+            //            writeDataSources(app,nodes,targetpath,mmb,resultmsgs);
+            //            // write relationSources
+            //            writeRelationSources(app,relnodes,targetpath,mmb,resultmsgs);
         } catch (Exception e) {
             resultmsgs.addElement("Backup failed, exception: " + e);
             log.error("Backup failed: " + Logging.stackTrace(e));
@@ -89,8 +85,7 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      * @param resultmsgs
      * @todo update javadoc
      */
-    static void writeNodes(String subTargetPath,
-        MMBase mmb, Vector resultmsgs) throws SQLException{
+    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs) throws SQLException {
 
         InsRel insrel = mmb.getInsRel();
 
@@ -107,18 +102,18 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
             }
 
             // Skip nodes of these builders:
-            if ( builder.getTableName().equals("reldef")
+            if (builder.getTableName().equals("reldef")
                 || builder.getTableName().equals("typerel")
                 || builder.getTableName().equals("versions")
                 || builder.getTableName().equals("syncnodes")
                 || builder.getTableName().equals("daymarks")
                 || builder.getTableName().equals("oalias")
-                || builder.getTableName().equals("icaches")
-                // || builder.getTableName().equals("typedef")
-                // || builder.getTableName().equals("object")
-                // || builder.getTableName().equals("mmservers")
-                ) {
-                    continue;
+                || builder.getTableName().equals(
+                    "icaches") // || builder.getTableName().equals("typedef")
+            // || builder.getTableName().equals("object")
+            // || builder.getTableName().equals("mmservers")
+            ) {
+                continue;
             }
 
             boolean isRelation = builder == insrel || builder.isExtensionOf(insrel);
@@ -138,12 +133,10 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      * @param resultmsgs Used to store messages that can be showmn to the user
      * @param isRelation Indicates whether the nodes to write are data (false) or relation (true) nodes
      */
-    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs,
-            MMObjectBuilder builder, List nodes, boolean isRelation) {
+    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs, MMObjectBuilder builder, List nodes, boolean isRelation) {
 
         // Create nodewriter for this builder
-        NodeWriter nodeWriter = new NodeWriter(mmb, resultmsgs, subTargetPath,
-            builder.getTableName(), isRelation);
+        NodeWriter nodeWriter = new NodeWriter(mmb, resultmsgs, subTargetPath, builder.getTableName(), isRelation);
 
         Iterator iNodes = nodes.iterator();
         int nrWritten = 0;
@@ -157,9 +150,7 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
         }
         nodeWriter.done();
 
-        log.debug("Builder " + builder.getTableName() + ": "
-            + nrWritten
-            + (isRelation? " relations": " nodes") + " written.");
+        log.debug("Builder " + builder.getTableName() + ": " + nrWritten + (isRelation ? " relations" : " nodes") + " written.");
     }
 
 }

@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.util.*;
-
-import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -19,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Used in MMObjectNode.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelationsCache.java,v 1.1 2003-09-10 18:31:50 michiel Exp $
+ * @version $Id: RelationsCache.java,v 1.2 2003-12-03 06:57:45 keesj Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelations
  * @see   org.mmbase.module.core.MMObjectNode#getRelationNodes
  * @since MMBase-1.7
