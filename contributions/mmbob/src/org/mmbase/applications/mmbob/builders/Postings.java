@@ -30,7 +30,7 @@ import org.mmbase.applications.mmbob.util.transformers.Smilies;
  * </code>
  *
  * @author Gerard van Enk
- * @version $Id: Postings.java,v 1.1 2004-06-13 14:15:17 daniel Exp $
+ * @version $Id: Postings.java,v 1.2 2004-12-09 17:23:05 daniel Exp $
  * @since MMBob-1.0
  */
 public class Postings extends MMObjectBuilder { 
@@ -54,25 +54,32 @@ public class Postings extends MMObjectBuilder {
      * If you prefer you could also use an explicit if/else tree to reach the same goal.
      */
     // overridden from MMObjectBuilder
+	/*
     public Parameter[] getParameterDefinition(String function) {
         Parameter[] params = NodeFunction.getParametersByReflection(Postings.class, function);
         if (params == null) return super.getParameterDefinition(function);
         return params;
         
     }
+	*/
 
     /**
      * A 'function' implementation which ignores the 'node' and does something with a 'Cloud' object.
      * @todo this might be interpreted as a function on the builder, somehow!
      */
 
-    private String escapeSmiliesImplementation(MMObjectNode node, Parameters p) {
-        String imagecontext = (String) p.get("imagecontext");
+    private String escapeSmiliesImplementation(MMObjectNode node, List args) {
+        String imagecontext = (String) args.get(0);
+        String themeid = (String) args.get(1);
+        String smileysetid = (String) args.get(2);
+        String fieldname = (String) args.get(3);
+        Cloud cloud = (Cloud) args.get(4);
+	/*
         String themeid = (String) p.get("themeid");
         log.debug("themeid="+themeid);
         String smileysetid = (String) p.get("smileysetid");
         String fieldname = (String) p.get("name");
-        Cloud cloud = (Cloud) p.get(Parameter.CLOUD);
+	*/
         //smilies.initSmilies(themeid, smileysetid);
         String field = node.getStringValue(fieldname);
         String result = "";
@@ -102,7 +109,7 @@ public class Postings extends MMObjectBuilder {
     // overridden from MMObjectBuilder
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
-            log.trace("executefunction of Postings builder " + function + " " + args);
+            log.info("executefunction of Postings builder " + function + " " + args);
         }
         if (function.equals("info")) {
             List empty = new ArrayList();
@@ -114,9 +121,7 @@ public class Postings extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (function.equals("escapesmilies")) {
-            Parameters p = Parameters.get(ESCAPESMILIES_PARAMETERS, args);  
-            return escapeSmiliesImplementation(node, p);
-
+            return escapeSmiliesImplementation(node, args);
             // more examples should be implemented here.
         } else {
             return super.executeFunction(node, function, args);
