@@ -128,8 +128,8 @@ public class MediaSourceFilter {
         try {
             MINSPEED = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minspeed"));
             MAXSPEED = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxspeed"));
-            MINCHANNELS = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxchannels"));
-            MAXCHANNELS = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minchannels"));
+            MINCHANNELS = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minchannels"));
+            MAXCHANNELS = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxchannels"));
         } catch (Exception e) {
             log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information");
         }
