@@ -11,11 +11,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.Encode;
 import org.mmbase.util.transformers.Sql;
+import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
+import org.mmbase.storage.search.*;
 
 /**
  * A TypeHandler for strings. textareas, text-input. Search values are SQL escaped.
@@ -23,7 +25,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.7 2003-07-01 11:20:43 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.8 2003-07-31 15:57:14 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -97,6 +99,7 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
+        
         String fieldName = field.getName();
         String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
         if (search == null) {
@@ -109,5 +112,16 @@ public class StringHandler extends AbstractTypeHandler {
         
         return "( UPPER( [" + fieldName + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
     }
+
+    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+        String fieldName = field.getName();
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        if (search == null || "".equals(search)) {
+            return null;
+        }
+        NodeListConstraintTag.addConstraint(query, fieldName, FieldCompareConstraint.LIKE, '%' + search + '%'); // how can I do this case insensitive?
+        return "";
+    }
+
 
 }

@@ -8,11 +8,11 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.typehandler;
+import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Query;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.6 2003-07-28 20:01:19 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.7 2003-07-31 15:57:13 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -78,9 +78,23 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return "( [" + fieldName + "] =" + search + ")";
     }
 
+    protected int getOperator() {
+        return FieldCompareConstraint.EQUAL;
+    }
+
+    /**
+     * Adds search constraint to Query object.
+     * @return null if nothing to be searched, "" if constraint added
+     */
+
     public String whereHtmlInput(Field field, Query query) throws JspTagException {
-        // todo: implement..
-        throw new UnsupportedOperationException("Query version not yet implemented");
+        String fieldName = field.getName();
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        if (search == null || "".equals(search)) {
+            return null;
+        }
+        NodeListConstraintTag.addConstraint(query, fieldName, getOperator(), search);
+        return "";
     }
     /**
      * Puts a prefix before a name. This is used in htmlInput and

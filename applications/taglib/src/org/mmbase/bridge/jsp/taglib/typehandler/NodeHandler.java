@@ -22,7 +22,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.10 2003-06-06 10:03:38 pierre Exp $
+ * @version $Id: NodeHandler.java,v 1.11 2003-07-31 15:57:13 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -139,6 +139,19 @@ public class NodeHandler extends IntegerHandler {
                 return "( [" + fieldName + "] =" + search + ")";
             }
         }
+        return super.whereHtmlInput(field);
+    }
+
+    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+        String fieldName = field.getName();
+        if (context.getCloud().hasNodeManager(field.getGUIType())) {
+            String id = prefix(fieldName + "_search");
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+                return "";
+            } else {
+                return super.whereHtmlInput(field, query);
+            }
+        }                
         return super.whereHtmlInput(field);
     }
 
