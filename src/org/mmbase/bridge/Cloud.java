@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 import java.util.Locale;
 import java.util.Set;
+import org.mmbase.security.UserContext;
 import org.mmbase.util.functions.Function;
 
 /**
@@ -20,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.49 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Cloud.java,v 1.50 2005-03-01 14:17:39 michiel Exp $
  */
 public interface Cloud {
 
@@ -377,7 +378,7 @@ public interface Cloud {
      *
      * @return the User object describing who is using this cloud now.
      */
-    public User getUser();
+    public UserContext getUser();
 
     /**
      * Returns a list of virtual nodes that are composed by fields of other
