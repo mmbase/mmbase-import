@@ -42,7 +42,6 @@
   a key/value system. Its a optional tag.
   -->
   <properties>
-    <property name="max-nodes-from-query">200</property>
 
      <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
     NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
