@@ -19,6 +19,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.security.MMBaseCop;
+import org.mmbase.storage.*;
 import org.mmbase.storage.implementation.database.JDBC2NodeWrapper;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.*;
@@ -36,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.99 2003-08-29 12:12:29 keesj Exp $
+ * @version $Id: MMBase.java,v 1.100 2003-09-01 12:39:07 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -213,6 +214,11 @@ public class MMBase extends ProcessorModule {
      * @scope private
      */
     String cookieDomain = null;
+
+    /**
+     * The storage manager factory to use. Retrieve using getStorageManagerFactory();
+     */
+    private StorageManagerFactory storageManagerFactory = null;
 
     /**
      * Reference to the Root builder (the most basic builder, aka 'object').
@@ -467,8 +473,6 @@ public class MMBase extends ProcessorModule {
         log.debug(" creating new multimedia base : " + baseName);
         Vector v;
 
-        // why are we giving our member variable it's own value here?
-        // database=getDatabase();
         getDatabase();
 
         rootBuilder = null;
@@ -1287,70 +1291,100 @@ public class MMBase extends ProcessorModule {
      */
     public MMJdbc2NodeInterface getDatabase() {
         if (database == null) {
-            // check if there is a storagemanagerfactory specified
-            String factoryClassName = getInitParameter("storagemanagerfactory");
-            if (factoryClassName!=null) {
-                // if so, instantiate the support class wrapper for the storage layer
-                database = new JDBC2NodeWrapper();
-                // print information about our database connection..
-                log.info("Using class: '" + database.getClass().getName() + "'.");
-                database.init(this,null);
-            } else {
-                File databaseConfig = null;
-                String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
-                String databasename = getInitParameter("DATABASE");
-                if (databasename == null) {
-                    DatabaseLookup lookup =
-                        new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
-                    if (jdbc == null)
-                        throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
-                    try {
-                        // dont use the getDirectConnection, upon failure, it will loop,....
-                        databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
-                    } catch (java.sql.SQLException sqle) {
-                        log.error(sqle);
-                        log.error(Logging.stackTrace(sqle));
-                        throw new RuntimeException("error retrieving an connection to the database:" + sqle);
-                    }
-                } else {
-                    // use the correct databas-xml
-                    databaseConfig = new File(databaseConfigDir + databasename + ".xml");
-                }
-                // get our config...
-                XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
-                try {
-                    Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
-                    database = (MMJdbc2NodeInterface)newclass.newInstance();
-                } catch (ClassNotFoundException cnfe) {
-                    String msg = "class not found:\n" + Logging.stackTrace(cnfe);
-                    log.error(msg);
-                    throw new RuntimeException(msg);
-                } catch (InstantiationException ie) {
-                    String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
-                    log.error(msg);
-                    throw new RuntimeException(msg);
-                } catch (IllegalAccessException iae) {
-                    String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
-                    log.error(msg);
-                    throw new RuntimeException(msg);
-                }
-                // print information about our database connection..
-                log.info("Using class: '" + database.getClass().getName() + "' with config: '" + databaseConfig + "'.");
-                // init the database..
-                database.init(this, dbdriver);
-            }
+            initializeStorage();
         }
         return database;
     }
 
     /**
-     * @since MMBase-1.7
+     * Loads either the storage manager factory or the appropriate support class using the configuration parameters.
      */
-    /*
-    public Storage getStorage() {
-        return (Storage) getDatabase();
+    public void initializeStorage() {
+        // check if there is a storagemanagerfactory specified
+        String factoryClassName = getInitParameter("storagemanagerfactory");
+        if (factoryClassName!=null) {
+            try {
+                storageManagerFactory = StorageManagerFactory.newInstance(this);
+                // if so, instantiate the support class wrapper for the storage layer
+                database = new JDBC2NodeWrapper(storageManagerFactory);
+                // print information about our database connection..
+                log.info("Using class: '" + database.getClass().getName() + "'.");
+            } catch (StorageException se) {
+                log.error(se.getMessage());
+                throw new StorageError();
+            }
+        } else {
+            File databaseConfig = null;
+            String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
+            String databasename = getInitParameter("DATABASE");
+            if (databasename == null) {
+                DatabaseLookup lookup =
+                    new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+                if (jdbc == null)
+                    throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
+                try {
+                    // dont use the getDirectConnection, upon failure, it will loop,....
+                    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
+                } catch (java.sql.SQLException sqle) {
+                    log.error(sqle);
+                    log.error(Logging.stackTrace(sqle));
+                    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
+                }
+            } else {
+                // use the correct databas-xml
+                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+            }
+            // get our config...
+            XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
+            try {
+                Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
+                database = (MMJdbc2NodeInterface)newclass.newInstance();
+            } catch (ClassNotFoundException cnfe) {
+                String msg = "class not found:\n" + Logging.stackTrace(cnfe);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            } catch (InstantiationException ie) {
+                String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            } catch (IllegalAccessException iae) {
+                String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            }
+            // print information about our database connection..
+            log.info("Using class: '" + database.getClass().getName() + "' with config: '" + databaseConfig + "'.");
+            // init the database..
+            database.init(this, dbdriver);
+        }
     }
-    */
+
+    /**
+     * Returns StorageManagerFactory class used to access the storage configuration.
+     * Note: in MMBase 1.7, this may return <code>null</code> if the system uses the old
+     * support classes to access the storage.
+     * @since MMBase-1.7
+     * @return a StorageManagerFactory class, or <code>null</code> if not configured
+     */
+    public StorageManagerFactory getStorageManagerFactory() {
+        return  storageManagerFactory;
+    }
+
+    /**
+     * Returns a StorageManager to access the storage.. Equal to getStorageManagerFactory().getStorageManager().
+     * Note: in MMBase 1.7, this wikll throw a {@link StorageException} if the system uses the old
+     * support classes to access the storage.
+     * @since MMBase-1.7
+     * @return a StorageManager class
+     * @throws StorageException if no storage manasger could be instantiated
+     */
+    public StorageManager getStorageManager() throws StorageException {
+        if (storageManagerFactory == null) {
+            throw new StorageConfigurationException("Storage manager factory not configured.");
+        } else {
+            return storageManagerFactory.getStorageManager();
+        }
+    }
 
     /**
      * Loads a Node again, using its 'right' parent.

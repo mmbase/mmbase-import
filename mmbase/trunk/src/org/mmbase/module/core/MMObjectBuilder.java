@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.241 2003-08-26 09:37:01 johannes Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.242 2003-09-01 12:39:07 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -773,56 +773,68 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Retrieves an object's type. If necessary, the type is added to the cache.
+     * @todo when something goes wrong, the method currently catches the exception and returns -1.
+     *       It should actually throw a NotFoundException instead.
+     * @sql uses sql statements. will be removed once the new storage layer is in use
      * @param number The number of the node to search for
      * @return an <code>int</code> value which is the object type (otype) of the node.
-     * @sql
      */
     public int getNodeType(int number) {
         // assertment
         if(number < 0 ) throw new RuntimeException("node number was invalid("+ number+")" );
-
-        int otype=-1;
-        MultiConnection con = null;
-        Statement stmt2 = null;
-        try {
-            // first try our mega cache for the convert
-            if (typeCache!=null) {
-                Integer tmpv=(Integer)typeCache.get(new Integer(number));
-                if (tmpv!=null) {
-                    otype=tmpv.intValue();
-                }
-            }
-            if (otype==-1 || otype==0) {
-                // first get the otype to select the correct builder
-                con   = mmb.getConnection();
-                stmt2 = con.createStatement();
-                String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
-                ResultSet rs=stmt2.executeQuery(sql);
-                try {
-                    if (rs.next()) {
-                        otype=rs.getInt(1);
-                        // hack hack need a better way
-                        if (otype!=0) {
-                            if (typeCache!=null) typeCache.put(new Integer(number),new Integer(otype));
-                        }
-                    } else {
-                        log.debug("Could not find the otype (no records) using following query:" + sql);
-                        return -1;
-                        // duh a SQLException??
-                        // throw new SQLException("Could not find the otype (no records) using following query:"+sql);
-                    }
-                } finally {
-                    rs.close();
-                }
-             }
-        } catch (SQLException e) {
-            // something went wrong print it to the logs
-            log.error(Logging.stackTrace(e));
-            return -1;
-        } finally {
-            mmb.closeConnection(con,stmt2);
+        // check the cache
+        Integer numberValue = new Integer(number);
+        Integer otypeValue = (Integer)typeCache.get(numberValue);
+        if (otypeValue!=null) {
+            return otypeValue.intValue();
         }
-        return otype;
+        // check whether to use the factory
+        if (mmb.getStorageManagerFactory()!=null) {
+            try {
+                int otype = mmb.getStorageManager().getNodeType(number);
+                typeCache.put(numberValue,new Integer(otype));
+                return otype;
+            } catch(StorageException se) {
+                // throw new NotFoundException(se);
+                log.error(Logging.stackTrace(se));
+                return -1;
+            }
+        } else {
+            int otype=-1;
+            MultiConnection con = null;
+            Statement stmt2 = null;
+            try {
+                if (otype==-1 || otype==0) {
+                    // first get the otype to select the correct builder
+                    con   = mmb.getConnection();
+                    stmt2 = con.createStatement();
+                    String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
+                    ResultSet rs=stmt2.executeQuery(sql);
+                    try {
+                        if (rs.next()) {
+                            otype=rs.getInt(1);
+                            // hack hack need a better way
+                            if (otype!=0) {
+                                typeCache.put(numberValue,new Integer(otype));
+                            }
+                        } else {
+                            // throw new NotFoundException(msg);
+                            log.debug("Could not find the otype (no records) using following query:" + sql);
+                            return -1;
+                        }
+                    } finally {
+                        rs.close();
+                    }
+                 }
+            } catch (SQLException e) {
+                // throw new NotFoundException(e);
+                log.error(Logging.stackTrace(e));
+                return -1;
+            } finally {
+                mmb.closeConnection(con,stmt2);
+            }
+            return otype;
+        }
    }
 
     /**
@@ -836,7 +848,6 @@ public class MMObjectBuilder extends MMTable {
     public MMObjectNode getAliasedNode(String key) {
         return getNode(key);
     }
-
 
     /**
      * Convert virtual nodes to real nodes based on their otype
@@ -960,12 +971,14 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Retrieves a node based on it's number (a unique key).
+     * @todo when something goes wrong, the method currently catches the exception and returns null.
+     *       It should actually throw a NotFoundException instead.
+     * @sql uses sql statements. will be removed once the new storage layer is in use
      * @param number The number of the node to search for
      * @param usecache If true, the node is retrieved from the node cache if possible.
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *       <code>MMObjectNode</code> containign the contents of the requested node.
-     * @throws RuntimeException If the node does not exist
-     * @sql
+     * @throws RuntimeException If the node does not exist (not always true!)
      */
     public synchronized MMObjectNode getNode(int number, boolean usecache) {
         if (number==-1) {
@@ -973,93 +986,97 @@ public class MMObjectBuilder extends MMTable {
             return null;
         }
         MMObjectNode node=null;
-        Integer integerNumber=new Integer(number);
+        Integer numberValue=new Integer(number);
         // try cache if indicated to do so
         if (usecache) {
-            node=(MMObjectNode)nodeCache.get(integerNumber);
-            if (node!=null) {
+            node = (MMObjectNode)nodeCache.get(numberValue);
+            if (node != null) {
                 return node;
             }
         }
-        // do the query on the database
-        try {
-            // retrieve node's objecttype
-            int bi=getNodeType(number);
-
-            String bul = null;
-            if(bi == 0) {
-                bul = "typedef";
-            } else if (bi > 0) {
-                bul = mmb.getTypeDef().getValue(bi);
-            } else {
-                // smaller then 0, cant be possible!
-                String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + bi + ")";
-                log.debug(msg);
-                throw new RuntimeException(msg);
-            }
-
-            if (bul == null) {
-                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + bi + ")");
+        // retrieve node's objecttype
+        MMObjectBuilder builder = this;
+        int nodeType = getNodeType(number);
+        // test otype.
+        // XXX todo: getNodeType() should throw a NotFound exception.
+        if (nodeType < 0) {
+            String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + nodeType + ")";
+            throw new RuntimeException(msg);
+        }
+        // if the type is not for the current buidler, determine the real builder
+        if (nodeType != oType) {
+            String builderName = mmb.getTypeDef().getValue(nodeType);
+            if (builderName == null) {
+                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + ")");
                 return null;
             }
-            MMObjectBuilder thisbuilder = mmb.getBuilder(bul);
-            if (thisbuilder==null) {
-                log.warn("Node #" + number + " builder " + bul + "(" + bi + ")) is not loaded");
+            builder = mmb.getBuilder(builderName);
+            if (builder == null) {
+                log.warn("Node #" + number + " builder " + builderName + "(" + nodeType + ")) is not loaded");
                 return null;
             }
-
-            MultiConnection con =null;
-            Statement stmt = null;
+        }
+        // use storage factory if present
+        if (mmb.getStorageManagerFactory()!=null) {
             try {
-                con=mmb.getConnection();
-                stmt=con.createStatement();
-                String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
-
-                ResultSet rs = stmt.executeQuery(query);
+                node = mmb.getStorageManager().getNode(builder, number);
+                // store in cache if indicated to do so
+                if (usecache) {
+                    safeCache(numberValue,node);
+                }
+                return node;
+            } catch(StorageException se) {
+                // throw new NotFoundException(se);
+                log.error(Logging.stackTrace(se));
+                return null;
+            }
+        } else {
+            // do the query on the database
+            try {
+                MultiConnection con =null;
+                Statement stmt = null;
                 try {
-                    if (rs.next()) {
-                        // create a new object and add it to the result vector
-                        MMObjectBuilder bu = mmb.getBuilder(bul);
-                        if (bu == null) {
-                            log.warn("Builder of node " + number + " could not be found, taking it 'object'");
-                            bu = mmb.getBuilder("object");
+                    con=mmb.getConnection();
+                    stmt=con.createStatement();
+                    String query = "SELECT " + builder.getNonByteArrayFields() +" FROM " + builder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
+
+                    ResultSet rs = stmt.executeQuery(query);
+                    try {
+                        if (rs.next()) {
+                            node=new MMObjectNode(builder);
+                            ResultSetMetaData rd=rs.getMetaData();
+                            String fieldname;
+                            for (int i=1;i<=rd.getColumnCount();i++) {
+                                fieldname=database.getDisallowedField( rd.getColumnName(i));
+                                node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
+                            }
+                            // store in cache if indicated to do so
+                            if (usecache) {
+                                safeCache(numberValue,node);
+                            }
+                            // clear the changed signal
+                            node.clearChanged();
+                        } else {
+                            // throw new NotFoundException(msg);
+                            log.warn("Node #" + number + " could not be found(nodetype: " + builder.getTableName() + "(" + nodeType + "))");
+                            return null; // not found
                         }
-                        if (bu == null) {
-                            log.error("Could not get the builder for nodetype with name : " + bul + " (node #" + number + " nodetype #" + bi + ")");
-                            return null;
-                        }
-                        node=new MMObjectNode(bu);
-                        ResultSetMetaData rd=rs.getMetaData();
-                        String fieldname;
-                        for (int i=1;i<=rd.getColumnCount();i++) {
-                            fieldname=database.getDisallowedField( rd.getColumnName(i));
-                            node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
-                        }
-                        // store in cache if indicated to do so
-                        if (usecache) {
-                            safeCache(integerNumber,node);
-                        }
-                        // clear the changed signal
-                        node.clearChanged();
-                    } else {
-                        log.warn("Node #" + number + " could not be found(nodetype: " + bul + "(" + bi + "))");
-                        return null; // not found
+                    } finally {
+                        rs.close();
                     }
                 } finally {
-                    rs.close();
+                    mmb.closeConnection(con,stmt);
                 }
-            } finally {
-                mmb.closeConnection(con,stmt);
+                // return the results
+                return node;
+            } catch (SQLException e) {
+                // something went wrong print it to the logs
+                String msg = "The node #" + number + " could not be retrieved : " + e + "\n" + Logging.stackTrace(e);
+                log.error(msg);
+                // do we need to throw an exception in this situation, of continue running?
+                // throw new NotFoundException(e);
+                return null;
             }
-            // return the results
-            return node;
-        } catch (SQLException e) {
-            // something went wrong print it to the logs
-            String msg = "The node #" + number + " could not be retrieved : " + e + "\n" + Logging.stackTrace(e);
-            log.error(msg);
-            // do we need to throw an exception in this situation, of continue running?
-            // throw new RuntimeException(msg);
-            return null;
         }
     }
 
@@ -1597,7 +1614,7 @@ public class MMObjectBuilder extends MMTable {
         }
 
         List results = (List) listCache.get(query);
-        
+
         // if unavailable, obtain from database
         if (results == null) {
             log.debug("result list is null, getting from database");
@@ -1726,7 +1743,7 @@ public class MMObjectBuilder extends MMTable {
         return result;
     }
 
-    /*
+    /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
@@ -3814,7 +3831,7 @@ public class MMObjectBuilder extends MMTable {
         }
 
         // should be TYPE_NODE ???
-        if (fields.get("otype") == null) { 
+        if (fields.get("otype") == null) {
             // if not defined in XML (legacy?)
             // It does currently not work if otype is actually defined in object.xml (as a NODE field)
             FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
