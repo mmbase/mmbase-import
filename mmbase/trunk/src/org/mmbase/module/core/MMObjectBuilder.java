@@ -1033,13 +1033,17 @@ public class MMObjectBuilder extends MMTable {
 			int v=node.getIntValue(field);
 			rtn=DateSupport.getYear(v);
 
-		// text functions
+		// text convertion  functions
 		} else if (function.equals("wap")) {
 			String val=node.getStringValue(field);
 			rtn=getWAP(val);
 		} else if (function.equals("html")) {
 			String val=node.getStringValue(field);
 			rtn=getHTML(val);
+		} else if (function.equals("shorted")) {
+			String val=node.getStringValue(field);
+			rtn=getShort(val,32);
+
 		} else {
 			System.out.println("Builder ("+tableName+") unknown function '"+function+"'");
 		}
@@ -1065,16 +1069,6 @@ public class MMObjectBuilder extends MMTable {
 
 	
 
-	/**
-	* support routine to return shorter strings (will be removed)
-	*/
-	public String getShort(String str,int len) {
-        if (str.length()>len) {
-            return(str.substring(0,(len-3))+"...");
-        } else {
-            return(str);
-        }
-	}
 	
 	/**
 	* return the number of nodes in the cache of one objecttype
@@ -1683,6 +1677,17 @@ public class MMObjectBuilder extends MMTable {
 			result = obj.toString();
 		}
 		return result;
+	}
+
+	/**
+	* support routine to return shorter strings (will be removed)
+	*/
+	public String getShort(String str,int len) {
+        if (str.length()>len) {
+            return(str.substring(0,(len-3))+"...");
+        } else {
+            return(str);
+        }
 	}
 
 	/**
