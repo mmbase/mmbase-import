@@ -268,10 +268,12 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
-            try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (IOException ioe){
-                throw new JspTagException(ioe.toString());
+            if (bodyContent != null) {
+                try {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } catch (IOException ioe){
+                    throw new JspTagException(ioe.toString());
+                }
             }
             return SKIP_BODY;
         }

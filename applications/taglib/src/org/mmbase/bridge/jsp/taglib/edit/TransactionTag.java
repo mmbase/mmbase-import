@@ -93,12 +93,14 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         return EVAL_PAGE;
     }
     public int doAfterBody() throws JspTagException {
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            return SKIP_BODY;
-        } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (IOException ioe){
+                throw new JspTagException(ioe.toString());
+            }
         }
+        return SKIP_BODY;
     }
 
 }
