@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.173 2003-07-10 11:04:53 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.174 2003-07-14 12:57:18 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3820,6 +3820,38 @@ Of course, the default behavior of getSmartPath can still be overridden.
         of using the format attribute you can also use the MMBase
         formatter taglib.
       </info>
+    </attribute>
+    <attribute>
+      <name>precision</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Specifies the 'precision' of the produced time.
+      </info>
+      <possiblevalue>
+        <value>seconds</value>
+        <info>
+          This is the default. Times are produced to 'second' accuracy (the maximum in MMBase).
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>minutes</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>hours</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>days</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>weeks</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>months</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>years</value>
+      </possiblevalue>
     </attribute>
     <example>
       &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
