@@ -59,6 +59,10 @@ public class MMBaseDoclet{
             String text = tags[tagcount].text();
             if (name.equals("name")){
                 nodeManagerConfig.setName(text);
+	    } else if (name.equals("maintainer")){
+                nodeManagerConfig.setMaintainer(text);
+	    } else if (name.equals("version")){
+                nodeManagerConfig.setVersion(text);
             } else if (name.equals("field")){
                 nodeManagerConfig.addFieldConfiguration(createFieldConfiguration(text));
             } else {

@@ -21,6 +21,42 @@ public class DocletRelationManagerConfiguration  implements RelationManagerConfi
     String nodeManagerName;
     
     String directionality="bidirectional";
+
+    String maintainer = "mmbase.org";
+    String version = "1";
+
+    String classFile ="InsRel";
+    String searchAge ="360";
+
+    public void setMaintainer(String maintainer){
+	    this.maintainer = maintainer;
+    }
+    public String getMaintainer(){
+	    return maintainer;
+    }
+
+    public void setVersion(String version){
+	    this.version = version;
+    }
+    public String getVersion(){
+	    return version;
+    }
+
+    public void setClassFile(String classFile){
+	    this.classFile = classFile;
+    }
+
+    public String getClassFile(){
+	    return classFile;
+    }
+
+    public void setSearchAge(String searchAge){
+	    this.searchAge = searchAge;
+    }
+
+    public String getSearchAge(){
+	    return searchAge;
+    }
     
     /** Creates a new instance of DocletRelationManagerConfiguration */
     public DocletRelationManagerConfiguration() {
