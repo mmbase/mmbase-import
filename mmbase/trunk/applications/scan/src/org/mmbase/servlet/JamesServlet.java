@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.38 2002-06-28 07:49:24 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.39 2002-06-28 09:25:37 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -114,10 +114,7 @@ public class JamesServlet extends MMBaseServlet {
     /**
      * This method retrieves the users' MMBase cookie name & value as 'name/value'.
      * When the cookie can't be found, a new cookie will be added.
-     * When an old James cookie is found, the related MMBaseProperty 'value' field will be replaced
-     * with a new MMBase cookie name & value. The cookies domain will be implicit or explicit
-     * depending on the MMBASEROOT.properties value.
-     * @vpro old formats for cookies etc. should be removed.
+     * The cookies domain will be implicit or explicit depending on the MMBASEROOT.properties value.
      * @dependency org.mmbase.module.builder.Properties should not depend on this builder ?
      * @param req The HttpServletRequest.
      * @param res The HttpServletResponse.
@@ -128,9 +125,8 @@ public class JamesServlet extends MMBaseServlet {
 
         String methodName = "getCookie()";
         String HEADERNAME = "COOKIE";
-        String JAMES_COOKIENAME = "James_Ident";
         String MMBASE_COOKIENAME = "MMBase_Ident";
-        String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";
+        String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";   // weird date?
         String PATH = "/";
         String domain = null;
         String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
@@ -170,35 +166,6 @@ public class JamesServlet extends MMBaseServlet {
             } else {
                 // debug(methodName+": Using explicit domain: "+domain);
                 res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; domain="+domain+"; expires="+FUTUREDATE));
-            }
-
-            if ((cookies!= null) && (cookies.indexOf(JAMES_COOKIENAME) != -1)) {
-
-                // Change all old JAMES cookie entries in the properties table to MMBASE cookie values.
-                // eg. key:'SID' value: 'James_Ident/936797541271' gets value: 'Mmbase_Ident/curtimemillis#'
-
-                MMObjectBuilder propBuilder = null;
-                propBuilder = mmbase.getMMObject("properties");
-                if (propBuilder==null) {
-                    //log.debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
-                }
-                StringTokenizer st = new StringTokenizer(cookies, ";");
-                while (st.hasMoreTokens()) {
-                    String cookie = st.nextToken().trim();
-                    if (cookie.startsWith(JAMES_COOKIENAME)) {
-
-                        // Change the value field of the related property to the mmbaseIdent value.
-                        //log.debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
-                        Enumeration e = propBuilder.search("WHERE key='SID' AND value='"+cookie.replace('=','/')+"'");
-                        if (e.hasMoreElements()) {
-                            MMObjectNode propNode = (MMObjectNode)e.nextElement();
-                            propNode.setValue("value", mmbaseCookie.replace('=','/'));
-                            propNode.commit();
-                        }
-                    }
-                }
-            } else {
-                // debug(methodName+": User has no "+JAMES_COOKIENAME+" also, *new user*");
             }
             return mmbaseCookie.replace('=','/');
         }
