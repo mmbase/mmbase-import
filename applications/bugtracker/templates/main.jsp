@@ -1,9 +1,11 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
-<mm:present referid="portal" inverse="true">
-<mm:import externid="portal" jspvar="portal">none</mm:import>
-<mm:import externid="page" jspvar="page2">none</mm:import>
-</mm:present>
+
+<mm:import externid="portal" jspvar="portal" />
+<mm:notpresent referid="portal"><mm:remove referid="portal" /></mm:notpresent>
+<mm:import externid="page"   jspvar="page2" />
+<mm:notpresent referid="page"><mm:remove referid="page" /></mm:notpresent>
+
 <mm:import externid="sbugid" jspvar="sbugid" />
 <mm:import externid="sissue" jspvar="sissue" />
 <mm:import externid="sstatus" jspvar="sstatus" />
@@ -19,7 +21,7 @@
 <mm:import externid="ca" from="cookie" />
 
 
-<mm:import id="base" />
+<mm:import externid="base" />
 
 
 <mm:url id="baseurl" page="$base" write="false" />

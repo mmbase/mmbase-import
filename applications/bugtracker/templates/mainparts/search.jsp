@@ -1,6 +1,4 @@
-<mm:import externid="portal" id="po2" jspvar="portal" />
-<mm:import externid="page" id="pa2" jspvar="page2" />
-<form action="<mm:url referids="portal,page" page="/" />" method="POST">
+<form action="<mm:url referids="portal?,page?,base" page="/" />" method="POST">
 <table cellspacing="0" cellpadding="0" class="list" width="97%">
 <tr class="listsearch">
 	<td width="50">
@@ -64,7 +62,7 @@
 	</td>
 	<td width="300">
 	<INPUT NAME="sissue" SIZE="20">
-	<a href="advancedsearch.jsp?portal=<%=portal%>&page=<%=page2%>">a</a>
+	<a href="<mm:url referids="portal?,page?" page="$base/advancedsearch.jsp" />">a</a>
 	</td>
 	<td>
 	<INPUT TYPE="SUBMIT" VALUE="search">
@@ -163,7 +161,7 @@
 			 <mm:field name="bugreports.issue" escape="inline"/>&nbsp;
 		</td>
 		<td>
-			<A HREF="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:field name="bugreports.number" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" BORDER="0" ALIGN="right"></A>
+			<a href="<mm:url referids="portal?,page?,base" page="$base/fullview.jsp"><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="$base/images/arrow-right.gif" />" BORDER="0" ALIGN="right"></A>
 		</td>
 </tr>
 <mm:last>
@@ -210,14 +208,14 @@
 
 		<mm:present referid="user" inverse="true" >
 			<td>
-			 <center><font color="#000000">We have no idea who you are please login !<a href="<mm:url referids="portal,page,base" page="$base/changeUser.jsp" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" valign="middle"></A></font>
+			 <center><font color="#000000">We have no idea who you are please login !<a href="<mm:url referids="portal?,page?,base" page="$base/changeUser.jsp" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" valign="middle"></A></font>
 			</td>
 		</mm:present>
 		<mm:present referid="user">
 			<td colspan="1">
 			<br />
 			<mm:node number="$user">
-			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <A HREF="changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />">change name</A> )<br /> i have a new bug and want to report it</font><A HREF="newBug.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&user=<mm:write referid="user" />"><img src="images/arrow-right.gif" BORDER="0" ></A>
+			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="portal?,page?" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url referids="portal?,page?,user" page="newBug.jsp" /><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" ></a>
 			</td>
 			</mm:node>
 		</mm:present>
