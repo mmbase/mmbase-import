@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media;
 
 import org.mmbase.module.builders.media.ResponseInfo;
-import java.util.Comparator;
+import java.util.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 
@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class ResponseInfoComparator implements Comparator {
+abstract public class ResponseInfoComparator implements Comparator, MediaFilter {
 
     /**
      * Implement this.
@@ -30,7 +30,7 @@ abstract public class ResponseInfoComparator implements Comparator {
 
     abstract  protected int compareResponseInfo(ResponseInfo o1, ResponseInfo o2); 
     
-    protected void configure(XMLBasicReader reader, Element e) {
+    public void configure(XMLBasicReader reader, Element e) {
         // nothing to be configured on default.
     }
          
@@ -38,6 +38,11 @@ abstract public class ResponseInfoComparator implements Comparator {
         ResponseInfo ri1  = (ResponseInfo) o1;
         ResponseInfo ri2  = (ResponseInfo) o2;
         return compareResponseInfo(ri1, ri2);
+    }
+
+    public List filter(List responseInfos) {
+        Collections.sort(responseInfos, this);
+        return responseInfos;
     }
 }
 

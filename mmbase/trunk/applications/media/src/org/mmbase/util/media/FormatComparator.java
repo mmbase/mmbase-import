@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top.
  * @author  Michiel Meeuwissen
- * @version $Id: FormatComparator.java,v 1.3 2003-01-08 22:20:25 michiel Exp $
+ * @version $Id: FormatComparator.java,v 1.4 2003-01-14 20:36:21 michiel Exp $
  */
 public class FormatComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(FormatComparator.class.getName());
@@ -44,10 +44,10 @@ public class FormatComparator extends  PreferenceComparator {
     }
     
     protected int getPreference(ResponseInfo ri) {
-        Format format = (Format) ri.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null);
+        Format format = ri.getFormat();
         int index =  preferredSources.indexOf(format);
         if (index == -1) { 
-            log.debug("Not found format: '" + format + "' in" + preferredSources);
+            if (log.isDebugEnabled()) log.debug("Not found format: '" + format + "' in" + preferredSources);
             index = preferredSources.size() + 1;
         }
         index = -index;   // low index =  high preference
