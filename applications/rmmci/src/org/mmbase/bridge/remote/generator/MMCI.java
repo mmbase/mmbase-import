@@ -79,6 +79,7 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.DataType", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
@@ -127,7 +128,6 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.AuthenticationData",doc));
 
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.DataType", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
     }
