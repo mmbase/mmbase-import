@@ -90,7 +90,7 @@
     <tr>
       <td>Editwizard</td>
       <td>
-        Different editwizard-examples. TODO: you need editwizards installed!
+        Different editwizard-examples.
       </td>
       <td class="link" >
         <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="../mmbase/style/default/images/next.gif"  /></a>
