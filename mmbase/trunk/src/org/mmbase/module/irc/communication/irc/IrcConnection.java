@@ -238,13 +238,14 @@ public 	class 		IrcConnection
             debug("send("+who+","+line+"): ERROR: Dont know who to send to!");
     }
 
-	public void receive( String msg )
-	{
+	public void receive( String msg ) {
 		String line = parseMessage( new IrcMessage( msg ));
-		if (line!=null && !line.equals(""))
-		{ 
-			//debug("receive("+line+"): pushing to comuser("+comuser+")");
-			comuser.receive( line );
+		if (line!=null && !line.equals("")) {
+			try {
+				comuser.receive( line );
+			} catch (Exception e) {
+				System.out.println("org.mmbase.module.irc.communication.IrcConnection something when wrong in the user code");
+			}
 		}
 	}
 
