@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: channel.xml,v 1.6 2002-06-07 14:54:31 pierre Exp $ -->
+<!-- @version $Id: channel.xml,v 1.1 2002-06-11 08:07:29 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
