@@ -1076,7 +1076,7 @@ Change directory to ${build.dir}/orion and run:
     <available property="webserver.jar.present"
                file="${webserver.jar}"/>
     <!-- Orion -->
-    <property name="orion.version" value="orion1.4.5"/>
+    <property name="orion.version" value="orion1.5.2"/>
     <property name="orion.url" value="http://www.orionserver.com/mirrordownload.jsp?file=${orion.version}.zip"/>
     <available property="orion.present"
                file="${download.dir}/${orion.version}.zip"/>
