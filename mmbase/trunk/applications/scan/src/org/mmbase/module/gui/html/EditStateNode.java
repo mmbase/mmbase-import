@@ -12,7 +12,7 @@ package org.mmbase.module.gui.html;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.module.core.*;
-
+import org.mmbase.util.logging.*;
 
 /**
  * EditState, controls the users edit session, keeps EditStatesNodes
@@ -24,10 +24,11 @@ import org.mmbase.module.core.*;
  */
 public class EditStateNode {
 
-	private String classname = getClass().getName();	
-	private boolean debug	  = false;
-	private void debug( String msg ){ System.out.println( classname +":"+ msg ); }
-
+    /**
+    * Logging instance
+    */
+	private static Logger log = Logging.getLoggerInstance(EditStateNode.class.getName());
+	
 	private static boolean removeRelations=false; // remover relations on node delete
 
 	Hashtable searchValues = new Hashtable();
@@ -59,9 +60,9 @@ public class EditStateNode {
 			if( !name.equals("") )
 				result = ((String)searchValues.get(name));
 			else
-				debug("getSearchValue("+name+"): ERROR: name is empty!");
+				log.error("getSearchValue("+name+"): name is empty!");
 		else
-			debug("getSearchValue("+name+"): ERROR: name is null!");
+			log.error("getSearchValue("+name+"): name is null!");
 
 		return result;
 	}
@@ -91,10 +92,10 @@ public class EditStateNode {
 				htmlValues.put(fieldname,value);
 			}
 			else
-				debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is empty!");
+				log.error("setHtmlValue("+fieldname+","+value+"): fieldname is empty!");
 		}
 		else
-			debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is null!");
+			log.error("setHtmlValue("+fieldname+","+value+"): fieldname is null!");
 
 		return(true);
 	}
@@ -178,13 +179,13 @@ public class EditStateNode {
 				if( mmObjectBuilder != null )
 					dutchEditor= mmObjectBuilder.getDutchSName();
 				else
-					debug("setBuilder("+name+"): ERROR: No MMObjectBuilder found with this name!");
+					log.error("setBuilder("+name+"): No MMObjectBuilder found with this name!");
 				editor = name;
 			}
 			else
-				debug("setBuilder("+name+"): ERROR: MMBase is not defined!");	
+				log.error("setBuilder("+name+"): MMBase is not defined!");	
 		else
-			debug("setBuilder("+name+"): ERROR: Name is not valid!");	
+			log.error("setBuilder("+name+"): Name is not valid!");	
 	}
 
 	public String getBuilderName() {
@@ -217,7 +218,7 @@ public class EditStateNode {
 
 	public void setInsSaveNode(MMObjectNode node) {
 		insSaveList.addElement(node);
-		debug("setInsSaveNode(): "+insSaveList.toString());
+		log.debug("setInsSaveNode(): "+insSaveList.toString());
 	}
 
 	public Vector getInsSaveList() {
@@ -229,9 +230,7 @@ public class EditStateNode {
 	}
 
 	public void delRelationTable() {
-		if (debug) {
-			debug("delRelationTable(): Del on relation table, here not implemented!");
-		}
+		log.debug("delRelationTable(): Del on relation table, here not implemented!");
 	}
 
 	/**
@@ -249,17 +248,15 @@ public class EditStateNode {
 		Hashtable relationTable = new Hashtable();
 		while (enum.hasMoreElements()) {
 			typeRel = (MMObjectNode)enum.nextElement();	
-			int j=-1;
-			if (typeRel.getIntValue("snumber") == node.getIntValue("otype")) { 
+			int j=typeRel.getIntValue("snumber");
+			if (j== node.getIntValue("otype")) {
 				j=typeRel.getIntValue("dnumber");
-			} else {
-				j=typeRel.getIntValue("snumber");
 			}
 			if (j!=-1) {
 				typeName = mmBase.getTypeDef().getValue(j);
 				relationTable.put(typeName,new Vector());
 			} else {
-				debug("getRelationTable(): Problem on "+typeRel.toString());
+				log.warn("getRelationTable(): Problem on "+typeRel.toString());
 			}
 				
 		}
@@ -285,20 +282,20 @@ public class EditStateNode {
 						target = mmObjectBuilder.getNode(rel.getIntValue("dnumber"));
 					else 
 						target = mmObjectBuilder.getNode(rel.getIntValue("snumber"));
-					typeName = mmBase.getTypeDef().getValue(target.getIntValue("otype"));
+					typeName = target.parent.getTableName();
 					Vector relList = (Vector)relationTable.get(typeName);
 					if (relList != null) {
 						relList.addElement(target);
 						relList.addElement(rel);
+					} else {
+                        log.warn("Relation ("+typeName+") defined, but typerel for this relation does not exist");
 					}
 				} catch(Exception e) {
-					debug("getRelationTable(): Problem with a relation, probably a relation with a non active builder");
+					log.warn("getRelationTable(): Problem with a relation, probably a relation with a non active builder");
 				}
 			}
 		} else {
-			if (debug) {
-				debug("getRelation(): EditNodeNumber is -1");
-			}
+			log.debug("getRelation(): EditNodeNumber is -1");
 		}
 		return (relationTable);
 	}

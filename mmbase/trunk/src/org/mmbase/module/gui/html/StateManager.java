@@ -15,6 +15,7 @@ import java.util.*;
 import javax.servlet.http.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.builders.*;
@@ -26,15 +27,18 @@ import org.mmbase.module.builders.*;
  * 
  * @author Daniel Ockeloen
  * @author Hans Speijer
+ * @author Pierre van Rooden
+ * @version 26-2-2001
  */
 
 public class StateManager implements CommandHandlerInterface {
-
-	private String classname = getClass().getName();
 	
-	Hashtable editStates; // HashTable with editstates indexed by usernames
 	public MMBase mmBase; // Reference to the mmBase module
+	Hashtable editStates; // HashTable with editstates indexed by usernames
 
+	// Logger
+	private static Logger log = Logging.getLoggerInstance(StateManager.class.getName());
+	
 	/**
 	 * Initialises the connection to mmBase and initialises the StateManager
 	 */ 
@@ -77,7 +81,7 @@ public class StateManager implements CommandHandlerInterface {
 	
 		if (userName==null) return("StateManager-> not logged in");	
 		EditState state = getEditState(userName);
-  	//	System.out.println("STATE="+state);
+  	//	log.debug("STATE="+state);
 
 		if (commands.hasMoreTokens()) {
 			token = commands.nextToken();
@@ -174,29 +178,26 @@ public class StateManager implements CommandHandlerInterface {
             // If so, the number of the relation in RelDef is obtained,
             // and the name of the builder to use is determined (if explicitly given)).
 
+            MMObjectBuilder bul = null;
             rtype = mmBase.getRelDef().getGuessedNumber(builder);
 
-            boolean usesbuilder=mmBase.getRelDef().usesbuilder;
-
-            if ((rtype!=-1) && (usesbuilder))  { // relation found
+            if ((rtype!=-1) && (RelDef.usesbuilder))  { // relation found
                 MMObjectNode node=mmBase.getRelDef().getNode(rtype);  // retrieve the reldef node
-                int ibuilder=node.getIntValue("builder");
-                if (ibuilder>0) {
-                    builder=mmBase.getTypeDef().getValue(ibuilder);
-                }
+                bul = mmBase.getRelDef().getBuilder(node);
+            } else {
+                bul = mmBase.getMMObject(builder);
             }
 
             // check whether the builder is a valid relationbuilder.
             // otherwise assign InsRel
             // note that is the builder specified is not an InsRel-derived builder, it will be overridden
 
-            MMObjectBuilder bul = mmBase.getMMObject(builder);
             if (!(bul instanceof InsRel)) {
-                builder="insrel";
+                bul=mmBase.getInsRel();
             }
 
             ed.popState();
-            ed.setBuilder(builder);
+            ed.setBuilder(bul.getTableName());
 
             ed.NewNode(userName);
             MMObjectNode node=ed.getEditNode();
@@ -204,11 +205,8 @@ public class StateManager implements CommandHandlerInterface {
             node.setValue("dnumber",n2);
 
             // If rtype is unknown, try to get the type from TypeRel
-            // note that typerel is only unknown if the relationname was invalid
-            // (which implies it as an insrel relation)
-            //                                             -->  shouldn't we throw an exception instead???
-            if (builder.equals("insrel") && (rtype==-1)) {
-                bul=ed.getBuilder();
+
+            if ((bul == mmBase.getInsRel()) && (rtype==-1)) {
                 rtype=mmBase.getTypeRel().getAllowedRelationType(bul.getNodeType(n1),bul.getNodeType(n2));
             }
 
@@ -220,7 +218,7 @@ public class StateManager implements CommandHandlerInterface {
             }
 
         } catch (Exception e) {
-            System.out.println("StateManager -> Can't create insnode");
+            log.error("StateManager -> Can't create insnode");
             e.printStackTrace();
         }
         return(true);
@@ -251,7 +249,7 @@ public class StateManager implements CommandHandlerInterface {
 
 	String createSelectionQuery(Hashtable skeys,MMObjectBuilder bul) {
 		String tmps=createSelectionQuery2(skeys,bul);
-		//System.out.println("StateManager-> "+createSelectionQuery2(skeys,bul));
+		// log.debug("StateManager-> "+createSelectionQuery2(skeys,bul));
 		if (tmps.equals("MMNODE episodes.title==*oorlog*")) {
 			return("WHERE etx_contains(title,Row('oorlog','SEARCH_TYPE=PROX_SEARCH(5)'))");
 		} else {
@@ -428,10 +426,5 @@ public class StateManager implements CommandHandlerInterface {
 		return result;
 	}
 
-	private void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );
-	}
-
-} 
+}
 
