@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE objectset PUBLIC "-//MMBase/DTD objectset config 1.0//EN" "http://www.mmbase.org/dtd/objectset_1_0.dtd">
+<objectset type="kb_category" exportsource="mmbase://www.mmbase.org/kbase" timestamp="20020516170724">
+        <object number="40" owner="admin" alias="kbase.root">
+                <field name="name">kbase.root</field>
+                <field name="visible">true</field>
+                <field name="date">1076923644</field>
+                <field name="description">this is a requered startnode for the app to work</field>
+        </object>
+</objectset>
