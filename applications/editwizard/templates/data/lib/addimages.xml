@@ -1,5 +1,5 @@
 <list fdatapath="relation[object/@type='images']" minoccurs="0" maxoccurs="*" type="image" defaultdisplaymode="summarize" hidecommand="">
-		<title>Related images</title>
+  <title>Related images</title>
 		<description>These are the images that are related to this news item.</description>
 
 		<command name="search" nodepath="images" fields="title,description">
