@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.9 2003-09-01 13:29:46 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.10 2003-09-01 15:21:52 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -804,14 +804,14 @@ public class DatabaseStorageManager implements StorageManager {
                      !shorten(field)) {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
-                    if (fieldNames != null) {
+                    if (fieldNames == null) {
                         fieldNames = new StringBuffer(fieldName);
                     } else {
                         fieldNames.append(',').append(fieldName);
                     }
                 }
             }
-            String query = scheme.format(new Object[] { this, builder, fieldNames, builder.getField("number"), new Integer(number)});
+            String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
             return getNode(s.executeQuery(query), builder);
         } catch (SQLException se) {
