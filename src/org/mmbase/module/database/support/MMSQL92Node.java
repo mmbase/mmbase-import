@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.5 2000-06-06 20:36:25 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.6 2000-06-20 08:20:14 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/06/06 20:36:25  wwwtech
+added XML create and convert code
+
 Revision 1.4  2000/05/15 14:47:48  wwwtech
 Rico: fixed double close() bug in getDBText en getDBBtye()
 
@@ -65,7 +68,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.5 $ $Date: 2000-06-06 20:36:25 $
+* @$Revision: 1.6 $ $Date: 2000-06-20 08:20:14 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -106,37 +109,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	public void init(MMBase mmb) {
 		this.mmb=mmb;
-	}
-
-	public boolean create(MMObjectBuilder bul,String tableName) {
-		// Note that builder is null when tableName='object'
-			// get us a propertie reader	
-			ExtendedProperties Reader=new ExtendedProperties();
-
-			// load the properties file of this server
-
-			String root=System.getProperty("mmbase.config");
-			Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
-		
-			String createtable=(String)prop.get(createString);
-
-
-			if (createtable!=null && !createtable.equals("")) {	
-    			createtable = Strip.DoubleQuote(createtable,Strip.BOTH);
-			try {
-				MultiConnection con=mmb.getConnection();
-				Statement stmt=con.createStatement();
-				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-				System.out.println("can't create table "+tableName);
-				e.printStackTrace();
-			}
-			} else {
-				System.out.println("MMObjectBuilder-> Can't create table no CREATETABLE_ defined");
-			}
-		return(true);
 	}
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i) {
@@ -884,9 +856,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	/**
 	* will be removed once the xml setup system is done
 	*/
-	public boolean createXML(MMObjectBuilder bul) {
-		
-
+	public boolean create(MMObjectBuilder bul) {
+	
+		if (!bul.isXMLConfig()) return(false);
+	
 		// use the builder to get the fields are create a
 		// valid create SQL string
 		String result=null;
@@ -905,8 +878,35 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				}	
 			}
 		}
-		result=getMatchCREATE(bul.getTableName())+"( number integer, "+result+" );";
+		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
 		System.out.println("XMLCREATE="+result);
+
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate(result);
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("can't create table "+bul.getTableName());
+			e.printStackTrace();
+			return(false);
+		}
+		return(true);
+	}
+
+
+	public boolean createObjectTable(String baseName) {
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner varchar(12) not null);");
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("can't create table "+baseName+"_object");
+			e.printStackTrace();
+		}
 		return(true);
 	}
 
@@ -927,6 +927,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 		// get the wanted notnull
 		boolean notnull=def.getDBNotNull();
+		if (name.equals("otype")) notnull=true;
 
 		String result=name+" "+matchType(type,size,notnull);
 		if (notnull) result+=" "+parser.getNotNullScheme();

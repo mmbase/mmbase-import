@@ -28,7 +28,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.12 $ $Date: 2000-04-18 23:16:17 $
+* @$Revision: 1.13 $ $Date: 2000-06-20 08:20:46 $
 */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -36,48 +36,6 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		createString="CREATETABLE_MYSQL";
 	}
 
-	/*
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
-			try {
-				if (fieldtype.equals("VARSTRING") || fieldtype.equals("STRING") || fieldtype.equals("VARCHAR")) {
-					String tmp=rs.getString(i);
-					if (tmp==null) {
-						node.setValue(prefix+fieldname,"");
-					} else {
-						node.setValue(prefix+fieldname,tmp);
-					} 
-				} else if (fieldtype.equals("VARSTRING_EX")) {
-					String tmp=rs.getString(i);
-					if (tmp==null) {
-						node.setValue(prefix+fieldname,"");
-					} else {
-						node.setValue(prefix+fieldname,tmp);
-					}
-				} else if (fieldtype.equals("lvarchar")) {
-					String tmp=rs.getString(i);
-					if (tmp==null) {
-						node.setValue(prefix+fieldname,"");
-					} else {
-						node.setValue(prefix+fieldname,tmp);
-					}
-				} else if (fieldtype.equals("LONG")) {
-					node.setValue(prefix+fieldname,rs.getInt(i));
-				} else if (fieldtype.equals("text")) {
-					//node.setValue(prefix+fieldname,getDBText(rs,i));
-					node.setValue(prefix+fieldname,"$SHORTED");
-				} else if (fieldtype.equals("BLOB")) {
-					//node.setValue(prefix+fieldname,getDBByte(rs,i));
-					node.setValue(prefix+fieldname,"$SHORTED");
-				} else {
-					System.out.println("MMysql42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
-				}
-			} catch(SQLException e) {
-				System.out.println("MMysql42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
-				e.printStackTrace();	
-			}
-			return(node);
-	}
-	*/
 
 
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
@@ -91,8 +49,9 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			value=value.substring(pos+1,value.length()-1);
 			like=true;
 		}
-		// System.out.println("fieldname="+fieldname+" type="+dbtype);
+		System.out.println("fieldname="+fieldname+" type="+dbtype);
 		if (dbtype.equals("var") || dbtype.equals("varchar")) {
+		//if (dbtype.equals("var") || dbtype.equals("VARCHAR")) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
@@ -114,6 +73,7 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 
 		} else if (dbtype.equals("LONG") || dbtype.equals("int")) {
+		//} else if (dbtype.equals("LONG") || dbtype.equals("INTEGER")) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
