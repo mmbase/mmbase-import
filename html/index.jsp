@@ -12,7 +12,7 @@
 </tr>
 <tr>
 <td colspan="3">
-      You are running <mm:include page="/version" /><br />
+      You are running <%=org.mmbase.Version.get() %><br />
 <p>This software is OSI Certified Open Source Software.<br />
 OSI Certified is a certification mark of the Open Source Initiative.</p>
 <p>MMBase has been build under the <a href="mpl-1.0.html">Mozilla Public License, Version 1.0</a></p>
