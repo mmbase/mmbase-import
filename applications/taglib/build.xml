@@ -5,6 +5,9 @@
 
 <project name="taglib" default="dependent.jar" basedir=".">
   <property name="project.name"   value="taglib" />
+  <property name="project.package"   value="org/mmbase/bridge/jsp/taglib" />
+  <property name="project.comment"   value="The MMBase Taglib implementation" />
+  
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
   &base;
 
