@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.84 2002-09-30 12:39:48 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.85 2002-10-02 21:19:54 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -474,13 +474,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Object getValue(String fieldName) {
 
         // get the value from the values table
-        Object o = retrieveValue(prefix+fieldName);
+        Object o = retrieveValue(prefix + fieldName);
 
         // routine to check for indirect values
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-        if (o==null) return parent.getValue(this,fieldName);
+        if (o == null) return parent.getValue(this, fieldName);
 
         // return the found object
         return o;
@@ -564,7 +564,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6
      */
     public Object getFunctionValue(String function, List args) {
-        return  parent.executeFunction(this, function, args);
+        return  parent.getFunctionValue(this, function, args);
     }
 
     /**
