@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.29 2003-04-01 08:41:29 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.30 2003-05-04 14:24:06 kees Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -102,11 +102,11 @@ public class ImageCaches extends AbstractImages {
         }
 
         if (nodes.size() == 0) {
-            log.error("Did not find an orginal image");
+            log.debug("Did not find cached images with key ("+ ckey +")");
             return -1 ;
         }
         if (nodes.size() > 1) {
-            log.warn("Did  find more then original image node");
+            log.warn("found more then one cached image with key ("+ ckey +")");
         }
         MMObjectNode node = (MMObjectNode) nodes.get(0);
         return node.getNumber();
@@ -116,15 +116,14 @@ public class ImageCaches extends AbstractImages {
      * Gets the handle bytes from a node.
      * @param n The node to receive the bytes from. It might be null, then null is returned.
      */
-    private  synchronized byte[] getImageBytes(MMObjectNode n) {
+    private  byte[] getImageBytes(MMObjectNode n) {
         if (n == null) {
-            log.debug("node was not found");
+            log.warn("method called with null MMObjectNode, returing null");
             return null;
         } else {
-            if (log.isDebugEnabled()) log.debug("node was found " + n.getNumber());
             byte[] bytes = n.getByteValue("handle");
             if (bytes == null) {
-                log.debug("handle was null!");
+                log.warn("handle was null for node with number ("+ n.getNumber() +")!");
                 return null;
             }
             if (log.isDebugEnabled()) log.debug("found " + bytes.length + " bytes");
@@ -132,11 +131,11 @@ public class ImageCaches extends AbstractImages {
         }
     }
 
-    private  synchronized byte[] getImageBytes(int number) {
+    private  byte[] getImageBytes(int number) {
         return getImageBytes(getNode(number));
     }
 
-    private synchronized byte[] getImageBytes(String number) {
+    private byte[] getImageBytes(String number) {
         return getImageBytes(getNode(number));
     }
     /**
@@ -149,14 +148,14 @@ public class ImageCaches extends AbstractImages {
      *
      * If the node does not exists, it returns empty byte array
      */
-    public synchronized byte[] getImageBytes(List params) {
+    public byte[] getImageBytes(List params) {
         return getImageBytes("" + params.get(0));
     }
 
     /**
      * Return the bytes for the cached image with a certain ckey, or null, if not cached.
      */
-    public synchronized byte[] getCkeyNode(String ckey) {
+    public byte[] getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
 	if(handleCache.contains(ckey)) {
 	    // found the node in the cache..
@@ -167,7 +166,7 @@ public class ImageCaches extends AbstractImages {
 
 	if (number == -1) {
 	    // we dont have a cachednode yet, return null	    
-	    log.info("cached node not found, returning null");
+	    log.debug("cached node not found for key ("+ ckey +"), returning null");
 	    return null;
 	}
 
