@@ -1,18 +1,12 @@
-/*
- * DocletNodeManagerConfiguration.java
- *
- * Created on June 13, 2002, 12:48 PM
- */
-
-package org.mmbase.applications.mmbasedoclet;
+package org.mmbase.applications.config;
 
 import org.mmbase.applications.config.*;
 
 /**
  *
- * @author  mmbase
+ * @author Kees Jongenburger
  */
-public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
+public class BasicNodeManagerConfiguration implements NodeManagerConfiguration{
     String parentNodeManagerName ="object";
     FieldConfigurations fieldConfigurations;
     String name;
@@ -22,8 +16,8 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
     String searchAge = "360";
     String description ;
     
-    /** Creates a new instance of DocletNodeManagerConfiguration */
-    public DocletNodeManagerConfiguration() {
+    /** Creates a new instance of BasicNodeManagerConfiguration */
+    public BasicNodeManagerConfiguration() {
         fieldConfigurations = new FieldConfigurations();
     }
     
