@@ -4,8 +4,8 @@
 <article>
 	<articleinfo>
 		<title>XML Importer overview (a.k.a. TCP 2.0)</title>
-		<date>24 december 2001</date>
-		<edition>$Id: overview.xml,v 1.2 2002-12-04 16:12:18 pierre Exp $</edition>
+		<date>24 December 2001</date>
+		<edition>$Id: overview.xml,v 1.3 2003-06-30 12:10:13 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Rob</firstname>
@@ -66,7 +66,7 @@
 		<itemizedlist>
 			 <listitem>Create a transaction context.</listitem>
 			 <listitem>Create new objects within the transaction context.</listitem>
-			 <listitem>Acces existing MMBase objects, this creates copies within the context.</listitem>
+			 <listitem>Access existing MMBase objects, this creates copies within the context.</listitem>
 			 <listitem>Create new relations between the objects.</listitem>
 			 <listitem>Commit the transaction.</listitem>
 		</itemizedlist>
@@ -114,7 +114,7 @@
 
 		<section>
 			<title>Object similarity</title>
-			<para>The notion of two MMBase objects, candidate or present, being considerd "similar" is not as straigtforward as may seem.</para>
+			<para>The notion of two MMBase objects, candidate or present, being considered "similar" is not as straightforward as may seem.</para>
 			<para>A definition might be to consider them similar if all their fields are equal. But in practice, this definition might be not restrictive enough in some cases, while being too restrictive in others. For instance, we can think of situations where it is only acceptable to consider objects equal if the objects they have relationships with, are also equal (i.e. movies should not only have the same title, but also the same director).</para>
 			<para>On the other hand, data-entry by hand into textfields may introduce all kind of minor errors, resulting in objects having different fields, while meant to represent the same object. In this case object similarity may translate into "similar enough" - using fuzzy-logic comparison. Clearly, if we want to bulk import data, while at the same time relying heavily on a concept of object similarity, we must be able to specify our own criteria of how to find a similar object. </para>
 		</section>
@@ -131,11 +131,11 @@
 
 		<section>
 			<title>Feedback</title>
-			<para>Processing of a transaction may fail because for an input object more than one similar object is found or an error occurs XXX the iport is stopped XXX but this will not stop the whole import. The current transaction is cancelled. The Importer continues with the next transaction. All transactions without duplicates or errors are committed to MMBase.</para>
+			<para>Processing of a transaction may fail because for an input object more than one similar object is found or an error occurs XXX the import is stopped XXX but this will not stop the whole import. The current transaction is canceled. The Importer continues with the next transaction. All transactions without duplicates or errors are committed to MMBase.</para>
 			<para>If for an input object more than one similar object is found the following happens. The complete transaction is appended to a report file.
-In the next stage duplicates_transactions.XML is processed. The user has to be consulted to decide wich merge result is preferred.</para>
+In the next stage duplicates_transactions.XML is processed. The user has to be consulted to decide which merge result is preferred.</para>
 			<para>Example. If there was an input object A and two similar objects were found (B and C). The following is presented to the user user on screen (probably a jsp page): the original input object (A) and for every similar object the merge result. Thus (A+B) and (A+C). The user has to select which merge result is preferred. Processing of this corrected transaction can continue in a next processing cycle.</para>
-			<para>All other kind of errors, e.g. syntax error (XML not according to dtd) or object field not found or object not found. For all these errors the transaction processing is cancelled an entry is written to a report file and the full transaction is written to a file (e.g. error_transactions.XML). XXX the iport is stopped XXX The user can consult the report-file afterward to review the transactions that went wrong. The report-file will contain all information necessary to correct the problems and give these transactions a second try. </para>
+			<para>All other kind of errors, e.g. syntax error (XML not according to dtd) or object field not found or object not found. For all these errors the transaction processing is canceled an entry is written to a report file and the full transaction is written to a file (e.g. error_transactions.XML). XXX the import is stopped XXX The user can consult the report-file afterward to review the transactions that went wrong. The report-file will contain all information necessary to correct the problems and give these transactions a second try. </para>
 		</section>
 
 </section>
@@ -157,13 +157,13 @@ In the next stage duplicates_transactions.XML is processed. The user has to be c
 		<section>
 			<title>objectFinder</title>
 			<para>A class that implements the SimilarObjectFinder interface (see below), this provides methods to search both the persistent cloud and the transaction for similar objects.</para>
-			<para>objectFinder parameters - parameters to be passed to the SimilarObjectFinder instance (support for parametrized implementations of similarObjectFinder).</para>
+			<para>objectFinder parameters - parameters to be passed to the SimilarObjectFinder instance (support for parameterized implementations of similarObjectFinder).</para>
 		</section>
 
 		<section>
 			<title>objectMerger</title>
 			<para>A class that implements the ObjectMerger interface (see below), this provides methods to merge two objects. Also it determines which relations of the merged objects are retained and which are dropped.</para>
-			<para>objectMerger parameters - parameters to be passed to the objectMerger instance (support for parametrized implementations of ObjectMerger).</para>
+			<para>objectMerger parameters - parameters to be passed to the objectMerger instance (support for parameterized implementations of ObjectMerger).</para>
 		</section>
 
 		<section>
@@ -228,16 +228,16 @@ In the next stage duplicates_transactions.XML is processed. The user has to be c
 		</section>
 </section>
 <section>
-		<title>TransactionHandler enhancements (performance and useability)</title>
+		<title>TransactionHandler enhancements (performance and usability)</title>
 		<para>Further enhancements that will make TCP functionality easier to use than it is now (due to its SCAN- heritage) </para>
 
 		<section>
 			<title>Performance</title>
-			<para>The current TransactionHandler uses a DOM-parser to parse the transactions from XML. TCP2.0 will replace this with a SAX-parser to improve perfomance and to reduce memory-usage, especially when importing large files (e.g. tens of MB).</para>
+			<para>The current TransactionHandler uses a DOM-parser to parse the transactions from XML. TCP2.0 will replace this with a SAX-parser to improve performance and to reduce memory-usage, especially when importing large files (e.g. tens of MB).</para>
 		</section>
 
 		<section>
-			<title>Useability</title>
+			<title>Usability</title>
 			<para>The only way to use the current TransactionHandler is by including the transaction code in a SCAN- page. TCP2.0 will extend this with two mechanisms that enable the TransactionHandler to be accessed more directly.</para>
 
 			<itemizedlist>
@@ -262,7 +262,7 @@ transaction.commit();
 		<title>TCP 2.0 Syntax</title>
 		<para>The complete syntax for the XML-compliant TCP2.0 transaction language is presented here. See also the Transactions.dtd. TCP2.0 is an extended version of the TCP. See TCP project for details.</para>
 		<para>The TCP 2.0 language is quite hierarchical. There is one 'Transactions context' within which can be more 'Transaction contexts', within which can be more 'Object contexts' or 'Object merge contexts'. Within an 'Object context' more fields can be defined. Within an 'Object merge context' more parameters can be defined.</para>
-		<para>(The names 'Transactions context' and 'Transaction contexts' might lead to some confusion. We are tied to those names because TCP 2.0 has to be backwards compattible with TCP.)</para>
+		<para>(The names 'Transactions context' and 'Transaction contexts' might lead to some confusion. We are tied to those names because TCP 2.0 has to be backwards compatible with TCP.)</para>
 
 		<section>
 			<title>Transactions context</title>
