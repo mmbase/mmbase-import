@@ -58,6 +58,13 @@ public class LogTag extends ContextReferrerTag {
 
     public int doAfterBody() throws JspTagException {
         if (doLog && jspvar == null) log.service(counter++ + ": " + bodyContent.getString());
+        if (jspvar != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (java.io.IOException e) {
+                throw new JspTagException(e.toString());
+            }
+        }
         return SKIP_BODY;
     }    
 }
