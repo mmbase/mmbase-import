@@ -14,7 +14,8 @@
 <!ATTLIST action include CDATA #IMPLIED >
 <!ATTLIST action extends CDATA #IMPLIED >
 
-<!ELEMENT lists ( optionlist+ ) >
+<!ELEMENT lists ( optionlist* ) >
+<!ATTLIST lists extends CDATA #IMPLIED >
 
 <!ELEMENT steps ( step+ ) >
 
