@@ -14,32 +14,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.mmbase.bridge.*;
+
+import java.io.IOException;
+
+import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * BridgeServlet is an MMBaseServlet with a bridge Cloud in
- * it. Extending from this makes it easy to implement servlet
- * implemented with the MMBase bridge interfaces.
+ * BridgeServlet is an MMBaseServlet with a bridge Cloud in it. Extending from this makes it easy to
+ * implement servlet implemented with the MMBase bridge interfaces.
  *
- * An advantage of this is that security is used, which means that you
- * cannot unintentionly serve content to the whole world which should
- * actually be protected by the security mechanism.
+ * An advantage of this is that security is used, which means that you cannot unintentionly serve
+ * content to the whole world which should actually be protected by the security mechanism.
  *
- * Another advantage is that implementation using the bridge is
- * easier/clearer.
+ * Another advantage is that implementation using the bridge is easier/clearer.
  *
- * The query of a bridge servlet can possible start with
- * #<session-variable-name># in which case the cloud is taken from
- * that session attribute. If the query does not begin with #, an
- * 'anonymous' cloud is used. 
+ * The query of a bridge servlet can possible start with session=<session-variable-name> in which case the
+ * cloud is taken from that session attribute with that name. Otherewise 'cloud_mmbase' is
+ * supposed. All this is only done if there was a session active at all. If not, or the session
+ * variable was not found, that an anonymous cloud is used.
  *
- * @todo This #session# is not yet used anywhere (editors should be
- * aware of this). Things are not going to work nice in editors
- * because they use for example the 'gui()' function, which should
- * then produce an url to a servlet with #session# in it.
- *
- * @version $Id: BridgeServlet.java,v 1.2 2002-06-28 21:03:45 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.3 2002-06-30 20:15:52 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -47,16 +43,23 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     private static Logger log;
     private Cloud cloud;
 
+    /**
+     * Returns known functions which can be performed with bridge-functionality
+     * specialisations would increase the priority for their specific goal.
+     */
+
+
     protected String getCloudName() {
         return "mmbase";
     }
 
-    protected Cloud getCloud() {        
+    private Cloud getCloud() {
         if (! cloud.getUser().isValid()) { 
             log.debug("Cloud was invalid, making new one");
             cloud = LocalContext.getCloudContext().getCloud(getCloudName());
         }
         return cloud;
+
     }
 
 
@@ -65,22 +68,34 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * This is convenient, and also ensures that all this kind of servlet work uniformely.
      */
      
-    protected Node getNode(HttpServletRequest req, HttpServletResponse res) throws java.io.IOException {
+    protected Node getNode(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String query = req.getQueryString();        
         if (query == null) { // also possible to use /attachments/<number>
             query = new java.io.File(req.getRequestURI()).getName();
         }
+
         Cloud c;
-        if (query.startsWith("#")) { // request to use cloud from session
-            int until = query.indexOf('#');
-            if (until == -1) {
-                res.sendError(res.SC_NOT_FOUND, "Malformed URL");
-            }
-            String sessionName = query.substring(1, until);
-            HttpSession session = req.getSession();
-            query = query.substring(until + 1);            
+
+        // trying to get a cloud from the session
+        HttpSession session = req.getSession(false); // false: do not create a session, only use it
+        if (session != null) { // there is a session
+            String sessionName = "cloud_" + getCloudName();
+            if (query.startsWith("session=")) { // indicated the session name in the query: session=<sessionname>+<nodenumber>
+                int plus = query.indexOf('+', 8);
+                if (plus == -1) {
+                    res.sendError(res.SC_NOT_FOUND, "Malformed URL");
+                    return null;
+                }
+                sessionName = query.substring(8, plus);
+                query = query.substring(plus + 1);                            
+            } 
             c = (Cloud) session.getAttribute(sessionName); 
+
+            // not found, simply take anonymous.
+            if (c == null) c = getCloud();
+
         } else {
+            // no session, take anonymous.
             c = getCloud();
         }
 
@@ -89,10 +104,24 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             node = c.getNode(query);
         } catch (org.mmbase.bridge.NotFoundException e) {
             res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist");
+        } catch (org.mmbase.security.SecurityException e) {
+            res.sendError(res.SC_FORBIDDEN, "Permission denied: " + e.toString());
         } catch (Exception e) {
             res.sendError(res.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
         }
         return node;
+    }
+
+    /**
+     * The idea is that a 'bridge servlet' on default serves 'nodes', and that there could be
+     * defined a 'last modified' time for nodes. This can't be determined right now, so 'now' is
+     * returned.
+     *
+     * This function is defined in HttpServlet
+     **/
+    protected long getLastModified(HttpServletRequest req) {
+        // return getNode().getLastModified(); // pseudo-code
+        return System.currentTimeMillis();
     }
 
     /**
@@ -103,5 +132,6 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         log = Logging.getLoggerInstance(BridgeServlet.class.getName());
         cloud = LocalContext.getCloudContext().getCloud(getCloudName());
     }
+
 
 }
