@@ -3,7 +3,10 @@
 <mm:present referid="action">
 <mm:cloud logon="admin" method="delegate" authenticate="class">
 
-<mm:url id="baseurl" write="false" referids="parameters,$parameters" page="<%=request.getScheme() + "://" + request.getServerName() +  request.getRequestURI() %>" />
+<mm:url id="baseurl" write="false" referids="parameters,$parameters" page="<%=request.getScheme() + "://" + request.getServerName() +  request.getRequestURI() %>">
+   <mm:param name="btemplate" value="fullview.jsp" />
+</mm:url>
+
  <mm:import id="works">yep</mm:import>
 
 <mm:compare value="sendaccountinfo" referid="action">
@@ -213,9 +216,8 @@ bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm
 rationale  :<mm:field name="rationale"/>
 
 <mm:url referid="baseurl" escapeamps="false">
-               <mm:param name="btemplate" value="fullview.jsp" />
-               <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
-          </mm:url>
+    <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
+</mm:url>
            </mm:node>
         </mm:setfield>
 	    </mm:createnode>
@@ -306,7 +308,6 @@ bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm
 rationale  :<mm:field name="rationale"/>
 
 <mm:url referid="baseurl" escapeamps="false">
-    <mm:param name="btemplate" value="fullview.jsp" />
     <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
 </mm:url>
            </mm:node>
@@ -453,7 +454,6 @@ user <mm:node referid="newuser"><mm:field name="account"/></mm:node> commented
 
 
 <mm:url referid="baseurl" escapeamps="false">
-     <mm:param name="btemplate" value="fullview.jsp" />
      <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
 </mm:url>
            </mm:node>
