@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.28 2002-06-28 21:22:57 michiel Exp $
+  @version $Id: wizard.xsl,v 1.29 2002-07-02 09:54:58 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -242,7 +242,7 @@
             <xsl:when test="@dttype='image' and not(upload)">
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
-                  <img src="{node:function(string(@number), concat('cachepath(', $imagesize, ')'))}" hspace="0" vspace="0" border="0" /><br />
+                  <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
                   <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
                   <xsl:call-template name="prompt_image_upload" />
                   </a>
@@ -264,7 +264,7 @@
               <nobr><input type="hidden" name="{@fieldname}" value="YES" />
                 <xsl:choose>
                   <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" /><br />
-                    <a href="{$ew_context}/attachment.db?{@number}"><xsl:call-template name="prompt_do_download" /></a><br />
+                    <a href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',', string(@number), ')'))}"><xsl:call-template name="prompt_do_download" /></a><br />
                   </xsl:when>
                   <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
@@ -276,7 +276,7 @@
         </xsl:when>
         <xsl:when test="@ftype='image'">
           <span>
-            <img src="{node:function(string(@number), concat('cachepath(', $imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+            <img src="{node:function(string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
           </span>
 
         </xsl:when>
@@ -313,7 +313,7 @@
               <tr>
                 <td>
                   <span>
-                    <img src="{node:function(string(@destination), concat('cachepath(',$imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+                    <img src="{node:function(string(@destination), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
                   </span>
                 </td>
                 <td width="20"><img src="{$mediadir}nix.gif" width="20" height="1" /></td>
