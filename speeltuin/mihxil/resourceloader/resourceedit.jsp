@@ -13,15 +13,15 @@
   <%! Xml  xmlEscaper     = new Xml(Xml.ESCAPE);  %>
   <%
   ResourceLoader resourceLoader = (ResourceLoader) session.getAttribute("resourceedit_document");
-  if (resourceLoader == null) resourceLoader = ResourceLoader.getRoot();   
+  if (resourceLoader == null) resourceLoader = ResourceLoader.getConfigurationRoot();   
 %>
   <form method="post" name="resource" action="<mm:url />">
 <table style="padding: 0">
-  <mm:cloud>
+  <mm:cloud method="http"  >
   <mm:import externid="dirs" />
   <mm:write referid="dirs" jspvar="dir" vartype="String">
     <mm:isnotempty>
-    <% if (resourceLoader.equals(ResourceLoader.getRoot())) {
+    <% if (resourceLoader.equals(ResourceLoader.getConfigurationRoot())) {
           if (dir.equals("..")) dir = ""; // can hapen in case of lost session (server restart)
         }
         resourceLoader = new ResourceLoader(resourceLoader, dir); 
@@ -47,7 +47,7 @@
       <mm:notpresent referid="resource">
       <select name="dirs" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">
         <option value=""></option>
-        <% if (! resourceLoader.equals(ResourceLoader.getRoot())) {
+        <% if (! resourceLoader.equals(ResourceLoader.getConfigurationRoot())) {
          %>
            <option value="..">..</option>
         <%
@@ -172,10 +172,10 @@
        if (r != null) {
          ChainedCharTransformer t = new ChainedCharTransformer();
          t.add(xmlEscaper);
-         if (resource.endsWith(".xml")) { // apply some mmbase code-conventions.
+         if (resource.endsWith(".xml")) { // apply some mmbase code-conventions.           
            t.add(new TabToSpacesTransformer(2));
          }
-         BufferedReader reader = new BufferedReader(new TransformingReader(r, xmlEscaper));
+         BufferedReader reader = new BufferedReader(new TransformingReader(r, t));
          while(true) {
             String line = reader.readLine();
             if (line == null) break;
