@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.bridge.*;
 import org.mmbase.util.Arguments;
 import org.mmbase.util.UriParser;
 import org.mmbase.module.builders.AbstractServletBuilder;
@@ -31,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.37 2003-06-12 17:08:38 michiel Exp $ 
+ * @version $Id: ImageTag.java,v 1.38 2003-07-09 20:01:26 michiel Exp $ 
  */
 
 public class ImageTag extends FieldTag {
 
-    private static Logger log = Logging.getLoggerInstance(ImageTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ImageTag.class);
     private Attribute template = Attribute.NULL;
 
     /**
@@ -63,11 +64,21 @@ public class ImageTag extends FieldTag {
         String sessionName = "";
 
         if(! getCloud().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
-            sessionName = "cloud_mmbase";
+            // the user is not anonymous!
+            // Need to check if node is readable by anonymous.
+            // in that case URLs can be simpler     
             CloudTag ct = null;
             ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
-                sessionName = ct.getSessionName();
+                CloudContext cc = ct.getDefaultCloudContext();
+                Cloud anonymousCloud = cc.getCloud(ct.getName());
+                try {
+                    anonymousCloud.getNode(node.getNumber());
+                } catch (org.mmbase.security.SecurityException se) {
+                    sessionName = ct.getSessionName();
+                }
+            } else {
+                // how can this happen?
             }
         }
 
