@@ -633,7 +633,7 @@ Change directory to ${build.dir}/orion and run:
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
     <target name="war" description="Create a MMBase war-file" depends="jar,javadocs,war.config,war.webroot">
-        <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml.tomcat">
+        <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
 
             <!-- which libs are needed? -->
             <lib dir="${build.dir}/mmbase/lib" defaultexcludes="true">
@@ -901,7 +901,7 @@ Change directory to ${build.dir}/orion and run:
         <exclude name="**/~*"/>
       </fileset>
     </copy>
-    <copy file="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml.tomcat"
+    <copy file="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"
           tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"/>
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/mmbase-taglib.tld" />
@@ -1065,7 +1065,7 @@ Change directory to ${build.dir}/orion and run:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <copy file="${build.dir}/orion/default-web-app/WEB-INF/web.xml.orion"
+    <copy file="${build.dir}/orion/default-web-app/WEB-INF/web.xml"
           tofile="${build.dir}/orion/default-web-app/WEB-INF/web.xml"/>
  
     <copy file="${web.dir}/mmbase-taglib.tld"
