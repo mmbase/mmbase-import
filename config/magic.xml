@@ -2052,7 +2052,7 @@
 	<test offset="0" type="short" comparator="="></test>
 </detector>
 <detector>
-	<mimetype>pdf</mimetype>
+	<mimetype>application/pdf</mimetype>
 	<extension>application/pdf</extension>
 	<designation>PDF document</designation>
 	<test offset="0" type="string" comparator="=">%PDF-</test>
