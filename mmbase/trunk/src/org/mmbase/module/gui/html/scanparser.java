@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.10 2000-03-30 13:11:28 wwwtech Exp $
+$Id: scanparser.java,v 1.11 2000-05-23 17:54:02 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/03/30 13:11:28  wwwtech
+Rico: added license
+
 Revision 1.9  2000/03/29 10:42:20  wwwtech
 Rob: Licenses changed
 
@@ -50,7 +53,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.10 $ $Date: 2000-03-30 13:11:28 $
+ * @$Revision: 1.11 $ $Date: 2000-05-23 17:54:02 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -302,7 +305,7 @@ public class scanparser extends ProcessorModule {
 					try {
 						newbody.append(do_list(body.substring(prepostcmd,postcmd),body.substring(postcmd+1,end_pos2),session,sp));
 					} catch(Exception e) {
-						debug("handle_line(): ERROR: do_list(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+printURI(sp)+") : "+e);
+						debug("handle_line(): ERROR: do_list(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
 						e.printStackTrace();
 					}
 					postcmd=end_pos2+7;
@@ -612,7 +615,7 @@ public class scanparser extends ProcessorModule {
 			try {
 				part=handle_line(part,session,sp);
 			} catch (Exception e) {
-				debug("do_part(): handle_line exception ("+printURI(sp)+") file : "+filename);
+				debug("do_part(): handle_line exception ("+sp.getUrl()+") file : "+filename);
 				e.printStackTrace();
 			}
 	
@@ -831,7 +834,7 @@ public class scanparser extends ProcessorModule {
     */
     private final String do_newpage(scanpage sp,String part)
     {
-		debug( "do_newpage("+printURI(sp)+")");
+		debug( "do_newpage("+sp.getUrl()+")");
         sp.rstatus=2;
         return(part);
     }
@@ -851,7 +854,7 @@ public class scanparser extends ProcessorModule {
     private final String do_mod(scanpage sp,String part) {
         int index = part.indexOf('-');
         if (index == -1) {
-            debug("do_mod(): ERROR: part (no '-'): '" + part+"' ("+printURI(sp)+")");
+            debug("do_mod(): ERROR: part (no '-'): '" + part+"' ("+sp.getUrl()+")");
             return "";
         } else {
             String moduleName = part.substring(0,index);
@@ -859,7 +862,7 @@ public class scanparser extends ProcessorModule {
 
             ProcessorInterface proc = getProcessor(moduleName);
             if (proc == null) {
-                debug("do_mod(): ERROR: no Processor(" + moduleName +") found for page("+printURI(sp)+")");
+                debug("do_mod(): ERROR: no Processor(" + moduleName +") found for page("+sp.getUrl()+")");
                 return "";
             } else {
                 return proc.replace(sp, moduleCommand);
@@ -995,9 +998,9 @@ public class scanparser extends ProcessorModule {
 				if( tmpprocessor==null )
 				{
 					if (sp.processor!=null)
-						debug("do_macro(): WARNING: No processor("+str+") found for page("+printURI(sp)+"), but scanpage has one.");
+						debug("do_macro(): WARNING: No processor("+str+") found for page("+sp.getUrl()+"), but scanpage has one.");
 					else
-						debug("do_macro(): ERROR: No processor("+str+") found for page("+printURI(sp)+")");
+						debug("do_macro(): ERROR: No processor("+str+") found for page("+sp.getUrl()+")");
 				}
 			}
 		}
@@ -1009,7 +1012,7 @@ public class scanparser extends ProcessorModule {
 		} else if (sp.processor!=null) {
 			tokje=htmlgen.getHTMLElement(sp, sp.processor,cmds);
 		} else {
-			debug("do_macro(): ERROR: No processor() specified in page("+printURI(sp)+")");
+			debug("do_macro(): ERROR: No processor() specified in page("+sp.getUrl()+")");
 			tokje="<B> No Processor specified in page </B><BR>";
 		}
 		return(tokje);
@@ -1625,7 +1628,7 @@ public class scanparser extends ProcessorModule {
 			if (sp.processor!=null) {
 				sp.processor.process(sp,proc_cmd,proc_var);
 			} else {
-				debug("do_proc_input(): ERROR: Processor("+part+") is not loaded in server for page("+printURI(sp)+")");
+				debug("do_proc_input(): ERROR: Processor("+part+") is not loaded in server for page("+sp.getUrl()+")");
 			}
 		} else {
 			debug("do_proc_input(): No Processor specified : "+rq_line);
@@ -1645,7 +1648,7 @@ public class scanparser extends ProcessorModule {
 
 	public synchronized String calcPage(String part2,scanpage sp,int cachetype) {
 
-		debug("calcPage("+part2+","+printURI(sp)+","+cachetype+")");
+		debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+")");
 
 		try {
 			String filename,paramline=null;
@@ -1690,7 +1693,7 @@ public class scanparser extends ProcessorModule {
 				return("");
 			}
 		} catch (Exception r) {
-			debug("calcPage("+part2+","+printURI(sp)+","+cachetype+"): ERROR: "+r);
+			debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+"): ERROR: "+r);
 			r.printStackTrace();
 			return("");
 		}
