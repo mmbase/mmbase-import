@@ -22,8 +22,8 @@ import org.mmbase.module.builders.protocoldrivers.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @author  $Author: vpro $
- * @version $Revision: 1.13 $ $Date: 2001-05-04 13:54:56 $
+ * @author  $Author: daniel $
+ * @version $Revision: 1.14 $ $Date: 2001-06-02 23:14:50 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -36,11 +36,13 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	Hashtable name2driver;
 	Hashtable url2driver;
+	private int starttime;
 
 	public MMServers() {
 		javastr=System.getProperty("java.version")+"/"+System.getProperty("java.vm.name");
 		osstr=System.getProperty("os.name")+"/"+System.getProperty("os.version");
 		new MMServersProbe(this);
+		starttime=(int)(System.currentTimeMillis()/1000);
 	}
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
@@ -77,8 +79,33 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 			int then=node.getIntValue("atime");
 			String tmp=""+(now-then)+"sec";
 			return(tmp);
+		} else if (field.equals("uptime")) {
+			int now=(int)(System.currentTimeMillis()/1000);
+			int uptime=now-starttime;
+			return(getUptimeString(uptime));
 		}
 		return(super.getValue(node,field));
+	}
+
+	private String getUptimeString(int uptime) {
+		String result="";
+		if (uptime>=(24*3600)) {
+			int d=uptime/(24*3600);	
+			result+=""+d+" d ";
+			uptime=uptime-(d*24*3600);
+		}
+		if (uptime>=(3600)) {
+			int h=uptime/(3600);	
+			result+=""+h+" h ";
+			uptime=uptime-(h*3600);
+		}
+		if (uptime>=60) {
+			int m=uptime/(60);	
+			result+=""+m+" m ";
+			uptime=uptime-(m*60);
+		}
+		result+=""+uptime+" s";
+		return(result);
 	}
 
 	public void probeCall() {
