@@ -35,5 +35,7 @@
   |
   <a href="tipsandtricks.jsp">Tips and Tricks (FAQ)</a>
   |
+  <a href="1.1/">what's new</a>
+  |
   <a href="<mm:url page="/mmdocs/reference/taglib/toc.html" />" >Taglib documentation</a>
 </p>
