@@ -6,22 +6,22 @@
 
 <mm:import jspvar="bewaar" externid ="bewaar" />
 <mm:import externid="alias_name" />
-<mm:import jspvar="type" externid ="type" />
+<mm:import jspvar="ntype" externid="ntype" />
 
-<% String path1 = type;		// Eerst stukje van kruimelpad %>
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
 
 <%-- Start: do we have a node type ? --%>
-<mm:present referid="type">
+<mm:present referid="ntype">
   <mm:notpresent referid="bewaar">
-    <form enctype="multipart/form-data" name="create" action="new_object.jsp?type=<%= type %>" method="post">
+    <form enctype="multipart/form-data" name="create" action="new_object.jsp?ntype=<%= ntype %>" method="post">
 	<table border="0" cellspacing="0" cellpadding="3" class="table-form">
 	<tr bgcolor="#CCCCCC">
 	  <td align="right">&nbsp;</td>
-	  <td class="title-m">New node of type <b><mm:nodeinfo nodetype="$type" type="guitype" /></b> (<%= type %>)</td>
+	  <td class="title-m">New node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
 	</tr>
-	<mm:fieldlist nodetype="<%= type %>" type="edit">
+	<mm:fieldlist nodetype="<%= ntype %>" type="edit">
 		<tr valign="top">
 			<td align="right" class="name"><mm:fieldinfo type="guiname" /></td>
 			<td><mm:fieldinfo type="input" /></td>
@@ -41,9 +41,9 @@
 </mm:present>
 
 <%-- Save the new node and show it --%>
-<mm:present referid="type">
+<mm:present referid="ntype">
   <mm:present referid="bewaar">
-    <mm:createnode type="<%= type %>" id="new_node">
+    <mm:createnode type="<%= ntype %>" id="new_node">
       <mm:fieldlist type="edit">
 		<mm:fieldinfo type="useinput" />
       </mm:fieldlist>
@@ -56,11 +56,11 @@
         </mm:node>
     </mm:present>
 
-	<p class="message">Your new node of type <b><%= type %></b> is saved with the following values.
+	<p class="message">Your new node of type <b><%= ntype %></b> is saved with the following values.
 	<mm:node referid="new_node">
 	<table border="0" cellspacing="0" cellpadding="3" class="table-form">
 	<tr bgcolor="#CCCCCC">
-	  <td colspan="2" class="title-m">New node of type <b><mm:nodeinfo nodetype="$type" type="guitype" /></b> (<%= type %>)</td>
+	  <td colspan="2" class="title-m">New node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
 	</tr>
     <mm:fieldlist type="list">
     	<tr valign="top">

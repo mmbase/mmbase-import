@@ -2,13 +2,14 @@
 <%@ include file="inc_top.jsp" %>
 <mm:cloud name="mmbase" jspvar="wolk" method="http" rank="basic user">
 <mm:import jspvar="savethis" externid="savethis" />
-<% String path1 = "";		// Eerst stukje van kruimelpad %>
+<mm:import jspvar="ntype" externid="ntype" />
+<% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
 <% // Save them
 if (savethis != null && savethis.equals("Save")) {
-	session.setAttribute("max_str",max_str); // Save new node nr in session 
-	session.setAttribute("dayofs",dayofs); // Save new node nr in session 
+	session.setAttribute("conf_max",conf_max); // Save new node nr in session 
+	session.setAttribute("conf_days",conf_days); // Save new node nr in session 
 }
 %>
 
@@ -18,12 +19,12 @@ if (savethis != null && savethis.equals("Save")) {
 maximum age in days of the items that will be found.</p>
 
 <%
-if (session.getAttribute("max_str") != null && session.getAttribute("dayofs") != null) {
+if (session.getAttribute("conf_max") != null && session.getAttribute("conf_days") != null) {
 %>
 <p class="message">You have saved the following settings<br>
 <%
-	out.println("<br>Maximum age in days: " + session.getAttribute("dayofs").toString());
-	out.println("<br>Maximum number of items shown: " + session.getAttribute("max_str").toString());
+	out.println("<br>Maximum age in days: " + session.getAttribute("conf_days").toString());
+	out.println("<br>Maximum number of items shown: " + session.getAttribute("conf_max").toString());
 %>
 </p>
 <%
@@ -43,11 +44,11 @@ If you want to make permanent changes you will have to edit the file 'inc_head.j
 </tr>
 <tr valign="top">
   <td align="right" class="name">Max days old</td>
-  <td><input type="text" name="dayofs" value="<%= dayofs %>" size="9" maxlength="9"></td>
+  <td><input type="text" name="conf_days" value="<%= conf_days %>" size="9" maxlength="9" /></td>
 </tr>
 <tr valign="top">
   <td align="right" class="name">Max items per page</td>
-  <td><input type="text" name="max_str" value="<%= max_str %>" size="9" maxlength="9"></td>
+  <td><input type="text" name="conf_max" value="<%= conf_max %>" size="9" maxlength="9" /></td>
 </tr>
   <tr><td align="right" colspan="2"><input type="submit" name="savethis" value="Save" /></td></tr>
 </table>
