@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.7 2000-05-07 20:20:07 wwwtech Exp $
+$Id: FieldDefs.java,v 1.8 2000-06-06 20:23:20 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/05/07 20:20:07  wwwtech
+daniel: upgrades for XML configs
+
 Revision 1.6  2000/03/31 16:15:37  wwwtech
 davzev: Added DBSTATE_UNKNOWN=-1 constant.
 
@@ -38,7 +41,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.7 $ $Date: 2000-05-07 20:20:07 $
+ * @$Revision: 1.8 $ $Date: 2000-06-06 20:23:20 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -46,7 +49,8 @@ public class FieldDefs  {
 	public final static int DBSTATE_SYSTEM = 3;
 	public final static int DBSTATE_UNKNOWN = -1;
 
-	public String GUIName; 
+	private String GUIName; 
+	public Hashtable GUINames = new Hashtable(); 
 	public String GUIType; 
 	public int	  GUISearch; 
 	public int    GUIList; 
@@ -57,6 +61,8 @@ public class FieldDefs  {
 	public boolean	  DBNotNull=false;
 	public int    DBPos;
 	public int    DBSize=-1;
+	public int SearchAge=30;
+
 
 	public FieldDefs() {
 	}
@@ -87,6 +93,8 @@ public class FieldDefs  {
 
 
 	public String getGUIName() {
+		String tmp=(String)GUINames.get("en");
+		if (tmp!=null) return(tmp);
 		return (GUIName);
 	}
 
@@ -102,6 +110,14 @@ public class FieldDefs  {
 		return (DBType);
 	}
 
+	public int getDBSize() {
+		return (DBSize);
+	}
+
+	public boolean getDBNotNull() {
+		return (DBNotNull);
+	}
+
 	public int getDBState() {
 		return (DBState);
 	}
@@ -114,7 +130,11 @@ public class FieldDefs  {
 		return (GUIList);
 	}
 
+	public int getGUIPos() {
+		return (GUIPos);
+	}
+
 	public String toString() {
-		return("DEF Name="+GUIName+" Type="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize);
+		return("DEF GUIName="+getGUIName()+" GUIType="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize);
 	}
 }
