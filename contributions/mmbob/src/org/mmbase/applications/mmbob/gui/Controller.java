@@ -372,6 +372,10 @@ public class Controller {
             if (f != null) {
                 virtual.setValue("name", f.getName());
                 virtual.setValue("language", f.getLanguage());
+                virtual.setValue("accountcreationtype", f.getAccountCreationType());
+                virtual.setValue("accountremovaltype", f.getAccountRemovalType());
+                virtual.setValue("loginmodetype", f.getLoginModeType());
+                virtual.setValue("logoutmodetype", f.getLogoutModeType());
                 virtual.setValue("description", f.getDescription());
                 virtual.setValue("postareacount", f.getPostAreaCount());
                 virtual.setValue("postthreadcount", f.getPostThreadCount());
@@ -395,7 +399,9 @@ public class Controller {
                 }
             }
         } catch (Exception e) {
+		e.printStackTrace();
         }
+
         return virtual;
     }
 
