@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.115 2004-07-29 17:14:20 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.116 2004-09-17 09:17:24 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -360,7 +360,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         } else {
             return rm;
         }
-        
+
     }
 
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
@@ -576,18 +576,18 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
 
             boolean checked = setSecurityConstraint(query);
-        
+
             if (! checked) {
                 log.warn("Query could not be completely modified by security: Aggregated result might be wrong");
             }
             AggregatedResultCache cache = AggregatedResultCache.getCache();
 
             List resultList = (List) cache.get(query);
-            if (resultList == null) {            
+            if (resultList == null) {
                 ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
                 resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
                 cache.put(query, resultList);
-            }            
+            }
             query.markUsed();
             NodeManager tempNodeManager;
             if (resultList.size() > 0) {
@@ -611,11 +611,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
 
     protected List    getClusterNodes(Query query) {
-        
+
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
         // check multilevel cache if needed
         List resultList = (List)multilevelCache.get(query);
-        
+
         // if unavailable, obtain from database
         if (resultList == null) {
             log.debug("result list is null, getting from database");
@@ -626,7 +626,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
             multilevelCache.put(query, resultList);
         }
-    
+
         query.markUsed();
 
         return resultList;
@@ -635,7 +635,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     /**
      * @since MMBase-1.7
      */
-    boolean setSecurityConstraint(Query query) {   
+    boolean setSecurityConstraint(Query query) {
         Authorization auth = mmbaseCop.getAuthorization();
         if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             BasicQuery bquery = (BasicQuery) query;
@@ -660,7 +660,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
         }
         return false;
-    } 
+    }
 
     void   checkNodes(BasicNodeList resultNodeList, Query query) {
         Authorization auth = mmbaseCop.getAuthorization();
@@ -673,12 +673,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         log.debug("Starting read-check");
         // resultNodeList is now a BasicNodeList; read restriction should only be applied now
         // assumed it though, that it contain _only_ MMObjectNodes..
-        
+
         // get authorization for this call only
-        
+
         UserContext user = userContext.getUserContext();
         List steps = query.getSteps();
-        
+
         log.debug("Creating iterator");
         ListIterator li = resultNodeList.listIterator();
         while (li.hasNext()) {
@@ -700,8 +700,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
         }
         resultNodeList.autoConvert = true;
-        
-        
+
+
     }
 
 
@@ -710,7 +710,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @since MMBase-1.7
      */
     protected NodeList getSecureList(Query query) {
-     
+
         boolean checked = setSecurityConstraint(query);
 
         List resultList = getClusterNodes(query);
@@ -730,8 +730,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             tempNodeManager = new VirtualNodeManager(this);
         }
         resultNodeList = new BasicNodeList(resultList, tempNodeManager);
-        
-        resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);       
+
+        resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
 
         if (! checked) {
             checkNodes(resultNodeList, query);
@@ -751,6 +751,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         String searchDir,
         boolean distinct) {
 
+        if ((nodePath==null) || nodePath.equals("")) throw new BridgeException("Node path cannot be empty - list at least one nodemanager.");
         Query query = Queries.createQuery(this, startNodes, nodePath, fields, constraints, orderby, directions, searchDir, distinct);
         return getList(query);
     }
