@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.18 2003-05-14 18:10:15 michiel Exp $
+ * @version $Id: Encode.java,v 1.19 2004-03-20 00:01:55 michiel Exp $
  **/
 public class Encode {
 
@@ -59,7 +59,7 @@ public class Encode {
     private  static Set registered = new HashSet();  // in this is remembered which classes were registered, to avoid registering them more than once.
 
     static {
-        log = Logging.getLoggerInstance(Encode.class.getName());
+        log = Logging.getLoggerInstance(Encode.class);
         encodings = new HashMap();
 
         // a few Encoding are avaible by default:
@@ -70,6 +70,8 @@ public class Encode {
             register("org.mmbase.util.transformers.Url");
             register("org.mmbase.util.transformers.Sql");
             register("org.mmbase.util.transformers.XmlField");
+            register("org.mmbase.util.transformers.LinkFinder");
+            register("org.mmbase.util.transformers.Censor");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.err.println(e.toString());
