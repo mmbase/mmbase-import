@@ -54,7 +54,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="webapp.dir"      value="${build.dir}/mmbase/mmbase-webapp"/>
 
   <property name="templates.dir"   value="${webapp.dir}/mmbase" />  
-  <property name="examples.dir"    value="${webapp.dir}/examples" />
+  <property name="examples.dir"    value="${webapp.dir}/mmexamples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
