@@ -1035,6 +1035,13 @@ public class servdb extends JamesServlet {
         }
 
         if( number != -1 ) {
+			// Following two lines replace the original commented out code
+			// to relieve the pressure on the monstorious properties table
+			// when selecting speed is an issue and the props table is fixed
+			// it can be enabled again
+			speed = 16000;
+			channels = 1;
+			/* Original code ending at: End of...
             sessionInfo session=sessions.getSession(sp,sp.sname);
             String	auto = getParamValue("a",params);
             if ( auto!=null && auto.equals("session") ) {
@@ -1070,6 +1077,9 @@ public class servdb extends JamesServlet {
             //  -------------------------------------------------------------------------------------------------------------
             if( debug ) debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
             //  -------------------------------------------------------------------------------------------------------------
+			
+			End of original code
+			*/
 
             String url = ((VideoParts)mmbase.getMMObject("videoparts")).getVideopartUrl( mmbase, sp, number, speed, channels);
             if( debug ) debug("getRMStream(): result: I have url("+url+") as result ");
