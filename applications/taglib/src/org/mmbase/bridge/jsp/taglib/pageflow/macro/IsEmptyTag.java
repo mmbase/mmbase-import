@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow.macro;
 
+import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
 
 /**
@@ -18,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
  */
 
 public class IsEmptyTag extends CompareTag  {
-    protected boolean doCompare(Comparable compare1, Comparable compare2) {        
-        return compare1 == null || "".equals(compare1);
+    protected Object getCompare2() throws JspTagException {
+        return "";
     }
 }
