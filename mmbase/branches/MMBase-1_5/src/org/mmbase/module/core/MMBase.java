@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.48 2002-02-04 12:54:43 pierre Exp $
+ * @version $Id: MMBase.java,v 1.48.2.1 2002-04-18 14:18:31 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -319,12 +319,6 @@ public class MMBase extends ProcessorModule  {
         initBuilders();
 
         log.debug("Objects started");
-
-        log.debug("Starting MultiRelations Builder");
-        MultiRelations = new MultiRelations(this);
-
-        log.debug("Starting Cluster Builder");
-        clusterBuilder = new ClusterBuilder(this);
 
         // weird place needs to rethink (daniel).
         Vwms bul=(Vwms)getMMObject("vwms");
@@ -845,26 +839,30 @@ public class MMBase extends ProcessorModule  {
         // new code checks all the *.xml files in builder dir, recursively
         loadBuilders(path);
 
+        log.debug("Starting MultiRelations Builder");
+        MultiRelations = new MultiRelations(this);
+
+        log.debug("Starting Cluster Builder");
+        clusterBuilder = new ClusterBuilder(this);
+
+        // first initialize versions, if available
+        log.debug("Versions:");
+        Versions versions=(Versions)getMMObject("versions");
+        if (versions!=null) {
+            versions.init();
+        }
+
         log.debug("mmobjects, inits");
         Enumeration t = mmobjs.elements();
         while (t.hasMoreElements()) {
-                    MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-                    log.debug("init " + fbul);
-                    fbul.init();
-        }
-
-        Enumeration t2 = mmobjs.keys();
-        while (t2.hasMoreElements()) {
-                    TypeDef.loadTypeDef(""+t2.nextElement());
-        }
-
-        log.debug("Versions:");
-        // check and update versions if needed
-        Versions ver=(Versions)getMMObject("versions");
-        if (ver!=null) {
-            t2 = mmobjs.keys();
-            while (t2.hasMoreElements()) {
-                checkBuilderVersion((String)t2.nextElement(),ver);
+            MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+            log.debug("init " + fbul);
+            if (!fbul.isVirtual()) {
+                fbul.init();
+                TypeDef.loadTypeDef(fbul.getTableName());
+                if (versions!=null) {
+                    checkBuilderVersion(fbul.getTableName(),versions);
+                }
             }
         }
 
