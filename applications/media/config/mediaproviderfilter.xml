@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE scripts SYSTEM "dtd/servers_1_0.dtd">
+
+<mediaproviderfilter>
+
+	<!-- define the chain of filters, the filter that has to filter first
+		has to mentioned as first. A filter is specified or by the classname
+		(class needs mediaproviderfilterinterface) or by some standard ones.
+		See for more information about the standard ones the rest of this file.
+		-->
+	<chain>
+		<filter>sortProviders</filter>
+		<filter>nl.vpro.mmbase.util.media.OmroepFilter</filter>
+	</chain>
+
+	<!-- The filerOnHost filter can be used when you want to redirect certain domains
+	to certain mediaproviders. user="*" is a default, when no filter matches the provider
+	specified by this dfault filter will be used.
+	-->
+	<filterOnHost>
+		<hostfilter user="*" provider="streams.omroep.nl" />
+		<hostfilter user="*.es" provider="streams.omroep.es" />
+		<hostfilter user="*.vpro.nl" provider="streams.vpro.nl" />
+	</filterOnHost>
+
+	<!-- The sortProviders filter will order the providers in a list from most wanted to use
+	till least wanted to use. The first one mentioned in the list is the most wanted. When the 
+	mediaproviderfilter finished the chain of filters, the most wanted will be taken if there are
+	still multiple providers left.
+	-->
+	<sortProviders>
+		<provider host="streams.omroep.nl" />
+		<provider host="streams.vpro.nl" />
+	</sortProviders>
+	
+</mediaproviderfilter>
