@@ -70,7 +70,7 @@ while (i.hasNext()) {
 # <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
 #
 Target[<mm:write referid="thisserver" />_<%=cache.getName()%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=cache.getName()%>"`
-Title[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <%=cache.getName()%>
+Title[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
 MaxBytes[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 100000000
 Options[<mm:write referid="thisserver" />_<%=cache.getName()%>]:  integer, nopercent
 kilo[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 1024
@@ -78,7 +78,7 @@ Ylegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests
 LegendO[<mm:write referid="thisserver" />_<%=cache.getName()%>]: &nbsp;total :
 LegendI[<mm:write referid="thisserver" />_<%=cache.getName()%>]: &nbsp;hits :
 ShortLegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests/s
-PageTop[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <h1><%=cache.getName()%> information</h1>
+PageTop[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
 
  <% } %>
 
