@@ -1,5 +1,5 @@
 /*
-$Id: Todos.java,v 1.4 2000-03-20 10:47:26 wwwtech Exp $
+$Id: Todos.java,v 1.5 2000-03-20 14:58:37 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/20 10:47:26  wwwtech
+Wilbert: Merged double mapping of integer status field to text into one method
+
 Revision 1.3  2000/03/17 12:37:11  wwwtech
 - (marcel) added better support for functions in getValue
 
@@ -21,7 +24,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2000-03-20 10:47:26 $
+ * @version $Revision: 1.5 $ $Date: 2000-03-20 14:58:37 $
  */
 public class Todos extends MMObjectBuilder {
 
@@ -34,6 +37,7 @@ public class Todos extends MMObjectBuilder {
 				case 5: return("Stopped");
 				case 6: return("Testing");
 				case 7: return("Finished");
+				case 8: return("Rejected");
 				default: return("Unknown");
 		}
 	}
