@@ -18,7 +18,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-reference.xml,v 1.6 2003-05-27 13:06:50 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.7 2003-06-11 13:30:25 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -103,17 +103,25 @@
 						<programlisting format="linespecific">nodepath=people or nodepath=people,news</programlisting>
 					</listitem>
 				</varlistentry>
+			</variablelist>
+			<variablelist>
+				<title>The following parameters MAY be specified:</title>
 				<varlistentry>
 					<term>fields</term>
 					<listitem>
 						<para>The fields to show in the list. If you query only one nodetype (see nodepath), you can use simple field names. Otherwise, you need to preface the fieldnames with the name of the objecttype they belong to.
 						If the first field listed is a number field, teh objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<note><para>In 1.6.3 and lower, field is mandatory. In 1.6.4 and up, if fields is not specified, the wizard uses the default 'list' fields specified by MMBase.</para></note>
 						<programlisting format="linespecific">fields=news.title,people.firstname,people.lastname</programlisting>
 					</listitem>
 				</varlistentry>
-			</variablelist>
-			<variablelist>
-				<title>The following parameters MAY be specified:</title>
+				<varlistentry>
+					<term>templates</term>
+					<listitem>
+						<para>The directory where the xsl templates can be found. Use this to specify an alternate directory for xsl templates.</para>
+						<programlisting format="linespecific">templates=data/my_xsl</programlisting>
+					</listitem>
+				</varlistentry>
 				<varlistentry>
 					<term>main</term>
 					<listitem>
@@ -211,7 +219,7 @@
 					<listitem>
 						<para>The field(s) on which to make a search, using the value specified in the search parameter and the type of comparison specified in the search type.</para>
 						<para>You can specify more than one field (separated by commas). if you do, a search matches if one or more of the specified fields matches.</para>
-						<para>If you specify this parameter, the wizards will create a searchbox at teh top of the list, allowing you to enter the value to serach for.</para> 
+						<note><para>If the search parameter (see below) is set to AUTO, specifying this parameter will create a searchbox at the top of the list, allowing you to enter the value to search for. If a search box is forced by the search parameter but the searchfields are not specified, the default is to search on the fields being displayed (specified in the fields parameter)</para></note>
 						<programlisting format="linespecific">searchfields=news.title,news.subtitle</programlisting>
 					</listitem>
 				</varlistentry>
@@ -242,11 +250,15 @@
 					</listitem>
 				</varlistentry>
 				<varlistentry>
-					<term>forcesearch</term>
+					<term>search</term>
 					<listitem>
-						<para>If true, a search is enforced before a result list is returned. If no serachvalue is given, the wziard produces an empty list and forces the user to enter a searchvalue. Note that this parameter is only appropriate if you provide searchfields.</para>
+						<para>The serach parameter specified when the list should show a search box, and whether searching is mandatory. There are four possible values:</para>
+						<para><emphasis>false</emphasis> turns searching off. If other parameters such as searchfields and serachvalue are given, the search is performed using those parameters but a serachbox is not displayed.</para>
+						<para><emphasis>true</emphasis> turns searching on, displaying a searchbox on top of the list, using defaults for parameters such as searchfields, if these are not specified.</para>
+						<para><emphasis>force</emphasis> is like TRUE, but searching (and showing a resultlist) is not performed until a serachvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
+						<para><emphasis>auto</emphasis> makes searcing depdnend on teh presence of teh searcgfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para> 
 						<note><para>Available from MMBase 1.6.4 and up</para></note>
-						<programlisting format="linespecific">forcesearch=true</programlisting>
+						<programlisting format="linespecific">search=true</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -296,6 +308,13 @@
 			</variablelist>
 			<variablelist>
 				<title>The following parameters MAY be specified:</title>
+				<varlistentry>
+					<term>templates</term>
+					<listitem>
+						<para>The directory where the xsl templates can be found. Use this to specify an alternate directory for xsl templates.</para>
+						<programlisting format="linespecific">templates=data/my_xsl</programlisting>
+					</listitem>
+				</varlistentry>
 				<varlistentry>
 					<term>sessionkey</term>
 					<listitem>
