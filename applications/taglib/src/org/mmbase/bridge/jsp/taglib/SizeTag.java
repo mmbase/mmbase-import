@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 
 import javax.servlet.jsp.JspTagException;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.17 2003-08-27 21:33:36 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.18 2003-09-02 19:46:44 michiel Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer, NodeListContainerReferrer {
@@ -45,17 +46,9 @@ public class SizeTag extends ListReferrerTag implements Writer, NodeListContaine
      * When in a list-container only, the size can be predicted by altering the query with "count()".
      * @since MMBase-1.7
      */
-    protected void nodeListContainerSize(NodeListContainer c) throws JspTagException {
-        Cloud cloud = c.getCloud();
+    protected void nodeListContainerSize(NodeListContainer c) throws JspTagException {       
         Query query = c.getQuery();
-        
-        Query count = query.aggregatingClone();
-        
-        Step step = (Step) (count.getSteps().get(0));
-        count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        
-        Node result = (Node) cloud.getList(count).get(0);
-        int res = result.getIntValue("number") - query.getOffset();
+        int res = Queries.count(query) - query.getOffset();
         int max = query.getMaxNumber();
         if (max > -1 && res > max) { res = max; }
         helper.setValue(new Integer(res));
