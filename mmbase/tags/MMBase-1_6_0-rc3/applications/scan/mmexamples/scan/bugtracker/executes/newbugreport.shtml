@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="../beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+
+
+<transactions>
+	<create>
+		<accessObject id="pool1" mmbaseId="BugTracker.Start"/>
+
+		<accessObject id="user1" mmbaseId="$SESSION-SUBMITTER"/>
+
+		<createObject id="report1" type="bugreports">
+			<setField name="bstatus">1</setField>
+			<setField name="btype">$SESSION-TYPE^</setField>
+			<setField name="issue">$SESSION-ISSUE^</setField>
+			<setField name="version">$SESSION-VERSION^</setField>
+			<setField name="bpriority">$SESSION-PRIORITY^</setField>
+			<setField name="description">$SESSION-DESCRIPTION^</setField>
+			<setField name="rationale"></setField>
+		</createObject>
+
+		<createObject id="event1" type="mmevents">
+			<setField name="name">submitted bug</setField>
+			<setField name="start">$MOD-INFO-TIME-CURTIME^</setField>
+		</createObject>
+
+ 		<createRelation type="related" source="pool1" destination="report1" />
+ 		<createRelation type="rolerel" source="report1" destination="user1">
+			<setField name="role">submitter</setField>
+		</createRelation>
+
+
+ 		<createRelation type="related" source="report1" destination="event1" />
+	</create>
+</transactions>
+
+<FORM ACTION="../index.shtml" METHOD="POST">
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD WIDTH="50"><IMG SRC="../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>feedback</B>
+	</TD>
+</TR>
+
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+		<CENTER> Changes Saved <BR>
+		<BR>
+		 <CENTER><INPUT TYPE="SUBMIT" VALUE="OKE">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>
