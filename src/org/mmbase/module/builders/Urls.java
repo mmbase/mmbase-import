@@ -15,12 +15,15 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
+
 
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
 public class Urls extends MMObjectBuilder {
+    private static Logger log = Logging.getLoggerInstance(Urls.class.getName());
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("url");
@@ -51,10 +54,12 @@ public class Urls extends MMObjectBuilder {
 	private boolean nodeChanged(String number,String builder,String ctype) {
         if (builder.equals(tableName)) {
 			int nr = Integer.parseInt(number);
-			//debug("Removing "+number+" from jumper cache");
 			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
-			if (jumpers==null) debug("ERROR: Could not get Jumper builder");
-			else jumpers.delJumpCache(number);
+			if (jumpers==null) { 
+				log.error("Urls builder - Could not get Jumper builder");
+			} else {
+				jumpers.delJumpCache(number);
+			}
 		}
 		return true;
 	}
@@ -68,5 +73,4 @@ public class Urls extends MMObjectBuilder {
         super.nodeRemoteChanged(number,builder,ctype);
 		return nodeChanged( number, builder, ctype);
 	}
-
 }
