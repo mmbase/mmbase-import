@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.util;
 
@@ -14,27 +14,28 @@ import java.util.*;
 import org.mmbase.module.core.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
+ * Class for creating builder configuration files.
+ *
  * @author Daniel Ockeloen
- *
- * @version $Id: XMLBuilderWriter.java,v 1.10 2000-09-15 13:44:38 daniel Exp $
- *
- * $Log: not supported by cvs2svn $
- * Revision 1.9  2000/08/29 20:47:05  daniel
- * forgot to write out properties
- *
- * Revision 1.8  2000/08/19 11:10:05  case
- * cjr: Set encoding=iso-8859-1 so french (and whatnot) chars are allowed
- *
- *
+ * @version $Id: XMLBuilderWriter.java,v 1.11 2001-04-19 12:44:06 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XMLBuilderWriter.class.getName());
+
+    /**
+     * Creates a builder configuration file.
+     * @param filename the filename where the configuration is to be stored
+     * @param bul the builder to store
+     * @return always <code>true</code>
+     */
     public static boolean writeXMLFile(String filename,MMObjectBuilder bul) {
         String header = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"+
                         "<!DOCTYPE builder PUBLIC \"//MMBase - builder//\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
-        //String header = "";
 
         String body=header+"<builder maintainer=\""+bul.getMaintainer()+"\" version=\""+bul.getVersion()+"\">\n\n";
 
@@ -101,6 +102,9 @@ public class XMLBuilderWriter  {
         body+="-->\n";
         body+="<descriptions>\n";
         body+="<!-- descriptions per language as defined by ISO 639  -->\n";
+
+        // XXX:escape descriptions and store them as CDATA
+
         names=bul.getDescriptions();
         if (names!=null) {
             for (Enumeration e=names.keys();e.hasMoreElements();) {
@@ -115,7 +119,7 @@ public class XMLBuilderWriter  {
         body+="</descriptions>\n\n";
 
         // properties
-		body+="<!-- <properties>\n";
+        body+="<!-- <properties>\n";
      	body+="you can define properties to be used by the classfile (if used) it uses\n";
      	body+="a key/value system. Its a optional tag.\n";
 		body+="-->\n";
@@ -253,13 +257,17 @@ public class XMLBuilderWriter  {
         // the end of the builder file
         body+="</builder>";
 
-        // print it
+        // print it  XXX: should be :  return saveFile(filename,body);  (?)
         saveFile(filename,body);
-        return(true);
+        return true;
     }
 
-
-
+    /**
+     * Writes a text to a file.
+     * @param filename the filename where the text is to be stored
+     * @param value the text to write
+     * @return always <code>true</code>
+     */
     static boolean saveFile(String filename,String value) {
         File sfile = new File(filename);
         try {
@@ -268,8 +276,10 @@ public class XMLBuilderWriter  {
             scan.flush();
             scan.close();
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
+            log.error(Logging.stackTrace(e));
+            // should return false!
         }
-        return(true);
+        return true;
     }
 }
