@@ -1,4 +1,4 @@
-/* 
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.29 2001-08-16 12:47:31 install Exp $
+* @version $Id: JamesServlet.java,v 1.28.2.1 2001-07-30 13:18:43 gerard Exp $
 */
 
 
@@ -56,6 +56,7 @@ public class JamesServlet extends HttpServlet {
         ServletConfig sc = getServletConfig();
         ServletContext sx = sc.getServletContext();
         MMBaseContext.init(sx);
+        MMBaseContext.initHtmlRoot();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(JamesServlet.class.getName());
     }

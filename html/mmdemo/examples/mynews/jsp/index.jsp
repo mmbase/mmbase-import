@@ -1,5 +1,5 @@
 <%@page errorPage="error.jsp"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-0.8" prefix="mm" %>
 <%-- get the current magazine, if there is no  magazine
 use the default magazine with alias default.mags --%>
 <% String magid = request.getParameter("magid") ; %>
@@ -38,7 +38,7 @@ use the default magazine with alias default.mags --%>
 
   <%-- we are still in the magazine node, we can now aks for related news items
   by using the related tag --%>
-  <mm:relatednodes type="news">
+  <mm:related type="news">
    <%-- the first tag is a macro for <mm:listcondition value="first"/> --%>
    <mm:first><TR><TD WIDTH="30"></TD><TD><TABLE width="100%" cellspacing=1 cellpadding=3 border=0><TR><TH ALIGN="LEFT">title</TH><TH ALIGN="RIGHT">link</TH></TR></mm:first> 
 
@@ -52,7 +52,7 @@ use the default magazine with alias default.mags --%>
     <TD ALIGN="RIGHT"><A HREF="newsitem.jsp?magid=<mm:field node="mag" name="number"/>&newsid=<mm:field name="number"/>">link</A></TD>
    </TR> 
    <mm:last></TABLE></TD></TR></mm:last>
-  </mm:relatednodes>
+  </mm:related>
   </TABLE>
   </CENTER>
  </BODY>

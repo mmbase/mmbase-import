@@ -1,12 +1,11 @@
 <%@page errorPage="error.jsp"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-0.8" prefix="mm" %>
 <mm:cloud name="mmbase">
 <%-- magazine node --%>
 <%-- the page is called with a parameter newsid
 we can use the parameter attribute of node to create a context 
 for the MMBase node --%>
-<mm:import externid="newsid"/>
-<mm:node number="${newsid}">
+<mm:node number="param:newsid">
 <HTML>
  <HEAD>
   <%-- we are in the news node  we can ask 
@@ -30,15 +29,15 @@ for the MMBase node --%>
   brakes and paragraphs --%>
   <P><mm:field  name="html(body)"/></P>
 
-  <mm:relatednodes type="images">
+  <mm:related type="images">
    <mm:first>Related images<BR></mm:first>
     <IMG SRC="/img.db?<mm:field name="number"/>+(200)">
-  </mm:relatednodes>
+  </mm:related>
 
-  <mm:relatednodes type="urls">
+  <mm:related type="urls">
    <mm:first>Related urls<BR></mm:first>
    <A HREF="<mm:field name="url"/>"><mm:field name="description"/></A><BR>
-  </mm:relatednodes>
+  </mm:related>
   </TD>
   </TR>
   </TABLE>

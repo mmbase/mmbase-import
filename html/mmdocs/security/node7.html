@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2K.1beta (1.56)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Autorization</TITLE>
+<META NAME="description" CONTENT="Autorization">
+<META NAME="keywords" CONTENT="status2">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2K.1beta">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="status2.css">
+
+<LINK REL="previous" HREF="node6.html">
+<LINK REL="up" HREF="node2.html">
+<LINK REL="next" HREF="node8.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html86"
+  HREF="node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.png"></A> 
+<A NAME="tex2html84"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.png"></A> 
+<A NAME="tex2html80"
+  HREF="node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html87"
+  HREF="node8.html">The configuration</A>
+<B> Up:</B> <A NAME="tex2html85"
+  HREF="node2.html">The different parts of</A>
+<B> Previous:</B> <A NAME="tex2html81"
+  HREF="node6.html">UserContext</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00025000000000000000">
+Autorization</A>
+</H2>
+The Authorization class checks if a UserContext has the rights to perform a certain operation on a certain node. The Operations which can be done are the following:
+
+<OL>
+<LI>Read : 
+	If a node may be accessed.
+</LI>
+<LI>Write :
+	If a node may be changed.
+</LI>
+<LI>Create : 
+	If a builder may create a new node.
+</LI>
+<LI>Link : 
+	If a relation may be created to the node.
+</LI>
+<LI>Delete:
+    	If the node may be deleted.
+</LI>
+<LI>Change Context:
+    	If the node rights may be changed.
+</LI>
+</OL>
+This operations can be used inside the method: boolean check(UserContext, NodeId, Operation) which returns true is an operation is permitted, and the method void assert(UserContext, NodeId, Operation) which trows an exception when a operation is not permitted. Furthermore this class contains a few methods to notify the security system of changes in the system.
+
+<P>
+<BR><HR>
+<ADDRESS>
+Eduard.Witteveen@omroep.nl
+</ADDRESS>
+</BODY>
+</HTML>

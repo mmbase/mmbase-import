@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-0.8" prefix="mm" %>
 <%@page import="java.util.Hashtable" %>
 <%@page import="org.mmbase.bridge.*" %>
 <mm:cloud name="mmbase">

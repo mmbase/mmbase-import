@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.107 $ $Date: 2001-09-03 15:31:48 $
+ * @version $Revision: 1.105.2.1 $ $Date: 2001-09-03 15:39:11 $
  */
 public class MMObjectBuilder extends MMTable {
 

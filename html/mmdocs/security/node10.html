@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2K.1beta (1.56)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>basic</TITLE>
+<META NAME="description" CONTENT="basic">
+<META NAME="keywords" CONTENT="status2">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2K.1beta">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="status2.css">
+
+<LINK REL="next" HREF="node11.html">
+<LINK REL="previous" HREF="node9.html">
+<LINK REL="up" HREF="node9.html">
+<LINK REL="next" HREF="node11.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html118"
+  HREF="node11.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.png"></A> 
+<A NAME="tex2html116"
+  HREF="node9.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.png"></A> 
+<A NAME="tex2html110"
+  HREF="node9.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html119"
+  HREF="node11.html">context</A>
+<B> Up:</B> <A NAME="tex2html117"
+  HREF="node9.html">The implementation</A>
+<B> Previous:</B> <A NAME="tex2html111"
+  HREF="node9.html">The implementation</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00041000000000000000">
+basic</A>
+</H2>
+This implementation can be used, when the basic authentication/authorization is used by the system. For the basic implementation the following classes should be loaded.
+
+<UL>
+<LI>org.mmbase.security.implementation.basic.AuthenticationHandler
+	This class will load several modules, which can be used for authentication. The config file for this authentication can be found in the config directory security/basic/authentication.xml. In this xml the account.properties file can be specified, which then can be used to login.
+
+<P>
+</LI>
+<LI>org.mmbase.security.implementation.basic.OwnerAuthorization 
+	This class will check the authorization of the nodes which are retrieved. The checking is done by verifying the name of the owner field with the login name.	
+</LI>
+</UL>
+In the situation you want to have only the check to see if a user has logged in, but not the verification on the nodes, the class to use for authorization would be: 
+org.mmbase.security.NoAuthorization. The authentication then will be active, but there will be no checks on the operations on the nodes itselve.
+
+<P>
+<BR><HR>
+<ADDRESS>
+Eduard.Witteveen@omroep.nl
+</ADDRESS>
+</BODY>
+</HTML>

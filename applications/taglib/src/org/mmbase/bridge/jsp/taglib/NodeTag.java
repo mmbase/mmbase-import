@@ -46,17 +46,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         log.debug("releasing");
         super.release();
         number = null;
-        type = null ;
-        element = null;
-        contextid = null;
+  	    type = null ;
+	    element = null;
+	    contextid = null;
         node = null;	   
     }
 
-    public void setId(String iid) {
-        log.debug("setting id of node to " + iid);
-        super.setId(iid);
-    }
-    
+	public void setId(String iid) {
+		log.debug("setting id of node to " + iid);
+		super.setId(iid);
+	}
+
     public void setNumber(String number) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);

@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.19 2001-08-24 07:31:34 pierre Exp $
+ * @version $Id: TransactionManager.java,v 1.18 2001-07-04 10:54:52 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -46,7 +46,7 @@ public class TransactionManager implements TransactionManagerInterface {
 
     }
 
-    public String create(Object user,String transactionname)
+    public String create(Object user,String transactionname) 
         throws TransactionManagerException {
         if (!transactions.containsKey(transactionname)) {
             Vector v=new Vector();
@@ -57,10 +57,10 @@ public class TransactionManager implements TransactionManagerInterface {
         if (log.isDebugEnabled()) {
             log.debug("create transaction for "+transactionname);
         }
-        return transactionname;
+        return(transactionname);
     }
 
-    public String addNode(String transactionname,String owner,String tmpnumber)
+    public String addNode(String transactionname,String owner,String tmpnumber) 
         throws TransactionManagerException {
         MMObjectNode node;
         Vector v;
@@ -86,10 +86,10 @@ public class TransactionManager implements TransactionManagerInterface {
             throw new TransactionManagerException(
                         "System error: Can't add node as it doesn't exist ");
         }
-        return tmpnumber;
+        return(tmpnumber);
     }
 
-    public String removeNode(String transactionname,String owner,String tmpnumber)
+    public String removeNode(String transactionname,String owner,String tmpnumber) 
         throws TransactionManagerException {
         MMObjectNode node;
         Vector v;
@@ -114,7 +114,7 @@ public class TransactionManager implements TransactionManagerInterface {
             throw new TransactionManagerException(
                         "System error: node doesn't exist ");
         }
-        return tmpnumber;
+        return(tmpnumber);
     }
 
 
@@ -144,7 +144,7 @@ public class TransactionManager implements TransactionManagerInterface {
             throw new TransactionManagerException(
                         "node doesn't exist "+tmpnumber);
         }
-        return tmpnumber;
+        return(tmpnumber);
     }
 
     public Vector getNodes(Object user,String transactionname) {
@@ -154,7 +154,7 @@ public class TransactionManager implements TransactionManagerInterface {
         if (rtn==null) {
             log.warn("getNodes(): can't find transaction "+transactionname);
         }
-        return rtn;
+        return(rtn);
     }
 
     public String cancel(Object user,String transactionname)
@@ -170,13 +170,13 @@ public class TransactionManager implements TransactionManagerInterface {
         } else {
             throw new TransactionManagerException("transaction unknown");
         }
-        return transactionname;
+        return(transactionname);
     }
 
 
     public String commit(Object user,String transactionname)
         throws TransactionManagerException {
-        return commit(user,transactionname,false);
+        return(commit(user,transactionname,false));
     }
 
     protected String commit(Object user,String transactionname,boolean debug)
@@ -205,7 +205,7 @@ public class TransactionManager implements TransactionManagerInterface {
         } else {
             log.warn("Can't find transaction "+transactionname);
         }
-        return transactionname;
+        return(transactionname);
     }
 
     private final static int UNCOMMITED=0;
@@ -217,7 +217,7 @@ public class TransactionManager implements TransactionManagerInterface {
     boolean performCommits(Object user,Vector nodes,boolean debug) {
         if (nodes==null || nodes.size()==0) {
             log.warn("performCommits: Empty list of nodes");
-            return false;
+            return(false);
         }
 
         MMObjectNode node;
@@ -272,7 +272,7 @@ public class TransactionManager implements TransactionManagerInterface {
 
         if (debug) {
             for (i=0;i<nodes.size();i++) {
-                node=(MMObjectNode)nodes.elementAt(i);
+                node=(MMObjectNode)nodes.elementAt(i);                
                 log.debug("node "+i+" type "+nodetype[i]+" , exist "+nodeexist[i]+" node "+node.getStringValue("_number"));
             }
         }
@@ -472,7 +472,7 @@ public class TransactionManager implements TransactionManagerInterface {
         for (i=0;i<nodes.size();i++) {
             if (nodestate[i]==COMMITED) {
                 node=(MMObjectNode)nodes.elementAt(i);
-                if (log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) { 
                     log.debug("commit "+node);
                 }
                 bul.removeTmpNode(node.getStringValue("_number"));
@@ -485,11 +485,12 @@ public class TransactionManager implements TransactionManagerInterface {
                 log.error("Failed node "+((MMObjectNode)nodes.elementAt(i)).toString());
             }
         }
-        return okay;
+        return(okay);
     }
 
     public String findUserName(Object user) {
-        return "";
+        String rtn="";
+        return(rtn);
     }
 
 }

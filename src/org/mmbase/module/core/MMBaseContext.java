@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.15 2001-08-16 14:59:19 pierre Exp $
+$Id: MMBaseContext.java,v 1.14.2.1 2001-08-16 15:00:43 pierre Exp $
 
 $Log: not supported by cvs2svn $
 Revision 1.14  2001/07/24 11:04:38  jaco
@@ -80,7 +80,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.15 $ $Date: 2001-08-16 14:59:19 $
+ * @$Revision: 1.14.2.1 $ $Date: 2001-08-16 15:00:43 $
  */
 public class MMBaseContext {
     private static Logger log;

@@ -1,0 +1,1969 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>MMBase taglib documentation</title>
+</head>
+<body alink="#336699" vlink="#336699" link="#336699" text="#336699" bgcolor="#FFFFFF" topmargin="0" rightmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+<table cellpadding="5" width="100%">
+<tr>
+<td width="30"></td><td>&nbsp;</td><td width="30"></td>
+</tr>
+<tr>
+<td></td><td>
+    Tag library for MMBase. MMBase consists of a cloud of nodes (objects) wich
+    can be related to each other. Relations can be seen as nodes with two arms
+    wich they use to connect two other nodes. Nodes of a specific type (like a
+    person node who holds a person's data) have their own nodemanager. A node
+    manager can have functions wich are specific for the type of nodes it is
+    managing. Just like a cloud can contain different type of nodes it can
+    contain different type of relations. And just like specific type of nodes
+    have their own nodemanager, relations of a specific type have their own
+    relation manager.
+  </td><td></td>
+</tr>
+<tr>
+<td></td><td>&nbsp;</td><td></td>
+</tr>
+<tr>
+<td></td><td><a name="toc"></a><a href="#cancel">cancel</a> | <a href="#changed">changed</a> | <a href="#cloud">cloud</a> | <a href="#commit">commit</a> | <a href="#compare">compare</a> | <a href="#context">context</a> | <a href="#createalias">createalias</a> | <a href="#createnode">createnode</a> | <a href="#createrelation">createrelation</a> | <a href="#deletenode">deletenode</a> | <a href="#even">even</a> | <a href="#field">field</a> | <a href="#fieldinfo">fieldinfo</a> | <a href="#fieldlist">fieldlist</a> | <a href="#first">first</a> | <a href="#import">import</a> | <a href="#info">info</a> | <a href="#last">last</a> | <a href="#list">list</a> | <a href="#listcondition">listcondition</a> | <a href="#listnodes">listnodes</a> | <a href="#node">node</a> | <a href="#nodefield">nodefield</a> | <a href="#nodeinfo">nodeinfo</a> | <a href="#notpresent">notpresent</a> | <a href="#odd">odd</a> | <a href="#param">param</a> | <a href="#present">present</a> | <a href="#related">related</a> | <a href="#relatednodes">relatednodes</a> | <a href="#remove">remove</a> | <a href="#setfield">setfield</a> | <a href="#transaction">transaction</a> | <a href="#url">url</a> | <a href="#write">write</a> | <a href="#info">info about the syntax of this document</a></td><td></td>
+</tr>
+<tr>
+<td></td><td>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="cancel"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;cancel&gt;</b>
+<p>
+      Can cancel a transaction with this.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">transaction</font>
+<br>The id of the transaction.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>empty<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="changed"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;changed&gt;</b>
+<p>The tag can be used in a list to determine if this item has changed compared to the previous one.
+     The criteria applies to the field(s) given in the orderby attribute of the accompanying list.
+     The first item of a list is always concidered 'changed'.
+     </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">inverse</font>
+<br>
+	  Inverse the sense of the condition, apply if the item is unchanged.
+	</li>
+<li>
+<font color="green">list</font>
+<br>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="cloud"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;cloud&gt;</b>
+<p>The cloud tag initializes the cloud to use.</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">name</font>
+      (can refer to context)
+    <br>The name of the cloud.<table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>mmbase</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">logon</font>
+      (can refer to context)
+    <br>The authentication name to use (account).</li>
+<li>
+<font color="green">rank</font>
+      (can refer to context)
+    <br>The required rank</li>
+<li>
+<font color="green">pwd</font>
+      (can refer to context)
+    <br>The password to use to logon to the cloud.</li>
+<li>
+<font color="green">id</font>
+<br>
+</li>
+<li>
+<font color="green">method</font>
+<br>
+        Describes how to get the authentication information.
+      <table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>http</b></td><td valign="top">
+          Use http protocol to ask name and password
+          from the user. If the `logon' attribute is specified too, then
+          logging on will fail if the user does not use that
+          username. The `pwd' attribute will be ignored.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>logout</b></td><td valign="top">
+	  When used `http' to logon, the browser will store name and
+          password. If you want to logon again, then you can first
+          `logout'. Then the `realm' of the http authenication will be
+          changed, and you obtain a new possibility to logon after
+          that. The cloud you obtain is anonymous.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>anonymous</b></td><td valign="top">
+          Ignore the `logon' attribute and create (or
+          reuse) a cloud with an anonymous user.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>asis</b></td><td valign="top">
+          Ignore the `logon' attribute and reuse the cloud as
+          it is in the session.
+        </td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">authenticate</font>
+<br>
+        The authentitation module which must be used by the security
+        system. The default is "name/password", which will do in most
+        cases.
+      </li>
+<li>
+<font color="green">jspvar</font>
+<br>
+       The name of the Jsp variable to export by cloud. If not
+       specified, then a variable with name `cloud' will exist.
+      </li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>
+&lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)
+only to user kamer --&gt;
+&lt;mm:cloud logon="kamer" method="http"&gt;
+logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br /&gt;
+&lt;mm:node number="kamer_pool" id="my_node"&gt;
+  &lt;mm:related type="news" sorted="number" direction="DOWN"&gt;
+     &lt;mm:head&gt;
+        &lt;!-- show a small heading, in which also appears the node-number of the pool --&gt;
+        &lt;mm:field node="my_node" name="number" /&gt;:
+        &lt;mm:field head="number" /&gt;: &lt;mm:field head="title" /&gt;&lt;br /&gt;
+     &lt;/mm:head&gt;
+     &lt;mm:field name="number" /&gt;: &lt;mm:field name="title" /&gt;&lt;br /&gt;
+  &lt;/mm:related&gt;
+&lt;/mm:node&gt;
+&lt;/mm:list&gt;
+&lt;/mm:cloud&gt;
+    </pre>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>
+&lt;!-- To logon on as a different user on my_page.jsp, make a ref to a page with this:  --&gt;
+&lt;mm:cloud method="logout" /&gt;
+&lt;% response.sendRedirect("http://my_host/my_page.jsp"); %&gt;
+    </pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="commit"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;commit&gt;</b>
+<p>
+      Can commit a transaction with this.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">transaction</font>
+<br>The id of the transaction.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>empty<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="compare"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;compare&gt;</b>
+<p>
+    Compares the value of a context variable to a String value. Only if
+    they are equal the body is evaluated.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">referid</font>
+      (can refer to context)
+    <br>
+	The context variable to compare to.
+	 </li>
+<li>
+<font color="red">value</font>
+      (can refer to context)
+    <br>
+	The value which the context variable must have.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="context"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;context&gt;</b>
+<p>
+      
+      Groups tags, and facilitates communication to the outside
+      world.
+      
+      
+      Tags inside a context tag supplying the `id' attribute
+      register themselves in the context.  Other tags can refer to
+      this id. See for example how the createrelation tag works.
+      
+      
+      With the import tag you can explicitily put things from outside
+      this context into this context, e.g. from the parameter list or
+      from a parent context. It is also possible to put new string in
+      the context with the import tag.
+      
+      
+      There are several ways to refer to objects in the context.
+      
+      
+       When you are adding a new object then the used attribute is
+      `id'.
+      
+      The `id' of an `external' object like a request parameter
+      is referred to as `externid' (only in the import tag).
+      
+      If you are reusing the same object, for example you have put
+      a node in the context, and are using it again then an attribute
+      `referid' is used.
+      
+      
+      If some attribute wants to use the value of an object in
+      the context, and it is an attribute which can refer to the
+      context, then you can use something like
+      ${&lt;context-id;&gt;.&lt;object-id&gt;}. The value of a context
+      variable can be written to the page with the `write' tag.
+      
+      
+      And finally there are some attributes which can only refer. For
+      example if some tag has to live as a child of another tag but
+      you want it to refer not to its direct parent, then there should
+      be an attribute with the name of the parent in which you can put
+      the id of the parent which it has to refer to. For example the
+      field tag has an attribute `node'. Other tags, like the
+      createrelation tag have attributes like `source' and
+      `destination' attributes which also simply contain the node
+      id's. Please find the examples.
+      
+      
+      In TCP there is a `tag' called `create', which is comparable to
+      `context'.
+      
+      
+      A Cloud (or a transaction) is a context too, so normally it will suffice to
+      use a cloud.
+      
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">id</font>
+<br>
+	The default id for a context is `context'. If the context is a
+	cloud, then the default id is `cloud'. This id is used in
+	context referring attributes.
+        </li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="createalias"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;createalias&gt;</b>
+<p>
+      Lives in a NodeProvider. Creates the bodycontent as an alias for the node.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">name</font>
+<br>
+	  In stead of giving it in the body, you can also indicate it
+	  with this parameter.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="createnode"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;createnode&gt;</b>
+<p>
+    Creates a new node.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">type</font>
+      (can refer to context)
+    <br>
+         The type (NodeManager name) of the new node.
+        <table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>news</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>people</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">id</font>
+<br>
+        See the `id' attribute of the Node tag.
+      <table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>a_new_node</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+        See the `jspvar' attribute of the Node tag.
+      </li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="createrelation"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;createrelation&gt;</b>
+<p>
+    Creates a relation between two nodes.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">role</font>
+      (can refer to context)
+    <br>
+	The role for the new relation.
+        </li>
+<li>
+<font color="green">id</font>
+<br>
+	The id of the node which is this relation.
+        </li>
+<li>
+<font color="red">source</font>
+<br>
+         The id of the node which will be on the source side of the relation.
+	</li>
+<li>
+<font color="red">destination</font>
+<br>
+         The id of the node which will be on the source side of the relation.
+	</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>
+&lt;mm:cloud&gt;
+&lt;mm:transaction id="my_transaction"&gt;
+&lt;mm:createnode type="news" id="my_news"&gt;
+   &lt;mm:setfield name="title"&gt;Todays news&lt;/mm:setfield&gt;
+   &lt;mm:setfield name="subtitle"&gt;There happened a lot today&lt;/mm:setfield&gt;
+&lt;/mm:createnode&gt;
+&lt;mm:node number="1808" id="my_author" /&gt;
+&lt;mm:createrelation role="author" source="my_author" destination="my_news" /&gt;
+&lt;/mm:transaction&gt;
+&lt;/mm:cloud&gt;
+    </pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="deletenode"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;deletenode&gt;</b>
+<p>
+      This tag extends the `node' tag, and is precisely the same. The
+      only difference is that after the body the node will be removed.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="ff9900">number</font><font size="-1" color="black"> (If stand alone, either `number' or `referid' must be supplied.)</font>
+      (can refer to context)
+    <br>
+</li>
+<li>
+<font color="ff9900">referid</font><font size="-1" color="black"> (If stand alone, either `number' or `referid' must be supplied.)</font>
+<br>
+</li>
+<li>
+<font color="green">fields</font>
+<br>
+</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+</li>
+<li>
+<font color="green">deleterelations</font>
+<br>
+<table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>true</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>false</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="even"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;even&gt;</b>
+<p>The tag can be used in a list to determine if this is an even item</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">list</font>
+<br>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="field"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;field&gt;</b>
+<p>
+      Gets the field `name' from node `node' (can also be
+      list).
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">node</font>
+<br>
+          The `id' of the node or list from which this field must be taken.
+          By default this is the node or list which is enclosing this field.
+        </li>
+<li>
+<font color="green">name</font>
+      (can refer to context)
+    <br>
+	  The name of the field to get.
+	</li>
+<li>
+<font color="green">head</font>
+      (can refer to context)
+    <br>
+	  Like `name', but does not return the value of the field, but
+	  the GUI-name of the field.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="fieldinfo"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;fieldinfo&gt;</b>
+<p>
+    This thing can be used inside a FieldListTag, or directly inside a
+    NodeProvider if you indicate with the field attribute about which
+    field you want to have information. It can have a body, which will
+    be added to the produced value, if this is not null.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">type</font>
+<br>
+<table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>name</b></td><td valign="top">The name of the field</td>
+</tr>
+<tr>
+<td valign="top"><b>guiname</b></td><td valign="top">The GUI name of the field (can be in other language)</td>
+</tr>
+<tr>
+<td valign="top"><b>input</b></td><td valign="top">
+	A form entry for the field. This can only be used if the
+        FieldList was in a NodeProvider tag, of if you have provided
+        the `nodemanager' attribute. If the FieldList has an id, the
+        names of the form entries will be prefixed with it.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>useinput</b></td><td valign="top">
+	
+	If you have create a form with type="input" and this form was
+        submitted, then you can use type="useinput" under a
+        NodeProvider, and it will get the request/post parameter
+        produced by "input" and make the right changes to the node.
+	
+	
+	The necessary externid's for this will be implicity imported
+	in the context. You don't have to worry about them.
+	
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>searchinput</b></td><td valign="top">
+	A form entry for the field, fit for use for searching. That
+        means that not textareas will be used and such.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>usesearchinput</b></td><td valign="top">
+	If you have create a form with type="searchinput" and this
+        form was submitted, then you can use this. It will produce a
+        part of a where clause which you can use to construct a whole
+        `where' for the list tag you are going to use.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>value</b></td><td valign="top">The value of this field. Can only be used if in a NodeProviderTag.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>guivalue</b></td><td valign="top">The guivalue of this field. Can only be used if in a NodeProviderTag.
+        </td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">field</font>
+<br>The field about which you want to have information. Only
+      if you want to use this tag directly under a nodeprovider tag.</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="fieldlist"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;fieldlist&gt;</b>
+<p>A list of fields. A field can list inside a NodeProvider in which case the NodeManager is found by means of
+    the parent node. It can also be stand alone, then you have to supply the type of the node (the name of the `nodemanager').
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">nodetype</font>
+      (can refer to context)
+    <br>
+</li>
+<li>
+<font color="green">id</font>
+<br>The id of the fieldlist.</li>
+<li>
+<font color="green">type</font>
+<br>
+        The type of fields that should be returned. If not specified, all
+        fields are returned.
+      <table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>create</b></td><td valign="top">
+          Defined in NodeManager from the bridge classes, but not used in
+          BasicNodeManager. Currently it does nothing special.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>edit</b></td><td valign="top">
+          Return only those fields that should appear in the input area of the
+          editor.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>list</b></td><td valign="top">
+          Return only those fields that should appear in the list area of the
+          editor.
+        </td>
+</tr>
+<tr>
+<td valign="top"><b>search</b></td><td valign="top">
+          Return only those fields that should appear in the search area of the
+          editor.
+        </td>
+</tr>
+</table>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="first"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;first&gt;</b>
+<p>The tag can be used in a list to determine if this is the
+    fist item in the list.</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">list</font>
+<br>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </li>
+<li>
+<font color="green">inverse</font>
+<br>
+	  Inverse the sense of the condition.
+	</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="import"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;import&gt;</b>
+<p>
+    To put objects in the context. That is, import a variable from an
+    external source (a parent context, parameters, a form
+    (postparameters) or the session). You can also create a new variable
+    with this.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="ff9900">id</font><font size="-1" color="black"> (Either `id' or `externid' or both must be supplied.)</font>
+<br>
+        This is the key by which the object will be registered in the
+	context. This key may not already exist. You must use the
+	remove tag first, if you need to change the value of the
+	registered object. If you do not supply this attribute, it is
+	supposed to have the same value as `externid' which should be
+	present then.
+	</li>
+<li>
+<font color="ff9900">externid</font><font size="-1" color="black"> (Either `id' or `externid' or both must be supplied.)</font>
+<br>
+        
+	The `externid' is the name of an attribute in the session,
+	parameter in the request, or id in the parent context. The
+	value of this thing is imported in the current context, with
+	the id given by the attribute `id'.
+        
+        
+	If there is no attribute `externid' then the value of the new
+	object in the context is taken from the body of this import
+	tag. In that way you can create a variable.
+        
+	</li>
+<li>
+<font color="green">required</font>
+<br>
+	If this object is required to be present. If it has to be
+	present, then the present tag will always evaluate. If there
+	can nothing be found by externid and a default value in the
+	body is missing too, then an exception will follow if required
+	is true.
+	</li>
+<li>
+<font color="green">from</font>
+<br>
+	Where to search the externid in. On default it is searched in
+	several sources, but you can limit it by this. In this way it
+	is also possible to get different variables with the same name
+	from different sources.
+	</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+	If you specify `jspvar' a jsp-variable with this name will be
+	created too. It is available after the closing of the
+	tag. Jsp-variables can also be created with the `write'
+	tag. You have preciser scoping for them then.
+	</li>
+<li>
+<font color="green">type</font>
+<br>
+	If you specify `jspvar' you can also specify a type for
+	it. Default, this is a String, but you could e.g. also want an
+	Integer.
+	</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;!-- Create a variable `hoi' from the parameter `haj', 
+     Generate an exception if this parameter is not present --&gt;
+&lt;mm:import id="hoi" externid="haj" from="parameters" required="true" /&gt;</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;!-- Create a variable `hoi' from the parameter `haj', 
+     If this parameter is not present, hoi becomes `hello' --&gt;
+&lt;mm:import id="hoi" externid="haj" from="parameters" &gt;hello&lt;/mm:import&gt;</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;!-- Create a variable `hoi' with value `hello' --&gt;
+&lt;mm:import id="hoi"&gt;hello&lt;/mm:import&gt;</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;!-- Create a variable `hoi'. The value will come from an external source,
+like the parameter list or the session (whereever it is availabe) --&gt;
+&lt;mm:import externid="hoi" /&gt;</pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="info"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;info&gt;</b>
+<p>This tag can be used to call getInfo from Module (can also be done with mod) and NodeManager.</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">nodemanager</font>
+<br>
+</li>
+<li>
+<font color="green">module</font>
+<br>
+</li>
+<li>
+<font color="green">id</font>
+<br>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="last"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;last&gt;</b>
+<p>The tag can be used in a list to determine if this is the
+    last item in the list.</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">list</font>
+<br>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </li>
+<li>
+<font color="green">inverse</font>
+<br>
+	  Inverse the sense of the condition.
+	</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="list"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;list&gt;</b>
+<p>
+      Returns a list of nodes. Starting at one or more nodes
+      traversals are made according to a specified path of nodemanagers. One
+      traversal makes up
+      one record returned by the list. All possible traversals that can be made
+      starting at one or more nodes of the same type and following a specified
+      path are returned. Additional attributes can be used to exclude records
+      from the returned list or to influence the order of the returned list.
+      Because the returned records can contain more than one
+      node you will have to prefix the field name with the nodemanager name and
+      a dot if you want to refer to them. When using a jsp variable a underscore
+      has to be used to separate a nodemanager name from a field name.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">nodes</font>
+<br>
+        Comma-separated list of nodes that should be used as start nodes.
+        The start nodes don't have to be a member of the first nodemanager in
+        the path. For example, if the start nodes belong to the second
+        nodemanager in a path with a length of three nodemanagers, traversals will
+        go into two directions at the same time. All traversals that make up a
+        complete path are returned.
+        If a node belongs to the last nodemanager in a path traversals will go
+        from right to left starting at the last nodemanager.
+        All start nodes specified in this attribute have to belong to the same
+        nodemanager. Nodes that belong to a different nodemanager than the first
+        node are ignored
+        In case this attribute is not specified all nodes from the first
+        nodemanager in the path are used as start nodes.
+      </li>
+<li>
+<font color="red">path</font>
+<br>
+        A comma-seperated list of nodemanagers which specifies the path
+        that should be followed. It is possible to explicitly specify a
+        relationmanager that should be used to go from one node to an other. If
+        no relationmanager is specified between two nodemanagers, all possible
+        relationmanagers that can be used to go to the next specified node in
+        the path are followed.
+      <table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>mags</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>mags,news</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>mags,related,news</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>mags,news,images</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>mags,related,news,related,images</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">fields</font>
+<br>
+        Comma-separated list of fields that should be made available in the
+        page. The fields are selected from attributes of the corresponding node
+        managers defined in type. It is required to append a prefix to
+        each field listed e.g. fields="mags.title,news.title". In the
+        jsp page the values are available in form of Strings e.g. mags.title is
+        available as mags_title and can be accessed using
+        &lt;%= mags_title %&gt;.
+      </li>
+<li>
+<font color="green">constraints</font>
+<br>
+      Contraints to prevent records from being included in the returned list.
+      These constraints follow the syntax of the SQL where clause. It's a good
+      practice to use uppercase letters for the operators and lowercase letters
+      for the fieldnames.
+    <table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>url.number = 100</b></td><td valign="top">!=, &lt;, &gt;, &lt;= and &gt;= can also be used</td>
+</tr>
+<tr>
+<td valign="top"><b>person.name = 'admin'</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>person.email IS NULL</b></td><td valign="top">indicating the email field should be empty</td>
+</tr>
+<tr>
+<td valign="top"><b>person.email LIKE '%.org'</b></td><td valign="top">indication the email should end with .org</td>
+</tr>
+<tr>
+<td valign="top"><b>url.number BETWEEN 30 AND 50</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>person.name IN ('admin', 'anonymous')</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>NOT (url.number = 100)</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>person.email IS NOT NULL</b></td><td valign="top">indicating the email field should not be empty</td>
+</tr>
+<tr>
+<td valign="top"><b>person.email NOT LIKE '%.org'</b></td><td valign="top">indication the email should not end with .org</td>
+</tr>
+<tr>
+<td valign="top"><b>url.number NOT BETWEEN 30 AND 50</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>person.name NOT IN ('admin', 'anonymous')</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>LOWER(user.name) = 'admin'</b></td><td valign="top">this will also allow `Admin' to be returned</td>
+</tr>
+<tr>
+<td valign="top"><b>LENGTH(user.name) &gt; 5</b></td><td valign="top">
+        this will only allow name with a length greater than 5 to be
+        returned
+      </td>
+</tr>
+<tr>
+<td valign="top"><b>((number=100) OR (name='admin') AND email LIKE '%.org')</b></td><td valign="top">Linking constraints together using AND and OR</td>
+</tr>
+<tr>
+<td valign="top"><b>name='aaa''bbb'</b></td><td valign="top">
+        To only retrieve the string aaa'bbb. A single quote can be escaped using
+        it twice for every single occurence.
+      </td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">orderby</font>
+<br>
+        A comma-separated list of field names on which the returned list should
+        be sorted.
+      </li>
+<li>
+<font color="green">directions</font>
+<br>
+        A comma-separated list of values indicating wether to sort up
+        (ascending) or down (descending) on the corresponding field in the
+        orderby  parameter or null if sorting on all fields should be up. The
+        value DOWN (case insensitive) indicates that sorting on the
+        corresponding field should be down, all other values (including the
+        empty value) indicate that sorting on the corresponding field should be
+        up. If the number of values found in this parameter are less than the
+        number of fields in the orderby parameter, all fields that don't have a
+        corresponding direction value are sorted according to the last specified
+        direction value.
+      <table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>UP</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>DOWN</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>UP,DOWN,UP</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">distinct</font>
+<br>
+        If set to `true' or `yes' all records who have exactly the same values
+        will not be added a second time to the returned list.
+      </li>
+<li>
+<font color="green">max</font>
+<br>The maximum number of records to return.</li>
+<li>
+<font color="green">offset</font>
+<br>The first number of records to skip.</li>
+<li>
+<font color="green">searchdir</font>
+<br>
+        Determines how directionality affects the search. If set to
+        "destination" relations in a path will only be followed
+        if valid relation exist from source to destination. If set to
+        "source" relations in a path will only be followed if
+        valid relations exist from destination to source. To follow all
+        relations ignoring their directionality set this attribute to
+        "all". Any other value for this attribute will follow
+        relations the way they are defined (either source to destination,
+        destination to source or both).
+      </li>
+<li>
+<font color="green">id</font>
+<br>
+        See the `id' attribute of the Node tag.
+      </li>
+<li>
+<font color="green">jspvar</font>
+<br>
+        See the `jspvar' attribute of the Node tag.
+      </li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
+  &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+  &lt;mm:field name="mags.title" /&gt;
+&lt;/mm:list&gt;</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;mm:list nodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
+  &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
+  &lt;mm:field name="news.title" /&gt;
+&lt;/mm:list&gt;</pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="listcondition"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;listcondition&gt;</b>
+<p>
+    Must be used in the body of a list tag. And the body of itself
+    will only be evaluated if some condition is true.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">value</font>
+<br>
+	 The `value' of the condition, in other words what the
+         condition is, described with a string. There is a limited set
+         available now. They are also availabe as `macro'-tags on this
+         tag.
+	 <table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>first</b></td><td valign="top">
+            Show only in first row.
+          </td>
+</tr>
+<tr>
+<td valign="top"><b>last</b></td><td valign="top">
+            Show only in last row.
+          </td>
+</tr>
+<tr>
+<td valign="top"><b>odd</b></td><td valign="top">
+            Show only when row number is odd.
+          </td>
+</tr>
+<tr>
+<td valign="top"><b>even</b></td><td valign="top">
+            Show only when row number is even.
+          </td>
+</tr>
+<tr>
+<td valign="top"><b>changed</b></td><td valign="top">
+            Show only when this row differs from the previous row (or when it is the first).
+          </td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">inverse</font>
+<br>
+	  Inverse the sense of the condition.
+	</li>
+<li>
+<font color="green">list</font>
+<br>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="listnodes"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;listnodes&gt;</b>
+<p>
+      The listnodes tag can be used to retrieve nodes managed by a certain
+      nodemanager. The syntax of the attributes are the same as the syntax of
+      the attributes of the list tag except that it is not needed to prefix
+      the fieldnames with nodemanager names.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">type</font>
+      (can refer to context)
+    <br>
+        The name of the nodemanager managing the type of nodes that should be
+        listed.
+      </li>
+<li>
+<font color="green">fields</font>
+<br>
+</li>
+<li>
+<font color="green">constraints</font>
+<br>
+</li>
+<li>
+<font color="green">orderby</font>
+<br>
+</li>
+<li>
+<font color="green">directions</font>
+<br>
+</li>
+<li>
+<font color="green">max</font>
+      (can refer to context)
+    <br>
+</li>
+<li>
+<font color="green">offset</font>
+      (can refer to context)
+    <br>
+</li>
+<li>
+<font color="green">id</font>
+<br>
+</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;mm:listnodes type="mags" fields="title" &gt;
+  &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+  &lt;mm:field name="title" /&gt;
+&lt;/mm:listnodes&gt;</pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="node"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;node&gt;</b>
+<p>
+      A tag to make a node available. Normally it will enclose
+      some field tags.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="ff9900">number</font><font size="-1" color="black"> (Either 'number', 'element' or 'referid' must be supplied.)</font>
+      (can refer to context)
+    <br>
+	  The nodenumber or alias identifying this node in MMBase.
+	</li>
+<li>
+<font color="ff9900">referid</font><font size="-1" color="black"> (Either 'number', 'element' or 'referid' must be supplied.)</font>
+<br>
+	  The `id' (name of the variable) of a node to refer to. In
+	  this way a node can be reused.
+        </li>
+<li>
+<font color="green">id</font>
+<br>
+	  With the `id' attribute you define an unique identifier for
+	  this node. Nested tags can refer to this directly and other
+	  tags by means of a context.
+        </li>
+<li>
+<font color="green">jspvar</font>
+<br>
+	  Create a JSP variable with this in the body. If you have defined `fields' too,
+	  then these fields will have jsp-variables prefixed with
+	  jspvar and an underscore.
+	</li>
+<li>
+<font color="ff9900">element</font><font size="-1" color="black"> (Either 'number', 'element' or 'referid' must be supplied.)</font>
+<br>
+	  The name of the node manager, identifying the node in a list or related list tag.
+	</li>
+<li>
+<font color="green">fields</font>
+<br>
+	  The fields you want to have from this node. Other fields are
+	  available as well, but will only be accessible with the
+	  field-tag. Field indicated in this `fields' attribute will
+	  also get a jsp-variable.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="nodefield"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;nodefield&gt;</b>
+<p>
+    Shows a field from a node without the need of use a node tag with a field tag in its body.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">number</font>
+<br>
+</li>
+<li>
+<font color="red">field</font>
+<br>
+</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="nodeinfo"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;nodeinfo&gt;</b>
+<p>This thing can be used inside a NodeProvider tag, to get
+    certain information about the node.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">type</font>
+<br>
+<table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>type</b></td><td valign="top">The type fo the node (the name of it's NodeManager).</td>
+</tr>
+<tr>
+<td valign="top"><b>guitype</b></td><td valign="top">The GUI representation of the type (NodeManager) of the node.</td>
+</tr>
+</table>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;mm:node number="1645"&gt;
+Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
+  &lt;mm:fieldlist type="edit"&gt;
+    &lt;em&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/em&gt;:    &lt;mm:fieldinfo type="value" /&gt;&lt;br /&gt;
+  &lt;/mm:fieldlist&gt;
+&lt;/mm:node&gt;
+</pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="notpresent"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;notpresent&gt;</b>
+<p>
+    Checks if a certain id is missing in the parent Context tag.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">referid</font>
+      (can refer to context)
+    <br>
+	 
+</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="odd"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;odd&gt;</b>
+<p>The tag can be used in a list to determine if this is an odd item</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">list</font>
+<br>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="param"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;param&gt;</b>
+<p>
+    Adds a parameter to the parent URL Tag.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">name</font>
+      (can refer to context)
+    <br>
+	The name of the parameter. The value is the body.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="present"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;present&gt;</b>
+<p>
+    Checks if a certain id is present in the parent Context tag.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">referid</font>
+      (can refer to context)
+    <br>
+	 
+</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="related"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;related&gt;</b>
+<p>
+      The related tag is the same as the list tag except that it always needs
+      one or more start nodes from which the nodemanager will be taken
+      and prefixed to the path specified bij the path attribute.
+      By default, the node used is that of the parent node tag.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">number</font>
+<br>
+        The number attribute overrides the default node for a related tag,
+        using instead retrieving the node from the cloud using the attribute.
+      </li>
+<li>
+<font color="green">node</font>
+<br>
+        The node attribute overrides the default node for a related tag,
+        using instead the node tag referenced by the attribute.
+      </li>
+<li>
+<font color="green">nodes</font>
+<br>
+        If the nodes attribute is given, the related tag will add these nodes
+        to the nodes used (in additon to the node identified by the parent node
+        tag).
+      </li>
+<li>
+<font color="red">path</font>
+<br>
+        This attribute is the same as the path attribute of the list tag except
+        that the first nodemanager should be ommitted. The first nodemanager
+        is implied by the parent node.
+      </li>
+<li>
+<font color="green">fields</font>
+<br>
+</li>
+<li>
+<font color="green">constraints</font>
+<br>
+</li>
+<li>
+<font color="green">orderby</font>
+<br>
+</li>
+<li>
+<font color="green">directions</font>
+<br>
+</li>
+<li>
+<font color="green">distinct</font>
+<br>
+</li>
+<li>
+<font color="green">max</font>
+<br>
+</li>
+<li>
+<font color="green">offset</font>
+<br>
+</li>
+<li>
+<font color="green">searchdir</font>
+<br>
+</li>
+<li>
+<font color="green">id</font>
+<br>
+</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;mm:node number="123"&gt;
+  &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
+    &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+    &lt;mm:field name="mags.title" /&gt;
+  &lt;/mm:related&gt;
+&lt;/mm:node&gt;</pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="relatednodes"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;relatednodes&gt;</b>
+<p>
+      The relatednodes tag can be used to retrieve nodes of a certain type
+      related to a node of another type. The syntax of the attributes are the
+      same as the syntax of the attributes of the list tag except that it is
+      not needed to prefix the fieldnames with a nodemanager name.
+      By default, the node used is that of the parent node tag.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">number</font>
+<br>
+        The number attribute overrides the default node for a related tag,
+        using instead retrieving the node from the cloud using the attribute.
+      </li>
+<li>
+<font color="green">node</font>
+<br>
+        The node attribute overrides the default node for a related tag,
+        using instead the node tag referenced by the attribute.
+      </li>
+<li>
+<font color="ff9900">type</font><font size="-1" color="black"> (
+        You cannot use 'orderby' or 'constraints' if you do not use 'type'.
+      )</font>
+<br>
+</li>
+<li>
+<font color="green">fields</font>
+<br>
+</li>
+<li>
+<font color="ff9900">constraints</font><font size="-1" color="black"> (
+        You also need to supply 'type'.
+      )</font>
+<br>
+</li>
+<li>
+<font color="ff9900">orderby</font><font size="-1" color="black"> (
+        You also need to supply 'type'.
+      )</font>
+<br>
+</li>
+<li>
+<font color="green">directions</font>
+<br>
+</li>
+<li>
+<font color="green">max</font>
+<br>
+</li>
+<li>
+<font color="green">offset</font>
+<br>
+</li>
+<li>
+<font color="green">id</font>
+<br>
+</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;mm:node number="Magazine" &gt;
+&lt;mm:relatednodes type="news" fields="title" &gt;
+  &lt;mm:head&gt;news in this magazine&lt;/mm:head&gt;
+  &lt;mm:field name="title" /&gt;
+&lt;/mm:relatednodes&gt;</pre>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="remove"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;remove&gt;</b>
+<p>
+    Remove an object from the context.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="red">referid</font>
+      (can refer to context)
+    <br>
+	
+</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="setfield"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;setfield&gt;</b>
+<p>
+      Changes the field `name' from node `node' (can also be
+      list).
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">node</font>
+<br>
+          The `id' of the node or list from which this field must be taken.
+          By default this is the node or list which is enclosing this field.
+        </li>
+<li>
+<font color="green">name</font>
+<br>
+	  The name of the field to set. If this field is not set this tag will
+          look for a surrounding fieldlist tag to retrieve name and node from.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="transaction"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;transaction&gt;</b>
+<p>
+     The transaction tag creates a transaction. A transaction is
+     a context too.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">name</font>
+<br>The name of the transaction.<table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>my_transaction</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">id</font>
+<br>The id of the transaction. Will be used to put it in a
+      context, if possible.<table bgcolor="#99ffff">
+<tr>
+<td valign="top"><b>my_transaction</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+       The name of the Jsp variable to export. If not
+       specified, then a variable with name `trans' will exist.
+      </li>
+<li>
+<font color="green">commitonclose</font>
+<br>
+       If the transaction must be committed after the body. The
+       default is true.
+      <table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>true</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>false</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">body</td><td>JSP<br>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="url"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;url&gt;</b>
+<p>
+    Returns an URL with parameters from the context.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">referids</font>
+      (can refer to context)
+    <br>
+	Specify which parameters. A comma seperated list of context
+	variable id's.
+	</li>
+<li>
+<font color="green">page</font>
+      (can refer to context)
+    <br>
+	The url to refer to. If not specified, then it becomes the
+        result of getRequestURI. 
+	</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+	In stead of writing to the page, you can also write the
+	resulting URL to a jsp variable.
+	</li>
+</ul>
+</td>
+</tr>
+</table>
+<table cellpadding="5" width="100%" bgcolor="#eeeeee">
+<tr>
+<td align="right" bgcolor="white" colspan="2"><a name="write"></a><a href="#toc">toc</a></td>
+</tr>
+<tr>
+<td colspan="2"><b>&lt;write&gt;</b>
+<p>
+    Can be used to create an jsp variable from a variable in the
+    context. Or, if the attribute `jspvar' is missing, to write the
+    value of a context variable to the page.
+    </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">attributes</td><td>
+<ul>
+<li>
+<font color="green">context</font>
+<br>
+	If you want to get it from another context than the direct parent.
+	</li>
+<li>
+<font color="red">referid</font>
+      (can refer to context)
+    <br>
+	The key of the variable to get.
+	</li>
+<li>
+<font color="green">jspvar</font>
+<br>
+	The name of the variable to create/used. If not specified,
+	then the value will be written to the page.
+	</li>
+<li>
+<font color="green">type</font>
+<br>
+	The type of the variable to create (default java.lang.Object)
+	<table bgcolor="#99ccff">
+<tr>
+<td valign="top"><b>Object</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>String</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>Node</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>Integer</b></td><td valign="top"></td>
+</tr>
+<tr>
+<td valign="top"><b>Vector</b></td><td valign="top"></td>
+</tr>
+</table>
+</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;!-- write the variable `hoi' to the page --&gt;
+&lt;mm:write referid="hoi" /&gt;</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" width="100">example</td><td>
+<pre>&lt;!-- Create a jsp-variable `greet' from context variable `hoi', write
+     `greet' uppercased to the page --&gt; 
+&lt;mm:write referid="hoi" jspvar="greet"&gt;&lt;%= greet.toUpperCase() %&gt;&lt;/mm:write&gt;</pre>
+</td>
+</tr>
+</table>
+</td><td></td>
+</tr>
+<tr>
+<td></td><td>&nbsp;</td><td></td>
+</tr>
+<tr>
+<td></td><td><a name="info"></a>
+<p>
+            This document lists the current tags implemented for MMBase.
+	    </p>
+<p>Attributes in <font color="red">red</font> are
+            required.
+	    </p>
+<p>If an attribute can refer to the context, then any occurences of the format
+	        ${x}, where x is the name of a context atribute, will be replaced by
+	        the value of that attribute.
+	        If the attribute is not defined the tag will throw an exception.
+	    </p>
+<p>
+            If a tag definition contains a body section this means that the
+            tag might do something with the content of the body.</p>
+</td><td></td>
+</tr>
+</table>
+</body>
+</html>

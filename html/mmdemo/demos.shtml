@@ -23,6 +23,10 @@
 <BR><BR>
 			The MMbase Team.
 			<BR><BR>
+		<CENTER>
+			<INPUT TYPE="hidden" VALUE="" NAME="dummy">
+			<INPUT TYPE="SUBMIT" VALUE="OK">
+		</CENTER>
 		</TD>
 </TR>
 
@@ -87,6 +91,19 @@
 	</TD>
 </TR>
 
+
+<TR>
+	<TD></TD>
+	<TD BGCOLOR="#00425A">
+		MyPage
+	</TD>
+	<TD BGCOLOR="#00425A">
+		Examples of a personelized website
+	</TD>
+	<TD BGCOLOR="#44BDAD" WIDTH="14">
+		<A HREF="demos_mypage.shtml"><IMG SRC="images/pijl.gif" BORDER="0" ALIGN="left"></A>
+	</TD>
+</TR>
 
 <TR>
 	<TD></TD>

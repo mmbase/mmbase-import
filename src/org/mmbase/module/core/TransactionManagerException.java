@@ -11,11 +11,11 @@ package org.mmbase.module.core;
 
 /**
  * @author John Balder, 3MPS
- * @version $Id: TransactionManagerException.java,v 1.3 2001-08-24 07:31:34 pierre Exp $
+ * @version $Id: TransactionManagerException.java,v 1.2 2000-12-14 11:04:11 wwwtech Exp $
  */
 public class TransactionManagerException extends Exception {
-
-    public TransactionManagerException(String error) {
-        super(error);
-    }
+	
+	public TransactionManagerException(String error) {
+		super(error);
+	}
 }
