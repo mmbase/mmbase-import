@@ -8,13 +8,13 @@
 <!ATTLIST builder extends CDATA #IMPLIED>
 <!ELEMENT descriptions (description*)>
 <!ELEMENT description (#PCDATA)>
-<!ATTLIST description xml:lang NMTOKEN "us">
+<!ATTLIST description xml:lang NMTOKEN "en">
 <!ELEMENT classfile (#PCDATA)>
 <!ELEMENT searchage (#PCDATA)>
 <!ELEMENT singular (#PCDATA)>
-<!ATTLIST singular xml:lang NMTOKEN "us">
+<!ATTLIST singular xml:lang NMTOKEN "en">
 <!ELEMENT plural (#PCDATA)>
-<!ATTLIST plural xml:lang NMTOKEN "us">
+<!ATTLIST plural xml:lang NMTOKEN "en">
 <!ELEMENT status (#PCDATA)>
 <!ELEMENT fieldlist (field*)>
 <!ELEMENT field (gui?,editor?,db)>
@@ -24,7 +24,7 @@
 <!ATTLIST property name CDATA #REQUIRED>
 <!ELEMENT gui (guiname*,guitype?)>
 <!ELEMENT guiname (#PCDATA)>
-<!ATTLIST guiname xml:lang NMTOKEN "us">
+<!ATTLIST guiname xml:lang NMTOKEN "en">
 <!ELEMENT guitype (#PCDATA)>
 <!ELEMENT editor (positions*)>
 <!ELEMENT positions (input?,list?,search?)>
@@ -33,7 +33,7 @@
 <!ELEMENT search (#PCDATA)>
 <!ELEMENT db (name,type?)>
 <!ELEMENT name (#PCDATA)>
-<!ATTLIST name xml:lang NMTOKEN "us">
+<!ATTLIST name xml:lang NMTOKEN "en">
 <!ELEMENT type (#PCDATA)>
 <!ATTLIST type state CDATA #REQUIRED>
 <!ATTLIST type size CDATA #IMPLIED>
