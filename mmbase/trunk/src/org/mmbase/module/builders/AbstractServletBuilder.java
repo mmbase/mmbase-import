@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.8 2002-09-23 10:59:05 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.9 2002-09-30 13:00:51 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -180,15 +180,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      */
 
-    protected Object executeFunction(MMObjectNode node, String function, String field) {
+    public Object executeFunction(MMObjectNode node, String function, List args) {
         if (function.equals("servletpath")) {
             
-            
-            Vector args = getFunctionParameters(field);
-
             if (log.isDebugEnabled()) {
-                log.debug("getting servletpath with args " + field);
-                log.debug("parsed " + args);
+                log.debug("getting servletpath with args " +args);
             }
 
             // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
@@ -227,20 +223,23 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
         } else if (function.equals("servletpathof")) { 
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
-            return getServletPathWithAssociation(field, MMBaseContext.getHtmlRootUrlPath());
+            return getServletPathWithAssociation((String) args.get(0), MMBaseContext.getHtmlRootUrlPath());
         } else if (function.equals("format")) { // don't issue a warning, builders can override this. 
             // images e.g. return jpg or gif
         } else if (function.equals("mimetype")) { // don't issue a warning, builders can override this. 
             // images, attachments and so on
         } else if (function.equals("sgui")) {
-            int comma = field.indexOf(',');
-            if (comma == -1) {
-                return getGUIIndicator(field, node);
+            if (args == null || args.size() ==0) {
+                return getGUIIndicator(node);
             } else {
-                return getSGUIIndicator("session=" + field.substring(0, comma) + "+", field.substring(comma + 1), node);
+                if (args.size() <= 1) {
+                    return getGUIIndicator((String) args.get(0), node);
+                } else {
+                    return getSGUIIndicator("session=" + args.get(0) + "+", (String) args.get(1), node);
+                }
             }
         } else {                   
-            return super.executeFunction(node, function, field);
+            return super.executeFunction(node, function, args);
         }    
         return null;
     }

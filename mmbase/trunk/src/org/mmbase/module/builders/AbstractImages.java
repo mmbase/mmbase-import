@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.11 2002-06-30 19:31:38 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.12 2002-09-30 13:00:51 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -91,13 +91,13 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      *
      */
 
-    protected Object executeFunction(MMObjectNode node, String function, String field) {
+    public Object executeFunction(MMObjectNode node, String function, List args) {
         if (function.equals("mimetype")) {
             return getImageMimeType(node);
         } else if (function.equals("format")) {
             return getImageFormat(node);
         } else {
-            return super.executeFunction(node, function, field);
+            return super.executeFunction(node, function, args);
         }
     }
 
