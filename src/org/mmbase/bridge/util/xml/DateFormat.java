@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.8 2004-06-03 08:44:10 michiel Exp $
+ * @version $Id: DateFormat.java,v 1.9 2004-09-17 10:02:47 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -127,7 +127,7 @@ public class DateFormat {
 
     /** Formats the fieldvalue to a date pattern
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
@@ -168,7 +168,7 @@ public class DateFormat {
 
     /** Returns the year part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @return year part
      */
     public static int getYear(String fieldValue) {
@@ -177,7 +177,7 @@ public class DateFormat {
 
     /** Returns the month part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @return month part
      */
     public static int getMonth(String fieldValue) {
@@ -185,7 +185,7 @@ public class DateFormat {
     }
     /** Returns the day of the month part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @return day of the month part
      */
     public static int getDay(String fieldValue) {
@@ -193,7 +193,7 @@ public class DateFormat {
     }
     /** Returns the hours part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @return hours part
      */
     public static int getHours(String fieldValue) {
@@ -201,7 +201,7 @@ public class DateFormat {
     }
     /** Returns the minutes part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @return minutes part
      */
     public static int getMinutes(String fieldValue) {
@@ -209,7 +209,7 @@ public class DateFormat {
     }
     /** Returns the seconds part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @return seconds part
      */
     public static int getSeconds(String fieldValue) {
@@ -218,7 +218,7 @@ public class DateFormat {
 
     /** Returns the year part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param timeZone  timezone
      * @return year part
      */
@@ -228,7 +228,7 @@ public class DateFormat {
 
     /** Returns the month part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param timeZone  timezone
      * @return month part
      */
@@ -237,7 +237,7 @@ public class DateFormat {
     }
     /** Returns the day of the month part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param timeZone  timezone
      * @return day of the month part
      */
@@ -246,7 +246,7 @@ public class DateFormat {
     }
     /** Returns the hours part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param timeZone  timezone
      * @return hours part
      */
@@ -255,7 +255,7 @@ public class DateFormat {
     }
     /** Returns the minutes part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param timeZone  timezone
      * @return minutes part
      */
@@ -264,7 +264,7 @@ public class DateFormat {
     }
     /** Returns the seconds part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param timeZone  timezone
      * @return seconds part
      */
@@ -274,7 +274,7 @@ public class DateFormat {
 
     /** Returns the a part of the date
      * 
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param datePart  which part of the date should be returned. These are Calendar constants
      * @return a part
@@ -285,7 +285,7 @@ public class DateFormat {
 
     /** Returns the a part of the date
      *
-     * @param fieldvalue  time-stamp
+     * @param fieldValue  time-stamp
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param datePart  which part of the date should be returned. These are Calendar constants
      * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
