@@ -20,12 +20,12 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Rob Vermeulen (VPRO)
  */
-public class TimeTag extends CloudReferrerTag implements Writer {
+public class TimeTag extends ContextReferrerTag implements Writer {
     
     private static Logger log = Logging.getLoggerInstance(TimeTag.class.getName());
     protected WriterHelper helper = new WriterHelper();
     
-    private static int DAY = 1000*60*60*24;
+    private static final int DAY = 1000*60*60*24;
     
     private String time = null;
     private String inputformat = null;
@@ -54,10 +54,7 @@ public class TimeTag extends CloudReferrerTag implements Writer {
         setMonths(dfs);
     }
     
-    public void TimeTag() {
-    }
-    
-        public void haveBody() { helper.haveBody(); }
+    public void haveBody() { helper.haveBody(); }
 
        
     public void setVartype(String t) throws JspTagException {
