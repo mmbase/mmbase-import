@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.180 2002-11-07 15:29:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181 2002-11-13 18:14:35 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -726,7 +726,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public int getNodeType(int number) {
 	// assertment
-	if(number < 0 ) throw new RuntimeException("node number was invalid("+number+")" );
+	if(number < 0 ) throw new RuntimeException("node number was invalid("+ number+")" );
 
         int otype=-1;
         MultiConnection con = null;
@@ -751,10 +751,11 @@ public class MMObjectBuilder extends MMTable {
                     if (otype!=0) {
                         if (obj2type!=null) obj2type.put(new Integer(number),new Integer(otype));
                     }
-                }
-		else {
-		    // duh a SQLException?
-                    throw new SQLException("Could not find the otype(no records) using following query:"+sql);
+                } else {
+                    log.debug("Could not find the otype (no records) using following query:" + sql);
+                    return -1;
+                    // duh a SQLException??
+                    // throw new SQLException("Could not find the otype (no records) using following query:"+sql);
                 }
              }
         } catch (SQLException e) {
@@ -847,6 +848,7 @@ public class MMObjectBuilder extends MMTable {
      * @param usecache If true, the node is retrieved from the node cache if possible.
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *       <code>MMObjectNode</code> containign the contents of the requested node.
+     * @throws RuntimeException If the node does not exist
      */
     public synchronized MMObjectNode getNode(int number, boolean usecache) {
         if (number==-1) {
@@ -870,16 +872,15 @@ public class MMObjectBuilder extends MMTable {
             String bul = null;
             if(bi == 0) {
                 bul = "typedef";
-            }
-            else if (bi > 0) {
+            } else if (bi > 0) {
                 bul = mmb.getTypeDef().getValue(bi);
-            }
-            else {
+            } else {
                 // smaller then 0, cant be possible!
                 String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + bi + ")";
-                log.error(msg);
+                log.debug(msg);
                 throw new RuntimeException(msg);
             }
+
             if (bul == null) {
                 log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + bi + ")");
                 return null;
