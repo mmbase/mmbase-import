@@ -200,7 +200,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
     /**
      * Retrieves a RelationManager.
-     * Note that the Relationmanager is very strict - you cannot retrieve a manager with source and destination reversed.
+     * Note that you can retrieve a manager with source and destination reversed.
      * @param sourceManagerID number of the NodeManager of the source node
      * @param destinationManagerID number of the NodeManager of the destination node
      * @param roleID number of the role
@@ -211,11 +211,37 @@ public class BasicCloud implements Cloud, Cloneable {
         RelationManager relManager=(RelationManager)relationManagerCache.get(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId);
         if (relManager==null) {
             // XXX adapt for other dir too!
-            Enumeration e =cloudContext.mmb.getTypeRel().search("WHERE snumber="+sourceManagerId+" AND dnumber="+destinationManagerId+" AND rnumber="+roleId);
+            Enumeration e =cloudContext.mmb.getTypeRel().search(
+                  "WHERE snumber="+sourceManagerId+" AND dnumber="+destinationManagerId+" AND rnumber="+roleId);
+            if (!e.hasMoreElements()) {
+              e =cloudContext.mmb.getTypeRel().search(
+                  "WHERE dnumber="+sourceManagerId+" AND snumber="+destinationManagerId+" AND rnumber="+roleId);
+            }
             if (e.hasMoreElements()) {
                 MMObjectNode node=(MMObjectNode)e.nextElement();
                 relManager = new BasicRelationManager(node,this);
                 relationManagerCache.put(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId,relManager);
+            }
+        }
+        return relManager;
+    }
+
+    /**
+     * Retrieves a flexible (type-independent) RelationManager.
+     * Note that the relation manager retrieved with this method does not contain
+     * type info, which means that some data, such as source- and destination type,
+     * cannot be retrieved.
+     * @param roleID number of the role
+     * @return the requested RelationManager
+     */
+    RelationManager getRelationManager(int roleId) {
+        // cache. pretty ugly but at least you don't get 1000+ instances of a relationmanager
+        RelationManager relManager=(RelationManager)relationManagerCache.get(""+roleId);
+        if (relManager==null) {
+            MMObjectNode n =cloudContext.mmb.getRelDef().getNode(roleId);
+            if (n!=null) {
+                relManager = new BasicRelationManager(n,this);
+                relationManagerCache.put(""+roleId,relManager);
             }
         }
         return relManager;
@@ -247,6 +273,19 @@ public class BasicCloud implements Cloud, Cloneable {
         RelationManager rm=getRelationManager(n1,n2,r);
         if (rm==null) {
             throw new BasicBridgeException("Relation manager from "+sourceManagerName+" to "+destinationManagerName+" as "+roleName+" does not exist.");
+        } else {
+            return rm;
+        }
+    }
+
+    public RelationManager getRelationManager(String roleName) {
+        int r=cloudContext.mmb.getRelDef().getGuessedNumber(roleName);
+        if (r==-1) {
+            throw new BasicBridgeException("Role "+roleName+" does not exist.");
+        }
+        RelationManager rm=getRelationManager(r);
+        if (rm==null) {
+            throw new BasicBridgeException("Relation manager for "+roleName+" does not exist.");
         } else {
             return rm;
         }

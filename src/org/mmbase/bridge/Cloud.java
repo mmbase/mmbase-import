@@ -90,6 +90,18 @@ public interface Cloud {
             String destinationManagerName, String roleName);
 
     /**
+     * Returns the specified relation manager.
+     * This is a very generic Relation Manager, which does not contain type
+     * information (it does, however, validate new relations).
+     *
+     * @param roleName                           name of the role
+     * @return                                   the requested relation manager
+     * @throws RelationManagerNotFoundException  if the specified relation
+     *                                           manager could not be found
+     */
+    public RelationManager getRelationManager(String roleName);
+
+    /**
      * Returns all relation managers available in this cloud.
      *
      * @return  a <code>RelationManagerList</code> containing all relation
@@ -172,8 +184,8 @@ public interface Cloud {
      */
 
     public User getUser();
-	
-    /**     
+
+    /**
      * Returns a list of virtual nodes that are composed by fields of other
      * nodes. Searches by default for all valid relations in path (searchDir="both").
      *
