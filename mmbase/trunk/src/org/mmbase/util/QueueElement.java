@@ -9,14 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
-
-/*
- *
- */	
+/**
+ * Element in a {@link Queue}.
+ */
 public class QueueElement {
-	public Object obj;
-	public QueueElement next;
+
+    /**
+     * The actual object stored in the queue
+     */
+    public Object obj;
+    /**
+     * The next element in the queue (null indicates no next element).
+     */
+    public QueueElement next;
 }
