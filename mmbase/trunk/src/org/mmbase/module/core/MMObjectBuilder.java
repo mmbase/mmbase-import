@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.108 $ $Date: 2001-09-10 08:24:38 $
+ * @version $Revision: 1.109 $ $Date: 2001-10-18 13:04:10 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -844,6 +844,7 @@ public class MMObjectBuilder extends MMTable {
         boolean rtn=false;
         if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
             FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
+            fd.setParent(this);
             log.debug("checkAddTmpField(): adding tmp field "+field);
             addField(fd);
             rtn=true;
@@ -1419,7 +1420,7 @@ public class MMObjectBuilder extends MMTable {
      * @param def the field definiton to add
      */
     public void addField(FieldDefs def) {
-            fields.put(def.getDBName(),def);
+        fields.put(def.getDBName(),def);
         sortedEditFields = null;
         sortedListFields = null;
         sortedFields = null;
@@ -1547,7 +1548,7 @@ public class MMObjectBuilder extends MMTable {
             for (int i=1;i<20;i++) {
                 for (Enumeration e=fields.elements();e.hasMoreElements();) {
                     node=(FieldDefs)e.nextElement();
-                    if (node.GUISearch==i) sortedEditFields.addElement(node);
+                    if (node.getGUISearch()==i) sortedEditFields.addElement(node);
                 }
             }
         }
@@ -1567,7 +1568,7 @@ public class MMObjectBuilder extends MMTable {
             for (int i=1;i<20;i++) {
                 for (Enumeration e=fields.elements();e.hasMoreElements();) {
                     node=(FieldDefs)e.nextElement();
-                    if (node.GUIList==i) sortedListFields.addElement(node);
+                    if (node.getGUIList()==i) sortedListFields.addElement(node);
                 }
             }
         }
@@ -1588,7 +1589,7 @@ public class MMObjectBuilder extends MMTable {
             for (int i=1;i<20;i++) {
                 for (Enumeration e=fields.elements();e.hasMoreElements();) {
                     node=(FieldDefs)e.nextElement();
-                    if (node.GUIPos==i) sortedFields.addElement(node);
+                    if (node.getGUIPos()==i) sortedFields.addElement(node);
                 }
             }
         }
@@ -2264,7 +2265,7 @@ public class MMObjectBuilder extends MMTable {
         for (int i=1;i<20;i++) {
             for (Enumeration e=fields.elements();e.hasMoreElements();) {
                 node=(FieldDefs)e.nextElement();
-                if (node.DBPos==i) {
+                if (node.getDBPos()==i) {
                     String name=node.getDBName();
                     if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
                         sortedDBLayout.addElement(name);
@@ -2773,10 +2774,12 @@ public class MMObjectBuilder extends MMTable {
         while (enum.hasMoreElements()) {
             FieldDefs def=(FieldDefs)enum.nextElement();
             String name=(String)def.getDBName();
+            def.setParent(this);
             fields.put(name,def);
         }
 
         FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
+        def.setParent(this);
         fields.put("otype",def);
         setDBLayout_xml(fields);
     }
