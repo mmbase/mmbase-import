@@ -12,7 +12,6 @@ package org.mmbase.applications.email;
 import java.util.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
@@ -65,7 +64,7 @@ public class EmailBuilder extends MMObjectBuilder {
         super.init ();
 
 	// get the sendmail module
-	sendmail=mmb.getSendMail();
+	sendmail=(SendMailInterface)mmb.getModule("sendmail");
 	
 	// start the email nodes expire handler, deletes
 	// oneshot email nodes after the defined expiretime 
@@ -145,16 +144,18 @@ public class EmailBuilder extends MMObjectBuilder {
 
 
     /**
-    * return all the mailed nodes older than time given
-    */
-    public Enumeration getMailedOlderThen(int expiretime) {
-	// calc search time based on expire time
-	int time=(int)(System.currentTimeMillis()/1000)-expiretime;
-
-	// query database for the nodes
-	Enumeration e=search("mailedtime=S"+time+" and mailstatus='1' and mailtype='1'");
-	
-	// return the nodes
-	return e;
-    }	
+     * Returns all the one-shot delivered mail nodes older than a specified time.
+     * This is used by {@link EmailExpireHandler} to remove expired emails.
+     * @param expireAge The minimum age of the desired nodes in seconds
+     * @return a unmodifiable List of MMObjectNodes
+     */
+    List getDeliveredMailOlderThan(long expireAge) {
+        // calc search time based on expire time
+        long age = (System.currentTimeMillis() / 1000) - expireAge;
+        // query database for the nodes
+        return Collections.unmodifiableList(
+                    searchVector("WHERE mailedtime < " + age +
+                                 " and mailstatus = " + STATE_DELIVERED +
+                                 " and mailtype = " + TYPE_ONESHOT ));
+    }
 }
