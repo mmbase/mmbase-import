@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.util.Locale;
 import java.util.Vector;
+import java.io.*;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -31,6 +32,7 @@ public class XMLRelationNodeReader extends XMLBasicReader {
    private static Logger log =
       Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
 
+    String applicationpath;
 
     /**
      * Constructor
@@ -38,10 +40,11 @@ public class XMLRelationNodeReader extends XMLBasicReader {
      * @param applicationpath the path where this application was exported to
      * @param mmbase
      */
-    public XMLRelationNodeReader(String filename, MMBase mmbase) {
+    public XMLRelationNodeReader(String filename, String applicationpath, MMBase mmbase) {
         super(filename, false);
+        this.applicationpath = applicationpath;
     }
-    
+
    /**
    * get the name of this application
    */
@@ -184,33 +187,51 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                            }
                            int type = bul.getDBType(key);
                            if (type != -1) {
-                              if (type == FieldDefs.TYPE_STRING
-                                 || type == FieldDefs.TYPE_XML) {
-                                 if (value == null)
-                                    value = "";
-                                 newnode.setValue(key, value);
-                              }
-                              else
-                                 if ((type == FieldDefs.TYPE_NODE)
-                                    || (type == FieldDefs.TYPE_INTEGER)) {
+                                if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
+                                    if (value == null)
+                                        value = "";
+                                    newnode.setValue(key, value);
+                                } else if (type == FieldDefs.TYPE_NODE) {
+                                    // do not really set it, because we need syncnodes later for this.
+                                    newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
+                                    newnode.setValue(key, MMObjectNode.VALUE_NULL);
+                                } else if (type == FieldDefs.TYPE_INTEGER) {
+                                   try {
+                                        newnode.setValue(key, Integer.parseInt(value));
+                                    } catch (Exception e) {
+                                        log.warn("error setting integer-field " + e);
+                                        newnode.setValue(key, -1);
+                                    }
+                                } else if (type == FieldDefs.TYPE_FLOAT) {
                                     try {
-                                       newnode.setValue(
-                                          key,
-                                          Integer.parseInt(value));
+                                        newnode.setValue(key, Float.parseFloat(value));
+                                    } catch (Exception e) {
+                                        log.warn("error setting float-field " + e);
+                                        newnode.setValue(key, -1);
                                     }
-                                    catch (Exception e) {
-                                       newnode.setValue(key, -1);
+                                } else if (type == FieldDefs.TYPE_DOUBLE) {
+                                    try {
+                                        newnode.setValue(key, Double.parseDouble(value));
+                                    } catch (Exception e) {
+                                        log.warn("error setting double-field " + e);
+                                        newnode.setValue(key, -1);
                                     }
-                                 }
-                                 else {
-                                    log.error(
-                                       "XMLRelationNodeReader node error : "
-                                          + key
-                                          + " "
-                                          + value
-                                          + " "
-                                          + type);
-                                 }
+                                } else if (type == FieldDefs.TYPE_LONG) {
+                                    try {
+                                        newnode.setValue(key, Long.parseLong(value));
+                                    } catch (Exception e) {
+                                        log.warn("error setting long-field " + e);
+                                        newnode.setValue(key, -1);
+                                    }
+                                } else if (type == FieldDefs.TYPE_BYTE) {
+                                    NamedNodeMap nm2 = n5.getAttributes();
+                                    Node n7 = nm2.getNamedItem("file");
+
+                                    newnode.setValue(key, readBytesFile(applicationpath + n7.getNodeValue()));
+                                } else {
+                                    log.error("FieldDefs not found for #" + type + " was not known for field with name: '"
+                                              + key + "' and with value: '" + value + "'");
+                                }
                            }
                         }
                         n5 = n5.getNextSibling();
@@ -223,7 +244,22 @@ public class XMLRelationNodeReader extends XMLBasicReader {
          }
          n1 = n1.getNextSibling();
       }
-      return (nodes);
+      return nodes;
    }
 
+    byte[] readBytesFile(String filename) {
+        File bfile = new File(filename);
+        int filesize = (int)bfile.length();
+        byte[] buffer = new byte[filesize];
+        try {
+            FileInputStream scan = new FileInputStream(bfile);
+            int len = scan.read(buffer, 0, filesize);
+            scan.close();
+        } catch (FileNotFoundException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+        } catch (IOException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+        }
+        return (buffer);
+    }
 }
