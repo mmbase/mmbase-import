@@ -2,7 +2,7 @@
 <div class="group">
 <div class="environment">
  <p class="current">
-    <%=m.getString("current_context")%>: <mm:nodeinfo type="gui" />
+    <%=getPrompt(m,"current_context")%>: <mm:nodeinfo type="gui" />
  </p>
 
 <div class="rights">
@@ -49,7 +49,7 @@
       </tr>
     </mm:listnodes>
     </mm:functioncontainer>
-    <tr><td class="text"><input type="submit"  name="submit" value="<%=m.getString("submit")%>" /></td></tr>
+    <tr><td class="text"><input type="submit"  name="submit" value="<%=getPrompt(m,"submit")%>" /></td></tr>
     <tr><td class="text"><a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>">back</a></td></tr>
    </table>
    </form>

@@ -6,11 +6,11 @@
   <mm:field name="username">
     <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
     <tr>
-      <td><%=m.getString("groups")%></td>
+      <td><%=getPrompt(m,"groups")%></td>
       <td>
         <select name="_groups"  size="15" multiple="multiple">
           <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
-            <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>       
+            <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
           </mm:relatednodes>
           <mm:unrelatednodes type="mmbasegroups" searchdir="source" role="contains">
             <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
@@ -21,10 +21,10 @@
           <mm:relatednodes referid="ingroups">
             <mm:param name="group"><mm:field name="number" /></mm:param>
           </mm:relatednodes>
-          </mm:url>"><%=m.getString("view_groups")%>
+          </mm:url>"><%=getPrompt(m,"view_groups")%>
         </a>
       </td>
-      <td><%=m.getString("rank")%></td>
+      <td><%=getPrompt(m,"rank")%></td>
       <td>
         <select name="_rank" size="15">
           <mm:relatednodes type="mmbaseranks">
@@ -38,9 +38,9 @@
     </tr>
     </mm:compare>
     <mm:compare value="<%=cloud.getUser().getIdentifier()%>">
-    <td><%=m.getString("groups")%></td>
-      <td>        
-        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">         
+    <td><%=getPrompt(m,"groups")%></td>
+      <td>
+        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
           <mm:nodeinfo type="gui" /><mm:last inverse="true">, </mm:last>
         </mm:relatednodes>
         <a href="<mm:url referids="parameters,$parameters">
@@ -48,10 +48,10 @@
           <mm:relatednodes referid="ingroups">
             <mm:param name="group"><mm:field name="number" /></mm:param>
           </mm:relatednodes>
-          </mm:url>"><%=m.getString("view_groups")%>
+          </mm:url>"><%=getPrompt(m,"view_groups")%>
         </a>
       </td>
-      <td><%=m.getString("rank")%></td>
+      <td><%=getPrompt(m,"rank")%></td>
       <td>
         <mm:relatednodes type="mmbaseranks">
           <mm:nodeinfo type="gui" />

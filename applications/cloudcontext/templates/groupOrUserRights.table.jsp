@@ -12,7 +12,7 @@
            <mm:booleanfunction name="parentsallow">
                class="parent"
            </mm:booleanfunction>
-           >       
+           >
           <mm:booleanfunction name="maygrant">
           <input type="checkbox" name="<mm:write />:<mm:field name="number" />"
              <mm:booleanfunction name="allows">
@@ -29,7 +29,7 @@
         </mm:stringlist>
       </tr>
     </mm:listnodes>
-    </mm:functioncontainer> 
+    </mm:functioncontainer>
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
-    <tr><td class="text"><a href="<mm:url referids="back@url,parameters,$parameters" />"><%=m.getString("back")%></a></td></tr>
+    <tr><td class="text"><a href="<mm:url referids="back@url,parameters,$parameters" />"><%=getPrompt(m,"back")%></a></td></tr>
    </table>
