@@ -1,7 +1,13 @@
-<?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:output method="html" version="4.0" indent="yes" />
+<xsl:output method="xml"
+                version="1.0"
+                encoding="utf-8"
+                omit-xml-declaration="no"
+                standalone="no"
+                doctype-public="-//W3C//DTD HTML 4.0 Transitional//"	  
+                indent="no"
+        />
 
 <xsl:variable name="mmbaseurl"></xsl:variable>
 <xsl:variable name="imagethumbnail">+s(128x128)</xsl:variable>
@@ -15,10 +21,10 @@
 	<span class="pagenav">
 	<xsl:choose>
 		<xsl:when test="page[@previous='true']">
-			<a class="pagenav" href="{$url}&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);">&lt;&lt;</a>&#160;
+			<a class="pagenav" href="{$url}&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);">&lt;&lt;</a><xsl:text> </xsl:text>
 		</xsl:when>
 		<xsl:otherwise>
-			&lt;&lt;&#160;
+			&lt;&lt;<xsl:text> </xsl:text>
 		</xsl:otherwise>
 	</xsl:choose>
 
@@ -36,24 +42,27 @@
 </xsl:template>
 
 <xsl:template match="page">
-	<a class="pagenav" href="{$url}&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a>&#160;
+	<a class="pagenav" href="{$url}&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a><xsl:text> </xsl:text>
 </xsl:template>
 
 
 <xsl:template match="page[@current='true']">
-	<span class="pagenav-current"><xsl:value-of select="position()" />&#160;</span>
+	<span class="pagenav-current"><xsl:value-of select="position()" /><xsl:text> </xsl:text></span>
 </xsl:template>
 
 <xsl:template match="list">
 	<html>
-	<head>
+	<head>       
+        <meta http-equiv="Content-Type"  content="text/html; charset=utf-8" />
 		<title>Search Results</title>
 	</head>
 	<body bgcolor="#FFFFFF" onload="window.focus(); preselect(selected);">
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	
 	<script language="javascript">
+		<xsl:text disable-output-escaping="yes">
 	<![CDATA[
+	<!--
 		parent.status = "please select one or more items from this list";
 		
 		var searchtype = getParameter_general("type", "objects");
@@ -125,7 +134,9 @@
 			document.location.replace(href);
 			return false;
 		}
+    // -->		
 	]]>	
+   </xsl:text>
 	</script>
 
 <!--
@@ -186,10 +197,10 @@
 			
 				<xsl:apply-templates select="pages" />
 				<xsl:if test="/list/@showing">
-					&#160; <span class="pagenav">(..more items found)</span>
+					<xsl:text> </xsl:text> <span class="pagenav">(..more items found)</span>
 				</xsl:if>
 				<xsl:if test="not(/list/@showing)">
-					&#160; <span class="pagenav">(<xsl:value-of select="/list/@count" /> items found)</span>
+					<xsl:text> </xsl:text> <span class="pagenav">(<xsl:value-of select="/list/@count" /> items found)</span>
 				</xsl:if>
 
 			</td>
@@ -210,7 +221,7 @@
 </xsl:template>
 
 <xsl:template match="field">
-	<xsl:value-of select="." />&#160;
+	<xsl:value-of select="." /><xsl:text> </xsl:text>
 </xsl:template>
 
 
