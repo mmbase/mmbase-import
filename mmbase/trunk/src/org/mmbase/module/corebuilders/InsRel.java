@@ -247,6 +247,20 @@ public class InsRel extends MMObjectBuilder {
     }
 
     /**
+     * Get all relation(s) for a MMObjectNode
+     * This function returns all relations in which the node is either a source or
+     * the destination (even if the direction is unidirectional).
+     * @param src Identifying number of the object to find the relations of.
+     * @return If succesful, a <code>Vector</code> containing the relations.
+     *       Each element in the vector's enumeration is a node object retrieved from the
+     *       associated table (i.e. 'insrel'), containing the node's fields.
+     *       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
+     */
+    public Vector getAllRelationsVector(int src) {
+        return searchVector("WHERE snumber="+src+" OR dnumber="+src);
+    }
+
+    /**
      * Get relation(s) for a MMObjectNode
      * This function returns all relations in which the node is either a source, or where the node is
      * the destination, but the direction is bidirectional.

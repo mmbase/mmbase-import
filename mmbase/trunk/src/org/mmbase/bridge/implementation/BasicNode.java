@@ -362,11 +362,9 @@ public class BasicNode implements Node {
                 deleteRelations(-1);
             } else {
                 // option unset, fail if any relations exit
-                int relations = getNode().getRelationCount();
-                if(relations!=0) {
+                if(getNode().hasRelations()) {
                     String message;
-                    message = "This node cannot be deleted. It has "
-                              + relations + " relations attached to it.";
+                    message = "This node cannot be deleted. It still has relations attached to it.";
                     log.error(message);
                     throw new BridgeException(message);
                 }
@@ -410,7 +408,12 @@ public class BasicNode implements Node {
      */
     private void deleteRelations(int type) {
         RelDef reldef=mmb.getRelDef();
-        Enumeration e = getNode().getRelations();
+        Enumeration e = null;
+        if (type==-1) {
+            e = getNode().getAllRelations();
+        } else {
+            e = getNode().getRelations();
+        }
         if (e!=null) {
             while (e.hasMoreElements()) {
                 MMObjectNode node = (MMObjectNode)e.nextElement();
