@@ -136,7 +136,7 @@ Build-compiler: ${build.compiler}
 
   <target name="javadocs" description="Documentation" depends="init">
   <mkdir dir="${project.build.dir}/${project.name}-src/docs"/>
-  <mkdir dir="${build.dir}/${project.name}-src/docs/api"/>
+  <mkdir dir="${project.build.dir}/${project.name}-src/docs/api"/>
   <javadoc packagenames="${project.javadoc.packages}"
     sourcepath="${project.source.dir}"
     destdir="${project.build.dir}/${project.name}-src/docs/api"
