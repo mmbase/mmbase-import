@@ -540,7 +540,6 @@ Change directory to ${build.dir}/orion and run:
       <exclude name="**/logging/log4j2/**" unless="log4j2.in.classpath" />
       <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
       <exclude name="**/test/bridge/**" unless="junit.in.classpath"/>
-      <exclude name="org/mmbase/module/database/support/PostgreSQL71.java" unless="postgresql.in.classpath"/>
       <exclude name="org/mmbase/module/RemoteMMCI.java"/>
       <exclude name="org/mmbase/bridge/ContextProvider.java"/>
       <exclude name="org/mmbase/bridge/RemoteContext.java"/>
@@ -574,6 +573,88 @@ Change directory to ${build.dir}/orion and run:
   </target>
 
 
+    <property name="config.build.dir" value="${build.dir}/config"/>
+    <property name="webroot.build.dir" value="${build.dir}/webroot"/>
+    
+    <!-- =================================================================== -->
+    <!-- Create the MMBase config build dir                                  -->
+    <!-- =================================================================== -->
+    <target name="war.config" depends="init.compile">
+        <!-- copy the jsp editors to a reasonable place -->
+        <copy todir="${config.build.dir}">
+            <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
+                <!-- the dirs we definitly need -->
+                <include name="databases/**"/>
+                <include name="dtd/**"/>
+                <include name="xslt/**"/>
+                <include name="log/**"/>
+                <include name="security/**"/>
+                
+                <!-- the modules we definitly need -->
+                <include name="modules/config.xml"/>
+                <include name="modules/jdbc.xml"/>
+                <include name="modules/mmbaseroot.xml"/>
+                
+                <!-- the builders we definitly need -->
+                <include name="builders/daymarks.xml"/>
+                <include name="builders/insrel.xml"/>
+                <include name="builders/reldef.xml"/>
+                <include name="builders/typerel.xml"/>
+                <include name="builders/icaches.xml"/>
+                <include name="builders/mmservers.xml"/>
+                <include name="builders/syncnodes.xml"/>
+                <include name="builders/versions.xml"/>
+                <include name="builders/images.xml"/>
+                <include name="builders/oalias.xml"/>
+                <include name="builders/typedef.xml"/>
+            </fileset>
+        </copy>            
+    </target>
+
+    <!-- =================================================================== -->
+    <!-- Create the MMBase html build dir                                    -->
+    <!-- =================================================================== -->
+    <target name="war.webroot" depends="init.compile">
+        <!-- copy the jsp editors to a reasonable place -->
+        <copy todir="${webroot.build.dir}/mmbase/edit">
+            <fileset dir="${source-html.dir}/mmeditors/jsp"/>
+        </copy>
+                
+        <!-- taglib docs -->
+        <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${build.dir}/mmbase/web/mmbase-taglib.html" />
+        
+        <!-- javadocs -->        
+        <copy todir="${webroot.build.dir}/mmbase/docs">
+            <fileset dir="${build.dir}/mmbase/docs"/>
+        </copy>        
+    </target>
+
+
+    <!-- =================================================================== -->
+    <!-- Create the MMBase war file                                          -->
+    <!-- =================================================================== -->
+    <target name="war" description="Create a MMBase war-file" depends="jar,javadocs,war.config,war.webroot">
+        <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml.tomcat">
+
+            <!-- which libs are needed? -->
+            <lib dir="${build.dir}/mmbase/lib" defaultexcludes="true">
+                <include name="mmbase.jar"/>
+                <include name="log4j.jar"/>
+                <include name="xml-apis.jar"/>
+                <include name="xalan.jar"/>
+                <include name="xalan.jar"/>
+            </lib>
+            
+            <!-- here our config has to be.. -->
+            <webinf dir="${build.dir}">
+                <include name="config/**"/>
+            </webinf>
+
+            <!-- our file's on the server -->
+            <fileset dir="${build.dir}/webroot"/>
+        </war>
+    </target>
+
   <!-- =================================================================== -->
   <!-- Create a customized MMBase jar file                                 -->
   <!-- =================================================================== -->
@@ -602,7 +683,7 @@ Change directory to ${build.dir}/orion and run:
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase 2001">
+             bottom="MMBase 2002">
       <classpath>
         <fileset dir="${build.dir}/mmbase/lib">
           <include name="*.jar"/>
@@ -628,7 +709,7 @@ Change directory to ${build.dir}/orion and run:
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             bottom="MMBase 2001">
+             bottom="MMBase 2002">
     </javadoc>
   </target>
 
@@ -1298,11 +1379,11 @@ Change directory to ${build.dir}/orion and run:
     <available property="hsql.expanded"
                file="${expand.dir}/${hsql.version}"/>
     <!-- Xalan and Xerces -->
-    <property name="xalan.version" value="xalan-j_2_2"/>
-    <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
+    <property name="xalan.version" value="xalan-j_2_3_1"/>
+    <property name="xalan.fullversion" value="xalan-j_2_3_1"/>
     <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
     <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
-    <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xerces.jar"/>
+    <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar"/>
     <property name="xml-apis.jar" value="${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar"/>
 
     <available property="xalan.present"
