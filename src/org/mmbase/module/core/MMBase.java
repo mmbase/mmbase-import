@@ -43,7 +43,7 @@ public class MMBase extends ProcessorModule  {
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	private SendMailInterface sendmail;
-	public MMBaseMultiCast mmc;
+	public MMBaseChangeInterface mmc;
 	int delay;
 	boolean	nodecachesdone=false;
 	MMBaseProbe probe;
@@ -307,7 +307,7 @@ public class MMBase extends ProcessorModule  {
 		//LStreams.checkBroadcastState(LStreams.getNode(573949));
 		if (2==1 && mmc!=null) {
 			// debug for in/out multicast check
-			if( debug) debug("maintenance(): in="+mmc.incount+" out="+mmc.outcount+" spawn="+mmc.spawncount);
+			// if( debug) debug("maintenance(): in="+mmc.incount+" out="+mmc.outcount+" spawn="+mmc.spawncount);
 		}
 	}
 
