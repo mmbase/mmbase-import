@@ -1,109 +1,83 @@
-<TABLE  cellspacing=1 cellpadding=3 border=0>
-<TR>
-	<TD>
-	<BR>
-	</TD>
-</TR>
-<TR>
-	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<INPUT NAME="sbugid" SIZE="4">
-	</TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<SELECT NAME="sstatus">
-		<OPTION VALUE="">
-		<OPTION VALUE="1">open
-		<OPTION VALUE="2">accepted
-		<OPTION VALUE="3">rejected
-		<OPTION VALUE="4">pending
-		<OPTION VALUE="5">integrated
-		<OPTION VALUE="6">closed
-	</SELECT>
-	</TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<SELECT NAME="stype">
-		<OPTION VALUE="">
-		<OPTION VALUE="1">bug
-		<OPTION VALUE="2">wish
-		<OPTION VALUE="3">doc
-		<OPTION VALUE="4">docwish
-	</SELECT>
-	</TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<SELECT NAME="spriority">
-		<OPTION VALUE="">
-		<OPTION VALUE="1">high
-		<OPTION VALUE="2">medium
-		<OPTION VALUE="3">low
-	</SELECT>
-	</TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<INPUT NAME="sversion" SIZE="3">
-	</TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<SELECT NAME="sarea">
-		<OPTION VALUE="">
+<table>
+<tr>
+	<td width="50"><img src="images/trans.gif" /></td>
+	<td>
+	<input name="sbugid" size="4" />
+	</td>
+	<td> width="50">
+	<select name="sstatus">
+		<option value="" />
+		<option value="1">open</option>
+		<option value="2">accepted</option>
+		<option value="3">rejected</option>
+		<option value="4">pending</option>
+		<option value="5">integrated</option>
+		<option value="6">closed</option>
+	</select>
+	</td>
+	<td bgcolor="#42BDAD" width="50">
+	<select name="stype">
+		<option value="" />
+		<option value="1">bug</option>
+		<option value="2">wish</option>
+		<option value="3">doc</option>
+		<option value="4">docwish</option>
+	</select>
+	</td>
+	<td>
+	<select name="spriority">
+		<option value="" />
+		<option value="1">high</option>
+		<option value="2">medium</option>
+		<option value="3">low</option>
+	</select>
+	</td>
+	<td>
+	<input name="sversion" size="3">
+	</td>
+	<td<>
+	<select name="sarea">
+		<option value="" />
 		<mm:listnodes type="areas">
-		<OPTION VALUE="<mm:field name="number" />"><mm:field name="substring(name,15,.)" />
+   		<option value="<mm:field name="number" />"><mm:field name="substring(name,15,.)" /></option>
 		</mm:listnodes>
-	</SELECT>
-	</TD>
-	<TD BGCOLOR="#42BDAD" width="300">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<INPUT NAME="sissue" SIZE="20">
-	</TD>
-	<TD BGCOLOR="#42BDAD">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=1>
-	<INPUT TYPE="SUBMIT" VALUE="search">
-	</TD>
-</TR>
-</FORM>
-<TR>
-	<TD>
-	</TD>
-</IR>
-<TR>
-	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="#42BDAD" width="50">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Bug #</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Status</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Type</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Priority</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Version</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Area</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Issue</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD" >
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=1>
+	</select>
+	</td>
+	<td>
+	<input name="sissue" size="20">
+	</td>
+	<td>
+	<input type="submit" value="search" />
+	</td>
+</tr>
+</form>
+<tr>
+	<td><img src="images/trans.gif" width="50" height="1"></td>
+	<td>
+	<b>bug #</b>
+	</td>
+	<td>
+	<b>Status</b>
+	</td>
+	<td>
+	<b>Type</b>
+	</td>
+	<td>
+	<b>Priority</b>
+	</td>
+	<td>
+	<b>Version</b>
+	</td>
+	<td>
+	<b>Area</b>
+	</td>
+	<td>
+	<b>Issue</b>
+	</td>
+	<td>
 	&nbsp;
-	</TD>
-</TR>
-<!-- the real searchpart -->
+	</td>
+</tr>
 
 <mm:present referid="where" inverse="true">
 <% 	where="";
@@ -119,21 +93,23 @@
 
 <mm:list path="pools,bugreports,areas" nodes="BugTracker.Start" orderby="bugreports.number" directions="down" constraints="<%=where%>">
 	<mm:last>
-		<mm:import id="total" jspvar="tmp"><mm:index/></mm:import>
+     <mm:index id="total" />
 	</mm:last>
 </mm:list>
 <% String total="0"; %>
 <mm:present referid="total">
-	<% total=tmp; %>
+  <mm:write referid="total" jspvar="tmp" vartype="integer">
+	<% total = tmp.toString(); %>
+  </mm:write>
 </mm:present>
 
 <mm:list path="pools,bugreports,areas" nodes="BugTracker.Start" orderby="bugreports.number" directions="down" constraints="<%=where%>" max="15" offset="$offset">
-<TR>
-		<TD WIDTH="30"></TD>
-		<TD BGCOLOR="#00425A">
+<tr>
+		<td width="30" />
+		<td>
 			#<mm:field name="bugreports.bugid" />
-		</TD>
-		<TD BGCOLOR="#00425A">
+		</td>
+		<td>
 			 <mm:field name="bugreports.bstatus">
 				<mm:compare value="1">Open</mm:compare>
 				<mm:compare value="2">Accepted</mm:compare>
@@ -142,119 +118,107 @@
 				<mm:compare value="5">Integrated</mm:compare>
 				<mm:compare value="6">Closed</mm:compare>
 			 </mm:field>
-		</TD>
-		<TD BGCOLOR="#00425A">
+		</td>
+		<td>
 			 <mm:field name="bugreports.btype">
 				<mm:compare value="1">Bug</mm:compare>
 				<mm:compare value="2">Wish</mm:compare>
 				<mm:compare value="3">DocBug</mm:compare>
 				<mm:compare value="4">DocWish</mm:compare>
 			 </mm:field>
-		</TD>
-		<TD BGCOLOR="#00425A">
+		</td>
+		<td>
 			 <mm:field name="bugreports.bpriority">
 				<mm:compare value="1">High</mm:compare>
 				<mm:compare value="2">Medium</mm:compare>
 				<mm:compare value="3">Low</mm:compare>
 			 </mm:field>
-		</TD>
-		<TD BGCOLOR="#00425A">
+		</td>
+		<td>
 			 <mm:field name="bugreports.version" />&nbsp;
-		</TD>
-		<TD BGCOLOR="#00425A">
+		</td>
+		<td>
 			 <mm:field name="areas.name" />&nbsp;
-		</TD>
-		<TD BGCOLOR="#00425A">
+		</td>
+		<td>
 			 <mm:field name="bugreports.issue" />&nbsp;
-		</TD>
-		<TD BGCOLOR="#44BDAD">
-			<A HREF="fullview.jsp?bugreport=<mm:field name="bugreports.number" />"><IMG SRC="images/arrow.gif" BORDER="0" ALIGN="left"></A>
-		</TD>
-</TR>
+		</td>
+		<td>
+			<a href="<mm:url page="fullview.jsp"><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="images/arrow.gif" /></a>
+		</td>
+</tr>
 <mm:last>
-<mm:import id="last" jspvar="last" ><mm:index offset="$offset" /></mm:import>
+  <mm:index id="last" offset="$offset" />
 </mm:last>
 </mm:list>
 
-<TR>
-	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD COLSPAN="7">
-	<CENTER>
+<% int last = 0; %>
+<mm:present referid="last">
+  <mm:write referid="last" jspvar="l" vartype="integer">
+     <% last = l.intValue(); %>
+  </mm:write>
+</mm:present>
+
+<tr>
+	<td width="50"><img src="images/trans.gif" width="50" height="1"></td>
+	<td colspan="7">
+	<center>
 	<% 
 		int offseti=1;
 		int lasti=1;
 		int totali=1;
 		try {
 			offseti=Integer.parseInt(offset);		
-			lasti=Integer.parseInt(last);		
+			lasti= last ;		
 			totali=Integer.parseInt(total);		
 		} catch(Exception e) {}
 	%>
-	<TABLE  cellspacing=0 cellpadding=3 border=0>
-	<TD BGCOLOR="#42BDAD">
-			<mm:compare referid="offset" value="0" inverse="true"><a href="index.jsp?offset=<%=(offseti-15)%>&where=<%=where%>"><IMG SRC="images/arrow2.gif" BORDER="0" ALIGN="left"></a></mm:compare>
-	</TD>
-	<TD BGCOLOR="#42BDAD">
-		<FONT COLOR="#000000">
+	<table>
+	<td>
+			<mm:compare referid="offset" value="0" inverse="true"><a href="index.jsp?offset=<%=(offseti-15)%>&where=<%=where%>"><IMG SRC="images/arrow2.gif" BORDER="0" ALIGN="left" /></a></mm:compare>
+	</td>
+	<td>
 			<% if (!total.equals("0")) { %>
 			<%=(offseti+1)%> to <%=(lasti+1)%> from <%=total%>
 			<% } else { %>
 				No bugs found in MMBase (ok not the one you are looking for)
 			<% } %>
 		
-		</FONT>
-	</TD>
-	<TD BGCOLOR="#42BDAD">
+	</td>
+	<td>
 			<% if (((lasti+1)!=totali) && !total.equals("0")) { %><a href="index.jsp?offset=<%=(offseti+15)%>&where=<%=where%>"><IMG SRC="images/arrow.gif" BORDER="0" ALIGN="left"></a><% } %>
-	</TD>
-	</TABLE>
-	</CENTER>
-	</TD>
-</TR>
+	</td>
+	</table>
+	</center>
+	</td>
+</tr>
 
+<tr>
+	<td><img src="images/trans.gif" width="50" height="1" /></td><%-- arch --%>
+	<td  colspan="7">
+	<b>New bug report</b>
+	</td>
+</tr>
+<tr>
 
-
-
-<!-- end of the searchpart -->
-<TR>
-	<TD>
-		&nbsp;
-	</TD>
-</TR>
-
-<TR>
-	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="#42BDAD" COLSPAN="7">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>New bug report</B>
-	</TD>
-	<TD BGCOLOR="#42BDAD">
-	<FONT COLOR="#000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>&nbsp;</B>
-	</TD>
-</TR>
-<TR>
-
-		<TD WIDTH="30"></TD>
+		<td width="30" />
 		<mm:present referid="user" inverse="true" >
-			<TD BGCOLOR="#00425A" COLSPAN="7">
+			<td colspan="7">
 			 <center>We have no idea who you are please login !
-			</TD>
-			<TD BGCOLOR="#44BDAD" WIDTH="14">
-				<A HREF="changeUser.jsp"><IMG SRC="images/arrow.gif" BORDER="0" ALIGN="left"></A>
-			</TD>
+			</td>
+			<td width="14">
+				<a href="<mm:url page="changeUser.jsp" />"><img src="images/arrow.gif" /></a>
+			</td>
 		</mm:present>
 		<mm:present referid="user">
-			<TD BGCOLOR="#00425A" cOLSPAN="7">
+			<td  colspan="7">
 			<mm:node number="$user">
-			<CENTER> I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <A HREF="changeUser.jsp">change name</A> ) i have a new bug and want to report it
-			</TD>
-			<TD BGCOLOR="#44BDAD" WIDTH="14">
-				<A HREF="newBug.jsp?user=<mm:write referid="user" />"><IMG SRC="images/arrow.gif" BORDER="0" ALIGN="left"></A>
-			</TD>
+			<center> I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url page="changeUser.jsp" />">change name</a> ) I have a new bug and want to report it
+			</td>
+			<td width="14">
+				<a href="newBug.jsp?user=<mm:write referid="user" />"><img src="images/arrow.gif" /></a>
+			</td>
 			</mm:node>
 		</mm:present>
-</TR>
-
-
-</TABLE>
+</tr>
+</table>

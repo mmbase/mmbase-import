@@ -32,12 +32,14 @@
 
 <mm:list path="bugreportupdates,bugreports" orderby="bugreports.time" directions="down">
 	<mm:last>
-		<mm:import id="total" jspvar="tmp2"><mm:index/></mm:import>
+    <mm:index id="total" />
 	</mm:last>
 </mm:list>
 <% String total="0"; %>
 <mm:present referid="total">
+  <mm:write referid="total" jspvar="tmp2" vartype="string">
 	<% total=tmp2; %>
+  </mm:write>
 </mm:present>
 
 <mm:listnodes type="bugreports" orderby="time" directions="down" max="15" offset="$offset">
@@ -69,9 +71,16 @@
 		</TD>
 </TR>
 <mm:last>
-<mm:import id="last" jspvar="last2" ><mm:index offset="$offset" /></mm:import>
+ <mm:index id="last" offset="$offset" />
 </mm:last>
 </mm:listnodes>
+<% int last2 = 0; %>
+<mm:present referid="last">
+  <mm:write referid="last" jspvar="t" vartype="integer">
+    <% last2 = t.intValue(); %>
+  </mm:write>
+</mm:present>
+
 
 <TR>
 	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
@@ -83,7 +92,7 @@
 		int totali=1;
 		try {
 			offseti=Integer.parseInt(offset);		
-			lasti=Integer.parseInt(last2);		
+			lasti= last2;		
 			totali=Integer.parseInt(total);		
 		} catch(Exception e) {}
 	%>
