@@ -18,17 +18,17 @@ import java.text.*;
 
 
 /**
- * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments.
+ * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyURLComposer.java,v 1.2 2003-02-03 18:06:20 michiel Exp $
+ * @version $Id: OmroepcgiRAMURLComposer.java,v 1.1 2003-02-03 22:50:54 michiel Exp $
  * @since MMBase-1.7
  */
-public class MyURLComposer extends MediaURLComposer {
+public class OmroepcgiRAMURLComposer extends RamURLComposer {
     
-    private static Logger log = Logging.getLoggerInstance(MyURLComposer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(OmroepcgiRAMURLComposer.class.getName());
 
-    public MyURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+    public OmroepcgiRAMURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
     }
     public Format getFormat() {
@@ -50,7 +50,7 @@ public class MyURLComposer extends MediaURLComposer {
         return lastSlash;
     }
     
-    public String getURL() {
+    protected StringBuffer getURLBuffer() {
         String url      = source.getStringValue("url");
         String rootpath = provider.getStringValue("rootpath");
         String host = provider.getStringValue("host");
@@ -72,9 +72,10 @@ public class MyURLComposer extends MediaURLComposer {
             args.insert(0, rootpath);
         }
         if (getFormat() == Format.RM || host.equals("cgi.omroep.nl")) {
-            getRMArgs(args);
+            RealURLComposer.getRMArgs(args, fragment);
         }
-        return provider.getStringValue("protocol") + "://" + host + args.toString();
+        args.insert(0,  provider.getStringValue("protocol") + "://" + host);
+        return args;
     }
 }
 

@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class URLComposerComparator implements Comparator, MediaFilter {
+abstract public class URLComposerComparator implements Comparator, Filter {
 
     /**
      * Implement this.
