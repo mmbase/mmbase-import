@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.44 2003-06-17 18:07:38 michiel Exp $ 
+ * @version $Id: NodeTag.java,v 1.45 2003-07-14 09:44:26 michiel Exp $ 
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static Logger log = Logging.getLoggerInstance(NodeTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(NodeTag.class);
 
     private Attribute number    = Attribute.NULL;
     private Attribute element   = Attribute.NULL;
@@ -115,7 +115,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             String referString = referid.getString(this);
             // try to find if already in context.
             if (log.isDebugEnabled()) {
-                log.debug("looking up Node with " + referid + " in context");
+                log.debug("looking up Node with " + referString + " in context");
             }
             switch(getNotfound()) {               
             case NOT_FOUND_SKIP:         { 
@@ -138,9 +138,11 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
         
         if (node == null) {
-            log.debug("node is null");
-            if (number != Attribute.NULL) {
-                String n = number.getString(this);
+            String n = number.getString(this);
+            if (log.isDebugEnabled()) {
+                log.debug("node is null, number attribute: '" + n + "'");
+            }
+            if (! n.equals("")) {
                 // explicity indicated which node (by number or alias)
                 if (! getCloud().hasNode(n)) {
                     switch(getNotfound()) {
