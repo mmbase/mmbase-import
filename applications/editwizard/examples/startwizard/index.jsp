@@ -30,7 +30,7 @@
     <a href="<mm:url referids="language,referrer,loginmethod" page="${jsps}list.jsp">
         <mm:param name="wizard">tasks/people</mm:param>
         <mm:param name="nodepath">people</mm:param>
-        <mm:param name="fields">number,firstname,lastname</mm:param>
+        <mm:param name="fields">number,firstname,lastname,owner</mm:param>
         <mm:param name="orderby">number</mm:param>
         <mm:param name="directions">down</mm:param>
       </mm:url>">List people</a>
@@ -42,7 +42,7 @@
     <a href="<mm:url referids="language,referrer,loginmethod" page="${jsps}list.jsp">
         <mm:param name="wizard">tasks/news</mm:param>
         <mm:param name="nodepath">news</mm:param>
-        <mm:param name="fields">number,title</mm:param>
+        <mm:param name="fields">number,title,owner</mm:param>
         <mm:param name="orderby">number</mm:param>
         <mm:param name="directions">down</mm:param>
       </mm:url>">List news</a>
@@ -70,7 +70,7 @@
   </table>
 <hr />
    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
-<a href="<mm:url page="../index.html" />">back</a>
+<a href="<mm:url page="../" />">back</a>
 
 </body>
 </html>

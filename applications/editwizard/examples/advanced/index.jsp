@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.22 2004-01-06 11:10:38 pierre Exp $
+    @version  $Id: index.jsp,v 1.23 2004-01-08 21:58:20 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -170,6 +170,7 @@ view XML</a></td>
            <mm:param name="fields">news.number,news.title</mm:param>
            <mm:param name="orderby">news.number</mm:param>
            <mm:param name="directions">down</mm:param>
+           <mm:param name="searchdirs">destination</mm:param>
            </mm:url>">News</a>
      </td><td>
         Only list news of default magazine (MyNews magazine).
@@ -206,7 +207,7 @@ view XML</a></td>
 
 <hr />
    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
-<a href="<mm:url page="../index.html" />">back</a>
+<a href="<mm:url page="../" />">back</a>
   </td></tr>
   </table>
 </body>
