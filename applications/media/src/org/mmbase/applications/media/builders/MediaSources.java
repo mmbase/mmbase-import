@@ -17,7 +17,6 @@ import java.io.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBaseContext;
-import javax.servlet.http.*;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.StringObject;
@@ -44,7 +43,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.14 2003-06-05 09:37:33 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.15 2003-06-24 09:04:48 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
