@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width:4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.4 2000-07-20 08:14:02 daniel Exp $
+$Id: MMOORel2Node.java,v 1.5 2001-04-11 11:41:22 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/07/20 08:14:02  daniel
+removed methods that did not compile (not patched yet)
+
 Revision 1.3  2000/05/15 14:47:48  wwwtech
 Rico: fixed double close() bug in getDBText en getDBBtye()
 
@@ -53,6 +56,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.corebuilders.InsRel;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
 * MMOORel2Node implements the MMJdbc2NodeInterface for
 * OO-rel types of databbases  this is the class used to abstact the query's
@@ -60,13 +66,11 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.4 $ $Date: 2000-07-20 08:14:02 $
+* @$Revision: 1.5 $ $Date: 2001-04-11 11:41:22 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    private static Logger log = Logging.getLoggerInstance(MMOORel2Node.class.getName()); 
 
 	MMBase mmb;
 	static Vector nameCache=null;
@@ -90,7 +94,9 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 			String root=System.getProperty("mmbase.config");
 		
-			if (debug) debug("create(): reading defines from '"+root+"/defines/"+tableName+".def'");
+			if (log.isDebugEnabled()) {
+                log.debug("create(): reading defines from '" + root + "/defines/" + tableName + ".def'");
+            }
 
 			Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
 	
@@ -109,17 +115,17 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 					} else {
 						stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t "+createtype+" under "+mmb.baseName+"_object_t");
 					}
-					debug("Created type "+tableName);
+					log.info("Created type "+tableName);
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {
-					debug("can't create type "+tableName);
-					debug("create row type "+mmb.baseName+"_"+tableName+"_t "+createtype+" under "+mmb.baseName+"_object_t");
-					e.printStackTrace();
+					log.error("can't create type "+tableName);
+					log.error("create row type "+mmb.baseName+"_"+tableName+"_t "+createtype+" under "+mmb.baseName+"_object_t");
+					log.error(Logging.stackTrace(e));
 				}
 			}
 			else {
-				debug("create(): Can't create table no CREATETABLE_ defined");
+				log.error("create(): Can't create table no CREATETABLE_ defined");
 			}
 
 			if (createtable!=null && !createtable.equals("")) {	
@@ -134,15 +140,15 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 					} else {
 						stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t "+createtable+" under "+mmb.baseName+"_object");
 					}
-					debug("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
+					log.info("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {
-					debug("can't create table "+tableName);
-					e.printStackTrace();
+					log.error("can't create table "+tableName);
+					log.error(Logging.stackTrace(e));
 				}
 			} else {
-				debug("create(): Can't create table no CREATETABLE_ defined");
+				log.error("create(): Can't create table no CREATETABLE_ defined");
 			}
 		return(true);
 	}
@@ -190,11 +196,11 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 					//node.setValue(prefix+fieldname,getDBByte(rs,i));
 					node.setValue(prefix+fieldname,"$SHORTED");
 				} else {
-					//debug("MMOORel2Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+					//log.debug("MMOORel2Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
 				}
 			} catch(SQLException e) {
-				debug("OORel2Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
-				e.printStackTrace();	
+				log.error("OORel2Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+				log.error(Logging.stackTrace(e));
 			}
 			return(node);
 	}
@@ -211,15 +217,15 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			inp=rs.getAsciiStream(idx);
 			if (inp==null) {
-				debug("MMOORel2Node DBtext no ascii "+inp);
+				log.warn("MMOORel2Node DBtext no ascii "+inp);
 				 return("");
 			}
 			if (rs.wasNull()) {
-				debug("MMOORel2Node DBtext wasNull "+inp);
+				log.warn("MMOORel2Node DBtext wasNull "+inp);
 				return("");
 			}
 			siz=inp.available(); // DIRTY
-		//	debug("MMOORel2Node DBtext SIZE="+siz);
+            //	log.debug("MMOORel2Node DBtext SIZE="+siz);
 			if (siz==0 || siz==-1) return("");
 			input=new DataInputStream(inp);
 			isochars=new byte[siz];
@@ -227,8 +233,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			str=new String(isochars,"ISO-8859-1");
 			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
-			debug("MMOORel2Node text  exception "+e);
-			e.printStackTrace();
+			log.error("MMOORel2Node text  exception "+e);
+			log.error(Logging.stackTrace(e));
 			return("");
 		}
 		return(str);
@@ -250,8 +256,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			input.readFully(bytes);
 			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
-			debug("MMOORel2Node byte  exception "+e);
-			e.printStackTrace();
+			log.error("MMOORel2Node byte  exception "+e);
+			log.error(Logging.stackTrace(e));
 		}
 		return(bytes);
 	}
@@ -268,20 +274,20 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			if (parser.hasMoreTokens()) {
 				cmd=parser.nextToken();
 			} 
-			//debug("CMD="+cmd+" PART="+part);
+			//log.debug("CMD="+cmd+" PART="+part);
 			// do we have a type prefix (example episodes.title==) ?
 			int pos=part.indexOf('.');
 			if (pos!=-1) {
 				part=part.substring(pos+1);
 			}
-			//debug("PART="+part);
+			//log.debug("PART="+part);
 			
 			// remove fieldname  (example title==) ?
 			pos=part.indexOf('=');
 			if (pos!=-1) {
 				String fieldname=part.substring(0,pos);
 				String dbtype=bul.getDBType(fieldname);
-				//debug("TYPE="+dbtype);
+				//log.debug("TYPE="+dbtype);
 				result+=parseFieldPart(fieldname,dbtype,part.substring(pos+1));
 				if (cmd!=null) {
 					if (cmd.equals("+")) {
@@ -300,7 +306,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		String result="";
 		boolean like=false;
 		char operatorChar = part.charAt(0);
-		//debug("char="+operatorChar);
+		//log.debug("char="+operatorChar);
 		String value=part.substring(1);
 		int pos=value.indexOf("*");
 		if (pos!=-1) {
@@ -325,7 +331,9 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			case 'E':
 				// EQUAL
 				result+="etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))";
-				if (debug) debug("etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))");
+				if (log.isDebugEnabled()) {
+                    log.debug("etx_contains(" + fieldname + ",Row('" + value + "','SEARCH_TYPE=PROX_SEARCH(5)'))");
+                }
 				break;
 			}
 
@@ -371,7 +379,9 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			byte[] result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			if (debug) debug("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
+			if (log.isDebugEnabled()) {
+                log.debug("SELECT " + fieldname + " FROM " + mmb.baseName + "_" + tableName + " where number=" + number);
+            }
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
 			if (rs.next()) {
 				result=getDBByte(rs,1);
@@ -380,8 +390,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			debug("getShortedByte(): trying to load bytes");
-			e.printStackTrace();
+			log.error("getShortedByte(): trying to load bytes");
+			log.error(Logging.stackTrace(e));
 		}
 
 		return(null);
@@ -403,8 +413,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			debug("getShortedText(): trying to load text");
-			e.printStackTrace();
+			log.error("getShortedText(): trying to load text");
+			log.error(Logging.stackTrace(e));
 		}
 		// return "" instead of null, not sure if this is oke
 		return("");
@@ -424,8 +434,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Error on root node");
-			e.printStackTrace();
+			log.error("Error on root node");
+			log.error(Logging.stackTrace(e));
 			return(-1);
 		}
 		return(0);	
@@ -460,15 +470,15 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)  
 			      || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-					// debug("Insert: DBState = "+DBState+", adding key: "+key);
+					// log.debug("Insert: DBState = "+DBState+", adding key: "+key);
 					fieldAmounts+=",?";
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					// debug("Insert: DBState = "+DBState+", skipping key: "+key);
+					// log.debug("Insert: DBState = "+DBState+", skipping key: "+key);
 				} else {
 					if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						fieldAmounts+=",?";
 					} else {
-						debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+						log.debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
 					}
 				}
 			}
@@ -480,24 +490,24 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.setInt(1,number);
 
 			// Prepare the statement for the DB elements to the fieldAmounts String.
-			// debug("Insert: Preparing statement using fieldamount String: "+fieldAmounts);
+			// log.debug("Insert: Preparing statement using fieldamount String: "+fieldAmounts);
 			int j=2;
 			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
 				String key = (String)e.nextElement();	
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)  
 			      || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-					// debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
+					// log.debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
 					setValuePreparedStatement( stmt, node, key, j );
 					j++;
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+					// log.debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
 					if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						setValuePreparedStatement( stmt, node, key, j );
 						j++;
 					} else {
-						debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+						log.debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
 					}
 				}
 			}
@@ -505,8 +515,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			debug("Error on : "+number+" "+owner+" fake");
-			e.printStackTrace();
+			log.debug("Error on : "+number+" "+owner+" fake");
+			log.error(Logging.stackTrace(e));
 			return(-1);
 		}
 
@@ -514,7 +524,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		bul.signalNewObject(bul.tableName,number);
 
 		node.setValue("number",number);
-		if (debug) debug("INSERTED="+node);
+		if (log.debug) log.debug("INSERTED="+node);
 		return(number);	
 	}
 	*/
@@ -528,17 +538,17 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			isochars=body.getBytes("ISO-8859-1");
 		} catch (Exception e) {
-			debug("setDBText(): String contains odd chars");
-			debug(body);
-			e.printStackTrace();
+			log.error("setDBText(): String contains odd chars");
+            log.error(body);
+			log.error(Logging.stackTrace(e));
 		}
 		try {
 			ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
 			stmt.setAsciiStream(i,stream,isochars.length);
 			stream.close();
 		} catch (Exception e) {
-			debug("setDBText(): Can't set ascii stream");
-			e.printStackTrace();
+			log.error("setDBText(): Can't set ascii stream");
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -551,8 +561,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.setBinaryStream(i,stream,bytes.length);
 			stream.close();
 		} catch (Exception e) {
-			debug("getDBByte(): Can't set byte stream");
-			e.printStackTrace();
+			log.error("getDBByte(): Can't set byte stream");
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -625,7 +635,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				log.error(Logging.stackTrace(e));
 				return(false);
 			}
 		}
@@ -634,7 +644,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
 				int num = node.getIntValue("number");
-				if (debug) debug("commit(): changed(insrel,"+bul.tableName+","+num+")");
+				if (log.debug) log.debug("commit(): changed(insrel,"+bul.tableName+","+num+")");
 				mmb.mmc.changedNode(num,bul.tableName,"c");
 
 				// figure out tables to send the changed relations
@@ -645,11 +655,11 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			} else {
 				int num = node.getIntValue("number");
-				if (debug) debug("commit(): changed("+bul.tableName+","+num+")");
+				if (log.debug) log.debug("commit(): changed("+bul.tableName+","+num+")");
 				if (mmb!=null && mmb.mmc!=null) {
 					mmb.mmc.changedNode(num,bul.tableName,"c");
 				} else {
-					debug("commit(): can't send change("+bul.tableName+","+num+"), mmb or mmb.mmc is null");
+					log.error("commit(): can't send change("+bul.tableName+","+num+"), mmb or mmb.mmc is null");
 				}
 			}
 		}
@@ -664,11 +674,13 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		java.util.Date d=new java.util.Date();
 		int number=node.getIntValue("number");
-		// temp removed (daniel) despre. if (debug) debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
-		if (debug) debug("removeNode(): SAVECOPY "+node.toString());
+		// temp removed (daniel) despre. if (debug) log.debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
+		if (log.isDebugEnabled()) {
+            log.debug("removeNode(): SAVECOPY " + node.toString());
+        }
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
-			debug("removeNode("+bul.tableName+","+number+"): PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+			log.warn("removeNode("+bul.tableName+","+number+"): still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
 		} else {
 			if (number!=-1) {
 				try {
@@ -678,12 +690,12 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {
-					debug("removeNode("+bul.tableName+","+number+"): ERROR: ");
-					e.printStackTrace();
+					log.error("removeNode("+bul.tableName+","+number+"): " + Logging.stackTrace(e));
 				}
 			}
-			else
-				debug("removeNode("+bul.tableName+","+number+"): ERROR: number not valid(-1)!");
+			else {
+				log.error("removeNode("+bul.tableName+","+number+"): number not valid(-1)!");
+            }
 		}
 		if (bul.broadcastChanges) {
 			mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"d");
@@ -693,8 +705,9 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			}
-			else
-				debug("removeNode("+bul.tableName+","+number+"): WARNING: want to remove it, but not an insrel (not implemented).");
+			else {
+				log.warn("removeNode("+bul.tableName+","+number+"): want to remove it, but not an insrel (not implemented).");
+            }
 		}
 
 	}
@@ -705,7 +718,9 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		if (currentdbkey!=-1) {
 			currentdbkey++;
 			if (currentdbkey<=currentdbkeyhigh) {
-				if (debug) debug("GETDBKEY="+currentdbkey);
+				if (log.isDebugEnabled()) {
+                    log.debug("GETDBKEY="+currentdbkey);
+                }
 				return(currentdbkey);
 			}
 		}
@@ -721,20 +736,22 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				debug("getDBKey(): ERROR: while getting a new key number");
-				e.printStackTrace();
+				log.error("getDBKey(): while getting a new key number");
+				log.error(Logging.stackTrace(e));
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException re){
-					debug("getDBKey(): Waiting 2 seconds to allow databvase to unlock fetchrelkey()");
+					log.info("getDBKey(): Waiting 2 seconds to allow database to unlock fetchrelkey()");
 				}
-				debug("getDBKey(): got key("+currentdbkey+")");
+				log.info("getDBKey(): got key("+currentdbkey+")");
 				return(-1);
 			}
 		}
 		currentdbkey=number; // zeg 10
 		currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
-		if (debug) debug("getDBKey(): got key("+currentdbkey+")");
+		if (log.isDebugEnabled()) {
+            log.debug("getDBKey(): got key("+currentdbkey+")");
+        }
 		return(number);
 	}
 
@@ -745,11 +762,15 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		if (nameCache.contains(tableName)) {
 			return(true);
 		} else {
-			if (tableName.length()>0) {
-				if (debug) debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
+			if (tableName.length()>0) {               
+				if (log.isDebugEnabled()) { // michiel: hmm, strange these are debug mesages _and_ errors?
+                    log.debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
+                } 
 				return(false);
 			} else {
-				if (debug) debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
+				if (log.isDebugEnabled()) {
+                   log. debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
+                }
 				return(true);
 			}
 		}
@@ -772,7 +793,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 			return(results);
 		} catch (Exception e) {
-			//e.printStackTrace();
+			//log.error(Logging.stackTrace(e));
 			return(results);
 		}
 	}
@@ -812,8 +833,8 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
  			stmt.close();
  			con.close();
  		} catch (SQLException e) {
- 			e.printStackTrace();
- 			System.out.println("Error on : "+number+" "+owner+" fake");
+ 			log.error("Error on : "+number+" "+owner+" fake");
+            log.error(Logging.stackTrace(e));
  			return(-1);
  		}
  			

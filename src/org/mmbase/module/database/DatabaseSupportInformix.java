@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width?: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: DatabaseSupportInformix.java,v 1.3 2000-03-30 13:11:45 wwwtech Exp $
+	$Id: DatabaseSupportInformix.java,v 1.4 2001-04-11 11:41:23 michiel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/03/30 13:11:45  wwwtech
+	Rico: added license
+	
 	Revision 1.2  2000/03/29 10:45:02  wwwtech
 	Rob: Licenses changed
 	
@@ -22,12 +25,17 @@ package org.mmbase.module.database;
 
 import java.sql.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Interface to support specific database things
  * for the JDBC module
- * @version $Id: DatabaseSupportInformix.java,v 1.3 2000-03-30 13:11:45 wwwtech Exp $
+ * @version $Id: DatabaseSupportInformix.java,v 1.4 2001-04-11 11:41:23 michiel Exp $
  */
 public class DatabaseSupportInformix implements DatabaseSupport {
+
+    private static Logger log = Logging.getLoggerInstance(DatabaseSupportInformix.class.getName()); 
 
 	public void init() {
 	}
@@ -47,8 +55,8 @@ public class DatabaseSupportInformix implements DatabaseSupport {
 			statement.executeUpdate();
 	        statement.close();
 		} catch (Exception e) {
-			System.out.println("DatabaseSupportInformix : failed to set lock mode "+e);
-			e.printStackTrace();
+			log.error("failed to set lock mode "+e);
+			log.error(Logging.stackTrace(e));
 		}
 	}
 }

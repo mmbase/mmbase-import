@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -21,9 +21,14 @@ import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
 */
 public class XMLDynamicFlashReader {
+
+    private static Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class.getName()); 
 
     Document document;
     DOMParser parser;
@@ -38,13 +43,13 @@ public class XMLDynamicFlashReader {
             //parser.setErrorHandler(errors);
 			File file = new File(filename);
         	if(!file.exists()) {
-  				System.out.println("ERROR -> Database file "+filename+" does not exist (check <DATABASE> tag in mmbaseroot.xml)");
+  				log.error("Database file "+filename+" does not exist (check <DATABASE> tag in mmbaseroot.xml)");
            	}
             parser.parse(filename);
             document = parser.getDocument();
 
 	} catch(Exception e) {
-	    e.printStackTrace();
+	    log.error(Logging.stackTrace(e));
 	}
     }
 
@@ -60,7 +65,7 @@ public class XMLDynamicFlashReader {
             document = parser.getDocument();
 
 	} catch(Exception e) {
-	    e.printStackTrace();
+	    log.error(Logging.stackTrace(e));
 	}
     }
 
