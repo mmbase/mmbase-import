@@ -10,9 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.io.*;
-
+import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -28,9 +29,65 @@ import org.mmbase.util.logging.*;
  * @version 24 Apr 2001
  */
 public class servjumpers extends JamesServlet {
+    private final static int EXPIRE = 120;
     private static Logger log;
     // reference to the MMBase cloud
     static MMBase mmbase;
+
+    /**
+     * tells if the user is using reload.
+     *
+     * @param the HttpServletRequest of the user.
+     * @return <code>true</code> if the user is using reloading, <code>false</code> otherwise.
+     */
+    private boolean reloadInfo(HttpServletRequest request) {
+        
+	    sessionsInterface sessions=null;
+	    Cookie[] cookies=request.getCookies();
+
+        if(cookies==null) {
+            return false;
+        }
+        Cookie cookie = cookies[0];
+        
+        // If user is not having a cookie he cannot be reloading.
+        if(cookie==null) {
+            return false;
+        }
+        
+        if (sessions==null) {
+            sessions = (sessionsInterface)mmbase.getModule("SESSION");
+            if(sessions==null) {
+                log.error("Need SESSION module to be able to retrieve the reload variable");
+                return false;
+            }
+        }
+        
+        // Converting cookie to SCAN cookie
+        sessionInfo info = sessions.getSession(new scanpage(),"MMBase_Ident/"+cookie.getValue());
+        
+        // if the reload variable is not set to R, the user is not reloading.
+        String reload = sessions.getValue(info, "RELOAD");
+        if(reload==null || !reload.equals("R")) {
+            log.debug("reloading for user ("+cookie.getValue()+") is off");
+            return false;
+        }
+        
+        // Reloading is on, but check if the reload time is expired.
+        String reloadtime = sessions.getValue(info, "RELOADTIME");
+        if (reloadtime!=null) {
+            int then=Integer.parseInt(reloadtime);
+            int now= (int)(DateSupport.currentTimeMillis()/1000);
+            if ((now-then)<EXPIRE) {
+                log.debug("reloading for user ("+cookie.getValue()+") is on");
+                return true;
+            } else {
+                log.debug("reloading for user ("+cookie.getValue()+") is expired");
+                sessions.setValue(info, "RELOAD","N");
+            }
+        }
+        return false;
+    }
 
     public void init() throws ServletException {
         super.init();
@@ -56,7 +113,24 @@ public class servjumpers extends JamesServlet {
         try {
             String url=null;
             String tmpr=req.getRequestURI().substring(1);
-            if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
+
+	    boolean reloadStatus=reloadInfo(req);
+	    log.debug("reloadStatus: "+reloadStatus);
+
+            // jump.db was handled by the serdb servlet,
+            // but it is nicer when it is handled in one place.
+            // and the servdb had a little issue setting the mimetype for jumpers
+            // which prevented some search bots to index the full site   
+        	if (tmpr.indexOf("jump.db") != -1 ) {
+        		String jumpKey = req.getQueryString();
+				if (jumpKey != null || "".equals(jumpKey.trim())) {        		
+        			url=getUrl(jumpKey,reloadStatus);
+				}
+        	} else {
+            	if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) {
+            	 	url=getUrl(tmpr,reloadStatus);
+            	}
+        	}
             if (url!=null) {
                 res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY); // 301
                 res.setContentType("text/html");
@@ -67,19 +141,20 @@ public class servjumpers extends JamesServlet {
         finally { decRefCount(req); } // decrease reference count
     }
 
+
     /**
      * Retrieve an alternate url based on a jumper key.
      * @param key the jumper key (original url specified)
      * @return the alternate yurl, or <code>null</code> if no url was found.
      */
-    String getUrl(String key) {
+    String getUrl(String key, boolean reloadStatus) {
         String url=null;
         Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
         if (bul!=null) {
             if (key.endsWith("/")) {
-                url=bul.getJump(key.substring(0,key.length()-1));
+                url=bul.getJump(key.substring(0,key.length()-1),reloadStatus);
             } else {
-                url=bul.getJump(key);
+                url=bul.getJump(key,reloadStatus);
             }
             if (url!=null) return url;
         } else {

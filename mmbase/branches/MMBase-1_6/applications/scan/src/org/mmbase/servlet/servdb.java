@@ -24,14 +24,14 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * servdb handles binairy request (*.db) files for MMbase spaces as images (img.db)
- * realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db) with servscan
- * it provides the communication between the clients browser and the mmbase space.
+ * The servdb servlet handles binairy requests.
+ * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
+ * With servscan it provides the communication between the clients browser and the mmbase space.
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.44.2.4 2003-05-30 08:32:18 vpro Exp $
+ * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
+ * @version $Id: servdb.java,v 1.44.2.5 2003-06-02 16:38:00 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -105,7 +105,7 @@ public class servdb extends JamesServlet {
         String templine,templine2;
         int filesize;
 
-        incRefCount(req); // this is already done in service of MMBaseServlet, 
+        incRefCount(req); // this is already done in service of MMBaseServlet,
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
@@ -185,7 +185,7 @@ public class servdb extends JamesServlet {
                 if (1==2 && templine!=null  && templine2.indexOf("no-cache")==-1 && !(lastmod.getTime()>nowdate)) {
 
                     // logAccess(304,""+cline.filesize);
-                    res.setStatus(res.SC_NOT_MODIFIED); // 304, "Not Modified"
+                    res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
                     res.setContentType(mimetype);
                     res.setContentLength(cline.filesize);
                     res.setHeader("Date",RFC1123.makeDate(new Date()));
@@ -235,18 +235,17 @@ public class servdb extends JamesServlet {
                         // ---
                         // img
                         // ---
-                        boolean NotANumber=false;
+                        boolean notANumber=false;
                         Vector params = getParamVector(req);
                         // Catch alias only images without parameters.
                         if (params.size()==1) {
-                            NotANumber=false;
                             try {
                                 Integer.parseInt((String)params.elementAt(0));
                             } catch (NumberFormatException e) {
-                                NotANumber=true;
+                                notANumber=true;
                             }
                         }
-                        if (params.size() > 1 || NotANumber) {
+                        if (params.size() > 1 || notANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
                             // this is an image number + template, cache the image, and go ahead
@@ -323,7 +322,7 @@ public class servdb extends JamesServlet {
                             String ur=getParamValue("url",getParamVector(req));
                             String n=getParamValue("n",getParamVector(req));
                             //debug("Buffer is null!!! Returning url("+ur+") and params("+n+").");
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType("text/html");
                             res.setHeader("Location",ur+"?"+n);
                             return;
@@ -334,16 +333,12 @@ public class servdb extends JamesServlet {
                         // --------
 
                         cacheReq = false;
-                        log.debug("service(rastream)");
+                        log.debug("service(rmstream)");
 
                         // is it a audiopart or an episode ?
                         // ---------------------------------
 
                         Vector vec = getParamVector(req);
-
-                        if (vec.contains("a(session)")) {
-                            vec=addRAMSpeed(sp,vec,res);
-                        }
 
                         if ( getParamValue("ea", vec)  != null ) {
                             log.debug("service(rastream): episode found");
@@ -364,7 +359,7 @@ public class servdb extends JamesServlet {
                             String ur=getParamValue("url",getParamVector(req));
                             String n=getParamValue("n",getParamVector(req));
                             log.info("service(): --> Buffer is null!!! Returning url("+ur+") and params("+n+") <--");
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType("text/html");
                             res.setHeader("Location",ur+"?"+n);
                             return;
@@ -423,7 +418,7 @@ public class servdb extends JamesServlet {
                         log.debug("jump.db Url="+url);
                         if (url!=null) {
                             // jhash.put(key,url);
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType("text/html");
                             res.setHeader("Location",url);
                             Date d=new Date(0);
