@@ -17,12 +17,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This is implementation of the Field Value interface can be used by
+ * This implementation of the Field Value interface can be used by
  * getFunctionValue of Node.
 
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: BasicFunctionValue.java,v 1.1 2002-09-27 20:11:14 michiel Exp $
+ * @version  $Id: BasicFunctionValue.java,v 1.2 2002-09-30 12:33:08 michiel Exp $
  * @since    MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
