@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.135 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMObjectNode.java,v 1.136 2005-03-16 10:50:12 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -65,14 +65,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Results of getRelatedNodes
      * @since 1.7
      */
-    protected static RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
+    protected static final RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
 
 
     /**
      * objectNumber -> List of all relation nodes
      * @since MMBase-1.7
      */
-    protected static RelationsCache relationsCache = RelationsCache.getCache();
+    protected static final RelationsCache relationsCache = RelationsCache.getCache();
     // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
     // private Vector relations=null; // possibly filled with insRels
 
@@ -157,7 +157,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     protected String alias;
 
     // object to sync access to properties
-    private Object properties_sync = new Object();
+    private final Object properties_sync = new Object();
 
     /**
      * temporarily holds a new context for a node
@@ -542,8 +542,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param fieldValue the value to assign
      * @return always <code>true</code>
      */
-    public boolean setValue(String fieldName,boolean fieldValue) {
-        return setValue(fieldName, new Boolean(fieldValue));
+    public boolean setValue(String fieldName, boolean fieldValue) {
+        return setValue(fieldName, Boolean.valueOf(fieldValue));
     }
 
     /**

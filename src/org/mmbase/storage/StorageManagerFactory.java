@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.12 2005-02-03 09:16:48 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.13 2005-03-16 10:47:38 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -468,7 +468,7 @@ public abstract class StorageManagerFactory {
      * @param value the value of the option (true or false)
      */
     public void setOption(Object key, boolean value) {
-        setAttribute(key,new Boolean(value));
+        setAttribute(key, Boolean.valueOf(value));
     }
 
     /**
