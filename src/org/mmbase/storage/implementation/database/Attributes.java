@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.7 2003-09-19 09:59:42 pierre Exp $
+ * @version $Id: Attributes.java,v 1.8 2003-09-25 12:53:10 pierre Exp $
  */
 public final class Attributes {
 
@@ -45,7 +45,8 @@ public final class Attributes {
     /**
      * Attribute: <code>database-binary-file-path</code>.
      * The path to the directyory where binary files are to be stored if {@link #STORES_BINARY_AS_FILE} is true.
-     * The default is <code>false</code>
+     * The default is the WEB-INF/data directory of the mmbase web application.
+     * Note that if you specify a relative url, it is taken from the web application's webroot.
      */
     public static final String BINARY_FILE_PATH = "database-binary-file-path";
 
