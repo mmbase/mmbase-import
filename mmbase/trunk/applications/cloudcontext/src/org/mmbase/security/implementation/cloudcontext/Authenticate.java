@@ -29,7 +29,7 @@ import org.mmbase.util.FileWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.6 2003-11-19 15:14:27 pierre Exp $
+ * @version $Id: Authenticate.java,v 1.7 2004-04-19 16:19:52 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -105,9 +105,9 @@ public class Authenticate extends Authentication {
             log.fatal(msg);
             throw new SecurityException(msg);
         }
-        if (s.equals("anonymous")) {
+        if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
-        } else if (s.equals("name/password")) {
+        } else if ("name/password".equals(s)) {
             String userName = (String)map.get("username");
             String password = (String)map.get("password");
             if(userName == null || password == null) {
@@ -122,8 +122,22 @@ public class Authenticate extends Authentication {
                 }
             }
             node = users.getUser(userName, password);
+        } else if ("class".equals(s)) {
+            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+            if (li == null) {
+                throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
+            }
+            String userName = (String) li.getMap().get("username");
+            if (extraAdmins.containsKey(userName)) {
+                log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
+                User user = new LocalAdmin(userName);
+                loggedInExtraAdmins.put(userName, user);
+                return user;
+            } else {
+                node = users.getUser((String) li.getMap().get("username"));
+            }
         } else {
-            throw new SecurityException("login module with name '" + s + "' not found, only know 'anonymous' and 'name/password' ");
+            throw new SecurityException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
         }
         if (node == null)  return null;
         return new User(node, uniqueNumber);
@@ -134,12 +148,12 @@ public class Authenticate extends Authentication {
     }
 
     // javadoc inherited
-    public boolean isValid(UserContext usercontext) throws SecurityException {
-        if (! (usercontext instanceof User)) {
+    public boolean isValid(UserContext userContext) throws SecurityException {
+        if (! (userContext instanceof User)) {
             log.debug("Changed to other security implementation");
             return false;
         }
-        User user = (User) usercontext;
+        User user = (User) userContext;
         boolean flag = user.isValid() && user.getKey() == uniqueNumber;
         if (flag) {
             log.debug(user.toString() + " was valid");
