@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.servlet.MMBaseServlet;
+import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Arguments;
@@ -24,7 +25,7 @@ import org.mmbase.util.Argument;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.17 2003-06-11 13:47:24 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.18 2003-07-03 09:04:55 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -90,6 +91,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         List ls = MMBaseServlet.getServletMappingsByAssociation(association);
         if (ls.size()>0) {
             result = (String) ls.get(0);
+            usesBridgeServlet = MMBaseServlet.getServletByMapping(result) instanceof BridgeServlet;
             // remove mask
             int pos = result.lastIndexOf("*");
             if (pos > 0) {
@@ -99,7 +101,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (pos == 0) {
                 result = result.substring(pos+1);
             }
-            usesBridgeServlet = true;
         } else {
             result = getDefaultPath();
         }
