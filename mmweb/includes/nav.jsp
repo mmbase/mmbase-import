@@ -2,7 +2,6 @@
 %><%@page import="java.util.*" %>
 <script type="text/javascript" language="javascript">
 
-// MM:what a hell!
 //HV Menu- by Ger Versluis (http://www.burmees.nl/)
 //Submitted to Dynamic Drive (http://www.dynamicdrive.com)
 //Visit http://www.dynamicdrive.com for this script and more
@@ -68,11 +67,8 @@ function AfterCloseAll(){return}
 
 count number off first line menus
 --%><%	int numberofpages = 0; 
-	int numberofportals = -1; // minus one since the current portal is excluded from the navigation
-	int numberofblanks = 3;
 	Vector currentPath = new Vector(); 
-%><mm:listnodes type="portals" ><% numberofportals++; %></mm:listnodes
-><mm:node number="$portal"
+%><mm:node number="$portal"
 ><mm:relatednodes type="pages" role="posrel" 
 	><mm:countrelations type="pages" jspvar="dummy" vartype="Integer" write="false"
 		><% try { 
@@ -81,7 +77,7 @@ count number off first line menus
 		%></mm:countrelations
 ></mm:relatednodes
 ></mm:node>
-var NoOffFirstLineMenus=  <%= numberofpages + numberofportals + numberofblanks %>;
+var NoOffFirstLineMenus=  <%= numberofpages %>;
 <%--
 
 ********* add pages of this portal to navigation *********
@@ -144,41 +140,6 @@ if(currentPath.size()==0) { // curent page not found in the path from homepage, 
 %></mm:field
 ></mm:related>
 </mm:node>
-<%--
-
-********* add blanks to navigation ****************
---%><% int p = numberofpages; 
-%><% for(int i=0; i<numberofblanks; i++) { 
-	p++; %>
-Menu<%= p %> = new Array("","","",0,26,142);
-<% }
-
-%><%--
-
-********* add portals to navigation (exclude selected portal) ****************
---%><mm:compare referid="portal" value="home" inverse="true"
-        ><mm:node number="home"
-	><mm:field name="number" id="thisportal" write="false"
-		><mm:compare referid="portal" value="$thisportal" inverse="true"
-		><% p++; %>
-Menu<%= p %> = new Array("<mm:field name="name"/>","/index.jsp?portal=<mm:field name="number"/>","",0,26,142);
-		</mm:compare
-	></mm:field
-	><mm:remove referid="thisportal"
-	/></mm:node
-></mm:compare
-><mm:list nodes="home" path="portals1,posrel,portals2"
-	searchdir="destination" orderby="posrel.pos" directions="UP"
-		><mm:field name="portals2.number" id="thisportal" write="false"
-			><mm:compare referid="portal" value="$thisportal" inverse="true"
-			><% p++; %>
-Menu<%= p %> = new Array("<mm:field name="portals2.name" 
-	/>","<mm:url page="/index.jsp"><mm:param name="portal"><mm:field name="portals2.number"/></mm:param></mm:url>","",0,26,142);
-		</mm:compare
-	></mm:field
-><mm:remove referid="thisportal"
-/></mm:list>
-
 </script>
 <script type="text/javascript" src="/scripts/menu_com.js" language="javascript"></script>
 <%-- <script language="JavaScript"><%@include file="/scripts/menu_com.js"%></script> --%>
