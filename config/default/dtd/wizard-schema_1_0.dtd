@@ -47,7 +47,7 @@
 <!ATTLIST list destination NMTOKEN #IMPLIED >
 <!ATTLIST list hidecommand NMTOKEN #IMPLIED >
 <!ATTLIST list orderby CDATA #IMPLIED >
-<!ATTLIST list ordertype NMTOKEN #IMPLIED >
+<!ATTLIST list ordertype CDATA #IMPLIED >
 <!ATTLIST list role NMTOKEN #IMPLIED >
 <!ATTLIST list type NMTOKEN #IMPLIED >
 <!ATTLIST list fields CDATA #IMPLIED >
