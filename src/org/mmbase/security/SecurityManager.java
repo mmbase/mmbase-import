@@ -77,7 +77,7 @@ public final class SecurityManager {
       	loadAuthorization(auteClass, auteUrl);
 
         // load the sharedSecret
-      	String sharedSecret = reader.getValue("/security/sharedsecret");
+      	sharedSecret = reader.getValue("/security/sharedsecret");
       	if(sharedSecret == null) {
 	    log.error("sharedsecret could not be found in security("+configUrl+")");
 	    throw new java.util.NoSuchElementException("sharedsecret in security");
@@ -117,9 +117,6 @@ public final class SecurityManager {
      * @return false if received shared secret not equals your own shared secret
      */
     public static boolean checkSharedSecret(String key) {
-		log.error("sh="+sharedSecret);
-		log.error("key="+key);
-
         if(sharedSecret.equals(key)) {
             return true;
         } else {
