@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.47 2003-05-08 06:09:22 kees Exp $
+ * @version $Id: servdb.java,v 1.48 2003-05-30 08:33:48 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -235,9 +235,18 @@ public class servdb extends JamesServlet {
                         // ---
                         // img
                         // ---
-
+                        boolean NotANumber=false;
                         Vector params = getParamVector(req);
-                        if (params.size() > 1) {
+                        // Catch alias only images without parameters.
+                        if (params.size()==1) {
+                            NotANumber=false;
+                            try {
+                                Integer.parseInt((String)params.elementAt(0));
+                            } catch (NumberFormatException e) {
+                                NotANumber=true;
+                            }
+                        }
+                        if (params.size() > 1 || NotANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
                             // this is an image number + template, cache the image, and go ahead
