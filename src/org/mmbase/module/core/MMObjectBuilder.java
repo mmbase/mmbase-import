@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.257 2004-01-08 15:03:56 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.258 2004-02-05 12:14:13 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -338,71 +338,80 @@ public class MMObjectBuilder extends MMTable {
      * @see #create
      */
     public boolean init() {
-        // skip initialisation if oType has been set (happend at end of init)
-        // note that init can be called twice
-        if (oType!=-1) return true;
+        synchronized(mmb) { // syncrhonized on mmb because can only init builder if mmb is inited completely
 
-        // first make sure parent builder is initalized
-        initAncestors();
+            // skip initialisation if oType has been set (happend at end of init)
+            // note that init can be called twice
+            if (oType != -1) return true; 
 
-        if (!created()) {
-            log.info("Creating table for builder " + tableName);
-            if (!create() ) {
-                // can't create buildertable.
-                // Throw an exception
-                throw new BuilderConfigurationException("Cannot create table for "+getTableName()+".");
-            };
-        }
-        TypeDef typeDef = mmb.getTypeDef();
-        // only deteremine otype if typedef is available,
-        // or this is typedef itself (have to start somewhere)
-        if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
-            oType = typeDef.getIntValue(tableName);
-            if (oType == -1) { // no object type number defined yet
-                if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
-                MMObjectNode node = typeDef.getNewNode("system");
-                node.setValue("name", tableName);
+            log.debug("Init of builder " + getTableName());
 
-                // This sucks:
-                if (description == null) description = "not defined in this language";
+            // XXX: deprecated
+            database = mmb.getDatabase();
 
-                node.setValue("description", description);
+            // first make sure parent builder is initalized
+            initAncestors();
 
-                oType = mmb.getDatabase().getDBKey();
-                log.debug("Got key " + oType);
-                node.setValue("number", oType);
-                // for typedef, set otype explictly, as it wasn't set in getNewNode()
-                if (this == typeDef) {
-                    node.setValue("otype", oType);
+
+            if (!created()) {
+                log.info("Creating table for builder " + tableName);
+                if (!create() ) {
+                    // can't create buildertable.
+                    // Throw an exception
+                    throw new BuilderConfigurationException("Cannot create table for "+getTableName()+".");
+                };
+            }
+            TypeDef typeDef = mmb.getTypeDef();
+            // only deteremine otype if typedef is available,
+            // or this is typedef itself (have to start somewhere)
+            if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
+                oType = typeDef.getIntValue(tableName);
+                if (oType == -1) { // no object type number defined yet
+                    if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
+                    MMObjectNode node = typeDef.getNewNode("system");
+                    node.setValue("name", tableName);
+
+                    // This sucks:
+                    if (description == null) description = "not defined in this language";
+
+                    node.setValue("description", description);
+
+                    oType = mmb.getDatabase().getDBKey();
+                    log.debug("Got key " + oType);
+                    node.setValue("number", oType);
+                    // for typedef, set otype explictly, as it wasn't set in getNewNode()
+                    if (this == typeDef) {
+                        node.setValue("otype", oType);
+                    }
+                    log.debug("Inserting the new typedef node");
+                    node.insert("system");
+                    // for typedef, call it's parents init again, as otype is only now set
+                    if (this == typeDef) {
+                        initAncestors();
+                    }
                 }
-                log.debug("Inserting the new typedef node");
-                node.insert("system");
-                // for typedef, call it's parents init again, as otype is only now set
-                if (this == typeDef) {
-                    initAncestors();
+            } else {
+                // warn if typedef was not created
+                // except for the 'object' and 'typedef' basic builders
+                if(!tableName.equals("typedef") && !tableName.equals("object")) {
+                    log.warn("init(): for tablename(" + tableName + ") -> can't get to typeDef");
+                    return false;
                 }
             }
-        } else {
-            // warn if typedef was not created
-            // except for the 'object' and 'typedef' basic builders
-            if(!tableName.equals("typedef") && !tableName.equals("object")) {
-                log.warn("init(): for tablename(" + tableName + ") -> can't get to typeDef");
-                return false;
-            }
-        }
 
-        // add temporary fields
-        checkAddTmpField("_number");
-        checkAddTmpField("_exists");
+            // add temporary fields
+            checkAddTmpField("_number");
+            checkAddTmpField("_exists");
 
-        // get property dof maximum number of queries..
-        String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
-        if(property != null) {
-            try {
-                maxNodesFromQuery = Integer.parseInt(property);
-                log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
-            } catch(NumberFormatException nfe) {
-                log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
+            // get property dof maximum number of queries..
+            String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
+            if(property != null) {
+                try {
+                    maxNodesFromQuery = Integer.parseInt(property);
+                    log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
+                } catch(NumberFormatException nfe) {
+                    log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
+                }
             }
         }
         return true;
@@ -604,7 +613,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      */
     public void setParentBuilder(MMObjectBuilder parent) throws StorageException {
-        mmb.getDatabase().registerParentBuilder(parent, this);
+        // mmb.getDatabase().registerParentBuilder(parent, this);
         ancestors.addAll(parent.getAncestors());
         ancestors.push(parent);
     }
@@ -619,8 +628,10 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Get a new node, using this builder as its parent. The new node is not a part of the cloud yet, and thus has
-     * the value -1 as a number. (Call {@link #insert} to add the node to the cloud).
+     * Get a new node, using this builder as its parent. The new node is not a part of the cloud
+     * yet, and thus has the value -1 as a number. (Call {@link #insert} to add the node to the
+     * cloud).  This method is also called inside database operations, so it may not do new database
+     * operations itself (that might cause dead-locks).
      * @param owner The administrator creating the new node.
      * @return A newly initialized <code>MMObjectNode</code>.
      */
@@ -1059,12 +1070,12 @@ public class MMObjectBuilder extends MMTable {
      *       It should actually throw a NotFoundException instead.
      * @sql uses sql statements. will be removed once the new storage layer is in use
      * @param number The number of the node to search for
-     * @param usecache If true, the node is retrieved from the node cache if possible.
+     * @param useCache If true, the node is retrieved from the node cache if possible.
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *       <code>MMObjectNode</code> containign the contents of the requested node.
      * @throws RuntimeException If the node does not exist (not always true!)
      */
-    public synchronized MMObjectNode getNode(int number, boolean usecache) {
+    public synchronized MMObjectNode getNode(int number, boolean useCache) {
         if (number==-1) {
             log.warn(" ("+tableName+") nodenumber == -1");
             return null;
@@ -1072,7 +1083,7 @@ public class MMObjectBuilder extends MMTable {
         MMObjectNode node=null;
         Integer numberValue=new Integer(number);
         // try cache if indicated to do so
-        if (usecache) {
+        if (useCache) {
             node = (MMObjectNode)nodeCache.get(numberValue);
             if (node != null) {
                 return node;
@@ -1101,11 +1112,11 @@ public class MMObjectBuilder extends MMTable {
             }
         }
         // use storage factory if present
-        if (mmb.getStorageManagerFactory()!=null) {
+        if (mmb.getStorageManagerFactory() != null) {
             try {
                 node = mmb.getStorageManager().getNode(builder, number);
                 // store in cache if indicated to do so
-                if (usecache) {
+                if (useCache) {
                     safeCache(numberValue,node);
                 }
                 return node;
@@ -1115,41 +1126,44 @@ public class MMObjectBuilder extends MMTable {
                 return null;
             }
         } else {
-            // do the query on the database
-            try {
-                MultiConnection con =null;
-                Statement stmt = null;
-                try {
-                    con=mmb.getConnection();
-                    stmt=con.createStatement();
-                    String query = "SELECT " + builder.getNonByteArrayFields() +" FROM " + builder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
 
-                    ResultSet rs = stmt.executeQuery(query);
-                    try {
-                        if (rs.next()) {
-                            node=new MMObjectNode(builder);
-                            ResultSetMetaData rd=rs.getMetaData();
-                            String fieldname;
-                            for (int i=1;i<=rd.getColumnCount();i++) {
-                                fieldname=database.getDisallowedField( rd.getColumnName(i));
-                                node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
-                            }
-                            // store in cache if indicated to do so
-                            if (usecache) {
-                                safeCache(numberValue,node);
-                            }
-                            // clear the changed signal
-                            node.clearChanged();
-                        } else {
-                            // throw new NotFoundException(msg);
-                            log.warn("Node #" + number + " could not be found(nodetype: " + builder.getTableName() + "(" + nodeType + "))");
-                            return null; // not found
+
+            MultiConnection con = null;
+            Statement stmt = null;
+
+            try {               
+
+                //NodeSearchQuery query = new NodeSearchQuery(this);
+                //BasicFieldValueConstraint constraint = new BasiceFieldValueConstraint(
+                //List = mmb.getDatabase().getNodes(query, this);
+                // do the query on the database
+                con = mmb.getConnection();
+                stmt = con.createStatement();
+                String query = "SELECT " + builder.getNonByteArrayFields() +" FROM " + builder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
+                
+                ResultSet rs = stmt.executeQuery(query);
+                try {
+                    if (rs.next()) {
+                        node=new MMObjectNode(builder);
+                        ResultSetMetaData rd=rs.getMetaData();
+                        String fieldname;
+                        for (int i=1;i<=rd.getColumnCount();i++) {
+                            fieldname= mmb.getDatabase().getDisallowedField( rd.getColumnName(i));
+                            node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
                         }
-                    } finally {
-                        rs.close();
+                        // store in cache if indicated to do so
+                        if (useCache) {
+                            safeCache(numberValue,node);
+                        }
+                        // clear the changed signal
+                        node.clearChanged();
+                    } else {
+                        // throw new NotFoundException(msg);
+                        log.warn("Node #" + number + " could not be found(nodetype: " + builder.getTableName() + "(" + nodeType + "))");
+                        return null; // not found
                     }
                 } finally {
-                    mmb.closeConnection(con,stmt);
+                    rs.close();
                 }
                 // return the results
                 return node;
@@ -1160,7 +1174,10 @@ public class MMObjectBuilder extends MMTable {
                 // do we need to throw an exception in this situation, of continue running?
                 // throw new NotFoundException(e);
                 return null;
+            } finally {
+                mmb.closeConnection(con,stmt);
             }
+
         }
     }
 
@@ -2812,7 +2829,7 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
                 return rtn;
-            }
+            }   
         }
 
         String field;
@@ -3449,9 +3466,7 @@ public class MMObjectBuilder extends MMTable {
      * @param m the MMBase object to set as owner of this builder
      */
     public void setMMBase(MMBase m) {
-        mmb=m;
-        // XXX: deprecated
-        database=mmb.getDatabase();
+        mmb = m;
     }
 
     /**
@@ -4161,7 +4176,7 @@ public class MMObjectBuilder extends MMTable {
                     sb.append(",");
                 }
 
-                sb.append(getFullTableName() + "." + database.getAllowedField(def.getDBName()));
+                sb.append(getFullTableName() + "." + mmb.getDatabase().getAllowedField(def.getDBName()));
                 first = false;
             }
         }
