@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.17 2003-09-08 13:55:14 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.18 2003-09-08 17:06:13 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -748,7 +748,11 @@ public class DatabaseStorageManager implements StorageManager {
                 return;
             }
         }
-        if (factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+        // Store data as a binary stream when the code is a clob or blob, or
+        // when database-force-encode-text is true.
+        if (field.getStorageType() == Types.CLOB ||
+            field.getStorageType() == Types.BLOB ||
+            factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             byte[] rawchars = null;
             try {
                 rawchars = value.getBytes(factory.getMMBase().getEncoding());
@@ -1363,11 +1367,16 @@ public class DatabaseStorageManager implements StorageManager {
                     Object id = field.getStorageIdentifier();
                     Map colInfo = (Map)columns.get(id);
                     if ((colInfo == null)) {
-                        log.error("VERIFY: Field " + field.getDBName() + " does NOT exist in storage!");
+                        log.error("VERIFY: Field " + field.getDBName() + " does NOT exist in storage! Field will be ignored.");
+                        // set field to virtual so it will not be stored -
+                        // prevents future queries or statements from failing
+                        field.setDBState(FieldDefs.DBSTATE_VIRTUAL);
                     } else {
                         // compare type
                         int curtype = field.getDBType();
-                        int type = getJDBCtoMMBaseType(((Integer)colInfo.get("DATA_TYPE")).intValue(), curtype);
+                        int storageType = ((Integer)colInfo.get("DATA_TYPE")).intValue();
+                        field.setStorageType(storageType);
+                        int type = getJDBCtoMMBaseType(storageType, curtype);
                         if (type != curtype) {
                             log.error("VERIFY: Field " + field.getDBName() + " mismatch : type defined as " +
                                 FieldDefs.getDBTypeDescription(curtype) + ", but in storage " +
