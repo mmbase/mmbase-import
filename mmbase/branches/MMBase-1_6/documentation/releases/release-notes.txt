@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.4 - Release Notes
+                     MMBase 1.6.5 - Release Notes
 ===================================================================
 
 ============
@@ -181,6 +181,10 @@ BUG FIXES AND IMPROVEMENTS:
 ------------------
 General Bug Fixes:
 ------------------
+[1.6.5] 
+- 1.6.4 was released with a wrong version of the ClusterBuilder
+- removed silly xml:lang on db.name in builder config files
+
 [1.6.4]
 - #6073 Flash does not pass image parameters to servlet
 - #6071 html() field format function does not escape properly 
@@ -254,6 +258,9 @@ General Bug Fixes:
 ---------------------
 Editwizard bug fixes:
 ---------------------
+[1.6.5]
+- #6164 Search command constraints attribute undefined
+
 [1.6.4]
 - #6072 Cannot list number in wizard list
 - #3563 pupup wizards cannot upload images
