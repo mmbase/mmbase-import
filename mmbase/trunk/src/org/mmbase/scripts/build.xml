@@ -103,6 +103,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="database.name" value="install"/>
   <property name="database.user" value="mmuser"/>
+  <property name="mmbase-taglib" value="mmbase-taglib.xml"/>
   <property name="database.password" value="mmpassword"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/lib/mmbase.jar"/>
@@ -626,7 +627,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-Q"/>
       <arg value="-XML"/>
       <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
