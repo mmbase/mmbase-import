@@ -108,8 +108,8 @@
         </description>
       </descriptions>
       <gui>
-        <guiname xml:lang="en">Information</guiname>
-        <guiname xml:lang="nl">Informatie</guiname>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Beschrijving</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
@@ -118,7 +118,7 @@
         </positions>
       </editor>
       <db>
-        <name>info</name>
+        <name>description</name>
         <type state="persistent" size="300" notnull="false">STRING</type>
       </db>
     </field>
