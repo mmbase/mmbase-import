@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.11 2003-02-13 17:25:12 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.12 2003-02-13 17:44:47 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
     
@@ -824,6 +824,7 @@ public class MMObjectBuilder extends MMTable {
             if(numbers.length() > MAX_QUERY_SIZE) {
                 result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
                 numbers = new StringBuffer();
+                first = true;
             }
         }
 
