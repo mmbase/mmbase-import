@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.16 2002-07-17 11:28:07 pierre Exp $
+ * @version $Id: Utils.java,v 1.17 2002-07-18 10:57:36 eduard Exp $
  */
 public class Utils {
 
@@ -576,13 +576,12 @@ public class Utils {
      * This method selects a multiple nodes using the given contextnode and xpath.
      * @param contextnode
      * @param xpath
-     * @return    The found nodes in a NodeList. The nodelist is empty if nothing is found.
+     * @return    The found nodes in a NodeList. <code>null</code> if nothing is found.
      */
     public static NodeList selectNodeList(Node contextnode, String xpath) {
         if (contextnode==null) {
             return null;
         }
-
         try {
             return XPathAPI.selectNodeList(contextnode, xpath);
         } catch (Exception e) {
@@ -668,7 +667,4 @@ public class Utils {
         in2.close();
         return outputstr;
     }
-
-
-
 }
