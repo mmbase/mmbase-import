@@ -139,7 +139,7 @@
 	</td>
 	<td>
 	<mm:import id="sub" reset="true">providers_adding</mm:import>
-	<a href="<mm:url page="index.jsp" referids="main,sub" />">Adding providers</a>
+	<a href="<mm:url page="index.jsp" referids="main,sub" />">Adding providers</a> ** done **
 	</td>
 </tr>
 <tr>
