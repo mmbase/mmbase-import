@@ -29,14 +29,14 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.34 2003-08-11 15:27:24 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.35 2003-08-14 10:18:57 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
     // extending from it, becase we need access to protected vars.
     // this tag is not acutally used as a tag
 
-    private static Logger log = Logging.getLoggerInstance(WriterHelper.class.getName());
+    private static Logger log = Logging.getLoggerInstance(WriterHelper.class);
     public static boolean NOIMPLICITLIST = true;
     public static boolean IMPLICITLIST   = false;
 
@@ -222,9 +222,16 @@ public class WriterHelper extends BodyTagSupport {
                 } else {
                     value = new ArrayList();
                 }
-                setJspvar();
-                return;
+            } else if (v instanceof List) {
+                value = v;
+            } else if (v instanceof Collection) {
+                value = new ArrayList((Collection) v);
+            } else { // dont' know any more
+                value = v; // wil perhaps fail
+                
             }
+            setJspvar();
+            return;
         case TYPE_VECTOR: // I think the type Vector should be deprecated?
             if (v == null) {
                 // if a vector is requested, but the value is not present,
