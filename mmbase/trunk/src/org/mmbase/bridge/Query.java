@@ -13,11 +13,10 @@ import org.mmbase.storage.search.*;
 import java.util.SortedSet;
 
 /**
- * Representation of a (database query). It is modifiable for use by bridge-users.
+ * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.5 2003-07-22 10:55:40 michiel Exp $
- * @todo Not sure this interface needed, perhaps everything should be done with a query-converter
+ * @version $Id: Query.java,v 1.6 2003-07-25 14:11:35 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -101,16 +100,19 @@ public interface Query extends SearchQuery, Cloneable {
      * value 'v', combined with given operator must evaluate to true.
      */
     FieldValueConstraint        createConstraint(StepField f, int op, Object v);
+
     /**
      * Create a contraint (for use with this Query object). The two given fields , combined with
      * given operator must evaluate to true.
      */
     CompareFieldsConstraint     createConstraint(StepField f, int op, StepField  v);
+
     /**
      * Create a contraint (for use with this Query object). The given field must lie between the
      * two given values.
      */
     FieldValueBetweenConstraint createConstraint(StepField f, Object o1, Object o2);
+
     /**
      * Create a contraint (for use with this Query object). The given field value must be contained
      * by the given set of values. 
