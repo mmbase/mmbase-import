@@ -5,7 +5,7 @@
 
 hebrew: דשךצ
 
-russian: перестоыка
+russian: перестойка
 
 esperanto: Eĥoŝanĝo ĉiuĵaŭde
 
@@ -22,7 +22,7 @@ ipa: hʉ xaːt ɚt met ɨ?
 euro: € 2,50
 </body>
 	<title>UTF-8 / coding test article</title>
-	<subtitle>Café tweeëntwintig, Jiři Šimek, перестоыка, 寛治</subtitle>
+	<subtitle>Café tweeëntwintig, Jiři Šimek, перестойка, 寛治</subtitle>
 	<intro>In the subtitle we find latin-1, latin-2, russion, and japanese/chinese. In the body, we find even more.</intro>
   </node>
 </news>
