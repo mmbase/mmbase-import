@@ -59,16 +59,16 @@ a key/value system. Its a optional tag.
 -->
 <fieldlist>
     <!-- POS 3 : <field> 'url'  -->
-         <field>
+    <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The name of the site or page this url links to</description>
+          <description xml:lang="nl">De naam van de pagina of website waar deze link naar wijst</description>
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Url</guiname>
-            <guiname xml:lang="nl">Url</guiname>
+            <guiname xml:lang="en">Naam</guiname>
+            <guiname xml:lang="nl">Name</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -85,6 +85,38 @@ a key/value system. Its a optional tag.
         <!-- database related  -->
         <db>
             <!-- name of the field in the database -->
+            <name>name</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+        </db>
+    </field>
+    <!-- POS 3 : <field> 'url'  -->
+    <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">The link or site internet address</description>
+          <description xml:lang="nl">Het internet adres avnd e link of website</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Url</guiname>
+            <guiname xml:lang="nl">Url</guiname>
+            <guitype>string</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>2</input>
+                <!-- position in list area of the editor -->
+                <list>3</list>
+                <!-- position in search area of the editor -->
+                <search>2</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
             <name>url</name>
             <!-- MMBase datatype and demands on it -->
             <type state="persistent" size="255" notnull="true" key="false">STRING</type>
@@ -92,11 +124,11 @@ a key/value system. Its a optional tag.
     </field>
 
     <!-- POS 4 : <field> 'description'  -->
-         <field>
+    <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">A short description of the website of page</description>
+          <description xml:lang="nl">Een korte omschrijving van de website of pagina</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -108,11 +140,11 @@ a key/value system. Its a optional tag.
         <editor>
             <positions>
                 <!-- position in the input area of the editor -->
-                <input>2</input>
+                <input>3</input>
                 <!-- position in list area of the editor -->
-                <list>1</list>
+                <list>-1</list>
                 <!-- position in search area of the editor -->
-                <search>2</search>
+                <search>3</search>
             </positions>
         </editor>
         <!-- database related  -->
