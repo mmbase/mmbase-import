@@ -166,8 +166,12 @@ public class MessageNode implements Node {
         return getMsg().getRelations();
     }
 
-    public RelationList getRelations(String relationManager) {
-        return getMsg().getRelations(relationManager);
+    public RelationList getRelations(String role) {
+        return getMsg().getRelations(role);
+    }
+
+    public RelationList getRelations(String role, String nodeManager) {
+        return getMsg().getRelations(role,nodeManager);
     }
 
     public int countRelations() {
