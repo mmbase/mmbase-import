@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.12 2002-04-17 13:17:48 pierre Exp $
+ * @version $Id: PostgreSQL71.java,v 1.13 2002-04-25 14:09:47 eduard Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -1091,11 +1091,12 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     }
 
     public boolean drop(MMObjectBuilder bul) {
-        log.debug("drop");
+        log.info("drop table for builder with name: " + bul.getTableName());
         return changeMetaData(bul, "DROP TABLE " +mmb.baseName+"_"+bul.getTableName());
     }
 
     public boolean updateTable(MMObjectBuilder bul) {
+        log.info("update table for builder with name: " + bul.getTableName());
         // dont know what this function SHOULD do...
         log.debug("updateTable");
         log.fatal("This function is not implemented !!");
@@ -1103,8 +1104,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     }
 
     public boolean addField(MMObjectBuilder bul,String fieldname) {
-        log.debug("addField");
-
+        log.info("add field for builder with name: " + bul.getTableName() + " with field with name: " + fieldname);
+        
         FieldDefs def = bul.getField(fieldname);
         if(def == null) {
             log.error("could not find field definition for field: "+fieldname+" for builder :" + bul.getTableName());
@@ -1120,21 +1121,25 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     }
 
     public boolean removeField(MMObjectBuilder bul,String fieldname) {
+        log.info("remove field for builder with name: " + bul.getTableName() + " with field with name: " + fieldname);
         return changeMetaData(bul, "ALTER TABEL " +mmb.baseName+"_"+bul.getTableName() + " DROP COLUMN "+fieldname);
     }
 
     public boolean changeField(MMObjectBuilder bul,String fieldname) {
+        log.info("change field for builder with name: " + bul.getTableName() + " with field with name: " + fieldname);
         if(removeField(bul, fieldname)) return addField(bul, fieldname);
         return false;
     }
 
     private boolean changeMetaData(MMObjectBuilder bul, String sql) {
+        log.info("change meta data for builder with name: " + bul.getTableName() + " with sql: " + sql);
+        
         // are we allowed to change the metadata?
-        int size=bul.size();
+        int size=bul.size();        
         // return when we are allowed...
         if (size > maxDropSize) {
-            log.error("chang of metadata not allowed on : "+bul.getTableName());
-            log.debug("check <maxdropsize> in your database.xml(in xml:"+maxDropSize+" and records#"+size+")");
+            log.error("change of metadata not allowed on : "+bul.getTableName());
+            log.error("check <maxdropsize> in your database.xml(in xml:"+maxDropSize+" and records#"+size+")");
             return false;
         }
 
@@ -1145,6 +1150,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             con = mmb.getConnection();
             stmt = con.createStatement();
             log.debug("gonna excute the followin query: " + sql);
+            stmt.executeUpdate(sql);
             stmt.close();
             con.close();
             return true;
