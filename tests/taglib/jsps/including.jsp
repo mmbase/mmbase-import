@@ -2,6 +2,9 @@
 <html>
 <mm:import id="a">A</mm:import>
 <mm:import externid="b">X</mm:import>
+<mm:import id="c">C</mm:import>
+
+
 <head>
 <mm:notpresent referid="b">
   <meta http-equiv="refresh" content="1; url=<mm:url><mm:param name="b" value="B" /><mm:param name="a" value="X" /></mm:url>" />
