@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.19.2.2 2004-06-17 11:48:47 rob Exp $
+ * @version $Id: DateSupport.java,v 1.19.2.3 2004-06-17 11:52:08 rob Exp $
  */
 public class DateSupport {
 
@@ -61,7 +61,7 @@ public class DateSupport {
     * @param month The month where 0 is januari
     */
     static public int daysInMonth(int year, int month) {
-        int months[] = { 31, 28, 31, 30, 31, 30, 30, 31, 30, 31, 30, 31 };
+        int months[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
         int days = months[month];
         year = (year < 90) ? year + 2000 : year + 1900;
 
