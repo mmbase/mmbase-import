@@ -34,7 +34,6 @@ import org.mmbase.util.logging.*;
  /           \/          \     /         \
  |  R  --> PW - PR --> PW -...- PR --> W  |
  |     T1     |    T2     |    |   TN     |
-
  \___________/ \_________/     \_________/
   
 
@@ -44,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.12 2003-05-12 13:12:28 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.13 2003-05-12 13:13:30 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
