@@ -16,7 +16,6 @@ import org.mmbase.module.corebuilders.*;
 import java.util.*;
 
 /**
- * Describes an object in the cloud.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -28,47 +27,48 @@ public class BasicNode implements Node {
     public static final int ACTION_REMOVE = 3;   // remove node
     public static final int ACTION_LINK = 4;     // add a relation to a node
     public static final int ACTION_COMMIT = 10;   // commit a node after changes
+
     /**
-    * Reference to the NodeManager
-    */
+     * Reference to the NodeManager
+     */
     protected NodeManager nodeManager;
 
     /**
-    * Reference to the Cloud.
-    */
+     * Reference to the Cloud.
+     */
     protected BasicCloud cloud;
 
     /**
-    * Reference to MMBase root.
-    */
+     * Reference to MMBase root.
+     */
     protected MMBase mmb;
 
     /**
-    * Reference to actual MMObjectNode object.
-    */
+     * Reference to actual MMObjectNode object.
+     */
     protected MMObjectNode noderef;
 
     /**
-    * Temporary node ID.
-    * this is necessary since there is otherwise no sure (and quick) way to determine
-    * whether a node is in 'edit' mode (i.e. has a temporary node).
-    */
+     * Temporary node ID.
+     * this is necessary since there is otherwise no sure (and quick) way to determine
+     * whether a node is in 'edit' mode (i.e. has a temporary node).
+     */
     protected int temporaryNodeId=-1;
 
     /**
-    * The account this node is edited under.
-    * This is needed to check whether people have not switched users during an edit.
-    */
+     * The account this node is edited under.
+     * This is needed to check whether people have not switched users during an edit.
+     */
     protected String account=null;
 
     /**
-    * Determines whether this node was created for insert.
-    */
+     * Determines whether this node was created for insert.
+     */
     protected boolean isnew = false;
 
-  	/**
-  	* Instantiates a node, linking it to a specified node manager.
-  	*/
+    /*
+     * Instantiates a node, linking it to a specified node manager.
+     */
   	BasicNode(MMObjectNode node, NodeManager nodeManager) {
   	    this.nodeManager=nodeManager;
   	    cloud=(BasicCloud)nodeManager.getCloud();
@@ -82,12 +82,12 @@ public class BasicNode implements Node {
   	    }
   	}
 
-    /**
-    * Instantiates a new node (for insert), using a specified nodeManager.
-    * @param node a temporary MMObjectNode that is the base for the node
-    * @param nodeManager the node manager to create the node with
-    * @param id the id of the node in the temporary cloud
-    */
+    /*
+     * Instantiates a new node (for insert), using a specified nodeManager.
+     * @param node a temporary MMObjectNode that is the base for the node
+     * @param nodeManager the node manager to create the node with
+     * @param id the id of the node in the temporary cloud
+     */
   	BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
   	    this(node, nodeManager);
   	    temporaryNodeId=id;
@@ -102,23 +102,14 @@ public class BasicNode implements Node {
 	    return noderef;
   	}
   	
-  	/**
-     * Retrieves the cloud where this node is part of.
-     */
     public Cloud getCloud() {
         return nodeManager.getCloud();
     }
 
-	/**
-     * Retrieves the NodeManager of this node
-     */
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 	
-	/**
-     * Retrieves the node number
-     */
     public int getNumber() {
         int i=getNode().getNumber();
         // new node, thus return temp id.
@@ -129,24 +120,25 @@ public class BasicNode implements Node {
         return i;
     }
 
-    /**
-    * Returns whether this is a new (not yet committed) node.
-    */
+    /*
+     * Returns whether this is a new (not yet committed) node.
+     */
     boolean isNew() {
         return isnew;
     }
     	
     /**
-    * Edit this node.
-    * Check whether edits are allowed and prepare a node for edits if needed.
-    * The type of edit is determined by the action specified, and one of:<br>
-    * ACTION_ADD (add a node),<br>
-    * ACTION_EDIT (edit node, or change aliasses),<br>
-    * ACTION_REMOVE (remove node),<br>
-    * ACTION_LINK (add a relation),<br>
-    * ACTION_COMMIT (commit a node after changes)
+     * Edit this node.
+     * Check whether edits are allowed and prepare a node for edits if needed.
+     * The type of edit is determined by the action specified, and one of:<br>
+     * ACTION_ADD (add a node),<br>
+     * ACTION_EDIT (edit node, or change aliasses),<br>
+     * ACTION_REMOVE (remove node),<br>
+     * ACTION_LINK (add a relation),<br>
+     * ACTION_COMMIT (commit a node after changes)
+     *
      * @param action The action to perform.
-    */
+     */
     protected void Edit(int action) {
         if (account==null) {
             account = cloud.getAccount();
@@ -202,11 +194,6 @@ public class BasicNode implements Node {
     	}
     }
 	
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setValue(String attribute, Object value) {
 	    Edit(ACTION_EDIT);
 	    if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)) {
@@ -215,134 +202,58 @@ public class BasicNode implements Node {
 	    BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
 	}
 
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setIntValue(String attribute, int value) {
 	    setValue(attribute,new Integer(value));
 	}
 
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setFloatValue(String attribute, float value) {
 	    setValue(attribute,new Float(value));
 	}
 
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setDoubleValue(String attribute, double value) {
 	    setValue(attribute,new Double(value));
 	}
 
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setByteValue(String attribute, byte[] value) {
 	    setValue(attribute,value);
 	}
 
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setLongValue(String attribute, long value) {
 	    setValue(attribute,new Long(value));
 	}
 
-	/**
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
 	public void setStringValue(String attribute, String value) {
 	    setValue(attribute,value);
 	}
 
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public Object getValue(String attribute) {
 	    return noderef.getValue(attribute);
 	}
 
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public int getIntValue(String attribute) {
 	    return noderef.getIntValue(attribute);
 	}
 
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public float getFloatValue(String attribute) {
 	    return noderef.getFloatValue(attribute);
 	}
 
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public long getLongValue(String attribute) {
 	    return noderef.getLongValue(attribute);
 	}
 
-
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public double getDoubleValue(String attribute) {
 	    return noderef.getDoubleValue(attribute);
 	}
 
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public byte[] getByteValue(String attribute) {
 	    return noderef.getByteValue(attribute);
 	}
 
-
-	/**
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want
-	 * @return value of attribute
-	 */
 	public String getStringValue(String attribute) {
 	    return noderef.getStringValue(attribute);
 	}
 
-	/**
-	* Commit the node to the database.
-	* Makes this node and/or the changes made to this node visible to the cloud.
-    * If this method is called for the first time on this node it will make
-    * this node visible to the cloud, otherwise the modifications made to
-    * this node using the set methods will be made visible to the cloud.
-    * This action fails if the current node is not in edit mode.
-    * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
-	*/
 	public void commit() {
 	    Edit(ACTION_COMMIT);
 	    // ignore commit in transaction (transaction commits)
@@ -363,11 +274,6 @@ public class BasicNode implements Node {
 	    }	
 	};
 
-	/**
-	 * Cancel changes to a node
-	 * This fails if the current node is not in edit mode.
-	 * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
-	 */
 	public void cancel() {
 	    Edit(ACTION_COMMIT);
 	    // when in a transaction, let the transaction cancel
@@ -386,9 +292,6 @@ public class BasicNode implements Node {
 	    }	
 	};
 	
-	/**
-	 * Removes the Node
-	 */
 	public void remove() {
 	    remove(true);
 	};
@@ -442,14 +345,11 @@ public class BasicNode implements Node {
         noderef=null;
 	}
 	
-	/**
-	 * Converts the node to a string
-	 */
 	 public String toString() {
 	    return noderef.toString();
 	 };
 
-	/**
+	/*
  	 * Removes all relations of certain type.
 	 * @param type Type of relation (-1 = don't care)
 	 */
@@ -475,18 +375,10 @@ public class BasicNode implements Node {
 	    }
 	};
 	
-	
-	/**
-	 * Removes all relations of the node.
-	 */
 	public void removeRelations() {
 	    deleteRelations(-1);
 	}
 
-	/**
- 	 * Removes all relations of this node of a certain type.
-	 * @param type of relation
-	 */
 	public void removeRelations(String type) {
 	    RelDef reldef=mmb.getRelDef();
     	int rType=reldef.getGuessedNumber(type);
@@ -497,12 +389,7 @@ public class BasicNode implements Node {
     	}
 	};
 
-	/**
-	 * Retrieve all relations of this node
-	 * @return a code>List</code> of all relations of Node
-	 */
 	private RelationList getRelations(int type) {	
-	
 	    Vector relvector=new Vector();
 	    Enumeration e=getNode().getRelations() ;
 	    NodeManager insrelman = cloud.getNodeManager("insrel");
@@ -519,19 +406,10 @@ public class BasicNode implements Node {
         return new BasicRelationList(relvector,cloud,insrelman);
 	};
 	
-	/**
-	 * Retrieve all relations of this node
-	 * @return a code>List</code> of all relations of Node
-	 */
 	public RelationList getRelations() {	
 	    return getRelations(-1);
 	};
 
-	/**
-	 *gets all relations of a certain type
-	 * @param type of relation
-	 * @return a code>List</code> of all relations of the Node of a certain type
-	 */
 	public RelationList getRelations(String type) {
 	    Vector relvector=new Vector();
 	    int rType=mmb.getRelDef().getGuessedNumber(type);
@@ -542,35 +420,18 @@ public class BasicNode implements Node {
     	}
 	};
 
-	/**
-	 * Checks whether the Node has any relations
-	 * @return <code>true</code> if the node has relations
-	 */
 	public boolean hasRelations() {
 	    return getNode().hasRelations();
 	};
 
-	
-	/**
-	 * Count the relations attached to the Node
-	 * @return number of relations
-	 */
 	public int countRelations() {
 	    return getRelations().size();
 	};
 
-	/**
-	 * Count the relations of a specific type attached to the Node 
-	 * @return number of relations of a specific type
-	 */
 	public int countRelations(String type) {
         return getRelations(type).size();
 	};
 
-	/**
-	 * Retrieve all related Nodes
-	 * @return a code>List</code> of all related Nodes
-	 */
 	public NodeList getRelatedNodes() {
 	    Vector relvector=new Vector();
 	    Enumeration e=getNode().getRelatedNodes().elements();
@@ -585,11 +446,6 @@ public class BasicNode implements Node {
         return new BasicNodeList(relvector,cloud);
 	};
 
-	/**
-	 * Retrieve all related nodes maintained by a given NodeManager
-	 * @param type name of the NodeManager of the related nodes
-	 * @return a <code>List</code> of all related nodes of the given manager
-	 */
 	public NodeList getRelatedNodes(String type) {
 	    Vector relvector=new Vector();
 	    Enumeration e=getNode().getRelatedNodes(type).elements();
@@ -604,19 +460,10 @@ public class BasicNode implements Node {
         return new BasicNodeList(relvector,cloud);
     }
 
-	/**
-	 * Count all related nodes maintained by a given NodeManager
-	 * @param type name of the NodeManager of the related nodes
-	 * @return number of related nodes of a specific type
-	 */
 	public int countRelatedNodes(String type) {
 	    return getNode().getRelationCount(type);
 	};
 	
-	/**
-     * Retrieves the aliases of this node
-     * @return a code>List</code> with the alias names
-     */
     public List getAliases() {
 	    Vector aliasvector=new Vector();
 	    OAlias alias=mmb.OAlias;
@@ -629,10 +476,6 @@ public class BasicNode implements Node {
         return aliasvector;
     };
 
-	/**
-     * Add an alias for this node
-     * @param aliasName the name of the alias (need to be unique)
-     */
     public void addAlias(String aliasName) {
         Edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
@@ -649,7 +492,7 @@ public class BasicNode implements Node {
         }
     }
 
-    /**
+    /*
      * Delete one or all aliasses of this node
      * @param aliasName the name of the alias (null means all aliases)
      */
@@ -686,20 +529,10 @@ public class BasicNode implements Node {
 	    }
     };
 
-    /**
-     * Remove an alias of this node
-     * @param aliasName the name of the alias
-     */
     public void removeAlias(String aliasName) {
         deleteAliases(aliasName);
     };
 
-    /**
-     * Adds a relation to this node
-     * @param destinationNode the node to which you want to relate this node
-	 * @param relationManager The relation manager you want to use
-	 * @return the added relation
-     */
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         Edit(ACTION_LINK);
 	    Relation relation = relationManager.createRelation(this,destinationNode);
@@ -708,18 +541,19 @@ public class BasicNode implements Node {
 
 
     /**
-    * Compares two objects, and returns true if they are equal.
-    * This effectively means that both objects are nodes, and they both refer to the same objectnode
-    * @param o the object to compare it with
-    */
+     * Compares two objects, and returns true if they are equal.
+     * This effectively means that both objects are nodes, and they both refer to the same objectnode
+     *
+     * @param o the object to compare it with
+     */
     public boolean equals(Object o) {
         return (o instanceof Node) && (o.hashCode()==hashCode());
     };
 
     /**
-    * Returns the object's hashCode.
-    * This effectively returns th objectnode's number
-    */
+     * Returns the object's hashCode.
+     * This effectively returns th objectnode's number
+     */
     public int hashCode() {
         return getNumber();
     };
