@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.7 2003-08-19 14:18:32 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.8 2003-08-20 09:20:40 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -192,14 +192,6 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
                 allowedFields.put(val, key);
             }
         }
-        // ensure the storage is initialized.
-        try {
-            StorageManager mn = factory.getStorageManager();
-            if (!mn.exists()) mn.create();
-        } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError(se);
-        }
     }
     
     public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
@@ -228,17 +220,23 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
     public boolean create(MMObjectBuilder bul) {
         try {
-            factory.getStorageManager().create(bul);
+            StorageManager mn = factory.getStorageManager();
+            if (bul.getTableName().equals("object")) {
+                mn.create();
+            } else {
+                mn.create(bul);
+            }
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
             throw new StorageError(se);
         }
     }
-    
+
     public boolean createObjectTable(String baseName) {
         try {
-            factory.getStorageManager().create();
+            StorageManager mn = factory.getStorageManager();
+            if (!mn.exists()) mn.create();
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
@@ -259,7 +257,6 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     public String getDisallowedField(String allowedfield) {
         // to lowercase, temporary hack
         allowedfield = allowedfield.toLowerCase();
-
         String disallowedfield = (String)allowedFields.get(allowedfield);
         if (disallowedfield != null) {
             return disallowedfield;
