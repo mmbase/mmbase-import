@@ -1,7 +1,19 @@
 /*
-	$Id: FieldDef.java,v 1.4 2000-03-29 10:46:33 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+	$Id: FieldDef.java,v 1.5 2000-03-30 13:11:41 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/03/29 10:46:33  wwwtech
+	Rob: Licenses changed
+	
 	Revision 1.3  2000/03/07 09:20:41  wwwtech
 	Rico: Changed fielddef to use a specific insert, this must be changed in future to support ORDMS, see typedef for hints how
 	
@@ -23,7 +35,7 @@ import org.mmbase.module.database.*;
  *
  *
  * @author Daniel Ockeloen
- * @version $Id: FieldDef.java,v 1.4 2000-03-29 10:46:33 wwwtech Exp $
+ * @version $Id: FieldDef.java,v 1.5 2000-03-30 13:11:41 wwwtech Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 

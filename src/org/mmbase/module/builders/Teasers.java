@@ -1,8 +1,20 @@
 /*
 
-$Id: Teasers.java,v 1.6 2000-03-30 12:58:13 wwwtech Exp $
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+
+$Id: Teasers.java,v 1.7 2000-03-30 13:11:34 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/30 12:58:13  wwwtech
+Rico: added license file
+
 Revision 1.5  2000/03/29 10:59:25  wwwtech
 Rob: Licenses changed
 
@@ -30,7 +42,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.6 $ $Date: 2000-03-30 12:58:13 $ 
+ * @version $Revision: 1.7 $ $Date: 2000-03-30 13:11:34 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {

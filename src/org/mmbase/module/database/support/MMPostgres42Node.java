@@ -1,7 +1,19 @@
 /*
-$Id: MMPostgres42Node.java,v 1.3 2000-03-29 10:44:51 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: MMPostgres42Node.java,v 1.4 2000-03-30 13:11:42 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/29 10:44:51  wwwtech
+Rob: Licenses changed
+
 Revision 1.2  2000/03/20 15:40:03  wwwtech
 davzev: Changed insert method, now insert will be done depending on DBState.
 
@@ -25,7 +37,7 @@ import org.mmbase.util.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.3 $ $Date: 2000-03-29 10:44:51 $
+* @$Revision: 1.4 $ $Date: 2000-03-30 13:11:42 $
 */
 public class MMPostgres42Node implements MMJdbc2NodeInterface {
 
@@ -361,7 +373,7 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 			t.printStackTrace();
 		}
 		if(bul.sortedDBLayout!=null) {
-			/* $Id: MMPostgres42Node.java,v 1.3 2000-03-29 10:44:51 wwwtech Exp $
+			/* $Id: MMPostgres42Node.java,v 1.4 2000-03-30 13:11:42 wwwtech Exp $
 			// This was the original code, can be deleted.
 			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
 				if (tmp.equals("")) {
@@ -391,7 +403,7 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 				}
 			}	
 
-			/* $Id: MMPostgres42Node.java,v 1.3 2000-03-29 10:44:51 wwwtech Exp $
+			/* $Id: MMPostgres42Node.java,v 1.4 2000-03-30 13:11:42 wwwtech Exp $
 			// This was the original code, can be deleted.
 			try {
 				stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");

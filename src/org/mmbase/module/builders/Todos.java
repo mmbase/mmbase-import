@@ -1,7 +1,19 @@
 /*
-$Id: Todos.java,v 1.6 2000-03-29 10:59:25 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: Todos.java,v 1.7 2000-03-30 13:11:34 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/29 10:59:25  wwwtech
+Rob: Licenses changed
+
 Revision 1.5  2000/03/20 14:58:37  wwwtech
 Rico: added Rejected status
 
@@ -21,7 +33,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2000-03-29 10:59:25 $
+ * @version $Revision: 1.7 $ $Date: 2000-03-30 13:11:34 $
  */
 public class Todos extends MMObjectBuilder {
 

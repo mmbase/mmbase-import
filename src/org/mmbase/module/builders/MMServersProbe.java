@@ -1,8 +1,20 @@
 /*
 
-$Id: MMServersProbe.java,v 1.3 2000-03-29 10:59:23 wwwtech Exp $
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+
+$Id: MMServersProbe.java,v 1.4 2000-03-30 13:11:32 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/29 10:59:23  wwwtech
+Rob: Licenses changed
+
 Revision 1.2  2000/02/24 14:08:20  wwwtech
 - (marcel) Changed System.out into debug and added headers
 
@@ -20,7 +32,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.3 $ $Date: 2000-03-29 10:59:23 $ 
+ * @version0 $Revision: 1.4 $ $Date: 2000-03-30 13:11:32 $ 
  */
 public class MMServersProbe implements Runnable {
 

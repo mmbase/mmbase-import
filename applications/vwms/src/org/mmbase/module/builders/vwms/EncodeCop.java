@@ -1,7 +1,19 @@
 /*
-$Id: EncodeCop.java,v 1.6 2000-03-29 11:04:45 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: EncodeCop.java,v 1.7 2000-03-30 13:11:36 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/29 11:04:45  wwwtech
+Rob: Licenses changed
+
 Revision 1.5  2000/03/27 16:01:01  wwwtech
 Rico: moved lots of VPRO stuff to nl.vpro
 
@@ -24,7 +36,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.6 $ $Date: 2000-03-29 11:04:45 $
+ * @version $Revision: 1.7 $ $Date: 2000-03-30 13:11:36 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {

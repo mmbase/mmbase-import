@@ -1,7 +1,19 @@
 /*
-$Id: cdplayers.java,v 1.3 2000-03-29 10:59:26 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: cdplayers.java,v 1.4 2000-03-30 13:11:35 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/29 10:59:26  wwwtech
+Rob: Licenses changed
+
 Revision 1.2  2000/03/17 12:36:49  wwwtech
 - (marcel) added better support for functions in getValue
 
@@ -21,7 +33,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.3 $ $Date: 2000-03-29 10:59:26 $ 
+ * @version $Revision: 1.4 $ $Date: 2000-03-30 13:11:35 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 

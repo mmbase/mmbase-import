@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.module;
 
 import java.io.*;
@@ -10,7 +19,7 @@ import org.mmbase.util.*;
  * This module gives mail functionality 
  *
  * @author Rob Vermeulen
- * @version $Revision: 1.3 $ $Date: 2000-03-29 10:04:58 $
+ * @version $Revision: 1.4 $ $Date: 2000-03-30 13:11:24 $
  */
 public class SendMail extends Module implements SendMailInterface {
 	private String 		 classname 	= getClass().getName();

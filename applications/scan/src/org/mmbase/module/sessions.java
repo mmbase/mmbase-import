@@ -1,7 +1,19 @@
 /*
- $Id: sessions.java,v 1.5 2000-03-29 10:05:00 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+ $Id: sessions.java,v 1.6 2000-03-30 13:11:26 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.5  2000/03/29 10:05:00  wwwtech
+ Rob: Licenses changed
+
  Revision 1.4  2000/03/24 11:16:15  wwwtech
  Rico: added test when saving the session values if the needed builders are loaded (properties,users)
 
@@ -30,7 +42,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.5 2000-03-29 10:05:00 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.6 2000-03-30 13:11:26 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 

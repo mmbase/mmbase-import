@@ -1,7 +1,19 @@
 /*
-$Id: MMMysql42Node.java,v 1.5 2000-03-29 10:44:51 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: MMMysql42Node.java,v 1.6 2000-03-30 13:11:43 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/29 10:44:51  wwwtech
+Rob: Licenses changed
+
 Revision 1.4  2000/03/20 16:16:43  wwwtech
 davzev: Changed insert method, now insert will be done depending on DBState.
 
@@ -25,7 +37,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.5 $ $Date: 2000-03-29 10:44:51 $
+* @$Revision: 1.6 $ $Date: 2000-03-30 13:11:43 $
 */
 public class MMMysql42Node implements MMJdbc2NodeInterface {
 
@@ -349,7 +361,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 
 		if (number == 0) return(insertRootNode(bul));
 
-		/* $Id: MMMysql42Node.java,v 1.5 2000-03-29 10:44:51 wwwtech Exp $
+		/* $Id: MMMysql42Node.java,v 1.6 2000-03-30 13:11:43 wwwtech Exp $
 		// Original code, not deleted for savety reasons (will be deleted soon),davzev
 		String tmp="";
 		for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
@@ -380,7 +392,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			}
 		}
 
-		/* $Id: MMMysql42Node.java,v 1.5 2000-03-29 10:44:51 wwwtech Exp $
+		/* $Id: MMMysql42Node.java,v 1.6 2000-03-30 13:11:43 wwwtech Exp $
 		// Original code, not deleted for savety reasons (will be deleted soon),davzev
 		MultiConnection con=null;
 		PreparedStatement stmt=null;

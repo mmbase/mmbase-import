@@ -1,4 +1,13 @@
 /*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
  * @(#)StringBuffer.java	1.28 96/02/14  
  *
  * Copyright (c) 1994 Sun Microsystems, Inc. All Rights Reserved.

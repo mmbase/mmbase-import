@@ -1,7 +1,19 @@
 /*
-	$Id: MultiRelations.java,v 1.9 2000-03-29 10:59:23 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+	$Id: MultiRelations.java,v 1.10 2000-03-30 13:11:32 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.9  2000/03/29 10:59:23  wwwtech
+	Rob: Licenses changed
+	
 	Revision 1.8  2000/03/24 14:33:59  wwwtech
 	Rico: total recompile
 	
@@ -37,7 +49,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.9 2000-03-29 10:59:23 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.10 2000-03-30 13:11:32 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	

@@ -1,8 +1,20 @@
 /*
 
-$Id: MMServers.java,v 1.8 2000-03-29 10:59:23 wwwtech Exp $
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+
+$Id: MMServers.java,v 1.9 2000-03-30 13:11:32 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/03/29 10:59:23  wwwtech
+Rob: Licenses changed
+
 Revision 1.7  2000/03/21 15:37:31  wwwtech
 - (marcel) Removed debug (globally declared in MMOBjectNode)
 
@@ -37,7 +49,7 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.8 $ $Date: 2000-03-29 10:59:23 $
+ * @version $Revision: 1.9 $ $Date: 2000-03-30 13:11:32 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
