@@ -351,7 +351,7 @@ public class servdb extends JamesServlet {
 
 						if (cline.buffer!=null) {
 							//debug("Buffer not null, returning stream");
-							cline.mimetype="application/x-pn-realmedia";
+							cline.mimetype="audio/x-pn-realaudio";
 							mimetype=cline.mimetype;
 						} else {
 							String ur=getParamValue("url",getParamVector(req));
@@ -893,7 +893,27 @@ public class servdb extends JamesServlet {
 		//  -------------------------------------------------------------------------------------------------------------
 
 			//String url = AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
-			String url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
+			//String url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
+
+            String url = null;
+
+            MMObjectBuilder b = mmbase.getMMObject( "cdtracks" );
+            MMObjectNode    n = b.getNode( number );
+            if( n != null ) {
+                if( n.getName().equals("audioparts")) {
+                    // url = getAudiopartUrl( mmbase, number, sp, speed, channels );
+                    url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
+                } else {
+                    if( n.getName().equals("cdtracks"))
+                    {
+                        // url = getCdtracksUrl( mmbase, number, sp, speed, channels );
+                        url = ((CDTracks)mmbase.getMMObject("cdtracks")).getCdtracksUrl( mmbase, number, sp, speed, channels);
+                    } else
+                        debug("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not cdtrack or audiopart!");
+                }
+            } else
+                debug("getRAStream("+number+","+speed+","+channels+"): ERROR: No reference to mmbase!");
+
 			if( debug ) debug("getRAStream(): result: I have url("+url+") as result ");
 			if( url != null )
 			{
