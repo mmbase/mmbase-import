@@ -76,7 +76,12 @@ community/community.shtml" TARGET="community">http://yourhost:port/community</A>
 <TR>	
 		<TD><IMG SRC="../../mmadmin/jsp/images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" VALIGN="top">
-        TODO
+        The image on the right shows the basic-design of the community-application. 
+Community is the toplevel node which can consists of multiple channels. 
+Each channel exists of one or more mesages.
+If people must login before they can participate in a channel, there must be
+a relation between the people node and the channel. 
+A community can be a forum or a chat.
 		</TD>
 		<TD BGCOLOR="#00425A">
 		<CENTER>
@@ -105,8 +110,8 @@ community/community.shtml" TARGET="community">http://yourhost:port/community</A>
 <TR>	
 		<TD><IMG SRC="../../mmadmin/jsp/images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" VALIGN="top">
-        TODO
-	
+        				The image on the right shows the homepage of the community-example. 
+This example shows you the basic features of the community application.
 		</TD>
 		<TD BGCOLOR="#00425A" >
 		<CENTER>

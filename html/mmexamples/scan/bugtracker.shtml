@@ -40,7 +40,19 @@
 		<TD><IMG SRC="../../mmadmin/jsp/images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" COLSPAN=3>
 			<BR>
-			<CENTER><A HREF="/bugtracker" TARGET="bugtracker">http://yourhost:port/bugtracker</A></CENTRER>
+
+			<LIST OBJECTS TYPE="versions" PROCESSOR="MMBASE" FIELDS="name,type" WHERE="name=='Bugtracker'+type=='application'" VERSION="2.0">
+			<LIF $ITEML==0>
+				<CENTER>Bugtracker application NOT installed please install before using it.<BR>
+You can install the Bugtracker application by going to ADMIN -> APPLICATIONS </CENTRER>
+			<ELSE>
+			<CENTER><A HREF="/bugtracker" TARGET="bugtracker">http://yourhost:port/bugtracker</A></CENTER>
+
+			</IF>
+			<LISTLOOP>
+			</LISTLOOP>
+			</LIST>
+
 			<BR><BR>
 		</TD>
 </TR>
