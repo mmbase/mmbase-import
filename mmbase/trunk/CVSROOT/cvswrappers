@@ -20,8 +20,8 @@
 #
 #  and value is a single-quote delimited value.
 # For example:
-*.gif -k 'b'
-*.jpg -k 'b'
-*.class -k 'b'
-*.o -k 'b'
-*.so -k 'b'
+*.gif -k 'b' -m 'COPY'
+*.jpg -k 'b' -m 'COPY'
+*.class -k 'b' -m 'COPY'
+*.o -k 'b' -m 'COPY'
+*.so -k 'b' -m 'COPY'
