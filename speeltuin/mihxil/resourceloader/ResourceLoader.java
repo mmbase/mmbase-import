@@ -96,7 +96,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.16 2004-10-29 14:41:42 pierre Exp $
+ * @version $Id: ResourceLoader.java,v 1.17 2004-10-29 14:59:33 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -310,6 +310,19 @@ public class ResourceLoader extends ClassLoader {
             webRoot = new ResourceLoader();
 
             //webRoot.roots.add(webRoot.new NodeURLStreamHandler(Resource.TYPE_WEB));
+
+
+            String htmlRoot = null;
+            if (servletContext != null) {
+                htmlRoot = servletContext.getInitParameter("mmbase.htmlroot");
+            }
+
+            if (htmlRoot == null) {
+                htmlRoot = System.getProperty("mmbase.htmlroot");
+            }
+            if (htmlRoot != null) {
+                webRoot.roots.add(webRoot.new FileURLStreamHandler(new File(htmlRoot)));
+            }
 
             if (servletContext != null) {
                 String s = servletContext.getRealPath("/");
@@ -1251,29 +1264,29 @@ public class ResourceLoader extends ClassLoader {
 
 
     private static String NOT_FOUND = "/localhost/NOTFOUND/";
-    private   class NotAvailableURLStreamHandler extends PathURLStreamHandler {
 
-        protected String getName(URL u) {
-            return u.getPath().substring(NOT_FOUND.length());
-        }
+    private  PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new PathURLStreamHandler() {
 
-        public URLConnection openConnection(String name) {
-            URL u;
-            try {
-                u = new URL(null, "http:/" + NOT_FOUND + name, this);
-            } catch (MalformedURLException mfue) {
-                throw new AssertionError(mfue.getMessage());
+            protected String getName(URL u) {
+                return u.getPath().substring(NOT_FOUND.length());
             }
-            return new NotAvailableConnection(u, name);
-        }
-
-        public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
-            return new HashSet();
-        }
-    }
-
-    private  PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new NotAvailableURLStreamHandler();
-
+            
+            public URLConnection openConnection(String name) {
+                URL u;
+                try {
+                    u = new URL(null, "http:/" + NOT_FOUND + name, this);
+                } catch (MalformedURLException mfue) {
+                    throw new AssertionError(mfue.getMessage());
+                }
+                return new NotAvailableConnection(u, name);
+            }
+            
+            public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
+                return new HashSet();
+            }
+        };
+    
+    
     private class NotAvailableConnection extends URLConnection {
 
         private String name;
@@ -1437,7 +1450,9 @@ public class ResourceLoader extends ClassLoader {
                 return os;
             }
         }
-
+        /**
+         * {@inheritDoc}
+         */
         public long getLastModified() {
             return getInputConnection().getLastModified();
         }
@@ -1448,10 +1463,16 @@ public class ResourceLoader extends ClassLoader {
      * For testing purposes only
      */
     public static void main(String[] argv) {
-        ResourceLoader resourceLoader = getConfigurationRoot();
+        ResourceLoader resourceLoader;
+
+        if (System.getProperty("mmbase.htmlroot") != null) {
+            resourceLoader = getWebRoot();
+        } else {
+            resourceLoader = getConfigurationRoot();
+        }
         try {
             if (argv.length == 0) {
-                System.err.println("useage: java [-Dmmbase.config=<config dir>] " + ResourceLoader.class.getName() + " [<sub directory>] <resource-name>");
+                System.err.println("useage: java [-Dmmbase.config=<config dir>|-Dmmbase.htmlroot=<some other dir>] " + ResourceLoader.class.getName() + " [<sub directory>] <resource-name>");
                 return;
             }
             String arg = argv[0];
