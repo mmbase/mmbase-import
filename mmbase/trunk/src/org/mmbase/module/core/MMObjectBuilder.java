@@ -128,7 +128,10 @@ public class MMObjectBuilder extends MMTable {
 		statCount("insert");
 		
 		try {
-		return(database.insert(this,owner,node));
+			int n;
+			n=database.insert(this,owner,node);
+			if (n>=0) nodeCache.put(new Integer(n),node);
+			return(n);
 		} catch(Exception e) {
 			debug("ERROR INSERT PROBLEM !");
 			debug("Error node="+node);
