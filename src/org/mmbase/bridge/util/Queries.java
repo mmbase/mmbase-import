@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.16 2003-12-16 21:29:13 michiel Exp $
+ * @version $Id: Queries.java,v 1.17 2003-12-17 08:47:27 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -273,14 +273,7 @@ public class Queries {
             constraints = constraints.substring(5).trim();
         }
         Constraint newConstraint = query.createConstraint(constraints);
-        Constraint constraint = query.getConstraint();
-        if (constraint != null) {
-            log.debug("compositing constraint");
-            Constraint compositeConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-            query.setConstraint(compositeConstraint);
-        } else {
-            query.setConstraint(newConstraint);
-        }
+        addConstraint(query, newConstraint);
         return newConstraint;
     }
 
@@ -289,8 +282,8 @@ public class Queries {
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
         if (newConstraint == null) return null;
-        Constraint constraint = query.getConstraint();
 
+        Constraint constraint = query.getConstraint();
 
         if (constraint != null) {
             log.debug("compositing constraint");
@@ -632,17 +625,8 @@ public class Queries {
             Step firstStep = (Step) query.getSteps().get(0);
             StepField firstStepField = query.createStepField(firstStep, "number");
             
-            Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);
-            
-            Constraint constraint = query.getConstraint();
-            if (constraint != null) {
-                log.debug("compositing constraint");
-                Constraint compositeConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-                query.setConstraint(compositeConstraint);
-            } else {
-                query.setConstraint(newConstraint);
-            }
-            
+            Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);            
+            addConstraint(query, newConstraint);
             return newConstraint;
         } else {
             return null;
