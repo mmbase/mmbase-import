@@ -17,8 +17,8 @@
 		<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" COLSPAN=3 VALIGN="top">
 			<BR>
-			Mbla asd sadas asddaasd asdsadad asdadad asdasdas adsasdasd asdasdasd asda sddsad adad a d das d dad asasdad asdfgdg sdgdgwer
-			<BR>
+	MyYahoo is a simple example of how to build a 'yahoo' website. This is a website where urls are categorised. This webpage will describe the design of this example. In /mmexamples/myyahoo/scan/ you can find the templates that create the actual site.
+			<BR><BR>
 		</TD>
 </TR>
 <TR>
@@ -39,7 +39,15 @@
 		<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" COLSPAN=3 >
 			<BR>
-			<CENTER><A HREF="/myyahoo" TARGET="yahoo">http://yourhost:port/myyahoo</A></CENTRER>
+			<LIST OBJECTS TYPE="versions" PROCESSOR="MMBASE" FIELDS="name,type" WHERE="name=='MyYahoo'+type=='application'" VERSION="2.0">
+			<LIF $ITEML==0>
+				<CENTER>MyYahoo application NOT installed please install before using it.<BR>  can do that under ADMIN -> APPLICATIONS </CENTRER>
+			<ELSE>
+				This url will show the actual MyYahoo example: <A HREF="/yahoo" TARGET="yahoo">http://yourhost:port/yahoo</A>
+			</IF>
+			<LISTLOOP>
+			</LISTLOOP>
+			</LIST>
 			<BR><BR>
 		</TD>
 </TR>
@@ -63,8 +71,10 @@
 <TR>	
 		<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" VALIGN="top">
-			This example a few very simple object layout in
-			out object cloud.
+		<BR>The image on the right side shows the design of this MyYahoo example.<BR>
+	MyYahoo consists of 3 object types, namely: jumpers, pools and urls. The jumper makes it possible to use a short url that will be expanded to a larger one. e.g. http://yourhost/myyahoo will be expanded to http://yourhost/mmexamples/myyahoo/scan/index.shtml?yahoo. <BR>
+	The pools are used to categorise urls. On pool contains all urls that belong to the categorie music. The other pool contains all urls that belong to the categorie movies. One pool is used as an exception, it contains all pools that function as a categorie.
+		<BR><BR>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN=1>
 		<CENTER>
@@ -95,8 +105,8 @@
 <TR>	
 		<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 		<TD BGCOLOR="#00425A" VALIGN="top">
-			This example a few very simple object layout in
-			out object cloud.
+	<BR>The image at the right side shows the layout of the MyYahoo example. The url at the top of this page allows you to see the real MyYahoo example.<BR>
+	MyYahoo shows some categories for the urls, namely: musix, movies, partners. At the bottom all urls existing in your system are displayed. The top of the page gives you the possibility to search for urls. Try the example and look at the templates! It will give you a good view about how MMBase works.  
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN=1>
 		<CENTER>
