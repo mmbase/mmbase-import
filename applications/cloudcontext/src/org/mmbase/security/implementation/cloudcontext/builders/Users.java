@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.29 2004-07-30 17:13:54 michiel Exp $
+ * @version $Id: Users.java,v 1.30 2004-08-10 10:41:09 keesj Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -68,6 +68,7 @@ public class Users extends MMObjectBuilder {
     // javadoc inherited
     public boolean init() {
         rankCache.putCache();
+		userCache.putCache();
         CacheInvalidator.getInstance().addCache(rankCache);
         CacheInvalidator.getInstance().addCache(userCache);
         mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
