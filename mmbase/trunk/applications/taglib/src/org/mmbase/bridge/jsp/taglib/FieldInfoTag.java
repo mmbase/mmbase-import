@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.65 2003-07-30 09:04:49 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.66 2003-07-31 15:57:13 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -280,7 +280,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 show = whereHtmlInput(field);
             } else {
                 Query query = c.getQuery();
-                show = whereHtmlInput(field, query);
+                if (log.isDebugEnabled()) {
+                    log.debug("Using " + query);
+                } 
+                whereHtmlInput(field, query);
+                show = "";
             }
 
             break;
