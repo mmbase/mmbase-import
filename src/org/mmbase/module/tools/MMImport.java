@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -24,6 +24,8 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The module which provides access to the multimedia database
@@ -34,6 +36,8 @@ import org.mmbase.module.database.support.*;
  * @author Daniel Ockeloen
  */
 public class MMImport extends ProcessorModule {
+
+    private static Logger log = Logging.getLoggerInstance(MMImport.class.getName()); 
 
 	MMBase mmb=null;
 
@@ -118,7 +122,7 @@ public class MMImport extends ProcessorModule {
 				body="";
 			}
 			pos=body.indexOf("<?xml");
-			System.out.println("MMImport item "+(count++));	
+			log.info("MMImport item "+(count++));	
 		}
 	}
 
@@ -159,7 +163,7 @@ public class MMImport extends ProcessorModule {
 		}
 		bul.insert("import",node);
 		} else {
-			System.out.println("Import illegal builder");
+			log.warn("Import illegal builder");
 		}
 	}
 
@@ -177,7 +181,7 @@ public class MMImport extends ProcessorModule {
 			}
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 			return(null);
 		}
 		return(null);

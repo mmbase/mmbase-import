@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width:4 ; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -25,12 +25,16 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
 import org.mmbase.module.tools.MMAppTool.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * @author Daniel Ockeloen
  */
 public class MMAdmin extends ProcessorModule {
 
+    private static Logger log = Logging.getLoggerInstance(MMAdmin.class.getName()); 
 	MMBase mmb=null;
 	MMAdminProbe probe=null;
 	String lastmsg="";
@@ -38,10 +42,10 @@ public class MMAdmin extends ProcessorModule {
 	private boolean kioskmode=false;
 
 	public void init() {
-        	String dtmp=System.getProperty("mmbase.kiosk");
-        	if (dtmp!=null && dtmp.equals("yes")) {
+        String dtmp=System.getProperty("mmbase.kiosk");
+        if (dtmp!=null && dtmp.equals("yes")) {
 			kioskmode=true;
-			System.out.println("*** Server started in kiosk mode ***"); 
+			log.info("*** Server started in kiosk mode ***"); 
 		}
 		mmb=(MMBase)getModule("MMBASEROOT");		
 		probe = new MMAdminProbe(this);
@@ -97,9 +101,9 @@ public class MMAdmin extends ProcessorModule {
 					int installedversion=ver.getInstalledVersion(name,"application");
 					if (installedversion==-1 || version>installedversion) {
 						if (installedversion==-1) {
-							System.out.println("Installing application : "+name);
+							log.info("Installing application : "+name);
 						} else {	
-							System.out.println("installing application : "+name+" new version from "+installedversion+" to "+version);
+							log.info("installing application : "+name+" new version from "+installedversion+" to "+version);
 						}
 						if (installApplication(name)) {
 							lastmsg="Application loaded oke<BR><BR>\n";
@@ -111,7 +115,7 @@ public class MMAdmin extends ProcessorModule {
 								ver.updateInstalledVersion(name,"application",maintainer,version);
 							}
 						} else {
-							System.out.println("Problem installing application : "+name);
+							log.warn("Problem installing application : "+name);
 						}
 					} else { 
 							lastmsg="Application was allready loaded (or a higher version)<BR><BR>\n";
@@ -125,7 +129,7 @@ public class MMAdmin extends ProcessorModule {
 				String appname=(String)cmds.get(cmdline);
 				String savepath=(String)vars.get("PATH");
 				String goal=(String)vars.get("GOAL");
-				System.out.println("APP="+appname+" P="+savepath+" G="+goal);
+				log.info("APP="+appname+" P="+savepath+" G="+goal);
 				writeApplication(appname,savepath,goal);
 			} else if (token.equals("APPTOOL")) {
 				String appname=(String)cmds.get(cmdline);
@@ -136,7 +140,7 @@ public class MMAdmin extends ProcessorModule {
 				doModulePosts(tok.nextToken(),cmds,vars);
 			} else if (token.equals("MODULESAVE")) {
 				if (kioskmode) {
-					System.out.println("MMAdmin> refused to write module , im in kiosk mode");
+					log.warn("MMAdmin> refused to write module , im in kiosk mode");
 				} else {
 					String modulename=(String)cmds.get(cmdline);
 					String savepath=(String)vars.get("PATH");
@@ -149,7 +153,7 @@ public class MMAdmin extends ProcessorModule {
 				}
 			} else if (token.equals("BUILDERSAVE")) {
 				if (kioskmode) {
-					System.out.println("MMAdmin> refused to write builder , im in kiosk mode");
+					log.warn("MMAdmin> refused to write builder , im in kiosk mode");
 				} else {
 					String buildername=(String)cmds.get(cmdline);
 					String savepath=(String)vars.get("PATH");
@@ -240,14 +244,14 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setModuleProperty(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused module property set , im in kiosk mode");
+			log.warn("refused module property set , im in kiosk mode");
 			return;
 		}
 		String modname=(String)vars.get("MODULE");
 		String key=(String)vars.get("PROPERTYNAME");
 		String value=(String)vars.get("VALUE");
 		Module mod=(Module)getModule(modname);
-		System.out.println("MOD="+mod);
+		log.debug("MOD="+mod);
 		if (mod!=null) {
 			mod.setInitParameter(key,value);
 			syncModuleXML(mod,modname);
@@ -320,23 +324,23 @@ public class MMAdmin extends ProcessorModule {
 
 	public void doRestart(String user) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused to reset the server , im in kiosk mode");
+			log.warn("MMAdmin> refused to reset the server , im in kiosk mode");
 			return;
 		}
 		lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<BR><BR>\n";
-		System.out.println("Server Reset requested by '"+user+"' Restart in 3 seconds");
+		log.info("Server Reset requested by '"+user+"' Restart in 3 seconds");
 		restartwanted=true;
 		probe = new MMAdminProbe(this,3*1000);
 	}
 
 	private boolean startAppTool(String appname) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused starting app tool , im in kiosk mode");
+			log.warn("refused starting app tool , im in kiosk mode");
 			return(false);
 		}
 
 		String path=MMBaseContext.getConfigPath()+("/applications/");
-		System.out.println("Starting apptool with : "+path+"/"+appname+".xml");
+		log.info("Starting apptool with : "+path+"/"+appname+".xml");
 		MMAppTool app=new MMAppTool(path+"/"+appname+".xml");
 		lastmsg="Started a instance of the MMAppTool with path : <BR><BR>\n";
 		lastmsg+=path+"/"+appname+".xml<BR><BR>\n";
@@ -353,27 +357,27 @@ public class MMAdmin extends ProcessorModule {
 						if (installDataSources(app.getDataSources(),applicationname)) {
 							if (installRelationSources(app.getRelationSources())) {
 							} else {
-								System.out.println("Application installer stopped : can't install relationsources");
+								log.warn("Application installer stopped : can't install relationsources");
 								return(false);
 							}
 						} else {
-							System.out.println("Application installer stopped : can't install datasources");
+							log.warn("Application installer stopped : can't install datasources");
 							return(false);
 						}
 					} else {
-						System.out.println("Application installer stopped : can't install allowed relations");
+						log.warn("Application installer stopped : can't install allowed relations");
 						return(false);
 					}
 				} else {
-					System.out.println("Application installer stopped : can't install reldefs");
+					log.warn("Application installer stopped : can't install reldefs");
 					return(false);
 				}
 			} else {
-				System.out.println("Application installer stopped : not all needed builders present");
+				log.warn("Application installer stopped : not all needed builders present");
 				return(false);
 			}
 		} else {
-			System.out.println("Can't install application : "+path+applicationname+".xml");
+			log.warn("Can't install application : "+path+applicationname+".xml");
 		}
 		return(true);
 	}
@@ -400,7 +404,7 @@ public class MMAdmin extends ProcessorModule {
 					if (b.hasMoreElements()) {
 					    // XXX To do : we may want to load the node and check/change the fields
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-						//System.out.println("node allready installed : "+exportnumber);
+						//log.warn("node allready installed : "+exportnumber);
 					} else {
 						newnode.setValue("number",-1);
 						int localnumber=doKeyMergeNode(newnode);
@@ -415,7 +419,7 @@ public class MMAdmin extends ProcessorModule {
 					}
 				}
 			} else {
-				System.out.println("Application installer : can't reach syncnodes builder");
+				log.warn("Application installer : can't reach syncnodes builder");
 			}
 			}
 		}
@@ -458,7 +462,7 @@ public class MMAdmin extends ProcessorModule {
 				return(localnumber);
 			} 
 		} else {
-			System.out.println("Application installer can't find builder for : "+newnode);
+			log.warn("Application installer can't find builder for : "+newnode);
 		}	
 		return(-1);
 	}
@@ -483,7 +487,7 @@ public class MMAdmin extends ProcessorModule {
 					if (b.hasMoreElements()) {
 					    // XXX To do : we may want to load the relation node and check/change the fields
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-						//System.out.println("node allready installed : "+exportnumber);
+						//log.warn("node allready installed : "+exportnumber);
 					} else {
 						newnode.setValue("number",-1);
 
@@ -531,12 +535,12 @@ public class MMAdmin extends ProcessorModule {
 							    syncnode.insert("import");
 						    }
 						} else {
-						    System.out.println("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
+						    log.warn("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
 						}
 					}
 				}
 			} else {
-				System.out.println("Application installer : can't reach syncnodes builder");
+				log.warn("Application installer : can't reach syncnodes builder");
 			}
 			}
 		}
@@ -595,7 +599,7 @@ public class MMAdmin extends ProcessorModule {
 			String name=(String)bh.get("name");
 			MMObjectBuilder bul=mmb.getMMObject(name);
 			if (bul==null) {
-				System.out.println("Application installer error : builder '"+name+"' not loaded");
+				log.error("Application installer error : builder '"+name+"' not loaded");
 				return(false);
 			}
 		}		
@@ -617,7 +621,7 @@ public class MMAdmin extends ProcessorModule {
 		if (reldef!=null) {
 			Vector res=reldef.searchVector("sname=='"+sname+"'+dname=='"+dname+"'");
 			if (res!=null && res.size()>0) {
-				//System.out.println("RefDef ("+sname+","+dname+") allready installed");
+				//log.warn("RefDef ("+sname+","+dname+") allready installed");
 			} else {
 				MMObjectNode node=reldef.getNewNode("system");
 				node.setValue("sname",sname);
@@ -634,11 +638,11 @@ public class MMAdmin extends ProcessorModule {
 				}
 				int id=reldef.insert("system",node);	
 				if (id!=-1) {
-					// System.out.println("RefDef ("+sname+","+dname+") installed");
+					// log.warn("RefDef ("+sname+","+dname+") installed");
 				} 
 			}
 		} else {
-			System.out.println("MMAdmin -> can't get reldef builder");
+			log.warn("can't get reldef builder");
 		}
 	}
 
@@ -648,33 +652,33 @@ public class MMAdmin extends ProcessorModule {
 		if (typerel!=null) {
 			TypeDef typedef=mmb.getTypeDef();
 			if (typedef==null) {
-				System.out.println("MMAdmin -> can't get typedef builder");
+				log.warn("can't get typedef builder");
 				return;
 			} 
 			RelDef reldef=mmb.getRelDef();
 			if (reldef==null) {
-				System.out.println("MMAdmin -> can't get reldef builder");
+				log.warn("can't get reldef builder");
 				return;
 			} 
 
 			// figure out rnumber
 			int rnumber=reldef.getGuessedNumber(rname);
 			if (rnumber==-1) {
-				System.out.println("MMAdmin -> no reldef : "+rname+" defined");
+				log.warn("no reldef : "+rname+" defined");
 				return;
 			}
 
 			// figure out snumber
 			int snumber=typedef.getIntValue(sname);
 			if (snumber==-1) {
-				System.out.println("MMAdmin -> no object : "+sname+" defined");
+				log.warn("no object : "+sname+" defined");
 				return;
 			} 
 
 			// figure out dnumber
 			int dnumber=typedef.getIntValue(dname);
 			if (dnumber==-1) {
-				System.out.println("MMAdmin -> no object : "+dname+" defined");
+				log.warn("no object : "+dname+" defined");
 				return;
 			} 
 
@@ -686,11 +690,11 @@ public class MMAdmin extends ProcessorModule {
 				node.setValue("max",count);
 				int id=typerel.insert("system",node);	
 				if (id!=-1) {
-					//System.out.println("TypeRel ("+sname+","+dname+","+rname+") installed");
+					//log.warn("TypeRel ("+sname+","+dname+","+rname+") installed");
 				} 
 			}
 		} else {
-			System.out.println("MMAdmin -> can't get typerel builder");
+			log.warn("can't get typerel builder");
 		}
 	}
 
@@ -701,12 +705,12 @@ public class MMAdmin extends ProcessorModule {
 		if (insrel!=null) {
 			RelDef reldef=mmb.getRelDef();
 			if (reldef==null) {
-				System.out.println("MMAdmin -> can't get reldef builder");
+				log.warn("can't get reldef builder");
 			}
 			// figure out rnumber
 			int rnumber=reldef.getGuessedNumber(rname);
 			if (rnumber==-1) {
-				System.out.println("MMAdmin -> no reldef : "+rname+" defined");
+				log.warn("no reldef : "+rname+" defined");
 				return;
 			}
 			
@@ -728,11 +732,11 @@ public class MMAdmin extends ProcessorModule {
 				}
 				int id=insrel.insert("system",node);	
 				// if (id!=-1) {
-				//  System.out.println("Relation installed");
+				//  log.info("Relation installed");
 				// }
 			}
 		} else {
-			System.out.println("MMAdmin -> can't get insrel builder");
+			log.warn("can't get insrel builder");
 		}
 	}
 
@@ -743,7 +747,7 @@ public class MMAdmin extends ProcessorModule {
 		}
 		Versions ver=(Versions)mmb.getMMObject("versions");
 		if (ver==null) {
-			System.out.println("Versions builder not installed, Can't auto deploy apps");
+		    log.warn("Versions builder not installed, Can't auto deploy apps");
 			return;
 		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
@@ -762,9 +766,9 @@ public class MMAdmin extends ProcessorModule {
 						int installedversion=ver.getInstalledVersion(name,"application");
 						if (installedversion==-1 || version>installedversion) {
 							if (installedversion==-1) {
-								System.out.println("Auto deploy application : "+aname+" started");
+                                log.info("Auto deploy application : "+aname+" started");
 							} else {	
-								System.out.println("Auto deploy application : "+aname+" new version from "+installedversion+" to "+version);
+								log.info("Auto deploy application : "+aname+" new version from "+installedversion+" to "+version);
 							}
 							if (installApplication(aname.substring(0,aname.length()-4))) {
 								if (installedversion==-1) {
@@ -772,9 +776,9 @@ public class MMAdmin extends ProcessorModule {
 								} else {
 									ver.updateInstalledVersion(name,"application",maintainer,version);
 								}
-								System.out.println("Auto deploy application : "+aname+" done");
+								log.info("Auto deploy application : "+aname+" done");
 							} else {
-								System.out.println("Problem installing application : "+name);
+								log.error("Problem installing application : "+name);
 							}
 						}
 
@@ -786,7 +790,7 @@ public class MMAdmin extends ProcessorModule {
 
 	private boolean	writeApplication(String appname,String targetpath,String goal) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused to write application , im in kiosk mode");
+			log.warn("refused to write application , im in kiosk mode");
 			return(false);
 		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
@@ -804,7 +808,7 @@ public class MMAdmin extends ProcessorModule {
 	Vector getApplicationsList() {
 		Versions ver=(Versions)mmb.getMMObject("versions");
 		if (ver==null) {
-			System.out.println("Versions builder not installed, Can't get to apps");
+			log.warn("Versions builder not installed, Can't get to apps");
 			return(null);
 		}
 		Vector results=new Vector();
@@ -844,7 +848,7 @@ public class MMAdmin extends ProcessorModule {
 	Vector getBuildersList() {
 		Versions ver=(Versions)mmb.getMMObject("versions");
 		if (ver==null) {
-			System.out.println("Versions builder not installed, Can't get to builders");
+            log.warn("Versions builder not installed, Can't get to builders");
 			return(null);
 		}
 		Vector results=new Vector();
@@ -900,7 +904,7 @@ public class MMAdmin extends ProcessorModule {
 			Vector defs=bul.getFieldDefs();
 			for (Enumeration h = defs.elements();h.hasMoreElements();) {
 				FieldDefs def=(FieldDefs)h.nextElement();	
-				//System.out.println("DEFS="+def);
+				//log.debug("DEFS="+def);
 				results.addElement(""+def.DBPos);
 				results.addElement(""+def.DBName);
 				int type=def.DBType;
@@ -941,7 +945,7 @@ public class MMAdmin extends ProcessorModule {
 		/*
 		Versions ver=(Versions)mmb.getMMObject("versions");
 		if (ver==null) {
-			System.out.println("Versions builder not installed, Can't get to builders");
+			log.warn("Versions builder not installed, Can't get to builders");
 			return(null);
 		}
 		*/
@@ -978,7 +982,7 @@ public class MMAdmin extends ProcessorModule {
 	Vector getDatabasesList() {
 		Versions ver=(Versions)mmb.getMMObject("versions");
 		if (ver==null) {
-			System.out.println("Versions builder not installed, Can't get to builders");
+			log.warn("Versions builder not installed, Can't get to builders");
 			return(null);
 		}
 		Vector results=new Vector();
@@ -1163,7 +1167,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderGuiName(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused gui name set , im in kiosk mode");
+			log.warn("refused gui name set , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1182,7 +1186,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderGuiType(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused gui type set , im in kiosk mode");
+			log.warn("refused gui type set , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1200,7 +1204,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderEditorInput(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused editor input set , im in kiosk mode");
+			log.warn("refused editor input set , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1221,7 +1225,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderEditorList(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused editor list set , im in kiosk mode");
+			log.warn("refused editor list set , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1242,7 +1246,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderEditorSearch(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> refused editor pos set , im in kiosk mode");
+			log.warn("refused editor pos set , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1263,7 +1267,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderDBSize(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused set DBSize field , im in kiosk mode");
+			log.warn("Refused set DBSize field , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1286,7 +1290,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderDBMMBaseType(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused set setDBMMBaseType field , im in kiosk mode");
+			log.warn("Refused set setDBMMBaseType field , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1318,7 +1322,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderDBState(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused set DBState field , im in kiosk mode");
+			log.warn("Refused set DBState field , im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1343,7 +1347,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderDBKey(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused set dbkey field, im in kiosk mode");
+			log.warn("Refused set dbkey field, im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1371,7 +1375,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void setBuilderDBNotNull(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused set NotNull field, im in kiosk mode");
+			log.warn("Refused set NotNull field, im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1394,7 +1398,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void addBuilderField(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused add builder field, im in kiosk mode");
+			log.warn("Refused add builder field, im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
@@ -1470,7 +1474,7 @@ public class MMAdmin extends ProcessorModule {
 
 	public void removeBuilderField(Hashtable vars) {
 		if (kioskmode) {
-			System.out.println("MMAdmin> Refused remove builder field, im in kiosk mode");
+			log.warn("Refused remove builder field, im in kiosk mode");
 			return;
 		}
 		String builder=(String)vars.get("BUILDER");
