@@ -35,47 +35,30 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.27 2003-12-21 13:27:50 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.28 2004-01-14 22:06:14 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
-
     // a node provider is a nodereferrer as well...
     // this is especially useful for some extended classes (like 'relatednodes').
     
     private static final Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class);
-    
-    private   Node   node;        
-    private   String jspvar = null;
-    private   boolean  modified = false;
-    
 
-    // general attributes for NodeProviders
-    // id from TagSupport
+
+    protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
 
     public void setJspvar(String jv) {
-        jspvar = jv;
-        if ("".equals(jspvar)) jspvar = null;
+        nodeHelper.setJspvar(jv);
     }
 
-        
-    /**
-    * For use by children, they can find the current 'node' belonging
-    * to this tag.
-    */
     
     public Node getNodeVar() {
-        return node;
+        return nodeHelper.getNodeVar();
     }
     
-    /**
-     * Children can also directly access the node member, but the
-     * prefered method is to treat this variable as much as possible
-     * as private, and use this.
-     */
 
     protected void setNodeVar(Node node) {        
-        this.node = node;
+        nodeHelper.setNodeVar(node);
     }
     
     abstract public void doInitBody() throws JspTagException;
@@ -86,42 +69,20 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
      */
 
     protected void fillVars() throws JspTagException {    
-        if (jspvar != null && node != null) {
-            pageContext.setAttribute(jspvar, node);
-        }
-        if (id != Attribute.NULL) {
-            getContextProvider().getContextContainer().registerNode(getId(), node);
-        }
+        nodeHelper.fillVars();
     }
                
-    private String getSimpleReturnValueName(String fieldName){        
-        return getSimpleReturnValueName(jspvar, fieldName);
-    }
-    /**
-     * Generates the variable-name for a field.
-     *
-     * @param prefix A prefix to use. Can be null.
-     * @param fieldName The name of the field.
-     */
-    static String getSimpleReturnValueName(String prefix, String fieldName){
-        String field = fieldName.replace('.','_');
-        if (prefix != null && ! "".equals(prefix)) {
-            field = prefix + "_" + field;
-        }
-        return field;
-    }
-
     public void setModified() {
-        //log.info(Logging.stackTrace());
-        modified = true;
+        nodeHelper.setModified();
     }
 
     /**
      * @since MMBase-1.7
      */
     protected boolean getModified() {
-        return modified;
+        return nodeHelper.getModified();
     }
+
     /**
     * Does everything needed on the afterbody tag of every
     * NodeProvider.  Normally this function would be overrided with
@@ -131,16 +92,10 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     * something without a body.
     **/
     public int doAfterBody() throws JspTagException {
-        if (modified) {
-            log.service("node was changed ! calling commit");
-            node.commit();
-        }
-        return SKIP_BODY;
+        return nodeHelper.doAfterBody();
     }
     
     public int doEndTag() throws JspTagException {
-        node = null;
-        modified = false;
-        return EVAL_PAGE;
+        return nodeHelper.doEndTag();
     }
 }
