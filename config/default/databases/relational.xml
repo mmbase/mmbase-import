@@ -40,6 +40,13 @@
 				 NOTE: if you ommit this scheme no primary keys are created
 		-->
     <primary-key>{0} {1} NOT NULL, PRIMARY KEY ({0})</primary-key>
+	  <!-- foreign-key scheme
+				 Defines the code for creating a field that is a secondary (or foreign) key
+		    	         {0} the name of the field to create.
+				 {1} the field type definitions (i.e. int(11))
+				 NOTE: if you ommit this scheme no foreign keys are created
+		-->
+    <foreign-key>{0} {1} NOT NULL, INDEX ({0})</foreign-key>
 	  <!-- key scheme
 				 Defines the code for creating a field that is also a unique secondary key
 				 Parameters:
