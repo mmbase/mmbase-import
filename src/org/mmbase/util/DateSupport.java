@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.21 2004-06-04 09:51:01 michiel Exp $
+ * @version $Id: DateSupport.java,v 1.22 2004-06-17 11:58:41 rob Exp $
  */
 public class DateSupport {
 
@@ -325,7 +325,10 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static String getTimeSecLen(int val) {
-        return getTimeSec(val);
+        Date date = new Date((long) val * 1000);
+        SimpleDateFormat f = new SimpleDateFormat("HH:mm:ss");
+        f.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return f.format(date);
     }
 
     /**
