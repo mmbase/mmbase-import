@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import sun.misc.BASE64Decoder;
-
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
@@ -342,10 +340,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 String username = null;
                 String password = null;
                 try {
-                    BASE64Decoder dec    = new BASE64Decoder();
                     String mime_line     = request.getHeader("Authorization"); 
                     if (mime_line != null) {
-                        String user_password = new String(dec.decodeBuffer(mime_line.substring(6))); 
+                        String user_password = org.mmbase.util.Encode.decode("BASE64", mime_line.substring(6)); 
                         StringTokenizer t    = new StringTokenizer(user_password, ":"); 
                         if (t.countTokens() == 2) {
                             username = t.nextToken(); 
