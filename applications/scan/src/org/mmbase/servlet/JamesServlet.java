@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.10 2000-05-10 13:26:05 wwwtech Exp $
+$Id: JamesServlet.java,v 1.11 2000-05-11 11:18:12 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/05/10 13:26:05  wwwtech
+- (marcel) Made displaying of address when new cookie is requested more advanced, because we use a proxy (which would turn up every time as the requesting host
+
 Revision 1.9  2000/05/10 13:08:42  wwwtech
 - (marcel) Replaced System.out's with debug and added computer-address in output when new cookie is requested to identify improper use of our service
 
@@ -39,12 +42,12 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.10 2000-05-10 13:26:05 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.11 2000-05-11 11:18:12 wwwtech Exp $
 */
 
 class DebugServlet {
 	public String classname = getClass().getName();
-	public boolean debug = true;
+	public static boolean debug = false;
 	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	JamesServlet servlet;
@@ -164,7 +167,49 @@ public class JamesServlet extends HttpServlet {
 		String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";
 		String PATH = "/";
 		String domain = null;
-		// debug(methodName+": Getting cookies from request header");
+
+		// somehow client has a cookie but does not return it in getHeader(COOKIE)
+		// this will explain why :)
+		
+		if( debug ) {
+			debug("getCookie(): header of client:");
+			debug("getCookie(): -----------------");
+
+			Enumeration e 	= req.getHeaderNames();
+			String		key	= null;
+
+			while( e.hasMoreElements() ) {
+				key = (String)e.nextElement();
+				debug("getCookie(): "+key+"("+req.getHeader(key)+")");
+			}
+			debug("getCookie(): -----------------");
+			debug("getCookie():");
+		
+			Cookie[] c = req.getCookies();
+			int 	 i = 0;
+			if( c != null ) {
+				i = c.length;
+
+				debug("getCookie():Cookies["+i+"]:");
+				debug("getCookie():-----------");
+	
+				Cookie cookie = null;
+				for( int j = 0; j<i; j++ ) {
+					cookie = c[j];
+					if( cookie != null ) {
+						debug("getCookie(): cookie["+j+"]: comment("+cookie.getComment()+") domain("+cookie.getDomain()+") maxage("+cookie.getMaxAge()+") name("+cookie.getName()+") path("+cookie.getPath()+") secure("+cookie.getSecure()+") value("+cookie.getValue()+") version("+cookie.getVersion()+")");
+	
+					} else {
+						debug("getCookie(): cookie["+j+"]: "+cookie);
+					}
+				}
+			} else { 
+				debug("getCookie(): no cookies found in header!");
+			}
+			debug("getCookie():");
+			debug("getCookie():--------");
+		}
+
 		String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
 		if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
@@ -182,9 +227,12 @@ public class JamesServlet extends HttpServlet {
 
 			// Added address in output to see if multiple cookies are being requested from same computer.
 			// This would imply improper use of our service :)
+			//
+			// added output to see why certain browsers keep asking for new cookie (giving a cookie
+			// with no reference in them with 'MMBASE_COOKIENAME'
 			// ------------------------------------------------------------------------------------------
 
-			debug(methodName+": address("+getAddress(req)+"), User has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
+			debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
 			MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
 			if (mmbase == null) {
 				debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
