@@ -166,7 +166,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
     protected static int NOT_HANDLED = -100;
-    public int doStartTag() throws JspTagException {
+    protected int doStartTagHelper() throws JspTagException {
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof NodeList)) {
