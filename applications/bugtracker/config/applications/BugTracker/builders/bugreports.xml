@@ -49,7 +49,7 @@
       <gui>
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="en">Type</guiname>
-        <guitype>integer</guitype>
+        <guitype>org.mmbase.bugtracker.resources.types</guitype>
       </gui>
       <editor>
         <positions>
@@ -65,7 +65,7 @@
       <gui>
         <guiname xml:lang="nl">Prioriteit</guiname>
         <guiname xml:lang="en">Priority</guiname>
-        <guitype>integer</guitype>
+        <guitype>org.mmbase.bugtracker.resources.priorities</guitype>
       </gui>
       <editor>
         <positions>
@@ -82,7 +82,7 @@
       <gui>
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="en">Status</guiname>
-        <guitype>integer</guitype>
+        <guitype>org.mmbase.bugtracker.resources.status</guitype>
       </gui>
       <editor>
         <positions>
@@ -125,7 +125,7 @@
       </gui>
       <db>
         <name>time</name>
-        <type state="persistent" notnull="true" key="false">INTEGER</type>
+        <type state="persistent" notnull="true" key="false">LONG</type>
       </db>
     </field>
     <field>
