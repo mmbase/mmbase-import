@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.5 2002-10-31 08:23:19 pierre Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.5.2.1 2003-06-02 12:58:20 vpro Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {
@@ -32,13 +32,14 @@ public class ConnectorCommandGetNewRelation extends ConnectorCommand {
      * @param destinationType         the type of the destination object
      */
      public ConnectorCommandGetNewRelation(String role, String sourceObjectNumber, String sourceType,
-                                           String destinationObjectNumber, String destinationType) throws WizardException {
-         super("getnewrelation");
-         addCommandAttr("role", role);
-         addCommandAttr("source", sourceObjectNumber);
-         addCommandAttr("sourcetype", sourceType);
-         addCommandAttr("destination", destinationObjectNumber);
-         addCommandAttr("destinationtype", destinationType);
+                                           String destinationObjectNumber, String destinationType String createDir) throws WizardException {
+         super(Dove.GETNEWRELATION);
+         addCommandAttr(Dove.ELM_ROLE,            role);
+         addCommandAttr(Dove.ELM_SOURCE,          sourceObjectNumber);
+         addCommandAttr(Dove.ELM_SOURCETYPE,      sourceType);
+         addCommandAttr(Dove.ELM_DESTINATION,     destinationObjectNumber);
+         addCommandAttr(Dove.ELM_DESTINATIONTYPE, destinationType);
+         addCommandAttr(Dove.ELM_CREATEDIR,       createDir);
      }
 
 }
