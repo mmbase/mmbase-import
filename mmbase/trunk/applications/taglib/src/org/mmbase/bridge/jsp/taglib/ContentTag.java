@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.19 2003-12-21 14:57:28 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.20 2004-03-19 23:20:53 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -44,7 +44,7 @@ public class ContentTag extends LocaleTag  {
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; } 
             public String  getType()    { return "text/html"; } 
-            public String  getEncoding(){ return "iso-8859-1"; } 
+            public String  getEncoding(){ return "ISO-8859-1"; } 
         };
 
     private static Map defaultEscapers       = new HashMap(); // contenttype -> chartransformer id
@@ -193,7 +193,7 @@ public class ContentTag extends LocaleTag  {
             if (type != Attribute.NULL) {
                 String defaultPostProcessor = (String) defaultPostProcessors.get(type.getString(this));
                 if (defaultPostProcessor != null) {
-                    return getCharTransformer(defaultPostProcessor);                    
+                    return getCharTransformer(defaultPostProcessor);
                 }
             }
             return null;
@@ -233,6 +233,7 @@ public class ContentTag extends LocaleTag  {
         } else {
             CharTransformer c = (CharTransformer) charTransformers.get(id);
             if (c == null) throw new JspTagException("The chartransformer " + id + " is unknown");
+            if (c == COPY) return null; // to avoid copying of nothing
             return c;
         }
     }
@@ -272,11 +273,9 @@ public class ContentTag extends LocaleTag  {
         }
         if (getPostProcessor() == null) {
             log.debug("no postprocessor");
-            //return EVAL_BODY_INCLUDE; // some appserver don't support this (orion)
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY; 
         } else {
-            return EVAL_BODY_BUFFERED; 
-            // don't really need buffering, but cant figure out to avoid
+            return EVAL_BODY_BUFFERED;
         }
     }
 
@@ -308,17 +307,25 @@ public class ContentTag extends LocaleTag  {
             if (post != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("A postprocessor was defined " + post);
+                    log.trace("processing  " + bodyContent.getString());
                 }
+               
                 post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
+                // bodyContent.getEnclosingWriter().flush();
+
             } else {
-                // only needed for lousy app-servers
-                try {
-                    if (bodyContent != null) {
-                        bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                    }
-                } catch (java.io.IOException ioe){
-                    throw new TaglibException(ioe);
-                }                 
+                if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+                    // only needed for lousy app-servers
+                    try {
+                        if (bodyContent != null) {
+                            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                            //log.info("flushing");
+                            //bodyContent.getEnclosingWriter().flush();
+                        }
+                    } catch (java.io.IOException ioe){
+                        throw new TaglibException(ioe);
+                    } 
+                }
             }
         }
         return SKIP_BODY;
