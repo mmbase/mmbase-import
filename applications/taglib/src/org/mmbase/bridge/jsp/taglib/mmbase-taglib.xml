@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.271 2004-07-29 18:58:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.272 2004-09-14 17:53:59 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3432,6 +3432,10 @@ like the parameter list or the session (where ever it is available) --&gt;
       </examplevalue>
       <examplevalue>
         <value>s(200)+f(gif)+paint(10)</value>
+      </examplevalue>
+      <examplevalue>
+        <value>s(100x100>)</value>
+        <info>Fit to 100x100 if it is bigger</info>
       </examplevalue>
     </attribute>
     <example>
