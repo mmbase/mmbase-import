@@ -10,7 +10,7 @@
     <%@include file="navigate.div.jsp" %>
     <%@include file="you.div.jsp" %>
     <h1><mm:field name="gui()" /></h1>
-    Deleted group <mm:field name="gui()" />
+    <%=getPrompt(m, "deletedgroup")%> <mm:field name="gui()" />
     <mm:deletenode deleterelations="true" />
   </mm:node>
   <hr />

@@ -108,7 +108,7 @@
 <%@include file="navigate.div.jsp" %>
 <%@include file="you.div.jsp" %>
 
-    <h1><mm:field name="gui()" /> (commited)</h1>
+    <h1><mm:field name="gui()" /> (<%=getPrompt(m, "commited")%>)</h1>
    <%@include file="group.div.jsp" %>
 
    </mm:node>

@@ -10,7 +10,7 @@
 
 <html>
   <head>
-    <title>Cloud Context Users Administration</title>
+    <title><%=getPrompt(m, "title")%></title>
     <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
