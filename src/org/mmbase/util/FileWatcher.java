@@ -325,7 +325,7 @@ public abstract class FileWatcher  { //extends Thread {
                                 log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + 
                                           "Currently watching: " + f.toString());
                             }
-                            System.out.print(".");
+                            // System.out.print(".");
                             f.removeFiles();
                             if (f.changed() || f.mustStop()) watchers.remove(f); 
                         }
