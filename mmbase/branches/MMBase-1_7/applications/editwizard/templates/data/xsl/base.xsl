@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.28.2.3 2004-05-17 22:23:55 michiel Exp $
+    @version $Id: base.xsl,v 1.28.2.4 2004-06-02 16:23:49 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -46,7 +46,7 @@
   <xsl:param name="timezone">GMT</xsl:param>
 -->
   <xsl:param name="timezone" />
-  <xsl:variable name="date-pattern">dd MMMM yyyy HH:mm</xsl:variable>
+  <xsl:variable name="date-pattern">:LONG.SHORT</xsl:variable>
 
   <!-- Maximum length for fields (approximation) -->
   <xsl:variable name="MAX_LENGTH" select="30" />

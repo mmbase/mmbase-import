@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.129 2004-05-02 16:34:21 nico Exp $
+    @version $Id: wizard.xsl,v 1.130 2004-06-02 16:21:25 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -628,10 +628,10 @@
   <xsl:template name="ftype-data">
     <xsl:choose>
       <xsl:when test="@dttype=&apos;datetime&apos;">
-        <xsl:value-of select="date:formatTimeZone(string(value), $date-pattern, $timezone)" disable-output-escaping="yes"/>
+        <xsl:value-of select="date:format(string(value), $date-pattern, $timezone, $language)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:when test="@dttype=&apos;millisecondsdatetime&apos;">
-        <xsl:value-of select="date:formatTimeZone(string(value), $date-pattern, 1, $timezone)" disable-output-escaping="yes"/>
+        <xsl:value-of select="date:format(string(value), $date-pattern, 1, $timezone, $language)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="value" mode="line"/>
@@ -1403,8 +1403,8 @@
       <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
           <a href="{$ew_context}/rmstreams.db?{field/@number}">
-            <xsl:call-template name="prompt_video"/>
-          </a>
+            <xsl:call-template name="prompt_video"/> 
+         </a>
         </span>
       </xsl:if>
     </td>
@@ -1444,6 +1444,11 @@
     </td>
   </xsl:template>
 
+  <!-- what must appear on the position of of a pos-item-button, if it should not appear itself -->
+  <xsl:template name="emptypositembutton">
+    <img src="{$mediadir}nix.gif" border="0" width="20" />
+  </xsl:template>
+
   <xsl:template name="positembuttons">
     <td>
       <xsl:choose>
@@ -1453,7 +1458,7 @@
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <img src="{$mediadir}nix.gif" border="0" width="20"/>
+          <xsl:call-template name="emptypositembutton" />
         </xsl:otherwise>
       </xsl:choose>
     </td>
@@ -1465,7 +1470,7 @@
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <img src="{$mediadir}nix.gif" border="0" width="20"/>
+          <xsl:call-template name="emptypositembutton" />
         </xsl:otherwise>
       </xsl:choose>
     </td>
