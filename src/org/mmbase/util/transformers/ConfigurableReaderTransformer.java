@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 
 public abstract class ConfigurableReaderTransformer extends ReaderTransformer implements ConfigurableTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(ConfigurableReaderTransformer.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ConfigurableReaderTransformer.class);
     protected int to;
 
     public ConfigurableReaderTransformer() {

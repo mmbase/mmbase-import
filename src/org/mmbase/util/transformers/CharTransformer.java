@@ -19,13 +19,14 @@ import java.io.*;
 
 public interface CharTransformer extends Transformer {
 
-    public Writer transform(Reader r, Writer w); 
-    public Writer transformBack(Reader r, Writer w);
 
-    public Writer transform(Reader r); 
-    public Writer transformBack(Reader r);
-
-    public String transform(String r); 
-    public String transformBack(String r);
+    Writer transform(Reader r, Writer w); 
+    Writer transformBack(Reader r, Writer w);
+    
+    Writer transform(Reader r); 
+    Writer transformBack(Reader r);
+    
+    String transform(String r); 
+    String transformBack(String r);
 
 }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(ReaderTransformer.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ReaderTransformer.class);
 
 
     // javadoc inherited

@@ -12,7 +12,9 @@ package org.mmbase.util.transformers;
 import java.util.Map;
 
 /**
- * Interface for transformations.
+ * Interface for transformations. The 'configurable' version can be configured with an integer, so
+ * the transformer can work in a limited number of ways. This is to avoid a wild growth of class,
+ * because you can influence the behaviour a bit by such a setting.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
