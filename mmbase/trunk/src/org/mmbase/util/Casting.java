@@ -19,15 +19,16 @@ package org.mmbase.util;
  * @since  MMBase-1.6
  */
 
-import org.mmbase.module.core.*;
-import org.w3c.dom.*;
-import org.mmbase.util.logging.*;
+import java.util.*;
+import java.io.Writer;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
-import java.util.*;
-import java.io.Writer;
+import org.mmbase.module.core.*;
+import org.mmbase.util.transformers.XmlField;
+import org.mmbase.util.logging.*;
+import org.w3c.dom.*;
 
 public class Casting {
     private static final Logger log = Logging.getLoggerInstance(Casting.class);
@@ -463,7 +464,8 @@ public class Casting {
             // not XML, make it XML, when conversion specified, use it...
             if (conversion == null) {
                 conversion = "MMXF_POOR";
-                log.warn("Using default for XML conversion: '" + conversion + "'.");
+                documentType = XmlField.XML_DOCTYPE;
+                log.debug("Using default for XML conversion: '" + conversion + "'.");
             }
             if (log.isDebugEnabled()) {
                 log.debug("converting the string to something else using conversion: " + conversion);
