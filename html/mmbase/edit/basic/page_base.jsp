@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<%@ page errorPage="error.jsp" %><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
 <% response.setContentType("text/html; charset=utf-8");
 // as many browsers as possible should not cache:
