@@ -93,44 +93,53 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
             // lets have 100 steps;
 
             JarFile jf = getJarFile();
-            step.setUserFeedBack("receiving package ... done (" + jf + ")");
-            increaseProgressBar(100);
-            // downloading is 10%
-
-            // step 3
-            step = getNextInstallStep();
-            step.setUserFeedBack("checking dependencies ..");
-
-            if (dependsInstalled(jf, step)) {
+            if (jf != null) {
+                step.setUserFeedBack("receiving package ... done (" + jf + ")");
                 increaseProgressBar(100);
-                // 20%
+                // downloading is 10%
 
-                step.setUserFeedBack("checking dependencies ... done");
-
-                // step 4
+                // step 3
                 step = getNextInstallStep();
-                step.setUserFeedBack("loading datasets ..");
-                if (installDataSets(jf, step)) {
-                    step.setUserFeedBack("loading datasets ... done");
+                step.setUserFeedBack("checking dependencies ..");
+
+                if (dependsInstalled(jf, step)) {
+                    increaseProgressBar(100);
+                    // 20%
+
+                    step.setUserFeedBack("checking dependencies ... done");
+
+                    // step 4
+                    step = getNextInstallStep();
+                    step.setUserFeedBack("loading datasets ..");
+                    if (installDataSets(jf, step)) {
+                        step.setUserFeedBack("loading datasets ... done");
+                    } else {
+                        step.setUserFeedBack("loading datasets ... failed");
+                    }
+                    increaseProgressBar(200);
+                    // 70%
+
+                    // step 5
+                    step = getNextInstallStep();
+                    step.setUserFeedBack("updating mmbase registry ..");
+                    updateRegistryInstalled();
+                    increaseProgressBar(100);
+                    // 90%
+                    step.setUserFeedBack("updating mmbase registry ... done");
+
                 } else {
-                    step.setUserFeedBack("loading datasets ... failed");
+                    step.setUserFeedBack("checking dependencies ... failed");
+                    setState("failed");
+                    return false;
                 }
-                increaseProgressBar(200);
-                // 70%
-
-                // step 5
-                step = getNextInstallStep();
-                step.setUserFeedBack("updating mmbase registry ..");
-                updateRegistryInstalled();
-                increaseProgressBar(100);
-                // 90%
-                step.setUserFeedBack("updating mmbase registry ... done");
-
             } else {
-                step.setUserFeedBack("checking dependencies ... failed");
-                setState("failed");
-                return false;
+                step.setUserFeedBack("getting the mmp package...failed (server down or removed disk ? )");
+                step.setType(installStep.TYPE_ERROR);
+                try {
+                    Thread.sleep(2000);
+                } catch(Exception ee) {}
             }
+
 
             increaseProgressBar(100);
             // 100%
