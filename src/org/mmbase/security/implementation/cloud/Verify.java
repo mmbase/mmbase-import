@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.10 2002-09-06 07:39:34 eduard Exp $
+ * @version $Id: Verify.java,v 1.11 2002-09-26 12:25:11 eduard Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class.getName());
@@ -95,7 +95,7 @@ public class Verify extends Authorization {
 	}
 	else if(operation != Operation.CREATE && adminBuilders.contains(builder)) {
 	    // most core builders cant be used by basic users...
-	    return false;
+	    return rank == Rank.ADMIN;
 	}
 	else {
 	    // admin may do everything else..
