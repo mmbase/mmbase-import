@@ -129,7 +129,7 @@ public class NodeWriter{
                 if (!key.equals("number") && !key.equals("owner")
                         && !key.equals("otype") && !key.equals("CacheCount")
                         && !key.equals("snumber") && !key.equals("dnumber")
-                        && !key.equals("rnumber") && !key.equals("dir")) {
+                        && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
                     write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
                 }
             } else {
