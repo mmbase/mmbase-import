@@ -24,7 +24,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.27 2002-11-05 14:17:03 pierre Exp $
+ * @version $Id: BasicCloudContext.java,v 1.28 2002-11-18 12:24:17 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -76,8 +76,7 @@ public class BasicCloudContext implements CloudContext {
         }
     else {
         // why dont we start mmbase, when there isnt a running instance, just change the check...
-            String message;
-            message = "MMBase has not been started, and cannot be started by "
+            String message = "MMBase has not been started, and cannot be started by "
                       + "this Class. (" + getClass().getName() + ")";
             log.error(message);
             throw new BridgeException(message);
@@ -92,9 +91,7 @@ public class BasicCloudContext implements CloudContext {
     public Module getModule(String moduleName) throws NotFoundException {
         Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
-            String message = "Module '" + moduleName + "' does not exist.";
-            log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Module '" + moduleName + "' does not exist.");
         }
         return mod;
     }
@@ -109,9 +106,7 @@ public class BasicCloudContext implements CloudContext {
 
     public Cloud getCloud(String name, String application, Map loginInfo) throws NotFoundException  {
         if ( !localClouds.contains(name) ) {
-             String message = "Cloud '" + name + "' does not exist.";
-             log.error(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException("Cloud '" + name + "' does not exist.");
         }
         return new BasicCloud(name, application, loginInfo,this);
     }
@@ -152,27 +147,27 @@ public class BasicCloudContext implements CloudContext {
     public FieldList createFieldList() {
         return new BasicFieldList();
     }
-    
+
     public NodeList createNodeList() {
         return new BasicNodeList();
     }
-    
+
     public RelationList createRelationList() {
         return new BasicRelationList();
     }
-    
+
     public NodeManagerList createNodeManagerList() {
         return new BasicNodeManagerList();
     }
-    
+
     public RelationManagerList createRelationManagerList() {
         return new BasicRelationManagerList();
     }
-    
+
     public ModuleList createModuleList() {
         return new BasicModuleList();
     }
-    
+
     public StringList createStringList() {
         return new BasicStringList();
     }

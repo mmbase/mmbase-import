@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.25 2002-11-05 21:59:40 robmaris Exp $
+ * @version $Id: BasicRelation.java,v 1.26 2002-11-18 12:24:18 pierre Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -89,11 +89,7 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public void setSource(Node node) {
         if (node.getCloud() != cloud) {
-            String message;
-            message = "Source and relation are not in the same transaction or "
-                      + "from different clouds.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Source and relation are not in the same transaction or from different clouds.");
         }
         relationChanged = true;
         int source=node.getIntValue("number");
@@ -109,11 +105,7 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public void setDestination(Node node) {
         if (node.getCloud() != cloud) {
-            String message;
-            message = "Destination and relation are not in the same "
-                      + "transaction or from different clouds.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Destination and relation are not in the same transaction or from different clouds.");
         }
         relationChanged = true;
         int dest=node.getIntValue("number");
@@ -153,14 +145,10 @@ public class BasicRelation extends BasicNode implements Relation {
         int rnumber = getNode().getIntValue("rnumber");
         if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
             if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
-                String message;
-                message = "Source and/or Destination node are not of the "
-                          + "correct type. ("
+                throw new BridgeException("Source and/or Destination node are not of the correct type. ("
                           + cloud.getNode(snumtype).getValue("name") + ","
                           + cloud.getNode(dnumtype).getValue("name") + ","
-                          + cloud.getNode(rnumber).getValue("sname") + ").";
-                log.error(message);
-                throw new BridgeException(message);
+                          + cloud.getNode(rnumber).getValue("sname") + ")");
             }
         }
 

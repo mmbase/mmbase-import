@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.19 2002-10-15 15:28:29 pierre Exp $
+ * @version $Id: BasicRelationManager.java,v 1.20 2002-11-18 12:24:18 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
@@ -113,11 +113,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public NodeManager getSourceManager() {
         if (typeRelNode==null) {
-            String message;
-            message = "This relationmanager does not contain source "
-                      + "information.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("This relationmanager does not contain source information.");
         }
         int nr=typeRelNode.getIntValue("snumber");
         return cloud.getNodeManager(nr);
@@ -125,11 +121,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public NodeManager getDestinationManager() {
         if (typeRelNode==null) {
-            String message;
-            message = "This relationmanager does not contain destination "
-                      + "information.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("This relationmanager does not contain destination information.");
         }
         int nr=typeRelNode.getIntValue("dnumber");
         return cloud.getNodeManager(nr);
@@ -145,26 +137,14 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
-            String message;
-            message = "Relationmanager and source node are not in the same "
-                      + "transaction or in different clouds.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds.");
         }
         if (destinationNode.getCloud() != cloud) {
-            String message;
-            message = "Relationmanager and destination node are not in the same "
-                      + "transaction or in different clouds.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds.");
         }
         if (!(cloud instanceof Transaction)  &&
                 (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
-            String message;
-            message = "Cannot add a relation to a new node that has not been "
-                      + "committed.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
         }
 
        BasicRelation relation = (BasicRelation)createNode();
