@@ -18,7 +18,7 @@ import org.mmbase.util.StringTagger;
  * @javadoc
  * @rename MultiLevelCacheEntry
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheEntry.java,v 1.4 2002-03-22 13:12:46 pierre Exp $
+ * @version $Id: MultilevelCacheEntry.java,v 1.5 2002-03-29 21:23:31 michiel Exp $
  */
 public class MultilevelCacheEntry {
     /**
@@ -48,7 +48,7 @@ public class MultilevelCacheEntry {
      * @javadoc
      * @todo tagger passed should be the key, hash should be determined by entry (?)
      */
-    public MultilevelCacheEntry(MultilevelCacheHandler han,Object hash,Object o ,StringTagger tagger) {
+    MultilevelCacheEntry(MultilevelCacheHandler han,Object hash,Object o ,StringTagger tagger) {
         this.han=han;
         this.hash=hash;
         this.cachedobject=o;
