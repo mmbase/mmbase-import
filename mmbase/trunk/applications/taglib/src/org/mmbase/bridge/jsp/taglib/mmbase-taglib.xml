@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.209 2003-10-24 13:32:16 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.210 2003-10-30 14:05:03 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -115,6 +115,7 @@ version: $Id: mmbase-taglib.xml,v 1.209 2003-10-24 13:32:16 pierre Exp $
 			<a href="#listnodes">listnodes</a>
 			<a href="#related">related</a>
 			<a href="#relatednodes">relatednodes</a>
+			<a href="#resultlist">resultlist</a>
 			<a href="#index">index</a>
 			<a href="#first">first</a>
 			<a href="#last">last</a>
@@ -4679,6 +4680,37 @@ The 0 is just counter, which starts at 0 on every page.
 			</possiblevalue>
 		</attribute>
 	</tag>
+
+	<tag>
+		<name>composite</name>
+		<type>mmbase.list</type>
+		<extends>nodelistcontainerreferrer</extends>
+		<see tag="constraint" />
+		<see tag="listnodescontainer" />
+		<see tag="listcontainer" />
+		<see tag="nodelistcontainer" />
+		<see tag="ageconstraint" />
+		<tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListCompositeConstraintTag</tagclass>
+		<info>
+			Combines constraints with a conditional operator.
+		</info>
+		<since>MMBase-1.7</since>
+		<attribute>
+			<name>operator</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+				The operator to be used in the comparison. Defaults to 'AND'
+			</info>
+			<possiblevalue>
+				<value>OR</value>
+			</possiblevalue>
+			<possiblevalue>
+				<value>AND</value>
+			</possiblevalue>
+		</attribute>
+	</tag>
+
 	<tag>
 		<name>ageconstraint</name>
 		<type>mmbase.list</type>
@@ -4949,7 +4981,6 @@ The 0 is just counter, which starts at 0 on every page.
 		</attribute>
 	</tag>
 
-
 	<tag>
 		<name>previousbatches</name>
 		<type>mmbase.list</type>
@@ -4976,9 +5007,54 @@ The 0 is just counter, which starts at 0 on every page.
 				number, the list is truncated from the beginning (of course).
 			</info>
 		</attribute>
-
 	</tag>
 
+	<tag>
+		<name>resultlist</name>
+		<extends>cloudreferrer</extends>
+		<extends>nodeprovider</extends>
+		<extends>listprovider</extends>
+		<extends>contextreader</extends>
+		<type>mmbase.basic.list</type>
+		<tagclass>org.mmbase.bridge.jsp.taglib.ResultListTag</tagclass>
+		<info>
+			<p>
+				A list iterating some list of nodes provided through a command issued to a nodemanager or a module.
+			</p>
+		</info>
+		<since>MMBase-1.7</since>
+		<attribute>
+			<name>referid</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+			</info>
+		</attribute>
+		<attribute>
+			<name>comparator</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="list" attribute="comparator" />
+		</attribute>
+		<attribute>
+			<name>command</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>The command to run.</info>
+		</attribute>
+		<attribute>
+			<name>nodemanager</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>The nodemanager on which to run the command. You have to provide either module or nodemanager.</info>
+		</attribute>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>The module on which to run the command. You have to provide either module or nodemanager.</info>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>removeitem</name>
@@ -4991,7 +5067,5 @@ The 0 is just counter, which starts at 0 on every page.
 		</info>
 		<since>MMBase-1.7</since>
 	</tag>
-
-
 
 </taglib>

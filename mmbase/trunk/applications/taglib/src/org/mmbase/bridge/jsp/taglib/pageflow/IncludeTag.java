@@ -30,10 +30,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Like UrlTag, but does not spit out an URL, but the page itself.
- * 
+ *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.40 2003-09-10 11:16:10 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.41 2003-10-30 14:05:07 pierre Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -49,9 +49,9 @@ public class IncludeTag extends UrlTag {
 
     static {
     }
-    
+
     protected Attribute debugType = Attribute.NULL;
-    
+
     private Attribute cite = Attribute.NULL;
 
     /**
@@ -68,11 +68,11 @@ public class IncludeTag extends UrlTag {
     public int doStartTag() throws JspTagException {
         if (page == null) { // for include tags, page attribute is obligatory.
             throw new JspTagException("Attribute 'page' was not specified");
-        }        
+        }
         return super.doStartTag();
     }
 
-    protected void doAfterBodySetValue() throws JspTagException {        
+    protected void doAfterBodySetValue() throws JspTagException {
         includePage();
     }
 
@@ -80,14 +80,14 @@ public class IncludeTag extends UrlTag {
      * Opens an Http Connection, retrieves the page, and returns the result.
      **/
     private void external(BodyContent bodyContent, String absoluteUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("External: found url: >" + absoluteUrl + "<");
         }
         try {
-            URL includeURL = new URL(absoluteUrl); 
+            URL includeURL = new URL(absoluteUrl);
 
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-            
+
             if (request != null) {
                 // Also propagate the cookies (like the jsession...)
                 // Then these, and the session,  also can be used in the include-d page
@@ -113,7 +113,7 @@ public class IncludeTag extends UrlTag {
             if (log.isDebugEnabled()) log.debug("found content encoding " + coding);
             if (coding == null) {
                 // default, steal from current response.
-                coding = response.getCharacterEncoding(); 
+                coding = response.getCharacterEncoding();
             }
             if (coding == null) { // stil null?
                 in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
@@ -132,16 +132,16 @@ public class IncludeTag extends UrlTag {
             int len;
             while ((len = in.read(buffer, 0, buffersize)) != -1) {
                 string.append(buffer, 0, len);
-            }            
+            }
             helper.setValue(debugStart(absoluteUrl) + string.toString() + debugEnd(absoluteUrl));
-            
-            if (log.isDebugEnabled()) { 
+
+            if (log.isDebugEnabled()) {
                 log.debug("found string: " + helper.getValue());
             }
 
         } catch (java.io.IOException e) {
-            throw new TaglibException (e);            
-        }         
+            throw new TaglibException (e);
+        }
     }
 
     /**
@@ -150,7 +150,7 @@ public class IncludeTag extends UrlTag {
      */
     private void externalRelative(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
         external(bodyContent,
-                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + relativeUrl, 
+                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + relativeUrl,
                  request, response);
     }
 
@@ -186,14 +186,15 @@ public class IncludeTag extends UrlTag {
         }
 
         HttpServletRequestWrapper request   = new HttpServletRequestWrapper(req);
-        
+
 
         try {
             javax.servlet.ServletContext sc = pageContext.getServletContext();
-            if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");                                
+            if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
             javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher(relativeUrl);
             if (rd == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
-            rd.include(request, response);    
+            rd.include(request, response);
+
             // bodyContent.write(response.toString());
             helper.setValue(debugStart(relativeUrl) + response.toString() + debugEnd(relativeUrl));
         } catch (Exception e) {
@@ -213,21 +214,21 @@ public class IncludeTag extends UrlTag {
     }
 
 
-    
+
     /**
      * When staying in the same web-application, then the file also can be found on the file system,
      * and the possibility arises simply citing it (passing the web-server). It is in no way
      * interpreted then. This can be useful when creating example pages.
-     */    
+     */
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
-            if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl); 
+            if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl);
             String urlFile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
-          
+
             // take of the sessionid if it is present
             //HttpSession session = request.getSession(false);
-            //if (session != null && session.isNew()) 
+            //if (session != null && session.isNew())
                 { // means there is a ;jsession argument
                 int j = urlFile.lastIndexOf(';');
                 if (j != -1) {
@@ -236,7 +237,7 @@ public class IncludeTag extends UrlTag {
 
             }
             java.io.File file = new java.io.File(urlFile);
-                                                 
+
             if (file.isDirectory()) {
                 throw new JspTagException("Cannot cite a directory");
             }
@@ -256,22 +257,22 @@ public class IncludeTag extends UrlTag {
             }
             helper.setValue(debugStart(urlFile) + string.toString() + debugEnd(urlFile));
         } catch (java.io.IOException e) {
-            throw new TaglibException (e); 
+            throw new TaglibException (e);
         }
     }
-    
+
     /**
      * Includes another page in the current page.
      */
     protected void includePage() throws JspTagException {
         try {
-			// Variables to keep track of which level we are at and what URI is current
+            // Variables to keep track of which level we are at and what URI is current
             int includeLevel;
             String includeURI="";
             String previncludeURI="";
 
             String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
-            
+
             if (pageLog.isServiceEnabled()) {
                 pageLog.service("Parsing mm:include JSP page: " + gotUrl);
             }
@@ -279,7 +280,7 @@ public class IncludeTag extends UrlTag {
             // (how does one check something like that?)
             String urlString;
 
-            // Do some things to make the URL absolute.            
+            // Do some things to make the URL absolute.
             String nudeUrl; // url withouth the params
             String params;  // only the params.
             int paramsIndex = gotUrl.indexOf('?');
@@ -290,17 +291,17 @@ public class IncludeTag extends UrlTag {
                 nudeUrl = gotUrl;
                 params  = "";
             }
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.debug("Found nude url " + nudeUrl);
             }
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
 
-               
+
             if (nudeUrl.indexOf(':') == -1) { // relative
-				// This code, which passes the RequestURI through Attributes is necessary
-				// Because Orion doesn't adapt the RequestURI when using the RequestDispatcher
-				// This breaks relative includes of more than 1 level.
+                // This code, which passes the RequestURI through Attributes is necessary
+                // Because Orion doesn't adapt the RequestURI when using the RequestDispatcher
+                // This breaks relative includes of more than 1 level.
 
                 // Fetch includelevel en reqeust URI from Attributes.
                 Integer level=(Integer)request.getAttribute("includeTagLevel");
@@ -316,7 +317,7 @@ public class IncludeTag extends UrlTag {
                     if (paramsIndex != -1) {
                         includeURI = includeURI.substring(0, paramsIndex);
                     }
-                } 
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("Include: Level=" + includeLevel + " URI=" + includeURI);
                 }
@@ -331,9 +332,9 @@ public class IncludeTag extends UrlTag {
                         // parent-file: the directory in which the current file is.
                         // nude-Url   : is the relative path to this dir
                         // canonicalPath: to get rid of /../../ etc
-                        // replace:  windows uses \ as path seperator..., but they may not be in URL's.. 
+                        // replace:  windows uses \ as path seperator..., but they may not be in URL's..
                         new java.io.File(new java.io.File(includeURI).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
-                   
+
                     // getCanonicalPath gives also gives c: in windows:
                     // take it off again if necessary:
                     int colIndex = urlString.indexOf(':');
@@ -360,7 +361,7 @@ public class IncludeTag extends UrlTag {
                 }
 
                 if (getCite()) {
-                    cite(bodyContent, urlString, request); 
+                    cite(bodyContent, urlString, request);
                 } else {
                     if (invalidIncludingAppServerRequestClasses.contains(request.getClass().getName())) {
                         externalRelative(bodyContent, response.encodeURL(urlString), request, response);
@@ -374,18 +375,18 @@ public class IncludeTag extends UrlTag {
                 request.setAttribute("includeTagURI",previncludeURI);
             } else { // really absolute
                 if (getCite()) {
-                    cite(bodyContent, gotUrl, request); 
+                    cite(bodyContent, gotUrl, request);
                 } else {
                     external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
                                                                    // also no need to encode the URL.
                 }
             }
-          
+
         } catch (java.io.IOException e) {
             throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
-            pageLog.debug("END Parsing mm:include JSP page"); 
+            pageLog.debug("END Parsing mm:include JSP page");
         }
     }
 
@@ -402,7 +403,7 @@ public class IncludeTag extends UrlTag {
         if (debugType == Attribute.NULL) return DEBUG_NONE;
 
         String dtype = debugType.getString(this).toLowerCase();
-        if (dtype.equals("none")) { 
+        if (dtype.equals("none")) {
             return  DEBUG_NONE; // also implement the default, then people can use a variable
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {
@@ -414,26 +415,26 @@ public class IncludeTag extends UrlTag {
         }
     }
 
-    /** 
+    /**
      * Returns a name for this tag, that must appear in the debug message (in the comments)
      */
     protected String getThisName() {
         String clazz = this.getClass().getName();
         return clazz.substring(clazz.lastIndexOf(".") + 1);
     }
-    
+
     /**
      * Write the comment that is just above the include page.
      */
     private String debugStart(String url) throws JspTagException {
         switch(getDebug()) {
-        case DEBUG_NONE: return ""; 
+        case DEBUG_NONE: return "";
         case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
         default: return "";
         }
     }
-     
+
     /**
      * Write the comment that is just below the include page.
      */
@@ -448,7 +449,7 @@ public class IncludeTag extends UrlTag {
 }
 
 /**
- * Wrapper around the response. It collects all data that is sent to it, and 
+ * Wrapper around the response. It collects all data that is sent to it, and
  * makes it available through a toString() method.
  */
 class ResponseWrapper extends HttpServletResponseWrapper {
@@ -462,7 +463,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     private MyServletOutputStream msos;
     private String contentType = DEFAULT_CONTENTTYPE;
     private String characterEncoding = DEFAULT_CHARSET;
- 
+
     /**
      * Public constructor
      */
@@ -472,7 +473,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
         writer = new PrintWriter(caw);
         msos =   new MyServletOutputStream(writer);
     }
-    
+
     /**
      * Return the OutputStream. This is a 'MyServletOutputStream' that
      * wraps around the PrintWriter
@@ -480,7 +481,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     public ServletOutputStream getOutputStream() throws java.io.IOException {
         return msos;
     }
- 
+
     /**
      * Return the PrintWriter
      */
@@ -495,7 +496,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
         writer.flush();
         return caw.toString();
     }
-    
+
     /**
      * Sets the content type of the response being sent to the
      * client. The content type may include the type of character
@@ -518,13 +519,13 @@ class ResponseWrapper extends HttpServletResponseWrapper {
             log.debug("set contenttype of include page to: '" +  contentType + "' (and character encoding to '" + characterEncoding +  "')");
         }
     }
-    
+
     /**
      * Returns the name of the charset used for the MIME body sent in this response.
      * If no charset has been assigned, it is implicitly set to ISO-8859-1 (Latin-1).
      * See RFC 2047 (http://www.ietf.org/rfc/rfc2045.txt) for more information about character encoding and MIME.
      * returns the encoding
-     */    
+     */
     public String getCharacterEncoding() {
         log.debug(characterEncoding);
         return characterEncoding;
@@ -539,7 +540,7 @@ class RequestWrapper extends HttpServletRequestWrapper {
      * Public constructor
      */
     public RequestWrapper(HttpServletRequest req) {
-        super(req); 
+        super(req);
     }
 }
 

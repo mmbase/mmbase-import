@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.6 2003-09-23 13:04:38 michiel Exp $
+ * @version $Id: NodeListAgeConstraintTag.java,v 1.7 2003-10-30 14:05:06 pierre Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
@@ -55,7 +55,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
     public void setInverse(String i) throws JspTagException {
         inverse = getAttribute(i);
     }
-    
+
 
     protected Integer getDayMark(int age) throws JspTagException {
         log.debug("finding day mark for " + age + " days ago");
@@ -69,20 +69,20 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
         query.setConstraint(constraint);
         query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
         query.setMaxNumber(1);
-        
+
         NodeList result = cloud.getList(query);
         if (result.size() == 0) {
             return new Integer(-1);
         } else {
             return new Integer(result.getNode(0).getIntValue("mark"));
         }
-                           
+
 
     }
 
 
 
-    public int doStartTag() throws JspTagException { 
+    public int doStartTag() throws JspTagException {
 
         if (minAge == Attribute.NULL && maxAge == Attribute.NULL) {
             throw new JspTagException("Either 'minage' or 'maxage' (or both) attributes must be present");
@@ -92,15 +92,15 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
 
         String fieldName;
         if (field == Attribute.NULL) {
-            fieldName = "number"; 
+            fieldName = "number";
         } else {
             fieldName = field.getString(this);
         }
 
         StepField stepField = query.createStepField(fieldName);
-        
+
         Constraint newConstraint = null;
-        
+
         int minAgeInt = minAge.getInt(this, -1);
         int maxAgeInt = maxAge.getInt(this, -1);
 
@@ -126,14 +126,18 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
             if (inverse.getBoolean(this, false)) {
                 query.setInverse(newConstraint, true);
             }
-            Constraint constraint = query.getConstraint();
-            if (constraint != null) {
-                log.debug("compositing constraint");
-                newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+
+            // if there is a OR or an AND tag, add
+            // the constraint to that tag,
+            // otherwise add it direct to the query
+            NodeListCompositeConstraintTag cons = (NodeListCompositeConstraintTag) findParentTag(NodeListCompositeConstraintTag.class, (String) container.getValue(this), false);
+            if (cons!=null) {
+                cons.addChildConstraint(newConstraint);
+            } else {
+                newConstraint = NodeListConstraintTag.addConstraintToQuery(query, newConstraint);
             }
-            query.setConstraint(newConstraint);
         }
-                
+
         return SKIP_BODY;
     }
 
