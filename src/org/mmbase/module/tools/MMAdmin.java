@@ -23,6 +23,7 @@ import org.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
+import org.mmbase.module.tools.MMAppTool.*;
 
 
 /**
@@ -117,6 +118,9 @@ public class MMAdmin extends ProcessorModule {
 				String goal=(String)vars.get("GOAL");
 				System.out.println("APP="+appname+" P="+savepath+" G="+goal);
 				writeApplication(appname,savepath,goal);
+			} else if (token.equals("APPTOOL")) {
+				String appname=(String)cmds.get(cmdline);
+				startAppTool(appname);
 			} else if (token.equals("BUILDERSAVE")) {
 				String buildername=(String)cmds.get(cmdline);
 				String savepath=(String)vars.get("PATH");
@@ -217,6 +221,13 @@ public class MMAdmin extends ProcessorModule {
 		System.out.println("Server Reset requested by '"+user+"' Restart in 3 seconds");
 		restartwanted=true;
 		probe = new MMAdminProbe(this,3*1000);
+	}
+
+	private boolean startAppTool(String appname) {
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		System.out.println("WANT : "+path+"/"+appname+".xml");
+		MMAppTool app=new MMAppTool(path+"/"+appname+".xml");
+		return(true);
 	}
 
 	private boolean installApplication(String applicationname) {
