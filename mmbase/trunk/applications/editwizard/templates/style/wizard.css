@@ -6,7 +6,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.4 2002-07-18 15:53:19 michiel Exp $
+  @version  $Id: wizard.css,v 1.5 2002-07-19 13:14:23 michiel Exp $
   
 */
 
@@ -19,6 +19,13 @@ table.body {
   padding:3;  
 }
 
+table.body tr.subtitle th {
+  background-color: #ccc;
+}
+
+table.body tr th span.form { /* the form's title */
+  float: left;
+}
 
 .searchframe { 
  /* 
@@ -40,6 +47,7 @@ div.searchframe {
   
 }
 
+
 .valid		{ 
   font-weight:bold; 
   color:#009900; 
@@ -48,10 +56,7 @@ div.searchframe {
   font-weight:bold; 
   color:#CC0000;
 }
-
-
-.divider	{ background-color:#CCCCCC; }
-.listmeta	{ font-size:11px; color:#999999; }
+*/
 
 
 .tooltip	{
@@ -66,28 +71,22 @@ div.searchframe {
 		}
 		
 
-.currentstepicon-valid, 
-.currentstepicon, 
-.stepicon-valid, 
-.stepicon, 
-.step, 
-.step-disabled {
-   font-weight: 900;
-   font-size: 16px; 
-   cursor:hand; 
-   color:#18248C; 
-   text-decoration: none;
+td.steps p {
+  margin-left: 10%;
+  text-align: left;
+  color: black;
 }
 
-.step-info a {
+
+.step a {
    padding-right: 10;
+   text-decoration: underline;
 }
 
-.currentstepicon-valid		{ color:#009900; text-decoration:underline; } 
-.currentstepicon			{ color:#CC0000; text-decoration:underline; }
-.stepicon-valid			{  color:#009900; }
-.stepicon				{  color:#CC0000; }
-.step-disabled			{  font-size:16px; color:#CCCCCC; cursor:default;}
+span.other a {
+   text-decoration: none;
+
+}
 
 .bottombutton				{ font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C;  }
 .bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
@@ -107,7 +106,7 @@ table.body {
 
 .input  { 
 	width: 100%; 
-    background-color: #EEE; 
+	/*    background-color: #EEE; */
 }
 
 
