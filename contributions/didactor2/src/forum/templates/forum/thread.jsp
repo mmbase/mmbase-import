@@ -124,7 +124,7 @@ This message is also create by this page.
 
     &nbsp;
   </div>
-  <div class="contentBodywit">
+  <div class="contentBodywit" style="padding-top: 5.2em">
 
    <mm:node referid="thread">
       <mm:import jspvar="includePath" vartype="String"><mm:write referid="includePath"/></mm:import>
@@ -161,7 +161,8 @@ This message is also create by this page.
 	      </em>
               <mm:compare referid="isTeacher" value="true">
                 <form name="del<mm:field name="number" />" method="post">
-                <input type="hidden" name="delnr" value="<mm:field name="number" />">
+                <input type="hidden" name="forum" value="<mm:write referid="forum"/>">
+               <input type="hidden" name="delnr" value="<mm:field name="number" />">
                 <input type="submit" value="<di:translate id="remove" >Remove</di:translate>" class="formbutton">
                 </form>
               </mm:compare>
@@ -172,7 +173,8 @@ This message is also create by this page.
 --%>
       <mm:notpresent referid="print">
             <form method="post" name="newmessage" action="<mm:treefile page="/forum/thread.jsp" objectlist="$includePath" referids="$referids"/>">
-                <input type="hidden" name="forum" value="<mm:write referid="forum"/>">
+                 <input type="hidden" name="thread" value="<mm:write referid="thread"/>">
+               <input type="hidden" name="forum" value="<mm:write referid="forum"/>">
 	      <input type="text" name="title" value="<mm:isempty referid="insertedmessageok"><mm:write referid="title"/></mm:isempty>" size="40"><di:translate id="title">Title</di:translate><br>
               <textarea cols=60 rows=6 name="message"><mm:isempty referid="insertedmessageok"><mm:write referid="message"/></mm:isempty></textarea><di:translate id="message">Message</di:translate>
 	      <br clear="all">
