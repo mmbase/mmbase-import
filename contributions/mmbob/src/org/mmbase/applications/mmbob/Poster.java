@@ -32,6 +32,7 @@ public class Poster {
     static private Logger log = Logging.getLoggerInstance(Poster.class);
 
     private int id, postcount, sessionstart, lastsessionend;
+    private int quotanumber,quotaused;
     private int avatar = 0;
     private String firstname, lastname, email, level, location, gender;
     private Node node;
@@ -46,6 +47,8 @@ public class Poster {
      * @param parent Forum that the poster belongs to
      */
     public Poster(Node node, Forum parent) {
+	this.quotanumber=20;
+	this.quotaused=10;
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
@@ -508,6 +511,21 @@ public class Poster {
         //long end = System.currentTimeMillis();
         //log.info("getAlias Speed = "+(end-start)+"ms");
         return value;
+   }
+
+   public boolean isQuotaReached() {
+	if (quotaused<quotanumber) {
+		return true;
+	}
+	return false;
+   }
+
+   public int getQuotaUsedNumber() {
+	return quotaused;
+   }
+
+   public int getQuotaNumber() {
+	return quotanumber;
    }
 
 }

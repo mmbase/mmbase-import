@@ -262,6 +262,14 @@ public class ForumManager {
         return user;
     }
 
+    public static String getDefaultPassword() {
+	return defaultpassword;
+    }
+
+    public static String getDefaultAccount() {
+	return defaultaccount;
+    }
+
     /**
      * ToDo: Write docs!
      * @return
