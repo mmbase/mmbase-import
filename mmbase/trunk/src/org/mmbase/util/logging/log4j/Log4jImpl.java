@@ -13,11 +13,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Level;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.ResourceLoader;
 
 import org.apache.log4j.xml.DOMConfigurator;
 
-import java.io.FileInputStream;
+import java.io.*;
 
 import java.io.PrintStream;
 import java.io.File;
@@ -46,9 +47,11 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     // It's enough to instantiate a factory once and for all.
     private final static org.apache.log4j.spi.LoggerRepository repository = new LoggerRepository(getRootLogger());
     private static Logger log = Logging.getLoggerInstance(Log4jImpl.class);
-    private static File configurationFile = null;
+    //private static File configurationFile = null;
 
     private static final String classname = Log4jImpl.class.getName();
+
+    private static ResourceWatcher configWatcher;
 
     /**
      * Constructor, like the constructor of {@link org.apache.log4j.Logger}.
@@ -89,13 +92,23 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      **/
 
     public static void configure(String s) {
-        configurationFile = new File(s);
-        if (! configurationFile.isAbsolute()) { // make it absolute
-            configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
-        }
-        doConfigure(configurationFile);
+
+        log.info("logging configurationfile : " + s);
+
+        ResourceLoader rl = Logging.getResourceLoader();
+        
+        log.info("using " + rl + " for resolving " + s);
+        configWatcher = new ResourceWatcher (rl) {
+                public void onChange(String s) {
+                doConfigure(resourceLoader.getResourceAsStream(s));
+            }
+        };
+
         configWatcher.clear();
-        configWatcher.add(configurationFile);
+        configWatcher.add(s);
+
+        doConfigure(rl.getResourceAsStream(s));
+
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
         log = getLoggerInstance(Log4jImpl.class.getName());
@@ -107,33 +120,24 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             System.setErr(new LoggerStream(err));
         }
     }
+
+    protected static void doConfigure(InputStream i) {        
+        DOMConfigurator domConfigurator = new DOMConfigurator();
+        domConfigurator.doConfigure(i, repository);
+    }
     /**
      * Performs the actual parsing of the log4j configuration file and handles the errors
      */
-    protected static void doConfigure(File f) {
-        String inform = "Parsing " + configurationFile.getAbsolutePath();
-        log.service(inform);
-    
+    protected static void doConfigure(File f) {        
+        log.info("Parsing " + f.getAbsolutePath());
         try {
-            DOMConfigurator domConfigurator = new DOMConfigurator();
-            domConfigurator.doConfigure(new FileInputStream(configurationFile), repository);
+            doConfigure(new FileInputStream(f));
         } catch (java.io.FileNotFoundException e) {
-            log.error("Could not find " + configurationFile  + " to configure logging: " + e.toString());
+            log.error("Could not find " + f  + " to configure logging: " + e.toString());
         }
 
     }
 
-    private static FileWatcher configWatcher = new FileWatcher (true) {
-            protected void onChange(File file) {
-                doConfigure(file);
-            }
-        };
-
-
-
-    public static File getConfigurationFile() {
-        return configurationFile;
-    }
 
     /**
      * @deprecated use setLevel

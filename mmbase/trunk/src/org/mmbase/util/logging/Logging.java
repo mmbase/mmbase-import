@@ -15,7 +15,8 @@ import java.lang.reflect.Method;
 
 import java.net.URL;
 import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.ResourceLoader;
 import org.xml.sax.InputSource;
 
 /** 
@@ -59,14 +60,13 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.31 2004-08-04 15:09:22 michiel Exp $
+ * @version $Id: Logging.java,v 1.32 2004-11-11 16:54:33 michiel Exp $
  */
 
 
 public class Logging {
 
     private static Class  logClass          = SimpleTimeStampImpl.class; // default Logger Implementation
-    private static File   configurationFile = null;             // Logging is configured with a configuration file. The path of this file can be requested later.
     private static boolean configured = false;
     private static final Logger log = getLoggerInstance(Logging.class); // logger for this class itself
 
@@ -77,18 +77,13 @@ public class Logging {
      */
     public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      
 
+    private static ResourceLoader resourceLoader;
+
     /**
      * @since MMBase-1.8
      */
-    private static FileWatcher fileWatcher = new FileWatcher(true) {
-            public void onChange(File f) {
-                configure(f.getAbsolutePath());
-            }
-        };
-    static {
-        fileWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-        fileWatcher.start();
-    }
+    private static ResourceWatcher configWatcher;
+    
 
     private Logging() {
         // this class has no instances.
@@ -98,15 +93,21 @@ public class Logging {
     /**
      * Configure the logging system.
      *
-     * @param configfile Path to an xml-file in which is described
+     * @param configFile Path to an xml-file in which is described
      * which class must be used for logging, and how this will be
      * configured (typically the name of another configuration file).  
      *
      */
     
-    public  static void configure (String configfile) {
-        
-        if (configfile == null) {
+    public  static void configure (ResourceLoader rl, String configFile) {
+        resourceLoader = rl;
+        configWatcher = new ResourceWatcher(rl) {
+            public void onChange(String s) {
+                configure(resourceLoader, s);
+            }
+        };
+
+        if (configFile == null) {
             log.info("No configfile given, default configuration will be used.");
             return;
         } 
@@ -117,37 +118,25 @@ public class Logging {
         // machine for the dtd's without giving an error! This line might give a hint 
         // where to search for these kinds of problems..
         
-        log.info("Configuring logging with " + configfile);
+        log.info("Configuring logging with " + configFile);
         ///System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
 
+        configWatcher.add(configFile);
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
 
-
-        configurationFile = new File(configfile);
-        configurationFile = configurationFile.getAbsoluteFile();
-
-        if (! fileWatcher.contains(configurationFile)) {
-            fileWatcher.add(configurationFile);
-        }
-        
-        if (! configurationFile.exists() || 
-            ! configurationFile.isFile() ||
-            ! configurationFile.canRead() ) { // not a readable file, return and warn that logging cannot be configured.
-            log.warn("Log configuration file is not accessible, default logging implementation will be used.");
+        XMLBasicReader reader;
+        try {
+            reader = new XMLBasicReader(resourceLoader.getInputSource(configFile), Logging.class);
+        } catch (Exception e) {
+            log.error("Could not open " + configFile + " " + e);
+            log.error(stackTrace(e));
             return;
         }
-   
-        // Convert the file to a system-dependant URL string for the parser to use
-        try {
-            URL logURL = configurationFile.toURL();
-            configfile = logURL.toString();
-        } catch (Exception e) {
-            log.error("Cannot get URL from file " + configfile + " : " + e.toString());
-            // that doesn't work, so let's try to do it ourselves
-            configfile = "file:///" + configurationFile.getAbsolutePath();
-        }                               
-
-
-        XMLBasicReader reader = new XMLBasicReader(new InputSource(configfile), Logging.class);
+        if (reader == null) {
+            log.error("No " + configFile);
+            return;
+        }
 
         String classToUse    = "org.mmbase.util.logging.SimpleImpl"; // default
         String configuration = "stderr,debug";                        // default
@@ -190,7 +179,7 @@ public class Logging {
         configureClass(configuration);
         configured = true;
         log.service("Logging configured");
-        log.debug("Now watching " + fileWatcher.getFiles());
+        log.debug("Now watching " + configWatcher.getResources());
         log.debug("Replacing wrappers " + LoggerWrapper.getWrappers());
         Iterator wrappers = LoggerWrapper.getWrappers().iterator();
         while (wrappers.hasNext()) {
@@ -225,9 +214,10 @@ public class Logging {
     /**
      * Logging is configured with a log file. This method returns the File which was used.
      */
-    public static File getConfigurationFile() {
-        return configurationFile;
+    public static ResourceLoader getResourceLoader() {
+        return resourceLoader;
     }
+
     /**
      * After configuring the logging system, you can get Logger instances to log with. 
      *
