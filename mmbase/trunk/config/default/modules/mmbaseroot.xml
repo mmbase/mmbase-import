@@ -97,9 +97,9 @@
         <property name="basename">install</property>
 
   	    <!--
-    	name="language" defines the used language in the gui when possible,
-	    it is defined with the domain postfix like uk, nl, us etc etc these are
-    	used in MMLANGUAGE.properties, *.def files (example urls.def).
+    	name="language" defines the language for the gui. The standard gui information for the
+		editors can be found in /config/modules/mmlanguage.xml. The gui information of a builder
+		is provided by the builder itself (e.g. /config/builders/urls.xml).
   	    -->
        <property name="language">en</property>
 
