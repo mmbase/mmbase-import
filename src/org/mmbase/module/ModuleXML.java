@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.9 $ $Date: 2000-07-23 08:27:24 $
+ * @version $Revision: 1.10 $ $Date: 2000-07-28 10:35:09 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -80,8 +80,6 @@ public abstract class ModuleXML extends Module {
 		} else {
        		 	mmbaseconfig=System.getProperty("mmbase.config");
 		}
-		System.out.println("CONFIGPATH="+mmbaseconfig);
-
 
 		MMBaseContext.setConfigPath(mmbaseconfig);
 		
