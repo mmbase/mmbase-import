@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Nico Klasens
  * @created 4-nov-2003
- * @version $Id: DateFormat.java,v 1.1 2003-12-19 11:09:55 nico Exp $
+ * @version $Id: DateFormat.java,v 1.2 2003-12-30 16:00:43 nico Exp $
  */
 public class DateFormat {
 
@@ -108,7 +108,6 @@ public class DateFormat {
            return "";
         }
         long seconds = Long.valueOf(fieldvalue).longValue();
-        System.out.println("format = " + seconds);
         return sdf.format(new Date(seconds * 1000));
     }
 
