@@ -9,23 +9,19 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
-import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
-import org.mmbase.module.core.*;
-import java.util.*;
-import java.net.*;
-import java.text.*;
 
+import java.util.Map;
 
 /**
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.6 2003-07-15 12:26:37 vpro Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.7 2003-07-15 12:36:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
-    
+
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl");
     }
