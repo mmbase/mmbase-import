@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.3 2004-02-04 16:57:28 michiel Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.4 2004-02-05 08:23:58 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {
 
@@ -55,7 +55,7 @@ public class DatabaseStorageLookup extends DocumentReader {
     /**
      * Constructor, accesses the storage lookup xml resource
      */
-    DatabaseStorageLookup() {
+    protected DatabaseStorageLookup() {
         super(new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH)),
               DocumentReader.validate(), DatabaseStorageLookup.class);
     }
@@ -65,7 +65,7 @@ public class DatabaseStorageLookup extends DocumentReader {
      * @param dmd the database meta data
      * @return The database configuration resource, or <code>null</code> if it cannot be determined
      */
-    String getResourcePath(DatabaseMetaData dmd) throws SQLException, StorageConfigurationException {
+    protected String getResourcePath(DatabaseMetaData dmd) throws SQLException, StorageConfigurationException {
         Element root = document.getDocumentElement();
         NodeList filterList = root.getElementsByTagName("filter");
         for (int i = 0; i < filterList.getLength(); i++) {
