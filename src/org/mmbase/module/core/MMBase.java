@@ -975,11 +975,11 @@ public class MMBase extends ProcessorModule  {
   	public MMObjectNode castNode(MMObjectNode node) {
                 /* fake because solved
                 */
-                int otype=node.getIntValue("otype");
+                int otype=node.getOType();
                 String ename=TypeDef.getValue(otype);
                 if (ename==null) return null;
-                MMObjectBuilder res=getMMObject(ename);
-                MMObjectNode node2=res.getNode(node.getIntValue("number"));
+                 MMObjectBuilder res=getMMObject(ename);
+                MMObjectNode node2=res.getNode(node.getNumber());
                 return node2;
                 //return node;
         }
