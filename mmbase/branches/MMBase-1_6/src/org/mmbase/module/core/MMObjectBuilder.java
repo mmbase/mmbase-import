@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.7 2003-02-11 09:44:37 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.8 2003-02-11 10:07:09 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable {
     
@@ -253,7 +253,12 @@ public class MMObjectBuilder extends MMTable {
      * Maximum number of nodes to return on a query (-1 means no limit, and is also the default)
      */
     private int maxNodesFromQuery = -1;
-    
+
+	/**
+	* Max length of a query, informix = 32.0000 so we assume a bit less for other databases
+	*/
+	private static final int MAX_QUERY_SIZE = 20000;
+
     /**
      * The string that can be used inside the builder.xml as property,
      * to define the maximum number of nodes to return.
