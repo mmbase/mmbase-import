@@ -2,6 +2,9 @@
 <!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
 <util>
   <properties>
-    <property name="maxfilesize">1048576</property><!-- 1 Mb = 1024^2 b -->
+    <property name="maxrequestsize">2000000</property><!-- about 2 MB -->
+    <property name="maxinmemoryparametersize">2000000</property><!-- about 2 MB -->
+    <property name="maxparametersize">2000000</property><!-- about 2 MB -->
+    <property name="uploaddir">/tmp</property><!-- temp directory for temp storage -->
   </properties>
 </util>
