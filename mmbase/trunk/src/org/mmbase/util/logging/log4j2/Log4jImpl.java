@@ -139,7 +139,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         if (repository.isDisabled(Log4jLevel.TRACE_INT)) {
             return;
         }
-        if (Log4jLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
+        if (Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel()))
             //callAppenders(new LoggingEvent(classname, this, Log4jLevel.TRACE, message, null));
             forcedLog(classname, Log4jLevel.TRACE, message, null);
     }
@@ -152,7 +152,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         if (repository.isDisabled(Log4jLevel.SERVICE_INT)) {
             return;
         }
-        if (Log4jLevel.SERVICE.isGreaterOrEqual(this.getChainedLevel()))
+        if (Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel()))
             //callAppenders(new LoggingEvent(classname, this, Log4jLevel.SERVICE, message, null));
             forcedLog(classname, Log4jLevel.SERVICE, message, null);
     }
@@ -160,7 +160,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     public final boolean isServiceEnabled() {
         if(repository.isDisabled( Log4jLevel.SERVICE_INT))
             return false;   
-        return Log4jLevel.SERVICE.isGreaterOrEqual(this.getChainedLevel());
+        return Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
     // **** SUBCLASSES ****
