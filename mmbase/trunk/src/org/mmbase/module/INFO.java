@@ -1,4 +1,5 @@
 /*
+$Id: INFO.java,v 1.4 2000-02-24 12:41:23 wwwtech Exp $
 
 VPRO (C)
 
@@ -6,6 +7,7 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module;
 
@@ -23,6 +25,8 @@ import org.mmbase.util.*;
  * a database
  *
  * @author Daniel Ockeloen
+ *
+ * @$Revision: 1.4 $ $Date: 2000-02-24 12:41:23 $
  */
 public class INFO extends ProcessorModule {
 
