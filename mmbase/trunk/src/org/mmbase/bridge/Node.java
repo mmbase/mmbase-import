@@ -9,18 +9,18 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
-
+import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * Describes an object in the cloud.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.51 2004-10-09 09:39:31 nico Exp $
+ * @version $Id: Node.java,v 1.52 2004-12-06 15:25:19 pierre Exp $
  */
 public interface Node {
 
@@ -209,7 +209,7 @@ public interface Node {
      */
     public void setDateValue(String fieldName, Date value);
 
-    
+
     /**
      * Sets the value of the specified field using a <code>List</code>.
      * This change will not be visible to the cloud until the commit method is
@@ -400,23 +400,6 @@ public interface Node {
     public FieldValue getFieldValue(Field field);
 
     /**
-     * Returns the value of the specified function on the node.  A
-     * function normally has arguments, which can be supplied with a
-     * List.
-     *
-     * @param functionName  the name of the function to be executed
-     * @param arguments     parameters to the function
-     * @return           the function value of the specified function
-     * @since MMBase-1.6
-     */
-    public FieldValue getFunctionValue(String functionName, List arguments);
-
-    /**
-     * @since MMBase-1.7
-     */
-    // public FieldValue getFunctionValue(String functionName, Arguments arguments);
-
-    /**
     * Commit the node to the database.
     * Makes this node and/or the changes made to this node visible to the cloud.
     * If this method is called for the first time on this node it will make
@@ -560,7 +543,7 @@ public interface Node {
 
     /**
      * @param role forward role of a relation
-     * @param nodeManager node manager on the other side of the relation 
+     * @param nodeManager node manager on the other side of the relation
      * @param searchDir the direction of the relation
      * @return List of relations
      * @since MMBase-1.7
@@ -766,5 +749,52 @@ public interface Node {
      * @return                      Whether the current user may change the context of this node
      */
     public boolean mayChangeContext();
+
+    /**
+     * Returns all the Function objects of this Module.
+     *
+     * @since MMBase-1.8
+     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
+     */
+    public Set getFunctions();
+
+    /**
+     * Returns a Fuction object.
+     * The object returned is a {@link org.mmbase.util.functions.Function} object.
+     * You need to explixitly cast the result to this object, since not all bridge
+     * implementations (i.e. the RMMCI) support this class.
+     *
+     * @since MMBase-1.8
+     * @param functionName name of the function
+     * @return a {@link org.mmbase.util.functions.Function} object.
+     * @throws NotFoundException if the function does not exist
+     */
+    public Function getFunction(String functionName);
+
+    /**
+     * Creates a parameter list for a function.
+     * The list can be filled with parameter values by either using the List set(int, Object) method, to
+     * set values for parameters by psoition, or by using the set(String, Object) method to
+     * set parameters by name.<br />
+     * This object can then be passed to the getFunctionValue method.
+     * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.<br />
+     * @since MMBase-1.8
+     * @param functionName name of the function
+     * @return a {@link org.mmbase.util.functions.Parameters} object.
+     * @throws NotFoundException if the function does not exist
+     */
+    public Parameters createParameters(String functionName);
+
+    /**
+     * Returns the value of the specified function on the node.  A
+     * function normally has arguments, which can be supplied with a
+     * List.
+     * @since MMBase-1.6
+     * @param functionName name of the function
+     * @param parameters list with parameters for the fucntion
+     * @return the result value of executing the function
+     * @throws NotFoundException if the function does not exist
+     */
+    public FieldValue getFunctionValue(String functionName, List parameters);
 
 }

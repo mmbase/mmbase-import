@@ -21,7 +21,7 @@ import org.w3c.dom.*;
 /**
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
-public class MMCI{
+public class MMCI {
     Hashtable classes;
     Vector classesVector;
 
@@ -117,10 +117,14 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
-				//why???
+                //why???
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
+
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.DataType",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function",doc));
     }
 
     public static void main(String [] argv) throws Exception{
@@ -137,10 +141,10 @@ public class MMCI{
             if (argv.length==1) {
                 os = new FileOutputStream(argv[0]);
             }
-	    OutputStreamWriter w = new OutputStreamWriter(os);
-	    XMLWriter.write(doc,w,true);
+        OutputStreamWriter w = new OutputStreamWriter(os);
+        XMLWriter.write(doc,w,true);
             w.flush();
-	    w.close();
+        w.close();
         }
     }
 

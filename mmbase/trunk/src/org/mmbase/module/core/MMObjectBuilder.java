@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.285 2004-11-26 20:44:42 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.286 2004-12-06 15:25:19 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -88,12 +88,10 @@ public class MMObjectBuilder extends MMTable {
     public final static String DEFAULT_ALINEA = "<br />&#160;<br />"; // marcel: bugfix #6617: changed &nbsp to &#160;
     public final static String DEFAULT_EOL = "<br />";
 
-
     /**
      * Parameters for the GUI function
      * @since MMBase-1.7
      */
-
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter("field",    String.class),
         Parameter.LANGUAGE,
@@ -103,14 +101,13 @@ public class MMObjectBuilder extends MMTable {
         Parameter.LOCALE,
         //new Parameter("length",   Integer.class),
         //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
-        
+
     };
 
     /**
      * Parameters for the age function
      * @since MMBase-1.7
      */
-
     public final static Parameter[] AGE_PARAMETERS = {};
 
     /**
@@ -153,6 +150,11 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated use MMBase.getMMBase().getDatabase() or mmb.getDatabase() instead
      */
     public static MMJdbc2NodeInterface database = null;
+
+    /**
+     * Default output when no data is available to determine a node's GUI description
+     */
+    static String GUI_INDICATOR = "no info";
 
     /**
      * Determines whether the cache is locked.
@@ -222,11 +224,6 @@ public class MMObjectBuilder extends MMTable {
      */
     String maintainer = "mmbase.org";
 
-    /**
-     * Default output when no data is available to determine a node's GUI description
-     */
-    static String GUI_INDICATOR = "no info";
-
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
      */
     Hashtable singularNames;
@@ -235,12 +232,12 @@ public class MMObjectBuilder extends MMTable {
      */
     Hashtable pluralNames;
 
-    /** 
+    /**
      *  Set of remote observers, which are notified when a node of this type changes
      */
     private Set remoteObservers = Collections.synchronizedSet(new HashSet());
 
-    /** 
+    /**
      * Set of local observers, which are notified when a node of this type changes
      */
     private Set localObservers = Collections.synchronizedSet(new HashSet());
@@ -250,6 +247,29 @@ public class MMObjectBuilder extends MMTable {
      * It is relative from the '/builders/' subdir
      */
     String xmlPath = "";
+
+    /**
+     * Parameters constants for {@link #wrapFunction}.
+     * @since MMBase-1.8
+     */
+    protected final static Parameter[] WRAP_PARAMETERS = {
+        new Parameter("field", String.class),
+        new Parameter("length", Number.class),
+        new Parameter("node", Object.class) };
+
+    /**
+     * This function wraps the text of a node's field and returns the result as a String.
+     * It takes as parameters a fieldname, the line length to wrap, and the Node containing the data.
+     * This function can be called through the function framework.
+     * @since MMBase-1.8
+     */
+    protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.INTEGER) {
+        public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+            String val  = node.getStringValue(parameters.getString("field"));
+            int wrappos = Casting.toInt(parameters.get("length"));
+            return wrap(val, wrappos);
+        }
+    };
 
     // contains the builder's field definitions
     protected Hashtable fields;
@@ -332,9 +352,10 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Constructor.
-     * Derived builders should provide their own constructors, rather than use this one.
      */
-    public MMObjectBuilder() {}
+    public MMObjectBuilder() {
+        addFunction(wrapFunction);
+    }
 
     private void initAncestors() {
         if (! ancestors.empty()) {
@@ -819,7 +840,7 @@ public class MMObjectBuilder extends MMTable {
 
     }
 
-    
+
     /**
      * Locks the node cache during the commit of a node.
      * This prevents the cache from gaining an invalid state
@@ -1103,8 +1124,8 @@ public class MMObjectBuilder extends MMTable {
 
 
         // not in cache. We are going to put it in.
-        
-        
+
+
         // retrieve node's objecttype
         MMObjectBuilder builder = this;
         int nodeType = getNodeType(number);
@@ -1120,7 +1141,7 @@ public class MMObjectBuilder extends MMTable {
             String builderName = mmb.getTypeDef().getValue(nodeType);
             if (builderName == null) {
                 log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking 'object'");
-                builderName = "object";                
+                builderName = "object";
                 //return null; Used to return null in MMBase < 1.7.0, but that gives troubles, e.g. that the result not gets cached.
             }
             builder = mmb.getBuilder(builderName);
@@ -1150,9 +1171,9 @@ public class MMObjectBuilder extends MMTable {
         } else {
             MultiConnection con = null;
             Statement stmt = null;
-            
+
             try {
-                
+
                 //NodeSearchQuery query = new NodeSearchQuery(this);
                 //BasicFieldValueConstraint constraint = new BasiceFieldValueConstraint(
                 //List = mmb.getDatabase().getNodes(query, this);
@@ -1160,7 +1181,7 @@ public class MMObjectBuilder extends MMTable {
                 con = mmb.getConnection();
                 stmt = con.createStatement();
                 String query = "SELECT " + builder.getNonByteArrayFields() +" FROM " + builder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
-                
+
                 ResultSet rs = stmt.executeQuery(query);
                 try {
                     if (rs.next()) {
@@ -1198,7 +1219,7 @@ public class MMObjectBuilder extends MMTable {
                 mmb.closeConnection(con, stmt);
                 return null;
             }
-            
+
         }
     }
 
@@ -2472,16 +2493,16 @@ public class MMObjectBuilder extends MMTable {
                 locale = new Locale(language, "");
             }
         } else {
-            if (language != null && (! locale.getLanguage().equals(language))) { // odd, but well, 
+            if (language != null && (! locale.getLanguage().equals(language))) { // odd, but well,
                 locale = new Locale(language, locale.getCountry());
             }
         }
         if (locale == null) locale = mmb.getLocale();
-        
+
         if (log.isDebugEnabled()) {
             log.debug("language " + locale.getLanguage() + " country " + locale.getCountry());
         }
-        
+
         String rtn;
         String field = pars.getString("field");
 
@@ -2498,12 +2519,12 @@ public class MMObjectBuilder extends MMTable {
                 rtn = getLocaleGUIIndicator(locale, field, node);
             }
         }
-        
-        
+
+
         if (rtn == null) {
             FieldDefs fdef = getField(field);
             if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getDBType() == FieldDefs.TYPE_DATETIME)) { // do something reasonable for this
-                
+
                 Date date;
                 if (fdef.getDBType() == FieldDefs.TYPE_DATETIME) {
                     date = node.getDateValue(field);
@@ -2524,7 +2545,7 @@ public class MMObjectBuilder extends MMTable {
         return rtn;
     }
 
-    
+
     /**
      * What should a GUI display for this node.
      * Default is the first non system field (first field after owner).
@@ -2781,50 +2802,80 @@ public class MMObjectBuilder extends MMTable {
      * Override executeFunction in your extension if you want to add functions.
      *
      * @param node The node on which the function must be executed
-     * @param function The string identifying the funcion
-     * @param arguments The list with function argument or null (which means 'no arguments')
+     * @param functionName The string identifying the funcion
+     * @param parameters The list with function argument or null (which means 'no arguments')
      *
      * @see #executeFunction
      * @since MMBase-1.6
      */
     // package because called from MMObjectNode
-    final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
-
-        Object rtn = null;
-        if (arguments == null) arguments = new ArrayList();
-        // for backwards compatibility (calling with string function with more then one argument)
-        if (arguments.size() == 1 && arguments.get(0) instanceof String) {
-            String arg = (String) arguments.get(0);
-            rtn =  executeFunction(node, function, arg);
-            if (rtn != null) return rtn;
-            arguments = getFunctionParameters(arg);
+    final Object getFunctionValue(MMObjectNode node, String functionName, List parameters) {
+        Function function = getFunction(node, functionName);
+        if (function != null) {
+            return function.getFunctionValueWithList(parameters);
+        } else {
+            // fallback
+            if (parameters == null) parameters = new ArrayList();
+            // for backwards compatibility (calling with string function with more than one argument)
+            if (parameters.size() == 1 && parameters.get(0) instanceof String) {
+                String arg = (String) parameters.get(0);
+                Object result =  executeFunction(node, functionName, arg);
+                if (result != null) {
+                    return result;
+                }
+                parameters = getFunctionParameters(arg);
+            }
+            return executeFunction(node, functionName, parameters);
         }
-        return executeFunction(node, function, arguments);
-
     }
 
     /**
-     * perhaps we need something like this
-     * @since MMBase-1.7
+     * @javadoc
+     * @since MMBase-1.8
      */
-    public Parameter[] getParameterDefinition(String function) {
-        //keesj: why not this.getClass()?
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MMObjectBuilder.class, function);
+    protected Function getFunction(MMObjectNode node, String functionName) {
+        Function function = getFunction(functionName);
+        if (function instanceof NodeFunction) {
+            return ((NodeFunction) function).newInstance(node);
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * @javadoc
+     * @since MMBase-1.8
+     */
+    protected Set getFunctions(MMObjectNode node) {
+        Set builderFunctions = getFunctions();
+        Set nodeFunctions = new HashSet();
+        for (Iterator i = builderFunctions.iterator(); i.hasNext();) {
+            Object function = i.next();
+            if (function instanceof NodeFunction) {
+                nodeFunctions.add(((NodeFunction) function).newInstance(node));
+            }
+        }
+        return nodeFunctions;
+    }
 
+    /**
+     * @javadoc
+     * @since MMBase-1.8
+     */
+    protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
+        return new NodeFunction(name, parameters, returnType);
+    }
 
     /**
      * Executes a function on the field of a node, and returns the result.
      * This method is called by the builder's {@link #getValue} method.
      * Derived builders should override this method to provide additional functions.
-    *
+     *
      * @since MMBase-1.6
      * @throws IllegalArgumentException if the argument List does not
      * fit the function
      * @see #executeFunction
      */
-
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
         if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
@@ -2909,16 +2960,19 @@ public class MMObjectBuilder extends MMTable {
             if (arguments == null || arguments.size() == 0) {
                 return getGUIIndicator(node);
             } else {
-                Parameters pars = Parameters.get(GUI_PARAMETERS, arguments);
-                return getGUIIndicator(node, pars);
+                if (! (arguments instanceof Parameters)) {
+                    arguments = new ParametersImpl(GUI_PARAMETERS, arguments);
+                }
+                return getGUIIndicator(node, (Parameters)arguments);
             }
         }
 
-        String field;
-        if (arguments == null || arguments.size() == 0) {
-            field = "";
-        } else {
-            field = (String) arguments.get(0);
+        String field = "";
+        if (arguments != null && arguments.size() == 0) {
+            Object o = arguments.get(0);
+            if (o instanceof String) {
+                field = (String) o;
+            }
         }
 
         // time functions
@@ -4353,6 +4407,69 @@ public class MMObjectBuilder extends MMTable {
         return 127 * o.getNumber();
     }
 
+    /**
+     * @javadoc
+     */
+    public class NodeFunction extends ProviderFunction {
+
+        public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
+            super(name,def,returnType, MMObjectBuilder.this);
+        }
+
+        /**
+         * @javadoc
+         */
+        public Function newInstance(MMObjectNode node) {
+            return new NodeInstanceFunction(node);
+        }
+
+        /**
+         * @javadoc
+         */
+        public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
+            return executeFunction(node, name, parameters);
+        }
+
+        public final Object getFunctionValueWithList(MMObjectNode node, List parameters) {
+            if (parameters instanceof Parameters) {
+                return getFunctionValue(node, (Parameters)parameters);
+            } else {
+                return getFunctionValue(node, new ParametersImpl(getParameterDefinition(), parameters));
+            }
+        }
+
+        /**
+         * @javadoc
+         */
+        public Object getFunctionValue(Parameters parameters) {
+            MMObjectNode node = Casting.toNode(parameters.get("node"), MMObjectBuilder.this);
+            if (node == null) {
+                throw new IllegalArgumentException("The function " + getName() + " requires a node argument");
+            }
+            return getFunctionValue(node, parameters);
+        }
+
+        /**
+         * @javadoc
+         */
+        private class NodeInstanceFunction extends WrappedFunction {
+
+            protected MMObjectNode node;
+
+            public NodeInstanceFunction(MMObjectNode node) {
+                super(NodeFunction.this);
+                this.node = node;
+            }
+
+            /**
+             * @javadoc
+             */
+            public final Object getFunctionValue(Parameters parameters) {
+                return NodeFunction.this.getFunctionValue(node, parameters);
+            }
+        }
+
+    }
 
 }
 

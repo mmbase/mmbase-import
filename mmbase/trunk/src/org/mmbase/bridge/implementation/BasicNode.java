@@ -18,6 +18,8 @@ import org.mmbase.bridge.util.fields.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 
@@ -30,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.135 2004-10-12 09:42:23 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.136 2004-12-06 15:25:19 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -593,10 +595,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return new BasicFieldValue(this, field);
     }
 
-    public FieldValue getFunctionValue(String functionName, List arguments) {
-        return new BasicFunctionValue(this, getNode(), getNode().getFunctionValue(functionName, arguments));
-    }
-
     public Document getXMLValue(String fieldName) {
         return getNode().getXMLValue(fieldName);
     }
@@ -853,7 +851,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param searchDir direction of the relation
      * @return list of relations
      * @throws NotFoundException
-     * 
+     *
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
@@ -1217,7 +1215,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * @see java.lang.Object#hashCode()
-     * 
+     *
      * @since MMBase-1.6.2
      */
     public int hashCode() {
@@ -1228,12 +1226,38 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Compares two nodes, and returns true if they are equal.
      * This effectively means that both objects are nodes, and they both have the same number and cloud
      * @param o the object to compare it with
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());
+    }
 
+    public Set getFunctions() {
+        Set functions = getNode().getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(this,fun));
+        }
+        return functionSet;
+    }
+
+    public Function getFunction(String functionName) {
+        Function function = getNode().getFunction(functionName);
+        if (function == null) {
+            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+        }
+        return new BasicFunction(this, function);
+    }
+
+    public Parameters createParameters(String functionName) {
+        return getFunction(functionName).createParameters();
+    }
+
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
     }
 
 }

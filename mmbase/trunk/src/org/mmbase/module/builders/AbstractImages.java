@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.29 2004-10-11 14:54:19 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.30 2004-12-06 15:25:19 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -194,14 +194,6 @@ public abstract class AbstractImages extends AbstractServletBuilder {
        return width;
     }
     */
-
-    /**
-     * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(AbstractImages.class, function);
-    }
-
 
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.

@@ -14,17 +14,21 @@ import java.util.*;
 
 import javax.servlet.jsp.*;
 
+import org.mmbase.bridge.FieldValue;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * A function tag for functions returning a list. The result is iterated.
+ * A function tag for functions returning a collection.
+ * The result is iterated. If a fucntion does not returna colelction, or if the result requires sorting,
+ * the resultvalue is transformed into a List.
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.5 2004-06-30 17:51:56 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.6 2004-12-06 15:25:19 pierre Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -32,7 +36,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
     // implementation of ListProvider
 
-    protected List    returnList;
+    protected Collection    returnCollection;
     protected Iterator iterator;
     protected int      currentItemIndex= -1;
 
@@ -40,7 +44,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     protected Attribute  comparator = Attribute.NULL;
 
     public int size(){
-        return returnList.size();
+        return returnCollection.size();
     }
     public int getIndex() {
         return currentItemIndex;
@@ -66,25 +70,26 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         return collector.getContextContainer();
     }
 
-    public int doStartTag() throws JspTagException {        
-
-        List list = (List) getFunctionValue();;
+    public int doStartTag() throws JspTagException {
+        Object value = getFunctionValue();
+        if (value instanceof Collection && comparator.equals(Attribute.NULL)) {
+            returnCollection = (Collection) value;
+        } else {
+            returnCollection = Casting.toList(value);
+        }
 
         collector = new ContextCollector(getContextProvider());
-
         helper.overrideWrite(false); // default behavior is not to write to page
-        
         currentItemIndex= -1;  // reset index
-        
-        returnList = list;
-        ListSorter.sort(returnList, (String) comparator.getValue(this), pageContext);
-        iterator = returnList.iterator();
+        if (!comparator.equals(Attribute.NULL)) {
+            ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), pageContext);
+        }
+        iterator = returnCollection.iterator();
         if (iterator.hasNext()) {
             return EVAL_BODY_BUFFERED;
         }
         return SKIP_BODY;
     }
-
 
     public int doAfterBody() throws JspException {
         if (getId() != null) {
@@ -110,10 +115,10 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     }
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), returnList, false);
+            getContextProvider().getContextContainer().register(getId(), returnCollection, false);
         }
         // dereference for gc.
-        returnList = null;
+        returnCollection = null;
         iterator = null;
         collector = null;
         return  super.doEndTag();

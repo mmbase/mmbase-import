@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.49 2004-10-15 18:35:23 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.50 2004-12-06 15:25:19 pierre Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -231,137 +231,94 @@ public class WriterHelper extends BodyTagSupport {
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         pageContext = thisTag.getPageContext();
         value = null;
-        switch (vartype) {
-            // these accept a value == null (meaning that they are empty)
-        case TYPE_LIST:
-            if (v instanceof String || v == null) {
-                if (! "".equals(v)) {
-                    value = StringSplitter.split((String) v);
-                } else {
-                    value = new ArrayList();
-                }
-            } else if (v instanceof List) {
-                value = v;
-            } else if (v instanceof Collection) {
-                value = new ArrayList((Collection) v);
-            } else { // dont' know any more
-                value = v; // wil perhaps fail
-                
-            }
-            setJspvar();
-            return;
-        case TYPE_VECTOR: // I think the type Vector should be deprecated?
-            if (v == null) {
-                // if a vector is requested, but the value is not present,
-                // make a vector of size 0.
-                value = new Vector();
-            } else if (! (v instanceof Vector)) {
-                // if a vector is requested, but the value is not a vector,
-                if (! (v instanceof Collection)) {
-                    // not even a Collection!
-                    // make a vector of size 1.
-                    value = new Vector();
-                    ((Vector)value).add(v);
-                } else {
-                    value = new Vector((Collection)v);
-                }
-            } else {
-                value = v;
-            }
-            setJspvar();
-            return;
-        }
-
-        // other can't be valid and still do something reasonable with 'null'.
-        if (v == null) {
-            value = null;
-            setJspvar();
-            return;
-        }
-
-        if (noImplicitList) {
+        if (noImplicitList && vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
             // Take last of list if vartype defined not to be a list:
             if (v instanceof List) {
-                if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
-                    List l = (List) v;
-                    if (l.size() > 0) {
-                        v = l.get(l.size() - 1);
-                    } else {
-                        v = null;
-                    }
+                List l = (List) v;
+                if (l.size() > 0) {
+                    v = l.get(l.size() - 1);
+                } else {
+                    v = null;
                 }
             }
         }
-
-        // types which cannot accept null;
-        switch (vartype) {
-        case TYPE_UNSET:
-            value = v; // leave it as it was.
-            setJspvar();
-            return;
-        case TYPE_INTEGER:
-            if (! (v instanceof Integer)) {
-                value = Casting.toInteger((v.toString()));
-                setJspvar();
-                return;
+        if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR) {
+            switch (vartype) {
+                // these accept a value == null (meaning that they are empty)
+                case TYPE_LIST:
+                    if (! (v instanceof List)) {
+                        v = Casting.toList(v);
+                    }
+                    break;
+                case TYPE_VECTOR: // I think the type Vector should be deprecated?
+                    if (v == null) {
+                        // if a vector is requested, but the value is not present,
+                        // make a vector of size 0.
+                        v = new Vector();
+                    } else if (! (v instanceof Vector)) {
+                        // if a vector is requested, but the value is not a vector,
+                        if (! (v instanceof Collection)) {
+                            // not even a Collection!
+                            // make a vector of size 1.
+                            Vector vector = new Vector();
+                            vector.add(v);
+                            v = vector;
+                        } else {
+                            v = new Vector((Collection)v);
+                        }
+                    }
+                    break;
+                case TYPE_UNSET:
+                    v = v; // leave it as it was.
+                    break;
+                case TYPE_INTEGER:
+                    if (! (v instanceof Integer)) {
+                        v = Casting.toInteger(v);
+                    }
+                    break;
+                case TYPE_DOUBLE:
+                    if (! (v instanceof Double)) {
+                        v = new Double(Casting.toDouble(v));
+                    }
+                    break;
+                case TYPE_LONG:
+                    if (! (v instanceof Long)) {
+                        v = new Long(Casting.toLong(v));
+                    }
+                    break;
+                case TYPE_FLOAT:
+                    if (! (v instanceof Float)) {
+                        v = new Float(Casting.toFloat(v));
+                    }
+                    break;
+                case TYPE_DECIMAL:
+                    if (! (v instanceof java.math.BigDecimal)) {
+                        v =  new java.math.BigDecimal(v.toString());
+                    }
+                    break;
+                case TYPE_STRING:
+                    if (! (v instanceof String)) {
+                        v = Casting.toString(v);
+                    }
+                    break;
+                case TYPE_DATE:
+                    if (! (v instanceof Date)) {
+                        v = Casting.toDate(v);
+                    }
+                    break;
+                case TYPE_BOOLEAN:
+                    if (! (v instanceof Boolean)) {
+                        v = new Boolean(Casting.toBoolean(v));
+                    }
+                    break;
+                case TYPE_NODE:
+                    if (! (v instanceof org.mmbase.bridge.Node)) {
+                        throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
+                    }
+                    break;
             }
-            break;
-        case TYPE_DOUBLE:
-            if (! (v instanceof Double)) {
-                value = new Double(v.toString());
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_LONG:
-            if (! (v instanceof Long)) {
-                value = new Long(v.toString());
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_FLOAT:
-            if (! (v instanceof Float)) {
-                value =  new Float(v.toString());
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_DECIMAL:
-            if (! (v instanceof java.math.BigDecimal)) {
-                value =  new java.math.BigDecimal(v.toString());
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_STRING:
-            if (! (v instanceof String)) {
-                value = Casting.toString(v);
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_DATE:
-            if (! (v instanceof Date)) {
-                value = Casting.toDate(v);
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_BOOLEAN:
-            if (! (v instanceof Boolean)) {
-                value = new Boolean(Casting.toBoolean(v));
-                setJspvar();
-                return;
-            }
-            break;
-        case TYPE_NODE:
-            if (! (v instanceof org.mmbase.bridge.Node)) {
-                throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
-            }
-            break;
+            value = v;
         }
-        if (value == null) value = v;
         setJspvar();
     }
 

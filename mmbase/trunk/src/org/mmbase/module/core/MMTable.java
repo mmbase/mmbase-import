@@ -13,6 +13,7 @@ import java.sql.*;
 
 import org.mmbase.module.database.*;
 import org.mmbase.storage.*;
+import org.mmbase.util.functions.FunctionProvider;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,9 +27,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.15 2004-11-23 09:55:50 michiel Exp $
+ * @version $Id: MMTable.java,v 1.16 2004-12-06 15:25:19 pierre Exp $
  */
-public class MMTable {
+public class MMTable extends FunctionProvider {
 
     private static final Logger log = Logging.getLoggerInstance(MMTable.class);
 

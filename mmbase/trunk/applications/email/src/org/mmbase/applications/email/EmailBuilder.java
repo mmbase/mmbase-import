@@ -105,14 +105,6 @@ public class EmailBuilder extends MMObjectBuilder {
 
     /**
      * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(EmailBuilder.class, function);
-    }
-
-
-    /**
-     * {@inheritDoc}
      *
      * Override the function call to receive the functions called from
      * the outside world (mostly from the taglibs)

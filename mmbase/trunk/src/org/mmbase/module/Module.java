@@ -17,6 +17,7 @@ import javax.servlet.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -33,26 +34,59 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.57 2004-11-19 21:03:52 michiel Exp $
+ * @version $Id: Module.java,v 1.58 2004-12-06 15:25:19 pierre Exp $
  */
-public abstract class Module {
+public abstract class Module extends FunctionProvider {
+
+    /**
+     * @javadoc
+     */
+    static Map modules;
+
+    // logger instance
     private static final Logger log = Logging.getLoggerInstance(Module.class);
 
-    static Map modules;
+    /**
+     * This function returns the Module's version number as an Integer.
+     * It takes no parameters.
+     * This function can be called through the function framework.
+     * @since MMBase-1.8
+     */
+    protected Function getVersionFunction = new AbstractFunction("getVersion", Parameter.EMPTY, ReturnType.INTEGER) {
+        public Object getFunctionValue(Parameters arguments) {
+            return new Integer(getVersion());
+        }
+    };
+
+    /**
+     * This function returns the Module's maintainer as a String.
+     * It takes no parameters.
+     * This function can be called through the function framework.
+     * @since MMBase-1.8
+     */
+    protected Function getMaintainerFunction = new AbstractFunction("getMaintainer", Parameter.EMPTY, ReturnType.STRING) {
+        public Object getFunctionValue(Parameters arguments) {
+            return getMaintainer();
+        }
+    };
+
+    protected Map functions = new HashMap();
 
     String moduleName = null;
     Hashtable state = new Hashtable();
     Hashtable mimetypes;
     Hashtable properties; // would like this to be LinkedHashMap (predictable order)
     String maintainer;
-    int    version;
+    int version;
 
     // startup call.
     private boolean started = false;
 
     public Module() {
+        addFunction(getVersionFunction);
+        addFunction(getMaintainerFunction);
         String startedAt = (new Date(System.currentTimeMillis())).toString();
-        state.put("Start Time", startedAt);        
+        state.put("Start Time", startedAt);
     }
 
     public final void setName(String name) {
@@ -219,7 +253,7 @@ public abstract class Module {
     public String getMimeType(String ext) {
         return getMimeTypeFile("dummy."+ext);
     }
-    
+
     public String getMimeTypeFile(String fileName) {
         ServletContext sx = MMBaseContext.getServletContext();
         String mimeType = sx.getMimeType(fileName);
@@ -359,13 +393,12 @@ public abstract class Module {
     }
 
     /**
-     * Loads all module-xml present in <mmbase-config-dir>/modules. 
+     * Loads all module-xml present in <mmbase-config-dir>/modules.
      * @return A HashTable with <module-name> --> Module-instance
      * @scope  private (only called from getModule)
      */
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
-
         ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
         Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
         log.info("In " + rl + " the following module XML's were found " + modules);
@@ -399,15 +432,15 @@ public abstract class Module {
                         Class newClass = Class.forName(className);
                         mod = (Module) newClass.newInstance();
                     }
-                    
+
                     results.put(fileName, mod);
-                    
+
                     mod.properties =  parser.getProperties();
-                    
+
                     // set the module name property using the module's filename
                     // maybe we need a parser.getModuleName() function to improve on this
                     mod.setName(fileName);
-                    
+
                     mod.setMaintainer(parser.getModuleMaintainer());
                     mod.setVersion(parser.getModuleVersion());
                 } catch (ClassNotFoundException cnfe) {

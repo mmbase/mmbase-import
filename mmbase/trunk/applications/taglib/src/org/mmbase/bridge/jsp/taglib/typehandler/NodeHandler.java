@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.util.Encode;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 
 //import org.mmbase.util.logging.*;
 
@@ -32,7 +32,7 @@ import org.mmbase.util.functions.Parameters;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.29 2004-07-26 20:18:01 nico Exp $
+ * @version $Id: NodeHandler.java,v 1.30 2004-12-06 15:25:19 pierre Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -88,7 +88,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
 
             // args for gui function
-            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = new ParametersImpl(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    "");
             args.set("locale",   tag.getLocale());
             args.set("response", tag.getPageContext().getResponse());
@@ -160,7 +160,7 @@ public class NodeHandler extends AbstractTypeHandler {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
-            } 
+            }
         }
         return super.whereHtmlInput(field);
     }
@@ -171,8 +171,8 @@ public class NodeHandler extends AbstractTypeHandler {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
-            } 
-        }                
+            }
+        }
         return super.whereHtmlInput(field, query);
     }
 

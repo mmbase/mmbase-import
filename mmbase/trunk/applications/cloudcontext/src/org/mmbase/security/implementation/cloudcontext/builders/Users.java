@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.31 2004-09-07 13:59:51 michiel Exp $
+ * @version $Id: Users.java,v 1.32 2004-12-06 15:25:19 pierre Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -67,7 +67,7 @@ public class Users extends MMObjectBuilder {
 
     // javadoc inherited
     public boolean init() {
-        rankCache.putCache(); 
+        rankCache.putCache();
         userCache.putCache();
 
         // MM: I think this is should not be configured.
@@ -372,12 +372,6 @@ public class Users extends MMObjectBuilder {
         }
      }
 
-    public Parameter[] getParameterDefinition(String function) {
-        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Users.class, function);
-        if (params == null) return super.getParameterDefinition(function);
-        return params;
-    }
-
     /**
      * @javadoc
      */
@@ -405,7 +399,7 @@ public class Users extends MMObjectBuilder {
                     // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
-                    Parameters pars = Parameters.get(GUI_PARAMETERS, args);
+                    Parameters pars = Functions.buildParameters(GUI_PARAMETERS, args);
                     Locale locale = (Locale) pars.get(Parameter.LOCALE);
                     if (locale == null) {
                         String lang = (String) pars.get(Parameter.LANGUAGE);
@@ -474,13 +468,13 @@ public class Users extends MMObjectBuilder {
             }
         }
     }
-    
+
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
         if (ctype.equals("d")) {
             int nodeNumber = Integer.parseInt(number);
             invalidateCaches(nodeNumber);
-        } else if (ctype.equals("c")) {            
+        } else if (ctype.equals("c")) {
             MMObjectNode node = getNode(number);
 
             Map ranks = new HashMap();
@@ -509,11 +503,11 @@ public class Users extends MMObjectBuilder {
                         i.remove();
                     }
                 }
-            }   
+            }
             userCache.putAll(users);
         }
         return true;
-        
+
     }
 
 

@@ -16,8 +16,7 @@ import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.Parameters;
-import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.*;
 
 
 /**
@@ -27,7 +26,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.21 2004-05-26 09:04:24 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.22 2004-12-06 15:25:19 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -36,14 +35,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     /**
      * Can be used to construct a List for executeFunction argument
-     * (new Parameters(GUI_ARGUMENTS))
+     * (new ParametersImpl(GUI_ARGUMENTS))
      */
-    public final static Parameter[] GUI_PARAMETERS = { 
+    public final static Parameter[] GUI_PARAMETERS = {
         new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS) // example, does not make too much sense :-)
     };
 
 
-    public final static Parameter[] SERVLETPATH_PARAMETERS = { 
+    public final static Parameter[] SERVLETPATH_PARAMETERS = {
         new Parameter("session",  String.class), // For read-protection
         new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
         new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
@@ -132,8 +131,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      * @param root The path to the application's root.
      */
-   
-    protected String getServletPath(String root) { 
+
+    protected String getServletPath(String root) {
         if (servletPath == null) {
             servletPath = getServletPathWithAssociation(getAssociation(), "");
             if (log.isServiceEnabled()) {
@@ -177,24 +176,15 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
     final public String getGUIIndicator(MMObjectNode node) {
-        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS));
+        return getSGUIIndicator(node, new ParametersImpl(GUI_PARAMETERS));
     }
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
-        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
+        return getSGUIIndicator(node, new ParametersImpl(GUI_PARAMETERS).set("field", field));
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(Attachments.class, function);
-    }
-
 
     /**
      * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
@@ -230,7 +220,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (args instanceof Parameters) {
                 a = (Parameters) args;
             } else {
-                a = new Parameters(SERVLETPATH_PARAMETERS, args);
+                a = new ParametersImpl(SERVLETPATH_PARAMETERS, args);
             }
             // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
             String session = a.getString("session");
@@ -238,7 +228,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             String argument = (String) a.get("argument");
             // argument represents the node-number
 
-            if (argument == null) {                                
+            if (argument == null) {
                 // second argument, which field to use, can for example be 'number' (the default)
                 String fieldName   = (String) a.get("field");
                 if (fieldName == null) {
@@ -253,12 +243,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
             // ok, make the path.
             StringBuffer servlet = new StringBuffer();
-            if (context == null) { 
+            if (context == null) {
                 servlet.append(getServletPath()); // use 'absolute' path (starting with /)
             } else {
                 servlet.append(getServletPath(context));
             }
-            String fileName = node.getStringValue("filename");            
+            String fileName = node.getStringValue("filename");
             boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
 
             if (usesBridgeServlet && ! session.equals("")) {
@@ -291,13 +281,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 if (args instanceof Parameters) {
                     a = (Parameters) args;
                 } else {
-                    a = new Parameters(GUI_PARAMETERS, args);
+                    a = new ParametersImpl(GUI_PARAMETERS, args);
                 }
-                
+
                 String  rtn = getSGUIIndicator(node, a);
                 if (rtn == null) return super.executeFunction(node, function, args);
-                return rtn;                
-            }            
+                return rtn;
+            }
         } else {
             return super.executeFunction(node, function, args);
         }

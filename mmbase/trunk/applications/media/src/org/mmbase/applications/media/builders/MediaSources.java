@@ -40,7 +40,7 @@ import org.mmbase.applications.media.Codec;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.31 2004-06-03 15:58:16 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.32 2004-12-06 15:25:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -219,14 +219,6 @@ public class MediaSources extends MMObjectBuilder {
         return Codec.get(source.getIntValue("codec"));
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaSources.class, function);
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -252,7 +244,7 @@ public class MediaSources extends MMObjectBuilder {
             }
         } else if (FUNCTION_URLS.equals(function) || FUNCTION_FILTEREDURLS.equals(function)) {
 
-            Parameters parameters = Parameters.get(URLS_PARAMETERS, args);
+            Parameters parameters = Functions.buildParameters(URLS_PARAMETERS, args);
 
             MMObjectNode fragment;
                                                    

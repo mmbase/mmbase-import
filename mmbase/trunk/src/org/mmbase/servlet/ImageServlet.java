@@ -28,7 +28,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.16 2004-10-08 17:37:53 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.17 2004-12-06 15:25:19 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -36,8 +36,8 @@ import org.mmbase.util.functions.*;
  * @see    AttachmentServlet
  */
 public class ImageServlet extends HandleServlet {
-    private static Logger log; 
- 
+    private static Logger log;
+
     private boolean convert = false;
 
     public void init() throws ServletException {
@@ -76,26 +76,26 @@ public class ImageServlet extends HandleServlet {
      * Content-Disposition header
      * {@inheritDoc}
      */
-    
+
     protected boolean setContent(QueryParts query, Node node, String mimeType) throws java.io.IOException {
         String fileName; // will be based on the 'title' field, because images lack a special field for this now.
         if (node.getNodeManager().getName().equals("icaches")) {
             int originalNode = node.getIntValue("id");
             Cloud c = node.getCloud();
-            
+
             if (! c.mayRead(originalNode) && c.getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
                 // try (again?) cloud from session
                 c = getCloud(query);
             }
-            
+
             if (c == null || ! c.mayRead(originalNode)) {
                 query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied on original image node '" + originalNode + "'");
                 return false;
-            }    
+            }
             fileName = c.getNode(originalNode).getStringValue("title");
 
         } else { // 'images', but as you see this is not explicit, so you can also name your image builder otherwise.
-            fileName = node.getStringValue("title"); 
+            fileName = node.getStringValue("title");
         }
 
         // still not found a sensible fileName? Give it up then.
@@ -107,7 +107,7 @@ public class ImageServlet extends HandleServlet {
 
     /**
      * ImageServlet can serve a icache node in stead (using the 'extra parameters'
-     * 
+     *
      * @since MMBase-1.8
      */
     protected Node getServedNode(QueryParts query, Node node) throws java.io.IOException {
@@ -116,7 +116,7 @@ public class ImageServlet extends HandleServlet {
             return n;
         }
         String nodeNumber     = query.getNodeNumber();
-        String nodeIdentifier = query.getNodeIdentifier();        
+        String nodeIdentifier = query.getNodeIdentifier();
         if (node.getNodeManager().getName().equals("icaches")) {
             if (! nodeNumber.equals(nodeIdentifier)) {
                 query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot convert icache node");
@@ -128,7 +128,7 @@ public class ImageServlet extends HandleServlet {
             // This _is_ an original node.
             if (! nodeNumber.equals(nodeIdentifier)) {
                 if (convert) {
-                    Parameters args = new Parameters(Images.CACHE_PARAMETERS);
+                    Parameters args = new ParametersImpl(Images.CACHE_PARAMETERS);
                     args.set("template", nodeIdentifier.substring(nodeNumber.length() + 1));
                     int icacheNodeNumber = node.getFunctionValue("cache", args).toInt();
                     Cloud cloud = node.getCloud();
@@ -145,7 +145,7 @@ public class ImageServlet extends HandleServlet {
             } else {
                 n =  getNode(query);
             }
-        } 
+        }
         query.setServedNode(n);
         return n;
     }
