@@ -9,7 +9,7 @@
 	</formalpara>
 	<formalpara>
 		<title>Usage</title>
-		<para>This tag defines how to create a new relation in a list, to an object supplied by one of the list commands. It is similar to <link linkend="action-create">action type="create"</link>, but it is used for the <link linkend="command-search">command type="search"</link> or <link linkend="command-wizard">command type="wizard"</link> tags.
+		<para>This tag defines how to create a new relation in a list, to an object supplied by one of the list commands. It is similar to <link linkend="action-create">action type="create"</link>, but it is used for the <link linkend="command-search">command name="search"</link> or <link linkend="command-wizard">command name="wizard"</link> tags.
 		</para>
 	</formalpara>
 	<para>Under the tag, you specify a <link linkend="relation">relation</link> tag, with the role and destinationtype attributes set to the type and role of the relation to create:
@@ -78,7 +78,7 @@
 		
 			...
 
-			<command type="search" ... >
+			<command name="search" ... >
 			
 			<action type="add" >
 				<relation role="author" destinationtype="people" />
