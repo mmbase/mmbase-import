@@ -16,10 +16,10 @@ import org.mmbase.bridge.StringIterator;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of Clouds
+ * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.8 2003-03-21 17:45:07 michiel Exp $
+ * @version $Id: BasicStringList.java,v 1.9 2003-08-08 12:07:17 michiel Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
     private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());
