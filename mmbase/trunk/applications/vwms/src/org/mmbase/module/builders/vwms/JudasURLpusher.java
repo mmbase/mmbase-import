@@ -14,14 +14,22 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.util.*;
+
 /**
  * @author Rico Jansen
  */
 public class JudasURLpusher implements Runnable {
+	private String classname = getClass().getName();
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	private boolean debug=false;
 
 	Thread kicker = null;
-	int sleepTime=8888;
+	int sleepTime=5000;
 	Judas parent;
+
+	Hashtable priurls=new Hashtable();
+	SortedVector prilist=new SortedVector();
 
 	public JudasURLpusher(Judas parent) {
 		this.parent=parent;
@@ -56,7 +64,7 @@ public class JudasURLpusher implements Runnable {
 	 * Main loop, exception protected
 	 */
 	public void run () {
-		if (kicker!=null) {
+		while (kicker!=null) {
 			try {
 				doWork();
 			} catch(Exception e) {
@@ -69,36 +77,55 @@ public class JudasURLpusher implements Runnable {
 	 * Main work loop
 	 */
 	public void doWork() {
-		Vector procurls;
-		String url;
-		Hashtable urls;
-	
-		System.out.println("JudasURLpusher Active");
+		PriorityURL priurl;
+
+		debug("Active");
 		while (kicker!=null) {
 			try { Thread.sleep(sleepTime); } catch (InterruptedException e) {}
-			if (parent.urls.size()>0) {
-				synchronized(parent.urls) {
-					procurls=parent.urls;
-					parent.urls=new Vector();
-				}
-				System.out.println("JudasURLpusher processing "+procurls.size()+" urls");
-				urls=killdups(procurls);
-				for (Enumeration e =urls.keys();e.hasMoreElements();) {
-					url=(String)e.nextElement();
-					parent.pushReload(url);
+			synchronized(priurls) {
+				if (debug) debug("Current urllist size "+prilist.size()+"=="+priurls.size());
+				if (prilist.size()>0) {
+					do {
+						priurl=(PriorityURL)prilist.firstElement();
+						debug("PriURL : "+priurl);
+						if (priurl.getPriority()==PriorityURL.MAX_PRIORITY) {
+							parent.pushReload(priurl.getURL());
+							prilist.removeElementAt(0);
+							priurls.remove(priurl.getURL());
+						}
+					} while (prilist.size()>0 && priurl.getPriority()==PriorityURL.MAX_PRIORITY);
+	
+					for (Enumeration e=prilist.elements();e.hasMoreElements();) {
+						priurl=(PriorityURL)e.nextElement();
+						priurl.increasePriority();
+					}
 				}
 			}
 		}
 	}
 
-	private Hashtable killdups(Vector urls) {
-		Hashtable hurls=new Hashtable(urls.size());
-		String url;
-		for (Enumeration e=urls.elements();e.hasMoreElements();) {
-			url=(String)e.nextElement();
-			hurls.put(url,"feep");
+
+
+
+	public void addURL(String url) {
+		addURL(url,PriorityURL.DEF_PRIORITY);
+	}
+
+	public void addURL(String url,int priority) {
+		PriorityURL priurl;
+		
+		synchronized(priurls) {
+			priurl=(PriorityURL)priurls.get(url);
+			if (priurl!=null) {
+				if (priurl.getPriority()<priority) {
+					priurl.setPriority(priority);
+					prilist.Sort();
+				}
+			} else {
+				priurl=new PriorityURL(url,priority);
+				priurls.put(url,priurl);
+				prilist.addSorted(priurl);
+			}
 		}
-		System.out.println("JudasURLpusher -> "+urls.size()+" - "+hurls.size()+" dups "+(urls.size()-hurls.size()));
-		return(hurls);
 	}
 }
