@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
 
   <classfile>Images</classfile>
   <searchage>31</searchage>
-  
+
   <!-- <names>
   names defines the different names used in user visible parts, singular for
   for talking about 1 object (Url,Person) and plurar for talking about multiple
@@ -39,15 +39,15 @@
   a key/value system. Its a optional tag.
   -->
   <properties>
-	 <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html 
+     <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
     NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
     <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> -->
-    
+
     <!-- convert using ImageMagick -->
     <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
     <property name="ImageConvert.ConverterCommand">convert</property>
     <property name="ImageConvert.ConverterRoot"></property>
-    
+
     <!-- generic property for all converters -->
     <property name="MaxConcurrentRequests">3</property>
   </properties>
