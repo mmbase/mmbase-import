@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.2 2002-01-31 10:05:07 pierre Exp $
+ * @version $Id: ContextProvider.java,v 1.2.4.1 2003-07-01 09:17:10 keesj Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider{
@@ -40,4 +40,13 @@ public class ContextProvider{
         }
         return LocalContext.getCloudContext();
     }
+
+    /**
+     * this method returns the default cloud context. 
+     * it is equals to LocalContext.getCloudContext();
+     * @since MMBase-1.6.4 (backport from MMBase-1.7 for compatibility) 
+     **/
+    public static CloudContext getDefaultCloudContext(){
+        return getCloudContext("local");
+    }   
 }
