@@ -6,9 +6,7 @@
 <%@include file="settings.jsp"%>
 <mm:import externid="url">index_users.jsp</mm:import>
 <mm:import externid="location" />
-<mm:import externid="visibleoperations">create,read,write,delete,change context</mm:import>
-<!-- mm:import externid="visibleoperations">read</mm:import-->
-<mm:import externid="parameters">location,language,visibleoperations</mm:import>
+<mm:import externid="parameters">location,language</mm:import>
 
 <html>
   <head>
