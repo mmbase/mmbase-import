@@ -37,7 +37,7 @@ import org.mmbase.cache.xslt.*;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.9 2002-03-29 20:15:52 michiel Exp $
+ * @version $Id: Utils.java,v 1.10 2002-04-02 13:37:04 michiel Exp $
  */
 public class Utils {
 
@@ -204,7 +204,7 @@ public class Utils {
      * @param       params  params to be used. eg.: $username will be replaced by the values in the hashtable, if a 'username' key is in the hashtable.
      * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
-    public static String getText(Node node, String defaultvalue, Hashtable params) {
+    public static String getText(Node node, String defaultvalue, Map params) {
         return fillInParams(getText(node, defaultvalue), params);
     }
 
@@ -267,7 +267,7 @@ public class Utils {
      * @param       text    The text what should be placed in the textnode.
      * @param       params  optional params which should be used in a replace action.
      */
-    public static void storeText(Node node, String text, Hashtable params) {
+    public static void storeText(Node node, String text, Map params) {
         storeText(node, fillInParams(text, params));
     }
 
@@ -375,21 +375,14 @@ public class Utils {
      * @param       transformer     The transformer.
      * @param       params          The params to be placed. Standard name/value pairs.
      */
-    protected static void setStylesheetParams(Transformer transformer, Hashtable params){
+    protected static void setStylesheetParams(Transformer transformer, Map params){
         if (params==null) return;
 
-        Enumeration paramnames = params.keys();
-        while (paramnames.hasMoreElements()){
-            String name = null;
-            try	{
-                name = (String)paramnames.nextElement();
-                // Expects an expression, so putting the string "hello" will make the
-                // processor look for the element hello. To set a param to a string
-                // value, we have to put extra quotes around it.
-                transformer.setParameter(name,params.get(name));
-            }catch (Exception paramE){
-                log.error(Logging.stackTrace(paramE));
-            }
+        Iterator i = params.entrySet().iterator();
+        while (i.hasNext()){
+            Map.Entry entry = (Map.Entry) i.next();
+            log.debug("setting param " + entry.getKey() + " to " + entry.getValue());
+            transformer.setParameter((String) entry.getKey(), entry.getValue());
         }
     }
 
@@ -403,7 +396,7 @@ public class Utils {
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, String xslfilename, Result result, Hashtable params) {
+    public static void transformNode(Node node, String xslfilename, Result result, Map params) {
         try {                       
             TemplateCache cache= TemplateCache.getCache();
             Source xsl = new StreamSource(new File(xslfilename));
@@ -416,7 +409,9 @@ public class Utils {
             }
             Transformer transformer = cachedXslt.newTransformer();
             // Set any stylesheet parameters.
-            setStylesheetParams(transformer, params);
+            if (params != null) {
+                setStylesheetParams(transformer, params);
+            }
             if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
             transformer.transform(new DOMSource(node), result);
         } catch (Exception e) {
@@ -475,7 +470,7 @@ public class Utils {
     /**
      * same as above, but now you can supply a params hashtable.
      */
-    public static Node transformNode(Node node, String xslfilename, Hashtable params) {
+    public static Node transformNode(Node node, String xslfilename, Map params) {
         DOMResult res = new DOMResult();
         transformNode(node,xslfilename,res,params);
         return res.getNode();
@@ -491,9 +486,8 @@ public class Utils {
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, String xslfilename, Writer out, Hashtable params) {
+    public static void transformNode(Node node, String xslfilename, Writer out, Map params) {
         if (log.isDebugEnabled()) log.debug("transforming: " + node.toString());
-
         // UNICODE works like this...
         java.io.StringWriter res = new java.io.StringWriter();
         transformNode(node,xslfilename, new javax.xml.transform.stream.StreamResult(res),  params);
@@ -537,7 +531,7 @@ public class Utils {
        any curly braces, the template is assumed to be a valid xpath (instead
        of plain data). Else the template is assumed to be a valid attribute template.
     */
-    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Hashtable params) {
+    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map params) {
         if (attributeTemplate==null) return null;
         StringBuffer result = new StringBuffer();
         String template = fillInParams(attributeTemplate, params);
@@ -607,13 +601,12 @@ public class Utils {
      * @param       params  the table with params (name/value pairs)
      * @return     The resulting string
      */
-    public static String fillInParams(String text, Hashtable params) {
+    public static String fillInParams(String text, Map params) {
         if (params==null) return text;
-        Enumeration enum = params.keys();
-        while (enum.hasMoreElements()) {
-            String name = (String)enum.nextElement();
-            String value = (String)params.get(name);
-            text = multipleReplace(text,"$"+name, value);
+        Iterator i = params.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            text = multipleReplace(text,"$"+entry.getKey(), (String) entry.getValue());
         }
         return text;
     }
