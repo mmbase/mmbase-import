@@ -27,8 +27,8 @@ import org.mmbase.util.*;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
 
-import nl.vpro.mmbase.util.media.video.*;
-import nl.vpro.mmbase.module.builders.*;
+import org.mmbase.util.media.video.*;
+import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen
@@ -50,49 +50,51 @@ public class VideoParts extends MMObjectBuilder {
 		int id=node.getIntValue("number");
 		String devname = null;
 
-		if (devtype==7){		//Check if source is from a jazzdrive -> 7
-			
-                	//sourcepath contains  eg. /Drivename/Dir/File
-                	String delim = "/";
-                	StringTokenizer tok = new StringTokenizer(sourcepath,delim);     //Retrieve devname
-                	if (tok.hasMoreTokens()) {
-                	        devname = tok.nextToken();
-                	}else{
-                	      System.out.println("VideoParts: insertDone: srcfile cannot be tokenized using symbol "+delim);
-                	      System.out.println("VideoParts: insertDone: insertDone will fail");
+		if(devtype==7) {		//Check if source is from a jazzdrive -> 7
+			debug("jazzdrives aren't supported at this moment");
+			/*
+           	//sourcepath contains  eg. /Drivename/Dir/File
+           	String delim = "/";
+           	StringTokenizer tok = new StringTokenizer(sourcepath,delim);     //Retrieve devname
+           	if(tok.hasMoreTokens()) {
+         		devname = tok.nextToken();
+         	} else {
+          	 	System.out.println("VideoParts: insertDone: srcfile cannot be tokenized using symbol "+delim);
+           	 	System.out.println("VideoParts: insertDone: insertDone will fail");
 			}
            	jazzdrives bul=(jazzdrives)mmb.getMMObject("jazzdrives");
 			Enumeration e=bul.search("WHERE name='"+devname+"'");
-                        if (e.hasMoreElements()) {
-                              	MMObjectNode jnode=(MMObjectNode)e.nextElement();
-                                jnode.setValue("state","copy");
-                                jnode.setValue("info","srcfile="+sourcepath+" id="+id);
-                                jnode.commit();
-                        }
+       		if (e.hasMoreElements()) {
+             	MMObjectNode jnode=(MMObjectNode)e.nextElement();
+             	jnode.setValue("state","copy");
+             	jnode.setValue("info","srcfile="+sourcepath+" id="+id);
+             	jnode.commit();
+       		}
+			*/
 		} else if (devtype==4 || devtype==5) {		//Check if source is from a import/
-		if (sourcepath!=null) {
-		System.out.println ("VideoParts.insertDone -> sourcepath = " + sourcepath);
-		System.out.println ("VideoParts.insertDone -> number = " + id);
-		File newfile=new File("/data/video/mov/"+id+".wav");
-		// With the new editor-interface (pulldowns), the full pathname
-		// will be provided (so including the leading '/data/import/')
-		//File curfile=new File("/data/import/"+t);
-		File curfile = new File (sourcepath);
-		if (curfile.exists()) {
-			if (curfile.renameTo(newfile)==false) {
-				System.out.println("VideoParts -> Can't rename wav file : " + sourcepath);
-			} else {
-				int st=node.getIntValue("storage"); 
-				RawVideos bul=(RawVideos)mmb.getMMObject("rawvideos");
-				if (st==1 || st==2) {
-					addRawVideo(bul,id,3,3,441000,2);   
-				} else if (st==3 || st==4) {
-					addRawVideo(bul,id,3,3,441000,1);   
+			if (sourcepath!=null) {
+				System.out.println ("VideoParts.insertDone -> sourcepath = " + sourcepath);
+				System.out.println ("VideoParts.insertDone -> number = " + id);
+				File newfile=new File("/data/video/mov/"+id+".wav");
+				// With the new editor-interface (pulldowns), the full pathname
+				// will be provided (so including the leading '/data/import/')
+				//File curfile=new File("/data/import/"+t);
+				File curfile = new File (sourcepath);
+				if (curfile.exists()) {
+					if (curfile.renameTo(newfile)==false) {
+						System.out.println("VideoParts -> Can't rename wav file : " + sourcepath);
+					} else {
+						int st=node.getIntValue("storage"); 
+						RawVideos bul=(RawVideos)mmb.getMMObject("rawvideos");
+						if (st==1 || st==2) {
+							addRawVideo(bul,id,3,3,441000,2);   
+						} else if (st==3 || st==4) {
+							addRawVideo(bul,id,3,3,441000,1);   
+						}
+						movAvailable(""+id);
+					}
 				}
-				movAvailable(""+id);
 			}
-		}
-		}
 		}
 		// devtype 8 is Armin
 		return(id);
