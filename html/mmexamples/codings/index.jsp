@@ -1,1 +1,1 @@
-<%@include file="default.jsp" %>
+<jsp:forward page="default.jsp" />
