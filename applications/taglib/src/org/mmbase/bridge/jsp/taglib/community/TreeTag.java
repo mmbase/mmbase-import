@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.11 2003-06-18 12:34:38 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.12 2003-06-18 13:40:09 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -96,6 +96,11 @@ public class TreeTag extends AbstractNodeListTag {
      *
      */
     public int doStartTag() throws JspTagException {
+      int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
+        }
+
         if (thread == Attribute.NULL) throw new JspTagException("Attribute thread has not been specified");
 
         //this is where we do the seach
