@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.270 2004-07-23 19:21:58 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.271 2004-07-29 18:58:08 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3548,7 +3548,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       </info>
       <since>MMBase-1.7.1</since>
     </attribute>
-    <see tag="context" />
     <see tag="param" />
     <see tag="url" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
@@ -5931,7 +5930,7 @@ The 0 is just counter, which starts at 0 on every page.
       </p>
     </info>
     <see type="tree" />
-    <see type="queryreferrer" />
+    <see tag="queryreferrer" />
     <since>MMBase-1.7.1</since>
     <attribute>
       <name>type</name>
