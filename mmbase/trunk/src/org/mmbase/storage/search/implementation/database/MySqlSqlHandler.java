@@ -34,14 +34,12 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.5 2003-11-27 17:58:42 robmaris Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.6 2003-12-11 13:05:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
-    /** Logger instance. */
-    private static Logger log
-    = Logging.getLoggerInstance(MySqlSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MySqlSqlHandler.class);
 
     /**
      * Constructor.
@@ -53,23 +51,54 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         super(disallowedValues);
     }
 
+
+
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
-            case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-
-            case SearchQueryHandler.FEATURE_OFFSET:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
-                break;
-
-            default:
-                result = super.getSupportLevel(feature, query);
+        case SearchQueryHandler.FEATURE_MAX_NUMBER:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            
+        case SearchQueryHandler.FEATURE_OFFSET:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            /*
+        case SearchQueryHandler.FEATURE_REGEXP:
+            result = SearchQueryHandler.SUPPORT_OPTIMAL;
+            break;
+            */
+        default:
+            result = super.getSupportLevel(feature, query);
         }
         return result;
     }
+
+    protected boolean useLower(FieldCompareConstraint constraint) {
+        return false;
+    }
+    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
+        if (caseSensitive) {
+            sb.append(" LIKE BINARY ");
+        } else {
+            sb.append(" LIKE ");
+        }
+        return sb;
+    }
+
+    /*
+    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
+        if (caseSensitive) {
+            sb.append(" REGEXP BINARY ");
+        } else {
+            sb.append(" REGEXP ");
+        }
+        return sb;
+    }
+    */
+
+
 
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
