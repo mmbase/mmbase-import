@@ -165,7 +165,7 @@ public class Statistics extends MMObjectBuilder {
                  *  hits          = number of hits in last interval
                  */
                 //int hitTime    = (int)(new java.util.Date().getTime() / 1000); // datefix
-                int hitTime=(int)(DateSupport.currentTimeMillis()/1000);
+                int hitTime=(int)(System.currentTimeMillis()/1000);
 	
                 int statsStart = stats.getIntValue ("start");
                 int nrOfSlices = stats.getIntValue ("timeslices");

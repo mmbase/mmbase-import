@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.49 2003-05-08 06:09:32 kees Exp $
+ * @version $Id: INFO.java,v 1.50 2003-07-02 06:20:44 keesj Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -731,7 +731,7 @@ public class INFO extends ProcessorModule {
                     return ""+System.currentTimeMillis()/1000;
                 }
             }
-            if (cmd.equals("DCURTIME")) return ""+DateSupport.currentTimeMillis()/1000;
+            if (cmd.equals("DCURTIME")) return ""+System.currentTimeMillis()/1000;
             if (cmd.equals("CURTIME10")) return ""+System.currentTimeMillis()/(10*1000);
             if (cmd.equals("CURTIME20")) return ""+System.currentTimeMillis()/(20*1000);
 
@@ -1055,7 +1055,7 @@ public class INFO extends ProcessorModule {
 
             return "Illegal date command";
         } else {
-            return new Date(DateSupport.currentTimeMillis()).toString();
+            return new Date(System.currentTimeMillis()).toString();
         }
     }
 

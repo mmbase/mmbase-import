@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.30 2003-05-08 06:09:21 kees Exp $
+ * @version $Id: BasicRelation.java,v 1.31 2003-07-02 06:20:43 keesj Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -142,8 +142,8 @@ public class BasicRelation extends BasicNode implements Relation {
         //int snumber = snumtype.getNumber();
         //int dnumber = dnumtype.getNumber();
         int rnumber = getNode().getIntValue("rnumber");
-        if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
-            if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
+        if (!mmb.getTypeRel().contains(snumtype, dnumtype, rnumber)) {
+            if (!mmb.getTypeRel().contains(dnumtype,snumtype,rnumber)) {
                 throw new BridgeException("Source and/or Destination node are not of the correct type. ("
                           + cloud.getNode(snumtype).getValue("name") + ","
                           + cloud.getNode(dnumtype).getValue("name") + ","

@@ -28,7 +28,7 @@ import org.mmbase.util.xml.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.74 2003-06-10 12:42:58 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.75 2003-07-02 06:20:46 keesj Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -2062,9 +2062,9 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector getNodeCacheEntries() {
         Vector results = new Vector();
-        Enumeration res = MMObjectBuilder.nodeCache.getOrderedElements();
-        while (res.hasMoreElements()) {
-            MMObjectNode node = (MMObjectNode)res.nextElement();
+        Iterator iter = MMObjectBuilder.nodeCache.getOrderedEntries().iterator();
+        while (iter.hasNext()) {
+            MMObjectNode node = (MMObjectNode)iter.next();
             results.addElement("" + MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
             results.addElement("" + node.getIntValue("number"));
             results.addElement(node.getStringValue("owner"));

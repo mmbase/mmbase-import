@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.14 2003-03-21 10:18:42 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.15 2003-07-02 06:20:45 keesj Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
@@ -117,7 +117,7 @@ public class MMEvents extends MMObjectBuilder {
         // a better way.
         Vector also = new Vector();
         log.debug("MMEvent probe CALL");
-        int now=(int)(DateSupport.currentTimeMillis()/1000);
+        int now=(int)(System.currentTimeMillis()/1000);
         log.debug("The currenttime in seconds NOW="+now);
         MMObjectNode snode = null, enode = null;
 
@@ -199,7 +199,7 @@ public class MMEvents extends MMObjectBuilder {
 
     public int insert(String owner,MMObjectNode node) {
         int val=node.getIntValue("start");
-        int newval=(int)(DateSupport.currentTimeMillis()/1000);
+        int newval=(int)(System.currentTimeMillis()/1000);
         if (val==-1) {
             node.setValue("start",newval);
             
@@ -214,7 +214,7 @@ public class MMEvents extends MMObjectBuilder {
 
     public boolean commit(MMObjectNode node) {
         int val=node.getIntValue("start");
-        int newval=(int)(DateSupport.currentTimeMillis()/1000);
+        int newval=(int)(System.currentTimeMillis()/1000);
         if (val==-1) {
             node.setValue("start",newval);
             
