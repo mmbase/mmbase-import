@@ -133,7 +133,13 @@ public class XMLNodeReader  {
 			NamedNodeMap nm=n2.getAttributes();
 			if (nm!=null) {
 			    Node n4=nm.getNamedItem("owner");
-			    MMObjectNode newnode=bul.getNewNode(n4.getNodeValue());
+			    MMObjectNode newnode = null;
+			    if(n4 != null) {
+				newnode = bul.getNewNode(n4.getNodeValue());
+			    }
+			    else {
+				newnode = bul.getNewNode("import");
+			    }
 			    n4=nm.getNamedItem("alias");
 			    if (n4!=null) newnode.setAlias(n4.getNodeValue());
 			    n4=nm.getNamedItem("number");
