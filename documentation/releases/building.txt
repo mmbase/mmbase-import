@@ -48,7 +48,7 @@ In order build MMBase into your own webapplication, you must do the following:
 
 1. Download and install a Java Development Kit
 
-2. Download and install the Ant Binary Distribution (Ant 1.4 is required)
+2. Download and install the Ant Binary Distribution (Ant 1.5 is required)
 
 3. Choose one of the Ant-targets, eg bindist which will build a
    complete binary distribution, and start ant with this target ('ant
