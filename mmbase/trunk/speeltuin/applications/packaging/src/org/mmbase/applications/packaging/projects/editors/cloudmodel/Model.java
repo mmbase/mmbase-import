@@ -36,10 +36,13 @@ public class Model {
      *  Description of the Field
      */
     public final static String DTD_PACKAGING_CLOUD_MODEL_1_0 = "packaging_cloud_model_1_0.dtd";
+    public final static String DTD_BUILDER_1_1 = "builder_1_1.dtd";
+
     /**
      *  Description of the Field
      */
     public final static String PUBLIC_ID_PACKAGING_CLOUD_MODEL_1_0 = "-//MMBase//DTD packaging_cloud_model config 1.0//EN";
+    public final static String PUBLIC_ID_BUILDER_1_1 = "-//MMBase//DTD builder config 1.1//EN";
 
     private ArrayList neededbuilders = new ArrayList();
     private ArrayList neededreldefs = new ArrayList();
@@ -52,15 +55,27 @@ public class Model {
      */
     public static void registerPublicIDs() {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_CLOUD_MODEL_1_0, "DTD_PACKAGING_CLOUD_MODEL_1_0", Model.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, "DTD_BUILDER_1_1", Model.class);
     }
 
     public Model(String modelfilename) {
-	readModel(modelfilename);
 	this.path=modelfilename;
+	readModel(modelfilename);
     }
 
     public Iterator getNeededBuilders() {
 	return neededbuilders.iterator();
+    }
+
+    public NeededBuilder getNeededBuilder(String buildername) {
+    	Iterator nbl=getNeededBuilders();
+	while (nbl.hasNext()) {
+		NeededBuilder nb=(NeededBuilder)nbl.next();
+		if (nb.getName().equals(buildername)) {
+			return nb;
+		}
+	}
+	return null;
     }
 
     public Iterator getNeededRelDefs() {
@@ -170,6 +185,8 @@ public class Model {
 				}
 			}
 			neededbuilders.add(nb);
+			// try to find if this is defined in a real file
+			readBuilder(nb);
 	    	}
                 for (Enumeration ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef"); ns.hasMoreElements(); ) {
             		Element n = (Element) ns.nextElement();
@@ -228,6 +245,210 @@ public class Model {
         }
   }
 
+
+    private void readBuilder(NeededBuilder nb) {
+	String builderpath=path.substring(0,path.length()-4)+"/"+nb.getName()+".xml";
+        File file = new File(builderpath);
+        if (file.exists()) {
+            XMLBasicReader reader = new XMLBasicReader(builderpath, Model.class);
+            if (reader != null) {
+                org.w3c.dom.Node n = reader.getElementByPath("builder");
+		if (n!=null) {
+                    	NamedNodeMap nm = n.getAttributes();
+	                if (nm != null) {
+                        	org.w3c.dom.Node n2 = nm.getNamedItem("name");
+                        	if (n2 != null) {
+                           		nb.setName(n2.getNodeValue());
+				}
+                        	n2 = nm.getNamedItem("maintainer");
+                        	if (n2 != null) {
+                           		nb.setMaintainer(n2.getNodeValue());
+				}
+                        	n2 = nm.getNamedItem("version");
+                        	if (n2 != null) {
+                           		nb.setVersion(n2.getNodeValue());
+				}
+                        	n2 = nm.getNamedItem("extends");
+                        	if (n2 != null) {
+                           		nb.setExtends(n2.getNodeValue());
+				}
+			}
+		}
+                n = reader.getElementByPath("builder.status");
+                if (n!=null) {
+                    org.w3c.dom.Node n2 = n.getFirstChild();
+                    if (n2 != null) {
+                       nb.setStatus(n2.getNodeValue());
+                    }
+                }
+                n = reader.getElementByPath("builder.searchage");
+                if (n!=null) {
+                    org.w3c.dom.Node n2 = n.getFirstChild();
+                    if (n2 != null) {
+                       nb.setSearchAge(n2.getNodeValue());
+                    }
+                }
+                for (Enumeration ns = reader.getChildElements("builder.names", "singular"); ns.hasMoreElements(); ) {
+            		Element n4 = (Element) ns.nextElement();
+            		String name = reader.getElementValue(n4);
+                    	NamedNodeMap nm = n4.getAttributes();
+	                if (nm != null) {
+				String language="unknown";
+                        	org.w3c.dom.Node n2 = nm.getNamedItem("xml:lang");
+                        	if (n2 != null) {
+                           		language=n2.getNodeValue();
+				}
+				nb.setSingularName(language,name);
+			}
+	    	}
+                for (Enumeration ns = reader.getChildElements("builder.names", "plural"); ns.hasMoreElements(); ) {
+            		Element n4 = (Element) ns.nextElement();
+            		String name = reader.getElementValue(n4);
+                    	NamedNodeMap nm = n4.getAttributes();
+	                if (nm != null) {
+				String language="unknown";
+                        	org.w3c.dom.Node n2 = nm.getNamedItem("xml:lang");
+                        	if (n2 != null) {
+                           		language=n2.getNodeValue();
+				}
+				nb.setPluralName(language,name);
+			}
+	    	}
+                for (Enumeration ns = reader.getChildElements("builder.descriptions", "description"); ns.hasMoreElements(); ) {
+            		Element n4 = (Element) ns.nextElement();
+            		String description = reader.getElementValue(n4);
+                    	NamedNodeMap nm = n4.getAttributes();
+	                if (nm != null) {
+				String language="unknown";
+                        	org.w3c.dom.Node n2 = nm.getNamedItem("xml:lang");
+                        	if (n2 != null) {
+                           		language=n2.getNodeValue();
+				}
+				nb.setDescription(language,description);
+			}
+	    	}
+                for (Enumeration ns = reader.getChildElements("builder.fieldlist", "field"); ns.hasMoreElements(); ) {
+            		Element n4 = (Element) ns.nextElement();
+			decodeField(nb,n4);
+	    	}
+	    }
+        }
+  }
+
+  private void decodeField(NeededBuilder nb,Element n) {
+	NeededBuilderField nbf = new NeededBuilderField();
+	org.w3c.dom.NodeList l=n.getElementsByTagName("description");
+	for (int i=0;i<l.getLength();i++) {
+		org.w3c.dom.Node n2=l.item(i);
+                NamedNodeMap nm = n2.getAttributes();
+                if (nm != null) {
+                     org.w3c.dom.Node n3 = nm.getNamedItem("xml:lang");
+                     if (n3 != null) {
+                          nbf.setDescription(n3.getNodeValue(),n2.getFirstChild().getNodeValue());
+                     }
+		}
+	}
+	l=n.getElementsByTagName("guiname");
+	for (int i=0;i<l.getLength();i++) {
+		org.w3c.dom.Node n2=l.item(i);
+                NamedNodeMap nm = n2.getAttributes();
+                if (nm != null) {
+                     org.w3c.dom.Node n3 = nm.getNamedItem("xml:lang");
+                     if (n3 != null) {
+                          nbf.setGuiName(n3.getNodeValue(),n2.getFirstChild().getNodeValue());
+                     }
+		}
+	}
+	l=n.getElementsByTagName("guitype");
+	if (l.getLength()>0) {
+		org.w3c.dom.Node n2=l.item(0);
+                if (n2 != null) {
+                       nbf.setGuiType(n2.getFirstChild().getNodeValue());
+		}
+	}
+	l=n.getElementsByTagName("input");
+	if (l.getLength()>0) {
+		org.w3c.dom.Node n2=l.item(0);
+                if (n2 != null) {
+		       try {
+                       		nbf.setEditorInputPos(Integer.parseInt(n2.getFirstChild().getNodeValue()));
+		       } catch(Exception e) {
+				log.info("builder.field.editor.input not a number");
+		       }
+		}
+	}
+	l=n.getElementsByTagName("list");
+	if (l.getLength()>0) {
+		org.w3c.dom.Node n2=l.item(0);
+                if (n2 != null) {
+		       try {
+                       		nbf.setEditorListPos(Integer.parseInt(n2.getFirstChild().getNodeValue()));
+		       } catch(Exception e) {
+				log.info("builder.field.editor.list not a number");
+		       }
+		}
+	}
+	l=n.getElementsByTagName("search");
+	if (l.getLength()>0) {
+		org.w3c.dom.Node n2=l.item(0);
+                if (n2 != null) {
+		       try {
+                       		nbf.setEditorSearchPos(Integer.parseInt(n2.getFirstChild().getNodeValue()));
+		       } catch(Exception e) {
+				log.info("builder.field.editor.search not a number");
+		       }
+		}
+	}
+	l=n.getElementsByTagName("name");
+	if (l.getLength()>0) {
+		org.w3c.dom.Node n2=l.item(0);
+                if (n2 != null) {
+                  	nbf.setDBName(n2.getFirstChild().getNodeValue());
+		}
+	}
+	l=n.getElementsByTagName("type");
+	if (l.getLength()>0) {
+		org.w3c.dom.Node n2=l.item(0);
+                if (n2 != null) {
+                  	nbf.setDBType(n2.getFirstChild().getNodeValue());
+		}
+                NamedNodeMap nm = n2.getAttributes();
+                if (nm != null) {
+                     org.w3c.dom.Node n3 = nm.getNamedItem("state");
+                     if (n3 != null) {
+                          nbf.setDBState(n3.getNodeValue());
+		     }
+                     n3 = nm.getNamedItem("size");
+                     if (n3 != null) {
+			  try {
+                          	nbf.setDBSize(Integer.parseInt(n3.getNodeValue()));
+		       	  } catch(Exception e) {
+				log.info("builder.field.editor.search not a number");
+		          }
+		     }
+                     n3 = nm.getNamedItem("key");
+                     if (n3 != null) {
+			  if (n3.getNodeValue().equals("true") || n3.getNodeValue().equals("TRUE")) {
+                          	nbf.setDBKey(true);
+			  } else {
+                          	nbf.setDBKey(false);
+			  }
+		     }
+                     n3 = nm.getNamedItem("notnull");
+                     if (n3 != null) {
+			  if (n3.getNodeValue().equals("true") || n3.getNodeValue().equals("TRUE")) {
+                          	nbf.setDBNotNull(true);
+			  } else {
+                          	nbf.setDBNotNull(false);
+			  }
+		     }
+		}
+	}
+	nb.addField(nbf);
+	
+
+  }
+
   private boolean writeModel() {
 	String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	body+="<!DOCTYPE cloudmodel PUBLIC \"-//MMBase/DTD cloudmodel 1.0//EN\" \"http://www.mmbase.org/dtd/cloudmodel_1_0.dtd\">\n";
@@ -238,6 +459,7 @@ public class Model {
 	while (nbl.hasNext()) {
 		NeededBuilder nb=(NeededBuilder)nbl.next();
 		body+="\t\t<builder maintainer=\""+nb.getMaintainer()+"\" version=\""+nb.getVersion()+"\">"+nb.getName()+"</builder>\n";
+		writeBuilder(nb);
 	}
 	body+="\t</neededbuilderlist>\n\n";
 
@@ -271,12 +493,122 @@ public class Model {
         }
 
         // write back to disk
-        File sfile = new File(path);
         try {
-            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
-            scan.writeBytes(body);
-            scan.flush();
-            scan.close();
+       	    Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF8"));
+            out.write(body);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
+	return true;
+  }
+
+
+  private boolean writeBuilder(NeededBuilder nb) {
+	String builderpath=path.substring(0,path.length()-4)+"/"+nb.getName()+".xml";
+	String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	body+="<!DOCTYPE builder PUBLIC \"-//MMBase/DTD builder 1.1//EN\" \"http://www.mmbase.org/dtd/builder_1_1.dtd\">\n";
+
+	body+="<builder name=\""+nb.getName()+"\" maintainer=\""+nb.getMaintainer()+"\" version=\""+nb.getVersion()+"\" extends=\""+nb.getExtends()+"\">\n";
+	body+="\t<status>"+nb.getStatus()+"</status>\n";
+	body+="\t<searchage>"+nb.getSearchAge()+"</searchage>\n";
+	body+="\t<names>\n";
+	body+="\t\t<!-- singles per language as defined by ISO 639 -->\n";
+	HashMap sn=nb.getSingularNames();
+	Iterator snk=sn.keySet().iterator();
+	while (snk.hasNext()) {
+		String key=(String)snk.next();
+		String value=(String)sn.get(key);
+		body+="\t\t<singular xml:lang=\""+key+"\">"+value+"</singular>\n";
+	}
+	body+="\t\t<!-- singles per language as defined by ISO 639 -->\n";
+	HashMap pn=nb.getPluralNames();
+	Iterator pnk=pn.keySet().iterator();
+	while (pnk.hasNext()) {
+		String key=(String)pnk.next();
+		String value=(String)pn.get(key);
+		body+="\t\t<plural xml:lang=\""+key+"\">"+value+"</plural>\n";
+	}
+	body+="\t</names>\n";
+	body+="\t<!-- <descriptions> small description of the builder for human reading -->\n";
+	body+="\t<descriptions>\n";
+	HashMap de=nb.getDescriptions();
+	Iterator dek=de.keySet().iterator();
+	while (dek.hasNext()) {
+		String key=(String)dek.next();
+		String value=(String)de.get(key);
+		body+="\t\t<description xml:lang=\""+key+"\">"+value+"</description>\n";
+	}
+	body+="\t</descriptions>\n";
+	body+="\t<fieldlist>\n";
+	Iterator fl=nb.getFields();
+	int pos = 3;
+	while (fl.hasNext()) {
+		NeededBuilderField nbf = (NeededBuilderField)fl.next();
+		body+="\t\t<!-- POS "+(pos++)+" : <field> '"+nbf.getDBName()+"'  -->\n";
+		body+="\t\t<field>\n";
+		body+="\t\t\t<descriptions>\n";
+
+		de=nbf.getDescriptions();
+		dek=de.keySet().iterator();
+		while (dek.hasNext()) {
+			String key=(String)dek.next();
+			String value=(String)de.get(key);
+			body+="\t\t\t\t<description xml:lang=\""+key+"\">"+value+"</description>\n";
+		}
+		body+="\t\t\t</descriptions>\n";
+		body+="\t\t\t<gui>\n";
+		de=nbf.getGuiNames();
+		dek=de.keySet().iterator();
+		while (dek.hasNext()) {
+			String key=(String)dek.next();
+			String value=(String)de.get(key);
+			body+="\t\t\t\t<guiname xml:lang=\""+key+"\">"+value+"</guiname>\n";
+		}
+		body+="\t\t\t\t<guitype>"+nbf.getGuiType()+"</guitype>\n";
+		body+="\t\t\t</gui>\n";
+		body+="\t\t\t<!-- editor related  -->\n";
+		body+="\t\t\t<editor>\n";
+		body+="\t\t\t\t<positions>\n";
+		body+="\t\t\t\t\t<!-- position in the input area of the editor -->\n";
+		body+="\t\t\t\t\t<input>"+nbf.getEditorInputPos()+"</input>\n";
+		body+="\t\t\t\t\t<!-- position in list area of the editor -->\n";
+		body+="\t\t\t\t\t<list>"+nbf.getEditorListPos()+"</list>\n";
+		body+="\t\t\t\t\t<!-- position in search area of the editor -->\n";
+		body+="\t\t\t\t\t<search>"+nbf.getEditorSearchPos()+"</search>\n";
+
+		body+="\t\t\t\t</positions>\n";
+		body+="\t\t\t</editor>\n";
+		body+="\t\t\t<!-- database related  -->\n";
+		body+="\t\t\t<db>\n";
+		body+="\t\t\t\t<!-- name of the field in the database -->\n";
+		body+="\t\t\t\t<name>"+nbf.getDBName()+"</name>\n";
+		body+="\t\t\t\t<!-- MMBase datatype and demands on it -->\n";
+		if (nbf.getDBSize()==-1) {
+			body+="\t\t\t\t<type state=\""+nbf.getDBState()+"\" notnull=\""+nbf.getDBNotNull()+"\" key=\""+nbf.getDBKey()+"\">"+nbf.getDBType()+"</type>\n";
+		} else {
+			body+="\t\t\t\t<type state=\""+nbf.getDBState()+"\" size=\""+nbf.getDBSize()+"\" notnull=\""+nbf.getDBNotNull()+"\" key=\""+nbf.getDBKey()+"\">"+nbf.getDBType()+"</type>\n";
+		}
+		body+="\t\t\t</db>\n";
+		body+="\t\t</field>\n";
+	}
+	body+="\t</fieldlist>\n";
+	body+="</builder>\n";
+
+        // check if the dirs are created, if not create them
+        String dirsp = builderpath.substring(0, builderpath.lastIndexOf(File.separator));
+        File dirs = new File(dirsp);
+        if (!dirs.exists()) {
+            dirs.mkdirs();
+        }
+
+        // write back to disk
+        try {
+       	    Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(builderpath), "UTF8"));
+            out.write(body);
+            out.flush();
+            out.close();
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
