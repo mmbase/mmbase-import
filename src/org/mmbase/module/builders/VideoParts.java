@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: VideoParts.java,v 1.17 2002-02-20 10:43:26 pierre Exp $
+ * @version $Id: VideoParts.java,v 1.18 2003-03-07 08:50:10 pierre Exp $
  */
 public class VideoParts extends MediaParts {
 
@@ -32,7 +32,7 @@ public class VideoParts extends MediaParts {
 
     /**
      * @javadoc
-     * @deprecation contains commented-out code
+     * @deprecated contains commented-out code
      * @dependency EditState (SCAN code)
      * @bad-literal devtypes should be named constants
      */
@@ -96,7 +96,7 @@ public class VideoParts extends MediaParts {
     /**
      * pre commit from the editor
      * @javadoc
-     * @deprecation contains commented-out code
+     * @deprecated contains commented-out code
      * @dependency EditState (SCAN code)
      * @bad-literal devtypes should be named constants
      */

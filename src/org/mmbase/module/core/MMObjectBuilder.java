@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.215 2003-03-06 17:45:13 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.216 2003-03-07 08:50:13 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2064,7 +2064,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Build a set command string from a set nodes ( should be moved )
-     * @parame nodes Vector containg the nodes to put in the set
+     * @param nodes Vector containg the nodes to put in the set
      * @param fieldName fieldname whsoe values should be put in the set
      * @return a comma-seperated list of values, as a <code>String</code>
      */
@@ -2409,7 +2409,7 @@ public class MMObjectBuilder extends MMTable {
      * avoid the overhead.
      *
      * @since MMBase-1.6
-     * @seet #getValue
+     * @see #getValue
      */
 
     protected Object getObjectValue(MMObjectNode node, String field) {
@@ -2505,7 +2505,7 @@ public class MMObjectBuilder extends MMTable {
      * Derived builders should override this method to provide additional functions.
     *
      * @since MMBase-1.6
-     * @throw IllegalArgumentException if the argument List does not
+     * @throws IllegalArgumentException if the argument List does not
      * fit the function
      * @see #executeFunction
      */
@@ -3321,7 +3321,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Gets description of the builder, using the specified language.
      * @param lang The language requested
-     * @returns the descriptions in that language, or <code>null</code> if it is not avaialble
+     * @return the descriptions in that language, or <code>null</code> if it is not avaialble
      */
     public String getDescription(String lang) {
         if (descriptions==null) return null;

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.46 2002-05-14 16:23:23 eduard Exp $
+ * @version $Id: INFO.java,v 1.47 2003-03-07 08:50:05 pierre Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -1328,7 +1328,7 @@ public class INFO extends ProcessorModule {
     }
 
     /**
-     * Tests whether a given filename exists either as a directory, as a file, or as a path (depending on the subcommand given).<br />
+     * Tests whether a given filename exists either as a directory, as a file, or as a path (depending on the subcommand given).
      * Subcommands are DIR, FILE, and PATH. This subcommand need be followed by a filename.
      * @param sp the current page context
      * @param tok the commands to be executed

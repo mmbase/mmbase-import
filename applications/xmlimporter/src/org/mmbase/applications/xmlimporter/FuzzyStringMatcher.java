@@ -1,15 +1,12 @@
 /*
- * ClassName: FuzzyStringMatcher.java
- *
- * Date: dec. 1st. 2001
- *
- * Copyright notice:
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 
 package org.mmbase.applications.xmlimporter;
 
@@ -17,7 +14,7 @@ package org.mmbase.applications.xmlimporter;
  * Utility class, providing methods for a fuzzy comparison between strings.
  * @author Rob van Maris (Finalist IT Group)
  * @since MMBase-1.5
- * @version $Id: FuzzyStringMatcher.java,v 1.2 2002-02-27 16:54:25 pierre Exp $
+ * @version $Id: FuzzyStringMatcher.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public class FuzzyStringMatcher {
 
@@ -76,8 +73,8 @@ public class FuzzyStringMatcher {
     }
 
     /**
-     * Creates normalized title, e.g. all non-alphanumeric
-     * characters replaced by white space, all characters converted
+     * Creates normalized title.
+     * e.g. all non-alphanumeric characters replaced by white space, all characters converted
      * to lowercase non-diacritical characters, and all white space
      * sequences contracted to a single white space character.
      * This is a convenience method, provided to make string comparison

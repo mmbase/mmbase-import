@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 /**
  * Support class for scanparser to calculate pages in the background.
  * @author Rico Jansen
- * @verison $Id: PageProcess.java,v 1.4 2003-03-04 14:55:04 nico Exp $
+ * @version $Id: PageProcess.java,v 1.5 2003-03-07 08:50:25 pierre Exp $
  */
 public class PageProcess implements Runnable {
 
@@ -80,6 +80,6 @@ public class PageProcess implements Runnable {
     }
 
     public String toString() {
-	return uri;
+        return uri;
     }
 }

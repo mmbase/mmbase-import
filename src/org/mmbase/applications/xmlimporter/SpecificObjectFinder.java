@@ -1,15 +1,12 @@
 /*
- * SpecificObjectFinder.java
- * Date: dec. 1st. 2001
- *
- * Copyright notice:
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- */
 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
@@ -24,7 +21,7 @@ import java.util.*;
  *
  * @author Rob van Maris (Finalist IT Group)
  * @since MMBase-1.5
- * @version $Id: SpecificObjectFinder.java,v 1.2 2002-02-27 16:54:26 pierre Exp $
+ * @version $Id: SpecificObjectFinder.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
  */
 public class SpecificObjectFinder implements SimilarObjectFinder {
 
@@ -75,7 +72,7 @@ public class SpecificObjectFinder implements SimilarObjectFinder {
     }
 
     /**
-     * Merge two objects in the persistent cloud, i.e. the database.
+     * Merge two objects in the persistent cloud (the database).
      * @param mmbaseId1 MMBase number of the first object. Afterward this
      *  object will be deleted.
      * @param mmbaseId2 MMBase number of the second object. Afterward this

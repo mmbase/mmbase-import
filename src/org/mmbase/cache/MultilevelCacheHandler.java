@@ -15,15 +15,12 @@ import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 
 /**
- * This object handles cache multilevel tag cache requests. it removed
- * invalid lines adding listeners to builders used in the multilevel
- * query's
-
+ * This object handles cache multilevel tag cache requests.
  *
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.11 2003-03-04 13:49:17 nico Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.12 2003-03-07 08:50:04 pierre Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 
@@ -68,12 +65,12 @@ public class MultilevelCacheHandler extends Cache {
      */
     public Object put(Object hash, Object o, Vector types,StringTagger tagger) {
         if (! isActive()) return null;
-	
+
         MultilevelCacheEntry n =  (MultilevelCacheEntry)super.get(hash);
-	if (n == null) {
-		n = new MultilevelCacheEntry(this, hash, o, tagger);
-        	addListeners(types, n);
-	}
+        if (n == null) {
+                n = new MultilevelCacheEntry(this, hash, o, tagger);
+                addListeners(types, n);
+        }
         return put(hash,n);
     }
 

@@ -15,11 +15,11 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.3 $ $Date: 2003-03-04 14:12:21 $ 
+ * @version $Id: EmailQueueProbe.java,v 1.4 2003-03-07 08:50:08 pierre Exp $
  */
 public class EmailQueueProbe implements Runnable {
 
-    static private Logger log = Logging.getLoggerInstance(EmailQueueProbe.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(EmailQueueProbe.class.getName());
 
     Thread kicker = null;
     int sleeptime;
@@ -32,7 +32,7 @@ public class EmailQueueProbe implements Runnable {
     }
 
     public void init() {
-        this.start();    
+        this.start();
     }
 
 
@@ -46,13 +46,13 @@ public class EmailQueueProbe implements Runnable {
             kicker.start();
         }
     }
-    
+
     /**
      * Stops the main Thread.
      */
     public void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);  
+        kicker.setPriority(Thread.MIN_PRIORITY);
         kicker.suspend();
         kicker.stop();
         kicker = null;
@@ -62,7 +62,7 @@ public class EmailQueueProbe implements Runnable {
      * Main loop, exception protected
      */
     public void run () {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
+        kicker.setPriority(Thread.MIN_PRIORITY+1);
         while (kicker!=null) {
             try {
                 doWork();
@@ -77,7 +77,7 @@ public class EmailQueueProbe implements Runnable {
      * Main work loop
      */
     public void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
+        kicker.setPriority(Thread.MIN_PRIORITY+1);
 
         while (kicker!=null) {
             parent.checkQueue();

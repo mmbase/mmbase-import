@@ -1,16 +1,12 @@
 /*
- * ClassName: InteractiveTransaction.java
- *
- * Date: dec. 1st. 2001
- *
- * Copyright notice:
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- */
 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
@@ -20,7 +16,7 @@ import org.mmbase.applications.xmlimporter.ObjectMerger;
 /**
  * Extended from Transaction for interactive handling of dulpicates.
  * @since MMBase-1.5
- * @version $Id: InteractiveTransaction.java,v 1.2 2002-02-27 16:54:26 pierre Exp $
+ * @version $Id: InteractiveTransaction.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public class InteractiveTransaction extends Transaction {
 

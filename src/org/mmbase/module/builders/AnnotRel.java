@@ -21,8 +21,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author David van Zeventer
- * @version 8 Dec 1999
- * @$Revision: 1.15 $ $Date: 2003-03-04 14:39:58 $
+ * @version $Id: AnnotRel.java,v 1.16 2003-03-07 08:50:07 pierre Exp $
  */
 public class AnnotRel extends InsRel {
 
@@ -160,21 +159,21 @@ public class AnnotRel extends InsRel {
     }
 
 
-	public Object getValue(MMObjectNode node,String field) {
-		if (field.equals("ms_pos")) {
-			int pos=node.getIntValue("pos");
-			String value=DateSupport.getTime((int)(pos/1000));	
-			return(value+".0");
-		} else if (field.equals("ms_length")) {
-			int len=node.getIntValue("length");
-			String value=DateSupport.getTime((int)(len/1000));	
-			return(value);
-		} else if (field.equals("end")) {
-			int pos=node.getIntValue("pos");
-			int len=node.getIntValue("length");
-			int end=pos+len;
-			return(""+end);
-		}
-		return(null);
-	}
+        public Object getValue(MMObjectNode node,String field) {
+                if (field.equals("ms_pos")) {
+                        int pos=node.getIntValue("pos");
+                        String value=DateSupport.getTime((int)(pos/1000));
+                        return(value+".0");
+                } else if (field.equals("ms_length")) {
+                        int len=node.getIntValue("length");
+                        String value=DateSupport.getTime((int)(len/1000));
+                        return(value);
+                } else if (field.equals("end")) {
+                        int pos=node.getIntValue("pos");
+                        int len=node.getIntValue("length");
+                        int end=pos+len;
+                        return(""+end);
+                }
+                return(null);
+        }
 }

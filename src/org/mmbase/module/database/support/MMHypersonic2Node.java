@@ -28,14 +28,14 @@ import org.mmbase.util.logging.Logging;
  *
  * It is now deprecated and only kept for people using the old
  * hypersonic database instead of the new version Hsqldb.
- * 
+ *
  * Eduard:
  * This class is not depricated, since Orion 1.6.0 still uses this
  * database as is example database with jndi resource's
  *
- * @ deprecated use {@link MMHsqldb2Node}
+ * @deprecated use {@link MMHsqldb2Node}
  * @author Daniel Ockeloen
- * @$Revision: 1.8 $ $Date: 2002-09-24 19:44:24 $
+ * @version $Id: MMHypersonic2Node.java,v 1.9 2003-03-07 08:50:17 pierre Exp $
  */
 public class MMHypersonic2Node extends MMSQL92Node {
     private static Logger log = Logging.getLoggerInstance(MMHypersonic2Node.class.getName());
@@ -47,7 +47,7 @@ public class MMHypersonic2Node extends MMSQL92Node {
     /**
      * Overridden since the hypersonic has following problems:
      * <ul><li>
-     * <code>rs.getString(i)</code> does not return the same as 
+     * <code>rs.getString(i)</code> does not return the same as
      * <code>new String(rs.getBytes(i))</code> (was added for encoding
      * problem. Actuall we need 2 settings for MMBase. 1 for pages and 1
      * for database layer. When we keep using one will only give problems
@@ -57,7 +57,7 @@ public class MMHypersonic2Node extends MMSQL92Node {
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs, int i, String prefix) {
         try {
-	    fieldname=fieldname.toLowerCase();
+            fieldname=fieldname.toLowerCase();
             // is this fieldname disallowed ? ifso map it back
             if (allowed2disallowed.containsKey(fieldname)) {
                 fieldname = (String)allowed2disallowed.get(fieldname);
@@ -69,7 +69,7 @@ public class MMHypersonic2Node extends MMSQL92Node {
             switch (type) {
             case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING: {
-		String tmp=rs.getString(i);
+                String tmp=rs.getString(i);
                 if (tmp == null) {
                     node.setValue(prefix + fieldname, "");
                 } else {

@@ -13,7 +13,8 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Generates a HTML Element: SELECT, uses this variables which are set in the<br>
+ * Generates a HTML Element: SELECT.
+ * Uses these variables which are set in the
  * super class (HTMLElement) to generate HTML:
  * <ul>
  * <li>boolean sel        : if true it checks if the String selected equals the
@@ -33,8 +34,8 @@ import org.mmbase.util.logging.*;
  * <li>boolean empty      : if true an empty option value is added.</li>
  * </el>
  *
- * @version 26-Sep-1996
  * @author Jan van Oosterom
+ * @version $Id: HTMLElementSelect.java,v 1.5 2003-03-07 08:50:33 pierre Exp $
  */
 
 public class HTMLElementSelect  extends HTMLElement  {

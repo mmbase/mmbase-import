@@ -106,7 +106,7 @@ public class TypeDef extends MMObjectBuilder {
      * Remove a node from the cloud, when the represented builder was active
      * it will also be unloaded
      * @param node The node to remove.
-     * @throw RuntimeException When the operation could not be performed
+     * @throws RuntimeException When the operation could not be performed
      */
     public void removeNode(MMObjectNode node) {
         Integer number=node.getIntegerValue("number");

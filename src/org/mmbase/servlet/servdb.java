@@ -24,14 +24,14 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * servdb handles binairy request (*.db) files for MMbase spaces as images (img.db)
- * realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db) with servscan
- * it provides the communication between the clients browser and the mmbase space.
+ * The servdb servlet handles binairy requests.
+ * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
+ * With servscan it provides the communication between the clients browser and the mmbase space.
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.44 2002-06-28 21:17:02 michiel Exp $
+ * @deprecated use {@link ImageServlet} or {@linbk AttachmentServlet} instead
+ * @version $Id: servdb.java,v 1.45 2003-03-07 08:50:28 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -105,7 +105,7 @@ public class servdb extends JamesServlet {
         String templine,templine2;
         int filesize;
 
-        incRefCount(req); // this is already done in service of MMBaseServlet, 
+        incRefCount(req); // this is already done in service of MMBaseServlet,
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
