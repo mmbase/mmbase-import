@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * MultiColCompare compares two Vectors on a given list of column numbers
@@ -55,6 +54,16 @@ public class MultiColCompare implements CompareInterface {
         }
     }
 
+    /**
+     * Make the comparison between to Vectors over all columns specified in the
+     * postiton array, starting from a specified index in that array.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Vector</code>.
+     * @param other the second object to compare. should be a <code>Vector</code>.
+     * @param compareposindex the index in the positionarray where to start comparing
+     * @return the result of the comparison
+     */
     public int compareCol(Object thisOne, Object other, int comparePosIndex) {
         // log.debug("compareCol: thisOne:"+thisOne+", other:"+other+", compPosIndex:"+comparePosIndex);
         Object object1;
@@ -78,15 +87,40 @@ public class MultiColCompare implements CompareInterface {
         return result;
     }
 
+    /**
+     * Make the comparison between to Vectors over all colums specified in the
+     * postiton array.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Vector</code>.
+     * @param other the second object to compare. should be a <code>Vector</code>.
+     * @return the result of the comparison
+     */
     public int compare(Object thisOne, Object other) {
         return compareCol(thisOne, other, 0);
     }
 
+    /**
+     * Make the comparison between two Integer objects.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Integer</code>.
+     * @param other the second object to compare. should be a <code>Integer</code>.
+     * @return the result of the comparison
+     */
     int internalIntCompare(Object thisOne, Object other) {
-        return(((Integer)thisOne).intValue()-((Integer)other).intValue());
+        return ((Integer)thisOne).intValue()-((Integer)other).intValue();
     }
 
+    /**
+     * Make the comparison between two String objects.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>String</code>.
+     * @param other the second object to compare. should be a <code>String</code>.
+     * @return the result of the comparison
+     */
     int internalStringCompare(Object thisOne, Object other) {
-        return(((String)thisOne).compareTo((String)other));
+        return ((String)thisOne).compareTo((String)other);
     }
 }
