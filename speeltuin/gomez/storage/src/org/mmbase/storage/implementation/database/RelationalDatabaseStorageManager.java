@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.1 2003-08-05 08:30:39 pierre Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.1 2003-08-20 13:25:45 pierre Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 

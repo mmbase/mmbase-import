@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 import java.io.InputStream;
 import java.util.StringTokenizer;
@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.15 2003-08-19 14:18:31 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.1 2003-08-20 13:25:44 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -71,7 +71,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     
     // Default storage manager class
     private final static Class DEFAULT_STORAGE_MANAGER_CLASS =
-        org.mmbase.storage.database.RelationalDatabaseStorageManager.class;
+        org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager.class;
 
     /**
      * The datasource in use by this factory.
@@ -112,7 +112,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         if (dataSourceURI != null) {
             try {
                 Context jndiCntx = new InitialContext();
-                dataSource = (DataSource)jndiCntx.lookup(dataSourceURI);
+log.info("SEARCH:"+dataSourceURI);
+                Object o =jndiCntx.lookup(dataSourceURI);
+log.info("FOUND: ("+o.getClass().getName()+")"+o);
+                dataSource = (DataSource)o;
+                
             } catch(NamingException ne) {
                 log.warn("Datasource '"+dataSourceURI+"' not available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
             }
@@ -203,8 +207,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             // First, determine the database name from the parameter set in mmbaseroot
             String databaseName =mmbase.getInitParameter("database");
             if (databaseName != null) {
-                // if databsename is specified, use that database resource
-                databaseResourcePath = "/org/mmbase/storage/database/resources/"+databaseName+".xml";
+                // if databasename is specified, attempt to use the database resource of that name
+                if (databaseName.startsWith("/")) {
+                    databaseResourcePath = databaseName;
+                } else {
+                    databaseResourcePath = "/org/mmbase/storage/implementation/database/resources/"+databaseName+".xml";
+                }
             } else {
                 // otherwise, search for supported drivers using the lookup xml
                 DatabaseStorageLookup lookup = new DatabaseStorageLookup();
