@@ -5,7 +5,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.5 2002-07-02 21:17:37 michiel Exp $
+  @version $Id: prompts.xsl,v 1.6 2002-07-18 15:45:28 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -53,14 +53,14 @@
 <xsl:variable name="tooltip_delete">Delete this item</xsl:variable>
 <xsl:template name="prompt_delete_confirmation" >Are you sure you want to delete this item?</xsl:template>
 <!-- save button prompts and tooltips -->
-<xsl:template name="prompt_save">(save)</xsl:template>
+<xsl:template name="prompt_save">save</xsl:template>
 <xsl:variable name="tooltip_save">Store all changes.</xsl:variable>
 <xsl:variable name="tooltip_no_save">The changes cannot be saved, since some data is not filled in correctly.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
-<xsl:template name="prompt_cancel">(cancel)</xsl:template>
+<xsl:template name="prompt_cancel">cancel</xsl:template>
 <xsl:variable name="tooltip_cancel">Cancel this task, changes will NOT be saved.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
-<xsl:template name="prompt_step">(step <xsl:value-of select="position()" />)</xsl:template>
+<xsl:template name="prompt_step">step <xsl:value-of select="position()" /></xsl:template>
 <xsl:variable name="tooltip_step_not_valid" > is NOT valid. Click here to correct the errors.</xsl:variable>
 <xsl:variable name="tooltip_valid" >The current form is valid.</xsl:variable>
 <xsl:variable name="tooltip_not_valid" >The current form is NOT valid. Correct red-marked fields and try again.</xsl:variable>
@@ -90,20 +90,18 @@
 <xsl:template name="prompt_search_title" >Title contains</xsl:template>
 <xsl:template name="prompt_search_owner" >Owner is</xsl:template>
 <!-- navigation -->
-<xsl:template name="prompt_index">(index)</xsl:template>
+<xsl:template name="prompt_index">index</xsl:template>
 <xsl:variable name="tooltip_index" >Return to the index page</xsl:variable>
-<xsl:template name="prompt_logout">(logout)</xsl:template>
+<xsl:template name="prompt_logout">logout</xsl:template>
 <xsl:variable name="tooltip_logout" >Logout and return to the index page</xsl:variable>
 <!-- prompts and tooltips for lists -->
-<xsl:template name="prompt_edit_list" >
-<xsl:value-of select="$title" />(<xsl:value-of select="@count" /> items)
-</xsl:template>
+<xsl:template name="prompt_edit_list" ><xsl:value-of select="$title" /> (<xsl:value-of select="@count" /> items)</xsl:template>
 <xsl:variable name="tooltip_edit_list" >These are the items that you can edit.</xsl:variable>
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">please select one or more items from this list</xsl:variable>
 <xsl:template name="prompt_no_results" >No entries found, try again...</xsl:template>
 <xsl:template name="prompt_more_results" >(More items found...)</xsl:template>
-<xsl:template name="prompt_result_count" >(<xsl:value-of select="/list/@count" /> items found)</xsl:template>
+<xsl:template name="prompt_result_count" ><xsl:value-of select="/list/@count" /> items found</xsl:template>
 <xsl:variable name="tooltip_cancel_search" >Cancel</xsl:variable>
 <xsl:variable name="tooltip_end_search" >OK</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
