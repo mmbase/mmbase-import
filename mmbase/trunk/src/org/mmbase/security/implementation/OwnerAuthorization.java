@@ -117,7 +117,7 @@ public class OwnerAuthorization extends Authorization {
     
     // used to get some very basic functionality inside the security..
     private static String EVERYBODY = "everybody";
-    public String setContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
     	return EVERYBODY;
     }
 
