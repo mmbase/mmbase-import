@@ -9,5 +9,6 @@
 %><mm:present referid="refresh"
 ><% needsRefresh = true;
 %></mm:present><mm:import id="jsps">/mmbase/edit/wizard/jsp/</mm:import
-><mm:import id="thisdir"><%=new  java.io.File(request.getServletPath()).getParentFile()%></mm:import><mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import
->
+><mm:import id="thisdir"><%=new  java.io.File(request.getServletPath()).getParentFile()%></mm:import
+><mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
+
