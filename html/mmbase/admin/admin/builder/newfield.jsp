@@ -15,7 +15,6 @@
 <% String value=null;
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
-<%=header("Administrate Builder "+builder+", Add Field")%>
 <table summary="new builder field properties" width="93%" cellspacing="1" cellpadding="3">
 <tr align="left">
  <th class="header" colspan="3">Add New Field to Builder <%=builder%></th>
