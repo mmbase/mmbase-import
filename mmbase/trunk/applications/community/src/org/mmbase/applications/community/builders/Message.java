@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.22 2004-01-07 15:29:09 pierre Exp $
+ * @version $Id: Message.java,v 1.23 2004-01-08 07:34:22 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -98,7 +98,7 @@ public class Message extends MMObjectBuilder {
     private NodeBreaker chatboxMessages = null;
 
     // indicates whether this builder has been activated for the community application
-    private boolean active = true;
+    private boolean active = false;
 
     /**
      * Constructor
