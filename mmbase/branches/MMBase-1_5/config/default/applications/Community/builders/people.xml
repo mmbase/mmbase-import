@@ -115,10 +115,6 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -134,8 +130,8 @@ a key/value system. Its a optional tag.
 		<gui>
 			<guiname xml:lang="fr">firstname</guiname>
 			<guiname xml:lang="nl">Voornaam</guiname>
-			<guiname xml:lang="en">First_name</guiname>
-			<guiname xml:lang="us">First_name</guiname>
+			<guiname xml:lang="en">FirstName</guiname>
+			<guiname xml:lang="us">FirstName</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -149,10 +145,6 @@ a key/value system. Its a optional tag.
 				<search>1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">32</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -168,8 +160,8 @@ a key/value system. Its a optional tag.
 		<gui>
 			<guiname xml:lang="fr">nomDeFamille</guiname>
 			<guiname xml:lang="nl">Achternaam</guiname>
-			<guiname xml:lang="en">Last_name</guiname>
-			<guiname xml:lang="us">Last_name</guiname>
+			<guiname xml:lang="en">LastName</guiname>
+			<guiname xml:lang="us">LastName</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -183,10 +175,6 @@ a key/value system. Its a optional tag.
 				<search>2</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">32</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -217,10 +205,6 @@ a key/value system. Its a optional tag.
 				<search>3</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">32</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -230,13 +214,14 @@ a key/value system. Its a optional tag.
 		</db>
 	</field>
 
-	<!-- POS 6 : <field> 'function'  -->
+	<!-- POS 6 : <field> 'account'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Funktie</guiname>
-			<guiname xml:lang="en">Function</guiname>
-			<guiname xml:lang="us">Function</guiname>
+			<guiname xml:lang="fr">Compte</guiname>
+			<guiname xml:lang="nl">Account</guiname>
+			<guiname xml:lang="en">Account</guiname>
+			<guiname xml:lang="us">Account</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -250,44 +235,6 @@ a key/value system. Its a optional tag.
 				<search>4</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">32</constraint>
-		</constraints>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>function</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
-		</db>
-	</field>
-
-	<!-- POS 7 : <field> 'account'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="fr">Account</guiname>
-			<guiname xml:lang="nl">Account</guiname>
-			<guiname xml:lang="en">Account</guiname>
-			<guiname xml:lang="us">Account</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>5</input>
-				<!-- position in list area of the editor -->
-				<list>5</list>
-				<!-- position in search area of the editor -->
-				<search>5</search>
-			</positions>
-		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder>
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -28,32 +28,25 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="nl">Community</singular>
-	<singular xml:lang="en">Community</singular>
+	<!-- singles per language  as defined by RFC xxx -->
 	<singular xml:lang="us">Community</singular>
-	<!-- multiple per language as defined by ISO 639 -->
-	<plural xml:lang="nl">Communities</plural>
-	<plural xml:lang="en">Communities</plural>
+	<singular xml:lang="en">Community</singular>
+	<singular xml:lang="nl">Community</singular>
+	<!-- multiple per language  as defined by RFC xxx -->
 	<plural xml:lang="us">Communities</plural>
+	<plural xml:lang="en">Communities</plural>
+	<plural xml:lang="nl">Communities</plural>
 </names>
 
 <!-- <descriptions>
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language as defined by ISO 639  -->
-	<description xml:lang="nl">A place where people can come together to communicate on the Internet</description>
-	<description xml:lang="en">A place where people can come together to communicate on the Internet</description>
+<!-- descriptions per language  as defined by RFC xxx -->
 	<description xml:lang="us">A place where people can come together to communicate on the Internet</description>
+	<description xml:lang="en">A place where people can come together to communicate on the Internet</description>
+	<description xml:lang="nl">A place where people can come together to communicate on the Internet</description>
 </descriptions>
-
-<!-- <properties>
-you can define properties to be used by the classfile (if used) it uses
-a key/value system. Its a optional tag.
--->
-<properties>
-</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -65,9 +58,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Object</guiname>
-			<guiname xml:lang="en">Object</guiname>
 			<guiname xml:lang="us">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="nl">Object</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -86,7 +79,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true" key="true">INTEGER</type>
+			<type state="persistent" notnull="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -94,6 +87,7 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
+			<guiname xml:lang="us">Owner</guiname>
 			<guiname xml:lang="en">Owner</guiname>
 			<guiname xml:lang="us">Eigenaar</guiname>
 			<guitype>string</guitype>
@@ -109,16 +103,12 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
+			<type state="persistent" size="12" notnull="true">STRING</type>
 		</db>
 	</field>
 
@@ -126,9 +116,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Naam</guiname>
-			<guiname xml:lang="en">Name</guiname>
 			<guiname xml:lang="us">Name</guiname>
+			<guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="nl">Naam</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -142,16 +132,12 @@ a key/value system. Its a optional tag.
 				<search>1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>name</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="255" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -159,9 +145,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Subtitel</guiname>
-			<guiname xml:lang="en">Subtitle</guiname>
 			<guiname xml:lang="us">Subtitle</guiname>
+			<guiname xml:lang="en">Subtitle</guiname>
+			<guiname xml:lang="nl">Subtitel</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -175,16 +161,12 @@ a key/value system. Its a optional tag.
 				<search>2</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>subtitle</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="255" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -192,9 +174,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Intro</guiname>
-			<guiname xml:lang="en">Intro</guiname>
 			<guiname xml:lang="us">Intro</guiname>
+			<guiname xml:lang="en">Intro</guiname>
+			<guiname xml:lang="nl">Intro</guiname>
 			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -208,16 +190,12 @@ a key/value system. Its a optional tag.
 				<search>3</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">2047</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>intro</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="2047" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="2047" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -225,9 +203,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Body</guiname>
-			<guiname xml:lang="en">Body</guiname>
 			<guiname xml:lang="us">Body</guiname>
+			<guiname xml:lang="en">Body</guiname>
+			<guiname xml:lang="nl">Body</guiname>
 			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -246,17 +224,18 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>body</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">STRING</type>
 		</db>
 	</field>
+
 
 	<!-- POS 7 : <field> 'kind'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Soort</guiname>
-			<guiname xml:lang="en">Kind</guiname>
 			<guiname xml:lang="us">Kind</guiname>
+			<guiname xml:lang="en">Kind</guiname>
+			<guiname xml:lang="nl">Soort</guiname>
 			<guitype>communitykind</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -270,19 +249,16 @@ a key/value system. Its a optional tag.
 				<search>5</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">15</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>kind</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="15" notnull="true" key="false">STRING</type>
+			<type state="persistent" size="15" notnull="true">STRING</type>
 		</db>
 	</field>
 
 </fieldlist>
 
 </builder>
+

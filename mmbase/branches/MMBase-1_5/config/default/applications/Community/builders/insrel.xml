@@ -110,10 +110,6 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -214,11 +210,11 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Richting</guiname>
 			<guiname xml:lang="fr">Direction</guiname>
+			<guiname xml:lang="nl">Richting</guiname>
 			<guiname xml:lang="en">Direction</guiname>
 			<guiname xml:lang="us">Direction</guiname>
-			<guitype>integer</guitype>
+			<guitype>dirs</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
