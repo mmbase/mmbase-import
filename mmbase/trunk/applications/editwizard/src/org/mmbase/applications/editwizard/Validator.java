@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.4 2002-09-23 11:09:16 michiel Exp $
+ * @version $Id: Validator.java,v 1.5 2003-04-16 07:16:37 pierre Exp $
  */
 
 public class Validator {
@@ -89,7 +89,7 @@ public class Validator {
         val = field.getOwnerDocument().createElement("validator");
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
-        if ("html".equals(dttype) || "html".equals(ftype)) {
+        if ("string".equals(dttype)) {
             // string or html
             int dtminlength = 0;
             try {
