@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManager.java,v 1.4 2000-10-26 13:10:37 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.5 2000-11-08 13:24:19 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/10/26 13:10:37  vpro
+	Rico: fixed b0rken uncompilable code
+	
 	Revision 1.3  2000/10/13 11:41:34  vpro
 	Rico: made it working
 	
@@ -31,7 +34,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.4 2000-10-26 13:10:37 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.5 2000-11-08 13:24:19 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -50,7 +53,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectBuilder builder=mmbase.getMMObject(type);
 		MMObjectNode node;
 		if (builder!=null) {
-			node=builder.getNewTmpNode(owner,owner+key);
+			node=builder.getNewTmpNode(owner,makeKey(owner,key));
 			if (_debug) debug("New tmpnode "+node);
 		} else {
 			debug("Can't find builder "+type);
@@ -58,50 +61,46 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(owner+key);
 	}
 
-	public String deleteTmpNode(String key) {
+	public String deleteTmpNode(String owner,String key) {
 		MMObjectBuilder b=mmbase.getMMObject("typedef");
-		b.removeTmpNode(key);
-		if (_debug) debug("delete node "+key);
+		b.removeTmpNode(makeKey(owner,key));
+		if (_debug) debug("delete node "+makeKey(owner,key));
 		return(key);
 	}
 
-	public MMObjectNode getNode(String key) {
+	public MMObjectNode getNode(String owner,String key) {
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		MMObjectNode node;
-		node=bul.getTmpNode(key);
+		node=bul.getTmpNode(makeKey(owner,key));
 		// fallback to normal nodes
 		if (node==null) {
 			if (_debug) debug("getNode tmp not node found "+key);
-			bul.getNode(key);
+			node=bul.getNode(key);
 		}
 		return(node);
 	}
 
-	/*
-	 * added JohnB, 3MPS, 11/10/2000
-	 *
-	 */
-	 public String getObject(String key,String owner) {
+	public String getObject(String owner,String key) {
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		MMObjectNode node;
-		node=bul.getTmpNode(key);
+		node=bul.getTmpNode(makeKey(owner,key));
 		// fallback to normal nodes
 		if (node==null) {
 			if (_debug) debug("getObject not tmp node found "+key);
 			bul.getNode(key);
 		}
 		if (node != null) {
-			return(key);
+			return(makeKey(owner,key));
 		} else {
 			return null;
 		}
 	}
 
-	public String setObjectField(String key,String field,Object value) {
+	public String setObjectField(String owner,String key,String field,Object value) {
 		MMObjectNode node;
 
 		// Memo next can be done by new MMObjectNode.setValue
-		node=getNode(key);
+		node=getNode(owner,key);
 		if (node!=null) {
 			int type=node.getDBType(field);
 			if (type>=0) {
@@ -116,10 +115,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	}
 
 
-	public String getObjectFieldAsString(String key,String field) {
+	public String getObjectFieldAsString(String owner,String key,String field) {
 		String rtn;
 		MMObjectNode node;
-		node=getNode(key);
+		node=getNode(owner,key);
 		if (node==null) {
 			debug("getObjectFieldAsString(): node "+key+" not found!");
 			rtn="";
@@ -129,10 +128,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(rtn);
 	}
 
-	public Object getObjectField(String key,String field) {
+	public Object getObjectField(String owner,String key,String field) {
 		Object rtn;
 		MMObjectNode node;
-		node=getNode(key);
+		node=getNode(owner,key);
 		if (node==null) {
 			debug("getObjectFieldAsString(): node "+key+" not found!");
 			rtn="";
@@ -142,4 +141,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(rtn);
 	}
 
+	private String makeKey(String owner,String key) {
+		return(owner+"_"+key);
+	}
 }
