@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
-><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:import externid="language">nl</mm:import><mm:locale language="$language">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
