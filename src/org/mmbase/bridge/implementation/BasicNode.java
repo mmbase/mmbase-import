@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.44 2002-01-31 10:05:11 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.45 2002-01-31 16:36:01 jaco Exp $
  */
 public class BasicNode implements Node {
     public static final int ACTION_CREATE = 1;   // create a node
@@ -760,16 +760,7 @@ public class BasicNode implements Node {
     }
 
     public boolean mayLink() {
-        String message = "Node.mayLink() is deprecated.";
-        log.warn(message);
-        // Give us some time to fix the editors before throwing an exception.
-        Calendar now = java.util.Calendar.getInstance();
-        Calendar deadline = java.util.Calendar.getInstance();
-        deadline.set(2002, 0, 31, 0, 0, 0);
-        if (!now.before(deadline)) {
-            throw new java.lang.UnsupportedOperationException(message);
-        }
-        return true;
+        throw new java.lang.UnsupportedOperationException("Node.mayLink() is deprecated.");
     }
 
     public boolean mayChangeContext() {
