@@ -22,11 +22,12 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+
 [1.6.2]
  - getRelatedNodes speedup, avoiding databasequeries when casting to actual type
- - Inheritance support in relations. It is possible to define object->object (related) now!
+ - Inheritance support in relations. It is possible to define
+ object->object (related) now!
  - %k (to log memory usage) in MMPatternLayout
- 
  
 [1.6.1]
  This is a bugfix release, so no new features
@@ -67,7 +68,6 @@ Documentation New Features:
 --------------------------
 
 [1.6.2] 
-
 - Chunked output. This takes very long. Put
   docbook.stylesheet=xhtml/docbook.xsl in build.properties, for
   old-style documentation
@@ -109,6 +109,7 @@ Examples New Features:
 ---------------------
 [1.6.2]
 - jsp editors use MMCI 1.2 features now (getAllowedRelations etc)
+
 [1.6.1]
 [1.6.0]
 - Alternative jsp-editors (aka my_editors) added as an example.
@@ -123,7 +124,7 @@ General Bug Fixes:
 ------------------
 
 [1.6.2]
- - Bytearray fields are not queried by default any more this was reuslting in
+ - Bytearray fields are not queried by default any more this was resulting in
    OutOfMemory errors
 
 [1.6.1]
@@ -141,6 +142,7 @@ General Bug Fixes:
 - MMInformix42Node' decodeDBNodeField won't apply String/Clob from
   clusternodes: #5129
 - MMInformix42Node is not UTF8 complient: #5133
+
 [1.6.0]
 - Fixed a problem with memory allocation in the bridge, which could cause
   MMBase to claim disproportional parts of memory when using the Multilevel
@@ -190,7 +192,7 @@ MMCI Bug Fixes:
 
 [1.6.2]
 - #5568 getAllowedRelations(NodeManager nodeManager, String role,
-String direction) fails to allow relation between two same types 
+  String direction) fails to allow relation between two same types 
 
 ----------------
 RMMCI Bug Fixes:
@@ -242,6 +244,7 @@ Upgrade:
   replacing the mmbase.jar.
 - On other systems: there has been one bugfix in the editwizards
   examples and some documentation has been fixed/added.
+
 [1.6.0]
 When you're upgrading from a previous MMBase-version it's important to
 know there have been made a few changes in the xml configuration of
@@ -260,6 +263,8 @@ Known Issues and Problems:
   mysql-connector-java-3.0.6-stable-bin.jar, see bug #5968 for more information.
 - With ImageMagick 5.4.8 and jdk 1.4 uploading images can go wrong,
   see bug #5877 for more information.
+- There is no decent way to become administrator with basicsecurity,
+  so the adminpages aren't working, see bug #5686 for more information
 
 [1.6.1]
 - No known issues solved
