@@ -2,10 +2,14 @@ package org.mmbase.applications.crontab;
 
 
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 public class JCronEntry {
     
+    private static final Logger log = Logging.getLoggerInstance(JCronEntry.class);
     private JCronJob jCronJob;
+
+    private Thread thread;
     
     private String id;
     private String name;
@@ -17,11 +21,12 @@ public class JCronEntry {
     private JCronEntryField month     ;//1-12
     private JCronEntryField dayOfWeek ;//0-7 (0 or 7 is sunday)
     
-    public JCronEntry(String id,String crontime,String name,String className) throws Exception{
+    public JCronEntry(String id, String crontime, String name, String className) throws Exception {
         this.id = id;
         this.name = name;
         this.className = className;
         jCronJob = (JCronJob)Class.forName(className).newInstance();
+        jCronJob.init(this);
         minute = new JCronEntryField();
         hour = new JCronEntryField();
         dayOfMonth = new JCronEntryField();
@@ -30,8 +35,17 @@ public class JCronEntry {
         setTimeVal(crontime);
     }
     
-    public void kick(){
-        jCronJob.kick(this);
+    public void kick() {
+        if (thread == null) {
+            thread = new Thread(jCronJob, "JCronJob(" + toString() + ")");
+            thread.setDaemon(true);            
+        }
+        if (thread.isAlive()) {
+            log.warn("Job " + jCronJob + " still running, so not restarting it again.");
+        } else {
+            thread.start();
+        }
+
     }
     
     public void setTimeVal(String crontime){
@@ -52,7 +66,6 @@ public class JCronEntry {
     
     public boolean mustRun(Date date){
         Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
         if (
         minute.valid(cal.get(cal.MINUTE)) &&
         hour.valid(cal.get(cal.HOUR_OF_DAY)) &&
@@ -81,5 +94,9 @@ public class JCronEntry {
     
     public JCronEntryField getDayOfWeekEntry(){
         return dayOfWeek;
+    }
+
+    public String toString() {
+        return name + ": " + className;
     }
 }

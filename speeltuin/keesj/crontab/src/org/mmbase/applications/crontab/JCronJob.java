@@ -1,6 +1,9 @@
 package org.mmbase.applications.crontab;
 
-public interface JCronJob{
-    public void kick(JCronEntry jCronEntry);
-    public void stop(JCronEntry jCronEntry);
+
+
+public interface JCronJob extends Runnable {
+
+    public void init(JCronEntry jCronEntry);
+    public void stop();
 }
