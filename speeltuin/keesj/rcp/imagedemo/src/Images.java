@@ -76,7 +76,7 @@ public class Images extends Thinlet
      */
     public static void main(String[] args) throws java.io.IOException
     {
-        new FrameLauncher("MMBase", new Images(), 400, 400);
+        new FrameLauncher("MMBase", new Images(), 800, 600);
     }
     
 }
