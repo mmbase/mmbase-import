@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.module.core;
+import java.util.Enumeration;
 
 /**
  *
@@ -68,4 +69,28 @@ public interface NodeInterface {
 	 * @return all relations of the Node of a certain type
 	 */
 	public Enumeration getRelations(String type);
+	
+	/**
+	 * count the relations attached to the Node
+	 * @return number of relations
+	 */
+	public Integer countRelations();
+
+	/**
+	 * count the relations of a specific type attached to the Node 
+	 * @return number of relations of a specific type
+	 */
+	public Integer countRelations(String type);
+
+	/**
+	 * get all related Nodes
+	 * @return all related Nodes
+	 */
+	public Enumeration getRelatedNodes();
+
+	/**
+	 * get all related Nodes of a certain type
+	 * @return all related Nodes of a certain type
+	 */
+	public Enumeration getRelatedNodes(String type);
 }
