@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.8 2003-07-25 12:42:05 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.9 2003-07-25 14:47:25 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -36,15 +36,23 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      */
     protected Class storageManagerClass;
 
-    // the map with configuration data
+    /**
+     * The map with configuration data
+     */
     protected Map attributes;
     
-    // the map with disallowed fieldnames and (if given) alternates
-    protected Map disallowedFields;
-    
-    // the map with type mapping data
+    /**
+     * The list with type mappings
+     */
     protected List typeMappings;
 
+    // The map with disallowed fieldnames and (if given) alternates
+    private Map disallowedFields;
+    
+    // The map with alternate fieldnames for disallowed fieldnames.
+    // this is the reverse of the disallowedFields map, but only for disallowed fields with alternate values.
+    private Map alternateFields;
+    
     /**
      * Stores the MMBase reference, and initializes the attribute map.
      * Opens and reads the StorageReader for this factory.
@@ -53,7 +61,8 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     public final void init(MMBase mmbase) throws StorageError {
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
-        disallowedFields = Collections.synchronizedMap(new HashMap());
+        disallowedFields = new HashMap();
+        alternateFields = new HashMap();
         typeMappings = Collections.synchronizedList(new ArrayList());
         try {
             load();
@@ -75,7 +84,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         // get attributes
         setAttributes(reader.getAttributes());
         // get disallowed fields
-        disallowedFields.putAll(reader.getDisallowedFields());
+        setDisallowedFields(reader.getDisallowedFields());
         // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
         Collections.sort(typeMappings);
@@ -171,9 +180,54 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         return Collections.unmodifiableMap(disallowedFields);
     }
 
+    /**
+     * Sets the map of disallowed Fields.
+     * Unlike setAttributes(), this actually replaces the existing disallowed fields map.
+     * It also craetes a map of alternate fieldnames, used in {@link #unmapField()}
+     * @throw StorageException if the fieldmap contains duplicate alternate names 
+     */
+	synchronized protected void setDisallowedFields(Map disallowedFields) throws StorageException {
+        // note: these maps need not be synchronised, as they cannot be changed concurrently 
+        Map alternateFields = new HashMap();
+        for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
+            Map.Entry mapEntry = (Map.Entry)i.next();
+            Object reverseKey = mapEntry.getValue();
+            Object reverseValue = mapEntry.getKey();
+            if (reverseKey != null) {
+                if (alternateFields.containsKey(mapEntry.getValue())) {
+                    throw new StorageException("The disallowed fields map contains duplicate alternate names");
+                } else {
+                    alternateFields.put(reverseKey, reverseValue);
+                }
+            }
+        }
+        this.disallowedFields = new HashMap(disallowedFields);
+        this.alternateFields = alternateFields;
+    }
+
+	public String mapField(String name) throws StorageException {
+        if (disallowedFields.containsKey(name)) {
+            String alternateName = (String)disallowedFields.get(name);
+            if (alternateName == null) {
+                throw new StorageException("The name of the field '"+name+"' is disallowed, and no alternate value is available.");
+            }
+            return alternateName;
+        } else {
+            return name;
+        }
+    }
+    
+	public String unmapField(String name) throws StorageException {
+        String disallowedName = (String)alternateFields.get(name);
+        if (disallowedName != null) {
+            return disallowedName;
+        } else {
+            return name;
+        }
+    }
+    
     abstract public double getVersion();
     
 	abstract public boolean supportsTransactions();
     
-
 }
