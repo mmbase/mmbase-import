@@ -1,11 +1,11 @@
 <%@ include file="settings.jsp"
-%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud"><%@ page errorPage="exception.jsp"
-%><mm:log jspvar="log"><%
+%><%@ page errorPage="exception.jsp" %><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud">
+<mm:log jspvar="log"><%
     /**
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.21 2003-12-08 12:16:24 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.22 2004-05-24 14:02:44 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -61,13 +61,14 @@ if (wizardConfig != null) {
     } else {
         if ((closedObject instanceof Config.WizardConfig) &&
             ((Config.WizardConfig)closedObject).wiz.committed()) {
-            // we move from a inline sub-wizard to a parent wizard...
+            
+            log.trace("we move from a inline sub-wizard to a parent wizard...");
             Config.WizardConfig inlineWiz=(Config.WizardConfig)closedObject;
             // with an inline popupwizard we should like to pass the newly created or updated
             // item to the 'lower' wizard.
             String objnr=inlineWiz.objectNumber;
             if ("new".equals(objnr)) {
-                // obtain new object number
+                log.trace("obtain new object number");
                 objnr=inlineWiz.wiz.getObjectNumber();
                 String parentFid = inlineWiz.parentFid;
                 if ((parentFid!=null) && (!parentFid.equals(""))) {
@@ -76,9 +77,12 @@ if (wizardConfig != null) {
                     wizardConfig.wiz.processCommand(wc);
                 }
             } else {
-                WizardCommand wc = new WizardCommand("cmd/update-item////",objnr);
+                log.trace("update-item for " + objnr);
+                WizardCommand wc = new WizardCommand("cmd/update-item////", objnr);
                 wizardConfig.wiz.processCommand(wc);
             }
+        } else {
+          log.trace("closed object not commited");
         }
         log.debug("processing request");
         wizardConfig.wiz.processRequest(request);
@@ -112,17 +116,18 @@ if (wizardConfig.wiz.startWizard()) {
     String origin = cmd.getParameter(3);
 
     String wizardname = cmd.getValue();
-    String redirectTo = response.encodeURL("wizard.jsp?fid=" + parentFid +
+    String redirectTo = response.encodeRedirectURL("wizard.jsp?fid=" + parentFid +
                                  "&did=" + parentDid +
                                  "&proceed=true&wizard=" + wizardname +
                                  "&sessionkey=" + ewconfig.sessionKey +
                                  "&objectnumber=" + objectnumber + 
-                                 "&popupid=" + popupId );
+                                 "&popupid=" + popupId);
+//                                  + "&origin=" + origin);
     log.debug("Redirecting to " + redirectTo);
     response.sendRedirect(redirectTo);
 } else if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
-    response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey +
+    response.sendRedirect(response.encodeRedirectURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey +
                                              "&proceed=true" +
                                              "&remove=true" +
                                              "&popupid=" + popupId ));
@@ -130,5 +135,4 @@ if (wizardConfig.wiz.startWizard()) {
     log.trace("Send html back");
     wizardConfig.wiz.writeHtmlForm(out, wizardConfig.wizard);
 }
-%></mm:log></mm:cloud></mm:locale>
-
+%></mm:log></mm:cloud></mm:content>

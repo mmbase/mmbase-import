@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.40 2004-05-02 15:34:43 nico Exp $
+ * @version  $Id: settings.jsp,v 1.41 2004-05-24 14:02:43 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -27,20 +27,8 @@ String sessionKey = "editwizard";
 %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
 
 log.trace("start of settings.jsp");
-// Add some header to make sure these pages are not cached anywhere.
-response.addHeader("Cache-Control","no-cache");
-response.addHeader("Pragma","no-cache");
-
 // Set session timeout
 session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
-
-// and make every page expired ASAP.
-long now = System.currentTimeMillis();
-response.setDateHeader("Expires",       now);
-response.setDateHeader("Last-Modified", now);
-
-//response.addHeader("Date",          now); // Jetty doesn't like if you set this.
-log.trace("done setting headers");
 
 // It is possible to specify an alternatvie 'sessionkey'
 // The sessionkey is used as a key for the session.
