@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<SECURE>
+<html xmlns="http://www.w3.org/TR/xhtml">
+<head>
+<title>MMBase Forum</title>
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
+</head>
+<body class="basic">
+$MOD-communityprc-CHANNEL-$PARAM1-DELALLMESSAGES
+<table summary="forum threads" width="93%" cellspacing="1" cellpadding="3" border="0">
+<tr align="left">
+  <th class="header" colspan="2">Result of your action</th>
+</tr>
+<tr>
+  <td class="multidata" colspan="2">
+     All messages are removed.
+  </td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td class="navigate"><a href="forum.shtml?$PARAM1" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
+<td class="data">Return to forum</td>
+</tr>
+</table>
+</body></html>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="XMLImporter" default="jar" basedir=".">
+  <property name="project.name"     value="xmlimporter" />
+  <property name="project.package"   value="org/mmbase/applications/xmlimporter" />
+  <property name="project.target.templates.dir"   value="xmlimporter" />
+  &base;
+
+</project>
+
+
+

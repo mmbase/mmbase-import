@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<!--
+		The Config module contains procedures, callable from jsp or SCAN, which can be
+		used to provide color-coding and validation of other xml configuration files.<br />
+		It is used by the administrator pages.
+-->
+<module>
+
+	<!-- <status>
+		What is the status of this builder options : active or inactive
+		This module should normally be active.
+		Making this module inactive may cause problems in some of the administration pages.
+	-->
+	<status>active</status>
+
+
+	<!-- <classfile>
+		Classfile used for initalization of this module
+	-->
+	<classfile>org.mmbase.module.Config</classfile>
+
+	<!-- <properties>
+		 You can define properties to be used by the classfile.
+		 This module does not have any properties.
+		 This tag should be left empty, but in place.
+	 -->
+	<properties>
+	</properties>
+
+</module>

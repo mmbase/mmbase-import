@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Project Proposal Requirements</title>
+
+    <date>2004-08-27</date>
+
+    <edition></edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Rob</firstname>
+
+        <surname>van Maris</surname>
+      </author>
+
+      <author>
+        <firstname>Rob</firstname>
+
+        <surname>Vermeulen</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>Project Proposal Requirements</title>
+
+    <para>A project proposal should provide sufficient information to answer
+    the questions below.</para>
+
+    <para>A project may be started based on a first draft of a proposal, even
+    if some of these questions are left unanswered. In this case the project
+    is only granted CVS-privileges later on, after a complete proposal is
+    submitted and approved by the MMC. The idea here is to allow for a
+    preliminary inception phase to investigate the feasability of the project
+    and determine the scope.</para>
+
+    <para>1) Motivation <itemizedlist>
+        <listitem>
+          <para>Why is this project necessary?</para>
+        </listitem>
+
+        <listitem>
+          <para>Why does this have to be an MMBase project instead of an
+          external package? (package terminology)</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>2) Goal <itemizedlist>
+        <listitem>
+          <para>What is the purpose of this project?</para>
+        </listitem>
+
+        <listitem>
+          <para>Which goals need to be achieved in order to consider the
+          project completed?</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>3) Design <itemizedlist>
+        <listitem>
+          <para>What are the key classes in the design. (Class diagram or
+          -listing).</para>
+        </listitem>
+
+        <listitem>
+          <para>What area the key technologies used?</para>
+        </listitem>
+
+        <listitem>
+          <para>(Dependencies on external libraries; licences)</para>
+        </listitem>
+
+        <listitem>
+          <para>Which existing parts of MMBase are extended/leveraged?</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>4) Impact <itemizedlist>
+        <listitem>
+          <para>Which existing parts of MMBase are modified?
+          (Core/non-core)</para>
+        </listitem>
+
+        <listitem>
+          <para>Which new packages will be created? (core/non-core)</para>
+        </listitem>
+
+        <listitem>
+          <para>Are there backward compatibility issues? (which version
+          required - release or CVS head)</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>5) Planning <itemizedlist>
+        <listitem>
+          <para>What is the estimated planning and total duration of the
+          project?</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+</article>

@@ -1,0 +1,134 @@
+/*
+ CSS for MMBase
+ @author Michiel Meeuwissen
+ @version $Id: mmbase.css,v 1.6 2004-02-13 10:22:46 gerard Exp $;
+*/
+
+
+body {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  background-color: white;
+  margin-left: 3%;
+  margin-right: 3%;
+  padding-left: 0pt;
+  padding-right: 0pt;
+}
+
+table { 
+  width: 100%;
+  font-size: 9pt;
+  border-bottom: none;
+  border-top: none;
+  border-left: solid thin white;
+  border-right: none;
+  border-collapse:separate;
+  border-spacing: 1pt;
+
+
+}
+
+/* a basic body is a page not using a table */
+body.basic h1 { 
+  padding-left: 3%;
+  background-color: #ddd;
+}
+body.basic p, table { 
+  margin-left: 3%;
+  width: 94%;
+}
+
+
+.intro { 
+  font-style: italic;
+}
+
+td {
+  padding: 3pt;
+}
+th {
+  background-color: #ddd;
+  text-align: left;
+}
+
+th.header,th.navigate { 
+  border-top: solid white 2ex;
+}
+
+tr.footer td {
+  border-top: solid thin black;
+  border-left: none;
+  border-right: none;
+  border-collapse:collapse;
+}
+
+.title,
+.subtitle {
+  color: navy
+}
+
+textarea.small {
+  height: 6em;
+}
+textarea.big   {
+  height: 15em;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+a:hover { 
+  /*
+    color: red;
+     text-decoration: underline;
+     */
+}
+
+.data {
+  border-bottom: solid thin #ddd;
+}
+.navigate {
+  text-align: center;
+  border-bottom: solid thin #ddd;
+}
+.linkdata {
+  text-align: center;
+  border-bottom: solid thin #ddd;
+}
+.multidata  {
+  background-color: #ddd;
+  padding: 5pt;
+  margin: 5pt;
+  border: solid thin black;
+}
+
+.currentmenuitem {
+  color: navy;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: right;
+  text-weight: bold;
+}
+
+.menuitem {
+  color: black;
+  font-size: 1em;
+  text-align: right;
+  text-weight: bold;
+}
+
+.link a img { 
+  border: none;
+}
+
+.navigate img { 
+  border: none;
+}

@@ -1,0 +1,4 @@
+<PROCESSOR MMBASE>
+	<LIST OBJECTS TYPE="mags" WHERE="title=='MyNews magazine'" FIELDS="number">
+	<GOTO $MOD-INFO-SERVERCONTEXT^/mmexamples/scan/mynews/index.shtml?$ITEM1>
+</LIST>

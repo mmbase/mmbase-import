@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<typedef exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
+
+    <node number="7000" owner="admin">
+   		<name>mmbaseusers</name>
+    </node>
+
+    <node number="7001" owner="admin">
+   		<name>mmbasegroups</name>
+    </node>
+
+    <node number="7002" owner="admin">
+   		<name>mmbasecontexts</name>
+    </node>
+
+    <node number="7003" owner="admin">
+   		<name>mmbaseranks</name>
+    </node>
+
+    <node number="7004" owner="admin">
+   		<name>rightsrel</name>
+    </node>
+
+</typedef>

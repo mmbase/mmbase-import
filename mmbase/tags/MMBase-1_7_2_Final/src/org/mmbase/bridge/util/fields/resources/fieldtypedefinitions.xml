@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<!DOCTYPE fieldtypedefinitions PUBLIC "-//MMBase//DTD fieldtypedefinitions 0.1//EN" "http://www.mmbase.org/dtd/fieldtypedefinitions_0_1.dtd">
+<fieldtypedefinitions>
+  
+<!-- 
+  version 0.1 (appearing in 1.7.0) of this file only adds the possibility of set- and get-processor. 
+  Later version will define more, like a defining class for every field type itself.
+
+  It could define default values, possible values, default sort orders etc etc.
+
+  @author Michiel Meeuwissen
+  @version $Id: fieldtypedefinitions.xml,v 1.1 2004-02-18 17:14:30 michiel Exp $
+-->
+
+<!--
+  <fieldtype id="xml">
+    <setprocessor type="string">
+      <class>org.mmbase.core.processors.XMLValidate</class>
+    </setprocessor>
+
+  </fieldtype>
+-->
+
+  
+  <fieldtype id="string">
+    <specialization id="md5password">
+      <setprocessor>
+        <class>org.mmbase.util.transformers.MD5</class>
+      </setprocessor>
+    </specialization>
+    <specialization id="lowercaseuppercase"><!-- silly example to test -->
+      <setprocessor>
+        <class>org.mmbase.util.transformers.LowerCaser</class>
+      </setprocessor>
+      <getprocessor>
+        <class>org.mmbase.util.transformers.UpperCaser</class>
+      </getprocessor>
+    </specialization>
+  </fieldtype>
+
+  
+</fieldtypedefinitions>
