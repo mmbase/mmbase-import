@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  */
 public class Upload extends ProcessorModule {
 
-    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Upload.class.getName());
 	private Hashtable FilesInMemory = new Hashtable();
 	private String fileUploadDirectory = null;
 
