@@ -241,8 +241,6 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="javadocs" description="Documentation" depends="init" if="src.available">
-  <mkdir dir="${project.build.dir}/${project.name}-src/docs"/>
-  <mkdir dir="${project.build.dir}/${project.name}-src/docs/api"/>
   <javadoc packagenames="${project.javadoc.packages}"
     sourcepath="${project.source.dir}/src"
     destdir="${project.build.dir}/api"
