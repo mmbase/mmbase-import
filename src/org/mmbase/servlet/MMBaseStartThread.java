@@ -19,15 +19,15 @@ import javax.servlet.ServletException;
  * Seperate thread to init MMBase. This is because init() of Servlets and Filters must take little
  * time, to not hold other web-apps.  Init of MMBase may take indefinitely if e.g. the database is down.
  *
- * @version $Id: MMBaseStartThread.java,v 1.3 2004-03-03 22:31:52 michiel Exp $
+ * @version $Id: MMBaseStartThread.java,v 1.4 2005-02-11 10:23:54 michiel Exp $
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
-class MMBaseStartThread extends Thread {
+public class MMBaseStartThread extends Thread {
 
     private   static final Logger log = Logging.getLoggerInstance(MMBaseStartThread.class);
     private MMBaseStarter starter;
-    MMBaseStartThread(MMBaseStarter s) {
+    public MMBaseStartThread(MMBaseStarter s) {
         super("MMBase Start Thread");
         starter = s;
         setDaemon(true); // if init never ends, don't hinder destroy
@@ -44,7 +44,8 @@ class MMBaseStartThread extends Thread {
                     starter.setInitException(null); // no error.
                     starter.setMMBase(mmb);
                 } catch (Throwable e) {
-                    log.fatal("Could not find the MMBase module!" + e.getMessage());
+                    log.fatal("Could not instantiate the MMBase module! " + e.getClass().getName() + " " + e.getMessage());
+                    log.error(Logging.stackTrace(e));   
                     starter.setInitException(new ServletException(e));
                 }
             }
