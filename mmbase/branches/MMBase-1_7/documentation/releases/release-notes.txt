@@ -149,6 +149,7 @@ Generic Bug Fixes:
 - searchquery: 'count' queries by bridge are not equal to count queries by MMObjectBuilder  	
 - If httppost.xml missing, dirty error in log, and you can't add it witout restart then.  	
 - Mmci: Node#countRelations can be a bit slow.  	
+- inverse constraint not working in mysql. 
 - Database Layer: Storagemanagerfactory does not set the correct default transactionlevel  	
 - searchquery: Use of number IN ([constant]) causes unresolvable queries in Mysql  	
 - searchquery : Inversing one constraint may inverse entire query  	
