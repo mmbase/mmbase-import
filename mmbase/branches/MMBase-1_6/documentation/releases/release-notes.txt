@@ -260,6 +260,7 @@ Editwizard bug fixes:
 ---------------------
 [1.6.5]
 - #6164 Search command constraints attribute undefined
+- #6163 Not entirely working when cookies disabled 
 
 [1.6.4]
 - #6072 Cannot list number in wizard list
