@@ -28,8 +28,13 @@ import org.mmbase.util.*;
 public class Email extends MMObjectBuilder {
 
 	private EmailSendProbe sendprobe;
-	public final static int ONESHOT=1;
-	public final static int REPEATMAIL=2;
+	public final static int STATE_UNKNOWN=-1;
+	public final static int STATE_WAITING=0;
+	public final static int STATE_DELIVERED=1;
+	public final static int STATE_FAILED=2;
+
+	public final static int TYPE_ONESHOT=1;
+	public final static int TYPE_REPEATMAIL=2;
 
 	public boolean init() {
 		super.init ();
@@ -44,10 +49,12 @@ public class Email extends MMObjectBuilder {
 	public boolean nodeChanged(String number,String builder,String ctype) {
 		// check the type of change on the object
 		if (ctype.equals("n")) {
-			// its a new object so lets check if we should mail
-			MMObjectNode node=getNode(number);
-			sendprobe.putTask(node);	
 		}
+		// its a new object so lets check if we should mail
+		// not sure if we can signal it on changes too. Since
+		// that means we will 'recheck' them alot
+		MMObjectNode node=getNode(number);
+		sendprobe.putTask(node);	
 		return(true);
 	}
 
@@ -109,47 +116,60 @@ public class Email extends MMObjectBuilder {
 	*/
 	public void checkRepeatMail(MMObjectNode node) {
 
-		String subject=node.getStringValue("subject");
-		String to=node.getStringValue("to");
-		String from=node.getStringValue("from");
-		String replyto=node.getStringValue("replyto");
-		String body=node.getStringValue("body");
-
-		// now if a url is defined it overrides the body
-		// it will then send the webpage defined by the
-		// url as the body !! (only  local url's are
-		// now supported that use html or shtml
-		String url=node.getStringValue("url");
-		if (url!=null && !url.equals("")) {
-			// get the page
-			String tmpbody=getPage(url);
-			if (tmpbody!=null) body=tmpbody;
-		}
-
-		// if its a oneshot mail then create mail and send it
-		// at the end remove the object from the cloud
-		// its one shot so lets mail and zap the node
-
-		Mail mail=new Mail(to,from);
-		mail.setSubject(subject);
-		mail.setDate();
-		if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
-		mail.setText(body);
-
-		// little trick if it seems valid html page set
-		// the headers for html mail
-		if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
-			mail.setHeader("Mime-Version","1.0");
-			mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
-		}
+		int mailstatus=node.getIntValue("mailstatus");
+		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+			String subject=node.getStringValue("subject");
+			String to=node.getStringValue("to");
+			String from=node.getStringValue("from");
+			String replyto=node.getStringValue("replyto");
+			String body=node.getStringValue("body");
+	
+			// now if a url is defined it overrides the body
+			// it will then send the webpage defined by the
+			// url as the body !! (only  local url's are
+			// now supported that use html or shtml
+			String url=node.getStringValue("url");
+			if (url!=null && !url.equals("")) {
+				// get the page
+				String tmpbody=getPage(url);
+				if (tmpbody!=null) body=tmpbody;
+			}
+	
+			// if its a oneshot mail then create mail and send it
+			// at the end remove the object from the cloud
+			// its one shot so lets mail and zap the node
+	
+			Mail mail=new Mail(to,from);
+			mail.setSubject(subject);
+			mail.setDate();
+			if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
+			mail.setText(body);
+	
+			// little trick if it seems valid html page set
+			// the headers for html mail
+			if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
+				mail.setHeader("Mime-Version","1.0");
+				mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
+			}
+			
+			// send the message to the user defined
+			if (mmb.getSendMail().sendMail(mail)==false) {
+				System.out.println("Email -> mail failed");
+				node.setValue("mailstatus",STATE_FAILED);
+			} else {
+				System.out.println("Email -> mail send to : "+to);
+				node.setValue("mailstatus",STATE_DELIVERED);
+			}
+			node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
 		
-		// send the message to the user defined
-		if (mmb.getSendMail().sendMail(mail)==false) {
-			System.out.println("Email -> mail failed");
-		} else {
-			System.out.println("Email -> mail send to : "+to);
-		}
-		
+			int mailtime=node.getIntValue("mailtime");
+			int repeattime=node.getIntValue("repeattime");
+
+			node.setValue("mailtime",mailtime+repeattime);
+			node.setValue("mailstatus",STATE_WAITING);
+			// set the changes back to the database
+			node.commit();
+		} 
 	}
 
 
@@ -165,10 +185,10 @@ public class Email extends MMObjectBuilder {
 		// obtain all the needed fields from the object
 		int mailtype=node.getIntValue("mailtype");
 		switch(mailtype) {
-			case ONESHOT :
+			case TYPE_ONESHOT :
 				checkOneShotMail(node);	
 				break;
-			case REPEATMAIL:
+			case TYPE_REPEATMAIL:
 				checkRepeatMail(node);	
 				break;
 		}
