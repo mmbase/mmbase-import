@@ -5,7 +5,7 @@
 	It is not a good idea to change things in this XML (because this might cause portability issues), but
 	you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-	version: $Id: taglibcontent.xml,v 1.17 2003-11-18 19:36:23 michiel Exp $
+	version: $Id: taglibcontent.xml,v 1.18 2003-11-19 13:29:03 michiel Exp $
 	-->
 
 	<!-- First per content-type default escapers and postprocessors are defined.
@@ -80,7 +80,12 @@
 		<class config="HTML_INLINE" back="true">org.mmbase.util.transformers.XmlField</class>
 	</escaper>
 	<escaper id="p">
-		<class config="HTML_BLOCK" back="true">org.mmbase.util.transformers.XmlField</class>
+    <!-- generated zero, one or more paragraphs, paragraphs can also end with br tags. -->
+		<class config="HTML_BLOCK_BR" back="true">org.mmbase.util.transformers.XmlField</class>
+	</escaper>
+	<escaper id="pp">
+    <!-- as 'p' but leading br-tags are omitted -->
+		<class config="HTML_BLOCK"  back="true">org.mmbase.util.transformers.XmlField</class>
 	</escaper>
 	<escaper id="sql">
 		<class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
