@@ -2,15 +2,17 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
-  
-
   <articleinfo>
-  	<title>MMBase Glossary</title>
-	<edition>$Id: glossary.xml,v 1.13 2003-07-27 17:47:49 henk Exp $</edition>
+    <title>MMBase Glossary</title>
+
+    <edition>$Id: glossary.xml,v 1.14 2003-07-29 09:30:06 henk Exp $</edition>
+
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
     </copyright>
-	<date>2003-03</date>
+
+    <date>2003-03</date>
+
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -635,8 +637,8 @@
 
         <glossdef>
           <para>The MMBase foundation covers the non-technical issues with
-          regard to MMBase. The tasks of the foundation include organizing the
-          MMBase Event, facilitating communication between MMBase users,
+          regard to MMBase. The tasks of the foundation includes organizing
+          MMBase Events, facilitating communication between MMBase users,
           providing management information about MMBase in presentations and
           brochures, etc. etc.</para>
         </glossdef>
