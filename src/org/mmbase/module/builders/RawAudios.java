@@ -8,8 +8,11 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: RawAudios.java,v 1.7 2000-03-30 13:11:33 wwwtech Exp $
+$Id: RawAudios.java,v 1.8 2000-07-04 11:51:12 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/30 13:11:33  wwwtech
+Rico: added license
+
 Revision 1.6  2000/03/30 12:42:57  wwwtech
 Rico: added warning to these VPRO dependent builders
 
@@ -46,7 +49,7 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.7 $ $Date: 2000-03-30 13:11:33 $
+ * @$Revision: 1.8 $ $Date: 2000-07-04 11:51:12 $
  *
  */
 public class RawAudios extends MMObjectBuilder {
@@ -295,6 +298,8 @@ public class RawAudios extends MMObjectBuilder {
 	 * getHostName: Gets the right hostname and using String containing a rawaudios.url field.
 	 * This method contains a lot of if-then-else constructs, since the RawAudios.url field uses
 	 * such a StrangE! format.
+	 * the url format is either: F=/audiopart#/16_1.ra H1=hostA.bla.nl H2=hostB.bla.nl 
+	 * the url format is or:     http://hostA.vpro.nl/audio/ra/audiopart#/40_1.ra 
 	 * @param url A String containing the contents of the rawaudios.url field.
 	 * @return The hostName
 	 */
@@ -310,15 +315,21 @@ public class RawAudios extends MMObjectBuilder {
 				if (url.indexOf(HOSTSYMBOL+"2") != -1) {
 					// Get everything starting at H2=here ,thus 3 chars further.
 					hostName = url.substring(url.indexOf(HOSTSYMBOL+"2") + 3);
+					// Only use String up until the first space character  
+					if (hostName.indexOf(" ") != -1) 
+						hostName = hostName.substring(0,hostName.indexOf(" "));
 				} else if (url.indexOf(HOSTSYMBOL+"1") != -1) {
 					// Get everything starting at H1=here ,thus 3 chars further.
 					hostName = url.substring(url.indexOf(HOSTSYMBOL+"1") + 3);
+					// Only use String up until the first space character  
+					if (hostName.indexOf(" ") != -1) 
+						hostName = hostName.substring(0,hostName.indexOf(" "));
 				} else {
 					debug2("getHostName("+url+"): ERROR: Url field contains "+FLIPSYMBOL+" symbol but NO "+HOSTSYMBOL+" symbol -> returning defaulthost:"+DEFAULTHOST);
 					hostName = DEFAULTHOST;
 				}
 			} else {
-				// Get the hostname after the protocolname up until the first slash. (This is probably station.vpro.nl)
+				// Get the hostname after the protocolname up until the first slash. (probably station.vpro.nl)
 				int fromIndex = url.indexOf("://") + 3;
 				hostName = url.substring(fromIndex, url.indexOf("/",fromIndex));
 			}
