@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.59 2004-03-16 13:52:04 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.60 2004-03-16 14:08:40 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -100,6 +100,21 @@ public class DatabaseStorageManager implements StorageManager {
         dataSource = (DataSource)factory.getAttribute(Attributes.DATA_SOURCE);
         if (factory.supportsTransactions()) {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
+        }
+        // determine generated key buffer size
+        if (bufferSize==null) {
+            bufferSize = new Integer(1);
+            Object bufferSizeAttribute = factory.getAttribute(Attributes.SEQUENCE_BUFFER_SIZE);
+            if (bufferSizeAttribute != null) {
+                try {
+                    bufferSize = Integer.valueOf(bufferSizeAttribute.toString());
+                } catch (NumberFormatException nfe) {
+                    // remove the SEQUENCE_BUFFER_SIZE attribute (invalid value)
+                    factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE,null);
+                    log.error("The attribute 'SEQUENCE_BUFFER_SIZE' has an invalid value(" +
+                        bufferSizeAttribute + "), will be ignored.");
+                }
+            }
         }
     }
 
@@ -227,20 +242,6 @@ public class DatabaseStorageManager implements StorageManager {
             if (sequenceKeys.size() > 0) {
                 return ((Integer)sequenceKeys.remove(0)).intValue();
             } else try {
-                if (bufferSize==null) {
-                    bufferSize = new Integer(1);
-                    Object bufferSizeAttribute = factory.getAttribute(Attributes.SEQUENCE_BUFFER_SIZE);
-                    if (bufferSizeAttribute != null) {
-                        try {
-                            bufferSize = Integer.valueOf(bufferSizeAttribute.toString());
-                        } catch (NumberFormatException nfe) {
-                            // remove the SEQUENCE_BUFFER_SIZE attribute (invalid value)
-                            factory.setAttribute(Attributes.SEQUENCE_BUFFER_SIZE,null);
-                            log.error("The attribute 'SEQUENCE_BUFFER_SIZE' has an invalid value(" +
-                                bufferSizeAttribute + "), will be ignored.");
-                        }
-                    }
-                }
                 getActiveConnection();
                 Statement s;
                 String query;
@@ -1466,7 +1467,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
                 scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
                 if (scheme != null) {
-                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1)});
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1), bufferSize });
                     logQuery(query);
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
