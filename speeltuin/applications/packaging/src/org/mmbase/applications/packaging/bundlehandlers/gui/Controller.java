@@ -118,7 +118,7 @@ public class Controller {
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         while (neededpackages.hasNext()) {
-            Hashtable np = (Hashtable)neededpackages.next();
+            HashMap np = (HashMap)neededpackages.next();
 
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("name",(String)np.get("name"));
