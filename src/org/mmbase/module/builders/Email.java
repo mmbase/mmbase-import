@@ -85,7 +85,6 @@ public class Email extends MMObjectBuilder {
 	* it mails and removed itself from the cloud when done
 	*/
 	public void checkRepeatMail(MMObjectNode node) {
-		System.out.println("CHECK REPEAT MAIL");
 		int mailstatus=node.getIntValue("mailstatus");
 		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
 
@@ -134,25 +133,30 @@ public class Email extends MMObjectBuilder {
 				if (tmpbody!=null) body=tmpbody;
 			}
 	
-			Mail mail=new Mail(to,from);
-			mail.setSubject(subject);
-			mail.setDate();
-			if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
-			mail.setText(body);
+
+			StringTokenizer tok = new StringTokenizer(to,",\n\r");
+			while (tok.hasMoreTokens()) {
+				String to_one=tok.nextToken();
+				Mail mail=new Mail(to_one,from);
+				mail.setSubject(subject);
+				mail.setDate();
+				if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
+				mail.setText(body);
 	
-			// little trick if it seems valid html page set
-			// the headers for html mail
-			if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
-				mail.setHeader("Mime-Version","1.0");
-				mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
-			}
-			
-			// send the message to the user defined
-			if (to==null || mmb.getSendMail().sendMail(mail)==false) {
-				System.out.println("Email -> mail failed");
-				node.setValue("mailstatus",STATE_FAILED);
-			} else {
-				node.setValue("mailstatus",STATE_DELIVERED);
+				// little trick if it seems valid html page set
+				// the headers for html mail
+				if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
+					mail.setHeader("Mime-Version","1.0");
+					mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
+				}
+				
+				// send the message to the user defined
+				if (to==null || mmb.getSendMail().sendMail(mail)==false) {
+					System.out.println("Email -> mail failed");
+					node.setValue("mailstatus",STATE_FAILED);
+				} else {
+					node.setValue("mailstatus",STATE_DELIVERED);
+				}
 			}
 			node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
 			return(node.getIntValue("mailstatus"));
@@ -168,10 +172,11 @@ public class Email extends MMObjectBuilder {
 				if (to==null || to.equals("")) {
 					to=tmp;
 				} else {
-					to=","+tmp;
+					to+=","+tmp;
 				}
 			}
 		}
+		System.out.println("TO="+to);
 		return(to);
 	}
 
@@ -187,7 +192,7 @@ public class Email extends MMObjectBuilder {
 				if (to==null || to.equals("")) {
 					to=email;
 				} else {
-					to=","+email;
+					to+=","+email;
 				}
 			}
 		}
@@ -207,7 +212,7 @@ public class Email extends MMObjectBuilder {
 				if (to==null || to.equals("")) {
 					to=email;
 				} else {
-					to=","+email;
+					to+=","+email;
 				}
 			}
 		}
