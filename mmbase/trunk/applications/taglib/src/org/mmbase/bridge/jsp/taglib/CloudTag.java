@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.78 2003-09-26 14:57:26 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.79 2003-11-06 16:17:57 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -293,8 +293,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             response.addCookie(c);
         } else {
             if (session.isNew()) {
-                log.debug(
-                    "New session!? That is very suspicious. Perhaps URL was not encoded, and cookies disabled, sending redirect to make sure the url is encoded.");
+                log.debug("New session!? That is very suspicious. Perhaps URL was not encoded, and cookies disabled, sending redirect to make sure the url is encoded.");
                 String query = request.getQueryString();
                 String thisPage = request.getRequestURI() + (query == null ? "" : "?" + query);
                 try {
@@ -378,8 +377,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
         }
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("setting header: " + getRealm());
+        }
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealm() + "\"");
 
         //res.setHeader("Authorization", logon);   would ne nice...
@@ -398,19 +398,26 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         return SKIP_BODY;
     }
 
+    private boolean setAnonymousCloud() throws JspTagException {
+        return setAnonymousCloud(null);
+    }
+
     /**
      * Sets the cloud member variable to an anonymous cloud.
      * @return true on success (cloud is set), false on failure (cloud is set to null)
      */
 
-    private boolean setAnonymousCloud() throws JspTagException {
+    private boolean setAnonymousCloud(Map logoutInfo) throws JspTagException {
         try {
-            log.debug("using an anonymous cloud");
-            cloud = getDefaultCloudContext().getCloud(getName());
+            // request/response information is not needed for mmbase-only implementation.
+            // but when using 'delegated' login-method, you might also want to delegate logout.
+            if (log.isDebugEnabled()) {
+                log.debug("creating an anonymous cloud for cloud '" + getName() + "' (with " + logoutInfo + ")");
+            }
+            cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo);
             cloud.setLocale(locale);
-            log.debug("put in hashMap");
             return true;
-        } catch (org.mmbase.security.SecurityException e) {
+        } catch (Exception e) {
             log.debug("Could not create anonymous cloud because " + e.toString());
             cloud = null;
             return false;
@@ -532,7 +539,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     session.removeAttribute(getSessionName()); // remove cloud itself
                 }
             }
-            setAnonymousCloud();
+            Map logoutInfo = new HashMap();
+            logoutInfo.put("request",  request);
+            logoutInfo.put("response", response);
+            setAnonymousCloud(logoutInfo);
             return true;
         }
         return false;
@@ -808,8 +818,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 if (toDir.startsWith("/")) {
                     referrerpage = org.mmbase.util.UriParser.makeRelative(toDir, thisDir) + "/" + thisFile;
                 } else {
-                    referrerpage =
-                        org.mmbase.util.UriParser.makeRelative(thisDir + "/" + toDir, toDir) + "/" + thisFile;
+                    referrerpage = org.mmbase.util.UriParser.makeRelative(thisDir + "/" + toDir, toDir) + "/" + thisFile;
                 }
             }
             StringBuffer referrer = new StringBuffer(referrerpage);
@@ -838,8 +847,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             case DENYREASON_FAIL :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             case DENYREASON_RANKTOOLOW :
-                return denyHTTP(
-                                "<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
+                return denyHTTP("<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
             default :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             }
@@ -852,15 +860,27 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             default :
                 return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
             }
+        } else if (getMethod() == METHOD_DELEGATE) {
+            switch (reason) {
+            case DENYREASON_FAIL: {
+                return SKIP_BODY;
+            }
+            case DENYREASON_RANKTOOLOW : {
+                throw new JspTagException("Rank too low");
+            }
+            default:
+                return SKIP_BODY;
+            }
+
         } else { // strange, no method given, password wrong (or missing), that's really wrong.
             switch (reason) {
             case DENYREASON_FAIL: {
                 if ("name/password".equals(getAuthenticate())) {
-                    throw new JspTagException("Logon of with " + logon.get(0)
+                    throw new JspTagException("Logon of with " + (logon != null && logon.size() > 0 ? "'" + logon.get(0) + "'" : "''") 
                                               + " failed."
                                               + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
                 } else {
-                    throw new JspTagException("Non name/password authentication failed");
+                    throw new JspTagException("Authentication ('" + getAuthenticate() + "') failed");
                 }
             }
             case DENYREASON_RANKTOOLOW : {
@@ -987,7 +1007,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return evalBody();
         }
         if (checkAnonymous()) {
-            return evalBody();
+            if (cloud == null) {
+                return SKIP_BODY;
+            } else {
+                return evalBody();
+            }
         }
         if (checkAsis()) {
             if (cloud == null) {
