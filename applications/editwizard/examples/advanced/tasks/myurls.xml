@@ -8,22 +8,13 @@
   <action type="create">
     <object type="urls">
       <field name="url" ftype="string">http://</field>
-      <field name="name" ftype="string">A nice name</field>
       <field name="description" ftype="string" />
     </object>
   </action>
   
   <form-schema id="step">
     <title>URL</title>
-    <field name="url" ftype="string">
-      <prompt>URL</prompt>
-    </field>
-    <field name="name" ftype="string">
-      <prompt>Name</prompt>
-    </field>
-    <field name="description" ftype="string">
-      <prompt>Description</prompt>
-    </field>
-        
+    <field name="url" />
+    <field name="description" />
   </form-schema>
 </wizard-schema>
