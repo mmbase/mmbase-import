@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Arguments;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,12 +21,12 @@ import javax.servlet.http.HttpServletRequest;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.18 2003-04-01 08:41:29 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.19 2003-05-19 09:00:15 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
 
-    private static Logger log = Logging.getLoggerInstance(AbstractImages.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
     /** 
      * Cache with 'ckey' keys.
@@ -42,18 +43,18 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
         void   remove(int originalNodeNumber) {
             String prefix = "" + originalNodeNumber;
-            log.info("removing " + prefix);
-            java.util.Iterator keys  = keySet().iterator();
+            log.debug("removing " + prefix);
+            Iterator keys  = keySet().iterator();
             List removed = new ArrayList();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                log.info("checking " + key);
+                log.debug("checking " + key);
                 if (key.startsWith(prefix)) { 
                     // check is obviously to crude, e.g. if node number happens to be 4, 
                     // about one in 10 cache entries will be removed which need not be removed, 
                     // but well, it's only a cache, it's only bad luck...
                     // 4 would be a _very_ odd number for an Image, btw..
-                    log.info("removing " + key + " " + get(key));
+                    log.debug("removing " + key + " " + get(key));
                     removed.add(key);
                     // cannot use keys.remove(), becaus then cache.remove is not called.
                 }
@@ -79,18 +80,18 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * An image's gui-indicator is of course some &lt;img src&gt;, but it depends on what kind of image
      * (cached, original) what excactly it must be.
      */
-    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req, String sessionName);
+    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a);
 
     /**
      * Gui indicator of a whole node.
      */
-    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, "*", res, null, session);
+    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
+        return getGUIIndicatorWithAlt(node, "*", a);
     }
 
-    protected String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {
+    protected String getSGUIIndicator(String field, MMObjectNode node, Arguments a) {
         if (field.equals("handle") || field.equals("")) {
-            return getSGUIIndicator(session, res, node);
+            return getSGUIIndicator(node, a);
         }
         // other fields can be handled by the orignal gui function...
         return getSuperGUIIndicator(field, node);
@@ -102,7 +103,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     abstract protected String getImageFormat(MMObjectNode node);
 
     /**
-     * Determine the MIME type of this image node, based on the image format.
+     * Determine the MIME type of this image node, baseImagd on the image format.
      */
     public String getImageMimeType(MMObjectNode node) {
         return mmb.getMimeType(getImageFormat(node));
