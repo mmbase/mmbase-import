@@ -47,11 +47,13 @@
 </p>
 <mm:timer>
 <table border="1" width="100%">
+<!--
 <tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/date.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/date.jsp" %></td>
 </tr>
+-->
 <tr><td colspan="2">Rich text fields. These fields can contain some basic structure information in XML. We can show XML with the formatter tag.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showrichfield.jsp" /></mm:formatter></pre></td>
@@ -107,11 +109,13 @@
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelationsxml.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/shownoderelationsxml.jsp" %></td>
 </tr>
+<!--
 <tr><td colspan="2">Want to try some XSL yourself?</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/tryyourself.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/tryyourself.jsp" %></td>
 </tr>
+-->
 </table>
 </mm:timer>
 </mm:node>
