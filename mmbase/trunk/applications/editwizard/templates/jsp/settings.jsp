@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=utf-8"
+<%@page language="java" contentType="text/html;charset=utf-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.26 2002-08-21 16:43:36 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.27 2002-08-30 19:12:55 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -175,6 +175,14 @@ if (popupId == null) popupId = "";
 popup = ! "".equals(popupId);
 if (popup) {
     log.debug("this is a popup");
+    String replace = request.getParameter("replace");
+    if ("true".equals(replace)) { // searchlists (and other?)  popups must be replaced, otherwise they 'inherit' properites of othere searclists on the page...
+        if (! ewconfig.subObjects.empty()) {
+            Config.SubConfig topObj = (Config.SubConfig) ewconfig.subObjects.peek();
+            topObj.popups.remove(popupId);
+            if (log.isDebugEnabled()) log.debug("Removing the '" + popupId + "' popup");
+        }
+     }
 } else {
     log.debug("this is not a popup");
 }
@@ -192,7 +200,7 @@ if (request.getParameter("logout") != null) {
     session.removeAttribute(sessionKey);
     log.debug("Redirecting to " + refer);
     if (! refer.startsWith("http:")) {
-        refer = response.encodeURL(request.getContextPath() + refer);
+        refer = response.encodeRedirectURL(request.getContextPath() + refer);
     }
     response.sendRedirect(refer);
     return;
@@ -213,7 +221,7 @@ if (request.getParameter("remove") != null) {
             Config.SubConfig top = (Config.SubConfig) ewconfig.subObjects.peek();
             Stack stack =  (Stack) top.popups.get(popupId);
             closedObject = stack.pop();
-            if (stack.size() == 0) { 
+            if (stack.size() == 0) {
                 top.popups.remove(popupId);        
                 log.debug("going to close this window"); 
 %>
@@ -264,14 +272,14 @@ if (request.getParameter("remove") != null) {
     if (ewconfig.subObjects.empty()) { // it _is_ empty? Then we are ready.
         log.debug("last object cleared, redirecting");
         if (! refer.startsWith("http:")) {
-            refer = response.encodeURL(request.getContextPath() + refer);
+            refer = response.encodeRedirectURL(request.getContextPath() + refer);
         }
         log.debug("Redirecting to " + refer);
         response.sendRedirect(refer);
         done = true;
     } else if (ewconfig.subObjects.peek() instanceof Config.ListConfig) {
         log.debug("Redirecting to list");
-        response.sendRedirect(response.encodeURL("list.jsp?proceed=true&sessionkey="+sessionKey));
+        response.sendRedirect(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey="+sessionKey));
         done = true;
     }
 }
@@ -280,6 +288,10 @@ if (request.getParameter("remove") != null) {
 if (!done) {
     if (log.isDebugEnabled()) {
         log.debug("Stack "            + ewconfig.subObjects);
+        if (! ewconfig.subObjects.empty()) {
+            Config.SubConfig topObj = (Config.SubConfig) ewconfig.subObjects.peek();
+            log.debug("Popups "           + topObj.popups  );
+        }
         log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());
     }
     log.service("end of settings.jsp");// meaning that the rest of the list/wizard page will be done (those include setting.jsp).
