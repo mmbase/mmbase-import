@@ -7,9 +7,9 @@
     <xsl:if test="/wizard/curform = 'itemize'">    
     <center>
     <embed 
-      src="http://michiel.omroep.nl/mm/mediaedit/display.ram.jsp" 
+      src="http://mihxil.komputilo.org/mm/mediaedit/display.ram.jsp?source=7071&amp;fragment=7070" 
       width="200" 
-      height="200"   
+      height="165"   
       type="audio/x-pn-realaudio-plugin"
       nojava="false" 
       controls="ImageWindow" 
@@ -17,7 +17,7 @@
       autostart="true" 
       nologo="true"
       nolabels="true"
-      name="embededplayer"></embed>
+      name="embeddedplayer"></embed>
   </center>
   <hr />
   </xsl:if>

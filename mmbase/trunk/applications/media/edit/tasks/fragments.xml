@@ -60,9 +60,11 @@
 		<list role="parent" destination="mediafragments" minoccurs="0" maxoccurs="*" orderby="field[@name='start']">
       <title>Items</title>       
       <item>
+         <fieldset>
         <field name="title" />
-        <field name="stop"  dttype="datetime"/>
-        <field name="start" dttype="datetime" />
+        <field name="stop"  ftype="realposition" />
+        <field name="start" ftype="realposition" />
+        </fieldset>
       </item>
 		
 			<action type="create" destinationtype="mediafragments">
