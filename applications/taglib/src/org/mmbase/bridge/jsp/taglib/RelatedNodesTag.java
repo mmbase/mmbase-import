@@ -81,7 +81,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
                 Node n = i.nextNode();
                 if (where == null) {
-                    where = new StringBuffer( n.getNumber());
+                    where = new StringBuffer("" +  n.getNumber());
                 } else {
                     where.append(",").append( n.getNumber());
                 }
@@ -89,7 +89,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (where == null) { // empty list, so use that one.
                 nodes = initialnodes;
             } else {
-                where = new StringBuffer("number in (" + where + ")");
+                where = where.insert(0, "number in (").append(")");
                 if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
                 nodes = manager.getList(where.toString(), orderby, directions);
             }
