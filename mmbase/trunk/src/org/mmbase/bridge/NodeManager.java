@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Hashtable;
+import java.util.Map;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletRequest;
 
@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.13 2002-04-13 11:08:39 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.14 2002-09-23 20:45:35 michiel Exp $
  */
 public interface NodeManager {
 
@@ -197,7 +197,7 @@ public interface NodeManager {
      * @param command the info to obtain, i.e. "USER-OS".
      * @param parameters a hashtable containing the named parameters of the list.
      */
-    public NodeList getList(String command, Hashtable parameters);
+    public NodeList getList(String command, Map parameters);
 
     /**
      * Retrieve info from a node manager based on a command string
@@ -208,7 +208,7 @@ public interface NodeManager {
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */
-    public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp);
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Check if the current user may create a new node of this type.
