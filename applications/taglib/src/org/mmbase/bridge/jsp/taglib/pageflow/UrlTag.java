@@ -30,7 +30,7 @@ public class UrlTag extends ContextReferrerTag {
            
     private Vector  referids = null;
     private HashMap extraParameters = null;
-    private String  page;
+    protected String  page;
     private String  jspvar;
 
     public void setReferids(String r) throws JspTagException {
@@ -60,13 +60,7 @@ public class UrlTag extends ContextReferrerTag {
         return EVAL_BODY_TAG;
     }
 
-    public int doAfterBody() throws JspTagException {
-
-        if (page == null) {
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            page = req.getRequestURI();
-        }
-
+    protected String getUrl() throws JspTagException {        
         String show = page;
         
         String connector = (show.indexOf('?') == -1 ? "?" : "&amp;");
@@ -96,6 +90,18 @@ public class UrlTag extends ContextReferrerTag {
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
             show = response.encodeURL(show);
         }
+        return show;
+
+    }
+
+    public int doAfterBody() throws JspTagException {
+
+        if (page == null) {
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+            page = req.getRequestURI();
+        }
+
+        String show = getUrl();
 
         if (getId() != null) {
             getContextTag().register(getId(), show);
@@ -108,7 +114,7 @@ public class UrlTag extends ContextReferrerTag {
                 bodyContent.clear();
                 bodyContent.print(show);                
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 throw new JspTagException (e.toString());            
             }
             
