@@ -50,7 +50,6 @@ Applications build file
 
   <target name="mmbase" depends="init">
     <ant dir="${source.dir}" target="jar" />
-    <ant dir="${source.dir}" target="expand.hsqldb" />
   </target>
 
   <target name="media" depends="mmbase,editwizard">
