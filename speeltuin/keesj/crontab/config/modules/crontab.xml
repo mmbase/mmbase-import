@@ -14,11 +14,15 @@
     third field: (optional) a description of the job
     fourth field: (optional) a configuration string (in JCronJobs aquirable by jCronEntry.getConfiguration())
     -->
-    <property name="testjob">
-      */1 5-23 * * *
-      org.mmbase.applications.crontab.TestCronJob
-    </property>
-    <!-- property name="mediaimport">*/1 * * * *|nl.omroep.mmbase.MediaImporter||/tmp/test.gz 1000 500</property-->
+    <property name="testjob">*/1 5-23 * * *|org.mmbase.applications.crontab.TestCronJob</property>
+
+    <!-- 
+      Example: mmbase stats
+    <property name="memorystats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||memory</property>
+    <property name="nodesstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.Nodes</property>
+    <property name="tagstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.TagAttributeCache</property>
+    <property name="multilevelstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.MultilevelCache</property>
+    -->
   </properties>
  
 </module>
