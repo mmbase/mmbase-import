@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search;
 
-import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 
 
 /**
@@ -30,7 +28,7 @@ import org.mmbase.module.corebuilders.*;
  * {@link ResultBuilder ResultBuilder}, that contains info on the node's fields.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class ResultNode extends VirtualNode {

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import java.io.*;
 import java.sql.*;
 
 import org.mmbase.storage.*;
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: OODatabaseStorage.java,v 1.2 2002-11-07 12:30:38 pierre Exp $
+ * @version $Id: OODatabaseStorage.java,v 1.3 2003-03-04 15:38:42 nico Exp $
  */
 public class OODatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage {
 

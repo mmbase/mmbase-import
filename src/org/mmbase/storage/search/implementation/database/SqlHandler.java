@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.Map;
 import org.mmbase.storage.search.*;
 /**
  * Interface for handler classes that are used to create SQL string 
@@ -56,7 +55,7 @@ import org.mmbase.storage.search.*;
  * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public interface SqlHandler {

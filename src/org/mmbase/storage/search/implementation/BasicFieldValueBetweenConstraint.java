@@ -9,15 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import java.util.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint 
