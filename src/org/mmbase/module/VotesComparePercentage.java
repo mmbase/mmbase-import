@@ -14,7 +14,7 @@ import org.mmbase.util.CompareInterface;
 /**
  * Class VotesComparePercentage
  * 
- * @javadoc
+ * @obsolete
  */
 
 public 	class		VotesComparePercentage

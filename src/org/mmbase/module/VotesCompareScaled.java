@@ -14,7 +14,7 @@ import org.mmbase.util.CompareInterface;
 /**
  * Class VotesCompareScaled
  * 
- * @javadoc
+ * @obsolete
  */
 
 public 	class		VotesCompareScaled

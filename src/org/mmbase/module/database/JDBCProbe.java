@@ -24,14 +24,14 @@ import org.mmbase.util.logging.Logging;
  * remove bad connections works using a callback into JDBC.
  *
  *
- * @version $Id: JDBCProbe.java,v 1.5 2002-10-10 18:08:43 michiel Exp $
+ * @version $Id: JDBCProbe.java,v 1.6 2003-01-07 15:20:19 kees Exp $
  * @author Daniel Ockeloen
 
- */
+*/
 public class JDBCProbe implements Runnable {
     private static Logger log = Logging.getLoggerInstance(JDBCProbe.class.getName());
     
-    private Thread kicker = null;
+    private boolean mustRun = true;
     private JDBC parent=null;
     private String name;
     private String input;
@@ -42,37 +42,11 @@ public class JDBCProbe implements Runnable {
     public JDBCProbe(JDBC parent) {
         this(parent, 30);
     }
+
     public JDBCProbe(JDBC parent, int ct) {
         this.parent=parent;
         checkTime = ct * 1000;
-        init();
-    }
-    
-    public void init() {
-        this.start();	
-    }
-    
-    
-    /**
-     * Starts the admin Thread.
-     */
-    public void start() {
-        /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this, "JDBCProbe");
-            kicker.start();
-        }
-    }
-    
-    /**
-     * Stops the admin Thread.
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);  
-        kicker.suspend();
-        kicker.stop();
-        kicker = null;
+	new Thread(this,"JDBCProbe").start();
     }
     
     /**
@@ -80,14 +54,13 @@ public class JDBCProbe implements Runnable {
      */
     public void run () {
         log.info("JDBC probe starting");
-        while (kicker != null) {
-            try{
-                Thread.sleep(checkTime);
-            } catch(InterruptedException e) {
-            }
+        while (mustRun) {
+            try{ Thread.sleep(checkTime); } catch(InterruptedException e) { }
+
             try {
                 parent.checkTime();
             } catch (Exception e) {
+		//added logg here
             }
         }
     }
