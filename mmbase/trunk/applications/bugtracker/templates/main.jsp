@@ -17,6 +17,13 @@
 
 <mm:import externid="cw" from="cookie" />
 <mm:import externid="ca" from="cookie" />
+
+
+<mm:import id="base" />
+
+
+<mm:url id="baseurl" page="$base" write="false" />
+
 <mm:present referid="ca">
    <mm:present referid="cw">
 			<mm:listnodes type="users" constraints="account='$ca' and password='$cw'" max="1">
@@ -44,7 +51,7 @@
    <%@ include file="mainparts/statistics.jsp" %>
 </mm:compare>
 <mm:compare referid="flap" value="mysettings">
-   <%@ include file="mainparts/mysettings.jsp" %>
+   %@ include file="mainparts/mysettings.jsp" %>
 </mm:compare>
 <mm:compare referid="flap" value="mybug">
    <%@ include file="mainparts/mybug.jsp" %>
