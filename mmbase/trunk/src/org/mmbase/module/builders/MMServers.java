@@ -18,13 +18,13 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author  $Author: michiel $
- * @version $Id: MMServers.java,v 1.26 2004-02-25 23:14:23 michiel Exp $
+ * @version $Id: MMServers.java,v 1.27 2004-03-19 10:53:53 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(MMServers.class);
     private int serviceTimeout = 60 * 15; // 15 minutes
-    private int intervalTime = 60 * 1000;
+    private long intervalTime = 60 * 1000; // 1 minute
 
     private boolean checkedSystem = false;
     private String javastr;
@@ -36,16 +36,27 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * @javadoc
      */
     public MMServers() {
-        javastr = System.getProperty("java.version")+"/"+System.getProperty("java.vm.name");
-        osstr   = System.getProperty("os.name")+"/"+System.getProperty("os.version");
+        javastr = System.getProperty("java.version") + "/" + System.getProperty("java.vm.name");
+        osstr   = System.getProperty("os.name") + "/" + System.getProperty("os.version");
+    }
 
+    public boolean init() {
+        if (oType != -1) return true; // inited already
+        if (!super.init()) return false;
         String tmp = getInitParameter("ProbeInterval");
         if (tmp != null) {
-            log.service("ProbeInterval was configured to be " + tmp + " seconds");
-            intervalTime = Integer.parseInt(tmp) * 1000;
+            intervalTime = (long) Integer.parseInt(tmp) * 1000;
+            log.service("ProbeInterval was configured to be " + intervalTime / 1000 + " seconds");
+        } else {
+            log.service("ProbeInterval defaults to " + intervalTime / 1000 + " seconds");
         }
+
 	start();
+        return true;
+
     }
+
+
 
 
     /**
@@ -64,7 +75,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public String getGUIIndicator(String field,MMObjectNode node) {
         if (field.equals("state")) {
-            int val=node.getIntValue("state");
+            int val = node.getIntValue("state");
             switch(val) {
                 case -1: return "Unknown";
                 case 1: return "Active";
@@ -130,7 +141,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public void run() {
         while (true) {
-            int thisTime = intervalTime;
+            long thisTime = intervalTime;
             if (mmb != null && mmb.getState()) {
                 doCheckUp();
             } else {
