@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.7 2003-11-10 16:47:14 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.8 2004-02-24 12:05:37 michiel Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider {
@@ -23,7 +23,7 @@ public class ContextProvider {
     * DEFAULT_CLOUD_CONTEXT_NAME="local"
     **/
 
-    public final static String DEFAULT_CLOUD_CONTEXT_NAME="local";
+    public final static String DEFAULT_CLOUD_CONTEXT_NAME = "local";
     private static String defaultCloudContextName ;
 
     /**
@@ -50,7 +50,7 @@ public class ContextProvider {
         } else if (uri.startsWith("local")){
             return LocalContext.getCloudContext();
         }
-	throw new BridgeException("cloudcontext with name {"+ uri +"} is not known to MMBase");
+	throw new BridgeException("cloudcontext with name {" + uri + "} is not known to MMBase");
     }
 
     /**
