@@ -17,7 +17,6 @@
   <descriptions>
     <description xml:lang="en">MMBase users, builder which contains all users from the system. Passwords will be encrypted with the encoding mentioned in properties</description>
     <description xml:lang="nl">MMBase gebruikers. In deze builder kunnen alle gebruikers van het systeem worden opgeslagen. Wachtwoorden worden gecodeert.</description>
-    <description xml:lang="eo">MMBase-uzantoj. En ĉi tiu kontruanto la uzantoj de la sistemo povas stokiĝi. Pasvortoj estas ĉifrataj.</description>
   </descriptions>
 
   <properties>
