@@ -7,7 +7,7 @@
 	int settings_maxupload = 4 * 1024 * 1024; // 1 MByte max uploadsize
 %><%
     if(settings_basedir == null) {
-        String jspFile = getServletContext().getRealPath(request.getRequestURI().substring(request.getContextPath().length()));
+        String jspFile = getServletConfig().getServletContext().getRealPath(request.getRequestURI().substring(request.getContextPath().length()));
         java.io.File f = new java.io.File(jspFile);
         settings_basedir = f.getParentFile().getAbsolutePath() + java.io.File.separator + "data";
     }
