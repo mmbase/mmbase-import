@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd"><application auto-deploy="false" version="1" name="MMBaseCrontabApp" maintainer="mmbase.org">
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application auto-deploy="true" version="1" name="MMBaseCrontabApp" maintainer="mmbase.org">
     <neededbuilderlist>
         <builder version="1" maintainer="mmbase.org">crontab</builder>
     </neededbuilderlist>
