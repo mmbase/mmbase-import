@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicSortOrderTest extends TestCase {
     
@@ -51,7 +51,7 @@ public class BasicSortOrderTest extends TestCase {
     /** Test of setDirection method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
     public void testSetDirection() {
         // Default is SortOrder.ASCENDING.
-        assert(instance.getDirection() == SortOrder.ORDER_ASCENDING);
+        assertTrue(instance.getDirection() == SortOrder.ORDER_ASCENDING);
         
         // Invalid value, should throw IllegalArgumentException.
         try {
@@ -60,12 +60,12 @@ public class BasicSortOrderTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         instance.setDirection(SortOrder.ORDER_DESCENDING);
-        assert(instance.getDirection() == SortOrder.ORDER_DESCENDING);
+        assertTrue(instance.getDirection() == SortOrder.ORDER_DESCENDING);
     }
     
     /** Test of getField method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
     public void testGetField() {
-        assert(instance.getField() == field);
+        assertTrue(instance.getField() == field);
     }
     
     /** Test of getDirection method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
@@ -87,14 +87,14 @@ public class BasicSortOrderTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */
     public void testToString() {
         // Default field alias.
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("SortOrder(field:" 
         + instance.getField().getAlias() + ", dir:"
         + instance.getDirection() + ")"));
         
         // Set field alias.
         field.setAlias("jklij");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("SortOrder(field:" 
         + instance.getField().getAlias() + ", dir:"
         + instance.getDirection() + ")"));

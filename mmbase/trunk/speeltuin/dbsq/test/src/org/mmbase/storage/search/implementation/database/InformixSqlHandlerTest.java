@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class InformixSqlHandlerTest extends TestCase {
     
@@ -73,23 +73,23 @@ public class InformixSqlHandlerTest extends TestCase {
     /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.InformixSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         // Support max number.
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(-1);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
         // Support offset only when set to default (= 0).
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_NONE);
         query.setOffset(0);
-        assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
@@ -98,25 +98,25 @@ public class InformixSqlHandlerTest extends TestCase {
         // Should return basic support level of constraint.
         SearchQuery query = new BasicSearchQuery();
         Constraint constraint = new TestConstraint(SearchQueryHandler.SUPPORT_NONE);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NONE);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NONE);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_WEAK);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_WEAK);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_WEAK);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_NORMAL);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NORMAL);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_NORMAL);
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL);
-        assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.InformixSqlHandler. */
     public void testToSql() throws Exception {
         // Test use of "FIRST" construct.
-        assert(instance.toSql(query, instance), 
+        assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT images.m_number AS m_number FROM " 
         + prefix + "images images WHERE images.m_number IS NULL"));
         
         query.setMaxNumber(100);
-        assert(instance.toSql(query, instance), 
+        assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT FIRST 100 images.m_number AS m_number FROM " 
         + prefix + "images images WHERE images.m_number IS NULL"));

@@ -8,7 +8,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicConstraintTest extends TestCase {
     
@@ -43,10 +43,10 @@ public class BasicConstraintTest extends TestCase {
     /** Test of setInverse method, of class org.mmbase.storage.search.implementation.BasicConstraint. */
     public void testSetInverse() {
         // Default is false.
-        assert(!instance.isInverse());
+        assertTrue(!instance.isInverse());
         
         instance.setInverse(true);
-        assert(instance.isInverse());
+        assertTrue(instance.isInverse());
     }
     
     /** Test of isInverse method, of class org.mmbase.storage.search.implementation.BasicConstraint. */
@@ -68,7 +68,7 @@ public class BasicConstraintTest extends TestCase {
     /** Test of getBasicSupportLevel method. */
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     public static Test suite() {

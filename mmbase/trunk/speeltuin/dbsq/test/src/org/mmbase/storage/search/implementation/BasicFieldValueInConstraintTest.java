@@ -11,7 +11,7 @@ import org.mmbase.module.corebuilders.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
     
@@ -85,17 +85,17 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         List values = new ArrayList(instance.getValues());
-        assert(values.size() == 0);
+        assertTrue(values.size() == 0);
         instance.addValue(STRING_TEST_VALUE1);
         values = new ArrayList(instance.getValues());
-        assert(values.size() == 1);
-        assert(values.indexOf(STRING_TEST_VALUE1) == 0);
+        assertTrue(values.size() == 1);
+        assertTrue(values.indexOf(STRING_TEST_VALUE1) == 0);
         instance.addValue(STRING_TEST_VALUE2);
         values = new ArrayList(instance.getValues());
-        assert(values.size() == 2);
+        assertTrue(values.size() == 2);
         // Lexicographically ordering:
-        assert(values.indexOf(STRING_TEST_VALUE1) == 1);
-        assert(values.indexOf(STRING_TEST_VALUE2) == 0);
+        assertTrue(values.indexOf(STRING_TEST_VALUE1) == 1);
+        assertTrue(values.indexOf(STRING_TEST_VALUE2) == 0);
         
         // Trying to add string value to integer field, should throw IllegalArgumentException.
         BasicFieldValueInConstraint instance2 = new BasicFieldValueInConstraint(integerField);
@@ -106,22 +106,22 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         
         // Add integer value to integer field.
         values = new ArrayList(instance2.getValues());
-        assert(values.size() == 0);
+        assertTrue(values.size() == 0);
         instance2.addValue(INTEGER_TEST_VALUE);
         values = new ArrayList(instance2.getValues());
-        assert(values.size() == 1);
-        assert(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
+        assertTrue(values.size() == 1);
+        assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
         // Same value, should not result in new element in values.
         instance2.addValue(LONG_TEST_VALUE);
         values = new ArrayList(instance2.getValues());
-        assert(values.size() == 1);
-        assert(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
-        assert(values.indexOf(LONG_TEST_VALUE.toString()) == 0);
+        assertTrue(values.size() == 1);
+        assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
+        assertTrue(values.indexOf(LONG_TEST_VALUE.toString()) == 0);
         instance2.addValue(FLOAT_TEST_VALUE2);
         values = new ArrayList(instance2.getValues());
-        assert(values.size() == 2);
-        assert(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
-        assert(values.indexOf(FLOAT_TEST_VALUE2.toString()) == 1);
+        assertTrue(values.size() == 2);
+        assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
+        assertTrue(values.indexOf(FLOAT_TEST_VALUE2.toString()) == 1);
     }
     
     /** Test of getValues method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
@@ -145,7 +145,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     /** Test of getBasicSupportLevel method. */
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
@@ -160,7 +160,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
     public void testToString() {
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("FieldValueInConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -169,7 +169,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         
          // Reverse inverse flag.
         instance.setInverse(!instance.isInverse());
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("FieldValueInConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -178,7 +178,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
  
         // Set field alias.
         stringField.setAlias("yyuiwe");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("FieldValueInConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -187,7 +187,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         
         // Reverse case sensitive.
         instance.setCaseSensitive(!instance.isCaseSensitive());
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("FieldValueInConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"
@@ -197,7 +197,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         // Add values.
         instance.addValue(STRING_TEST_VALUE1);
         instance.addValue(STRING_TEST_VALUE2);
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals("FieldValueInConstraint(inverse:"
         + instance.isInverse() + ", field:"
         + instance.getField().getAlias() + ", casesensitive:"

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldConstraintTest extends TestCase {
     
@@ -59,8 +59,8 @@ public class BasicFieldConstraintTest extends TestCase {
     
     /** Test of getField method, of class org.mmbase.storage.search.implementation.BasicFieldConstraint. */
     public void testGetField() {
-        assert(instance.getField() != null);
-        assert(instance.getField() == field);
+        assertTrue(instance.getField() != null);
+        assertTrue(instance.getField() == field);
     }
     
     /** Tests constructor. */
@@ -75,12 +75,12 @@ public class BasicFieldConstraintTest extends TestCase {
     /** Test of setCaseSensitive method, of class org.mmbase.storage.search.implementation.BasicFieldConstraint. */
     public void testSetCaseSensitive() {
         // Defaults to true.
-        assert(instance.isCaseSensitive());
+        assertTrue(instance.isCaseSensitive());
         
         instance.setCaseSensitive(false);
-        assert(!instance.isCaseSensitive());
+        assertTrue(!instance.isCaseSensitive());
         instance.setCaseSensitive(true);
-        assert(instance.isCaseSensitive());
+        assertTrue(instance.isCaseSensitive());
     }
     
     /** Test of isCaseSensitive method, of class org.mmbase.storage.search.implementation.BasicFieldConstraint. */
@@ -92,7 +92,7 @@ public class BasicFieldConstraintTest extends TestCase {
     /** Test of getBasicSupportLevel method. */
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
-        assert(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicFieldConstraint. */

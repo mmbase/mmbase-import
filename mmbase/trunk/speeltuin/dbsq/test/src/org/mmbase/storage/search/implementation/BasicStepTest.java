@@ -10,7 +10,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -53,14 +53,14 @@ public class BasicStepTest extends TestCase {
     /** Test of getTableName method, of class org.mmbase.storage.search.implementation.BasicStep. */
     public void testGetTableName() {
         String tableName = instance.getTableName();
-        assert(tableName != null);
-        assert(tableName.equals(BUILDER_NAME));
+        assertTrue(tableName != null);
+        assertTrue(tableName.equals(BUILDER_NAME));
     }
     
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */
     public void testSetAlias() {
         // Default is builder name.
-        assert(instance.getAlias().equals(BUILDER_NAME));
+        assertTrue(instance.getAlias().equals(BUILDER_NAME));
         
         // Null value, should throw IllegalArgumentException.
         try {
@@ -76,8 +76,8 @@ public class BasicStepTest extends TestCase {
         
         instance.setAlias(TEST_ALIAS);
         String alias = instance.getAlias();
-        assert(alias != null);
-        assert(alias.equals(TEST_ALIAS));
+        assertTrue(alias != null);
+        assertTrue(alias.equals(TEST_ALIAS));
     }
     
     /** Test of getAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */
@@ -95,25 +95,25 @@ public class BasicStepTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         SortedSet nodes = instance.getNodes();
-        assert(nodes.size() == 0);
+        assertTrue(nodes.size() == 0);
         int nodeNumber0 = 23456;
         instance.addNode(nodeNumber0);
         nodes = instance.getNodes();
-        assert(nodes.size() == 1);
+        assertTrue(nodes.size() == 1);
         Iterator iNodes = nodes.iterator();
-        assert(iNodes.hasNext());
-        assert(iNodes.next().equals(new Integer(nodeNumber0)));
-        assert(!iNodes.hasNext());
+        assertTrue(iNodes.hasNext());
+        assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
+        assertTrue(!iNodes.hasNext());
         int nodeNumber1 = 2345;
         instance.addNode(nodeNumber1);
         nodes = instance.getNodes();
-        assert(nodes.size() == 2);
+        assertTrue(nodes.size() == 2);
         iNodes = nodes.iterator();
-        assert(iNodes.hasNext());
-        assert(iNodes.next().equals(new Integer(nodeNumber1)));
-        assert(iNodes.hasNext());
-        assert(iNodes.next().equals(new Integer(nodeNumber0)));
-        assert(!iNodes.hasNext());
+        assertTrue(iNodes.hasNext());
+        assertTrue(iNodes.next().equals(new Integer(nodeNumber1)));
+        assertTrue(iNodes.hasNext());
+        assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
+        assertTrue(!iNodes.hasNext());
     }
     
     /** Test of getNodes method, of class org.mmbase.storage.search.implementation.BasicStep. */
@@ -148,14 +148,14 @@ public class BasicStepTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicStep. */
     public void testToString() {
         // With default alias.
-        assert(instance.toString(), 
+        assertTrue(instance.toString(), 
         instance.toString().equals("Step(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ")"));
         
         // With test alias.
         instance.setAlias(TEST_ALIAS);
-        assert(instance.toString(), 
+        assertTrue(instance.toString(), 
         instance.toString().equals("Step(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ")"));
@@ -163,7 +163,7 @@ public class BasicStepTest extends TestCase {
         // With nodes.
         instance.addNode(123);
         instance.addNode(3456);
-        assert(instance.toString(), 
+        assertTrue(instance.toString(), 
         instance.toString().equals("Step(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ")"));
