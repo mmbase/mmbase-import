@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.19.2.2 2005-01-25 16:52:22 michiel Exp $
+ * @version $Id: Attribute.java,v 1.19.2.3 2005-02-08 18:16:43 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -209,10 +209,8 @@ public class Attribute {
                         log.error("Unbalanced parentheses in '" + this + "'");
                         throw new AttributeException("Unbalanced parentheses in '" + this + "'");
                     }
-                    int posOpen1  = attr.indexOf('{', pos);
-                    int posOpen2  = attr.indexOf('[', pos);
-                    int posOpen   = (posOpen1 < posOpen2 && posOpen1 >= 0) ? posOpen1 : posOpen2;
-
+                    int posOpen  = attr.indexOf(c, pos);
+                    
                     if (posOpen > -1 && posOpen < posClose) { // another one was opened!
                         opened++;
                         pos = posOpen + 1;
