@@ -31,7 +31,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.52 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: TypeDef.java,v 1.53 2005-03-16 12:47:51 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -132,7 +132,7 @@ public class TypeDef extends MMObjectBuilder {
         }
         // look if we can store to file, if it aint there yet...
         String path = getBuilderConfiguration(node);
-        java.net.URL url = mmb.getBuilderLoader().findResource(path);
+        java.net.URL url = mmb.getBuilderLoader().getResource(path);
         try {
             if (! url.openConnection().getDoInput()) {
                 // first store our config....

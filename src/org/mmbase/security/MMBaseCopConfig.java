@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.22 2005-03-01 13:59:54 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.23 2005-03-16 12:48:29 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -91,7 +91,7 @@ public class MMBaseCopConfig {
      */
     MMBaseCopConfig(MMBaseCop mmbaseCop) throws java.io.IOException, NoSuchMethodException, SecurityException {
 
-        java.net.URL config = securityLoader.findResource("security.xml");
+        java.net.URL config = securityLoader.getResource("security.xml");
         log.info("using: '" + config + "' as configuration file for security");
         
         watcher = new SecurityConfigWatcher(mmbaseCop);
