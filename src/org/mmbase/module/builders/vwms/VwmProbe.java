@@ -16,6 +16,7 @@ import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * admin module, keeps track of all the worker pools
@@ -27,6 +28,9 @@ import org.mmbase.util.*;
  */
 public class VwmProbe implements Runnable {
 
+    // logging variable
+	private static Logger log = Logging.getLoggerInstance(VwmProbe.class.getName());
+	
 	Thread kicker = null;
 	VwmProbeInterface parent=null;
 	SortedVector tasks= new SortedVector(new MMObjectCompare("wantedtime"));
@@ -71,7 +75,7 @@ public class VwmProbe implements Runnable {
 	 */
 	public synchronized void run() {
 		kicker.setPriority(Thread.MIN_PRIORITY+1);  
-		System.out.println("VwmProbe -> started probe");
+		log.info("VwmProbe -> started probe");
 		while (kicker!=null) {
 				if (tasks.size()>0) {
 					anode=(MMObjectNode)tasks.elementAt(0);
@@ -87,16 +91,16 @@ public class VwmProbe implements Runnable {
 						ttime=anode.getIntValue("wantedtime")-ttime;
 						if (ttime<3) {
 							// time has come handle this task now !
-							System.out.println("VwmProbe Handle Task NOW");
+							log.service("VwmProbe Handle Task NOW");
 							try {
 //								parent.performTask(anode);
 								pp=new PerformProbe(parent,anode);
-							} catch (Exception e) {
-								System.out.println("VWMprobe : performTask failed"+anode);
+							} catch (RuntimeException e) {
+								log.error("VWMprobe : performTask failed "+anode+" : "+e);
 							}
 							tasks.removeElement(anode);
 						} else {
-							System.out.println("VwmProbe wait for "+ttime);
+							log.service("VwmProbe wait for "+ttime);
 							wait(ttime*1000);
 						}
 					}
@@ -114,7 +118,7 @@ public class VwmProbe implements Runnable {
 		}
 		// is the active node
 		if (tasks.size()==0 || node==tasks.elementAt(0)) {
-			System.out.println("VwmProbe : notify()");
+			log.service("VwmProbe : notify()");
 			notify();
 		}
 		return(true);
