@@ -105,6 +105,18 @@
       <a href="http://www.mmbase.org"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr> 
+  <tr>
+    <td>
+      www.mmbase.org/bug: Bugs and wishes
+    </td>
+    <td>
+      If you find bugs in this product, then please use our
+      bugtracker to inform use about that. You can also submit wishes.
+    </td>
+    <td class="link" >
+      <a href="http://www.mmbase.org/bug"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
+    </td>
+  </tr> 
 </table>
 </body>
 </html>
