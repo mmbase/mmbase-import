@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.3 2002-03-15 09:52:37 pierre Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.4 2002-03-18 17:13:07 eduard Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {
@@ -25,7 +25,7 @@ public class ConnectorCommandGetNewRelation extends ConnectorCommand {
     /**
      * @javadoc
      */
-     public ConnectorCommandGetNewRelation(String role, String sourceobjectnumber, String destinationobjectnumber) {
+     public ConnectorCommandGetNewRelation(String role, String sourceobjectnumber, String destinationobjectnumber) throws WizardException {
          super("getnewrelation");
          addCommandAttr("role", role);
          addCommandAttr("source", sourceobjectnumber);
