@@ -13,12 +13,12 @@ package org.mmbase.applications.media.filters;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 
 /**
- * Facilitates implementing Comparator by defining the 'preference' of
+ * Facilitates implementing Sorter by defining the 'preference' of
  * one object. A preference is just an int. The higher, the better.
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class PreferenceComparator extends ComparatorFilter {
+abstract public class PreferenceSorter extends SorterFilter {
     /**
      *  Implement a preference for this URLComposer
      */
