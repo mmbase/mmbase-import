@@ -28,7 +28,7 @@ List  showDirs(File thisDir, String prefix, int max) throws IOException {
     if (f.isDirectory() && (! f.getName().equals("last")) && (new File(f, "messages.log")).exists()) {
 	found ++;
 	    if (found >= max) break;
-       info.link = "build_page.jsp?dir=" + prefix + "/" + f.getName();
+       info.link = "/development/download/build_page.jsp?dir=" + prefix + "/" + f.getName();
        Date date = new Date(new File(f, "messages.log").lastModified());
        info.date = date;
        info.dateString = df.format(date);
