@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.70 2003-05-19 07:39:17 kees Exp $
+ * @version $Id: MMAdmin.java,v 1.71 2003-05-23 15:45:32 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -608,36 +608,19 @@ public class MMAdmin extends ProcessorModule {
             String name = app.getApplicationName();
             String maintainer = app.getApplicationMaintainer();
             if (requiredMaintainer != null && !maintainer.equals(requiredMaintainer)) {
-                return result.error(
-                    "Install error: "
-                        + name
-                        + " requires maintainer '"
-                        + requiredMaintainer
-                        + "' but found maintainer '"
-                        + maintainer
-                        + "'");
+                return result.error("Install error: " + name + " requires maintainer '" + requiredMaintainer + 
+                                    "' but found maintainer '" + maintainer + "'");
             }
             int version = app.getApplicationVersion();
             if (requiredVersion != -1 && version != requiredVersion) {
-                return result.error(
-                    "Install error: "
-                        + name
-                        + " requires version '"
-                        + requiredVersion
-                        + "' but found version '"
-                        + version
-                        + "'");
+                return result.error("Install error: " + name + " requires version '" + requiredVersion + 
+                                    "' but found version '" + version + "'");
             }
             int installedVersion = ver.getInstalledVersion(name, "application");
             if (installedVersion == -1 || version > installedVersion) {
                 if (!name.equals(applicationName)) {
-                    result.warn(
-                        "Application name "
-                            + name
-                            + " not the same as the base filename "
-                            + applicationName
-                            + ".\n"
-                            + "This may cause problems when referring to this application.");
+                    result.warn("Application name " + name + " not the same as the base filename " + applicationName + ".\n"
+                                + "This may cause problems when referring to this application.");
                 }
                 // We should possibly check whether the maintainer is valid here (see sample code below).
                 // There is currently no way to do this, though, unless we use awful queries.
@@ -666,12 +649,8 @@ public class MMAdmin extends ProcessorModule {
                         } catch (Exception e) {}
                         if (installedAppVersion == -1 || appVersion > installedAppVersion) {
                             log.service("Application '" + applicationName + "' requires : " + appName);
-                            if (!installApplication(appName,
-                                appVersion,
-                                appMaintainer,
-                                result,
-                                installationSet,
-                                false)) {
+                            if (!installApplication(appName, appVersion, appMaintainer,
+                                result, installationSet, false)) {
                                 return false;
                             }
                         } else if (appMaintainer != null) {
@@ -691,13 +670,8 @@ public class MMAdmin extends ProcessorModule {
                 if (installedVersion == -1) {
                     log.info("Installing application : " + name);
                 } else {
-                    log.info(
-                        "installing application : "
-                            + name
-                            + " new version from "
-                            + installedVersion
-                            + " to "
-                            + version);
+                    log.info("installing application : " + name
+                            + " new version from " + installedVersion + " to " + version);
                 }
                 if (installBuilders(app.getNeededBuilders(), path + applicationName, result)
                     && installRelDefs(app.getNeededRelDefs(), result)
@@ -736,8 +710,10 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    boolean installDataSources(Vector ds, String appname, ApplicationResult result) {
+    protected boolean installDataSources(Vector ds, String appname, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
+
+        List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
             for (Enumeration h = ds.elements(); h.hasMoreElements();) {
                 Hashtable bh = (Hashtable)h.nextElement();
@@ -745,14 +721,14 @@ public class MMAdmin extends ProcessorModule {
                 String prepath = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
 
                 if (fileExists(prepath + path)) {
-                    XMLNodeReader nodereader =
-                        new XMLNodeReader(prepath + path, prepath + appname + File.separator, mmb);
+                    XMLNodeReader nodereader = new XMLNodeReader(prepath + path, prepath + appname + File.separator, mmb);
                     String exportsource = nodereader.getExportSource();
                     int timestamp = nodereader.getTimeStamp();
-                    Vector importednodes = new Vector();
+                    Vector importedNodes = new Vector();
+                    // loop all nodes , and add to syncnodes.
                     for (Enumeration n = nodereader.getNodes(mmb).elements(); n.hasMoreElements();) {
-                        MMObjectNode newnode = (MMObjectNode)n.nextElement();
-                        int exportnumber = newnode.getIntValue("number");
+                        MMObjectNode newNode = (MMObjectNode)n.nextElement();
+                        int exportnumber = newNode.getIntValue("number");
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
                         Enumeration b = syncbul.search(query);
                         if (b.hasMoreElements()) {
@@ -760,27 +736,42 @@ public class MMAdmin extends ProcessorModule {
                             MMObjectNode syncnode = (MMObjectNode)b.nextElement();
                             log.debug("node allready installed : " + exportnumber);
                         } else {
-                            newnode.setValue("number", -1);
-                            int localnumber = doKeyMergeNode(newnode, result);
-                            if (localnumber != -1) {
+                            newNode.setValue("number", -1);
+                            int localnumber = doKeyMergeNode(newNode, result);
+                            if (localnumber != -1) { // this node was not yet imported earlier
                                 MMObjectNode syncnode = syncbul.getNewNode("import");
                                 syncnode.setValue("exportsource", exportsource);
                                 syncnode.setValue("exportnumber", exportnumber);
                                 syncnode.setValue("timestamp", timestamp);
                                 syncnode.setValue("localnumber", localnumber);
                                 syncnode.insert("import");
-                                if ((localnumber == newnode.getNumber()) && (newnode.parent instanceof Message)) {
-                                    importednodes.add(newnode);
+                                if (localnumber == newNode.getNumber()) {
+                                    // && (newNode.parent instanceof Message)) { terrible stuff
+                                    
+                                    // determin if there were NODE fields, which need special treatment later.
+                                    List fields = newNode.parent.getFields();
+                                    Iterator i = fields.iterator();
+                                    while (i.hasNext()) {
+                                        FieldDefs def = (FieldDefs) i.next();
+                                        if (def.getDBType() == FieldDefs.TYPE_NODE && ! def.getDBName().equals("number")) {
+                                            newNode.values.put("__exportsource", exportsource);
+                                            nodeFieldNodes.add(newNode);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                    for (Enumeration n = importednodes.elements(); n.hasMoreElements();) {
+
+                    // mm: ????? Why is this????
+                    //     Can someone _please_ at least comment in this kind of terribleness!
+                    /*
+                    for (Enumeration n = importedNodes.elements(); n.hasMoreElements();) {
                         MMObjectNode importnode = (MMObjectNode)n.nextElement();
                         int exportnumber = importnode.getIntValue("thread");
                         int localnumber = -1;
-                        Enumeration b =
-                            syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
+                        Enumeration b = syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
                             MMObjectNode n2 = (MMObjectNode)b.nextElement();
                             localnumber = n2.getIntValue("localnumber");
@@ -788,11 +779,51 @@ public class MMAdmin extends ProcessorModule {
                         importnode.setValue("thread", localnumber);
                         importnode.commit();
                     }
+                    */
                 }
             }
+
+            // treat NODE fields now.
+            Iterator i = nodeFieldNodes.iterator();
+            while (i.hasNext()) {
+                MMObjectNode importedNode = (MMObjectNode) i.next();           
+                log.info(importedNode);
+                String exportsource = (String) importedNode.values.get("__exportsource");
+                // clean it up
+                importedNode.values.remove("__exportsource");
+
+                List fields = importedNode.parent.getFields();
+                Iterator j = fields.iterator();                
+                while (j.hasNext()) { 
+                    FieldDefs def = (FieldDefs) j.next();
+                    if (def.getDBType() == FieldDefs.TYPE_NODE && ! (def.getDBName().equals("number"))) {
+                        int exportnumber;
+                        try {
+                            exportnumber = Integer.parseInt((String) importedNode.values.get("__" + def.getDBName()));
+                        } catch (Exception e) {
+                            exportnumber = -1;
+                        }
+
+                        // clean it up (don't know if this is necessary, but don't risc anything!)
+                        importedNode.values.remove("__" + def.getDBName());
+                                                                      
+                        int localNumber = -1;
+                        String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
+                        log.info(query);
+                        Enumeration b = syncbul.search(query);
+                        if (b.hasMoreElements()) {
+                            MMObjectNode n2 = (MMObjectNode) b.nextElement();
+                            localNumber = n2.getIntValue("localnumber");
+                        }
+                        importedNode.setValue(def.getDBName(), localNumber);
+                        importedNode.commit();
+                    }
+                }
+            }
+ 
             return result.isSuccess();
         } else {
-            return result.error("Application installer : can't reach syncnodes builder");
+            return result.error("Application installer : can't reach syncnodes builder"); // 
         }
     }
 
@@ -907,14 +938,8 @@ public class MMAdmin extends ProcessorModule {
                                     syncnode.insert("import");
                                 }
                             } else {
-                                result.error(
-                                    "Cannot sync relation (exportnumber=="
-                                        + exportnumber
-                                        + ", snumber:"
-                                        + snumber
-                                        + ", dnumber:"
-                                        + dnumber
-                                        + ")");
+                                result.error("Cannot sync relation (exportnumber==" + exportnumber
+                                        + ", snumber:" + snumber + ", dnumber:" + dnumber + ")");
                             }
                         }
                     }
