@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.288 2004-12-20 13:13:03 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.289 2004-12-20 17:54:44 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -217,6 +217,11 @@ public class MMObjectBuilder extends MMTable {
      * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
      */
     public boolean broadcastChanges = true;
+
+    /**
+     * Internal (instance) version number of this builder.
+     */
+    protected long internalVersion = -1;
 
     /**
      *  Maintainer information for builder registration
@@ -449,9 +454,25 @@ public class MMObjectBuilder extends MMTable {
                 }
             }
         }
+        update();
         return true;
     }
 
+    /**
+     * Updates the internal version number of this buidler;
+     */
+    protected void update() {
+        internalVersion = System.currentTimeMillis();
+    }
+
+    /**
+     * Returns the builder's internal version number.
+     * This number can be used to sync wrapper classes. I.e. to make sure that a
+     * nodemanager's fieldlist is the same as that of the wrapped builder.
+     */
+    public long getInternalVersion() {
+        return internalVersion;
+    }
 
     /**
      * Creates a new builder table in the current database.
@@ -1295,6 +1316,8 @@ public class MMObjectBuilder extends MMTable {
             fd.setParent(this);
 
             addField(fd);
+            // added field, so update version
+            update();
             return true;
         } else {
             return false;
@@ -2329,7 +2352,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Build a set command string from a set nodes ( should be moved )
      * @param nodes Vector containg the nodes to put in the set
-     * @param fieldName fieldname whsoe values should be put in the set
+     * @param fieldName fieldname whose values should be put in the set
      * @return a comma-seperated list of values, as a <code>String</code>
      */
     public String buildSet(Vector nodes, String fieldName) {
@@ -2387,6 +2410,7 @@ public class MMObjectBuilder extends MMTable {
         // sortedDBLayout=new Vector();
         setDBLayout_xml(fields);
         // log.service("currently fields: " + fields);
+        update();
     }
 
     /**
@@ -2632,7 +2656,8 @@ public class MMObjectBuilder extends MMTable {
             for (Iterator i=fields.values().iterator(); i.hasNext();) {
                 FieldDefs node=(FieldDefs)i.next();
                 // include only fields which have been assigned a valid position
-                if (((sortorder==FieldDefs.ORDER_CREATE) && (node.getDBPos()>-1)) ||
+                if ((sortorder==FieldDefs.ORDER_NONE) ||
+                    ((sortorder==FieldDefs.ORDER_CREATE) && (node.getDBPos()>-1)) ||
                     ((sortorder==FieldDefs.ORDER_EDIT) && (node.getGUIPos()>-1)) ||
                     ((sortorder==FieldDefs.ORDER_SEARCH) && (node.getGUISearch()>-1)) ||
                     ((sortorder==FieldDefs.ORDER_LIST) && (node.getGUIList()>-1))
@@ -2751,7 +2776,7 @@ public class MMObjectBuilder extends MMTable {
                 if (log.isDebugEnabled()) {
                     log.debug("function = '" + function + "', fieldname = '" + name + "'");
                 }
-                List a = new ArrayList(); 
+                List a = new ArrayList();
                 a.add(name);
                 rtn = getFunctionValue(node, function, a);
 
@@ -3649,7 +3674,7 @@ public class MMObjectBuilder extends MMTable {
      * @param fields A list of the builder's FieldDefs
      */
     public void setDBLayout_xml(Hashtable fields) {
-        sortedDBLayout=new Vector();
+        sortedDBLayout = new Vector();
         sortedDBLayout.addElement(FIELD_OBJECT_TYPE);
         sortedDBLayout.addElement(FIELD_OWNER);
 
@@ -3683,6 +3708,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDescription(String e) {
         this.description=e;
+        update();
     }
 
     /**
@@ -3691,6 +3717,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDescriptions(Hashtable e) {
         this.descriptions=e;
+        update();
     }
 
     /**
@@ -3729,6 +3756,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setSearchAge(String age) {
         this.searchAge=age;
+        update();
     }
 
     /**
@@ -3879,6 +3907,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setSingularNames(Hashtable names) {
         singularNames=names;
+        update();
     }
 
     /**
@@ -3893,6 +3922,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setPluralNames(Hashtable names) {
         pluralNames=names;
+        update();
     }
 
     /**
@@ -4137,7 +4167,8 @@ public class MMObjectBuilder extends MMTable {
      * Sets the subpath of the builder's xml configuration file.
      */
     public void setXMLPath(String m) {
-         xmlPath = m;
+        xmlPath = m;
+        update();
     }
 
     /**
@@ -4179,6 +4210,7 @@ public class MMObjectBuilder extends MMTable {
      */
     void setInitParameters(Hashtable properties) {
         this.properties = properties;
+        update();
     }
 
     /**
@@ -4198,6 +4230,7 @@ public class MMObjectBuilder extends MMTable {
     public void setInitParameter(String name, String value) {
         if (properties == null) properties = new Hashtable();
         properties.put(name,value);
+        update();
     }
 
     /**
@@ -4219,6 +4252,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setVersion(int i) {
         version=i;
+        update();
     }
 
     /**
@@ -4243,8 +4277,8 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setMaintainer(String m) {
         maintainer=m;
+        update();
     }
-
 
     /**
      * hostname, parses the hostname from a url, so http://www.mmbase.org/bug
