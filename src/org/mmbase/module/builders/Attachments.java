@@ -7,24 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
 */
-/*
- 
-  $Id: Attachments.java,v 1.5 2001-01-23 15:37:21 gerard Exp $
- 
-  $Log: not supported by cvs2svn $
-  Revision 1.4  2000/08/18 21:37:17  case
-  cjr: Changed representation of file in edit menu to clickable filename,
-       analogous to clickable image for the images builder.
-
-  Revision 1.3  2000/08/16 21:50:02  case
-  cjr: Now sets filename (new attribute) and mimetype according to values
-       made available through HttpPost: parameters file_name and file_type
- 
-  Revision 1.2  2000/08/06 00:31:05  case
-  cjr: Now calls org.mmbase.util.MagicFile to automatically set mimetype on upload
- 
- 
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -36,35 +18,29 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
-
+import org.mmbase.util.logging.*;
 
 /**
+ * This builder can be used to maintain files
+ *
  * @author cjr@dds.nl
- *
- * @version $Id: Attachments.java,v 1.5 2001-01-23 15:37:21 gerard Exp $
- *
  */
 public class Attachments extends MMObjectBuilder {
-    private String classname = getClass().getName();
-    private boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
 
     protected String defaultMimeType = "application/x-binary";
 
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
-        if (debug) {
-            debug("CMDS="+cmds);
-            debug("VARS="+vars);
-        }
+     	log.debug("CMDS="+cmds);
+       	log.debug("VARS="+vars);
+
         EditState ed = (EditState)vars.get("EDITSTATE");
-        if (debug) {
-            debug("Attachments::process() called");
-        }
+        log.debug("Attachments::process() called");
+
         String action = command.nextToken();
         if (action.equals("SETFIELD")) {
             String fieldname = command.nextToken();
-            if (debug) {
-                debug("fieldname = "+fieldname);
-            }
+            log.debug("fieldname = "+fieldname);
             setEditFileField(ed, fieldname, cmds, sp);
         }
         return false;
@@ -91,7 +67,6 @@ public class Attachments extends MMObjectBuilder {
 
     protected boolean setEditFileField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
         MMObjectBuilder obj=ed.getBuilder();
-        //FieldDefs def=obj.getField(fieldname);
         try {
             MMObjectNode node=ed.getEditNode();
             if (node!=null) {
@@ -101,22 +76,20 @@ public class Attachments extends MMObjectBuilder {
                 String file_name = sp.poster.getPostParameter("file_name");
                 String file_type = sp.poster.getPostParameter("file_type");
                 String file_size = sp.poster.getPostParameter("file_size");
-                if (debug) {
-                    if (file_name == null) {
-                        debug("file_name is NULL");
-                    } else {
-                        debug("file_name = "+file_name);
-                    }
-                    if (file_type == null) {
-                        debug("file_type is NULL");
-                    } else {
-                        debug("file_type = "+file_type);
-                    }
-                    if (file_size == null) {
-                        debug("file_size is NULL");
-                    } else {
-                        debug("file_size = "+file_size);
-                    }
+              	if (file_name == null) {
+                	log.debug("file_name is NULL");
+          		} else {
+              		log.debug("file_name = "+file_name);
+          		}
+          		if (file_type == null) {
+              		log.debug("file_type is NULL");
+          		} else {
+              		log.debug("file_type = "+file_type);
+          		}
+          		if (file_size == null) {
+              		log.debug("file_size is NULL");
+          		} else {
+             	 	log.debug("file_size = "+file_size);
                 }
 
                 // [end]
@@ -130,9 +103,7 @@ public class Attachments extends MMObjectBuilder {
                     node.setValue("size",bytes.length);  // Simpler than converting "file_size"
                 }
                 else {
-                    if (debug) {
-                        debug("Grr. Got zero bytes");
-                    }
+                	log.debug("Attachment builder -> Grr. Got zero bytes");
                 }
             }
         } catch (Exception e) {
