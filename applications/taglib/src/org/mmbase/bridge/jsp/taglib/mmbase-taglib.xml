@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!--  
 This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
 To convert this file to a standard .tld file you need  an xslt engine like xalan:
@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.261 2004-07-01 11:05:43 johannes Exp $
+version: $Id: mmbase-taglib.xml,v 1.262 2004-07-08 12:26:45 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -547,29 +547,11 @@ version: $Id: mmbase-taglib.xml,v 1.261 2004-07-01 11:05:43 johannes Exp $
 			<name>escape</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>Override the default escape behaviour determined by the surrounding Content-tag.</info>
+			<info>
+        Override the default escape behaviour determined by the surrounding Content-tag.
+        <document file="resources/taglibcontent.xml" mode="escapers" />
+      </info>
 			<see tag="content" />
-			<possiblevalue>
-				<value>text/html</value>
-			</possiblevalue>
-			<possiblevalue>
-				<value>text/xml</value>
-			</possiblevalue>
-			<possiblevalue>
-				<value>text/plain</value>
-				<info>This equals no escaping</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>p</value>
-				<info>Interpret as 'enriched' ASCII for 'block' HTML parts. It normally generates one or more p-tags.</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>...</value>
-				<info>
-					All possible values are defined in taglibcontent.xml
-					TODO: documentation must be generated from this XML.
-				</info>
-			</possiblevalue>
 			<since>MMBase-1.7</since>
 		</attribute>
 	</taginterface>
@@ -4695,8 +4677,13 @@ The 0 is just counter, which starts at 0 on every page.
 		<tagclass>org.mmbase.bridge.jsp.taglib.ContentTag</tagclass>
 		<teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
 		<info>
+      <p>
 			 The content tag is meant to put around your whole page, and set general properties, like
 			 language, taglib behaviour, content type.
+      </p>
+      <p>
+        The content-tag can also provide a default 'escaping' behavior for surrounded 'writer' tags. 
+      </p>
 		</info>
 		<since>MMBase-1.7</since>
 		<attribute>
@@ -4725,14 +4712,14 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				The Content-Type of this page.
+        <p>
+          The Content-Type of this page.
+        </p>
+        <p>
+          Setting the content-type can also trigger a default 'escaper' and 'postprocessor'. 
+        </p>
+        <document file="resources/taglibcontent.xml" mode="content" />
 			</info>
-			<examplevalue>
-				<value>text/html (default)</value>
-			</examplevalue>
-			<examplevalue>
-				<value>text/xml</value>
-			</examplevalue>
 		</attribute>
 		<attribute>
 			<name>encoding</name>
@@ -4774,31 +4761,15 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				If this attribute is set the complete body-result is piped through this. If you specified
-				'type', then a default postprocessor might be defined.
+        <p>
+          If this attribute is set the complete body-result is piped through this. If you specified
+          'type', then a default postprocessor might be defined.
+        </p>
+        <p>
+          The following postprocessors can be specified.
+        </p>        
+        <document file="resources/taglibcontent.xml" mode="postprocessors" />
 			</info>
-			<possiblevalue>
-				<value>reducespace</value>
-				<info>
-					<p>
-						Replaces groups of one and more newlines by one new line, and one or more space by one
-						space. This spares bandwidth and makes the result better readable.
-					</p>
-					<p>
-						This is default for most XML-like content types.
-					</p>
-				</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>perl</value>
-				<info>
-					Interpret the complete body as a perl program, and write the result.
-				</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>...</value>
-				<info>See your taglibcontent.xml (default available in jar)</info>
-			</possiblevalue>
 		</attribute>
 		<attribute>
 			<name>escaper</name>
@@ -4809,20 +4780,18 @@ The 0 is just counter, which starts at 0 on every page.
 					The default value of the escape attribute of all writer tags in the body. The values are
 					defined in taglibcontent.xml. Reasonable defaults apply if you explicitely speficy a type.
 				</p>
+        <p>
+          The 'escape' attribute of the surrounded writers can be used to override this. (E.g. if
+          the writer itself produces HTML (e.g. mm:function name="gui"), then you should use
+          escape="none").
+        </p>
+        <p>
+          The following 'escapers' can be specified:
+        </p>
+        <document file="resources/taglibcontent.xml" mode="escapers" />
 			</info>
-			<possiblevalue>
-				<value>text/html</value>
-				<info>Escape for this content-type</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>inline</value>
-				<info>Interpret as 'enriched' ASCII for 'inline' HTML parts (so no blocks)</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>...</value>
-				<info>See your taglibcontent.xml (default available in jar)</info>
-			</possiblevalue>
 			<see tag="writer" attribute="escape" />
+			<see tag="function" />
 		</attribute>
 	</tag>
 	<tag>
