@@ -6,19 +6,19 @@
 
   <searchage>14</searchage>
   <names>
-		<singular xml:lang="en">Channel</singular>
-		<singular xml:lang="nl">Kanaal</singular>
+    <singular xml:lang="en">Channel</singular>
+    <singular xml:lang="nl">Kanaal</singular>
     <plural xml:lang="en">Channels</plural>
-		<plural xml:lang="nl">Kanalen</plural>
+    <plural xml:lang="nl">Kanalen</plural>
   </names>
   
   <descriptions>
-		<description xml:lang="en">A channel of a community</description>
-		<description xml:lang="nl">Een kanaal binnen een gemeenschap</description>
+    <description xml:lang="en">A channel of a community</description>
+    <description xml:lang="nl">Een kanaal binnen een gemeenschap</description>
   </descriptions>
 
   <properties>
-		<property name="baserecordpath">/tmp/chatlogs</property>
+    <property name="baserecordpath">/tmp/chatlogs</property>
   </properties>
   <fieldlist>
     <field>
@@ -31,7 +31,7 @@
         <guiname xml:lang="nl">Titel</guiname>
         <guitype>string</guitype>
       </gui>
-				<editor>
+        <editor>
         <positions>
           <list>1</list>
         </positions>
@@ -40,7 +40,7 @@
         <name>title</name>
         <type state="persistent" size="255" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
 
    <field>
       <descriptions>
@@ -56,7 +56,7 @@
         <name>subtitle</name>
         <type state="persistent" size="255" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
 
     <field>
       <descriptions>
@@ -72,7 +72,7 @@
         <name>intro</name>
         <type state="persistent" size="2047" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
 
     <field>
       <descriptions>
@@ -88,7 +88,7 @@
         <name>body</name>
         <type state="persistent" size="2047" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
 
     <field>
       <descriptions>
@@ -110,7 +110,7 @@
         <name>session</name>
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
-		</field>
+    </field>
     
     <field>
       <descriptions>
@@ -132,7 +132,7 @@
         <name>state</name>
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
-		</field>
+    </field>
     
     <field>
       <descriptions>
@@ -153,7 +153,7 @@
         <name>open</name>
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
-		</field>
+    </field>
     
     <field>
       <descriptions>
@@ -176,7 +176,7 @@
         <name>highseq</name>
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
-		</field>
+    </field>
 
 
     <field>
@@ -193,9 +193,8 @@
         <name>maxusers</name>
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
-		</field>
-
-</fieldlist>
-
+    </field>
+  </fieldlist>
+  
 </builder>
 

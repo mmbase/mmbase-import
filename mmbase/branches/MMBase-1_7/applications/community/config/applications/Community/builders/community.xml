@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="community" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: community.xml,v 1.4 2003-06-18 20:03:54 michiel Exp $ -->
+  <!-- @version $Id: community.xml,v 1.4.2.1 2004-04-13 13:18:53 michiel Exp $ -->
   <status>active</status>  
   <classfile>org.mmbase.applications.community.builders.Community</classfile>
 
   <searchage>14</searchage>
 
   <names>
-		<singular xml:lang="en">Community</singular>
-		<singular xml:lang="nl">Gemeenschap</singular>
-		<plural xml:lang="en">Communities</plural>
-		<plural xml:lang="nl">Gemeenschappen</plural>
+    <singular xml:lang="en">Community</singular>
+    <singular xml:lang="nl">Gemeenschap</singular>
+    <plural xml:lang="en">Communities</plural>
+    <plural xml:lang="nl">Gemeenschappen</plural>
   </names>
 
   <descriptions>
-		<description xml:lang="en">A place where people can come together to communicate on the Internet</description>
-		<description xml:lang="nl">Plaats waar personen bijeen kunnen komen en communiceren</description>
+    <description xml:lang="en">A place where people can come together to communicate on the Internet</description>
+    <description xml:lang="nl">Plaats waar personen bijeen kunnen komen en communiceren</description>
   </descriptions>
   
   <fieldlist>
@@ -34,17 +34,17 @@
       <editor>
         <positions><list>1</list></positions>
       </editor>
-				<db>
+        <db>
         <name>title</name>
         <type state="persistent" size="255" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
     <field>
       <descriptions>
         <description xml:lang="en">Subtitle of the community</description>
         <description xml:lang="nl">Subtitel van de gemeenschap</description>
       </descriptions>
-				<gui>
+        <gui>
         <guiname xml:lang="en">Subtitle</guiname>
         <guiname xml:lang="nl">Subtitel</guiname>
         <guitype>string</guitype>
@@ -56,7 +56,7 @@
         <name>subtitle</name>
         <type state="persistent" size="255" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
     
     <field>
       <descriptions>
@@ -72,7 +72,7 @@
         <name>intro</name>
         <type state="persistent" size="2047" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
     <field>
       <descriptions>
         <description xml:lang="en">Main descriptive tekt for this community, i.e. forum rules</description>
@@ -87,7 +87,7 @@
         <name>body</name>
         <type state="persistent" size="2047" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
 
     <field>
       <descriptions>
@@ -106,7 +106,7 @@
         <name>kind</name>
         <type state="persistent" size="15" notnull="true">STRING</type>
       </db>
-		</field>    
+    </field>    
   </fieldlist>
 </builder>
 
