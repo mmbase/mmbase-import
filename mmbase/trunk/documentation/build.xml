@@ -270,7 +270,7 @@
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation" depends="documentation.html,documentation.static.copy"> <!-- ,documentation.pdf"-->
+  <target name="documentation" depends="documentation.html,documentation.static.copy,documentation.pdf">
     <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
  
