@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.2 2003-08-22 12:34:49 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.3 2003-09-05 13:41:28 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -45,13 +45,13 @@ public class StorageReader extends DocumentReader  {
     public static void registerPublicIDs() {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_STORAGE_1_0, DTD_STORAGE_1_0, StorageReader.class);
     }
-    
+
     /**
      * The factory for which the reader reads the document.
      * The factory is used to verify whether the document is compatible, and is used to instantiate objects
      * that depend on factory information (such as schemes)
      */
-    protected StorageManagerFactory factory; 
+    protected StorageManagerFactory factory;
 
     /**
      * Constructor.
@@ -161,7 +161,7 @@ public class StorageReader extends DocumentReader  {
      * <ul>
      *  <li>option-disallowed-fields-case-sensitive : has the Boolean value TRUE if disallowed fields are case sensitive (default FALSE)</li>
      * </ul>
-     * @return attributes as a map 
+     * @return attributes as a map
      */
     public Map getAttributes() {
         Map attributes = new HashMap();
@@ -173,8 +173,8 @@ public class StorageReader extends DocumentReader  {
             for (int i=0; i<attributeTagList.getLength(); i++) {
                 Element attributeTag = (Element)attributeTagList.item(i);
                 String attributeName = attributeTag.getAttribute("name");
-                // require an attribute name. 
-                // if not given, skip the option. 
+                // require an attribute name.
+                // if not given, skip the option.
                 if (attributeName != null) {
                     attributes.put(attributeName,getNodeTextValue(attributeTag));
                 }
@@ -182,11 +182,11 @@ public class StorageReader extends DocumentReader  {
             NodeList optionTagList = attributesTag.getElementsByTagName("option");
             for (int i=0; i<optionTagList.getLength(); i++) {
                 Element optionTag = (Element)optionTagList.item(i);
-                // require an option name. 
-                // if not given, skip the option. 
+                // require an option name.
+                // if not given, skip the option.
                 String optionName = optionTag.getAttribute("name");
                 if (optionName != null) {
-                    String optionValue = optionTag.getAttribute("set");
+                    String optionValue = optionTag.getAttribute("value");
                     Boolean value = Boolean.TRUE;
                     if (optionValue != null) {
                         value = new Boolean(optionValue);
@@ -224,7 +224,7 @@ public class StorageReader extends DocumentReader  {
      * Returns all disallowed fields and their possible alternate values.
      * The fields are returned as name-value pairs, where the disallowedfieldname is the key, and
      * the alternate name is the value (null if no name is given).
-     * @return disallowed fields as a map 
+     * @return disallowed fields as a map
      */
     public Map getDisallowedFields() {
         Map disallowedFields = new HashMap();
@@ -237,10 +237,10 @@ public class StorageReader extends DocumentReader  {
             for (int i = 0; i < fieldTagList.getLength(); i++) {
                 Element fieldTag = (Element)fieldTagList.item(i);
                 String fieldName = fieldTag.getAttribute("name");
-                // require a field name. 
+                // require a field name.
                 // if not given, skip the option.
                 if (fieldName != null) {
-                    if (!casesensitive) fieldName = fieldName.toLowerCase(); 
+                    if (!casesensitive) fieldName = fieldName.toLowerCase();
                     String replacement = fieldTag.getAttribute("replacement");
                     disallowedFields.put(fieldName,replacement);
                 }
