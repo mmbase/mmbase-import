@@ -3737,6 +3737,7 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="cloud" />
     <see tag="time" />
     <tagclass>org.mmbase.bridge.jsp.taglib.LocaleTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
     <info>
       <p>
         Sets a locale. Tags living in its body can request the Locale
@@ -3781,6 +3782,14 @@ The 0 is just counter, which starts at 0 on every page.
       <examplevalue>
         <value>GB</value>
       </examplevalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        A jspvar of type Locale can be created.
+      </info>
     </attribute>
     <example>     
       <include base="examples.taglib" href="codesamples/timelocale.jsp" />
