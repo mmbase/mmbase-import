@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.24 2002-11-05 20:51:38 robmaris Exp $
+ * @version $Id: ContextAuthorization.java,v 1.25 2002-12-02 17:45:41 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
@@ -400,7 +400,7 @@ public class ContextAuthorization extends Authorization {
         }
         if (!check(user, nodeNumber, operation) ) {
             String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
-            log.error(msg);
+            log.debug(msg);
             throw new SecurityException(msg);
         }
     }
