@@ -492,12 +492,27 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	   out.writeBytes(sharepassword+"\r\n");
 	   out.writeBytes("--"+boundary+"\r\n");
    	   out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
+	   String oldline="";
+       	   if (getPackageStep()!=null) { oldline = getPackageStep().getUserFeedBack(); }
 
             try {
-                InputStream in = pack.getJarStream();
+                BufferedInputStream in = new BufferedInputStream(pack.getJarStream());
                 int val;
+		int totallen=0;
                 while ((val = in.read()) != -1) {
                     out.write(val);
+		    totallen++;
+        	    if (getPackageStep()!=null) {
+			String lenp=" send ";
+			if (totallen<1024) {
+				lenp+=""+totallen+" bytes";
+			} else if (totallen<(1024*1024)) {
+				lenp+=""+((float)totallen/1024)+" KB";
+			} else {
+				lenp+=""+((float)totallen/(1024*1024))+" MB";
+			}
+			getPackageStep().setUserFeedBack(oldline+lenp);
+		    }
                 }
             } catch (Exception e) {
                 log.error("can't load : " + path);
@@ -507,6 +522,8 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	    out.writeBytes("--"+boundary+"--\r\n");
 	    out.flush();
 	    out.close();
+
+       	    if (getPackageStep()!=null) getPackageStep().setUserFeedBack(oldline+" server processing");
     
             // Get the response
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -565,12 +582,27 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	   out.writeBytes(sharepassword+"\r\n");
 	   out.writeBytes("--"+boundary+"\r\n");
    	   out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
+   	   String oldline="";
+           if (getPackageStep()!=null) { oldline = getPackageStep().getUserFeedBack(); }
 
             try {
-                InputStream in = bundle.getJarStream();
+                BufferedInputStream in = new BufferedInputStream(bundle.getJarStream());
                 int val;
+		int totallen=0;
                 while ((val = in.read()) != -1) {
                     out.write(val);
+		    totallen++;
+        	    if (getPackageStep()!=null) {
+			String lenp=" send ";
+			if (totallen<1024) {
+				lenp+=""+totallen+" bytes";
+			} else if (totallen<(1024*1024)) {
+				lenp+=""+((float)totallen/1024)+" KB";
+			} else {
+				lenp+=""+((float)totallen/(1024*1024))+" MB";
+			}
+			getPackageStep().setUserFeedBack(oldline+lenp);
+		    }
                 }
             } catch (Exception e) {
                 log.error("can't load : " + path);
@@ -581,6 +613,8 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	    out.flush();
 	    out.close();
     
+       	    if (getPackageStep()!=null) getPackageStep().setUserFeedBack(oldline+" server processing");
+
             // Get the response
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;

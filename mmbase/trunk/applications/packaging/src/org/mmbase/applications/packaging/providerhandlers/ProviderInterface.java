@@ -12,6 +12,7 @@ import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.installhandlers.*;
+import org.mmbase.applications.packaging.projects.*;
 
 /**
  * Interface for all the provider handlers
@@ -91,6 +92,7 @@ public interface ProviderInterface {
      */
     public void setInstallStep(installStep step);
 
+    public void setPackageStep(packageStep step);
 
     /**
      *  Sets the description attribute of the ProviderInterface object
