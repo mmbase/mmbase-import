@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: XmlEntities.java,v 1.3 2003-05-12 11:15:35 michiel Exp $
+ * @version $Id: XmlEntities.java,v 1.4 2003-07-01 11:03:33 michiel Exp $
  */
 public class XmlEntities extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(XmlEntities.class);
@@ -42,5 +42,8 @@ public class XmlEntities extends ReaderTransformer implements CharTransformer {
             log.error(e.toString());
         }
         return w;
+    }
+    public String toString() {
+        return "XMLENTITIES";
     }
 }
