@@ -12,6 +12,7 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -41,7 +42,7 @@ public class Sql extends AbstractTransformer implements CharTransformer {
             line=new String("");
             obj=new String(str);
             while((idx=obj.indexOf('\''))!=-1) {
-                line+=obj.substring(0,idx)+"''";
+                line += obj.substring(0,idx)+"''";
                 obj=obj.substring(idx+1);
             }
             line=line+obj;
@@ -53,7 +54,7 @@ public class Sql extends AbstractTransformer implements CharTransformer {
      * Used when registering this class as a possible Transformer
      */
 
-    public HashMap transformers() {
+    public Map transformers() {
         HashMap h = new HashMap();
         h.put(ENCODING, new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
         return h;
