@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * Converts images using ImageMagick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.24 2002-02-12 19:30:42 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.24.2.1 2002-07-04 07:10:37 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -68,9 +68,6 @@ public class ConvertImageMagick implements ImageConvertInterface {
         }
         if(!checkConvCom.isFile()) {
             log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " is not a file");
-        }
-        if(!checkConvCom.canRead()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " is not readable");
         }
 
         // do a test-run, maybe slow during startup, but when it is done this way, we can also output some additional info in the log about version..
