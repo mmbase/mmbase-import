@@ -1,5 +1,5 @@
 <%-- check whether the thememanager has been installed --%>
-<mm:listnodes type="versions" constraints="name='Thememanager@MMBased_bundle_basic'"><mm:import id="thememanager">true</mm:import></mm:listnodes>
+<mm:import id="thememanager">true</mm:import>
 <%-- use thememanager --%>
 <mm:present referid="thememanager">
 <%-- get the context of the thememanger, this is used to create urls --%>
