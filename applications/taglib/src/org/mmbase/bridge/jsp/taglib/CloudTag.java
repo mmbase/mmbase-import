@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,6 +80,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private static final String REALM = "realm_";
 
+    private Cookie[] cookies;
+
     private static CloudContext cloudContext;
     
     private String cloudName  = DEFAULT_CLOUD_NAME;
@@ -89,7 +92,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private String authenticate = "name/password"; 
     
     private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
-    private Vector logon = null;  
+    private String logonatt =  "";  
     private String pwd = null;
     private Rank   rank = null;
     private String sessionName = null;
@@ -116,9 +119,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
     
     public void setLogon(String l) throws JspTagException {
-        logon = StringSplitter.split(getAttributeValue(l));
+        logonatt = getAttributeValue(l);
         if ("".equals(l)) {
-            logon = null;   // that also means to ignore the logon name
+            logonatt = null;   // that also means to ignore the logon name
         }
 
     }
@@ -171,30 +174,77 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
 
+
+    private Cookie searchCookie() {
+        String cookie = REALM + getSessionName(); 
+        if (cookies != null) {
+            for (int i=0; i< cookies.length; i++) {
+                if (cookies[i].getName().equals(cookie) && (! "".equals(cookies[i].getValue()))) {
+                    return cookies[i];
+                }
+            }
+        }
+        return null;
+    }
+    private void setRealmCookie(String r) {
+        Cookie c = searchCookie();
+        if (c == null) {
+            c = new Cookie(REALM + getSessionName(), r);
+            c.setMaxAge(-1); // a day
+        } else {
+            c.setValue(r);            
+        }
+        cookies[0] = c;
+        response.addCookie(c); 
+    }
+    private void removeRealmCookie() {
+        String cookie = REALM + getSessionName(); 
+        log.debug("removing cookie");
+        if (cookies != null) {
+            for (int i=0; i< cookies.length; i++) {
+                if (cookies[i].getName().equals(cookie)) {
+                    log.debug("removing cookie with value " + cookies[i]);
+                    cookies[i].setValue("");
+                    cookies[i].setMaxAge(0); // remove                
+                    response.addCookie(cookies[i]);
+                }
+            }
+        }
+    }
+    private  String  getRealmCookie() {
+        Cookie c = searchCookie();
+        if (c != null) {
+            log.debug("found cookie on path = " + c);
+            return c.getValue();
+        }
+        return null;
+    }
+
     /**
-    * Deny access to this page.
-    *
-    * @param A message to provide to the user if she does not accepts authorization (enters 'cancel')
-    *
-    * REMARK: Perhaps we should do some i18n on this message
-    *
-    * @return SKIP_BDDY;
-    */    
+     * Deny access to this page.
+     *
+     * @param A message to provide to the user if she does not accepts authorization (enters 'cancel')
+     *
+     * REMARK: Perhaps we should do some i18n on this message
+     *
+     * @return SKIP_BDDY;
+     */    
     private int deny(String message) throws JspTagException {
         log.debug("sending deny");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         
-        String realm = (String) session.getAttribute(REALM + getSessionName());
-        if (realm == null) {
+
+        if (getRealmCookie() == null) {
             // in the Realm is the time, this makes it unique, and is used by browser to 
             // store the name password.
             // if you throw away the realm name from the session, then the browser does 
             // not know the password anymore. 
             // this is how 'logout' works.
-            realm = "MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime();
-        }
-        session.setAttribute(REALM + getSessionName(), realm);
-        response.setHeader("WWW-Authenticate", "Basic realm=\"" + realm + "\"");
+            setRealmCookie("MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime());
+        } 
+        
+        log.debug("setting header: " + getRealmCookie());
+        response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealmCookie() + "\"");
 
         //res.setHeader("Authorization", logon);   would ne nice...
         //keesj:look at the php3 tutorial for an example
@@ -214,7 +264,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     private void logout() {
-        session.removeAttribute(REALM + getSessionName());
+        removeRealmCookie();
     }
     
     private void setAnonymousCloud(String name) {
@@ -258,7 +308,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     /**
      *  Check name and retrieve cloud
      */
-    public int doStartTag() throws JspTagException{
+    public int doStartTag() throws JspTagException {
+
+        Vector logon = logonatt != null ? StringSplitter.split(logonatt) : null;
+        if (logon != null && logon.size() == 0) logon = null;
 
         // check if this is a reuse:
         if (getReferid() != null) {
@@ -278,18 +331,31 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             setAnonymousCloud(cloudName);            
             return evalBody();
         }
-        
-        session  = (HttpSession)pageContext.getSession();
-        request  = (HttpServletRequest)pageContext.getRequest();
+
+
+        request  = (HttpServletRequest) pageContext.getRequest();
         response = (HttpServletResponse)pageContext.getResponse();
-        cloud = (Cloud)session.getAttribute(getSessionName());
+        
+        cookies = request.getCookies();
+        if (cookies == null) {
+            cookies = new Cookie[0];
+        }
+               
+        session  = (HttpSession)pageContext.getSession();
+
+        if (session != null) { // some people like to disable their session
+            cloud = (Cloud)session.getAttribute(getSessionName());
+        }
 
         log.debug("startTag " + cloud);
 
         if (method == METHOD_LOGOUT) {            
             log.debug("request to log out, remove session atributes, give anonymous cloud."); 
             logout();
-            session.removeAttribute(getSessionName());       // remove cloud itself
+            if (session != null) {
+                log.debug("session is not null");
+                session.removeAttribute(getSessionName());       // remove cloud itself
+            } 
             setAnonymousCloud(cloudName);
             // the available cloud in this case is a anonymous one
             return evalBody();
@@ -322,7 +388,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
-                    session.removeAttribute(getSessionName());
+                    if (session != null) {
+                        session.removeAttribute(getSessionName());
+                    }
                 }
             } else  if (logon != null) { 
                 log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
@@ -330,7 +398,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 if (! logon.contains(cloud.getUser().getIdentifier())) { // no!
                     log.debug("logged on, but as wrong user. log out first.");
                     cloud = null;
-                    session.removeAttribute(getSessionName());
+                    if (session != null) {
+                        session.removeAttribute(getSessionName());
+                    }
                 } else {
                     log.debug("Cloud is ok already");
                 }
@@ -342,7 +412,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                         log.debug("logged on, but rank of user is to low (" + rank.toString() + ". log out first.");
                     }
                     cloud = null;                    
-                    session.removeAttribute(getSessionName());
+                    if (session != null) {
+                        session.removeAttribute(getSessionName());
+                    }
                 } else {
                     log.debug("Cloud is ok already");
                 }
@@ -355,11 +427,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (method == METHOD_HTTP) {
                 log.debug("with http");
 
-                if (session.getAttribute(REALM + getSessionName()) == null) {
+                if (getRealmCookie() == null) {
                     log.debug("no realm found, need to log on again");
                     return deny("<h2>Need to log in again</h2> You logged out");
                 }
-                log.debug("authent: " + request.getHeader("WWW-Authenticate"));
+                log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealmCookie());
                 // find logon, password with http authentication       
                 String username = null;
                 String password = null;
@@ -415,7 +487,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                         if (curRank.getInt() < rank.getInt()) {
                             log.debug("logged on, but rank of user is to low (" + cloud.getUser().getRank() + ". log out first.");
                             cloud = null;
-                            session.removeAttribute(getSessionName());
+                            if (session != null) {
+                                session.removeAttribute(getSessionName());
+                            }
                             return deny("<h2>Rank to low for this page (is " + curRank.toString() + ", must be at least " + rank.toString() + ")</h2>");
                             
 
@@ -442,14 +516,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("Could not create Cloud.");
                 throw new JspTagException("Could not create cloud.");           
             } else {
-                session.setAttribute(getSessionName(), cloud);
+                if (session != null) {
+                    session.setAttribute(getSessionName(), cloud);
+                }
             }
         }        
         return evalBody();
     }
     
     public int doAfterBody() throws JspTagException {
-        logon = null;
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());            
             return SKIP_BODY;
