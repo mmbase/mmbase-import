@@ -308,12 +308,12 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
 
 <example>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
-  &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+  &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
   &lt;mm:field name="mags.title" /&gt;
 &lt;/mm:list&gt;</example>
 
 <example>&lt;mm:list nodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
-  &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
+  &lt;mm:first&gt;news in this magazine, ordered&lt;/mm:first&gt;
   &lt;mm:field name="news.title" /&gt;
 &lt;/mm:list&gt;</example>
 
@@ -426,7 +426,7 @@ one or more examplevalue tags is you want to give some example values.
 
 <example>&lt;mm:node number="123"&gt;
   &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
-    &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+    &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
     &lt;mm:field name="mags.title" /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;</example>
@@ -434,7 +434,7 @@ one or more examplevalue tags is you want to give some example values.
 <example>&lt;mm:node number="456"&gt; &lt;!-- node 456 is of type mags --&gt;
   &lt;mm:field name="title" /&gt;
   &lt;mm:related path="news0" fields="mags0.title"&gt;
-    &lt;mm:head&gt;related magazines&lt;/mm:head&gt;
+    &lt;mm:first&gt;related magazines&lt;/mm:first&gt;
     &lt;mm:field name="mags0.title" /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;</example>
@@ -509,7 +509,7 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
 
 <example>&lt;mm:listnodes type="mags" fields="title" &gt;
-  &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+  &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
   &lt;mm:field name="title" /&gt;
 &lt;/mm:listnodes&gt;</example>
 
@@ -601,7 +601,7 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
 <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" fields="title" &gt;
-  &lt;mm:head&gt;news in this magazine&lt;/mm:head&gt;
+  &lt;mm:first&gt;news in this magazine&lt;/mm:first&gt;
   &lt;mm:field name="title" /&gt;
 &lt;/mm:relatednodes&gt;</example>
   </tag>
@@ -841,11 +841,11 @@ only to user kamer --&gt;
 logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br /&gt;
 &lt;mm:node number="kamer_pool" id="my_node"&gt;
   &lt;mm:related type="news" sorted="number" direction="DOWN"&gt;
-     &lt;mm:head&gt;
+     &lt;mm:first&gt;
         &lt;!-- show a small heading, in which also appears the node-number of the pool --&gt;
         &lt;mm:field node="my_node" name="number" /&gt;:
         &lt;mm:field head="number" /&gt;: &lt;mm:field head="title" /&gt;&lt;br /&gt;
-     &lt;/mm:head&gt;
+     &lt;/mm:first&gt;
      &lt;mm:field name="number" /&gt;: &lt;mm:field name="title" /&gt;&lt;br /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;
