@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.40 2002-06-07 11:40:34 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.41 2002-06-07 12:10:34 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -418,19 +418,19 @@ public class ConvertImageMagick implements ImageConvertInterface {
             log.debug("starting program");
 
 
-            // adding fonts dir to path if 'font' option used
-            String[] env = new String[1];           
 
+            Process p;
             if (cwd != null) {
-                env[0] = "PATH=" + System.getProperty("PATH", ".") +  File.pathSeparator + cwd.toString();
+                // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
+                String[] env = new String[1];                           
+                env[0] = "MAGICK_HOME=" + cwd.toString();
+                if (log.isDebugEnabled()) {
+                    log.debug("MAGICK_HOME " + env[0]);
+                }                       
+                p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]), env); 
             } else {
-                env[0] = "PATH=" + System.getProperty("PATH", ".");
+                p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0])); 
             }
-            if (log.isDebugEnabled()) {
-                log.debug("using path " + env[0]);
-            }
-            
-            Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]), env); 
 
             // in grabs the stuff coming from stdout from program...
             InputStream in = p.getInputStream();
