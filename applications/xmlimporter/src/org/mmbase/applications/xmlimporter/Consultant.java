@@ -32,59 +32,60 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Erik Visser (Finalist IT Group)
  * @author Rob van Maris (Finalist IT Group)
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: Consultant.java,v 1.2 2002-02-27 16:54:25 pierre Exp $
  */
 public class Consultant {
-   
+
    /** Logger instance. */
    private static Logger log
    = Logging.getLoggerInstance(Consultant.class.getName());
-   
+
    /** When import finished.
     */
-   public final static int IMPORT_STARTING = 0;   
-   
+   public final static int IMPORT_STARTING = 0;
+
    /** When import running.
     */
    public final static int IMPORT_RUNNING = 1;
-   
+
    /** When import finished.
     */
    public final static int IMPORT_FINISHED = 2;
-   
+
    /** When transaction time out.
     */
    public final static int IMPORT_TIMED_OUT = 3;
-   
+
    /** When transaction time out.
     */
    public final static int IMPORT_EXCEPTION = 4;
-   
+
    /** the original object */
    private TmpObject originalObject;
-   
+
    /** the collection of mergeresults */
    private List mergeResults;
-   
+
    /** the index of the user chosen mergeresult */
    private int choice;
-   
+
    /** the index of the user chosen mergeresult */
-   private int importStatus;   
+   private int importStatus;
 
    /** switch that indicates the import mode chosen by the user
     * true = interactive ; false = batch
     */
-   private boolean interactive;      
-   
+   private boolean interactive;
+
    /** switch to detect if duplicates are found during a BATCH import */
    private boolean duplicatesFound;
-   
+
    /** Creates new Consultant */
    public Consultant() {
       init();
    }
-   
+
    /** init all fields */
    public void init() {
       originalObject = null;
@@ -94,7 +95,7 @@ public class Consultant {
       interactive = false;
       duplicatesFound = false;
    }
-   
+
    /** Consult the user for a mergeresult choice.
     * After a call to this method, call duplicatesResolved() to examine
     * if duplicates are resolved. If not the thread was interrupted.
@@ -103,11 +104,11 @@ public class Consultant {
     */
    public synchronized void consultUser(TmpObject originalObject,
    List mergeResults) {
-  
+
       this.originalObject = originalObject;
       this.mergeResults = mergeResults;
       try {
-         while(!Thread.interrupted() && !duplicatesResolved()) {    
+         while(!Thread.interrupted() && !duplicatesResolved()) {
             wait();
          }
       } catch (InterruptedException e) {}
@@ -116,11 +117,11 @@ public class Consultant {
    /** sets the user chosen import mode
     * true if interactive false otherwise
     * @param duplicatesFound Set true if duplicates are found. False otherwise.
-    */   
+    */
    public synchronized void setDuplicatesFound(boolean duplicatesFound) {
       this.duplicatesFound = duplicatesFound;
-   } 
-   
+   }
+
    /** Returns true if in a transaction duplicates are found.
     * @return True if duplicates are found. False otherwise.
     */
@@ -129,16 +130,16 @@ public class Consultant {
          return mergeResults != null;
       } else {
          return duplicatesFound;
-      }         
+      }
    }
-   
+
    /** Returns true if the user has chosen a mergeresult.
     * @return True if duplicates are resolved. False otherwise.
     */
    public synchronized boolean duplicatesResolved() {
       return mergeResults == null;
    }
-   
+
    /** Returns the index of the mergeresult the user has chosen.
     * Call this method after method duplicatesResolved() returns true and
     * before the next call to method consultUser(). Nou ok tis goed.
@@ -147,7 +148,7 @@ public class Consultant {
    public synchronized int getChoice() {
       return choice;
    }
-   
+
    /** Sets the index of the mergeresult the user has chosen.
     * Call this method after method duplicatesResolved() returns true and
     * before the next call to method consultUser(). Nou ok tis goed.
@@ -160,8 +161,8 @@ public class Consultant {
       originalObject = null;
       // to wake up the consulting Thread
       notifyAll();
-   } 
-   
+   }
+
    /** Returns the original object.
     * The consultant object holds an original object and a list of merge results.
     *
@@ -170,7 +171,7 @@ public class Consultant {
    public synchronized TmpObject getOriginalObject() {
       return originalObject;
    }
-   
+
    /** Returns the a list of merge results.
     * The consultant object holds an original object and a list of merge results.
     *
@@ -195,7 +196,7 @@ public class Consultant {
     */
    public synchronized void setImportStatus(int importStatus) {
       this.importStatus = importStatus;
-   }   
+   }
 
    /** Returns true if import has finished.
     * False otherwise.
@@ -203,25 +204,25 @@ public class Consultant {
     */
    public synchronized int getImportStatus() {
       return importStatus;
-   }   
+   }
 
    /** Sets the user chosen import mode.
     * True if interactive. False otherwise.
     *
     * @param interactive Set to true if user has chosen interactive importmode. Set false otherwise.
-    */   
+    */
    public synchronized void setInteractive(boolean interactive) {
       this.interactive = interactive;
-   } 
-   
+   }
+
    /** Returns true if user has chosen interactive import mode.
     * False otherwise.
     * @return True if import mode is interactive. False otherwise.
-    */   
+    */
    public synchronized boolean interactive() {
       return interactive;
-   }  
-   
+   }
+
    /**
     * Add to log using info. Can be used from a jsp.
     * @param source Name of the message source.
@@ -230,7 +231,7 @@ public class Consultant {
    public static void logInfo(String source, String message) {
       log.info("source: " + source + "message: " + message);
    }
-   
+
    /**
     * Add to log using error. Can be used from a jsp.
     * @param source Name of the message source.
@@ -238,8 +239,8 @@ public class Consultant {
     */
    public static void logError(String source, String message) {
       log.error("source: " + source + "message: " + message);
-   } 
-   
+   }
+
    /**
     * Add to log using debug. Can be used from a jsp.
     * @param source Name of the message source.
@@ -249,8 +250,8 @@ public class Consultant {
       if (log.isDebugEnabled()) {
          log.debug("source: " + source + "message: " + message);
       }
-   }   
-   
+   }
+
    /**
     * Add to log using trace. Can be used from a jsp.
     * @param source Name of the message source.
@@ -260,5 +261,5 @@ public class Consultant {
       if (log.isDebugEnabled()) {
          log.trace("source: " + source + "message: " + message);
       }
-   }      
+   }
 }

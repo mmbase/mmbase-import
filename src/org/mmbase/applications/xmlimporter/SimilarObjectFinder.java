@@ -3,7 +3,7 @@
  *
  * Date: dec. 1st. 2001
  *
- * Copyright notice: 
+ * Copyright notice:
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -21,19 +21,19 @@ import org.mmbase.applications.xmlimporter.*;
  * objects are searched in both the persistent and temporary cloud.
  *
  * @author Rob van Maris: Finalist IT Group
- *
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: SimilarObjectFinder.java,v 1.2 2002-02-27 16:54:26 pierre Exp $
  */
 public interface SimilarObjectFinder {
 
     /**
      * Initialize this instance (called once per transaction).
-     * @param params The initialization parameters, provided as 
+     * @param params The initialization parameters, provided as
      *  name/value pairs (both String).
      * @throws TransactionHandlerException if a failure occurred.
      */
     public void init(HashMap params) throws TransactionHandlerException;
-    
+
     /**
      * Searches for similar object. Objects found in the
      * persistent cloud will be accessed in the transaction.
@@ -44,6 +44,6 @@ public interface SimilarObjectFinder {
      */
     public List findSimilarObject(Transaction transaction, TmpObject tmpObj)
     throws TransactionHandlerException;
-    
+
 }
 

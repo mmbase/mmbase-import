@@ -1,9 +1,9 @@
 /*
  * ClassName: TransactionHandlerException.java
- * 
+ *
  * Date: dec. 1st. 2001
  *
- * Copyright notice: 
+ * Copyright notice:
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -12,12 +12,13 @@
  */
 
 package org.mmbase.applications.xmlimporter;
-	
+
 /**
  * Creates a new transactionHandler exception.
  *
  * @author Rob van Maris: Finalist IT Group
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: TransactionHandlerException.java,v 1.2 2002-02-27 16:54:27 pierre Exp $
  */
 public class TransactionHandlerException extends Exception {
 	String code = "";
@@ -32,9 +33,9 @@ public class TransactionHandlerException extends Exception {
         /**
          * Creates a new transactionHandler exception.
          * @param s -  Text to serve as message in the exception.
-         */        
-	public TransactionHandlerException(String s) { 
-		super(s); 
+         */
+	public TransactionHandlerException(String s) {
+		super(s);
 	}
 }
-	
+

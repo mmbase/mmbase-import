@@ -3,7 +3,7 @@
  *
  * Date: dec. 1st. 2001
  *
- * Copyright notice: 
+ * Copyright notice:
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -18,11 +18,11 @@ package org.mmbase.applications.xmlimporter;
  * the real User object (when that is finished).
  *
  * @author Rob van Maris: Finalist IT Group
- *
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: User.java,v 1.2 2002-02-27 16:54:28 pierre Exp $
  */
 public class User {
-    
+
     /** User name. */
     private String name;
 

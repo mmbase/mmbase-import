@@ -17,10 +17,13 @@ import java.util.*;
 import java.io.File;
 import org.mmbase.applications.xmlimporter.ObjectMerger;
 
-/** Extended from Transaction for interactive handling of dulpicates.
+/**
+ * Extended from Transaction for interactive handling of dulpicates.
+ * @since MMBase-1.5
+ * @version $Id: InteractiveTransaction.java,v 1.2 2002-02-27 16:54:26 pierre Exp $
  */
 public class InteractiveTransaction extends Transaction {
-   
+
    /**
     * Creates new InteractiveTransaction.
     * @param timeOut if the transactions is not finished after the timeout
@@ -39,7 +42,7 @@ public class InteractiveTransaction extends Transaction {
    Consultant consultant) {
       super(uti, key, id, commitOnClose, timeOut, reportFile, consultant);
    }
-   
+
    /**
     * Handles sitiuations where more then one similar objects are found to
     * merge with. This implementation confronts the user with the merge results.
@@ -62,13 +65,13 @@ public class InteractiveTransaction extends Transaction {
          TmpObject similarObject = (TmpObject)iter.next();
          mergeResults.add(caculateMerge(similarObject, tempObj, merger));
       }
-      
+
       int choice = consult(tempObj, mergeResults);
-      
+
       merge((TmpObject)similarObjects.get(choice), tempObj, merger);
       return true;
    }
-   
+
    /**
     * Handles sitiuations where more then one similar objects are found to
     * merge with. This implementation confronts the user with the merge results.
@@ -80,18 +83,18 @@ public class InteractiveTransaction extends Transaction {
     * @return the index number of the chosen mergeResult
     * @throws TransactionHandlerException If the situation could not be handled.
     */
-   int consult(TmpObject originalObject, List mergeResults) 
+   int consult(TmpObject originalObject, List mergeResults)
    throws TransactionHandlerException {
-    
+
       // Consult user.
       consultant.consultUser(originalObject, mergeResults);
-      
+
       // Test if duplicates were actually resolved.
       if (!consultant.duplicatesResolved()) {
          throw new TransactionHandlerException(
          "Failed to resolve duplicates by consulting user.");
       }
-      
+
       // Get users choice.
       return consultant.getChoice();
    }
