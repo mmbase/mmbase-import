@@ -746,7 +746,7 @@ Change directory to ${build.dir}/orion and run:
           failonerror="yes">
       <arg value="-Q"/>
       <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmcommunity-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
