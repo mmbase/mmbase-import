@@ -87,7 +87,7 @@ if (urlStack == null) {
 <mm:write referid="config.lang" jspvar="lang" vartype="string">
 <%
   locale  =  new java.util.Locale(lang, "");
-  m = java.util.ResourceBundle.getBundle("org.mmbase.applications.jsp.editors.editors", locale);
+  m = java.util.ResourceBundle.getBundle("org.mmbase.jspeditors.editors", locale);
 %>
 </mm:write>
 <mm:import id="style"><style type="text/css">@import url(css/<mm:write referid="config.style_sheet" />);</style></mm:import>
