@@ -3,14 +3,17 @@
 <mm:cloud>
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
+<mm:import id="template">/development/projects/project.jsp</mm:import>
 <td class="white" colspan="2" valign="top">
     <h1>Archived Projects</h1>
-    <mm:listnodes type="project" constraints="m_status = 'finished'" orderby="number" directions="down">
-        <h2><a href="/development/projects/project.jsp?project=<mm:field name="number" />&portal=<mm:write referid="portal" />"><mm:field name="title" /></a>
-        (<mm:field name="status"/>)</h2>
-        <mm:field name="intro" />
-    </mm:listnodes>
-   <br /><br />
+   <mm:listnodescontainer type="project">
+     <mm:constraint field="status" value="finished" />
+     <mm:sortorder field="number" direction="down" />
+     <mm:listnodes id="project">
+       <h2><a href="<mm:url referids="portal,page,project,template" />"><mm:field name="title" /></a> (<mm:field name="status"/>)</h2>
+       <mm:field name="intro" escape="p" />    
+     </mm:listnodes>
+   </mm:listnodescontainer>
 </td>
 
 <%@include file="/includes/footer.jsp" %>
