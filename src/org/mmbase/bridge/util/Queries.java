@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.11 2003-12-01 12:51:29 vpro Exp $
+ * @version $Id: Queries.java,v 1.12 2003-12-02 12:32:26 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -411,6 +411,24 @@ public class Queries {
             throw new BridgeException("Too many search directions (" + path + "/" + searchDirs + ")");
         }
         return list.subList(initialSize, list.size());
+    }
+
+    /**
+     * Adds a number of fields. Fields is represented as a comma separated string.
+     * @return The new stepfields
+     */
+
+    public static List addFields(Query query, String fields) {
+        List result = new ArrayList();
+        if (fields == null) return result;
+        List list = StringSplitter.split(fields);
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            String fieldName = (String) i.next();
+            result.add(query.addField(fieldName));
+        }
+        return result;
+
     }
 
     /**
