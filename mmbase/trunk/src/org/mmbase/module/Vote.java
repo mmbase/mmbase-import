@@ -12,7 +12,7 @@ package org.mmbase.module;
 /**
  * Class Vote
  * 
- * @javadoc
+ * @obsolete
  */
 
 public 	class 		Vote {
