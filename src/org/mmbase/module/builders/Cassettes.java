@@ -24,20 +24,10 @@ import org.mmbase.util.*;
  */
 public class Cassettes extends MMObjectBuilder {
 
-
-	public String getGUIIndicator(MMObjectNode node) {
-		String str=node.getStringValue("title");
-		if (str.length()>15) {
-			return(str.substring(0,12)+"...");
-		} else {
-			return(str);
-		}
-	}
-
 	public String getGUIIndicator(String field,MMObjectNode node) {
-		if (field.equals("playtime")) {
+		if (field.equals("length")) {
 			String str;
-			int val=(node.getIntValue("playtime")/1000);
+			int val=(node.getIntValue("length")/1000);
 			int h=val/3600;val=val-(h*3600);
 			int m=val/60;val=val-(m*60);
 			if (m<10) { str="0"+h; } else { str=""+h; }
