@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.16 2004-03-05 21:21:52 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.17 2004-03-10 11:50:19 michiel Exp $</edition>
 
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
@@ -1042,7 +1042,7 @@
         <acronym>IRC</acronym>
         <glossdef>
           <para>
-            The channel #mmbase of the <ulink url="www.slashnet.org">Slashnet IRC network</ulink> is
+            The channel #mmbase of the <ulink url="http://www.slashnet.org">Slashnet IRC network</ulink> is
             an active scene which is used by MMBase developers to discuss MMBase in a casual way. It
             is also much used to get help for installation and implementation issues.
           </para>
