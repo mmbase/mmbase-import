@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.13 2003-09-03 19:40:03 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.14 2003-09-16 17:46:34 michiel Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -67,9 +67,9 @@ public class ListNodesTag extends AbstractNodeListTag {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
 
-        if (c == null) {
+        if (c == null || type != Attribute.NULL) {
             if (type == Attribute.NULL) {
-                throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given)");
+                throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
             }            
             nodeManager = getCloud().getNodeManager(type.getString(this));
             NodeList nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
