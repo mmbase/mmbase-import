@@ -114,7 +114,11 @@
 	<mm:present referid="ids">
 
 	    <mm:listnodes type="people" constraints="number IN ($ids)">
-		<mm:import id="$field" reset="true"><mm:isempty referid="$field" inverse="true"><mm:write referid="$field"/>, </mm:isempty><mm:field name="email"/></mm:import>
+                <mm:import id="tmp_email" reset="true"><mm:field name="email"/></mm:import>
+                <mm:isempty referid="tmp_email">
+                    <mm:import id="tmp_email" reset="true"><mm:field name="username"/></mm:import>
+                </mm:isempty>
+		<mm:import id="$field" reset="true"><mm:isempty referid="$field" inverse="true"><mm:write referid="$field"/>, </mm:isempty><mm:write referid="tmp_email"/></mm:import>
 	    </mm:listnodes>
 	</mm:present>
     </mm:present>
@@ -143,7 +147,7 @@
   <mm:import id="ccText" jspvar="ccText"><mm:write referid="cc"/></mm:import>
   <mm:import id="toText" jspvar="toText"><mm:write referid="to"/></mm:import>
   <%
-    if ( toText.indexOf( "@" ) > 0 ) {
+    if ( toText.trim().length() > 0 ) {
 
   %>	
       <mm:import id="emailok" reset="true">1</mm:import>
