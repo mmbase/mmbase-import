@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
-import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
 
 
@@ -88,6 +87,16 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             }
         }
 
+        if ((compare2 instanceof Number) && (compare1 instanceof String)) {
+            log.debug("found an instance of Number");
+            compare2 = new java.math.BigDecimal(compare2.toString());
+            if ("".equals(compare1)) { // do something reasonable in IsEmpty
+                compare1=new java.math.BigDecimal(0);
+            } else {
+                compare1 = new java.math.BigDecimal((String)compare1);
+            }
+        }
+        
         // if using 'BigDecimal' then avoid classcastexceptions also if other type is some number.
         if (compare1 instanceof java.math.BigDecimal) {
             if (! (compare2 instanceof java.math.BigDecimal)) {
