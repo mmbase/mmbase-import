@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!-- DOCTYPE sendmail PUBLIC "//MMBase - linkchecker module//" "http://www.mmbase.org/dtd/linkchecker.dtd" -->
-<!-- 	This module sends all incorrect urls to a certain person.
-		Make sure that you enabled the sendmail module and that you
-		have specified the mailhost in sendmail.properties. -->
+<!DOCTYPE module PUBLIC "//MMBase - linkchecker module//" "http://www.mmbase.org/dtd/module.dtd">
+<!--    This module sends all incorrect urls to a certain person.
+                Make sure that you enabled the sendmail module and that you
+                have specified the mailhost in sendmail.properties. -->
 
 <module>
 
@@ -22,8 +22,8 @@
      a key/value system. Its a optional tag.
    -->
   <properties>
- 	<property name="from">linkchecker@mmbase.org</property>
- 	<property name="to">youremail@mmbase.org</property>
+      <property name="from">linkchecker@mmbase.org</property>
+      <property name="to">linkchecker@mmbase.org</property>
   </properties>
 
 </module>
