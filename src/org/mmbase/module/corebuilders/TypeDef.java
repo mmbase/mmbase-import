@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.47 2004-11-25 13:53:45 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.48 2004-12-06 14:22:07 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -134,7 +134,7 @@ public class TypeDef extends MMObjectBuilder {
         }
         // look if we can store to file, if it aint there yet...
         String path = getBuilderConfiguration(node);
-        java.net.URL url = ResourceLoader.getConfigurationRoot().findResource(path);
+        java.net.URL url = mmb.getBuilderLoader().findResource(path);
         try {
             if (! url.openConnection().getDoInput()) {
                 // first store our config....
@@ -454,7 +454,7 @@ public class TypeDef extends MMObjectBuilder {
             log.error("field 'path' was empty.");
             return null;
         }
-        return path + "/" + node.getStringValue("name") + ".xml";
+        return path + node.getStringValue("name") + ".xml";
     }
 
 
