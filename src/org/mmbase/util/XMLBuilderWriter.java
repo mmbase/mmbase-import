@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated-now use org.mmbase.xml.BuilderWriter instead
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.16 2002-03-26 13:16:32 pierre Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.17 2002-04-17 14:00:09 michiel Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -84,7 +84,7 @@ public class XMLBuilderWriter  {
                 body.append("\t<singular xml:lang=\""+country+"\">"+name+"</singular>\n");
             }
         } else {
-            body.append("\t<singular xml:lang=\"us\">"+bul.getDutchSName()+"</singular>\n");
+            body.append("\t<singular xml:lang=\"en\">"+bul.getDutchSName()+"</singular>\n");
         }
 
         body.append("\t<!-- multiple per language as defined by ISO 639 -->\n");
@@ -98,7 +98,7 @@ public class XMLBuilderWriter  {
                 body.append("\t<plural xml:lang=\""+country+"\">"+name+"</plural>\n");
             }
         } else {
-            body.append("\t<plural xml:lang=\"us\">"+bul.getDutchSName()+"</plural>\n");
+            body.append("\t<plural xml:lang=\"en\">"+bul.getDutchSName()+"</plural>\n");
         }
         body.append("</names>\n\n");
 
@@ -120,7 +120,7 @@ public class XMLBuilderWriter  {
                 body.append("\t<description xml:lang=\""+country+"\">"+name+"</description>\n");
             }
         } else {
-            body.append("\t<description xml:lang=\"us\">"+bul.getDescription()+"</description>\n");
+            body.append("\t<description xml:lang=\"en\">"+bul.getDescription()+"</description>\n");
         }
 
         body.append("</descriptions>\n\n");
@@ -165,9 +165,9 @@ public class XMLBuilderWriter  {
                     body.append("\t\t\t<guiname xml:lang=\""+country+"\">"+name+"</guiname>\n");
                 }
             } else {
-                body.append("\t\t\t<guiname xml:lang=\"us\">"+def.getGUIName()+"</guiname>\n");
+                body.append("\t\t\t<guiname xml:lang=\"en\">"+def.getGUIName()+"</guiname>\n");
             }
-            //	body.append("\t\t\t<guiname xml:lang=\"us\">Object</guiname>\n";
+            //	body.append("\t\t\t<guiname xml:lang=\"en\">Object</guiname>\n";
             body.append("\t\t\t<guitype>integer</guitype>\n");
             body.append("\t\t</gui>\n");
             body.append("\t\t<!-- editor related  -->\n");
@@ -211,7 +211,7 @@ public class XMLBuilderWriter  {
                             body.append("\t\t\t<guiname xml:lang=\""+country+"\">"+name+"</guiname>\n");
                         }
                     } else {
-                        body.append("\t\t\t<guiname xml:lang=\"us\">"+def.getGUIName()+"</guiname>\n");
+                        body.append("\t\t\t<guiname xml:lang=\"en\">"+def.getGUIName()+"</guiname>\n");
                     }
                     body.append("\t\t\t<guitype>"+def.getGUIType()+"</guitype>\n");
                     body.append("\t\t</gui>\n");
