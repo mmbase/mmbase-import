@@ -324,6 +324,17 @@ using list tag: <br />
 </mm:listcontainer>
 
 
+<mm:listcontainer path="news,urls" fields="urls.number,urls.url">
+  <mm:constraint field="urls.url" value="$url" />
+  <mm:distinct />
+  listcontainer: size <mm:size /> (should be 1) <br />
+  Should follow the url:<br />
+  <mm:list>
+    <mm:index /> url: <mm:field name="urls.url" /><br />
+  </mm:list>
+</mm:listcontainer>
+
+
 
 <mm:log>distinct on mm:listnodescontainer</mm:log>
 <em>Using mm:distinct on mm:listnodescontainer</em><br />
