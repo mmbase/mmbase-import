@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.23 2002-10-25 13:09:53 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.24 2002-11-05 20:51:38 robmaris Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
@@ -248,19 +248,19 @@ public class ContextAuthorization extends Authorization {
                 log.debug("gonna execute the query:" + xpath );
             }
             found = XPathAPI.selectSingleNode(document, xpath);
-            
+
             if (found == null) { // fall back to default
                 log.warn("context with name :'" + context + "' was not found in the configuration " + configFile );
-                                
+
                 // retrieve the default context...
                 xpath = "/contextconfig/contexts/context[@name = ancestor::contexts/@default]";
-                
+
                 if (log.isDebugEnabled()) {
                     log.debug("gonna execute the query:" + xpath + " on file : " + configFile);
                 }
 
                 found  = XPathAPI.selectSingleNode(document, xpath);
-                
+
                 if (found == null) {
                     throw new SecurityException("Configuration error: Context " + context + " not found and no default context found either (change " + configFile + ")");
                 }
@@ -270,17 +270,17 @@ public class ContextAuthorization extends Authorization {
                 Node defaultContextNode = nnm.getNamedItem("name");
                 String defaultContext = defaultContextNode.getNodeValue();
 
-                synchronized(replaceNotFound) { 
+                synchronized(replaceNotFound) {
                         replaceNotFound.put(context, defaultContext);
                 }
             }
 
             // found is not null now.
             // now get the requested operation
-            
+
             // now do the same query with the default context...
             xpath = "operation[@type='" + operation + "']/grant";
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.debug("gonna execute the query:" + xpath + " On " + found.toString());
             }
             NodeList grants = XPathAPI.selectNodeList(found, xpath);
@@ -288,7 +288,7 @@ public class ContextAuthorization extends Authorization {
             if (log.isDebugEnabled()) {
                 log.debug("Found " + grants.getLength() + " grants on " + operation + " for context " + context) ;
             }
-                      
+
             Set allowedGroups = new HashSet();
             for(int currentNode = 0; currentNode < grants.getLength(); currentNode++) {
                 Node contains = grants.item(currentNode);
@@ -311,12 +311,12 @@ public class ContextAuthorization extends Authorization {
                     log.debug("operation " + operation + " was NOT permitted for user with id " + user);
                 }
             }
-            
+
             // put it in the cache
             synchronized(cache) {
                 cache.rightAdd(operation, context, user.getIdentifier(), allowed);
             }
-            
+
             return allowed;
 
         } catch(javax.xml.transform.TransformerException te) {
@@ -324,7 +324,7 @@ public class ContextAuthorization extends Authorization {
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
         }
-                
+
     }
 
 
@@ -427,7 +427,7 @@ public class ContextAuthorization extends Authorization {
                 throw new SecurityException(msg);
             }
             if (! check(user, dstNodeNumber, "link")) {
-                String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
+                String msg = "Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
                 throw new SecurityException(msg);
             }
