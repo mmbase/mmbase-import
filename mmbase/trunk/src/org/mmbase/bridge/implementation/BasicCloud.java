@@ -109,8 +109,20 @@ public class BasicCloud implements Cloud, Cloneable {
         description = cloudName;
     }
 
-	public Node getNode(int nodenumber) {
-	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
+    public Node getNode(int nodenumber) {
+        MMObjectNode node;
+        try {
+            node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
+        // Catch the exception in case of a negative nodenumber.
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new BasicBridgeException("Node with number " + nodenumber
+                                           + " does not exist.");
+        // Catch the exception in case of a positive nodenumber wich is not
+        // found.
+        } catch (RuntimeException e) {
+            throw new BasicBridgeException("Node with number " + nodenumber
+                                           + " does not exist.");
+        }
 	    if (node==null) {
 	        throw new BasicBridgeException("Node with number "+nodenumber+" does not exist.");
 	    } else {
@@ -362,7 +374,8 @@ public class BasicCloud implements Cloud, Cloneable {
         return cloud;
     }  	
 
-    public NodeList getList(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct) {
+    public NodeList getList(String nodes, String nodeManagers, String fields,
+            String where, String sorted, String direction, boolean distinct) {
   		
         String pars ="";
   		if (nodes!=null) {

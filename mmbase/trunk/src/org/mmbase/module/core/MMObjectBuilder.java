@@ -1031,6 +1031,71 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Returns a vector containing all the objects that match the searchkeys in
+     * a given order.
+     *
+     * @param where       where clause that the objects need to fulfill
+     * @param sorted      a comma separated list of field names on wich the 
+     *                    returned list should be sorted
+     * @param directions  A comma separated list of the values indicating wether
+     *                    to sort up (ascending) or down (descending) on the
+     *                    corresponding field in the <code>sorted</code>
+     *                    parameter or <code>null</code> if sorting on all
+     *                    fields should be up.
+     *                    The value DOWN (case insensitive) indicates
+     *                    that sorting on the corresponding field should be
+     *                    down, all other values (including the
+     *                    empty value) indicate that sorting on the
+     *                    corresponding field should be up.
+     *                    If the number of values found in this parameter are
+     *                    less than the number of fields in the
+     *                    <code>sorted</code> parameter, all fields that
+     *                    don't have a corresponding direction value are
+     *                    sorted according to the last specified direction
+     *                    value.
+     * @return            a vector containing all the objects that apply in the
+     *                    requested order
+     */
+    public Vector searchVector(String where, String sorted, String directions) {
+        if (where==null) {
+            where="";
+        } else if (where.indexOf("MMNODE")!=-1) {
+            where=convertMMNode2SQL(where);
+        } else {
+            //where=QueryConvertor.altaVista2SQL(where);
+            where=QueryConvertor.altaVista2SQL(where,database);
+        }
+        if (directions == null) {
+            directions = "";
+        }
+        StringTokenizer sortedTokenizer;
+        StringTokenizer directionsTokenizer;
+        sortedTokenizer = new StringTokenizer(sorted, ",");
+        directionsTokenizer = new StringTokenizer(directions, ",");
+        String orderBy = "";
+        String lastDirection = " ASC";
+        while (sortedTokenizer.hasMoreElements()) {
+            String field = sortedTokenizer.nextToken();
+            orderBy += mmb.getDatabase().getAllowedField(field);
+            if (directionsTokenizer.hasMoreElements()) {
+                String direction = directionsTokenizer.nextToken();
+                if ("DOWN".equalsIgnoreCase(direction)) {
+                    lastDirection = " DESC";
+                } else {
+                    lastDirection = " ASC";
+                }
+            }
+            orderBy += lastDirection;
+            if (sortedTokenizer.hasMoreElements()) {
+                orderBy += ", ";
+            }
+        }
+        String query = "SELECT * FROM " + getFullTableName() + " " + where
+                       + " ORDER BY " + orderBy;
+        return(basicSearch(query));
+    }
+
+    /**
     * Returns a vector containing all the objects that match the searchkeys
     * @param where where clause that the objects need to fulfill
     * @param sorted order in which to return the objects
