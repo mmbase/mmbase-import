@@ -22,23 +22,23 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.2 2003-07-09 10:03:11 michiel Exp $
+ * @version $Id: Configurable.java,v 1.3 2003-07-28 15:00:28 pierre Exp $
  * @since MMBase-1.7
  */
-abstract class Configurable {
+public abstract class Configurable {
     private static Logger log = Logging.getLoggerInstance(Authentication.class);
 
-    /** 
-     * The SecurityManager, which created this instance 
+    /**
+     * The SecurityManager, which created this instance
      */
     protected MMBaseCop manager;
 
-    /** 
+    /**
      * The security configuration file (security.xml). The file is absolute.
      */
     protected File configFile;
 
-    /** 
+    /**
      * This filewatcher checks the configuration file for changes.
      */
     protected FileWatcher fileWatcher;
