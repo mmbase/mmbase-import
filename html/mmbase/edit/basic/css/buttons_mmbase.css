@@ -75,3 +75,5 @@ span.tree:before   {
   content: url(../../../style/images/search.gif);
   background: white;
 }
+
+input.search:after  { content: url(../../../style/images/search.gif); }

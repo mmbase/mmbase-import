@@ -63,8 +63,8 @@ if (urlStack == null) {
 <mm:import id="config" externid="mmeditors_config" from="session" />
 
 <mm:context id="config" referid="config">
-  <mm:import externid="page_size" from="parameters,this">20</mm:import>
-  <mm:import externid="indexoffset" from="parameters,this">1</mm:import>
+  <mm:import id="page_size"   externid="mmjspeditors_page_size"   from="parameters,cookie,this">20</mm:import>
+  <mm:import id="indexoffset" externid="mmjspeditors_indexoffset" from="parameters,cookie,this">1</mm:import>
   <mm:import id="style_sheet" externid="mmjspeditors_style"     from="parameters,cookie,this">mmbase.css</mm:import>
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>  
   <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />

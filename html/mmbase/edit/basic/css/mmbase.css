@@ -47,3 +47,8 @@ textarea.big {
   height: 15em;
 }
 
+
+a:link    { color: blue; }
+a:visited { color: blue; }
+a:active  { color: purple; }
+a:hover   { color: purple; }
