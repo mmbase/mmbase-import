@@ -178,6 +178,7 @@ public class XMLDatabaseReader  {
 	return(null);
     }
 
+
     /**
     */
     public Hashtable getTypeMapping() {
@@ -194,13 +195,23 @@ public class XMLDatabaseReader  {
 						NamedNodeMap nm=n3.getAttributes();
 						if (nm!=null) {
 							Node n5=nm.getNamedItem("mmbase-type");
-							String mmbasetype=n5.getNodeValue();
+							String tmp=n5.getNodeValue();
 							String dbtype=n4.getNodeValue();
+
+							int mmbasetype=-1;
+							if (tmp.equals("VARCHAR")) mmbasetype=FieldDefs.TYPE_STRING;
+							if (tmp.equals("STRING")) mmbasetype=FieldDefs.TYPE_STRING;
+							if (tmp.equals("INTEGER")) mmbasetype=FieldDefs.TYPE_INTEGER;
+							if (tmp.equals("TEXT")) mmbasetype=FieldDefs.TYPE_TEXT;
+							if (tmp.equals("BYTE")) mmbasetype=FieldDefs.TYPE_BYTE;
+							if (tmp.equals("FLOAT")) mmbasetype=FieldDefs.TYPE_FLOAT;
+							if (tmp.equals("DOUBLE")) mmbasetype=FieldDefs.TYPE_DOUBLE;
+							if (tmp.equals("LONG")) mmbasetype=FieldDefs.TYPE_LONG;
 			
-							dTypeInfos dtis=(dTypeInfos)table.get(mmbasetype);
+							dTypeInfos dtis=(dTypeInfos)table.get(new Integer(mmbasetype));
 							if (dtis==null) {
 								dtis=new dTypeInfos();
-								table.put(mmbasetype,dtis);
+								table.put(new Integer(mmbasetype),dtis);
 							}
 							dTypeInfo dti=new dTypeInfo();
 							dti.mmbaseType=mmbasetype;
@@ -210,7 +221,7 @@ public class XMLDatabaseReader  {
 							n5=nm.getNamedItem("min-size");
 							if (nm!=null) {
 								try {
-									String tmp=n5.getNodeValue();
+									tmp=n5.getNodeValue();
 									int size=Integer.parseInt(tmp);
 									dti.minSize=size;
 								} catch(Exception e) {}
@@ -220,7 +231,7 @@ public class XMLDatabaseReader  {
 							n5=nm.getNamedItem("max-size");
 							if (nm!=null) {
 								try {
-									String tmp=n5.getNodeValue();
+									tmp=n5.getNodeValue();
 									int size=Integer.parseInt(tmp);
 									dti.maxSize=size;
 								} catch(Exception e) {}
@@ -238,7 +249,6 @@ public class XMLDatabaseReader  {
 	}
 	return(table);
     }
-
 
     /**
     * get the pluralnames of this builder
