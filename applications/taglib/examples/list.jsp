@@ -25,6 +25,10 @@
 <%@ include file="menu.jsp"%>
 
 <h1>Using the list tag</h1>
+<p>
+  You can also query a 'path' of results from MMBase. This goes with the mm:list tag. This tag does not provide real nodes but so-called 'cluster nodes', which 
+  are actually combination of more than one node. This means the a simple mm:relatendodes cannot be used inside an mm:list. You would need <a href="<mm:url page="/mmdocs/reference/taglib/node.jsp#element" />">the element attribute of mm:node<a> then.
+</p>
 
 <form method="POST">
 &lt;mm:list 

@@ -24,6 +24,11 @@
 
 <h1>Using the relatednodes tag</h1>
 
+<p>
+  This is the next thing you might want. If you are 'in' a certain node , you are going to want to find the 'related' nodes. The mm:relatednodes tag does provide this 
+  functionality.
+</p>
+
 <table>
   <tr>
     <td valign="top">
