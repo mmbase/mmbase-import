@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.17 2002-08-21 11:44:13 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.18 2002-08-30 19:12:54 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -153,7 +153,7 @@ function doSearch(el, cmd, sessionkey) {
     constraints += ")";
 
     // build url
-    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&referrer=<%=request.getParameter("referrer")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&len=10&language=<%=request.getParameter("language")%>";
+    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=request.getParameter("referrer")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&len=10&language=<%=request.getParameter("language")%>";
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
     url += setParam("constraints", constraints);

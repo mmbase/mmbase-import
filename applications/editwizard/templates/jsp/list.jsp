@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.25 2002-08-21 11:43:31 michiel Exp $
+     * @version  $Id: list.jsp,v 1.26 2002-08-30 19:12:55 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -32,7 +32,7 @@ if (! ewconfig.subObjects.empty()) {
         log.debug("this is a popup");
         Stack stack = (Stack) top.popups.get(popupId);
         if (stack == null) {
-            log.debug("no configuration found for popup list");
+            log.debug("No configuration found for popup list");
             stack = new Stack();
             top.popups.put(popupId, stack);
             listConfig = null;
@@ -40,6 +40,7 @@ if (! ewconfig.subObjects.empty()) {
             if (stack.empty()) {
                 log.error("Empty stack?");
             } else {
+                
                 listConfig = (Config.ListConfig) stack.peek();
             }
         }
