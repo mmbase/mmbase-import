@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.42 2003-12-04 13:32:12 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.43 2003-12-17 14:19:36 mmweb Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -238,9 +238,9 @@
       <!--
       <listitem>
         <para>MMBase community taglib reference (<ulink
-        id="taglibcommunityjsp" url="reference/community-taglib/toc.html">JSP</ulink>
+        id="taglibcommunityjsp" url="../mmdocs/reference/community-taglib/toc.html">JSP</ulink>
         <ulink id="taglibcommunityhtml"
-        url="reference/mmcommunity-taglib.html">HTML</ulink>)</para>
+        url="../mmdocs/reference/mmcommunity-taglib.html">HTML</ulink>)</para>
       </listitem>
       -->
       <listitem>
@@ -257,7 +257,7 @@
         <!-- old format (mmdocs) documentation -->
 
         <para>SCAN (<ulink id="veryoldanddeprecatedscan"
-        url="frontenddevelopers/SCAN1_0.html">HTML</ulink>)</para>
+        url="templaters/SCAN1_0.html">HTML</ulink>)</para>
       </listitem>
 
       <listitem>
@@ -269,14 +269,14 @@
         url="frontenddevelopers/xmlimporter/overview.pdf">PDF</ulink>)</para>
 
         <para>Quick start (<ulink id="xmlimporterquickstart"
-        url="frontenddevelopers/xmlimporter/quickstart.html">HTML</ulink>,
+        url="developers/xmlimporter/quickstart.html">HTML</ulink>,
         <ulink id="xmlimporterquickstart.pdf"
-        url="frontenddevelopers/xmlimporter/quickstart.pdf">PDF</ulink>)</para>
+        url="developers/xmlimporter/quickstart.pdf">PDF</ulink>)</para>
 
         <para>Cook Book (<ulink id="xmlimportercookbook"
-        url="frontenddevelopers/xmlimporter/cookbook.html">HTML</ulink>,
+        url="developers/xmlimporter/cookbook.html">HTML</ulink>,
         <ulink id="xmlimportercookbook.pdf"
-        url="frontenddevelopers/xmlimporter/cookbook.pdf">PDF</ulink>)</para>
+        url="developers/xmlimporter/cookbook.pdf">PDF</ulink>)</para>
       </listitem>
     </itemizedlist>
   </section>
