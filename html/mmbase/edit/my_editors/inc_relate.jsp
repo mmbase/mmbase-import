@@ -1,6 +1,6 @@
 <mm:import externid="verander_ok" />
 
-<!-- ### Create relation with node nr: we have nr, ntype, kind, rnr ### -->
+<!-- ### Create relation with node nr: we have nr, ntype, rkind, rnr ### -->
 <mm:present referid="rnr">
 
 	<table border="0" cellspacing="0" cellpadding="4" class="table-form">
@@ -45,12 +45,12 @@
 
 	<tr valign="top">
 	  <td class="name" align="right">Relation kind</td>
-	  <td><b><mm:write referid="kind" /></b></td>
+	  <td><b><mm:write referid="rkind" /></b></td>
 	</tr>
 	
 	<mm:notpresent referid="verander_ok">
 		<%-- Create relation: go to edit relation when it has > 1 editable fields (then it is a relation with a value) --%>
-		<mm:createrelation source="source_node" destination="dest_node" role="$kind" id="the_relation">
+		<mm:createrelation source="source_node" destination="dest_node" role="$rkind" id="the_relation">
 			<mm:fieldlist type="edit"><mm:first><mm:import id="verander">ok</mm:import></mm:first></mm:fieldlist>
 		</mm:createrelation>
 	</mm:notpresent>	<%-- end notpresent verander_ok --%>
@@ -59,7 +59,7 @@
 		<%-- Edit relation: needed when a relation has a value (like position f.e.) --%>
 		<mm:node referid="the_relation">
 			<tr bgcolor="#CCCCCC"><td>&nbsp;</td><td class="title-s">Edit the relation</td></tr>
-			<form method="post" action="<mm:url referids="ntype,nr,rnr,kind,dir">
+			<form method="post" action="<mm:url referids="ntype,nr,rnr,rkind,dir">
 				<mm:param name="the_relation"><mm:field name="number" /></mm:param>
 				<mm:param name="save_it">didthat</mm:param>
 			</mm:url>">
@@ -78,6 +78,7 @@
 		<%-- Save relation --%>
 		<mm:import externid="the_relation" required="true" />
 		<tr><td colspan="2"><p class="message">The nodes have been related and your input is saved.</p></td></tr>
+
 		<mm:node referid="the_relation">
 			<mm:fieldlist type="edit">
 				<mm:context><mm:fieldinfo type="useinput" /></mm:context>

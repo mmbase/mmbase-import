@@ -98,10 +98,10 @@ int list_index = 0;		// Index value of the list
 	  <td align="center">
 	  <mm:present referid="nr">		<%-- if there is a nr, there is a node and thus we are trying to find another to relate to --%>
 		<mm:compare referid="dir" value="nwchild">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,kind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a>
+		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-right.gif" alt="-&gt;" width="21" height="20" border="0" /></a>
 		</mm:compare>
 		<mm:compare referid="dir" value="nwparent">
-		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,kind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-left.gif" alt="-&lt;" width="21" height="20" border="0" /></a>
+		  <a title="relate" href="<mm:url page="relate_object.jsp" referids="ntype,nr,rkind,dir"><mm:param name="rnr"><mm:field name="number" /></mm:param></mm:url>"><img src="img/mmbase-relation-left.gif" alt="-&lt;" width="21" height="20" border="0" /></a>
 		</mm:compare>
 	  </mm:present>
 	  </td>
@@ -126,7 +126,7 @@ int list_index = 0;		// Index value of the list
 	if (prev >= -1) { if (prev < 0 ) { prev = 0; }
 	%>
 	<mm:present referid="nr">
-		<a href="<mm:url referids="ntype,nr,kind,dir"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param name="o"><%= prev %></mm:param><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-left.gif" alt="previous" width="21" height="20" border="0" /></a>
+		<a href="<mm:url referids="ntype,nr,rkind,dir"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param name="o"><%= prev %></mm:param><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-left.gif" alt="previous" width="21" height="20" border="0" /></a>
 	</mm:present>
 	<mm:notpresent referid="nr">
 		<a href="<mm:url referids="ntype"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param name="o"><%= prev %></mm:param><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-left.gif" alt="previous" width="21" height="20" border="0" /></a>
@@ -136,7 +136,7 @@ int list_index = 0;		// Index value of the list
 	if (ofs >= max) {  
 	%>
 	<mm:present referid="nr">
-		<a href="<mm:url referids="ntype,nr,kind"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param value="0" name="o" /><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-up.gif" alt="index" width="21" height="20" border="0" /></a>
+		<a href="<mm:url referids="ntype,nr,rkind"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param value="0" name="o" /><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-up.gif" alt="index" width="21" height="20" border="0" /></a>
 	</mm:present>
 	<mm:notpresent referid="nr">
 		<a href="<mm:url referids="ntype"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param value="0" name="o" /><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-up.gif" alt="index" width="21" height="20" border="0" /></a>
@@ -146,7 +146,7 @@ int list_index = 0;		// Index value of the list
 	if (next < total_found) { 
 	%>
 	<mm:present referid="nr">
-		<a href="<mm:url referids="ntype,nr,kind,dir"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param name="o"><%= next %></mm:param><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-right.gif" alt="next" width="21" height="20" border="0" /></a>
+		<a href="<mm:url referids="ntype,nr,rkind,dir"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param name="o"><%= next %></mm:param><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-right.gif" alt="next" width="21" height="20" border="0" /></a>
 	</mm:present>
 	<mm:notpresent referid="nr">
 		<a href="<mm:url referids="ntype"><mm:param name="conf_days"><%= conf_days %></mm:param><mm:param name="o"><%= next %></mm:param><mm:param name="s" value="$search_string" /></mm:url>"><img src="img/mmbase-right.gif" alt="next" width="21" height="20" border="0" /></a>
