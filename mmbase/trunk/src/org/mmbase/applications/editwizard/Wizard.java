@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.50 2002-07-18 10:44:28 pierre Exp $
+ * @version $Id: Wizard.java,v 1.51 2002-07-18 10:57:36 eduard Exp $
  *
  */
 public class Wizard {
@@ -845,7 +845,10 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
     private void resolveShortcuts(Node schemanode, boolean recurse) {
         String xpath;
         if (recurse) xpath=".//field|.//list"; else xpath="field|list";
-        NodeList children = Utils.selectNodeList(schemanode, xpath );
+        NodeList children = Utils.selectNodeList(schemanode, xpath);        
+        if(children == null) {
+            throw new RuntimeException("could not perform xpath:"+xpath+" for schemanode:\n" + schemanode);
+        }
         Node node;
         for (int i=0; i<children.getLength(); i++) {
             resolveShortcut(children.item(i));
