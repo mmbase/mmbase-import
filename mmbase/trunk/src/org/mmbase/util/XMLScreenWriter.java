@@ -66,6 +66,17 @@ public class XMLScreenWriter  {
 		}
 	    } else if (node.getNodeType() == node.TEXT_NODE) {
 		out.write(node.getNodeValue()+"\n");
+	    } else if (node.getNodeType() == node.DOCUMENT_TYPE_NODE) {
+		String publicid = ((DocumentType)node).getPublicId();
+		String systemid = ((DocumentType)node).getSystemId();
+		out.write("<font color=\""+tag_color+"\">&lt;!DOCTYPE "+((DocumentType)node).getName());
+		if (publicid != null && !publicid.equals("")) {
+		    out.write(" PUBLIC \""+((DocumentType)node).getPublicId()+"\"");
+		}
+		if (systemid != null && !systemid.equals("")) {
+		    out.write(" \""+((DocumentType)node).getSystemId()+"\"");
+		}
+		out.write("&gt;</font><br>\n");
 	    } else {
 		boolean is_end_node = isEndNode(node);
 		NamedNodeMap nnm = node.getAttributes();
