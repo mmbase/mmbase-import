@@ -29,21 +29,29 @@ public class IncludeTag extends UrlTag {
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
 
     public int doAfterBody() throws JspTagException {
-        
         if (page == null) {
             throw new JspTagException("Attribute 'page' was not specified");
         }
+    	return includePage();
+    }
+
+    protected int includePage() throws JspTagException {
+
         try {
             bodyContent.clear(); // newlines and such must be removed            
 
             String gotUrl = getUrl(false);// false: don't write &amp; tags but real &.
-            
             // if not absolute, make it absolute:
             // (how does one check something like that?)
             String urlString;
 
             // Do some things to make the URL absolute.            
-            String nudeUrl = gotUrl.substring(0, gotUrl.indexOf('?'));
+            String nudeUrl;
+            if (gotUrl.indexOf('?') != -1) {
+                nudeUrl = gotUrl.substring(0, gotUrl.indexOf('?'));
+            } else {
+                nudeUrl = gotUrl;
+            }
 
             if (nudeUrl.indexOf('/') == 0) { // absolute on server
                 javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
@@ -60,20 +68,20 @@ public class IncludeTag extends UrlTag {
             }                
                 
             if (log.isDebugEnabled()) log.debug("found url: >" + urlString + "<");
-	    URL includeURL = new URL(urlString); 
+    	    URL includeURL = new URL(urlString); 
             
-	    HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-	    //connection.connect();
-	    
-	    BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
-
+            HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
+    	    //connection.connect();
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+            
             String line = null;
             while ((line = in.readLine()) != null ) {
-		bodyContent.write(line);
-	    }
+                bodyContent.println(line);
+            }
 	    
             if (getId() != null) {
-               getContextTag().register(getId(), bodyContent.getString());
+                getContextTag().register(getId(), bodyContent.getString());
             }
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (java.io.IOException e) {
@@ -81,5 +89,4 @@ public class IncludeTag extends UrlTag {
         }        
         return SKIP_BODY;
     }
-
 }
