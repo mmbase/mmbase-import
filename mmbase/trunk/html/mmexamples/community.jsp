@@ -24,7 +24,7 @@
     <tr>
         <td colspan="2" >
             <br />
-            <mm:list path="versions" fields="name,type" constraints="versions.name='Community' AND versions.type='application'">
+            <mm:list path="versions" fields="versions.name,versions.type" constraints="versions.name='Community' AND versions.type='application'">
               <mm:first>
                 <mm:import id="mynewsIsPresent">true</mm:import>
               </mm:first>
