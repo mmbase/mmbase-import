@@ -20,37 +20,37 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-	<th class="header">Machine</th>
-	<th class="header">State</th>
-	<th class="header">Last Seen</th>
-	<th class="header">Uptime</th>
-	<th class="header">Host</th>
-	<th class="header">OS</th>
-	<th class="header">&nbsp;</th>
+    <th class="header">Machine</th>
+    <th class="header">State</th>
+    <th class="header">Last Seen</th>
+    <th class="header">Uptime</th>
+    <th class="header">Host</th>
+    <th class="header">OS</th>
+    <th class="header">&nbsp;</th>
 </tr>
-<mm:listnodes type="mmservers" fields="name,showstate,showatime,host,os,jdk,uptime">
+<mm:listnodes type="mmservers" >
 <tr>
-	<td class="data">
-	<mm:field name="name" />
-	</td>
-	<td class="data">
-	<mm:field name="showstate" />
-	</td>
-	<td class="data">
-	<mm:field name="showatime" />
-	</td>
-	<td class="data">
-	<mm:field name="uptime" />
-	</td>
-	<td class="data">
-	<mm:field name="host" />
-	</td>
-	<td class="data">
-	<mm:field name="os" />
-	</td>
-	<td class="navigate" width="14">
-		<a href="server/actions.jsp?server=<%=name%>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
-	</td>
+    <td class="data">
+    <mm:field name="name" />
+    </td>
+    <td class="data">
+    <mm:field name="showstate" />
+    </td>
+    <td class="data">
+    <mm:field name="showatime" />
+    </td>
+    <td class="data">
+    <mm:field name="uptime" />
+    </td>
+    <td class="data">
+    <mm:field name="host" />
+    </td>
+    <td class="data">
+    <mm:field name="os" />
+    </td>
+    <td class="navigate" width="14">
+        <a href="server/actions.jsp?server=<mm:field name="name" />"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    </td>
 </tr>
 </mm:listnodes>
 <tr><td>&nbsp;</td></tr>
