@@ -67,7 +67,10 @@ public class ImageCaches extends MMObjectBuilder {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt2=con.createStatement();
-				ResultSet rs=stmt2.executeQuery("SELECT number FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
+
+
+
+				ResultSet rs=stmt2.executeQuery("SELECT "+mmb.getDatabase().getAllowedField("number")+" FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
 				if (rs.next()) {
 					int number=rs.getInt(1);
 					MMObjectNode n2=getNode(number);
