@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.33 2003-11-12 14:15:22 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.34 2003-12-09 15:57:50 jaco Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -124,8 +124,15 @@ function doOnLoad_ew() {
         if (firstfield!=null) firstfield.focus();
     }
 
-
     doValidateAndUpdateButtons();
+
+    // Start the htmlarea's.
+    for (var i = 0; i < htmlAreas.length; i++) {
+      var editor = new HTMLArea(htmlAreas[i]);
+      customize(editor, "../htmlarea/");
+      editor.generate();
+      htmlAreas[i] = editor;
+    }
 }
 
 function doOnSubmit(form) {
@@ -327,7 +334,6 @@ function doAdd(s, cmd) {
 }
 
 function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
-    doCheckWysiwyg();
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/start-wizard/"+fieldid+"/"+dataid+"/"+objectnumber+"/"+origin+"/";
     fld.value = wizardname;
@@ -335,7 +341,6 @@ function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
 }
 
 function doGotoForm(formid) {
-    doCheckWysiwyg();
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/goto-form//"+formid+"//";
     fld.value = "";
@@ -344,8 +349,6 @@ function doGotoForm(formid) {
 }
 
 function doSendCommand(cmd, value) {
-    doCheckWysiwyg();
-
     var fld = document.getElementById("hiddencmdfield");
     fld.name = cmd;
     fld.value = "";
@@ -414,7 +417,15 @@ function doCancel() {
     document.body.scrollTop = 0;
 }
 
+function saveHtmlAreas() {
+    for (var i = 0; i < htmlAreas.length; i++) {
+      var editor = htmlAreas[i];
+      editor._textArea.value = editor.getHTML();
+    }
+}
+
 function doSave() {
+    saveHtmlAreas();
     var allvalid = doValidateAndUpdateButtons();
     if (allvalid) {
         setButtonsInactive();
@@ -424,6 +435,7 @@ function doSave() {
 }
 
 function doSaveOnly() {
+    saveHtmlAreas();
     var allvalid = doValidateAndUpdateButtons();
     if (allvalid) {
         setButtonsInactive();
@@ -447,8 +459,3 @@ function doRefresh() {
     doSendCommand("","");
 }
 
-function doCheckWysiwyg() {
-    try {
-        if (wysiwyg) wysiwyg.blur();
-    } catch (e) {}
-}
