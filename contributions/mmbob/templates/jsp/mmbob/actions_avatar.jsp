@@ -9,11 +9,14 @@
 
 <%-- imports when request is multipart post --%>
 <mm:notpresent referid="selectedavatar">
-  <mm:import externid="addavatar" from="multipart"/>
-  <mm:import externid="selectavatar" from="multipart"/>
-  <mm:import externid="otheravatarset" from="multipart"/>
-  <mm:import externid="avatarsets" from="multipart"/>
-  <mm:import externid="_handle_name" from="multipart"/>
+  <mm:import externid="_handle_size" from="multipart"/>
+  <mm:compare referid="_handle_size" value="0" inverse="true"> 
+    <mm:import externid="addavatar" from="multipart"/>
+    <mm:import externid="selectavatar" from="multipart"/>
+    <mm:import externid="otheravatarset" from="multipart"/>
+    <mm:import externid="avatarsets" from="multipart"/>
+    <mm:import externid="_handle_name" from="multipart"/>
+  </mm:compare>
 </mm:notpresent>
 
 <%-- imports when request is not multipart post --%>
