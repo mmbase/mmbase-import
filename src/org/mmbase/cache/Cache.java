@@ -29,11 +29,11 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.19 2003-07-17 17:01:16 michiel Exp $
+ * @version $Id: Cache.java,v 1.20 2004-08-04 11:33:39 michiel Exp $
  */
-abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
+abstract public class Cache extends LRUHashtable implements SizeMeasurable {
 
-    private static Logger log = Logging.getLoggerInstance(Cache.class);
+    private static final Logger log = Logging.getLoggerInstance(Cache.class);
 
     /**
      * All registered caches
@@ -135,8 +135,6 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
     private boolean active = true;
     protected int   maxEntrySize = -1; // no maximum/ implementation does not support;
 
-
-
     public Cache(int size) {
         super(size);
         log.service("Creating cache " + getName() + ": " + getDescription());
@@ -226,7 +224,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
      * Like 'get' of LRUHashtable but considers if the cache is active or not.
      *
      */
-    public synchronized Object get(Object key) {
+    public  Object get(Object key) {
         if (! active) return null;
         return super.get(key);
     }
@@ -235,7 +233,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
      * Like 'put' of LRUHashtable but considers if the cache is active or not.
      *
      */
-    public synchronized Object put(Object key, Object value) {
+    public Object put(Object key, Object value) {
         if (! active) return null;
         return super.put(key, value);
     }
