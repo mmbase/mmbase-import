@@ -75,6 +75,7 @@ public class ImageTag extends FieldTag {
         }
 
         String servletPath;
+
         {
             List args = new ArrayList();
             args.add(sessionName);
@@ -85,7 +86,7 @@ public class ImageTag extends FieldTag {
 
         String url;
         String fileName = node.getStringValue("filename");
-        if ("".equals(fileName)) {
+        if (servletPath.endsWith("?") ||  "".equals(fileName)) {
             url = servletPath + number;
         } else {
             url = servletPath + fileName + "?" + number;
