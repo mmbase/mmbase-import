@@ -99,7 +99,7 @@ public class servdb extends JamesServlet {
         }
         sessions = (sessionsInterface) getModule("SESSION");
         if (sessions == null) {
-            log.error("Could not find module with name 'SESSION'!");
+            log.debug("Could not find session module, proceeding without sessions");
         }
         lastmod = new Date();
     }
@@ -584,6 +584,13 @@ public class servdb extends JamesServlet {
         return(result);
     }
 
+    private sessionInfo getSession(scanpage sp) {
+        if (sessions==null)
+            return null;
+        else
+            return sessions.getSession(sp,sp.sname);
+    }
+
     private scanpage getscanpage( HttpServletRequest req, HttpServletResponse res ) {
         scanpage sp=new scanpage();
         sp.req_line=req.getRequestURI();
@@ -591,7 +598,7 @@ public class servdb extends JamesServlet {
         sp.setReq(req);
         String sname=getCookie(sp.req,res);
         sp.sname=sname;
-        sessionInfo session=sessions.getSession(sp,sp.sname);
+        sessionInfo session=getSession(sp);
         sp.session=session;
         ServletConfig sc=getServletConfig();
         ServletContext sx=sc.getServletContext();
@@ -604,7 +611,7 @@ public class servdb extends JamesServlet {
 
     public Vector filterSessionMods(scanpage sp,Vector params,HttpServletResponse res) {
         // debug("filterSessionMods("+sp+","+params+","+res+"): start");
-        sessionInfo session=sessions.getSession(sp,sp.sname);
+        sessionInfo session=getSession(sp);
         if (session!=null) {
             int pos1;
             String line;
@@ -644,7 +651,7 @@ public class servdb extends JamesServlet {
     *
     */
     public Vector checkSessionJingle(scanpage sp,Vector params,HttpServletResponse res) {
-        sessionInfo session=sessions.getSession(sp,sp.sname);
+        sessionInfo session=getSession(sp);
         boolean havesession=false,havesbj=false;
         String str="";
         int i=0;
@@ -698,7 +705,7 @@ public class servdb extends JamesServlet {
         int ispeed=16000;
         int ichannels=1;
 
-        sessionInfo session=sessions.getSession(sp,sp.sname);
+        sessionInfo session=getSession(sp);
         if (session!=null) {
             wspeed=sessions.getValue(session,"SETTING_RASPEED");
             // debug("w="+wspeed);
@@ -998,7 +1005,7 @@ public class servdb extends JamesServlet {
         }
 
         if( number != -1 ) {
-            sessionInfo session=sessions.getSession(sp,sp.sname);
+            sessionInfo session=getSession(sp);
             String	auto = getParamValue("a",params);
             if ( auto!=null && auto.equals("session") ) {
                 // get properties RASPEED and RACHANNELS from user
@@ -1088,7 +1095,7 @@ public class servdb extends JamesServlet {
 			speed = 16000;
 			channels = 1;
 			/* Original code ending at: End of...
-            sessionInfo session=sessions.getSession(sp,sp.sname);
+            sessionInfo session=getSession(sp);
             String	auto = getParamValue("a",params);
             if ( auto!=null && auto.equals("session") ) {
                 // get properties RASPEED and RACHANNELS from user
