@@ -1,6 +1,9 @@
-<%@page import="java.util.*, java.io.*, java.text.* " session="true"%>
+<%@page import="java.util.*, java.io.*, java.text.*,  java.util.regex.* " session="true"%>
 
-<%! class DirSorter implements Comparator {
+<%!
+
+    final Pattern DATE_PATTERN = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
+    class DirSorter implements Comparator {
      public int compare(Object o1, Object o2) {
            File f2 =(File) o2;
            File f1 = (File) o1;
@@ -27,8 +30,11 @@ List  showDirs(File thisDir, String prefix, int max) throws IOException {
     File f = (File) content[i];
     if (f.isDirectory() && (! f.getName().equals("last")) && (new File(f, "messages.log")).exists()) {
 	found ++;
-	    if (found >= max) break;
+	if (found >= max) break;
        info.link = "/development/download/build_page.jsp?dir=" + prefix + "/" + f.getName();
+	if (! DATE_PATTERN.matcher(f.getName()).matches()) {
+	   info.remarks = f.getName();
+       }
        Date date = new Date(new File(f, "messages.log").lastModified());
        info.date = date;
        info.dateString = df.format(date);
@@ -41,7 +47,7 @@ List  showDirs(File thisDir, String prefix, int max) throws IOException {
               string.write(c);
               c = reader.read();
            }
-          info.remarks = string.toString();
+          info.remarks += string.toString();
        }
        File changes = new File(f, "RECENTCHANGES.txt");
        if(changes.canRead()) {
