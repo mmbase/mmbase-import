@@ -4,7 +4,7 @@
 
    @author Eduard Witteveen
    @author Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.4 2002-08-05 22:01:36 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.5 2002-08-05 22:45:32 michiel Exp $
    
 -->
 <project name="project naam" default="full" basedir=".">
@@ -17,7 +17,7 @@
   <!-- files that are to be created -->
   <property name="sourcepackage.path" value="${destination.dir}/mmbase-src.zip"/>
   <property name="libpackage.path" value="${destination.dir}/mmbase-lib.zip"/>
-  <property name="jarpackage.path" value="${destination.dir}/mmbase.zip"/>
+  <property name="jarpackage.path" value="${destination.dir}/mmbase.jar"/>
   <property name="warpackage.file" value="${destination.dir}/mmbase.war"/>
 
   <!-- these are not used
@@ -163,10 +163,14 @@ api            API-documentation
 
   <target name="storebuild" depends="build.jar">
     <!-- our build thingies -->
+    <!--
     <zip zipfile="${jarpackage.path}">
       <fileset dir="${mmbase.release.lib.dir}" includes="${mmbase.jar.file}" />
       <fileset dir="${mmbase.web.dir}" />
     </zip>
+    -->
+
+    <copy file="${mmbase.release.lib.dir}/${mmbase.jar.file}" tofile="${jarpackage.path}"/>
 
     <!-- the libs we used -->
     <zip zipfile="${libpackage.path}" basedir="${mmbase.compile.lib.dir}">
