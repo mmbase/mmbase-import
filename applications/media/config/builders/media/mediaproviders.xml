@@ -53,7 +53,6 @@
       </db>
     </field>
     
-    <!-- POS 4 : <field> 'Rooturl'  -->
     <field>
       <descriptions>
         <description xml:lang="en">
@@ -65,8 +64,8 @@
         </description>
       </descriptions>
       <gui>
-        <guiname xml:lang="en">RootUrl</guiname>
-        <guiname xml:lang="nl">RootUrl</guiname>
+        <guiname xml:lang="en">Host name</guiname>
+        <guiname xml:lang="nl">Hostname</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
@@ -75,7 +74,7 @@
         </positions>
       </editor>
       <db>
-        <name>rooturl</name>
+        <name>host</name>
         <type state="persistent" size="200" notnull="false">STRING</type>
       </db>
     </field>
