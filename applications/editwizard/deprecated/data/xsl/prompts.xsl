@@ -5,15 +5,17 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.2 2004-06-29 16:16:22 michiel Exp $
+  @version $Id: prompts.xsl,v 1.3 2004-06-29 16:31:35 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
 <!-- prompts for starting a editwizard -->
-<xsl:template name="prompt_edit_wizard">Change...</xsl:template>
-<xsl:variable name="tooltip_edit_wizard"><xsl:call-template name="prompt_edit_wizard" /></xsl:variable><!-- to make the new 'i18n' xsl's work with this -->
-<xsl:template name="prompt_add_wizard"><img src="{$mediadir}new.gif" border="0" width="20" height="20" alt="(start wizard)"/></xsl:template>
-<xsl:variable name="tooltip_add_wizard"><xsl:call-template name="prompt_add_wizard" /></xsl:variable><!-- to make the new 'i18n' xsl's work with this -->
+<xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
+<xsl:template name="prompt_edit_wizard"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:template><!-- to make the new 'i18n' xsl's work with this -->
+
+<xsl:variable name="tooltip_add_wizard"><img src="{$mediadir}new.gif" border="0" width="20" height="20" alt="(start wizard)"/></xsl:variable>
+<xsl:template name="prompt_add_wizard"><xsl:value-of select="$tooltip_add_wizard" /></xsl:template><!-- to make the new 'i18n' xsl's work with this -->
+
 <!-- prompts for datefields -->
 <xsl:template name="optionlist_months">
   <option value="1">january</option>
