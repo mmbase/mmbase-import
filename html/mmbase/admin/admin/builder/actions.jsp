@@ -2,7 +2,7 @@
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <%@include file="../../settings.jsp" %>
-<mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <% String builder = request.getParameter("builder"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
