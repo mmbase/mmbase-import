@@ -37,8 +37,13 @@ public class RelatedTag extends ListTag {
     protected String getSearchNodes() throws JspTagException {
         return (nodes == Attribute.NULL || nodes.getString(this).equals("")) ? "" + getNode().getNumber() : nodes.getString(this);
     }
+
+    /**
+     * Obtain the list path. Adds the related basenode's type (extended with a '0' postfix to distinguis it from
+     * other types in the path) to the front of the path.
+     */
     protected String getPath() throws JspTagException {
-        return getBaseNode().getNodeManager().getName() + "," + path.getString(this);
+        return getBaseNode().getNodeManager().getName() + "0," + path.getString(this);
     }
 
 }
