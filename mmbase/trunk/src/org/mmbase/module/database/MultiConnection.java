@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.14 2002-05-08 15:28:28 vpro Exp $
+ * @version $Id: MultiConnection.java,v 1.15 2002-10-07 12:07:28 eduard Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -65,6 +65,16 @@ public class MultiConnection implements Connection {
     private long startTimeMillis=0;
     private int usage=0;
     public int state=0;
+
+    /**
+     * protected constructor for extending classes, so they can use
+     * this with for example only a connection..
+     */
+    protected MultiConnection() {
+        this.con = con;
+        this.parent = null;
+        state=CON_UNUSED;
+    }
 
     /**
      * @javadoc

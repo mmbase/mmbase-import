@@ -424,8 +424,15 @@ NetComponents can be found at:
                classpathref="compile.classpath"
                classname="com.informix.jdbc.IfxCblob" />
 
-    <available property="naming.in.classpath" classname="javax.naming.Context" />
-    <available property="sqlconnection.in.classpath" classname="javax.sql.Connection" />
+    <available 
+      property="naming.in.classpath" 
+      classpathref="compile.classpath"
+      classname="javax.naming.Context" />
+    
+    <available
+      property="sqlconnection.in.classpath"
+      classpathref="compile.classpath"
+      classname="javax.sql.DataSource" />
 
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
