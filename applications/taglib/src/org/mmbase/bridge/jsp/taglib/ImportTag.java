@@ -89,6 +89,7 @@ public class ImportTag extends WriteTag {
     public int doStartTag() throws JspTagException {
         Object value = null;
         log.trace("dostarttag of import");
+        helper.setTag(this);
         if (getId() == null) {
             log.trace("No id was given, using externid ");
             useId = externid.getString(this);
@@ -162,7 +163,6 @@ public class ImportTag extends WriteTag {
                 }
             }
         }
-        helper.setJspvar(pageContext);
         found = false; // for use next time
         useId = null;
         bodyContent = null;

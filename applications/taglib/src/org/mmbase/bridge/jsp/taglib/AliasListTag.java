@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.Node;
 
@@ -38,7 +39,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() {
         return helper.getValue();
@@ -69,7 +70,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
      */
     public int doStartTag() throws JspTagException{
         helper.overrideWrite(false); // default behavior is not to write to page
-
+        helper.setTag(this);
         currentItemIndex= -1;  // reset index
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
@@ -89,10 +90,11 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         return SKIP_BODY;
     }
 
-    public int doAfterBody() throws JspTagException {
+    public int doAfterBody() throws JspException {
         if (getId() != null) {
             getContextTag().unRegister(getId());
         }
+        helper.doAfterBody();
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
@@ -119,7 +121,6 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         if (returnValues.hasNext()){
             currentItemIndex ++;
             helper.setValue(returnValues.next().toString());
-            helper.setJspvar(pageContext);
             if (getId() != null) {
                 getContextTag().register(getId(), helper.getValue());
             }

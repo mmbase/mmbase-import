@@ -44,7 +44,6 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
      */
     public int doAfterBody() throws JspTagException {
         setFieldVar();
-
         String body = "";
         if (bodyContent != null) body = bodyContent.getString();
         // Get the new value from the body.

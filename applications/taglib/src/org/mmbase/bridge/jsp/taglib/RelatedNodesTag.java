@@ -84,11 +84,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             NodeManager manager = getCloud().getNodeManager(type.getString(this));
             NodeList initialnodes;
 
-            if (role == Attribute.NULL) {
-                initialnodes = parentNode.getRelatedNodes(type.getString(this));
-            } else {
-                initialnodes = parentNode.getRelatedNodes(type.getString(this), role.getString(this), (String) searchDir.getValue(this));
-            }
+            initialnodes = parentNode.getRelatedNodes(type.getString(this), (String) role.getValue(this), (String) searchDir.getValue(this));
 
             StringBuffer where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
@@ -113,11 +109,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 }
                 nodes = parentNode.getRelatedNodes();
             } else {
-                if (role == Attribute.NULL) {
-                    nodes = parentNode.getRelatedNodes((String) type.getValue(this));
-                } else {
-                    nodes = parentNode.getRelatedNodes((String) type.getValue(this), (String) role.getValue(this), (String) searchDir.getValue(this));
-                }
+                nodes = parentNode.getRelatedNodes((String) type.getValue(this), (String) role.getValue(this), (String) searchDir.getValue(this));
             }
         }
         return setReturnValues(nodes, true);

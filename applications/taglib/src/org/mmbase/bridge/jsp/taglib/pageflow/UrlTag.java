@@ -47,7 +47,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() throws JspTagException {
         return getUrl();
@@ -83,6 +83,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
         extraParameters = new HashMap();
+        helper.setTag(this);
         return EVAL_BODY_BUFFERED;
     }
 
@@ -157,8 +158,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
 
     public int doAfterBody() throws JspException {
         if (bodyContent != null) bodyContent.clearBody(); // don't show the body.
-        helper.setBodyContent(bodyContent);
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
 
     public int doEndTag() throws JspTagException {
@@ -169,7 +169,6 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
             // unless jspvar is specified, because then, perhaps the user wants that..
         }
         doAfterBodySetValue();
-        helper.setJspvar(pageContext);
 
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());

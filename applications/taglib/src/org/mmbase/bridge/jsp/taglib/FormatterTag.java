@@ -57,7 +57,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         helper.setJspvar(j);
     }
     public void setWrite(String w) throws JspTagException {
-        helper.setWrite(getAttributeBoolean(w));
+        helper.setWrite(getAttribute(w));
     }
     public Object getWriterValue() throws JspTagException {
         return helper.getValue();
@@ -238,6 +238,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
 
     public int doStartTag() throws JspTagException {
+        helper.setTag(this);
         counter = (Counter) pageContext.getAttribute(PAGECONTEXT_COUNTER);
         if (counter == null) {
             log.debug("counter not found");
@@ -273,8 +274,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     }
 
     public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
 
 
@@ -395,8 +395,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             
         }
         
-
-        helper.setJspvar(pageContext);
 
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
