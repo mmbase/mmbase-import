@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
 public class ForumMMBaseSyncer implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class); 
 
     // thread
     Thread kicker = null;
