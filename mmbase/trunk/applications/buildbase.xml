@@ -122,8 +122,22 @@ Build-compiler: ${build.compiler}
   </target>
 
   <target name="package" depends="jar">
+    <echo file="${project.build.dir}/README-PACKAGE.txt">
+This is the '${project.name}' package of MMBase. And this file contains generic installation instructions for such
+an MMBase package.
+
+Generally you find .jar files, which you have to place in WEB-INF/lib of your web-app (next to
+mmbase.jar). Furthermore, possibly there is a config directory which contains (example) configuration
+for your mmbase configuration directory (possibly in WEB-INF/config).
+
+Other directories will normally contain jsp-templates and such which you can choose to put anywhere in your
+web application.
+
+</echo>
+
     <zip zipfile="${project.zip}">
        <fileset dir="${project.jar.dir}" includes="*.jar"/>
+       <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
        <fileset dir="${project.source.dir}">
          <patternset id="package.files" >
            <include name="**"/>
