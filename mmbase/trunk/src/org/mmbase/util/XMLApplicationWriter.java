@@ -50,14 +50,12 @@ public class XMLApplicationWriter  {
 	// write the contextsources
 	body+=getContextSources(app);
 
-
 	// write the description
 	body+=getDescription(app);
 
 	// write the install-notice
 	body+=getInstallNotice(app);
 
-	
 	// close the application file
 	body+="</application>\n";
 	saveFile(targetpath+"/"+app.getApplicationName()+".xml",body);
@@ -67,6 +65,10 @@ public class XMLApplicationWriter  {
 
 	// now write the context files itself
 	writeContextSources(app,targetpath);
+
+	// now as a backup write all the needed builders
+	// that the application maker claimed we needed
+	writeBuilders(app,targetpath,mmb);
 
 	resultmsgs.addElement("Writing Application file : "+targetpath+"/"+app.getApplicationName()+".xml");
 		
@@ -229,6 +231,26 @@ public class XMLApplicationWriter  {
 			if (type.equals("depth")) {
 				XMLContextDepthReader capp=new XMLContextDepthReader(path);
 				XMLContextDepthWriter.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
+			}
+		}
+	}
+
+	private static void writeBuilders(XMLApplicationReader app,String targetpath,MMBase mmb) {
+		// create the dir for the Data & resource files
+		File file = new File(targetpath+"/"+app.getApplicationName()+"/builders");
+		try {
+			file.mkdirs();
+		} catch(Exception e) {
+			System.out.println("Can't create dir : "+targetpath+"/"+app.getApplicationName()+"/builders");
+		} 
+
+		Vector builders=app.getNeededBuilders();
+		for (Enumeration e=builders.elements();e.hasMoreElements();) {
+			Hashtable bset=(Hashtable)e.nextElement();
+			String name=(String)bset.get("name");
+			MMObjectBuilder bul=mmb.getMMObject(name);
+			if (bul!=null) {
+				XMLBuilderWriter.writeXMLFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml",bul);
 			}
 		}
 	}
