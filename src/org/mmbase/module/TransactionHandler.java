@@ -156,7 +156,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		try {
  			parser.setFeature("http://xml.org/sax/features/validation", true);
 			XEH = new XMLCheckErrorHandler();
-            parser.setErrorHandler(XEH);
+                        parser.setErrorHandler(XEH);
+                        EntityResolver resolver = new XMLEntityResolver(true, getClass());
+                        parser.setEntityResolver(resolver);
+
 		} catch (Exception parsException) {
 			log.error("No DTD validation supported");
 		}
