@@ -323,7 +323,7 @@ public class ListTag extends NodeLikeTag implements BodyTag {
             if (sortedString != null) { // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
                 String f = (String)stringSplitter(sortedString).get(0);
-                String value = (String)next.getValue(f);
+                String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue !=null) {
                     if (value.equals(previousValue)) {
                         changed = false;
