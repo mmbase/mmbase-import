@@ -11,11 +11,16 @@ package org.mmbase.servlet;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletException;
 
 import java.util.Map;
 
 import org.mmbase.bridge.*;
 import org.mmbase.security.Rank;
+
+import org.mmbase.module.builders.Images;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
 
 /**
  * ImageServlet handles nodes as images. If you want to convert an image (resize it, turn it, change
@@ -23,7 +28,7 @@ import org.mmbase.security.Rank;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.15 2003-11-12 13:23:30 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.16 2004-10-08 17:37:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -31,6 +36,24 @@ import org.mmbase.security.Rank;
  * @see    AttachmentServlet
  */
 public class ImageServlet extends HandleServlet {
+    private static Logger log; 
+ 
+    private boolean convert = false;
+
+    public void init() throws ServletException {
+        super.init();
+        String convertParameter = getInitParameter("convert");
+        convert = "true".equals(convertParameter);
+        log = Logging.getLoggerInstance(ImageServlet.class);
+        if (convert) {
+            log.service("Image servlet will accept image conversion templates");
+        }
+    }
+
+    // just to get ImageServlet in the stacktrace.
+    protected final Cloud getClassCloud() {
+        return super.getClassCloud();
+    }
 
     public String getServletInfo()  {
         return "Serves (cached) MMBase images";
@@ -48,8 +71,13 @@ public class ImageServlet extends HandleServlet {
         return node.getFunctionValue("mimetype", null).toString();
     }
 
+
+    /**
+     * Content-Disposition header
+     * {@inheritDoc}
+     */
     
-    protected boolean setContent(HttpServletRequest req, HttpServletResponse res, Node node, String mimeType) throws java.io.IOException {
+    protected boolean setContent(QueryParts query, Node node, String mimeType) throws java.io.IOException {
         String fileName; // will be based on the 'title' field, because images lack a special field for this now.
         if (node.getNodeManager().getName().equals("icaches")) {
             int originalNode = node.getIntValue("id");
@@ -57,12 +85,11 @@ public class ImageServlet extends HandleServlet {
             
             if (! c.mayRead(originalNode) && c.getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
                 // try (again?) cloud from session
-                QueryParts query = readQuery(req, res); // pitty that req must be read again now, but well..
-                c = getCloud(req, res, query);
+                c = getCloud(query);
             }
             
             if (c == null || ! c.mayRead(originalNode)) {
-                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied on original image node '" + originalNode + "'");
+                query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied on original image node '" + originalNode + "'");
                 return false;
             }    
             fileName = c.getNode(originalNode).getStringValue("title");
@@ -74,8 +101,53 @@ public class ImageServlet extends HandleServlet {
         // still not found a sensible fileName? Give it up then.
         if (fileName == null || fileName.equals("")) fileName = "mmbase-image";
 
-        res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getFunctionValue("format", null).toString() + "\"");
+        query.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getFunctionValue("format", null).toString() + "\"");
         return true;
+    }
+
+    /**
+     * ImageServlet can serve a icache node in stead (using the 'extra parameters'
+     * 
+     * @since MMBase-1.8
+     */
+    protected Node getServedNode(QueryParts query, Node node) throws java.io.IOException {
+        Node n = query.getServedNode();
+        if (n != null) {
+            return n;
+        }
+        String nodeNumber     = query.getNodeNumber();
+        String nodeIdentifier = query.getNodeIdentifier();        
+        if (node.getNodeManager().getName().equals("icaches")) {
+            if (! nodeNumber.equals(nodeIdentifier)) {
+                query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot convert icache node");
+                return null;
+            } else {
+                n = getNode(query);
+            }
+        } else {
+            // This _is_ an original node.
+            if (! nodeNumber.equals(nodeIdentifier)) {
+                if (convert) {
+                    Parameters args = new Parameters(Images.CACHE_PARAMETERS);
+                    args.set("template", nodeIdentifier.substring(nodeNumber.length() + 1));
+                    int icacheNodeNumber = node.getFunctionValue("cache", args).toInt();
+                    Cloud cloud = node.getCloud();
+                    cloud = findCloud(cloud, "" + icacheNodeNumber, query);
+                    if (cloud == null) {
+                        return null;
+                    }
+                    Node icache = cloud.getNode(icacheNodeNumber);
+                    n = icache;
+                } else {
+                    query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "This server does not allow you to convert an image in this way");
+                    return null;
+                }
+            } else {
+                n =  getNode(query);
+            }
+        } 
+        query.setServedNode(n);
+        return n;
     }
 
 }

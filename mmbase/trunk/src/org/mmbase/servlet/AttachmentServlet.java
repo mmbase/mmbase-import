@@ -10,20 +10,21 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.util.Map;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 
 /**
  * Serves attachments. An attachments can be any object, as long as it has a byte[] field named
  * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
  * this servlet and preferably the node has also those fields.
   *
- * @version $Id: AttachmentServlet.java,v 1.8 2004-09-30 14:54:56 pierre Exp $
+ * @version $Id: AttachmentServlet.java,v 1.9 2004-10-08 17:37:52 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see HandleServlet
  * @see ImageServlet
  */
 public class AttachmentServlet extends HandleServlet {
+
 
     public String getServletInfo()  {
         return "Serves MMBase nodes as attachments";
@@ -37,6 +38,11 @@ public class AttachmentServlet extends HandleServlet {
         a.put("images",      new Integer(10)); // And also can do images (but is not aware of // icaches)
         a.put("downloads",   new Integer(0));
         return a;
+    }
+
+    // just to get AttachmentServlet in the stacktrace.
+    protected final Cloud getClassCloud() {
+        return super.getClassCloud();
     }
 
     /**
