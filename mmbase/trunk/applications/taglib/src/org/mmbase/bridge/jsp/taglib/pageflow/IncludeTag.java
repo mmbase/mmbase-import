@@ -177,8 +177,9 @@ public class IncludeTag extends UrlTag {
             String urlfile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
           
             // take of the sessionid if it is present
-            HttpSession session = request.getSession(false);
-            if (session != null && session.isNew()) { // means there is a ;jsession argument
+            //HttpSession session = request.getSession(false);
+            //if (session != null && session.isNew()) 
+                { // means there is a ;jsession argument
                 int j = urlfile.lastIndexOf(';');
                 if (j != -1) {
                     urlfile=urlfile.substring(0, j);
@@ -338,7 +339,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     private CharArrayWriter caw;
     private PrintWriter writer;
     private MyServletOutputStream msos;
-    private String characterEncoding = "text/html; charset=utf-8";
+    private String characterEncoding = "text/html;charset=utf-8";
  
     /**
      * Public constructor
@@ -378,7 +379,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
      * If obtaining a PrintWriter, this method should be called first.
      */
     public void setContentType(String encoding) {
-        log.debug("setting content of include page, we need better routine here(to coding : " +  encoding + ")");
+        log.debug("setting content of include page, we need better routine here (to coding : " +  encoding + ")");
         this.characterEncoding = encoding;
     }
     
