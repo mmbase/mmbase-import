@@ -22,7 +22,7 @@ import org.mmbase.util.Encode;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.4 2003-06-06 10:03:38 pierre Exp $
+ * @version $Id: StringHandler.java,v 1.5 2003-06-16 09:08:32 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -59,7 +59,11 @@ public class StringHandler extends AbstractTypeHandler {
                 }
                 buffer.append("</textarea>");
             } else {
-                buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
+                if (field.getGUIType().equals("password")) {
+                    buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
+                } else {
+                    buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
+                }
                 buffer.append(prefix(field.getName()));
                 buffer.append("\" value=\"");
                 if (node != null) {
