@@ -124,7 +124,7 @@ public class MMEdit extends ProcessorModule {
 	/**
 	 * The hook that passes all list related pages to the correct handler
 	 */
-	public Vector getList(scanpage sp,StringTagger tagger, String command) {
+	public Vector getList(scanpage sp,StringTagger tagger, String command) throws ParseException{
 		Vector result = new Vector();
 		CommandHandlerInterface handler;
 
