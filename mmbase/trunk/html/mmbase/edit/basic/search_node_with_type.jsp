@@ -12,26 +12,10 @@
 <mm:import externid="search"     from="parameters" />
 <mm:import externid="maylink"    from="parameters" />
 
-<!-- if no previous search, clear all search values -->
-<mm:notpresent referid="search">
-    <mm:write value="" session="_search_form_minage" />
-    <mm:write value="" session="_search_form_maxage" />
-    <mm:context>
-        <!--clear all search field values -->
-        <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-            <mm:fieldinfo type="name">
-              <mm:write value="" session="search_form_$_" />
-            </mm:fieldinfo>
-        </mm:fieldlist>
-    </mm:context>
-</mm:notpresent>
-
 <!-- import search age and store in session -->
 
 <mm:import externid="_search_form_minage" ></mm:import>
-<mm:write referid="_search_form_minage" session="_search_form_minage" />
 <mm:import externid="_search_form_maxage" ></mm:import>
-<mm:write referid="_search_form_maxage" session="_search_form_maxage" />
 
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
@@ -43,10 +27,6 @@
             <tr align="left">
              <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
              <td width="100%"><mm:fieldinfo type="searchinput" /></td>
-             <!-- import field search value and store in session -->
-             <mm:fieldinfo type="name">
-                <mm:write referid="search_form_$_" session="search_form_$_" />
-             </mm:fieldinfo>
            </tr>
         </mm:fieldlist>
          <tr align="left">
@@ -166,14 +146,36 @@
   <tr>
     <mm:isgreaterthan referid="page" value="0.5">
       <td class="navigate">
-            <a href='<mm:url referids="node,node_type,role_name,direction,search"><mm:param name="page" value="${+$page-1}" /></mm:url>' >
+            <a href='<mm:url referids="node,node_type,role_name,direction,search">
+                <mm:param name="page" value="${+$page-1}" />
+                <!--pass all search field values -->
+                <mm:context>
+                  <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+                    <mm:fieldinfo type="name">
+                      <mm:import externid="search_form_$_" />
+                      <mm:param name="search_form_$_" value="${search_form_$_}" />
+                    </mm:fieldinfo>
+                  </mm:fieldlist>
+                </mm:context>
+              </mm:url>' >
                  <span class="previous"></span><span class="alt">[<-previous page]</span>
       </a>
         </td> 
     </mm:isgreaterthan>
     <mm:present referid="next_page">
       <td class="navigate">      
-            <a href='<mm:url referids="node,node_type,role_name,direction,search"><mm:param name="page"  value="${+$page+1}" /></mm:url>' >
+            <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
+                <mm:param name="page"  value="${+$page+1}" />
+                <!--pass all search field values -->
+                <mm:context>
+                  <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+                    <mm:fieldinfo type="name">
+                      <mm:import externid="search_form_$_" />
+                      <mm:param name="search_form_$_" value="${search_form_$_}" />
+                    </mm:fieldinfo>
+                  </mm:fieldlist>
+                </mm:context>
+              </mm:url>' >
               <span class="next"></span><span class="alt">[next page ->]</span>
             </a>
       </td>
