@@ -105,32 +105,32 @@ public class CloudTag extends ContextTag implements CloudProvider {
     **/
     public CloudContext getDefaultCloudContext(){
         if (cloudContext == null){
-            cloudContext=LocalContext.getCloudContext();
+            cloudContext = LocalContext.getCloudContext();
         } 
         return cloudContext;
     }
     
     
-    public void setName(String name){
-        cloudName = name;        
+    public void setName(String name) throws JspTagException {
+        cloudName = getAttributeValue(name);        
     }
     
-    public void setLogon(String l){
-        logon = l;
+    public void setLogon(String l) throws JspTagException {
+        logon = getAttributeValue(l);
         if ("".equals(logon)) {
             logon = null;   // that also means to ignore the logon name
         }
 
     }
     public void setRank(String r) throws JspTagException {
-        rank = Rank.getRank(r);
+        rank = Rank.getRank(getAttributeValue(r));
         if (rank == null) {
             throw new JspTagException("Unknown rank " + r);
         }
     }
     
-    public void setPwd(String pwd){
-        this.pwd = pwd;
+    public void setPwd(String pwd) throws JspTagException {
+        this.pwd = getAttributeValue(pwd);
     }
 
     public void setJspvar(String jv) {
@@ -166,9 +166,8 @@ public class CloudTag extends ContextTag implements CloudProvider {
     }
     
     public String getId() {
-        String id = super.getId();
-        if (id != null) return id;
-        return "cloud";
+        if (id == null) return "cloud";
+        return id;
     }
 
 
@@ -192,7 +191,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
             // if you throw away the realm name from the session, then the browser does 
             // not know the password anymore. 
             // this is how 'logout' works.
-            realm = "MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime();;
+            realm = "MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime();
         }
         session.setAttribute(REALM, realm);
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + realm + "\"");
