@@ -34,7 +34,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.28 2003-12-17 21:03:47 michiel Exp $
+ * @version $Id: Contexts.java,v 1.29 2003-12-21 13:27:19 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -890,6 +890,13 @@ public class Contexts extends MMObjectBuilder {
         return groupOrUser;
     }
 
+
+    public Parameter[] getParameterDefinition(String function) {
+        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Contexts.class, function);
+        if (params == null) return super.getParameterDefinition(function);
+        return params;
+        
+    }
 
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {

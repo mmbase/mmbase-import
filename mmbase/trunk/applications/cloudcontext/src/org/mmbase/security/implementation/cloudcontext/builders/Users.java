@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.21 2003-12-18 13:41:57 michiel Exp $
+ * @version $Id: Users.java,v 1.22 2003-12-21 13:27:19 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -342,6 +342,13 @@ public class Users extends MMObjectBuilder {
 
     }
 
+
+    public Parameter[] getParameterDefinition(String function) {
+        Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Users.class, function);
+        if (params == null) return super.getParameterDefinition(function);
+        return params;
+        
+    }
 
     /**
      * @javadoc
