@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.11 2002-06-12 10:36:30 eduard Exp $
+ * @version $Id: Generator.java,v 1.12 2002-06-14 18:55:21 michiel Exp $
  */
 public class Generator {   
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
@@ -34,7 +34,7 @@ public class Generator {
     public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, org.mmbase.bridge.Cloud cloud) {
         this.tree = documentBuilder.newDocument();
         Element rootElement = tree.createElement("objects");
-        rootElement.setAttribute("cloud", cloud.getName());
+        rootElement.setAttribute("cloud", cloud.getName());    
         tree.appendChild(rootElement);
     }
     
@@ -77,6 +77,7 @@ public class Generator {
             return e.toString();
         }
     }
+    
     
     /**
      * Adds a field to the DOM Document. This means that there will
@@ -208,6 +209,8 @@ public class Generator {
         object.setAttribute("id", "" + node.getNumber());
         // the type...
         object.setAttribute("type", node.getNodeManager().getName());
+        // and the otype (type as number)
+        object.setAttribute("otype", node.getStringValue("otype"));
         
         // add the fields (empty)
         FieldIterator i = node.getNodeManager().getFields().fieldIterator();
@@ -216,14 +219,8 @@ public class Generator {
             Element field = tree.createElement("field");            
             // the name
             field.setAttribute("name", fieldDefinition.getName());
-            if(fieldDefinition.getName().equals("otype") || fieldDefinition.getName().equals("number")) {
-                field.setAttribute("format", getFieldFormat(node, fieldDefinition));
-                field.appendChild(tree.createTextNode(node.getStringValue(fieldDefinition.getName())));
-            }
-            else {
-                // that it is not filled yet...
-                field.setAttribute("notfilled", "");
-            }
+            // that it is not filled yet...
+            field.setAttribute("notfilled", "");            
             // add it to the object
             object.appendChild(field);
         }        
@@ -232,16 +229,28 @@ public class Generator {
     }    
     
     private org.w3c.dom.Element importDocument(org.w3c.dom.Element fieldElement, Document toImport) {
-        String namespace = toImport.getDoctype().getSystemId();
-        String prefix = toImport.getDocumentElement().getTagName() + ":";        
-        log.debug("using namepace: " + namespace + " with prefix: " + prefix);        
+        DocumentType dt = toImport.getDoctype();
+        String tagName = toImport.getDocumentElement().getTagName();
+
+        String  namespace;
+        if (dt != null) {
+            namespace = dt.getSystemId();
+        }  else {
+            namespace = "http://www.mmbase.org/" + tagName;
+        }
+                      
+        String prefix = tagName + ":";       
+        
+        if (log.isDebugEnabled()) {
+            log.debug("using namepace: " + namespace + " with prefix: " + prefix);
+        }
+        toImport.getDocumentElement().setAttribute("xmlns:" + tagName, namespace);
         return importElement(fieldElement, toImport.getDocumentElement(), namespace, prefix);
     }
 
     private org.w3c.dom.Element importElement(org.w3c.dom.Element parent, org.w3c.dom.Element toImport, String namespace, String prefix) {
         // first create the Element
         Element current = parent.getOwnerDocument().createElementNS(namespace, prefix + toImport.getTagName());
-        
         // add all the attributs..
         org.w3c.dom.NamedNodeMap namednodes = toImport.getAttributes();        
         for(int i=0; i < namednodes.getLength(); i++) {
