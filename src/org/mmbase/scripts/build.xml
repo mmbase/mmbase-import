@@ -589,8 +589,9 @@ URL: http://www.mmbase.org
 Comment: The MMBase Content Managment System
 Version: ${distro}.${version}
 Distribution: ${distro}
-Compiled-by: ${ant.version} 
-Java-version: ${ant.java.version}
+Build-by: ${ant.version} 
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
 </echo>
     
     <mkdir dir="${release.lib.dir}" />
