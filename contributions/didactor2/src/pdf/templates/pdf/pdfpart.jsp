@@ -32,10 +32,14 @@
 <mm:compare referid="node_type" value="pages">
     <mm:import id="display">1</mm:import>
 </mm:compare>
+<mm:compare referid="node_type" value="educations">
+    <mm:import id="display">1</mm:import>
+</mm:compare>
+
 
 <mm:present referid="display">
 
-    <%= "<h"+level.toString()+">" %><mm:field name="name"/><%= "</h"+level.toString()+">" %>
+    <%= "<h"+level.toString()+">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
     <br/>
     <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/><mm:field name="text" escape="none"/></mm:import>
     <%
@@ -156,6 +160,20 @@
         <br/>
 
     <% if (level.intValue() < 20) { %>
+        <mm:compare referid="node_type" value="educations">
+    <mm:list nodes="$number" path="educations,posrel,learnobjects" orderby="posrel.pos" fields="learnobjects.number" searchdir="destination" distinct="true">
+        <mm:remove referid="number"/>
+        <mm:remove referid="level"/>
+        <mm:field name="learnobjects.number" jspvar="partnumber">
+            <mm:include page="pdfpart.jsp">
+                <mm:param name="partnumber"><%= partnumber %></mm:param>
+                <mm:param name="level"><%= (level.intValue()+1) %></mm:param>
+            </mm:include>
+        </mm:field>
+    </mm:list>
+        </mm:compare>
+
+        <mm:compare referid="node_type" value="educations" inverse="true">
     <mm:list  path="learnobjects1,posrel,learnobjects2" orderby="posrel.pos" fields="learnobjects2.number" searchdir="destination" distinct="true" constraints="learnobjects1.number = $number">
         <mm:remove referid="number"/>
         <mm:remove referid="level"/>
@@ -166,6 +184,7 @@
             </mm:include>
         </mm:field>
     </mm:list>
+        </mm:compare>
     <% } %>
 
 </mm:present>
