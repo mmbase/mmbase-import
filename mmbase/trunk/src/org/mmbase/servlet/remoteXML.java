@@ -18,6 +18,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
+import org.mmbase.util.logging.*;
 
 /**
  * The remoteXML Servlet serves GET requests coming from remotebuilders 
@@ -31,10 +32,10 @@ import org.mmbase.security.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.18 $ $Date: 2001-04-13 08:55:44 $
+ * @version $Revision: 1.19 $ $Date: 2001-04-13 11:51:57 $
  */
 public class remoteXML extends JamesServlet {
-	private boolean debug = true;
+	private static Logger log = Logging.getLoggerInstance(remoteXML.class.getName());
 	MMBase mmbase;
 	private MMBaseCop mmbaseCop = null;
 
@@ -42,8 +43,8 @@ public class remoteXML extends JamesServlet {
 	 * Initializing mmbase root variable.
 	 */
 	public void init() {
-		if (debug) debug("init: Initializing mmbase root variable.");
-		mmbase=(MMBase)getModule("MMBASEROOT");
+		log.debug("Initializing mmbase root variable.");
+		mmbase = (MMBase)getModule("MMBASEROOT");
 		mmbaseCop = mmbase.getMMBaseCop();
 	}
 
@@ -57,25 +58,24 @@ public class remoteXML extends JamesServlet {
 		incRefCount(req);
 		try {
 			String sharedsecret = req.getHeader("sharedSecret");
-			//debug("Sharedsecret = "+sharedsecret);
+			//log.debug("Sharedsecret = "+sharedsecret);
 
 			// Check if the remote machine knows the same shared secret. 
 			if(mmbaseCop.checkSharedSecret(sharedsecret)) {
-				debug("info - sharedsecret is correct, system is authenticated"); 
+				log.info("sharedsecret is correct, system is authenticated"); 
 			} else {
-				debug("warning - sharedsecret is NOT correct, system is NOT authenticated"); 
+				log.warn("sharedsecret is NOT correct, system is NOT authenticated"); 
 			}
 			
 			if (req.getMethod().equals("POST")) {
-				if (debug) debug("service: Incoming request: POST");
+				log.info("Incoming request: POST");
 				handlePost(req,res);
 			} else 
 			if (req.getMethod().equals("GET")) {
-				if (debug) debug("service: Incoming request: GET");
+				log.info("Incoming request: GET");
 				handleGet(req,res);
 			}
 		} catch (Exception e)  {
-			debug("error "+e);
 			e.printStackTrace();
 		} finally { decRefCount(req); }
 	}
@@ -86,14 +86,14 @@ public class remoteXML extends JamesServlet {
 	 * @param res the current HttpServletResponse
 	 */
 	private void handlePost(HttpServletRequest req,HttpServletResponse res) {
-		if (debug) debug("handlePost: Getting posted contents and attempt to read & commit it to mmbase");
+		log.info("Getting posted contents and attempt to read & commit it to mmbase");
 		try {
 			HttpPost poster=new HttpPost(req);
 			String xml=poster.getPostParameter("xmlnode");
 			boolean commitOk = commitXML(xml,req);
-			if (!commitOk) debug("handlePost: ERROR: commitXML Failed for xml:"+xml); 
+			if (!commitOk) log.error("commitXML Failed for xml:"+xml); 
 		} catch(Exception e) {
-			debug("handlePost: ERROR POST failed from remoteXML");
+			log.error("POST failed from remoteXML");
 			e.printStackTrace();
 		}
 	}
@@ -106,45 +106,45 @@ public class remoteXML extends JamesServlet {
 	 * @param res the current HttpServletResponse
 	 */
 	private void handleGet(HttpServletRequest req,HttpServletResponse res) {
-		if (debug) debug("handleGet: Getting info from querystring");
+		log.info("Getting info from querystring");
 		String buildername =getParam(req,0);
 		String nodename = getParam(req,1);
 		String proto = getParam(req,2);
 		String host = getParam(req,3);
 		String port = getParam(req,4);
 		String remoteUrl= proto+"://"+host+":"+port;
-		if (debug) debug("handleGet: Buildername:"+buildername+" Nodename:"+nodename+" remoteUrl:"+remoteUrl);
+		log.info("Buildername:"+buildername+" Nodename:"+nodename+" remoteUrl:"+remoteUrl);
 
-		if (debug) debug("handleGet: Getting node for reference:"+nodename);
+		log.info("Getting node for reference:"+nodename);
 		MMObjectBuilder bul=mmbase.getMMObject(buildername);
 		if (bul!=null) {
 			int number=-1;
 			String numberStr=bul.getNumberFromName(nodename);
 			if (numberStr!=null) {
-				if (debug) debug("handleGet: Found number "+numberStr+" for nodename:"+nodename);
+				log.info("Found number "+numberStr+" for nodename:"+nodename);
 				try { number = Integer.parseInt(numberStr);} catch (NumberFormatException nfe) {
-					debug("handleGet: ERROR: number:"+numberStr+" is not a number.");
+					log.error("number:"+numberStr+" is not a number.");
 					nfe.printStackTrace();
 				}
 			} else {
-				debug("handleGet: Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
+				log.info("Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
 				if (bul instanceof ServiceBuilder) {
 					ServiceBuilder serviceBuilder=(ServiceBuilder)bul;	
 					number = insertRemoteBuilderNode(serviceBuilder,buildername,nodename,remoteUrl);
-					debug("handleGet: INSERTED "+buildername+" node:"+nodename+" object:"+number);
+					log.info("INSERTED "+buildername+" node:"+nodename+" object:"+number);
 				} else
-					debug("handleGet: INFO: Requested node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
+					log.warn("Requested node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
 			}
 			if (number!=-1) {
 				String body="";
 				MMObjectNode node=bul.getNode(number);
 				if (node!=null) {
-					if (debug) debug("handleGet: Filling body with xml version of "+buildername+" node:"+nodename);
+					log.info("Filling body with xml version of "+buildername+" node:"+nodename);
 					body=node.toXML();	
 				} else 
-					debug("handleGet: ERROR: Can't get node for number:"+number+", node="+node);
+					log.error("Can't get node for number:"+number+", node="+node);
 				try {
-					if (debug) debug("handleGet: Sending body back to client.");
+					log.info("Sending body back to client.");
 					// Open	a output stream so you can write to the client
 					PrintStream out = new PrintStream(res.getOutputStream());
 					res.setContentType("text/plain");
@@ -153,13 +153,13 @@ public class remoteXML extends JamesServlet {
 					out.flush();
 					out.close();
 				} catch(Exception e) {
-					debug("handleGet: ERROR: Sending requested data for GET failed.");
+					log.error("Sending requested data for GET failed.");
 					e.printStackTrace();
 				}
 			} else
-				if (debug) debug("handleGet: ERROR: number="+number+" node insert failed or node is wrong type, cancelling request.");
+				log.error("number="+number+" node insert failed or node is wrong type, cancelling request.");
 		} else
-			debug("handleGet: ERROR can't get builder: "+buildername+" from mmbase.");
+			log.error("Can't get builder: "+buildername+" from mmbase.");
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class remoteXML extends JamesServlet {
 	 */	
 	public int insertRemoteBuilderNode(ServiceBuilder serviceBuilder,String builderName,String nodeName,String remoteUrl) {
 		MMServers mmserverBuilder=(MMServers)mmbase.getMMObject("mmservers");
-		if (debug) debug("insertRemoteBuilderNode: Searching mmserver where host=remoteUrl="+remoteUrl);
+		log.info("Searching mmserver where host=remoteUrl="+remoteUrl);
 		Enumeration mmsEnum = mmserverBuilder.search( "WHERE host='"+remoteUrl+"'");
 		if (mmsEnum.hasMoreElements()) {
 			MMObjectNode mmserverNode = (MMObjectNode) mmsEnum.nextElement();
@@ -184,8 +184,7 @@ public class remoteXML extends JamesServlet {
 				// Inserts a remotebuilder type node as a servicebuilder node and relates it to mmserverNode.
 				serviceBuilder.addService(nodeName,localclass,mmserverNode);
 			} catch(Exception e) {
-				debug("insertRemoteBuilderNode: ERROR in addService, mmserverNode:"+mmserverNode);
-				debug("insertRemoteBuilderNode: ERROR in addService, Buildername:"+builderName+" Nodename:"+nodeName+" remoteUrl:"+remoteUrl);
+				log.error("in addService, mmserver:"+mmserverNode+"Buildername:"+builderName+" Nodename:"+nodeName+" remoteUrl:"+remoteUrl);
 				e.printStackTrace();
 				return -1;
 			}
@@ -195,11 +194,11 @@ public class remoteXML extends JamesServlet {
 				MMObjectNode serviceNode = (MMObjectNode) e.nextElement();
 				return serviceNode.getIntValue("number");	
 			} else {
-				debug("insertRemoteBuilderNode: ERROR: Can't find just inserted! remotebuilder node where name="+nodeName);
+				log.error("Can't find just inserted! remotebuilder node where name="+nodeName);
 				return -1;
 			}
 		} else {
-			debug("insertRemoteBuilderNode: ERROR: Can't find mmservernode where host="+remoteUrl);
+			log.error("Can't find mmservernode where host="+remoteUrl);
 			return -1;
 		}
 	}
@@ -213,15 +212,14 @@ public class remoteXML extends JamesServlet {
 	 * @return true when posted node is merged, false otherwise.
 	 */
 	public boolean commitXML(String xml,HttpServletRequest req) {
-		if (debug) debug("commitXML: Storing xmlnode in db, xml:"+xml);
-
+		log.info("Storing xmlnode in db, xml:"+xml);
 		Hashtable values=getXMLValues(xml);
 
 		// hack for braindead psion jdk
 		String remhost=req.getRemoteAddr();
 		String givenhost=(String)values.get("host");
 		if (givenhost!=null && givenhost.indexOf("http://localhost")!=-1) {
-			debug("commitXML: HOST REPLACE=http://"+remhost+":8080");
+			log.info("HOST REPLACE=http://"+remhost+":8080");
 			values.put("host","http://"+remhost+":8080");	
 		}
 
@@ -232,40 +230,40 @@ public class remoteXML extends JamesServlet {
 			int number=-1;
 			String numberStr=bul.getNumberFromName(nodename);
 			if (numberStr!=null) {
-				if (debug) debug("commitXML: Found number "+numberStr+" for nodename:"+nodename);
+				log.info("Found number "+numberStr+" for nodename:"+nodename);
 				try { number = Integer.parseInt(numberStr);} catch (NumberFormatException nfe) {
-					debug("commitXML: ERROR: number:"+numberStr+" is not a number.");
+					log.error("number:"+numberStr+" is not a number.");
 					nfe.printStackTrace();
 					return false;
 				}
 			} else {
-				debug("commitXML: Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
+				log.error("Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
 				if (bul instanceof ServiceBuilder) {
 					ServiceBuilder serviceBuilder=(ServiceBuilder)bul;	
 					String remoteUrl=(String)values.get("host");
 					number = insertRemoteBuilderNode(serviceBuilder,buildername,nodename,remoteUrl);
 				} else {
-					debug("commitXML: INFO: Posted node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
+					log.warn("Posted node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
 					return false;
 				}
 			}
 			if (number!=-1) {
-				if (debug) debug("commitXML: Getting node for "+buildername+" obj "+number);
+				log.info("Getting node for "+buildername+" obj "+number);
 				MMObjectNode node=bul.getNode(number);
 				if (node!=null) {
 					mergeXMLNode(node,values); //merges related fields. in node.
 					node.commit();
 					return true;
 				} else {
-					debug("commitXML: ERROR: Can't get node for number:"+number+", node="+node);
+					log.error("Can't get node for number:"+number+", node="+node);
 					return false;
 				}
 			} else {
-				if (debug) debug("handleGet: ERROR: number="+number+" node insert failed or node is wrong type, cancelling post.");
+				log.error("number="+number+" node insert failed or node is wrong type, cancelling post.");
 				return false;
 			}
 		} else {
-			debug("commitXML: ERROR can't get builder: "+buildername+" from mmbase.");
+			log.error("Can't get builder: "+buildername+" from mmbase.");
 			return false;
 		}
 	}
@@ -277,7 +275,7 @@ public class remoteXML extends JamesServlet {
 	 * @param values the received service node values.
 	 */
 	private void mergeXMLNode(MMObjectNode node,Hashtable values) {
-		if (debug) debug("mergeXMLNode: Merging data for node "+node.getStringValue("name")); 
+		log.info("Merging data for node "+node.getStringValue("name")); 
 		Enumeration t=values.keys();
 		while (t.hasMoreElements()) {
 			String key=(String)t.nextElement();
