@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.67 2004-12-10 19:05:36 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.68 2005-01-04 13:44:43 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -51,8 +51,8 @@ import org.mmbase.util.logging.*;
 public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(ContextTag.class);
 
-    static final String CONTEXTTAG_KEY = "__context";
-    public static final String DEFAULTENCODING_KEY = "__defaultencoding";
+    public static final String CONTEXTTAG_KEY = "org.mmbase.taglib.context";
+    public static final String DEFAULTENCODING_KEY = "org.mmbase.taglib.defaultencoding";
 
     private ContextContainer container = null;
     private ContextProvider  parent = null;
@@ -61,9 +61,31 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private CloudContext cloudContext;
 
     private Attribute referid = Attribute.NULL;
+    private Attribute scope   = Attribute.NULL;
 
     public void setReferid(String r) throws JspTagException {
         referid = getAttribute(r);
+    }
+    
+    public void setScope(String s) throws JspTagException {
+        scope = getAttribute(s);
+    }
+
+    private int getScope() throws JspTagException {        
+        String ss = scope.getString(this).toLowerCase();
+        if ("".equals(ss)) {
+            return PageContext.PAGE_SCOPE;
+        } else if ("request".equals(ss)) {
+            return PageContext.REQUEST_SCOPE;
+        } else if ("session".equals(ss)) {
+            return PageContext.SESSION_SCOPE;
+        } else if ("page".equals(ss)) {
+            return PageContext.PAGE_SCOPE;
+        } else if ("application".equals(ss)) {
+            return PageContext.APPLICATION_SCOPE;
+        } else {
+            throw new JspTagException("Unknown scope '" + ss + "'");
+        }
     }
 
     /**
@@ -87,11 +109,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     /**
      * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
      */
-    void createContainer(ContextContainer c) {
+    void createContainer(ContextContainer c) { //throws JspTagException {
         if (c == null && ! ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.isELIgnored")))) {
             container = new PageContextContainer(pageContext);
         } else {
-            container = new StandaloneContextContainer(getId(), c);
+            container = new StandaloneContextContainer(pageContext, getId(), c);
         }
 
     }
@@ -274,6 +296,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
+        container.release();
         container = null;
         parent = null;
         cloudContext = null;
