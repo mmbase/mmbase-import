@@ -8,9 +8,9 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.applications.packages.projects.creators;
+package org.mmbase.applications.packaging.projects.creators;
 
-import org.mmbase.applications.packages.projects.*;
+import org.mmbase.applications.packaging.projects.*;
 import java.io.*;
 import java.util.*;
 import java.util.jar.*;

@@ -8,15 +8,15 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.applications.packages.projects.creators;
+package org.mmbase.applications.packaging.projects.creators;
 
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packages.*;
-import org.mmbase.applications.packages.projects.*;
+import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.projects.*;
 
 
 import java.io.*;
@@ -70,7 +70,7 @@ public class DisplayHtmlCreator extends BasicCreator implements CreatorInterface
         step=getNextPackageStep();
         step.setUserFeedBack("used exclude : "+exclude);
 
-        String newfilename=MMBaseContext.getConfigPath()+"/packages/build/"+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_display_html_"+newversion;
+        String newfilename=MMBaseContext.getConfigPath()+"/packaging/build/"+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_display_html_"+newversion;
 	try {
   		JarOutputStream jarfile = new JarOutputStream(new FileOutputStream(newfilename+".tmp"),new Manifest());
 
