@@ -90,7 +90,7 @@ public interface scancacheInterface {
      * @param key key under which the content was cached
      * @param value content to store
      * @param cachetype only needed for cachepool "PAGE".
-     *        If 0, no file transfer is performed. Otherwise the {@link NetFileServ} builder is
+     *        If 0, no file transfer is performed. Otherwise the {@link org.mmbase.module.builders.NetFileSrv} builder is
      *        invoked to start the VWM that handles the transfer.
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the old cached content as a string, or <code>null</code> if no entry was found

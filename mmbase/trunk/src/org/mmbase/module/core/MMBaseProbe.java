@@ -17,14 +17,14 @@ import java.io.*;
 
 /**
  * MMBaseProbe is a thread-like object that gets instantiated by MMbase.
- * It calls the callback method {@link MMBase.ProbeRun} in MMbase, which in turn probes the builders.
+ * It calls the callback method {@link MMBase#doProbeRun} in MMbase, which in turn probes the builders.
  * After the probe has been preformed, it schedules itself to be destroyed after an alotted time (10 minutes),
  * which also clears the reference in MMBase and prompts that module to create a new probe instance.
  * This way, maintanance is scheduled to run every ten minutes.
  *
  * @author Daniel Ockeloen
  * @author Pierer van Rooden (javadoc)
- * @version $Id: MMBaseProbe.java,v 1.5 2001-01-31 11:49:42 pierre Exp $
+ * @version $Id: MMBaseProbe.java,v 1.6 2001-07-02 15:09:44 pierre Exp $
  */
 public class MMBaseProbe implements Runnable {
 
@@ -41,12 +41,12 @@ public class MMBaseProbe implements Runnable {
 		this.parent=parent;
 		init();
 	}
-	
+
     /**
     * Initializes the probe and starts a probe thread.
     */
 	public void init() {
-		this.start();	
+		this.start();
 	}
 
 
@@ -60,14 +60,14 @@ public class MMBaseProbe implements Runnable {
 			kicker.start();
 		}
 	}
-	
+
 	/**
 	 * Stops the probing thread.
 	 * Uses deprecated methods (suspend/stop), should be changed or removed.
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.setPriority(Thread.MIN_PRIORITY);
 		kicker.suspend();
 		kicker.stop();
 		kicker = null;

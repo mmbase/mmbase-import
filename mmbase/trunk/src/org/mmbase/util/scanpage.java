@@ -24,12 +24,12 @@ import org.mmbase.util.logging.*;
  * The scanpage is a container class.
  * It holds all information that is needed to identify a user, including
  * servlet objects and MMBase session information.
- * It was introduced to make {@link servscan} threadsafe but will probably in the future
+ * It was introduced to make {@link org.mmbase.servlet.servscan} threadsafe but will probably in the future
  * hold all request related information, because we want to extend the model
  * of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.13 2001-04-13 15:13:18 pierre Exp $
+ * @version $Id: scanpage.java,v 1.14 2001-07-02 15:09:52 pierre Exp $
  */
 public class scanpage {
     // logger

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * Maintains jumpers for redirecting urls.
  * The data stored in this builder is used to redirect urls based ons a specific key.
- * The jumpers builder is called from the {@link servjumpers} servlet.
+ * The jumpers builder is called from the {@link org.mmbase.servlet.servjumpers} servlet.
  * <br>
  * The jumpers builder can be configured using two properties:<br>
  * <ul>

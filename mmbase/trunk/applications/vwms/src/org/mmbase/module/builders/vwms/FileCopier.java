@@ -84,7 +84,7 @@ public class FileCopier implements Runnable {
 
     /**
      * Main loop, exception-protected.
-     * @see doWork
+     * @see #doWork
      */
     public void run () {
         if (kicker!=null) {

@@ -274,8 +274,8 @@ public class StringTagger implements Map {
     /**
      * Returns the value of a key as an Object.
      * The value returned is a single, unseparated, string.<br>
-     * Use {@link Values} to get a list of multi-values as a <code>Vector</code>.<br>
-     * Use {@link Value} to get the first value as a String
+     * Use {@link #Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * Use {@link #Value} to get the first value as a String
      * @param ob the key of the value to retrieve
      */
     public Object get(Object ob) {
@@ -371,7 +371,7 @@ public class StringTagger implements Map {
     /**
      * Returns a Enumeration of the values as String.
      * The values returned are all single, unsepartated, strings.
-     * Use {@link multiElements} to get a list of multi-values.
+     * Use {@link #multiElements} to get a list of multi-values.
      */
     public Enumeration elements() {
         return tokens.elements();
@@ -380,7 +380,7 @@ public class StringTagger implements Map {
     /**
      * Returns a Enumeration of the values as Vectors that contain
      * the seperated values.
-     * Use {@link elements} to get a list of single, unseparated, values.
+     * Use {@link #elements} to get a list of single, unseparated, values.
      */
     public Enumeration multiElements(String token) {
         Vector tmp=(Vector)multitokens.get(token);
@@ -394,8 +394,8 @@ public class StringTagger implements Map {
     /**
      * Returns the values as a Vector that contains
      * the separated values.<br>
-     * Use {@link get} to get the list of values as a <code>String</code><br>
-     * Use {@link Value} to get the first value as a String
+     * Use {@link #get} to get the list of values as a <code>String</code><br>
+     * Use {@link #Value} to get the first value as a String
      * @param token the key of the value to retrieve
      */
     public Vector Values(String token) {
@@ -415,8 +415,8 @@ public class StringTagger implements Map {
      * Returns the first value as a <code>String</code>.
      * In case of a single value, it returns that value. In case of multiple values,
      * it returns the
-     * Use {@link get} to get the list of values as a <code>String</code><br>
-     * Use {@link Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * Use {@link #get} to get the list of values as a <code>String</code><br>
+     * Use {@link #Values} to get a list of multi-values as a <code>Vector</code>.<br>
      * @param token the key of the value to retrieve
      */
     public String Value(String token) {

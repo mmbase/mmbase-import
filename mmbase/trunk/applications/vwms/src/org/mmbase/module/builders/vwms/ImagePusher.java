@@ -50,7 +50,7 @@ public class ImagePusher implements Runnable {
     ImageMaster parent;
 
     /**
-    * Queue containing the file-copy tasks that need to be performed by {@link #filecopier}
+    * Queue containing the file-copy tasks that need to be performed by {@link FileCopier}
     */
     Queue files2copy=new Queue(128);
 

@@ -91,7 +91,7 @@ public class JudasURLpusher implements Runnable {
 
     /**
      * Main loop, exception protected
-     * @see doWork
+     * @see #doWork
      */
     public void run () {
         while (kicker!=null) {
