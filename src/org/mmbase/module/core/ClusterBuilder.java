@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18.2.6 2003-06-16 08:42:09 vpro Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.7 2003-06-16 09:13:38 vpro Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -919,6 +919,8 @@ public class ClusterBuilder extends VirtualBuilder {
                 desttosrc = false;
             }
 
+            String sourceNumber = numberOf(idx2char(i));
+            String destNumber   = numberOf(idx2char(i + 2));
             if (desttosrc) {
                 // check for directionality if supported
                 String dirstring;
@@ -929,8 +931,6 @@ public class ClusterBuilder extends VirtualBuilder {
                 }
                 // there is a typed relation from destination to src
                 if (srctodest) {
-                    String sourceNumber = numberOf(idx2char(i));
-                    String destNumber   = numberOf(idx2char(i + 2));
                     // there is ALSO a typed relation from src to destination - make a more complex query
                     result.append(
                            "(("+ sourceNumber     + "=" + relChar + ".snumber AND "+
@@ -939,14 +939,14 @@ public class ClusterBuilder extends VirtualBuilder {
                                  destNumber       + "=" + relChar + ".snumber" + dirstring + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".dnumber AND "+
-                                  numberOf(idx2char(i + 2)) + "=" + relChar + ".snumber" + dirstring);
+                    result.append(sourceNumber     + "=" + relChar + ".dnumber AND "+
+                                  destNumber + "=" + relChar + ".snumber" + dirstring);
                 }
             } else {
                 if (srctodest) {
                     // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".snumber AND "+
-                              numberOf(idx2char(i + 2)) + "=" + relChar + ".dnumber");
+                    result.append(sourceNumber     + "=" + relChar + ".snumber AND "+
+                                  destNumber + "=" + relChar + ".dnumber");
                 } else {
                     // no results possible
                     // terminate, return null!
