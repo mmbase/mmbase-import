@@ -114,4 +114,9 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         }
         return field;
     }
+    
+    public int doEndTag() throws JspTagException {
+        id = null;
+        return EVAL_PAGE;
+    }
 }
