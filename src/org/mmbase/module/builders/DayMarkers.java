@@ -17,7 +17,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.12 2000-07-13 08:08:15 daniel Exp $
+ * @version $Id: DayMarkers.java,v 1.13 2000-10-04 13:55:45 vpro Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -125,7 +125,7 @@ public class DayMarkers extends MMObjectBuilder {
 				Statement stmt=con.createStatement();
 				ResultSet rs=stmt.executeQuery("select mark from "+mmb.baseName+"_daymarks where daycount="+(wday));
 				if (rs.next()) {
-					int tmp=rs.getInt(0);
+					int tmp=rs.getInt(1);
 					daycache.put(new Integer(wday),new Integer(tmp));
 					stmt.close();
 					con.close();
@@ -134,7 +134,7 @@ public class DayMarkers extends MMObjectBuilder {
 				stmt.close();
 				con.close();
 			} catch(Exception e) {
-				daycache.put(new Integer(wday),new Integer(1));
+				daycache.put(new Integer(wday),new Integer(0));
 				return(0);
 			}
 		} else {
