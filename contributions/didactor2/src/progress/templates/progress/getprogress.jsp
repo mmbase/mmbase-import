@@ -6,9 +6,13 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
+<%-- report either the current user's progress, or the one given by "student" argument --%>
+<mm:import externid="student" id="student"><mm:write referid="user"/></mm:import>
+
+
 <%-- find user's copybook --%>
 <mm:import id="copybookNo"/>
-<mm:node number="$user" notfound="skip">
+<mm:node number="$student" notfound="skip">
   <mm:relatedcontainer path="classrel,classes">
     <mm:constraint field="classes.number" value="$class"/>
     <mm:related>
