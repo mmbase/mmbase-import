@@ -166,6 +166,7 @@ debug=off
 deprecation=on
 distro=${distro}
 version=${version}
+builddate=${builddate}
     </echo>
 
     <!-- copy a readme and other basic docs from documentation dir -->
@@ -188,8 +189,8 @@ version=${version}
           tofile="${build.dir}/mmbase-src/LICENSE"/>
 
     <!-- zip -->
-    <zip zipfile="${build.dir}/${name}-src-${version}.zip">
-     <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${version}" 
+    <zip zipfile="${build.dir}/${name}-src-${builddate}.zip">
+     <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}"
        includes="**" />
     </zip>
   </target>
@@ -223,8 +224,8 @@ version=${version}
 
 
     <!-- zip -->
-    <zip zipfile="${build.dir}/${name}-${version}.zip">
-     <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}" 
+    <zip zipfile="${build.dir}/${name}-${builddate}.zip">
+     <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${builddate}"
        includes="**" />
     </zip>
 
@@ -274,7 +275,7 @@ version=${version}
 
 
 
-  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation" 
+  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation"
           depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">
 
     <mkdir dir="${compile.lib.dir}"/>
@@ -412,9 +413,9 @@ version=${version}
     <echo>
   WARNING
   MMBase doesn't compile when using J2SE 1.4, you have to change the following files by hand:
-	MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
-	BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods
-	More information is provided in the javadocs in these files.
+  MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
+  BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods
+  More information is provided in the javadocs in these files.
 </echo>
   </target>
 
@@ -569,8 +570,8 @@ Main-Class: org.mmbase.Version
     <mkdir dir="${release.lib.dir}" />
     <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
-	     includes="org/mmbase/**"
-	     manifest="${build.dir}/manifest.mf" >
+       includes="org/mmbase/**"
+       manifest="${build.dir}/manifest.mf" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
@@ -655,8 +656,8 @@ Build-compiler: ${build.compiler}
     </copy>
     <jar jarfile="${build.dir}/mmbase-dtds.jar"
          basedir="${build.dir}/dtd"
-	     includes="**"
-	     manifest="${build.dir}/manifest.mf"
+       includes="**"
+       manifest="${build.dir}/manifest.mf"
       />
   </target>
 
@@ -678,8 +679,8 @@ Build-compiler: ${build.compiler}
     <!-- =================================================================== -->
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
-  <target name="wars" description="Create full-fledged and minimalistic mmbase.war" 
-          depends="war,minimalistic.war" 
+  <target name="wars" description="Create full-fledged and minimalistic mmbase.war"
+          depends="war,minimalistic.war"
   />
 
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar">
@@ -691,7 +692,7 @@ Build-compiler: ${build.compiler}
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" 
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file"
           depends="lib.release,jar,minimalistic.war.config">
     <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
@@ -722,7 +723,7 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase build ${version}">
+             bottom="MMBase build ${version}.${builddate}">
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
@@ -754,7 +755,7 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase build ${version}">
+             bottom="MMBase build ${version}.${builddate}">
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
@@ -853,7 +854,7 @@ Build-compiler: ${build.compiler}
 
     <!-- sucks, but at least repairs a broken link for now: -->
     <!-- taglib-groups.html must be generated from the xml -->
-    <copy todir="${reference.dir}/taglib">      
+    <copy todir="${reference.dir}/taglib">
       <fileset dir="${source-src.dir}/org/mmbase/bridge/jsp/taglib">
         <include name="*.html"/>
       </fileset>
@@ -1223,12 +1224,12 @@ Build-compiler: ${build.compiler}
 
     <echo file="${expand.dir}/jspsmartupload/manifest.mf">
 Name: com/jspsmart/upload
-Version: MMBase build ${version}
+Version: MMBase build ${version}.${builddate}
 </echo>
     <jar jarfile="${expand.dir}/jspsmartupload/jspsmartupload.jar"
          basedir="${expand.dir}/jspsmartupload/jspsmartupload/Web-inf/classes"
-	     includes="com/**"
-	     manifest="${expand.dir}/jspsmartupload/manifest.mf" >
+       includes="com/**"
+       manifest="${expand.dir}/jspsmartupload/manifest.mf" >
     </jar>
   </target>
 
@@ -1293,7 +1294,7 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target name="generate.remote"
           description="Generate the source for the remote classes"
-	depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
+  depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
           unless="mmci.xml.present">
 
 
@@ -1303,11 +1304,11 @@ Version: MMBase build ${version}
 
     <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="compile.classpath" >
       <arg value="${generated-source-src.dir}/MMCI.xml" />
-	<classpath>
-		<pathelement location="${build.dir}/classes" />
-	</classpath>
+  <classpath>
+    <pathelement location="${build.dir}/classes" />
+  </classpath>
     </java>
-	<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
+  <!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
     <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile.classpath" fork="true" >
       <arg value="${generated-source-src.dir}"/>
       <arg value="${generated-source-src.dir}/MMCI.xml"/>
@@ -1336,7 +1337,7 @@ Version: MMBase build ${version}
       <include name="org/mmbase/bridge/remote/implementation/*.java"/>
     </javac>
     <rmic base="${build.dir}/classes" classpathref="compile.classpath">
-    	<include name="org/mmbase/bridge/remote/rmi/*.class"/>
+      <include name="org/mmbase/bridge/remote/rmi/*.class"/>
         <classpath>
            <pathelement location="${build.dir}/classes"/>
         </classpath>
@@ -1376,7 +1377,7 @@ Build-compiler: ${build.compiler}
 </echo>
 
     <jar jarfile="${build.dir}/mmbase/rmmci.jar"
-   	     manifest="${build.dir}/rmmcitmp/manifest.mf"
+         manifest="${build.dir}/rmmcitmp/manifest.mf"
     >
        <fileset dir="${build.dir}/classes">
         <include name="org/mmbase/bridge/*.class"/>
@@ -1425,7 +1426,7 @@ Build-compiler: ${build.compiler}
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt"
-              token="[BASESTYLESHEET]" 
+              token="[BASESTYLESHEET]"
               value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
 
     <!-- copy also the images and resources -->
