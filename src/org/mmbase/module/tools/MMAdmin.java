@@ -280,22 +280,22 @@ public class MMAdmin extends ProcessorModule {
                 if (htmlbase==null)
                     return "N.A.";
                 else
-                    return(""+MultilevelCacheHandler.getMultilevelCacheHandler().getHits());
+                    return(""+MultilevelCacheHandler.getCache("basic").getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
                 if (htmlbase==null)
                     return "N.A.";
                 else
-                    return(""+MultilevelCacheHandler.getMultilevelCacheHandler().getMisses());
+                    return(""+MultilevelCacheHandler.getCache("basic").getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
                 if (htmlbase==null)
                     return "N.A.";
                 else
-                    return(""+(MultilevelCacheHandler.getMultilevelCacheHandler().getHits()+MultilevelCacheHandler.getMultilevelCacheHandler().getMisses()));
+                    return(""+(MultilevelCacheHandler.getCache("basic").getHits()+MultilevelCacheHandler.getCache("basic").getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
                 if (htmlbase==null)
                     return "N.A.";
                 else
-                    return(""+(MultilevelCacheHandler.getMultilevelCacheHandler().getRatio()*100));
+                    return(""+(MultilevelCacheHandler.getCache("basic").getRatio()*100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
                 if (htmlbase==null) {
                     return "N.A.";
@@ -321,7 +321,7 @@ public class MMAdmin extends ProcessorModule {
                 if (htmlbase==null)
                     return "N.A.";
                 else
-                    return(""+(MultilevelCacheHandler.getMultilevelCacheHandler().getSize()));
+                    return(""+(MultilevelCacheHandler.getCache("basic").getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -1678,7 +1678,7 @@ public class MMAdmin extends ProcessorModule {
     public Vector  getMultilevelCacheEntries() {
         Vector results=new Vector();
         if (htmlbase!=null) {
-            Enumeration res=MultilevelCacheHandler.getMultilevelCacheHandler().getOrderedElements();
+            Enumeration res=MultilevelCacheHandler.getCache("basic").getOrderedElements();
             while (res.hasMoreElements()) {
                 MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
 	        	StringTagger tagger=en.getTagger();
@@ -1706,7 +1706,7 @@ public class MMAdmin extends ProcessorModule {
 	    		    results.addElement("");
     	    	}
 	    	    results.addElement(tagger.ValuesString("ALL"));
-    		    results.addElement(""+MultilevelCacheHandler.getMultilevelCacheHandler().getCount(en.getKey()));
+    		    results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
             }		
         }
         return(results);
