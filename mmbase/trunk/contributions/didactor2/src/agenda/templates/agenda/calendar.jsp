@@ -71,7 +71,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
 <%--    <link rel=StyleSheet href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" referids="$referids"/>" type="text/css">--%>
     <cal:calendar view="month" language="nl" country="NL" date="<%=format.format(calendar.getTime())%>">
       <di:usercalwriter />
-      <table width=144 class="cal" cellspacing=0>
+      <table width=130 class="cal" cellspacing=0>
         <tr>
           <td bgcolor="#DDDDDD" align="center" class="calMonth">
             <a href="javascript:moveMonth(<mm:write referid="calmonth"/>-1)">&lt;&lt;</a>
@@ -85,7 +85,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
           <td>
             <table width="100%" class="calWeek" cellspacing=0>
               <tr>
-                <td class="calWeek" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td class="calWeek" align="center">&nbsp;&nbsp;</td>
                 <td class="calWeek" align="center"><di:translate>zo</di:translate></td>
                 <td class="calWeek" align="center"><di:translate>ma</di:translate></td>
                 <td class="calWeek" align="center"><di:translate>di</di:translate></td>
@@ -93,7 +93,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
                 <td class="calWeek" align="center"><di:translate>do</di:translate></td>
                 <td class="calWeek" align="center"><di:translate>vr</di:translate></td>
                 <td class="calWeek" align="center"><di:translate>za</di:translate></td>
-                <td class="calWeek" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td class="calWeek" align="center">&nbsp;&nbsp;</td>
               </tr>
             </table>
           </td>
@@ -103,7 +103,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
             <table width="100%" class="calDay" cellspacing=0>
               <st:dataset name="week">
                 <tr>
-                  <td class="calDaySpacing" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                  <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
                   <st:dataset name="day">
                     <mm:remove referid="class"/>
                     <st:isnotset name="dayinmonth">
@@ -122,7 +122,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
                       <st:data name="dayofmonth"/>
                     </td>
                   </st:dataset>
-                  <td class="calDaySpacing" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                  <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
                 </tr>
               </st:dataset>
             </table>
