@@ -36,6 +36,9 @@
     <copy todir="mmbase-core/src/tests/config">
       <fileset dir="${mmbaseroot}/tests/config"/>
     </copy>
+    <copy todir="mmbase-webapp/src/webapp">
+      <fileset dir="${mmbaseroot}/html"/>
+    </copy>
 
     <copy todir="mmbase-core/src/tests/config">
       <fileset dir="${mmbaseroot}/tests/config"/>
