@@ -742,7 +742,7 @@ Build-compiler: ${build.compiler}
     <mkdir dir="${build.dir}/mmbase-src/docs"/>
     <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
-             destdir="${build.dir}/mmbase-src/docs/api"
+             destdir="${mmdocs.dir}/javadoc"
              author="true"
              version="true"
              use="false"
@@ -854,6 +854,7 @@ Build-compiler: ${build.compiler}
 
   <target name="web.documentation" if="do.documentation">
     <antcall target="documentation" />
+    <antcall target="javadocs" />
   </target>
 
   <!-- =================================================================== -->
