@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Storage.java,v 1.1 2002-09-16 15:07:32 pierre Exp $
+ * @version $Id: Storage.java,v 1.2 2002-11-07 12:30:37 pierre Exp $
  */
 public interface Storage  {
 
@@ -42,7 +42,7 @@ public interface Storage  {
      * @since MMBase-1.6
      * @param parent the parent builder to register
      * @param child the builder to register as the parent's child
-     * @throws UnsupportedOperationException when the support layer does not allow extension of this builder
+     * @throws StorageException when the support layer does not allow extension of this builder
      */
     public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
         throws StorageException;
@@ -75,6 +75,7 @@ public interface Storage  {
     /**
      * Returns a newly created transaction object.
      * @return the new transaction
+     * @throws StorageException if the transaction could not be created
      */
     public Transaction createTransaction() throws StorageException;
 
@@ -84,6 +85,15 @@ public interface Storage  {
      * @return unique number
      */
     public int createKey();
+
+    /**
+     * Gives an unique number for a node to be inserted.
+     * This method should work with multiple mmbases
+     * @param trans the transaction to use for obtaining the key
+     * @return unique number
+     * @throws StorageException if an error occurred during key generation
+     */
+    public int createKey(Transaction trans) throws StorageException;
 
     /**
      * This method inserts a new object, and registers the change.
@@ -99,6 +109,7 @@ public interface Storage  {
      * @param node The node to insert
      * @param trans the transaction to perform the insert in
      * @return The (new) number for this node, or -1 if an error occurs.
+     * @throws StorageException if an error occurred during insert
      */
     public int insert(MMObjectNode node, Transaction trans) throws StorageException;
 
@@ -114,12 +125,14 @@ public interface Storage  {
      * @param node The node to commit
      * @param trans the transaction to perform the insert in
      * @return true of succesful, false otherwise
+     * @throws StorageException if an error occurred during commit
      */
     public boolean commit(MMObjectNode node, Transaction trans) throws StorageException;
 
     /**
      * Delete a node
      * @param node The node to delete
+     * @return <code>true</code> if succesful
      */
     public boolean delete(MMObjectNode node);
 
@@ -127,6 +140,8 @@ public interface Storage  {
      * Delete a node within a transaction
      * @param node The node to delete
      * @param trans the transaction to perform the insert in
+     * @throws StorageException if an error occurred during delete
+     * @return <code>true</code> if succesful
      */
     public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;
 
@@ -143,7 +158,7 @@ public interface Storage  {
      * @param builder The builder to select from
      * @param number the number of the node
      * @param trans the transaction to perform the insert in
-     * @throws StorageException if an error occurred during delete
+     * @throws StorageException if an error occurred during the get
      * @return the MMObjectNode that was found, or null f it doesn't exist
      */
     public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;
@@ -176,6 +191,7 @@ public interface Storage  {
      * @param builder the builder to create the storage for
      * @param trans the transaction to perform the create in
      * @return true if the storage was succesfully created
+     * @throws StorageException if an error occurred during the creation fo the table
      */
     public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;
 
@@ -189,6 +205,7 @@ public interface Storage  {
      * Create the object storage (the storage where to register all objects) within a transaction
      * @param trans the transaction to perform the create in
      * @return true if the storage was succesfully created
+     * @throws StorageException if an error occurred during the caretion of the object storage
      */
     public boolean createObjectStorage(Transaction trans) throws StorageException;
 

@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.1 2002-09-16 15:07:34 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.2 2002-11-07 12:30:38 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -824,7 +824,28 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * This method will work with multiple mmbases
      * @return unique number
      */
-    abstract public int createKey();
+    public int createKey() {
+        int number =-1;
+        DatabaseTransaction trans=null;
+        try {
+            trans=createDatabaseTransaction();
+            number=createKey(trans);
+            trans.commit();
+        } catch (StorageException e) {
+            log.error(e.toString());
+            if (trans!=null) trans.rollback();
+        }
+        return number;
+    }
+
+    /**
+     * Gives an unique number for a node to be inserted.
+     * This method should work with multiple mmbases
+     * @param trans the transaction to use for obtaining the key
+     * @return unique number
+     * @throws StorageException if an error occurred while obtaining the key
+     */
+    abstract public int createKey(Transaction trans) throws StorageException;
 
     /**
      * This method inserts a new object, and registers the change.
