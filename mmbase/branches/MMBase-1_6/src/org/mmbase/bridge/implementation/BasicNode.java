@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.77.2.2 2002-11-18 12:28:29 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.77.2.3 2002-12-05 09:41:30 kees Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -828,13 +828,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         deleteAliases(aliasName);
     }
 
-    public Relation createRelation(Node destinationNode, Node relationManager) {
-        if (relationManager instanceof RelationManager) {
+    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
             Relation relation = relationManager.createRelation(this,destinationNode);
             return relation;
-        } else {
-            throw new IllegalArgumentException("parameter relationManager should be of type RelationManager");
-        }
     }
 
     /**
