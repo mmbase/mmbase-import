@@ -126,12 +126,24 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 				
 				// save the image to disk
 				ImageCaches bul=(ImageCaches)Vwms.mmb.getMMObject("icaches");		
-				
+			
+				String mimetype = "image/jpeg"; // When not overwritten, it will stay on 'jpeg'.
+
 				// get the clear ckey
 				String ckey=filename.substring(8);
 				int pos=ckey.indexOf(".");
 				if (pos!=-1) {
 					ckey=ckey.substring(0,pos);
+					// We now have a clean ckey ( aka 234242+f(gif) )
+					// Get mimetype from ckey params string.
+					StringTokenizer st = new StringTokenizer(ckey,"+\n\r");
+					Vector ckeyVec = new Vector();
+					while (st.hasMoreTokens()) {
+						ckeyVec.addElement(st.nextElement());
+					}
+					Images imagesBuilder = (Images)Vwms.mmb.getMMObject("images");		
+					mimetype = imagesBuilder.getImageMimeType(ckeyVec);
+					// debug("handleMirror: ckey "+ckey+" has mimetype: "+mimetype);
 					ckey=path2ckey(ckey);
 				}
 
@@ -139,10 +151,10 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 				byte[] filebuf=bul.getCkeyNode(ckey);
 				debug("verzoek size "+filebuf.length);
 				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
-				saveImageAsisFile(srcpath,filename,filebuf);
-				
+				// Pass mimetype.
+				saveImageAsisFile(srcpath,filename,filebuf,mimetype);
 
-				// recover teh correct source/dest properties for this mirror
+				// recover the correct source/dest properties for this mirror
 				String sshpath=getProperty("sshpath");
 				String dstuser=getProperty(dstserver+":user");
 				String dsthost=getProperty(dstserver+":host");
@@ -266,9 +278,10 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 
-	public boolean saveImageAsisFile(String path,String filename,byte[] value) {
+	private boolean saveImageAsisFile(String path,String filename,byte[] value, String mimetype) {
 		String header="Status: 200 OK";
-		header+="\r\nContent-type: image/jpeg";
+		// header+="\r\nContent-type: image/jpeg";
+		header+="\r\nContent-type: "+mimetype;
 		header+="\r\nContent-length: "+value.length;
 	    header+="\r\n\r\n";
 
