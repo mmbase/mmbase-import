@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 	
-	version: $Id: taglibcontent.xml,v 1.10 2003-06-06 10:03:30 pierre Exp $
+	version: $Id: taglibcontent.xml,v 1.11 2003-06-24 13:39:21 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -40,8 +40,11 @@
   <escaper id="text/xml">
     <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
   </escaper>
-  <escaper id="rich">
-    <class config="RICHBODY" back="true">org.mmbase.util.transformers.XmlField</class>
+  <escaper id="inline">
+    <class config="HTML_INLINE" back="true">org.mmbase.util.transformers.XmlField</class>
+  </escaper>
+  <escaper id="p">
+    <class config="HTML_BLOCK" back="true">org.mmbase.util.transformers.XmlField</class>
   </escaper>
   <escaper id="uppercase">
     <class>org.mmbase.util.transformers.UpperCaser</class>
