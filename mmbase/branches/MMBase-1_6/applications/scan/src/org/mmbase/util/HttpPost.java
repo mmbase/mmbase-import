@@ -23,7 +23,7 @@ import org.mmbase.util.xml.UtilReader;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.14.2.3 2003-04-02 15:38:44 vpro Exp $
+ * @version $Id: HttpPost.java,v 1.14.2.4 2003-04-04 14:22:45 pierre Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -77,11 +77,15 @@ public class HttpPost {
      * Initialise WorkerPostHandler
      */
     public HttpPost(HttpServletRequest req) {
-        UtilReader reader = new UtilReader("httppost.xml");
-        properties = reader.getProperties();
-        if(properties.containsKey("maxfilesize")) {
-            maxFileSize = Integer.parseInt(""+properties.get("maxfilesize"));
-            log.debug("Setting maxfilesize to "+maxFileSize);
+        try {
+            UtilReader reader = new UtilReader("httppost.xml");
+            properties = reader.getProperties();
+            if(properties.containsKey("maxfilesize")) {
+                maxFileSize = Integer.parseInt(""+properties.get("maxfilesize"));
+                log.debug("Setting maxfilesize to "+maxFileSize);
+            }
+        } catch(Exception e) {
+            // no config file... ignore
         }
         postid = System.currentTimeMillis();
         this.req = req;
@@ -129,9 +133,9 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #getPostParameter
     */
-    public boolean checkPostMultiParameter(String name) {        
+    public boolean checkPostMultiParameter(String name) {
         if (!postDecoded) decodePost(req);
-        
+
         Object obj = postValues.get(name);
         if (obj == null) {
             return false;
@@ -166,15 +170,15 @@ public class HttpPost {
     public byte[] getPostParameterBytes(String name) throws PostValueToLargeException {
         // decode when not done yet..
         if (!postDecoded) decodePost(req);
-        
+
         // when the parameter was not found, return null
-        Object obj = postValues.get(name);        
+        Object obj = postValues.get(name);
         if (obj==null) {
-            return null;            
+            return null;
         }
 
         // when it is an instance of String throw the exeption
-        if (obj instanceof String)  {            
+        if (obj instanceof String)  {
             String msg = "Use getPostParameterFile";
             log.warn(msg);
             throw new PostValueToLargeException("Use getPostParameterFile");
@@ -198,7 +202,7 @@ public class HttpPost {
     public Vector getPostMultiParameter(String name) {
         return getPostMultiParameter(name, null);
     }
-    
+
     /**
     * This method returns the value of the postparameter as a Vector.
     * In case of a parameter with one value, it returns it as a Vector
@@ -209,13 +213,13 @@ public class HttpPost {
     public Vector getPostMultiParameter(String name, String encoding) {
         // decode when not done yet..
         if (!postDecoded) decodePost(req);
-        
+
         // when the parameter was not found, return null
-        Object obj = postValues.get(name);        
+        Object obj = postValues.get(name);
         if (obj==null) {
-            return null;            
+            return null;
         }
-        
+
         Vector results= new Vector();
         if (obj instanceof Vector) {
             Vector v = (Vector)obj;
@@ -224,7 +228,7 @@ public class HttpPost {
                 byte[] data = (byte[])e.nextElement();
                 results.addElement(getString(data, encoding));
             }
-        } 
+        }
         else {
             // we assume that obj will be byte[]
             byte[] data = (byte[]) obj;
@@ -232,7 +236,7 @@ public class HttpPost {
         }
         return results;
     }
-    
+
     private static String getString(byte[] data, String encoding) {
         if(encoding == null) {
             // depricated.. dont know how to replace..
@@ -397,10 +401,10 @@ public class HttpPost {
                     log.info("readContentLength(): (memory) broken out of loop after "+i+" times");
                 }
             } catch (Exception e) {
-                log.error("readContentLength(): Can't read post msg from client");               
-                log.error(Logging.stackTrace(e));                
+                log.error("readContentLength(): Can't read post msg from client");
+                log.error(Logging.stackTrace(e));
                 buffer[len-1] = -1;
-                // just to return _something_... 
+                // just to return _something_...
                 // Mozilla 0.9.7 (and 0.9.6?) had a bug here. Now they are only slow, but work, if you don't supply a file...
 
             }
@@ -594,7 +598,7 @@ public class HttpPost {
                     String[] dispositionInfo = extractDispositionInfo(disposition.substring(0,separator-(start2+2)));
                     String mimetype = extractContentType(disposition.substring(separator-(start2+2)+2));
                     String fieldname = dispositionInfo[1];
-                    String filename = dispositionInfo[2];                    
+                    String filename = dispositionInfo[2];
                     Vector v1 = new Vector();
                     v1.addElement(mimetype.getBytes());
                     addpostinfo(post_header,fieldname+"_type",v1);
