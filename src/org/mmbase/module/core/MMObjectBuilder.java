@@ -659,6 +659,7 @@ public class MMObjectBuilder extends MMTable {
 	public MMObjectNode getNewTmpNode(String owner,String key) {
 		MMObjectNode node=null;
 		node=getNewNode(owner);
+		checkAddTmpField("_number");
 		node.setValue("_number",key);
 		TemporaryNodes.put(key,node);
 		return node;
@@ -668,9 +669,25 @@ public class MMObjectBuilder extends MMTable {
 	 * Put a Node in the temporary node list
 	 */
 	public void putTmpNode(String key, MMObjectNode node) {
+        checkAddTmpField("_number");
 		node.setValue("_number",key);
 		TemporaryNodes.put(key,node);
 	}
+
+	/**
+	 * checks if a fielddef exists for a temporarynode, if not it will be added
+	 */
+ 	public boolean checkAddTmpField(String field) {
+        boolean rtn=false;
+        if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
+            FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
+            if(debug) debug("checkAddTmpField(): adding tmp field "+field);
+            addField(fd);
+            rtn=true;
+        }
+        return(false);
+    }
+
 
 	/**
 	 * Get nodes from the temporary node space
