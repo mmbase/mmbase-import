@@ -18,7 +18,7 @@ import java.util.List;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.23 2002-01-31 10:05:07 pierre Exp $
+ * @version $Id: Cloud.java,v 1.24 2002-02-05 12:57:06 michiel Exp $
  */
 public interface Cloud {
 
@@ -29,7 +29,7 @@ public interface Cloud {
      *
      * @param number                  the number of the requested node
      * @return                        the requested node
-     * @throws NodeNotFoundException  if the specified node could not be found
+     * @throws NotFoundException  if the specified node could not be found
      */
     public Node getNode(int number);
 
@@ -40,7 +40,7 @@ public interface Cloud {
      *
      * @param number                  the number of the requested node
      * @return                        the requested node
-     * @throws NodeNotFoundException  if the specified node could not be found
+     * @throws NotFoundException  if the specified node could not be found
      */
     public Node getNode(String number);
 
@@ -52,7 +52,7 @@ public interface Cloud {
      *
      * @param alias                   the alias of the requested node
      * @return                        the requested node
-     * @throws NodeNotFoundException  if the specified node could not be found
+     * @throws NotFoundException  if the specified node could not be found
      */
     public Node getNodeByAlias(String alias);
 

@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.51 2002-01-31 10:05:10 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.52 2002-02-05 12:57:06 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -169,15 +169,15 @@ public class BasicCloud implements Cloud, Cloneable {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
             String message;
-            message = "Node with number " + nodenumber + " does not exist.";
+            message = "Something went wrong while getting node with number " + nodenumber + " (does it exist?) " + e.toString();
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         }
         if (node==null) {
             String message;
             message = "Node with number " + nodenumber + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         } else {
             return makeNode(node,nodenumber);
         }
