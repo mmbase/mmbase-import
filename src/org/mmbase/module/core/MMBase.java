@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.56 2002-04-16 14:59:56 michiel Exp $
+ * @version $Id: MMBase.java,v 1.57 2002-04-18 07:32:44 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1087,8 +1087,6 @@ public class MMBase extends ProcessorModule  {
                 String desc=(String)descriptions.get(locale.getLanguage());
                 // XXX" set description by builder?
                 bul.setDescription(desc);
-                // XXX: setDutchSName is deprecated
-                bul.setDutchSName("Default!");
                 bul.setSingularNames(parser.getSingularNames());
                 bul.setPluralNames(parser.getPluralNames());
                 bul.setVersion(parser.getBuilderVersion());
