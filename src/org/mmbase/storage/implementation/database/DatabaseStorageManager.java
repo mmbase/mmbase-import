@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.80 2004-10-21 10:02:43 marcel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.81 2004-11-26 19:55:33 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -591,7 +591,7 @@ public class DatabaseStorageManager implements StorageManager {
                 node.storeValue(field.getDBName(), value);
             }
             if (value instanceof byte[]) {
-                DataOutputStream byteStream = new DataOutputStream(new FileOutputStream(binaryFile));
+                FileOutputStream byteStream = new FileOutputStream(binaryFile);
                 byteStream.write((byte[])value);
                 byteStream.flush();
                 byteStream.close();
@@ -724,6 +724,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
         }
+        log.debug("insert field values " + fieldNames + " " + fieldValues);
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
             try {
@@ -850,6 +851,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
         }
+        log.debug("change field values " + node);
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
