@@ -1468,6 +1468,13 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("lowercase")) {
             String val=node.getStringValue(field);
             rtn=val.toLowerCase();
+        } else if (function.startsWith("wrap_")) {
+            String val=node.getStringValue(field);
+            try {
+		int wrappos=Integer.parseInt(function.substring(5));
+		System.out.println("WRAPPOS="+wrappos);
+            	rtn=wrap(val,wrappos);
+	    } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
 	     NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
@@ -2435,4 +2442,34 @@ public class MMObjectBuilder extends MMTable {
         maintainer=m;
     }
 
+
+    public String wrap(String text,int width) {
+		StringTokenizer tok;
+		String word;
+		StringBuffer dst=new StringBuffer();
+		int pos;
+
+		tok=new StringTokenizer(text," \n\r",true);
+		pos=0;
+		while(tok.hasMoreTokens()) {
+			word=tok.nextToken();
+			if (word.equals("\n")) {
+				pos=0;
+			} else if (word.equals(" ")) {
+				pos++;
+				if (pos>=width) {
+					dst.append("\n");
+					pos=0;
+				}
+			} else {
+				pos+=word.length();
+				if (pos>=width) {
+					dst.append("\n");
+					pos=0;
+				}
+			}
+			dst.append(word);
+		}
+		return(dst.toString());
+	}
 }
