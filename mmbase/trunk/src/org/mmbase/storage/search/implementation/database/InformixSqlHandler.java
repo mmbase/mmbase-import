@@ -35,29 +35,39 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.13 2004-08-23 12:44:49 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.14 2004-08-30 11:43:44 mark Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
-    /** Logger instance. */
+    /**
+     * Logger instance.
+     */
     private static Logger log
             = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
 
-    /** MMBase instance. */
+    /**
+     * MMBase instance.
+     */
     private MMBase mmbase = null;
 
     /**
      * Constructor.
      *
      * @param disallowedValues Map mapping disallowed table/fieldnames
-     *        to allowed alternatives.
+     *                         to allowed alternatives.
      */
     public InformixSqlHandler(Map disallowedValues) {
         super(disallowedValues);
         mmbase = MMBase.getMMBase();
     }
 
+    /**
+     * Dertermine if the given query will turn out to be a UNION query
+     *
+     * @param query
+     * @return <code>true</code> if the given query will contain a UNION
+     */
     private boolean isUnionQuery(SearchQuery query) {
         Iterator iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
@@ -66,7 +76,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 RelationStep relationStep = (RelationStep) step;
                 // If the query contains RelationSteps that are bi-directional
                 // then the query will turn out to be a union query.
-                if (relationStep.getDirectionality()==RelationStep.DIRECTIONS_BOTH) {
+                if (relationStep.getDirectionality() == RelationStep.DIRECTIONS_BOTH) {
                     return true;
                 }
             }
@@ -99,47 +109,39 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
-            throw new IllegalStateException(
-                    "Searchquery has no step (at least 1 step is required).");
+            throw new IllegalStateException("Searchquery has no step (at least 1 step is required).");
         }
         if (query.getFields().isEmpty()) {
-            throw new IllegalStateException(
-                    "Searchquery has no field (at least 1 field is required).");
+            throw new IllegalStateException("Searchquery has no field (at least 1 field is required).");
         }
 
         // Test offset set to default (= 0).
         if (query.getOffset() != SearchQuery.DEFAULT_OFFSET) {
-            throw new UnsupportedOperationException(
-                    "Value of offset other than "
+            throw new UnsupportedOperationException("Value of offset other than "
                     + SearchQuery.DEFAULT_OFFSET + " not supported.");
         }
 
         // SELECT
         StringBuffer sbQuery = new StringBuffer("SELECT ");
 
-        log.debug("query:" + query.toString());
+        log.trace("query:" + query.toString());
 
-        // Optimizer directive {+ORDERED}
-        if (query.getSteps().size() > 3) {
+        if (!isUnionQuery(query)) {
             /*
-               {+ORDERED} may not be used when using UNIONS
-                 placing token, which i replace later on
+               Optimizer directive {+ORDERED} may not be used when using UNIONS
             */
-            sbQuery.append("$ORDERED");
-        }
+            if (query.getSteps().size() > 3) {
+                sbQuery.append("{+ORDERED} ");
+            }
 
-        // FIRST
-        StringBuffer firstClause = new StringBuffer();
-        if (query.getMaxNumber() != -1) {
-            // Maxnumber set.
             /*
-                FIRST may not be used when using UNIONS
-                  placing token, which i replace later on
-             */
-            sbQuery.append("$FIRST");
-            firstClause.append("FIRST ").
-                    append(query.getMaxNumber()).
-                    append(" ");
+               FIRST may not be used when using UNIONS
+            */
+            if (query.getMaxNumber() != -1) {
+                sbQuery.append("FIRST ").
+                        append(query.getMaxNumber()).
+                        append(" ");
+            }
         }
 
         // DISTINCT
@@ -149,38 +151,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
         firstInChain.appendQueryBodyToSql(sbQuery, query, firstInChain);
 
-        // $FIRST-TOKEN REPLACEMENT
-        if (query.getMaxNumber() != -1) {
-            if (sbQuery.indexOf("UNION") > -1) {
-                // no first-clause allowed in UNION. Replace Token by nothing
-                while (sbQuery.indexOf("$FIRST") > -1) {
-                    sbQuery.replace(sbQuery.indexOf("$FIRST"), sbQuery.indexOf("$FIRST") + 6, "");
-                }
-            } else {
-                // replace token by firstClause
-                sbQuery.replace(sbQuery.indexOf("$FIRST"), sbQuery.indexOf("$FIRST") + 6, firstClause.toString());
-            }
-        }
-
-        // $ORDERED-TOKEN REPLACEMENT
-        if (sbQuery.indexOf("$ORDERED") > -1) {
-            if (sbQuery.indexOf("UNION") > -1) {
-                // no $ORDERED-clause allowed in UNION. Replace Token by nothing
-                while (sbQuery.indexOf("$ORDERED") > -1) {
-                    log.debug("3");
-                    sbQuery.replace(sbQuery.indexOf("$ORDERED"), sbQuery.indexOf("$ORDERED") + 8, "");
-                }
-            } else {
-                // replace token by firstClause
-                sbQuery.replace(sbQuery.indexOf("$ORDERED"), sbQuery.indexOf("$ORDERED") + 8, "{+ORDERED} ");
-            }
-        }
-
-        String strSQL = sbQuery.toString();
-        if (log.isDebugEnabled()) {
-            log.debug("generated SQL: " + strSQL);
-        }
-        return strSQL;
+        return sbQuery.toString();
     }
 
     // javadoc is inherited
@@ -292,15 +263,13 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
         }
 
-        log.trace("Base field part of query : "+sb);
+        log.trace("Base field part of query : " + sb);
 
-        // vector needed to save OR-Elements (Searchdir=BOTH) for migration to UNION-query
+        // vector to save OR-Elements (Searchdir=BOTH) for migration to UNION-query
         Vector orElements = new Vector();
 
-        // needed to save AND-Elements from relationString for migration to UNION-query
+        // save AND-Elements from relationString for migration to UNION-query
         StringBuffer andElements = new StringBuffer();
-
-        boolean relationalConstraintInBothDirections = false;
 
         // Tables
         sb.append(" FROM ");
@@ -351,7 +320,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
                 sbNodes.append(")");
             }
-            log.trace("Node constraint string : "+sbNodes);
+            log.trace("Node constraint string : " + sbNodes);
 
             // Relation steps.
             if (step instanceof RelationStep) {
@@ -377,8 +346,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                             sbRelations.append("<>1");
                         }
 
-                        // Also Gather the "And"-elements
-                        if (andElements.length()>0) {
+                        // Gather the "And"-elements
+                        if (andElements.length() > 0) {
                             andElements.append(" AND ");
                         }
                         appendField(andElements, previousStep, "number", multipleSteps);
@@ -406,8 +375,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
 
-                        // Also Gather the "And"-elements
-                        if (andElements.length()>0) {
+                        // Gather the "And"-elements
+                        if (andElements.length() > 0) {
                             andElements.append(" AND ");
                         }
 
@@ -423,14 +392,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
                     case RelationStep.DIRECTIONS_BOTH:
 
-                        // set to true
-                        relationalConstraintInBothDirections = true;
-
                         if (relationStep.getRole() != null) {
                             sbRelations.append("(((");
                         } else {
                             sbRelations.append("((");
                         }
+
                         appendField(sbRelations, previousStep, "number", multipleSteps);
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
@@ -458,7 +425,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                             sbRelations.append(")");
                         }
 
-                        // here starts the code to gather al the OR- elements for the union
+                        // Gather al the OR- elements for the union
                         // start of First element
                         StringBuffer orElement = new StringBuffer();
                         orElement.append("(");
@@ -477,7 +444,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         }
 
                         if (relationStep.getRole() != null) {
-                            // ooops role  is given lets add the rnumber
+                            // role is given lets add the rnumber
                             orElement.append(" AND ");
                             appendField(orElement, relationStep, "rnumber", multipleSteps);
                             orElement.append("=").
@@ -510,7 +477,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         orElement.append(")");
                         orElements.add(orElement);
 
-                        relationalConstraintInBothDirections = true;
                         // end of hacking
                         break;
 
@@ -521,8 +487,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
 
                     default: // Invalid directionality value.
-                        throw new IllegalStateException(
-                                "Invalid directionality value: " + relationStep.getDirectionality());
+                        throw new IllegalStateException("Invalid directionality value: " + relationStep.getDirectionality());
                 }
                 if (relationStep.getRole() != null) {
                     sbRelations.append(" AND ");
@@ -533,7 +498,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 sbRelations.append(")");
             }
         }
-        log.trace("Relation string : "+sbRelations);
+        log.trace("Relation string : " + sbRelations);
 
         // Constraints
         StringBuffer sbConstraints = new StringBuffer();
@@ -552,7 +517,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
            5) add the ORDER BY Clause
         */
         StringBuffer unionRelationConstraints = new StringBuffer();
-        if (relationalConstraintInBothDirections) {
+        if (isUnionQuery(query)) {
             // 1)
             // we first need to figure out the additional constraints in
             // order to add them to the relational constraints
@@ -562,40 +527,36 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 if (sbConstraints.length() > 0) {
                     // Combine constraints.
                     // if sbConstraints allready ends with " AND " before adding " AND "
-                    log.info("sbConstraints:"+sbConstraints);
-                    log.info("sbConstraints.length:"+sbConstraints.length());
+                    log.info("sbConstraints:" + sbConstraints);
+                    log.info("sbConstraints.length:" + sbConstraints.length());
 
                     // have to check if the constraint end with "AND ", sometimes it's not :-(
-                    if (sbConstraints.length()>=4) {
-                        if (!sbConstraints.substring(sbConstraints.length()-4,sbConstraints.length()).equals("AND ")) {
+                    if (sbConstraints.length() >= 4) {
+                        if (!sbConstraints.substring(sbConstraints.length() - 4, sbConstraints.length()).equals("AND ")) {
                             unionConstraints.append(" AND ");
                         }
                     }
 
                     if (constraint instanceof CompositeConstraint) {
-                        appendCompositeConstraintToSql(
-                                unionConstraints, (CompositeConstraint) constraint,
+                        appendCompositeConstraintToSql(unionConstraints, (CompositeConstraint) constraint,
                                 query, false, true, firstInChain);
                     } else {
-                        firstInChain.appendConstraintToSql(
-                                unionConstraints, constraint, query,
+                        firstInChain.appendConstraintToSql(unionConstraints, constraint, query,
                                 false, true);
                     }
                 } else {
                     // Only regular constraints.
                     if (constraint instanceof CompositeConstraint) {
-                        appendCompositeConstraintToSql(
-                                unionConstraints, (CompositeConstraint) constraint,
+                        appendCompositeConstraintToSql(unionConstraints, (CompositeConstraint) constraint,
                                 query, false, false, firstInChain);
                     } else {
-                        firstInChain.appendConstraintToSql(
-                                unionConstraints, constraint, query,
+                        firstInChain.appendConstraintToSql(unionConstraints, constraint, query,
                                 false, false);
                     }
                 }
             }
 
-            log.trace("Union constraint : "+unionConstraints);
+            log.trace("Union constraint : " + unionConstraints);
 
             /*
                2) Combine the OR-Elements
@@ -621,10 +582,10 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
                 }
             }
-       
+
             /*
-               3) Okay, here we're goin to create a new BaseQuery,
-               we need that in  order to re-use that for every union
+               3) Here we're going to create a new BaseQuery,
+                  we need that in order to re-use that for every union
             */
             Enumeration e = combinedElements.elements();
             String combinedElement = "";
@@ -640,33 +601,37 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         append(sbConstraints.toString());
             }
 
-            log.trace("Base query including fields and tables : "+sb);
+            log.trace("Base query including fields and tables : " + sb);
 
             // now add the combined relation-constraints as UNIONS
             while (e.hasMoreElements()) {
                 combinedElement = (String) e.nextElement();
                 if (teller != 1) {
-                    unionRelationConstraints.append(" UNION ").append(baseQuery);
+                    if (sb.indexOf("COUNT") > -1) {
+                        unionRelationConstraints.append(" UNION ALL ").append(baseQuery);
+                    } else {
+                        unionRelationConstraints.append(" UNION ").append(baseQuery);
+                    }
                 }
 
                 // Make sure the unionRelationConstraint ends with " AND " or a " WHERE"
-                if (unionRelationConstraints.length()>=4) {
-                    if (!unionRelationConstraints.substring(unionRelationConstraints.length()-4,unionRelationConstraints.length()).equals("AND ") && !unionRelationConstraints.substring(unionRelationConstraints.length()-6,unionRelationConstraints.length()).equals("WHERE ")) {
+                if (unionRelationConstraints.length() >= 4) {
+                    if (!unionRelationConstraints.substring(unionRelationConstraints.length() - 4, unionRelationConstraints.length()).equals("AND ") && !unionRelationConstraints.substring(unionRelationConstraints.length() - 6, unionRelationConstraints.length()).equals("WHERE ")) {
                         unionRelationConstraints.append(" AND ");
                     }
                 }
 
-                if (andElements.length()>0) {
+                if (andElements.length() > 0) {
                     unionRelationConstraints.append(andElements).append(" AND ");
                 }
 
                 unionRelationConstraints.append(" " + combinedElement + " ");
-                log.trace("Union relation constraint "+teller+" : "+unionRelationConstraints);
+                log.trace("Union relation constraint " + teller + " : " + unionRelationConstraints);
                 teller++;
             }
 
             // add the stuff to sb
-            if (sbConstraints.length()>0) {
+            if (sbConstraints.length() > 0) {
                 sb.append(" WHERE ").append(sbConstraints.toString()).append(unionRelationConstraints);
             } else {
                 sb.append(" WHERE ").append(unionRelationConstraints);
@@ -715,7 +680,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                             // match found
                             sb.append((i + 1) + " ");
                             // prevent that the field is listed twice in this order-by
-                            i=query.getFields().size();
+                            i = query.getFields().size();
                         }
                     }
 
@@ -730,8 +695,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                             break;
 
                         default: // Invalid direction value.
-                            throw new IllegalStateException(
-                                    "Invalid direction value: " + sortOrder.getDirection());
+                            throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
                     }
 
                     if (iSortOrders.hasNext()) {
@@ -741,7 +705,6 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
             log.debug("Completed generation of UNION query:" + sb.toString());
         } else {
-            // if no OR it does this
             sbConstraints.append(sbRelations); // Constraints by relations.
             if (query.getConstraint() != null) {
                 Constraint constraint = query.getConstraint();
@@ -749,23 +712,19 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     // Combine constraints.
                     sbConstraints.append(" AND ");
                     if (constraint instanceof CompositeConstraint) {
-                        appendCompositeConstraintToSql(
-                                sbConstraints, (CompositeConstraint) constraint,
+                        appendCompositeConstraintToSql(sbConstraints, (CompositeConstraint) constraint,
                                 query, false, true, firstInChain);
                     } else {
-                        firstInChain.appendConstraintToSql(
-                                sbConstraints, constraint, query,
+                        firstInChain.appendConstraintToSql(sbConstraints, constraint, query,
                                 false, true);
                     }
                 } else {
                     // Only regular constraints.
                     if (constraint instanceof CompositeConstraint) {
-                        appendCompositeConstraintToSql(
-                                sbConstraints, (CompositeConstraint) constraint,
+                        appendCompositeConstraintToSql(sbConstraints, (CompositeConstraint) constraint,
                                 query, false, false, firstInChain);
                     } else {
-                        firstInChain.appendConstraintToSql(
-                                sbConstraints, constraint, query,
+                        firstInChain.appendConstraintToSql(sbConstraints, constraint, query,
                                 false, false);
                     }
                 }
@@ -809,8 +768,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                             break;
 
                         default: // Invalid direction value.
-                            throw new IllegalStateException(
-                                    "Invalid direction value: " + sortOrder.getDirection());
+                            throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
                     }
 
                     if (iSortOrders.hasNext()) {
@@ -818,7 +776,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
                 }
             }
-            log.debug("Completed generation of normal query:" + sb.toString());
+            log.debug("Completed generation of query:" + sb.toString());
         }
     }
 }
