@@ -532,10 +532,7 @@ public class BasicNode implements Node {
 	 * @return <code>true</code> if the node has relations
 	 */
 	public boolean hasRelations() {
-	    // this should be done using:
-	    //  return getNode().hasRelations();
-	    // once we submit the relation stuff
-	    return getRelations().size()!=0;
+	    return getNode().hasRelations();
 	};
 
 	

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * which is a class extended from MMObjectBuilder)
  *
  * @author Daniel Ockeloen
- * @author Pierre vanm Rooden (javadoc)
+ * @author Pierre van Rooden
  * @version 18 jan 2001
  */
 
@@ -78,7 +78,7 @@ public class MMObjectNode {
 	private Object properties_sync=new Object();
 
 	/**
-	* Epty constructor added for javadoc	
+	* Empty constructor added for javadoc	
 	* @deprecated Unused. Should be removed.
 	*/
 	public MMObjectNode() {
@@ -92,9 +92,8 @@ public class MMObjectNode {
 		if (parent!=null) {	
 			this.parent=parent;
 		} else {
-			System.out.println("MMObjectNode-> contructor called with partent=null");
-			MMObjectNode bla=null;
-			bla.toString();
+			log.error("MMObjectNode-> contructor called with parent=null");
+			throw new NullPointerException("contructor called with parent=null");
 		}
 	}
 
@@ -790,6 +789,17 @@ public class MMObjectNode {
 	}
 
 	/**
+	* Returns whether this node has relations.
+	* This includes uni-direction relations which would otherwise not be counted.
+	* @return <code>true</code> if any relations exist, <code>false</code> otherwise.
+	*/	
+	public boolean hasRelations() {
+	    return getRelationCount()>0;
+	    // to be replaced in future releases with:
+	    // return parent.mmb.getInsRel().hasRelations(getIntValue("number"));
+	}
+
+	/**
 	* Return the relations of this node.
 	* Note that this returns the nodes describing the relation - not the nodes 'related to'.
 	* @return An <code>Enumeration</code> containing the nodes
@@ -844,7 +854,6 @@ public class MMObjectNode {
 		return result.elements();
 	}
 
-
 	/**
 	* Return the relations of this node, filtered on a specified type.
 	* Note that this returns the nodes describing the relation - not the nodes 'related to'.
@@ -852,7 +861,7 @@ public class MMObjectNode {
 	* @return An <code>Enumeration</code> containing the nodes
 	*/	
 	public Enumeration getRelations(String wantedtype) {
-		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
+		int otype=parent.mmb.getTypeDef().getIntValue(wantedtype);
 		if (otype!=-1) {
 			return getRelations(otype);
 		}
@@ -866,7 +875,7 @@ public class MMObjectNode {
 	*/	
 	public int getRelationCount(String wantedtype) {
 	    int count=0;
-		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
+		int otype=parent.mmb.getTypeDef().getIntValue(wantedtype);
 		if (otype!=-1) {
 		    if (relations==null) {	
 			    Vector re=parent.getRelations_main(this.getIntValue("number"));
