@@ -173,6 +173,17 @@ Ok, did not throw exception with 'reset'.<br />
 </p>
 <h2>Combo with lists</h2>
 <mm:import id="testlist" vartype="list">A,B,C,D,E,F</mm:import>
+
+
+ <% try { %> 
+<mm:stringlist referid="testlist">
+ <mm:import id="some_id" reset="true">bla bla bla</mm:import>
+</mm:stringlist>
+  Ok, did not even give exception in list <br />
+ <% } catch (Exception e) { %>
+  WRONG  reset in list gave exception! <br />
+ <% } %>
+
 <% try { %>
 <mm:stringlist referid="testlist">
    <mm:write id="some_list_id" />
