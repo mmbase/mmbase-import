@@ -515,6 +515,11 @@ public class Controller {
                 } else {
                     virtual.setValue("isadministrator", "false");
                 }
+                if (ap != null && a.isModerator(ap.getAccount())) {
+                    virtual.setValue("ismoderator", "true");
+                } else {
+                    virtual.setValue("ismoderator", "false");
+                }
             }
         }
         return virtual;
