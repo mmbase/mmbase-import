@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Class for creating builder configuration files.
  *
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.11 2001-04-19 12:44:06 pierre Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.12 2001-04-19 13:21:40 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
