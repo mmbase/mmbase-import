@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.17 2004-10-08 17:37:53 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.18 2005-03-16 10:56:36 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -45,7 +45,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * It is a digit optionially followed by +.* (used in ImageServlet for url-triggered icache production)
      */
 
-    private static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(?:/.*)?"); 
+    private static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?"); 
     // some example captured by this regexp:
     //   /mmbase/images/session=mmbasesession+1234+s(100)/image.jpg
     //   /mmbase/images/1234+s(100)/image.jpg
@@ -95,6 +95,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         String q = req.getQueryString();
         
         String query;
+        String fileNamePart;
         if (q == null) { 
             // also possible to use /attachments/[session=abc+]<number>/filename.pdf
             if (contextPathLength == -1) {
@@ -109,10 +110,12 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 return null;
             }
             query = m.group(1);
+            fileNamePart = m.group(2);
             
         } else {
             // attachment.db?[session=abc+]number
             query = q;
+            fileNamePart = null;
         }
         
         String sessionName = null; // "cloud_" + getCloudName();
@@ -132,7 +135,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         } else {
             nodeIdentifier  = query;
         }
-        qp = new QueryParts(sessionName, nodeIdentifier, req, res);
+        qp = new QueryParts(sessionName, nodeIdentifier, req, res, fileNamePart);
         req.setAttribute("org.mmbase.servlet.BridgeServlet$QueryParts", qp);
         return qp;
     }
@@ -314,18 +317,20 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     /**
      * Keeps track of determined information, to avoid redetermining it.
      */
-    final class QueryParts {
+    final static class QueryParts {
         private String sessionName;
         private String nodeIdentifier;
         private HttpServletRequest req;
         private HttpServletResponse res;
         private Node node;
         private Node servedNode;
-        QueryParts(String sessionName, String nodeIdentifier, HttpServletRequest req, HttpServletResponse res) throws IOException {
+        private String fileName;
+        QueryParts(String sessionName, String nodeIdentifier, HttpServletRequest req, HttpServletResponse res, String fileNamePart) throws IOException {
             this.req = req;
             this.res = res;
             this.sessionName = sessionName;
             this.nodeIdentifier = nodeIdentifier;
+            this.fileName = fileNamePart;
             
         }
         void setNode(Node node) {
@@ -339,6 +344,9 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         }
         Node getServedNode() {
             return servedNode;
+        }
+        String getFileName() {
+            return fileName;
         }
         String getSessionName() { return sessionName; }
         String getNodeNumber() { 
