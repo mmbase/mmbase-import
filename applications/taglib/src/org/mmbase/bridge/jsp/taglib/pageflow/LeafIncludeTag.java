@@ -60,9 +60,4 @@ public class LeafIncludeTag extends IncludeTag {
     public void setObjectlist(String p) throws JspTagException {
         objectlist = getAttributeValue(p);
     }
-
-    protected String getThisName() {
-        return "LeafInclude";
-    }
-        
 }
