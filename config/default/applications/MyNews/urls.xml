@@ -1,23 +1,27 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<urls exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20000602143030">
-	<node number="1082" owner="admin">
-		<description>EO website</description>
-		<url>http://www.eo.nl</url>
-	</node>
-
-	<node number="1079" owner="admin">
-		<description>Pinkpop 2000</description>
-		<url>http://www.vpro.nl/pinkpop2000</url>
-	</node>
-
-	<node number="740" owner="system">
-		<description>The Defining Builders project</description>
-		<url>http://www.mmbase.org/mmbase/pool/project.shtml?452+3022</url>
-	</node>
-
-	<node number="738" owner="system">
-		<description>Download MMbase</description>
+<?xml version="1.0" encoding="utf-8"?>
+<urls exportsource="mmbase://127.0.0.1/test_db/mm" timestamp="20020516170724">
+	<node number="8516" owner="system">
+		<name></name>
 		<url>http://www.mmbase.org/download</url>
+		<description>Download MMbase</description>
+	</node>
+
+	<node number="8514" owner="system">
+		<name></name>
+		<url>http://www.mmbase.org/mmbase/pool/project.shtml?452+3022</url>
+		<description>The Defining Builders project</description>
+	</node>
+
+	<node number="8512" owner="admin">
+		<name></name>
+		<url>http://www.vpro.nl/pinkpop2000</url>
+		<description>Pinkpop 2000</description>
+	</node>
+
+	<node number="8510" owner="admin">
+		<name></name>
+		<url>http://www.eo.nl</url>
+		<description>EO website</description>
 	</node>
 
 </urls>

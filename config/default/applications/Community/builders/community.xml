@@ -1,32 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder maintainer="mmbase.org" version="0" extends="object">
 
-<!-- <status>
-	what is the status of this builder options : active or inactive
--->
 <status>active</status>
-
-<!-- <classfile>
-	This is a optional tag, it names the classfile that allows you to add
-	support routines or changes them on a per builder base. For example
-	images has routines to image support etc etc.
-
-	possible values : Dummy or disabled tag makes mmbase use the default setup
-
-		short name : Urls will start class : org.mmbase.module.builders.Urls.class
-
-		long name : nl.vpro.mmbase.module.builders.Urls will start that class
--->
 <classfile>org.mmbase.module.builders.Community</classfile>
 
 <searchage>14</searchage>
-
-<!-- <names>
-	names defines the different names used in user visible parts, singular for
-	for talking about 1 object (Url,Person) and plurar for talking about multiple
-	<Urls, people).
->-->
 <names>
 	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">Community</singular>
@@ -43,7 +22,7 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-	<description xml:lang="nl">A place where people can come together to communicate on the Internet</description>
+	<description xml:lang="nl"></description>
 	<description xml:lang="en">A place where people can come together to communicate on the Internet</description>
 	<description xml:lang="us">A place where people can come together to communicate on the Internet</description>
 </descriptions>
