@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.19 2002-07-19 08:55:43 eduard Exp $
+     * @version  $Id: settings.jsp,v 1.20 2002-07-19 09:55:39 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -93,7 +93,6 @@
         // which parameter to use to configure a wizard page
         public void config(Config.WizardConfig c) {
             c.wizard      = getParam("wizard", c.wizard);
-            if(c.wizard == null) throw new RuntimeException("Wizard was null in config(Config.WizardConfig c)");
             c.setAttribute("origin",getParam("origin"));
             c.objectNumber = getParam("objectnumber");
         }
@@ -136,7 +135,7 @@ boolean proceed = "true".equals(request.getParameter("proceed")) ||
 // Look if there is already a configuration in the session.
 Object configObject = session.getAttribute(sessionKey);
 if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) { // nothing (ok) in the session
-    log.debug("creating new configuration (in session is " + configObject + ")");
+    if (log.isDebugEnabled()) log.debug("creating new configuration (in session is " + configObject + ")");
     ewconfig = new Config();
     session.setAttribute(sessionKey, ewconfig);  // put it in the session
 } else {
@@ -171,11 +170,13 @@ if (request.getParameter("remove") != null) {
         // remove popupwizard
         // pass the result of the popupwizard to the calling wizard
         // (how do we do this ???)
-        closedObject=ewconfig.subObjects.pop();
+        log.debug("subObjects " + ewconfig.subObjects);
+        closedObject = ewconfig.subObjects.pop();
     }
+
     if (ewconfig.subObjects.size() == 0) {
-        if (sessionKey.indexOf("|popup")>0) {
-        // a separate running popup, so remove sessiondata
+        if (sessionKey.indexOf("|popup") > 0) {
+            log.debug("a separate running popup, so remove sessiondata");
             session.removeAttribute(sessionKey);
 %>
 <html>
@@ -184,6 +185,10 @@ if (request.getParameter("remove") != null) {
 <%
             if (closedObject instanceof Config.WizardConfig &&
                 ((Config.WizardConfig)closedObject).wiz.committed()) {
+                    // XXXX I find all this stuff in wizard.jsp too. Why??
+
+
+                log.debug("Closed was a Wizard (commited)");
                 String sendCmd="";
                 String objnr="";
                 Config.WizardConfig inlineWiz=(Config.WizardConfig)closedObject;
@@ -194,14 +199,18 @@ if (request.getParameter("remove") != null) {
                 if ("new".equals(objnr)) {
                     // obtain new object number
                     objnr=inlineWiz.wiz.getObjectNumber();
+                    if (log.isDebugEnabled()) log.debug("Objectnumber was 'new', now " + objnr);
                     String parentFid = inlineWiz.parentFid;
                     if ((parentFid!=null) && (!parentFid.equals(""))) {
+                        log.debug("Settings. Sending an add-item command ");
                         String parentDid = inlineWiz.parentDid;
                         sendCmd="cmd/add-item/"+parentFid+"/"+parentDid+"//";
                     }
                 } else {
+                    if (log.isDebugEnabled()) log.debug("Aha, this was existing, send an 'update-item' cmd for object " + objnr);
                     sendCmd="cmd/update-item////";
                 }
+                if (log.isDebugEnabled()) log.debug("Sending command " + sendCmd + " , " + objnr);
 %>
    window.opener.doSendCommand("<%=sendCmd%>","<%=objnr%>");
 <%          } %>
