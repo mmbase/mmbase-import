@@ -96,8 +96,8 @@ MMCI (bridge) New Features:
 Taglib New Features:
 -------------------
 [1.7.1]
-
-- #6441 container attribute missing on function-tags. 
+- #6441 container attribute missing on function-tags.
+- #6510 mm:relatednodes missing path attribute (also fixed for mm:listnodes)
 
 [1.7.0]
 - Content-Tag, which provides default escaping behaviour,
@@ -149,24 +149,38 @@ Generic Improvement:
 ------------------
 Generic Bug Fixes:
 ------------------
-
 [1.7.1]
-- searchquery: 'count' queries by bridge are not equal to count queries by MMObjectBuilder  	
-- If httppost.xml missing, dirty error in log, and you can't add it witout restart then.  	
-- Mmci: Node#countRelations can be a bit slow.  	
-- inverse constraint not working in mysql. 
-- Database Layer: Storagemanagerfactory does not set the correct default transactionlevel  	
-- searchquery: Use of number IN ([constant]) causes unresolvable queries in Mysql  	
-- searchquery : Inversing one constraint may inverse entire query  	
-- JMSendmail does not properly encode mail messages  	
+- #6548 'blob converting' tool is not synchronized, can run more than once.   	
+- #6525 org.mmbase.module.SendMail: tries to send mail before it is properly initialized 
+- #6524 mm:relatednodes constraint requires explicit qualification of field number  	
+- #6516 Some XSLT's of config/xslt give error with certain XSLT processors.  	
+- #6504 Length calculation in DateSupport is not working anymore  	
+- #6493 getValue on byte-field does not return null if field is unfilled.  	
+- #6485 If you define otype as a not-null NODE field (in object.xml) then you cannot import NODE fields any more.  	
+- #6482 Attachments: mimetype not re-determined if handle is replaced.  	
+- #6477 'format' function on Attachments not implemented.  	
+- #6453 GUI of url field of jumpers is no good.  	
+- #6452 If httppost.xml missing, dirty error in log, and you can't add it witout restart then.  	
+- #6437 JMSendmail does not properly encode mail messages  	
+- #6199 Unicode in images (convertimagemagic) is broken again.  	
+- #4413 Show and annotate functions of Config-module ignore encoding of the file.
+- #6472 jsp-editors: When deleting objects of first page, search result is not rememberd.   	
+- #6457 jsp-editors: 'Stacking' of history doesn't work well if started with search on number. 
+- #6451 Problems on Windows with ImageMagick and text
+- #6543 Mmci: getNodeValue does not return proper Node instance 
+- #6450 Mmci: Node#countRelations can be a bit slow.  	
+- #6484 searchquery maxNumber not supported   	
+- #6476 searchquery dissalowed fields do not take in account that sql keyword might be case insentitive  	
+- #6454 searchquery 'count' queries by bridge are not equal to count queries by MMObjectBuilder  	
+- #6449 searchquery nodes=-1 not working.  	
+- #6448 searchquery inverse constraint not working in mysql.
+- #6443 searchquery Use of number IN ([constant]) causes unresolvable queries in Mysql  	
+- #6439 searchquery Inversing one constraint may inverse entire query
+- #6489 Utils LinkFinder.java -- String index out of range: -1   	
+- #6464 Utils 'xmlfield' tranformer for 'emphasize' (_) is a bit to stupid.  
+- #6490 Utils java.util.DateSupport: public static String getTimeSec(int val) returns 12h clock instead of 24h 
+- Database Layer: Storagemanagerfactory does not set the correct default transactionlevel 
 - Database Layer: Killed connection can be put back in multi-pool.  	
-- Editwizards: Public ID not registered.  	
-- Editwizards: Edit-rights are not always checked 
--  dtd's contains 'xml:lang' on db/name, which does not make sense.   	
-- NullPointer in BasicNode.java  	
-- Editwizards: Javascript error on save & close and cancle  	
-- Editwizards: timezone problems  	
-- Editwizards: javascript error on save 
 
 
 [1.7.0]
@@ -192,6 +206,8 @@ Generic Bug Fixes:
 ------------------
 Security Bug Fixes:
 ------------------
+[1.7.1]
+- #6559 Security CCS:SecurityUser cache not started
 [1.7.0]
 - It is for a security implementation possible to define new ranks
   now. 
@@ -199,30 +215,122 @@ Security Bug Fixes:
   there are read-restrictions on defined on your installation, you
   need to create an index on the owner fields.
 
+---------------
+Core Bug Fixes:
+---------------
+[1.7.1]
+- #6560 ClusterBuilder does not allow queries over nodemanagers with
+        short name  	
+- #6531 Multicast Time To Live is not configurable, you should now be
+        able to set the ttl using the property MULTICASTTTL in
+        mmbaseroot.xml <property name="multicastttl">1</property>
+        default is 1  	
+- #6526 You cannot define extra fields in object.xml.  	
+- #6511 StringIndexOutOfBounds exception in BasicQuery.java 
+- #6506 When a field of a cluster-node is null, getStringValue might
+        give [FIELD VALUE NULL] in stead of empty string.
+- #6483 Insrel does not make accurate check on 'dir' field  	
+- #6460 parseFieldPart does not escape all astriks 
+- #6440 Different behavior on mm:list between 1.6 and 1.7 
+- #6432 MMObjectNode silenty fails on a wronly inserted relation node, page however gets corrupted 	
+- #6428 builder dtd's contains 'xml:lang' on db/name, which does not
+        make sense.
+- #6427 NullPointer in BasicNode.java
+
+
+-------------------------
+Database Layer Bug Fixes:
+-------------------------
+[1.7.1]
+- #6554 mmbase can't handle a mysql restart   	
+- #6498 Resultsets not closed/connectionpool depleted in PostgreSQL  	
+- #6486 Virtual NODE type field, error during creation of table.  	
+- #6481 Leaving numeric fields 'unset' before commiting, leaves them
+        not present in the field values list of mmobjectnode, which is
+        not recognized by database layer
+- #6469 InformixSQLHandler doesn't pass uni-directional relation-constraints  	
+- #6462 no automatic translation (adding 'm_') to fields in a
+        listnodes 'constraint' attribute  	
+- #6444 Storagemanagerfactory does not set the correct default transactionlevel  	
+- #6436 Killed connection can be put back in multi-pool.  	
+- #5951 MMJdbc2NodeInterface lacks javadoc 
+
+
+---------------------
+Editwizard Bug Fixes:
+---------------------
+[1.7.1] 	
+- #6564 unable to make file upload mandatory  
+- #6563 popup wizards don't work in deprecated wizard look   	
+- #6508 editwizard pass incorrect origin parameter to subwizard  	
+- #6501 If titles are 'null' the search of list.jsp does not work.  	
+- #6500 fieldtypes enum,double,long,float are not validated  	
+- #6487 Date-formats of lists don't consider set language.  	
+- #6473 It goes wrong if the referrer arguments contains / in its argument.  	
+- #6465 Editwizard does not handle xml characters very well (< and >) (html area AND text input)  	
+- #6434 Public ID not registered.  	
+- #6430 Edit-rights are not always checked  	
+- #6418 timezone problems  	
+- #6414 Javascript error on save
+
 
 -----------------
 Taglib Bug Fixes:
 -----------------
 [1.7.1]
--  string in 'referids' gives an error   	
--  In contradiction to node-lists, referid="a" id="a" does not work for mm:fieldlist  	
--  attribute missing on function-tags.  	
--  <mm:fieldinfo type="usesearchinput" someimes gives ClassCastException. 
+- #6241 TreeTag: No way to order or constrain steps.   	
+- #6230 Taglib documentation wider than window.  	
+- #5986 Tree-functionality is too community-specific. 
+- #6488 mm:import from session raises exception if no session if available   	
+- #6480 mm:fieldinfo type="reusesearchinput" not working for 'date' fields.  	
+- #6478 mm:listfunction not useable.  	
+- #6474 mm:listrelationscontainer mm:relatednode might give wrong node.  	
+- #6470 Constraints specified in listnodes not parsed to SearchQuery.  	
+- #6467 mm:fieldinfo options="date" type="usesearchinput" does not work as expected  	
+- #6461 mm:cloud 's delegate method not documented, and writing to
+        session which is notg always secure.
+- #6458 mm:redirect not quite ok.  	
+- #6456 mm:formatter not working in windows.  	
+- #6455 Empty string in 'referids' gives an error  	
+- #6447 In contradiction to node-lists, referid="a" id="a" does not work for mm:fieldlist  	
+- #6442 ListTag is not corresponding with BasicStep  	
+- #6441 container attribute missing on function-tags.  	
+- #6438 <mm:fieldinfo type="usesearchinput" someimes gives ClassCastException.  	
+- #6378 Firefox on Mac OS X fails to edit images in jsp editors 
+- #6492 Using mm:urls' referids not fully specifies the resulting urls. 
+- #6494 Cache-Control: no-cache not understood by a caching front-proxy. 
+- #6497 Unfilled double-field, gives exception when using mm:field vartype="double". 
+- #6499 IS NULL and IS NOT NULL cannot be queried by taglib's mm:constraint 
+- #6505 mm:cloud's loginpage-attribute / tomcat 5: If used on welcome
+        page, 'referrer' gets empty string, which is quite
+        inconvenient on login-page.
+- #6507 mm:constraint operator=IN value=a,b,c give exception
+- #6509 Missing TEI for mm:info 
+- #6512 mm:cloud method='http' does not work wel on mm:included page
+- #6514 mm:shrink throws StackEmpty exceptions
+- #6515 listcontainer misses the nodes attirbute
+- #6522 method="pagelogon" on cloud tag doesn't work
+- #6523 fieldinfo sorts the resourcebundels 
+- #6547 relatednodescontainer with path. The first element with same
+        type as the surround node does not remain without digit. 
+- #6555 mm:content sets headers only in do-after body
+- string in 'referids' gives an error   	
+- In contradiction to node-lists, referid="a" id="a" does not work for mm:fieldlist  	
+- attribute missing on function-tags.  	
+- <mm:fieldinfo type="usesearchinput" someimes gives ClassCastException. 
+- CloudReferrerTag.getProviderCloudVar has been renamed to CloudReferrerTag.getCloudVar
 
 [1.7.0]
- - Working with resin now.
-
- - The fields parameter of the list tags (related, list, etc) now no
-   longer accepts fields that do not exist. Note that this means that
-   some pages may give errors now if they specified wrong fieldnames. 
-
- - Lots of small attributes-related things, like emulating complete
-   absence of the the attribute when its value is empty. Some
-   attributes (like the 'id' attribute) did not yet accept taglib
-   variables ($-variables), which also has been fixed on several
-   places. 
-
- - URL-tag not a Writer any more.
+- Working with resin now.
+- The fields parameter of the list tags (related, list, etc) now no
+  longer accepts fields that do not exist. Note that this means that
+  some pages may give errors now if they specified wrong fieldnames. 
+- Lots of small attributes-related things, like emulating complete
+  absence of the the attribute when its value is empty. Some
+  attributes (like the 'id' attribute) did not yet accept taglib
+  variables ($-variables), which also has been fixed on several
+  places. 
+- URL-tag not a Writer any more.
 
 
 ---------------------
