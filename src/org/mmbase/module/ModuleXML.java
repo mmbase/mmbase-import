@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.19 $ $Date: 2001-01-04 13:24:18 $
+ * @version $Revision: 1.20 $ $Date: 2001-01-12 10:24:37 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -86,6 +86,9 @@ public abstract class ModuleXML extends Module {
                     				if (modprops!=null) {
 			                       	 ((Module)mod).properties=modprops;
                     				}
+                        // set the module name property using the module's filename
+                        // maybe we need a parser.getModuleName() function to improve on this
+ 						((Module)mod).setName(bname);
 						((Module)mod).setMaintainer(parser.getModuleMaintainer());
 						((Module)mod).setVersion(parser.getModuleVersion());
 						((Module)mod).setClassName(parser.getClassFile());
