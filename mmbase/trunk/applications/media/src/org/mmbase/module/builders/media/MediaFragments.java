@@ -15,7 +15,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.media.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
 
 /**
@@ -83,7 +83,7 @@ public class MediaFragments extends MMObjectBuilder {
         if (field.equals("showlength")) {
             return ""+calculateLength(node);
         } else if (field.equals("urlresult")) {
-            return getUrl(node.getNumber(), null, 0, 0);
+            return getUrl(node.getNumber(), null, null, 0, 0);
         } else {
             return super.getValue( node, field );
         }
@@ -123,18 +123,19 @@ public class MediaFragments extends MMObjectBuilder {
      * get an url for the requested media.
      *
      * @param mediafragment the number of the media fragment wanted
-     * @param request the HttpRequest of the user
+     * @param request the HttpServletRequest of the user
+     * @param response the HttpServletResponse of the user
      * @param wantedspeed the requested speed of the user
      * @param wantedchannels the request channels of the user
      * @return the Url for the requested media
      */
-    public String getUrl(int mediafragmentnr, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+    public String getUrl(int mediafragmentnr, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
         log.debug("Getting url for mediafragment "+mediafragmentnr);
         // Which MediaSource is the best one to use ?
         MMObjectNode mediaFragment = getNode(mediafragmentnr);
         MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, request, wantedspeed, wantedchannels);
         log.debug("Selected mediasource = "+mediaSource.getNumber());
-        return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, wantedspeed, wantedchannels);
+        return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, response, wantedspeed, wantedchannels);
     }
     
     /**

@@ -17,7 +17,7 @@ import java.io.*;
 
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.StringObject;
@@ -44,18 +44,30 @@ public class MediaSources extends MMObjectBuilder {
     
     private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
     
-    // Audio formats
-    public final static int MP3_FORMAT         = 1;
-    public final static int RA_FORMAT          = 2;
-    public final static int WAV_FORMAT         = 3;
-    public final static int PCM_FORMAT         = 4;
-    public final static int MP2_FORMAT         = 5;
-    public final static int SURESTREAM_FORMAT  = 6;
-    
-    // Video formats
-    public final static int MPG_FORMAT = 11;
-    public final static int RM_FORMAT  = 12;
-    public final static int MOV_FORMAT = 13;
+    // Formats
+    public final static int MP3_FORMAT  = 1;
+    public final static int RA_FORMAT   = 2;
+    public final static int WAV_FORMAT  = 3;
+    public final static int PCM_FORMAT  = 4;
+    public final static int MP2_FORMAT  = 5;
+    public final static int RM_FORMAT   = 6;
+    public final static int VOB_FORMAT  = 7;
+    public final static int AVI_FORMAT  = 8;
+    public final static int MPEG_FORMAT = 9;
+    public final static int MP4_FORMAT  = 10;
+    public final static int MPG_FORMAT  = 11;
+    public final static int ASF_FORMAT  = 12;
+    public final static int MOV_FORMAT  = 13;
+    public final static int WMA_FORMAT  = 14;
+    public final static int OGG_FORMAT  = 15;
+    public final static int OGM_FORMAT  = 16;
+        
+    // Codecs
+    public final static int VORBIS_CODEC = 1;
+    public final static int G2_CODEC     = 2;
+    public final static int DIV3_CODEC   = 3;
+    public final static int DIV4_CODEC   = 4;
+    public final static int DIVX_CODEC   = 5;
     
     // Status
     public final static int REQUEST = 1;
@@ -292,18 +304,10 @@ public class MediaSources extends MMObjectBuilder {
                     case WAV_FORMAT: return "wav";
                     case PCM_FORMAT: return "pcm";
                     case MP2_FORMAT: return "mp2";
-                    case SURESTREAM_FORMAT: return "g2/sure";
+                    case RM_FORMAT: return "rm";
                     case MPG_FORMAT: return "mpg";
-                    case RM_FORMAT: return "Rm";
                     case MOV_FORMAT: return "Mov";
                     default: return "Undefined";
-                }
-            } else if (field.equals("issurestream")) {
-                int val=node.getIntValue("issurestream");
-                switch( val ) {
-                    case 0	: return "false";
-                    case 1	: return "true";
-                    default	: return "Undefined";
                 }
             } else {
                 return field;
@@ -334,7 +338,7 @@ public class MediaSources extends MMObjectBuilder {
      * @param wantedchannels
      * @return the url
      */
-    public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+    public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
         
         // Find the provider for the url
         MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
@@ -348,7 +352,7 @@ public class MediaSources extends MMObjectBuilder {
         String firstPartUrl = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
         
         // Maybe we have to give here everything...
-        String url = mediaUrlComposer.composeUrl(mediafragment, mediasource, request, wantedspeed, wantedchannels);
+        String url = mediaUrlComposer.composeUrl(mediafragment, mediasource, request, response, wantedspeed, wantedchannels);
         
         return firstPartUrl+url;
     }

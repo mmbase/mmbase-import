@@ -203,8 +203,8 @@ public class MediaSourceFilter {
                 node = getFormat(mediasources, MediaSources.MP3_FORMAT);
             } else if(format.equals("WAV")) {
                 node = getFormat(mediasources, MediaSources.WAV_FORMAT);
-            } else if(format.equals("G2")) {
-                node = getFormat(mediasources, MediaSources.SURESTREAM_FORMAT);
+            } else if(format.equals("RM")) {
+                node = getFormat(mediasources, MediaSources.RM_FORMAT);
             } else if(format.equals("MP2")) {
                 node = getFormat(mediasources, MediaSources.MP2_FORMAT);
             }
