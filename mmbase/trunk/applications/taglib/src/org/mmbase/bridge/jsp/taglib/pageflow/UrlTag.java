@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import java.util.Vector;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
            
-    private   Vector  referids = null;
+    private   List  referids = null;
     protected HashMap extraParameters = null;
     protected String  page;
 
