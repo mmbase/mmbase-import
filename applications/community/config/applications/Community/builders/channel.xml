@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="channel" maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: channel.xml,v 1.1.1.1 2003-02-25 06:59:17 kees Exp $ -->
+<!-- <status>
+    what is the status of this builder options : active or inactive
+-->
+<status>active</status>
+
+<!-- <classfile>
+    This is a optional tag, it names the classfile that allows you to add
+    support routines or changes them on a per builder base. For example
+    images has routines to image support etc etc.
+
+    possible values : Dummy or disabled tag makes mmbase use the default setup
+
+        short name : Urls will start class : org.mmbase.module.builders.Urls.class
+
+        long name : nl.vpro.mmbase.module.builders.Urls will start that class
+-->
+<classfile>Channel</classfile>
+
+<searchage>14</searchage>
+
+<!-- <names>
+    names defines the different names used in user visible parts, singular for
+    for talking about 1 object (Url,Person) and plurar for talking about multiple
+    <Urls, people).
+>-->
+<names>
+    <!-- singles per language  as defined by RFC xxx -->
+    <singular xml:lang="en">Channel</singular>
+    <singular xml:lang="nl">Kanaal</singular>
+    <!-- multiple per language  as defined by RFC xxx -->
+    <plural xml:lang="en">Channels</plural>
+    <plural xml:lang="nl">Kanalen</plural>
+</names>
+
+<!-- <descriptions>
+    small description of the builder for human reading
+-->
+<descriptions>
+<!-- descriptions per language  as defined by RFC xxx -->
+    <description xml:lang="en">A channel of a community</description>
+    <description xml:lang="nl">Een kanaal binnen een gemeenschap</description>
+</descriptions>
+
+<properties>
+    <property name="baserecordpath">/tmp/chatlogs</property>
+</properties>
+
+<!-- <fieldlist>
+     defines the different fields in this object, be carefull the order is important
+    once defined keep them in the same order.
+    If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+<fieldlist>
+    <!-- POS 3 : <field> 'name'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Title of the channel (i.e. main topic)</description>
+          <description xml:lang="nl">Titel van het kanaal (bijv hoofdonderwerp)</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Title</guiname>
+            <guiname xml:lang="nl">Titel</guiname>
+            <guitype>string</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>1</input>
+                <!-- position in list area of the editor -->
+                <list>1</list>
+                <!-- position in search area of the editor -->
+                <search>1</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>title</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="255" notnull="false">STRING</type>
+        </db>
+    </field>
+
+    <!-- POS 4 : <field> 'subtitle'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Subtitle of the channel</description>
+          <description xml:lang="nl">Subtitel van het kanaal</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Subtitle</guiname>
+            <guiname xml:lang="nl">Subtitel</guiname>
+            <guitype>string</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>2</input>
+                <!-- position in list area of the editor -->
+                <list>5</list>
+                <!-- position in search area of the editor -->
+                <search>2</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>subtitle</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="255" notnull="false">STRING</type>
+        </db>
+    </field>
+
+    <!-- POS 5 : <field> 'intro'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Introduction text for this channel, i.e. for whom it is ment</description>
+          <description xml:lang="nl">Introduktietekst voor dit kanaal, bijv voor het weergeven van de doelgroep</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Intro</guiname>
+            <guiname xml:lang="nl">Intro</guiname>
+            <guitype>field</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>3</input>
+                <!-- position in list area of the editor -->
+                <list>6</list>
+                <!-- position in search area of the editor -->
+                <search>3</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>intro</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="2047" notnull="false">STRING</type>
+        </db>
+    </field>
+
+    <!-- POS 6 : <field> 'body'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Main description of the channel</description>
+          <description xml:lang="nl">Hoofdtekst/omschrijving van het kanaal</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Description</guiname>
+            <guiname xml:lang="nl">Beschrijving</guiname>
+            <guitype>field</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>4</input>
+                <!-- position in list area of the editor -->
+                <list>-1</list>
+                <!-- position in search area of the editor -->
+                <search>4</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>body</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="2047" notnull="false">STRING</type>
+        </db>
+    </field>
+
+    <!-- POS 7 : <field> 'session'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Set this to 'true' (1) if the channel is connected to a 'session' object (not used)</description>
+          <description xml:lang="nl">Zet op 'true' (1) als het kanaal aan een sessie object is gekoppeld (niet in gebruik).</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Session</guiname>
+            <guiname xml:lang="nl">Sessie</guiname>
+            <guitype>integer</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>9</input>
+                <!-- position in list area of the editor -->
+                <list>7</list>
+                <!-- position in search area of the editor -->
+                <search>8</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>session</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" notnull="true">INTEGER</type>
+        </db>
+    </field>
+
+    <!-- POS 8 : <field> 'state'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">State of the channel with regard on how to handle access: free access (0), login required to read (1 or 3), logon required to write (2 or 3)
+					</description>
+          <description xml:lang="nl">Status van het kanaal m.b.t. toegankelijkheid: vrije toegang (0), login nodig voor lezen (1 of 3), login nodig voor schrijven (2 of 3)</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Logon State</guiname>
+            <guiname xml:lang="nl">Login status</guiname>
+            <guitype>channellogin</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>8</input>
+                <!-- position in list area of the editor -->
+                <list>3</list>
+                <!-- position in search area of the editor -->
+                <search>7</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>state</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" notnull="true">INTEGER</type>
+        </db>
+    </field>
+
+    <!-- POS 9 : <field> 'open'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Whether the channel is open (2), read only (1), scheduled to open (0) or closed (-1)</description>
+          <description xml:lang="nl">Of het kanaal open is (2), alleen open voor lezen (1), in de wachtrij om te openen (0), of dicht (-1)</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Open</guiname>
+            <guiname xml:lang="nl">Open</guiname>
+            <guitype>channelopen</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>6</input>
+                <!-- position in list area of the editor -->
+                <list>2</list>
+                <!-- position in search area of the editor -->
+                <search>6</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>open</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" notnull="true">INTEGER</type>
+        </db>
+    </field>
+
+    <!-- POS 10 : <field> 'highseq'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Highest current message number in this channel</description>
+          <description xml:lang="nl">Hoogste volgnummer van berichten in dit kanaal</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Highest sequence</guiname>
+            <guiname xml:lang="nl">Hoogste volgordenr</guiname>
+            <guitype>integer</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>-1</input>
+                <!-- position in list area of the editor -->
+                <list>8</list>
+                <!-- position in search area of the editor -->
+                <search>-1</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>highseq</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" notnull="true">INTEGER</type>
+        </db>
+    </field>
+
+    <!-- POS 11 : <field> 'maxusers'  -->
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Maximum number of users that can simultaneously log on</description>
+          <description xml:lang="nl">Maximala aantal gebruikers dat simultaan ingelogd kan zijn</description>
+        </descriptions>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="en">Maximum users</guiname>
+            <guiname xml:lang="nl">Maximum gebruikers</guiname>
+            <guitype>integer</guitype>
+        </gui>
+        <!-- editor related  -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>5</input>
+                <!-- position in list area of the editor -->
+                <list>4</list>
+                <!-- position in search area of the editor -->
+                <search>5</search>
+            </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>maxusers</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" notnull="true">INTEGER</type>
+        </db>
+    </field>
+
+</fieldlist>
+
+</builder>
+
