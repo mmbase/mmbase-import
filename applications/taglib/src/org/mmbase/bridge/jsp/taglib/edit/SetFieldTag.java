@@ -65,6 +65,11 @@ public class SetFieldTag extends NodeReferrerTag {
         pageContext.setAttribute("fieldname", fieldname);
     }
     
+    protected String convert (String s) throws JspTagException { 
+        return s;
+    }
+            
+
     /**
      * Set the value of the field.
      */
@@ -75,7 +80,7 @@ public class SetFieldTag extends NodeReferrerTag {
             node.setValue(fieldname, org.mmbase.util.Encode.decode("BASE64", bodyContent.getString()));
 	} else {           
             String newValue = bodyContent.getString();
-            node.setValue(fieldname, newValue);
+            node.setValue(fieldname, convert(newValue));
         }
         
         return SKIP_BODY;
