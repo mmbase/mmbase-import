@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.22 2000-06-14 15:21:34 wwwtech Exp $
+	$Id: Images.java,v 1.23 2000-06-15 16:54:39 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.22  2000/06/14 15:21:34  wwwtech
+	Rico: fixed array bug
+	
 	Revision 1.21  2000/06/08 18:00:12  wwwtech
 	Rico: reduced/switched-off debug
 	
@@ -77,7 +80,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.22 2000-06-14 15:21:34 wwwtech Exp $
+ * @version $Id: Images.java,v 1.23 2000-06-15 16:54:39 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -123,6 +126,9 @@ public class Images extends MMObjectBuilder {
 		imageconvert.init(ImageConvertParams);
 
 		ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
+		if(bul==null) {
+			debug("Error: Place icaches in objects.def before images");
+		}
 		// Startup parrallel converters
 		ireqprocessors=new ImageRequestProcessor[MaxConcurrentRequests];
 		debug("Starting "+MaxConcurrentRequests+" Converters");
