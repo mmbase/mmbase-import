@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase" method="http" rank="administrator">
+<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <% String builder = request.getParameter("builder"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -20,8 +20,10 @@
    String msg="";
    if (cmd!=null) {
     try {
-        Hashtable params=new Hashtable();
+        Map params=new Hashtable();
         params.put("BUILDER",builder);
+        params.put("CLOUD", cloud);
+
         if (cmd.equals("BUILDER-REMOVEFIELD")) {
             params.put("FIELDNAME",request.getParameter("field"));
             params.put("SURE",request.getParameter("confirm"));
@@ -76,7 +78,9 @@
   <th class="header">More</th>
 </tr>
 <%
-    NodeList fields=mmAdmin.getList("FIELDS-"+builder,null,request,response);
+    Map params = new Hashtable();
+    params.put("CLOUD", cloud);
+    NodeList fields=mmAdmin.getList("FIELDS-"+builder, params,request,response);
     for (int i=0; i<fields.size(); i++) {
         Node field=fields.getNode(i);
 %>
