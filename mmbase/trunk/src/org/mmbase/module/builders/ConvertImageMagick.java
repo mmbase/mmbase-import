@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.34 2002-04-19 09:35:51 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.35 2002-04-22 15:29:35 pierre Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -431,12 +431,13 @@ public class ConvertImageMagick implements ImageConvertInterface {
             log.debug("retrieved all information");
             byte[] image=imagestream.toByteArray();
 
-                // no bytes in the image thingie
+            // No bytes in the image -
+            // ImageMagick failed to create a proper image.
+            // return null so this image is not by accident stored in the database
             if(image.length < 1) {
-                log.warn("Imagemagick conversion did not succeed. Returning byte array of " + image.length + " bytes.");
+                log.error("Imagemagick conversion did not succeed. Returning null.");
+                return null;
             }
-            // we a image of 0 bytes is not a real image to me... i will leave the code here intact, but maybe nicer to return null....
-            // checkout what our error? was...
 
             // log what came on STDERR
             ByteArrayOutputStream errorstream = new ByteArrayOutputStream();
@@ -455,7 +456,6 @@ public class ConvertImageMagick implements ImageConvertInterface {
             } else {
                 log.debug("No information on stderr found");
             }
-
 
             // print some info and return....
             log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");
