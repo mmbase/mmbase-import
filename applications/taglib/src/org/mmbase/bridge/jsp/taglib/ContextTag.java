@@ -194,24 +194,25 @@ public class ContextTag extends ContextReferrerTag {
         if (log.isDebugEnabled()) {
             log.trace("getting object " + key);
         }
-        Object result;
+        Object result = null;
+        Object tempresult;
         switch (type) {
         case TYPE_SESSION:
-            result = getSession().getAttribute(key);
-            if (result != null) break;
+            result = getSession().getAttribute(key);          
         case TYPE_POSTPARAMETERS:
-            result = getPoster().getPostParameter(key);
-            if (result != null) break;
+            tempresult = getPoster().getPostParameter(key);
+            if (tempresult != null) result = tempresult;
         case TYPE_PARAMETERS:
-            result = pageContext.getRequest().getParameter(key);
-            if (result != null) break;
+            tempresult = pageContext.getRequest().getParameter(key);
+            if (tempresult != null) result = tempresult;
         case TYPE_PARENT:
             if (getParentContext() != null) {
-                result = parent.getObject(key);
-                break;
+                tempresult = parent.getObject(key);
+                if (tempresult != null) result = tempresult;
             }
         case TYPE_HASHMAP:
-            result = hashMap.get(key);
+            tempresult = hashMap.get(key);
+            if (tempresult != null) result = tempresult;
             break;
         default:
             result = null;
