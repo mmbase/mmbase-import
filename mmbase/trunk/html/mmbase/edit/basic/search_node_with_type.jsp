@@ -70,14 +70,14 @@
 </mm:present>
 
 <%-- apply age-constraint always --%>
-<mm:ageconstraint minage="${_search_form_minage_$node_type}" maxage="${_search_form_maxage_$node_type}" />
+<mm:ageconstraint minage="$[_search_form_minage_$node_type]" maxage="$[_search_form_maxage_$node_type]" />
 
 
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
 
  <mm:size id="totalsize" write="false" />
 
- <mm:write id="offset" value="${+($page - $config.indexoffset)*$config.page_size}" write="false" />
+ <mm:write id="offset" value="$[+($page - $config.indexoffset)*$config.page_size]" write="false" />
  <mm:offset    value="$offset"  />
  <mm:maxnumber value="$config.page_size" />  
  
@@ -108,7 +108,7 @@
            <span class="previous"></span><span class="alt">[&lt;&lt;-first ]</span>
          </a>
         </a>
-        <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="${+ $page - 1}" /></mm:url>'>
+        <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="$[+ $page - 1]" /></mm:url>'>
           <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
         </a>
         </nobr>
@@ -134,7 +134,7 @@
      <span class="currentpage" style="font-size: 120%; font-weight: bold;">
        <mm:write value="$page" />
      </span>
-     <mm:write write="false" id="maxpagenumber" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
+     <mm:write write="false" id="maxpagenumber" vartype="integer" value="$[+ ($totalsize - 1) / $config.page_size + $config.indexoffset]" />
    </mm:isgreaterthan>   
    <mm:context>
       <mm:nextbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
@@ -154,7 +154,7 @@
       <td class="navigate" colspan="1" style="text-align: right;">
         <mm:present referid="needsnext">
           <nobr>
-          <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="${+ $page + 1}" /></mm:url>'>
+          <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="$[+ $page + 1]" /></mm:url>'>
           <span class="next"></span><span class="alt">[next page -&gt;]</span>
         </a>
         <a href='<mm:url referid="purl">
@@ -197,7 +197,7 @@
     </mm:fieldlist>
     </mm:context>
     <mm:size id="size" write="false" />
-    <th colspan="2"><nobr><mm:write referid="totalsize"><mm:compare value="0"><%=m.getString("search.noresults")%></mm:compare><mm:isgreaterthan value="0"><mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset + $size}" />/<mm:write  /></mm:isgreaterthan></mm:write></nobr></th><!-- X and -> collum -->
+    <th colspan="2"><nobr><mm:write referid="totalsize"><mm:compare value="0"><%=m.getString("search.noresults")%></mm:compare><mm:isgreaterthan value="0"><mm:write vartype="integer" value="$[+$offset + 1]" />-<mm:write vartype="integer" value="$[+$offset + $size]" />/<mm:write  /></mm:isgreaterthan></mm:write></nobr></th><!-- X and -> collum -->
   </tr>
 
 <mm:listnodes id="node_number" directions="$directions"  orderby="$orderby" jspvar="sn">
