@@ -103,7 +103,7 @@ public class Bugtracker {
     }
     
     public String getVersion(){
-        return "$Id: Bugtracker.java,v 1.8 2002-11-13 21:38:18 kees Exp $";
+        return "$Id: Bugtracker.java,v 1.9 2002-11-16 13:59:53 kees Exp $";
     }
     
     public static void main(String argv[]) throws Exception{
@@ -121,7 +121,5 @@ public class Bugtracker {
         //bugtracker.addRootBugCategory(10,bugtracker.createBugCategory("org"));
         //bugtracker.addRootBugCategory(20,bugtracker.createBugCategory("nl"));
         //bugtracker.addRootBugCategory(5,bugtracker.createBugCategory("com"));
-        
-        
     }
 }
