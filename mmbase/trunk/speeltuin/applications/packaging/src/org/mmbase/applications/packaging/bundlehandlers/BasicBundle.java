@@ -155,6 +155,7 @@ public class BasicBundle implements BundleInterface {
 
     public boolean install() {
         // step1
+	log.info("WOOO1");
         installStep step = getNextInstallStep();
         step.setUserFeedBack("bundle/basic installer started");
 
@@ -170,16 +171,31 @@ public class BasicBundle implements BundleInterface {
             d.next();
         }
         int pss = 800/pbs; // guess the progressbar per installed package
+	log.info("WOOO2");
 
         boolean changed = true; // signals something was installed
         while (changed) {
             Iterator e = getNeededPackages();
             changed = false;
             while (e.hasNext()) {
-                HashMap np = (HashMap)e.next();
-                pkg = PackageManager.getPackage((String)np.get("id"));
+		log.info("WOOO3");
+                Object o=e.next();
+		log.info("WOOO3b"+o);
+		log.info("WOOO3b"+o.getClass());
+		if (o instanceof HashMap) {
+		log.info("WOOO3c");
+		} else {
+		log.info("WOOO3d");
+		}
+                HashMap np = (HashMap)o;
+		log.info("WOOO4");
+                String tmp=(String)np.get("id");
+		log.info("WOOO5");
+                pkg = PackageManager.getPackage(tmp);
+		log.info("WOOO6");
                 if (pkg != null) {
                     String state = pkg.getState();
+		    log.info("WOOO5");
                     String name = pkg.getName();
                     if (!state.equals("installed")) {
                         step = getNextInstallStep();
@@ -213,6 +229,7 @@ public class BasicBundle implements BundleInterface {
 
         step=getNextInstallStep();
         step.setUserFeedBack("bundle/basic installer ended");
+	log.info("WOO10");
         return true;
     }
 
@@ -448,7 +465,7 @@ public class BasicBundle implements BundleInterface {
                         wid = wid.replace(' ','_');
                         wid = wid.replace('/','_');
 
-                        Hashtable h = new Hashtable();
+                        HashMap h = new HashMap();
                         h.put("name",name);
                         h.put("id",wid);
                         h.put("type",type);
