@@ -106,9 +106,9 @@
 			Nav nav = (Nav)childs.get(y);
 			sb.append("\n  <div>");
                         if (nav.childs.size() >0){
-			   sb.append("<a href=\""+ baseURL +"&page="+ nav.id +"\" onMouseOver=\"show('"+menuid+"_"+ y+"',"+deep+",this)\">");
+			   sb.append("<a href=\""+ baseURL +"&amp;page="+ nav.id +"\" onmouseover=\"show('"+menuid+"_"+ y+"',"+deep+",this)\">");
 			} else {
-			   sb.append("<a href=\""+ baseURL +"&page="+ nav.id +"\" onMouseOver=\"show('',"+deep+",this)\">");
+			   sb.append("<a href=\""+ baseURL +"&amp;page="+ nav.id +"\" onmouseover=\"show('',"+deep+",this)\">");
 			}
 			sb.append(nav.name);
 			sb.append("</a>");
