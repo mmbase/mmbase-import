@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.58.2.1 2004-04-26 15:00:52 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.58.2.2 2004-08-10 15:02:57 keesj Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -631,10 +631,11 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param table name of the original table
      * @return A <code>String</code> containing the table name
      */
-    private String getTableName(String table) {
-        int end = table.length() - 1;
-        while (Character.isDigit(table.charAt(end))) --end;
-        return table.substring(0, end + 1);
+    private String getTableName(String table) {     	     
+        int end = table.length() ;
+        if (end == 0) throw new IllegalArgumentException("Table name too short '" + table + "'");
+        while (Character.isDigit(table.charAt(end -1))) --end;
+        return table.substring(0, end );
     }
 
     /**
@@ -1591,7 +1592,7 @@ public class ClusterBuilder extends VirtualBuilder {
             Iterator iSteps= steps.iterator();
             while (iSteps.hasNext() && result == null) {
                 BasicStep step= (BasicStep)iSteps.next();
-                if (step.getTableName().equals(builder.tableName)) {
+                if (step.getTableName().equals(builder.tableName)) {  // should inheritance not be considered?
                     // Found.
                     result = step;
                 }
