@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.154 2002-09-30 12:42:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.155 2002-09-30 15:52:42 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1595,7 +1595,7 @@ public class MMObjectBuilder extends MMTable {
     protected void updateFields() {
         sortedFieldLists = new HashMap();
         // note: sortedDBLayout is deprectated
-        sortedDBLayout=new Vector();
+        // sortedDBLayout=new Vector();
         setDBLayout_xml(fields);
     }
 
@@ -2423,8 +2423,8 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDBLayout_xml(Hashtable fields) {
         sortedDBLayout=new Vector();
-        sortedDBLayout.addElement("otype");
-        sortedDBLayout.addElement("owner");
+        //sortedDBLayout.addElement("otype");
+        //sortedDBLayout.addElement("owner");
 
         FieldDefs node;
 
@@ -2432,9 +2432,11 @@ public class MMObjectBuilder extends MMTable {
         for (Iterator i=orderedfields.iterator();i.hasNext();) {
             node=(FieldDefs)i.next();
             String name=node.getDBName();
-            if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
-                sortedDBLayout.add(name);
+            if(sortedDBLayout.contains(name)) {
+                log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");                
+                continue;                    
             }
+            sortedDBLayout.add(name);
         }
     }
 
