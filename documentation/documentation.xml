@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.10 2003-06-11 20:53:21 henk Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.11 2003-06-30 12:34:26 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -36,7 +36,7 @@
 			are in the html/mmexamples module, so new examples must be added there.
 		</para>
 		<para>
-			Formal documentation is availabe in the `docbook' XML format in the `documentation' modules of
+			Formal documentation is available in the `docbook' XML format in the `documentation' modules of
 			the CVS repository.
 		</para>
 		<para>
@@ -118,7 +118,7 @@
 		<itemizedlist>
 			<listitem>
 				<para>Jedit</para>
-				<para>Jedit is a Java-based text editor that uses colorcoding to ease edting of source code, such as java code, xml/html, and css. It provides a number of useful macros and plugins, including xml validaton, tag completion, and xml auto-formatting.</para>
+				<para>Jedit is a Java-based text editor that uses colorcoding to ease editing of source code, such as java code, xml/html, and css. It provides a number of useful macros and plugins, including xml validation, tag completion, and xml auto-formatting.</para>
 				<para>Has some issues: it is a bit slow and occasionally freezes up, but it provides auto-save facilities and can recover after a crash. A good color-coded editor that works on all java-supporting platforms</para>
 				<para>see: <ulink url="http://www.jedit.org">http://www.jedit.org</ulink></para>
 			</listitem>
