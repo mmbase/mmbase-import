@@ -19,8 +19,6 @@ import java.io.BufferedOutputStream;
 
 import org.mmbase.bridge.Node;
 
-import org.mmbase.util.RFC1123;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -31,7 +29,7 @@ import java.util.*;
  * As AttachmentServlet, but the mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.2 2002-07-24 19:43:18 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.3 2002-09-06 21:33:38 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -100,12 +98,12 @@ public class HandleServlet extends BridgeServlet {
     protected boolean setExpires(HttpServletResponse res, Node node) {
         if (node.getNodeManager().getName().equals("icaches")) {
             // cached images never expire, they cannot change without receiving a new number, thus changing the URL.
-            Date never = new Date(System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000));
+            long never = System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000);
             // one year in future, this is considered to be sufficiently 'never'.
-            res.setHeader("Expires", RFC1123.makeDate(never));           
+            res.setDateHeader("Expires", never);           
         } else {
-            Date later =  new Date(System.currentTimeMillis() + expires);
-            res.setHeader("Expires", RFC1123.makeDate(later));
+            long later = System.currentTimeMillis() + expires;
+            res.setDateHeader("Expires", later);
         }
         return true;
     }
@@ -123,8 +121,7 @@ public class HandleServlet extends BridgeServlet {
             return;
         }
         // fill the headers
-        String now  = RFC1123.makeDate(new Date());
-        res.setHeader("Date", now);                    
+        res.setDateHeader("Date", System.currentTimeMillis());                    
 
         String mimeType = getMimeType(node);
         res.setContentType(mimeType);
