@@ -117,21 +117,6 @@
   </servlet>
   -->
 
-  <!-- servscan servlet, needed for parsing scan-pages
-  Uncomment this code to activate SCAN. Also turn on servlet mapping below.
-  You will first need to make the following SCAN modules active:
-  scanparser,mmbase,mmedit,session,info,calc
-  -->
-  <!--
-  <servlet>
-    <servlet-name>servscan</servlet-name>
-    <display-name>Servscan Servlet</display-name>
-    <description>Needed for parsing scan pages</description>
-    <servlet-class>org.mmbase.servlet.servscan</servlet-class>
-    <load-on-startup>6</load-on-startup>
-  </servlet>
-  -->
-
   <!-- mapping for version-request -->
   <servlet-mapping>
     <servlet-name>version</servlet-name>
@@ -167,16 +152,6 @@
   <servlet-mapping>
     <servlet-name>dove</servlet-name>
     <url-pattern>/xml/dove.xml</url-pattern>
-  </servlet-mapping>
-  -->
-
-  <!-- mapping shtml-files to servscan
-       Uncomment this code if you activate SCAN.
-  -->
-  <!--
-  <servlet-mapping>
-    <servlet-name>servscan</servlet-name>
-    <url-pattern>*.shtml</url-pattern>
   </servlet-mapping>
   -->
 
