@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -26,12 +26,16 @@ import org.mmbase.module.builders.Properties;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Arjan Houtman
  * @author Daniel Ockeloen
  */
 public class MMUsers extends ProcessorModule {
-	public final String CLASSNAME = getClass ().getName ();
+
+    private static Logger log = Logging.getLoggerInstance(MMUsers.class.getName()); 
 
 	private PasswordGeneratorInterface pwgen = new PasswordGenerator ();
 	private MMBase mmbase;
@@ -49,15 +53,9 @@ public class MMUsers extends ProcessorModule {
 	private String emailBodyLogin;
 	private String emailBodyPasswd;
 	private String emailBodyEnd;
-
-	private static final boolean debug=false;
-
-	private void debug (String msg) {
-		System.out.println (CLASSNAME + ": " + msg);
-	}
 	
 	private String error (String msg) {
-		debug( msg );
+		log.error(msg);
 		return "Error-> " + msg;
 	}
 
@@ -73,7 +71,9 @@ public class MMUsers extends ProcessorModule {
 		sessionInfo info = sessions.getSession (sp, sp.sname);
 		String userid = sessions.getValue (info, "USERNUMBER");
 
-		if (debug) debug ("Clearing session-info of user " + userid);
+		if (log.isDebugEnabled()) {
+            log.debug("Clearing session-info of user " + userid);
+        }
 		if (userid!=null) {
 			Hashtable has = getUserProperties (userid);
 			if (has != null) {
@@ -81,7 +81,9 @@ public class MMUsers extends ProcessorModule {
 					MMObjectNode node = (MMObjectNode)e.nextElement ();
 					String key = node.getStringValue ("key");
 					if ((key != null) && (excludedKeys.indexOf(";"+key+";")<0)) {
-						if (debug) debug ("Clearing key '" + key + "'");
+						if (log.isDebugEnabled()) {
+                            log.debug ("Clearing key '" + key + "'");
+                        }
 						sessions.setValue (info, key, "");
 					}	
 				}
@@ -131,16 +133,20 @@ public class MMUsers extends ProcessorModule {
 				String password = pwgen.getPassword ();
 				int userid = createNewUser (sp, loginname, password, address);
 				
-				if (userid < 0) debug ("Couldn't create a new user!");
+				if (userid < 0) log.error("Couldn't create a new user!");
 				else sendConfirmationEMail (address, loginname, password);
 				rtn = rtn+userid;
 			} else {
 				rtn="EMAIL";
-				if (debug) debug("Email address is already in use");
+				if (log.isDebugEnabled()) {
+                    log.debug("Email address is already in use");
+                }
 			}
 		} else {
 			rtn="USER";
-			if (debug) debug("Username is already in use");
+			if (log.isDebugEnabled()) {
+                log.debug("Username is already in use");
+            }
 		}
 		return rtn;
 	}
@@ -154,7 +160,7 @@ public class MMUsers extends ProcessorModule {
 		if (usernode == null) return -1;
 		usernode.setValue ("description", "created for SID = " + sid);
 		int id = users.insert ("system", usernode);
-		if (debug) debug ("Created new user " + id + ", SID=" + sid);
+		if (log.isServiceEnabled()) log.service("Created new user " + id + ", SID=" + sid);
 
 		// sessionInfo info = sessions.getSession (sp.req, sid);
 		sessionInfo info = sessions.getSession (sp, sp.sname);
@@ -249,14 +255,19 @@ public class MMUsers extends ProcessorModule {
 				pnode.setValue ("ptype", "string");
 				properties.insert ("system", pnode);
 				usernode.delPropertiesCache();
-				if (debug) debug ("storeValue() storing '" + value + "' in '" + key + "' for user "+userid);
+				if (log.isDebugEnabled()) {
+                    log.debug ("storeValue() storing '" + value + "' in '" + key + "' for user "+userid);
+                }
+
 			}
 			else
 			{
 				pnode.setValue ("value", value);
 				pnode.setValue ("ptype", "string");
 				pnode.commit();
-				if (debug) debug ("storeValue() overwriting '" + value + "' in '" + key + "' for user "+userid);
+				if (log.isDebugEnabled()) {
+                    log.debug ("storeValue() overwriting '" + value + "' in '" + key + "' for user "+userid);
+                }
 			}
 		}
 		else {
@@ -289,11 +300,11 @@ public class MMUsers extends ProcessorModule {
 				    : getListSelection (props, fields, tagger); 
 			}
 			else {
-				if (debug) debug ("MMUsers can't get property '" + tok + "'");
+                log.warn("MMUsers can't get property '" + tok + "'");
 			}
 		}
 		else {
-			debug ("MMUsers can't list '" + value + "'");
+			log.warn("MMUsers can't list '" + value + "'");
 		}
 		
 		return res;
@@ -375,37 +386,38 @@ public class MMUsers extends ProcessorModule {
 		// get email config and check it
    		emailFrom = getInitParameter("from");
 		if (emailFrom == null || emailFrom.equals("")) 
-			debug ("missing init param from");
+			log.debug ("missing init param from");
 		if (emailFrom.equals("youremail@yourcompany.nl")) 
-			debug ("from init parameter is still default, please change!!!!");
+			log.debug ("from init parameter is still default, please change!!!!");
 		emailReturnPath = getInitParameter("returnpath");
 		if (emailReturnPath == null || emailReturnPath.equals("")) 
-			debug (" missing init param returnpath");
+			log.debug (" missing init param returnpath");
 		if (emailReturnPath.equals("youremail@yourcompany.nl")) 
-			debug (" returnpath init parameter is still default, please change!!!!");
+			log.debug (" returnpath init parameter is still default, please change!!!!");
 		emailSubject = getInitParameter("subject");
 		if (emailSubject == null || emailSubject.equals("")) 
-			debug ("missing init param subject");              
+			log.debug ("missing init param subject");              
 		emailBodyBegin = getInitParameter("bodybegin"); 
 		if (emailBodyBegin == null || emailBodyBegin.equals("")) 
-			debug ("missing init param bodybegin");
+			log.debug ("missing init param bodybegin");
 		emailBodyLogin = getInitParameter("bodylogin");
 		if (emailBodyLogin == null || emailBodyBegin.equals("")) 
-			debug ("missing init param bodylogin");
+			log.debug ("missing init param bodylogin");
 		emailBodyPasswd = getInitParameter("bodypasswd"); 
 		if (emailBodyPasswd == null || emailBodyPasswd.equals("")) 
-			debug ("missing init param bodypasswd");
+			log.debug ("missing init param bodypasswd");
 		emailBodyEnd = getInitParameter("bodyend");
 		if (emailBodyEnd == null || emailBodyEnd.equals("")) 
-			debug ("missing init param bodyend");
+			log.debug ("missing init param bodyend");
 
-		if (debug) debug ("Sending e-mail to " + address + " concerning login '" + loginname + "' and password '" + password + "'");
+		if (log.isServiceEnabled()) {
+            log.service("Sending e-mail to " + address + " concerning login '" + loginname + "' and password '" + password + "'");
+        }
 		if (sendMail == null) sendMail = (SendMailInterface)getModule("sendmail");
-		if (sendMail == null)
-		{
-			System.out.println("MMUsers ERROR CANNOT GET MODULE SendMail!");
-			System.out.println("MMUsers could not send mail to "+address+" for login name "+loginname
-							   +" with password "+password);
+		if (sendMail == null) {
+            log.error("MMUsers ERROR CANNOT GET MODULE SendMail!");
+		    log.error("MMUsers could not send mail to " + address + " for login name " + loginname
+							   +" with password "+ password);
 			return;
 		}
 
@@ -434,7 +446,7 @@ public class MMUsers extends ProcessorModule {
 			Hashtable properties = usernode.getProperties();		
 			return(properties);
 		} else {
-			System.out.println("MMUsers -> getUserProperties not a valid user = "+userid);
+            log.warn("MMUsers -> getUserProperties not a valid user = " + userid);
 			return(null);
 		}	
 	}
@@ -457,13 +469,17 @@ public class MMUsers extends ProcessorModule {
 		MMObjectNode pnode=usernode.getProperty(key);
 		if (pnode == null)
 		{
-			debug( "MOD-MMUSERS-" + userid + "-GET-"+key+": key not found");
+            if (log.isDebugEnabled()) {
+                log.debug( "MOD-MMUSERS-" + userid + "-GET-"+key+": key not found");
+            }
 			return "";
 		}
 		String type = pnode.getStringValue ("ptype");
 		String value = pnode.getStringValue ("value");
 		if (type.equals ("string")) res = value; else res = "<NON-PRINTABLE>";
-		if (debug) debug( ""+userid+" "+res);
+		if (log.isDebugEnabled()) {
+            log.debug( "" + userid + " " + res);
+        }
 		return res;
 	}
 
@@ -492,7 +508,9 @@ public class MMUsers extends ProcessorModule {
 		sessionInfo info = sessions.getSession (sp,sp.sname);
 		String oldUserID = sessions.getValue (info, "USERNUMBER");
 		
-		if (debug) debug("Switch Info from " + oldUserID +" to "+newUserID);
+		if (log.isDebugEnabled()) {
+            log.debug("Switch Info from " + oldUserID +" to "+newUserID);
+        }
 
 		if (!newUserID.equals(oldUserID))
 			clearSessionInfo( sp );
@@ -508,7 +526,7 @@ public class MMUsers extends ProcessorModule {
 		Hashtable has2=getUserProperties(newUserID);
 		if (has2 == null)
 		{
-			debug( "WARNING SWITCH: newuser "+newUserID+" has no properties!");
+			log.warn("SWITCH: newuser " + newUserID + " has no properties!");
 			return "";
 		}
 		for (Enumeration e = has2.elements(); e.hasMoreElements (); ) {
