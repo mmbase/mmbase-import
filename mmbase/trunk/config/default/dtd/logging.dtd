@@ -4,5 +4,5 @@
 
 <!-- With logging describe which class to use for logging -->
 <!ELEMENT logging (class,configuration?)>
-<!ELEMENT class   ()>
-<!ELEMENT configuration ()>
+<!ELEMENT class   (#PCDATA)>
+<!ELEMENT configuration (#PCDATA)>
