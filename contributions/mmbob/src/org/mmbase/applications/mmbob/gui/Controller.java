@@ -443,7 +443,7 @@ public class Controller {
 		int up=(int)(d*u);
 		int ub=(int)(b*u);
 
-		log.info("u="+u+" d="+d+" up="+up+" b="+b+" ub="+ub);
+		// log.info("u="+u+" d="+d+" up="+up+" b="+b+" ub="+ub);
 
 		virtual.setValue("quotausedpercentage",up);
 		virtual.setValue("quotaunusedpercentage",100-up);
@@ -451,6 +451,16 @@ public class Controller {
 		virtual.setValue("quotausednumber",u);
 		virtual.setValue("quotaunusednumber",t-u);
 		virtual.setValue("quotausedbar",ub);
+
+		if (up>59) {
+			if (up>79) {
+				virtual.setValue("quotawarning","red");
+			} else {
+				virtual.setValue("quotawarning","orange");
+			}
+		} else {
+			virtual.setValue("quotawarning","green");
+		}
             }
         }
         return virtual;

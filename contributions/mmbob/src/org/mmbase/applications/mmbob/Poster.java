@@ -37,7 +37,7 @@ public class Poster {
     private String firstname, lastname, email, level, location, gender;
     private Node node;
     private Forum parent;
-    private Hashtable mailboxes;
+    private HashMap mailboxes;
     private HashMap seenthreads = new HashMap();
 
     /**
@@ -47,8 +47,8 @@ public class Poster {
      * @param parent Forum that the poster belongs to
      */
     public Poster(Node node, Forum parent) {
-	this.quotanumber=20;
-	this.quotaused=10;
+	this.quotanumber=10;
+	this.quotaused=-1;
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
@@ -416,7 +416,7 @@ public class Poster {
      * @return the mailbox
      */
     public Mailbox getMailbox(String name) {
-        if (mailboxes == null) mailboxes = readMailboxes();
+        if (mailboxes == null) readMailboxes();
         Object o = mailboxes.get(name);
         return (Mailbox) o;
     }
@@ -439,8 +439,8 @@ public class Poster {
      *
      * @return All the poster's mailboxes
      */
-    private Hashtable readMailboxes() {
-        Hashtable result = new Hashtable();
+    private void readMailboxes() {
+        mailboxes = new HashMap();
         if (node != null) {
             RelationIterator i = node.getRelations("posmboxrel", "forummessagebox").relationIterator();
             while (i.hasNext()) {
@@ -452,10 +452,10 @@ public class Poster {
                     p = rel.getSource();
                 }
                 Mailbox mailbox = new Mailbox(p, this);
-                result.put(mailbox.getName(), mailbox);
+                mailboxes.put(mailbox.getName(), mailbox);
             }
         }
-        return result;
+       calcMailboxQuota();
     }
 
     /**
@@ -527,5 +527,20 @@ public class Poster {
    public int getQuotaNumber() {
 	return quotanumber;
    }
+
+   public void mailboxChanged(Mailbox mb) {
+       // check on quota
+       calcMailboxQuota();
+   }
+
+   private void calcMailboxQuota() {
+       quotaused = 0;
+       Iterator i=mailboxes.values().iterator();
+       while (i.hasNext()) {
+                Mailbox m = (Mailbox)i.next();
+                quotaused +=m.getMessageCount();
+       }
+  }
+   	
 
 }
