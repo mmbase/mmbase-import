@@ -461,7 +461,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	if (pos!=-1) {
 		posturl = posturl.substring(0,pos);
 	}
-	posturl = "http://"+posturl + "/mmbase/mmpm/upload/package.mmp";
+	posturl = "http://"+posturl + "/mmbase/packagemanager/upload/package.mmp";
         try {
  	    String boundary =  "*5433***3243";
     
@@ -551,7 +551,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 	if (pos!=-1) {
 		posturl = posturl.substring(0,pos);
 	}
-	posturl = "http://"+posturl + "/mmbase/mmpm/upload/package.mmp";
+	posturl = "http://"+posturl + "/mmbase/packagemanager/upload/package.mmp";
         try {
  	    String boundary =  "*5433***3243";
     
@@ -588,7 +588,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 
             try {
                 BufferedInputStream in = new BufferedInputStream(bundle.getJarStream());
-		log.info("SENDING CREATOR="+creator);
                 int val;
 		int totallen=0;
                 while ((val = in.read()) != -1) {

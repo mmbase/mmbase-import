@@ -313,8 +313,17 @@ public class Controller {
                 virtual.setValue("licensebody", p.getLicenseBody());
                 String path = ShareManager.getProvidingPath(method) + "/package.mmp?id=" + p.getId() + "&amp;version=" + p.getVersion();
                 virtual.setValue("path", path);
+                List l = p.getScreenshots();
+                if (l != null) {
+                    virtual.setValue("screenshots", getRelatedScreenshotsString(l,ShareManager.getProvidingPath(method)));
+                }
 
-                List l = p.getRelatedPeople("initiators");
+                l = p.getStarturls();
+                if (l != null) {
+                    virtual.setValue("starturls", getRelatedStarturlsString(l));
+                }
+
+                l = p.getRelatedPeople("initiators");
                 if (l != null) {
                     virtual.setValue("initiators", getRelatedPeopleString(l, "initiators"));
                 }
@@ -364,6 +373,30 @@ public class Controller {
                     body += "\t\t\t<supporter company=\"" + pr.getCompany() + "\" />\n";
                 }
             }
+        }
+        return body;
+    }
+
+    public String getRelatedScreenshotsString(List screenshots,String path) {
+        String body = "";
+	path = path.substring(0,path.length()-31);
+        for (Iterator i = screenshots.iterator(); i.hasNext(); ) {
+                String name = (String) i.next();
+                String file = (String) i.next();
+                String description = (String) i.next();
+                body += "\t\t\t<screenshot name=\"" + name + "\" file=\"" + path+file + "\">"+description+"</screenshot>\n";
+        }
+        return body;
+    }
+
+
+    public String getRelatedStarturlsString(List starturls) {
+        String body = "";
+        for (Iterator i = starturls.iterator(); i.hasNext(); ) {
+                String name = (String) i.next();
+                String link = (String) i.next();
+                String description = (String) i.next();
+                body += "\t\t\t<url name=\"" + name + "\" link=\"" + link + "\">"+description+"</url>\n";
         }
         return body;
     }
