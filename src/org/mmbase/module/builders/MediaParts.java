@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.4  2001/05/04 16:19:43  vpro
+Wilbert: updated nodeLocal/remoteChanged to support machine name
+
 Revision 1.3  2001/04/10 12:20:38  michiel
 michiel: new logging system.
 
@@ -19,7 +22,7 @@ Revision 1.1  2000/12/14 16:19:22  vpro
 davzev: Created MediaParts builder (no table version yet, only java), AudioParts and VideoParts now extend MediaParts.
 
 
-$Id: MediaParts.java,v 1.4 2001-05-04 16:19:43 vpro Exp $
+$Id: MediaParts.java,v 1.5 2001-05-08 16:26:46 vpro Exp $
 */
 package org.mmbase.module.builders;
 
@@ -59,7 +62,7 @@ import org.mmbase.module.builders.*;
  * immediately.
  * 
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.4 2001-05-04 16:19:43 vpro Exp $
+ * @version $Id: MediaParts.java,v 1.5 2001-05-08 16:26:46 vpro Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 
@@ -103,7 +106,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 		if (ctype.equals("d")) {
 			try {
 				int num=Integer.parseInt(number);
-				boolean success = removeRaws(num);
+				boolean success = removeRaws(builder,num);
 				if (!success) 
                     log.error("removeRaws was not succesful!");
 			} catch (NumberFormatException nfe) {
@@ -153,27 +156,26 @@ public abstract class MediaParts extends MMObjectBuilder {
 
 	/**
 	 * Removes related rawaudio/video objects. 
+	 * @param buildername the buildername of which type this number is.
 	 * @param number objectnumber of audio/videopart. 
 	 * @return true if remove was succesful, false otherwise.
 	 */
-	public boolean removeRaws(int number) {
+	public boolean removeRaws(String buildername,int number) {
 		MMObjectBuilder builder = null;
 		Enumeration e = null;
-		MMObjectNode node = getNode(number);
-		MMObjectNode typedefNode = getNode(node.getIntValue("otype"));
 		
-		if (typedefNode.getStringValue("name").equals("audioparts")) {
+		if (buildername.equals("audioparts")) {
 			if (log.isDebugEnabled()) {
                 log.debug("removeRaws: Deleting all rawaudios where id=" + number);
             }
 			builder = mmb.getMMObject("rawaudios");
-		} else if (typedefNode.getStringValue("name").equals("videoparts")) {
+		} else if (buildername.equals("videoparts")) {
 			if (log.isDebugEnabled()) {
-                log.debug("removeRaws: Deleting all rawaudios where id=" + number);
+                log.debug("removeRaws: Deleting all rawvideos where id=" + number);
             }
 			builder = mmb.getMMObject("rawvideos");
 		} else {
-			log.error("removeRaws: Can't delete raws since number:" + number + " is not an audio/videopart but a " + typedefNode.getStringValue("name"));
+			log.error("Can't delete raws since number:"+number+" is not an audio/videopart but a "+buildername);
 			return false;
 		}
 
