@@ -23,10 +23,21 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.6 2003-11-26 16:48:37 michiel Exp $
+ * @version $Id: CgiSbURLComposer.java,v 1.1 2003-11-26 16:48:37 michiel Exp $
  * @since MMBase-1.7
  */
-public class CgiURLComposer extends RamURLComposer {
+public class CgiSbURLComposer extends RamURLComposer {
+
+    
+    protected String getBandPrefix() {
+        return "sb.";
+    }
+    protected String getBand() {
+        return "smalband";
+    }
+    public String getGUIIndicator(Map options) {
+        return super.getGUIIndicator(options) + " (" + getBand() +")";
+    }
 
 
     /**
@@ -44,19 +55,16 @@ public class CgiURLComposer extends RamURLComposer {
      * Host must be cgi.omroep.nl script.
      */
     public boolean canCompose() {
-        return provider.getStringValue("host").equals("cgi.omroep.nl")  && provider.getStringValue("rootpath").charAt(0) != '%';
+        return provider.getStringValue("host").equals("cgi.omroep.nl")  && provider.getStringValue("rootpath").charAt(0) == '%';
     }
 
 
     protected StringBuffer getURLBuffer() {
-        String rootpath = provider.getStringValue("rootpath");
+        String rootpath = provider.getStringValue("rootpath").substring(1);
         StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootpath);
-        buff.append(source.getStringValue("url"));
+        int lastSlash = RealSbURLComposer.addURL(buff, source.getStringValue("url"));
+        buff.insert(lastSlash + 1, getBandPrefix());
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title
-        if (fragment == null) {
-            // cgi script does not work without title (for wm)?
-            buff.append('?').append("title=geen_beschrijving");
-        }
         return buff;            
     }
 
