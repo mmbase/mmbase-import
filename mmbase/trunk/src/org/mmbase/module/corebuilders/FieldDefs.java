@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.37 2003-09-08 17:06:12 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.38 2003-09-19 12:04:38 pierre Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -53,7 +53,7 @@ public class FieldDefs implements Comparable, Storable {
     private static Logger log = Logging.getLoggerInstance(FieldDefs.class);
 
     private final static String[] DBSTATES = {
-        "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM"
+        "unknown", "virtual", "unknown", "persistent", "system"
     };
 
     private final static String[] DBTYPES = {
@@ -178,10 +178,10 @@ public class FieldDefs implements Comparable, Storable {
      */
     public static int getDBStateId(String state) {
         if (state == null) return DBSTATE_UNKNOWN;
-        state = state.toUpperCase();
-        if (state.equals("PERSISTENT"))  return DBSTATE_PERSISTENT;
-        if (state.equals("VIRTUAL"))     return DBSTATE_VIRTUAL;
-        if (state.equals("SYSTEM"))      return DBSTATE_SYSTEM;
+        state = state.toLowerCase();
+        if (state.equals("persistent"))  return DBSTATE_PERSISTENT;
+        if (state.equals("virtual"))     return DBSTATE_VIRTUAL;
+        if (state.equals("system"))      return DBSTATE_SYSTEM;
         return DBSTATE_UNKNOWN;
     }
 
