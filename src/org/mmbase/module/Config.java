@@ -58,12 +58,9 @@ import org.mmbase.module.core.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.16 2002-12-18 20:57:15 michiel Exp $
+ * @version $Id: Config.java,v 1.14.6.2 2002-12-18 20:53:03 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
- * Revision 1.14.6.2  2002/12/18 20:53:03  michiel
- * fix for #4780
- *
  * Revision 1.14.6.1  2002/12/03 21:22:31  michiel
  * fixes for bugs #4249, #3713 and #4393 plus a little cleaning in the process. All related to DTD resolving / XML validation
  *

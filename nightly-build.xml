@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.5 2002-11-12 22:36:58 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.5.2.1 2002-12-10 23:00:26 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -36,24 +36,30 @@
   <property name="warpackage.file"    value="${destination.dir}/mmbase.war"/>
   <property name="minwarpackage.file" value="${destination.dir}/minimalistic-mmbase.war"/>
 
-  <!-- Make build for this time -->
-  <property name="date" value="now" />
-  
-        
+  <target name="init">
+    <tstamp/>
+    <property name="date" value="${DSTAMP}"/>
+
+
+  <property name="cvs.mmbase.module" value="all"/>
+
+  <property name="cvsroot" value=":pserver:guest@www.mmbase.org:/usr/local/cvs" />
+  <property name="checkoutcommand" value="checkout -r MMBase-1_6 ${cvs.mmbase.module}" />
+  <property name="updatecommand" value="update -d -P  -r MMBase-1_6 " />
+
+  </target>
+
   <!-- ================================================================================
        Getting the source by CVS and store it
        ================================================================================
   -->        
-  <property name="cvs.mmbase.module" value="all"/>
 
-  <property name="cvsroot" value=":pserver:guest@www.mmbase.org:/usr/local/cvs" />
-  <property name="checkoutcommand" value="checkout -D ${date} " />
-  <property name="updatecommand" value="update -d -P  -D ${date} " />
+  <target name="cvs" depends="init">
 
-  <target name="cvs">
     <echo>Doing an anonymous CVS login</echo>
     <cvspass cvsroot="${cvsroot}" password="guest" />
 		
+    <echo message="${updatecommand}" />
     <!-- get config from cvs -->
     <mkdir dir="${nbuild.dir}/cvs"/>
     <cvs cvsRoot="${cvsroot}"

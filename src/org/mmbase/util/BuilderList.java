@@ -24,7 +24,7 @@ import java.util.*;
  * Gives an xml-representation of a dir structure with builders
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.3 2002-11-29 08:02:52 gerard Exp $
+ * @version $Id: BuilderList.java,v 1.2.2.1 2002-11-28 22:13:36 gerard Exp $
  */
 public class BuilderList {
     // logger not used at the moment

@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.9 2002-11-26 10:02:21 pierre Exp $
+  @version $Id: caches.xml,v 1.8.2.1 2002-11-26 10:00:32 pierre Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -39,6 +39,7 @@
     <status>active</status>
     <size>128</size>
   </cache>
+
 
   <!-- ================================================================================
   Caches for XSL Transformations

@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.11 2002-11-25 17:35:26 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.9.2.2 2002-11-27 15:53:02 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -242,6 +242,7 @@ public class BuilderWriter extends DocumentWriter  {
                     addComment("builder.field.db.type",db);
                     Element dbtype=addContentElement("type",sType,db);
                     String sState = FieldDefs.getDBStateDescription(fielddef.getDBState());
+                    sState=sState.toLowerCase();
                     dbtype.setAttribute("state",sState);
                     int size=fielddef.getDBSize();
                     if (size>-1) {

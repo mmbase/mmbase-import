@@ -3,7 +3,7 @@
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.8 2002-11-27 14:56:22 pierre Exp $
+     * @version  $Id: upload.jsp,v 1.7.2.1 2002-11-27 14:54:14 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen

@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.83 2002-12-18 19:48:06 michiel Exp $
+  @version $Id: wizard.xsl,v 1.80.2.3 2002-12-18 19:46:14 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />

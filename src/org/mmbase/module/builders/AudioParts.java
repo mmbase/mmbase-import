@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.29 2002-12-04 13:54:37 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.28.2.1 2002-12-04 13:57:41 vpro Exp $
  */
 public class AudioParts extends MediaParts {
     //logging

@@ -13,7 +13,6 @@ import java.sql.*;
 
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
-import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.XMLDatabaseReader;
@@ -23,9 +22,9 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.20 2002-11-28 14:11:51 robmaris Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.18 2002-09-16 15:07:29 pierre Exp $
  */
-public interface MMJdbc2NodeInterface extends SearchQueryHandler {
+public interface MMJdbc2NodeInterface {
     /**
      * Returns whether this database support layer allows for buidler to be a parent builder
      * (that is, other builders can 'extend' this builder and its database tables).
@@ -59,15 +58,8 @@ public interface MMJdbc2NodeInterface extends SearchQueryHandler {
      * @javadoc
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
-    
     /**
-     * Converts an MMNODE expression to an SQL expression. Returns the 
-     * result as an SQL where-clause, but with the leading "WHERE " left out.
-     *
-     * @param where The MMNODE expression.
-     * @bul The builder for the type of nodes that is queried.
-     * @return The SQL expression.
-     * @see org.mmbase.module.core.MMObjectBuilder#convertMMNode2SQL(String)
+     * @javadoc
      */
     public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
     /**

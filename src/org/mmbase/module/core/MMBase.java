@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.81 2002-11-21 13:35:08 pierre Exp $
+ * @version $Id: MMBase.java,v 1.79.2.2 2002-11-21 13:36:27 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 

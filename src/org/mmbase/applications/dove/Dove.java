@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.27 2002-11-27 12:50:12 pierre Exp $
+ * @version $Id: Dove.java,v 1.26.2.1 2002-11-27 12:51:38 pierre Exp $
  */
 
 public class Dove extends AbstractDove {

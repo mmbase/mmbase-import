@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.2 2002-12-17 15:32:10 pierre Exp $
+ * @version $Id: DateHandler.java,v 1.1.2.1 2002-12-17 15:30:56 pierre Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 

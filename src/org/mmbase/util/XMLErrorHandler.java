@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.8 $ $Date: 2002-12-03 21:24:28 $
+ * @version $Revision: 1.7.2.1 $ $Date: 2002-12-03 21:22:34 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: BugReports.java,v 1.4 2002-11-21 13:39:43 pierre Exp $
+ * @version $Id: BugReports.java,v 1.3.6.1 2002-11-21 13:42:01 pierre Exp $
  */
 public class BugReports extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(BugReports.class.getName());
