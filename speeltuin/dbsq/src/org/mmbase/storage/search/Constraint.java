@@ -34,5 +34,4 @@ public interface Constraint {
     // javadoc is inherited
     public int hashCode();
     
-    // TODO: include isInverse setting in toString() for all constraint subclasses.
 }

@@ -11,7 +11,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicRelationStepTest extends TestCase {
     
@@ -117,7 +117,7 @@ public class BasicRelationStepTest extends TestCase {
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
-        + instance.getDirectionality() + ")"));
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
         
         // With test alias.
         instance.setAlias(TEST_ALIAS);
@@ -125,7 +125,7 @@ public class BasicRelationStepTest extends TestCase {
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
-        + instance.getDirectionality() + ")"));
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
          
         // With nodes.
         instance.addNode(123);
@@ -134,7 +134,7 @@ public class BasicRelationStepTest extends TestCase {
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
-        + instance.getDirectionality() + ")"));
+        + RelationStep.DIRECTIONALITY_NAMES[instance.getDirectionality()] + ")"));
      }
     
     public static Test suite() {

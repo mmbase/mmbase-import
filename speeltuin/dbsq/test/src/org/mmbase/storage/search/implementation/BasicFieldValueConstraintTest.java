@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldValueConstraintTest extends TestCase {
     
@@ -135,7 +135,18 @@ public class BasicFieldValueConstraintTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
     public void testToString() {
         assert(instance1.toString(),
-        instance1.toString().equals("FieldValueConstraint(field:"
+        instance1.toString().equals("FieldValueConstraint(inverse:"
+        + instance1.isInverse() + ", field:"
+        + instance1.getField().getAlias() + ", casesensitive:"
+        + instance1.isCaseSensitive() + ", operator:"
+        + instance1.getOperator() + ", value:"
+        + instance1.getValue() + ")"));
+        
+         // Reverse inverse flag.
+        instance1.setInverse(!instance1.isInverse());
+        assert(instance1.toString(),
+        instance1.toString().equals("FieldValueConstraint(inverse:"
+        + instance1.isInverse() + ", field:"
         + instance1.getField().getAlias() + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"
@@ -144,7 +155,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
         // Set field alias.
         field1.setAlias("yyuiwe");
         assert(instance1.toString(),
-        instance1.toString().equals("FieldValueConstraint(field:"
+        instance1.toString().equals("FieldValueConstraint(inverse:"
+        + instance1.isInverse() + ", field:"
         + instance1.getField().getAlias() + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"
@@ -153,7 +165,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
         // Reverse case sensitive.
         instance1.setCaseSensitive(!instance1.isCaseSensitive());
         assert(instance1.toString(),
-        instance1.toString().equals("FieldValueConstraint(field:"
+        instance1.toString().equals("FieldValueConstraint(inverse:"
+        + instance1.isInverse() + ", field:"
         + instance1.getField().getAlias() + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"
@@ -161,7 +174,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
         
         instance1.setValue(STRING_VALUE2);
         assert(instance1.toString(),
-        instance1.toString().equals("FieldValueConstraint(field:"
+        instance1.toString().equals("FieldValueConstraint(inverse:"
+        + instance1.isInverse() + ", field:"
         + instance1.getField().getAlias() + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"
@@ -169,7 +183,8 @@ public class BasicFieldValueConstraintTest extends TestCase {
         
         instance1.setOperator(FieldCompareConstraint.GREATER);
         assert(instance1.toString(),
-        instance1.toString().equals("FieldValueConstraint(field:"
+        instance1.toString().equals("FieldValueConstraint(inverse:"
+        + instance1.isInverse() + ", field:"
         + instance1.getField().getAlias() + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"

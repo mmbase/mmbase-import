@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     
@@ -70,7 +70,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         
-        // XXX TODO: test table and field aliases for uniqueness.
+        // TODO: (later) test table and field aliases for uniqueness.
         
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {

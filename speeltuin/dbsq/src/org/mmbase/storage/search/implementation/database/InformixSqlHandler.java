@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     
@@ -64,7 +64,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         
-        // XXX TODO: test table and field aliases for uniqueness.
+        // TODO: (later) test table and field aliases for uniqueness.
         
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
@@ -76,10 +76,15 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             "Searchquery has no field (at least 1 field is required).");
         }
         
+        // Test offset set to default (= 0).
+        if (query.getOffset() != SearchQuery.DEFAULT_OFFSET) {
+            throw new UnsupportedOperationException(
+            "Value of offset other than " 
+            + SearchQuery.DEFAULT_OFFSET + " not supported.");
+        }
+        
         // SELECT
         StringBuffer sbQuery = new StringBuffer("SELECT ");
-        // TODO: throw exception if offset set to non-default value.
-        
         
         // FIRST
         if (query.getMaxNumber() != -1) {

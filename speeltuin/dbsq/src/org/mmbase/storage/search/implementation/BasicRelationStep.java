@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
     
@@ -113,7 +113,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         append(", nodes:").
         append(getNodes()).
         append(", dir:").
-        append(getDirectionality()).
+        append(RelationStep.DIRECTIONALITY_NAMES[getDirectionality()]).
         append(")");
         return sb.toString();
     }

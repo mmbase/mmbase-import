@@ -14,11 +14,13 @@ public interface CompareFieldsConstraint extends FieldCompareConstraint {
     /**
      * Returns a string representation of this CompareFieldsConstraint. 
      * The string representation has the form 
-     * "CompareFieldsConstraint(field:&lt;field&gt;, 
+     * "CompareFieldsConstraint(inverse:&lt:inverse&gt;, field:&lt;field&gt;, 
      *  casesensitive:&lt;casesensitive&gt;, operator:&lt;operator&gt;,
      *  field2:&lt;field2&gt;)"
      * where 
      * <ul>
+     * <li><em>&lt;inverse&gt;</em>is the value returned by
+     *      {@link #isInverse isInverse()}
      * <li><em>&lt;field&gt;</em> is the field alias returned by 
      *     <code>FieldConstraint#getField().getAlias()</code>
      * <li><em>&lt;casesensitive&gt;</em> is the value returned by

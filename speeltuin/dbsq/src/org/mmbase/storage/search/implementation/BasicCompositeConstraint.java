@@ -7,7 +7,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicCompositeConstraint extends BasicConstraint
 implements CompositeConstraint {
@@ -95,7 +95,7 @@ implements CompositeConstraint {
             return isInverse() == constraint.isInverse()
                 && logicalOperator == constraint.getLogicalOperator()
                 && childs.equals(constraint.getChilds());
-            // TODO: should order of childs matter (it does now)?
+            // TODO: (later) should order of childs matter (it does now)?
         } else {
             return false;
         }
@@ -110,8 +110,10 @@ implements CompositeConstraint {
     
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("CompositeConstraint(operator:");
-        sb.append(getLogicalOperator()).
+        StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
+        append(isInverse()).
+        append(", operator:").
+        append(getLogicalOperator()).
         append(", childs:").
         append(getChilds()).
         append(")");
