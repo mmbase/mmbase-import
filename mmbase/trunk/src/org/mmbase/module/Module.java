@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.39 $ $Date: 2002-10-03 14:46:24 $
+ * @version $Revision: 1.40 $ $Date: 2002-10-10 17:20:42 $
  */
 public abstract class Module {
 
@@ -330,7 +330,7 @@ public abstract class Module {
                 mod.startModule();
             } catch (Exception f) {
                 log.error("startModules(): module(" + mod + ") not found to 'init'!");
-                f.printStackTrace();
+                log.error(Logging.stackTrace(f));
             }
         }
     }
