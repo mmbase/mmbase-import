@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.58 2002-05-16 14:59:59 eduard Exp $
+ * @version $Id: BasicCloud.java,v 1.59 2002-05-28 16:35:08 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -201,7 +201,7 @@ public class BasicCloud implements Cloud, Cloneable {
         Vector nodeManagers = new Vector();
         for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
-            if(!bul.isVirtual()) {
+            if(!bul.isVirtual() && check(Operation.READ, bul.oType)) {
                 nodeManagers.add(bul.getTableName());
             }
         }
