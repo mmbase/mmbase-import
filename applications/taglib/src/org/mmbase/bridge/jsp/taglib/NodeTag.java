@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.51 2003-12-18 11:56:22 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.52 2004-01-16 18:18:11 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -174,7 +174,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                             node = null;
                             break;
                         default:
-                            throw new JspTagException("Could not find 'element' node.");
+                            throw new JspTagException("Could not find node element '" + element.getString(this) + "'");
                         }
                     }
                 } else {
