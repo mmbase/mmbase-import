@@ -155,7 +155,7 @@ public class MediaSourceFilter {
      */
     public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {
         
-        List mediaSources = mediaFragmentBuilder.getMediaSources(mediaFragment);
+        List mediaSources = mediaFragmentBuilder.getSources(mediaFragment);
         
         if (mediaSources == null || mediaSources.size() == 0) {
             log.warn("mediaFragment " + mediaFragment.getStringValue("title") + " does not have media sources");
