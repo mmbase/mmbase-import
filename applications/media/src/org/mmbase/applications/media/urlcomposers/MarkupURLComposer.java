@@ -29,7 +29,7 @@ import java.net.*;
  * its parent fragments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MarkupURLComposer.java,v 1.3 2003-02-18 17:08:58 michiel Exp $
+ * @version $Id: MarkupURLComposer.java,v 1.4 2003-02-25 23:54:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class MarkupURLComposer extends FragmentURLComposer { 
@@ -95,10 +95,11 @@ public class MarkupURLComposer extends FragmentURLComposer {
 
     public String getDescription(Map options) { 
         Locale locale = (Locale) options.get("locale");
+        ResourceBundle m = ResourceBundle.getBundle("org.mmbase.applications.media.urlcomposers.resources.markupurlcomposer", locale);
         String url = getURL() + "&amp;language=" + locale.getLanguage();
         MMObjectNode template = getTemplate();
         if (template.getStringValue("mimetype").equals("text/html")) {
-            return template.getStringValue("name") + "<br />" + template.getStringValue("description") + ":<br /><nobr>&lt;object data='" + url + "' type='text/html'&gt;&lt/object&gt;</nobr>";
+            return template.getStringValue("name") + "<br />" + template.getStringValue("description") + "<br />" + m.getString("object") + ":<br /><nobr>&lt;object data='" + url + "' type='text/html'&gt;&lt/object&gt;</nobr>";
         } else {
             return template.getStringValue("name") + "<br />" + template.getStringValue("description");
         }

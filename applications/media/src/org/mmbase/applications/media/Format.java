@@ -17,7 +17,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.8 2003-02-25 10:18:28 michiel Exp $
+ * @version $Id: Format.java,v 1.9 2003-02-25 23:54:31 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -75,6 +75,13 @@ public final class Format {   // final class!!
         } catch (java.lang.IndexOutOfBoundsException e) {
             return UNKNOWN;
         }
+    }
+
+    /**
+     * don't know if this is nice
+     */
+    public static List getMediaFormats() {
+        return Arrays.asList(new Format[] {MP3, RA, RA,WAV, PCM, MP2, RM, VOB, AVI, MPEG, MP4, MPG, ASF, MOV, WMA, OGG, OGM, RAM, WMP, QT});
     }
     public static Format get(String id) {
         id = id.toLowerCase();
