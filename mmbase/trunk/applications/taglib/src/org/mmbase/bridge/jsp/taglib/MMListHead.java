@@ -12,27 +12,29 @@ import javax.servlet.jsp.tagext.*;
 **/
 public class MMListHead extends BodyTagSupport{
 	
-	public int doStartTag() throws JspException{
-		try {
-			MMList mmList = (MMList)this.findAncestorWithClass((Tag)this,Class.forName("org.mmbase.bridge.jsp.taglib.MMList"));
-			
-			if (mmList == null)
-				return SKIP_BODY;
-			if (mmList.isFirst())
-				return EVAL_BODY_TAG;
-		} catch (Exception e){
-			return SKIP_BODY;
-		}
-		return SKIP_BODY;
-	}
-	
-	public int doEndTag() throws JspException{
-		try{
-			if(bodyContent != null)
-				bodyContent.writeOut(bodyContent.getEnclosingWriter());
-		} catch(java.io.IOException e){
-			throw new JspException("IO Error: " + e.getMessage());
-		}
-		return EVAL_PAGE;
-	}
+    public int doStartTag() throws JspException{
+        try {
+            ListTag mmList = 
+                (ListTag) this.findAncestorWithClass((Tag)this,
+                                                     Class.forName("org.mmbase.bridge.jsp.taglib.ListTag"));
+            
+            if (mmList == null)
+                return SKIP_BODY;
+            if (mmList.isFirst())
+                return EVAL_BODY_TAG;
+        } catch (Exception e){
+            return SKIP_BODY;
+        }
+        return SKIP_BODY;
+    }
+    
+    public int doEndTag() throws JspException{
+        try{
+            if(bodyContent != null)
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        } catch(java.io.IOException e){
+            throw new JspException("IO Error: " + e.getMessage());
+        }
+        return EVAL_PAGE;
+    }
 }
