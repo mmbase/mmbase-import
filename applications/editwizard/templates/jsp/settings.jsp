@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.23 2002-08-12 19:37:22 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.24 2002-08-12 20:48:46 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -118,7 +118,7 @@ response.addHeader("Cache-Control","no-cache");
 response.addHeader("Pragma","no-cache");
 
 // Set session timeout
-session.setMaxInactiveInterval(60 * 60 * 24); // 24 hours;
+session.setMaxInactiveInterval(60 * 60 ); // 1 hour;
 
 // and make every page expired ASAP.
 String now = org.mmbase.util.RFC1123.makeDate(new Date());
@@ -141,11 +141,15 @@ boolean proceed = "true".equals(request.getParameter("proceed")) ||
 
 // Look if there is already a configuration in the session.
 Object configObject = session.getAttribute(sessionKey);
+if (proceed && configObject == null) {
+    throw new WizardException("Your data cannot be found anymore, you waited too long (more than an hour), or the server was restarted");
+}
+
 if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) { // nothing (ok) in the session
     if (log.isDebugEnabled()) log.debug("creating new configuration (in session is " + configObject + ")");
     ewconfig = new Config();
-    if (! sessionKey.endsWith("_search")) {
-        session.setAttribute(sessionKey, ewconfig);  // put it in the session
+    if (! sessionKey.endsWith("_search")) { 
+        session.setAttribute(sessionKey, ewconfig);  // put it in the session (if not a search window)
     }
 
 } else {
@@ -187,7 +191,9 @@ if (request.getParameter("remove") != null) {
     }
 
     if (ewconfig.subObjects.size() == 0) {
+        //if (request.getParameter("popup") != null) {
         if (sessionKey.indexOf("|popup") > 0) {
+
             log.debug("a separate running popup, so remove sessiondata");
             session.removeAttribute(sessionKey);
 %>
@@ -238,11 +244,11 @@ if (request.getParameter("remove") != null) {
             log.debug("Redirecting to " + refer);
             response.sendRedirect(refer);
         }
-        done=true;
+        done = true;
     } else if (ewconfig.subObjects.peek() instanceof Config.ListConfig) {
         log.debug("Redirecting to list");
         response.sendRedirect(response.encodeURL("list.jsp?proceed=true&sessionkey="+sessionKey));
-        done=true;
+        done = true;
     }
 }
 
