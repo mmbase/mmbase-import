@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.56 2004-09-16 10:48:30 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.57 2005-02-23 14:44:19 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -146,6 +146,7 @@ function doSearch(el, cmd, sessionkey) {
     var constraints= el.getAttribute("constraints");
     var orderby    = el.getAttribute("orderby");
     var directions = el.getAttribute("directions");
+    var searchdir = el.getAttribute("searchdir");
     var distinct   = el.getAttribute("distinct");
 
     // lastobject is generally the last builder in the nodepath.
@@ -212,6 +213,7 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("constraints", encodeURI(constraints));
     url += setParam("orderby", orderby);
     url += setParam("directions", directions);
+    url += setParam("searchdir", searchdir);
     url += setParam("distinct", distinct);
     url += setParam("age", searchage+"");
     url += setParam("type", el.getAttribute("type"));
