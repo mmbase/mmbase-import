@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud>
+<mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
+<mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
+<mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
@@ -123,7 +125,15 @@
 		<input type="submit" name="folderaction" value="move">
 		</th>
 	</tr>
+	<mm:import id="viewstate"><mm:field name="viewstate" /></mm:import>
+		<mm:compare referid="viewstate" value="0">
+		<mm:setfield name="viewstate">1</mm:setfield>
+		<mm:import id="mbn"><mm:node referid="mailboxid"><mm:field name="name" /></mm:node></mm:import>
+		</mm:compare>
 	</mm:node>
+	<mm:compare referid="viewstate" value="0">
+        <mm:function set="mmbob" name="signalMailboxChange" referids="forumid,posterid,mbn@mailboxid" />
+	</mm:compare>
 	</mm:present>
 	</table>
 	</form>

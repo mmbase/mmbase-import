@@ -19,43 +19,14 @@
  <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
-
 <center>
-<mm:node referid="postingid">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
-  <tr><th width="25%" align="left">Poster</th><th align="left">Onderwerp : <mm:field name="subject" /></th></tr>
-  <mm:import id="tdvar">listpaging</mm:import>
-  <tr>
-    <td class="<mm:write referid="tdvar" />" align="left">
-      <mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
-    </td>
-    <td class="<mm:write referid="tdvar" />" align="right">
-    </td>
-  </tr>
- 
-  <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-    <p>
-      <b><mm:field name="poster" /></b>
-    </p>
-  </td>
-
-  <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** Laatste keer aangepast op : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
-                                                                                                
-               <mm:formatter xslt="xslt/posting2xhtmlLight.xslt">
-                <mm:function referids="imagecontext,themeid" name="escapesmilies">
-                <mm:write/>
-                </mm:function>
-              </mm:formatter>
-                                                                                                
-    <br /><br /><br /><br /><br />
-  </td>
- </tr>
-</table>
-</mm:node>
-
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
-  <tr><th colspan="3" align="center" >Bericht echt verwijderen ??</th></tr>
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="80%">
+  <tr><th colspan="3" align="left" >Bericht : <p />
+	<mm:node referid="postingid">
+	<mm:field name="subject" /> van <mm:field name="poster" /><p />
+	<mm:field name="html(body)" />
+	<p />
+	</mm:node> echt verwijderen ??</th></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp">
 					<mm:param name="forumid" value="$forumid" />
@@ -63,7 +34,7 @@
 					<mm:param name="postthreadid" value="$postthreadid" />
 					<mm:param name="postingid" value="$postingid" />
 				</mm:url>" method="post">
-	<input type="hidden" name="moderatorcheck" value="true">
+	<input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="removepost">
 	<p />
 	<center>

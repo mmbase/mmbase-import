@@ -37,7 +37,7 @@
 	<table cellpadding="0" class="list" cellspacing="0" width="150">
 	<tr><th>Folder</th></tr>
 	<mm:node referid="posterid">
-	<mm:related path="posrel,forummessagebox">
+	<mm:related path="posmboxrel,forummessagebox">
 		<mm:node element="forummessagebox">
 			<mm:field name="name">
 			<mm:notpresent referid="mailboxid">
@@ -64,25 +64,28 @@
 	</td></tr>
 	<tr><td>
 	<table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
+	<mm:import id="barsize">150</mm:import>
+        <mm:nodefunction set="mmbob" name="getQuotaInfo" referids="forumid,posterid,barsize">
 	<tr><th colspan="3">PM Quota</th></tr>
-	<tr><td colspan="3">You are using 10% of your quota</td></tr>
-	<tr><td colspan="3"><img src="images/green.gif" height="7" width="20"></td></tr>
+	<tr><td colspan="3">You are using <mm:field name="quotausedpercentage" />% of your quota</td></tr>
+	<tr><td colspan="3"><img src="images/green.gif" height="7" width="<mm:field name="quotausedbar" />"></td></tr>
 	<tr><td align="left" width="33%">0%</td><td align="middle" width="34%">50%</td><td align="right" width="33%">100%</td></tr>
+	</mm:nodefunction>
 	</table>
 	</td></tr>
 	</table>
    </td>
    <td valign="top">
 	<table cellpadding="0" class="list" style="margin-top : 2px;" cellspacing="0" width="100%" border="1">
-	<tr><th>Subject</th><th>Sender</th><th>Date</th><th></th></tr>
+	<tr><th></th><th>Subject</th><th>Sender</th><th>Date</th><th></th></tr>
 	<mm:present referid="mailboxid">
    	<form action="<mm:url page="privatemessagesconfirmaction.jsp" referids="forumid,mailboxid" />" method="post">
 	<mm:node referid="mailboxid">
-	<mm:relatednodes type="forumprivatemessage">
+	<mm:relatednodes type="forumprivatemessage" orderby="createtime" directions="down">
 	<mm:first>
 		<mm:import id="messagesfound">true</mm:import>
 	</mm:first>
-	<tr><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
+	<tr><td><mm:index /></td><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a> <mm:field name="viewstate"><mm:compare value="0">*UNSEEN*</mm:compare></mm:field></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
 	</mm:relatednodes>
 	</mm:node>
 	<tr>

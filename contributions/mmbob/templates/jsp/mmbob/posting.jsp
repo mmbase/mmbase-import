@@ -58,7 +58,7 @@
 		</mm:compare>
 	</td></tr>
 	<tr><th>Onderwerp</th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />" ></td></th>
-	<tr><th valign="top">Bericht <center><table width="99"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><quote poster="<mm:field name="poster"/>"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></quote></textarea></td></tr>
+	<tr><th valign="top">Bericht <center><table width="99"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><quote poster="<mm:field name="c_poster"/>"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></quote></textarea></td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="postreply">
 	<center><input type="submit" value="plaats bericht">

@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud>
+<mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
+<mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
+<mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <mm:import externid="action" />
 <mm:import externid="forumid" />
 <mm:import externid="folderaction" />
@@ -15,18 +17,6 @@
 		<mm:remove referid="adminmode" />
   		<mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
 	  </mm:nodefunction>
-</mm:present>
-
-<mm:import id="moderatormode">false</mm:import>
-<mm:import externid="moderatorcheck" />
-<mm:present referid="moderatorcheck">
-          <mm:import externid="postareaid" />
-          <mm:import externid="page">1</mm:import>
-          <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
-                <mm:remove referid="moderatormode" />
-                <mm:import id="moderatormode"><mm:field name="ismoderator" /></mm:import>
-          </mm:nodefunction>
-          <mm:remove referid="postareaid"/>
 </mm:present>
 
 <mm:compare value="postreply" referid="action">
@@ -60,6 +50,17 @@
 	<mm:import externid="foldername" />
 	<mm:booleanfunction set="mmbob" name="removeFolder" referids="forumid,posterid,foldername">
 	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="removeprivatemessage" referid="action">
+	<mm:import externid="mailboxid" />
+	<mm:import externid="messageid" />
+	<mm:node referid="messageid">
+		<mm:deletenode deleterelations="true" />
+                <mm:import id="mbn"><mm:node referid="mailboxid"><mm:field name="name" /></mm:node></mm:import>
+        	<mm:import id="resultcode" ><mm:function set="mmbob" name="signalMailboxChange" referids="forumid,posterid,mbn@mailboxid" /></mm:import>
+	</mm:node>
 </mm:compare>
 
 
@@ -103,6 +104,8 @@
 	<mm:booleanfunction set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location">
 	</mm:booleanfunction>
 </mm:compare>
+
+
 
 <mm:compare value="true" referid="adminmode">
 <mm:compare value="newpostarea" referid="action">
@@ -156,19 +159,15 @@
 	<mm:booleanfunction set="mmbob" name="removePostThread" referids="forumid,postareaid,postthreadid">
 	</mm:booleanfunction>
 </mm:compare>
-</mm:compare>
 
-
-<mm:compare value="true" referid="moderatormode">
 <mm:compare value="removepost" referid="action">
-        <mm:import externid="postareaid" />
-        <mm:import externid="postthreadid" />
-        <mm:import externid="postingid" />
-        <mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid">
-        </mm:booleanfunction>
+	<mm:import externid="postareaid" />
+	<mm:import externid="postthreadid" />
+	<mm:import externid="postingid" />
+	<mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid">
+	</mm:booleanfunction>
 </mm:compare>
 </mm:compare>
-
 
 <mm:compare value="newforum" referid="action">
 	<mm:import externid="name" />

@@ -11,7 +11,6 @@
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
-<mm:import externid="page">1</mm:import>
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -24,27 +23,12 @@
 </mm:present>
 <!-- end action check -->
 
-<!-- moderator check -->
-<%-- Administrative / Moderative functions --%>
-<mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
-   <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
-</mm:nodefunction>
-
 <center>
 
-<mm:compare referid="ismoderator" value="false">
-  <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
-    <tr><th>Bewerk Thread</th></tr>
-    <tr><td><font color="red"><b>Toegang geweigerd tot deze handeling</font></b></td></tr>
-  </table>
-</mm:compare>
-
-<mm:compare referid="ismoderator" value="true">
-
-  <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
-    <mm:node referid="postthreadid">
-    <tr><th colspan="3">Bewerk Thread</th></tr>
-    <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
+  <mm:node referid="postthreadid">
+  <tr><th colspan="3">Bewerk Thread</th></tr>
+  <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
 	<tr><th width="200">Status</th><td colspan="2" align="middle">
 		<select name="state">
 		<mm:field name="state">
@@ -97,8 +81,8 @@
   	</form>
 	</td>
 	</tr>
-  </table>
-</mm:compare>
+</table>
+
 
 </mm:cloud>
 </html>
