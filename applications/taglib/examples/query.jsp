@@ -1,5 +1,5 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@ page session="false" import="org.mmbase.bridge.*,org.mmbase.storage.search.*"%>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ page errorPage="error.jsp" session="false"  %><mm:content type="text/html">
 <html>
 <head>
   <title>Queries with MMBase taglib (1.7)</title>
@@ -45,3 +45,4 @@
 </mm:cloud>
 </body>
 </html>
+</mm:content>
