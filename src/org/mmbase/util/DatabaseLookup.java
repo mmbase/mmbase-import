@@ -40,7 +40,7 @@ public class DatabaseLookup {
 	this.databaseConfigPath = databaseConfigPath;
         try {
             InputSource in = new InputSource(new FileInputStream(lookupConfig.getAbsoluteFile()));
-            in.setSystemId("file://" + lookupConfig.getAbsoluteFile());
+            in.setSystemId(lookupConfig.toURL().toString());
             document = XMLBasicReader.getDocumentBuilder(DatabaseLookup.class).parse(in);
         } catch(org.xml.sax.SAXException se) {
             String message = "error loading configfile :'" + lookupConfig + "'" + Logging.stackTrace(se);
