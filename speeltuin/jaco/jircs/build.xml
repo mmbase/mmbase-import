@@ -23,6 +23,7 @@
   <property name="srcdist.name" value="jircs-src-${version}"/>
   <property name="bindist.name" value="jircs-${version}"/>
   <patternset id="docs">
+    <include name="changes.txt"/>
     <include name="jircs.png"/>
     <include name="jircs.dia"/>
     <include name="readme.txt"/>
