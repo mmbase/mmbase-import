@@ -172,11 +172,10 @@ public class IncludeTag extends UrlTag {
      * interpreted then. This can be useful when creating example pages.
      */
     
-
-
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
+            if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl); 
             java.io.File file = new java.io.File(pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length())));
             if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
             java.io.FileReader reader = new java.io.FileReader(file);
