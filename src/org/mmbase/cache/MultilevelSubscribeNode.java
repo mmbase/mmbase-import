@@ -19,9 +19,9 @@ import org.mmbase.module.core.MMBaseObserver;
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.4 2002-03-22 15:21:33 pierre Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.5 2002-03-29 21:26:01 michiel Exp $
  */
-public class MultilevelSubscribeNode implements MMBaseObserver {
+class MultilevelSubscribeNode implements MMBaseObserver {
 
     /**
      * @javadoc
@@ -40,7 +40,7 @@ public class MultilevelSubscribeNode implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public MultilevelSubscribeNode(MMBase mmb,String type) {
+    MultilevelSubscribeNode(MMBase mmb,String type) {
         this.mmb=mmb;
         this.type=type;
         mmb.addLocalObserver(type,this);
