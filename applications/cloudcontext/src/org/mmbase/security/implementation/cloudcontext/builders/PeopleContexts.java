@@ -18,15 +18,25 @@ import org.mmbase.module.core.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.1 2003-11-03 13:22:31 michiel Exp $
+ * @version $Id: PeopleContexts.java,v 1.2 2004-05-11 15:23:01 michiel Exp $
  */
 public class PeopleContexts extends Contexts {
 
 
+
+    protected String peopleBuilder = "people";
+    public boolean init() {
+        String s = (String) getInitParameters().get("peoplebuilder");
+        if (s != null) {
+            peopleBuilder = s;
+        }
+        return super.init();
+    }
+
     // javadoc inherited
     protected boolean isOwnNode(User user, MMObjectNode node) {       
         if (super.isOwnNode(user, node)) return true;
-        if (node.getBuilder().getTableName().equals("people")) {
+        if (node.getBuilder().getTableName().equals(peopleBuilder)) {
             if (node.getStringValue("account").equals(user.getIdentifier())) {
                 return true;
             }
