@@ -6,9 +6,11 @@
   </head>
   <body>
     <h1>Cloud logout/login</h1>
+    <mm:log>logout</mm:log>
   <p>
     Testing logout <mm:cloud method="logout" />.
   </p>
+    <mm:log>login</mm:log>
   <p>
     Testing method="http"
     <mm:cloud method="http" jspvar="cloud">
