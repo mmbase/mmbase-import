@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.34 2004-05-14 22:18:38 robmaris Exp $
+ * @version $Id: Queries.java,v 1.35 2004-05-25 16:24:06 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -68,7 +68,7 @@ abstract public  class Queries {
     public static Query createQuery(Cloud cloud, String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct) {
 
         // the bridge test case say that you may also specifiy empty string (why?)
-        if ("".equals(startNodes)) {
+        if ("".equals(startNodes) || "-1".equals(startNodes)) {
             startNodes = null;
         }
         if ("".equals(fields)) {
@@ -639,8 +639,9 @@ abstract public  class Queries {
      * @return the new constraint, or null if the startNodes list was empty.
      */
     public static Constraint addStartNodes(Query query, String startNodes) {
-        if (startNodes == null)
+        if (startNodes == null || "".equals(startNodes) || "-1".equals(startNodes)) {
             return null;
+        }
 
         SortedSet startNodeSet = new TreeSet();
 
