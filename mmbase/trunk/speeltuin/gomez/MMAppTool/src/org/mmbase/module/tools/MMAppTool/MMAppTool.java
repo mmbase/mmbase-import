@@ -41,6 +41,8 @@ public class MMAppTool extends Object {
 
 	public void doExit() {
 		System.out.println("Clossing MMAppTool");
-		System.exit(0);
+		//System.exit(0);
+		dis.hide();
+		dis.dispose();
 	}
 }
