@@ -1852,6 +1852,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	</info>
     </attribute>
     <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
         <name>page</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
@@ -1959,6 +1964,43 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>inverse</name>
         <required>false</required>
     </attribute>
+  </tag>
+  <tag>
+    <name>maylink</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
+    <info>
+	Check if node may be linked to.
+    </info>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+    </attribute>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+    </attribute>
+  </tag>
+  <tag>
+    <name>maylink</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayChangeContextTag</tagclass>
+    <info>
+	Check if context of node may be changed
+    </info>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+    </attribute>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+    </attribute>
+  </tag>
+  <tag>
+    <name>setcontext</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.SetContextTag</tagclass>
+    <info>
+	  Change the context of a node. New context is in body.
+    </info>
   </tag>
   <tag>
     <name>countrelations</name>
