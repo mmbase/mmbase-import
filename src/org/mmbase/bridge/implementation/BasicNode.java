@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.53 2002-03-28 15:45:17 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.54 2002-04-03 11:19:26 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -371,7 +371,11 @@ public class BasicNode implements Node {
 
         org.w3c.dom.Node subField = null;
         if(field.getType() == Field.TYPE_XML) {
-            subField = tree.importNode(getXMLValue(field.getName()).getDocumentElement(), true);
+            Document doc = getXMLValue(field.getName());
+            if(doc == null) {
+                return null;
+            }
+            subField = tree.importNode(doc.getDocumentElement(), true);
         }
         else {
             subField = tree.createTextNode(getStringValue(field.getName()));

@@ -46,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.2 2002-04-02 17:08:07 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.3 2002-04-03 11:19:28 eduard Exp $
  * @since   MMBase-1.6
  */
 public  class NodeFunction {
@@ -61,6 +61,7 @@ public  class NodeFunction {
         log.debug("calling with string " + node);
         return function("mmbase", node, function);
     }
+    
     /**
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
@@ -77,15 +78,13 @@ public  class NodeFunction {
             return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
         }
     }
+
     /**
      * It can be handy to supply a whole node, it will search for the field 'number' itself.
      */
-
     public static String function(org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(number, function);
     }
-
-
 }

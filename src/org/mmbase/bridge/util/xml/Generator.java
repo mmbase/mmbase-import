@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.1 2002-03-28 15:49:22 michiel Exp $
+ * @version $Id: Generator.java,v 1.2 2002-04-03 11:19:27 eduard Exp $
  */
 public  class Generator {
 
@@ -284,7 +284,10 @@ public  class Generator {
                     Field field = i.nextField();
                     if (log.isDebugEnabled()) log.debug("getting field " + field.getName());
                     if (getXMLElement(object, "field[@name='" + field.getName() + "']") == null) {
-                        object.appendChild(node.getXMLValue(field.getName(), object.getOwnerDocument()));
+                        Element elem = node.getXMLValue(field.getName(), object.getOwnerDocument());
+                        if(elem!=null) {
+                            object.appendChild(elem);
+                        }
                     }
                 }
             } else {
