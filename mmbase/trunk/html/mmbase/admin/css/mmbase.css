@@ -6,8 +6,10 @@ body.basic { background-image: url("../images/background.gif");
        color: #42BDAD; }
 
 body.navigationbar {
-             background-color: #00425A;
-             color: white;
+    background-color: #00425A;
+    color: white;
+    margin-top: 0em;
+    margin-left: 0em;
 }
 
 a:link { color: white; }
@@ -17,9 +19,9 @@ a:active { color: yellow; }
 table   { width : 93%; }
 
 td { vertical-align : top;
-     horizontal-align : left;	
-     border-width: 1;		
-}	
+     horizontal-align : left;
+     border-width: 1;
+}
 
 th {
    background-color: #42BDAD;
@@ -56,12 +58,14 @@ textarea.big   {
 .currentmenuitem {
     font-family: arial, verdana, helvetica, geneva;
     font-size: medium;
+    font-weight:bold;
     color: white;
     text-decoration: none
 }
 .menuitem {
     font-family: arial, verdana, helvetica, geneva;
     font-size: medium;
+    font-weight:bold;
     color: #42BDAD;
     text-decoration: none
 }
