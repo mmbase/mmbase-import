@@ -1,12 +1,45 @@
-<%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
+<%!
+
+    // MM: hard node numbers ?!?!
+
+    /* Transforms a portal node number into the base url for that portal
+     * Notice that the old format (/index.jsp?portal=123) will still work
+     * and is still used underwater.
+     * @param portalNumber The number of the node of the portal.
+     * @returns A base url for the specified portal.
+     */
+    String createUrlXXX(String portalNumber) {
+        String pn = portalNumber.intern();
+        if(pn == "199") return "/devportal/index.jsp";
+        if(pn == "202") return "/mmbaseportal/index.jsp";
+        if(pn == "205") return "/foundationportal/index.jsp";
+        // this should never happen - parameters should not be appended.
+        return "/index.jsp?portal=" + pn;
+    }
+                                                                                                                                  
+    /**
+     * Like the former, but will render the first parameter.
+     * Further parameters can be appended by &paramName=paramValue
+     */
+    String createUrlXXX(String portalNumber, String encodedParamName1, String encodedParamValue1) {
+        String pn = portalNumber.intern();
+        String param = encodedParamName1 + "=" + encodedParamValue1;
+        if(pn == "199") return "/devportal/index.jsp?" + param;
+        if(pn == "202") return "/mmbaseportal/index.jsp?" + param;
+        if(pn == "205") return "/foundationportal/index.jsp?" + param;
+        // this should never happen - parameters may be appended.
+        return "/index.jsp?portal=" + pn + "&" + param;
+    }
 %><% String componentTitle = "header";%>
 <%@include file="cachesettings.jsp" %>
 <cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <!-- <mm:time time="now" format=":LONG.LONG" /> -->
 <html>
   <head>
-     <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase-dev.css" />" />
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase-devnews.css" />" />
+<mm:node number="$portal"><mm:related path="posrel,templates">
+     <link rel="stylesheet" type="text/css" href="<mm:field name="templates.url"/>" />
+</mm:related></mm:node>
      <link rel="shortcut icon" href="/media/favicon.ico" /> 
      <title>
         <mm:node number="$portal" notfound="skipbody">
@@ -15,6 +48,8 @@
       </title>
      <script type="text/javascript" language="javascript" src="/scripts/launchcenter.js"><!-- help IE --></script> 
      <meta http-equiv="imagetoolbar" content="no" />
+<%-- assuming this page is only included from index.jsp, and this site only deployed on www.mmbase.org --%>
+     <%-- base href="http://www.mmbase.org/index.jsp" --%>
    </head>
 <body>
 <mm:log>head</mm:log>
@@ -69,3 +104,4 @@
 <mm:log>nehead</mm:log>
 </cache:cache>
 
+<!-- END FILE: /includes/header.jsp -->
