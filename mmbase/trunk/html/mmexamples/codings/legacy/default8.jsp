@@ -1,11 +1,11 @@
-<%@page session="false" language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" 
+<%@page session="false" language="java" contentType="text/html;charset=UTF-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content language="en" type="text/html">
+%>
 <mm:cloud>
 <html>
   <head>
     <title>Codings examples</title>	 
-    <link rel="stylesheet" href="../../mmbase/style/css/mmbase.css" type="text/css" />
+    <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
   </head>
   <body>
     <h1>Introduction</h1>
@@ -80,13 +80,15 @@
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>   
-      <p><em>With &lt;%@:include:</em></p>
+      <p><em>With &lt;%@:include (utf-8 page)</em></p>
       <%@include file="atincluded.jsp" %>
-      
+
+      <p><em>With &lt;%@:include (iso-8859-1 page):</em></p>
+      <%@include file="atincluded1.jsp" %>
+
       <hr />
       used node: <mm:write referid="node" /> (<mm:field name="number" />)<br />
-      <a href="<mm:url page="index.shtml" />">SCAN version of this page</a><br />
-      <a href="<mm:url page="default1.jsp" />">ISO-8859-1 version of this page</a><br />
+      <a href="<mm:url page=".." />">back</a><br />
       
     </mm:node>
     
@@ -94,9 +96,8 @@
       <h1>The 'Codings' applications was not deployed. Please do so before going to this page.</h1>
     </mm:notpresent>
     
-    <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
     
   </body>
 </html>
 </mm:cloud>
-</mm:content>

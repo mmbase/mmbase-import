@@ -1,4 +1,3 @@
-<%@page pageEncoding="ISO-8859-1" %>
 <p>in page: Café tweeëntwintig</p>
 <p>
   in attribute: <mm:write value="Café tweeëntwintig" />
