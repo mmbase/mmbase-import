@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.17 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicRelation.java,v 1.17.2.1 2002-02-20 10:43:37 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -128,6 +128,7 @@ public class BasicRelation extends BasicNode implements Relation {
     }
 
     /**
+     * 
      * @javadoc
      */
     void checkValid() {
@@ -165,10 +166,21 @@ public class BasicRelation extends BasicNode implements Relation {
         // on throwing the exception in the core
 
         checkValid();
+        if (! (BasicCloud.isTemporaryId(snum) || BasicCloud.isTemporaryId(dnum))) {
+            if (isnew) {
+                cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
+                relationChanged = false;            
+            } else {
+                if (relationChanged) {
+                    cloud.assert(Operation.CHANGE_RELATION, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
+                    relationChanged = false;
+                }        
+            }
+        } 
         super.commit();
         if (!(cloud instanceof Transaction)) {
-            snum=getNode().getIntValue("snumber");
-            dnum=getNode().getIntValue("dnumber");
+            snum = getNode().getIntValue("snumber");
+            dnum = getNode().getIntValue("dnumber");
         }
     }
 
@@ -179,7 +191,7 @@ public class BasicRelation extends BasicNode implements Relation {
      */
     public boolean equals(Object o) {
         return (o instanceof Relation) && (o.hashCode()==hashCode());
-    };
+    }
 
     /**
      * Returns the object's hashCode.
@@ -187,6 +199,6 @@ public class BasicRelation extends BasicNode implements Relation {
      */
     public int hashCode() {
         return getNumber();
-    };
-}
+    }
 
+}
