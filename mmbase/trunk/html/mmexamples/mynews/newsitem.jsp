@@ -1,4 +1,4 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+<%@page session="false" errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content language="en" escaper="inline" postprocessor="reducespace">
 <mm:cloud>
@@ -36,14 +36,13 @@ for the MMBase node --%>
   <mm:field  escape="p" name="body"/>
 
   </td></tr>
-  <mm:related path="posrel,images" orderby="posrel.pos" max="3">
+  <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
    <mm:first><tr><th colspan="2">Related images</th></tr><tr><td /><td></mm:first>
-     <mm:node element="images">
-       <img src="<mm:image template="s(200)" />" alt="<mm:field name="title" />" />
-     </mm:node>
+   <img src="<mm:image template="s(200)" />" alt="<mm:field name="title" />" />
    <mm:last></td></tr></mm:last>
-  </mm:related>
+  </mm:relatednodes>
 
+  <%-- the 'old' way to sort on posrel was like this (using 'clusternodes') --%>
   <mm:related path="posrel,urls" orderby="posrel.pos" max="3">
    <mm:first><tr><th colspan="2">Related urls</th></tr><tr><td /><td></mm:first>
    <a href="<mm:field name="urls.url"/>"><mm:field name="urls.description"/></a><br />

@@ -1,13 +1,13 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+<%@page session="false" errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content language="en" postprocessor="reducespace" escaper="inline">
+%><mm:content language="en" type="text/html"  escaper="inline">
 <mm:import externid="magid">default.mags</mm:import>
 <mm:cloud>
 <mm:node number="$magid" id="mag">
 <html>
  <head>
- <title><mm:field  name="title" /></title>
- <link rel="stylesheet" type="text/css" href="style.css" />
+   <title><mm:field  name="title" /></title>
+   <link rel="stylesheet" type="text/css" href="style.css" />
  </head>
  <body>
   <center>
@@ -27,15 +27,15 @@
      </td>
    </tr>
    <%-- we have to use the related tag if we want to order with pos --%>
-   <mm:related path="posrel,news" fields="posrel.pos,news.title" orderby="posrel.pos">
-   <mm:first>
-     <tr><td width="30" /><td><table width="100%"><tr><th align="left">title</th><th align="right">&nbsp;</th></tr></mm:first> 
-     <tr>
-       <td><mm:field name="news.title" /></td>
-      <td align="right"><a href="<mm:url referids="mag" page="newsitem.jsp"><mm:param name="newsid"><mm:field name="news.number"/></mm:param></mm:url>">link</a></td>
-     </tr> 
-   <mm:last></table></td></tr></mm:last>
-  </mm:related>
+   <mm:relatednodes id="newsid" role="posrel" type="news" orderby="posrel.pos">
+     <mm:first>
+       <tr><td width="30" /><td><table width="100%"><tr><th align="left">title</th><th align="right">&nbsp;</th></tr></mm:first> 
+       <tr>
+         <td><mm:field name="title" /></td>
+         <td align="right"><a href="<mm:url referids="mag,newsid" page="newsitem.jsp" />">link</a></td>
+       </tr> 
+       <mm:last></table></td></tr></mm:last>
+     </mm:relatednodes>
   </table>
   </center>
   <hr />
