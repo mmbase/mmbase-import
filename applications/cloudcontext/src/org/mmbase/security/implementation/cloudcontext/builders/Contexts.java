@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.10 2003-08-05 21:40:07 michiel Exp $
+ * @version $Id: Contexts.java,v 1.11 2003-08-06 10:03:25 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -296,6 +296,15 @@ public class Contexts extends MMObjectBuilder {
                     ac = new AllowingContexts(contexts, inverse);
                     allowingContextsCache.put(userContext.getIdentifier(), ac);
                 }
+                if (ac.contexts.size() == 0) {
+                    if (ac.inverse) {
+                        return Authorization.COMPLETE_CHECK;
+                    } else {
+                        // may read nothing
+                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
+                        return new Authorization.QueryCheck(true, mayNothing);
+                    }
+                }
                 
                 List steps = query.getSteps();
                 if (steps.size() * ac.contexts.size() < maxContextsInQuery) { 
@@ -442,14 +451,16 @@ public class Contexts extends MMObjectBuilder {
         return n.getStringValue("name");
     }
 
-
     private static class AllowingContexts {
         SortedSet contexts;
         boolean inverse;
         AllowingContexts(SortedSet c, boolean i) {
             contexts = c;
-            inverse = i;
+             inverse = i;
         }
         
     }
+
+
+
 }
