@@ -32,18 +32,18 @@ public class TypeDef extends MMObjectBuilder {
      * Number-to-name cache.
      * @duplicate should be moved to org.mmbase.cache
      */
-    private Hashtable nameCache=new Hashtable(); // object number -> typedef name
+    private Map nameCache = new Hashtable(); // object number -> typedef name
 
     /**
      * Name-to-number cache.
      * @duplicate should be moved to org.mmbase.cache
      */
-    private Hashtable numberCache=new Hashtable(); // typedef name -> object number
+    private Map numberCache= new Hashtable(); // typedef name -> object number
 
     /**
      * List of known builders.
      */
-    private Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();	// Contains the names of all active builders
 
     /**
      * Constructor
@@ -72,14 +72,19 @@ public class TypeDef extends MMObjectBuilder {
      * @return always true
      */
     public boolean readCache() {
+        log.service("Reading typedef caches");
         Integer number;
         String name;
-        for (Enumeration e=search(null); e.hasMoreElements();) {
-            MMObjectNode n= (MMObjectNode)e.nextElement();
-            number=n.getIntegerValue("number");
-            name=n.getStringValue("name");
-            numberCache.put(name,number);
-            nameCache.put(number,name);
+        for (Enumeration e = search(null); e.hasMoreElements();) {
+            MMObjectNode n= (MMObjectNode) e.nextElement();
+            number= n.getIntegerValue("number");
+            name  = n.getStringValue("name");
+            if (number != null && name != null) {
+                numberCache.put(name,number);
+                nameCache.put(number,name);
+            } else {
+                log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
+            }
          }
         return true;
     }
@@ -97,8 +102,8 @@ public class TypeDef extends MMObjectBuilder {
         } else {
             // XXX: a bit ugly to do this every time a match fails...
             readCache();
-            result=(Integer)numberCache.get(builderName);
-            if (result!=null) {
+            result = (Integer) numberCache.get(builderName);
+            if (result != null) {
                 return result.intValue();
             }
             return -1;
@@ -132,7 +137,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public String getValue(String type) {
         try {
-            return (String)nameCache.get(new Integer(Integer.parseInt(type)));
+            return (String) nameCache.get(new Integer(Integer.parseInt(type)));
         } catch(Exception e) {
             return "unknown";
         }
@@ -141,14 +146,14 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public String getSingularName(String builderName, String country) {
-        if (builderName==null) return "unknown";
+    public String getSingularName(String builderName, String language) {
+        if (builderName == null) return "unknown";
         MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(builderName);
         if (bul!=null) {
-            if (country==null) {
+            if (language == null) {
                 return bul.getSingularName();
             } else {
-                return bul.getSingularName(country);
+                return bul.getSingularName(language);
             }
         } else {
             return "inactive ("+builderName+")";
