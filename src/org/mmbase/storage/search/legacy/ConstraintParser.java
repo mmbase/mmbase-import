@@ -101,7 +101,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.11 2003-03-10 11:51:04 pierre Exp $
+ * @version $Id: ConstraintParser.java,v 1.12 2003-06-05 14:16:19 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -209,7 +209,9 @@ public class ConstraintParser {
      * A <em>field</em> can be one of these forms:
      * <ul>
      * <li><em>stepalias</em><b>.</b><em>fieldname</em>
+     * <li>[<em>stepalias</em><b>.</b><em>fieldname</em>]
      * <li><em>fieldname</em> (only when just one step is specified).
+     * <li>[<em>fieldname</em>] (only when just one step is specified).
      * </ul>
      *
      * @param token The token.
@@ -218,19 +220,24 @@ public class ConstraintParser {
      */
     public static StepField getField(String token, List steps) {
         BasicStep step = null;
+        int bracketOffset = (token.startsWith("[") && token.endsWith("]")) ? 1 : 0;
         int idx = token.indexOf('.');
         if (idx == -1) {
             if (steps.size() > 1) {
-                throw new IllegalArgumentException(
-                "Fieldname not prefixed with table alias: \""
-                + token + "\"");
+                throw new IllegalArgumentException( "Fieldname not prefixed with table alias: \"" + token + "\"");
             }
             step = (BasicStep) steps.get(0);
         } else {
-            step = getStep(token.substring(0, idx), steps);
+            step = getStep(token.substring(bracketOffset, idx), steps);
         }
         MMObjectBuilder builder = step.getBuilder();
-        String fieldName = token.substring(idx + 1);
+        String  fieldName;
+        if (idx == -1) {
+            fieldName = token.substring(bracketOffset, token.length() - bracketOffset);
+        } else {
+            fieldName = token.substring(idx + 1, token.length() - bracketOffset);
+        }
+
         FieldDefs fieldDefs = builder.getField(fieldName);
         if (fieldDefs == null) {
             throw new IllegalArgumentException(
