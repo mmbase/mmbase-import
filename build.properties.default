@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.8 2004-11-09 10:15:05 marcel Exp $
+# $Id: build.properties.default,v 1.9 2004-12-17 13:04:13 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -117,6 +117,16 @@ fileupload.file=${fileupload.version}.tar.gz
 fileupload.dest=${download.dir}/${fileupload.file}
 fileupload.loc=http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}
 fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
+
+
+
+# ----- Standard taglib + jstl ------------
+taglibs-standard.version=jakarta-taglibs-standard-1.1.2
+taglibs-standard.file=${taglibs-standard.version}.tar.gz
+taglibs-standard.dest=${download.dir}/${taglibs-standard.file}
+taglibs-standard.loc=http://apache.mirror.rokscom.nl/jakarta/taglibs/standard/binaries/${taglibs-standard.file}
+taglibs-standard-jstl.jar=${expand.dir}/${taglibs-standard.version}/lib/jstl.jar
+taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/standard.jar
 
 
 
