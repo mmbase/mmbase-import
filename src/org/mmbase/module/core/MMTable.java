@@ -16,30 +16,47 @@ import org.mmbase.module.*;
 import org.mmbase.module.database.*;
 
 /**
- * MMTable is the base abstraction of a database table, it provides a starting point
- * only with very basic functions as size and name of the table.
+ * MMTable is the base abstraction of a cloud of objects stored in one database tabel,
+ * essentially a cloud of objects of the same type.
+ * It provides a starting point for MMObjectBuilder by defining a scope - the database table -
+ * and basic functionality to create the table and query properties such as its size.
+ * This class does not contain actual management of nodes (this is left to MMOBjectBuilder).
  *
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @author Pierre van Rooden (javadoc)
+ * @version 31 januari 2001
  */
 public class MMTable {
 
-	public MMBase mmb; 
+    /**
+    * The MMBase module that this table belongs to
+    */
+	public MMBase mmb;
+	
+	/**
+	* The table name
+	*/
 	public String tableName;
 
-	/**
-	*
-	*/
+    /**
+    * Empty constructor.
+    */
 	public MMTable() {
 	}
 
+    /**
+    * Constructor.
+    * Associates the table with a MMBase module.
+    * @param m MMBase module to associate the table with
+    */
 	public MMTable(MMBase m) {
 		mmb=m; 
 	}
 
-	/**
-	* return the number of relation types in this mmbase and table
-	*/
+    /**
+    * Determine the number of objects in this table.
+    * @return The number of entries in the table.
+    */
 	public int size() {
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -56,12 +73,17 @@ public class MMTable {
 		} catch (Exception e) {
 			return(-1);
 		}
+		// better: (but have to move getFullTableName() from MOBjectBuilder to MMTable first)
+ 	    // return database.size(getFullTableName());
 	}
 
 
-	/**
-	* return the number of relation types in this mmbase and table
-	*/
+    /**
+    * Check whether the table is accessible.
+    * In general, this means the table does not exist. Please note that this routine may
+    * also return false if the table is inaccessible due to insufficient rights.
+    * @return <code>true</code> if the table is accessible, <code>false</code> otherwise.
+    */
 	public boolean created() {
 		if (size()==-1) {
 			System.out.println("TABLE "+tableName+" NOT FOUND");
@@ -70,6 +92,8 @@ public class MMTable {
 			System.out.println("TABLE "+tableName+" FOUND");
 			return(true);
 		}
+		// better:
+ 	    // return database.created(getFullTableName());
 	}
 
 }

@@ -12,20 +12,43 @@ package org.mmbase.module.core;
 import java.lang.Exception;
 
 /**
- * This exception gets thrown when a node contains invalid data
+ * This exception gets thrown when a node contains invalid data.
  */
 public class InvalidDataException extends Exception {
 
-    public String invalidField="";
+    /** Name of the field that caused the exception
+    */
+    private String invalidField=null;
+	
 	/**
-	 * Create the exception
+	 * Create the exception.
  	 */
-	public InvalidDataException (String s) {
-		super(s);
+	public InvalidDataException() {
 	}
 	
-	public InvalidDataException (String s, String fieldName) {
-		super(s);
+	/**
+	 * Create the exception.
+	 * @param message a description of the exception
+ 	 */
+	public InvalidDataException (String message) {
+		super(message);
+	}
+	
+	/**
+	 * Create the exception.
+	 * @param message a description of the exception
+	 * @param fieldMame the name of the field that caused the exception
+ 	 */
+	public InvalidDataException (String message, String fieldName) {
+		super(message);
 		invalidField=fieldName;
+	}
+	
+	/**
+	* Retrieved the name of the field that caused the exception
+	* @return the field name as a String
+	*/
+	public String getInvalidFieldName() {
+	    return invalidField;
 	}
 }
