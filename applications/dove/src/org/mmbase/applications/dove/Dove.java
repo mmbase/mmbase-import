@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.58 2004-12-03 14:45:03 pierre Exp $
+ * @version $Id: Dove.java,v 1.59 2004-12-23 15:55:27 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -139,8 +139,6 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-//                    } else if (type == Field.TYPE_DATETIME || type == Field.TYPE_BOOLEAN) {
-//                        fel = addContentElement(FIELD, ""+node.getLongValue(fname), out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
@@ -161,8 +159,6 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-//                    } else if (type == Field.TYPE_DATETIME || type == Field.TYPE_BOOLEAN) {
-//                        fel = addContentElement(FIELD, ""+node.getLongValue(fname), out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
@@ -977,14 +973,10 @@ public class Dove extends AbstractDove {
                     String originalValue = (String)originalValues.get(key);
                     String mmbaseValue = null;
                     int type = node.getNodeManager().getField(key).getType();
-//                    if (type == Field.TYPE_DATETIME || type == Field.TYPE_BOOLEAN) {
-//                        mmbaseValue = ""+node.getLongValue(key);
-//                    } else {
                         mmbaseValue = node.getStringValue(key);
-//                    }
                     if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
-                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key, out);
+                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key + " value found: " + mmbaseValue + "value expected: " + originalValue, out);
                         err.setAttribute(ELM_TYPE, IS_SERVER);
                         return false;
                     }
