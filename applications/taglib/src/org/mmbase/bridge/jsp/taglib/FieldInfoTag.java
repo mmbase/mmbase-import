@@ -102,7 +102,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
     private String options;
     public void setOptions(String o) throws JspTagException {
-        options = getAttributeValue(o);        
+        options = getAttributeValue(o);
     }
 
     public int doStartTag() throws JspTagException{
@@ -114,7 +114,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         field = ((FieldProvider) fieldProvider).getFieldVar();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
-         * EXPERIMENTAL 
+         * EXPERIMENTAL
          */
         CloudTag ct = null;
         ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
@@ -161,11 +161,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-            
+
             List args = new Vector();
             args.add(field.getName());
             args.add(sessionName);
-            args.add(node.getCloud().getLocale().getLanguage());
+            args.add(getCloud().getLocale().getLanguage());
             show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
@@ -249,10 +249,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         switch(type) {
         case Field.TYPE_BYTE: {
             List args = new Vector();
-            args.add(sessionName);
             args.add("");
+            args.add(sessionName);
+            args.add(getCloud().getLocale().getLanguage());
             show = new StringBuffer(
-                (node != null ? node.getFunctionValue("gui", args).toString() : "") + 
+                (node != null ? node.getFunctionValue("gui", args).toString() : "") +
                 "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />");
             break;
         }
@@ -330,8 +331,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 if (node != null) value = node.getIntValue(field.getName());
                 org.mmbase.bridge.NodeIterator nodes = getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
                 List args = new Vector();
-                args.add(sessionName);
                 args.add("");
+                args.add(sessionName);
+                args.add(getCloud().getLocale().getLanguage());
                 while(nodes.hasNext()) {
                     org.mmbase.bridge.Node tmp = nodes.nextNode();
                     // we have a match on the number!
@@ -349,7 +351,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     show.append("<input type=\"checkbox\" name=\"").append(prefix(field.getName() + "_search")).append("\" />\n");
                 }
                 break;
-            }            
+            }
         }
         case Field.TYPE_INTEGER:
             if (field.getGUIType().equals("types")) {
@@ -363,12 +365,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 if (log.isDebugEnabled()) {
                     log.debug("language: " + getCloud().getLocale().getLanguage());
                 }
-                   
+
                 while (i.hasNext()) {
                     org.mmbase.bridge.NodeManager nm = i.nextNodeManager();
                     //int listvalue = nm.getNumber(); // TODO getNumber
                     String listvalue = nm.getName();
-                    show.append("<option value=\"").append(listvalue).append("\""); 
+                    show.append("<option value=\"").append(listvalue).append("\"");
                     if (node != null) {
                         /*
                         if (listvalue == value) {
@@ -423,7 +425,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 show = new StringBuffer("<input type=\"hidden\" name=\"").append(prefix(field.getName())).append("\" value=\"").append(cal.getTime().getTime()/1000).append("\" />");
                 // give also present value, this makes it possible to see if user changed this field.
 
-                
+
                 if (options == null || options.indexOf("date") > -1) {
                     show.append("<select name=\"").append(prefix(field.getName() + "_day")).append("\">\n");
                     for (int i = 1; i <= 31; i++) {
@@ -623,7 +625,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     show = null;
                     break;
                 }
-            }        
+            }
         case Field.TYPE_INTEGER:
             if (guitype.equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
