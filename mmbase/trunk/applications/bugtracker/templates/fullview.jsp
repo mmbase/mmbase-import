@@ -6,7 +6,7 @@
   <%@include file="parameters.jsp" %>
   <%@include file="login.jsp" %>
 
-  <mm:import externid="bugreport" />
+  <mm:import externid="bugreport" required="true"/>
   <mm:import externid="flap">overview</mm:import>
   
   

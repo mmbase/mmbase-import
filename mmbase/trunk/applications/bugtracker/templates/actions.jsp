@@ -62,20 +62,20 @@ password : <mm:write referid="password" />
 </mm:compare>
 
 <mm:compare value="updatebug" referid="action">
-<mm:import externid="updater" />
-<mm:import externid="bugreport" />
-<mm:import externid="newissue" />
-<mm:import externid="newbtype" />
-<mm:import externid="newbstatus" />
-<mm:import externid="newversion" />
-<mm:import externid="newefixedin" />
-<mm:import externid="newfixedin" />
-<mm:import externid="newbpriority" />
-<mm:import externid="newdescription" />
-<mm:import externid="newrationale" />
-<mm:import externid="newarea" />
-<mm:import externid="oldarea" />
-<mm:import externid="oldarearel" />
+<mm:import externid="updater" required="true"/>
+<mm:import externid="bugreport" required="true"/>
+<mm:import externid="newissue" required="true"/>
+<mm:import externid="newbtype" required="true"/>
+<mm:import externid="newbstatus" required="true"/>
+<mm:import externid="newversion" required="true"/>
+<mm:import externid="newefixedin" required="true"/>
+<mm:import externid="newfixedin" required="true"/>
+<mm:import externid="newbpriority" required="true"/>
+<mm:import externid="newdescription" required="true"/>
+<mm:import externid="newrationale" required="true"/>
+<mm:import externid="newarea" required="true"/>
+<mm:import externid="oldarea" required="true"/>
+<mm:import externid="oldarearel" required="true"/>
 <% int now=(int)(System.currentTimeMillis()/1000); %>
 
 	<mm:node id="usernode" number="$updater" />
@@ -294,9 +294,10 @@ password : <mm:write referid="password" />
 </mm:compare>
 
 <mm:compare value="addcomment" referid="action">
-        <mm:import externid="newtitle" />
-        <mm:import externid="newtext" />
-        <mm:import externid="newuser" />
+        <mm:import externid="newtitle" required="true"/>
+        <mm:import externid="newtext" required="true"/>
+        <mm:import externid="newuser" required="true"/>
+        <mm:import externid="bugreport" required="true"/>
 	<mm:node referid="bugreport" id="bugreportnode" />
 	<mm:node referid="newuser" id="usernode" />
 	<mm:createnode id="commentnode" type="comments">
@@ -310,33 +311,53 @@ password : <mm:write referid="password" />
 </mm:compare>
 
 <mm:compare value="addmaintainer" referid="action">
-<mm:import externid="maintainer" />
+<mm:import externid="maintainer" required="true"/>
+<mm:import externid="bugreport" required="true"/>
 <mm:node id="bugnode" number="$bugreport" />
 <mm:node id="usernode" number="$maintainer" />
 <mm:createrelation role="rolerel" source="bugnode" destination="usernode">
 	<mm:setfield name="role">maintainer</mm:setfield>
 </mm:createrelation>
+     <% request.setAttribute("template","fullview.jsp"); %>
+     <% request.setAttribute("flap","change"); %>
+	   <mm:import id="message">maintaineradded</mm:import>
 </mm:compare>
 
 <mm:compare value="removemaintainer" referid="action">
+<mm:import externid="bugreport" required="true"/>
     <mm:import externid="maintainerrel" />
     <mm:deletenode referid="maintainerrel" />
+	   <mm:import id="message">maintainerremoved</mm:import>
 </mm:compare>
 
 <mm:compare value="removemyselfinterested" referid="action">
+ <mm:context>
+    <mm:import externid="bugreport" required="true"/>
+     <%@include file="login.jsp"%>
     <mm:list nodes="$bugreport" path="bugreports,rolerel,users" constraints="users.number=$user and rolerel.role='interested'">
 	<mm:node element="rolerel">
 		<mm:deletenode />
 	</mm:node>
     </mm:list>
+ </mm:context>
+	  <mm:import id="message">removedmyselfinterested</mm:import>
+     <% request.setAttribute("template","fullview.jsp"); %>
+     <% request.setAttribute("flap","change"); %>
 </mm:compare>
 
 <mm:compare value="addmyselfinterested" referid="action">
+ <mm:context>
+    <mm:import externid="bugreport" required="true"/>
+     <%@include file="login.jsp"%>
     <mm:node id="bugnode" number="$bugreport" />
     <mm:node id="usernode" number="$user" />
     <mm:createrelation role="rolerel" source="bugnode" destination="usernode">
 		<mm:setfield name="role">interested</mm:setfield>
     </mm:createrelation>
+     <% request.setAttribute("template","fullview.jsp"); %>
+     <% request.setAttribute("flap","change"); %>
+  </mm:context>
+	<mm:import id="message">myselfinterestedadded</mm:import>
 </mm:compare>
 <mm:present referid="message">
 <mm:write referid="message" write="false" jspvar="msg">

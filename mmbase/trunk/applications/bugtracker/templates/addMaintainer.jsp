@@ -1,16 +1,46 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page language="java" contentType="text/html; charset=utf-8"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud method="asis">
+  <%@include file="parameters.jsp" %>
+  <%@include file="login.jsp" %>
+<mm:import externid="bugreport" required="true"/>
 
-%><mm:cloud
-><%@include file="/includes/getids.jsp" 
-%><%@include file="/includes/header.jsp"
+<center>
+<form action="<mm:url referids="parameters,$parameters"><mm:param name="template">fullview.jsp</mm:param><mm:param name="flap">change</mm:param></mm:url>" method="GET">
+<table cellspacing="0" cellpadding="0" style="margin-top : 70px;" class="list" width="70%">
+<tr>
+	<th>
+	current Maintainer
+	</th>
+	<th>
+	New Maintainer
+	</th>
+	<th>
+	Action
+	</th>
+</tr>
 
+<tr>
+		<td>
+			<mm:list path="bugreports,rolerel,users" nodes="$bugreport" constraints="rolerel.role='maintainer'">
+			<mm:field name="users.firstname" /> <mm:field name="users.lastname" /><br />
+			</mm:list>
+			&nbsp;
+		</td>
+		<td>
+			<select name="maintainer">
 
-%><td colspan="2" valign="top">
-<mm:import externid="base">/development/bugtracker</mm:import>
-
-<mm:include referids="base" page="addMaintainer_real.jsp" />
-
-</td>
-<%@include file="/includes/footer.jsp"
-%></mm:cloud>
+				<mm:list path="users,groups"  constraints="groups.name='BugTrackerCommitors'">
+				<option value="<mm:field name="users.number" />"><mm:field name="users.firstname" /> <mm:field name="users.lastname" />
+				</mm:list>
+				&nbsp;
+			</select>
+		</td>
+		<td>
+		<input type="hidden" name="action" value="addmaintainer" />
+		<input type="hidden" name="bugreport" value="<mm:write referid="bugreport"/>" />
+		<input type="SUBMIT" value="SAVE" />
+		</td>
+</tr>
+</table>
+</form>
+</mm:cloud>

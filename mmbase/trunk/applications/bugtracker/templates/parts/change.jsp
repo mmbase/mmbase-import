@@ -12,37 +12,38 @@
    <mm:node referid="user">
     <mm:present referid="commitor">
        You (<mm:field name="firstname" /> <mm:field name="lastname" />) have the status of commitor this allows you the following actions<br><br>
-					Update report <A HREF="updateBugreport.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />&user=<mm:write referid="user" />"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">updateBugreport.jsp</mm:param></mm:url>">Update report <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action" value="deletebugreport"/></mm:url>" onclick="return  confirm('You are about to delete a bug report!');">Delete this bugreport <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 
-					<mm:present referid="hasmaintainers" inverse="true">
-						Delete this bugreport <A HREF="showMessage.jsp?action=deletebugreport&portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
-					</mm:present>
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">addMaintainer.jsp</mm:param></mm:url>">Add maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 
-					Add maintainer <A HREF="addMaintainer.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
-					Remove maintainer <A HREF="removeMaintainer.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:write referid="bugreport" />"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">removeMaintainer.jsp</mm:param></mm:url>">Remove maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+
 				<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'">
-					Remove yourself as interested <A HREF="fullview.jsp?bugreport=<mm:write referid="bugreport" />&user=<mm:write referid="user" />&portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&action=removemyselfinterested"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">removemyselfinterested</mm:param></mm:url>">Remove yourself as interested <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 					<mm:import id="userfound" />
 				</mm:list>
+
 				<mm:present referid="userfound" inverse="true">
-				Add yourself as interested <A HREF="fullview.jsp?bugreport=<mm:write referid="bugreport" />&user=<mm:write referid="user" />&portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&action=addmyselfinterested"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
-				</mm:present>
+				<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">addmyselfinterested</mm:param></mm:url>">Add yourself as interested  <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 				</mm:present>
 
 
+				</mm:present>
 			<!-- user but not a commitor -->
 				<mm:present referid="commitor" inverse="true">
 					You (<mm:field name="firstname" /> <mm:field name="lastname" />) have the status of developer this allows you the following actions<p />
-					<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'">
-						Remove yourself as interested <A HREF="executes/removeMyselfInterested.jsp?bugreport=<mm:write referid="bugreport" />&user=<mm:write referid="user" />"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
-						<mm:import id="userfound" />
-					</mm:list>
-					<mm:present referid="userfound" inverse="true">
-						Add yourself as interested <A HREF="executes/addMyselfInterested.jsp?bugreport=<mm:write referid="bugreport" />&user=<mm:write referid="user" />"><IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
-					</mm:present>
+				<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'">
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">removemyselfinterested</mm:param></mm:url>">Remove yourself as interested <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<mm:import id="userfound" />
+				</mm:list>
+
+				<mm:present referid="userfound" inverse="true">
+				<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">addmyselfinterested</mm:param></mm:url>">Add yourself as interested  <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 				</mm:present>
-				</mm:node>
-			</mm:present>
+				</mm:present>
+			</mm:node>
+		</mm:present>
 		</td>
 </tr>
 </table>

@@ -50,14 +50,18 @@
 		<mm:import id="noareas" />
 		<mm:node number="BugTracker.Start">
 		<SELECT NAME="newarea">
-			<mm:relatednodes type="areas">
-			<mm:first><mm:remove referid="noareas" /></mm:first>
-			<OPTION VALUE="<mm:field name="number" />"
-			<mm:field name="name">
-			<mm:compare value="Misc">SELECTED</mm:compare>
-			</mm:field>
-			><mm:field name="substring(name,15,.)" />
+   
+			<mm:relatednodescontainer type="areas">
+        <mm:sortorder field="name" direction="up"/>
+			  <mm:relatednodes>
+			  <mm:first><mm:remove referid="noareas" /></mm:first>
+			    <OPTION VALUE="<mm:field name="number" />"
+    			<mm:field name="name">
+    			<mm:compare value="Misc">SELECTED</mm:compare>
+    			</mm:field>
+  			><mm:field name="substring(name,15,.)" />
 			</mm:relatednodes>
+			</mm:relatednodescontainer>
 		</SELECT>
 		</mm:node>
 		</td>
@@ -120,10 +124,10 @@
 		</td>
 		<td>
 			<p />
-      <form action="<mm:url referids="parameters,$parameters"/>" method="POST">
+      <form action="<mm:url referids="parameters,$parameters"/>" method="GET">
 			<CENTER>
-        <INPUT TYPE="hidden" name="template" value="">
 				<INPUT TYPE="submit" VALUE="CANCEL">
+       </CENTER>
 			</form>
 		</td>
 </tr>
