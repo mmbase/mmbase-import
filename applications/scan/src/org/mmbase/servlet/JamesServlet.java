@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.20 2001-02-20 18:19:11 michiel Exp $
+$Id: JamesServlet.java,v 1.21 2001-03-02 16:10:57 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2001/02/20 18:19:11  michiel
+Initialisation of logging facilities.
+
 Revision 1.19  2000/07/22 21:25:23  daniel
 changes mmbase.mode
 
@@ -72,19 +75,13 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.20 2001-02-20 18:19:11 michiel Exp $
+* @version $Id: JamesServlet.java,v 1.21 2001-03-02 16:10:57 michiel Exp $
 */
 
 class DebugServlet {
 
 	static Logger log = Logging.getLoggerInstance(DebugServlet.class.getName()); 
 	public String classname = getClass().getName();
-	public static boolean debug = false;
-	public void debug( String msg ) { 		
-
-		log.debug(msg + "<deprecated call to debug>");
-		//System.out.println( classname +":"+ msg ); 
-	}
 
 	JamesServlet servlet;
 	Vector URIs = new Vector();
@@ -116,16 +113,6 @@ public class JamesServlet extends HttpServlet {
 
 	static {
 
-		/* Michiel: 
-		   This doesn't seem to be such a bad place to initialise our logging stuff.
-		*/        
-		
-		System.out.println("MMBase starts now");
-		Logging.configure(System.getProperty("mmbase.config") + "/log/log.xml");
-		log = Logging.getLoggerInstance(JamesServlet.class.getName()); 
-		System.out.println("Logging starts now");
-		log.info("\n====================\nStarting MMBase\n====================");
-
 		/*
 		String dtmp=System.getProperty("mmbase.mode");
 		if (dtmp!=null && dtmp.equals("demo")) {
@@ -151,6 +138,18 @@ public class JamesServlet extends HttpServlet {
 		} else {
 			System.err.println("mmbase.outputfile = null, no redirection of System.out to file");
 		}
+
+
+		/* Michiel: 
+		   This doesn't seem to be such a bad place to initialise our logging stuff.
+		*/        
+		
+		System.out.println("MMBase starts now");
+		Logging.configure(System.getProperty("mmbase.config") + "/log/log.xml");
+		log = Logging.getLoggerInstance(JamesServlet.class.getName()); 
+		System.out.println("Logging starts now");
+		log.info("\n====================\nStarting MMBase\n====================");
+
 	}
 
 	/*
