@@ -113,6 +113,15 @@ public class MMExamples extends ProcessorModule {
 				String goal=(String)vars.get("GOAL");
 				System.out.println("APP="+appname+" P="+savepath+" G="+goal);
 				writeApplication(appname,savepath,goal);
+			} else if (token.equals("BUILDERSAVE")) {
+				String buildername=(String)cmds.get(cmdline);
+				String savepath=(String)vars.get("PATH");
+				MMObjectBuilder bul=mmb.getMMObject(buildername);
+				if (bul!=null) {
+					XMLBuilderWriter.writeXMLFile(savepath,bul);
+					lastmsg="Writing finished, no problems.<BR><BR>\n";
+					lastmsg+="A clean copy of "+buildername+".xml can be found at : "+savepath+"<BR><BR>\n";
+				}
 			}
 
 		}
@@ -132,6 +141,12 @@ public class MMExamples extends ProcessorModule {
 				return(getDescription(tok.nextToken()));
 			} else if (cmd.equals("LASTMSG")) { 
 				return(lastmsg);
+			} else if (cmd.equals("BUILDERVERSION")) { 
+				return(""+getBuilderVersion(tok.nextToken()));
+			} else if (cmd.equals("BUILDERCLASSFILE")) { 
+				return(""+getBuilderClass(tok.nextToken()));
+			} else if (cmd.equals("BUILDERDESCRIPTION")) { 
+				return(""+getBuilderDescription(tok.nextToken()));
 			}
 		}
 		return("No command defined");
@@ -147,11 +162,45 @@ public class MMExamples extends ProcessorModule {
 	}
 
 
+	int getBuilderVersion(String appname) {
+		String path=MMBaseContext.getConfigPath()+("/builders/");
+		XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
+		if (app!=null) {
+			return(app.getBuilderVersion());
+		}
+		return(-1);
+	}
+
+	String getBuilderClass(String bulname) {
+		String path=MMBaseContext.getConfigPath()+("/builders/");
+		XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml");
+		if (bul!=null) {
+			return(bul.getClassFile());
+		}
+		return("");
+	}
+
+
+
 	String getDescription(String appname) {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
 		if (app!=null) {
 			return(app.getDescription());
+		}
+		return("");
+	}
+
+
+	String getBuilderDescription(String appname) {
+		String path=MMBaseContext.getConfigPath()+("/builders/");
+		XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
+		if (app!=null) {
+			Hashtable desc=app.getDescriptions();
+			String us=(String)desc.get("us");
+			if (us!=null) {
+				return(us);
+			}
 		}
 		return("");
 	}
@@ -617,15 +666,16 @@ public class MMExamples extends ProcessorModule {
 			for (int i=0;i<files.length;i++) {
 				String aname=files[i];
 				if (aname.endsWith(".xml")) {
+					String name=aname;
+					String sname=name.substring(0,name.length()-4);
 					XMLBuilderReader app=new XMLBuilderReader(path+aname);
-					String name=aname; // should name be added to xml ?
-					results.addElement(name);
+					results.addElement(sname);
 					results.addElement(""+app.getBuilderVersion());
-					int installedversion=ver.getInstalledVersion(name,"builder");
+					int installedversion=ver.getInstalledVersion(sname,"builder");
 					if (installedversion==-1) {
 						results.addElement("no");
 					} else {
-						results.addElement("yes (ver : "+installedversion+")");
+						results.addElement("yes");
 					}
 					results.addElement(app.getBuilderMaintainer());
 				}
