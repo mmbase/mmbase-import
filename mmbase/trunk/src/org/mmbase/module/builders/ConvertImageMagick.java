@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.56 2004-05-05 08:14:13 jaco Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.57 2004-07-12 16:22:07 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);
@@ -36,6 +36,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
     // The modulate scale base holds the builder property to specify the scalebase.
     // If ModulateScaleBase property is not defined, then value stays max int.
     private static int modulateScaleBase = Integer.MAX_VALUE;
+
+    // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
     
     /**
      * The default image format.
@@ -326,26 +328,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     int firstcomma = cmd.indexOf(',');
                     int secondcomma = cmd.indexOf(',', firstcomma + 1);
                     type = "draw";
-                    try {
-                        cmd = "text " + cmd.substring(0, secondcomma) + " " + cmd.substring(secondcomma + 1);
-                        cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
-                        // convert needs UTF-8, but Runtime seemingly always writes ISO-8859-1, so we
-                        // are going to lie here.
-                        
-                        // even the value of this doesn't seem to matter
-                        if (log.isDebugEnabled()) {
-                            log.debug( "file.encoding: " + java.lang.System.getProperty( "file.encoding"));
-                        }
-                    } catch (java.io.UnsupportedEncodingException e) {
-                        log.error(e.toString());
-                    }
+                    cmd = "text " + cmd.substring(0, secondcomma) + " " + cmd.substring(secondcomma + 1);
                 } else if (type.equals("draw")) {
-                    try {
-                        cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
+                    //try {
+                        //cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
                         // can be some text in the draw command
-                    } catch (java.io.UnsupportedEncodingException e) {
-                        log.error(e.toString());
-                    }
+                    //} catch (java.io.UnsupportedEncodingException e) {
+                    //   log.error(e.toString());
+                    //}
                 } else if (type.equals("font")) {
                     if (cmd.startsWith("mm:")) {
                         // recognize MMBase config dir, so that it is easy to put the fonts there.
@@ -380,6 +370,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         type = "crop";
                         cmd = (x2 - x1) + "x" + (y2 - y1) + "+" + x1 + "+" + y1;
                     } catch (Exception e) {
+
                         log.error(e.toString());
                     }
                 } else if (type.equals("roll")) {
@@ -456,10 +447,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
         log.debug( "Calculating modulate cmd using scale base " + scaleBase + " for modulate cmd: " + cmd);
         String modCmd = "";
         StringTokenizer st = new StringTokenizer(cmd, ",/");
-        while (st.hasMoreTokens())
+        while (st.hasMoreTokens()) {
             modCmd += scaleBase + Integer.parseInt(st.nextToken()) + ",";
-        if (!modCmd.equals(""))
+        }
+        if (!modCmd.equals("")) {
             modCmd = modCmd.substring(0, modCmd.length() - 1);
+        }
         // remove last ',' char.
         log.debug("Modulate cmd after calculation: " + modCmd);
         return modCmd;
@@ -474,11 +467,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return      The result of the conversion (a picture).
      *
      */
-    private byte[] convertImage(
-                                byte[] pict,
-                                List cmd,
-                                String format,
-                                File cwd) {
+    private byte[] convertImage(byte[] pict, List cmd, String format, File cwd) {
 
         if (pict != null && pict.length > 0) {
             cmd.add(0, "-");
@@ -486,14 +475,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             cmd.add(format + ":-");
 
             String command = cmd.toString(); // only for debugging.
-            log.debug(
-                      "Converting image(#"
-                      + pict.length
-                      + " bytes)  to '"
-                      + format
-                      + "' ('"
-                      + command
-                      + "')");
+            log.debug("Converting image(#" + pict.length + " bytes)  to '" + format + "' ('" + command + "')");
 
             CommandLauncher launcher = new CommandLauncher("ConvertImage");
             ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
@@ -503,8 +485,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             try {
                 if (cwd != null) {
                     // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
-                    String[] env = new String[1];
-                    env[0] = "MAGICK_HOME=" + cwd.toString();
+                    String[] env = { "MAGICK_HOME=" + cwd.toString() };
                     if (log.isDebugEnabled()) {
                         log.debug("MAGICK_HOME " + env[0]);
                     }
