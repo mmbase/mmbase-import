@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE scripts SYSTEM "dtd/mediaproviderfilter_1_0.dtd">
+
+<mediasourcefilter>
+
+	<!-- define the chain of filters, the filter that has to filter first
+		has to mentioned as first. A filter is specified or by the classname
+		(class needs mediasourcefilterinterface) or by some standard ones.
+		See for more information about the standard ones the rest of this file.
+		-->
+	<chain>
+		<filter>preferedSource</filter>
+	</chain>
+
+	<!-- define the sequence of preference. The first mentioned format will be given if found.
+	-->
+	<preferedSource>
+		<source format="G2" />
+		<source format="RA" />
+	</preferedSource>
+
+	<!-- Used to specify realaudio preferences.
+	-->
+	<realaudio>
+		<minspeed>16000</minspeed>
+		<maxspeed>96000</maxspeed>
+		<minchannels>1</minchannels>
+		<maxchannels>2</maxchannels>
+	</realaudio>
+	
+</mediasourcefilter>
