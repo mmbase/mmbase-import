@@ -26,7 +26,8 @@ import org.mmbase.module.ParseException;
  */
 public class TypeRel extends MMObjectBuilder {
 
-	LRUHashtable artCache=new LRUHashtable(128);
+	LRUHashtable artCache			=new LRUHashtable(128);
+	LRUHashtable artCacheVector		=new LRUHashtable(128);
 
 	/**
 	* a core object, defined the allowed relations between different typedefs
@@ -90,6 +91,9 @@ public class TypeRel extends MMObjectBuilder {
 	}
 
 
+	/*
+	* get the reationtypenr of the allowed relation between objectnr 1 and 2 (eg. a 'related')
+	*/
 	public int getAllowedRelationType(int snum,int dnum) {
 		try {
 			// putting a cache here is silly but makes editor faster !
@@ -101,6 +105,7 @@ public class TypeRel extends MMObjectBuilder {
 			MMObjectNode node;
 			if (rs.next()) {
 				int j=rs.getInt(1);
+				// there are more than 1 relation types possible, return -1 
 				if (rs.next()) {
 					artCache.put(""+snum+" "+dnum,new Integer(-1));
 					j=-1;
@@ -118,6 +123,28 @@ public class TypeRel extends MMObjectBuilder {
 			return(-1);
 		}
 		return(-1);
+	}
+
+	
+	public Vector getAllowedRelationTypes(int snum,int dnum) {
+		Vector result = new Vector();
+
+		try {
+
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("SELECT rnumber FROM "+mmb.baseName+"_"+tableName+" WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+");");
+			MMObjectNode node;
+			while (rs.next()) {
+				int j=rs.getInt(1);
+				result.addElement( new Integer(j) );
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return(result);
 	}
 
 
@@ -206,4 +233,24 @@ public class TypeRel extends MMObjectBuilder {
 		}
 	}
 
+	public Vector getAllowedRelationsTypes(int number1,int number2) {
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE (snumber="+number1+" AND dnumber="+number2+") OR (snumber="+number2+" AND dnumber="+number1+");");
+			MMObjectNode node;
+			Vector results=new Vector();
+			while(rs.next()) {
+				int rnumber=rs.getInt(6);
+				MMObjectNode snode=mmb.getRelDef().getNode(rnumber);
+				results.addElement(snode);
+			}	
+			stmt.close();
+			con.close();
+			return(results);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return(null);
+		}
+	}
 }
