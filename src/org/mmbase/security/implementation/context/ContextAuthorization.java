@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.30 2003-08-06 08:30:46 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.31 2003-08-06 10:00:22 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class);
@@ -584,6 +584,16 @@ public class ContextAuthorization extends Authorization {
                     allowingContextsCache.put(userContext.getIdentifier(), ac);
                 }
                 
+                if (ac.contexts.size() == 0) {
+                    if (ac.inverse) {
+                        return COMPLETE_CHECK;
+                    } else {
+                        // may read nothing
+                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
+                        return new Authorization.QueryCheck(true, mayNothing);
+                    }
+                }
+
                 List steps = query.getSteps();
                 if (steps.size() * ac.contexts.size() < maxContextsInQuery) { 
                     Iterator i = steps.iterator();
