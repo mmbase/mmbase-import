@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.context;
 
 import org.mmbase.security.*;
+import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in java.lang
 
 import java.util.*;
 import java.io.FileInputStream;
@@ -52,16 +53,16 @@ public class ContextAuthorization extends Authorization {
             String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
             log.error(message);
             log.error(Logging.stackTrace(se));
-            throw new org.mmbase.security.SecurityException(message);
+            throw new SecurityException(message);
         } catch(java.io.IOException ioe) {
             log.error("error parsing file :"+configFile);
             log.error(Logging.stackTrace(ioe));
-            throw new org.mmbase.security.SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
+            throw new SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
         }
         log.debug("loaded: '" +  configFile + "' as config file for authorization");
     }
 
-    public String getDefaultContext(UserContext user) throws org.mmbase.security.SecurityException {
+    public String getDefaultContext(UserContext user) throws SecurityException {
         String defaultContext = (String)userDefaultContexts.get(user);
         if (defaultContext==null) {
             String xpath = "/contextconfig/accounts/user[@name='"+user.getIdentifier()+"']";
@@ -85,24 +86,24 @@ public class ContextAuthorization extends Authorization {
         return defaultContext;
     }
 
-    public void create(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public void create(UserContext user, int nodeNumber) throws SecurityException {
         // notify, well actually we only have to set the context to the default of the user...
         log.info("create on node #"+nodeNumber+" by user: " +user);
         String defaultContext = getDefaultContext(user);
         setContext(user, nodeNumber, defaultContext);
     }
 
-    public void update(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public void update(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
         log.info("update on node #"+nodeNumber+" by user: " +user);
     }
 
-    public void remove(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException{
+    public void remove(UserContext user, int nodeNumber) throws SecurityException{
         // notify the log
         log.info("remove on node #"+nodeNumber+" by user: " +user);
     }
 
-    public void setContext(UserContext user, int nodeNumber, String context) throws org.mmbase.security.SecurityException {
+    public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
         // notify the log
         if (log.isDebugEnabled()) {
             log.info("set context on node #"+nodeNumber+" by user: " +user + " to " + context );
@@ -116,7 +117,7 @@ public class ContextAuthorization extends Authorization {
         if(!possible.contains(context)) {
             String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user;
             log.error(msg);
-            throw new org.mmbase.security.SecurityException(msg);
+            throw new SecurityException(msg);
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
@@ -130,9 +131,9 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-    public String getContext(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public String getContext(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
-        log.info("get context on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) log.debug("get context on node #"+nodeNumber+" by user: " +user);
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
         assert(user, nodeNumber, Operation.READ);
@@ -142,7 +143,7 @@ public class ContextAuthorization extends Authorization {
         return node.getStringValue("owner");
     }
 
-    public HashSet getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public HashSet getPossibleContexts(UserContext user, int nodeNumber) throws SecurityException {
         // notify the log
         log.info("get possible context on node #"+nodeNumber+" by user: " +user);
 
@@ -194,7 +195,7 @@ public class ContextAuthorization extends Authorization {
         return list;
     }
 
-    public boolean check(UserContext user, int nodeNumber, Operation operation) throws org.mmbase.security.SecurityException{
+    public boolean check(UserContext user, int nodeNumber, Operation operation) throws SecurityException{
         if (log.isDebugEnabled()) {
             log.info("check on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         }
@@ -209,7 +210,14 @@ public class ContextAuthorization extends Authorization {
         //  look which groups belong to this,...
         MMObjectNode node = getMMNode(nodeNumber);
         String context = node.getStringValue("owner");
+        
+        return check(user, context, operation.toString());
+    }
 
+    private boolean check(UserContext user, int nodeNumber, String operation) throws SecurityException {
+        return check(user, getContext(user, nodeNumber), operation);
+    }
+    private boolean check(UserContext user, String context, String operation) throws SecurityException {
         // look if we have this one already inside the positive cache...
         synchronized(cache) {
             Boolean result = cache.rightGet(operation, context, user.getIdentifier());
@@ -218,6 +226,7 @@ public class ContextAuthorization extends Authorization {
                 return result.booleanValue();
             }
         }
+
 
         String xpath = "/contextconfig/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']/grant";
         NodeList found;
@@ -229,6 +238,8 @@ public class ContextAuthorization extends Authorization {
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
         }
+
+
 
         // say our context isnt found... do the same query but now on the default context...
         if(found.getLength() == 0) {
@@ -271,6 +282,7 @@ public class ContextAuthorization extends Authorization {
             }
         }
 
+
         HashSet allowedGroups = new HashSet();
         for(int currentNode = 0; currentNode < found.getLength(); currentNode++) {
             Node contains = found.item(currentNode);
@@ -278,7 +290,7 @@ public class ContextAuthorization extends Authorization {
             Node contextNameNode = nnm.getNamedItem("group");
             allowedGroups.add(contextNameNode.getNodeValue());
             if (log.isDebugEnabled()) {
-                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
+                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"/*+nodeNumber*/+" by user: " +user);
             }
         }
         boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
@@ -341,7 +353,7 @@ public class ContextAuthorization extends Authorization {
                     // this is a group...
                     // when not already known, add it to our to fetch-list
                     if(!done.contains(named)) {
-                        log.debug("\tfounnd a new group with name "+named+", which could contain our user, adding it to the to fetch list");
+                        log.debug("\tfound a new group with name "+named+", which could contain our user, adding it to the to fetch list");
                         fetchedGroups.add(named);
                     }
                 } else if(type.equals("user")) {
@@ -354,31 +366,62 @@ public class ContextAuthorization extends Authorization {
                 } else {
                     String msg = "dont know the type:" + type;
                     log.error(msg);
-                    throw new org.mmbase.security.SecurityException(msg);
+                    throw new SecurityException(msg);
                 }
             }
         }
         return userInGroups(user, fetchedGroups, done);
     }
 
-    public void assert(UserContext user, int nodeNumber, Operation operation) throws org.mmbase.security.SecurityException {
+    public void assert(UserContext user, int nodeNumber, Operation operation) throws SecurityException {
         log.info("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         if (!check(user, nodeNumber, operation) ) {
             String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
             log.error(msg);
-            throw new org.mmbase.security.SecurityException(msg);
+            throw new SecurityException(msg);
         }
     }
 
-    public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) {
-        return check(user, nodeNumber, operation);
+    
+    public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
+        if (operation == Operation.CREATE) {
+            // may link on both nodes
+            return check(user, srcNodeNumber, "link") && check(user, dstNodeNumber, "link");
+        } else if (operation == Operation.CHANGE_RELATION) {
+            return check(user, nodeNumber, Operation.WRITE.toString()) &&
+                check(user, srcNodeNumber, "link") && check(user, dstNodeNumber, "link");
+        } else {
+            throw new RuntimeException("Called check with wrong operation " + operation);
+        }
     }
 
-    public void assert(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws org.mmbase.security.SecurityException {
-        if (!check(user, nodeNumber, operation) ) {
-            String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
-            log.error(msg);
-            throw new org.mmbase.security.SecurityException(msg);
+    public void assert(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
+        if (operation == Operation.CREATE) {
+            // may link on both nodes
+            if(!check(user, srcNodeNumber, "link")) {
+                String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
+                log.error(msg);
+                throw new SecurityException(msg);                
+            }  
+            if (! check(user, dstNodeNumber, "link")) {
+                String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
+                log.error(msg);
+                throw new SecurityException(msg);                                
+            }
+        } else if (operation == Operation.CHANGE_RELATION) {
+            if(!check(user, srcNodeNumber, "link")) {
+                String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
+                log.error(msg);
+                throw new SecurityException(msg);                
+            }  
+            if (! check(user, dstNodeNumber, "link")) {
+                String msg = "Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier();
+                log.error(msg);
+                throw new SecurityException(msg);                                
+            }
+            assert(user, nodeNumber, Operation.WRITE);
+        } else {
+            throw new RuntimeException("Called check with wrong operation " + operation);
         }
     }
 
@@ -391,14 +434,14 @@ public class ContextAuthorization extends Authorization {
             if(builder == null) {
                 String msg = "builder 'typedef' not found";
                 log.error(msg);
-                throw new org.mmbase.security.SecurityException(msg);
+                throw new SecurityException(msg);
             }
         }
         MMObjectNode node = builder.getNode(n);
         if(node == null) {
             String msg = "node " + n + " not found";
             log.error(msg);
-            throw new org.mmbase.security.SecurityException(msg);
+            throw new SecurityException(msg);
         }
         return node;
     }
