@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.1 2002-05-08 10:50:38 michiel Exp $
+    @version  $Id: index.jsp,v 1.2 2002-05-14 15:19:20 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -39,7 +39,12 @@
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
 	<h1>Editwizard Examples</h1>
-
+  <p>
+   This example overrides the 'list.xsl' of the editwizard bij placing
+   a variant in xsl/list.xsl relative to this file. It also uses it's
+   private XML editwizard definitions, which are also placed
+   relativily to this file in the 'samples' directory.
+  </p>
   <!-- check if the MyNews application was installed -->
   <mm:cloud>
   <mm:listnodes type="versions" constraints="[type] LIKE '%application%' AND [name] LIKE '%MyNews%'">
@@ -47,9 +52,11 @@
   </mm:listnodes>
   </mm:cloud>
 	<br />	
-
   <!-- Yes, installed, show the editwizard entry page -->
   <mm:present referid="mynews_installed">
+
+  <table>    
+   <tr><td>          
 	<a href="<mm:url referids="referrer" page="${jsps}list.jsp">           
            <mm:param name="title">People</mm:param>
            <mm:param name="wizard">samples/people</mm:param>
@@ -63,7 +70,14 @@
             <mm:param name="wizard">samples/people</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>">Create</a>)
-  <br />   
+  </td><td>
+     This is a '2 step' example. You can create/change the date for a
+     person and related a picture in the first step. In the second
+   	 step then, you can related articles to the person. We also
+ 	   demonstrate here how you can jump directly to the wizard to create a
+	   new person (without having to go to the list first).
+  </td></tr>
+  <tr><td>
    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
            <mm:param name="title">Images</mm:param>
            <mm:param name="wizard">samples/imageupload</mm:param>
@@ -72,7 +86,11 @@
            <mm:param name="orderby">title</mm:param>
            </mm:url>" 
            onClick="return openListImages(this);">    
-           Images</a> (search:  <input type="text" name="imagedesc" value="" style="width:200px;text-align:left;" />) <br />
+           Images</a> (search:  <input type="text" name="imagedesc"	value="" style="width:200px;text-align:left;" />)
+   </td><td>
+    A very simple image uploader. We show here how you could add search criteria.
+    </td><tr>
+    <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
 		       <mm:param name="title">News</mm:param>
         	 <mm:param name="wizard">samples/news</mm:param>
@@ -80,7 +98,14 @@
            <mm:param name="fields">number,title</mm:param>
            <mm:param name="orderby">number</mm:param>
            <mm:param name="directions">down</mm:param>
-           </mm:url>">News</a><br />  
+           </mm:url>">News</a>
+     </td><td>       
+      Demonstrated is how to use editwizards 'libs'. These are pieces
+      of XML stored in the editwizard data directory which you can
+      include in you own wizards.
+     </td></tr>
+     </table>
+     
    </mm:present>
 
    <!-- MyNews applications was not installed, perhaps builders are missing and so on. Give warning. -->
