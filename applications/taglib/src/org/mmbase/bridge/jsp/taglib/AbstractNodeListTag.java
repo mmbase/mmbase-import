@@ -157,7 +157,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param where the selection query
      */
     public void setConstraints(String where) throws JspTagException {
-        this.constraints = getAttributeValue(where);
+        constraints = getAttributeValue(where);
+        if ("".equals(constraints)) constraints = null; // this means: no constraints
     }
 
 
