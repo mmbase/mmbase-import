@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.21 $ $Date: 2001-07-02 09:08:10 $
+ * @version $Revision: 1.22 $ $Date: 2001-07-02 09:24:34 $
  */
 public class remoteXML extends JamesServlet {
 	private static Logger log = Logging.getLoggerInstance(remoteXML.class.getName());
@@ -63,7 +63,7 @@ public class remoteXML extends JamesServlet {
 			// Check if the remote machine knows the same shared secret. 
 			if(!mmbaseCop.checkSharedSecret(sharedsecret)) {
 				log.error("sharedsecret is NOT correct, system is NOT authenticated"); 
-				return false;
+				return;
 			}
 			
 			if (req.getMethod().equals("POST")) {
