@@ -40,9 +40,9 @@ import java.sql.Statement;
 public class servdb extends JamesServlet {
 
 //  ---------------------------------------------------
-	private String 	classname 	= getClass().getName();
+	//private String 	classname 	= getClass().getName();
 	private	boolean	debug		= true;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	//private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 //  ---------------------------------------------------
 
 	private		Date 				lastmod 	= null, tempdate;
