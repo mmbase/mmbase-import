@@ -146,7 +146,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 		node.setValue("status",5);
 		node.commit();
 
-		Vwms.sendMail(name,"daniel@vpro.nl","performTask not implemented","");
+		Vwms.sendMail(name,"performTask not implemented","");
 		return(false);
 	}
 
