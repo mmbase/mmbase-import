@@ -441,7 +441,7 @@ public class Poster {
     private Hashtable readMailboxes() {
         Hashtable result = new Hashtable();
         if (node != null) {
-            RelationIterator i = node.getRelations("posrel", "forummessagebox").relationIterator();
+            RelationIterator i = node.getRelations("posmboxrel", "forummessagebox").relationIterator();
             while (i.hasNext()) {
                 Relation rel = i.nextRelation();
                 Node p = null;
@@ -481,16 +481,16 @@ public class Poster {
             mnode.setIntValue("carboncopymode", carboncopymode);
             mnode.commit();
 
-            RelationManager rm = ForumManager.getCloud().getRelationManager("posters", "forummessagebox", "posrel");
+            RelationManager rm = ForumManager.getCloud().getRelationManager("posters", "forummessagebox", "posmboxrel");
             if (rm != null) {
                 Node rel = rm.createRelation(node, mnode);
-                rel.setIntValue("pos", 1); // little weird, daniel
+                // rel.setIntValue("pos", 1); // little weird, daniel
                 rel.commit();
                 Mailbox newbox = new Mailbox(mnode, this);
                 mailboxes.put(name, newbox);
                 return newbox;
             } else {
-                log.error("Forum can't load relation nodemanager posters/forummessagebox/posrel");
+                log.error("Forum can't load relation nodemanager posters/forummessagebox/posmboxrel");
             }
         } else {
             log.error("Forum can't load forummessagebox nodemanager");
