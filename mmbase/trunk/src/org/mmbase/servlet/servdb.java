@@ -78,7 +78,9 @@ public class servdb extends JamesServlet {
 
     public void onload() {}
 
+
     public void unload() {}
+
 
     public void shutdown() {}
 
@@ -168,6 +170,7 @@ public class servdb extends JamesServlet {
 
             // org.mmbase fileroot=(String)Roots.get(req.getAcceptor());
             // org.mmbase if (fileroot==null) fileroot=(String)Roots.get("www");
+
 
             fileroot="/usr/local/orion/default-site/html/";
 
@@ -387,6 +390,7 @@ public class servdb extends JamesServlet {
                                             // org.mmbase if (stats!=null) stats.countSimpleEvent("Desktop="+ref);
                                         }
                                         //debug("Playlist="+playlists);
+
 
                                         if (playlists!=null) {
                                             Vector vec=getParamVector(req);
@@ -700,6 +704,7 @@ public class servdb extends JamesServlet {
                 //return(null); // removed for mtus
             }
 
+
             try {
                 ispeed=Integer.parseInt(wspeed);
                 ichannels=Integer.parseInt(wchannels);
@@ -711,6 +716,7 @@ public class servdb extends JamesServlet {
             params.addElement("c("+ichannels+")");
             //debug("ADDED="+ispeed+" "+ichannels);
         }
+
 
         return(params);
     }
@@ -729,6 +735,7 @@ public class servdb extends JamesServlet {
                 node=bul.getNode((String)params.elementAt(0));
             } catch(Exception e) { }
 
+
             if (node!=null) {
                 result=node.toXML();
             } else {
@@ -744,6 +751,7 @@ public class servdb extends JamesServlet {
                         node=bul.getNode(i);
                     } catch(Exception e) { }
 
+
                     if (node!=null) {
                         result+=node.toXML()+"\n\n";
                     }
@@ -757,7 +765,7 @@ public class servdb extends JamesServlet {
         return(data);
     }
 
-    /*
+    /**
      * Downloading Attachment
      * cjr@dds.nl, July 27th 2000
      *
@@ -766,25 +774,30 @@ public class servdb extends JamesServlet {
     public byte[] getAttachment(Vector params) {
         debug("getAttachment(): param="+params);
         String result="";
-        if (params.size()==0) return(null);
-        MMObjectBuilder bul=mmbase.getMMObject("attachments");
         if (params.size()==1) {
+            MMObjectBuilder bul=mmbase.getMMObject("attachments");
             MMObjectNode node=null;
             try {
                 node=bul.getNode((String)params.elementAt(0));
-            } catch(Exception e) { }
+            } catch(Exception e) {
+                if (debug) debug("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
+                return null;
+            }
 
             if (node!=null) {
                 byte[] data = node.getByteValue("handle");
                 return data;
             } else {
                 result="Sorry no valid mmnode so no attachment can be given";
-            }
-        }
-        byte[] data=new byte[result.length()];
-        result.getBytes(0,result.length(),data,0);
+                byte[] data=new byte[result.length()];
+                result.getBytes(0,result.length(),data,0);
 
-        return(data);
+                return(data);
+            }
+        } else {
+            if (debug) debug("getAttachment called with "+params.size()+" arguments, instead of exactly 1");
+            return null;
+        }
     }
 
     /**
