@@ -5,6 +5,7 @@
   <!-- =================================================================== -->
   <!-- Read customized values if available -->
   <property file="build.properties" />
+
   <!-- Default values for properties that can be customized -->
   <property name="mmbase.source.dir" value=".." />
   <property name="source.dir"   location="${mmbase.source.dir}" />
@@ -15,7 +16,8 @@
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
 
-  <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
+  <!-- project defaults (not used atm)-->  
+  <!--<property file="${source.dir}/build.properties.default"/>-->
 
   <property name="tests.source.dir"   location="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
@@ -59,68 +61,9 @@
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
     <ant dir="${source.dir}" target="lib.compile" />
-    <ant dir="${source.dir}" target="expand.hsqldb" />
+    <!--<ant dir="${source.dir}" target="expand.hsqldb" />-->
   </target>
   
-
-  <!-- =================================================================== -->
-  <!-- Build the JUnit test environment                                    -->
-  <!-- =================================================================== -->
-  <!--
-  <target name="junit"
-          description="Build the JUnit test environment"
-          depends="init,lib.release,lib.compile,jar,expand.hsql">
-    <mkdir dir="${build.dir}/junit"/>
-    <mkdir dir="${build.dir}/junit/config"/>
-    <mkdir dir="${build.dir}/junit/lib"/>
-    <copy todir="${build.dir}/junit/config">
-      <fileset dir="${source-config.dir}"/>
-    </copy>
-    <copy todir="${build.dir}/junit/config/builders">
-      <fileset dir="${source-config.dir}/applications/BridgeTest/builders">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    <replace file="${build.dir}/junit/config/applications/BridgeTest.xml">
-      <replacetoken>auto-deploy=&quot;false&quot;</replacetoken>
-      <replacevalue>auto-deploy=&quot;true&quot;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/mmbaseroot.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
-    </replace>
-    <copy file="${junit.jar}"   todir="${build.dir}/junit/lib"/>
-    <copy file="${servlet.jar}" todir="${build.dir}/junit/lib"/>
-    <copy file="${mmbase.jar}"  todir="${build.dir}/junit/lib"/>
-    <copy file="${hsql.jar}"    todir="${build.dir}/junit/lib"/>
-    <copy file="${xalan.jar}"   todir="${build.dir}/junit/lib"/>
-    <copy file="${xerces.jar}"  todir="${build.dir}/junit/lib"/>
-    <copy file="${jai_codec.jar}" todir="${build.dir}/junit/lib"/>
-    <copy file="${jai_core.jar}"  todir="${build.dir}/junit/lib"/>
-    <copy file="${log4j.jar}"     todir="${build.dir}/junit/lib"/>
-  </target>
-
-   -->
   <!-- =================================================================== -->
   <!-- Clean the JUnit test environment                                    -->
   <!-- =================================================================== -->
@@ -128,9 +71,6 @@
     <delete dir="${tests.build.dir}"/>
     <delete dir="${tests.work.dir}"/>
   </target>
-
-
-
 
   <target name="init.get">
     <!-- JUnit -->
