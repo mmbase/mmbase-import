@@ -16,6 +16,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.SizeOf;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
@@ -24,9 +26,9 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.66 2002-07-26 08:47:33 vpro Exp $
+ * @version $Id: BasicNode.java,v 1.67 2002-09-23 13:53:43 michiel Exp $
  */
-public class BasicNode implements Node {
+public class BasicNode implements Node, SizeMeasurable {
 
     public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
@@ -83,6 +85,13 @@ public class BasicNode implements Node {
      * @scope private
      */
     protected boolean isnew = false;
+
+    public int getByteSize() {
+        return getByteSize(new SizeOf());
+    }
+    public int getByteSize(SizeOf sizeof) {
+        return sizeof.sizeof(noderef);
+    }
 
     /*
      * Instantiates a node, linking it to a specified node manager.
@@ -633,6 +642,57 @@ public class BasicNode implements Node {
             }
         }
         return new BasicNodeList(relvector,cloud);
+    }
+
+    /**
+     * @since MMBase-1.6
+     */
+
+    public NodeList getRelatedNodes(String type, String role, String direction) {
+
+        log.debug("listing related nodes of role '" + role + "'" );
+        int requestedRole = mmb.getRelDef().getNumberByName(role);
+        List result = new Vector();
+
+        InsRel insrel = mmb.getInsRel();
+        int dir  = ClusterBuilder.getSearchDir(direction);
+        MMObjectBuilder bul = mmb.getMMObject(type);
+        if (bul == null) {
+            throw new NotFoundException("Could not get related nodes of type '" + type + "', because that is not a known NodeManager");
+        }
+
+        log.debug("role number '" + requestedRole + "'" );
+        if (requestedRole == -1) {
+            throw new NotFoundException("Could not get role '" + role + "'");
+        }
+
+        Enumeration e = getNode().getRelations();
+        
+        if (e != null) {
+            while(e.hasMoreElements()) {
+                MMObjectNode relNode = (MMObjectNode) e.nextElement();
+                log.debug("Found relation node '" + relNode + "'" ); 
+                int rnumber = relNode.getIntValue("rnumber");
+                
+                if (rnumber == requestedRole) {
+                    int number = relNode.getIntValue("dnumber");
+                    if (number == getNumber()) {           
+                        if (dir == ClusterBuilder.SEARCH_DESTINATION) {
+                            continue;
+                        }
+                        number = relNode.getIntValue("snumber");
+                    } else {
+                        if (dir == ClusterBuilder.SEARCH_SOURCE) {
+                            continue;
+                        }
+                    }
+                    // TODO more things with direction?
+                    MMObjectNode destNode = (MMObjectNode) bul.getNode(number);
+                    result.add(destNode);
+                }
+            }
+        }
+        return new BasicNodeList(result, cloud);
     }
 
     public int countRelatedNodes(String type) {

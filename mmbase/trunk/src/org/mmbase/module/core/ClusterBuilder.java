@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.9 2002-07-05 12:56:18 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.10 2002-09-23 13:53:44 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -71,6 +71,31 @@ public class ClusterBuilder extends VirtualBuilder {
      * This is the default value (for compatibility purposes).
      */
     public static final int SEARCH_EITHER = 4;
+
+    /**
+     * Translates a string to a search direction constant.
+     *
+     * @since MMBase-1.6
+     */
+
+    public static int getSearchDir(String search) {
+        if (search == null) return SEARCH_EITHER;
+        search = search.toUpperCase();
+        if ("DESTINATION".equals(search)) {
+            return SEARCH_DESTINATION;
+        } else if ("SOURCE".equals(search)) {
+            return SEARCH_SOURCE;
+        } else if ("BOTH".equals(search)) {
+            return SEARCH_BOTH;
+        } else if ("ALL".equals(search)) {
+            return SEARCH_ALL;
+        } else if ("EITHER".equals(search)) {
+            return SEARCH_EITHER;
+        } else {
+            throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
+        }
+        
+    }
 
     // logging variable
     private static Logger log = Logging.getLoggerInstance(ClusterBuilder.class.getName());
