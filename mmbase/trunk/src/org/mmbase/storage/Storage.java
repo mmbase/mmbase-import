@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database;
+package org.mmbase.storage;
 
 import org.mmbase.module.core.*;
 
@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Storage.java,v 1.2 2002-04-17 10:29:26 pierre Exp $
+ * @version $Id: Storage.java,v 1.1 2002-09-16 15:07:32 pierre Exp $
  */
 public interface Storage  {
 

@@ -11,6 +11,8 @@ package org.mmbase.module.database.support;
 
 import java.sql.*;
 
+import org.mmbase.storage.StorageException;
+import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.XMLDatabaseReader;
@@ -20,7 +22,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.17 2002-04-08 12:13:20 pierre Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.18 2002-09-16 15:07:29 pierre Exp $
  */
 public interface MMJdbc2NodeInterface {
     /**

@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
+import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.66 2002-07-03 16:42:42 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.67 2002-09-16 15:07:29 pierre Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 

@@ -17,7 +17,7 @@ import java.net.URLEncoder;
 
 import org.mmbase.util.*;
 import org.mmbase.module.ParseException;
-import org.mmbase.module.database.StorageException;
+import org.mmbase.storage.StorageException;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 
@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.150 2002-08-30 14:29:25 rob Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.151 2002-09-16 15:07:23 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
