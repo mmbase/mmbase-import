@@ -532,7 +532,18 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			Object fieldValue = "";
 					
 			Node fieldContext = fieldContextList.item(k);
-			if (fieldContext.getNodeName().equals("#text")) continue;
+			String nodeName = fieldContext.getNodeName();
+
+			log.debug("nodeName = "+nodeName);
+
+			if (nodeName.equals("#text")) {
+				continue;
+			}
+
+			if (!nodeName.equals("setField")) {
+				log.error(nodeName +" is not a valid operation on an object");
+				throw new TransactionHandlerException(nodeName +" is not a valid operation on an object");
+			}
 
 			//get attributes
 			NamedNodeMap nm3 = fieldContext.getAttributes();
