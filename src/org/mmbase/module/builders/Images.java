@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.30 2000-07-13 15:57:31 install Exp $
+	$Id: Images.java,v 1.31 2000-07-17 12:22:36 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.30  2000/07/13 15:57:31  install
+	Rob: Dynamic scanner support almost finished
+	
 	Revision 1.29  2000/07/13 09:40:28  install
 	Rob
 	
@@ -101,7 +104,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.30 2000-07-13 15:57:31 install Exp $
+ * @version $Id: Images.java,v 1.31 2000-07-17 12:22:36 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -329,11 +332,11 @@ public class Images extends MMObjectBuilder {
 				if(activeBuilders.contains("scanners")) {
 					getDevices("scanners",devices);
 				} 
-				if(activeBuilders.contains("camera")) {
-					getDevices("camera",devices);
-				} else 
-				if(activeBuilders.contains("pccard")) {
-					getDevices("pccard",devices);
+				if(activeBuilders.contains("cameras")) {
+					getDevices("cameras",devices);
+				} 
+				if(activeBuilders.contains("pccards")) {
+					getDevices("pccards",devices);
 				} 
 		        tagger.setValue("ITEMS","2");
 				return devices;	
