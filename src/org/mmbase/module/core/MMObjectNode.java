@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.74 $ $Date: 2002-04-17 13:17:41 $
+ * @version $Revision: 1.75 $ $Date: 2002-04-18 07:50:47 $
  */
 
 public class MMObjectNode {
@@ -1004,20 +1004,6 @@ public class MMObjectNode {
     public String getGUIIndicator() {
         if (parent!=null) {
             return parent.getGUIIndicator(this);
-        } else {
-            log.error("MMObjectNode -> can't get parent");
-            return "problem";
-        }
-    }
-
-    /**
-     * Return the Single name for this node in the currently selected language (accoridng to the configuration).
-     * The 'dutch' in the method name is a bit misleading.
-     * @return the <code>String</code> value
-     */
-    public String getDutchSName() {
-        if (parent!=null) {
-            return parent.getDutchSName();
         } else {
             log.error("MMObjectNode -> can't get parent");
             return "problem";
