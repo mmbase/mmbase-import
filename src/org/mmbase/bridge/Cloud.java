@@ -216,7 +216,7 @@ public interface Cloud {
      *         "artist.name,description,related,url", null, null, null, true);
      * </pre>
      *
-     * For more information about the constraints parameter consult
+     * For more information about the <code>constraints</code> parameter consult
      * {@link NodeManager#getList(String constraints, String orderby, String
      * directions)}. 
      *
@@ -242,18 +242,18 @@ public interface Cloud {
      *                      path has a field with the same name.
      * @param constraints   Contraints to prevent nodes from being
      *                      included in the resulting list which would normally
-     *                      by included or null if no contraints should be
-     *                      applied.
+     *                      by included or <code>null</code> if no contraints
+     *                      should be applied.
      * @param orderby       A comma separated list of field names on which the
-     *                      returned list should be sorted or null if
-     *                      the order of the returned virtual nodes doesn't
+     *                      returned list should be sorted or <code>null</code>
+     *                      if the order of the returned virtual nodes doesn't
      *                      matter.
      * @param directions    A comma separated list of the values UP and DOWN
      *                      indicating wether the sort on the
      *                      corresponding field in the <code>orderby</code>
      *                      parameter should be up (ascending) or down
-     *                      (descending) or null if sorting for all fields
-     *                      should be up. If less values are supplied
+     *                      (descending) or <code>null</code> if sorting for all
+     *                      fields should be up. If less values are supplied
      *                      then there are fields in the <code>orderby</code>
      *                      parameter, the first value in the list is used for
      *                      the remainig fields.
@@ -267,34 +267,5 @@ public interface Cloud {
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
             boolean distinct);
-
-/*
-     * @param nodes         The numbers of the nodes to start the search with.
-     *                      These have to be a member of the first NodeManager
-     *                      listed in the nodeManagers parameter. The syntax is
-     *                      a comma-seperated lists of node numbers.
-     *                      Example : '112' or '1,2,14'
-     * @param nodeManagers  The NodeManager chain. The syntax is a comma-seperated lists of NodeManager names.
-     *      The search is formed by following the relations between successive NodeManagers in the list. It is possible to explicitly supply
-     *      a RelationManager by placing the name of the manager between two NodeManagers to search.
-     *      Example: 'company,people' or 'typedef,authrel,people'.
-     * @param fields The fieldnames to return (comma seperated). This can include the name of the NodeManager in case of fieldnames that are used by
-     *      more than one manager (i.e number).
-     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
-     *      Examples: 'people.lastname', 'typedef.number,authrel.creat,people.number'
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
-     *      Examples: "people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
-     * @param order the fieldnames on which you want to sort. Identical in syntax to the fields parameter.
-     * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
-     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
-     *      The first value in the list is used for teh remainig fields. Default value is <code>'UP'</code>.
-     *      Examples: 'UP,DOWN,DOWN'
-     * @param distinct <code>True> indicates the records returned need to be distinct. <code>False</code> indicates double values can be returned.
-     * @return a <code>List</code> of found (virtual) nodes
-
-    public NodeList getList(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct);
-
-*/
-
 
 }
