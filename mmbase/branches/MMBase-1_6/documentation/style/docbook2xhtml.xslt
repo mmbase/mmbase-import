@@ -111,6 +111,10 @@
     <p>
       This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
     </p>
+    <p>
+      For questions and remarks about this documentation mail to: 
+      <a href="mailto:documentation@mmbase.org">documentation@mmbase.org</a>
+   </p>
   </xsl:template>
 
 </xsl:stylesheet>
