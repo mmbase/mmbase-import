@@ -156,12 +156,12 @@ function refresh()
 	</th>
 	</tr>
 	  <mm:nodelistfunction set="mmpm" name="getPackageInfo" referids="id,version,provider">
- 	    <tr><th>Name</th><td><mm:field name="name" /></td>
- 	    <tr><th>Type</th><td><mm:field name="type" /></td>
- 	    <tr><th>Version</th><td><mm:field name="version" /></td>
- 	    <tr><th>Maintainer</th><td><mm:field name="maintainer" /></td>
- 	    <tr><th>Creation-Date</th><td><mm:field name="creation-date" /></td>
- 	    <tr><th>Provider</th><td><mm:field name="provider" /></td>
+ 	    <tr><th>Name</th><td align="left"><mm:field name="name" /></td>
+ 	    <tr><th>Type</th><td align="left"><mm:field name="type" /></td>
+ 	    <tr><th>Version</th><td align="left"><mm:field name="version" /></td>
+ 	    <tr><th>Maintainer</th><td align="left"><mm:field name="maintainer" /></td>
+ 	    <tr><th>Creation-Date</th><td align="left"><mm:field name="creation-date" /></td>
+ 	    <tr><th>Provider</th><td align="left"><mm:field name="provider" /></td>
 	  </mm:nodelistfunction>
 </table>
 </td>
@@ -295,7 +295,7 @@ function refresh()
 	</th>
 </tr>
 <tr>
-	<td colspan="2" valign="top">
+	<td colspan="2" valign="top" align="left">
 		<br />
 		<b>Package Description</b><p />
 		<mm:field name="description" />
@@ -304,7 +304,7 @@ function refresh()
 	</td>
 </tr>
 <tr>
-	<td valign="top">
+	<td valign="top" align="left">
 		<br />
 		<b>Initiators</b><p />
 		<mm:import id="type" reset="true" >initiators</mm:import>
@@ -315,7 +315,7 @@ function refresh()
 		</mm:nodelistfunction>
 		<p />
 	</td>
-	<td valign="top">
+	<td valign="top" align="left">
 		<br />
 		<b>Licence info</b><p />
 		Type : <mm:field name="licensetype" /><br />
@@ -329,7 +329,7 @@ function refresh()
 	</td>
 
 <tr>
-	<td valign="top" width="50%">
+	<td valign="top" width="50%" align="left">
 		<br />
 		<b>Supporters</b><p />
 		<mm:import id="type" reset="true" >supporters</mm:import>
@@ -339,7 +339,7 @@ function refresh()
 		<p />
 		<p />
 	</td>
-	<td valign="top" width="50%">
+	<td valign="top" width="50%" align="left">
 		<br />
 		<b>Contact info</b><p />
 		<mm:import id="type" reset="true" >contacts</mm:import>
@@ -352,7 +352,7 @@ function refresh()
 	</td>
 </tr>
 <tr>
-	<td colspan="2" valign="top">
+	<td colspan="2" valign="top" align="left">
 		<br />
 		<b>Developers who have worked on this release</b><p />
 		<mm:import id="type" reset="true" >developers</mm:import>
