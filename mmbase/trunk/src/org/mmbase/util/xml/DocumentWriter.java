@@ -13,13 +13,14 @@ import java.io.*;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
-import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.logging.*;
+import org.xml.sax.InputSource;
 
 import org.w3c.dom.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
+
+import org.mmbase.util.logging.*;
 
 /**
  * Abstract class for creating xml documents.
@@ -29,19 +30,13 @@ import javax.xml.transform.dom.DOMSource;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.3 2002-06-07 13:23:20 pierre Exp $
+ * @version $Id: DocumentWriter.java,v 1.4 2003-08-18 16:50:53 pierre Exp $
  */
-abstract public class DocumentWriter  {
+abstract public class DocumentWriter extends DocumentReader {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DocumentWriter.class.getName());
 
-    /**
-     * The XML builder document.
-     * Since getDocument() constructs the document, this field is protected so derived readers can
-     * access the document before generation.
-     */
-    protected Document document;
     /**
      * True if the document has been generated
      */
@@ -57,7 +52,7 @@ abstract public class DocumentWriter  {
      */
     private ResourceBundle messageRB;
 
-    // keep oublic and system id
+    // keep public and system id
     String publicId ="";
     String systemId ="";
 
@@ -67,16 +62,60 @@ abstract public class DocumentWriter  {
      * The document is empty after construction.
      * It is actually filled with a call to {@link #generateDocument()}, which is in turn called when
      * the document is first accessed through {@link #getDocument()}.
-     * @param qualifiedName the qualified name of teh document's root element
+     * @param qualifiedName the qualified name of the document's root element
      * @param publicID the PUBLIC id of the document type
      * @param systemID the SYSTEm id of the document type
      */
     public DocumentWriter(String qualifiedName, String publicId, String systemId) throws DOMException {
-        DOMImplementation domImpl=XMLBasicReader.getDocumentBuilder().getDOMImplementation();
+        DOMImplementation domImpl=DocumentReader.getDocumentBuilder().getDOMImplementation();
         this.publicId=publicId;
         this.systemId=systemId;
         DocumentType doctype=domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
         document=domImpl.createDocument(null,qualifiedName,doctype);
+    }
+
+    /**
+     * Constructs the document by reading it from a file.
+     * @param path the path to the file from which to read the document
+     */
+    public DocumentWriter(String path) {
+        super(path);
+        documentGenerated = true;
+    }
+
+    /**
+     * Constructs the document by reading it from a source.
+     * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
+     * of the document read is to be found. The dtd sould be in the resources package under the package of the class passed.
+     * @param path the path to the file from which to read the document
+     * @param validating whether to validate the document
+     * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
+     */
+    public DocumentWriter(String path, boolean validating, Class resolveBase) {
+        super(path, validating, resolveBase);
+        documentGenerated = true;
+    }
+    
+    /**
+     * Constructs the document by reading it from a source.
+     * @param source the input source from which to read the document
+     */
+    public DocumentWriter(InputSource source) {
+        super(source);
+        documentGenerated = true;
+    }
+
+    /**
+     * Constructs the document by reading it from a source.
+     * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
+     * of the document read is to be found. The dtd sould be in the resources package under the package of the class passed.
+     * @param source the input source from which to read the document
+     * @param validating whether to validate the document
+     * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
+     */
+    public DocumentWriter(InputSource source, boolean validating, Class resolveBase) {
+        super(source, validating, resolveBase);
+        documentGenerated = true;
     }
 
     /**
