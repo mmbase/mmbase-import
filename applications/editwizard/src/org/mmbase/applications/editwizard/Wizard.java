@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.121 2004-04-07 17:04:26 michiel Exp $
+ * @version $Id: Wizard.java,v 1.122 2004-04-15 10:47:05 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -73,7 +73,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private String name;
 
     // the result objectnumber (the number of the object after a commit)
-    // this value is only assigned after COMMIT is called - otherwise it reurns null
+    // this value is only assigned after COMMIT is called - otherwise it is null
     private String objectNumber;
 
     // the wizard (file) name. Eg.: samples/jumpers will choose the file $path/samples/jumpers.xml
@@ -518,8 +518,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             params.putAll(externParams);
         }
 
-        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out,
-                            params);
+        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params);
     }
 
     /**
@@ -861,12 +860,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param       form    The node of the pre-html form which is to be generated
      * @param       formdef the node of the wizardschema form definition
-     * @param       data    Points to the datacontext node which should be used for this form.
+     * @param       dataContext   Points to the datacontext node which should be used for this form.
      */
-    public void createPreHtmlForm(Node form, Node formdef, Node data)
+    public void createPreHtmlForm(Node form, Node formdef, Node dataContext)
         throws WizardException {
         if (log.isDebugEnabled()) {
-            log.trace("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
+            log.trace("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + dataContext);
         }
 
         // select all fields on first level
@@ -891,7 +890,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                 // place newfieldset in pre-html form
                 form.appendChild(newfieldset);
-                createPreHtmlForm(newfieldset, field, data);
+                createPreHtmlForm(newfieldset, field, dataContext);
             } else {
                 Node fieldDataNode = null;
                 String xpath = Utils.getAttribute(field, "fdatapath", null);
@@ -903,14 +902,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
                     }
                 } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Doing '" + xpath + "'");
+                        log.debug("on " + Utils.getXML(dataContext));
+                    }
+
                     // A normal field.
                     if (nodeName.equals("field")) {
                         // xpath is found.
-                        fieldDataNode = Utils.selectSingleNode(data, xpath);
+                        fieldDataNode = Utils.selectSingleNode(dataContext, xpath);
 
                         if (fieldDataNode != null) {
                             // create normal formfield.
-                            Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", "true"));
+                            Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(dataContext, "object/@maywrite", "true"));
                             mergeConstraints(field, fieldDataNode);
                             createFormField(form, field, fieldDataNode);
                         } else {
@@ -920,15 +924,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                                 log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
 
                                 //set number attribute in field, then you can use it in wizard.xsl
-                                Utils.setAttribute(field, "number",   Utils.selectSingleNodeText(data, "object/@number", ""));
-                                Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", "true"));
+                                Utils.setAttribute(field, "number",   Utils.selectSingleNodeText(dataContext, "object/@number", ""));
+                                Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(dataContext, "object/@maywrite", "true"));
 
                                 // create the formfield (should be using the current data node ???)
                                 createFormField(form, field, fieldDataNode);
                             } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
                                 log.debug("A startwizard!");
                                 // create the formfield using the current data node
-                                createFormField(form, field, data);
+                                createFormField(form, field, dataContext);
                             } else {
                                 // throw an exception, but ONLY if the datapath was created from a 'name' attribute
                                 // (only in that case can we be sure that the path is faulty - in otehr cases
@@ -943,13 +947,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     }
                     // A list "field". Needs special processing.
                     if (nodeName.equals("list")) {
-                        NodeList fieldInstances = Utils.selectNodeList(data, xpath);
+                        NodeList fieldInstances = Utils.selectNodeList(dataContext, xpath);
 
                         if (fieldInstances == null) {
                             throw new WizardException("The xpath: " + xpath +
                                                       " is not valid. Note: this xpath maybe generated from a <field name='fieldname'> tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
                         }
-                        createFormList(form, field, fieldInstances, data);
+                        createFormList(form, field, fieldInstances, dataContext);
                     }
                 }
             }
@@ -1191,8 +1195,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         } else if (nodeName.equals("list")) {
             // List nodes
             String role = Utils.getAttribute(singleNode, "role", null); //"insrel");
-            String destination = Utils.getAttribute(singleNode, "destinationtype",
-                                                    null);
+            String destination = Utils.getAttribute(singleNode, "destinationtype", null);
 
             // legacy: use destination if destinationtype not given
             if (destination == null) {
@@ -1271,12 +1274,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 fdatapath.append(']');
 
                 // normal list or a list inside a list?
-                String parentname = singleNode.getParentNode().getNodeName();
-
-                if (parentname.equals("item")) {
+                if (singleNode.getParentNode().getNodeName().equals("item")) {
                     fdatapath.insert(0, "object/");
                 }
-
                 Utils.setAttribute(singleNode, "fdatapath", fdatapath.toString());
             }
         }
@@ -2144,52 +2144,94 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * For creating new objects, use WizardDatabaseConnector.createObject.
      *
      * @param listId  the id of the proper list definition node, the list that issued the add command
-     * @param dataId  The did (dataid) of the anchor (parent) where the new node should be created
+     * @param subDataId  The did (dataid) of the anchor (parent) where the new node should be created
      * @param destinationId   The new destination
-     * @param createorder ordernr under which this item is added ()i.e. when adding more than one item to a
+     * @param createOrder ordernr under which this item is added ()i.e. when adding more than one item to a
      *                    list using one add-item command). The first ordernr in a list is 1
+     * @return The new relation.
      */
-    private Node addListItem(String listId, String dataId, String destinationId,
-                             boolean isCreate, int createorder) throws WizardException {
+    private Node addListItem(String listId, String subDataId, String destinationId,
+                             boolean isCreate, int createOrder) throws WizardException {
         log.debug("Adding list item");
 
         // Determine which list issued the add-item command, so we can get the create code from there.
-        Node listnode = Utils.selectSingleNode(schema, ".//list[@fid='" + listId + "']");
-        Node objectdef = null;
+        Node listNode = Utils.selectSingleNode(schema, ".//list[@fid='" + listId + "']");
+        Node relationDefinition = null;
 
         // action=add is for search command
         if (!isCreate) {
-            objectdef = Utils.selectSingleNode(listnode, "action[@type='add']/relation");
+            relationDefinition = Utils.selectSingleNode(listNode, "action[@type='add']/relation");
         }
 
         // action=create is for create command
         // (this should be an 'else', but is supported for 'search' for old xsls)
-        if (objectdef == null) {
-            objectdef = Utils.selectSingleNode(listnode, "action[@type='create']/relation");
+        if (relationDefinition == null) {
+            relationDefinition = Utils.selectSingleNode(listNode, "action[@type='create']/relation");
         }
 
-        if (objectdef == null) { // still null?
+
+        if (relationDefinition == null) { // still null?
             throw new WizardException("Could not find action (add or create) to add a item to list with id " + listId);
         }
 
-        objectdef = objectdef.cloneNode(true);
+        relationDefinition = relationDefinition.cloneNode(true); // why is this necessary?
       
         if (log.isDebugEnabled()) {
-            log.debug("Creating object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef, "type"));
+            log.debug("Creating object " + relationDefinition.getNodeName() + " type " + Utils.getAttribute(relationDefinition, "type"));
         }
 
         // Put the value from the command in that object-definition.
         if (destinationId != null) {
-            Utils.setAttribute(objectdef, "destination", destinationId);
+            Utils.setAttribute(relationDefinition, "destination", destinationId);
         }
 
         // We have to add the object to the data, so first determine to which parent it belongs.
-        Node parent = Utils.selectSingleNode(data, ".//*[@did='" + dataId + "']");
+        Node parent = Utils.selectSingleNode(data, ".//*[@did='" + subDataId + "']");
 
-        // Ask the database to create that object.
-        Node newObject = databaseConnector.createObject(data, parent, objectdef, variables, createorder);
 
-        return newObject;
+
+        // Ask the database to create that object, and return it.
+        Node newRelation =  databaseConnector.createObject(data, parent, relationDefinition, variables, createOrder);
+
+        // reload the data, there may be sub-list-data to be reloaded.
+        if (destinationId != null) {
+            Node newRelatedNode = Utils.selectSingleNode(newRelation, "object");
+            if (newRelatedNode != null) {
+                String relatedType = Utils.selectSingleNodeText(newRelatedNode, "@type", null);
+
+                Node loadAction = Utils.selectSingleNode(schema.getDocumentElement(), "action[@type='load']/relation[@destination='" + relatedType + "']/object");
+
+                if (loadAction != null) {
+                    Collection newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
+                    // newly loaded objects must be marked as 'already-existing'.
+
+                    Iterator i = newSubRelations.iterator(); 
+                    while (i.hasNext()) {
+                        Node newSubRelation = (Node) i.next();
+                        Utils.setAttribute(newSubRelation, "already-exists", "true");                        
+                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
+
+                        for (int j = 0; j < newSubObjects.getLength(); j++) {
+                            Node newSubObject = newSubObjects.item(j);
+                            Utils.setAttribute(newSubObject, "already-exists", "true");
+                        }
+
+                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
+                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
+                            Node newSubSubRelation = newSubSubRelations.item(k);
+                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
+                        }
+                    }                    
+                } else {
+                    log.debug("Nothing found to load");
+                }
+            } else {
+
+                throw new WizardException("Could not find relatednode " + Utils.getXML(newRelation));
+            }
+        }
+        return newRelation;
+
     }
 
     /**
