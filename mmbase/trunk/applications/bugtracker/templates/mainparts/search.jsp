@@ -234,6 +234,7 @@
 
 <tr>
    <td colspan="1" class="listpaging">
+     &nbsp;
      <mm:write referid="noffset">
        <mm:isgreaterthan value="0">
          <mm:isgreaterthan value="15">
