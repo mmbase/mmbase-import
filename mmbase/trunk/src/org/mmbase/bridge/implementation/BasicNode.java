@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.118 2004-01-08 10:33:24 johannes Exp $
+ * @version $Id: BasicNode.java,v 1.119 2004-01-08 12:37:16 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -927,6 +927,25 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             Node alias = i.nextNode();
             result.add(alias.getStringValue("name"));
         }
+                
+        // There might be aliases in temporary nodes
+        // This is quite a dirty (and probably also slow) hack
+        // for bug #6185.
+        // Usually the TemporaryNodes hashtable shall not be
+        // too full.
+        if (cloud instanceof Transaction) {
+        	Hashtable tnodes = MMObjectBuilder.TemporaryNodes;
+        	for (Enumeration e = tnodes.elements(); e.hasMoreElements();) {
+        		MMObjectNode mynode = (MMObjectNode)e.nextElement();
+        		if (mynode.getTableName().equals("oalias")){
+        			String dest = mynode.getStringValue("_destination");
+        			if ((account + "_" + temporaryNodeId).equals(dest)) {
+        				result.add(mynode.getStringValue("name"));
+        			}
+        		}
+        	}        	
+        }
+        
         return result;
     }
 
