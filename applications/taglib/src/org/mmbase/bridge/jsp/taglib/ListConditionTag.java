@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen 
 **/
 
-public class ListConditionTag extends BodyTagSupport implements ConditionTag {
+public class ListConditionTag extends ContextReferrerTag implements ConditionTag {
     
     private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName()); 
     
@@ -35,8 +35,8 @@ public class ListConditionTag extends BodyTagSupport implements ConditionTag {
     private String  parentListId;
     private boolean inverse = false;
     
-    public void setValue(String v){
-        value = v;
+    public void setValue(String v) throws JspTagException {
+        value = getAttributeValue(v);
     }
     
     public void setList(String l) {
@@ -49,27 +49,8 @@ public class ListConditionTag extends BodyTagSupport implements ConditionTag {
     
     public int doStartTag() throws JspTagException{
         // find the parent list:
-        ListItemInfo nodeListItemInfo;
-        Class nodeListItemInfoClass;
-        try {
-            nodeListItemInfoClass = Class.forName("org.mmbase.bridge.jsp.taglib.ListItemInfo");
-        } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find ListItemInfo class");  
-        }
-        
-        nodeListItemInfo = (ListItemInfo) findAncestorWithClass((Tag)this, nodeListItemInfoClass); 
-        if (nodeListItemInfo == null) {
-            throw new JspTagException ("Could not find parentlist");  
-        }
-        if (parentListId != null) { // search further, if necessary
-            while (nodeListItemInfo.getId() != parentListId) {
-                nodeListItemInfo = (ListItemInfo) findAncestorWithClass((Tag)nodeListItemInfo, nodeListItemInfoClass);            
-                if (nodeListItemInfo == null) {
-                    throw new JspTagException ("Could not find parent with id " + parentListId);  
-                }
-            }
-        }
-        
+        ListItemInfo nodeListItemInfo = (ListItemInfo)findParentTag("org.mmbase.bridge.jsp.taglib.ListItemInfo", parentListId);
+
         boolean result;
         if        ("first".equalsIgnoreCase(value)) {  
             result = (nodeListItemInfo.getIndex() == 0 ) != inverse;
