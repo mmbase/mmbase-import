@@ -618,6 +618,7 @@ Change directory to ${build.dir}/orion and run:
     <!-- =================================================================== -->
     <!-- Create the MMBase html build dir                                    -->
     <!-- =================================================================== -->
+    <!--    <target name="war.webroot" depends="init.compile, javadocs">  -->
     <target name="war.webroot" depends="init.compile">
         <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${webroot.build.dir}/mmbase/edit">
@@ -627,17 +628,22 @@ Change directory to ${build.dir}/orion and run:
         <!-- taglib docs -->
         <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${build.dir}/mmbase/web/mmbase-taglib.html" />
         
-        <!-- javadocs -->        
+        <!-- javadocs -->
+        <!-- skipping javadocs (also depend on target 'javadocs', when uncommenting.... ) 
         <copy todir="${webroot.build.dir}/mmbase/docs">
             <fileset dir="${build.dir}/mmbase/docs"/>
-        </copy>        
+        </copy>
+        -->
     </target>
 
 
     <!-- =================================================================== -->
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
-    <target name="war" description="Create a MMBase war-file" depends="jar,javadocs,war.config,war.webroot">
+    <target name="war" description="Create a MMBase war-file" depends="jar,war.config,war.webroot,expand.hsql">
+        <!-- copy the hsql file explicit, war clause doesnt accept the ${hsql.jar}  -->
+        <copy file="${hsql.jar}" tofile="${build.dir}/mmbase/lib/hsql.jar"/>
+        
         <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
 
             <!-- which libs are needed? -->
@@ -647,6 +653,7 @@ Change directory to ${build.dir}/orion and run:
                 <include name="xml-apis.jar"/>
                 <include name="xalan.jar"/>
                 <include name="xalan.jar"/>
+                <include name="hsql.jar"/>
             </lib>
             
             <!-- here our config has to be.. -->
