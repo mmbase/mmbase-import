@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.14 2004-06-15 21:13:25 robmaris Exp $
+ * @version $Id: MMTable.java,v 1.15 2004-11-23 09:55:50 michiel Exp $
  */
 public class MMTable {
 
@@ -65,7 +65,7 @@ public class MMTable {
      * @since MMBase-1.7
      */
     public String getFullTableName() {
-        return mmb.baseName+"_"+tableName;
+        return mmb.baseName + "_" + tableName;
     }
 
     /**
