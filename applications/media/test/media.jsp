@@ -6,15 +6,15 @@
   <body>
     <h1></h1>
 <p>
-Try e.g to make a fragment /tv/vpro/noorderlicht/laatste.rm (type: rm) and the following will show links:
-(correct also test.ram.jsp to you situation (should be fixed).
+Try e.g to make a fragment /tv/vpro/noorderlicht/laatste.rm (type: rm) and the following will show two working links:
+(correct also test.ram.jsp to your situation (should be fixed, and go right automaticly)).
 </p>
 <mm:cloud>
  <mm:listnodes id="fragment" type="mediafragments">
   <mm:field name="title" />:<br />
   <mm:related path="posrel,mediasources" fields="posrel.pos" orderby="posrel.pos"><mm:context>
      <mm:node id="source" element="mediasources">
-     source: <a href="<mm:field  name="absoluteurl(streams)"  />"><mm:field name="str(format)" /></a><br />
+     source: <a href="<mm:field  name="absoluteurl(play)"  />"><mm:field name="str(format)" /></a><br />
      <mm:field name="format" vartype="integer">
         <mm:compare value="12">
               <a href="<mm:url referids="fragment,source" page="test.ram.jsp" />">smil</a><br />
