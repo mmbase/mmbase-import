@@ -808,7 +808,6 @@ public class HtmlBase extends ProcessorModule {
 			for (;f.hasMoreElements();) {
 				// hack hack this is way silly Strip needs to be fixed
 				String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
-				String type2=null;
 				result=getNodeStringValue(node,fieldname);
 				if (result!=null && !result.equals("null")) {
     				results.addElement(result); 
