@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.15 2003-07-15 17:37:24 michiel Exp $
+ * @version  $Id: validator.js,v 1.16 2003-07-15 19:04:10 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -39,15 +39,17 @@ function detach_validator(element) {
     this.validateElement(element, true);
 }
 
+
 function validate_validator(event, el) {
     // called from html: when user pressed a key or leaves a field.
 
+
     if (!el) var el = event.srcElement || event.target;
 
-    if (event.type == "blur") {
-       formValid == null;
+    if (event.type == "blur" || event.type == "change") {
+       formValid = null;
 	   doValidateAndUpdateButtons();
-    } else {
+    } else if (event.type == "keyup")  {
        if (formValid == null) {
           formValid = doValidateForm(el);
        }
@@ -254,10 +256,10 @@ function validateElement_validator(el, silent) {
 
 function doValidateForm(el) {
     // checks if the other elements of this form are valid
-
+    
     //    alert("validating form " + el);
     var invalid = false;
-    form = document.forms["form"];
+    form = document.forms[0];
     if (form.getAttribute("invalidlist") != "") {
         return false;
     }
