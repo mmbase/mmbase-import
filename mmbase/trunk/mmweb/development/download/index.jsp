@@ -12,16 +12,17 @@
  <mm:list path="pages2,releases,mmevents"
  	fields="releases.number,mmevents.start" 
  	orderby="mmevents.start" directions="DOWN" max="1">
+	<mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
     <mm:node element="releases">
-	<h3><mm:field name="name" /> <mm:field name="version"/></h3>
-	<mm:field name="html(intro)" />                                
+		<h3><mm:field name="name" /> <mm:field name="version"/></h3>
+		<mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale>
+		<mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write/></p></mm:isnotempty></mm:field>
+		<mm:field name="body" escape="p"><mm:isnotempty><mm:write/></mm:isnotempty></mm:field>
         <mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
         <mm:first><ul></mm:first>
         <li>
 		<mm:node element="urls">
-		<mm:field name="url">
-			<a href="<mm:url page="$_"/>"><mm:field name="description"/></a>
-		</mm:field>
+		<mm:field name="url"><a href="<mm:url page="$_"/>"><mm:field name="description"/></a></mm:field>
 		</mm:node>
         </li>
 		<mm:last></ul></mm:last>
@@ -29,7 +30,7 @@
     </mm:node>
 </mm:list>
 
-<h2>Latest builds from the stable branch(MMBase-1_7)</h2>
+<h2>Latest builds from the stable branch (MMBase-1_7)</h2>
 <% Iterator j = getStableBuilds(5).iterator() ;%>
 <ul>
 <% while (j.hasNext()) { 
