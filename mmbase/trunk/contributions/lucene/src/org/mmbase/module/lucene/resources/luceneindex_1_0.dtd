@@ -1,4 +1,4 @@
-<!ELEMENT luxeneindex (index*)>
+<!ELEMENT luceneindex (index*)>
 
 <!ELEMENT index (builder*)>
 <!ATTLIST index name NMTOKEN #IMPLIED>
