@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Calc.java
  * @author Daniel Ockeloen
- * @version $Id: CALC.java,v 1.9 2003-03-04 15:26:34 nico Exp $
+ * @version $Id: CALC.java,v 1.10 2005-02-09 09:48:48 michiel Exp $
  */
 public class CALC extends ProcessorModule {
     // logging
@@ -71,7 +71,7 @@ public class CALC extends ProcessorModule {
      * @javadoc
      */
     String doCalc(String cmd) {
-        log.service("Calc module calculates "+cmd);
+        log.debug("Calc module calculates "+cmd);
         ExprCalc cl=new ExprCalc(cmd);
         // marcel: annoying, upgraded this log to debug
         log.debug("Calc converts number Natural number");
