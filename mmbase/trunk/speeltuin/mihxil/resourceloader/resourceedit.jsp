@@ -1,16 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page language="java" contentType="text/html;charset=utf-8" session="true" import="org.mmbase.util.*,java.io.*,java.net.*,org.w3c.dom.*,java.util.*,javax.servlet.jsp.PageContext"
+<%@page language="java" contentType="text/html;charset=utf-8" session="true" import="org.mmbase.util.*,org.mmbase.util.transformers.*,java.io.*,java.net.*,org.w3c.dom.*,java.util.*,javax.servlet.jsp.PageContext"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html" expires="0">
 <html>
   <head>
     <title><mm:write id="title" value="MMBase Resource Editor" /></title>
-    <link rel="stylesheet" href="mmbase/style/css/mmbase.css" type="text/css" />
+    <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
     <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
     <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />    
   </head>
 <body>
-  <%!  ResourceLoader resourceLoader = ResourceLoader.getRoot(); %>
+  <%!  
+  ResourceLoader resourceLoader = ResourceLoader.getRoot();   
+  Xml            xmlEscaper     = new Xml(Xml.ESCAPE);
+
+  %>
   <form method="post" name="resource">
 <table>
   <mm:cloud>
@@ -131,7 +135,7 @@
        {
        Reader r = resourceLoader.getReader(resource);
        if (r != null) {
-         BufferedReader reader = new BufferedReader(r);
+         BufferedReader reader = new BufferedReader(new TransformingReader(r, xmlEscaper));
          while(true) {
             String line = reader.readLine();
             if (line == null) break;

@@ -13,11 +13,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
-
+ * The resources builder can be used by {@link org.mmbase.util.ResourceLoader} to load resources from
+ * (configuration files, classes, resourcebundles).
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Resources.java,v 1.1 2004-10-02 17:36:08 michiel Exp $
+ * @version $Id: Resources.java,v 1.2 2004-10-13 11:22:31 michiel Exp $
  * @since   MMBase-1.8
- * @see    
  */
 public class Resources extends Attachments {
     private static final Logger log = Logging.getLoggerInstance(Resources.class);
@@ -28,14 +29,29 @@ public class Resources extends Attachments {
     public static final String    HANDLE_FIELD        = "handle";
     public static final String    DEFAULT_CONTEXT     = "admin";
 
+    /**
+     * Registers this builder in the ResourceLoader.
+     * {@inheritDoc}
+     */
+    public boolean init() {
+        boolean res = super.init();
+        if (res) {
+            org.mmbase.util.ResourceLoader.setResourceBuilder(this);
+        } 
+        return res;
 
+    }
 
+    /**
+     * Implements virtual filename field.
+     * {@inheritDoc}
+     */
     public Object getValue(MMObjectNode node, String field) {
         if (field.equals(FILENAME_FIELD)) {
             String s = node.getStringValue(RESOURCENAME_FIELD);
             int i = s.lastIndexOf("/");
             if (i > 0) {
-                return s.substring(i);
+                return s.substring(i + 1);
             } else {
                 return s;
             }
