@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
 <builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
@@ -48,6 +50,13 @@
 	<description xml:lang="en">People</description>
 	<description xml:lang="us">People</description>
 </descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -106,12 +115,16 @@
 				<search>11</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">12</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -136,12 +149,16 @@
 				<search>1</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">32</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>firstname</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="32" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -166,12 +183,16 @@
 				<search>2</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">32</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>lastname</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="32" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -196,6 +217,10 @@
 				<search>3</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">32</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -226,6 +251,10 @@
 				<search>4</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">12</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
