@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.49 2002-02-27 11:00:49 eduard Exp $
+ * @version $Id: BasicNode.java,v 1.50 2002-02-27 13:11:52 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -364,7 +364,7 @@ public class BasicNode implements Node {
         
         // the format
         attr = tree.createAttribute("format");
-        attr.setValue(((BasicField)field).field.getDBTypeDescription());
+        attr.setValue(((BasicField)field).field.getDBTypeDescription().toLowerCase());
         fieldElem.setAttributeNode(attr);            
         
         org.w3c.dom.Node subField = null;

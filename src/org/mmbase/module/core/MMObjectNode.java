@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.61 $ $Date: 2002-02-27 11:00:50 $
+ * @version $Revision: 1.62 $ $Date: 2002-02-27 13:11:53 $
  */
 
 public class MMObjectNode {
@@ -533,10 +533,16 @@ public class MMObjectNode {
     public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
         
+        if(getDBType(fieldName)!= FieldDefs.TYPE_XML) {
+            throw new RuntimeException("field was not an xml-field, dont know how i need to convert this to and xml-document");
+        }        
         if (!(o instanceof Document)) {
             // do conversion from string to Document thing...
-            log.debug("Strange, i expected that the field would contain an xml object");
+            // This is still checking code... hope that this will never occur, but im not sure of it...
+            log.warn("Strange, i expected that the field would contain an xml object");
             o = convertStringToXml(fieldName,  getStringValue(fieldName));
+            // since it wasnt a document, store the Document in the field variable..            
+            values.put(fieldName, o);
         }
         return (Document) o;
     }
