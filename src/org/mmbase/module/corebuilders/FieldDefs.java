@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.5 2000-03-30 13:11:41 wwwtech Exp $
+$Id: FieldDefs.java,v 1.6 2000-03-31 16:15:37 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/30 13:11:41  wwwtech
+Rico: added license
+
 Revision 1.4  2000/03/29 10:46:34  wwwtech
 Rob: Licenses changed
 
@@ -32,12 +35,13 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.5 $ $Date: 2000-03-30 13:11:41 $
+ * @$Revision: 1.6 $ $Date: 2000-03-31 16:15:37 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
 	public final static int DBSTATE_PERSISTENT = 2;
 	public final static int DBSTATE_SYSTEM = 3;
+	public final static int DBSTATE_UNKNOWN = -1;
 
 	public String GUIName; 
 	public String GUIType; 
