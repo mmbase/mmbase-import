@@ -9,6 +9,7 @@
 
 <mm:import id="taglibdoc">/mmdocs/taglib</mm:import>
 
+<mm:log>testing fieldlist</mm:log>
 <mm:notpresent referid="node">
   No testnode in session. Do first <a href="transaction.jsp">transaction.jsp</a>
 </mm:notpresent>
@@ -18,7 +19,7 @@
 <em>see <a href="<mm:url page="${taglibdoc}/fieldlist.jsp" />">fieldlist</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/fieldinfo.jsp" />">fieldinfo</a></em><br />
 <mm:node referid="nodenumber">
-  <mm:fieldlist> 
+  <mm:fieldlist type="create"> 
     <mm:fieldinfo type="guiname" />: <mm:field /><br />
   </mm:fieldlist>
 </mm:node>
@@ -26,7 +27,7 @@
 <h3>getting node by number (number attribute): </h3>
 <em>see <a href="<mm:url page="${taglibdoc}/last.jsp" />">last</a></em><br />
 <mm:node number="$nodenumber">
-  <mm:fieldlist> 
+  <mm:fieldlist type="create"> 
     <mm:fieldinfo type="name" /><mm:last inverse="true">, </mm:last>
     <mm:last><br /></mm:last>
   </mm:fieldlist>
@@ -48,6 +49,8 @@
 </mm:node>
 (should see title and subtitle fields)
 
+
+<mm:log>testing edit node</mm:log>
 <h3>editing the node from session (from non-anonymous) cloud</h3>
 <em>see <a href="<mm:url page="${taglibdoc}/setfield.jsp" />">setfield</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/createalias.jsp" />">createalias</a></em><br />
@@ -66,7 +69,7 @@
 </mm:node>
 (should see twice the changed subtitle, one of the aliases must be equal to the subtitle)
 <p>
-Should see a node-number (twice): <mm:write value="$node" /> <mm:write referid="node" vartype="string" /> <mm:url page="$node" />
+Should see a node-number (trice): <mm:write value="$node" /> <mm:write referid="node" vartype="string" /> <mm:url page="$node" />
 </p>
 
 <%--
@@ -101,20 +104,22 @@ notfound="skip"<br />
 <% } catch (Exception e) { %>
    WRONG!! Threw exception even though 'skip' was specified.<br /> 
 <% } %>
+
+<mm:log>testing relations lists</mm:log>
 <h3>Relations, countrelations, listrelations, relatednode</h3>
 <em>see <a href="<mm:url page="${taglibdoc}/countrelations.jsp" />">countrelations</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/listrelations.jsp" />">listrelations</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/relatednode.jsp" />">relatednode</a></em><br />
 <mm:node referid="node">
-  countrelations (not specified type): <mm:countrelations /> (should be 1)<br />
-  countrelations (specified type): <mm:countrelations type="urls" /> (should be 1)<br />
+   countrelations (not specified type): <mm:countrelations /> (should be 1)<br />
+   countrelations (specified type): <mm:countrelations type="urls" /> (should be 1)<br />
    ountrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="destination" /> (should be 1)<br />
    countrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="source" /> (should be 0)<br />
    countrelations (specified searchdir): <mm:countrelations  searchdir="source" /> (should be 0)<br />
    countrelations (specified role): <mm:countrelations  role="posrel" /> (should be 1)<br />
    countrelations (specified role): <mm:countrelations  role="related" /> (should be 0)<br />
   gui of the relation node (with listrelations),
-  should see a number: 
+  should see gui of a relations (number -> number): 
   <mm:listrelations id="listrelations">
      <mm:field name="gui()" /><br />
      Should see url (with relatednode):
@@ -136,6 +141,7 @@ notfound="skip"<br />
      <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
   </mm:listrelations>
 
+<mm:log>element/related nodes</mm:log>
 <h3>Testing 'element' attribute and list tags</h3>
 <em>see <a href="<mm:url page="${taglibdoc}/node.jsp#node.element" />">element attribute</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/list.jsp" />">list</a></em><br />
@@ -147,10 +153,13 @@ using list tag: <br />
    news.title:    <mm:field name="news.title" />   <br />
    news.subtitle: <mm:field name="news.subtitle" /><br />
    urls.url:      <mm:field name="urls.url" />     <br />
+    <mm:log>1</mm:log>
    <mm:node element="news">
      <em>node element="news"</em>:<br />
+    <mm:log>2</mm:log>
      title: <mm:field name="title" /><br />
      <em>should follow 6 times (numbered from 1 to 6) the related URL:</em><br />
+    <mm:log>3</mm:log>
      <mm:relatednodes type="urls">
        1  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
@@ -175,11 +184,24 @@ using list tag: <br />
      <mm:relatednodes type="urls" orderby="description" constraints="">
        5  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
-     <mm:related path="urls">
+     <mm:related path="urls" fields="urls.url">
        6  related url (used related): <mm:field name="urls.url" /><br />
      </mm:related>  
 
    </mm:node>
+</mm:list>
+
+
+<h3>List-tag with only one element</h3>
+<mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" >
+
+   <em>all the following should have values</em>:<br />
+   news.title:    <mm:field name="news.title" />   <br />
+   news.subtitle: <mm:field name="news.subtitle" /><br />
+
+   <em>this not</em>:<br />
+   news.title:    <mm:field name="title" />   <br />
+   news.subtitle: <mm:field name="subtitle" /><br />
 </mm:list>
 
 </mm:cloud>
