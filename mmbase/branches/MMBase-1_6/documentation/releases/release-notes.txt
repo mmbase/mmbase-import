@@ -24,8 +24,10 @@ General New Features:
 --------------------
 
 [1.6.3]
- - added ConvertDummy class, which can be used if ImageMagic or JAI are unavailable
-   ConvertDummy does not convert iamges, but does allow use of images and the image servlet.
+- added ConvertDummy class, which can be used if ImageMagic or JAI are unavailable
+  ConvertDummy does not convert iamges, but does allow use of images and the image servlet.
+- org.mmbase.util.HttpPost has it's own configuration file. It can be
+  used to configure the maxfilesize property.
 
 [1.6.2]
  - getRelatedNodes speedup, avoiding databasequeries when casting to actual type
@@ -138,6 +140,13 @@ General Bug Fixes:
 ------------------
 
 [1.6.3]
+- #5978 MMInformix42Node throws nullpointer as reading empty
+  database-field
+- #5969 MMInformix42Node ignores notnull-fields
+- #5960 search on 'object' in multilevel fails. This fix needs to be
+  tested.
+- #5994 TypeDef.getAllowedRelationType returned typerel number instead
+  of reldef number
 
 [1.6.2]
  - Bytearray fields are not queried by default any more this was resulting in
@@ -182,7 +191,7 @@ Application bug fixes:
 
 [1.6.2]
 - Errors during installation of an application will be displayed in
-the resultpage.
+  the resultpage.
 
 [1.6.1]
 - Using comments in application files results in errors in the log:
@@ -211,7 +220,8 @@ Security Bug Fixes:
 ----------------
 MMCI Bug Fixes:
 ----------------
-
+[1.6.3]
+- #5961 'contains' of NodeList work oddly
 
 [1.6.2]
 - #5568 getAllowedRelations(NodeManager nodeManager, String role,
@@ -231,7 +241,12 @@ Taglib Bug Fixes:
 ----------------
 
 [1.6.3]
--  #5979  FieldInfo's NodeHandler implements check for NodeManager wrong
+- #5979 FieldInfo's NodeHandler implements check for NodeManager wrong
+- #5992 No 'searchdir' attribute on 'relatednodes', confusion
+  with 'directions' 
+- #5977 Method=asis does cannot produce anonymous cloud
+- #5963 Simple getRelatedNodes brings down database
+- #5972 Direction is not honoured in getRelatedNodes
 
 [1.6.2]
 - #5587  TEI-class for Fieldinfo tag.
@@ -239,7 +254,6 @@ Taglib Bug Fixes:
 - #5286 ListRelations tag does not accept an id attribute
 - #5242 mm:write cookie does not set 'path' explicitely.
 - #5174 mm:include doesn't work in mozilla
-
 
 [1.6.1]
 - Function-values can be something else then string now:  bug #4988
@@ -263,6 +277,7 @@ Upgrade:
 ========
 [1.6.3]
 - Replace mmbase.jar
+- Add httppost.xml configuration file to config/utils dir
 
 [1.6.2]
 - Replace mmbase.jar
@@ -287,7 +302,9 @@ the builders:
 Known Issues and Problems:
 ========================
 [1.6.3]
- - No new issues.
+- myeditors don't honour inheritance, see bug #5998 for more
+  information.  
+- Multilevel queries of parents are not invalidated, see bug #5993.
 
 [1.6.2]
 - XXXX The jsp-editor update might also have solved the tomcat 4.0 issue?
