@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.15 2003-09-02 19:48:58 michiel Exp $
+ * @version $Id: Attribute.java,v 1.16 2003-09-05 16:32:38 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -121,7 +121,7 @@ public class Attribute {
      * Returns the evaluated Attribute as a String. This is never null (empty string in that case)..
      */
     public String getString(ContextReferrerTag tag) throws JspTagException {
-        return org.mmbase.util.Casting.toString(getValue(tag));
+        return Casting.toString(getValue(tag));
     }
 
     /** 
@@ -271,10 +271,7 @@ public class Attribute {
         abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
         
         final void  appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
-            Object value = getValue(tag);
-            if (value != null) {
-                buffer.append(Casting.toString(value));
-            }
+            Casting.toStringBuffer(buffer, getValue(tag));
         }
     }
 

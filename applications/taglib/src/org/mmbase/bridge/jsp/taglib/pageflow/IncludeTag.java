@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.*;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.38 2003-08-27 21:33:40 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.39 2003-09-05 16:32:37 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -169,8 +170,14 @@ public class IncludeTag extends UrlTag {
             Object o;
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                o=e.getValue();
-                log.debug("key '" + e.getKey() + "' value '" + e.getValue().toString() + "'");
+                o = e.getValue();
+                if (log.isDebugEnabled()) {
+                    if (o instanceof String[]) {
+                        log.debug("key '" + e.getKey() + "' value '" + Arrays.asList((String[]) o) + "'");
+                    } else {
+                        log.debug("key '" + e.getKey() + "' value '" + o.toString() + "'");
+                    }
+                }
             }
         }
 
@@ -187,7 +194,7 @@ public class IncludeTag extends UrlTag {
             helper.setValue(debugStart(relativeUrl) + response.toString() + debugEnd(relativeUrl));
         } catch (Exception e) {
             log.debug(Logging.stackTrace(e));
-            throw new JspTagException(e.toString());
+            throw new TaglibException(e.toString(), e);
         }
 
         if (log.isDebugEnabled()) {

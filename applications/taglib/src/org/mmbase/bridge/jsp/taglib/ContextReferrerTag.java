@@ -23,6 +23,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.Casting;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -32,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.47 2003-09-02 17:26:21 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.48 2003-09-05 16:32:36 michiel Exp $
  * @see ContextTag
  */
 
@@ -421,12 +423,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     protected String getString(String key) throws JspTagException {
-        Object o = getObject(key);
-        if (o instanceof Node) {
-            Node n = (Node) o;
-            return "" + n.getNumber();
-        }
-        return o.toString();
+        return Casting.toString(getObject(key));
     }
 
     /**
