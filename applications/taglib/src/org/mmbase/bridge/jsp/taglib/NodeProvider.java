@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
+import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
 /**
@@ -20,5 +21,5 @@ public interface NodeProvider extends TagIdentifier{
 	* NOTE: we have decided to call this methid getNodeVar because
 	* we use tag attributes with name "node" and type String 
 	**/
-	public Node getNodeVar();	
+	public Node getNodeVar() throws JspTagException;	
 }
