@@ -69,7 +69,7 @@
 
     <steps>
         <step form-schema="step1" />
-        <step form-schema="step2" />
+        <!-- step form-schema="step2" / -->
     </steps>
 
     <form-schema id="step1">
@@ -142,4 +142,4 @@
     </form-schema>
 
 
-</wizard-schema>
+</wizard-schema> 
