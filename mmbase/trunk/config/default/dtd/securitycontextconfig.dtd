@@ -7,7 +7,7 @@
     	    <!ATTLIST property name NMTOKEN #REQUIRED > 
     
     <!ELEMENT accounts ( user+ ) >     
-    	<!ELEMENT user ( identify ) >
+    	<!ELEMENT user ( identify* ) >
     	<!ATTLIST user context NMTOKEN #REQUIRED >
     	<!ATTLIST user name NMTOKEN #REQUIRED >    
     	    <!ELEMENT identify ( #PCDATA ) >
