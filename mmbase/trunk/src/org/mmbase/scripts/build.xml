@@ -74,6 +74,7 @@ NetComponents can be found at:
   <property name="mmbase.jar" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="source-config.dir" location="${source.dir}/config"/>
   <property name="source-html.dir" location="${source.dir}/html"/>
+  <property name="source-documentation.dir" location="${source.dir}/documentation" />
   <property name="source-src.dir" location="${source.dir}/src"/>
   <property name="webapp.dir" value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir" value="${webapp.dir}/mmdocs"/>
@@ -605,7 +606,9 @@ Distribution: ${distro}
     <!-- Create the MMBase html build dir                                    -->
     <!-- =================================================================== -->
     <!--    <target name="war.webroot" depends="init.compile, javadocs">  -->
-    <target name="war.webroot" depends="init.compile,taglib.doc">
+
+    <!-- What for the war is so different?? -->
+    <target name="war.webroot" depends="init.compile,taglib.doc,documentation">
 
         <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${webroot.build.dir}/mmbase/edit">
@@ -616,6 +619,9 @@ Distribution: ${distro}
         <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${mmdocs.dir}/mmbase-taglib.html" />
         <copy todir="${webroot.build.dir}/mmbase/taglib">
              <fileset dir="${mmdocs.dir}/taglib"/>
+        </copy>         
+        <copy todir="${webroot.build.dir}/mmbase/documentation">
+             <fileset dir="${mmdocs.dir}/html"/>
         </copy>         
         
         <!-- javadocs -->
@@ -716,6 +722,7 @@ Distribution: ${distro}
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
   </target>
+
   <target name="taglib.doc" description="Make the MMBase taglib documentation"
           depends="init.compile">          
     <mkdir dir="${mmdocs.dir}/taglib"/>
@@ -998,6 +1005,13 @@ Distribution: ${distro}
     <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
     <available property="jspsmartupload.present" file="${jspsmartupload.jar}" />
 
+    <!-- Docbook XSL -->
+    <property name="docbook-xsl.version" value="docbook-xsl-1.52.2"  />
+    <property name="docbook-xsl.file" value="${docbook-xsl.version}.tar.gz"  />
+    <property name="docbook-xsl.url" value="http://belnet.dl.sourceforge.net/sourceforge/docbook/${docbook-xsl.file}" />
+    <available property="docbook-xsl.present"  file="${download.dir}/${docbook-xsl.file}" />
+    <available property="docbook-xsl.expanded"  file="${expand.dir}/${docbook-xsl.version}" />
+
 
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
@@ -1109,6 +1123,19 @@ Version: MMBase build ${version}
     </jar>
   </target>
 
+
+  <target name="get.docbook-xsl" depends="init,init.get" unless="docbook-xsl.present">
+    <get src="${docbook-xsl.url}"
+         dest="${download.dir}/${docbook-xsl.file}" />
+  </target>
+
+  <target name="expand.docbook-xsl" depends="get.docbook-xsl" unless="docbook-xsl.expanded">
+    <gunzip src="${download.dir}/${docbook-xsl.file}" dest="${expand.dir}/${docbook-xsl.version}.tar"/>
+    <untar src="${expand.dir}/${docbook-xsl.version}.tar"        dest="${expand.dir}"/>
+    <delete file="${expand.dir}/${docbook-xsl.version}.tar"/>
+  </target>
+
+
   <!-- =================================================================== -->
   <!-- Clean the download directory                                        -->
   <!-- =================================================================== -->
@@ -1219,6 +1246,30 @@ Version: MMBase build ${version}
     <delete dir="${source-src.dir}/org/mmbase/bridge/remote/implementation"/>
     <delete file="${source-src.dir}/MMCI.xml"/>
   </target>
+
+
+ <!-- ================================================================================ -->
+ <!-- Perform docbook2html conversion in the documentation module                      -->
+ <!-- ================================================================================ -->
+  <target name="documentation" description="Make the MMBase documentation from docbook-sources"
+          depends="expand.docbook-xsl">
+    <mkdir dir="${mmdocs.dir}/html" />
+    <style 
+      basedir="${source-documentation.dir}" 
+      destdir="${mmdocs.dir}/html"
+      style="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl">
+      <include name="**/*.xml" />
+    </style>
+  </target>
+  <!-- =================================================================== -->
+  <!-- Clean the documentation directory                                   -->
+  <!-- =================================================================== -->
+  <target name="clean.documentation" description="Clean the generated documenation">
+    <delete dir="${mmdocs.dir}/html"/>
+  </target>
+
+
+
 </project>
 
 
