@@ -9,7 +9,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronEntry.java,v 1.7 2004-04-05 18:29:28 michiel Exp $
+ * @version $Id: JCronEntry.java,v 1.8 2004-04-07 10:50:00 michiel Exp $
  */
 
 public class JCronEntry {
@@ -41,6 +41,7 @@ public class JCronEntry {
     public JCronEntry(String id, String cronTime, String name, String className) throws Exception {
         this.id = id;
         this.name = name;
+        if (this.name == null) this.name = "";
         this.className = className;
         this.cronTime = cronTime;
         jCronJob = (Runnable) Class.forName(className).newInstance();
