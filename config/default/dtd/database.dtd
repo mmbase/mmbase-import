@@ -6,15 +6,17 @@
 <!ELEMENT name (#PCDATA)>
 <!ELEMENT mmbasedriver (#PCDATA)>
 <!ELEMENT maxdropsize (#PCDATA)>
-<!ELEMENT scheme (create?,not-null?,null?,primary-key?,key?)>
+<!ELEMENT scheme (create?,create-extended?,not-null?,null?,primary-key?,foreign-key?,key?)>
 <!ELEMENT create (#PCDATA)>
+<!ELEMENT create-extended (#PCDATA)>
 <!ELEMENT not-null (#PCDATA)>
 <!ELEMENT null (#PCDATA)>
 <!ELEMENT primary-key (#PCDATA)>
+<!ELEMENT foreign-key (#PCDATA)>
 <!ELEMENT key (#PCDATA)>
 <!ELEMENT mapping (type-mapping*)>
 <!ELEMENT type-mapping (#PCDATA)>
-<!ATTLIST type-mapping mmbase-type (INTEGER|LONG|FLOAT|DOUBLE|STRING|BYTE|XML) #REQUIRED>
+<!ATTLIST type-mapping mmbase-type (INTEGER|LONG|FLOAT|DOUBLE|STRING|BYTE|XML|REFERRER) #REQUIRED>
 <!ATTLIST type-mapping min-size CDATA #IMPLIED>
 <!ATTLIST type-mapping max-size CDATA #IMPLIED>
 <!ELEMENT disallowed (field*)>
