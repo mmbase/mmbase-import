@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.248 2004-03-29 09:09:21 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1293,11 +1293,19 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<refercontext>true</refercontext>
-			<info>The authentication name to use (account). When used together with
-			e.g. the method="http" option, validation only succeeds if
-			the username equals this attribute. In this case it is also possible to
-			supply a list of usernames here (comma separated)</info>
-		</attribute>
+			<info>
+        <p>
+          The authentication name to use (account). When used together with
+          e.g. the method="http" option, validation only succeeds if
+          the username equals this attribute. In this case it is also possible to
+          supply a list of usernames here (comma separated)
+        </p>
+        <p>
+          It can also be used in combination with the 'password' attribute, in which case
+          authentication will happen by that.
+        </p>
+      </info>
+      </attribute>
 		<attribute>
 			<name>logon</name>
 			<required>false</required>
@@ -1311,8 +1319,13 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<refercontext>true</refercontext>
-			<info>The required rank. This is another way to force a special
-			user when using method="http".
+			<info>
+        The required rank. This is another way to force a special
+        user when using several methods. Often, you should use this attribute in combination with some
+        'method' attribute, because if the 'current' cloud (of the session) does not have a user of
+        at least this required rank, then it needs to know how to login again then. If there is no
+        method in that case, then the body will be skipped, and no error will be shown (This
+        behaviour may be usefull to `check' a cloud only).
 			</info>
 			<possiblevalue>
 				<value>administrator</value>
@@ -1328,8 +1341,8 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 			<refercontext>true</refercontext>
 			<info>
 				<p>
-						You can use the loginpage attribute to specify the (relative) path to a security login page.
-						i.e.:
+          You can use the loginpage attribute to specify the (relative) path to a security login page.
+          i.e.:
 				<pre>
 				<![CDATA[
 <mm:cloud name="mmbase" loginpage="login.jsp">
@@ -1341,28 +1354,28 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 						In that case, the tag checks whether the page has been called with a predefined set of parameters.
 				</p>
 				<p>
-						If the page was called with the 'command' parameter set to 'login', the tag assumes a request is being made to log on using the parameters passed.
-						The actual names of the parameter passed differs by security method chosen, which is defined by the 'authenticate' attribute.
-						For instance, with authenticate method 'username/password', the following additional parameters are recognized:
-
-
-						cloud: similar to the cloudtag's 'name' attribute
-						username: similar to the  cloudtag's 'username' attribute
-						password: similar to the  cloudtag's 'password' attribute
-
-						If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
-						This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
-						The page may also implement its own method of authentication.
-
-						The 'command=login' parameter has no effect when the loginpage attribute was not specified.
-				</p>
+          If the page was called with the 'command' parameter set to 'login', the tag assumes a request is being made to log on using the parameters passed.
+          The actual names of the parameter passed differs by security method chosen, which is defined by the 'authenticate' attribute.
+          For instance, with authenticate method 'username/password', the following additional parameters are recognized:
+          
+          
+          cloud: similar to the cloudtag's 'name' attribute
+          username: similar to the  cloudtag's 'username' attribute
+          password: similar to the  cloudtag's 'password' attribute
+          
+          If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
+          This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
+          The page may also implement its own method of authentication.
+          
+          The 'command=login' parameter has no effect when the loginpage attribute was not specified.
+        </p>
 				<p>
-				The page should link page to the page which is supplied in the reference parameter.
-				The login page itselve should have a parameter 'command' with value 'login', 'authenticate' with the authentication method which is wanted.
-				Additional parameters will be passed to the underlying security implementation.
-
-				A simple login page could contain the following jsp-code:
-				<pre>
+          The page should link page to the page which is supplied in the reference parameter.
+          The login page itselve should have a parameter 'command' with value 'login', 'authenticate' with the authentication method which is wanted.
+          Additional parameters will be passed to the underlying security implementation.
+          
+          A simple login page could contain the following jsp-code:
+          <pre>
 				<![CDATA[
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"%>
 <html>
@@ -1390,11 +1403,11 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 				When a user is logged in, a call in that page, with parameter 'command' and value 'logout' causes the user to be logged out.
 				</p>
 				<p>
-						There are different situations on which the cloud tag with the attibute loginpage can react, they are:
+          There are different situations on which the cloud tag with the attibute loginpage can react, they are:
 				</p>
 				<ul>
 					<li>
-						scenario 1 : not logged-in, no parameter with value login:
+            scenario 1 : not logged-in, no parameter with value login:
 						Stop current page processing, show the login.jsp, which is
 						a form with parameter command with value login. Parameters
 						can be specified inside a form. When the button submit is
@@ -1434,7 +1447,12 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<refercontext>true</refercontext>
-			<info>The password to use to logon to the cloud.</info>
+			<info>
+        The password to use to logon to the cloud. Always consider using method="pagelogon" whey you
+        use this attribute, because the default method will otherwise be "sessionlogon". Then, the
+        resulting cloud-object is written to the session, and the visitor of your page can abuse
+        this to gain authorisation also on other pages.
+      </info>
 		</attribute>
 		<attribute>
 			<name>pwd</name>
@@ -1449,15 +1467,15 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				Describes how to get the authentication information.
+        Describes how to get the authentication information. The default behaviour is as described in 'asis'.
 			</info>
 			<possiblevalue>
 				<value>http</value>
 				<info>
 					Use http protocol to ask name and password
-					from the user. If the `username' attribute is specified too, then
+          from the user. If the `username' attribute is specified too, then
 					logging on will fail if the user does not use that
-					username. The `password' (or 'pwd')  attribute will be ignored.
+          username. The `password' (or 'pwd')  attribute will be ignored.
 				</info>
 			</possiblevalue>
 			<possiblevalue>
@@ -1473,16 +1491,54 @@ version: $Id: mmbase-taglib.xml,v 1.247 2004-03-08 12:41:09 michiel Exp $
 			<possiblevalue>
 				<value>anonymous</value>
 				<info>
-					Ignore the `logon' attribute and create (or
-					reuse) a cloud with an anonymous user.
+					Ignore the `logon' attribute and create (or reuse) a cloud with an anonymous user.
 				</info>
 			</possiblevalue>
 			<possiblevalue>
 				<value>asis</value>
 				<info>
-					Ignore the `logon' attribute and reuse the cloud as
-					it is in the session.
+          <p>
+            Ignore the `logon' attribute and reuse the cloud as
+            it is in the session, or create an `anonymous' cloud, if there is not cloud in the
+            session.
+          </p>
+        </info>
+			</possiblevalue>
+
+			<possiblevalue>
+				<value>pagelogon</value>
+				<info>
+          <p>
+            This method should be used together with the "password" attribute, to indicate that the
+            resulting cloud should only be available to the current page, and not to the session.
+          </p>
 				</info>
+        <see tag="cloud" attribute="password" />
+        <since>MMBase-1.7</since>
+			</possiblevalue>
+
+			<possiblevalue>
+				<value>sessionlogon</value>
+				<info>
+          <p>
+            Thie method can be used together with "password" attribute, to indicate that the
+            resulting cloud must be written in the session, and can be picked up with method="asis"
+            in another page. Visitors of the page using the login-method should be trusted, because
+            they could perhaps exploit this cloud-object in the session.
+          </p>
+          <p>
+            For backwards compatibility reasons this method is the default method if you use the
+            'password' attribute, but a warning will be logged to encourage to state this
+            explicitely, because it is good that you are aware of the consequences.
+          </p>
+          <p>
+            A page using a non-anymous cloud in the session should not be cached publicly, that is
+            another reason to use 'pagelogon'.
+          </p>
+				</info>
+        <see tag="cloud" attribute="password" />
+        <see tag="content" />
+        <since>MMBase-1.7</since>
 			</possiblevalue>
 		</attribute>
 		<attribute>
@@ -2621,6 +2677,18 @@ transaction was commited, following should result anything:
 			<possiblevalue>
 				<value>guitype</value>
 				<info>The GUI representation of the type (NodeManager) of the node.</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>plural_guitype</value>
+				<info>The plural GUI representation of the type (NodeManager) of the node.</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>description</value>
+				<info>The description of the type (NodeManager) of the node.</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>number</value>
+				<info>The node number</info>
 			</possiblevalue>
 		</attribute>
 		<attribute>
@@ -4602,12 +4670,18 @@ The 0 is just counter, which starts at 0 on every page.
 			<info>
 				<p>
 					When this page expires (in seconds after now). If you set this, this has influence on some
-					http header being set ('Cache-Control' and 'Expires'). This default to one minute if there
-					is no session used on the page, and to no caching otherwise.
+					http header being set ('Cache-Control' and 'Expires'). This default to one minute
+          public-caching if there is no session used on the page, and to no caching otherwise.
 				</p>
 				<p>
 					Setting this to 0 has the effect of disabling all proxy-caching.
 				</p>
+        <p>
+          If expires is is set to a value greater than 0, and there is a Cloud-tag in the page which
+          wrote a non-anonymous cloud object to the session, then the Cache-Control header is 'private',
+          rather than public, because such a situation implies that there is something on the page
+          which is not public.
+        </p>
 			</info>
 			<examplevalue>
 				<value>UTF-8</value>
@@ -5562,5 +5636,15 @@ The 0 is just counter, which starts at 0 on every page.
 		<see type="tree" />
 		<since>MMBase-1.7</since>
 	</tag>
+
+	<!--tag>
+		<name>test</name>
+		<tagclass>org.mmbase.bridge.jsp.taglib.TestTag</tagclass>
+		<attribute>
+			<name>evalbody</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag-->
 
 </taglib>
