@@ -568,8 +568,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     /**
      * Write the value of the fieldinfo.
      */
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 }

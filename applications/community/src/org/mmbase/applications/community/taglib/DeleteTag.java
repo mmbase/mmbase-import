@@ -35,6 +35,6 @@ public class DeleteTag extends NodeTag {
             throw new JspTagException("Community module not available.");
         Node node=getNodeVar();
         community.getInfo("MESSAGE-"+node.getNumber()+"-DEL",pageContext.getRequest(),pageContext.getResponse());
-        return super.doAfterBody();
+        return super.doEndTag();
     }
 }

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
@@ -90,7 +91,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     /**
      * A handle necessary when using the Time Tag;
      */
-    protected int timerHandle;
+    protected int timerHandle = -1;
 
     private String previousValue = null; // static voor doInitBody
 
@@ -130,7 +131,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     /**
      * Sets the list maximum with an integer argument. Tomcat needs
      * this if you feed it with an rtexprvalue of type int.
-     *    
+     *
 
      commented out, use "" + for tomcat!
     public void setMax(int m) {
@@ -162,10 +163,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
-        javax.servlet.jsp.tagext.TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
+
+        // serve parent timer tag:
+        TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
             timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         }
+
+
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof NodeList)) {
@@ -186,6 +191,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (constraints != null) {
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
+            if (getReferid().equals(getId())) { // in such a case, don't whine
+                getContextTag().unRegister(getId());
+            }
             return setReturnValues((NodeList) o);
         }
         return NOT_HANDLED;
@@ -195,7 +203,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * froma  passed node list.
      * The list is assumed to be already sorted and trimmed.
      * @param nodes the nodelist to create the iterator from
-     * @return EVAL_BODY_TAG if the resulting list is not empty, SKIP_BODY if the
+     * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
      *  list is empty. THis value should be passed as the result of {
      *  @link #doStartTag}.
      */
@@ -211,7 +219,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param nodes the nodelist to create the iterator from
      * @param trim if true, trim the list using offset and max
      *        (if false, it is assumed the calling routine already did so)
-     * @return EVAL_BODY_TAG if the resulting list is not empty, SKIP_BODY if the
+     * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
      *  list is empty. THis value should be passed as the result of {
      *  @link #doStartTag}.
      */
@@ -231,16 +239,16 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 offset = 0;
             }
             nodes = nodes.subNodeList(offset, to);
-       
-        } 
+
+        }
         returnList   = nodes;
 
-        returnValues = returnList.nodeIterator();        
+        returnValues = returnList.nodeIterator();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
         if (returnValues.hasNext())
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         return SKIP_BODY;
     }
 
@@ -249,10 +257,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         super.doAfterBody();
         if (getId() != null) {
             getContextTag().unRegister(getId());
-        }        
+        }
         if (returnValues.hasNext()){
             doInitBody();
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_AGAIN;
         } else {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -266,7 +274,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextTag().register(getId(), returnList);
-        }        
+        }
         javax.servlet.jsp.tagext.TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).haltTimer(timerHandle);
@@ -278,7 +286,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (returnValues.hasNext()){
             currentItemIndex ++;
             Node next = returnValues.nextNode();
-            if (orderby != null && ! "".equals(orderby)) { 
+            if (orderby != null && ! "".equals(orderby)) {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
                 String f = (String)StringSplitter.split(orderby).get(0);
@@ -293,9 +301,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 previousValue = value;
             }
             setNodeVar(next);
-            if (getId() != null) {
-                getContextTag().register(getId(), next);
-            }        
             fillVars();
         }
     }

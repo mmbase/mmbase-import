@@ -34,12 +34,12 @@ public class CreateAliasTag extends NodeReferrerTag {
     /**
     * Add the alias.
     **/
-    public int doAfterBody() throws JspTagException {        
+    public int doEndTag() throws JspTagException {        
         // search the node:
         Node node = getNode();
         
         // alias name is in the body if no attribute name is given
-        if (alias == null) {
+        if (alias == null && bodyContent !=null) {
             alias = bodyContent.getString();
         } 
 
@@ -48,6 +48,6 @@ public class CreateAliasTag extends NodeReferrerTag {
                 doJob(node, alias);
             }
         }
-        return SKIP_BODY;
+        return EVAL_PAGE;
     }
 }
