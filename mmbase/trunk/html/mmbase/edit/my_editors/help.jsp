@@ -74,6 +74,8 @@ Added 'About the icons'.<br />
 18-05-2003 (v.0.6b3): More adjustments to lay-out.<br />
 Relations are created with the proper direction in mind. Relate buttons should point in the direction of the relation.<br />
 26-05-2003 (v.0.6b4): Made includes: inc_search.jsp &amp; inc_relate.jsp for searching and relating nodes.<br />
+06-08-2003 (v.0.6r1): Fixed bug #5998 (i hope, needs to be tested).
+<br/>Some lay-out fixes.<br />
 </p>
 
 <%@ include file="inc_foot.jsp" %>
