@@ -74,6 +74,9 @@
         </mm:compare>
       </mm:field>
     </mm:node>
+    <p>
+    <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+    </p>
   </div>
 
   <div class="columnRight">

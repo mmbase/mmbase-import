@@ -146,7 +146,7 @@
 </mm:compare>
 </mm:compare>
 
-<a href="index.jsp">Portfolio cockpit</a><br/>
+<a href="index.jsp?contact=<mm:write referid="contact"/>">Portfolio cockpit</a><br/>
 
 
 <mm:node referid="myuser" >
@@ -396,9 +396,6 @@
                             </di:hasrole>
                         </mm:isgreaterthan>
                         </mm:compare>
-                        <mm:compare value="3">
-                            <mm:import id="mayread" reset="true">true</mm:import>
-                        </mm:compare>
                         <mm:compare value="4">
                             <mm:import id="mayread" reset="true">true</mm:import>
                         </mm:compare>
@@ -424,6 +421,8 @@
 
               <mm:remove referid="link"/>
               <mm:import id="link"><a href="<mm:treefile page="/portfolio/showitem.jsp" objectlist="$includePath" referids="$referids">
+                                <mm:param name="contact"><mm:write referid="contact"/></mm:param>
+                                
                                   <mm:param name="currentitem"><mm:field name="number"/></mm:param>
                                   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
                                   <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
