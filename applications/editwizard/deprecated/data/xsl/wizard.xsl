@@ -6,7 +6,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.1 2003-12-19 11:09:52 nico Exp $
+  @version $Id: wizard.xsl,v 1.2 2004-01-05 14:54:12 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -245,7 +245,7 @@
 
       // Store htmlarea names.
       var htmlAreas = new Array();
-      <xsl:for-each select="//*[@ftype='html']">
+      <xsl:for-each select="//form[@id=/wizard/curform]//*[@ftype='html']">
         htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
       </xsl:for-each>
 
@@ -1168,7 +1168,7 @@
   </xsl:template>
 
 
-  <!-- don't want the save-only button?. Put this in your wizard.xsl extension 
+  <!-- don't want the save-only button?. Put this in your wizard.xsl extension
   <xsl:template name="saveonlybutton">
     <a id="bottombutton-saveonly" />
   </xsl:template>
