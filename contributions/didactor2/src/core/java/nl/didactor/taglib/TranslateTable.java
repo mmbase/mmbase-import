@@ -101,7 +101,6 @@ public class TranslateTable {
      * @param path the path to read the file from
      */
     protected static synchronized void readFile(String basepath, String path) {
-        Map m = Collections.synchronizedMap(new HashMap());
         File root = new File(basepath);
         File file = new File(path);
         String location = "";
@@ -114,7 +113,11 @@ public class TranslateTable {
             }
             file = file.getParentFile();
         }
-
+        Map m = (Map) translationTables.get(location);
+        if (m == null) {
+            m = Collections.synchronizedMap(new HashMap());
+            translationTables.put(location, m);
+        }        
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             String line;
@@ -133,7 +136,7 @@ public class TranslateTable {
         } catch (Exception e) {
             System.err.println("Exception: " + e);
         }
-        translationTables.put(location, m);
+       
         log.debug("Adding translations from file [" + path + "] with key [" + location + "]");
     }
     
