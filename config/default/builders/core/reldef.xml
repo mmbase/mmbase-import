@@ -16,10 +16,12 @@
         <singular xml:lang="en">Relation Definition</singular>
         <singular xml:lang="nl">Relatie Definitie</singular>
         <singular xml:lang="eo">Rilatodifino</singular>
+        <singular xml:lang="it">Relazione Definizione</singular>
         <!-- multiple per language as defined by ISO 639 -->
         <plural xml:lang="en">Relation Definitions</plural>
         <plural xml:lang="nl">Relatie Definities</plural>
         <plural xml:lang="eo">Rilatodifinoj</plural>
+        <plural xml:lang="it">Relazione Definizioni</plural>
     </names>
 
     <!-- <descriptions>
@@ -30,6 +32,7 @@
         <description xml:lang="en">Defines relations</description>
         <description xml:lang="nl">Defineerd relaties</description>
         <description xml:lang="eo">Difinas rilatojn</description>
+        <description xml:lang="it">Definisce le relazioni</description>
     </descriptions>
 
     <!-- <fieldlist>
@@ -45,6 +48,7 @@
                 <guiname xml:lang="en">Source</guiname>
                 <guiname xml:lang="nl">Bron</guiname>
                 <guiname xml:lang="eo">Fonto</guiname>
+                <guiname xml:lang="it">Fonte</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -74,6 +78,7 @@
                 <guiname xml:lang="en">Target</guiname>
                 <guiname xml:lang="nl">Bestemming</guiname>
                 <guiname xml:lang="eo">Celo</guiname>
+                <guiname xml:lang="it">Obbiettivo</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -103,6 +108,7 @@
                 <guiname xml:lang="en">Direction</guiname>
                 <guiname xml:lang="nl">Richting</guiname>
                 <guiname xml:lang="eo">Direkto</guiname>
+                <guiname xml:lang="it">Direzione</guiname>
                 <guitype>dirs</guitype>
             </gui>
             <!-- editor related  -->
@@ -132,6 +138,7 @@
                 <guiname xml:lang="en">SourceGUIName</guiname>
                 <guiname xml:lang="nl">BronGUINaam</guiname>
                 <guiname xml:lang="eo">Fontnomo</guiname>
+                <guiname xml:lang="it">FonteGUINome</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -161,6 +168,7 @@
                 <guiname xml:lang="en">TargetGUIName</guiname>
                 <guiname xml:lang="nl">DoelGUINaam</guiname>
                 <guiname xml:lang="eo">Celnomo</guiname>
+                <guiname xml:lang="it">ObbiettivoGUINome</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -190,6 +198,7 @@
                 <guiname xml:lang="en">Builder</guiname>
                 <guiname xml:lang="nl">Builder</guiname>
                 <guiname xml:lang="eo">Konstruanto</guiname>
+                <guiname xml:lang="it">Costruttore</guiname>
                 <guitype>reltypes</guitype>
             </gui>
             <!-- editor related -->

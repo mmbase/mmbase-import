@@ -16,11 +16,13 @@
      <singular xml:lang="nl">Objekttype</singular>
      <singular xml:lang="eo">Objekttipo</singular>
      <singular xml:lang="fy">Object Tiepe</singular>
+     <singular xml:lang="it">Oggetto Tipo</singular>
      <!-- multiple per language as defined by ISO 639 -->
      <plural xml:lang="en">Object Types</plural>
      <plural xml:lang="nl">Objekttypen</plural>
      <plural xml:lang="eo">Objekttipoj</plural>
      <plural xml:lang="fy">Object Tiepes</plural>
+     <plural xml:lang="it">Oggetto Tipi</plural>
   </names>
 
   <!-- <descriptions>
@@ -32,6 +34,7 @@
      <description xml:lang="nl">Definitie van objekt types</description>
      <description xml:lang="eo">Difinoj de objekttipoj</description>
      <description xml:lang="fy">Definitsie fan de object tiepes</description>
+     <description xml:lang="it">Definisci i tipi per gli oggetti</description>
   </descriptions>
 
   <fieldlist>
@@ -44,6 +47,7 @@
           <guiname xml:lang="nl">Naam</guiname>
           <guiname xml:lang="eo">Nomo</guiname>
           <guiname xml:lang="fy">Namme</guiname>
+          <guiname xml:lang="it">Nome</guiname>
           <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -74,6 +78,7 @@
           <guiname xml:lang="nl">Omschrijving</guiname>
           <guiname xml:lang="eo">Priskribo</guiname>
           <guiname xml:lang="fy">Beskrowing</guiname>
+          <guiname xml:lang="it">Descrizione</guiname>
           <guitype>field</guitype>
         </gui>
         <!-- editor related  -->
@@ -104,6 +109,7 @@
           <guiname xml:lang="nl">Configuratie</guiname>
           <guiname xml:lang="eo">Agordo</guiname>
           <guiname xml:lang="fy">Ynstellings</guiname>
+          <guiname xml:lang="it">Configurazione</guiname>
           <guitype>field</guitype>
         </gui>
         <!-- editor related  -->
