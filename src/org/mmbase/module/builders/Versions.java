@@ -88,10 +88,9 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             VersionXMLCacheNodeReader parser=new VersionXMLCacheNodeReader(cacheversionfile);
             parser.setBuilder(this);
             CacheVersionHandlers=parser.getCacheVersions(CacheVersionHandlers);
-            System.out.println("Cache version Handlers="+CacheVersionHandlers);
         }
         for (Enumeration e=CacheVersionHandlers.keys();e.hasMoreElements();) {
-                String bname=(String)e.nextElement();
+            String bname=(String)e.nextElement();
             mmb.addLocalObserver(bname,this);
             mmb.addRemoteObserver(bname,this);
         }
@@ -101,7 +100,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      * @javadoc
      */
     private boolean nodeChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("Versions -> signal change on " + number + " " + builder + " ctype=" + ctype);
         }
         Vector subs=(Vector)CacheVersionHandlers.get(builder);
@@ -115,7 +114,6 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             }
         } catch(Exception e) {
             log.error(Logging.stackTrace(e));
-//			e.printStackTrace();
         }
         return true;
     }
