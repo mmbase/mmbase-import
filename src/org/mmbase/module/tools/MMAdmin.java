@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.49 2002-05-24 06:15:40 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.50 2002-06-17 13:12:01 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -869,9 +869,9 @@ public class MMAdmin extends ProcessorModule {
                 // fill the name....
                 type.setValue("name", name);
 
-                // fill the config...                
+                // fill the config...
                 org.w3c.dom.Document config = null;
-                try {                
+                try {
                     config =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(appFile);
                 }
                 catch(org.xml.sax.SAXException se) {
@@ -1707,7 +1707,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null) {
-            int pos=bul.getFields().size();
+            int pos=bul.getFields().size()+1;
 
             FieldDefs def=new FieldDefs();
             def.setDBPos(pos);
@@ -1746,7 +1746,7 @@ public class MMAdmin extends ProcessorModule {
             def.setGUIType(value);
 
             bul.addField(def);
-            if (mmb.getDatabase().addField(bul, def.getDBName())) { 
+            if (mmb.getDatabase().addField(bul, def.getDBName())) {
                 syncBuilderXML(bul,builder);
             } else {
                 log.warn("Could not sync builder XML because addField returned false (tablesizeprotection?)");
@@ -1784,7 +1784,7 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    public void syncBuilderXML(MMObjectBuilder bul,String builder) {        
+    public void syncBuilderXML(MMObjectBuilder bul,String builder) {
         String savepath=MMBaseContext.getConfigPath()+File.separator + "builders" + File.separator + builder + ".xml";
         log.service("Syncing builder xml (" + savepath + ") for builder " + builder);
         try {
