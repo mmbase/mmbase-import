@@ -16,17 +16,19 @@ import java.util.List;
  * A list of Relation Managers
  *
  * @author Pierre van Rooden
+ * @version $Id: RelationManagerList.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
  */
 public interface RelationManagerList extends NodeManagerList {
 
-	/**
-	*
-	*/
-	public RelationManager getRelationManager(int index);
+    /**
+     * Returns the RelationManager at the indicated postion in the list
+     * @param index the position of the RelationManager to retrieve
+     */
+    public RelationManager getRelationManager(int index);
 
-	/**
-	*
-	*/
-	public RelationManagerIterator relationManagerIterator();
-		
+    /**
+     * Returns an type-specific iterator for this list.
+     */
+    public RelationManagerIterator relationManagerIterator();
+
 }

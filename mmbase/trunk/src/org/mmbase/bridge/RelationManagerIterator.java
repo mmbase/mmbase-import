@@ -14,12 +14,13 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
+ * @version $Id: RelationManagerIterator.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
  */
 public interface RelationManagerIterator extends NodeManagerIterator {
 
-	/**
-	*
-	*/
-	public RelationManager nextRelationManager();
-	
+    /**
+     * Returns the next element in the iterator as a RelationManager
+     */
+    public RelationManager nextRelationManager();
+
 }

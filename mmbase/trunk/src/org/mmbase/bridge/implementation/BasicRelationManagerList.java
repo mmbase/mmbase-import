@@ -19,6 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
+ * @version $Id: BasicRelationManagerList.java,v 1.6 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
@@ -42,7 +43,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         set(index, rm);
         return rm;
     }
-    
+
     /**
     *
     */
@@ -56,13 +57,13 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
     public RelationManagerIterator relationManagerIterator() {
         return new BasicRelationManagerIterator(this);
     };
-    
+
     public class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
-    
+
         BasicRelationManagerIterator(BasicList list) {
             super(list);
         }
-                             
+
         public void set(Object o) {
             if (! (o instanceof RelationManager)) {
                 String message;
@@ -81,7 +82,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
             }
             list.add(index, o);
         }
-        
+
         public void set(RelationManager n) {
             list.set(index, n);
         }
@@ -93,7 +94,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         public RelationManager nextRelationManager() {
             return (RelationManager)next();
         }
-    
+
     }
-    
+
 }

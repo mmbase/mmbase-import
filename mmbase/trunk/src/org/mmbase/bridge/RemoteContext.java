@@ -18,24 +18,30 @@ import org.mmbase.bridge.remote.rmi.*;
 import org.mmbase.bridge.remote.implementation.*;
 
 import org.mmbase.bridge.*;
+
 /**
+ * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
+ * @version $Id: RemoteContext.java,v 1.2 2002-01-31 10:05:08 pierre Exp $
+ * @since MMBase-1.5
  */
-public class RemoteContext{
-	/**
-         * connect to a remote cloudcontext the name of the context
-         * depend on configurations found in mmbaseroot.xml (host) and
-         * rmmci.xml for port and context name
-         * @param uri rmi uri like rmi://www.mmbase.org:1111/remotecontext
-         * @return the remote cloud context named remotecontext
-         * @throw RuntimeException if anything goes wrong
-         */
-	public static CloudContext getCloudContext(String uri) {
-		try {
-	        	RemoteCloudContext remoteCloudContext= (RemoteCloudContext)Naming.lookup(uri);	
-			return new RemoteCloudContext_Impl(remoteCloudContext);
-		} catch (Exception e){
-			throw new RuntimeException(e.getMessage());
-		}
-	}
+public class RemoteContext {
+
+    /**
+     * Connect to a remote cloudcontext. The name of the context
+     * depends on configurations found in mmbaseroot.xml (host) and
+     * rmmci.xml for port and context name
+     * @todo should throw a Bridge Exception (?)
+     * @param uri rmi uri like rmi://www.mmbase.org:1111/remotecontext
+     * @return the remote cloud context named remotecontext
+     * @throw RuntimeException if anything goes wrong
+     */
+    public static CloudContext getCloudContext(String uri) {
+        try {
+            RemoteCloudContext remoteCloudContext= (RemoteCloudContext)Naming.lookup(uri);
+            return new RemoteCloudContext_Impl(remoteCloudContext);
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

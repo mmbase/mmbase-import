@@ -24,14 +24,15 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: RelationManager.java,v 1.5 2002-01-31 10:05:08 pierre Exp $
  */
 public interface RelationManager extends NodeManager {
-    /** 
+    /**
      * Directionality constant : uni-directional
      */
     public final static int UNIDIRECTIONAL = 1;
 
-    /** 
+    /**
      * Directionality constant : bi-directional
      */
     public final static int BIDIRECTIONAL = 2;
@@ -41,13 +42,13 @@ public interface RelationManager extends NodeManager {
      * @return the role as a <code>String</code>
      */
     public String getForwardRole();
-    
+
     /**
      * Retrieves the role of the destination to the source
      * @return the role as a <code>String</code>
      */
     public String getReciprocalRole();
-    
+
     /**
      * Retrieves the directionality for this type (the default assigned to a new relation).
      * @return one of the directionality constants

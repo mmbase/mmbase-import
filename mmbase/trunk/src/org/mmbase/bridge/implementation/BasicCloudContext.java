@@ -20,9 +20,11 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
+ * @javadoc
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: BasicCloudContext.java,v 1.20 2002-01-31 10:05:10 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -41,7 +43,7 @@ public class BasicCloudContext implements CloudContext {
     * Transaction Manager to keep track of transactions
     */
     static TransactionManager transactionManager = null;
-	
+
     // map of clouds by name
     private static Set localClouds = new HashSet();
 
@@ -57,23 +59,23 @@ public class BasicCloudContext implements CloudContext {
         if (i!=null) {
             mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
 
-		
+
             // create transaction manager and temporary node manager
             tmpObjectManager = new TemporaryNodeManager(mmb);
-    	    transactionManager = new TransactionManager(mmb,tmpObjectManager);
-		
-    	    // create module list
-    	    while(i.hasNext()) {
+            transactionManager = new TransactionManager(mmb,tmpObjectManager);
+
+            // create module list
+            while(i.hasNext()) {
                 Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);
                 localModules.put(mod.getName(),mod);
             }
-	    
-	    // set all the names of all accessable clouds..
-	    localClouds.add("mmbase");
-	    
-        } 
-	else {
-	    // why dont we start mmbase, when there isnt a running instance, just change the check...
+
+        // set all the names of all accessable clouds..
+        localClouds.add("mmbase");
+
+        }
+    else {
+        // why dont we start mmbase, when there isnt a running instance, just change the check...
             String message;
             message = "MMBase has not been started, and cannot be started by "
                       + "this Class.";
@@ -84,11 +86,11 @@ public class BasicCloudContext implements CloudContext {
 
     public ModuleList getModules() {
         ModuleList ml=new BasicModuleList(localModules.values(),this);
-	    return ml;
+        return ml;
     }
 
     public Module getModule(String moduleName) {
-    	Module mod = (Module)localModules.get(moduleName);
+        Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
             String message;
             message = "Module " + moduleName + " does not exist.";
@@ -99,37 +101,37 @@ public class BasicCloudContext implements CloudContext {
     }
 
     public Cloud getCloud(String cloudName) {
-    	return getCloud(cloudName, "anonymous", null);
+        return getCloud(cloudName, "anonymous", null);
     }
-        
+
     public Cloud getCloud(String name, String application, HashMap loginInfo) {
-    	if ( !localClouds.contains(name) ) {
+        if ( !localClouds.contains(name) ) {
              String message;
              message = "Cloud " + name + " does not exist.";
              log.error(message);
-	     throw new BridgeException(message);
-	}
-	return new BasicCloud(name, application, loginInfo,this);
+         throw new BridgeException(message);
+    }
+    return new BasicCloud(name, application, loginInfo,this);
     }
 
     public StringList getCloudNames() {
-    	return new BasicStringList(localClouds);
+        return new BasicStringList(localClouds);
     }
 
     /**
      * Create a temporary scanpage object.
      */
     static scanpage getScanPage(ServletRequest rq, ServletResponse resp) {
-	scanpage sp = new scanpage();
+    scanpage sp = new scanpage();
         if (rq instanceof HttpServletRequest) {
             HttpServletRequest req=(HttpServletRequest)rq;
             sp.setReq(req);
-	    sp.setRes((HttpServletResponse)resp);
-    	    if (req!=null) {
-	        sp.req_line=req.getRequestURI();
-    	        sp.querystring=req.getQueryString();
+        sp.setRes((HttpServletResponse)resp);
+            if (req!=null) {
+            sp.req_line=req.getRequestURI();
+                sp.querystring=req.getQueryString();
             }
-    	}
-	return sp;
+        }
+    return sp;
     }
 }

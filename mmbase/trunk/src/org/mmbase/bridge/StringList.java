@@ -16,17 +16,19 @@ import java.util.List;
  * A list of Strings
  *
  * @author Pierre van Rooden
+ * @version $Id: StringList.java,v 1.3 2002-01-31 10:05:09 pierre Exp $
  */
 public interface StringList extends List {
 
-	/**
-	 *
-	 */
-	public String getString(int index);
+    /**
+     * Returns the string at the indicated postion in the list
+     * @param index the position of the string to retrieve
+     */
+    public String getString(int index);
 
-	/**
-	 *
-	 */
-	public StringIterator stringIterator();
-		
+    /**
+     * Returns an type-specific iterator for this list.
+     */
+    public StringIterator stringIterator();
+
 }
