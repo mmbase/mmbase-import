@@ -29,9 +29,11 @@ import org.mmbase.util.logging.Logging;
 
 /** authorization based on a config*/
 public class ContextAuthorization extends Authorization {
-    private static Logger log=Logging.getLoggerInstance(ContextAuthorization.class.getName()); 
-    private Document document;
-    private ContextCache cache= new ContextCache();
+    private static Logger   log=Logging.getLoggerInstance(ContextAuthorization.class.getName()); 
+    private Document 	    document;
+    private ContextCache    cache= new ContextCache();
+
+    private HashMap 	    replaceNotFound = new HashMap();
 
     protected void load() {
     	log.debug("using: '" + configFile + "' as config file for authentication");
@@ -142,6 +144,11 @@ public class ContextAuthorization extends Authorization {
 
 	// retrieve the current context..
 	String currentContext = getContext(user, nodeNumber);
+    	synchronized(replaceNotFound) {
+	    if(replaceNotFound.containsKey(currentContext)) {
+	    	currentContext = (String)replaceNotFound.get(currentContext);
+	    }
+	}
 	
 	HashSet list;	
 	synchronized(cache) {
@@ -251,6 +258,10 @@ public class ContextAuthorization extends Authorization {
 	    	log.error( Logging.stackTrace(te));
 	    	throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
 	    }
+	    // add it to the plave thing, so that it can be used within the getPossibleUserContexes..
+	    synchronized(replaceNotFound) {
+	    	replaceNotFound.put(context, defaultContext);
+	    }
     	}
 	
     	HashSet allowedGroups = new HashSet();	    	
@@ -353,6 +364,7 @@ public class ContextAuthorization extends Authorization {
     }
     
     private static org.mmbase.module.core.MMObjectBuilder builder = null;
+    
     private MMObjectNode getMMNode(int n) {
         if(builder == null) {
             org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
