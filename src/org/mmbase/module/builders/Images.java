@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.24 2000-07-06 08:40:07 install Exp $
+	$Id: Images.java,v 1.25 2000-07-06 08:51:29 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.24  2000/07/06 08:40:07  install
+	Rico: added params to Images builder
+	
 	Revision 1.23  2000/06/15 16:54:39  wwwtech
 	Rob: added error message
 	
@@ -83,7 +86,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.24 2000-07-06 08:40:07 install Exp $
+ * @version $Id: Images.java,v 1.25 2000-07-06 08:51:29 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -94,9 +97,7 @@ public class Images extends MMObjectBuilder {
 
 	// Currenctly only ImageMagick works / this gets parameterized soon
 	protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick";
-	protected static String ConverterRoot = "/usr/local/";
-	protected static String ConverterCommand = "bin/convert";
-	protected int MaxConcurrentRequests=3;
+	protected int MaxConcurrentRequests=2;
 
 	protected int MaxRequests=32;
 	protected Queue imageRequestQueue=new Queue(MaxRequests);
@@ -113,7 +114,7 @@ public class Images extends MMObjectBuilder {
 		tmp=getInitParameter("MaxConcurrentRequests");
 		if (tmp!=null) {
 			try {
-				itmp=Integer.parseInt("MaxConcurrentRequests");
+				itmp=Integer.parseInt(tmp);
 			} catch (NumberFormatException e) {
 				itmp=2;
 			}
