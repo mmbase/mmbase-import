@@ -30,14 +30,14 @@ import org.mmbase.util.logging.Logging;
  * adapt the new JDBC 3 methods, so that they pass their call to
  * the driver, instead of throwing an UnsupportedOperationException.
  *
- * @deprecated It would possibly be better to pass the logging of the sql query
- *              to the code that calls the conenction, rather than place it in
- *              the conenction itself, as it's implementation leads to conflicts
- *              between various JDBC versions.
- *              This also goes for freeing the connection once it is 'closed'.
+ * @sql It would possibly be better to pass the logging of the sql query
+ *      to the code that calls the conenction, rather than place it in
+ *      the conenction itself, as it's implementation leads to conflicts
+ *      between various JDBC versions.
+ *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.9 2002-03-01 09:53:19 pierre Exp $
+ * @version $Id: MultiConnection.java,v 1.10 2002-03-04 09:50:43 pierre Exp $
  */
 public class MultiConnection implements Connection {
     // states
