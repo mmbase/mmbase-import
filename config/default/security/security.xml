@@ -22,8 +22,7 @@
 			class.
 
 	 -->
-  	<authentication class="org.mmbase.security.implementation.AuthenticationHandler" 
-			url="authentication.xml" /> -->
+  	<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="authentication.xml" />
 
 	<!--
 		tag authorization:
@@ -35,8 +34,7 @@
 			be used for configuration of of the authorization
 			class.
 	 -->
-    	<authorization  class="org.mmbase.security.implementation.OwnerAuthorization" 
-	    	    	url="../accounts.properties" />
+    	<authorization  class="org.mmbase.security.implementation.basic.OwnerAuthorization" url="../accounts.properties" />
 
 	<!--
             shared secret:
