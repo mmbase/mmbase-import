@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
  * Creates the index page for the documentation.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DocumentationIndex.java,v 1.1 2004-11-01 12:44:42 pierre Exp $
+ * @version $Id: DocumentationIndex.java,v 1.2 2004-11-01 13:39:23 pierre Exp $
  */
 public class DocumentationIndex {
 
@@ -228,35 +228,51 @@ public class DocumentationIndex {
     protected String getTitle(Object resource) throws IOException {
         String name = null;
         String path = getLastOfPath(resource);
-        if (!path.endsWith(".html")) { // assume a directory
-            resource = getChild(resource, "index.html");
-            path = getLastOfPath(resource);
-        }
-        if (exists(resource) && path.endsWith(".html")) {
-          BufferedReader indexReader = new BufferedReader(getReader(resource));
-          String line = indexReader.readLine();
-          while (line !=null) {
-              String lineLC = line.toLowerCase();
-              int pos = lineLC.indexOf("<title>");
-              if (pos>=0) {
-                  int pos2 = lineLC.indexOf("</title>",pos+7);
-                  while (pos2==-1) {
-                    String temp = indexReader.readLine();
-                    if (temp == null) break;
-                    line = line + temp;
-                    lineLC = lineLC + temp.toLowerCase();
-                    pos2 = lineLC.indexOf("</title>",pos+7);
-                  }
-                  if (pos2 > -1) {
-                      name = line.substring(pos+7, pos2);
-                  } else {
-                      name = line.substring(pos+7);
-                  }
-                  line = null;
-              } else {
-                  line = indexReader.readLine();
-              }
-           }
+        if (path.endsWith(".txt")) {
+            if (exists(resource)) {
+                name = path;
+                BufferedReader indexReader = new BufferedReader(getReader(resource));
+                String line = indexReader.readLine();
+                if (line!=null && line.startsWith("===")) {
+                    line = indexReader.readLine();
+                    if (line !=null) {
+                        name = line.trim();
+                    }
+                }
+                indexReader.close();
+            }
+        } else {
+            if (!path.endsWith(".html")) { // assume a directory
+                resource = getChild(resource, "index.html");
+                path = getLastOfPath(resource);
+            }
+            if (exists(resource) && path.endsWith(".html")) {
+                BufferedReader indexReader = new BufferedReader(getReader(resource));
+                String line = indexReader.readLine();
+                while (line !=null) {
+                    String lineLC = line.toLowerCase();
+                    int pos = lineLC.indexOf("<title>");
+                    if (pos>=0) {
+                        int pos2 = lineLC.indexOf("</title>",pos+7);
+                        while (pos2==-1) {
+                            String temp = indexReader.readLine();
+                            if (temp == null) break;
+                            line = line + temp;
+                            lineLC = lineLC + temp.toLowerCase();
+                            pos2 = lineLC.indexOf("</title>",pos+7);
+                        }
+                        if (pos2 > -1) {
+                            name = line.substring(pos+7, pos2);
+                        } else {
+                            name = line.substring(pos+7);
+                        }
+                        line = null;
+                    } else {
+                        line = indexReader.readLine();
+                    }
+                }
+                indexReader.close();
+            }
         }
         return name;
     }
