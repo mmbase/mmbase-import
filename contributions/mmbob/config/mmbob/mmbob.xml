@@ -21,8 +21,8 @@
     <email from="your.emailaddress@yourdomain.org"/>
    
     <layout>
-      <header path="footer.jsp"/>
-      <footer path="header.jsp"/>
+      <header path="header.jsp"/>
+      <footer path="footer.jsp"/>
     </layout>
 
     <xslts>
@@ -45,8 +45,8 @@
       </postarea>
       <email from="your.otheremailaddress@yourdomain.org"/>
       <layout>
-        <header path="footer2.jsp"/>
-        <footer path="header2.jsp"/>
+        <header path="header2.jsp"/>
+        <footer path="footer2.jsp"/>
       </layout>
     </forum>
 
