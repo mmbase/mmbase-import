@@ -370,7 +370,7 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("HOUR")) return(""+d.getHours());
 			if (cmd.equals("MIN")) return(""+d.getMinutes());
 			if (cmd.equals("SEC")) return(""+d.getSeconds());
-			if (cmd.equals("YEAR")) return("19"+d.getYear()); // year 2000 bug! 
+			if (cmd.equals("YEAR")) return(""+(1900+d.getYear())); // year 2000 bug! 
 			if (cmd.equals("SHORTYEAR")) return(""+d.getYear());
 			if (cmd.equals("MONTH")) {
 				switch(whichname) {
