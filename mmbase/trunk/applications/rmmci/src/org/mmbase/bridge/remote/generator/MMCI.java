@@ -115,6 +115,8 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
 				//why???
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
     }
 
     public static void main(String [] argv) throws Exception{
