@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.52 2004-12-13 18:24:40 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.53 2005-01-03 17:58:34 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -39,6 +39,8 @@ public class WriterHelper extends BodyTagSupport {
     private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
     public static boolean NOIMPLICITLIST = true;
     public static boolean IMPLICITLIST   = false;
+
+    public static final String STACK_ATTRIBUTE = "org_mmbase_taglib__stack";
 
     static final int TYPE_UNKNOWN = -10;
     static final int TYPE_UNSET   = -1;
@@ -57,9 +59,9 @@ public class WriterHelper extends BodyTagSupport {
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
-    static final int TYPE_FIELD   = 23;
-    static final int TYPE_FIELDVALUE   = 24;
-    static final int TYPE_BOOLEAN   = 25;
+    static final int TYPE_FIELD         = 23;
+    static final int TYPE_FIELDVALUE    = 24;
+    static final int TYPE_BOOLEAN       = 25;
 
 
     static final int stringToType(String tt) {
@@ -119,6 +121,7 @@ public class WriterHelper extends BodyTagSupport {
      * @since MMBase_1.8
      */
     private   Stack _Stack;
+    private   boolean pushed = false;
 
     private   boolean hasBody          = false;
 
@@ -326,14 +329,22 @@ public class WriterHelper extends BodyTagSupport {
             }
             value = v;
         }
-        ContextContainer thisContextContainer = thisTag.getContextProvider().getContextContainer();
-        _Stack = (Stack) thisContextContainer.get("_STACK");
+
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
             _Stack = new Stack();
-            thisContextContainer.register("_STACK", _Stack);
+            pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
-        _Stack.push(value);
-        thisContextContainer.put("_", value);
+        if (pushed) {
+            log.info("Value was set already by this tag");
+            _Stack.set(_Stack.size() - 1, value);
+        } else {
+            _Stack.push(value);
+            pushed = true;
+        }
+
+        pageContext.setAttribute("_", value);
+        log.info("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
         setJspvar();
     }
 
@@ -349,6 +360,7 @@ public class WriterHelper extends BodyTagSupport {
 
     private void setJspvar() throws JspTagException {
         if (jspvar == null) return;
+
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
@@ -431,11 +443,12 @@ public class WriterHelper extends BodyTagSupport {
      */
     private void pop_Stack() throws JspTagException {
         if (_Stack != null) {
-            _Stack.pop();
+            Object pop = _Stack.pop();
+            log.info("Removed " + pop +  "( " + pop.getClass().getName() + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
             if (_Stack.empty()) {
-                thisTag.getContextProvider().getContextContainer().remove("_");
+                pageContext.removeAttribute("_");
             } else {
-                thisTag.getContextProvider().getContextContainer().put("_", _Stack.peek());
+                pageContext.setAttribute("_", _Stack.peek());
             }
             _Stack = null;
         }
@@ -487,6 +500,7 @@ public class WriterHelper extends BodyTagSupport {
         pageContext   = null;
         value         = null;
         _Stack        = null;
+        pushed        = false;
     }
 
 
