@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.28 2004-02-24 11:53:19 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.29 2004-03-16 14:38:38 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -442,7 +442,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     public void destroy() {
         log.info("Servlet " + getServletName() + " is taken out of service");
-        initThread.interrupt();
+        if (initThread != null) {
+            initThread.interrupt();
+        } else {
+            log.debug(" " + getServletName() + " was not initialized");
+        }
         log.debug("Disassociating this servlet with mappings");
         Iterator i = getServletMappings(getServletConfig().getServletName()).iterator();
         while (i.hasNext()) {
