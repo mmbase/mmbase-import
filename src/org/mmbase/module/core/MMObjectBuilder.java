@@ -20,6 +20,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 import org.mmbase.cache.Cache;
+import org.mmbase.cache.NodeListCache;
 
 import org.mmbase.module.ParseException;
 import org.mmbase.module.builders.DayMarkers;
@@ -59,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.237 2003-07-14 10:13:41 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.238 2003-07-14 21:04:24 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -90,6 +91,14 @@ public class MMObjectBuilder extends MMTable {
      * @since 1.7
      */
     private static Cache typeCache;
+
+
+    /**
+     * Results of getNodes
+     * @since 1.7
+     */
+    protected static NodeListCache listCache = NodeListCache.getCache();
+
 
     static {
         typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
@@ -708,7 +717,7 @@ public class MMObjectBuilder extends MMTable {
     public void safeCache(Integer n, MMObjectNode node) {
         synchronized(nodeCache) {
             if(cacheLocked==0) {
-                nodeCache.put(n,node);
+                nodeCache.put(n, node);
             }
         }
     }
@@ -1567,7 +1576,7 @@ public class MMObjectBuilder extends MMTable {
             mmb.closeConnection(con,stmt);
         }
 
-        // Process and return the results.
+
         processSearchResults(results);
         return results;
     }
@@ -1588,16 +1597,19 @@ public class MMObjectBuilder extends MMTable {
     throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         if (query.getBuilder() != this) {
-            throw new IllegalArgumentException(
-            "Wrong builder for query on '" + query.getBuilder().getTableName()
-            + "'-table: " + this.getTableName());
+            throw new IllegalArgumentException("Wrong builder for query on '" + query.getBuilder().getTableName() + "'-table: " + this.getTableName());
+        }
+
+        List results = (List) listCache.get(query);
+        
+        // if unavailable, obtain from database
+        if (results == null) {
+            log.debug("result list is null, getting from database");
+            results = mmb.getDatabase().getNodes(query, this);
+            listCache.put(query, results);
         }
 
         // TODO (later): implement maximum set by maxNodesFromQuery?
-
-        // Execute query.
-        List results = mmb.getDatabase().getNodes(query, this);
-
         // Perform necessary postprocessing.
         processSearchResults(results);
 
