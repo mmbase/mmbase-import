@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.3 2004-04-08 09:20:08 keesj Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.4 2004-05-10 12:48:18 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -42,11 +42,24 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private String contentType       = DEFAULT_CONTENTTYPE;
     private String characterEncoding = DEFAULT_CHARSET;
 
+    private HttpServletResponse wrappedResponse;
+
     /**
      * Public constructor
      */
     public GenericResponseWrapper(HttpServletResponse resp) {
-        super(resp);
+        super(resp);        
+        wrappedResponse = resp;
+
+    }
+
+    /**
+     * Gets the response object which this wrapper is wrapping. You might need this when giving a
+     * redirect or so.
+     * @since MMBase-1.7.1
+     */
+    public HttpServletResponse getWrappedResponse() {
+        return wrappedResponse;
     }
 
     /**
