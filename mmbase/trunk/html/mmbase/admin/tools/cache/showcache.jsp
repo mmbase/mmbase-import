@@ -18,9 +18,9 @@ required="true" />
 <table summary="applications" width="93%" cellspacing="1" cellpadding="3" border="0">
 <%
 
- Cache cache = Cache.getCache(cacheName); 
+ Cache cache = Cache.getCache(cacheName);
  if (cache != null) {
-%>   
+%>
 
 <tr align="left">
   <th class="header" colspan="4">Cache Monitor - v1.0</th>
@@ -38,8 +38,8 @@ required="true" />
 <%
    Iterator i = cache.getOrderedEntries(500).iterator();
    int j = 0;
-   while(i.hasNext()) {   
-     Map.Entry entry = (Map.Entry) i.next();    
+   while(i.hasNext()) {
+     Map.Entry entry = (Map.Entry) i.next();
 %>
 <tr>
   <td class="data"><%=++j%></td>
@@ -51,7 +51,7 @@ required="true" />
 <tr><td>&nbsp;</td></tr>
 <% } %>
 <tr>
-<td class="navigate"><a href="../cache.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../cache.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Cache Monitor</td>
 </tr>
 </table>

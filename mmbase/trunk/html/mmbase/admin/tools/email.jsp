@@ -17,7 +17,7 @@
     NodeManager email=null;
     try {
        email=cloud.getNodeManager("email");
-    } catch (Exception e) {}
+    } catch (NotFoundException e) {}
 %>
 
 <tr align="left">
@@ -35,33 +35,33 @@
 
 <tr><td>&nbsp;</td></tr>
 <tr>
-  <td class="data" colspan="2">Max number of queued messages in memory</td>
-  <td class="data" colspan="2"><%=email.getInfo("MAXMEMTASKS")%></td>
+  <td class="data" colspan="3">Max number of queued messages in memory</td>
+  <td class="data" ><%=email.getInfo("MAXMEMTASKS")%></td>
 </tr>
 <tr>
-  <td class="data" colspan="2">Messages queued time</td>
-  <td class="data" colspan="2"><%=email.getInfo("DBQUEUEDTIME")%></td>
+  <td class="data" colspan="3">Messages queued time</td>
+  <td class="data" ><%=email.getInfo("DBQUEUEDTIME")%></td>
 </tr>
 <tr>
-  <td class="data" colspan="2">Queued probe time</td>
-  <td class="data" colspan="2"><%=email.getInfo("DBQUEUEPROBETIME")%></td>
+  <td class="data" colspan="3">Queued probe time</td>
+  <td class="data" ><%=email.getInfo("DBQUEUEPROBETIME")%></td>
 </tr>
 <tr>
-  <td class="data" colspan="2">Number of queued messages in database</td>
-  <td class="data" colspan="2"><%=email.getInfo("DBQUEUED")%></td>
+  <td class="data" colspan="3">Number of queued messages in database</td>
+  <td class="data" ><%=email.getInfo("DBQUEUED")%></td>
 </tr>
 <tr>
-  <td class="data" colspan="2">Number of queued messages in memory</td>
-  <td class="data" colspan="2"><%=email.getInfo("MEMTASKS")%></td>
+  <td class="data" colspan="3">Number of queued messages in memory</td>
+  <td class="data" ><%=email.getInfo("MEMTASKS")%></td>
 </tr>
 <tr>
-  <td class="data" colspan="2">Number of messages send</td>
-  <td class="data" colspan="2"><%=email.getInfo("NUMBEROFMAILSEND")%></td>
+  <td class="data" colspan="3">Number of messages send</td>
+  <td class="data" ><%=email.getInfo("NUMBEROFMAILSEND")%></td>
 </tr>
 <tr>
-  <td class="data">Show first 500 entry's of the queue</td>
+  <td class="data" colspan="3">Show first 500 entry's of the queue</td>
   <td class="navigate">
-    <a href="email/emailqueue.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="email/emailqueue.jsp" />" ><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 
@@ -70,7 +70,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to home page</td>
 </tr>
 </table>
