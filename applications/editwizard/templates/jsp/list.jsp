@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.44 2003-12-02 14:14:31 michiel Exp $
+     * @version  $Id: list.jsp,v 1.45 2003-12-15 10:24:07 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -120,7 +120,7 @@ int resultsSize;
 Query query = null;
 
 //// do not list anything if search is forced and no searchvalue given
-if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=null && "".equals(listConfig.searchValue)) {
+if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
@@ -136,12 +136,15 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=nul
 } else {
     log.trace("This is not a multilevel. Getting nodes from type " + listConfig.nodePath);
     NodeManager mgr = cloud.getNodeManager(listConfig.nodePath);
-    log.trace("directions: " + listConfig.directions);
+    if (log.isDebugEnabled()) {
+       log.trace("directions: " + listConfig.directions);
+    }
     NodeQuery q = mgr.createQuery();
     Queries.addConstraints(q, listConfig.constraints);
     Queries.addSortOrders(q, listConfig.orderBy, listConfig.directions);
     query = q;
 }
+
 
 
 if (query != null) {
@@ -152,8 +155,9 @@ if (query != null) {
 
 resultsSize = Queries.count(query);
 
-
+if (log.isDebugEnabled()) {
 log.trace("Got " + results.size() + " results");
+}
 
 
 int maxpages   = listConfig.maxpagecount;
@@ -238,8 +242,8 @@ for (int i = 0; i<pagecount && i<maxpages; i++) {
     pages.appendChild(pagenode);
 }
 
-log.trace("Setting xsl parameters");
 java.util.Map params = listConfig.getAttributes();
+
 
 params.put("start",      String.valueOf(start));
 params.put("referrer",   ewconfig.backPage);
@@ -262,6 +266,7 @@ params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
 params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
+
 
 log.trace("Doing the transformation for " + listConfig.template);
 Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
