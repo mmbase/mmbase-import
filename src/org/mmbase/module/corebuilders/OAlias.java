@@ -29,14 +29,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.16 2003-12-17 21:09:03 michiel Exp $
+ * @version $Id: OAlias.java,v 1.17 2004-09-02 10:40:56 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(OAlias.class);
 
-    // alias -> node-number (Integer) 
+    // alias -> node-number (Integer)
     private Cache numberCache = new Cache(128) {
         public String getName()        { return "AliasCache"; }
         public String getDescription() { return "Cache for node aliases"; }
@@ -69,7 +69,7 @@ public class OAlias extends MMObjectBuilder {
         if (nodeNumber == null) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(this);
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);      
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
                 query.setConstraint(constraint);
                 Iterator i = getNodes(query).iterator();
                 if (i.hasNext()) {
@@ -79,7 +79,7 @@ public class OAlias extends MMObjectBuilder {
                     return rtn;
                 } else {
                     numberCache.put(name, NOT_FOUND);
-                    return -1;                
+                    return -1;
                 }
             } catch (SearchQueryException sqe) {
                 log.error(sqe.toString());
@@ -143,7 +143,7 @@ public class OAlias extends MMObjectBuilder {
      *
      * @since MMBase-1.7
      */
-    
+
     public void createAlias(String alias, int number) {
         MMObjectNode node = getNewNode("system");
         node.setValue("name", alias);
@@ -162,4 +162,32 @@ public class OAlias extends MMObjectBuilder {
         super.removeNode(node);
         numberCache.remove(name);
     }
+
+    /**
+     * Called when a remote node is changed.
+     * If a node is changed or newly created, this adds the new or updated alias to the
+     * cache.
+     * @todo Old aliasses are currently not cleared or removed - which means that they may remain
+     * useable for some time after the actual alias is deleted or renamed.
+     * This is because old alias information is no longer available when this call is made.
+     * @since MMBase-1.7
+     * @param machine Name of the machine that changed the node.
+     * @param number Number of the changed node as a <code>String</code>
+     * @param builder type of the changed node
+     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+     * @return always <code>true</code>
+     */
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        if (machine.equals(getTableName())) {
+            if (ctype.equals("c") || ctype.equals("n")) {
+                // should remove aliasses referencing this number from numberCache here
+                MMObjectNode node = getNode(number);
+                numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
+            } else if (ctype.equals("d")) {
+                // should remove aliasses referencing this number from numberCache here
+            }
+       }
+       return super.nodeRemoteChanged(machine, number, builder, ctype);
+    }
+
 }
