@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.229 2003-05-22 11:29:03 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.230 2003-05-23 12:20:26 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -88,7 +88,7 @@ public class MMObjectBuilder extends MMTable {
      * The cache that contains the last X types of all requested objects
      * @since 1.7
      */
-    public static Cache typeCache;
+    private static Cache typeCache;
 
     static {
         typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
@@ -100,6 +100,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * The cache that contains the X last requested nodes
+     * @scope protected
      */
     public static org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
 
@@ -2937,6 +2938,7 @@ public class MMObjectBuilder extends MMTable {
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return always <code>true</code>
      */
+
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
