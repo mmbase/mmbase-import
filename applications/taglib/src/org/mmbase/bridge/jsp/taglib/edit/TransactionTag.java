@@ -12,14 +12,11 @@ package org.mmbase.bridge.jsp.taglib.edit;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
 
-import java.util.HashMap;
-
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.ContextTag;
-import org.mmbase.bridge.jsp.taglib.CloudProvider;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 *
 **/
-public class TransactionTag extends ContextTag implements CloudProvider {
+public class TransactionTag extends ContextTag  {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;     
@@ -51,7 +48,7 @@ public class TransactionTag extends ContextTag implements CloudProvider {
         name = s;
     }
 
-    /* if you don't extend from Sequence:
+    /* if you don't extend from Context:
     public void  registerNode(String id, Node n) {
     }
     
