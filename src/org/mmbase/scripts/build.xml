@@ -79,6 +79,7 @@ NetComponents can be found at:
   <property name="mmdocs.dir" value="${webapp.dir}/mmdocs"/>
   <property name="lib.dir" value="${webapp.dir}/WEB-INF/lib"/>
   <property name="web.dir" value="${webapp.dir}/WEB-INF"/>
+
   <target name="init" depends="check.dir.all">
     <tstamp/>
     <mkdir dir="${build.dir}"/>
@@ -243,7 +244,7 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <target name="lib" description="Create the lib directory"
           depends="init,expand.servlet,expand.xalan,expand.jai,
-                   expand.log4j,expand.junit">
+                   expand.log4j,expand.junit,get.jspsmartupload">
     <mkdir dir="${build.dir}/mmbase/mmbase-webapp"/>
     <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF"/>
     <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
@@ -255,7 +256,8 @@ NetComponents can be found at:
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
-
+    <copy file="${jspsmartupload.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+            
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
       <fileset dir="${source-src.dir}/org/mmbase/scripts/legal"/>
@@ -474,6 +476,7 @@ NetComponents can be found at:
     <echo message="Warning: Missing optional package javax.jai."/>
     <echo message="You can't use the java based Image-Converter without this package,"/> 
     <echo message="you've got to use ImageMagick."/>
+
     <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
     <echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
@@ -566,6 +569,7 @@ NetComponents can be found at:
                 <include name="log/**"/>
                 <include name="security/**"/>
                 <include name="caches.xml"/>
+                <include name="magic.xml" /><!-- used if you switch on 'attachments' -->
                 
                 <!-- the applications we definitly need -->                
                 <include name="applications/CloudSecurity.xml"/>
@@ -626,6 +630,7 @@ NetComponents can be found at:
                 <include name="xerces.jar"/>
                 <include name="xalan.jar"/>
                 <include name="hsqldb.jar"/>
+                <include name="jspsmartupload.jar"/>
             </lib>
             
             <!-- here our config has to be.. -->
@@ -952,7 +957,7 @@ NetComponents can be found at:
     <available property="jai.present"
                file="${download.dir}/${jai.version}.tar.gz"/>
     <available property="jai.expanded"
-               file="${expand.dir}/${jai.version}"/>
+      file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
     <!-- property name="log4j.version" value="1.2.4" /-->
     <property name="log4j.version" value="1.1.3" /> 
@@ -972,6 +977,14 @@ NetComponents can be found at:
                file="${download.dir}/${junit.version}.zip"/>
     <available property="junit.expanded"
                file="${expand.dir}/${junit.version}"/>
+
+    <!-- JSPSmartUpload -->
+    <property name="jspsmartupload.file" value="jspSmartUpload" />
+    <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
+    <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
+    <available property="jspsmartupload.present" file="${jspsmartupload.jar}" />
+
+
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
@@ -1063,7 +1076,26 @@ NetComponents can be found at:
     <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
   </target>
 
+  <!-- Jsp Smartupload is necessary for the editwizards -->
+  <target name="get.jspsmartupload" depends="init,init.get" unless="jspsmartupload.present">
+    <get src="${jspsmartupload.url}"
+         dest="${download.dir}/${jspsmartupload.file}.tar.gz" />
+    <mkdir dir="${expand.dir}/jspsmartupload" />
+    <gunzip src="${download.dir}/${jspsmartupload.file}.tar.gz" dest="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar"/>
+    <untar src="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar" dest="${expand.dir}/jspsmartupload"/>
 
+    <echo file="${expand.dir}/jspsmartupload/manifest.mf">
+Name: jspsmartupload
+Manifest-Version: 1.0
+Created-By: MMBase build ${version}
+Signature-Version: ${version}
+</echo>
+    <jar jarfile="${expand.dir}/jspsmartupload/jspsmartupload.jar"
+         basedir="${expand.dir}/jspsmartupload/jspsmartupload/Web-inf/classes"
+	     includes="com/**"
+	     manifest="${expand.dir}/jspsmartupload/manifest.mf" >
+    </jar>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Clean the download directory                                        -->
