@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.123 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.124 2005-03-01 14:21:55 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -44,7 +44,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     private static int lastRequestId = -2;
 
     // link to cloud context
-    private BasicCloudContext cloudContext = null;
+    private CloudContext cloudContext = null;
 
     // link to typedef object for retrieving type info (builders, etc)
     private TypeDef typedef = null;
@@ -71,11 +71,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud = null;
 
-    // MMBaseCop
     MMBaseCop mmbaseCop = null;
 
-    // User context
-    protected BasicUser userContext = null;
+    protected UserContext userContext = null;
 
     private MultilevelCache multilevelCache; // should be static?
 
@@ -114,20 +112,68 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @param authenticationType authentication type
      * @param loginInfo Map with login credentials
      * @param cloudContext cloudContext of cloud
+     * @throws NotFoundException If MMBase not yet started, or shutting down.
+     * @throws BridgeException   No security could be obtained.
+     * @throws SecurityException  Could not perform login
      */
     BasicCloud(String name, String authenticationType, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
-        this.cloudContext = (BasicCloudContext)cloudContext;
+        this.cloudContext = (BasicCloudContext) cloudContext;
+        init();
+        userContext = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
+        if (userContext == null) {
+            log.debug("Login failed");
+            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
+        }        
+        // end authentication...
+
+        if (userContext.getAuthenticationType() == null) {
+            log.warn("Security implementation did not set 'authentication type' in the user object.");
+        }
+
+        // normally, we want the cloud to read it's context from an xml file.
+        // the current system does not support multiple clouds yet,
+        // so as a temporary hack we set default values
+        this.name = name;
+        description = name;
+    }
+
+    /**
+     * @param name name of cloud
+     * @param authenticationType authentication type
+     * @param loginInfo Map with login credentials
+     * @param cloudContext cloudContext of cloud
+     * @throws NotFoundException If MMBase not yet started, or shutting down.
+     * @throws BridgeException   No security could be obtained.
+     * @throws SecurityException  Could not perform login
+     */
+    BasicCloud(String name, UserContext user, CloudContext cloudContext) {
+        // get the cloudcontext and mmbase root...
+        this.cloudContext = cloudContext;
+        init();
+        userContext = user;
+        if (userContext == null) {
+            throw new java.lang.SecurityException("Login invalid: did not supply user object");
+        }        
+
+        if (userContext.getAuthenticationType() == null) {
+            log.warn("Security implementation did not set 'authentication type' in the user object.");
+        }
+
+        this.name = name;
+        description = name;
+
+    }
+
+    private final void init() {
         MMBase mmb = BasicCloudContext.mmb;
 
-        log.debug("Creating a cloud");
-
         if (! mmb.getState()) {
-            throw new BridgeException("MMBase not yet, or not successfully initialized (check mmbase log)");
+            throw new NotFoundException("MMBase not yet, or not successfully initialized (check mmbase log)");
         }
 
         if (mmb.isShutdown()) {
-            throw new BridgeException("MMBase is shutting down.");
+            throw new NotFoundException("MMBase is shutting down.");
         }
 
         log.debug("Doing authentication");
@@ -138,30 +184,18 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             log.error(message);
             throw new BridgeException(message);
         }
-        org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
-        if (uc == null) {
-            log.debug("Login failed");
-            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
-        }
-        userContext = new BasicUser(mmbaseCop, uc, authenticationType);
-        // end authentication...
-
         log.debug("Setting up cloud object");
         // other settings of the cloud...
         typedef = mmb.getTypeDef();
         locale = new Locale(mmb.getLanguage(), "");
-
-        // normally, we want the cloud to read it's context from an xml file.
-        // the current system does not support multiple clouds yet,
-        // so as a temporary hack we set default values
-        this.name = name;
-        description = name;
 
         // generate an unique id for this instance...
         account = "U" + uniqueId();
 
         // start multilevel cache
         multilevelCache = MultilevelCache.getCache();
+
+
     }
 
     // Makes a node or Relation object based on an MMObjectNode
@@ -258,7 +292,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public NodeManagerList getNodeManagers() {
-        Vector nodeManagers = new Vector();
+        List nodeManagers = new ArrayList();
         for (Enumeration builders = BasicCloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul = (MMObjectBuilder)builders.nextElement();
             if (!bul.isVirtual() && check(Operation.READ, bul.oType)) {
@@ -507,7 +541,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return description;
     }
 
-    public User getUser() {
+    public UserContext getUser() {
         return userContext;
     }
 
@@ -526,7 +560,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return mmbaseCop.getAuthorization().check(userContext.getUserContext(), nodeID, operation);
+        return mmbaseCop.getAuthorization().check(userContext, nodeID, operation);
     }
 
     /**
@@ -535,7 +569,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @param nodeID the node on which to check the operation
     */
     void verify(Operation operation, int nodeID) {
-        mmbaseCop.getAuthorization().verify(userContext.getUserContext(), nodeID, operation);
+        mmbaseCop.getAuthorization().verify(userContext, nodeID, operation);
     }
 
     /**
@@ -547,7 +581,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        return mmbaseCop.getAuthorization().check(userContext.getUserContext(), nodeID, srcNodeID, dstNodeID, operation);
+        return mmbaseCop.getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     /**
@@ -558,7 +592,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     * @param dstNodeID the destination node for this relation
     */
     void verify(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        mmbaseCop.getAuthorization().verify(userContext.getUserContext(), nodeID, srcNodeID, dstNodeID, operation);
+        mmbaseCop.getAuthorization().verify(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     // javadoc inherited
@@ -590,7 +624,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             boolean checked = setSecurityConstraint(query);
 
             if (! checked) {
-                log.warn("Query could not be completely modified by security: Aggregated result might be wrong");
+                log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
             AggregatedResultCache cache = AggregatedResultCache.getCache();
 
@@ -658,7 +692,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 return true;
             } else {
                 if (bquery.queryCheck == null) { // not set already, do it now.
-                    Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                    Authorization.QueryCheck check = auth.check(userContext, query, Operation.READ);
                     if (log.isDebugEnabled()) {
                         log.debug("FOUND security check " + check + " FOR " + query);
                     }
@@ -691,7 +725,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         // get authorization for this call only
 
-        UserContext user = userContext.getUserContext();
         List steps = query.getSteps();
         Step nodeStep = null;
         if (query instanceof NodeQuery) {
@@ -720,7 +753,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                     nodenr = node.getIntValue(pref + ".number");
                 }
                 if (nodenr != -1) {
-                    mayRead = auth.check(user, nodenr, Operation.READ);
+                    mayRead = auth.check(userContext, nodenr, Operation.READ);
                 }
             }
 
