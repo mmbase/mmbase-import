@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.19 2001-10-04 10:44:08 eduard Exp $
+$Id: MMBaseContext.java,v 1.20 2001-10-05 08:49:23 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.19  2001/10/04 10:44:08  eduard
+eduard : tried to fix the problem with the images builder trying to generate url's. This functionality should not be there, or the ServletRequest should be passed tru the builders. It can now work with multiple mmbase's and still generate a valid url with reference to valid servlet.
+
 Revision 1.18  2001/10/03 17:33:42  michiel
 michiel: made some member variable private (in stead of package), added function 'init(configpath, initloggin)', private init functions now need a string
 
@@ -92,7 +95,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.19 $ $Date: 2001-10-04 10:44:08 $
+ * @$Revision: 1.20 $ $Date: 2001-10-05 08:49:23 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -103,6 +106,7 @@ public class MMBaseContext {
     private static String configPath;
     private static String htmlRoot;
     private static String htmlRootUrlPath ="/";
+    private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
 
     /**
@@ -151,53 +155,8 @@ public class MMBaseContext {
             // Init logging.
             initLogging();
 	    
-	    // init the htmlRootUrlPath
-	    {	    	    
-	    	// fetch resource path for the current serletcontext root...
-	    	String contextUrl = convertResourceUrl(servletContext, "/");
-				
-		// fetch resource path for the root serletcontext root...
-		ServletContext rootContext = servletContext.getContext("/");
-		String rootContextUrl = convertResourceUrl(rootContext, "/");
-		
-		if(contextUrl != null && rootContextUrl != null) {
-    	    	    // the beginning of contextUrl is the same as the string rootContextUrl, 
-    	    	    // the left part is the current urlPath on the server...
-		    if(contextUrl.startsWith(rootContextUrl)) {
-		    	// htmlUrl is gonna be filled
-		    	htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
-		    }
-		    else {
-		    	log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
-		    }
-		}
-	    }
-    	    initialized = true;
+            initialized = true;
         }
-    }
-
-    /**
-     * converts a url with a given context, to the resource url.
-     * @param servletContext 
-     * @param url A url to the resource, which must exist
-     * @return null on failure, otherwise a resource url.
-     */
-    private static String convertResourceUrl(ServletContext servletContext, String url) {
-    	// return null on failure
-    	if(servletContext == null) return null;
-	
-    	try {
-            java.net.URL transformed = servletContext.getResource(url);
-            if(transformed == null){
-            	servletContext.log("no resource is mapped to the pathname: '"+url+"'");
-                return null;
-            }
-            return transformed.toString();
-      	}
-        catch (java.net.MalformedURLException e) {
-            servletContext.log("could not convert the url: '" + e + "'(error converting)", e);
-        }
-        return null;
     }
 
     /**
@@ -490,6 +449,32 @@ public class MMBaseContext {
         }
         return outputFile;
     }
+
+
+    /**
+     * converts a url with a given context, to the resource url.
+     * @param servletContext 
+     * @param url A url to the resource, which must exist
+     * @return null on failure, otherwise a resource url.
+     */
+    private static String convertResourceUrl(ServletContext servletContext, String url) {
+    	// return null on failure
+    	if(servletContext == null) return null;
+	
+    	try {
+            java.net.URL transformed = servletContext.getResource(url);
+            if(transformed == null){
+            	servletContext.log("no resource is mapped to the pathname: '"+url+"'");
+                return null;
+            }
+            return transformed.toString();
+      	}
+        catch (java.net.MalformedURLException e) {
+            servletContext.log("could not convert the url: '" + e + "'(error converting)", e);
+        }
+        return null;
+    }
+
     
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under 
@@ -499,11 +484,37 @@ public class MMBaseContext {
      * @deprecated  should not be needed, and this information should be requested from the ServletRequest
      */
     public synchronized static String getHtmlRootUrlPath() {
-        if (!initialized) {
-            String message = "The init method should be called first.";
-            System.err.println(message);
-            throw new RuntimeException(message);
-        }
+        if (!htmlRootUrlPathInitialized) {
+            if (! initialized) {
+                String message = "The init method should be called first.";
+                System.err.println(message);
+                throw new RuntimeException(message);
+            }
+            if (sx == null) {
+                htmlRootUrlPathInitialized = true; 
+                return htmlRootUrlPath;
+            }
+            // init the htmlRootUrlPath
+            // fetch resource path for the current serletcontext root...
+            String contextUrl = convertResourceUrl(sx, "/");
+            
+            // fetch resource path for the root serletcontext root...
+            ServletContext rootContext = sx.getContext("/");
+            String rootContextUrl = convertResourceUrl(rootContext, "/");
+            
+            if(contextUrl != null && rootContextUrl != null) {
+                // the beginning of contextUrl is the same as the string rootContextUrl, 
+                // the left part is the current urlPath on the server...
+                if(contextUrl.startsWith(rootContextUrl)) {
+                    // htmlUrl is gonna be filled
+                    htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
+                }
+                else {
+                    log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
+                }
+            }
+	    htmlRootUrlPathInitialized = true;                      
+        } 
         return htmlRootUrlPath;
     }
 }
