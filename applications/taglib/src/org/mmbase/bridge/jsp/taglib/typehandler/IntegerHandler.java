@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.13 2003-08-07 14:35:21 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.14 2003-08-08 12:11:12 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -211,7 +211,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                 return eh.whereHtmlInput(field);
             }
         }
-        return null;
+        return super.whereHtmlInput(field);
     }
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {

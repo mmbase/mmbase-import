@@ -24,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.17 2003-08-07 14:35:21 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.18 2003-08-08 12:11:12 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -144,13 +144,7 @@ public class NodeHandler extends IntegerHandler {
             String id = prefix(fieldName + "_search");
             if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
                 return null;
-            } else {
-                String search =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
-                if (search == null || "".equals(search)) {
-                    return null;
-                }
-                return "( [" + fieldName + "] =" + search + ")";
-            }
+            } 
         }
         return super.whereHtmlInput(field);
     }
@@ -161,9 +155,7 @@ public class NodeHandler extends IntegerHandler {
             String id = prefix(fieldName + "_search");
             if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
                 return null;
-            } else {
-                return super.whereHtmlInput(field, query);
-            }
+            } 
         }                
         return super.whereHtmlInput(field, query);
     }
