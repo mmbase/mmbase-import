@@ -59,6 +59,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static final int TYPE_TYPE      = 4;
     private static final int TYPE_GUITYPE   = 5;
 
+    private static final int TYPE_UNSET     = 100;
+
     // input and useinput produces pieces of HTML
     // very handy if you're creating an editors, but well yes, not very elegant.
     private static final int TYPE_INPUT    = 10;
@@ -66,7 +68,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static final int TYPE_SEARCHINPUT = 12;
     private static final int TYPE_USESEARCHINPUT = 13;
 
-    private int type;
+    private int type = TYPE_UNSET;
 
     public void setType(String t) throws JspTagException {
         t = getAttributeValue(t);
@@ -93,6 +95,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
+    }
+    private String options;
+    public void setOptions(String o) throws JspTagException {
+        options = getAttributeValue(o);        
     }
 
     public int doStartTag() throws JspTagException{
@@ -362,59 +368,74 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 }
                 show = "<input type=\"hidden\" name=\"" + prefix(field.getName()) + "\" value=\"" + cal.getTime().getTime()/1000 + "\" />";
                 // give also present value, this makes it possible to see if user changed this field.
-                show +=  "<select name=\"" + prefix(field.getName() + "_day") + "\">\n";
-                for (int i = 1; i <= 31; i++) {
-                    if (cal.get(Calendar.DAY_OF_MONTH) == i) {
-                        show += "  <option selected=\"selected\">" + i + "</option>\n";
-                    } else {
-                        show += "  <option>" + i + "</option>\n";
+
+                
+                if (options == null || options.indexOf("date") > -1) {
+                    show +=  "<select name=\"" + prefix(field.getName() + "_day") + "\">\n";
+                    for (int i = 1; i <= 31; i++) {
+                        if (cal.get(Calendar.DAY_OF_MONTH) == i) {
+                            show += "  <option selected=\"selected\">" + i + "</option>\n";
+                        } else {
+                            show += "  <option>" + i + "</option>\n";
+                        }
                     }
-                }
-                show += "</select>-";
-                show += "<select name=\"" + prefix(field.getName() + "_month") + "\">\n";
-                for (int i = 1; i <= 12; i++) {
-                    if (cal.get(Calendar.MONTH) == (i - 1)) {
-                        show += "  <option selected=\"selected\">" + i + "</option>\n";
-                    } else {
-                        show += "  <option>" + i + "</option>\n";
+                    show += "</select>-";
+                    show += "<select name=\"" + prefix(field.getName() + "_month") + "\">\n";
+                    for (int i = 1; i <= 12; i++) {
+                        if (cal.get(Calendar.MONTH) == (i - 1)) {
+                            show += "  <option selected=\"selected\">" + i + "</option>\n";
+                        } else {
+                            show += "  <option>" + i + "</option>\n";
+                        }
                     }
+                    show += "</select>-";
+                    show += "<input type =\"text\" size=\"5\" name=\"" + prefix(field.getName() + "_year") + "\" " +
+                        "value=\"" + cal.get(Calendar.YEAR) + "\" />";
+                } else {
+                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_day") + "\" value=\"" + cal.get(Calendar.DAY_OF_MONTH) + "\" />";
+                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_month") + "\" value=\"" + cal.get(Calendar.MONTH) + "\" />";
+                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"" + cal.get(Calendar.YEAR) + "\" />";
                 }
-                show += "</select>-";
-                show += "<input type =\"text\" size=\"5\" name=\"" + prefix(field.getName() + "_year") + "\" " +
-                    "value=\"" + cal.get(Calendar.YEAR) + "\" />";
-                show += "&nbsp;&nbsp;<select name=\"" + prefix(field.getName() + "_hour") + "\">\n";
-                for (int i = 0; i <= 23; i++) {
-                    if (cal.get(Calendar.HOUR_OF_DAY) == i) {
+                if (options == null || options.indexOf("time") > -1) {
+                    show += "&nbsp;&nbsp;<select name=\"" + prefix(field.getName() + "_hour") + "\">\n";
+                    for (int i = 0; i <= 23; i++) {
+                        if (cal.get(Calendar.HOUR_OF_DAY) == i) {
                         show += "  <option selected=\"selected\">";
-                    } else {
-                        show += "  <option>";
+                        } else {
+                            show += "  <option>";
+                        }
+                        if (i<10) show += "0";
+                        show += i + "</option>\n";
                     }
-                    if (i<10) show += "0";
-                    show += i + "</option>\n";
-                }
-                show += "</select> h :";
-                show += "<select name=\"" + prefix(field.getName() + "_minute") + "\">\n";
-                for (int i = 0; i <= 59; i++) {
-                    if (cal.get(Calendar.MINUTE) == i) {
-                        show += "  <option selected=\"selected\">";
-                    } else {
-                        show += "  <option>";
+                    show += "</select> h :";
+                
+                    show += "<select name=\"" + prefix(field.getName() + "_minute") + "\">\n";
+                    for (int i = 0; i <= 59; i++) {
+                        if (cal.get(Calendar.MINUTE) == i) {
+                            show += "  <option selected=\"selected\">";
+                        } else {
+                            show += "  <option>";
+                        }
+                        if (i< 10) show += "0";
+                        show += i + "</option>\n";
                     }
-                    if (i< 10) show += "0";
-                    show += i + "</option>\n";
-                }
-                show += "</select> m :";
-                show += "<select name=\"" + prefix(field.getName() + "_second") + "\">\n";
-                for (int i = 0; i <= 59; i++) {
-                    if (cal.get(Calendar.SECOND) == i) {
-                        show += "  <option selected=\"selected\">";
-                    } else {
-                        show += "  <option>";
+                    show += "</select> m :";
+                    show += "<select name=\"" + prefix(field.getName() + "_second") + "\">\n";
+                    for (int i = 0; i <= 59; i++) {
+                        if (cal.get(Calendar.SECOND) == i) {
+                            show += "  <option selected=\"selected\">";
+                        } else {
+                            show += "  <option>";
                     }
-                    if (i< 10) show += "0";
-                    show += i + "</option>\n";
+                        if (i< 10) show += "0";
+                        show += i + "</option>\n";
+                    }
+                    show += "</select> s";
+                } else {
+                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_hour") + "\" value=\"" + cal.get(Calendar.HOUR_OF_DAY) + "\" />";
+                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"" + cal.get(Calendar.MINUTE) + "\" />";
+                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"" + cal.get(Calendar.SECOND) + "\" />";
                 }
-                show += "</select> s";
                 break;
             }
         case Field.TYPE_FLOAT:
