@@ -24,8 +24,6 @@
   <mm:field name="postingsperpage" id="pagesize" write="false"/>
 </mm:nodefunction>
 
-<mm:write referid="pagesize"/>
-
 <mm:notpresent referid="pagesize">
 <mm:import id="pagesize">20</mm:import>
 </mm:notpresent>
@@ -87,7 +85,7 @@
 </table>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%" align="center">
-  		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
+  		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize,imagecontext">
 		  <mm:first>
 			<tr><th width="25%" align="left"><mm:write referid="mlg_Member"/></th><th align="left"><mm:write referid="mlg_Topic"/>: <mm:field name="subject" /></th></tr>
 		  </mm:first>
