@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+<status>active</status>
+<version>4</version>
+<description>functions for the package builder</description>
+
+
+		<function name="getProjectBundleTargets">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getProjectBundleTargets</method>
+			<param name="name" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+				<field name="depends" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getProjectPackageTargets">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getProjectPackageTargets</method>
+			<param name="name" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+				<field name="depends" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getProjectTargets">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getProjectTargets</method>
+			<param name="name" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+				<field name="depends" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="packageTarget">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>packageTarget</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newversion" type="int" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="getPackageValue">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getPackageValue</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="name" type="String" description="" />
+			<return type="String">
+			</return>
+		</function>
+
+
+		<function name="setPackageValue">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageValue</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="newvalue" type="String" description="" />
+			<return type="String">
+			</return>
+		</function>
+
+
+		<function name="getProjectTargets">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getProjectTargets</method>
+			<param name="name" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+				<field name="depends" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="addBundleTarget">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addBundleTarget</method>
+			<param name="project" type="String" description="" />
+			<param name="newtargetname" type="String" description="" />
+			<param name="newtargettype" type="String" description="" />
+			<param name="newtargetpath" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageTarget">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageTarget</method>
+			<param name="project" type="String" description="" />
+			<param name="newtargetname" type="String" description="" />
+			<param name="newtargettype" type="String" description="" />
+			<param name="newtargetpath" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageDepends">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageDepends</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newpackageid" type="String" description="" />
+			<param name="newversion" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delPackageDepends">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>delPackageDepends</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="delpackageid" type="String" description="" />
+			<param name="delversion" type="String" description="" />
+			<param name="delversionmode" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setPackageDepends">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageDepends</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="packageid" type="String" description="" />
+			<param name="oldversion" type="String" description="" />
+			<param name="oldversionmode" type="String" description="" />
+			<param name="newversion" type="String" description="" />
+			<param name="newversionmode" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageDepends">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageDepends</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newpackageid" type="String" description="" />
+			<param name="newversion" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="setPackageLicenseVersion">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageLicenseVersion</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newlicenseversion" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="setPackageLicenseType">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageLicenseType</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newlicensetype" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="setPackageLicenseName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageLicenseName</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newlicensename" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="setPackageInitiator">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageInitiator</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldname" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="oldcompany" type="String" description="" />
+			<param name="newcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageInitiator">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageInitiator</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="newcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delPackageInitiator">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>delPackageInitiator</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldname" type="String" description="" />
+			<param name="oldcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setPackageDeveloper">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageDeveloper</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldname" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="oldcompany" type="String" description="" />
+			<param name="newcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageDeveloper">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageDeveloper</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="newcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delPackageDeveloper">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>delPackageDeveloper</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldname" type="String" description="" />
+			<param name="oldcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+
+		<function name="setPackageContact">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageContact</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldreason" type="String" description="" />
+			<param name="newreason" type="String" description="" />
+			<param name="oldname" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="oldemail" type="String" description="" />
+			<param name="newemail" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageContact">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageContact</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newreason" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="newemail" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delPackageContact">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>delPackageContact</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldreason" type="String" description="" />
+			<param name="oldname" type="String" description="" />
+			<param name="oldemail" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setPackageSupporter">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageSupporter</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldcompany" type="String" description="" />
+			<param name="newcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addPackageSupporter">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addPackageSupporter</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delPackageSupporter">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>delPackageSupporter</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="oldcompany" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="delIncludedPackage">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>delIncludedPackage</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="id" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addTargetPackage">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addTargetPackage</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newpackage" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="haveTargetLog">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>haveTargetLog</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<return type="Node">
+				<field name="log" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getProjectTargetInfo">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getProjectTargetInfo</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<return type="Node">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+
+                <function name="getTargetPackageDepends">
+                        <description>
+                        </description>
+                        <type>class</type>
+                        <class>org.mmbase.applications.packages.projects.gui.Controller</class>
+                        <method>getTargetPackageDepends</method>
+                        <param name="project" type="String" description="" />
+                        <param name="target" type="String" description="" />
+                        <return type="NodeList">
+                        </return>
+                </function>
+
+
+		<function name="getTargetPeople">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getTargetPeople</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="type" type="String" description="" />
+			<param name="subtype" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+		<function name="getTargetIncludedPackages">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getTargetIncludedPackages</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getProjects">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getProjects</method>
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+				<field name="path" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="setIncludedVersion">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setIncludedVersion</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="id" type="String" description="" />
+			<param name="newversion" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="setPackageDescription">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageDescription</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newdescription" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="setPackageName">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageName</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+
+		<function name="setPackageMaintainer">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>setPackageMaintainer</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newmaintainer" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="addProject">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>addProject</method>
+			<param name="newprojectname" type="String" description="" />
+			<param name="newprojectpath" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+		<function name="getCreators">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getCreators</method>
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+				<field name="value" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getTargetPackageSteps">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packages.projects.gui.Controller</class>
+			<method>getTargetPackageSteps</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="logid" type="int" description="">-1</param>
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+</functionset>
