@@ -17,14 +17,43 @@
         <mm:node number="$portal" notfound="skipbody">
 	  <mm:field name="name" />
         </mm:node> - <mm:node number="$page" notfound="skipbody"><mm:field name="title" /></mm:node><% if(userFullName != null) { %> - Welcome <%= userFullName %> <% } %>
-      </title>
-     <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/launchcenter.js" />"><!-- help IE --></script> 
-     <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/navi.js" />"><!-- help IE --></script> 
-     <meta http-equiv="imagetoolbar" content="no" />
+      </title><%--
+			
+			I made this hack to be able to add javascript as well. Must be changed
+			Ernst Bunders
+			
+     --%><script type="text/javascript" language="javascript" src="<mm:url page="/scripts/launchcenter.js" />"><!-- help IE --></script> 
+     <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/navi.js" />"><!-- help IE --></script>
+<%
+		if(pageContext.findAttribute("jScripts")!=null){
+			Iterator jScripts=((List)pageContext.findAttribute("jScripts")).iterator();
+				while(jScripts.hasNext()){
+				  out.println("<script type=\"text/javascript\" language=\"javascript\" src=\""+(String)jScripts.next()+"\" ></script>");
+				}
+			}
+			
+%>
+		 <meta http-equiv="imagetoolbar" content="no" />
     <%-- assuming this page is only included from index.jsp, and this site only deployed on www.mmbase.org --%>
      <%-- base href="http://www.mmbase.org/index.jsp" --%>
    </head>
-<body>
+<%
+	 String onLoadEvents="";
+		 if(pageContext.findAttribute("bLoadEvs")!=null){
+			 Iterator bLoadEvs=((List)pageContext.findAttribute("bLoadEvs")).iterator();		 
+			 StringBuffer allEvents=new StringBuffer();
+
+			 while(bLoadEvs.hasNext()){
+			   allEvents.append((String)bLoadEvs.next());
+				 allEvents.append(" ; ");
+			 }
+			 while(allEvents.indexOf("\"")>-1){
+         allEvents.setCharAt(allEvents.indexOf("\""),'\'');			 																 
+			 }
+			 onLoadEvents=allEvents.toString();
+		 }
+%>
+<body <%=(!"".equals(onLoadEvents)?"onLoad=\""+onLoadEvents+"\"":"")%> >
 <%@ include file="nav.jsp" %>
 <%-- tables in tables in tables!! Why?! --%>
 <table border="0" cellspacing="0" cellpadding="0" class="content" style="width: 100%">
