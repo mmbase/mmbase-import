@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServersProbe.java,v 1.9 2002-06-19 19:17:30 michiel Exp $
+$Id: MMServersProbe.java,v 1.10 2003-03-04 14:12:22 nico Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2002/06/19 19:17:30  michiel
+michiel: cleaning project: made the interval between probings configurable. Removed some unused variables.
+
 Revision 1.8  2001/04/10 12:20:38  michiel
 michiel: new logging system.
 
@@ -36,21 +39,12 @@ Revision 1.2  2000/02/24 14:08:20  wwwtech
 */
 package org.mmbase.module.builders;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.9 $ $Date: 2002-06-19 19:17:30 $ 
+ * @version0 $Revision: 1.10 $ $Date: 2003-03-04 14:12:22 $ 
  */
 public class MMServersProbe implements Runnable {
 

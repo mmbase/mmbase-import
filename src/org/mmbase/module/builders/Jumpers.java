@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.Cache;
 

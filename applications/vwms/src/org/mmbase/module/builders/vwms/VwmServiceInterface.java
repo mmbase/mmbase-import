@@ -9,10 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
-import java.util.*;
-import java.net.*;
-import java.sql.*;
-
 /**
  * Interface for VWMs that handle file servicing.
  * This interface is used for VWMs that need to be invoked by the scancache module whenever a file is to
@@ -24,8 +20,6 @@ import java.sql.*;
  * @author Pierre van Rodoen (javadocs)
  * @version 5 Apr 2001
  */
-import org.mmbase.module.builders.*;
-
 public interface VwmServiceInterface extends VwmInterface {
 
     /**

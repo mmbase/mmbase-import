@@ -9,15 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.protocoldrivers;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
 /**
- *
  * @rename Jini
-  * @version 27 Mar 1997
+ * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class jini implements ProtocolDriver {

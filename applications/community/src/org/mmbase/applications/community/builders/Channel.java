@@ -10,12 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.builders;
 
-import java.net.*;
 import java.util.*;
 import java.io.*;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.builders.Message;
 import org.mmbase.module.community.*;
 import org.mmbase.util.*;

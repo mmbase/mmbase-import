@@ -10,10 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
-import java.sql.*;
-import javax.servlet.http.*;
 
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;

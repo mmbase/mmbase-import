@@ -11,7 +11,6 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
-import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 
 import org.mmbase.util.*;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.*;
  * also be defined by a builder (?).
  *
  * @author Rob Vermeulen
- * @version $Id: Cameras.java,v 1.4 2002-11-25 13:09:21 pierre Exp $
+ * @version $Id: Cameras.java,v 1.5 2003-03-04 14:12:22 nico Exp $
  */
 public class Cameras extends MMObjectBuilder implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(Cameras.class.getName());

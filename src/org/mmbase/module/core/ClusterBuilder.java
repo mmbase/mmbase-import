@@ -11,8 +11,6 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import java.sql.*;
-import org.mmbase.module.*;
-import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
@@ -40,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.30 2003-02-20 13:46:19 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.31 2003-03-04 14:19:01 nico Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 

@@ -10,13 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import java.sql.*;
 import java.io.*;
 import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.mmbase.module.*;
-import org.mmbase.module.database.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,11 +21,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.32 2002-10-24 15:02:22 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.33 2003-03-04 14:19:00 nico Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.32 $ $Date: 2002-10-24 15:02:22 $
+ * @$Revision: 1.33 $ $Date: 2003-03-04 14:19:00 $
  */
 public class MMBaseContext {
     private static Logger log;

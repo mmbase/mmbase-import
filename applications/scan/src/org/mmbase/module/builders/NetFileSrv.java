@@ -10,13 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.sql.*;
 
-import org.mmbase.module.database.*;
 import org.mmbase.module.builders.vwms.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
 
 /**
  * The NetFileServ builder contains information on services available to NetFile objects.
