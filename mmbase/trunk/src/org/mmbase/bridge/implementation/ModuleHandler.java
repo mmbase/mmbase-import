@@ -17,7 +17,10 @@ import java.util.*;
  * ModuleHandler
  * @author Rob Vermeulen
  */
-public class ModuleHandler implements Module, InvocationHandler {
+public class ModuleHandler implements Module {
+    //removed InvocationHandler because this is jdk1.3, and MMBase requires 1.2
+    //
+    //, InvocationHandler {
     // link to cloud context
     private CloudContext cloudContext = null;
     private org.mmbase.module.Module mmbase_module;
@@ -45,9 +48,11 @@ public class ModuleHandler implements Module, InvocationHandler {
             useintf = new Class[] {Module.class};
         }
         System.out.println("creating proxy for : "+mod.getName()+" = "+useintf);
-        return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
-                                      useintf,
-                                      new ModuleHandler(mod,cloudcontext));
+        //removed this because it causes errors on compiling with JDK1.2
+        //        return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
+        //                              useintf,
+        //                              new ModuleHandler(mod,cloudcontext));
+        return null;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
