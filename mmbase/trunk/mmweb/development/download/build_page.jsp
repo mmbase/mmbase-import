@@ -8,7 +8,7 @@
 <mm:import externid="dir" jspvar="dir" />
 
 <h2><mm:write referid="dir" /></h2>
-<% File baseDir = new File("/home/nightlybuild/builds"); %>
+<% File baseDir = new File("/home/mmweb/nightly/builds"); %>
 
 <%! class DirSorter implements Comparator {
      public int compare(Object o1, Object o2) {
