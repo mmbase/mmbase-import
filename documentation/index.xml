@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.45 2004-02-13 12:06:09 henk Exp $</edition>
+    <edition>$Id: index.xml,v 1.46 2004-02-16 17:27:25 henk Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -91,13 +91,18 @@
         id="installationorion" url="install/orion-1.x.html">HTML</ulink>)</para>
       </listitem>
 
-	<listitem>
+	  <listitem>
         <!-- external documentation -->
-        <para>Installation instructions for Red Hat Linux + Tomcat + MySQL + Apache (<ulink
+        <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
         id="installationredhatlinux" url="http://tldp.org/HOWTO/MMBase-Inst-HOWTO/index.html">HTML</ulink>)</para>
       </listitem>
 
-
+	  <listitem>
+        <!-- external documentation -->
+        <para>Installation instructions for 1.5.x under Debian GNU / Linux "woody" + Tomcat + MySQL (<ulink
+        id="installationdebiangnulinux" url="http://tldp.org/HOWTO/MMBase.html">HTML</ulink>)</para>
+      </listitem>
+	  
       <listitem>
         <para>MMBase configuration documentation (<ulink id="configuration"
         url="administrators/configuration.html">HTML</ulink>, <ulink
