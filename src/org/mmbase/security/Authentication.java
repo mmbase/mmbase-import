@@ -62,8 +62,8 @@ public abstract class Authentication {
     /** 
      *	The method returns the Rank of a UserContext
      *	@param usercontext The UserContext of which we want to know the rights
-     *	@return The rank of the userContext
+     *	@return <code>true</code> when valid, otherwise <code>false</code>
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */        
-    public abstract Rank getRank(UserContext usercontext) throws org.mmbase.security.SecurityException;   
+    public abstract boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException;   
 }

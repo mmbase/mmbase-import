@@ -59,7 +59,7 @@ public class OwnerAuthorization extends Authorization {
         boolean permitted = false;
 
         // if we are admin, then everything is permitted as well....
-        if(manager.getAuthentication().getRank(user) == Rank.ADMIN) {
+        if(user.getRank() == Rank.ADMIN) {
             log.debug("user admin has always all rights..");
             return true;
         }
@@ -69,7 +69,7 @@ public class OwnerAuthorization extends Authorization {
             case Operation.CREATE_INT:
 	    // nah, we always except links from other nodes.....		
             case Operation.LINK_INT:            	
-            	permitted = !(manager.getAuthentication().getRank(user) == Rank.ANONYMOUS);
+            	permitted = !(user.getRank() == Rank.ANONYMOUS);
             	break;
     	    // nah, we may always view other nodes.,....		
             case Operation.READ_INT:         
@@ -81,7 +81,7 @@ public class OwnerAuthorization extends Authorization {
             case Operation.WRITE_INT:
             case Operation.CHANGECONTEXT_INT:
             	// we are logged in, check if we may edit this node,....
-            	if(manager.getAuthentication().getRank(user) != Rank.ANONYMOUS) {
+            	if(user.getRank() != Rank.ANONYMOUS) {
                     MMObjectNode node = getMMNode(nodeNumber);
                     String ownerName = node.getStringValue("owner");
     	    	    log.debug("Owner of checking field is:'" + ownerName + "' and user is '" + user.getIdentifier() + "'");

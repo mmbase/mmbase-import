@@ -28,7 +28,7 @@ public class NoAuthentication extends Authentication {
     /** 
      * this method does nothing..
      */        
-    public Rank getRank(UserContext usercontext) throws org.mmbase.security.SecurityException {
-    	return Rank.ANONYMOUS;
-    }       
+    public boolean isValid(UserContext usercontext) throws org.mmbase.security.SecurityException {
+    	return true;
+    }
 }

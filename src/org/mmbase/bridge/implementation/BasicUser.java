@@ -27,14 +27,17 @@ public class BasicUser implements User {
     }
     
     public String getRank() {
-    	return securityManager.getAuthentication().getRank(usercontext).toString();
+    	if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
+    	return usercontext.getRank().toString();
     }
     
     public String getIdentifier() {
+    	if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
     	return usercontext.getIdentifier();
     }
     
-    UserContext getUserContext(){
+    UserContext getUserContext() {
+    	// if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
     	return usercontext;
     }
 }
