@@ -5,7 +5,7 @@
 %>
 <mm:import externid="url">index_users.jsp</mm:import>
 <mm:import externid="location" />
-<mm:import externid="parameters">location</mm:import>
+<mm:import externid="parameters">location,language</mm:import>
 
 <html>
 <head>

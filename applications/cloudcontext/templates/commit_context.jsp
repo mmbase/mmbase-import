@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@include file="settings.jsp"
 %><%@include file="import.jsp" %>
-
+<mm:content language="$language">
 <mm:import externid="context" required="true" />
 
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
@@ -34,3 +34,4 @@
    <%@include file="context.div.jsp" %>
    </mm:node>
   </mm:cloud>
+</mm:content>

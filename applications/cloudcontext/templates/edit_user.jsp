@@ -12,6 +12,5 @@
 
  <h1><mm:field name="gui()" /></h1>
   <%@include file="edit_user.form.jsp" %>
-
    </mm:node>
   </mm:cloud>
