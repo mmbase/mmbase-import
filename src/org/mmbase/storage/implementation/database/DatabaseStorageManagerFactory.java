@@ -37,7 +37,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.19 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.20 2005-02-09 22:37:23 eduard Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -241,7 +241,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 Connection con = null;
                 try {
                     con = dataSource.getConnection();
-                    databaseResourcePath = lookup.getResourcePath(con.getMetaData());
+                    DatabaseMetaData metadata = con.getMetaData();
+                    databaseResourcePath = lookup.getResourcePath(metadata);
+                    if(databaseResourcePath == null) {
+                        // TODO: ask the lookup for a string containing all information on which the lookup could verify and display this instead of the classname
+                        throw new StorageConfigurationException("No filter found in " + lookup.getFileName() + " for driver class:" + metadata.getConnection().getClass().getName() + "\n");
+                    }                    
                 } catch (SQLException sqle) {
                     throw new StorageInaccessibleException(sqle);
                 } finally {
