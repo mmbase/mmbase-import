@@ -30,7 +30,7 @@
 <!ATTLIST optionlist optioncontent CDATA #IMPLIED >
 <!ATTLIST optionlist include CDATA #IMPLIED >
 
-<!ELEMENT option ( #PCDATA ) >
+<!ELEMENT option ( #PCDATA | prompt )* >
 <!ATTLIST option id CDATA  #REQUIRED >
 
 <!ELEMENT query ( object* ) >
