@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.74 2003-05-04 11:48:02 kees Exp $
+ * @version $Id: Images.java,v 1.75 2003-05-05 08:33:18 kees Exp $
  */
 public class Images extends AbstractImages {
 
@@ -534,7 +534,7 @@ public class Images extends AbstractImages {
         synchronized(imageRequestTable) {
             req = (ImageRequest) imageRequestTable.get(ckey);
             if (req != null) {
-                log.info("ConvertImage: a conversion in progress (" + ckey + ")...  (requests="+ ( req.count() + 1) + ")");
+                log.info("ConvertImage: a conversion is already in progress (" + ckey + ")...  (requests="+ ( req.count() + 1) + ")");
             } else {
                 req = new ImageRequest(objectId, ckey, params, inputPicture);
                 imageRequestTable.put(ckey,req);
