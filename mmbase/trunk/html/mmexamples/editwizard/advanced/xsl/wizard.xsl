@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.1 2002-07-15 12:23:29 michiel Exp $
+  @version   $Id: wizard.xsl,v 1.2 2002-07-19 14:19:20 michiel Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -12,24 +12,17 @@
 
   <!-- The form-content is the lay-out of the page. You can make this different, but don't forget to add the elements present in this one -->
   <xsl:template name="formcontent">
-    <table>
-      <xsl:call-template name="superhead" />       
+    <table class="body">
+      <xsl:call-template name="title" />
+      <xsl:call-template name="subtitle" />
       <tr>
-        <td />
-        <td>
-          <span class="head">
-            <xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-          <table>
-          <xsl:apply-templates select="/*/steps-validator" />
+        <td class="mysteps">
+          <table width="100%">
+            <xsl:apply-templates select="/*/steps-validator" />
           </table>
         </td>
-        <td valign="top">
-          <table>
+        <td valign="top" width="100%">
+          <table width="100%">
             <xsl:apply-templates select="form[@id=/wizard/curform]" />
           </table>
         </td>
@@ -40,16 +33,31 @@
   <xsl:template name="steps">
     <tr>
       <td>
-        <!-- all steps -->
         <xsl:for-each select="step">
-          <p>
-            <xsl:call-template name="stepbutton" />
+          <p class="step">
+            <xsl:call-template name="steptemplate" />
           </p>
         </xsl:for-each>
       </td>
     </tr>
   </xsl:template>
 
+  <xsl:template name="step">
+    <a>
+      <xsl:call-template name="stepaattributes" />
+      <xsl:call-template name="prompt_step" />
+      </a><br />
+    <xsl:value-of select="/*/form[@id=current()/@form-schema]/title" />
+  </xsl:template>
+
+  <xsl:template name="buttons">
+    <tr>
+      <td class="mybuttons">
+        <xsl:call-template name="cancelbutton" /><br />
+        <xsl:call-template name="savebutton" />
+      </td>
+    </tr>    
+  </xsl:template>
 
 
 </xsl:stylesheet>
