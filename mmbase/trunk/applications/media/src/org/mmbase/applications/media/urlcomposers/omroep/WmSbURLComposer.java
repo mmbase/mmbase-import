@@ -9,21 +9,17 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
-import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
-import org.mmbase.module.core.*;
-import java.util.*;
-import java.net.*;
-import java.text.*;
+
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.5 2003-07-15 12:26:37 vpro Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.6 2003-07-15 12:36:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
-  
+
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl");
     }
