@@ -32,6 +32,7 @@ import org.mmbase.util.logging.Logging;
 public abstract class CloudReferrerTag extends BodyTagSupport {
 	
     private static Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
+
     private static CloudContext cloudContext;
 
     private CloudProvider cloudTag = null;
@@ -71,16 +72,16 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
 
         CloudProvider cTag = (CloudProvider) findAncestorWithClass((Tag)this, cloudClass); 
         if (cTag == null) {
-            throw new JspTagException ("Could not find parent cloud");  
+            throw new JspTagException ("Could not find parent CloudProvider");  
         }
 
         if ("".equals(cloudId)) cloudId = null;
 
-        if (id != null) { // search further, if necessary
+        if (cloudId != null) { // search further, if necessary
             while (cTag.getId() != cloudId) {
                 cTag = (CloudProvider) findAncestorWithClass((Tag)cTag, cloudClass);
                 if (cTag == null) {
-                    throw new JspTagException ("Could not find parent with id " + cloudId);  
+                    throw new JspTagException ("Could not find parent CloudProvider with id " + cloudId);  
                 }
             }
             
