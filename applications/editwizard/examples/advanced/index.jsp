@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.25 2004-02-27 13:35:17 gerard Exp $
+    @version  $Id: index.jsp,v 1.26 2004-03-16 17:30:59 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -38,7 +38,7 @@
    <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
   <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
   <mm:import id="templates">/templates</mm:import><!-- unused now -->
-  <mm:import id="jsps">/mmbase/edit/wizard/jsp/</mm:import>
+  <mm:import id="jsps">/mmbase/edit/wizard/jsp</mm:import>
   <mm:import id="pagelength">10</mm:import>
   <table class="body">
     <tr><td class="left" /><td>
@@ -66,7 +66,7 @@
   </p>
   <table class="listcanvas">
    <tr><td>
-        <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+        <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
            <mm:param name="wizard">tasks/people</mm:param>
            <mm:param name="nodepath">people</mm:param>
            <mm:param name="fields">number,firstname,lastname</mm:param>
@@ -74,7 +74,7 @@
            <mm:param name="directions">down</mm:param>
            </mm:url>">Person test</a>
   <!-- show how to jump to wizard.jsp directly -->
-  (<a href="<mm:url referids="referrer,pagelength" page="${jsps}wizard.jsp">
+  (<a href="<mm:url referids="referrer,pagelength" page="$jsps/wizard.jsp">
             <mm:param name="wizard">tasks/people</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>">Create</a>)
@@ -89,7 +89,7 @@
   </tr>
 
    <tr><td>
-        <form action="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp" />" method="post">
+        <form action="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp" />" method="post">
            <select name="searchfields">
                <option value="firstname">First name</option>
                <option value="lastname">Last name</option>
@@ -112,10 +112,10 @@
 
   <tr><td>
    <form id="searchimage">
-   <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+   <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
            <mm:param name="wizard">tasks/imageupload</mm:param>
            <mm:param name="nodepath">images</mm:param>
-           <mm:param name="fields">title,owner</mm:param>
+           <mm:param name="fields">title,handle,owner</mm:param>
            <mm:param name="orderby">title</mm:param>
            </mm:url>"
            onClick="return openListImages(this);">
@@ -128,7 +128,7 @@
   <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/imageupload.xml</mm:param></mm:url>">view XML</a></td>
  </tr>
 <tr><td>
-   <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+   <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
            <mm:param name="wizard">tasks/attachments</mm:param>
            <mm:param name="nodepath">attachments</mm:param>
            <mm:param name="fields">title</mm:param>
@@ -142,7 +142,7 @@
 view XML</a></td>
  </tr>
     <tr><td>
-    <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+    <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
              <mm:param name="wizard">tasks/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
            <mm:param name="fields">number,title</mm:param>
@@ -162,7 +162,7 @@ view XML</a></td>
   <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/news.xml</mm:param></mm:url>">view XML</a></td>
    </tr>
     <tr><td>
-    <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+    <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
                <mm:param name="title">MyNews Magazine news</mm:param>
                <mm:param name="startnodes">default.mags</mm:param>
              <mm:param name="wizard">tasks/news</mm:param>
@@ -176,7 +176,7 @@ view XML</a></td>
         Only list news of default magazine (MyNews magazine).
      </td></tr>
     <tr><td>
-    <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+    <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
              <mm:param name="wizard">tasks/mags</mm:param>
            <mm:param name="nodepath">mags</mm:param>
            <mm:param name="fields">number,title</mm:param>
@@ -190,7 +190,7 @@ view XML</a></td>
       </tr>
 
     <tr><td>
-    <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+    <a href="<mm:url referids="referrer,pagelength" page="${jsps}/list.jsp">
              <mm:param name="wizard">tasks/people</mm:param>
            <mm:param name="nodepath">news,people</mm:param>
            <mm:param name="fields">people.number,news.title,people.firstname,people.lastname</mm:param>
