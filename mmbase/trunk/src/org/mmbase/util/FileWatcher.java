@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.19 2003-11-16 14:04:21 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.20 2004-01-15 12:38:26 michiel Exp $
  */
 public abstract class FileWatcher  {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -270,6 +270,7 @@ public abstract class FileWatcher  {
 
         private Set watchers = new HashSet();
         FileWatcherRunner() {
+            super("MMBase FileWatchers");
             log.info("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
