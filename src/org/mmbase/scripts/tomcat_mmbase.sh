@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.7 2000-10-16 22:37:14 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.8 2000-10-17 09:27:59 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -19,7 +19,7 @@ MMBASE_HOME=..
 TOMCAT_HOME=/usr/local/java/apache/jakarta-tomcat
 
 # change this to your mmbase path where the classes are or to the mmbase.jar
-MMBASE_JAR=$MMBASE_HOME/lib/mmbase.jar
+MMBASE_LIB=$MMBASE_HOME/lib
 # change this to your mmbase-config dir
 MMBASE_CONFIG=$MMBASE_HOME/config/default
 # change this to the location of the mmbase-html's (must be under webapps in Tomcat)
@@ -127,7 +127,12 @@ if [ "$oldCP" != "" ]; then
     CLASSPATH=${CLASSPATH}:${oldCP}
 fi
 
-CLASSPATH=${JDBC_CLASSPATH}:${MMBASE_JAR}:${CLASSPATH}
+# MMBASE libs lezen
+for i in ${MMBASE_LIB}/* ; do
+  CLASSPATH=$i:${CLASSPATH
+done
+
+CLASSPATH=${JDBC_CLASSPATH}:${CLASSPATH}
 
 export CLASSPATH
 
