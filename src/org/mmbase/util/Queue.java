@@ -15,6 +15,10 @@ import java.util.*;
  * A list object that allows firstin-firstout retrieval of data.
  * When querying for data that is not (yet) available, the retrieve-process sleeps
  * until it is notified of a change.
+ * In 1.5, this class need to be replaced with the java.util.concurrent.BlockingQueue&lt;E&gt; interface.
+ *
+ * @author vpro
+ * @version $Id: Queue.java,v 1.6 2004-09-30 14:07:11 pierre Exp $
  */
 public class Queue {
 
