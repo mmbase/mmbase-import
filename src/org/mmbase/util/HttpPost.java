@@ -9,16 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
+import java.io.*;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
@@ -27,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.17 2003-04-02 14:32:49 vpro Exp $
+ * @version $Id: HttpPost.java,v 1.18 2003-04-02 15:01:00 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -38,10 +30,10 @@ public class HttpPost {
     // logger
     private static Logger log = Logging.getLoggerInstance(HttpPost.class.getName());
 
-    // properties
-    private static Hashtable properties = null;
+    public static final String CONFIG_FILE = "httppost.xml";
+    public static final String MAX_PROPERTY = "maxfilesize";
 
-    private int maxLoop=2048;
+    private static final int maxLoop=2048;
 
     /**
      * are the postparameters decoded yet?
@@ -56,7 +48,7 @@ public class HttpPost {
     /**
      * Maximum postparametersize to decode the the parameters into memory
      */
-    private int MaximumPostbufferSize=1*1024*1024; // 1024 switch to disk needs to be param
+    private static final int maximumPostbufferSize = 1*1024*1024; // 1024 switch to disk needs to be param
 
     /**
     * post buffer, holds the values ones decoded
@@ -81,10 +73,10 @@ public class HttpPost {
      * Initialise WorkerPostHandler
      */
     public HttpPost(HttpServletRequest req) {
-        XMLUtilReader reader = new XMLUtilReader("httppost.xml");
-        properties = reader.getProperties();
-        if(properties.containsKey("maxfilesize")) {
-            maxFileSize = Integer.parseInt(""+properties.get("maxfilesize"));
+        org.mmbase.util.xml.UtilReader reader = new org.mmbase.util.xml.UtilReader(CONFIG_FILE);
+        Map properties = reader.getProperties();
+        if(properties.containsKey(MAX_PROPERTY)) {
+            maxFileSize = Integer.parseInt(""+properties.get(MAX_PROPERTY));
             log.debug("Setting maxfilesize to "+maxFileSize);
         }
         postid = System.currentTimeMillis();
@@ -380,7 +372,7 @@ public class HttpPost {
 
         len=req.getContentLength();
         // Maximum postsize
-        if (len<MaximumPostbufferSize) {
+        if (len<maximumPostbufferSize) {
             log.debug("readContentLength(): writing to memory.");
             try {
                 buffer=new byte[len];
