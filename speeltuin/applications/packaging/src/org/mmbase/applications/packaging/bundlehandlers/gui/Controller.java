@@ -42,12 +42,12 @@ public class Controller {
 
 
     public Controller() {
-        cloud=LocalContext.getCloudContext().getCloud("mmbase");
+        cloud = LocalContext.getCloudContext().getCloud("mmbase");
 
         // hack needs to be solved
-         manager=cloud.getNodeManager("typedef");
-        if (manager==null) log.error("Can't access builder typedef");
-        context=LocalContext.getCloudContext();
+         manager = cloud.getNodeManager("typedef");
+        if (manager == null) log.error("Can't access builder typedef");
+        context = LocalContext.getCloudContext();
         if (!InstallManager.isRunning()) InstallManager.init();
     }
 
@@ -109,8 +109,8 @@ public class Controller {
 
     public List getBundleNeededPackages(String id,String wv,String newuser) {
         // get the bundles of one id (all versions)
-        BundleInterface bundle=BundleManager.getBundle(id);
-        Enumeration neededpackages=bundle.getNeededPackages();
+        BundleInterface bundle = BundleManager.getBundle(id);
+        Enumeration neededpackages = bundle.getNeededPackages();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
