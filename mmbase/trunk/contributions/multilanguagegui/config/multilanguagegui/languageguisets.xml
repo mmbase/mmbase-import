@@ -2,5 +2,5 @@
 <!DOCTYPE languageguisets PUBLIC "//MMBase - languageguisets //" "http://www.mmbase.org/dtd/languageguisets_1_0.dtd">
 <languageguisets>
 	<languageguiset name="misc" file="sets/misc.xml" />
-	<languageguiset name="forums" file="sets/forums.xml" />
+	<languageguiset name="mmbob" file="sets/mmbob.xml" />
 </languageguisets>
