@@ -120,7 +120,8 @@ public class Email extends MMObjectBuilder {
 			String to=node.getStringValue("to");
 			String from=node.getStringValue("from");
 			String replyto=node.getStringValue("replyto");
-			String body=node.getStringValue("body");
+			//String body=node.getStringValue("body");
+			String body=getBody(node);
 	
 			// now if a url is defined it overrides the body
 			// it will then send the webpage defined by the
@@ -174,6 +175,26 @@ public class Email extends MMObjectBuilder {
 			}
 		} else {
 			return(""); // should we make the subject empty on defailt ?
+		}
+	}
+
+
+	String getBody(MMObjectNode node) {
+		String body=node.getStringValue("body");
+		if (body!=null) {
+			if (body.startsWith("/")) {
+				// we need a url=".." in tcp !
+				String pagebody=getPage(body);
+				if (pagebody!=null) {
+					return(pagebody);
+				} else {
+					return("body page 404 : "+body);
+				}
+			} else {
+				return(body);
+			}
+		} else {
+			return(""); // should we make the body empty on defailt ?
 		}
 	}
 
