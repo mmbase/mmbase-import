@@ -15,12 +15,13 @@ import java.util.ListIterator;
  * A list of nodes
  *
  * @author Pierre van Rooden
+ * @version $Id: FieldIterator.java,v 1.3 2002-01-31 10:05:07 pierre Exp $
  */
 public interface FieldIterator extends ListIterator {
 
-	/**
-	*
-	*/
-	public Field nextField();
-	
+    /**
+     * Returns the next element in the iterator as a Field
+     */
+    public Field nextField();
+
 }

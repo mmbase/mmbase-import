@@ -24,6 +24,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: VirtualNodeManager.java,v 1.9 2002-01-31 10:05:13 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
@@ -81,7 +82,7 @@ public class VirtualNodeManager extends BasicNodeManager {
         throw new BridgeException(message);
     }
 
-	/**
+    /**
      * Search nodes of this type.
      * Throws an exception since this type is virtual, and searching is not allowed.
      */

@@ -18,6 +18,7 @@ import java.util.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: LocalContext.java,v 1.2 2002-01-31 10:05:07 pierre Exp $
  */
 public final class LocalContext extends BasicCloudContext {
 
@@ -25,19 +26,18 @@ public final class LocalContext extends BasicCloudContext {
     private static final CloudContext thiscontext = new LocalContext();
 
     /**
-     *  constructor to call from the MMBase class
-     *  (private, so cannot be reached from a script)
+     * Constructor to call from the MMBase class
+     * (private, so cannot be reached from a script)
      */
     private LocalContext() {
         super();
     }
 
     /**
-     *  called from the script to retrive the current CloudContext
-     *
+     * Called from the script to retrieve the current CloudContext
      */
     public static CloudContext getCloudContext() {
         return thiscontext;
     }
-	
+
 }

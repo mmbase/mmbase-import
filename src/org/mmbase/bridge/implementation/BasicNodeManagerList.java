@@ -17,9 +17,10 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of nodes
+ * A list of node managers
  *
  * @author Pierre van Rooden
+ * @version $Id: BasicNodeManagerList.java,v 1.5 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
@@ -38,9 +39,9 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     *
     */
     public Object convert(Object o, int index) {
-        if (o instanceof NodeManager) {        
+        if (o instanceof NodeManager) {
             return o;
-        }        
+        }
         NodeManager nm = cloud.getNodeManager((String)o);
         set(index, nm);
         return nm;
@@ -52,20 +53,20 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     public NodeManager getNodeManager(int index) {
         return (NodeManager) get(index);
     }
-    
+
     /**
     *
     */
     public NodeManagerIterator nodeManagerIterator() {
         return new BasicNodeManagerIterator(this);
     };
-    
+
     public class BasicNodeManagerIterator extends BasicIterator implements NodeManagerIterator {
-    
+
         BasicNodeManagerIterator(BasicList list) {
             super(list);
         }
-        
+
         public void set(Object o) {
             if (! (o instanceof NodeManager)) {
                 String message;
@@ -97,7 +98,7 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
         public NodeManager nextNodeManager() {
             return (NodeManager)next();
         }
-    
+
     }
-    
+
 }

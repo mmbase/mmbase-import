@@ -21,9 +21,10 @@ import org.mmbase.util.logging.*;
 import java.util.*;
 
 /**
- *
+ * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: BasicCloud.java,v 1.51 2002-01-31 10:05:10 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());

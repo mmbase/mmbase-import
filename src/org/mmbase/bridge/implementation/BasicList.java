@@ -19,9 +19,11 @@ import java.util.NoSuchElementException;
 
 
 /**
- * A list of nodes
+ * A list of objects.
+ * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
+ * @version $Id: BasicList.java,v 1.6 2002-01-31 10:05:11 pierre Exp $
  */
 public class BasicList extends ArrayList  {
 

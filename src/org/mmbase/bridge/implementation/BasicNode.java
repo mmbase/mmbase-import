@@ -21,6 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
+ * @version $Id: BasicNode.java,v 1.44 2002-01-31 10:05:11 pierre Exp $
  */
 public class BasicNode implements Node {
     public static final int ACTION_CREATE = 1;   // create a node

@@ -17,9 +17,10 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of nodes
+ * A list of relations
  *
  * @author Pierre van Rooden
+ * @version $Id: BasicRelationList.java,v 1.5 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
@@ -49,14 +50,14 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
     public Relation getRelation(int index) {
         return (Relation)get(index);
     }
-    
+
     /**
     *
     */
     public RelationList subRelationList(int fromIndex, int toIndex) {
         return new BasicRelationList(subList(fromIndex, toIndex),cloud,nodemanager);
     }
-    
+
     /**
     *
     */
@@ -65,12 +66,12 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
     };
 
     public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
-    
+
         BasicRelationIterator(BasicList list) {
             super(list);
         }
-        
-             
+
+
         public void set(Object o) {
             if (! (o instanceof Relation)) {
                 String message;
@@ -89,7 +90,7 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
             }
             list.add(index, o);
         }
-        
+
         public void set(Relation n) {
             list.set(index, n);
         }
@@ -99,11 +100,11 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
 
         // in fact we should also override set(Node) and add(Node),
         // but sigh...
-    
+
         public Relation nextRelation() {
             return (Relation)next();
         }
 
     }
-    
+
 }
