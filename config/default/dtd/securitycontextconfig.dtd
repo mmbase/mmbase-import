@@ -13,8 +13,6 @@
     	    <!ELEMENT identify ( #PCDATA ) >
     	    <!ATTLIST identify rank CDATA #REQUIRED >
     	    <!ATTLIST identify type CDATA #REQUIRED > 
-    	    	<!ELEMENT contexts ( context+ ) >
-    	    	<!ATTLIST contexts default NMTOKEN #REQUIRED > 
 
     <!ELEMENT groups ( group+ ) >
     	<!ELEMENT group ( contains+ ) >
