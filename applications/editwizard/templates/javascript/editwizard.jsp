@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.10 2002-07-18 09:21:50 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.11 2002-07-18 09:27:24 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -162,7 +162,7 @@ function doSearch(el, cmd, sessionkey) {
     if (!window.frames[0] || !window.frames[0].document || (window.frames[0].document.location.href.indexOf(url) == -1)) {
         if (window.frames[0] && window.frames[0].document) {
             window.frames[0].document.open();
-            window.frames[0].document.writeln('<link rel="stylesheet" type="text/css" href="../style.css" /><span>...searching...</span>');
+            window.frames[0].document.writeln('<link rel="stylesheet" type="text/css" href="../style/base.css" /><span>...searching...</span>');
             window.frames[0].document.close();
         }
 
