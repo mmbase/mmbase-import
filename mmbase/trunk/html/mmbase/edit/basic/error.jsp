@@ -12,7 +12,7 @@ Stacktrace:
   <%= org.mmbase.util.logging.Logging.stackTrace(exception) %>
 </pre>
 
-<p>Click <a href="./">here</a> to continue.</p>
+<p>Click <a href="<%=response.encodeURL("search_node.jsp")%>">here</a> to continue.</p>
 <hr />
 Please contact your system administrator about this.
 

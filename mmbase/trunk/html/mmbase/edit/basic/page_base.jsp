@@ -4,7 +4,10 @@
 // as many browsers as possible should not cache:
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma","no-cache");
-response.setHeader("Expires",  "0"); 
+String now = org.mmbase.util.RFC1123.makeDate(new java.util.Date());
+response.setHeader("Expires",  now); 
+response.setHeader("Last-Modified",  now); 
+response.setHeader("Date",  now); 
 %><%@ page errorPage="error.jsp" language="java" contentType="text/html; charset=utf-8"
 %><html>
 <head> 
