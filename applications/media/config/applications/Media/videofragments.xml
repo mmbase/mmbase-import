@@ -88,4 +88,26 @@
 		<intro></intro>
 	</node>
 
+	<node number="6000" owner="default">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Netwerk 2003-01-12</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="6001" owner="default">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Netwerk 2003-01-13</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
 </videofragments>

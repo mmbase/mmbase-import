@@ -1,48 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="140" owner="default" snumber="96" dnumber="99" rtype="parent" dir="bidirectional">
+	<node number="4000" owner="default" snumber="96" dnumber="99" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="138" owner="default" snumber="96" dnumber="94" rtype="parent" dir="bidirectional">
+	<node number="4001" owner="default" snumber="96" dnumber="94" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="136" owner="default" snumber="99" dnumber="124" rtype="related" dir="bidirectional">
+	<node number="4002" owner="default" snumber="99" dnumber="124" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="216" owner="default" snumber="116" dnumber="217" rtype="related" dir="bidirectional">
+	<node number="4003" owner="default" snumber="116" dnumber="217" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="215" owner="default" snumber="217" dnumber="132" rtype="related" dir="bidirectional">
+	<node number="4004" owner="default" snumber="108" dnumber="126" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="162" owner="default" snumber="108" dnumber="126" rtype="related" dir="bidirectional">
+	<node number="4005" owner="default" snumber="124" dnumber="130" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="160" owner="default" snumber="124" dnumber="130" rtype="related" dir="bidirectional">
+	<node number="4006" owner="default" snumber="99" dnumber="108" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="158" owner="default" snumber="130" dnumber="132" rtype="related" dir="bidirectional">
+	<node number="4007" owner="default" snumber="122" dnumber="124" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="156" owner="default" snumber="126" dnumber="132" rtype="related" dir="bidirectional">
+	<node number="4008" owner="default" snumber="99" dnumber="116" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="154" owner="default" snumber="99" dnumber="108" rtype="related" dir="bidirectional">
+	<node number="4009" owner="default" snumber="116" dnumber="128" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="152" owner="default" snumber="122" dnumber="124" rtype="parent" dir="bidirectional">
+	<node number="4010" owner="default" snumber="114" dnumber="116" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="148" owner="default" snumber="99" dnumber="116" rtype="related" dir="bidirectional">
+
+  <!-- source -> providers -->
+  
+  <!-- rm -->
+	<node number="4011" owner="default" snumber="128" dnumber="3001" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="146" owner="default" snumber="116" dnumber="128" rtype="related" dir="bidirectional">
+	<node number="4013" owner="default" snumber="130" dnumber="3001" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="144" owner="default" snumber="128" dnumber="134" rtype="related" dir="bidirectional">
+	<node number="4015" owner="default" snumber="126" dnumber="3003" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="142" owner="default" snumber="114" dnumber="116" rtype="parent" dir="bidirectional">
+  <!-- asf -->
+	<node number="4016" owner="default" snumber="217" dnumber="3002" rtype="related" dir="bidirectional">
+	</node>
+
+  <!-- netwerk -->
+	<node number="4017" owner="default" snumber="5000" dnumber="3002" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="4018" owner="default" snumber="5001" dnumber="3002" rtype="related" dir="bidirectional">
+	</node>
+
+  <!-- fragment -> source -->
+	<node number="4019" owner="default" snumber="6000" dnumber="5000" rtype="related" dir="bidirectional">
+	</node>
+	<node number="4020" owner="default" snumber="6001" dnumber="5001" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="4021" owner="default" snumber="99" dnumber="6000" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="4022" owner="default" snumber="99" dnumber="6001" rtype="related" dir="bidirectional">
 	</node>
 
 </insrel>
