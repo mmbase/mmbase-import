@@ -101,14 +101,12 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.12 2003-06-05 14:16:19 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.13 2003-08-29 11:45:23 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
 
-    // Logger instance.
-    private final static Logger log =
-        Logging.getLoggerInstance(ConstraintParser.class.getName());
+    private final static Logger log = Logging.getLoggerInstance(ConstraintParser.class);
 
     private List steps = null;
 
@@ -274,7 +272,7 @@ public class ConstraintParser {
     }
 
     /** Creates a new instance of ConstraintParser */
-    public ConstraintParser(BasicSearchQuery query) {
+    public ConstraintParser(SearchQuery query) {
         this.steps = query.getSteps();
     }
 
