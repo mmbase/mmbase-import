@@ -48,8 +48,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     // It's enough to instantiate a factory once and for all.
     private final static org.apache.log4j.spi.LoggerRepository repository = new LoggerRepository(getRootLogger());
-    private final static  DOMConfigurator domConfigurator = new DOMConfigurator();
-    private static Logger log;
+    private static Logger log = null;
     private static File configurationFile = null;
 
     private static final String classname = Log4jImpl.class.getName();
@@ -81,8 +80,12 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
 
     /**
-     * Calls the configure method of DOMConfigurator, and redirect standard error
-     * to STDERR category.
+     * Calls the configure method of DOMConfigurator, and redirect
+     * standard error to STDERR category. It also starts up the
+     * FileWatcher.  The 'configureAndWatch' method of DOMConfigurator
+     * used to be used, but it is not feasible anymore because
+     * 1. cannot give the repository then. 2. Cannot log the happening
+     * on normal way.
      *
      * @param s: A string to the xml-configuration file. Can be
      * absolute, or relative to the Logging configuration file.
@@ -93,12 +96,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         if (! configurationFile.isAbsolute()) { // make it absolute
             configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
         }
-        System.out.println("Parsing " + configurationFile.getAbsolutePath());
-        try {
-            domConfigurator.doConfigure(new FileInputStream(configurationFile), repository);
-        } catch (java.io.FileNotFoundException e) {
-            System.out.println("Could not find " + configurationFile  + " to reconfigure: " + e.toString());
-        }
+        doConfigure(configurationFile);
+
         configWatcher.add(configurationFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
@@ -107,22 +106,38 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         Log4jImpl err = getLoggerInstance("STDERR");
         // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
         if(err.getLevel() != Log4jLevel.FATAL) {
-            System.out.println("Redirecting stdout to MMBase logging");
+            System.err.println("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
             System.setErr(new LoggerStream(err));
+        }       
+    }
+    /**
+     * Performs the actual parsing of the log4j configuration file and handles the errors
+     */
+
+    protected static void doConfigure(File f) {
+        String inform = "Parsing " + configurationFile.getAbsolutePath();
+        if (log == null) {
+            System.out.println(inform);
+        } else {
+            log.service(inform);
         }
-       
+        try {
+            DOMConfigurator domConfigurator = new DOMConfigurator();
+            domConfigurator.doConfigure(new FileInputStream(configurationFile), repository);
+        } catch (java.io.FileNotFoundException e) {
+            String error = "Could not find " + configurationFile  + " to configure logging: " + e.toString();
+            if (log == null) {
+                System.out.println(error);
+            } else {
+                log.error(error);
+            }
+        }
+        
     }
 
     private static FileWatcher configWatcher = new FileWatcher (true) {
             protected void onChange(File file) {
-                try {     
-                    System.out.println("Reading " + file);
-                    domConfigurator.doConfigure(new FileInputStream(file), repository);
-                } catch (java.io.FileNotFoundException e) {
-                    System.out.println("Could not find " + file + " to reconfigure");
-                }
-                //configReader = new XMLBasicReader(file.getAbsolutePath());
-                //configure(configReader);
+                doConfigure(file);
             }
         };
 
