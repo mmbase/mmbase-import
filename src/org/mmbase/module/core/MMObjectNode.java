@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.81 $ $Date: 2002-08-21 18:52:28 $
+ * @version $Revision: 1.82 $ $Date: 2002-09-26 12:51:04 $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -560,12 +560,20 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * @see getXMLValue
+     * Returns the value of the specified field as a <code>dom.Document</code>
+     * If the node value is not itself a Document, the method attempts to
+     * attempts to convert the String value into an XML.
+     * If the value cannot be converted, this method returns <code>null</code>
+     *
+     * @param fieldName  the name of the field to be returned
+     * @return  the value of the specified field as a DOM Element or <code>null</code>
+     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
+     * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
         if(getDBType(fieldName)!= FieldDefs.TYPE_XML) {
-            throw new RuntimeException("field was not an xml-field, dont know how i need to convert this to and xml-document");
+            throw new IllegalArgumentException("Field was not an xml-field, dont know how I need to convert this to an xml-document");
         }
         if (o == null) {
             log.warn("Got null value in field " + fieldName);
@@ -729,7 +737,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Get a value of a certain field.
      * The value is returned as an Integer value. Values of non-Integer, numeric fields are converted if possible.
-     * Booelan fields return 0 for false, 1 for true.
+     * Boolean fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return
@@ -753,7 +761,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Get a value of a certain field.
      * The value is returned as a long value. Values of non-long, numeric fields are converted if possible.
-     * Booelan fields return 0 for false, 1 for true.
+     * Boolean fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return
@@ -778,7 +786,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Get a value of a certain field.
      * The value is returned as a float value. Values of non-float, numeric fields are converted if possible.
-     * Booelan fields return 0 for false, 1 for true.
+     * Boolean fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return
@@ -803,7 +811,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Get a value of a certain field.
      * The value is returned as a double value. Values of non-double, numeric fields are converted if possible.
-     * Booelan fields return 0 for false, 1 for true.
+     * Boolean fields return 0 for false, 1 for true.
      * String fields are parsed to a number, if possible.
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return

@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.31 2002-09-23 13:53:42 michiel Exp $
+ * @version $Id: Node.java,v 1.32 2002-09-26 12:51:04 pierre Exp $
  */
 public interface Node {
 
@@ -121,6 +121,9 @@ public interface Node {
     /**
      * Returns the value of the specified field as an object. For example a
      * field of type <code>int</code> is returned as an <code>Integer</code>.
+     * The object type may vary and is dependent on how data was stored in a field.
+     * I.e. It may be possible for an Integer field to return it's value as a String 
+     * if it was stored that way in the first place.
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -129,6 +132,13 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>boolean</code>.
+     * If the actual value is numeric, this call returns <code>true</code>
+     * if the value is a positive, non-zero, value. In other words, values '0'
+     * and '-1' are concidered <code>false</code>.
+     * If the value is a string, this call returns <code>true</code> if
+     * the value is "true" or "yes" (case-insensitive).
+     * In all other cases (including calling byte fields), <code>false</code>
+     * is returned.
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -165,6 +175,13 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as an <code>int</code>.
+     * Numeric fields are simply converted. Double and float values may be truncated.
+     * For Node values, the numeric key is returned.
+     * Long values return -1 of the value is too large.
+     * Boolean fields return 0 if false, and 1 if true.
+     * String fields are parsed.
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * (i.e. a byte array), this function returns -1
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -173,6 +190,12 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>float</code>.
+     * This function attempts to convert the value to a float.
+     * Numeric fields are simply converted. 
+     * Boolean fields return 0.0 if false, and 1.0 if true.
+     * String fields are parsed.
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * (i.e. a byte array), this function returns -1.0.
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -181,6 +204,12 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>long</code>.
+     * This function attempts to convert the value to a long.
+     * Numeric fields are simply converted. Double and float values may be truncated. 
+     * Boolean fields return 0 if false, and 1 if true.
+     * String fields are parsed.
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * (i.e. a byte array), this function returns -1
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -189,6 +218,12 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>double</code>.
+     * This function attempts to convert the value to a double.
+     * Numeric fields are simply converted. Double may be truncated.
+     * Boolean fields return 0.0 if false, and 1.0 if true.
+     * String fields are parsed.
+     * If a parsed string contains an error, ot the field value is not of a type that can be converted 
+     * (i.e. a byte array), this function returns -1.0.
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -197,6 +232,9 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>byte array</code>.
+     * This function returns either the value of a byte field, or the byte value of a string 
+     * (converted using the default encoding, i.e. UTF8)
+     * Other types of values return an empty byte-array.
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -205,6 +243,9 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>String</code>.
+     * Byte arrays are converted to string using the default encoding (UTF8).
+     * Node values return a string representation of their numeric key. 
+     * For other values the result is calling the toString() method on the actual object.
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
@@ -249,23 +290,33 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>dom.Document</code>
+     * If the node value is not itself a Document, the method attempts to
+     * attempts to convert the String value into an XML.
+     * If the value cannot be converted, this method returns <code>null</code>
      *
      * @param fieldName  the name of the field to be returned
-     * @return           the value of the specified field as a DOM Element or <code>null</code>
+     * @return the value of the specified field as a DOM Element or <code>null</code>
+     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
-    public Document getXMLValue(String fieldName);
+    public Document getXMLValue(String fieldName) throws IllegalArgumentException;
     
     /**
      * Returns the value of the specified field as a <code>dom.Element</code>
+     * If the node value is not itself a Document, the method attempts to
+     * attempts to convert the String value into an XML.
+     * This method fails (throws a IllegalArgumentException) if the Field is not of type TYPE_XML.
+     * If the value cannot be converted, this method returns <code>null</code>
      *
      * @param fieldName  the name of the field to be returned
-     * @param tree       the DOM Document to which it must be added
+     * @param tree the DOM Document to which the Element is added 
+     *             (as the document root element)
      * @return           the value of the specified field as a DOM Element or <code>null</code>
+     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
 
-    public Element getXMLValue(String fieldName, Document tree);    
+    public Element getXMLValue(String fieldName, Document tree) throws IllegalArgumentException;    
 
     /**
      * Set's the value of the specified field as a <code>dom.Element</code>
