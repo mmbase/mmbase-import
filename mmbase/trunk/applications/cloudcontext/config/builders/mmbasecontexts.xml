@@ -32,7 +32,7 @@
       </editor>
       <db>
         <name>name</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="32" notnull="true" key="true">STRING</type>
       </db>
     </field>
     <!-- field definition for field 4 : description -->
