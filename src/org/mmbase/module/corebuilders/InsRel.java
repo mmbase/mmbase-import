@@ -44,19 +44,6 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* Construct the InsRel object that gives access to insrels
-	*/
-	/*
-	public InsRel(MMBase m) {
-		this.mmb=m;
-		this.tableName="insrel";
-		init();
-		m.mmobjs.put(tableName,this);
-	}
-	*/
-
-	
-	/**
 	* Fix a reldef node
 	*/
 	public MMObjectNode alignRelNode(MMObjectNode node) {
