@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <status>active</status>
+  <classfile>org.mmbase.module.core.MMBase</classfile>
+  <properties>
+    <property name="machinename">MMBaseserver</property>
+    <property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
+    <property name="multicastport">16080</property>
+    <property name="host">127.0.0.1</property>
+    <property name="basename">install</property>
+    <property name="language">en</property>
+    <property name="encoding">UTF-8</property>
+  </properties>
+</module>
