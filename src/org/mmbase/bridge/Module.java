@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.*;
+import java.util.Hashtable;
 import javax.servlet.*;
 
 /**
@@ -19,7 +19,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.8 2002-01-31 10:05:07 pierre Exp $
+ * @version $Id: Module.java,v 1.9 2002-04-13 11:07:53 michiel Exp $
  */
 public interface Module {
 
