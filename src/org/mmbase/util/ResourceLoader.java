@@ -94,7 +94,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.6 2004-11-25 13:53:12 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.7 2004-11-26 15:09:48 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -283,8 +283,9 @@ public class ResourceLoader extends ClassLoader {
                 String s = servletContext.getRealPath(RESOURCE_ROOT);
                 if (s != null) {
                     configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), true));
+                } else {
+                    configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
                 }
-                configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
             }
 
             if (servletContext != null) {
@@ -419,30 +420,56 @@ public class ResourceLoader extends ClassLoader {
      * {@inheritDoc}
      * @see #findResourceList
      */
-    public Enumeration findResources(final String name) {
-        return Collections.enumeration(findResourceList(name));
+    protected Enumeration findResources(final String name) throws IOException {
+        final Iterator i = roots.iterator();
+        return new Enumeration() {
+                private Enumeration current = null;
+                private Enumeration next;
+                { 
+                    current = getNext();
+                    next = getNext();
+                }
+
+                protected Enumeration getNext() {
+                    if (i.hasNext()) {
+                        try {                            
+                            PathURLStreamHandler ush = (PathURLStreamHandler) i.next(); 
+                            Enumeration e = ush.getResources(name);
+                            return e;
+                        } catch (IOException io) {
+                            log.warn(io);
+                            return current;
+                        }
+                    } else {
+                        return current;
+                    }
+                }
+                
+                public boolean hasMoreElements() {
+                    return current.hasMoreElements() || next.hasMoreElements();
+                }
+                public Object nextElement() {
+                    if (! current.hasMoreElements()) {
+                        current = next;
+                        next = getNext();                        
+                    }
+                    return current.nextElement();
+                }
+
+            };
     }
 
     /**
      * Returns a List, containing all URL's which may present the
      * given resource. This can be used to show what happens.
      */
-    public List findResourceList(final String name) {
-        List list = new ArrayList();
-        Iterator i = roots.iterator();
-        while (i.hasNext()) {
-            try {
-                PathURLStreamHandler sh = (PathURLStreamHandler) i.next();
-                URLConnection uc = sh.openConnection(name);
-                if (uc.getDoInput() || uc.getDoOutput()) { // if not at least readable or writeable it is extremely uninteresting.
-                    list.add(uc.getURL());
-                }
-            } catch (Exception e) {
-                log.warn(e);
-            }
-
+    public List getResourceList(final String name) {
+        try {
+            return Collections.list(getResources(name));
+        } catch (IOException io) {
+            log.warn(io);
+            return new ArrayList();
         }
-        return list;
     }
 
 
@@ -833,12 +860,27 @@ public class ResourceLoader extends ClassLoader {
         /**
          * We need an openConnection by name only, and public.
          */
-        abstract public URLConnection openConnection(String name);
+        abstract public URLConnection openConnection(String name);        
 
         /**
          * When a URL has been created, in {@link #openConnection(String)}, this method can make a 'name' of it again.
          */
         abstract protected String getName(URL u);
+
+        /**
+         * Returns a List of URL's with the same name. Defaults to one URL. 
+         */
+        Enumeration getResources(final String name) throws IOException {
+            return new Enumeration() {
+                    private boolean hasMore = true;
+                    public boolean hasMoreElements() { return hasMore; };
+                    public Object nextElement() {
+                        hasMore = false;
+                        return openConnection(name).getURL();
+                    }
+                    
+                };
+        }
 
         protected URLConnection openConnection(URL u) throws IOException {
             return openConnection(getName(u));
@@ -1267,12 +1309,58 @@ public class ResourceLoader extends ClassLoader {
         ClassLoaderURLStreamHandler(ClassLoaderURLStreamHandler f) {
             root = f.root;
         }
+
+
+        /**
+         * Add a package name prefix if the name is not absolute Remove leading "/"
+         * if name is absolute
+         * Stolen from java.lang.Class. It is private there, but needed to implemetn {@link #getResources}
+         */
+        private String resolveName(String name) {
+            if (name == null) {
+                return name;
+            }
+            if (!name.startsWith("/")) {
+                Class c = ResourceLoader.class;
+                while (c.isArray()) {
+                    c = c.getComponentType();
+                }
+                String baseName = c.getName();
+                int index = baseName.lastIndexOf('.');
+                if (index != -1) {
+                    name = baseName.substring(0, index).replace('.', '/') +"/"+name;
+                }
+            } else {
+
+            }
+            return name;
+        }
+
+        private ClassLoader getClassLoader() {
+            ClassLoader cl = ResourceLoader.class.getClassLoader();
+            if (cl == null) {
+                // A system class.
+                return ClassLoader.getSystemClassLoader();
+            } else {
+                return cl;
+            }
+        }
+
         protected String getName(URL u) {
             return u.getPath().substring((root +  ResourceLoader.this.context.getPath()).length());
         }
+        private String getClassResourceName(final String name) {
+            String res = root + ResourceLoader.this.context.getPath() + name;
+            res = res.substring(1);
+            return res;
+        }
+
+        Enumeration getResources(final String name) throws IOException {        
+            return getClassLoader().getResources(getClassResourceName(name));
+        }
         public URLConnection openConnection(String name) {
             try {
-                URL u = ResourceLoader.class.getResource(root + ResourceLoader.this.context.getPath() + name);
+                URL u = getClassLoader().getResource(getClassResourceName(name));
                 if (u == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 return u.openConnection();
             } catch (IOException ioe) {
@@ -1280,27 +1368,34 @@ public class ResourceLoader extends ClassLoader {
             }
         }
         public Set getPaths(final Set results, final Pattern pattern,  final boolean recursive, final boolean directories) {
-            InputStream inputStream = ResourceLoader.this.getResourceAsStream(INDEX);
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                try {
-                    while (true) {
-                        String line = reader.readLine();
-                        if (line == null) break;
-                        if (line.startsWith("#")) continue; // support for comments
-                        line = line.trim();
-                        if (line.equals("")) continue;     // support for empty lines
-                        if (directories) {
-                            line = getDirectory(line);
+            try {
+                Enumeration e = getResources(INDEX);
+                while (e.hasMoreElements()) {
+                    URL u = (URL) e.nextElement();
+                    InputStream inputStream = u.openStream();
+                    if (inputStream != null) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                        try {
+                            while (true) {
+                                String line = reader.readLine();
+                                if (line == null) break;
+                                if (line.startsWith("#")) continue; // support for comments
+                                line = line.trim();
+                                if (line.equals("")) continue;     // support for empty lines
+                                if (directories) {
+                                    line = getDirectory(line);
+                            }
+                                if (pattern == null || pattern.matcher(line).matches()) {
+                                    results.add(line);
+                                }
+                            }
+                        } catch (IOException ioe) {
                         }
-                        if (pattern == null || pattern.matcher(line).matches()) {
-                        results.add(line);
+                    } else {
+                        
                     }
                 }
-                } catch (IOException ioe) {
-                }
-            } else {
-
+            } catch (IOException ioe) {
             }
             return results;
         }
@@ -1525,12 +1620,9 @@ public class ResourceLoader extends ClassLoader {
 
     }
 
+    // ================================================================================
     /**
-     * ================================================================================
-     * Main
-     *
      * For testing purposes only
-     * ================================================================================
      */
     public static void main(String[] argv) {
         ResourceLoader resourceLoader;
@@ -1558,13 +1650,13 @@ public class ResourceLoader extends ClassLoader {
             } else {
                 InputStream resource = resourceLoader.getResourceAsStream(arg);
                 if (resource == null) {
-                    System.out.println("No such resource " + arg + " for " + resourceLoader.findResource(arg) + ". Creating now.");
+                    System.out.println("No such resource " + arg + " for " + resourceLoader.getResource(arg) + ". Creating now.");
                     PrintWriter writer = new PrintWriter(resourceLoader.createResourceAsStream(arg));
                     writer.println("TEST");
                     writer.close();
                     return;
                 }
-                System.out.println("-------------------- resolved " + arg + " with " + resourceLoader + ": ");
+                System.out.println("-------------------- resolved " + resourceLoader.getResourceList(arg) + " with " + resourceLoader + ": ");
                 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
                 
