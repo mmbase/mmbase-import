@@ -8,9 +8,16 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.40 2001-07-16 10:08:07 jaco Exp $
+$Id: INFO.java,v 1.41 2001-10-24 17:04:51 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.40  2001/07/16 10:08:07  jaco
+jaco: Moved all configuration stuff to MMBaseContext.
+If needed params not found or incorrect a ServletException with a description isthrown.
+It's now again possible to not redirect System.out and System.err to a file.
+Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+
 Revision 1.39  2001/07/08 13:25:54  daniel
 added version test tag
 
@@ -76,7 +83,7 @@ import org.mmbase.util.logging.Logger;
  * @author Pierre van Rooden
  * @version $Version:$
  *
- * @$Revision: 1.40 $ $Date: 2001-07-16 10:08:07 $
+ * @$Revision: 1.41 $ $Date: 2001-10-24 17:04:51 $
  */
 public class INFO extends ProcessorModule {
 
@@ -737,6 +744,7 @@ public class INFO extends ProcessorModule {
             } catch(Exception e) {
                 // no problem it was probably not a number
             }
+			int ctime=(int)(calendar.getTime().getTime()/1000);
 
             int whichname=INFO.Not;
 
@@ -1070,13 +1078,21 @@ public class INFO extends ProcessorModule {
                 rtn=d.getDate()+" "+DateStrings.Dutch_longmonths[d.getMonth()];
                 return rtn;
             } else if (cmd.equals("WEEKCURTIME")) {
-                int ctime=(int)(DateSupport.currentTimeMillis()/1000);
                 Date d2=new Date((long)ctime*1000);
                 int day=d2.getDay();
                 int hours=d2.getHours();
                 int min=d2.getMinutes();
                 int sec=d2.getSeconds();
                 ctime-=((day+1)*86400);
+                ctime-=(hours*3600);
+                ctime-=(min*60);
+                ctime-=(sec);
+                return ""+ctime;
+			} else if (cmd.equals("DAYCURTIME")) {
+                Date d2=calendar.getTime();
+                int hours=d2.getHours();
+                int min=d2.getMinutes();
+                int sec=d2.getSeconds();
                 ctime-=(hours*3600);
                 ctime-=(min*60);
                 ctime-=(sec);
