@@ -14,6 +14,11 @@ important files (webapp, database) before upgrading.
   org.mmbase.modules.corebuilder.ObjectTypes to org.mmbase.modules.corebuilder.TypeDef
   This needs to be changed in the typdef.xml configuration file.
 
+- The storage configuration files were originally located in the mmbase.jar.
+  To override them you had to place your version of the configuration file under classes/org/mmbase/storage/implementation/database/resources.
+  In 1.8, these files have been moved to the storage/database directory in the mmbase config directory.
+  If you override the storage configuration, you need to move your files to the new directory.
+
 - If you use the multicast feature to cast changes between mmbase servers, and upgrade from a
   version < 1.7.2.
   The multicast configuration is moved from mmbaseroot.xml to utils/multicast.xml!
@@ -21,7 +26,7 @@ important files (webapp, database) before upgrading.
 
 - Replace mmbase.jar with the new jars.
   - if you used editwizards, place mmbase-editwizard.jar (from
-    mmbase-editwizard.zip) 
+    mmbase-editwizard.zip)
   - if you used community, place mmbase-community.jar (from
     mmbase-community.zip). You can remove mmcommunity-taglib.tld too
     and place this in web.xml instead of:
@@ -33,7 +38,7 @@ important files (webapp, database) before upgrading.
 -  Replace and/or install all shipped jsps too.
    - generic editors are now shipped under /mmbase/edit/basic. You can
      follow this new convention and remove /mmeditors.  Or you
-     copy/move the content to the original location /mmeditors/jsp 
+     copy/move the content to the original location /mmeditors/jsp
 
    - For admin pages goes the same. They are now in /mmbase/admin
      (used to be /mmadmin/jsp).
@@ -52,7 +57,7 @@ important files (webapp, database) before upgrading.
   </taglib>
   Note that the taglib is not any more present in mmbase.jar
   itself. So if you wrote mmbase.jar here in web.xml you have to
-  change it. 
+  change it.
 
 - copy and/or merge configuration files from WEB-INF/config.
 
@@ -61,9 +66,9 @@ important files (webapp, database) before upgrading.
 - The fields parameter of the MMBase taglib list tags (related, list,
   etc) now no longer accepts fields that do not exist. Some pages may
   give errors now if they specified wrong fieldnames, so you are
-  advised to check your site's pages for this error. 
+  advised to check your site's pages for this error.
 
 - If needed, convert the data directory where mmbase stored binary
-  data. 
+  data.
 
 - Check the releasenotes.txt for know issues and changes.
