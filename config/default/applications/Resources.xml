@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="Resources" maintainer="mmbase.org" version="1" auto-deploy="false">
-  
+
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">images</builder>
     <builder maintainer="mmbase.org" version="0">icaches</builder>
@@ -19,14 +19,9 @@
 
   <contextsourcelist/>
 
-  <description>Installs a few basic resources like urls, attachments,
-    images and icaches. A few other applications depend on this
-    one. For images and icaches, jai or Imagemagick is also required,
-    see documentation for more information about how to install one of
-    these.
-  </description>
-
-  <install-notice>
-    Urls, attachments, images and icaches installed
-  </install-notice>
+  <description><![CDATA[Installs a few basic resources such as urls, attachments, images and the image cache.<br />
+A few other applications depend on this application.<br />
+For images and icaches, either JAI or Imagemagick is required, see the documentation
+for more information about how to install one of these tools.]]></description>
+  <install-notice><![CDATA[Urls, attachments, images and icaches installed.]]></install-notice>
 </application>
