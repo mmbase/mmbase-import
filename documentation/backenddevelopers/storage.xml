@@ -7,7 +7,7 @@
 
     <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.2 2003-06-30 11:17:38 johannes Exp $</edition>
+    <edition>$Id: storage.xml,v 1.3 2003-06-30 12:05:31 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -33,10 +33,11 @@
   <section id="interfaces">
     <title>Interfaces</title>
 		<para>TODO: explain packages and interfaces</para>
+		<note><para> It may be useful to drop the interfaces and use abstract classes instead.</para></note>
 		<section id="Transaction">
 			<title>Transaction Interface</title>
 			<para>The Transaction object is used as a means to maintain state information regarding a transaction.</para>
-			<para>A transaction comprises off all storage commands between creating (opening) a transaction object, and either closing or cancelling the transaction. In databases implementations, a Transaction is equal to a database connection. In other storages, it could hold a reference to a temporary file, or a memory-based cache.</para>
+			<para>A transaction comprises of all storage commands between creating (opening) a transaction object, and either closing or cancelling the transaction. In databases implementations, a Transaction is equal to a database connection (a <link linkend="DatabaseTransaction">DatabaseTransaction</link> is an implementation of Transaction, which defines several additional methods so database commands can be passed through the Transaction). In other storages, it could hold a reference to a temporary file, or a memory-based cache.</para>
 			<para>The intention of the Transaction object is to allow - for those implementations that can - to roll back changes when the transaction fails. To do this, you need to pass the Transaction object to each and every method called in the storage layer. Once all changes have been made, you can make the changes permanent by committing the transaction.</para>
 			<note><para>Using a Transaction by no means guarantees rollback is possible, as not all implementations will allow for rollback. You can check whether rollback is supported by calling the <methodname>supportsRollback()</methodname> method.</para></note>
 			<programlisting format="linespecific"><![CDATA[
@@ -56,7 +57,7 @@ public interface Transaction {
 							<term><methodname>public boolean supportsRollback();</methodname></term>
 							<listitem>
 								<para>This method returns <constant>true</constant> if the transaction object supports rollback.</para>
-								<note><para>This method generally retrieves it's data by calling the <methodname>supportsRollback</methodname> method of the Storage class. Useful for when you do not have a reference to Storage, but otherwise a bit superfluous. However it is possible for individual transactions to turn rollback on or off (i.e. when querying data, rollback will likely be turned off as it makes the transaction quicker), so this method may still yield different results.</para></note>
+								<note><para>This method generally retrieves it's data by calling the <methodname>supportsRollback</methodname> method of the Storage class. Useful for when you do not have a reference to Storage, but otherwise a bit superfluous. However it is possible for individual transactions to turn rollback on or off (i.e. when querying data, rollback may be turned off as it makes the transaction quicker), so this method may still yield different results.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -79,7 +80,10 @@ public interface Transaction {
 	
 		<section id="Storage">
 			<title>Storage Interface</title>
-			<para>...</para>
+			<para>The Storage interface defines a storage device - a location where MMBase objects are kept. This is generally a persistent layer, and most often a database. However, the way Storage is defined, when combined iwth teh Query interface (not yet integrated in the interface) it is possible to create alternate storages, such as a memory-only storage for test purposes, or a xml-based storage.</para>
+			<para>The interface defiens methods for qyerying the storage, and for teh creation, deletion, and updates of objects in the storage. It also defines method for creating or altering teh storage itself (adding fields to a builder, for instance).</para>
+			<para>The aim is to keep the storage free from database- or system-specific elements.</para>
+			<para>Storage uses Transaction objects to track changes. With the exception of storage-altering methods, all methods in Storage accept a Transaction object as a parameter.</para>
 			<programlisting format="linespecific"><![CDATA[
 public interface Storage extends SearchQueryHandler {
 
@@ -156,13 +160,13 @@ public interface Storage extends SearchQueryHandler {
 					throws StorageException;</methodname></term>
 							<listitem>
 								<para>Registers a builder as a parent builder (that is, other builders can 'extend' this builder and its storage device). At the least, this code should check whether the builder is allowed as a parent builder, and throw an exception if this is not possible.</para>
-								<note><para>This method will probably be dropped from the interface. Knowledge on whether a builder extends other builders should likely be done in the builder itself, not in the storage layer. In current implementations the method does not do anything useful anyway.</para></note>
+								<note><para>This method will be dropped from the interface. Knowledge on whether a builder extends other builders should be done in the builder itself, not in the storage layer. In current implementations the method does not do anything useful anyway.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>boolean supportsRollback();</methodname></term>
 							<listitem>
-								<para>Returns whether rollback on storage level is supported. This method determines whether <link linkend="Transaction" >Transaction</link> objects for this layer can rollback changes.</para>
+								<para>Returns whether rollback on storage level is supported. This method determines whether <link linkend="Transaction" >Transaction</link> objects for this layer can rollback changes. If <methodname>Storage.supportsRollback()</methodname> returns false, the <methodname>Transaction.supportsRollback()</methodname> should also return false.</para>
 							</listitem>
 						</varlistentry>
 						
@@ -172,7 +176,7 @@ public interface Storage extends SearchQueryHandler {
 								<para>Retrieve a large text for a specified object field. While this would normally be retrieved using getNode(), for purposes of performance and memory preservation, you might not want to load large texts in memory until you actually uses this. If you want to preserve memory in your storage, you can implement this method to return texts on demand. In addition, when you assemble a Node from storage, you will need to fill the text fields that you do NOT want to load directly with an indicator value (currently the text "$SHORTED").
 								</para>
 								<note><para>It may be useful to define a specific Indicator object/value rather than a text. The Indicator object would need to be defined in the Storage Interface.</para></note>
-								<note><para>There should probably be a Transactional version of this method.</para></note>
+								<note><para>There should be a Transactional version of this method.</para></note>
 							</listitem>
 						</varlistentry>
 						
@@ -180,7 +184,7 @@ public interface Storage extends SearchQueryHandler {
 							<term><methodname>byte[] getBytes(MMObjectNode node,String fieldname);</methodname></term>
 							<listitem>
 								<para>Retrieve a large binary object (byte array) for a specified object field. See getText() above for more details. The Indicator for an unloaded Binary field is the same as for an unloaded text field.</para>
-								<note><para>There should probably be a Transactional version of this method.</para></note>
+								<note><para>There should be a Transactional version of this method.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -191,21 +195,21 @@ public interface Storage extends SearchQueryHandler {
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>int createKey();</methodname></term>
-							<listitem><para>Gives an unique number for a node to be inserted. This method is non-transactional (does not require a Transaction object), and should work properly even if multiple mmbase servers use the same storage. Currently this method actually calls the transactional version of the createKey method, but that method will likely be dropped. </para>
+							<listitem><para>Gives an unique number for a node to be inserted. This method is non-transactional (does not require a Transaction object), and should work properly even if multiple mmbase servers use the same storage. Currently this method actually calls the transactional version of the createKey method, but that method will be dropped. </para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>int createKey(Transaction trans) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Gives an unique number for a node to be inserted, using the given Transaction to access the Storage. This method should work properly even if multiple mmbase servers use the same storage.</para>
-								<note><para>Since obtaining a key should work cross- server, it should also work cross-transaction. Using a transaction to obtain the key does not actually add functionality. So it is likely this method will be dropped, unless merits can be found to trace the Transaction that created the key.</para></note>
+								<note><para>Since obtaining a key should work cross- server, it should also work cross-transaction. Using a transaction to obtain the key does not actually add functionality. This method will be dropped, unless merits can be found to trace the Transaction that created the key.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>int insert(MMObjectNode node);</methodname></term>
 							<listitem>
 								<para>This method inserts a new object, and registers the change. Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns a new node number or -1 depending on success.</para>
-								<note><para>It is probably interesting to determine whether non-transactional methods should be included in the Interface. While it is useful as it simplifies calls to Storage, it also complicates the interface. It should be determined whether these methods are to be included in the Storage interface or not. Alternate solutions are to create a TransactionalStorage interface and move all transactional versions of methods there, or to simply drop the non-transactional methods from Storage and - for backward compatibility -include them in the Support2Storage class. This notice applies to all transactional methods, including <methodname>commit</methodname>, <methodname>delete</methodname>, <methodname>create</methodname>, <methodname>getNode</methodname>, <methodname>getNodeType</methodname>, and <methodname>createObjectStorage</methodname></para></note>
+								<note><para>We should determine whether non-transactional methods should be included in the Interface. While it is useful as it simplifies calls to Storage, it also complicates the interface. It should be determined whether these methods are to be included in the Storage interface or not. Alternate solutions are to create a TransactionalStorage interface and move all transactional versions of methods there, or to simply drop the non-transactional methods from Storage and - for backward compatibility -include them in the Support2Storage class. This notice applies to all transactional methods, including <methodname>commit</methodname>, <methodname>delete</methodname>, <methodname>create</methodname>, <methodname>getNode</methodname>, <methodname>getNodeType</methodname>, and <methodname>createObjectStorage</methodname>. It may also be worthwhile to add the transactional methods to the Transaction interface, so that Transaction.insert(MMObjectNode) will be similar to Storage.insert(MMObjectNode, Transaction).</para></note>
 								<note><para>It should be considered to rename <methodname>insert()</methodname> to <methodname>createNode()</methodname></para></note>
 							</listitem>
 						</varlistentry>
@@ -282,7 +286,7 @@ public interface Storage extends SearchQueryHandler {
 							<term><methodname>boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Create a storage for the specified builder within a transaction.</para>
-								<note><para>It is probably wise to consider whether defining a storage (creating, deleting, or altering it) should be done within a transaction (as it generally works on database tables). It may be useful to only define this method as non-transactional, so that calling this method assures the storage is there, so that when you use multiple servers you will not run into conflict (or use functionality that may not be there). This also counts for <methodname>createObjectStorage</methodname>, <methodname>addField</methodname>, <methodname>removeField</methodname>, <methodname>ChangeField</methodname>, and <methodname>updateStorage</methodname>.</para></note>
+								<note><para>I don't think defining a storage (creating, deleting, or altering it) should be done within a transaction (as it generally works on database tables). It seems more useful to only define this method as non-transactional, so that calling this method assures the storage is there, so that when you use multiple servers you will not run into conflict (or use functionality that may not be there). This also counts for <methodname>createObjectStorage</methodname>, <methodname>addField</methodname>, <methodname>removeField</methodname>, <methodname>ChangeField</methodname>, and <methodname>updateStorage</methodname>.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -327,7 +331,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>Adds a field to the storage of this builder.</para>
 								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
-								<note><para>Should probably be renamed to <methodname>createField()</methodname> (in accordance with code conventions)</para></note>
+								<note><para>Should be renamed to <methodname>createField()</methodname> (in accordance with code conventions)</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -335,7 +339,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>Deletes a field from the storage of this builder.</para>
 								<note><para>See <methodname>create()</methodname> for suggestions on transactional methods that create/define storage.</para></note>
-								<note><para>Should probably be renamed to deleteField (in accordance with code conventions)</para></note>
+								<note><para>Should be renamed to deleteField (in accordance with code conventions)</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -448,6 +452,115 @@ public interface Storage extends SearchQueryHandler {
 	<section id="classes">
     <title>Classes</title>
 		<para>TODO: explain classes</para>
+
+		<section id="DatabaseTransaction">
+			<title>DatabaseTransaction Interface</title>
+			<para>DatabaseTransaction is an implementation of Transaction for use with databases using JDBC.</para>
+			<programlisting format="linespecific"><![CDATA[
+public class DatabaseTransaction {
+
+    public DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;
+
+    public boolean databaseSupportsRollback() throws StorageException;
+
+    public boolean hasTable(String tableName) throws StorageException;
+
+    public Set getTables(String baseName) throws StorageException;
+
+    public void registerChanged(MMObjectNode node, String change);
+
+    public ResultSet executeQuery(String sql) throws StorageException;
+
+    public boolean executeUpdate(String sql) throws StorageException;
+
+    public boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;
+
+    public int getIntegerResult();
+
+    public MMObjectNode getNodeResult(MMObjectBuilder builder);
+
+}]]></programlisting>
+			<formalpara>
+				<title>DatabaseTransaction Methods (in addition to the methods in Transaction):</title>
+				<para><variablelist>
+						<varlistentry>
+							<term><methodname>public DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;</methodname></term>
+							<listitem>
+								<para>The constructor for the DatabaseTransaction object.</para>
+								<para>The transaction attempts to obtain a connection with the database, using the DatabaseStorage to obtain the needed data (such as a refernce to the JDBC module).
+								The parameter supplied indicates whether rollback should be enabled (if available). You can explicitly turn off rollback facilities (which might slow down database access) for internal routines by specifying useRollback as false.</para>
+								<note><para>If <parameter class="option">userollback</parameter> is true, this method calls the DatabaseStorage <methodname>supportsRollback()</methodname> method to check if rollback is possible. The DatabaseStorage will generally have pre-determined whether rollback is possible or not (when initializing the storage layer) by calling the <methodname>databaseSupportsRollback()</methodname> method.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean databaseSupportsRollback() throws StorageException;</methodname></term>
+							<listitem>
+								<para>Queries the database metadata to test whether this database supports rollback. Rollback of a transaction is defined as making undone any changes to the persistent storage used (i.e. a database), since the transaction started. Not all databases support this.</para>
+								<note><para>This method should be called only once, at the initialization of the storage layer, to determine whether rollback is available. It may be worthwhile to replace this method with a getMetaData() method. We can then move the rollback test itself to the DatabaseStorage.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean hasTable(String tableName) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Queries the database metadata to test whether a given table exists.</para>
+								<note><para>It may be worthwhile to replace this method with a getMetaData() method (see <methodname>databaseSupportsRollback()</methodname>. We can then move the table test itself to the DatabaseStorage.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public Set getTables(String baseName) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Queries the database metadata to obtain a list of tables following a specified pattern.</para>
+								<note><para>It may be worthwhile to replace this method with a getMetaData() method (see <methodname>databaseSupportsRollback()</methodname>. We can then move the table list itself to the DatabaseStorage.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public void registerChanged(MMObjectNode node, String change);</methodname></term>
+							<listitem>
+								<para>Register changes for broadcasting after commit.</para>
+								<para>The Transaction maintains a cache of changes to nodes. If the Transaction is successfully committed, it will broadcast these changes using MultiCast, by calling the <methodname>registerChanged</methodname> in the DatabaseStorage. This ensures that changes are only broadcasted if the commit was succesfull.</para>
+								<note><para>Current code does not take into account Transactions that do not rollback. If no rollback support is present, the changes should immediately be broadcasted, instead of cached.</para></note>
+								<note><para>The <methodname>commit()</methodname> method calls the <methodname>registerChanged()</methodname> in DatabaseStorage to actually broadcast the events. It is moe appropriate to move that code from databseStorage to DatbaseTransaction. (In fact, it would make sense to add the method to the Transaction interface, as it is not specifically database related and generally required to maintain a correct state between servers)</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public ResultSet executeQuery(String sql) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Execute a SQL statement on the database, and return the Resultset.</para>
+								<note><para>I generally feel that the Query interface should be used by DatbaseStorage. DatabaseTransaction merely passes commands (sql statements) to the database. I think it is appropriate to pass sql strings, rather than query objects, especially as it allows for the DatabaseStorage to pass it's own statements.</para></note>
+								<note><para>The reason we do not pass a Statement object is that this allows ONE entry point where connections and statements are created. This allows for the Transaction to use connection pools and logging separate from the Database storage.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean executeUpdate(String sql) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). If the execution was succesfull (but did not generate an error) the method returns true.</para>
+								<note><para>see <methodname>executeQuery()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;</methodname></term>
+							<listitem>
+							  <para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). The sql query will be run using a prepared statement, which is then filled with content from the passed node. The fields parameter contains the fields to add to the statement. The SQL statement should be appropriate to be used as a prepared statement, and have the appropriate type and number of parameters (as in fields).</para>
+								<para>If the execution was succesfull (but did not generate an error) the method returns true.</para>
+								<note><para>see <methodname>executeQuery()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public int getIntegerResult();</methodname></term>
+							<listitem>
+								<para>Attempts to return a single integer result from the last retrieved resultset. Use this method to return the result of a query which returns a resultset of records containing one single numeric field If the query failed, or returned an unexpected result, or if the resultset is exhausted, the function returns -1. If this is due to an error then the error is logged.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public MMObjectNode getNodeResult(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Attempts to return a single Node from the last retrieved resultset. Use this method to return the result of a query which returns a resultset of records containing fields from a builder table. If the query failed, or returned an unexpected result, or if the resultset is exhausted, the function returns null. If this is due to an error then the error is logged. Currently does not work for clusternodes, as far as I know.</para>
+								<note><para>This method (and <methodname>getIntegerResult()</methodname>) assume that Transaction can (and should) be used to temporarily store a resultset. If we choose for this approach (rather than move the code to DatabaseStorage), we would also need <methodname>getResultSet()</methodname> and <methodname>next()</methodname> methods, so we can iterate.</para></note>
+							</listitem>
+						</varlistentry>
+					</variablelist></para>
+			</formalpara>
+		</section>
 
 		<section id="AbstractDatabaseStorage">
 			<title>AbstractDatabaseStorage Class</title>
