@@ -18,8 +18,10 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * @javadoc
+ * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.17 2003-07-01 14:21:23 keesj Exp $
+ * @version $Id: AnnotRel.java,v 1.18 2004-10-08 12:26:43 pierre Exp $
  */
 public class AnnotRel extends InsRel {
 
