@@ -9,118 +9,62 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-import javax.servlet.ServletException;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.io.BufferedOutputStream;
-
-import java.util.List;
-import java.util.Vector;
+import java.util.Map;
 import java.util.Date;
 
 import org.mmbase.bridge.Node;
 
-import org.mmbase.util.RFC1123;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
- * ImageServlet handles cached images. You have to put them in the
- * cache yourself. The cache() function of Images can be used for
- * this. An URL can be gotten with cachepath().
+ * ImageServlet handles nodes as images. If you want to convert an image (resize it, turn it, change
+ * its colors etc) then you want to serve an 'icaches' node ('icaches' are cached conversions of
+ * images), which you have to create yourself before calling this servlet. The cache() function of
+ * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.8 2002-06-28 21:10:10 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.9 2002-06-30 20:15:52 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @see    org.mmbase.module.builders.AbstractImages
+ * @see    org.mmbase.module.builders.Images#executeFunction
  */
-public class ImageServlet extends BridgeServlet {
-    private static Logger log;
-    private long originalImageExpires;
-
-    public void init() throws ServletException {
-        super.init();
-        log = Logging.getLoggerInstance(ImageServlet.class.getName());
-        String origExpires = getInitParameter("expire");
-        if (origExpires == null) {
-            // default: one hour
-            originalImageExpires = 60 * 60 * 1000;
-        } else {
-            originalImageExpires = new Integer(origExpires).intValue() * 1000;
-        }
-        // make sure this servlet is known to process images
-        associate("images", getServletName());
-    }
-
-    /**
-     * Overrides parent function. The current time is returned now, but I wonder is this is ok.
-     **/
-    protected long getLastModified(HttpServletRequest req) {
-        return System.currentTimeMillis();
-    }
-
-    /**
-     * Serves images (and cached images).
-     *
-     */
-
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        Node node = getNode(req, res);
-
-        if (node == null) return;
-
-        byte[] bytes   = node.getByteValue("handle");
-        if (bytes == null) {
-            res.sendError(res.SC_NOT_FOUND, "Node with number " + node.getNumber() + " does contain a handle field.");
-            return;
-
-        }
-        int    filesize = bytes.length;
-
-        res.setContentType(node.getStringValue("mimetype()"));
-        res.setContentLength(filesize);
-
-        String now  = RFC1123.makeDate(new Date());
-        res.setHeader("Date", now);
-
-        String fileName;
-        if (node.getNodeManager().getName().equals("icaches")) {
-            fileName = getCloud().getNode(node.getIntValue("id")).getStringValue("title");
-            // cached images never expire, they cannot change without receiving a new number, thus changing the URL.
-            Date never = new Date(System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000));
-            // one year in future, this is considered to be sufficiently 'never'.
-            res.setHeader("Expires", RFC1123.makeDate(never));
-            
-        } else { // 'images'
-            fileName = node.getStringValue("title"); 
-            // images themselves can expire,  the expiration time is set in init-param 'expire'.
-            Date later =  new Date(System.currentTimeMillis() + originalImageExpires);
-            res.setHeader("Expires", RFC1123.makeDate(later));
-        }
-        if (fileName == null || fileName.equals("")) fileName="image_from_mmbase";
-
-        res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getStringValue("format()") + "\"");
-
-
-        BufferedOutputStream out = null;
-        try {
-            out = new BufferedOutputStream(res.getOutputStream());
-        } catch (java.io.IOException e) {
-            log.error(Logging.stackTrace(e));
-        }
-
-
-        out.write(bytes, 0, filesize);
-        out.flush();
-        out.close();
-    }
-
-
+public class ImageServlet extends HandleServlet {
 
     public String getServletInfo()  {
-        return "Serves cached MMBase images.";
+        return "Serves (cached) MMBase images";
     }
+
+    protected Map getAssociations() {
+        Map a = super.getAssociations();
+        a.put("images",      new Integer(50));  // Is good in images (knows icaches)
+        a.put("attachments", new Integer(5));   // Can do attachments a little
+        a.put("downloads",   new Integer(-10));   // Can do attachments a little
+        return a;
+    }
+
+    protected String getMimeType(Node node) {
+        return node.getStringValue("mimetype()");
+    }
+
+    
+    protected boolean setContent(HttpServletResponse res, Node node, String mimeType) throws java.io.IOException {
+        String fileName; // will be based on the 'title' field, because images lack a special field for this now.
+        if (node.getNodeManager().getName().equals("icaches")) {
+            try {
+                fileName = node.getCloud().getNode(node.getIntValue("id")).getStringValue("title");
+            } catch (org.mmbase.security.SecurityException e) {
+                res.sendError(res.SC_FORBIDDEN, "Permission denied on original image node: " + e.toString());
+                return false;
+            }
+        } else { // 'images', but as you this is not explicit, so you can also name your image builder otherwise.
+            fileName = node.getStringValue("title"); 
+        }
+
+        // still not found a sensible fileName? Give it up then.
+        if (fileName == null || fileName.equals("")) fileName = "mmbase-image";
+
+        res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getStringValue("format()") + "\"");
+        return true;
+    }
+
 }

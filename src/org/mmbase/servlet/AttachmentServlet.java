@@ -9,115 +9,49 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-import javax.servlet.ServletException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.io.BufferedOutputStream;
-
-import org.mmbase.bridge.*;
-
-import org.mmbase.util.RFC1123;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-import java.util.Date;
+import java.util.Map;
+import org.mmbase.bridge.Node;
 
 /**
- *
- * @version $Id: AttachmentServlet.java,v 1.4 2002-06-28 21:05:49 michiel Exp $
+ * Serves attachments. An attachments can be any object, as long as it has a byte[] field named
+ * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
+ * this servlet and preferably the node has also those fields.
+  *
+ * @version $Id: AttachmentServlet.java,v 1.5 2002-06-30 20:15:52 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @see AttachmentServlet
  */
-public class AttachmentServlet extends BridgeServlet {
-    private static Logger log;
-
-
-    private long expires;
-    /**
-     */
-    public AttachmentServlet() {
-        super();
-    }
-
-    public void init() throws ServletException {
-        super.init();
-        log = Logging.getLoggerInstance(AttachmentServlet.class.getName());
-
-        String expiresParameter = getInitParameter("expire");
-        if (expiresParameter == null) {
-            // default: one hour
-            expires = 60 * 60 * 1000;
-        } else {
-            expires = new Integer(expiresParameter).intValue() * 1000;
-        }
-
-        associate("attachments", getServletName());
-    }
-
-    /**
-     * Overrides parent function. The current time is returned now, but I wonder is this is ok.
-     **/
-    protected long getLastModified(HttpServletRequest req) {
-        return System.currentTimeMillis();
-    }
-
-    /**
-     * Serves (cached) attachements.
-     *
-     */
-
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {    
-        Node node = getNode(req, res);
-
-        if (node == null) return;
-
-        byte[] bytes = node.getByteValue("handle"); 
-        if (bytes == null) {
-            res.sendError(res.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
-            return;
-        }
-        int    fileSize = bytes.length;
-
-        String fileName = node.getStringValue("filename");
-        if (fileName == null || fileName.equals("")) {
-            fileName = "MMBase-attachment";
-        }
-        String mimeType = node.getStringValue("mimetype");
-        if (mimeType == null || mimeType.equals("")) {
-            mimeType = "application/x-binary";
-        }
-
-        res.setContentType(mimeType);
-        res.setContentLength(fileSize);
-        res.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-
-        String now  = RFC1123.makeDate(new Date());
-        res.setHeader("Date", now);
-                
-
-        // attachments could principaly expire,  the expiration time is set in init-param 'expire'.
-        Date later =  new Date(System.currentTimeMillis() + expires);
-        res.setHeader("Expires", RFC1123.makeDate(later));
-        BufferedOutputStream out=null;
-        try {
-            out = new BufferedOutputStream(res.getOutputStream());
-        } catch (java.io.IOException e) {
-            log.error(Logging.stackTrace(e));
-        }
-
-        out.write(bytes, 0, fileSize);
-        out.flush();
-        out.close();
-    }
-
-
+public class AttachmentServlet extends HandleServlet {
 
     public String getServletInfo()  {
-        return "Serves MMBase attachments.";
+        return "Serves MMBase nodes as attachments";
+    }
+
+    protected Map getAssociations() {
+        Map a = super.getAssociations();
+        a.put("attachments", new Integer(50)); // Is very good in attachments (determins mime-type
+                                               // starting with 'attachments' builder fields),
+
+        a.put("images",      new Integer(10)); // And also can do images (but is not aware of // icaches)
+        a.put("downloads",   new Integer(0));
+        return a;
+    }
+
+    /**
+     * Determins the mimetype. Can be overridden.
+     */
+    protected String getMimeType(Node node) {
+        String mimeType = node.getStringValue("mimetype");
+        if (mimeType == null || mimeType.equals("")) { 
+            // mime-type missing, try to suppose that this is an image node, which has the mimetype
+            // as a function.
+            mimeType = node.getStringValue("mimetype()"); 
+            if (mimeType == null || mimeType.equals("")) { 
+                return super.getMimeType(node);
+            }
+        }
+        return mimeType;
     }
 
 }
