@@ -1,45 +1,44 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <html>
-<head>
-   <title>MMBase Administration</title>
-   <link rel="stylesheet" href="css/mmbase.css" type="text/css">
-</head>
-<mm:import externid="category" />
-<mm:import externid="subcategory" />
-<mm:notpresent referid="category">
-        <frameset rows="60,*" border="0" frameborder="0" framespacing="0" >
-                <frame src="<mm:url page="nav.jsp?category=about&subcategory=about"/>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
-                <frame src="<mm:url page="about/about.jsp"/>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        </frameset>
-</mm:notpresent>
-<mm:present referid="category">
-        <frameset rows="60,*" border="0" frameborder="0" framespacing="0">
-  	    <mm:notpresent referid="subcategory">
-                <frame src="<mm:url page="nav.jsp?category=${category}&subcategory=${subcategory}" />" name="navigatie"
-scrolling="no" marginwidth="1" marginheight="0" />
-          </mm:notpresent>
-  	    <mm:present referid="subcategory">
-                <frame src="<mm:url page="nav.jsp?category=${category}" />" name="navigatie"
-scrolling="no" marginwidth="1" marginheight="0" />
- 	    </mm:present>
-        <mm:compare referid="category" value="examples">
-		<mm:import id="url">/mmexamples/index.jsp</mm:import>
-        </mm:compare>
-        <mm:compare referid="category" value="documentation">
-		<mm:import id="url">/mmdocs/index.html</mm:import>
-        </mm:compare>
-	  <mm:notpresent referid="url">
-  	    <mm:notpresent referid="subcategory">
-		<mm:import id="url"><mm:write referid="category" />/main.jsp</mm:import>
-          </mm:notpresent>
-  	    <mm:present referid="subcategory">
-		<mm:import id="url"><mm:write referid="category" />/<mm:write referid="subcategory" />.jsp</mm:import>
-          </mm:present>
-          <frame src="<mm:url page="$url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        </frameset>
-	 </mm:notpresent>
-</mm:present>
+  <head>
+    <title>MMBase Administration</title>
+    <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
+  </head>
+  <mm:import externid="category" />
+  <mm:import externid="subcategory" />
+  <mm:notpresent referid="category">
+    <frameset rows="70,*" border="0" frameborder="0" framespacing="0">
+      <frame src="<mm:url page="nav.jsp?category=about&subcategory=about" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+      <frame src="<mm:url page="about/about.jsp"/>" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+    </frameset>
+  </mm:notpresent>
+  <mm:present referid="category">
+    <frameset rows="70,*" border="0" frameborder="0" framespacing="0">
+      <mm:notpresent referid="subcategory">
+        <frame src="<mm:url page="nav.jsp?category=${category}&subcategory=${subcategory}" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+      </mm:notpresent>
+      <mm:present referid="subcategory">
+        <frame src="<mm:url page="nav.jsp?category=${category}" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+      </mm:present>
+      <mm:compare referid="category" value="examples">
+        <mm:import id="url">/mmexamples/index.jsp</mm:import>
+      </mm:compare>
+      <mm:compare referid="category" value="documentation">
+        <mm:import id="url">/mmdocs/index.html</mm:import>
+      </mm:compare>
+      <mm:notpresent referid="url">
+        <mm:notpresent referid="subcategory">
+          <mm:import id="url"><mm:write referid="category" />/main.jsp</mm:import>
+        </mm:notpresent>
+        <mm:present referid="subcategory">
+          <mm:import id="url"><mm:write referid="category" />/<mm:write referid="subcategory" />.jsp</mm:import>
+        </mm:present>
+        <frame src="<mm:url page="$url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+      </mm:notpresent>
+      </frameset>
+  </mm:present>
+
 <noframes>
 <body class="basic">
 <table summary="navigation">
