@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
  */
 package org.mmbase.bridge.jsp.taglib;
-import  org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import java.util.*;
 import java.text.*;
@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.41 2004-05-18 15:38:25 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.42 2004-06-02 10:53:35 keesj Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -31,28 +31,28 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     private static final int DAY = 1000 * 60 * 60 * 24;
 
-    private Attribute time        = Attribute.NULL;
+    private Attribute time = Attribute.NULL;
     private Attribute inputFormat = Attribute.NULL;
-    private Attribute offset      = Attribute.NULL;
+    private Attribute offset = Attribute.NULL;
 
-    private Attribute precision   = Attribute.NULL;
-    private Attribute relevance   = Attribute.NULL;
+    private Attribute precision = Attribute.NULL;
+    private Attribute relevance = Attribute.NULL;
 
-    private Attribute timezone   = Attribute.NULL;
+    private Attribute timezone = Attribute.NULL;
 
-    private final static int PRECISION_UNSET   = -1;
+    private final static int PRECISION_UNSET = -1;
     private final static int PRECISION_SECONDS = 1;
     private final static int PRECISION_MINUTES = 2;
-    private final static int PRECISION_HOURS   = 3;
-    private final static int PRECISION_DAYS    = 4;
-    private final static int PRECISION_WEEKS   = 5;
-    private final static int PRECISION_MONTHS  = 6;
-    private final static int PRECISION_YEARS   = 7;
+    private final static int PRECISION_HOURS = 3;
+    private final static int PRECISION_DAYS = 4;
+    private final static int PRECISION_WEEKS = 5;
+    private final static int PRECISION_MONTHS = 6;
+    private final static int PRECISION_YEARS = 7;
 
     /**
      * Fast way to find the day number of a day
      */
-    static private Map days   = new HashMap();
+    static private Map days = new HashMap();
     /**
      * Fast way to find the month number of a month
      */
@@ -62,19 +62,12 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         DateFormatSymbols dfs = new SimpleDateFormat("", Locale.ENGLISH).getDateFormatSymbols();
         setDays(dfs);
         setMonths(dfs);
-   }
-
-
-    /**
-     * DateFormat user for parsing dates. Given dates are always in english.
-     */
-    private SimpleDateFormat parseFormat = new SimpleDateFormat("", Locale.ENGLISH);
+    }
 
     /**
      * Format attribute used for displaying the dates.
      */
     private Attribute dateFormat = Attribute.NULL;
-
 
     /**
      * @since MMBase-1.7.1
@@ -122,7 +115,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     }
 
-
     public void setRelevance(String p) throws JspTagException {
         relevance = getAttribute(p);
     }
@@ -132,21 +124,29 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         return getPrecisionConstant(p);
     }
 
-    protected DateFormat getFormat() throws JspTagException {
-
-        DateFormat df;
-        if (log.isDebugEnabled()) log.debug("format: '" + dateFormat + "'");
-
-        String format = dateFormat.getString(this);
+    /**
+     * 
+     * @return the current locale based on a parent locale tag if extist or else the default locale from the default cloud context
+     */
+    protected Locale getLocale() throws JspTagException {
         Locale locale;
-
-        LocaleTag localeTag = (LocaleTag) findParentTag(LocaleTag.class.getName(), null, false);
+        LocaleTag localeTag = (LocaleTag) findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             locale = localeTag.getLocale();
         } else {
             locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
+        return locale;
+    }
 
+    protected DateFormat getFormat() throws JspTagException {
+
+        DateFormat df;
+        if (log.isDebugEnabled())
+            log.debug("format: '" + dateFormat + "'");
+
+        String format = dateFormat.getString(this);
+        Locale locale = getLocale();
         // symbolic formats. Perhaps will be moved to another attribute or so.
         if (format.length() > 0 && format.charAt(0) == ':') {
             log.debug("found symbolic format");
@@ -156,18 +156,17 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 df = DateFormat.getDateInstance(getDateFormatStyle(format.substring(1)), locale);
             } else {
                 int i = format.indexOf('.');
-                df = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)),
-                                                            getDateFormatStyle(format.substring(i+1)), locale);
+                df = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)), getDateFormatStyle(format.substring(i + 1)), locale);
             }
         } else if (format.equals("e")) {
-            df = new DayOfWeekDateFormat();
-            
+            df = new DayOfWeekDateFormat(locale);
+
         } else {
             df = new SimpleDateFormat(format, locale);
         }
-        
+
         String tz = timezone.getString(this);
-        if (! tz.equals("")) {
+        if (!tz.equals("")) {
             df.setTimeZone(TimeZone.getTimeZone(tz));
         }
 
@@ -183,7 +182,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         this.offset = getAttribute(offset);
     }
 
-
     public void setTimezone(String tz) throws JspTagException {
         timezone = getAttribute(tz);
     }
@@ -198,7 +196,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     }
 
     public int doStartTag() throws JspTagException {
-        
+
         helper.setValue(evaluateTime());
 
         if (getId() != null) {
@@ -215,17 +213,15 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         return helper.doAfterBody();
     }
 
-
     public int doEndTag() throws JspTagException {
         return helper.doEndTag();
     }
 
-    public void release () {
+    public void release() {
         inputFormat = Attribute.NULL;
-        offset =      Attribute.NULL;
-        dateFormat =  Attribute.NULL;
+        offset = Attribute.NULL;
+        dateFormat = Attribute.NULL;
     }
-
 
     /**
      * Converts a string to a DateFormat constant.
@@ -253,24 +249,24 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * @javadoc
      */
     private String evaluateTime() throws JspTagException {
-        if (log.isDebugEnabled()) { 
-            log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputFormat +"'");
+        if (log.isDebugEnabled()) {
+            log.debug("time: '" + time + "' offset: '" + offset + "' format: '" + dateFormat + "' inputformat: '" + inputFormat + "'");
         }
 
         String useTime = null;
         date = null;
         // If the time attribute is not set, check if referid is used, otherwise check if the parent set the time.
         // Otherwise use current time
-        if(time == Attribute.NULL) {
-            if(getReferid() != null) { // try to get it from other time tag
+        if (time == Attribute.NULL) {
+            if (getReferid() != null) { // try to get it from other time tag
                 Object object = getObject(getReferid());
                 if (object instanceof Date) {
                     date = (Date) object;
                 } else {
                     useTime = Casting.toString(object);
                 }
-            } else {                   // try to get it from parent writer.
-                Writer w =  findWriter(false);
+            } else { // try to get it from parent writer.
+                Writer w = findWriter(false);
                 if (w != null) {
                     Object object = w.getWriterValue();
                     if (object instanceof Date) {
@@ -282,7 +278,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 }
             }
 
-            if(useTime == null && date == null) { // still not found
+            if (useTime == null && date == null) { // still not found
                 throw new JspTagException("Cannot evaluate time. No time attribute given, no referid attribute set, and no writer parent tag found.");
             }
         } else {
@@ -290,12 +286,12 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
         String iformat = inputFormat.getString(this);
-        if (iformat.equals("")) {            
+        if (iformat.equals("")) {
             if (date == null) {
                 // Is the time given in second from EPOC (UTC)?
                 try {
                     long timeFromEpoc = Long.parseLong(useTime);
-                    date = new Date(timeFromEpoc*1000);
+                    date = new Date(timeFromEpoc * 1000);
                 } catch (NumberFormatException nfe) {
                     // perhaps it was a keyWord...
                     // this will be explored hereafter.
@@ -306,7 +302,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             }
 
             // Is a day specified, like: monday, tuesday ?
-            if(date == null && isDay(useTime)) {
+            if (date == null && isDay(useTime)) {
                 try {
                     date = handleDay(useTime);
                 } catch (ParseException e) {
@@ -317,7 +313,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 }
             }
             // Is a month specified, like: january, february ?
-            if(date == null && isMonth(useTime)) {
+            if (date == null && isMonth(useTime)) {
                 try {
                     date = handleMonth(useTime);
                 } catch (ParseException e) {
@@ -328,7 +324,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 }
             }
             // Is a keyword used, like: yesterday, today ?
-            if(date == null && isKeyword(useTime)) {
+            if (date == null && isKeyword(useTime)) {
                 try {
                     date = handleKeyword(useTime);
                 } catch (ParseException e) {
@@ -339,19 +335,18 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
                 }
             }
             if (date == null) {
-                date = parseTime();  // Try to parse it in three standard ways.
+                date = parseTime(); // Try to parse it in three standard ways.
             }
-
         } else { // The input format is provided. We use that to parse the time attribute
             try {
-                parseFormat.applyPattern(iformat);
-                date = parseFormat.parse(useTime);
+                SimpleDateFormat format = getDateFormat();
+                format.applyPattern(iformat);
+                date = format.parse(useTime);
             } catch (java.text.ParseException e) {
                 throw new TaglibException(e);
             }
 
         }
-
 
         if (log.isDebugEnabled()) {
             log.debug("date: '" + date + "'");
@@ -362,12 +357,12 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
         // Calculate the offset
-        if(offset != Attribute.NULL) {
+        if (offset != Attribute.NULL) {
             long calculatedDate = date.getTime();
             long os;
             String off = offset.getString(this);
             try {
-                os  = Long.parseLong(off) * 1000;
+                os = Long.parseLong(off) * 1000;
             } catch (NumberFormatException nfe) {
                 os = new Double(off).longValue() * 1000;
             }
@@ -375,21 +370,27 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
         if (precision != Attribute.NULL) {
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(getLocale());
             cal.setTime(date);
             int prec = getPrecision();
-            switch(prec) {
-                case PRECISION_YEARS:    cal.set(Calendar.MONTH,  Calendar.JANUARY);
-                case PRECISION_MONTHS:   cal.set(Calendar.DAY_OF_MONTH,  1);
-                case PRECISION_DAYS:     cal.set(Calendar.HOUR_OF_DAY,  0);
-                case PRECISION_HOURS:    cal.set(Calendar.MINUTE,    0);
-                case PRECISION_MINUTES:  cal.set(Calendar.SECOND,    0);
-                case PRECISION_SECONDS:
-                default:                 cal.set(Calendar.MILLISECOND,    0);
+            switch (prec) {
+                case PRECISION_YEARS :
+                    cal.set(Calendar.MONTH, Calendar.JANUARY);
+                case PRECISION_MONTHS :
+                    cal.set(Calendar.DAY_OF_MONTH, 1);
+                case PRECISION_DAYS :
+                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                case PRECISION_HOURS :
+                    cal.set(Calendar.MINUTE, 0);
+                case PRECISION_MINUTES :
+                    cal.set(Calendar.SECOND, 0);
+                case PRECISION_SECONDS :
+                default :
+                    cal.set(Calendar.MILLISECOND, 0);
             }
-            if (prec == PRECISION_WEEKS)  {
-                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS
-                cal.set(Calendar.DAY_OF_WEEK, 1);
+            if (prec == PRECISION_WEEKS) {
+                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS                
+                cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
                 cal.set(Calendar.HOUR_OF_DAY, 0);
                 cal.set(Calendar.MINUTE, 0);
                 cal.set(Calendar.SECOND, 0);
@@ -399,19 +400,25 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         }
 
         if (relevance != Attribute.NULL) {
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(getLocale());
             cal.setTime(date);
             int rel = getRelevance();
-            switch(rel) {
-                case PRECISION_SECONDS:  cal.set(Calendar.MINUTE,    0);
-                case PRECISION_MINUTES:  cal.set(Calendar.HOUR,      0);
-                case PRECISION_HOURS:    cal.set(Calendar.DAY_OF_MONTH,    0);
-                case PRECISION_WEEKS:    ;
-                case PRECISION_DAYS:     cal.set(Calendar.MONTH,  Calendar.JANUARY);
-                case PRECISION_MONTHS:   cal.set(Calendar.YEAR, 0);
-                case PRECISION_YEARS:
-                default:
-            }
+            switch (rel) {
+                case PRECISION_SECONDS :
+                    cal.set(Calendar.MINUTE, 0);
+                case PRECISION_MINUTES :
+                    cal.set(Calendar.HOUR, 0);
+                case PRECISION_HOURS :
+                    cal.set(Calendar.DAY_OF_MONTH, 0);
+                case PRECISION_WEEKS :
+                    ;
+                case PRECISION_DAYS :
+                    cal.set(Calendar.MONTH, Calendar.JANUARY);
+                case PRECISION_MONTHS :
+                    cal.set(Calendar.YEAR, 0);
+                case PRECISION_YEARS :
+                default :
+                    }
             date = cal.getTime();
         }
 
@@ -427,7 +434,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * Check if a certain string is the name of a day.
      */
     private boolean isDay(String day) {
-        if (log.isDebugEnabled()) log.debug("day: '"+day+"'");
+        if (log.isDebugEnabled())
+            log.debug("day: '" + day + "'");
         return days.containsKey(day.toLowerCase());
     }
 
@@ -435,7 +443,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * Check if a certain string is the name of a month.
      */
     private boolean isMonth(String month) {
-        if (log.isDebugEnabled()) log.debug("month: '"+month+"'");
+        if (log.isDebugEnabled())
+            log.debug("month: '" + month + "'");
         return months.containsKey(month.toLowerCase());
     }
 
@@ -443,13 +452,10 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * check if it is a keyword
      */
     private boolean isKeyword(String keyword) {
-        if (log.isDebugEnabled()) log.debug("keyword: '"+keyword+"'");
+        if (log.isDebugEnabled())
+            log.debug("keyword: '" + keyword + "'");
 
-        return
-            keyword.equalsIgnoreCase("now") ||
-            keyword.equalsIgnoreCase("today") ||
-            keyword.equalsIgnoreCase("tomorrow") ||
-            keyword.equalsIgnoreCase("yesterday");
+        return keyword.equalsIgnoreCase("now") || keyword.equalsIgnoreCase("today") || keyword.equalsIgnoreCase("tomorrow") || keyword.equalsIgnoreCase("yesterday");
     }
 
     /**
@@ -461,22 +467,26 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      *
      */
     private Date parseTime() throws JspTagException {
-        if(time == Attribute.NULL) return null;
+        if (time == Attribute.NULL)
+            return null;
 
         Date date = new Date();
         try {
             String t = time.getString(this);
-            if(t.length() == 10) {
-                parseFormat.applyPattern("yyyy/MM/dd");
-                date = parseFormat.parse(t);
-            } else if(t.length() == 8) {
-                parseFormat.applyPattern("HH:mm:ss");
-                date = parseFormat.parse(t);
-            } else if(t.length() == 19) {
-                parseFormat.applyPattern("yyyy/MM/dd HH:mm:ss");
-                date = parseFormat.parse(t);
+            if (t.length() == 10) {
+                SimpleDateFormat format = getDateFormat();
+                format.applyPattern("yyyy/MM/dd");
+                date = format.parse(t);
+            } else if (t.length() == 8) {
+                SimpleDateFormat format = getDateFormat();
+                format.applyPattern("HH:mm:ss");
+                date = format.parse(t);
+            } else if (t.length() == 19) {
+                SimpleDateFormat format = getDateFormat();
+                format.applyPattern("yyyy/MM/dd HH:mm:ss");
+                date = format.parse(t);
             } else {
-                throw new JspTagException("Time '" + t+ "' could not be parsed according to yyyy/MM/dd, HH:mm:ss or yyyy/MM/dd HH:mm:ss");
+                throw new JspTagException("Time '" + t + "' could not be parsed according to yyyy/MM/dd, HH:mm:ss or yyyy/MM/dd HH:mm:ss");
             }
         } catch (ParseException e) {
             throw new TaglibException(e);
@@ -485,36 +495,35 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     }
 
-
     /**
      * Evaluate the start of the day asked for.
      */
-    private Date handleDay(String snextday) throws ParseException, JspTagException  {
-        int nextday = ((Integer)days.get(snextday.toLowerCase())).intValue();
+    private Date handleDay(String snextday) throws ParseException, JspTagException {
+        int nextday = ((Integer) days.get(snextday.toLowerCase())).intValue();
 
         // Find out which day it is.
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(getLocale());
         calendar.setTime(new Date());
         int today = calendar.get(Calendar.DAY_OF_WEEK);
 
         // Calc how many days futher
-        int diff = (7+nextday-today)%7;
+        int diff = (7 + nextday - today) % 7;
 
         // If diff=0, calculate if we want to return the same day or next week.
         long seconds = 0;
-        if(diff==0) {
+        if (diff == 0) {
             // No offset given, return next week.
-            if(offset == Attribute.NULL){
+            if (offset == Attribute.NULL) {
                 diff = 7;
             } else {
                 // Calculate how many seconds are already past this day
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
-                seconds = hours*3600+minutes+60;
+                seconds = hours * 3600 + minutes + 60;
 
                 long ioffset = Long.parseLong(offset.getString(this));
                 // If we are not over the offset return the same day, otherwise next week.
-                if(seconds > ioffset) {
+                if (seconds > ioffset) {
                     diff = 7;
                 }
             }
@@ -529,37 +538,37 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * Evaluate the start of the month asked for.
      */
     private Date handleMonth(String smonth) throws ParseException, JspTagException {
-        int month = ((Integer)months.get(smonth.toLowerCase())).intValue();
+        int month = ((Integer) months.get(smonth.toLowerCase())).intValue();
 
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(getLocale());
         calendar.setTime(new Date());
         int today = calendar.get(Calendar.MONTH);
 
         // Calc how many months futher
-        int diff = (12+month-today)%12;
+        int diff = (12 + month - today) % 12;
 
         // If diff=0, calculate if we want to return the same day or next month.
         long seconds = 0;
-        if(diff==0) {
+        if (diff == 0) {
             // No offset is given, return next month
-            if(offset==null){
-                diff=12;
+            if (offset == null) {
+                diff = 12;
             } else {
                 // Calculate how many seconds are already past this day
                 int days = calendar.get(Calendar.DAY_OF_MONTH);
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
-                seconds = days*24*3600+hours*3600+minutes+60;
+                seconds = days * 24 * 3600 + hours * 3600 + minutes + 60;
 
                 long ioffset = Long.parseLong(offset.getString(this));
                 // If we are not over the offset return the same day, otherwise next month.
-                if(seconds>ioffset) {
-                    diff=12;
+                if (seconds > ioffset) {
+                    diff = 12;
                 }
             }
         }
         // Go to the correct month
-        calendar.add(Calendar.MONTH,diff);
+        calendar.add(Calendar.MONTH, diff);
 
         return getBeginOfMonth(calendar);
     }
@@ -568,31 +577,28 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * convert a keyword into a date
      * @param keyword the keyword to convert
      */
-    private Date handleKeyword(String keyword) throws ParseException {
-        if(keyword.equals("now")) {
+    private Date handleKeyword(String keyword) throws ParseException, JspTagException {
+        if (keyword.equals("now")) {
             return new Date();
         }
 
-        int index=0;
+        int index = 0;
 
-        if(keyword.equals("today"))   {
+        if (keyword.equals("today")) {
             index = 0;
-        } else
-            if(keyword.equals("tomorrow"))   {
-                index = DAY;
-            } else
-                if(keyword.equals("yesterday"))   {
-                    index = -DAY;
-                }
+        } else if (keyword.equals("tomorrow")) {
+            index = DAY;
+        } else if (keyword.equals("yesterday")) {
+            index = -DAY;
+        }
 
         long now = System.currentTimeMillis();
         Date newDate = new Date(now + index);
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(getLocale());
         calendar.setTime(newDate);
 
         return getBeginOfDay(calendar);
     }
-
 
     /**
      * Finds the start of the day.
@@ -601,8 +607,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      */
     private Date getBeginOfDay(Calendar cal) throws ParseException {
         cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE,      0);
-        cal.set(Calendar.SECOND,      0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         return cal.getTime();
     }
 
@@ -612,7 +618,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
      * @return The beginning of the month of the given Date
      */
     private Date getBeginOfMonth(Calendar cal) throws ParseException {
-        cal.set(Calendar.DAY_OF_MONTH,  1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         return getBeginOfDay(cal);
     }
 
@@ -622,8 +628,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     static private void setDays(DateFormatSymbols dfs) {
         String[] dayarray = dfs.getWeekdays();
 
-        for(int i=0; i<dayarray.length;i++) {
-            days.put(dayarray[i].toLowerCase(),new Integer(i));
+        for (int i = 0; i < dayarray.length; i++) {
+            days.put(dayarray[i].toLowerCase(), new Integer(i));
         }
     }
 
@@ -633,25 +639,38 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     static private void setMonths(DateFormatSymbols dfs) {
         String[] montharray = dfs.getMonths();
 
-        for(int i=0; i<montharray.length;i++) {
-            months.put(montharray[i].toLowerCase(),new Integer(i));
+        for (int i = 0; i < montharray.length; i++) {
+            months.put(montharray[i].toLowerCase(), new Integer(i));
         }
+    }
+    /**
+     * DateFormat used for parsing dates.
+     */
+    protected SimpleDateFormat getDateFormat() throws JspTagException {
+        return new SimpleDateFormat("", getLocale());
     }
 
     protected class DayOfWeekDateFormat extends DateFormat {
+        Locale locale;
         private TimeZone zone = null;
+
+        public DayOfWeekDateFormat(Locale locale) {
+            this.locale = locale;
+        }
+
         public Date parse(String source, ParsePosition pos) {
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(locale);
             int day = source.charAt(0) - '0';
-            pos.setIndex(pos.getIndex() + 1);            
+            pos.setIndex(pos.getIndex() + 1);
             calendar.set(Calendar.DAY_OF_WEEK, day);
             if (zone != null) {
                 calendar.setTimeZone(zone);
             }
             return calendar.getTime();
         }
+
         public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(locale);
             calendar.setTime(date);
             if (zone != null) {
                 calendar.setTimeZone(zone);
@@ -665,6 +684,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             zone = value;
         }
 
-        
     }
+
 }
