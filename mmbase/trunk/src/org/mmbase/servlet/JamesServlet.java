@@ -1,4 +1,4 @@
-/* 
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -28,18 +28,18 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.31 2001-10-29 12:05:41 vpro Exp $
+* @version $Id: JamesServlet.java,v 1.32 2001-12-19 17:28:49 vpro Exp $
 */
 
 
 public class JamesServlet extends HttpServlet {
 	static Logger log;
-	
+
 	/**
 	* To keep track of the currently running servlets
 	* switch the following boolean to true.
 	*/
-	private static final boolean logServlets = false;
+	private static final boolean logServlets = true;
 	private static int servletCount; // Number of running servlets
 	/**
 	*  Lock to sync add and remove of threads
@@ -53,11 +53,11 @@ public class JamesServlet extends HttpServlet {
 	* Toggle to print running servlets to log
 	*/
 	private static int printCount;
-	
+
 	/**
 	* Debug method for logging. obsolete
 	*/
-	protected void debug( String msg ) { 
+	protected void debug( String msg ) {
 	//	log.debug(msg + " <deprecated call>"); }
 	}
 
@@ -71,7 +71,7 @@ public class JamesServlet extends HttpServlet {
         ServletConfig sc = getServletConfig();
         ServletContext sx = sc.getServletContext();
         MMBaseContext.init(sx);
-        MMBaseContext.initHtmlRoot();	
+        MMBaseContext.initHtmlRoot();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(JamesServlet.class.getName());
     }
@@ -385,7 +385,7 @@ public class JamesServlet extends HttpServlet {
 				if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
 				else { s.refCount++; s.URIs.addElement(URL); }
 			}// sync
-        
+
 			if ((printCount & 31)==0) {
 				if (curCount>0) {
 					log.info("Running servlets: "+curCount);
@@ -408,56 +408,16 @@ public class JamesServlet extends HttpServlet {
 //  ------------------------------------------------------------------------------------------------------------
 // these vars should be renamed!
 
-    private static  boolean     isForVPRO        = true;                // is this class used by vpro or others
-    private static  String      VPRODomain       = "145.58";            // well not quite, but does the trick :)
     private static  String      VPROProxyName    = "vpro6d.vpro.nl";    // name of proxyserver
     private static  String      VPROProxyAddress = "145.58.172.6";      // address of proxyserver
 
-    /**
-     * Determines if a user comes from an internal or external host, i.e.
-     * when using two streaming servers, one for external users and one for internal users.
-     * <br>
-     * XXX: uses VPROProxyName, VPROProxyAddress, VPRODomain. Should be made more generic
-     * by using propertie values in mmbaseroot (?).
-     * The name of the method should be changed (i.e to isInternalAddres)
-     * @param req The HTTP request, which contains hostname as ipaddress
-     * @return <code>true</code> if the user is internal, <code>false</code> if external.
-     */
-    public boolean isInternalVPROAddress(HttpServletRequest req) {
-        boolean intern  = false;
-        String  ip      = req.getRemoteAddr();
-        // computers within vpro domain, use *.vpro.nl as server, instead *.omroep.nl
-        // --------------------------------------------------------------------------
-        if( ip != null && !ip.equals("")) {
-            // is address from proxy?
-            // ----------------------
-            if( ip.indexOf( VPROProxyName )!= -1  || ip.indexOf( VPROProxyAddress )!= -1 ) {
-                // positive on proxy, get real ip
-                // ------------------------------
-                ip = req.getHeader("X-Forwarded-For");
-
-                // come from internal host?
-                // ------------------------
-                if( ip != null && !ip.equals("") && ip.indexOf( VPRODomain ) != -1) {
-                    intern = true;
-                }
-            } else {
-                // no proxy, this is the real thing
-                // --------------------------------
-                if( ip.indexOf("145.58") != -1 ) {
-                    intern = true;
-                }
-            }
-        }
-        return intern;
-    }
 
     /**
      * Extract hostname from request, get address and determine the proxies between it.
      * Needed to determine if user a comes from an internal or external host, i.e.
      * when using two streaming servers, one for external users and one for internal users.
      * <br>
-     * XXX: uses VPROProxyName, VPROProxyAddress, VPRODomain. Should be made more generic.
+     * XXX: uses VPROProxyName, VPROProxyAddress. Should be made more generic.
      * @param req The HTTP request, which contains hostname as ipaddress
      * @return a string containing the proxy chain. in the format
      *         "clientproxy.clientside.com->dialin07.clientside.com"
