@@ -538,12 +538,12 @@ class MMultipartRequest {
 // org.mmbase.util.HttpPost implementation
 
 
-class MultipartRequest {
+class MMultipartRequest {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
     private org.mmbase.util.HttpPost o;
 
-    MultipartRequest(HttpServletRequest req) {
+    MMultipartRequest(HttpServletRequest req) {
 		log.debug("Creating HttpPost instance");
         o = new org.mmbase.util.HttpPost(req);
     };
