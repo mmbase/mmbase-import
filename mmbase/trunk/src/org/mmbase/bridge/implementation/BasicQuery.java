@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.25 2003-09-16 18:52:08 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.26 2003-11-10 17:54:32 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -186,9 +186,15 @@ public class BasicQuery implements Query  {
         BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
         relationStep.setDirectionality(direction); 
         relationStep.setAlias(createAlias(relationStep.getTableName()));
+        NodeManager relationManager = otherNodeManager.getCloud().getNodeManager(relationStep.getTableName());
         BasicStep next = (BasicStep) relationStep.getNext();
         next.setAlias(createAlias(next.getTableName()));
-        if (! aggregating) addField(next, otherNodeManager.getField("number")); // distinct?
+        if (! aggregating) {
+            // the number fields must always be queried, otherwise the original node cannot be found back (e.g. <mm:node element=)
+            addField(relationStep, relationManager.getField("number"));  // query relation node
+            addField(next,         otherNodeManager.getField("number"));  // and next node
+            // distinct?
+        }
         return relationStep;
     }
     public RelationStep addRelationStep(NodeManager otherNodeManager) {
