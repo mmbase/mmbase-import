@@ -114,7 +114,7 @@ public class CronDaemon implements Runnable {
      * daemon is already started on default.
      */
     public void start() {
-        log.info("Starting JCronDaemon");
+        log.info("Starting CronDaemon");
         cronThread = new Thread(this, "CronDaemon");
         cronThread.setDaemon(true);
         cronThread.start();
@@ -136,7 +136,7 @@ public class CronDaemon implements Runnable {
     }
 
     /**
-     * Gets (and instantiates, and starts) the one JCronDaemon instance.
+     * Singleton, Gets (and instantiates, and starts) the one CronDaemon instance.
      */
 
     public static synchronized CronDaemon getInstance() {
