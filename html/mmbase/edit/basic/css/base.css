@@ -1,0 +1,40 @@
+.currentmenuitem {
+    font-family: arial, verdana, helvetica, geneva;
+    font-size: medium;
+    color: white;
+    text-decoration: none
+}
+.menuitem {
+    font-family: arial, verdana, helvetica, geneva;
+    font-size: medium;
+    color: #42BDAD;
+    text-decoration: none
+}
+
+
+.small {
+    width: 100%;
+}
+
+.buttons {
+    text-align: right
+}
+textarea.small {
+    height: 6em;
+}
+textarea.big {
+    height: 15em;
+    width: 100%;    
+}
+input {
+}
+
+p.foot {
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
+p.foot2 {
+	margin-bottom: 0px;
+	margin-top: 0px;
+    float: right;
+}
