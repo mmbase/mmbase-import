@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.3 2003-09-03 19:34:12 michiel Exp $
+ * @version $Id: Queries.java,v 1.4 2003-09-05 16:30:57 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -314,9 +314,12 @@ public class Queries {
         return query;
     }
 
+    /**
+     * Returns substring of given string without the leading digits (used in 'paths')
+     */
     protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
-        while (Character.isDigit(complete.charAt(end))) end--;
+        while (Character.isDigit(complete.charAt(end--)));
         return complete.substring(0, end + 1);
     }
 
@@ -330,12 +333,12 @@ public class Queries {
             searchDirs = "";
         }
        
-        StringTokenizer pathTokenizer     = new StringTokenizer(path, ",");
+        StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
         StringTokenizer searchDirsTokenizer = new StringTokenizer(searchDirs, ",");
 
         Cloud cloud = query.getCloud();
 
-        if (query.getSteps().size() == 0 ) {
+        if (query.getSteps().size() == 0 ) { // if no steps yet, first step must be added with addStep
             String completeFirstToken = pathTokenizer.nextToken().trim();
             String firstToken      = removeDigits(completeFirstToken);
             Step step = query.addStep(cloud.getNodeManager(firstToken));
