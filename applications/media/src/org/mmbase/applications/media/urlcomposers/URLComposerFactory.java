@@ -31,7 +31,7 @@ import java.lang.reflect.*;
  * format/protocol combination to a URLComposer class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.11 2003-02-25 23:54:31 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.12 2003-03-21 13:31:36 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -97,7 +97,7 @@ public class URLComposerFactory  {
     // this is the beforementioned list.
     private List urlComposerClasses = new ArrayList();
 
-    private ComposerConfig defaultUrlComposer;
+    private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null); 
 
 
     private FileWatcher configWatcher = new FileWatcher(true) {
@@ -277,7 +277,7 @@ public class URLComposerFactory  {
                 log.debug(cc.checkFormat(format) + "/" + cc.checkProtocol(protocol));
             }
         }
-        if (! found) { // use default
+        if (! found) { // use default            
             URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info);
             if (uc != null && ! urls.contains(uc)) { // avoid duplicates
                 log.debug("No urlcomposer found, adding the default");
