@@ -1598,6 +1598,7 @@ public class MMAdmin extends ProcessorModule {
 			results.addElement("");
 		}
 		results.addElement(tagger.ValuesString("ALL"));
+		results.addElement(""+htmlbase.getMultilevelCacheHandler().getCount(en.getKey()));
 	}	
 	return(results);
     }
@@ -1608,6 +1609,7 @@ public class MMAdmin extends ProcessorModule {
 	Enumeration res=MMObjectBuilder.nodeCache.getOrderedElements();
 	while (res.hasMoreElements()) {
 		 MMObjectNode node=(MMObjectNode)res.nextElement();
+		results.addElement(""+MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
 		results.addElement(""+node.getIntValue("number"));
 		results.addElement(node.getStringValue("owner"));
 		results.addElement(mmb.getTypeDef().getValue(node.getIntValue("otype")));
