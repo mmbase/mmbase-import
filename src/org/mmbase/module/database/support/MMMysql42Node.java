@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * mysql.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMMysql42Node.java,v 1.21 2002-11-10 21:15:52 michiel Exp $
+ * @version $Id: MMMysql42Node.java,v 1.21.2.1 2003-03-27 17:31:41 robmaris Exp $
  */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
     /**
@@ -59,8 +59,12 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
             stmt.executeUpdate("update "+mmb.baseName+"_numberTable set number = number+1");
             ResultSet rs=stmt.executeQuery("select number from "+mmb.baseName+"_numberTable;");
-            while(rs.next()) {
-                number=rs.getInt(1);
+            try {
+                while(rs.next()) {
+                    number=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.executeUpdate("unlock tables;");
             stmt.close();

@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.41.2.3 2003-03-26 10:19:56 mark Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.4 2003-03-27 17:31:41 robmaris Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -882,8 +882,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             Statement stmt = con.createStatement();
             if (log.isDebugEnabled()) log.trace("SELECT " + fieldname + " FROM " + mmb.baseName + "_" + tableName + " where number=" + number);
             ResultSet rs = stmt.executeQuery("SELECT " + fieldname + " FROM " + mmb.baseName + "_" + tableName + " where number=" + number);
-            if (rs.next()) {
-                result = getDBByte(rs, 1);
+            try {
+                if (rs.next()) {
+                    result = getDBByte(rs, 1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -908,8 +912,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             MultiConnection con = mmb.getConnection();
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT " + fieldname + " FROM " + mmb.baseName + "_" + tableName + " where number=" + number);
-            if (rs.next()) {
-                result = getDBText(rs, 1);
+            try {
+                if (rs.next()) {
+                    result = getDBText(rs, 1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -1210,8 +1218,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 MultiConnection con = mmb.getConnection();
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("execute function fetchrelkey(10)");
-                while (rs.next()) {
-                    number = rs.getInt(1);
+                try {
+                    while (rs.next()) {
+                        number = rs.getInt(1);
+                    }
+                } finally {
+                    rs.close();
                 }
                 stmt.close();
                 con.close();
@@ -1246,11 +1258,15 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             MultiConnection con = mmb.getConnection();
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT tabname FROM systables where tabid>99;");
-            String s;
-            while (rs.next()) {
-                s = rs.getString(1);
-                if (s != null) s = s.trim();
-                results.addElement(s);
+            try {
+                String s;
+                while (rs.next()) {
+                    s = rs.getString(1);
+                    if (s != null) s = s.trim();
+                    results.addElement(s);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();

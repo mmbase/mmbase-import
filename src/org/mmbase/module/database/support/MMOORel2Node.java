@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.7 2002-11-14 16:22:11 robmaris Exp $
+$Id: MMOORel2Node.java,v 1.7.2.1 2003-03-27 17:31:41 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2002/11/14 16:22:11  robmaris
+RvM: replaced calls to deprecated MMObjectNode getTableName() by getName().
+
 Revision 1.6  2001/07/09 12:30:03  jaco
 jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
 
@@ -72,7 +75,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.7 $ $Date: 2002-11-14 16:22:11 $
+* @$Revision: 1.7.2.1 $ $Date: 2003-03-27 17:31:41 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -389,9 +392,13 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
                 log.debug("SELECT " + fieldname + " FROM " + mmb.baseName + "_" + tableName + " where number=" + number);
             }
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-			if (rs.next()) {
-				result=getDBByte(rs,1);
-			}
+			try {
+                if (rs.next()) {
+                    result=getDBByte(rs,1);
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 			return(result);
@@ -412,9 +419,13 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-			if (rs.next()) {
-				result=getDBText(rs,1);
-			}
+			try {
+                if (rs.next()) {
+                    result=getDBText(rs,1);
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 			return(result);
@@ -736,9 +747,13 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
 				ResultSet rs=stmt.executeQuery("execute function fetchrelkey(10)");
-				while (rs.next()) {
-					number=rs.getInt(1);
-				}
+                try {
+                    while (rs.next()) {
+                        number=rs.getInt(1);
+                    }
+                } finally {
+                    rs.close();
+                }
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
@@ -789,12 +804,16 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT tabname FROM systables where tabid>99;");
-			String s;
-			while (rs.next()) {
-				s = rs.getString(1);
-				if (s!=null) s = s.trim();
-				results.addElement(s);
-			}	
+			try {
+                String s;
+                while (rs.next()) {
+                    s = rs.getString(1);
+                    if (s!=null) s = s.trim();
+                    results.addElement(s);
+                }	
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 			return(results);
