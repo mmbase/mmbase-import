@@ -24,14 +24,14 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.16 2003-09-05 16:32:38 michiel Exp $
+ * @version $Id: Attribute.java,v 1.17 2003-10-16 07:25:11 pierre Exp $
  * @since   MMBase-1.7
  */
 
 public class Attribute {
     private static final Logger log = Logging.getLoggerInstance(Attribute.class);
 
-    private static AttributeCache cache = new AttributeCache(); 
+    private static AttributeCache cache = new AttributeCache();
     // not sure the cache is actually useful for performance, perhaps it can as well be switched off.
 
     public final static Attribute NULL = new NullAttribute();
@@ -124,7 +124,7 @@ public class Attribute {
         return Casting.toString(getValue(tag));
     }
 
-    /** 
+    /**
      * Returns the evaluated Attribute as a int
      */
 
@@ -132,7 +132,7 @@ public class Attribute {
         return org.mmbase.util.Casting.toInt(getValue(tag), def);
     }
 
-    /** 
+    /**
      * Returns the evaluated Attribute as a List (evalatued to comma-seperated String, which is 'split').
      * The List is empty if getValue would give empty String or null.
      *
@@ -142,7 +142,7 @@ public class Attribute {
         return StringSplitter.split(getString(tag));
     }
 
-    /** 
+    /**
      * Returns the evaluated Attribute as a boolen (depending on if getValue returns one of the
      * strings 'true' or 'false' (case insensitve)).
      *
@@ -203,6 +203,7 @@ public class Attribute {
                     int posclose = attr.indexOf('}', pos);
                     int posopen  = attr.indexOf('{', pos);
                     if (posclose == -1) {
+                        log.error("Unbalanced parentheses in '" + this + "'");
                         throw new AttributeException("Unbalanced parentheses in '" + this + "'");
                     }
                     if (posopen > -1 && posopen < posclose) { // another one was opened!
@@ -249,8 +250,8 @@ public class Attribute {
     }
 
     /**
-     * A Part represents one part of an Attribute. 
-     */   
+     * A Part represents one part of an Attribute.
+     */
 
     static abstract class Part {
 
@@ -269,7 +270,7 @@ public class Attribute {
         }
 
         abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
-        
+
         final void  appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
             Casting.toStringBuffer(buffer, getValue(tag));
         }
@@ -280,15 +281,18 @@ public class Attribute {
      */
     static class VariablePart extends Part {
         protected boolean containsVars; //wether the name of variable itself contains variables.
-        VariablePart(Attribute a) throws JspTagException { 
+        VariablePart(Attribute a) throws JspTagException {
             containsVars = a.containsVars();
             if (containsVars) {
                 part = a;
             } else {
-                String var =  (String) a.getValue(null);               
-                if (var.length() < 1) throw new AttributeException("Expression too short");
+                String var =  (String) a.getValue(null);
+                if (var.length() < 1) {
+                    log.error("Expression too short :"+var);
+                    throw new AttributeException("Expression too short");
+                }
                 part = var;
-            } 
+            }
         }
         protected String getType() { return "Variable"; }
         final Object getValue(ContextReferrerTag tag) throws JspTagException {
@@ -301,7 +305,7 @@ public class Attribute {
             if ("_".equals(v)) {
                 return tag.findWriter().getWriterValue();
             } else {
-                return tag.getObject(v); 
+                return tag.getObject(v);
             }
         }
     }
@@ -318,7 +322,7 @@ public class Attribute {
             return evaluated ? "evaluated" : "not evaluated";
         }
 
-        ExpressionPart(Attribute a) throws JspTagException { 
+        ExpressionPart(Attribute a) throws JspTagException {
             if (a.containsVars()) {
                 evaluated = false;
                 part = a;
