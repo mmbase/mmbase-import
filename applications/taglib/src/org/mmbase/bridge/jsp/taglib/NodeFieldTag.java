@@ -41,6 +41,6 @@ public class NodeFieldTag extends FieldTag {
     }
     
     public Node getNodeVar() throws JspTagException {
-        return getCloudProviderVar().getNode(number);
+        return getCloud().getNode(number);
     }
 }

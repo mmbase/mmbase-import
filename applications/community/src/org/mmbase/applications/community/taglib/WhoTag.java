@@ -51,12 +51,15 @@ public class WhoTag extends AbstractNodeListTag {
         // XXX: have to add some error checking too
         community=getCloudContext().getModule("communityprc");
         if (community==null) throw new JspTagException("Community module is not active");
-        if (channel==null) throw new JspTagException("Attribute channel has not been specified");
+        if (channel==null) { // must be the surrounding node
+            Node n = getNode();
+            channel = n.getStringValue("number");
+        }
 
         Hashtable params=new Hashtable();
         params.put("CHANNEL",channel);
         try {
-            Cloud cloud=getCloudProviderVar();
+            Cloud cloud=getCloud();
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
 

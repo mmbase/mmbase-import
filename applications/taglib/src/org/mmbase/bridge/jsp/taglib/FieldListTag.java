@@ -115,7 +115,7 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
         if (nodeManagerString == null) { // living as NodeReferrer
             nodeManager = getNodeVar().getNodeManager();
         } else {
-            nodeManager = getCloudProviderVar().getNodeManager(nodeManagerString);
+            nodeManager = getCloud().getNodeManager(nodeManagerString);
         }
 
         if (type != NO_TYPE) {

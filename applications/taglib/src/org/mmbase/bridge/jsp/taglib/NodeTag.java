@@ -84,7 +84,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             log.debug("node is null");
             if (number != null) {
                 // explicity indicated which node (by number or alias)
-                node = getCloudProviderVar().getNode(number);
+                node = getCloud().getNode(number);
                 if(node == null) {
                     throw new JspTagException("Cannot find Node with number " + number);
                 }

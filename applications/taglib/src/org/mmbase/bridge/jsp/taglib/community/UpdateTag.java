@@ -46,7 +46,7 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         }
         community=getCloudContext().getModule("communityprc");
         // create a temporary message node that holds the new data
-        Node node = new MessageNode(getCloudProviderVar(),message);
+        Node node = new MessageNode(getCloud(),message);
         setNodeVar(node);
         return EVAL_BODY_TAG;
     }
@@ -65,7 +65,7 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         }
         Hashtable params=new Hashtable();
         try {
-            Cloud cloud=getCloudProviderVar();
+            Cloud cloud=getCloud();
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
         params.put("MESSAGE-BODY",body);
