@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.13 2003-08-11 13:31:14 michiel Exp $
+ * @version $Id: Contexts.java,v 1.14 2003-08-13 10:39:18 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -156,7 +156,7 @@ public class Contexts extends MMObjectBuilder {
 
         if ( (source.parent instanceof Contexts) && (destination.parent instanceof Groups)) {
             if (operation == Operation.CREATE) {
-                return Groups.getBuilder().mayGrant(destination, source.getStringValue("name"), Operation.READ, user);
+                return Groups.getBuilder().mayGrant(destination, source.getStringValue("name"), Operation.READ, user.getNode());
             }
             
         }
@@ -223,7 +223,7 @@ public class Contexts extends MMObjectBuilder {
 
         // when it is our user node, and you are this user, you may do anything on it (change password)
         if (builder instanceof Users) {
-            if (user.equals(node) && (operation == Operation.READ || operation == Operation.WRITE)) {
+            if (user.getNode().equals(node) && (operation == Operation.READ || operation == Operation.WRITE)) {
                 if (log.isDebugEnabled()) {
                     log.debug("May always " + operation + " on own user node: " + nodeId);
                 }
@@ -243,6 +243,11 @@ public class Contexts extends MMObjectBuilder {
      */
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
 
+        return mayDo(user.getNode(), contextNode, operation);
+    }
+
+    protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation) {
+
         Iterator iter = getGroups(contextNode, operation).iterator();        
 
         // now checking if this user is in one of these groups.
@@ -251,17 +256,17 @@ public class Contexts extends MMObjectBuilder {
             log.trace("checking group " + group);
             if(Groups.getBuilder().contains(group, user)) { 
                 if (log.isDebugEnabled()) {
-                    log.debug("User " + user.getIdentifier() + " may " + operation + " according to context " + contextNode);
+                    log.debug("User " + user.getStringValue("username") + " may " + operation + " according to context " + contextNode);
                 }
                 return true;
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("User " + user.getIdentifier() + " may not " + operation + " according to context " + contextNode);
+            log.debug("User " + user.getStringValue("username") + " may not " + operation + " according to context " + contextNode);
         }
         return false;
-    }
 
+    }
 
 
     /**

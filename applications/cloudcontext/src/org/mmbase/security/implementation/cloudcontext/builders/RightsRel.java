@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.5 2003-08-11 13:31:14 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.6 2003-08-13 10:39:18 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -70,12 +70,13 @@ public class RightsRel extends InsRel {
 
 
 
-    public int getNewNode(String owner, int snumber, int dnumber) {
+    MMObjectNode getNewNode(String owner, int snumber, int dnumber, Operation operation) {
         MMObjectNode rel = getNewNode(owner);
         rel.setValue("snumber", snumber);
         rel.setValue("dnumber", dnumber);
         rel.setValue("rnumber", mmb.getRelDef().getNumberByName("grants"));
-        return rel.insert(owner);
+        rel.setValue("operation", operation.toString());
+        return rel;
     }
 
     /**

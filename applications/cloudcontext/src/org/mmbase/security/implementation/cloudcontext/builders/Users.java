@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.12 2003-08-06 21:54:00 michiel Exp $
+ * @version $Id: Users.java,v 1.13 2003-08-13 10:39:18 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -324,6 +324,11 @@ public class Users extends MMObjectBuilder {
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         return o1.getNumber() == o2.getNumber();
     }
+
+    public String toString(MMObjectNode n) {
+        return n.getStringValue("username");
+    }
+
 
 
 }
