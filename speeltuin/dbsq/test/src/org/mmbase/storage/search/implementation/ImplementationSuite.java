@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ImplementationSuite extends TestCase {
     
@@ -45,7 +45,6 @@ public class ImplementationSuite extends TestCase {
         suite.addTest(org.mmbase.storage.search.implementation.BasicRelationStepTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSearchQueryTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSortOrderTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.BasicSqlGeneratorTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicStepTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicStepFieldTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.database.DatabaseSuite.suite());

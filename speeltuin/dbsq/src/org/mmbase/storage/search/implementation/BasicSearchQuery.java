@@ -9,13 +9,9 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSearchQuery implements SearchQuery {
-    
-    /** Query handler used to produce queries in ANSI SQL 92 format. */
-    private final static BasicSqlGenerator sql92Generator
-    = new BasicSqlGenerator(new HashMap(0), "");
     
     /** Distinct property. */
     private boolean distinct = false;
@@ -158,18 +154,6 @@ public class BasicSearchQuery implements SearchQuery {
         this.constraint = constraint;
     }
     
-    /**
-     * Represents this query as a string in ANSI SQL 92 format.
-     *
-     * @return ANSI SQL 92 representation of this query.
-     * @throws SearchQueryException
-     * @throws IllegalStateException when the query is not complete.
-     */
-    public static String toSQL92(SearchQuery query) 
-    throws SearchQueryException {
-        return sql92Generator.toSql(query);
-    }
-    
     // javadoc is inherited
     public boolean isDistinct() {
         return distinct;
@@ -236,6 +220,17 @@ public class BasicSearchQuery implements SearchQuery {
         + 29 * fields.hashCode()
         + 31 * sortOrders.hashCode()
         + 37 * (constraint == null? 0: constraint.hashCode());
+    }
+    
+    // javadoc is inherited
+    public String toString() {
+        return "SearchQuery(distinct:" + isDistinct()
+        + ", steps:" + getSteps()
+        + ", fields:" + getFields()
+        + ", constraint:" + getConstraint()
+        + ", sortorders:" + getSortOrders()
+        + ", max:" + getMaxNumber()
+        + ", offset:" + getOffset() + ")";
     }
     
 }
