@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @application Mail
  * @deprecated use the Mail application code instead
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.28 2004-10-11 11:08:47 pierre Exp $
+ * @version $Id: Email.java,v 1.29 2004-10-25 08:08:37 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -497,7 +497,7 @@ public class Email extends MMObjectBuilder {
     /**
      * some stat calls used by the email admin tool
      */
-    public String replace(PageContext sp, StringTokenizer tok) {
+    public String replace(PageInfo sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("DBQUEUED")) return ""+getNumberOfQueued();
@@ -513,7 +513,7 @@ public class Email extends MMObjectBuilder {
     /**
      * some list commands for the email admin tool
      */
-    public Vector getList(PageContext sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("MEMTASKS")) return getMemTasks();

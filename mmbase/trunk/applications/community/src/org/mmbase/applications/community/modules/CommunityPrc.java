@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.16 2004-10-11 11:19:49 pierre Exp $
+ * @version $Id: CommunityPrc.java,v 1.17 2004-10-25 08:08:34 pierre Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -121,11 +121,11 @@ public class CommunityPrc extends ProcessorModule {
      * Handle a $MOD command.
      * The actual commands are directed to the Message, Channel, and
      * Community builders.
-     * @param sp The PageContext (containing http and user info) that calls the function
+     * @param sp The PageInfo (containing http and user info) that calls the function
      * @param cmds the command to execute
      * @return the result value as a <code>String</code>
      */
-    public String replace(PageContext sp, String cmds) {
+    public String replace(PageInfo sp, String cmds) {
         if (activate()) {
             StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
             if (tok.hasMoreTokens()) {
@@ -154,12 +154,12 @@ public class CommunityPrc extends ProcessorModule {
      * XXX: This is a bit of a sloppy way to pass results, and the actual
      * mechanics may get changed (formalized) in the future.
      *
-     * @param sp The PageContext (containing http and user info) that calls the function
+     * @param sp The PageInfo (containing http and user info) that calls the function
      * @param cmds the commands to process
      * @param vars variables that were set to be used during processing.
      * @return the result value as a <code>String</code>
      */
-    public boolean process(PageContext sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
         boolean result = false;
         if (activate()) {
             String token;
@@ -192,7 +192,7 @@ public class CommunityPrc extends ProcessorModule {
      * MMCI).
      * If neither object is supported, no data is returned.
      */
-    private void setReturnValue(PageContext sp, Hashtable vars, String name, String value) {
+    private void setReturnValue(PageInfo sp, Hashtable vars, String name, String value) {
         if (vars!=null) {
             // return it in the vars hashtable
             if (value==null) {
@@ -210,7 +210,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param vars variables that were set to be used during processing.
      * @return <code>true</code> if the post was successful
      */
-    private boolean doPostProcess(PageContext sp, Hashtable cmds, Hashtable vars) {
+    private boolean doPostProcess(PageInfo sp, Hashtable cmds, Hashtable vars) {
         // Get the MessageThread, Subject and Body from the formvalues.
         String tmp = (String)cmds.get("MESSAGE-POST");
         setReturnValue(sp,vars,"MESSAGE-ERROR",null);
@@ -256,7 +256,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param vars variables that were set to be used during processing.
      * @return <code>true</code> if the update was sucecsful
      */
-    private boolean doUpdateProcess(PageContext sp, Hashtable cmds, Hashtable vars) {
+    private boolean doUpdateProcess(PageInfo sp, Hashtable cmds, Hashtable vars) {
         String tmp = (String)cmds.get("MESSAGE-UPDATE");
         try {
             // Get the Subject, Body, number from the formvalues.
@@ -309,7 +309,7 @@ public class CommunityPrc extends ProcessorModule {
     /**
      * Generates a list of values from a command to the processor.
      * Recognized commands are TREE, WHO, and TEMPORARYRELATIONS.
-     * @param context the context of the page or calling application (currently, this should be a PageContext object)
+     * @param context the context of the page or calling application (currently, this should be a PageInfo object)
      * @param command the list command to execute.
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values as MMObjectNodes
@@ -330,7 +330,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param command the list command to execute.
      * @return a <code>Vector</code> that contains the list values
      */
-    public Vector getList(PageContext sp, StringTagger params, String command) {
+    public Vector getList(PageInfo sp, StringTagger params, String command) {
         if (activate()) {
             if (command.equals("TREE")) return messageBuilder.getListMessages(params);
             if (command.equals("WHO")) return channelBuilder.getListUsers(params);

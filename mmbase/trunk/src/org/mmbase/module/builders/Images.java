@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.98 2004-10-11 11:08:47 pierre Exp $
+ * @version $Id: Images.java,v 1.99 2004-10-25 08:08:37 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -459,14 +459,14 @@ public class Images extends AbstractImages {
     /**
      * @deprecated Use getImageNode(params);
      */
-    public byte[] getImageBytes5(PageContext sp, List params) {
+    public byte[] getImageBytes5(PageInfo sp, List params) {
         return getImageBytes(params);
     }
 
     /**
      * @deprecated Use getImageNode(params);
      */
-    public byte[] getImageBytes(PageContext sp, List params) {
+    public byte[] getImageBytes(PageInfo sp, List params) {
         return getImageBytes(params);
     }
 
@@ -666,7 +666,7 @@ public class Images extends AbstractImages {
     /**
      * @javadoc
      */
-    public Vector getList(PageContext sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         Vector devices = new Vector();
 
         if (tok.hasMoreTokens()) {
