@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.8 2003-12-18 09:05:42 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.9 2004-03-24 09:49:20 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
     // nodereferrer because RelatedNodesContainer extension
@@ -86,17 +86,18 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                 query.setNodeStep((Step) query.getSteps().get(0));
             }
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
-    // if EVAL_BODY == EVAL_BODY_BUFFERED
     public int doAfterBody() throws JspTagException {
-        try {
-            if (bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            }
-        } catch (java.io.IOException ioe){
-            throw new JspTagException(ioe.toString());
-        } 
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (java.io.IOException ioe){
+                throw new JspTagException(ioe.toString());
+            } 
+        }
         return SKIP_BODY;        
     }
 

@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.4 2003-12-18 09:05:48 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.5 2004-03-24 09:49:20 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -77,7 +77,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 query.setNodeStep((Step) query.getSteps().get(2));
             }
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
 
 

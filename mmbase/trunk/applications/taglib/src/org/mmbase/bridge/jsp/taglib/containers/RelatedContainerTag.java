@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.7 2004-02-17 09:45:47 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.8 2004-03-24 09:49:20 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -68,16 +68,18 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
         Queries.addFields(query, (String) fields.getValue(this));
 
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
-    // if EVAL_BODY == EVAL_BODY_BUFFERED
+
     public int doAfterBody() throws JspTagException {
-        try {
-            if (bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        if(EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (java.io.IOException ioe){
+                throw new JspTagException(ioe.toString());
             }
-        } catch (java.io.IOException ioe){
-            throw new JspTagException(ioe.toString());
         }
         return SKIP_BODY;
     }
