@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.50 2002-03-18 12:19:27 michiel Exp $
+ * @version $Id: Images.java,v 1.51 2002-03-25 15:56:19 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -112,7 +112,7 @@ public class Images extends AbstractImages {
             return null; // ObjectBuilder itself will handle this case.
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db?";
+        String servlet    = getServlet(); 
         String imageThumb = servlet + node.getIntValue("cache(s(100x60))");
         String image      = servlet + node.getNumber();
         return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>");
