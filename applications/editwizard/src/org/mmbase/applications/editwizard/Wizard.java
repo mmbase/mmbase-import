@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.82 2003-05-27 11:17:09 pierre Exp $
+ * @version $Id: Wizard.java,v 1.83 2003-05-28 11:20:36 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -725,9 +725,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         createFormField(form, field, fieldDataNode);
                     } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
                         log.debug("A startwizard!");
-                        //set number attribute in field
-                        Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
-                        createFormField(form, field, fieldDataNode);
+                        // create the formfield using the current data node
+                        createFormField(form, field, data);
                     } else {
                         // throw an exception, but ONLY if the datapath was created from a 'name' attribute
                         // (only in that case can we be sure that the path is faulty - in otehr cases
@@ -900,24 +899,30 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // field nodes
             String name      = Utils.getAttribute(singleNode, "name", null);
             String fdatapath = Utils.getAttribute(singleNode, "fdatapath", null);
+            String ftype     = Utils.getAttribute(singleNode, "ftype", null);
             if (fdatapath == null) {
+                // if no name, select the current node
                 if (name == null) {
-                    fdatapath = "@number";
-                } else if ("number".equals(name)) {                    
-                    Utils.setAttribute(singleNode, "ftype", "data"); // the number field may of course never be edited
-                    fdatapath = "@number";
+                    if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
+                        fdatapath=".";
+                    }
                 } else {
-                    fdatapath="field[@name='" + name + "']";
-                }
-                // normal field or a field inside a list node?
-                Node parentNode   = singleNode.getParentNode();
-                String parentname = parentNode.getNodeName();
-                // skip fieldset
-                if (parentname.equals("fieldset")) {
-                    parentname = parentNode.getParentNode().getNodeName();
-                }
-                if (parentname.equals("item")) {
-                    fdatapath = "object/"+fdatapath;
+                    if ("number".equals(name)) {                    
+                        Utils.setAttribute(singleNode, "ftype", "data"); // the number field may of course never be edited
+                        fdatapath = "@number";
+                    } else {
+                        fdatapath="field[@name='" + name + "']";
+                    }
+                    // normal field or a field inside a list node?
+                    Node parentNode   = singleNode.getParentNode();
+                    String parentname = parentNode.getNodeName();
+                    // skip fieldset
+                    if (parentname.equals("fieldset")) {
+                        parentname = parentNode.getParentNode().getNodeName();
+                    }
+                    if (parentname.equals("item")) {
+                        fdatapath = "object/"+fdatapath;
+                    }
                 }
                 Utils.setAttribute(singleNode, "fdatapath", fdatapath);
             }
@@ -1200,9 +1205,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (form.getNodeName().equals("form")) {
                     wizardObjectNumber = "new";
                 } else {
-                    wizardObjectNumber = Utils.getAttribute(newField, "number", "new");
+                    wizardObjectNumber = "{object/@number}";
                 }
             }
+            // evaluate object number
             wizardObjectNumber = Utils.transformAttribute(dataNode, wizardObjectNumber);
             Utils.setAttribute(newField, "objectnumber", wizardObjectNumber);
             String wizardOrigin = Utils.getAttribute(newField, "origin", null);
