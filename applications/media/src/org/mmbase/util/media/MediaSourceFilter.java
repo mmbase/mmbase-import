@@ -89,7 +89,8 @@ public class MediaSourceFilter {
      * read the MediaSourceFilter configuration
      */
     private synchronized void readConfiguration(File configFile) {
-        
+
+        log.service("Reading " + configFile);
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         
         // reading filterchain information
