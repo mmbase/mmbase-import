@@ -12,16 +12,13 @@ package org.mmbase.module.core;
 import java.util.Iterator;
 
 /**
- * This interface represents a node's type information object - what used to be the 'builder'.
- * It contains all the field and attribuut information, as well as GUI data for editors and
- * some information on deribed and deriving types.
- * Since node types are normally maintained through use of config files (and not in the database),
- * as wel as for security issues, the data of a nodetype cannot be changed except through
- * the use of an administration module (whcih is why we do not include setXXX methods here).
+ * Modules are pieces of functionality that are not MMBase objects.
+ * e.g. Session, Mail, Upload and other functionality
+ *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public interface NodeTypeInterface {
+public interface ModuleInterface {
 
  	/**
      * Retrieves the Cloud to which this node type belongs
@@ -50,14 +47,4 @@ public interface NodeTypeInterface {
 	 */
 	public String getDescription();
 
-	/**
-	 * Retrieve all field of this nodetype
-	 * @param language the language in which you want the fields
-	 */
-	public Iterator getFields(String language);
-
-	/** 
-	 * Retrieve all fields of this nodetype (in the default language defined in mmbaseroot.xml)
-	 */
-	public Iterator getFields();
 }
