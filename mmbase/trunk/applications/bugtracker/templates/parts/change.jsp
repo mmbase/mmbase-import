@@ -1,9 +1,9 @@
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="98%">
+<table class="list">
 <tr>
   <td colspan="6">
    The changes you can make to this bugreport depend on your user level<br><br>
    <mm:present referid="user" inverse="true">
-    You need to be logged in, goto MyBug or Mainpage
+     You need to be logged in, goto MyBug or Mainpage
    </mm:present>
 
 
