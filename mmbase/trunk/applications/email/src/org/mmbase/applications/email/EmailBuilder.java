@@ -131,14 +131,16 @@ public class EmailBuilder extends MMObjectBuilder {
             }
             
             // get the mailtype so we can call the correct handler/method
-            int mailtype = node.getIntValue("mailtype");
-            switch(mailtype) {
+            int mailType = node.getIntValue("mailtype");
+            switch(mailType) {
             case TYPE_ONESHOT :
-                EmailHandlerOneShot.mail(node);
-                break;
+                // deleting the node happens in EmailExpireHandler
             case TYPE_ONESHOTKEEP :
-                EmailHandlerOneShotKeep.mail(node);
+                EmailHandler.sendMailNode(node);
                 break;
+            case TYPE_REPEATMAIL : 
+            default:
+                log.warn("Trying to mail a node with unsupported type " + mailType);
             }
             return null;
         } else if (function.equals("startmail")) {         // function mail(type) called (starts a background thread)
@@ -149,14 +151,16 @@ public class EmailBuilder extends MMObjectBuilder {
             }
             
             // get the mailtype so we can call the correct handler/method
-            int mailtype = node.getIntValue("mailtype");
-            switch(mailtype) {
+            int mailType = node.getIntValue("mailtype");
+            switch(mailType) {
             case TYPE_ONESHOT :
-                EmailHandlerOneShot.startmail(node);
+                // deleting the node happens in EmailExpireHandler
+            case TYPE_ONESHOTKEEP : 
+                EmailBackgroundHandler mailer = new EmailBackgroundHandler(node);
                 break;
-            case TYPE_ONESHOTKEEP :
-                EmailHandlerOneShotKeep.startmail(node);
-                break;
+            case TYPE_REPEATMAIL : 
+            default: 
+                log.warn("Trying to mail a node with unsupported type " + mailType);
             }
             return null;
         } else {

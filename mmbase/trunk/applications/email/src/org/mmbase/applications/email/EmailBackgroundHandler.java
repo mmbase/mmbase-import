@@ -36,6 +36,7 @@ public class EmailBackgroundHandler implements Runnable {
     // email node
     private MMObjectNode node;
 
+
     /**
      * create a background thread with given email node
      */
