@@ -17,7 +17,7 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.14 2003-11-20 16:22:00 pierre Exp $
+ * @version $Id: Field.java,v 1.15 2003-11-26 17:58:27 michiel Exp $
  */
 public interface Field {
 
@@ -71,6 +71,7 @@ public interface Field {
      *
      * @param locale the locale that determines the language for the GUI name
      * @return  the GUI name for this field
+     * @since MMBase-1.7
      */
     public String getGUIName(Locale locale);
 
@@ -86,6 +87,7 @@ public interface Field {
      *
      * @param locale the locale that determines the language for the description
      * @return  the description for this field
+     * @since MMBase-1.7
      */
     public String getDescription(Locale locale);
 
