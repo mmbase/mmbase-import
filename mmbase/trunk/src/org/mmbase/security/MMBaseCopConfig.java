@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.17 2004-05-24 17:11:34 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.18 2004-08-04 14:46:32 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -60,11 +60,6 @@ public class MMBaseCopConfig {
             this.cop = cop;
         }
         
-
-        public void add(File file) {
-            //log.info(Logging.stackTrace() + "Adding: " + file);
-            super.add(file);
-        }
         public void onChange(File file) {
             try {
                 log.debug("Going to reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
