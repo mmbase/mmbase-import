@@ -10,98 +10,113 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
+import org.mmbase.util.logging.*;
 
-public class Execute
-{
-	private String className = getClass().getName();
+/**
+ * Class for running programs and executing commands.
+ * The methods in this class catch and return output from these commands (both info and error messages).
+ *
+ * @author Daniel Ockeloen
+ * @author Pierre van Rooden (javadocs)
+ * @version 9 Apr 2001
+ */
+public class Execute {
+    // logger
+    private static Logger log = Logging.getLoggerInstance(Execute.class.getName());
 
-	public String execute (String command[])  {
-		Process p=null;
-		String s="",tmp="";
+    /**
+     * Executes a command or program.
+     * The output of the program is returned as a string.
+     * @param command An array of strings, in which teh first argument is the command to execute,
+     *                and the rest its parameters
+     * @return the command output
+     */
+    public String execute (String command[])  {
+        Process p=null;
+        String s="",tmp="";
 
-		BufferedReader	dip= null;
-		BufferedReader	dep= null;
- 
-		try 
-		{
-			p = (Runtime.getRuntime()).exec(command,null);
-			p.waitFor();
-		} 
-		catch (Exception e) 
-		{
-			s+=e.toString();
-			return s;
-		}
+        BufferedReader dip= null;
+        BufferedReader dep= null;
 
-		dip = new BufferedReader( new InputStreamReader(p.getInputStream()));
-		dep = new BufferedReader( new InputStreamReader(p.getErrorStream()));
+        try {
+            p = (Runtime.getRuntime()).exec(command,null);
+            p.waitFor();
+        } catch (Exception e) {
+            s+=e.toString();
+            return s;
+        }
 
-		try 
-		{
-			while ((tmp = dip.readLine()) != null) 
-			{
-           		s+=tmp+"\n"; 
-			}
-			while ((tmp = dep.readLine()) != null) 
-			{
-				s+=tmp+"\n";
-			}
-		} 
-		catch (Exception e) 
-		{
-			return s;
-		}
-		return s;
-	}
+        dip = new BufferedReader( new InputStreamReader(p.getInputStream()));
+        dep = new BufferedReader( new InputStreamReader(p.getErrorStream()));
 
-	public String execute (String command) 
-	{
-		Process p=null;
-		String s="",tmp="";
+        try {
+            while ((tmp = dip.readLine()) != null) {
+                   s+=tmp+"\n";
+            }
+            while ((tmp = dep.readLine()) != null) {
+                s+=tmp+"\n";
+            }
+        } catch (Exception e) {
+            return s;
+        }
+        return s;
+    }
 
-		BufferedReader	dip= null;
-		BufferedReader	dep= null;
- 
-		try 
-		{
-			p = (Runtime.getRuntime()).exec(command,null);
-			p.waitFor();
-		} 
-		catch (Exception e) 
-		{
-			s+=e.toString();
-			return s;
-		}
+    /**
+     * Executes a command or program.
+     * The output of the program is returned as a string.
+     * @param command the command to execute
+     * @return the command output
+     */
+    public String execute (String command)
+    {
+        Process p=null;
+        String s="",tmp="";
 
-		dip = new BufferedReader( new InputStreamReader(p.getInputStream()));
-		dep = new BufferedReader( new InputStreamReader(p.getErrorStream()));
+        BufferedReader dip= null;
+        BufferedReader dep= null;
 
-		try 
-		{
-			while ((tmp = dip.readLine()) != null) 
-			{
-           		s+=tmp+"\n"; 
-			}
-			while ((tmp = dep.readLine()) != null) 
-			{
-				s+=tmp+"\n";
-			}
-		} 
-		catch (Exception e) 
-		{
-			return s;
-		}
-		return s;
-	}
+        try {
+            p = (Runtime.getRuntime()).exec(command,null);
+            p.waitFor();
+        } catch (Exception e) {
+            s+=e.toString();
+            return s;
+        }
 
-	private void writeLog( String msg )
-	{
-		System.out.println(className + " : " + msg );
-	}
+        dip = new BufferedReader( new InputStreamReader(p.getInputStream()));
+        dep = new BufferedReader( new InputStreamReader(p.getErrorStream()));
 
-	public static void main(String args[])
-	{
-		Execute execute = new Execute();
-		System.out.println(execute.execute(args[0]));
-	}
+        try {
+            while ((tmp = dip.readLine()) != null) {
+                   s+=tmp+"\n";
+            }
+            while ((tmp = dep.readLine()) != null) {
+                s+=tmp+"\n";
+            }
+        } catch (Exception e) {
+            return s;
+        }
+        return s;
+    }
+
+    /**
+     * Outputs debug code.
+     * Not used.
+     */
+    private void writeLog( String msg ) {
+        log.error(msg);
+    }
+
+    /**
+     * Entry for direct invocation from the commandline.
+     * Usage:<br />
+     * java Execute [command]<br/>
+     * Does not take parameters.
+     * @deprecated Only for testing. I mean, why bother?
+     */
+    public static void main(String args[]) {
+        Execute execute = new Execute();
+        System.out.println(execute.execute(args[0]));
+    }
 }
