@@ -203,7 +203,7 @@ public class DidactorPortfolio extends Component {
     private boolean createClass(MMObjectNode cls) {
         MMBase mmb = cls.getBuilder().getMMBase();
         String username = "system";
-        MMObjectBuilder portfolios = mmb.getBuilder("portfolio");
+        MMObjectBuilder portfolios = mmb.getBuilder("portfolios");
         InsRel insrel = mmb.getInsRel();
         int related = mmb.getRelDef().getNumberByName("related");
 
