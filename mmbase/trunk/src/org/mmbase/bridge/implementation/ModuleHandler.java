@@ -93,7 +93,27 @@ public class ModuleHandler implements Module {
 	        throw new BasicBridgeException("getInfo() is not supported by this module.");
 	    }
 	}
-	
+
+	public void process(String command, Object parameter) {
+	    process(command, parameter, null, null,null);
+	}
+
+	public void process(String command, Object parameter, Hashtable auxparameters) {
+	    process(command, parameter, auxparameters, null,null);
+	}
+
+	public void process(String command, Object parameter, Hashtable auxparameters, ServletRequest req,  ServletResponse resp){
+	    if (mmbase_module instanceof ProcessorInterface) {
+                Hashtable cmds=new Hashtable();
+                if (parameter==null) { parameter="-1"; }
+                cmds.put(command,parameter);
+	        ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
+                        cmds,auxparameters);
+	    } else {
+	        throw new BasicBridgeException("process() is not supported by this module.");
+	    }
+	}
+
 	public NodeList getList(String command, Hashtable parameters){
 	    return getList(command,parameters,null,null);
 	}
@@ -114,15 +134,15 @@ public class ModuleHandler implements Module {
 	                }
 	            }
 	        }
-	
+
 	        try {
     	        Vector v=((ProcessorInterface)mmbase_module).getList(BasicCloudContext.getScanPage(req, resp),params,command);
     	        if (v==null) { v=new Vector(); }
                 int items=1;
     	        try { items=Integer.parseInt(params.Value("ITEMS")); } catch (Exception e) {}
 	            Vector fieldlist=params.Values("FIELDS");
-	
-	
+
+
 	            Vector res=new Vector(v.size() / items);
     	        MMObjectBuilder bul= ((BasicCloudContext)cloudContext).mmb.getMMObject("multirelations");
     	        for(int i= 0; i<v.size(); i+=items) {
@@ -148,7 +168,7 @@ public class ModuleHandler implements Module {
     	    } catch (Exception e) {
     	        throw new BasicBridgeException(""+e);
     	    }
-	
+
 	    } else {
  	        throw new BasicBridgeException("getInfo() is not supported by this module.");
 	    }
