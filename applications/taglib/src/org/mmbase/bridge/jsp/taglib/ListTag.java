@@ -80,7 +80,7 @@ public class ListTag extends AbstractNodeListTag {
     /**
      * The search parameter, determines how directionality affects the search.
      * Possible values are <code>both</code>, <code>destination</code>,
-     * <code>source</code>, and <code>all</code>
+     * <code>source</code>, <code>either</code>, and <code>all</code>
      * @param search the swerach value
      */
     public void setSearchdir(String search) throws JspTagException {
@@ -89,10 +89,11 @@ public class ListTag extends AbstractNodeListTag {
         if (searchString.length()==0) {
             searchString="BOTH";
         } else if ( !searchString.equals("BOTH") &&
+                    !searchString.equals("EITHER") &&
                     !searchString.equals("SOURCE") &&
                     !searchString.equals("DESTINATION") &&
                     !searchString.equals("ALL"))  {
-            throw new JspTagException("Search should be one of BOTH, SOURCE, "+
+            throw new JspTagException("Search should be one of BOTH, EITHER, SOURCE, "+
                         "DESTINATION, or ALL (value found was "+searchString+")");
         }
     }
