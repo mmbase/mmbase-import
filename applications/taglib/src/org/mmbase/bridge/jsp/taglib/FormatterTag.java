@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.41 2004-11-11 17:24:04 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.42 2004-11-17 20:39:04 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -482,7 +482,11 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      */
     private String xslTransform(Document doc, String xsl) throws JspTagException {
         try {
-            return xslTransform(doc, getFactory().getURIResolver().resolve(xsl, null));
+            Source source = getFactory().getURIResolver().resolve(xsl, null);
+            if (source == null) {
+                throw new TaglibException("Could not find XSL for " + xsl);
+            }
+            return xslTransform(doc, source);
          } catch (javax.xml.transform.TransformerException e) {
              throw new TaglibException(e); // probably the file could not be found.
          }
