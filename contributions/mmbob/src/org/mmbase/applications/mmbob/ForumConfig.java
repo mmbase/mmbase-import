@@ -55,6 +55,10 @@ public class ForumConfig {
 	decodeConfig(reader,n);
     }
 
+    public ForumConfig(String id) {
+	this.id = id;
+    }
+
     private boolean decodeConfig(XMLBasicReader reader,Element n) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -357,6 +361,10 @@ public class ForumConfig {
 
    public void setAvatarsUploadEnabled(String mode) {
         avatarsUploadEnabled = mode;
+   }
+
+   public void setContactInfoEnabled(String mode) {
+       contactInfoEnabled = mode;
    }
 
    public void setAvatarsGalleryEnabled(String mode) {

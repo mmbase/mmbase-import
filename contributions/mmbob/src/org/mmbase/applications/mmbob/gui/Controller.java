@@ -226,6 +226,7 @@ public class Controller {
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("pos", pos++);
                         virtual.setValue("subject", p.getSubject());
+                        log.info("Controller body="+p.getBody(imagecontext));
                         virtual.setValue("body", p.getBody(imagecontext));
                         virtual.setValue("edittime", p.getEditTime());
                         Poster po = f.getPoster(p.getPoster());
@@ -468,6 +469,7 @@ public class Controller {
                 virtual.setValue("accountremovaltype", f.getAccountRemovalType());
                 virtual.setValue("loginmodetype", f.getLoginModeType());
                 virtual.setValue("logoutmodetype", f.getLogoutModeType());
+                virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
                 virtual.setValue("description", f.getDescription());
                 virtual.setValue("postareacount", f.getPostAreaCount());
                 virtual.setValue("postthreadcount", f.getPostThreadCount());
@@ -576,6 +578,8 @@ public class Controller {
                 virtual.setValue("accountremovaltype", f.getAccountRemovalType());
                 virtual.setValue("loginmodetype", f.getLoginModeType());
                 virtual.setValue("logoutmodetype", f.getLogoutModeType());
+                virtual.setValue("guestreadmodetype", f.getGuestReadModeType());
+                virtual.setValue("guestwritemodetype", f.getGuestWriteModeType());
                 virtual.setValue("avatarsdisabled", f.getAvatarsDisabled());
                 virtual.setValue("avatarsuploadenabled", f.getAvatarsUploadEnabled());
                 virtual.setValue("avatarsgalleryenabled", f.getAvatarsGalleryEnabled());
@@ -602,6 +606,28 @@ public class Controller {
 		e.printStackTrace();
         }
 
+        return virtual;
+    }
+
+    public MMObjectNode getForumsConfig() {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        virtual.setValue("language", ForumManager.getLanguage());
+        virtual.setValue("accountcreationtype", ForumManager.getAccountCreationType());
+        virtual.setValue("accountremovaltype", ForumManager.getAccountRemovalType());
+        virtual.setValue("loginmodetype", ForumManager.getLoginModeType());
+        virtual.setValue("logoutmodetype", ForumManager.getLogoutModeType());
+        virtual.setValue("guestreadmodetype", ForumManager.getGuestReadModeType());
+        virtual.setValue("guestwritemodetype", ForumManager.getGuestWriteModeType());
+        virtual.setValue("avatarsuploadenabled", ForumManager.getAvatarsUploadEnabled());
+        virtual.setValue("avatarsgalleryenabled", ForumManager.getAvatarsGalleryEnabled());
+        virtual.setValue("contactinfoenabled", ForumManager.getContactInfoEnabled());
+        virtual.setValue("smileysenabled", ForumManager.getSmileysEnabled());
+        virtual.setValue("privatemessagesenabled", ForumManager.getPrivateMessagesEnabled());
+        virtual.setValue("postingsperpage", ForumManager.getPostingsPerPage());
+        virtual.setValue("fromaddress",ForumManager.getFromEmailAddress());
+        virtual.setValue("headerpath",ForumManager.getHeaderPath());
+        virtual.setValue("footerpath",ForumManager.getFooterPath());
         return virtual;
     }
 
@@ -900,6 +926,8 @@ public class Controller {
             virtual.setValue("lastsubject", a.getLastSubject());
             virtual.setValue("guestreadmodetype", a.getGuestReadModeType());
             virtual.setValue("guestwritemodetype", a.getGuestWriteModeType());
+            virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
+            virtual.setValue("smileysenabled", f.getSmileysEnabled());
             virtual.setValue("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
             virtual.setValue("pagecount", a.getPageCount(pagesize));
             if (activeid != -1) {
@@ -1406,6 +1434,37 @@ public class Controller {
             f.setDescription(description);
             f.saveDirect();
         }
+        return true;
+    }
+
+
+    public boolean changeForumConfig(String forumid, String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+		f.setLogoutModeType(logoutmodetype);
+		f.setLoginModeType(loginmodetype);
+		f.setGuestReadModeType(guestreadmodetype);
+		f.setGuestWriteModeType(guestwritemodetype);
+		f.setAvatarsUploadEnabled(avatarsuploadenabled);
+		f.setAvatarsGalleryEnabled(avatarsgalleryenabled);
+		f.saveConfig();
+        }
+        return true;
+    }
+
+
+    public boolean changeForumsConfig(String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String contactinfoenabled,String smileysenabled,String privatemessagesenabled,String postingsperpage) {
+	ForumManager.setLogoutModeType(logoutmodetype);
+	ForumManager.setLoginModeType(loginmodetype);
+	ForumManager.setGuestReadModeType(guestreadmodetype);
+	ForumManager.setGuestWriteModeType(guestwritemodetype);
+	ForumManager.setAvatarsUploadEnabled(avatarsuploadenabled);
+	ForumManager.setAvatarsGalleryEnabled(avatarsgalleryenabled);
+	ForumManager.setContactInfoEnabled(contactinfoenabled);
+	ForumManager.setSmileysEnabled(smileysenabled);
+	ForumManager.setPrivateMessagesEnabled(privatemessagesenabled);
+	ForumManager.setPostingsPerPage(postingsperpage);
+	ForumManager.saveConfig();
         return true;
     }
 

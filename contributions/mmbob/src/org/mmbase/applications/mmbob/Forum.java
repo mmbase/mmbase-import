@@ -987,21 +987,21 @@ public class Forum {
    }
 
    public void setLogoutModeType(String type) {
-	if (config != null) {
+	if (checkConfig()) {
 		config.setLogoutModeType(type);
 	}
    }
 
 
    public void setLoginModeType(String type) {
-	if (config != null) {
+	if (checkConfig()) {
 		config.setLoginModeType(type);
 	}
    }
 
 
    public String getGuestReadModeType() {
-	if (config != null) {
+	if (checkConfig()) {
 		String tmp = config.getGuestReadModeType();
         	if (tmp != null) {
                	 	return tmp;
@@ -1011,19 +1011,19 @@ public class Forum {
    }
 
    public void setAvatarsUploadEnabled(String mode) {
-	if (config != null) {
+	if (checkConfig()) {
 		config.setAvatarsUploadEnabled(mode);
 	}
    }
 
    public void setAvatarsGalleryEnabled(String mode) {
-	if (config != null) {
+	if (checkConfig()) {
 		config.setAvatarsGalleryEnabled(mode);
 	}
    }
 
    public void setGuestReadModeType(String type) {
-	if (config != null) {
+	if (checkConfig()) {
 		config.setGuestReadModeType(type);
 	}
    }
@@ -1039,7 +1039,7 @@ public class Forum {
    }
 
    public void setGuestWriteModeType(String type) {
-	if (config != null) {
+	if (checkConfig()) {
 		config.setGuestWriteModeType(type);
 	}
    }
@@ -1179,5 +1179,11 @@ public class Forum {
         return ForumManager.getPostingsPerPage();
     }
 
+   private boolean checkConfig() { 
+	if (config==null) {
+		config =  new ForumConfig(getName());
+	}
+	return true;
+   }
 
 }

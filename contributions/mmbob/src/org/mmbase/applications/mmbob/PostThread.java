@@ -253,7 +253,9 @@ public class PostThread {
 	    	//	pnode.setStringValue("body",body);
 		//}
 
-                pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
+                //pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
+		// gerard this is wrong again ?
+                pnode.setStringValue("body",body);
 
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));

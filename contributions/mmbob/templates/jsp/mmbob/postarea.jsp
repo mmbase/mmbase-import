@@ -55,7 +55,7 @@
 			<mm:import id="pagecount"><mm:field name="pagecount" /></mm:import>
 			<tr><th colspan="2" align="left">
 					<mm:compare referid="image_logo" value="" inverse="true">
-					<center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
+					<center><img src="<mm:write referid="image_logo" />" width="60%" ></center>
 					<br />
 					</mm:compare>
 			<b><mm:write referid="mlg_Area_name"/></b> : <mm:field name="name" /> <b><mm:write referid="mlg_Topics"/></b> : <mm:field name="postthreadcount" /> <b><mm:write referid="mlg_Messages"/></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg_Views"/></b> : <mm:field name="viewcount" /><br />

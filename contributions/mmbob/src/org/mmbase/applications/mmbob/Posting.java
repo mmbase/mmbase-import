@@ -89,7 +89,9 @@ public class Posting {
      * @param imagecontext The context where to find the images (eg smilies)
      */
     public void setBody(String body,String imagecontext) {
-        node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
+        //node.setStringValue("body", "<poster>" + postingBody.transform(body) + "</poster>");
+        //node.setStringValue("body", postingBody.transform(body));
+        node.setStringValue("body", body);
         String parsed = node.getStringValue("body");
         parsed = translateBody(node.getStringValue("body"),imagecontext);
         node.setStringValue("c_body", parsed);
@@ -244,7 +246,9 @@ public class Posting {
         } 
 
 	//String imagecontext = "/mmbase/thememanager/images";
-        body = smilies.transform(body, themeid, imagecontext);
+	if (parent.getParent().getParent().getSmileysEnabled().equals("true")) {
+        	body = smilies.transform(body, themeid, imagecontext);
+	}
 	return body;
     }
 }
