@@ -448,6 +448,7 @@ See mmexamples/taglib for more elaborated examples.
       produce output themselves are 'writers'.
     </info>
     <see tag="write" />
+    <see tag="writerreffer" />
     <attribute>
       <name>jspvar</name>
       <required>false</required>
