@@ -3,7 +3,8 @@
 
 <util>
     <properties>
-        <property name="maxfilesize">1048576</property>
-        <property name="maxrequestsize">209715200</property><!-- about 200 MB -->
+        <property name="maxfilesize">530971520</property>
+        <property name="maxparametersize">530971520</property>
+        <property name="maxrequestsize">530971520</property><!-- about 500 MB?? -->
     </properties>
 </util>
