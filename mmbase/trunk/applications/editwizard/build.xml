@@ -10,14 +10,14 @@
 
   <!-- JSPSmartUpload -->
   <property name="jspsmartupload.file" value="jspSmartUpload" />
-  <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
+  <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.zip" />
   <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
   <property name="project.extra.path" location="../dove/build/mmbase-dove.jar" />
 
   &base;
 
   <target name="init.get">
-    <available property="jspsmartupload.present" file="${download.dir}/${jspsmartupload.file}.tar.gz" />
+    <available property="jspsmartupload.present" file="${download.dir}/${jspsmartupload.file}.zip" />
     <available property="jspsmartupload.expanded" file="${jspsmartupload.jar}" />
   </target>
 
@@ -41,15 +41,13 @@
   <!-- Jsp Smartupload is necessary for the editwizards -->
   <target name="get.jspsmartupload" depends="init.get" unless="jspsmartupload.present">
     <get src="${jspsmartupload.url}"
-      dest="${download.dir}/${jspsmartupload.file}.tar.gz"
+      dest="${download.dir}/${jspsmartupload.file}.zip"
       verbose="on" />
   </target>
   
   <target name="expand.jspsmartupload" depends="get.jspsmartupload" unless="jspsmartupload.expanded">
     <mkdir dir="${expand.dir}/jspsmartupload" />
-    <gunzip src="${download.dir}/${jspsmartupload.file}.tar.gz" dest="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar"/>
-    <untar src="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar" dest="${expand.dir}/jspsmartupload"/>
-    
+    <unzip src="${download.dir}/${jspsmartupload.file}.zip" dest="${expand.dir}/jspsmartupload"/>
     <echo file="${expand.dir}/jspsmartupload/manifest.mf">
 Name: com/jspsmart/upload
 Version: MMBase build ${version}.${builddate}
