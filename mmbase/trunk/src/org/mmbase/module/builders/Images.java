@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.17 2000-06-05 14:42:15 wwwtech Exp $
+	$Id: Images.java,v 1.18 2000-06-05 15:42:15 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.17  2000/06/05 14:42:15  wwwtech
+	Rico: image queuing built in plus parallel converters
+	
 	Revision 1.16  2000/06/02 11:20:45  wwwtech
 	Rico: made the param checking more robust
 	
@@ -62,7 +65,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.17 2000-06-05 14:42:15 wwwtech Exp $
+ * @version $Id: Images.java,v 1.18 2000-06-05 15:42:15 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -255,7 +258,7 @@ public class Images extends MMObjectBuilder {
 										imageRequestTable.put(ckey,req);
 										imageRequestQueue.append(req);
 									} else {
-										debug("ConvertImage: a conversion in progress...  (requests="+req.count()+")");
+										debug("ConvertImage: a conversion in progress...  (requests="+req.count()+1+")");
 									}
 								}
 								picture=req.getOutput();
