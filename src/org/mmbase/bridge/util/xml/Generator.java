@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.5 2002-04-08 12:10:13 eduard Exp $
+ * @version $Id: Generator.java,v 1.6 2002-04-08 15:23:39 eduard Exp $
  */
 public  class Generator {
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
@@ -138,7 +138,7 @@ public  class Generator {
      * Returns the document as a String.
      */
     public String toString() {
-        return toString(false);
+        return toString(tree, false);
     }
 
     /**
@@ -146,8 +146,12 @@ public  class Generator {
      *@param ident if the string has to be idented
      */
     public String toString(boolean ident) {
+        return toString(tree, ident);
+    }
+     
+    public static String toString(Document doc, boolean ident) {
         try {
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(tree);
+            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
             if(ident) {
                 format.setIndenting(true);
                 format.setPreserveSpace(false);
@@ -156,7 +160,7 @@ public  class Generator {
             }
             java.io.StringWriter result = new java.io.StringWriter();
             org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(tree);
+            prettyXML.serialize(doc);
             return result.toString();    
         } 
         catch (Exception e) {
@@ -231,41 +235,94 @@ public  class Generator {
         attr.setValue(field.getName());
         fieldElement.setAttributeNode(attr);
 
-        // gui-type
-        attr = tree.createAttribute("gui-type");
-        attr.setValue(field.getGUIType());
+        // position create
+        attr = tree.createAttribute("position-create");
+        attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_CREATE)));
         fieldElement.setAttributeNode(attr);
 
-        // gui-name
-        attr = tree.createAttribute("gui-name");
-        attr.setValue(field.getGUIName());
-        fieldElement.setAttributeNode(attr);
-     
-
-        // type
-        attr = tree.createAttribute("type");
-        attr.setValue("" + field.getType());
+        // position search
+        attr = tree.createAttribute("position-search");
+        attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_SEARCH)));
         fieldElement.setAttributeNode(attr);
 
-        // state
-        attr = tree.createAttribute("state");
-        attr.setValue("" + field.getState());
+        // position edit
+        attr = tree.createAttribute("position-edit");
+        attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_EDIT)));
         fieldElement.setAttributeNode(attr);
 
-        if(field.getType() == Field.TYPE_XML) {
-            Document doc = node.getXMLValue(field.getName());
-            if(doc!= null) {
-                fieldElement.appendChild(tree.importNode(doc.getDocumentElement(), true));
-            }
-            
-        }
-        else {
-            fieldElement.appendChild(tree.createTextNode(node.getStringValue(field.getName())));
-        }    
+        // position list
+        attr = tree.createAttribute("position-list");
+        attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_LIST)));
+        fieldElement.setAttributeNode(attr);
+        
+        // format
+        attr = tree.createAttribute("format");
+        attr.setValue(getFieldFormat(node, field));
+        fieldElement.setAttributeNode(attr);        
+
+        // insert the actual value inside the field thing!
+        switch(field.getType()) {
+            case Field.TYPE_XML:
+                Document doc = node.getXMLValue(field.getName());
+                // only fill the field, if field has a value..
+                if(doc!= null) {
+                    // put the xml inside the field...
+                    fieldElement.appendChild(tree.createCDATASection(toString(doc, false)));
+                }
+            break;
+            case Field.TYPE_BYTE:
+                org.mmbase.util.transformers.Base64 transformer = new org.mmbase.util.transformers.Base64();
+                fieldElement.appendChild(tree.createTextNode(transformer.transform(node.getByteValue(field.getName()))));
+            default:
+                fieldElement.appendChild(tree.createTextNode(node.getStringValue(field.getName())));
+        }        
         nodeElement.appendChild(fieldElement);
         return fieldElement;
     }
     
+    private String getFieldFormat(Node node, Field field) {
+        switch (field.getType()) {
+            case Field.TYPE_XML:
+                return "xml";
+            case Field.TYPE_STRING:
+                return "string";
+            case Field.TYPE_INTEGER:
+            case Field.TYPE_LONG:
+                // was it a builder?
+                String fieldName = field.getName();
+                String guiType = field.getGUIType();
+                
+                // I want a object database type!
+                if(fieldName.equals("otype") 
+                || fieldName.equals("snumber") 
+                || fieldName.equals("dnumber") 
+                || fieldName.equals("rnumber") 
+                || fieldName.equals("role") 
+                || guiType.equals("reldefs")) {
+                    return "object";
+                }
+                if(guiType.equals("eventtime")) {
+                    return "date";
+                }
+            case Field.TYPE_FLOAT:
+            case Field.TYPE_DOUBLE:
+                return "numeric";
+            case Field.TYPE_BYTE:
+                return "bytes";
+            default:
+                return "unknown";
+        }
+    }
+    
+    private int getFieldPosition(Field field, FieldList list) {
+        for(int i=0; i < list.size(); i++) {
+            if(list.getField(i).equals(field)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private Element createRelationEntry(Relation relation, boolean createSourceEntry) {
         Element fieldElement = tree.createElement("relation");
         
