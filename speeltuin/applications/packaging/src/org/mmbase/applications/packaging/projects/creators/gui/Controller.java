@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.applications.packages.projects.gui;
+package org.mmbase.applications.packaging.projects.gui;
 
 import java.io.*;
 import java.net.URL;
@@ -17,14 +17,14 @@ import java.util.jar.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
-import org.mmbase.applications.packages.*;
-import org.mmbase.applications.packages.packagehandlers.*;
-import org.mmbase.applications.packages.bundlehandlers.*;
-import org.mmbase.applications.packages.installhandlers.*;
-import org.mmbase.applications.packages.providerhandlers.*;
-import org.mmbase.applications.packages.sharehandlers.*;
-import org.mmbase.applications.packages.projects.creators.*;
-import org.mmbase.applications.packages.projects.*;
+import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.packagehandlers.*;
+import org.mmbase.applications.packaging.bundlehandlers.*;
+import org.mmbase.applications.packaging.installhandlers.*;
+import org.mmbase.applications.packaging.providerhandlers.*;
+import org.mmbase.applications.packaging.sharehandlers.*;
+import org.mmbase.applications.packaging.projects.creators.*;
+import org.mmbase.applications.packaging.projects.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 
