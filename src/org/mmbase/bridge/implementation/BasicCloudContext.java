@@ -24,7 +24,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.20 2002-01-31 10:05:10 pierre Exp $
+ * @version $Id: BasicCloudContext.java,v 1.21 2002-02-20 10:54:08 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -78,7 +78,7 @@ public class BasicCloudContext implements CloudContext {
         // why dont we start mmbase, when there isnt a running instance, just change the check...
             String message;
             message = "MMBase has not been started, and cannot be started by "
-                      + "this Class.";
+                      + "this Class. (" + getClass().getName() + ")";
             log.error(message);
             throw new BridgeException(message);
         }
@@ -133,5 +133,13 @@ public class BasicCloudContext implements CloudContext {
             }
         }
     return sp;
+    }
+    /**
+     * @return String describing the encoding.
+     * @since MMBase-1.6
+     */
+
+    public String getDefaultCharacterEncoding() {
+        return mmb.getEncoding();
     }
 }
