@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.79 2002-10-29 11:26:07 michiel Exp $
+  @version $Id: wizard.xsl,v 1.80 2002-11-14 16:52:39 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -55,7 +55,7 @@
         </nobr>
       </span>
     </th>
-    </tr>   
+   </tr>   
   </xsl:template>
 
   <!-- The second row of the the body's table -->
@@ -520,11 +520,7 @@
         </xsl:when>
 
         <xsl:when test="@ftype='realposition'">
-       <span style="width:128" >
-          <input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
-              <xsl:apply-templates select="@*" />
-            </input><input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();" />
-          </span>
+          <xsl:call-template name="realposition" />
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates select="value" mode="inputline" />
@@ -533,6 +529,13 @@
       <xsl:apply-templates select="postfix" />
   </xsl:template>
 
+  <xsl:template name="realposition">    
+  <span style="width:128" >
+    <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
+    <xsl:apply-templates select="@*" />
+    </input><input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();" /></nobr>
+  </span>
+  </xsl:template>
 
   <!-- produces the <tr> (two columns) for a bunch of fields (used in item) -->
   <xsl:template name="itemfields">
