@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.24 2005-03-01 14:14:37 michiel Exp $
+ * @version $Id: Authentication.java,v 1.25 2005-03-01 16:40:22 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -50,6 +50,9 @@ public abstract class Authentication extends Configurable implements Authenticat
      * @since MMBase-1.8
      */
     public int getMethod(String m) {
+        if (m == null || m.equals("")) {
+            return METHOD_UNSET;
+        }
         m = m.toLowerCase();
         if ("http".equals(m)) {
             return METHOD_HTTP;
