@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 /*
  
-  $Id: Attachments.java,v 1.4 2000-08-18 21:37:17 case Exp $
+  $Id: Attachments.java,v 1.5 2001-01-23 15:37:21 gerard Exp $
  
   $Log: not supported by cvs2svn $
+  Revision 1.4  2000/08/18 21:37:17  case
+  cjr: Changed representation of file in edit menu to clickable filename,
+       analogous to clickable image for the images builder.
+
   Revision 1.3  2000/08/16 21:50:02  case
   cjr: Now sets filename (new attribute) and mimetype according to values
        made available through HttpPost: parameters file_name and file_type
@@ -37,7 +41,7 @@ import org.mmbase.util.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: Attachments.java,v 1.4 2000-08-18 21:37:17 case Exp $
+ * @version $Id: Attachments.java,v 1.5 2001-01-23 15:37:21 gerard Exp $
  *
  */
 public class Attachments extends MMObjectBuilder {
@@ -76,7 +80,7 @@ public class Attachments extends MMObjectBuilder {
                 if (size == -1 || num == -1) {
                     return "["+filename+"]";
                 } else {
-                    return "<a href=\"attachment.db/"+filename+"?"+num+"\" target=\"extern\">["+filename+"]</a>";
+                    return "<a href=\"/attachment.db/"+filename+"?"+num+"\" target=\"extern\">["+filename+"]</a>";
                 }
             } else {
                 return "";
