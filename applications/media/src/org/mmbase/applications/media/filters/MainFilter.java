@@ -38,7 +38,7 @@ import java.lang.Integer;
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
  */
-public class MainFilter implements Filter {    
+public class MainFilter {
     private static Logger log = Logging.getLoggerInstance(MainFilter.class.getName());
 
     public static final String MAIN_TAG          = "mainFilter";
@@ -81,8 +81,6 @@ public class MainFilter implements Filter {
         return filter;
     }
 
-
-    public void configure(XMLBasicReader reader, Element e) { }
     
     /**
      * read the MainFilter configuration
@@ -97,6 +95,9 @@ public class MainFilter implements Filter {
         Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
         ChainComparator chainComp = new ChainComparator();
+        // When chaining 'comparators' then they are combined to one comparator
+        // Then only one 'sort' has to be done, which is more efficient.
+
         for(Enumeration e = reader.getChildElements(MAIN_TAG + "." + CHAIN_TAG, FILTER_TAG); 
             e.hasMoreElements();) {
             Element chainElement =(Element)e.nextElement();
@@ -117,6 +118,7 @@ public class MainFilter implements Filter {
                 log.service("Added filter " + clazz + "(id=" + elementId + ")");
                 if (elementId != null && ! "".equals(elementId)) {                    
                     // find right configuration
+                    // not all filters necessarily have there own configuration
                     boolean found = false;
                     Enumeration f = reader.getChildElements(filterConfigs, FILTERCONFIG_TAG);
                     while (f.hasMoreElements()) {
@@ -141,6 +143,10 @@ public class MainFilter implements Filter {
         }
         if (chainComp.size() > 0) filters.add(chainComp); // make sure it is at least empty
     }
+
+    /**
+     * Perform the actual filter task
+     */
 
     public List filter(List urls) {
         Iterator i = filters.iterator();
