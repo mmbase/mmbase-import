@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.34 2003-07-08 19:57:38 michiel Exp $
+ * @version $Id: Utils.java,v 1.35 2003-08-26 12:56:05 michiel Exp $
  */
 
 public class Utils {
@@ -197,7 +197,7 @@ public class Utils {
             if (n == null) return defaultvalue;
             return n.getNodeValue();
         } catch (Exception e) {
-            log.warn(Logging.stackTrace(e));
+            log.debug(Logging.stackTrace(e));
             return defaultvalue;
         }
     }
@@ -472,7 +472,7 @@ public class Utils {
 
 
     /**
-     * For debugging purposes. Return the constructed document as a String.
+     * For debugging purposes. Return the constructed node as a String.
      */
 
     public static String stringFormatted(Node node) {
@@ -481,14 +481,7 @@ public class Utils {
                 log.debug("node " +node);
                 log.debug("doc " + node.getOwnerDocument());
             }
-            Document doc;
-            if (node instanceof Document) {
-                doc = (Document) node;
-            } else {
-                doc = node.getOwnerDocument();
-            }
-
-            Source domSource = new DOMSource(doc);
+            Source domSource = new DOMSource(node);
             StringWriter result = new StringWriter();
             StreamResult streamResult = new StreamResult(result);
             TransformerFactory tf = TransformerFactory.newInstance();
