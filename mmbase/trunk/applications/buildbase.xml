@@ -115,7 +115,7 @@ Build-compiler: ${build.compiler}
     <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
-	     includes="org/**,nl/**"
+	     includes="src/**"
 	     manifest="${project.build.dir}/manifest.mf" >
     </jar>
 
@@ -143,7 +143,6 @@ web application.
            <include name="**"/>
            <exclude name="*.xml" />
            <exclude name="build/**" />
-           <exclude name="org/**" />
          </patternset>
        </fileset>
     </zip>          
