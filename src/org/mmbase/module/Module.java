@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.58 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Module.java,v 1.59 2004-12-16 11:54:30 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -126,7 +126,8 @@ public abstract class Module extends FunctionProvider {
      * This method is called by {@link #startModule()}, which makes sure it is not called
      * more than once. You should not call init() directly, call startModule() instead.
      */
-    public abstract void init();
+    public void init() {
+    }
 
     /**
      * prepares the module when loaded.
@@ -136,7 +137,8 @@ public abstract class Module extends FunctionProvider {
      * This method is called by {@link #startModules()}. You should not call onload() directly.
      * @scope protected
      */
-    public abstract void onload();
+    public void onload() {
+    }
 
     /**
      * Shuts down the module. This method is called by shutdownModules.
@@ -146,8 +148,6 @@ public abstract class Module extends FunctionProvider {
     protected void shutdown() {
         // on default, nothing needs to be done.
     }
-
-
 
     /**
      * state, returns the state hashtable that is/can be used to debug. Should
@@ -280,8 +280,6 @@ public abstract class Module extends FunctionProvider {
         modules = null;
     }
 
-
-
     public static synchronized final void startModules() {
         // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
@@ -328,6 +326,7 @@ public abstract class Module extends FunctionProvider {
     public static Object getModule(String name) {
         return getModule(name, false);
     }
+
     /**
      * Retrieves a reference to a Module.
      * If you set the <code>startOnLoad</code> to <code>true</code>,
