@@ -59,6 +59,14 @@
      </td></tr>
      </mm:write>
 	 </mm:maychangecontext>
+   <mm:maychangecontext inverse="true">
+     <tr>
+   	  <mm:write referid="this_node" vartype="Node" jspvar="node1">
+      <td class="data"><em><%=m.getString("change_node.context")%></em></td>
+      <td><small><%= node1.getContext() %></small></td></td>
+      </mm:write>
+     </tr>
+   </mm:maychangecontext>
 <tr>
 <td colspan="3" class="buttons">
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
