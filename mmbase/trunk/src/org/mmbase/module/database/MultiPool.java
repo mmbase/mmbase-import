@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.41 2004-02-02 18:27:48 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.42 2004-02-24 11:54:33 michiel Exp $
  */
 public class MultiPool {
 
@@ -72,12 +72,11 @@ public class MultiPool {
         boolean logStack = true;
         try {
             while (!fillPool(logStack)) {
-                log.error("Cannot run with no connections, retrying after 10 seconds.");
+                log.error("Cannot run with no connections, retrying after 10 seconds for " + mmb + " " + (mmb.isShutdown() ? "(shutdown)" : ""));
                 Thread.sleep(10000);
                 logStack = false; // don't log that mess a second time
-                log.info("Retrying now for " + mmb + " " + (mmb.isShutdown() ? "(shutdown)" : ""));
                 if (mmb.isShutdown()) {
-                    log.info("MMBase has been shutted down");
+                    log.info("MMBase has been shutted down.");
                     return;
                 }
             }
@@ -114,7 +113,7 @@ public class MultiPool {
         if (errors > 0) {
             String message = firstError.getMessage();
             if (logStack) {
-                message = message + Logging.stackTrace(firstError);
+                message += Logging.stackTrace(firstError);
             }  else {
                 int nl = message.indexOf('\n'); // some stupid drivers (postgresql) add stacktrace to message
                 if (nl > 0) {
@@ -122,8 +121,7 @@ public class MultiPool {
                 }
             }
 
-            log.error("Could not get all connections (" + errors + " failures). First error: " + message);
-            log.info("Multipools size is now " + pool.size() + " rather then " + conMax);
+            log.error("Could not get all connections (" + errors + " failures, multipool size now " + pool.size() + " rather then " + conMax +"). First error: " + message);
             if (pool.size() < 1) { // that is fatal.
                 return false;
             }
