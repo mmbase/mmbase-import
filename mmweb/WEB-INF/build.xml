@@ -7,6 +7,7 @@
       <pathelement location="lib/commons-validator.jar"/>
    </path>
    <target name="compile">
+      <mkdir dir="classes" />
       <javac classpathref="classpath" fork="true" destdir="classes" srcdir="src"/>
    </target>
 </project>
