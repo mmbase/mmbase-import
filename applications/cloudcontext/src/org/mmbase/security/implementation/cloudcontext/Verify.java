@@ -17,10 +17,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
+ * Implementation of Authorization Most implementation is delegated to the Contexts builder.
+ *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: Verify.java,v 1.4 2003-06-17 09:32:18 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: Verify.java,v 1.5 2003-06-18 14:15:38 michiel Exp $
+ * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts; 
  */
 public class Verify extends Authorization {
     private static Logger    log = Logging.getLoggerInstance(Verify.class.getName());
