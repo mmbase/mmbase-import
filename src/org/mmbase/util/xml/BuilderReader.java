@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.9 2004-02-09 13:50:36 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.10 2004-09-17 12:31:11 pierre Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
@@ -431,7 +431,8 @@ public class BuilderReader extends XMLBasicReader {
         // DB
         Element db = getElementByPath(field,"field.db");
         def.setDBName(getElementValue(getElementByPath(db,"db.name")));
-        def.setDBType(getDBType(getElementByPath(db,"db.type"),def));
+        // def.setDBType(getDBType(getElementByPath(db,"db.type"),def));
+        getDBType(getElementByPath(db,"db.type"),def);
 
         decodeFieldDef(field,def);
 
