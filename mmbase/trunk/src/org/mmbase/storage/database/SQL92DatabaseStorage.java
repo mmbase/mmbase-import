@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.16 2003-07-09 18:14:51 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.17 2003-08-06 13:39:04 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class);
@@ -261,7 +261,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             break;
         case FieldDefs.TYPE_NODE: {
             Object value = node.getValue(fieldName);
-            if (value == MMObjectNode.VALUE_NULL) {
+            if (value == MMObjectNode.VALUE_NULL || value == null) {
                 stmt.setNull(i, java.sql.Types.INTEGER);
             } else {
                 // retrieve node as a numeric value                    
