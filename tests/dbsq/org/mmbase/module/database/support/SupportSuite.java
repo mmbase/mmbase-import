@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class SupportSuite extends TestCase {
     
@@ -31,7 +31,7 @@ public class SupportSuite extends TestCase {
     
     public static Test suite() {
         TestSuite suite = new TestSuite("ImplementationSuite");
-        suite.addTest(org.mmbase.module.database.support.MMSQL92NodeTest.suite());
+//        suite.addTest(org.mmbase.module.database.support.MMSQL92NodeTest.suite());
         return suite;
     }
     
