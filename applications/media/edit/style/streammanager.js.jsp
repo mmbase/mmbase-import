@@ -19,6 +19,14 @@ function getPlayerURL(form) {
     }
 }
 
+function setTime(millistime) {
+    return "bla";
+}
+
+function getTime(formattedtime) {
+    return 123;
+}
+
 function setPlayerFrame(form) {
     var current = parent.frames["player"].location.href;
     var player  = getPlayerURL(form); 

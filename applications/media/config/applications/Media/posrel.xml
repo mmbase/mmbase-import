@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<posrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114814">
+	<node number="554" owner="michiel" snumber="540" dnumber="557" rtype="posrel" dir="bidirectional">
+		<pos>3</pos>
+	</node>
+
+	<node number="553" owner="michiel" snumber="540" dnumber="556" rtype="posrel" dir="bidirectional">
+		<pos>2</pos>
+	</node>
+
+	<node number="552" owner="michiel" snumber="540" dnumber="555" rtype="posrel" dir="bidirectional">
+		<pos>1</pos>
+	</node>
+
+</posrel>

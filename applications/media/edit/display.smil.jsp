@@ -4,7 +4,9 @@
 %>
 <mm:cloud>
 <mm:import externid="source"   required="true" />
-<mm:node number="$source">
+<mm:node id="s" number="$source">
+<!-- this is completey stupid, but it works for the moment -->
+<mm:relatednodes type="mediaproviders" max="1">
 <smil>
   <head>
      <meta name="copyright" content="NOS Internet" />
@@ -15,10 +17,13 @@
   </head>
   <body>    
      <par>
-      <video      src="<mm:field name="urlresult(streams)" />" region="filmpje"  />
+      <mm:field name="name">
+         <video   src="<mm:field node="s" name="urlresult($_)" />" region="filmpje"  />
+      </mm:field>
      </par>
   </body>
 </smil>
+</mm:relatednodes>
 </mm:node>
 </mm:cloud>
 
