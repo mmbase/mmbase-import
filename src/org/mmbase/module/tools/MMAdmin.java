@@ -1,12 +1,12 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
-*/
+ 
+ */
 package org.mmbase.module.tools;
 
 import java.util.*;
@@ -33,13 +33,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.66 2003-04-18 07:27:23 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.67 2003-04-23 08:15:07 kees Exp $
  */
 public class MMAdmin extends ProcessorModule {
-
+    
     // logging routines
     private static Logger log = Logging.getLoggerInstance(MMAdmin.class.getName());
-
+    
     /**
      * reference to MMBase
      * @scope private
@@ -63,13 +63,13 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean kioskmode=false;
-
+    
     /**
      * @javadoc
      */
     public MMAdmin() {
     }
-
+    
     /**
      * @javadoc
      */
@@ -82,7 +82,7 @@ public class MMAdmin extends ProcessorModule {
         mmb=(MMBase)getModule("MMBASEROOT");
         probe = new MMAdminProbe(this);
     }
-
+    
     /**
      * Returns a virtual builder used to create node lists from the results
      * returned by getList().
@@ -95,7 +95,7 @@ public class MMAdmin extends ProcessorModule {
     public MMObjectBuilder getListBuilder(String command,Map params) {
         return new VirtualBuilder(mmb);
     }
-
+    
     /**
      * Retrieves a specified builder.
      * The builder's name can be extended with the subpath of that builder's configuration file.
@@ -110,7 +110,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return mmb.getMMObject(path);
     }
-
+    
     /**
      * Generate a list of values from a command to the processor
      * @javadoc
@@ -160,14 +160,14 @@ public class MMAdmin extends ProcessorModule {
         }
         return null;
     }
-
+    
     /**
      * @javadoc
      */
     private boolean checkAdmin(scanpage sp, String cmd) {
         return checkUserLoggedOn(sp, cmd, true);
     }
-
+    
     /**
      * @javadoc
      */
@@ -183,14 +183,14 @@ public class MMAdmin extends ProcessorModule {
         }
         return authorized;
     }
-
+    
     /**
      * Execute the commands provided in the form values
      * @javadoc
      */
     public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
         String cmdline,token;
-
+        
         for (Enumeration h = cmds.keys();h.hasMoreElements();) {
             cmdline=(String)h.nextElement();
             if(!checkAdmin(sp,cmdline)) return false;
@@ -236,11 +236,11 @@ public class MMAdmin extends ProcessorModule {
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
                             lastmsg="Writing finished, problems occurred\n\n"+
-                                    "Error encountered="+e.getMessage()+"\n\n";
+                            "Error encountered="+e.getMessage()+"\n\n";
                             return false;
                         }
                         lastmsg="Writing finished, no problems.\n\n"+
-                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"\n\n";
+                        "A clean copy of "+modulename+".xml can be found at : "+savepath+"\n\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
@@ -259,19 +259,19 @@ public class MMAdmin extends ProcessorModule {
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
                             lastmsg="Writing finished, problems occurred\n\n"+
-                                    "Error encountered="+e.getMessage()+"\n\n";
+                            "Error encountered="+e.getMessage()+"\n\n";
                             return false;
                         }
                         lastmsg="Writing finished, no problems.\n\n"+
-                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"\n\n";
+                        "A clean copy of "+buildername+".xml can be found at : "+savepath+"\n\n";
                     }
                 }
             }
-
+            
         }
         return false;
     }
-
+    
     // basically replaces linefeeds and some characters.
     private String escape(String s) {
         if (s==null) {
@@ -286,7 +286,7 @@ public class MMAdmin extends ProcessorModule {
             return obj.toString();
         }
     }
-
+    
     /**
      * Handle a $MOD command
      * @javadoc
@@ -365,13 +365,13 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("RELATIONCACHEREQUESTS")) {
                 return(""+(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()));
             } else if (cmd.equals("RELATIONCACHEPERFORMANCE")) {
-
-            return(""+(1.0*MMObjectNode.getRelationCacheHits())/(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()+0.0000000001)*100);
+                
+                return(""+(1.0*MMObjectNode.getRelationCacheHits())/(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()+0.0000000001)*100);
             }
         }
         return "No command defined";
     }
-
+    
     /**
      * @javadoc
      */
@@ -383,7 +383,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return -1;
     }
-
+    
     /**
      * @javadoc
      */
@@ -395,7 +395,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return -1;
     }
-
+    
     /**
      * @javadoc
      */
@@ -407,7 +407,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
@@ -419,7 +419,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
@@ -437,9 +437,9 @@ public class MMAdmin extends ProcessorModule {
             mod.setInitParameter(key,value);
             syncModuleXML(mod,modname);
         }
-
+        
     }
-
+    
     /**
      * @javadoc
      * @todo should obtain data from the configuration file
@@ -453,16 +453,16 @@ public class MMAdmin extends ProcessorModule {
             String value=(String)props.get(key);
             return value;
         }
-        */
+         */
         Module mod=(Module)getModule(modname);
         if (mod!=null) {
             String value=mod.getInitParameter(key);
             if (value!=null) return value;
         }
         return "";
-
+        
     }
-
+    
     /**
      * @javadoc
      */
@@ -474,7 +474,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
@@ -490,7 +490,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
@@ -502,13 +502,13 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
     public void maintainance() {
     }
-
+    
     /**
      * @javadoc
      * @bad-literal time for MMAdminProbe should be a constant or configurable
@@ -523,7 +523,7 @@ public class MMAdmin extends ProcessorModule {
         restartwanted=true;
         probe = new MMAdminProbe(this,3*1000);
     }
-
+    
     /**
      * @javadoc
      */
@@ -532,7 +532,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused starting app tool, am in kiosk mode");
             return false;
         }
-
+        
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         log.info("Starting apptool with : "+path+File.separator+appname+".xml");
         MMAppTool app=new MMAppTool(path+File.separator+appname+".xml");
@@ -540,22 +540,22 @@ public class MMAdmin extends ProcessorModule {
         lastmsg+=path+File.separator+appname+".xml\n\n";
         return true;
     }
-
+    
     /**
      * Installs the application
      * @param applicationName Name of the application file, without the xml extension
      *                        This is also assumed to be the name of teh application itself
      *                        (if not, a warning will be issued)
      * @param result the result object, containing error messages when the installation fails,
-                     or the installnotice if succesfull or already installed
+     * or the installnotice if succesfull or already installed
      * @param installationSet set of installations that are currently being installed.
      *                        used to check if there are circular dependencies
      * @param autoDeploy if true, the installation is only installed if the application is set to autodeploy
      * @return true if succesfull, false otherwise
      */
-     private boolean installApplication(String applicationName, int requiredVersion, String requiredMaintainer,
-                                       ApplicationResult result, Set installationSet,
-                                       boolean autoDeploy) {
+    private boolean installApplication(String applicationName, int requiredVersion, String requiredMaintainer,
+    ApplicationResult result, Set installationSet,
+    boolean autoDeploy) {
         if (installationSet.contains(applicationName)) {
             return result.error("Circular reference to application with name "+applicationName);
         }
@@ -580,7 +580,7 @@ public class MMAdmin extends ProcessorModule {
             if (installedVersion == -1 || version > installedVersion) {
                 if(!name.equals(applicationName)) {
                     result.warn("Application name "+name+" not the same as the base filename "+applicationName+".\n"+
-                                "This may cause problems when referring to this application.");
+                    "This may cause problems when referring to this application.");
                 }
                 // We should possibly check whether the maintainer is valid here (see sample code below).
                 // There is currently no way to do this, though, unless we use awful queries.
@@ -590,7 +590,7 @@ public class MMAdmin extends ProcessorModule {
                 if (!maintainer.equals(installedAppMaintainer)) {
                     return result.error("Install error: "+name+" is of maintainer '"+maintainer+"' but installed application is of maintainer '"+installedMaintainer+"'");
                 }
-                */
+                 */
                 // should be installed - add to installation set
                 installationSet.add(applicationName);
                 List requires = app.getRequirements();
@@ -603,8 +603,8 @@ public class MMAdmin extends ProcessorModule {
                         String appMaintainer = (String)reqapp.get("maintainer");
                         int appVersion = -1;
                         try {
-                          String appVersionAttr = (String)reqapp.get("version");
-                          if (appVersionAttr != null) appVersion = Integer.parseInt(appVersionAttr);
+                            String appVersionAttr = (String)reqapp.get("version");
+                            if (appVersionAttr != null) appVersion = Integer.parseInt(appVersionAttr);
                         } catch (Exception e) {}
                         if (installedAppVersion == -1 || appVersion > installedAppVersion) {
                             log.service("Application '"+applicationName+"' requires : "+appName);
@@ -620,7 +620,7 @@ public class MMAdmin extends ProcessorModule {
                             if (!appMaintainer.equals(installedAppMaintainer)) {
                                 return result.error("Install error: "+name+" requires maintainer '"+appMaintainer+"' but found maintainer '"+installedAppMaintainer+"'");
                             }
-                            */
+                             */
                         }
                     }
                 }
@@ -631,10 +631,10 @@ public class MMAdmin extends ProcessorModule {
                     log.info("installing application : "+name+" new version from "+installedVersion+" to "+version);
                 }
                 if (installBuilders(app.getNeededBuilders(), path + applicationName,result) &&
-                    installRelDefs(app.getNeededRelDefs(),result) &&
-                    installAllowedRelations(app.getAllowedRelations(),result) &&
-                    installDataSources(app.getDataSources(),applicationName, result) &&
-                    installRelationSources(app.getRelationSources(), result)) {
+                installRelDefs(app.getNeededRelDefs(),result) &&
+                installAllowedRelations(app.getAllowedRelations(),result) &&
+                installDataSources(app.getDataSources(),applicationName, result) &&
+                installRelationSources(app.getRelationSources(), result)) {
                     if (installedVersion == -1) {
                         ver.setInstalledVersion(name,"application",maintainer,version);
                     } else {
@@ -642,8 +642,8 @@ public class MMAdmin extends ProcessorModule {
                     }
                     log.info("Application '"+name+"' deployed succesfully.");
                     result.success("Application loaded oke\n\n"+
-                                   "The application has the following install notice for you : \n\n"+
-                                   app.getInstallNotice());
+                    "The application has the following install notice for you : \n\n"+
+                    app.getInstallNotice());
                 }
                 // installed or failed - remove from installation set
                 installationSet.remove(applicationName);
@@ -652,8 +652,8 @@ public class MMAdmin extends ProcessorModule {
                 // and if it was not auto-deployed (as in that case messages would not be deemed very useful)
                 if (installationSet.size() == 1) {
                     result.success("Application was allready loaded (or a higher version)\n\n"+
-                                   "To remind you here is the install notice for you again : \n\n"+
-                                   app.getInstallNotice());
+                    "To remind you here is the install notice for you again : \n\n"+
+                    app.getInstallNotice());
                 }
             }
         } else {
@@ -661,7 +661,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return result.isSuccess();
     }
-
+    
     /**
      * @javadoc
      */
@@ -672,7 +672,7 @@ public class MMAdmin extends ProcessorModule {
                 Hashtable bh=(Hashtable)h.nextElement();
                 String path=(String)bh.get("path");
                 String prepath=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-
+                
                 if (fileExists(prepath+path)) {
                     XMLNodeReader nodereader=new XMLNodeReader(prepath+path,prepath+appname+File.separator,mmb);
                     String exportsource=nodereader.getExportSource();
@@ -698,7 +698,7 @@ public class MMAdmin extends ProcessorModule {
                                 syncnode.setValue("localnumber",localnumber);
                                 syncnode.insert("import");
                                 if ((localnumber==newnode.getNumber()) &&
-                                    (newnode.parent instanceof Message)) {
+                                (newnode.parent instanceof Message)) {
                                     importednodes.add(newnode);
                                 }
                             }
@@ -723,7 +723,7 @@ public class MMAdmin extends ProcessorModule {
             return result.error("Application installer : can't reach syncnodes builder");
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -759,13 +759,13 @@ public class MMAdmin extends ProcessorModule {
                 result.error("Insert of node "+newnode+" failed.");
             }
             return localnumber;
-
+            
         } else {
             result.error("Application installer can't find builder for : "+newnode);
             return -1;
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -778,10 +778,10 @@ public class MMAdmin extends ProcessorModule {
                 path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator+path;
                 if (fileExists(path)) {
                     XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
-
+                    
                     String exportsource=nodereader.getExportSource();
                     int timestamp=nodereader.getTimeStamp();
-
+                    
                     for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
                         MMObjectNode newnode=(MMObjectNode)n.nextElement();
                         int exportnumber=newnode.getIntValue("number");
@@ -799,7 +799,7 @@ public class MMAdmin extends ProcessorModule {
                             // Due to the order in which syncing takles place, it is possible that such structures will fail
                             // to get imported.
                             // ye be warned.
-
+                            
                             // find snumber
                             int snumber=newnode.getIntValue("snumber");
                             b=syncbul.search("exportnumber=="+snumber+"+exportsource=='"+exportsource+"'");
@@ -809,7 +809,7 @@ public class MMAdmin extends ProcessorModule {
                             } else {
                                 snumber=-1;
                             }
-
+                            
                             // find dnumber
                             int dnumber=newnode.getIntValue("dnumber");
                             b=syncbul.search("exportnumber=="+dnumber+"+exportsource=='"+exportsource+"'");
@@ -819,7 +819,7 @@ public class MMAdmin extends ProcessorModule {
                             } else {
                                 dnumber=-1;
                             }
-
+                            
                             newnode.setValue("snumber",snumber);
                             newnode.setValue("dnumber",dnumber);
                             int localnumber=-1;
@@ -834,7 +834,7 @@ public class MMAdmin extends ProcessorModule {
                                     syncnode.insert("import");
                                 }
                             } else {
-                               result.error("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
+                                result.error("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
                             }
                         }
                     }
@@ -845,7 +845,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return result.isSuccess();
     }
-
+    
     /**
      * Checks and if required installs needed relation definitions.
      * Retrieves, for each reldef entry, the attributes, and passes these on to {@link #installRelDef}
@@ -880,7 +880,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return true;
     }
-
+    
     /**
      * Checks and if required installs needed allowed type relations.
      * Retrieves, for each allowed relation entry, the attributes, and passes these on to {@link #installTypeRel}
@@ -898,7 +898,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return true;
     }
-
+    
     /**
      * Lists the required builders for this application, and makes attempts to install any builders that are
      * not present.
@@ -920,8 +920,8 @@ public class MMAdmin extends ProcessorModule {
                 String path = mmb.getBuilderPath(name, "");
                 if(path != null) {
                     result.error("The builder '" + name + "' was already on our system, but inactive."+
-                                  "To install this application, make the builder '" +
-                                  path + name +  ".xml" + "' active");
+                    "To install this application, make the builder '" +
+                    path + name +  ".xml" + "' active");
                     continue;
                 }
                 // attempt to open the application root
@@ -949,7 +949,7 @@ public class MMAdmin extends ProcessorModule {
                 MMObjectNode type = objectTypes.getNewNode("system");
                 // fill the name....
                 type.setValue("name", name);
-
+                
                 // fill the config...
                 org.w3c.dom.Document config = null;
                 try {
@@ -975,8 +975,8 @@ public class MMAdmin extends ProcessorModule {
         }
         return result.isSuccess();
     }
-
-
+    
+    
     /**
      * Checks whether a given relation definition exists, and if not, creates that definition.
      * @param sname source name of the relation definition
@@ -988,7 +988,7 @@ public class MMAdmin extends ProcessorModule {
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
     private boolean installRelDef(String sname, String dname, int dir,String sguiname, String dguiname, int builder,
-                                  ApplicationResult result) {
+    ApplicationResult result) {
         RelDef reldef=mmb.getRelDef();
         if (reldef!=null) {
             if(reldef.getNumberByName(sname+"/"+dname)==-1) {
@@ -1017,7 +1017,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return true;
     }
-
+    
     /**
      * Checks and if required installs an allowed type relation (typerel object).
      * @param sname source type name of the type relation
@@ -1027,7 +1027,7 @@ public class MMAdmin extends ProcessorModule {
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
     private boolean installTypeRel(String sname, String dname, String rname, int count,
-                                   ApplicationResult result) {
+    ApplicationResult result) {
         TypeRel typerel=mmb.getTypeRel();
         if (typerel!=null) {
             TypeDef typedef=mmb.getTypeDef();
@@ -1038,25 +1038,25 @@ public class MMAdmin extends ProcessorModule {
             if (reldef==null) {
                 return result.error("Can't get reldef builder");
             }
-
+            
             // figure out rnumber
             int rnumber=reldef.getNumberByName(rname);
             if (rnumber==-1) {
                 return result.error("No reldef with role '"+rname+"' defined");
             }
-
+            
             // figure out snumber
             int snumber=typedef.getIntValue(sname);
             if (snumber==-1) {
                 return result.error("No builder with name '"+sname+"' defined");
             }
-
+            
             // figure out dnumber
             int dnumber=typedef.getIntValue(dname);
             if (dnumber==-1) {
                 return result.error("No builder with name '"+dname+"' defined");
             }
-
+            
             if (!typerel.contains(snumber,dnumber,rnumber,TypeRel.STRICT)) {
                 MMObjectNode node=typerel.getNewNode("system");
                 node.setValue("snumber",snumber);
@@ -1075,7 +1075,7 @@ public class MMAdmin extends ProcessorModule {
             return result.error("Can't get typerel builder");
         }
     }
-
+    
     /**
      * @javadoc
      * @deprecated-now not used (?)
@@ -1093,7 +1093,7 @@ public class MMAdmin extends ProcessorModule {
                 log.warn("no reldef : "+rname+" defined");
                 return;
             }
-
+            
             MMObjectNode node=insrel.getRelation(snumber,dnumber,rnumber);
             if (node==null) {
                 node=insrel.getNewNode("system");
@@ -1116,7 +1116,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("can't get insrel builder");
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1146,7 +1146,7 @@ public class MMAdmin extends ProcessorModule {
             }
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1166,7 +1166,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return true;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1177,7 +1177,7 @@ public class MMAdmin extends ProcessorModule {
             return null;
         }
         Vector results=new Vector();
-
+        
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
@@ -1209,14 +1209,14 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
     Vector getBuildersList() {
         return getBuildersList(null);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1233,7 +1233,7 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
         return getBuildersList(path, subpath, ver);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1268,7 +1268,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1284,11 +1284,11 @@ public class MMAdmin extends ProcessorModule {
                 results.addElement(key);
                 results.addElement(value);
             }
-
+            
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1310,17 +1310,17 @@ public class MMAdmin extends ProcessorModule {
                     results.addElement(""+size);
                 }
             }
-
+            
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
     Vector getModulesList() {
         Vector results=new Vector();
-
+        
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
@@ -1334,7 +1334,7 @@ public class MMAdmin extends ProcessorModule {
                     String sname=name.substring(0,name.length()-4);
                     XMLModuleReader app=new XMLModuleReader(path+aname);
                     results.addElement(sname);
-
+                    
                     results.addElement(""+app.getModuleVersion());
                     String status=app.getStatus();
                     if (status.equals("active")) {
@@ -1348,7 +1348,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1359,7 +1359,7 @@ public class MMAdmin extends ProcessorModule {
             return null;
         }
         Vector results=new Vector();
-
+        
         String path = MMBaseContext.getConfigPath()+File.separator+"databases"+File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
@@ -1373,7 +1373,7 @@ public class MMAdmin extends ProcessorModule {
                     String sname=name.substring(0,name.length()-4);
                     XMLDatabaseReader app = new XMLDatabaseReader(path + aname);
                     results.addElement(sname);
-
+                    
                     results.addElement("0");
                     results.addElement("yes");
                     results.addElement("mmbase.org");
@@ -1382,7 +1382,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1394,7 +1394,7 @@ public class MMAdmin extends ProcessorModule {
             return false;
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1454,7 +1454,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
@@ -1472,7 +1472,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1487,7 +1487,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-
+    
     /**
      * @javadoc
      */
@@ -1496,7 +1496,7 @@ public class MMAdmin extends ProcessorModule {
             setModuleProperty(vars);
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1527,7 +1527,7 @@ public class MMAdmin extends ProcessorModule {
             removeBuilderField(vars);
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1540,7 +1540,7 @@ public class MMAdmin extends ProcessorModule {
         String fieldname=(String)vars.get("FIELDNAME");
         String country=(String)vars.get("COUNTRY");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1548,7 +1548,7 @@ public class MMAdmin extends ProcessorModule {
         }
         syncBuilderXML(bul,builder);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1560,7 +1560,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1568,7 +1568,7 @@ public class MMAdmin extends ProcessorModule {
         }
         syncBuilderXML(bul,builder);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1580,7 +1580,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1591,7 +1591,7 @@ public class MMAdmin extends ProcessorModule {
         }
         syncBuilderXML(bul,builder);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1603,7 +1603,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1614,7 +1614,7 @@ public class MMAdmin extends ProcessorModule {
         }
         syncBuilderXML(bul,builder);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1626,7 +1626,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1637,7 +1637,7 @@ public class MMAdmin extends ProcessorModule {
         }
         syncBuilderXML(bul,builder);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1649,7 +1649,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1662,7 +1662,7 @@ public class MMAdmin extends ProcessorModule {
             syncBuilderXML(bul,builder);
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1674,7 +1674,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1684,7 +1684,7 @@ public class MMAdmin extends ProcessorModule {
             syncBuilderXML(bul,builder);
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1696,7 +1696,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1706,7 +1706,7 @@ public class MMAdmin extends ProcessorModule {
             syncBuilderXML(bul,builder);
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1718,7 +1718,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1730,7 +1730,7 @@ public class MMAdmin extends ProcessorModule {
         }
         syncBuilderXML(bul,builder);
     }
-
+    
     /**
      * @javadoc
      */
@@ -1742,7 +1742,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("VALUE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
@@ -1756,7 +1756,7 @@ public class MMAdmin extends ProcessorModule {
             syncBuilderXML(bul,builder);
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1772,32 +1772,32 @@ public class MMAdmin extends ProcessorModule {
             // This should be the number of the last field as denied in the builder xml,
             // as the DBPos field is incremented for each field in that file.
             int pos=bul.getFields(FieldDefs.ORDER_CREATE).size()+1;
-
+            
             FieldDefs def=new FieldDefs();
             def.setDBPos(pos);
-
+            
             def.setGUIPos(pos);
             def.setGUIList(-1);
             def.setGUISearch(pos);
-
+            
             String value=(String)vars.get("dbname");
             def.setDBName(value);
             def.setGUIName("en",value);
-
+            
             log.service("Adding field " + value);
-
+            
             value=(String)vars.get("mmbasetype");
             def.setDBType(value);
-
+            
             value=(String)vars.get("dbstate");
             def.setDBState(value);
-
+            
             value=(String)vars.get("dbnotnull");
             def.setDBNotNull(value.equals("true"));
-
+            
             value=(String)vars.get("dbkey");
             def.setDBKey(value.equals("true"));
-
+            
             value=(String)vars.get("dbsize");
             try {
                 int i=Integer.parseInt(value);
@@ -1805,10 +1805,10 @@ public class MMAdmin extends ProcessorModule {
             } catch (Exception e) {
                 log.debug("dbsize had invalid value, not setting size");
             }
-
+            
             value=(String)vars.get("guitype");
             def.setGUIType(value);
-
+            
             bul.addField(def);
             if (mmb.getDatabase().addField(bul, def.getDBName())) {
                 syncBuilderXML(bul,builder);
@@ -1819,7 +1819,7 @@ public class MMAdmin extends ProcessorModule {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1831,7 +1831,7 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         String fieldname=(String)vars.get("FIELDNAME");
         String value=(String)vars.get("SURE");
-
+        
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null && value!=null && value.equals("Yes")) {
             FieldDefs def=bul.getField(fieldname);
@@ -1844,7 +1844,7 @@ public class MMAdmin extends ProcessorModule {
             }
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1860,7 +1860,7 @@ public class MMAdmin extends ProcessorModule {
             log.error(Logging.stackTrace(e));
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1874,7 +1874,7 @@ public class MMAdmin extends ProcessorModule {
             log.error(Logging.stackTrace(e));
         }
     }
-
+    
     /**
      * @javadoc
      */
@@ -1912,7 +1912,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     /**
      * @javadoc
      */
@@ -1928,27 +1928,27 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-
+    
     class ApplicationResult {
-
+        
         protected String resultMessage;
         protected boolean success;
         protected MMAdmin adminModule;
-
+        
         ApplicationResult(MMAdmin adminModule) {
             this.adminModule=adminModule;
             resultMessage = "";
             success = true;
         }
-
+        
         String getMessage() {
             return resultMessage;
         }
-
+        
         boolean isSuccess() {
             return success;
         }
-
+        
         boolean error(String message) {
             success=false;
             adminModule.log.error(message);
@@ -1956,7 +1956,7 @@ public class MMAdmin extends ProcessorModule {
             resultMessage += message;
             return false;
         }
-
+        
         boolean warn(String message) {
             success=false;
             adminModule.log.warn(message);
@@ -1964,14 +1964,14 @@ public class MMAdmin extends ProcessorModule {
             resultMessage += message;
             return false;
         }
-
+        
         boolean success(String message) {
             success=true;
             if (!resultMessage.equals("")) resultMessage += "\n";
             resultMessage += message;
             return true;
         }
-
+        
     }
-
+    
 }

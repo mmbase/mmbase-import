@@ -1,12 +1,12 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
-*/
+ 
+ */
 package org.mmbase.module.tools.MMAppTool;
 
 import java.util.*;
@@ -16,7 +16,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.*;
 
 public class BuilderRect extends Object {
-
+    
     private AppCanvas parent;
     private float bscale;
     private final static boolean debug=false;
@@ -27,7 +27,7 @@ public class BuilderRect extends Object {
     private XMLBuilderReader bul;
     private Vector fields;
     private String name;
-
+    
     public BuilderRect(AppCanvas parent,String name,XMLBuilderReader bul,int size,int x, int y) {
         this.parent=parent;
         this.name=name;
@@ -37,7 +37,7 @@ public class BuilderRect extends Object {
         this.bscale=1.1F;
         namefont=new Font("Arial",Font.BOLD,size);
     }
-
+    
     public void paint(Graphics g) {
         if (fm==null) {
             fm=g.getFontMetrics(namefont);
@@ -53,18 +53,18 @@ public class BuilderRect extends Object {
         }
         g.drawRoundRect(x,y+50,dx,dy,10,10);
         g.drawRoundRect(x,y,dx,30,10,10);
-
+        
         g.setColor(parent.getTextColor());
         g.setFont(namefont);
-
+        
         g.drawString("Builder : \""+name+"\"       Version : \""+bul.getBuilderVersion()+" / "+bul.getBuilderMaintainer()+"\"",x+15,y+h+2);
-
+        
         // first set the header
         g.drawString("GUIName",x+15,y+50+h);
         g.drawString("DBName",x+150,y+50+h);
         g.drawString("DBType",x+300,y+50+h);
         g.drawString("DBSize",x+450,y+50+h);
-
+        
         int ypos=y+50+(h*3);
         for (Enumeration e=fields.elements();e.hasMoreElements();) {
             FieldDefs def=(FieldDefs)e.nextElement();
@@ -80,38 +80,38 @@ public class BuilderRect extends Object {
             }
         }
     }
-
-
+    
+    
     public void recalc() {
         // recalc my oval based on the name, font, size
         fields=bul.getFieldDefs();
-
+        
         /*
         for (Enumeration e=fields.elements();e.hasMoreElements();) {
             FieldDefs def=(FieldDefs)e.nextElement();
             System.out.println("def="+def);
         }
-        */
-
+         */
+        
         h=fm.getHeight();
         dx=(int)(500*bscale);
         dy=(int)((h*fields.size())*bscale);
     }
-
+    
     public boolean isInside(int mx, int my) {
         return(false);
     }
-
+    
     public void setActive(boolean active) {
         this.active=active;
     }
-
+    
     public boolean getActive() {
         return(active);
     }
-
+    
     public String getTypeString(int dbtype) {
         return FieldDefs.getDBTypeDescription(dbtype);
     }
-
+    
 }
