@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- 
+
+   @author  Michiel Meeuwissen
+   @version $Id: log4j.xml,v 1.13 2002-04-15 12:53:54 michiel Exp $
+   @since   MMBase-1.4
+
    Location of the log4j.dtd. 
    In Tomcat a simple "log4j.dtd" will do, but this does not work in
    older versions of Orion (because of limitation of Xerces). 
@@ -45,23 +50,33 @@
 
 <log4j:configuration>
 
-  <appender name="logfile" class="org.apache.log4j.FileAppender" >
-    <param name="File"   value="&logdir;mmbase.log" />
-    <param name="Append" value="true" />
+  <!-- 
+  The appenders of the default log4j configuration are writing to 
+  STDOUT on default. 
+  This is problably not what you want, but at least it works always.
+  (This also means that the &logdir; entity is not used in this example configuration)
+  See in the eother examples how to configure a log file.
+  -->
+
+  <appender name="logfile" class="org.apache.log4j.ConsoleAppender" >
+    <param name="Target" value="System.out" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{ABSOLUTE} %-7p %c{4} - %m%n" />
     </layout>
   </appender>
 
-  <appender name="pagedebug" class="org.apache.log4j.FileAppender" >
-    <param name="File"   value="&logdir;mmpage.log" />
-    <param name="Append" value="true" />
+  <!-- 
+  A different appender for 'page' logging. This is writing to stdout now too, but probably you want 
+  this to go to another file.
+  -->     
+  <appender name="pagedebug" class="org.apache.log4j.ConsoleAppender" >
+    <param name="Target" value="System.out" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{ISO8601} %c - %m%n" />
+      <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} PAGE %-7p %c{2} %L - %m%n" />
     </layout>
   </appender>
   
-<!-- categories -->
+  <!-- categories -->
   
   <!-- examples: different priority for a few subtrees -->
   <category name="org.mmbase.bridge" class ="&logger;">
@@ -73,8 +88,8 @@
   </category>
 
 
-  <!-- results from the log tag go to a different file -->
-  <category name="org.mmbase.PAGE.LOGTAG" class ="&logger;" additivity="false" >
+  <!-- 'page logging' goes to a different appender -->
+  <category name="org.mmbase.PAGE" class ="&logger;" additivity="false" >
     <priority class="&priority;" value ="service" />
     <appender-ref ref="pagedebug" />
   </category>
