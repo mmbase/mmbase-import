@@ -15,7 +15,6 @@ import java.io.File;
 import java.net.*;
 import java.util.*;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
@@ -42,15 +41,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.20 2004-11-17 20:38:23 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.21 2004-12-17 10:53:40 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
     
     private static final Logger log = Logging.getLoggerInstance(URIResolver.class);
 
-    private EntryList     extraDirs;  // prefix -> URL pairs
-    private URL           cwd;
+    private EntryList     dirs;  // prefix -> URL pairs
     private int           hashCode;
 
 
@@ -70,7 +68,6 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
 
     public URIResolver(URL c, boolean overhead) {
-        cwd      = c;
         hashCode = c.hashCode();
     }
     /**
@@ -109,8 +106,8 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     /**
      * @deprecated
      */
-    public URIResolver(File f, EntryList extradirs) {
-        this(toURL(f), extradirs);
+    public URIResolver(File f, EntryList extraDirs) {
+        this(toURL(f), extraDirs);
     }
 
     /**
@@ -123,14 +120,16 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * 'extra dir' available, namely the MMBase configuration
      * directory (with prefix mm:)
      */
-    public URIResolver(URL c, EntryList extradirs) {
+    public URIResolver(URL c, EntryList extraDirs) {
         if (log.isDebugEnabled()) log.debug("Creating URI Resolver for " + c);
+        URL cwd;
         if (c == null) {
             File[] roots = File.listRoots();
             if (roots != null && roots.length > 0) {
                 try {
                     cwd = roots[0].toURL();
                 } catch (Exception e) {
+                    cwd = null;
                 }
             } else {
                 log.warn("No filesystem root available, trying with 'null'");
@@ -141,22 +140,21 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         } else {
             cwd = c;
         }
-        extraDirs = new EntryList();
-        if (extradirs != null) {
-            extraDirs.addAll(extradirs);
+        dirs = new EntryList();
+        dirs.add(new Entry("", cwd));
+        if (extraDirs != null) {
+            dirs.addAll(extraDirs);
         }
-        extraDirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource(".")));
-
+        dirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource(".")));
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
-        if (extraDirs.size() == 1) { // only mmbase config, cannot change
+        if (extraDirs == null || extraDirs.size() == 0) { // only mmbase config, and root cannot change
             if (log.isDebugEnabled()) log.debug("getting hashCode " + cwd.hashCode());
             hashCode = cwd.hashCode(); 
             // if only the cwd is set, then you alternatively use the cwd has hashCode is this way.
             // it this way in these case it is easy to avoid constructing an URIResolver at all.
         } else {
-            hashCode = 31 * cwd.hashCode() + extraDirs.hashCode(); // see also javadoc of List
-            if (log.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + extraDirs + "'");
+            hashCode = dirs.hashCode(); // see also javadoc of List
         }
     }
 
@@ -166,7 +164,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      *
      */    
     public URL getCwd() {
-        return cwd;
+        return ((Entry) dirs.get(0)).getDir();
     }
 
     /**
@@ -175,13 +173,14 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * @return A String which could be used as a shell's path.
      */
     public String getPath() {
-        String result = cwd.toString();
-        Iterator i = extraDirs.iterator();            
+        StringBuffer result = new StringBuffer();
+        Iterator i = dirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
-            result += File.pathSeparatorChar + entry.getDir().toString();
+            result.append(File.pathSeparatorChar);
+            result.append(entry.getDir().toString());
         }
-        return result;        
+        return result.toString();        
     }
 
     /**
@@ -191,8 +190,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
     public List getPrefixPath() {
         List result = new ArrayList();
-        result.add(cwd.toString());
-        Iterator i = extraDirs.iterator();            
+        Iterator i = dirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
             result.add(entry.getPrefix() + entry.getDir().toString());
@@ -229,22 +227,25 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             URL baseURL;
             if (base == null  // 'base' is often 'null', but happily, this object knows about cwd itself.
                 || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
-                baseURL = cwd;
+                baseURL = getCwd();
             } else {
                 baseURL = resolveToURL(base, null); // resolve URIRsolver's prefixes like mm:, ew: in base.
             }
             
             URL path = null;
             { // check all known prefixes
-                Iterator i = extraDirs.iterator();            
+                Iterator i = dirs.iterator();            
                 while (i.hasNext()) {
                     Entry entry = (Entry) i.next();
-                    if (href.startsWith(entry.getPrefix())) { //explicitely stated!
+                    String pref = entry.getPrefix();
+                    if (! "".equals(pref) && href.startsWith(pref)) { //explicitely stated!
                         path = new URL(entry.getDir(), href.substring(entry.getPrefixLength())); 
+                        log.info("href matches " + entry + " returing " + path);
                         break;
                     }
                     try {
                         URL u = new URL(entry.getDir(), href);
+                        log.trace("Trying " + u);
                         // getDoInput does not work for every connection.
                         if (u.openConnection().getInputStream() != null) {                    
                             path = u;
@@ -318,9 +319,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     public boolean equals(Object o) {
         if (o != null && (o instanceof URIResolver)) {
             URIResolver res = (URIResolver) o;          
-            return (extraDirs == null ? (res.extraDirs == null || res.extraDirs.size() == 1) : 
-                                         extraDirs.equals(res.extraDirs)) && 
-                   cwd.equals(res.cwd);
+            return (dirs == null ? (res.dirs == null || res.dirs.size() == 1) : dirs.equals(res.dirs)); 
             // See java javadoc, lists compare every element, files equal if  point to same file
             // extraDirs == null?
             // -> created with first constructor.
@@ -334,10 +333,10 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     }
 
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
-        return sizeof.sizeof(extraDirs);
+        return sizeof.sizeof(dirs);
     }
     public String toString() {
-        return cwd.toString() + " " + getPrefixPath().toString();
+        return getPrefixPath().toString();
     }
 
     /**
@@ -414,7 +413,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             return prefixLength;
         }
         public String toString() {
-            return dir.toString();
+            return prefix + ":" + dir.toString();
         }
         public boolean equals(Object o) {            
             if (o instanceof File) {
