@@ -22,12 +22,10 @@
 			<setField name="rationale"></setField>
 		</createObject>
 
-l
 		<createObject id="event1" type="mmevents">
 			<setField name="name">submitted bug</setField>
 			<setField name="start">$MOD-INFO-TIME-CURTIME^</setField>
 		</createObject>
-
 
  		<createRelation type="related" source="pool1" destination="report1" />
  		<createRelation type="rolerel" source="report1" destination="user1">
