@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
 */
 public class XMLApplicationWriter  {
 
-    public static boolean writeXMLFile(XMLApplicationReader app,String targetpath) {
+    public static boolean writeXMLFile(XMLApplicationReader app,String targetpath,MMBase mmb) {
 	System.out.println("STARTED XML WRITER ON : "+app);
 
 	// again this is a stupid class generating the xml file
@@ -50,9 +50,15 @@ public class XMLApplicationWriter  {
 	// write the relationsources
 	body+=getRelationSources(app);
 
+	// write the contextsources
+	body+=getContextSources(app);
+
 	// close the application file
 	body+="</application>\n";
 	saveFile(targetpath+"/"+app.getApplicationName()+".xml",body);
+
+	// now the tricky part starts figure out what nodes to write
+	writeDateSources(app,targetpath,mmb);
 	return(true);
     }
 
@@ -130,6 +136,21 @@ public class XMLApplicationWriter  {
     }
 
 
+    static String getContextSources(XMLApplicationReader app) {
+	String body="\t<contextsourcelist>\n";
+	Vector builders=app.getContextSources();
+	for (Enumeration e=builders.elements();e.hasMoreElements();) {
+		Hashtable bset=(Hashtable)e.nextElement();
+		String path=(String)bset.get("path");
+		String type=(String)bset.get("type");
+		String goal=(String)bset.get("goal");
+		body+="\t\t<contextsource path=\""+path+"\" type=\""+type+"\" goal=\""+goal+"\"/>\n";
+	}
+	body+="\t</contextsourcelist>\n\n";
+	return(body);	
+    }
+
+
 	static boolean saveFile(String filename,String value) {
 		File sfile = new File(filename);
 		try {
@@ -141,5 +162,23 @@ public class XMLApplicationWriter  {
 			e.printStackTrace();
 		}
 		return(true);
+	}
+
+	private static void writeDateSources(XMLApplicationReader app,String targetpath,MMBase mmb) {
+
+		Vector builders=app.getContextSources();
+		for (Enumeration e=builders.elements();e.hasMoreElements();) {
+			Hashtable bset=(Hashtable)e.nextElement();
+			String path=(String)bset.get("path");
+			String type=(String)bset.get("type");
+			String goal=(String)bset.get("goal");
+
+			path=MMBaseContext.getConfigPath()+("/applications/"+path);
+			System.out.println("READ="+path+" type="+type);
+			if (type.equals("depth")) {
+				XMLContextDepthReader capp=new XMLContextDepthReader(path);
+				XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb);
+			}
+		}
 	}
 }
