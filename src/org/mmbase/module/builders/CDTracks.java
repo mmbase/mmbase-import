@@ -6,6 +6,9 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+
+	*HAS TO MOVE TO NL-BRANCH!*
+
 */
 package org.mmbase.module.builders;
 
@@ -19,6 +22,8 @@ import org.mmbase.util.*;
 import org.mmbase.module.gui.html.*;
 
 // import org.mmbase.hardware.linux.cdrom.*;
+
+import nl.vpro.mmbase.util.media.audio.*;
 
 /**
  * @author Daniel Ockeloen
@@ -282,4 +287,9 @@ public class CDTracks extends MMObjectBuilder {
 		node.setValue("storage",2);
 		node.setValue("body","");
 	}
+
+    public String getCdtracksUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
+    {
+        return AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
+    }
 }
