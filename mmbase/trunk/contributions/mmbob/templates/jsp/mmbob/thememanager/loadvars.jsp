@@ -3,7 +3,7 @@
 <%-- use thememanager --%>
 <mm:present referid="thememanager">
 <%-- get the context of the thememanger, this is used to create urls --%>
-<mm:import id="context"><mm:url page="/mmbase/thememanager"/></mm:import>
+<mm:import id="context">/mmbase/thememanager</mm:import>
 <%-- set the imagecontext, this can be used if images are stored somewhere else --%>
 <mm:import id="imagecontext"><mm:write referid="context"/>/images</mm:import>
 <mm:import externid="forumid" id="tmpid" />
@@ -91,6 +91,7 @@
 <mm:import id="image_mood_suprised"><img src="<mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" />"></mm:import>
 
 </mm:present>
+
 <mm:present referid="thememanager" inverse="true">
 <mm:import id="style_default"><link rel="stylesheet" type="text/css" href="css/mmbase-dev.css" /></mm:import>
 <mm:import id="image_arrowright">images/arrow-right.gif</mm:import>
