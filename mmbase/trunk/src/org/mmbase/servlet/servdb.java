@@ -256,7 +256,7 @@ public class servdb extends JamesServlet {
 						// System.out.println("servdb::service(img): The contenttype for this image is: "+mimetype);
 
 						// check point, plugin needed for mirror system
-						checkImgMirror(req);
+						checkImgMirror(sp);
 					} 
 					else 
 
@@ -804,14 +804,13 @@ public class servdb extends JamesServlet {
 	/**
 	*
 	*/
-	private void checkImgMirror(HttpServletRequest req) {
-		String host=req.getRemoteHost();
+	private void checkImgMirror(scanpage sp) {
+		String host=sp.getAddress();
 		if (host!=null && (host.equals("sneezy.omroep.nl") || host.equals("images.vpro.nl")) && mmbase!=null) {
-			debug("SERVDB22->"+req.getQueryString());
+			debug("checkImgMirror ->"+sp.req.getQueryString());
 			NetFileSrv bul=(NetFileSrv)mmbase.getMMObject("netfilesrv");
 			if (bul!=null) {
-				debug("SERVDB2->"+req.getQueryString());
-				bul.fileChange("images","main","/img.db:"+req.getQueryString()+".asis");
+				bul.fileChange("images","main","/img.db:"+sp.req.getQueryString()+".asis");
 			}
 		}
 	}
