@@ -14,7 +14,7 @@
     </p>
     <mm:log>xxx</mm:log>
     <p>
-      <mm:cloud  loginpage="login.jsp"  jspvar="cloud">
+      <mm:cloud  loginpage="login.jsp?referrer=cloud5.jsp"  jspvar="cloud">
         You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must not be anonymous)
       </mm:cloud>
