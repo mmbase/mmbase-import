@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.9 2003-02-14 15:13:58 pierre Exp $;
+ @version $Id: documentation.css,v 1.10 2003-04-24 11:00:10 michiel Exp $;
 */
 
 
@@ -29,7 +29,7 @@ th {
 
 .title,
 .subtitle {
-   color: navy
+   color: #00425A;
  }
 
 .programlisting,
@@ -48,24 +48,46 @@ a {
 }
 
 a:link {
-  color: blue;
+  color: #44BDAD;
 }
 
 a:visited {
-  color: purple;
+  color: #00425A;
 }
 
-a:hover { // color: red;
-          // text-decoration: underline;
-                  }
+a:hover { 
+  color: #44BDAD;
+  text-decoration: underline;
+}
 
 
- .navfooter, .navheader { background-color: #EEDDFF; }
+ .navfooter, .navheader { 
+  background-color: #44BDAD;
+}
+
+
+.navfooter table , .navheader table { 
+  padding: 1ex;
+  border-spacing: 0;
+  color: #44BDAD;
+}
+.navfooter table td, th {  
+   background-color: #00425A;
+}
+.navheader table td, th { 
+   background-color: #00425A;
+} 
+.navfooter a, .navheader a {
+  color: white; 
+}
+
 
  .chapter, .refentry,
  .book, .reference,
- .preface, .colophon { margin-left: 10pt;
-                       margin-right: 10pt; }
+ .preface, .colophon { 
+  margin-left: 10pt;
+  margin-right: 10pt; 
+}
 
 
 div.navigation {
@@ -88,7 +110,7 @@ div.navigation[class] {
 
 
 div.navigation:before {
-//  content: url(logo.png);
+  /*  content: url(logo.png); */
 }
 
 
