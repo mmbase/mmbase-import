@@ -137,7 +137,7 @@ one or more examplevalue tags is you want to give some example values.
       </examplevalue>
     </attribute>
     <attribute>
-      <name>endtag</name>
+      <name>closetag</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>The tagname to use for the ending tags when creating the content of listhead and listtail.</info>
