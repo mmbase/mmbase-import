@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.2 2002-02-08 10:12:26 pierre Exp $
+ * @version $Id: JumpersFilter.java,v 1.3 2002-02-11 08:12:51 pierre Exp $
  */
 public class JumpersFilter implements Filter {
     private static Logger log;
@@ -33,7 +33,7 @@ public class JumpersFilter implements Filter {
      * @deprecated will be dropped in future versions
      */
     public void setFilterConfig(FilterConfig fc) {
-        throw new UnsupportedOperationException("This routine has been dropped in the Servlet api 2.3");
+        throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
     /**
@@ -42,7 +42,7 @@ public class JumpersFilter implements Filter {
      * @deprecated will be dropped in future versions
      */
     public FilterConfig getFilterConfig() {
-        throw new UnsupportedOperationException("This routine has been dropped in the Servlet api 2.3");
+        throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
     /**
