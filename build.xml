@@ -1475,6 +1475,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx150m" />
       <classpath>
@@ -1569,6 +1570,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx100m" />
       <classpath>
@@ -1584,6 +1586,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx100m" />
       <classpath>
