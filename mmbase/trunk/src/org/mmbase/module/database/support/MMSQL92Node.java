@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.11 2000-06-22 12:56:37 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.12 2000-06-22 13:29:45 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/06/22 12:56:37  wwwtech
+Daniel
+
 Revision 1.10  2000/06/22 12:21:04  install
 Daniel, if something goes wrong blame me
 
@@ -83,7 +86,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.11 $ $Date: 2000-06-22 12:56:37 $
+* @$Revision: 1.12 $ $Date: 2000-06-22 13:29:45 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -953,7 +956,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		} else {
 			String result=name+" "+matchType(type,size,notnull);
 			if (notnull) result+=" "+parser.getNotNullScheme();
-			System.out.println("BRRRR2="+result);
 			return(result);
 		}
 	}	
@@ -966,7 +968,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			if (typs!=null) {
 				for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
 					 dTypeInfo typ = (dTypeInfo)e.nextElement();
-					 System.out.println("WWW="+size+" "+typ.minSize+" "+typ.maxSize+typ.dbType+" "+typs.maps.size());
+					 //System.out.println("WWW="+size+" "+typ.minSize+" "+typ.maxSize+typ.dbType+" "+typs.maps.size());
 					// needs smart mapping code
 					if (size==-1) {
 						result=typ.dbType;
