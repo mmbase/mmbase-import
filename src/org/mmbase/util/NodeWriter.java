@@ -133,7 +133,12 @@ public class NodeWriter{
                     write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
                 }
             } else {
-                write(writeXMLField(key, node, directory, mmb));
+                //due to current tcp implementation sometimes nodeField are created
+                //those fiels always start with an underscore. If a node starts with
+                //we skip it
+                if (!key.startsWith("_")) {
+                        write(writeXMLField(key, node, directory, mmb));
+                }
             }
         }
         // end the node
