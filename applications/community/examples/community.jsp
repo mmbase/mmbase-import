@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Communities</title>
-<link rel="stylesheet" type="text/css" href="../../share/community/css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body class="basic">
 <table summary="communities" width="93%" cellspacing="1" cellpadding="3" border="0">
