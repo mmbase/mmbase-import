@@ -21,6 +21,7 @@
   <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
     <javac srcdir="src" destdir="build/classes" classpathref="classpath" debug="yes" optimize="yes">
            <include name="org/mmbase/bridge/remote/generator/*.java"/>
+           <include name="org/mmbase/servlet/rmi/*.java"/>
     </javac>
   </target>
 
