@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: MMRemoteProbe.java,v 1.6 2000-12-19 13:31:03 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote;
 
 import java.lang.*;
@@ -16,13 +21,13 @@ import java.io.*;
 
 /**
  *
- * @version 27 Mar 1997
+ * @version $Revision: 1.6 $ $Date: 2000-12-19 13:31:03 $
  * @author Daniel Ockeloen
  */
 public class MMRemoteProbe implements Runnable {
 
 	private String 		classname = getClass().getName();
-	private boolean 	debug 	  = false;
+	private boolean 	debug 	  = true;
 	private void		debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	private final static int SLEEPTIME = 60 * 1000;
