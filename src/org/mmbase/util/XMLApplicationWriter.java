@@ -130,7 +130,7 @@ public class XMLApplicationWriter  {
 		Hashtable bset=(Hashtable)e.nextElement();
 		String path=(String)bset.get("path");
 		String builder=(String)bset.get("builder");
-		body+="\t\t<datasource builder=\""+builder+"\"path=\""+path+"\" />\n";
+		body+="\t\t<datasource builder=\""+builder+"\" path=\""+path+"\" />\n";
 	}
 	body+="\t</datasourcelist>\n\n";
 
