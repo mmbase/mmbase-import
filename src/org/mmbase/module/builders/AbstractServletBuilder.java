@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.6 2002-06-30 21:12:05 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.7 2002-07-24 19:48:03 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -203,7 +203,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             } else {
                 servlet = getServletPath(context, null);
             }
-            if (usesBridgeServlet & !session.equals("")) servlet += "session=" + session + "+";
+            if (usesBridgeServlet && ! session.equals("")) servlet += "session=" + session + "+";
             
             if ("".equals(f)) {
                 return servlet;
