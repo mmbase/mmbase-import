@@ -61,7 +61,7 @@
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
-   <input class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
+   <input onclick="return confirm('Are you sure? This wil delete 1 node and <mm:countrelations /> relations!');" class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
 </mm:maydelete>
 </td>
 </tr>

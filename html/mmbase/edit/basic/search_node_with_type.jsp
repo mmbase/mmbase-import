@@ -31,6 +31,7 @@
 <mm:write session="_search_form_minage_$node_type" referid="_search_form_minage_$node_type" />
 <mm:write session="_search_form_maxage_$node_type" referid="_search_form_maxage_$node_type" />
 
+
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
 <mm:context id="form">
@@ -88,6 +89,11 @@
  </mm:url>
 
  <mm:url id="purl" referid="baseurl" referids="orderby?,directions?" write="false" />
+
+ <mm:url id="deleteurl" referids="node_type,orderby?,directions?,search?,page" page="commit_node.jsp" write="false">
+   <mm:param name="delete" value="true" />
+ </mm:url>
+
 
 
 <mm:import id="pager">
@@ -198,12 +204,14 @@
   <tr>
     <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
    <mm:fieldlist nodetype="$node_type" type="list">
-        <td class="listdata"><mm:fieldinfo type="guivalue" /> &nbsp;</td>
+     <td 
+      <mm:fieldinfo type="name"><mm:compare value="number"> title="age: <mm:function name="age" /> days"</mm:compare></mm:fieldinfo>
+      class="listdata"><mm:fieldinfo type="guivalue" /> &nbsp;</td>
    </mm:fieldlist>
     <td class="navigate">
         <mm:maydelete>
           <mm:hasrelations inverse="true">
-            <a href="<mm:url referids="node_type,node_number,page" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
+            <a href="<mm:url referid="deleteurl" referids="node_number"  />">
               <span class="delete"></span><span class="alt">[delete]</span>
             </a>
           </mm:hasrelations>
@@ -213,11 +221,11 @@
         </mm:maydelete>
         &nbsp;
      </td>    
-     <td class="navigate">  
-    <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink)) { %>
-            <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
-                  <span class="change"></span><span class="alt">[change]</span>
-            </a>
+     <td class="navigate">
+    <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || mayLink) { %>
+       <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
+         <span class="change"></span><span class="alt">[change]</span>
+       </a>
      <% } else { %>&nbsp;<% } %>
      </td>
  </tr>  
