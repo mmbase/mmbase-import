@@ -37,7 +37,7 @@ public class Posting {
     /**
      * Construct the posting
      *
-     * @param node postingnode
+     * @param node   postingnode
      * @param parent postthread
      */
     public Posting(Node node, PostThread parent) {
@@ -48,6 +48,7 @@ public class Posting {
 
     /**
      * Set the id of this postingnode
+     *
      * @param id posting id
      */
     public void setId(int id) {
@@ -56,6 +57,7 @@ public class Posting {
 
     /**
      * set the subject of the posting
+     *
      * @param subject
      */
     public void setSubject(String subject) {
@@ -64,17 +66,19 @@ public class Posting {
 
     /**
      * set the body of the posting
+     *
      * @param body
      */
     public void setBody(String body) {
-	log.info("SETBODY");
+        log.info("SETBODY");
         node.setStringValue("body", body);
-	String parsed=node.getStringValue("body");
-	node.setStringValue("cbody",parsed);
+        String parsed = node.getStringValue("body");
+        node.setStringValue("c_body", parsed);
     }
 
     /**
      * set the date/time of the last time this posting was editted
+     *
      * @param time Date/time (Epoch)
      */
     public void setEditTime(int time) {
@@ -83,6 +87,7 @@ public class Posting {
 
     /**
      * get the date/time of the last time this posting was editted
+     *
      * @return Date/time (Epoch)
      */
     public int getEditTime() {
@@ -91,6 +96,7 @@ public class Posting {
 
     /**
      * get the id of this posting
+     *
      * @return
      */
     public int getId() {
@@ -99,6 +105,7 @@ public class Posting {
 
     /**
      * set the node of this posting
+     *
      * @param node posting
      */
     public void setNode(Node node) {
@@ -107,6 +114,7 @@ public class Posting {
 
     /**
      * get the subject of this posting
+     *
      * @return subject of this posting
      */
     public String getSubject() {
@@ -115,15 +123,17 @@ public class Posting {
 
     /**
      * get the body of this posting
+     *
      * @return body of this posting
      */
     public String getBody() {
-	log.info("GETBODY");
-        return node.getStringValue("cbody");
+        log.info("GETBODY");
+        return node.getStringValue("c_body");
     }
 
     /**
      * get the accountname/nick of the poster of this posting
+     *
      * @return accountname/nick of the poster
      */
     public String getPoster() {
@@ -132,6 +142,7 @@ public class Posting {
 
     /**
      * get the date/time (epoch) when this posting was posted
+     *
      * @return date/time (epoch)
      */
     public int getPostTime() {
@@ -140,6 +151,7 @@ public class Posting {
 
     /**
      * Delete a posting and signal the parent postthread that the posting must be removed
+     *
      * @return allways <code>true</code>
      */
     public boolean remove() {
@@ -150,6 +162,7 @@ public class Posting {
 
     /**
      * save the node to the cloud
+     *
      * @return allways <code>true</code>
      */
     public boolean save() {
