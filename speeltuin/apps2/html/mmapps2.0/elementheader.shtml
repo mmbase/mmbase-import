@@ -1,0 +1,19 @@
+<!-- shows the header of the components listed in application.shtml -->
+<TR>
+	<TD BGCOLOR="#CCCCCC">
+	<FONT FACE=helvetica,arial,geneva SIZE=3 COLOR="#000000">
+	<CENTER><B>Name</B></CENTER>
+	</TD>
+	<TD BGCOLOR="#CCCCCC">
+	<FONT FACE=helvetica,arial,geneva SIZE=3 COLOR="#000000">
+	<CENTER><B>Version</B></CENTER>
+	</TD>
+	<TD BGCOLOR="#CCCCCC">
+	<FONT FACE=helvetica,arial,geneva SIZE=3 COLOR="#000000">
+	<CENTER><B>Creation Date</B></CENTER>
+	</TD>
+	<TD BGCOLOR="#CCCCCC">
+	<FONT FACE=helvetica,arial,geneva SIZE=3 COLOR="#000000">
+	<CENTER><B>Description</B></CENTER>
+	</TD>
+</TR>

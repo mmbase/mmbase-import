@@ -1,0 +1,25 @@
+<application name="MyNews" version="1" auto-deploy="false" create-date="Jan 12, 2002 11:10:51 AM" MD5="hier moet nog een functie voor komen">
+
+	<description>MyNews is a magazine with news articles about MMBase. This application consists of three parts: The web pages are called ScanMagazin, the content is called NewsArticles, and the CloudLayout is called Magazine. Just install this application and you will have a magazine on your site. In a later version we'll try to auto update the news articles.
+	</description>
+
+	<maintainer>
+		<name>Rob Vermeulen</name>
+		<company>VPRO</company>
+		<info>Thanks for showing interest in this application. After installing this application go to http://localhost/mynews to see the News Portal.</info>
+		<email>rob@mmbase.org</email>
+		<homebase>mmbase://apps.mmbase.org</homebase>
+	</maintainer>
+
+	<displays>
+		<display name="ScanMagazine" auto-deploy="true" create-date="Dec 20, 2001 10:19:41 AM" MD5="d3972bff ffffffff f5fffffe 00000000" />
+	</displays>
+
+	<cloudlayouts>
+		<cloudlayout name="Magazine" auto-deploy="true" create-date="Dec 20, 2001 10:19:41 AM" MD5="kjklk34j 23434323 jklkjklkj 3kj3kj3k" />
+	</cloudlayouts>
+
+	<datasets>
+		<dataset name="NewsArticles" auto-deploy="true" create-date="Dec 20, 2001 10:19:41 AM" MD5="kjklk34j 23434323 jklkjklkj 3kj3kj3k" />
+	</datasets>
+</application>

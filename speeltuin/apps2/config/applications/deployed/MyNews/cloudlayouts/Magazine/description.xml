@@ -1,0 +1,30 @@
+<cloudlayout name="Magazine" version="1" create-date="Dec 20, 2001 10:19:41 AM" md5="fb3fb9 000000 df2b9f ffffff">
+
+	<description>These builders can be used to maintain a magazine.</description>
+
+	<requires>
+	</requires>
+
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org" version="1" md5="2fe7ffdf 00000000 37259aff ffffffff">mags</builder>
+		<builder maintainer="mmbase.org" version="1" md5="fbb3fdfc 00000000 39bf9a7d 00000000">urls</builder>
+		<builder maintainer="mmbase.org" version="1" md5="deffbfee ffffffff 7e5f7965 00000000">jumpers</builder>
+		<builder maintainer="mmbase.org" version="1" md5="7fff7fd7 00000000 3bffb7a7 ffffffff">news</builder>
+		<builder maintainer="mmbase.org" version="1" md5="e9feedfb ffffffff eaf7bf94 ffffffff">mmevents</builder>
+		<builder maintainer="mmbase.org" version="1" md5="feedafb7 ffffffff 90fddfdf ffffffff">people</builder>
+		<builder maintainer="mmbase.org" version="1" md5="ede67fff 00000000 abffffba 00000000">images</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist>
+		<reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+		<relation from="mags" to="news" type="related" count="10" />
+		<relation from="news" to="images" type="related" count="-1" />
+		<relation from="news" to="urls" type="related" count="-1" />
+		<relation from="news" to="mmevents" type="related" count="-1" />
+		<relation from="news" to="people" type="related" count="-1" />
+		<relation from="mags" to="jumpers" type="related" count="-1" />
+	</allowedrelationlist>
+</cloudlayout>
