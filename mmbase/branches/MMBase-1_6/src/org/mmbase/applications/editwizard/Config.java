@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26.2.1 2003-04-16 13:49:17 vpro Exp $
+ * @version $Id: Config.java,v 1.26.2.2 2003-04-24 08:05:34 vpro Exp $
  */
 
 public class Config {
@@ -151,7 +151,7 @@ public class Config {
                     // Was given relatively, that's easy:
                     refFile = new File(request.getRealPath(config.backPage)).getParentFile();
                 }
-                if (refFile != null && refFile.exists()) {
+                if (refFile.exists()) {
                     extraDirs.add("ref:", refFile);
                 }
 

@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.2 2003-04-16 10:03:21 vpro Exp $
+ * @version $Id: Wizard.java,v 1.74.2.3 2003-04-24 08:05:34 vpro Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -896,6 +896,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Utils.setAttribute(formstep, "form-schema", formid);
                 stepsnode.appendChild(formstep);
             }
+            // TODO: according to the dtd, schemanode should be inserted before any form-schema nodes
             schemanode.appendChild(stepsnode);
         }
     }
@@ -912,10 +913,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // field nodes
             String name      = Utils.getAttribute(singlenode, "name", null);
             String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
-            if (name == null && fdatapath == null) {
-                fdatapath = "object/field[@name='number']";
-            }
-            if (name != null && fdatapath == null) {
+            if (fdatapath==null) {
+                if (name == null || name.equals("number")) {
+                    fdatapath = "@number";
+                    Utils.setAttribute(singlenode, "ftype", "data");
+                } else {
+                    fdatapath="field[@name='"+name+"']";
+                }
                 // normal field or a field inside a list node?
                 Node parentNode=singlenode.getParentNode();
                 String parentname = parentNode.getNodeName();
@@ -924,11 +928,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     parentname = parentNode.getParentNode().getNodeName();
                 }
                 if (parentname.equals("item")) {
-                    fdatapath = "object/field[@name='"+name+"']";
-                } else {
-                    fdatapath = "field[@name='"+name+"']";
+                    fdatapath = "object/"+fdatapath;
                 }
-
                 Utils.setAttribute(singlenode, "fdatapath", fdatapath);
             }
         } else if (nodeName.equals("list")) {
