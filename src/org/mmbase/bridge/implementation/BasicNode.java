@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.89 2003-03-28 14:01:59 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.90 2003-04-02 19:07:29 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -703,9 +703,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * @since MMBase-1.6
      */
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
         if (log.isDebugEnabled()) {
-            log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+direction+")");
+            log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+searchDir+")");
         }
 
         // default directionalty to query for the bridge is SEARCH_BOTH;
@@ -713,8 +713,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // the Clusterbuidler has to assume SEARCH_EITHER as a default.
         // therefor we have to set SEARCH_BOTH manually
         int dir = ClusterBuilder.SEARCH_BOTH;
-        if (direction!=null) {
-            dir = ClusterBuilder.getSearchDir(direction);
+        if (searchDir != null) {
+            dir = ClusterBuilder.getSearchDir(searchDir);
         }
         // call list: note: role can be null
         List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
@@ -731,8 +731,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             return new BasicNodeList(mmnodes, cloud);
         }
     }
-    public NodeList getRelatedNodes(String type, String role, String direction) {
-        return getRelatedNodes(cloud.getNodeManager(type), role, direction);
+    public NodeList getRelatedNodes(String type, String role, String searchDir) {
+        return getRelatedNodes(cloud.getNodeManager(type), role, searchDir);
     }
 
     public int countRelatedNodes(String type) {

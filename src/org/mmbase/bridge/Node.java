@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.39 2002-12-05 09:50:32 kees Exp $
+ * @version $Id: Node.java,v 1.40 2003-04-02 19:07:28 michiel Exp $
  */
 public interface Node {
 
@@ -352,6 +352,11 @@ public interface Node {
     public FieldValue getFunctionValue(String functionName, List arguments);
 
     /**
+     * @since MMBase-1.7
+     */
+    // public FieldValue getFunctionValue(String functionName, Arguments arguments);
+
+    /**
     * Commit the node to the database.
     * Makes this node and/or the changes made to this node visible to the cloud.
     * If this method is called for the first time on this node it will make
@@ -548,10 +553,10 @@ public interface Node {
      * @param nodeManager  the name of the node manager the returned nodes
      *                     should have
      * @param role         the role of the relation
-     * @param direction    the direction of the relation
+     * @param searchDir    the direction of the relation
      * @return             a list of related nodes
      */
-    public NodeList getRelatedNodes(String nodeManager, String role, String direction);
+    public NodeList getRelatedNodes(String nodeManager, String role, String searchDir);
 
     /**
      * Returns all related nodes that have a specific node manager and role.
@@ -562,10 +567,10 @@ public interface Node {
      * @since MMBase-1.6
      * @param nodeManager  the node manager the returned nodes should have
      * @param role         the role of the relation
-     * @param direction    the direction of the relation
+     * @param searchDir    the direction of the relation
      * @return             a list of related nodes
      */
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction);
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir);
 
     /**
      * Returns the number of related nodes that have a specific node manager.
