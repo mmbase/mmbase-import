@@ -44,18 +44,28 @@ one or more examplevalue tags is you want to give some example values.
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>
     <p>
-	  MMBase consists of a cloud of nodes (objects) wich can be related to each other. Relations can
-    be seen as nodes with two arms which they use to connect two other nodes. Nodes of a specific
-    type (like a person node who holds a person's data) have their own nodemanager. A node manager
-    can have functions wich are specific for the type of nodes it is managing. Just like a cloud can
-    contain different type of nodes it can contain different type of relations. And just like
-    specific type of nodes have their own nodemanager, relations of a specific type have their own
-    relation manager.
+      MMBase consists of a cloud of nodes (also known as objects) wich can be related to each
+      other. Relations can be seen as nodes with two arms which they use to connect two other
+      nodes. Nodes of a specific type (like a person node who holds a person's data) have their own
+      nodemanager (also knows as a builder). A node manager can have functions wich are specific for
+      the type of nodes it is managing. Just like a cloud can contain different type of nodes it can
+      contain different type of relations. And just like specific type of nodes have their own
+      nodemanager, relations of a specific type have their own relation manager.
     </p>
     <p>
-    Tags can exchange variables by use of a 'context', and 'variables'
-    in it. Please read the <a href="#context">documenation for mm:context</a> if you want to
-    know how this works.
+      This relativily simple idea gives rises to rich and sometimes complicated data structures. The
+      goal of the MMBase taglib is to make this 'cloud' of data easily accessible, by means of
+      XML-like 'tags'. There are tags for 'nodes' and for 'fields' (which are in nodes). There are
+      also tags for lists and list of nodes.  Additionally there are also tags available, which do
+      not directly relate to the MMBase data cloud, but are simply handy sometimes.
+    </p>
+    <p>
+      Tags can exchange variables by use of a 'context', and 'variables' in it. Please read the <a
+      href="#context">documenation for mm:context</a> if you want to know how this works.
+    </p>
+    <p>
+      Tags can be divided in groups of tags which share common properties and functionailty.  These
+      groups are described first. 
     </p>
   </info>
   <taginterface>
@@ -103,7 +113,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Reuses a previously defined tag of the same type.
+	Reuses a previously defined tag of the same type.
       </info>
     </attribute>
   </taginterface>
@@ -117,8 +127,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Which list to use, if the tag is in the body of more than one list, and you don't need the
-		direct parent.
+	Which list to use, if the tag is in the body of more than one list, and you don't need the
+	direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -134,8 +144,8 @@ one or more examplevalue tags is you want to give some example values.
   <taginterface>
     <name>condition</name>
     <info>
-      Condition tags have a body which is evaluated or not depending on certain
-      attributes or surrouning tags.
+      Condition tags have a body which is evaluated or not depending on certain attributes or on the
+      surrounding tags.
     </info>
     <attribute>
       <name>inverse</name>
@@ -172,7 +182,7 @@ one or more examplevalue tags is you want to give some example values.
       get a real node with a sub node tag with the 'element'
       attribute.
     </info>
-	<see>node.element</see>
+    <see>node.element</see>
   </taginterface>
   <taginterface>     
     <name>fieldreferrer</name>
@@ -184,7 +194,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		If the tag is living in more than one fieldprovider, and you don't need the direct parent.
+	If the tag is living in more than one fieldprovider, and you don't need the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -215,8 +225,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Which cloud to use. If the tag is living in more than one cloud tag, and you want to refer
-		to another then the direct parent.
+	Which cloud to use. If the tag is living in more than one cloud tag, and you want to refer
+	to another then the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -231,8 +241,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Which writer to use. If the tag is living in more than one writer, and you want to refer
-		to another then the direct parent.
+	Which writer to use. If the tag is living in more than one writer, and you want to refer
+	to another then the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -242,7 +252,7 @@ one or more examplevalue tags is you want to give some example values.
       A writer is a tag that can produce output. Normally the default will be to
       write to the page, unless the tag has a body.
     </info> 
-	<see>write</see>
+    <see>write</see>
     <attribute>
       <name>jspvar</name>
       <required>false</required>
@@ -1491,60 +1501,59 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </possiblevalue>
       <possiblevalue>
         <value>input</value>
-		<info>
-		  A form entry for the field.  If the surrounding FieldList
-		  has an id, the names of the form entries will be prefixed
-		  with it.
+	<info>
+	  A form entry for the field.  If the surrounding FieldList has an id, the names of the form
+	  entries will be prefixed with it.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>useinput</value>
         <info>
-		  <p>
-			If you have created a form with type="input" and this form
-			was submitted, then you can use type="useinput", and it
-			will get the request/post parameter produced by "input"
-			and make the right changes to the parent field.
-		  </p>
-		  <p>
-			The necessary externid's for this will be implicity imported
-			in the context. You don't have to worry about them.
-		  </p>
-		  <p>
-			'useinput' is exceptional because it doesn't realy produce
-			any 'info' about the field, but rather changes it.
-		  </p>
-		  <p>
-			Can only be used if the parent FieldProvider also provides a Node.
-		  </p>
+	  <p>
+	    If you have created a form with type="input" and this form was submitted, then you can
+	    use type="useinput", and it will get the request/post parameter produced by "input" and
+	    make the right changes to the parent field.
+	  </p>
+	  <p>
+	    The necessary externid's for this will be implicity imported in the context. You don't
+	    have to worry about them.
+	  </p>
+	  <p>
+	    'useinput' is exceptional because it doesn't realy produce any 'info' about the field,
+	    but rather changes it.
+	  </p>
+	  <p>
+	    Can only be used if the parent FieldProvider also provides a Node.
+	  </p>
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>searchinput</value>
         <info>
-		  A form entry for the field, fit for use for searching. That
-		  means that no textareas will be used and such.
+	  A form entry for the field, fit for use for searching. That means that no textareas will
+	  be used and such.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>usesearchinput</value>
         <info>
-		  If you have created a form with type="searchinput" and this
-		  form was submitted, then you can use this. It will produce a
-		  part of a where clause which you can use to construct a whole
-		  `where' for the list tag you are going to use.
+	  If you have created a form with type="searchinput" and this form was submitted, then you
+	  can use this. It will produce a part of a where clause which you can use to construct a
+	  whole `where' for the list tag you are going to use.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>value</value>
         <info>
-		  The value of this field. Can only be used if the parent FieldProvider also provides a Node.
+	  The value of this field. Can only be used if the parent FieldProvider also provides a
+	  Node.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>guivalue</value>
         <info>
-		  The guivalue of this field. Can only be used if the parent FieldProvider also provides a Node.
+	  The guivalue of this field. Can only be used if the parent FieldProvider also provides a
+	  Node.
         </info>
       </possiblevalue>
     </attribute>
@@ -1555,8 +1564,9 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
-    <info>The nodeinfo tag can be used inside a NodeProvider tag, to get
-    certain information about the node.
+    <info>
+      The nodeinfo tag can be used inside a NodeProvider tag, to get certain information about the
+      node.
     </info>
     <attribute>
       <name>type</name>
@@ -1600,25 +1610,24 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Which context variable.
+	Which context variable.
       </info>
-	</attribute>
+    </attribute>
   </tag>
   <tag>
     <name>notpresent</name>
     <extends>present</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
     <info>
-	  Checks if a certain variable is missing in the parent Context tag.
+      Checks if a certain variable is missing in the parent Context tag.
     </info>
-	<see>present</see>
+    <see>present</see>
   </tag>
   <tag>
     <name>write</name>
     <extends>writer</extends>
     <extends>writerreferrer</extends>
     <extends>contextwriter</extends>
-
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
@@ -1644,14 +1653,14 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     </info>
     <see>import</see>
     <attribute>
-        <name>referid</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    <refercontext>true</refercontext>
-    <info>
-		The key of the variable to get. If it is missing (and value is
-		missing), then the parent Writer tag is written (if it exist).
-    </info>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+	The key of the variable to get. If it is missing (and value is
+	missing), then the parent Writer tag is written (if it exist).
+      </info>
     </attribute>
     <attribute>
       <name>value</name>
@@ -1659,24 +1668,22 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-		The value to write. In this you can use context variables with
-		"$", the advantage of this attribute above the referid
-		attribute is that you can combine variables and add some text
-		of your own. The disadvantages relate to complexitiy and
-		efficiency.
+	The value to write. In this you can use context variables with "$", the advantage of this
+	attribute above the referid attribute is that you can combine variables and add some text of
+	your own. The disadvantages relate to complexitiy and efficiency.
       </info>
     </attribute>
     <attribute>
-        <name>session</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>You can also put things into the session with this.</info>
+      <name>session</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>You can also put things into the session with this.</info>
     </attribute>
     <attribute>
-        <name>cookie</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>Writing things to cookie is also possible.</info>
+      <name>cookie</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Writing things to cookie is also possible.</info>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
