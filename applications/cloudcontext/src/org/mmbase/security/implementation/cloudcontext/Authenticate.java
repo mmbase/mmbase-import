@@ -29,24 +29,24 @@ import org.mmbase.util.FileWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.5 2003-11-17 12:46:32 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.6 2003-11-19 15:14:27 pierre Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
     private long uniqueNumber;
     private long extraAdminsUniqueNumber;
 
-    private static Properties extraAdmins = null;      // Admins to store outside database. 
+    private static Properties extraAdmins = null;      // Admins to store outside database.
     protected static Map      loggedInExtraAdmins = new HashMap();
 
-    protected FileWatcher watchAdmins = new FileWatcher() {            
+    protected FileWatcher watchAdmins = new FileWatcher() {
             public void onChange(File f) {
                 readAdmins(f);
-            }        
+            }
         };
 
     protected void readAdmins(File f) {
-        try {          
+        try {
             extraAdmins = new Properties();
             loggedInExtraAdmins = new HashMap();
             if (f.canRead()) {
@@ -132,7 +132,7 @@ public class Authenticate extends Authentication {
     public static User getLoggedInExtraAdmin(String userName) {
         return (User) loggedInExtraAdmins.get(userName);
     }
-    
+
     // javadoc inherited
     public boolean isValid(UserContext usercontext) throws SecurityException {
         if (! (usercontext instanceof User)) {
@@ -154,8 +154,9 @@ public class Authenticate extends Authentication {
     protected class LocalAdmin extends User {
         private String userName;
         private long   l;
-        LocalAdmin(String user) {            
-            super(new AdminVirtualNode(), uniqueNumber);            
+        LocalAdmin(String user) {
+            super(null, uniqueNumber);
+            node = new AdminVirtualNode();
             l = extraAdminsUniqueNumber;
             userName = user;
         }
@@ -165,7 +166,7 @@ public class Authenticate extends Authentication {
         public boolean isValid() { return l == extraAdminsUniqueNumber; }
     }
     public  class AdminVirtualNode extends VirtualNode {
-        AdminVirtualNode() { 
+        AdminVirtualNode() {
             super(Users.getBuilder());
         }
     }
