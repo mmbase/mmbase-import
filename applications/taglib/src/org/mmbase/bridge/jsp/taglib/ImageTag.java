@@ -61,13 +61,23 @@ public class ImageTag extends FieldTag {
             }        
         }
 
-        String url;
+        String number;
         if (template == null) {
-            // the image itself
-            url = node.getStringValue("servletpath(" + sessionName + ",number," + context + ")");
+            // the node/image itself
+            number = node.getStringValue("number");
         } else {
             // the cached image
-            url = node.getStringValue("servletpath(" + sessionName + ",cache(" + template + ")," + context + ")");
+            number = node.getStringValue("cache(" + template + ")");
+        }
+
+        String servletPath = node.getStringValue("servletpath(" + sessionName + ",," + context + ")");
+
+        String url;
+        String fileName = node.getStringValue("filename");
+        if ("".equals(fileName)) {
+            url = servletPath + number;
+        } else {
+            url = servletPath + fileName + "?" + number;
         }
         helper.setValue(url);
         helper.setPageContext(pageContext);
