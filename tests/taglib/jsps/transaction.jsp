@@ -41,7 +41,7 @@ transaction was commited, following should result anything:
    <mm:field name="title" />
 </mm:listnodes>
 <br />
-<h3>Creating relation in transaction</h3>
+<h3>Creating relations in transaction</h3>
 <mm:transaction name="mytranc">
   <mm:node id="node1" number="$nodenumber" />
   <mm:createnode id="node2" type="urls">
@@ -54,6 +54,14 @@ transaction was commited, following should result anything:
   <mm:createrelation source="node1" destination="node2" role="sorted">
    <mm:setfield name="pos">100</mm:setfield>
   </mm:createrelation>
+  <mm:createnode id="node3" type="news">
+     <mm:setfield name="subtitle">Test node3, created in transaction, made relation to it</mm:setfield>
+	   <mm:setfield name="title">Another news article (<mm:write referid="curtime" />)</mm:setfield>
+  </mm:createnode>
+  <mm:createrelation source="node1" destination="node3" role="sorted">
+   <mm:setfield name="pos">100</mm:setfield>
+  </mm:createrelation>
+  
 </mm:transaction>
 <hr />
 logged on as: <%= cloud.getUser().getIdentifier() %><br />
