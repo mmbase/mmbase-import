@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
-// import org.mmbase.security.*;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.builders.MultiRelations;
@@ -60,11 +60,14 @@ public class BasicCloud implements Cloud, Cloneable {
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud=null;
 
-    // Authorizer
-//    private Authorizer securityManager = null;
+    // Authorization
+    private Authorization authorization = null;
+
+    // Authentication
+    private Authentication authentication = null;
 
     // User context
-//    private UserContext userContext = null;
+    protected UserContext userContext = null;
 
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
@@ -80,8 +83,9 @@ public class BasicCloud implements Cloud, Cloneable {
             name = cloud.name+"."+cloudName;
         }
         description = cloud.description;
-//        securityManager = cloud.securityManager;
-//        userContext = cloud.userContext;
+        authorization = cloud.authorization;
+        authentication = cloud.authentication;
+        userContext = cloud.userContext;
         account= cloud.account;
     }
 
@@ -95,8 +99,9 @@ public class BasicCloud implements Cloud, Cloneable {
         language = cloudContext.mmb.getLanguage();
         // determine security manager for this cloud
 
-//        securityManager=SecurityHandler.getAuthorization();
-//        cloud.userContext=new UserContext();
+        authorization=((BasicCloudContext)cloudcontext).securityManager.getAuthorization();
+        authentication=((BasicCloudContext)cloudcontext).securityManager.getAuthentication();
+        userContext=new UserContext();
 
         // normally, we want the cloud to read it's context from an xml file.
         // the current system does not support multiple clouds yet,
@@ -117,7 +122,7 @@ public class BasicCloud implements Cloud, Cloneable {
 	    if (node==null) {
 	        throw new BasicBridgeException("Node with number "+nodenumber+" does not exist.");
 	    } else {
-//	        assert(Operation.READ,nodenumber);
+	        assert(Operation.READ,nodenumber);
 	        if (node.getNumber()==-1) {
     	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), nodenumber);
     	    } else {
@@ -137,7 +142,7 @@ public class BasicCloud implements Cloud, Cloneable {
 	    if (node==null) {
 	        throw new BasicBridgeException("Node with number "+nodenumber+" does not exist.");
 	    } else {
-//	        assert(Operation.READ,node.getNumber());
+	        assert(Operation.READ,node.getNumber());
 	        if (node.getNumber()==-1) {
     	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(nodenumber));
     	    } else {
@@ -157,7 +162,7 @@ public class BasicCloud implements Cloud, Cloneable {
 	    if ((node==null) || (node.getNumber()==-1)) {
 	        throw new BasicBridgeException("node with alias "+aliasname+" does not exist.");
 	    } else {
-//	        assert(Operation.READ,node.getNumber());
+	        assert(Operation.READ,node.getNumber());
     	    return new BasicNode(node, getNodeManager(node.parent.getTableName()));
 	    }
 	}
@@ -350,7 +355,7 @@ public class BasicCloud implements Cloud, Cloneable {
      */
     String getAccount() {
         if (account==null) {
-            throw new SecurityException("User not logged on.");
+            throw new org.mmbase.security.SecurityException("User not logged on.");
         }
         return account;
     }
@@ -363,10 +368,7 @@ public class BasicCloud implements Cloud, Cloneable {
 	 * @return <code>true</code> if succesful (should throw exception?)
      */
     public boolean logon(String authenticatorName, Object[] parameters) {
-//        Authenticator authenticator = SecurityHandler.getAuthentication(authenticatorName);
-//        userContext = authenticator.verify(parameters);
-//        return userContext.isValid();
-        return false;
+        return authentication.login(authenticatorName,userContext,parameters);
     }
 
     /**
@@ -375,33 +377,41 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node on which to check the operation
     * @return <code>true</code> if acces sis granted, <code>false</code> otherwise
     */
-//    boolean check(Operation operation, int nodeID) {
-//        return securityManager.check(userContext,operation,nodeID);
-//    }
+    boolean check(Operation operation, int nodeID) {
+        return authorization.check(userContext,nodeID,operation);
+    }
   	
     /**
     * Asserts access rights. throws an exception if an operation is not allowed.
     * @param operation the operation to check (READ, WRITE, CREATE, LINK, OWN)
     * @param nodeID the node on which to check the operation
     */
-//    void assert(Operation operation, int nodeID) {
-//        securityManager.assert(userContext,operation,nodeID);
-//    }
+    void assert(Operation operation, int nodeID) {
+        authorization.assert(userContext,nodeID,operation);
+    }
   	
     /**
     * initializes access rights for a newly created node
     * @param nodeID the node to init
     */
     void createSecurityInfo(int nodeID) {
-//        securityManager.create(userContext,nodeID);
+        authorization.create(userContext,nodeID);
     }
 
-  	/**
-     * Logs off a user.
-     * Resets the user's context to 'anonymous'
-     */
-    public void logoff() {
-//        userContext.clear();
+    /**
+    * removes access rights for a removed node
+    * @param nodeID the node to init
+    */
+    void removeSecurityInfo(int nodeID) {
+        authorization.remove(userContext,nodeID);
+    }
+
+    /**
+    * updates access rights for a changed node
+    * @param nodeID the node to init
+    */
+    void updateSecurityInfo(int nodeID) {
+        authorization.update(userContext,nodeID);
     }
 
     /**
@@ -410,7 +420,7 @@ public class BasicCloud implements Cloud, Cloneable {
     */
     BasicCloud getCopy() {
         BasicCloud cloud=new BasicCloud(null,this);
-//        cloud.userContext=new UserContext();
+        cloud.userContext=new UserContext();
         cloud.account="U"+uniqueId();
         return cloud;
     }  	
@@ -418,13 +428,13 @@ public class BasicCloud implements Cloud, Cloneable {
 	/**
      * Search nodes in a cloud accoridng to a specified filter.
      * @param nodes The numbers of the nodes to start the search with. These have to be a member of the first NodeManager
-     *      listed in the nodeManagers parameter. The syntax is a comma-seperated lists of node ids.
+     *      listed in the nodeManagers parameter. The syntax is a comma-separated lists of node ids.
      *      Example : '112' or '1,2,14'
-     * @param nodeManagers The NodeManager chain. The syntax is a comma-seperated lists of NodeManager names.
+     * @param nodeManagers The NodeManager chain. The syntax is a comma-separated lists of NodeManager names.
      *      The search is formed by following the relations between successive NodeManagers in the list. It is possible to explicitly supply
      *      a RelationManager by placing the name of the manager between two NodeManagers to search.
      *      Example: 'company,people' or 'typedef,authrel,people'.
-     * @param fields The fieldnames to return (comma seperated). This can include the name of the NodeManager in case of fieldnames that are used by
+     * @param fields The fieldnames to return (comma separated). This can include the name of the NodeManager in case of fieldnames that are used by
      *      more than one manager (i.e number).
      *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
      *      Examples: 'people.lastname', 'typedef.number,authrel.creat,people.number'
@@ -488,15 +498,6 @@ public class BasicCloud implements Cloud, Cloneable {
   		        tempNodeManager = new VirtualNodeManager((MMObjectNode)v.get(0),this);
   		    }
   		    return new BasicNodeList(v,this,tempNodeManager);
-/*  		    NodeManager tempNodeManager=null;
-  		    for(Enumeration nodeEnum = v.elements(); nodeEnum.hasMoreElements(); ){
-  		        MMObjectNode node = (MMObjectNode)nodeEnum.nextElement();
-  		        if (tempNodeManager==null) {
-  		            tempNodeManager = new VirtualNodeManager(node,this);
-  		        }
-  		        retval.addElement(new BasicNode(node,tempNodeManager));
-  		    }
-*/
 		} else {
       		throw new BasicBridgeException("getList failed, parameters are invalid :" +pars);
         }

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-// import org.mmbase.security.*;
+import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -160,13 +160,13 @@ public class BasicNode implements Node {
 	    int realnumber=noderef.getNumber();
 	    if (realnumber!=-1) {
 	        if (action==ACTION_REMOVE) {
-//	            cloud.assert(Operation.REMOVE,realnumber);
+	            cloud.assert(Operation.REMOVE,realnumber);
 	        }
 	        if (action==ACTION_LINK) {
-//	            cloud.assert(Operation.LINK,realnumber);
+	            cloud.assert(Operation.LINK,realnumber);
 	        }
 	        if ((action==ACTION_EDIT) && (temporaryNodeId==-1)) {
-//	            cloud.assert(Operation.WRITE,realnumber);
+	            cloud.assert(Operation.WRITE,realnumber);
 	        }
 	    }
 	
@@ -355,6 +355,7 @@ public class BasicNode implements Node {
 	            isnew=false;
 	        } else {
 	            node.commit();
+                cloud.updateSecurityInfo(getNumber());
 	        }
 	        // remove the temporary node
 	        BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
@@ -431,7 +432,9 @@ public class BasicNode implements Node {
 	                BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
     	        }
 	            MMObjectNode node= getNode();
+	            int number=getNumber();
 	            node.parent.removeNode(node);
+	            cloud.removeSecurityInfo(number);
 	        }
         }
         // the node does not exist anymore, so invalidate all references.
@@ -505,9 +508,9 @@ public class BasicNode implements Node {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
 	            if ((type==-1) || (mmnode.getIntValue("rnumber")==type)) {
-//	                if (cloud.check(Operation.READ, mmnode.getNumber())) {
+	                if (cloud.check(Operation.READ, mmnode.getNumber())) {
 	                    relvector.add(mmnode);
-//	                }
+	                }
 	            }
 	        }
         }
@@ -572,9 +575,9 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-//	            if (cloud.check(Operation.READ, mmnode.getNumber())) {
+	            if (cloud.check(Operation.READ, mmnode.getNumber())) {
 	                relvector.add(mmnode);
-//	            }
+	            }
 	        }
 	    }
         return new BasicNodeList(relvector,cloud);
@@ -591,9 +594,9 @@ public class BasicNode implements Node {
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-//	            if (cloud.check(Operation.READ, mmnode.getNumber())) {
+	            if (cloud.check(Operation.READ, mmnode.getNumber())) {
 	                relvector.add(mmnode);
-//	            }
+	            }
 	        }
 	    }
         return new BasicNodeList(relvector,cloud);

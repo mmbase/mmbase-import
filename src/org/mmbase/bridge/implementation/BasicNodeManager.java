@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-// import org.mmbase.security.*;
+import org.mmbase.security.*;
 import java.util.*;
 import javax.servlet.*;
 import org.mmbase.util.*;
@@ -66,7 +66,7 @@ public class BasicNodeManager implements NodeManager {
     * @return the new <code>Node</code>
     */
     public Node createNode() {
-//        cloud.assert(Operation.CREATE,builder.oType);
+        cloud.assert(Operation.CREATE,builder.oType);
         // create object as a temporary node
         int id = cloud.uniqueId();
         System.out.println();
@@ -187,11 +187,11 @@ public class BasicNodeManager implements NodeManager {
 		    v = builder.searchVector(where);
 	    }
 	    // remove all nodes that cannot be accessed
-//	    for(int i=(v.size()-1); i>-1; i--) {
-//	        if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getIntValue("number"))) {
-//	            v.remove(i);
-//	        }
-//	    }
+	    for(int i=(v.size()-1); i>-1; i--) {
+	        if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getIntValue("number"))) {
+	            v.remove(i);
+	        }
+	    }
 	    return new BasicNodeList(v,cloud,this);
     }
 
