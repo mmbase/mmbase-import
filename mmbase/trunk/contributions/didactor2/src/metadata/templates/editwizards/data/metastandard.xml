@@ -6,7 +6,7 @@
   <action type="create">
     <object type="metastandard"/>
   </action>
-    
+
   <action type="load">
     <field name="name"/>
     <field name="description"/>
@@ -30,6 +30,13 @@
       <prompt>Omschrijving van de metadata standaard</prompt>
     </field>
 
+
+    <list destination="metadefinition" role="related" extends="list/metadefinition.xml" orderby="name">
+       <item>
+          <field ftype="startwizard" wizardname="metadefinition.xml" />
+       </item>
+    </list>
+
     <!--<list destination="metavocabulary" role="related" extends="list/metavocabularydefinition.xml" />-->
 
 
@@ -37,5 +44,6 @@
         <list destination="news" extends="list/news.xml" />
         <list destination="learnblocks" role="posrel" extends="list/learnblocks.xml" />
         <list destination="urlcategories" role="related" extends="list/urlcategories.xml" />-->
-    </form-schema>
+  </form-schema>
+
 </wizard-schema>
