@@ -3,10 +3,11 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="MMBase editwizard project" default="jar" basedir=".">
+<project name="MMBase editwizard project" default="dependent.jar" basedir=".">
   <property name="project.name"     value="editwizard" />
   <property name="project.package"   value="org/mmbase/applications/editwizard" />
 
+  <property name="project.extra.path" value="${applications.dir}/dove/build/mmbase-dove.jar" />
   <!-- JSPSmartUpload -->
   <property name="jspsmartupload.file" value="jspSmartUpload" />
   <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
@@ -19,8 +20,15 @@
     <available property="jspsmartupload.expanded" file="${jspsmartupload.jar}" />
   </target>
 
+  
+  <target name="dove">
+    <ant dir="${applications.dir}/dove" target="jar" />
+  </target>
 
-  <target name="dependent.package" depends="jspsmartupload,package" />
+  <target name="dependent.jar" depends="dove,jar" />
+
+
+  <target name="dependent.package" depends="dependent.jar,jspsmartupload,package" />
 
   <target name="jspsmartupload" depends="expand.jspsmartupload">
     <copy todir="${project.jar.dir}" file="${jspsmartupload.jar}">
