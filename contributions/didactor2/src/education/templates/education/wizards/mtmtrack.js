@@ -14,7 +14,7 @@ if((navigator.appName == "Netscape" && parseInt(navigator.appVersion) >= 3 && na
 	for(i = 0; i < parent.frames.length; i++) {
 		if(parent.frames[i].name == MTMCodeFrame && parent.frames[i].MTMLoaded) {
 			parent.frames[i].MTMTrack = true;
-			setTimeout("parent.frames[" + i + "].MTMDisplayMenu()", 50);
+			setTimeout("parent.frames[" + i + "].MTMDisplayMenu(); ", 50);
 			break;
 		}
 	}
