@@ -69,27 +69,28 @@
     Vector fieldlist = new Vector();
     String token;
     String numberfield=null;
-    try {
-        while ((token=stok.nextToken())!=null) {
-            fieldlist.add(token);
-            if (token.indexOf(".number")>-1) {
-                numberfield = token;
-            }
-            if (token.indexOf("number")>-1 && numberfield==null) numberfield=token;
-        }
-    } catch (Exception e) {}
+  
+    while (stok.hasMoreTokens()) {
+		token = stok.nextToken();
+		fieldlist.add(token);
+		if (token.indexOf(".number")>-1) {
+			numberfield = token;
+		}
+		if (token.indexOf("number")>-1 && numberfield==null) numberfield=token;
+	}
 
 
     int nodecount=0;
+
     stok = new StringTokenizer(nodepath, ",");
     nodecount = stok.countTokens();
     String lastobjectname=null;
 
-    try {
-        while ((token=stok.nextToken())!=null) {
-            lastobjectname = token;
-        }
-    } catch (Exception e) {}
+	while (stok.hasMoreTokens()) {
+	   lastobjectname = stok.nextToken();
+    }
+
+
 
     if (lastobjectname==null) {
         // redirect to default document of current directory.
@@ -156,16 +157,7 @@
     if (wizard!=null) {
         // create wizard object so that delete/create actions are correctly loaded. No need to store. We'll create another wizard automatically if a button in the list is pressed.
         Wizard wiz=null;
-        try {
-            wiz = new Wizard(settings_basedir, wizard, null, cloud);
-        } catch (SecurityException se) {
-            out.println(showError("Could not login. Make sure you are logged in correctly."));
-            return;
-        } catch (WizardException e) {
-            // wizard could not be instantiated
-            out.println(showError("Wizard <b>"+wizard+"</b> could not be initialized. Make sure wizard xml file exists and that the xml file is valid xml.\nMessage: "+e.getMessage()));
-            return;
-        }
+        wiz = new Wizard(settings_basedir, wizard, null, cloud);
         deletable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']")!=null);
         creatable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='create']")!=null);
 
@@ -176,18 +168,12 @@
     // fire query
     NodeList results;
 
-    try {
         if (multilevel) {
             results = cloud.getList(startnodes, nodepath, fields, constraints, orderby, directions, "both", distinct);
         } else {
             NodeManager mgr = cloud.getNodeManager(nodepath);
             results = mgr.getList(constraints, orderby, directions);
         }
-    } catch (Exception e) {
-        out.println(showError("Could not perform query. Make sure nodepath is valid.\n Message from mmbase interface: "+e.getMessage()));
-        return;
-    }
-
 
 
     if (start>results.size()-1) start = results.size()-1;
@@ -218,7 +204,7 @@
             String fieldname = (String)fieldlist.elementAt(j);
             String fieldguiname=fieldname;
 
-            try {
+
                 if (multilevel) {
                     int period=fieldname.indexOf('.');
                     String nmname=fieldname.substring(0,period);
@@ -227,11 +213,6 @@
                 } else {
                         fieldguiname=item.getNodeManager().getField(fieldname).getGUIName();
                 }
-            } catch (Exception e) {
-                // field was not found by mmbase
-                out.println(showError("Field <b>"+fieldname+"</b> does not exists for this nodemanager. Please specify correct fieldnames."));
-                return;
-            }
             addField(obj, fieldguiname, item.getStringValue(fieldname));
 
         }
