@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
  * Creates the index page for the documentation.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DocumentationIndex.java,v 1.3 2004-11-01 13:50:50 pierre Exp $
+ * @version $Id: DocumentationIndex.java,v 1.4 2004-11-02 11:08:50 pierre Exp $
  */
 public class DocumentationIndex {
 
@@ -207,7 +207,10 @@ public class DocumentationIndex {
             return ((File)resource).getName();
         } else {
             String path = resource.toString();
-            int pos = path.lastIndexOf('/', path.length()-2);
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length()-1);
+            }
+            int pos = path.lastIndexOf('/', path.length()-1);
             if (pos>-1) {
                 return path.substring(pos+1);
             } else {
@@ -303,6 +306,34 @@ public class DocumentationIndex {
     }
 
     /**
+     * Adds a link to an alternate resource for a givenhtml file (i.e. a pdf or jsp version)
+     * if such a file exists.
+     * @param resource the orufuinbal resource
+     * @param parentPath the path to use as a parent path when generating documentation links
+     * @param fillPAth the full path to the original resource
+     * @param extension the alternate extension of the resource
+     * @param label the label to use in the link
+     * @param out the Writer to send output to
+     */
+    protected void addAdditionalPath(Object resource, String parentPath, String fullPath,
+                String extension, String label, java.io.Writer out) throws IOException {
+        // get path and check if there is a pdf version of the html file
+        if (fullPath.endsWith(".html")) {
+            Object alternateResource = fullPath.substring(0,fullPath.length()-5)+extension;
+            if (resource instanceof File) {
+                alternateResource = new File((String)alternateResource);
+            }
+            if (exists(alternateResource)) {
+                String shortPath = getLastOfPath(alternateResource);
+                if (parentPath != null) {
+                    shortPath = parentPath + "/" + shortPath;
+                }
+                out.write(", <a href=\""+shortPath+"\" target=\"_top\">" + label + "</a>");
+            }
+        }
+    }
+
+    /**
      * Creates a bulleted list of documentation references for one section in the documentation index.
      * @param resourceDir the full path/reference to the documentation section
      * @param parentPath the path to use as a parent path when generating documentation links
@@ -324,24 +355,17 @@ public class DocumentationIndex {
                              if (parentPath != null) {
                                  path = parentPath + "/" + path;
                              }
-                             if (path.endsWith(".txt")) {
-                                 out.write("<li><p>"+name+" (<a href=\""+path+"\" target=\"_top\">Text</a>");
-                             } else {
-                                 out.write("<li><p>"+name+" (<a href=\""+path+"\" target=\"_top\">HTML</a>");
-                             }
-                             if (path.endsWith(".html")) {
+                             out.write("<li><p>"+name+" (");
+                             if (path.endsWith(".txt")) { // text file
+                                 out.write("<a href=\""+path+"\" target=\"_top\">Text</a>");
+                             } else if (path.endsWith(".html")) {  // html file
+                                 out.write("<a href=\""+path+"\" target=\"_top\">HTML</a>");
                                  String fullPath = resource.toString();
-                                 Object pdfResource = fullPath.substring(0,fullPath.length()-5)+".pdf";
-                                 if (resource instanceof File) {
-                                     pdfResource = new File((String)pdfResource);
-                                 }
-                                 if (exists(pdfResource)) {
-                                     String pdfshortpath = getLastOfPath(pdfResource);
-                                     if (parentPath != null) {
-                                         pdfshortpath = parentPath + "/" + pdfshortpath;
-                                     }
-                                     out.write(", <a href=\""+pdfshortpath+"\" target=\"_top\">PDF</a>");
-                                 }
+                                addAdditionalPath(resource, parentPath, fullPath,".pdf", "PDF", out);
+                             } else { // directory with index.html file
+                                 out.write("<a href=\"" + path+"/index.html\" target=\"_top\">HTML</a>");
+                                 String fullPath = getChild(resource, "index.html").toString();
+                                 addAdditionalPath(resource, path, fullPath,".pdf", "PDF", out);
                              }
                              out.write(")</p>");
                              if (maxDepth > 1) {
@@ -371,9 +395,11 @@ public class DocumentationIndex {
             out.write("<div class=\"titlepage\"><h2 class=\"title\" style=\"clear: both\">");
             out.write("<a id=\"" + sectionPath + "\" />"+sectionTitle);
             out.write("</h2></div><div class=\"itemizedlist\">");
-            if (first) {
+            if (first) { // introduction: show only html files
                 listResources(documentationRoot, null, 0, out);
-            } else {
+            } else if (sectionPath.startsWith("javadoc")) {  // only show top directories in javadoc
+                listResources(getChildDir(documentationRoot, sectionPath), sectionPath, 1, out);
+            } else { // other documentation: show up to two directories deep
                 listResources(getChildDir(documentationRoot, sectionPath), sectionPath, 2, out);
             }
             out.write("</div>");
