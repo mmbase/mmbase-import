@@ -31,6 +31,7 @@ public class InsRel extends MMObjectBuilder {
 	public String classname = getClass().getName();
 	public boolean debug = false;
 	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	public int relnumber=-1;
 
 	// cache system, holds the relations from the 25 
 	// most used relations
@@ -378,5 +379,24 @@ public class InsRel extends MMObjectBuilder {
 			return(bul.getGuessedNumber(name));
 		}
 		return(-1);
+	}
+
+
+	/**
+	* setDefaults for a node
+	*/
+	public void setDefaults(MMObjectNode node) {
+		if (tableName.equals("insrel")) return;
+
+		if (relnumber==-1) {
+			RelDef bul=(RelDef)mmb.getMMObject("reldef");
+			if (bul!=null) {
+				relnumber=bul.getGuessedByName(tableName);
+				if (relnumber==-1) System.out.println("InsRel-> Can not guess name ("+tableName+")");
+			} else {
+				System.out.println("InsRel-> Can not reach RelDef");
+			}
+		}
+		node.setValue("rnumber",relnumber);
 	}
 }
