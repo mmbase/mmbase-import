@@ -19,7 +19,7 @@ package org.mmbase.module.core;
  *
  * @author Daniel Ockeloen
  * @author Pierer van Rooden (javadoc)
- * @version $Id: MMBaseProbe.java,v 1.8 2003-03-04 14:19:00 nico Exp $
+ * @version $Id: MMBaseProbe.java,v 1.9 2003-03-26 10:15:20 kees Exp $
  */
 public class MMBaseProbe implements Runnable {
 
@@ -72,6 +72,7 @@ public class MMBaseProbe implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"MMBaseProbe");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
@@ -82,7 +83,7 @@ public class MMBaseProbe implements Runnable {
      */
     public void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker.interrupt();
         kicker = null;
     }
 
