@@ -4,7 +4,6 @@
 <h1>Testing taglib</h1>
 <h2>Testing import/present/notpresent/compare tags</h2>
 <mm:import externid="a_param" required="true" />
-<mm:log>tadaaam</mm:log>
 <% try { %>
 <mm:import externid="b_param" required="true" />
 WRONG: required attribute of import didn't throw exception<br />
