@@ -19,20 +19,40 @@ import org.mmbase.module.corebuilders.*;
 */
 public class XMLApplicationWriter  {
 
-    public static boolean writeXMLFile(String applicationname,String targetpath) {
-	System.out.println("STARTED XML WRITER ON : "+applicationname);
-	String body="<application>\n";
+    public static boolean writeXMLFile(XMLApplicationReader app,String targetpath) {
+	System.out.println("STARTED XML WRITER ON : "+app);
 
+	// again this is a stupid class generating the xml file
+	// the second part called the extractor is kind of neat
+	// but very in early beta
+	String name=app.getApplicationName();
+	String maintainer=app.getApplicationMaintainer();
+	int version=app.getApplicationVersion();
+	boolean deploy=app.getApplicationAutoDeploy();
+	
+	String body="<application name=\""+name+"\" maintainer=\""+maintainer+"\" version=\""+version+"\" auto-deploy=\""+deploy+"\">\n";
 	// status
-	body+="<!-- <status>\n";
-	body+="\twhat is the status of this builder options : active or inactive\n";
-	body+="-->\n";
-	body+="<status>active</status>\n\n";
+	body+="\t<neededbuilderlist>\n";
+	body+=getNeededBuilders(app);
+	body+="\t</neededbuilderlist>\n\n";
 
 	System.out.println("BODY="+body);
 	return(true);
     }
 
+    static String getNeededBuilders(XMLApplicationReader app) {
+	String body="";
+	Vector builders=app.getNeededBuilders();
+	System.out.println("builders="+builders.size());
+	for (Enumeration e=builders.elements();e.hasMoreElements();) {
+		Hashtable bset=(Hashtable)e.nextElement();
+		String name=(String)bset.get("name");
+		String maintainer=(String)bset.get("maintainer");
+		String version=(String)bset.get("version");
+		body+="\t\t<builder maintainer=\""+maintainer+"\" version=\""+version+"\">"+name+"</builder>\n";
+	}
+	return(body);	
+    }
 
 
 	static boolean saveFile(String filename,String value) {
