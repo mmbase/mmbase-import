@@ -38,6 +38,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
 
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
+  <property name="xalan.jar" value="${build.dir}/lib/xalan.jar"/>
   <property name="project.name" value="a-mmbase-project" />
   <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
   <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
@@ -136,6 +137,7 @@ Build-compiler: ${build.compiler}
       <classpath>
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
         <pathelement path="${project.build.dir}/classes" />
       </classpath>
       <include name="**/*.java"/>
