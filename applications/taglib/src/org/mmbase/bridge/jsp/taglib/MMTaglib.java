@@ -61,7 +61,7 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
     	    pageCloud = (Cloud)pageContext.getAttribute("cloud");
     	    // fallback if CLOUD tag was not used
     	    if (pageCloud==null) {
-    	        pageCloud=cloudContext.getCloud(DEFAULT_CLOUD_NAME);
+    	        pageCloud=getDefaultCloudContext().getCloud(DEFAULT_CLOUD_NAME);
     	        pageContext.setAttribute("cloud",pageCloud);
     	    }
     	}

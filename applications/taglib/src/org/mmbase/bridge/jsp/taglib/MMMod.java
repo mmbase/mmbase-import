@@ -16,10 +16,7 @@ import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
-import org.mmbase.module.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
+import org.mmbase.bridge.*;
 
 /**
  * experimental code(does no use MMCI)
@@ -31,21 +28,6 @@ public class MMMod extends MMTaglib implements BodyTag {
     private String name=null;
     private String value=null;
 
-    public ProcessorInterface getProcessor(String name) throws MMTaglibException{
-	ProcessorInterface processor= null;
-	Object o =Module.getModule(name); 
-	if (o != null && o instanceof ProcessorInterface){
-	    processor=(ProcessorInterface)o;
-	} else {
-	    if (o != null){
-		throw new MMTaglibException("Module " + name + " is not a Prosessor , it does not implements the ProcessorInterface");
-	    } else {
-		throw new MMTaglibException("unalbe to get module  " + name + " maybe it does not exists");
-	    }
-	}
-	return processor;
-    }
-    
     public void setName(String name){
 	this.name = name;
     }
@@ -71,32 +53,18 @@ public class MMMod extends MMTaglib implements BodyTag {
 	    if (value!=null) content=value;
 
 	    //pi is the module we whant to use
-	    ProcessorInterface pi = getProcessor(name);
-	    String retval = pi.replace(getScanPage(),content);
+	    Module mod= getDefaultCloudContext().getModule(name);
+	
+	    String retval = mod.getInfo(content,pageContext.getRequest(),pageContext.getResponse());
 	    
 	    //pageContext.getOut().print(retval);
 	    bodyOut.clearBody();
 	    bodyOut.print(retval);
 	    bodyOut.writeOut(bodyOut.getEnclosingWriter());
-	} catch (MMTaglibException taglibException){
-	    throw new JspTagException(taglibException.toString());
 	} catch (IOException ioe){
 	    throw new JspTagException("IOException " + ioe.getMessage());
 	}
-	
         return SKIP_BODY;
-    }
-    
-    private scanpage getScanPage() throws MMTaglibException {
-	if (! (pageContext.getRequest() instanceof HttpServletRequest)){
-	    throw new MMTaglibException("the mod commmand only works on HTTP(the request is not an instance of HttpServletRequest)");
-	}
-	scanpage sp = new scanpage();
-	sp.setReq((HttpServletRequest)pageContext.getRequest());
-	sp.setRes((HttpServletResponse)pageContext.getResponse());
-	sp.req_line=((HttpServletRequest)pageContext.getRequest()).getRequestURI();
-	sp.querystring=((HttpServletRequest)pageContext.getRequest()).getQueryString();
-	return sp;
     }
 }
 
