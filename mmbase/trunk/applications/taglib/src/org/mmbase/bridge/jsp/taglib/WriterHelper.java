@@ -57,7 +57,7 @@ public class WriterHelper extends BodyTagSupport {
 
     static final int stringToType(String tt) {
         String t = tt.toLowerCase();
-        if ("string".equals(tt)) {
+        if ("string".equals(t)) {
             return TYPE_STRING;
         } else if ("node".equals(t)) {
             return TYPE_NODE;
