@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.71 $ $Date: 2002-04-05 11:47:07 $
+ * @version $Revision: 1.72 $ $Date: 2002-04-08 11:14:35 $
  */
 
 public class MMObjectNode {
@@ -136,6 +136,7 @@ public class MMObjectNode {
      * This method returns the actual builder.
      * The node may miss vital information (not retrieved from the database) to act as a node of such
      * a builder - if you need actual status you need to reload it.
+     * @since MMBase-1.6
      * @return the builder of this node
      */
     public MMObjectBuilder getBuilder() {
