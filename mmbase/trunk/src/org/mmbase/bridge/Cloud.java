@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.39 2003-07-29 15:05:48 michiel Exp $
+ * @version $Id: Cloud.java,v 1.40 2003-08-27 21:25:06 michiel Exp $
  */
 public interface Cloud {
 
@@ -508,6 +508,7 @@ public interface Cloud {
 
 
 
+
     /**
      * Create an empty Query, which can be filled, and used in {getList#query}.
      * @since MMBase-1.7
@@ -521,6 +522,17 @@ public interface Cloud {
      * @since MMBase-1.7
      */
     public Query createAggregatedQuery();
+
+
+    /**
+     * Create an empty NodeQuery, which can be filled, and used in {getList#nodequery}. The query
+     * can be used only when at least one step is added, and 'setNodeStep' is called.
+     * @since MMBase-1.7
+     */
+
+    public NodeQuery createNodeQuery();
+
+
 
 
     /**
