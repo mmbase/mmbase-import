@@ -13,3 +13,16 @@
 <!ATTLIST generatedata role CDATA #IMPLIED>
 <!ATTLIST generatedata file CDATA #IMPLIED>
 <!ATTLIST generatedata tokenizer CDATA #IMPLIED>
+
+<!ATTLIST quota tokenizer CDATA #IMPLIED>
+<!ATTLIST quota max CDATA #IMPLIED>
+<!ATTLIST quota softwarning CDATA #IMPLIED>
+<!ATTLIST quota warning CDATA #IMPLIED>
+
+<!ELEMENT alias (#PCDATA)>
+<!ATTLIST alias object CDATA #IMPLIED>
+<!ATTLIST alias extern CDATA #IMPLIED>
+<!ATTLIST alias field CDATA #IMPLIED>
+<!ATTLIST alias externfield CDATA #IMPLIED>
+<!ATTLIST alias key CDATA #IMPLIED>
+<!ATTLIST alias externkey CDATA #IMPLIED>
