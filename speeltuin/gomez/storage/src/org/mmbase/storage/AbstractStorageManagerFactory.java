@@ -15,15 +15,14 @@ import org.xml.sax.InputSource;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
-import org.mmbase.storage.util.StorageReader;
-import org.mmbase.storage.util.Scheme;
+import org.mmbase.storage.util.*;
 
 /**
  * An abstract implementation of the StorageManagerFactory implements ways for setting and retrieving attributes.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.10 2003-07-28 10:19:20 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.11 2003-07-30 10:19:40 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -46,6 +45,11 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * The list with type mappings
      */
     protected List typeMappings;
+    
+    /**
+     * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
+     */
+    protected ChangeManager changeManager;    
 
     // The map with disallowed fieldnames and (if given) alternates
     private Map disallowedFields;
@@ -60,6 +64,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = new HashMap();
         typeMappings = Collections.synchronizedList(new ArrayList());
+        changeManager = new ChangeManager(mmbase);
         try {
             load();
         } catch (StorageException se) {
@@ -230,7 +235,11 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
         }
     }
-   
+ 
+    public ChangeManager getChangeManager() {
+        return changeManager;
+    }
+  
     abstract public double getVersion();
     
 	abstract public boolean supportsTransactions();
