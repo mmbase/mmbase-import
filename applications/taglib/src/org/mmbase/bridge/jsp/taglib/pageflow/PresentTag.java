@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if certain id is present in the parent context.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PresentTag.java,v 1.19 2004-05-25 16:32:13 michiel Exp $
+ * @version $Id: PresentTag.java,v 1.20 2004-07-19 15:28:31 michiel Exp $
  */
 
 public class PresentTag extends ContextReferrerTag implements Condition {
@@ -53,6 +53,6 @@ public class PresentTag extends ContextReferrerTag implements Condition {
                 }
             }
         }
-        return EVAL_PAGE;
+        return SKIP_BODY;
     }
 }
