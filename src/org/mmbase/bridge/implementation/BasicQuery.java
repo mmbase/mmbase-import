@@ -17,14 +17,14 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-
+import org.mmbase.security.Authorization;
 
 
 /**
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.13 2003-08-05 09:07:43 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.14 2003-08-05 19:31:53 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -36,10 +36,11 @@ public class BasicQuery implements Query  {
     protected boolean used = false;
     protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).
 
+
+    protected Authorization.QueryCheck secureConstraint = null;
+
     private   HashMap  aliasSequences = new HashMap(); 
     // to make unique table aliases. This is similar impl. as  in core. Why should it be at all....
-
-
 
     protected BasicSearchQuery query;
 
@@ -141,6 +142,9 @@ public class BasicQuery implements Query  {
 
     public Step addStep(NodeManager nm) {
         if (used) throw new BridgeException("Query was used already");
+
+        removeSecurityConstraint(); // if present
+
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
         
         step.setAlias(createAlias(step));
@@ -293,6 +297,11 @@ public class BasicQuery implements Query  {
         return c;
     }
     
+    public Constraint                  setInverse(Constraint c, boolean i) {
+        ((BasicConstraint) c).setInverse(i);
+        return c;        
+    }
+
     public FieldConstraint             setCaseSensitive(FieldConstraint c, boolean s) {
         ((BasicFieldConstraint) c).setCaseSensitive(s);
         return c;
@@ -334,6 +343,41 @@ public class BasicQuery implements Query  {
         return wasUsed;
     }
 
+
+    boolean isSecure() { 
+        return secureConstraint != null && secureConstraint.isChecked();
+    }
+
+    void setSecurityConstraint(Authorization.QueryCheck c) {
+        if (c != null && c.getConstraint() != null) {
+            Constraint constraint = query.getConstraint();
+            if (constraint != null) {
+                log.debug("compositing constraint");
+                Constraint compConstraint = createConstraint(constraint, CompositeConstraint.LOGICAL_AND, c.getConstraint());
+                query.setConstraint(compConstraint);
+            } else {
+                query.setConstraint(c.getConstraint());
+            }
+        }
+        secureConstraint = c;
+    }
+
+    void removeSecurityConstraint() {
+        if (secureConstraint != null && secureConstraint.getConstraint() != null) {
+            Constraint constraint = query.getConstraint();
+            if (secureConstraint.equals(constraint)) {
+                query.setConstraint(null);
+            } else { // must be part of the composite constraint
+                BasicCompositeConstraint compConstraint = (BasicCompositeConstraint) constraint;
+                compConstraint.removeChild(secureConstraint.getConstraint()); // remove it
+                if (compConstraint.getChilds().size() == 1) { // no need to let it composite then
+                    Constraint newConstraint = (Constraint) compConstraint.getChilds().get(0);
+                    query.setConstraint(newConstraint);
+                }
+            }
+            secureConstraint = null;            
+        }
+    }
 
 
     public boolean equals(Object obj) {
