@@ -37,7 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
-    private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
+    
+    private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
 
     public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
     private static Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
@@ -63,7 +64,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             log.debug("setting page context: " + this.getClass().getName());
         }
         setPageContextOnly(pc); // make pageContext availabe
-        pageContextTag = (ContextTag) pageContext.getAttribute("__context");
+        pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
 
 
         if (pageContextTag == null) { // not yet put 
@@ -83,12 +84,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageContextTag.setPageContextOnly(pageContext);
 
             // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
-            pageContextTag.fillVars();
             // register also the tag itself under __context.
             // _must_ set __context before calling setPageContext otherwise in infinite loop. 
             pageContextTag.createContainer(null);
             pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
-            pageContext.setAttribute("__context", pageContextTag);
+            pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
            
             // there is one implicit ContextTag in every page.
             // its id is null, it is registered in the pageContext as __context.
@@ -325,18 +325,27 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /**
      * Finds the parent context provider.
+     * @since MMBase-1.7
      */
 
     public ContextProvider getContextProvider() throws JspTagException {
         return getContextProvider((String) contextId.getValue(this), ContextProvider.class);
     }
 
+    /**
+     * Finds the parent context tag. In MMBase 1.7 and higher,
+     * normally you would like to use getContextProvider in stead.
+     * 
+     */
+
     public ContextTag getContextTag() throws JspTagException {
         return (ContextTag) getContextProvider((String) contextId.getValue(this), ContextTag.class);
     }
 
     /**
-     * Finds a parent context tag using an id. 
+     * Finds a parent context tag using an id, and a class. The class
+     * is ContextProvider or ContextTag.
+     * @since MMBase-1.7
      */
 
     private ContextProvider getContextProvider(String contextid, Class cl) throws JspTagException {
@@ -370,9 +379,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
         if (log.isDebugEnabled()) { 
-            log.debug("Getting object '" + key + "' from '" + getContextTag().getId() + "'");
+            log.debug("Getting object '" + key + "' from '" + getContextProvider().getId() + "'");
         }
-        Object r = getContextTag().getContainerObject(key);
+        Object r = getContextProvider().getContainer().getObject(key);
         if (r == null) { 
             log.debug("Not found, returning empty string");
             return "";
@@ -398,6 +407,23 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
         return o.toString();
     }
+
+    /**
+     * Returns the content-tag in which this context-referrer is in,
+     * or a default (compatible with MMBase 1.6) if there is none.
+     * @since MMBase-1.7
+     */
+
+    public ContentTag getContentTag() throws JspTagException {
+        ContentTag ct = (ContentTag) findParentTag(ContentTag.class, null, false);
+        if (ct == null) {
+            return ContentTag.DEFAULT;
+        } else {
+            return ct;
+        }
+    }
+     
+
 
     // Writer Implmentation
     // Not all ContextReferrerTags are actually Writers, but no m.i. in java.
@@ -428,14 +454,5 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
     final public void haveBody() { helper.haveBody(); }
 
-    public ContentTag getContentTag() throws JspTagException {
-        ContentTag ct = (ContentTag) findParentTag(ContentTag.class, null, false);
-        if (ct == null) {
-            return ContentTag.DEFAULT;
-        } else {
-            return ct;
-        }
-    }
-     
 
 }

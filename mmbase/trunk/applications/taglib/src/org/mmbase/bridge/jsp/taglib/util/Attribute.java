@@ -27,12 +27,12 @@ import org.mmbase.util.StringSplitter;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.8 2003-05-16 07:55:48 kees Exp $
+ * @version $Id: Attribute.java,v 1.9 2003-05-26 15:17:36 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public class Attribute {
-    private static Logger log = Logging.getLoggerInstance(Attribute.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Attribute.class);
     private static AttributeCache cache = new AttributeCache();
 
     public final static Attribute NULL = new NullAttribute();
@@ -143,8 +143,6 @@ public class Attribute {
     }
 
     /**
-
-    /**
      * String representation of this Attribute object (for debugging)
      */
     public String toString() {
@@ -214,7 +212,7 @@ public class Attribute {
                     pos++;
                 } else {        // search until non-identifier
                     StringBuffer varName = new StringBuffer();
-                    while (ContextTag.isContextIdentifierChar(c)) {
+                    while (ContextContainer.isContextIdentifierChar(c)) {
                         varName.append(c);
                         pos++;
                         if (pos >= attr.length()) break; // end of string
@@ -320,7 +318,7 @@ public class Attribute {
     }
 
     /**
-     * A simple 'string' part, wich does need any evaluating or parsing any more.
+     * A simple 'string' part, wich does not need any evaluating or parsing any more.
      *
      */
 
@@ -335,10 +333,14 @@ public class Attribute {
 
 
 /**
- * Cache which relates unparsed Attribute Strings with parsed `Attribute' objects.
+ * Cache which relates unparsed Attribute Strings with parsed
+ * `Attribute' objects.  It is not sure that this cache actually
+ * increases performance. Perhaps we can as well do without.
+
  */
+
 class AttributeCache extends Cache {
-    private static Logger log = Logging.getLoggerInstance(AttributeCache.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AttributeCache.class);
     AttributeCache() {
         super(1000);
     }
@@ -362,7 +364,8 @@ class AttributeException extends JspTagException {
 }
 
 /**
- * The attribute containing 'null' is special. No parsing needed, nothing needed.
+ * The attribute containing 'null' is special. No parsing needed, nothing needed. It is very often
+ * used, so we provide an implementation optimized for speed.
  */
 class NullAttribute extends Attribute {
     NullAttribute() { }

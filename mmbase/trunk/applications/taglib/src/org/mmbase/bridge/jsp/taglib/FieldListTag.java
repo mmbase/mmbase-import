@@ -174,7 +174,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public int doAfterBody() throws JspTagException {
         if (getId() != null) {
-            getContextTag().unRegister(getId());
+            getContextProvider().getContainer().unRegister(getId());
         }
         if (returnValues.hasNext()){
             doInitBody();
@@ -194,7 +194,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextTag().register(getId(), returnList);
+            getContextProvider().getContainer().register(getId(), returnList);
         }
         return  EVAL_PAGE;
     }
@@ -204,7 +204,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             currentItemIndex ++;
             currentField = returnValues.nextField();
             if (getId() != null) {
-                getContextTag().register(getId(), currentField);
+                getContextProvider().getContainer().register(getId(), currentField);
             }
         }
     }

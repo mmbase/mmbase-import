@@ -83,7 +83,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
             pageContext.setAttribute(jspvar, node);
         }
         if (id != null) {
-            getContextTag().registerNode(id, node);
+            getContextProvider().getContainer().registerNode(id, node);
         }
     }
                

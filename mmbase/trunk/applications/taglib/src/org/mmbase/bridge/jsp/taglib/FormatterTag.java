@@ -317,26 +317,32 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             }
             switch(getFormat()) {
             case FORMAT_XHTML:
+                helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(xslTransform(doc, "xslt/2xhtml.xslt"));
                 break;
             case FORMAT_PRESENTXML:
+                helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(xslTransform(doc, "xslt/2xml.xslt"));
                 break;
             case FORMAT_CODE:
                 helper.setValue(xslTransform(doc, "xslt/code2xml.xslt"));
                 break;
             case FORMAT_TEXTONLY:
+                helper.useEscaper(true); 
                 helper.setValue(xslTransform(doc, "xslt/2ascii.xslt"));
                 break;
             case FORMAT_RICH:
+                helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(xslTransform(doc, "xslt/mmxf2rich.xslt"));
                 break;
             case FORMAT_ESCAPEXMLPRETTY:
+                helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(Encode.encode("ESCAPE_XML", prettyXML(doc)));
                 // helper.setValue(prettyXML(doc));
                 break;
             // -- FORMAT_LIMIT_XML
             case FORMAT_ESCAPEXML:
+                helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(Encode.encode("ESCAPE_XML", body));
                 break;
             case FORMAT_DATE:
@@ -377,7 +383,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         
 
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
 
         if (timerHandle != -1) {

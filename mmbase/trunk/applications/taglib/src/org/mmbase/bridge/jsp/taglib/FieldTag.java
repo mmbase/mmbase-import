@@ -109,7 +109,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         if (field == null) { // some function, or 'referid' was used.
             if (getReferid() != null) { // referid
                 value = getObject(getReferid());
-            } else {                    // function
+            } else {         // function
                 value = getNodeVar().getValue(fieldName);
             }
         } else {                        // a field was found!
@@ -150,7 +150,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         helper.setTag(this);
         helper.setValue(value);
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         log.debug("end of doStartTag");
         return EVAL_BODY_BUFFERED;

@@ -47,7 +47,7 @@ public class CommitTag extends CloudReferrerTag {
         /*
           why should we do this??
         if (tt.getId() != null) {
-            getContextTag().unRegister(tt.getId());
+            getContextProvider().getContainer().unRegister(tt.getId());
         }
         */
         return SKIP_BODY;    
