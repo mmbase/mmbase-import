@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <html>
 <head>
    <title>MMBase Administration</title>
@@ -6,26 +7,24 @@
     <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </head>
 <%
-    String menu=request.getParameter("menu");
-    String submenu=request.getParameter("submenu");
     String category=request.getParameter("category");
     String subcategory=request.getParameter("subcategory");
     if (category==null) {
 %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0" >
-   		<frame src="nav.jsp?menu=1&submenu=1" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
-   		<frame src="about/about.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+   		<frame src="<mm:url page="nav.jsp?category=about&subcategory=about"/>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+   		<frame src="<mm:url page="about/about.jsp"/>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
 	</frameset>
 <% } else { %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0">
-   		<frame src="nav.jsp?menu=<%=menu%>&submenu=<%=submenu%>" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+   		<frame src="<mm:url page="<%="nav.jsp?category="+category+"&subcategory="+subcategory%>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
    		<% if (subcategory==null) { %>
-	  	  <frame src="<%=category%>/main.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+	  	  <frame src="<mm:url page="<%=category+"/main.jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else if (category.equals("demos")) { %>
 		  <frame src="<mm:url page="/mmexamples/index.html" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
-		  <frame src="<%=category%>/<%=subcategory%>.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        <% } %>		
+		  <frame src="<mm:url page="<%=category+"/"+subcategory+".jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+        <% } %>
 	</frameset>
 <% } %>
 
@@ -43,10 +42,10 @@
   <th class="header">About MMBase</td>
 </tr>
 <tr>
-  <td class="data"><a href="about/license.jsp">License</a></td>
+  <td class="data"><a href="<mm:url page="about/license.jsp" />">License</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="about/about.jsp">About</a></td>
+  <td class="data"><a href="<mm:url page="about/about.jsp" />">About</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -64,7 +63,7 @@
   <th class="header">Editors</td>
 </tr>
 <tr>
-  <td class="data"><a href="editors/basic.jsp">Basic</a></td>
+  <td class="data"><a href="<mm:url page="editors/basic.jsp" />">Basic</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -73,22 +72,22 @@
   <th class="header">Administration</td>
 </tr>
 <tr>
-  <td class="data"><a href="admin/servers.jsp">Servers</a></td>
+  <td class="data"><a href="<mm:url page="admin/servers.jsp" />">Servers</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="admin/builders.jsp">Builders</a></td>
+  <td class="data"><a href="<mm:url page="admin/builders.jsp" />">Builders</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="admin/applications.jsp">Applications</a></td>
+  <td class="data"><a href="<mm:url page="admin/applications.jsp" />">Applications</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="admin/modules.jsp">Modules</a></td>
+  <td class="data"><a href="<mm:url page="admin/modules.jsp" />">Modules</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="admin/databases.jsp">Databases</a></td>
+  <td class="data"><a href="<mm:url page="admin/databases.jsp" />">Databases</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="admin/documentation.jsp">Documentation</a></td>
+  <td class="data"><a href="<mm:url page="admin/documentation.jsp" />">Documentation</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -97,10 +96,10 @@
   <th class="header">Tools</td>
 </tr>
 <tr>
-  <td class="data"><a href="tools/cache.jsp">Cache Monitor</a></td>
+  <td class="data"><a href="<mm:url page="tools/cache.jsp" />">Cache Monitor</a></td>
 </tr>
 <tr>
-  <td class="data"><a href="tools/email.jsp">Email Queue Monitor</a></td>
+  <td class="data"><a href="<mm:url page="tools/email.jsp" />">Email Queue Monitor</a></td>
 </tr>
 </table>
 </body>
