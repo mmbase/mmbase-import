@@ -30,7 +30,7 @@
       <xsl:call-template name="subtitle" />
       <tr>
         <td class="steps">
-          <table width="100%">
+          <table>
             <xsl:apply-templates select="/*/steps-validator" />
           </table>
         </td>

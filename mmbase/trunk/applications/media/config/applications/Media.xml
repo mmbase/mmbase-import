@@ -38,7 +38,6 @@
       -->
     
     <relation from="mediafragments"  to="mediasources"    type="related" /> <!-- to make getRelatedNodes('mediasources') possible .. -->
- 
     <relation from="mediasources"    to="mediaproviders"  type="related" />
 
 

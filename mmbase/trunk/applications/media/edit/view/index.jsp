@@ -25,7 +25,7 @@
   <table>
     <tr><th colspan="3">Result of type <mm:write value="$type" /></th></tr> 
     <tr><th>Titel</th><th>Items en URL's</th><th>Eigenaar</th></tr>
-  <mm:list nodes="$origin" path="pools,$type" max="10" orderby="${type}.number" directions="down" constraints="$ownerconstraints $textconstraints">
+  <mm:list nodes="$origin" path="pools,$type" max="100" orderby="${type}.number" directions="down" constraints="$ownerconstraints $textconstraints">
   <mm:context>
   <mm:node  id="fragment" element="$type">
    <mm:nodeinfo id="actualtype" type="type" write="false" />

@@ -20,7 +20,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealURLComposer.java,v 1.5 2003-02-16 18:53:36 michiel Exp $
+ * @version $Id: RealURLComposer.java,v 1.6 2003-02-19 20:50:25 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -33,13 +33,14 @@ public class RealURLComposer extends FragmentURLComposer  {
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = super.getURLBuffer();
         if (getFormat().equals(Format.RM)) {
-            return getRMArgs(buff, fragment);
+            return getRMArgs(buff, fragment, info);
         } else {
             return buff;
         }
     }
 
-    public static StringBuffer getRMArgs(StringBuffer args, MMObjectNode fragment) {
+    public static StringBuffer getRMArgs(StringBuffer args, MMObjectNode fragment, Map info) {
+        if ("true".equals(info.get("nude"))) return args;
         if (fragment != null) { // can add this for RM-sources
             long start = fragment.getLongValue("start");
             long end   = fragment.getLongValue("stop");

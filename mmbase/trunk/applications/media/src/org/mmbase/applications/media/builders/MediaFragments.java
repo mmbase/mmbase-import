@@ -29,7 +29,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.9 2003-02-17 18:06:16 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.10 2003-02-19 20:50:21 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -42,7 +42,7 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_URLS        = "urls";
     public static final String FUNCTION_FILTEREDURLS  = "filteredurls";
     public static final String FUNCTION_URL         = "url";
-    public static final String FUNCTION_PARENT      = "parent";    
+    public static final String FUNCTION_NUDEURL     = "nudeurl";
     public static final String FUNCTION_PARENTS     = "parents";    
     public static final String FUNCTION_ROOT        = "root";    
     public static final String FUNCTION_SUBFRAGMENT = "issubfragment";
@@ -96,7 +96,7 @@ public class MediaFragments extends MMObjectBuilder {
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
-            info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode's number of the parent or null");
+            info.put(FUNCTION_ROOT, "() Returns the 'parent' MMObjectNode's number of the parent or null");
             info.put(FUNCTION_SUBFRAGMENT, "() Wether this fragment is a subfragment (returns a Boolean)");
             info.put(FUNCTION_SUBFRAGMENTS, "() Returns a stack of parents  (Stack of MMObjectNode)");
             info.put(FUNCTION_AVAILABLE, "() Wether this fragment is 'available'. A fragment can be unaivable when there is a related publishtimes which defines it 'unpublished'");
@@ -114,8 +114,8 @@ public class MediaFragments extends MMObjectBuilder {
             return getFilteredURLs(node, translateURLArguments(args, null));
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
             return new Boolean(isSubFragment(node));
-        } else if (FUNCTION_PARENT.equals(function)) {
-            MMObjectNode parent = getParentFragment(node);
+        } else if (FUNCTION_ROOT.equals(function)) {
+            MMObjectNode parent = getRootFragment(node);
             return parent;
         } else if (FUNCTION_PARENTS.equals(function)) {
             return getParentFragments(node);
@@ -137,6 +137,10 @@ public class MediaFragments extends MMObjectBuilder {
             }
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, translateURLArguments(args, null));
+        } else if (FUNCTION_NUDEURL.equals(function)) {
+            Map info = translateURLArguments(args, null);
+            info.put("nude", "true");
+            return getURL(getRootFragment(node), info);
         } else if (FUNCTION_FORMAT.equals(function)) {
             return getFormat(node, translateURLArguments(args, null));
         } else if (function.equals("showlength")) {
@@ -259,32 +263,42 @@ public class MediaFragments extends MMObjectBuilder {
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
     
+    /**
+     * Returns a Stack with all parent fragments. Starts stacking from
+     * this, so on top is the mediafragment with the sources, and on
+     * the bottom is the fragment itself.
+     */
+
+
     public Stack getParentFragments(MMObjectNode fragment) {
         Stack result = new Stack();
         result.push(fragment);
-        int thisNumber = fragment.getNumber();
-        log.debug("Finding parent of node " + thisNumber);
+        log.debug("Finding parent of node " + fragment.getNumber());
         int role = mmb.getRelDef().getNumberByName("posrel");
         org.mmbase.module.corebuilders.InsRel insrel =  mmb.getRelDef().getBuilder(role);
-        Enumeration e = insrel.getRelations(thisNumber, mmb.getBuilder("mediafragments").getObjectType(), role);
+        Enumeration e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
         while (e.hasMoreElements()) {
             MMObjectNode relation = (MMObjectNode) e.nextElement();
             log.debug("Checking relation " + relation);
-            if (relation.getIntValue("dnumber") == thisNumber) { // yes, found a parent node
-                log.debug("Yes, found parent of " + thisNumber + " " + relation.getIntValue("snumber"));
-                result.push(getNode(relation.getIntValue("snumber")));
+            if (relation.getIntValue("dnumber") == fragment.getNumber()) { // yes, found a parent node
+                log.debug("Yes, found parent of " + fragment.getNumber() + " " + relation.getIntValue("snumber"));
+                fragment = getNode(relation.getIntValue("snumber"));
+                result.push(fragment);
             }            
         }
         
         role = mmb.getRelDef().getNumberByName("parent");
         insrel =  mmb.getRelDef().getBuilder(role);
-        e = insrel.getRelations(thisNumber, mmb.getBuilder("mediafragments").getObjectType(), role);
+        e = insrel.getRelations(fragment.getNumber(), mmb.getBuilder("mediafragments").getObjectType(), role);
         while (e.hasMoreElements()) {
             MMObjectNode relation = (MMObjectNode) e.nextElement();
             log.debug("Checking relation " + relation);
-            if (relation.getIntValue("snumber") == thisNumber) { // yes, found a parent node
-                log.debug("Yes, found base=parent of " + thisNumber + " " + relation.getIntValue("dnumber"));
-                result.push(getNode(relation.getIntValue("dnumber")));
+            if (relation.getIntValue("snumber") == fragment.getNumber()) { // yes, found a parent node
+                if (log.isDebugEnabled()) {
+                    log.debug("Yes, found base=parent of " + fragment.getNumber() + " " + relation.getIntValue("dnumber"));
+                }
+                fragment = getNode(relation.getIntValue("dnumber"));
+                result.push(fragment);
             }            
         }
         return result;
@@ -292,31 +306,14 @@ public class MediaFragments extends MMObjectBuilder {
 
 
     /**
-     * Find the mediafragment of which the given mediafragment is a part.
+     * Find the mediafragment of which the given mediafragment is a part. This fragment is not a subfragment.
+     * 
      * @param mediafragment sub media fragment
      * @return The parent media fragment or null if it has not.
      */
-    protected MMObjectNode getParentFragment(MMObjectNode fragment) {
+    public MMObjectNode getRootFragment(MMObjectNode fragment) {
         Stack s = getParentFragments(fragment);
         return (MMObjectNode) s.peek();
-    }
-
-    /**
-     * Returns the fragment which has no parent fragments. This fragment should have the mediasources related to it.
-     *
-     * @return An MMObjectNode.
-     */
-
-    public MMObjectNode getRootFragment(MMObjectNode fragment) {
-        MMObjectNode temp;
-        log.debug("Finding root of " + fragment.getNumber());
-        List path = new ArrayList(); // to avoid circular references (in case of wrong links)
-        do {
-            temp = fragment;
-            path.add(temp);
-            fragment = getParentFragment(fragment);
-        } while (fragment != null && (!path.contains(fragment)));
-        return temp;
     }
     
     /**

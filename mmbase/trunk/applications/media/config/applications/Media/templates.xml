@@ -32,7 +32,7 @@
 	<node number="7004" owner="media">
 		<name>A SMIL with all subfragments</name>
 		<description>Smil example</description>
-		<url>smil.jsp?</url>
+		<url>smil.ram.jsp?</url>
 		<mimetype>application/smil</mimetype>
 	</node>
 
