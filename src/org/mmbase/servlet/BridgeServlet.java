@@ -16,8 +16,10 @@ import javax.servlet.http.HttpSession;
 import org.mmbase.bridge.*;
 
 import java.io.IOException;
+import java.io.File;
 
-import org.mmbase.util.StringObject;
+import java.util.regex.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -36,21 +38,18 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.10 2003-05-08 06:09:23 kees Exp $
+ * @version $Id: BridgeServlet.java,v 1.11 2003-11-06 16:23:22 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public abstract class BridgeServlet extends  MMBaseServlet {
 
 
+    private static final Pattern FILE_PATTERN = Pattern.compile(".*?((?:session=.*\\+)?\\d+)(?:/.*)?");
     private static Logger log;
 
     /**
-     * Returns known functions which can be performed with bridge-functionality
-     * specialisations would increase the priority for their specific goal.
      */
-
-
     protected String getCloudName() {
         return "mmbase";
     }
@@ -58,12 +57,12 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     /**
      * Remove session information from query object, and returns session-name (or null)
      */
-    protected String readQuery(StringObject query, HttpServletResponse res) throws IOException  {
+    protected String readQuery(StringBuffer query, HttpServletResponse res) throws IOException  {
         String sessionName = "cloud_" + getCloudName();
-        if (query.indexOf("session=") >= 0) { 
+        if (query.toString().indexOf("session=") >= 0) { 
             // indicated the session name in the query: session=<sessionname>+<nodenumber>
             
-            int plus = query.indexOf("+", 8);
+            int plus = query.toString().indexOf("+", 8);
             if (plus == -1) {
                 res.sendError(HttpServletResponse.SC_NOT_FOUND, "Malformed URL");
                 return null;
@@ -74,12 +73,12 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         return sessionName;
     }
 
-    protected Cloud getCloud(HttpServletRequest req, HttpServletResponse res, StringObject query) throws IOException {
+    protected Cloud getCloud(HttpServletRequest req, HttpServletResponse res, StringBuffer query) throws IOException {
 
         log.debug("getting a cloud");
         // trying to get a cloud from the session
         Cloud cloud = null;
-        HttpSession session = req.getSession(false); // false: do not create a session, only use it
+         HttpSession session = req.getSession(false); // false: do not create a session, only use it
         if (session != null) { // there is a session
             log.debug("from session");
             String sessionName = readQuery(query, res);
@@ -97,25 +96,35 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             }
         }
         return cloud;
-
     }
 
 
     /**
      * Servlets would often need a node. This function will get one for you using the query string.
-     * This is convenient, and also ensures that all this kind of servlet work uniformely.
+     * This is convenient, and also ensures that all this kind of servlets work uniformely.
      */
      
     protected Node getNode(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String q = req.getQueryString();
-        StringObject query;
-        if (q == null) { // also possible to use /attachments/<number>
-            query = new StringObject(new java.io.File(req.getRequestURI()).getName());
+        StringBuffer query;
+        if (q == null) { 
+            // also possible to use /attachments/[session=abc+]<number>/filename.pdf
+            //query = new StringBuffer(req.getRequestURI());
+            Matcher m = FILE_PATTERN.matcher(req.getRequestURI());
+            if (! m.matches()) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Malformed URL");
+                return null;
+            }
+            query = new StringBuffer(m.group(1));
+            
         } else {
-            query = new StringObject(q);
+            // attachment.db?[session=abc+]number
+            query = new StringBuffer(q);
         }
 
-        if (log.isDebugEnabled()) log.debug("query : " + query);
+        if (log.isDebugEnabled()) { 
+            log.debug("query : " + query);
+        }
         Cloud c = getCloud(req, res, query);
         if (c == null) return null;
         Node node = null;
@@ -158,7 +167,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
 
     public void init() throws ServletException {
         super.init();
-        log = Logging.getLoggerInstance(BridgeServlet.class.getName());
+        log = Logging.getLoggerInstance(BridgeServlet.class);
     }
 
 
