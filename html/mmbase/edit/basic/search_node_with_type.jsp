@@ -69,12 +69,14 @@
     <mm:fieldlist nodetype="$node_type" type="list">
          <th><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small> </th>
     </mm:fieldlist>
-    <th>&nbsp;</th><!-- X collum -->
-    <th>&nbsp;</th><!-- -> collum -->
+    <th colspan="2">size: <mm:size /></th><!-- X and -> collum -->
   </tr>
-<mm:listnodes id="node_number" directions="DOWN"   orderby="number"
-                offset="${+$page*$config.page_size}"  max="$config.page_size"
-                jspvar="sn">
+
+ <mm:maxnumber value="$config.page_size" />
+ <mm:offset    value="${+$page*$config.page_size}"  />
+  
+
+<mm:listnodes id="node_number" directions="DOWN"  orderby="number" jspvar="sn">
   <tr>
         <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;</td>
    <mm:fieldlist nodetype="$node_type" type="list">
