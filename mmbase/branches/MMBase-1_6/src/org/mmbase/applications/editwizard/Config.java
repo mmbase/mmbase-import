@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26.2.10 2003-06-11 07:55:14 vpro Exp $
+ * @version $Id: Config.java,v 1.26.2.11 2003-06-13 13:25:09 vpro Exp $
  */
 
 public class Config {
@@ -552,7 +552,14 @@ public class Config {
                     // Was given relatively, that's easy:
                     refFile = new File(getRealPath(config.backPage)).getParentFile();
                 }
+                
                 if (refFile.exists()) {
+                    if (! config.language.equals("")) {
+                        File refi18n = new File(refFile, "i18n" + File.separator + config.language);
+                        if (refi18n.isDirectory()) {
+                            extraDirs.add("refi18n:", refi18n);
+                        }
+                    }
                     extraDirs.add("ref:", refFile);
                 }
 
