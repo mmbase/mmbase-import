@@ -14,9 +14,12 @@ import org.mmbase.util.*;
 
 
 public interface SendMailInterface {
-	public boolean sendMail(String from, String to, String data);
-	public boolean sendMail(String from, String to, String data, Hashtable headers);
-	public boolean sendMail(Mail mail);
-	public String verify(String name);
-	public Vector expand(String name);
+    public boolean sendMail(String from, String to, String data);
+    public boolean sendMail(String from, String to, String data, Map headers);
+    public boolean sendMail(Mail mail);
+    /**
+     * checks the e-mail address
+     */
+    public String verify(String name);
+    public List   expand(String name);
 }
