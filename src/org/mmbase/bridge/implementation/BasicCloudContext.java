@@ -22,7 +22,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.31 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.32 2003-11-10 16:47:14 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -101,11 +101,11 @@ public class BasicCloudContext implements CloudContext {
         return getCloud(cloudName, "anonymous", null);
     }
 
-    public Cloud getCloud(String name, String application, Map loginInfo) throws NotFoundException  {
+    public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException  {
         if ( !localClouds.contains(name) ) {
             throw new NotFoundException("Cloud '" + name + "' does not exist.");
         }
-        return new BasicCloud(name, application, loginInfo,this);
+        return new BasicCloud(name, authenticationType, loginInfo, this);
     }
 
     public StringList getCloudNames() {

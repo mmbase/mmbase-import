@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.19 2002-11-05 14:17:02 pierre Exp $
+ * @version $Id: CloudContext.java,v 1.20 2003-11-10 16:47:14 michiel Exp $
  */
 public interface CloudContext {
 
@@ -51,6 +51,7 @@ public interface CloudContext {
      * @param name                     the name of the cloud to be returned
      * @return                         the requested cloud
      * @throws CloudNotFoundException  if the specified cloud could not be found
+     * @throws SecurityException       if no anonymous user can be created
      */
     public Cloud getCloud(String name);
 
@@ -58,13 +59,13 @@ public interface CloudContext {
      * Returns the cloud with the specified name, with authentication
      *
      * @param name                the name of the cloud to be returned
-     * @param authenticationtype  the type of authentication, which should be
+     * @param authenticationType  the type of authentication, which should be
      *                            used by the authentication implementation.
      * @param loginInfo           the user related login information.
      * @return                    the requested cloud
      * @throws NotFoundException  if the specified cloud could not be found
      */
-    public Cloud getCloud(String name, String authenticationtype, Map loginInfo) throws NotFoundException;
+    public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
 
     /**
      * Returns the names of all the clouds known to the system
