@@ -1,4 +1,5 @@
-<%@ include file="page_base.jsp"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><%@ include file="page_base_functionality.jsp"
 %><mm:import externid="username" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">
