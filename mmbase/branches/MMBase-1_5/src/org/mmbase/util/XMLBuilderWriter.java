@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Class for creating builder configuration files.
  *
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.12 2001-04-19 13:21:40 pierre Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.12.4.1 2002-06-11 09:24:11 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -35,7 +35,7 @@ public class XMLBuilderWriter  {
      */
     public static boolean writeXMLFile(String filename,MMObjectBuilder bul) {
         String header = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"+
-                        "<!DOCTYPE builder PUBLIC \"//MMBase - builder//\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
+                        "<!DOCTYPE builder PUBLIC \"-//MMBase/DTD builder config 1.0//EN\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
 
         String body=header+"<builder maintainer=\""+bul.getMaintainer()+"\" version=\""+bul.getVersion()+"\">\n\n";
 
@@ -120,19 +120,19 @@ public class XMLBuilderWriter  {
 
         // properties
         body+="<!-- <properties>\n";
-     	body+="you can define properties to be used by the classfile (if used) it uses\n";
-     	body+="a key/value system. Its a optional tag.\n";
-		body+="-->\n";
-		body+="<properties>\n";
+        body+="you can define properties to be used by the classfile (if used) it uses\n";
+        body+="a key/value system. Its a optional tag.\n";
+        body+="-->\n";
+        body+="<properties>\n";
         Hashtable props=bul.getInitParameters();
         if (props!=null) {
             for (Enumeration e=props.keys();e.hasMoreElements();) {
                 String name=(String)e.nextElement();
-				String value=(String)props.get(name);
-    			body+="\t<property name=\""+name+"\">"+value+"</property>\n";
-			}
-	    }
-		body+="</properties>\n\n";
+                String value=(String)props.get(name);
+                body+="\t<property name=\""+name+"\">"+value+"</property>\n";
+            }
+        }
+        body+="</properties>\n\n";
 
         // fieldlists
         body+="<!-- <fieldlist>\n";
