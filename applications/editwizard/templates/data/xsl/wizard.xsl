@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.37 2002-07-15 12:19:36 michiel Exp $
+  @version $Id: wizard.xsl,v 1.38 2002-07-15 12:34:17 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -128,6 +128,15 @@
     <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript">
+    <xsl:text disable-output-escaping="yes">
+<![CDATA[
+    <!--
+         window.history.forward(1);
+    -->
+]]>
+    </xsl:text>
+    </script>
   </xsl:template>
 
 
