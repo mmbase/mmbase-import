@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.4 2002-05-16 15:26:28 michiel Exp $
+    @version  $Id: index.jsp,v 1.5 2002-05-16 16:09:26 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -103,6 +103,19 @@
       Demonstrated is how to use editwizards 'libs'. These are pieces
       of XML stored in the editwizard data directory which you can
       include in you own wizards.
+     </td></tr>
+    <tr><td>
+    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
+		       <mm:param name="title">News</mm:param>
+		       <mm:param name="startnodes">default.mags</mm:param>
+        	 <mm:param name="wizard">samples/news</mm:param>
+           <mm:param name="nodepath">mags,news</mm:param>
+           <mm:param name="fields">news.number,news.title</mm:param>
+           <mm:param name="orderby">news.number</mm:param>
+           <mm:param name="directions">down</mm:param>
+           </mm:url>">News</a>
+     </td><td>       
+        Only list news of default magazine (MyNews magazine).
      </td></tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
