@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
-    <!ENTITY mmlevel    "org.mmbase.util.logging.log4j.Log4jLevel" >
+    <!ENTITY mmlevel  "org.mmbase.util.logging.log4j.Log4jLevel" >
     <!ENTITY logdir   "/export/home/mmweb/log/" >
 ]>
 <log4j:configuration   debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/" >
@@ -47,13 +47,13 @@
 
   <!-- 'page logging' goes to a different appender -->
   <logger name="org.mmbase.PAGE" additivity="false">
-    <level class="&mmlevel;" value ="service" />
+    <level class="&mmlevel;" value ="info" />
     <appender-ref ref="pagedebug" />
   </logger>
 
   <!-- SQL logging -->
   <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
-    <level class="&mmlevel;" value ="debug" />   
+    <level class="&mmlevel;" value ="service" />   
     <appender-ref ref="sqllog" />
   </logger>
 
@@ -66,7 +66,7 @@
   -->
  
   <logger name="STDERR">
-    <level class="&mmlevel;" value ="info" />	
+    <level class="&mmlevel;" value ="fatal" />	
   </logger>
   
   <root>
