@@ -1,4 +1,4 @@
-<% response.setHeader("Content-Type","text/html; charset=utf-8");
+<%@page contentType="text/html; charset=utf-8"
 %><%!
     String settings_basedir = "";
 	int settings_sessiontimeout = 60 * 60 * 24; // 24 hours
