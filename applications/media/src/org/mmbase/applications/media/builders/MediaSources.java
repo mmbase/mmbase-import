@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.28 2004-05-04 15:30:47 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.29 2004-05-12 14:39:29 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -494,7 +494,7 @@ public class MediaSources extends MMObjectBuilder {
         MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
         insrel.setValue("snumber", source.getValue("number"));
         insrel.setValue("dnumber", providernumber);
-        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        insrel.setValue("rnumber", mmb.getRelDef().getNumberByName("related"));
         
         int ret = insrel.insert(owner);
         if(ret<0) {
