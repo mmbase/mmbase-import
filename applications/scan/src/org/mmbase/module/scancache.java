@@ -250,7 +250,8 @@ public class scancache extends Module implements scancacheInterface {
 	                // get the time from memory
 	                Integer tmp2=(Integer)timepool.get(poolName+key);
 	                int then=tmp2.intValue();
-	                log.debug("scancache -> file="+then+" now="+now+" interval="+interval);
+	                log.debug("scancache -> file="+then+" now="+now
+	                        +" then-now="+(then-now)+" interval="+interval);
 	                if (((now-then)-interval)<0) {
 	                    return value;
 	                } else {
@@ -351,7 +352,7 @@ public class scancache extends Module implements scancacheInterface {
         // insert the new item and save to disk
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
-            timepool.put(poolName+key,new Integer((int)(DateSupport.currentTimeMillis()/1000))); // store expiration time
+            timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
             return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
@@ -406,7 +407,7 @@ public class scancache extends Module implements scancacheInterface {
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
             // also add time to timepool??
-            timepool.put(poolName+key,new Integer((int)(DateSupport.currentTimeMillis()/1000))); // store expiration time
+            timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
             return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
@@ -533,7 +534,7 @@ public class scancache extends Module implements scancacheInterface {
 
     /**
      * loads a file from the disk.
-     * The file retrieved is stored in the cache root directory, followed by the poolname 
+     * The file retrieved is stored in the cache root directory, followed by the poolname
      * (HENK or PAGE), followed by the 'original' file name.
      * @param pool The name of the pool
      * @param filename the name of the file
@@ -597,7 +598,7 @@ public class scancache extends Module implements scancacheInterface {
         body+="Expires: "+expireTime+"\n";
         body+="Date: "+now+"\n";
 		// Internet explorer refuses to see resulting page as HTML
-		// when cache control header added to .asis file 
+		// when cache control header added to .asis file
         // body+="Cache-Control: no-cache\n";
         body+="Pragma: no-cache\n";
         body+="Last-Modified: "+now+"\n\n";
