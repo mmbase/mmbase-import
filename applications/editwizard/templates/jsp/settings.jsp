@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.12 2002-05-23 08:12:14 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.13 2002-05-28 14:02:07 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -27,7 +27,9 @@
         // which parameters to use to configure a list page
         public void config(Config.ListConfig c) {
             c.title       = getParam("title", c.title);
-            c.template    = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
+            if (c.template==null) {
+                c.template = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
+            }
             c.startNodes  = getParam("startnodes", c.startNodes);
             c.nodePath    = getParam("nodepath", c.nodePath);
             c.fields      = getParam("fields", c.fields);

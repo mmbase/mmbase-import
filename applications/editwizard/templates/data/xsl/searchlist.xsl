@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.7 2002-05-27 21:34:50 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.8 2002-05-28 14:02:06 pierre Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -20,7 +20,8 @@
     <span class="pagenav">
       <xsl:choose>
         <xsl:when test="page[@previous='true']">
-          <a class="pagenav" title="{$tooltip_previous}{@currentpage-1}" href="{$listpage}&amp;popup=true&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);"><xsl:call-template name="prompt_previous" /></a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          <a class="pagenav" title="{$tooltip_previous}{@currentpage-1}"
+             href="javascript:browseTo({page[@previous='true']/@start});"><xsl:call-template name="prompt_previous" /></a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="prompt_previous" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
@@ -31,7 +32,8 @@
 
       <xsl:choose>
         <xsl:when test="page[@next='true']">
-          <a class="pagenav" title="{$tooltip_next}{@currentpage+1}" href="{$listpage}&amp;popup=true&amp;start={page[@next='true']/@start}" onclick="return dobrowse(this);"><xsl:call-template name="prompt_next" /></a>
+          <a class="pagenav" title="{$tooltip_next}{@currentpage+1}"
+             href="javascript:browseTo({page[@next='true']/@start});"><xsl:call-template name="prompt_next" /></a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="prompt_next" />
@@ -41,7 +43,8 @@
   </xsl:template>
 
   <xsl:template match="page">
-    <a class="pagenav" title="{$tooltip_goto}{position()}" href="{$listpage}&amp;popup=true&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a><xsl:text> </xsl:text>
+    <a class="pagenav" title="{$tooltip_goto}{position()}"
+       href="javascript:browseTo({@start});" ><xsl:value-of select="position()" /></a><xsl:text></xsl:text>
   </xsl:template>
 
 
@@ -65,6 +68,7 @@
          ]]>
         </xsl:text>
             parent.status = "<xsl:value-of select="tooltip_select_search" />";
+            var listpage = "<xsl:value-of disable-output-escaping="yes" select="$listpage" />";
         <xsl:text disable-output-escaping="yes">
         <![CDATA[
             var searchtype = getParameter_general("type", "objects");
@@ -106,7 +110,7 @@
                 parent.doAdd(selected, cmd);
             }
 
-            function buildSelectedList(){
+            function buildSelectedList() {
                 var s = selected + "|";
                 var f = document.forms[0];
                 for (var i=0; i<f.elements.length; i++) {
@@ -125,10 +129,10 @@
                 return s.substring(0, s.length - 1);;
             }
 
-            function dobrowse(el){
+            function browseTo(start) {
                 selected = buildSelectedList();
-                var href = el.getAttribute("href");
-                href += "&selected="+selected+"&cmd="+cmd;
+                var href = listpage;
+                href += "&start="+start+"&selected="+selected+"&cmd="+cmd;
 
                 document.location.replace(href);
                 return false;
