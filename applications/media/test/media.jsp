@@ -12,7 +12,7 @@ Try e.g to make a fragment /tv/vpro/noorderlicht/laatste.rm (type: rm) and the f
 <mm:cloud>
  <mm:listnodes id="fragment" type="mediafragments">
   <mm:field name="title" />:<br />
-  <mm:related path="posrel,mediasources" fields="posrel.pos" orderby="posrel.pos"><mm:context>
+  <mm:related path="mediasources"><mm:context>
      <mm:node id="source" element="mediasources">
      source: <a href="<mm:field  name="absoluteurl(play)"  />"><mm:field name="str(format)" /></a><br />
      <mm:field name="format" vartype="integer">

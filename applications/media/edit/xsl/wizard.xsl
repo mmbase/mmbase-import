@@ -18,6 +18,7 @@
       nologo="true"
       nolabels="true"
       name="embeddedplayer"></embed>
+    <h1>Noorderlicht</h1>
   </center>
   <hr />
   </xsl:if>

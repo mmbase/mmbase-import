@@ -90,7 +90,7 @@ public class MediaSourceFilter {
      */
     private synchronized void readConfiguration(File configFile) {
         
-        XMLBasicReader reader = new XMLBasicReader(configFile.toString());
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         
         // reading filterchain information
         externFilters = new Hashtable();
