@@ -73,6 +73,7 @@ NetComponents can be found at:
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="distro"      value="MMBase 1.6.0"/>
+  <property name="documentation.builders.language" value="en" />
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="source-config.dir"         location="${source.dir}/config"/>
   <property name="source-html.dir"           location="${source.dir}/html"/>
@@ -1484,7 +1485,7 @@ Version: MMBase build ${version}
     description="Make the MMBase documentation from docbook-sources">
 
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
-    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/html/docbook.xsl" />
+    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
 
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
@@ -1530,10 +1531,93 @@ Version: MMBase build ${version}
     
   </target>
 
-  <target name="documentation" depends="taglib.doc,community.doc,docbookumentation">
+  <target name="documentation" 
+          depends="taglib.doc,community.doc,docbookumentation,documentation.builders">
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-html.dir}/mmdocs" />
     </copy>
+  </target>
+
+  <!-- =================================================================== -->
+  <!--  Create the Builder documentation                                   -->
+  <!-- =================================================================== -->
+  <target name="documentation.builders" 
+          depends="docbookumentation"
+          description="Generate builder-documentation from the builder config files">
+    <mkdir dir="${mmdocs.dir}/templaters/builders"/>
+
+    <copy todir="${mmdocs.dir}/templaters/builders" 
+          file="${source-documentation.dir}/style/docbook2xhtml.xslt"
+          />
+
+    <!-- not used at the moment
+    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt" 
+             token="[BASESTYLESHEET]" 
+             value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
+    -->
+    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt" 
+             token="[BASESTYLESHEET]" 
+             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+
+    <!-- compile class for listing of builders -->
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile.classpath"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/util/BuilderLister.java" />
+    </javac>
+    
+    <!-- call class, this will give an xml file with a listing of all the builders -->
+    <java classname="org.mmbase.util.BuilderLister"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="no"
+          output="${mmdocs.dir}/templaters/builders/allbuilders.xml">
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${source.dir}/config/default/builders" />
+    </java>
+  
+    <!-- put all builders in one big file -->
+    <style      
+      style="${source-config.dir}/default/xslt/allbuilders.xsl"
+      extension=".xml"
+      in="${mmdocs.dir}/templaters/builders/allbuilders.xml"
+      out="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
+      >
+        <param name="language" expression="${documentation.builders.language}"/>
+    </style>
+
+    <!-- convert this file into docbook -->
+    <style      
+      style="${source-config.dir}/default/xslt/builder2docbook.xsl"
+      extension=".xml"
+      in="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
+      out="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
+      >
+        <param name="language" expression="${documentation.builders.language}"/>
+    </style>
+
+
+    <!-- generate xhtml -->
+    <style      
+      style="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+      extension=".html"
+      in="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
+      out="${mmdocs.dir}/templaters/builders/index.html"
+      >
+        <param name="root" expression="../../"/>
+    </style>
+    
+    <!-- remove temp files -->
+    <delete file="${mmdocs.dir}/templaters/builders/allbuilders.xml"/>
+    <delete file="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"/>
+    <delete file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"/>
   </target>
 
   <!-- =================================================================== -->
@@ -1542,7 +1626,6 @@ Version: MMBase build ${version}
   <target name="clean.documentation" description="Clean the generated documenation">
     <delete dir="${mmdocs.dir}"/>
   </target>
-
 
   <!-- =================================================================== -->
   <!-- Clean                                                               -->
