@@ -54,21 +54,6 @@ public class NodeProviderTEI extends TagExtraInfo {
         //If an 'id' is defined as well (eg 'mynode') then this will be prefixed to the
         //fieldnames: mynode_title.
         
-        Object fieldsAttribute  = data.getAttribute("fields"); 
-        Vector fields;
-        
-        if (TagData.REQUEST_TIME_VALUE == fieldsAttribute) {
-            log.debug("Cannot set field variables for request time value");
-            fields = new Vector();
-        } else {
-            String fieldsString = (String) fieldsAttribute;
-            if (fieldsString == null) {
-                fields = new Vector();
-            } else {
-                fields  = ContextReferrerTag.stringSplitter(fieldsString, ",");
-            }
-        }
-        
         int nodeVariable = 0; 
         // Number of node-variables to be defined. 
         // is 0 or 1 now, but will become more for multi-level lists (not yet ready)
@@ -84,29 +69,10 @@ public class NodeProviderTEI extends TagExtraInfo {
             }
         }
         
-        variableInfo =    new VariableInfo[(fields.size()) + nodeVariable];
-        int j = 0;
-        for (int i = 0 ; i < fields.size(); i++){
-            String field = (String)fields.elementAt(i);
-            //it would be nice to return Integer is a field is of that type
-            
-            // michiel: I think we should deprecate also this.
-            
-            // log.debug("will set " + getSimpleReturnValueName(id, field));
-            variableInfo[j++] = new VariableInfo(AbstractNodeProviderTag.getSimpleReturnValueName(id, field),
-                                                 "java.lang.String",
-                                                 true,
-                                                 VariableInfo.NESTED);
-            /* michiel: this does not make much sense. why would someone want to use 'item1', if you have 
-               a name to use. It also clashes with a builder which has a fieldname 'item1'.
-               variableInfo[j++] = new VariableInfo(prefix + "item" + (i+1),
-               "java.lang.String",
-               true,
-               VariableInfo.NESTED);            
-            */
-        }
+        variableInfo =    new VariableInfo[nodeVariable];
+
         if (nodeVariable == 1) {
-            variableInfo[j] = new VariableInfo(id,
+            variableInfo[0] = new VariableInfo(id,
                 "org.mmbase.bridge.Node",
                 true,
                 VariableInfo.NESTED);
