@@ -32,11 +32,11 @@ import org.xml.sax.SAXException;
  * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.35 2003-06-17 16:42:08 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.36 2003-07-18 14:57:50 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
-    private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
+    private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class);
 
     private static final String MMRESOURCES = "/org/mmbase/resources/";
 
@@ -105,14 +105,6 @@ public class XMLEntityResolver implements EntityResolver {
     private boolean  validate;
     private Class    resolveBase;
 
-
-    /**
-     * This class is used by init of logging system.
-     * After configuration of logging, logging must be reinitialized.
-     */
-    static void reinitLogger() {
-        log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
-    }
 
 
     /**
