@@ -4,7 +4,7 @@
 
   <status>active</status>
   
-  <classfile>org.mmbase.module.builders.media.MediaFragments</classfile>
+  <classfile>org.mmbase.applications.media.builders.MediaFragments</classfile>
   
   <names>
     <singular xml:lang="nl">Mediafragment</singular>

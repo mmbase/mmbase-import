@@ -3,7 +3,7 @@
 <builder name="mediasources" extends="object">
   <status>active</status>
   
-  <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
+  <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
 
   <searchage>14</searchage>
   
@@ -37,7 +37,7 @@
       <gui>
         <guiname xml:lang="en">Format</guiname>
         <guiname xml:lang="nl">Formaat</guiname>
-        <guitype>org.mmbase.module.builders.media.resources.formats</guitype>
+        <guitype>org.mmbase.applications.media.builders.resources.formats</guitype>
       </gui>
       <editor>
         <positions>
@@ -116,7 +116,7 @@
       <gui>
         <guiname xml:lang="en">Channels</guiname>
         <guiname xml:lang="nl">Kanalen</guiname>
-        <guitype>org.mmbase.module.builders.media.resources.channels</guitype>
+        <guitype>org.mmbase.applications.media.builders.resources.channels</guitype>
       </gui>
       <editor>
         <positions>
@@ -168,7 +168,7 @@
       <gui>
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Toestand</guiname>
-        <guitype>org.mmbase.module.builders.media.resources.states</guitype>
+        <guitype>org.mmbase.applications.media.builders.resources.states</guitype>
       </gui>
       <editor>
         <positions>
