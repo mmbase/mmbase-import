@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.22 2003-09-03 19:32:46 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.23 2003-09-03 20:08:18 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -145,7 +145,7 @@ public class BasicQuery implements Query  {
         removeSecurityConstraint(); // if present
  
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
-
+        setAlias(step, null); // null: generate alias
         if (! aggregating && ! (this instanceof NodeQuery)) {
             addField(step, nm.getField("number"));
         }
