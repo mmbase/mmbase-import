@@ -34,10 +34,10 @@
       <td>      
         <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
       <mm:context>
-      <mm:relatednodes  id="fragment" type="$actualtype" role="parent" directions="source">
+      <mm:relatednodes  id="fragment" type="$actualtype" role="posrel" searchdir="destination">
           <br /><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
           <ul>
-      <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos">
+      <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos" searchdir="destination" >
           <mm:context>
          <mm:node id="fragment" element="${actualtype}2">
              <li><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a></li>
