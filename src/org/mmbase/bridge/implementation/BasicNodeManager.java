@@ -61,7 +61,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
     }
 
     public Node createNode() {
-        cloud.assert(Operation.CREATE,builder.oType);
+        cloud.assert(Operation.CREATE, builder.oType);
         // create object as a temporary node
         int id = cloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
@@ -71,8 +71,8 @@ public class BasicNodeManager implements NodeManager, Comparable {
         }
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
         // set the owner to userName instead of account
-//        node.setValue("owner",cloud.getUserName());
-        node.setValue("owner","bridge");
+        node.setValue("owner",cloud.getUser().getIdentifier());
+        //node.setValue("owner","bridge");
         if (builder instanceof InsRel) {
             return new BasicRelation(node, (RelationManager)this, id);
         } else {
