@@ -21,21 +21,21 @@ import org.mmbase.util.logging.Logging;
 
 /**
 * The exporttag can take a variable from the context and put it in a jsp variable.
-* 
+*
 * @author Michiel Meeuwissen
 */
 public class ExportTag extends CloudReferrerTag {
-    
-    private static Logger log = Logging.getLoggerInstance(ExportTag.class.getName()); 
+
+    private static Logger log = Logging.getLoggerInstance(ExportTag.class.getName());
 
     private String jspvar = null;
     private String key = null;
     private boolean declare = true;
     private String extraBodyContent = null;
-    
+
     public void setType(String t) {
         // nothing to do, the type property is only used in the TEI.
-    }    
+    }
 
     public void setJspvar(String j) {
         jspvar = j;
@@ -45,17 +45,18 @@ public class ExportTag extends CloudReferrerTag {
         key = k;
     }
 
-    
+
     public int doStartTag() throws JspTagException {
 
         if (log.isDebugEnabled()) {
             log.debug("getting object " + key + "-> " + getContextTag().getObject(key));
-        }    
+        }
         Object value = getContextTag().getObject(key);
-    
+
+        extraBodyContent = null;
         if (value != null) {
             if (jspvar != null) {
-                pageContext.setAttribute(jspvar, value);         
+                pageContext.setAttribute(jspvar, value);
             } else {
                 extraBodyContent = value.toString();
             }
@@ -71,7 +72,7 @@ public class ExportTag extends CloudReferrerTag {
                 bodyContent.clearBody();
                 bodyContent.print(extraBodyContent + body);
             }
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());            
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
