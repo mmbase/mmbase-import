@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.48 2003-05-30 08:33:48 vpro Exp $
+ * @version $Id: servdb.java,v 1.49 2003-06-02 16:49:37 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -235,18 +235,17 @@ public class servdb extends JamesServlet {
                         // ---
                         // img
                         // ---
-                        boolean NotANumber=false;
+                        boolean notANumber=false;
                         Vector params = getParamVector(req);
                         // Catch alias only images without parameters.
                         if (params.size()==1) {
-                            NotANumber=false;
                             try {
                                 Integer.parseInt((String)params.elementAt(0));
                             } catch (NumberFormatException e) {
-                                NotANumber=true;
+                                notANumber=true;
                             }
                         }
-                        if (params.size() > 1 || NotANumber) {
+                        if (params.size() > 1 || notANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
                             // this is an image number + template, cache the image, and go ahead
@@ -334,16 +333,12 @@ public class servdb extends JamesServlet {
                         // --------
 
                         cacheReq = false;
-                        log.debug("service(rastream)");
+                        log.debug("service(rmstream)");
 
                         // is it a audiopart or an episode ?
                         // ---------------------------------
 
                         Vector vec = getParamVector(req);
-
-                        if (vec.contains("a(session)")) {
-                            vec=addRAMSpeed(sp,vec,res);
-                        }
 
                         if ( getParamValue("ea", vec)  != null ) {
                             log.debug("service(rastream): episode found");
