@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.io.BufferedOutputStream;
 
 import java.util.Vector;
+import java.util.Date;
 
 import org.mmbase.module.builders.AbstractImages;
 
 import org.mmbase.module.core.MMObjectNode;
 
-//import org.mmbase.util.RFC1123;
+import org.mmbase.util.RFC1123;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -34,12 +35,13 @@ import org.mmbase.util.logging.Logging;
  * cache yourself. The cache() function of Images can be used for
  * this.
  *
- * @version $Id: ImageServlet.java,v 1.1 2002-03-13 12:07:55 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.2 2002-03-19 12:13:23 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class ImageServlet extends  MMBaseServlet {
     private static Logger log;
+    private long originalImageExpires;
 
     /**
      */
@@ -50,16 +52,38 @@ public class ImageServlet extends  MMBaseServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         log = Logging.getLoggerInstance(ImageServlet.class.getName());
+        String origExpires = getInitParameter("expire");
+        if (origExpires == null) {
+            // default: one hour
+            originalImageExpires = 60*60*1000;
+        } else {
+            originalImageExpires = new Integer(origExpires).intValue() * 1000;
+        }
     }
 
     /**
-     * Serves (cached) images.
+     * Overrides parent function. The current time is returned now, but I wonder is this is ok.
+     **/
+    protected long getLastModified(HttpServletRequest req) {
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * Serves (cached) images. 
      * 
      */
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         AbstractImages icaches = (AbstractImages) mmbase.getMMObject("icaches");
-        Integer imageNumber = new Integer(req.getQueryString());
+        String query = req.getQueryString();
+        /* this would also be possible.
+           It would become easier to configure your front-proxy, because an img.db URL does not contain ? then anymore
+        if (query == null) { // also possible to use /img.db/<number>
+            query = new java.io.File(req.getRequestURI()).getName();
+        }
+        */
+
+        Integer imageNumber = new Integer(query);
         Vector params = new Vector();
         params.add(imageNumber);
  
@@ -71,7 +95,22 @@ public class ImageServlet extends  MMBaseServlet {
 
         res.setContentType(icaches.getImageMimeType(params));
         res.setContentLength(filesize);
-        
+
+        String now  = RFC1123.makeDate(new Date());
+        res.setHeader("Date", now);
+
+
+        if (icaches.getNode(imageNumber.intValue()).parent.getTableName().equals("icaches")) {
+            // cached images never expire, they cannot change without receiving a new number, thus changing the URL.
+            Date never = new Date(System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000));         
+            // one year in future, this is considered to be sufficiently 'never'.
+            res.setHeader("Expires", RFC1123.makeDate(never));
+        } else { // 'images'
+            // images themselves can expire,  the expiration time is set in init-param 'expire'.
+            Date later =  new Date(System.currentTimeMillis() + originalImageExpires);
+            res.setHeader("Expires", RFC1123.makeDate(later));
+        }
+
         BufferedOutputStream out=null;
         try {
             out = new BufferedOutputStream(res.getOutputStream());
