@@ -23,6 +23,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 /**
  * This class reads a relation node from an exported application.
@@ -32,7 +33,7 @@ import org.w3c.dom.Node;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.21 2004-10-01 08:41:12 pierre Exp $
+ * @version $Id: XMLRelationNodeReader.java,v 1.22 2004-11-11 16:52:57 michiel Exp $
  */
 public class XMLRelationNodeReader extends XMLBasicReader {
 
@@ -52,6 +53,14 @@ public class XMLRelationNodeReader extends XMLBasicReader {
      */
     public XMLRelationNodeReader(String filename, String applicationpath, MMBase mmbase) {
         super(filename, false);
+        this.applicationpath = applicationpath;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public XMLRelationNodeReader(InputSource is, String applicationpath) {
+        super(is, false);
         this.applicationpath = applicationpath;
     }
 

@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.21 2004-10-01 08:41:10 pierre Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.22 2004-11-11 16:52:57 michiel Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(XMLApplicationReader.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(XMLApplicationReader.class);
 
     /** Public ID of the Application DTD version 1.0 */
     public static final String PUBLIC_ID_APPLICATION_1_0 = "-//MMBase//DTD application config 1.0//EN";
@@ -66,6 +66,10 @@ public class XMLApplicationReader extends XMLBasicReader {
 
     public XMLApplicationReader(String filename) {
         super(filename, XMLApplicationReader.class);
+        root=getElementByPath("application");
+    }
+    public XMLApplicationReader(org.xml.sax.InputSource is) {
+        super(is, XMLApplicationReader.class);
         root=getElementByPath("application");
     }
 

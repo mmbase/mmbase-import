@@ -16,6 +16,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
 /**
  * This class reads a node from an exported application.
@@ -25,7 +26,7 @@ import org.w3c.dom.*;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.27 2004-10-01 08:41:11 pierre Exp $
+ * @version $Id: XMLNodeReader.java,v 1.28 2004-11-11 16:52:57 michiel Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
@@ -39,6 +40,14 @@ public class XMLNodeReader extends XMLBasicReader {
      */
     public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
         super(filename, false);
+        this.applicationpath = applicationpath;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public XMLNodeReader(InputSource is, String applicationpath) {
+        super(is, false);
         this.applicationpath = applicationpath;
     }
 
