@@ -128,4 +128,12 @@ public interface NodeInterface {
      * @param aliasName the name of the alias
      */
     public void removeAlias(String aliasName);
+
+    /**
+     * Adds a relation to this node
+     * @param destinationNode the node to which you want to relate this node
+	 * @param relationtype The type of relation you want to use
+	 * @return the added relation
+     */
+    public RelationInterface addRelation(NodeInterface destinationNode, RelationTypeInterface relationtype);
 }
