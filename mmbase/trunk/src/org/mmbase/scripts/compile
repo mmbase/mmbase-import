@@ -1,0 +1,6 @@
+#!/usr/local/bin/bash
+
+MMBASEpath=/usr/local/install/org/mmbase
+LOGpath=/usr/local/install/org/mmbase/log
+javac `find $MMBASEpath -name '*.java' -print` 2> $LOGpath/compile.log &
+
