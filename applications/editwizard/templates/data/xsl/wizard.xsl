@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.24 2002-06-12 07:34:49 michiel Exp $
+  @version $Id: wizard.xsl,v 1.25 2002-06-24 12:36:23 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -221,28 +221,19 @@
             </xsl:if>
           </div>
         </xsl:when>
-        <xsl:when test="@ftype='wizard'">
-          <div>
-            <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616">
-              <tr>
-                <td align="right" valign="top" class="search" width="100%">
-                  <nobr>
-                    <a title="{$tooltip_new}" href="{$wizardpage}&amp;wizard={@wizardname}|{@did}&amp;objectnumber={@objectnumber}&amp;popup=true">
-                      <xsl:value-of select="prompt_new" />
-                    </a>
-                    <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  </nobr>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </xsl:when>
-        <xsl:when test="@ftype='startwizard'">
-          <nobr><a href="{$popuppage}&amp;inline={@inline}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >
-           <xsl:if test="not(@inline='true')">
-            <xsl:attribute name="target">_blank</xsl:attribute>
+        <xsl:when test="@ftype='wizard' or @ftype='startwizard'">
+          <nobr>
+           <xsl:if test="@inline='true'">
+                <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
+                <xsl:call-template name="prompt_edit_wizard" />
+                </a>
            </xsl:if>
-          <xsl:call-template name="prompt_edit_wizard"/></a>
+           <xsl:if test="not(@inline='true')">
+                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}"
+                   target="_blank">
+                <xsl:call-template name="prompt_edit_wizard" />
+                </a>
+           </xsl:if>
           </nobr>
         </xsl:when>
         <xsl:when test="@ftype='upload'">
@@ -489,11 +480,17 @@
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
-                <a href="{$popuppage}&amp;inline={@inline}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >
-           <xsl:if test="not(@inline='true')">
-            <xsl:attribute name="target">_blank</xsl:attribute>
+           <xsl:if test="@inline='true'">
+                <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
+                <xsl:call-template name="prompt_add_wizard" />
+                </a>
            </xsl:if>
-                <xsl:call-template name="prompt_add_wizard" /></a>
+           <xsl:if test="not(@inline='true')">
+                <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}"
+                   target="_blank">
+                <xsl:call-template name="prompt_add_wizard" />
+                </a>
+           </xsl:if>
                 <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
               </nobr>
             </td>

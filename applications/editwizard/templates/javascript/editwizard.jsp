@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.7 2002-06-10 12:37:44 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.8 2002-06-24 12:36:23 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -231,6 +231,14 @@ function doAdd(s, cmd) {
     removeModalIFrame();
     if (!s || (s == "")) return;
     doSendCommand(cmd, s);
+}
+
+function doStartWizard(fieldid,dataid,wizardname,objectnumber) {
+    doCheckWysiwyg();
+    var fld = document.getElementById("hiddencmdfield");
+    fld.name = "cmd/start-wizard/"+fieldid+"/"+dataid+"/"+objectnumber+"/";
+    fld.value = wizardname;
+    document.forms[0].submit();
 }
 
 function doGotoForm(formid) {
