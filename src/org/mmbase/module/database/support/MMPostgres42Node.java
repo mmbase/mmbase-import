@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.5 2000-03-31 15:15:42 wwwtech Exp $
+$Id: MMPostgres42Node.java,v 1.6 2000-03-31 16:02:08 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/31 15:15:42  wwwtech
+Davzev: Changend insert() debug code for DBState checking
+
 Revision 1.4  2000/03/30 13:11:42  wwwtech
 Rico: added license
 
@@ -40,7 +43,7 @@ import org.mmbase.util.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.5 $ $Date: 2000-03-31 15:15:42 $
+* @$Revision: 1.6 $ $Date: 2000-03-31 16:02:08 $
 */
 public class MMPostgres42Node implements MMJdbc2NodeInterface {
 
@@ -376,17 +379,6 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 			t.printStackTrace();
 		}
 		if(bul.sortedDBLayout!=null) {
-			/* $Id: MMPostgres42Node.java,v 1.5 2000-03-31 15:15:42 wwwtech Exp $
-			// This was the original code, can be deleted.
-			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
-				if (tmp.equals("")) {
-					tmp+="?";
-				} else {
-					tmp+=",?";
-				}
-			}
-			*/
-
 			// Create a String that represents the amount of DB fields to be used in the insert.
 			// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
 			fieldAmounts="?";
@@ -402,42 +394,13 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
-				}
-			}	
-
-			/* $Id: MMPostgres42Node.java,v 1.5 2000-03-31 15:15:42 wwwtech Exp $
-			// This was the original code, can be deleted.
-			try {
-				stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");
-			} catch(Exception t2) {
-				t2.printStackTrace();
-			}
-			try {
-				stmt.setEscapeProcessing(false);
-				stmt.setInt(1,number);
-				int i=2;
-				
-				if(bul.sortedDBLayout!=null) {
-					for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
-						String key = (String)e.nextElement();	
-						setValuePreparedStatement( stmt, node, key, i );
-						i++;
+					if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
+						fieldAmounts+=",?";
+					} else {
+						debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
 					}
 				}
-				stmt.executeUpdate();
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-				System.out.println("Error on : "+number+" "+owner+" fake");
-				try {
-					stmt.close();
-					con.close();
-				} catch(Exception t2) {}
-				e.printStackTrace();
-				return(-1);
-			}
-			*/
+			}	
 
 			try {
 				stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+fieldAmounts+")");
@@ -464,7 +427,12 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 						} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 							// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 						} else {
-							debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+							if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
+								setValuePreparedStatement( stmt, node, key, j );
+								j++;
+							} else {
+								debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+							}
 						}
 					}
 				}

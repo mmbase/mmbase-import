@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.6 2000-03-31 15:15:07 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.7 2000-03-31 16:01:31 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/31 15:15:07  wwwtech
+Davzev: Changend insert() debug code for DBState checking
+
 Revision 1.5  2000/03/30 13:11:42  wwwtech
 Rico: added license
 
@@ -39,7 +42,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.6 $ $Date: 2000-03-31 15:15:07 $
+* @$Revision: 1.7 $ $Date: 2000-03-31 16:01:31 $
 */
 public class MMInformix42Node implements MMJdbc2NodeInterface {
 
@@ -397,18 +400,6 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		int number=getDBKey();
 		if (number==-1) return(-1);
 		try {
-			/* $Id: MMInformix42Node.java,v 1.6 2000-03-31 15:15:07 wwwtech Exp $
-			// Original code, not deleted for savety reasons (will be deleted soon),davzev
-			String tmp="";
-			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
-				if (tmp.equals("")) {
-					tmp+="?";
-				} else {
-					tmp+=",?";
-				}
-			}
-			*/
-
 			// Create a String that represents the amount of DB fields to be used in the insert.
 			// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
 			String fieldAmounts="?";
@@ -424,25 +415,13 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+					if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
+						fieldAmounts+=",?";
+					} else {
+						debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+					}
 				}
 			}
-
-			/* $Id: MMInformix42Node.java,v 1.6 2000-03-31 15:15:07 wwwtech Exp $
-			// Original code, not deleted for savety reasons (will be deleted soon),davzev
-			MultiConnection con=bul.mmb.getConnection();
-			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");
-			stmt.setInt(1,number);
-			int i=2;
-			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
-				String key = (String)e.nextElement();	
-				setValuePreparedStatement( stmt, node, key, i );
-				i++;
-			}
-			stmt.executeUpdate();
-			stmt.close();
-			con.close();
-			*/
 
 			// Create the DB statement with DBState values in mind. 
 			MultiConnection con=bul.mmb.getConnection();
@@ -464,7 +443,12 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+					if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
+						setValuePreparedStatement( stmt, node, key, j );
+						j++;
+					} else {
+						debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+					}
 				}
 			}
 			stmt.executeUpdate();
