@@ -12,17 +12,19 @@ package org.mmbase.bridge.jsp.taglib.tree;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
-import org.mmbase.bridge.util.*;
 
-import org.mmbase.bridge.*;
 import java.io.IOException;
+import java.util.Stack;
+
+import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
+
 
 /**
  * Something like this
@@ -51,13 +53,15 @@ import org.mmbase.util.logging.Logging;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.2 2003-12-19 09:39:05 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.3 2003-12-24 00:31:39 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
 
     private TreeList     tree;
     private TreeIterator iterator;
+
+    private Stack        shrinkStack;
 
     private int previousDepth = -1;
     private int depth = 0;
@@ -93,6 +97,10 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
     public void setMaxdepth(String md) throws JspTagException {
         maxDepth = getAttribute(md);
+    }
+
+    public Stack getShrinkStack() {
+        return shrinkStack;
     }
 
 
@@ -144,6 +152,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
      */
     public int doStartTag() throws JspTagException {
 
+        shrinkStack = new Stack();
         collector = new ContextCollector(getContextProvider().getContextContainer());
 
         // serve parent timer tag:
@@ -180,14 +189,16 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         }
         iterator = tree.treeIterator();
         
-        // returnList is know, now we can serve parent formatter tag
+        // returnList is known, now we can serve parent formatter tag
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(tree);
         }
 
+
         if (iterator.hasNext()) {
-            depth         = 0;
+            depth         = iterator.currentDepth();
+            previousDepth = depth - 1;
             nextNode      = iterator.nextNode();
             nextDepth     = iterator.currentDepth();
             return EVAL_BODY_BUFFERED;

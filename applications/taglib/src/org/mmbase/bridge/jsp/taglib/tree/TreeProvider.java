@@ -11,21 +11,20 @@ package org.mmbase.bridge.jsp.taglib.tree;
 
 import org.mmbase.bridge.jsp.taglib.*;
 
+import java.util.Stack;
+
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeProvider.java,v 1.1 2003-12-18 23:05:45 michiel Exp $
+ * @version $Id: TreeProvider.java,v 1.2 2003-12-24 00:31:39 michiel Exp $
  */
-public interface TreeProvider extends NodeProvider, ListProvider {
-
-    /**
-     * Returns the 'size' of the current cluster node.
-     */
-    public int getDepth();
+public interface TreeProvider extends NodeProvider, ListProvider, DepthProvider {
 
     public int getPreviousDepth();
 
     public int getNextDepth();
+
+    public Stack getShrinkStack();
 
 }
 
