@@ -75,7 +75,7 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.18 $ $Date: 2001-05-04 13:59:12 $
+ * @version $Revision: 1.19 $ $Date: 2001-05-07 12:40:20 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -405,12 +405,12 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return mmservername or null if it can't be found.
 	 */
 	public String getRelatedMMServerName() {
-		log.info("Get the mmserver that runs this code.");
+		log.debug("Get the mmserver that runs this code.");
 		Enumeration e=Vwms.mmb.getInsRel().getRelated(wvmnode.getIntValue("number"),"mmservers");
 		if (e.hasMoreElements()) {
 			MMObjectNode mmserverNode = (MMObjectNode) e.nextElement();
 			String name = mmserverNode.getStringValue("name");
-			log.info("Found mmserver: "+name);
+			log.debug("Found mmserver: "+name);
 			return name;
 		} else {
 			log.error("No mmserver found!");
