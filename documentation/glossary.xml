@@ -355,10 +355,11 @@
         <glossdef>					
 					<para>
 						MMBase supports inheritance. This means that every 'news' node is also an 'object'
-						node. You can also extend your 'mynews' builder form the 'news' builder. All fields from
+						node. You can also extend your 'mynews' builder from the 'news' builder. All fields from
 						news are then inherited to mynews, and mynews nodes can be treated as (because they are)
 						news nodes.
 					</para>
+					<glossseealso otherterm="builder" />
 				</glossdef>
       </glossentry>
 
@@ -424,6 +425,72 @@
 				</glossdef>
       </glossentry>
 
+
+      <glossentry id="plusone">
+        <glossterm>+1</glossterm>
+        <glossdef>										
+					<orderedlist>
+						<listitem>
+							<para>
+								An geeky synonym for 'I agree'.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								One of the elections in a vote
+							</para>
+						</listitem>
+					</orderedlist>
+					<glossseealso otherterm="vote" />
+				</glossdef>
+      </glossentry>
+
+
+      <glossentry id="vote">
+        <glossterm>vote</glossterm>
+        <glossdef>										
+					<para>
+						Major decisions on MMBase implementation are done by voting by commitors on the
+						developers list.
+					</para>
+					<glossseealso otherterm="plusone" />
+					<glossseealso otherterm="commitor" />
+				</glossdef>
+      </glossentry>
+
+
+
+      <glossentry id="commitor">
+        <glossterm>commmitor</glossterm>
+        <glossdef>										
+					<para>
+						An MMBase developer with CVS commiting access.
+					</para>
+					<glossseealso otherterm="vote" />
+					<glossseealso otherterm="cvs" />
+				</glossdef>
+      </glossentry>
+
+
+      <glossentry id="cvs">
+        <glossterm>Concurrent Versions System</glossterm>
+				<acronym>CVS</acronym>
+        <glossdef>										
+					<para>
+						Open Source version system, which is used to administrate MMBase source codes. Typical
+						for CVS is that it is possible to use it withouth acquiring locks on files (which is the
+						way it is used for MMBase). This means that files can be edited simultaneously by
+						different people, but also that the risc for 'conflicts' arises (if a patch cannot be
+						made automaticly). 
+					</para>
+					<para>
+						The MMBase CVS repository is hosted on the mmbase.org server.
+					</para>
+					<glossseealso otherterm="vote" />
+					<glossseealso otherterm="module" />
+				</glossdef>
+      </glossentry>
+
       <glossentry id="mmbase">
         <glossterm>MMBase</glossterm>
         <glossdef>
@@ -439,10 +506,10 @@
         <glossterm>bridge</glossterm>
         <glossdef>
 					<para>
-						The bridge are the Java interfaces which are to be used to talk to MMBase. In
+						The bridge is the set of Java interfaces which are to be used to talk to MMBase. In
 						contradiction to the core of MMBase all actions are authorized by the security
 						system. Templating language should communicate through the bridge, and for example the
-						MMBase Taglib is doing thing.
+						MMBase Taglib is doing this.
 					</para>					
 					<para>
 						There is currently one 'basic' implementation of the bridge, and also one alternative
@@ -475,7 +542,9 @@
 						</listitem>
 						<listitem>
 							<para>
-								MMObjectBuilder/MMObjectNode vs NodeManager/Node
+								MMObjectBuilder/MMObjectNode vs NodeManager/Node. When you want to define a new
+								'object type' with extra functionality then it is currently not possible to extend
+								NodeManagers or Nodes, but you need to extend the core's MMObjectBuilder. 
 							</para>
 						</listitem>
 					</orderedlist>
@@ -494,7 +563,7 @@
         <acronym>RMMCI</acronym>
         <glossdef>
 					<para>
-						An alternative to the bridge. Can be used to implement life/staging MMBase's, but can
+						An alternative implementation of the bridge. Can be used to implement life/staging MMBase's, but can
 						also be useful to inspect/test a running MMBase.
 					</para>
 					<glossseealso otherterm="bridge" />
@@ -509,18 +578,18 @@
 					<para>
 						A packaged content managment system based on MMBase. Typical for WIAB is a fixed object
 						model and a distinction between life and staging environments. It was developed for the
-						Amsterdam municipal.
+						Amsterdam municipal by Framfab but is maintained by Finalist now.
 					</para>
 					<glossseealso otherterm="rmmci" />
         </glossdef>
       </glossentry>
 
       <glossentry id="mmc">
-        <glossterm>MMBase Managing Comitee</glossterm>
+        <glossterm>MMBase Managment Committee</glossterm>
         <acronym>MMC</acronym>
         <glossdef>
 					<para>
-						High status MMBase commitors who meet every thursday to talk about it.
+						High status MMBase commitors who are supposed to meet every thursday to talk about it.
           </para>
 				</glossdef>
       </glossentry>
@@ -594,6 +663,12 @@
 								asociated with every page, the 'context' tag, and list tags.
 							</para>
 						</listitem>
+						<listitem>
+							<para>
+								A 'Cloud Context' is the bridge object which provides clouds, modules, and empty
+								lists.
+							</para>
+						</listitem>
 					</orderedlist>
 				</glossdef>
 
@@ -641,6 +716,7 @@
 							</remark>
 						</listitem>
 					</orderedlist>
+					<glossseealso otherterm="cvs" />
 				</glossdef>
       </glossentry>
 
@@ -663,7 +739,7 @@
         <glossdef>
 					<para>
 						A value for the 'dir' attribute of reldef and insrel nodes. It only sais something about
-						the visibility of the relation. Every MMBase relation is bidirection in the sense that
+						the visibility of the relation. Every MMBase relation is bidirectional in the sense that
 						it has a clearly defined source and destination.
           </para>
 					<glossseealso otherterm="unidir" />
