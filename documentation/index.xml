@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.47 2004-02-27 13:08:01 gerard Exp $</edition>
+    <edition>$Id: index.xml,v 1.48 2004-04-23 14:53:34 pierre Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -84,44 +84,44 @@
         id="installtomcat.pdf" url="administrators/install-tomcat.pdf">PDF</ulink>)</para>
       </listitem>
 
-	  <listitem>
+    <listitem>
         <!-- external documentation -->
         <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
         id="installationredhatlinux" url="http://tldp.org/HOWTO/MMBase-Inst-HOWTO/index.html">HTML</ulink>)</para>
       </listitem>
 
-	  <listitem>
+    <listitem>
         <!-- external documentation -->
         <para>Installation instructions for 1.5.x under Debian GNU / Linux "woody" + Tomcat + MySQL (<ulink
         id="installationdebiangnulinux" url="http://tldp.org/HOWTO/MMBase.html">HTML</ulink>)</para>
       </listitem>
-	  
+
       <listitem>
         <para>MMBase configuration documentation (<ulink id="configuration"
         url="administrators/configuration.html">HTML</ulink>, <ulink
         id="configuration.pdf" url="administrators/configuration.pdf">PDF</ulink>)</para>
       </listitem>
-	  
-	   <listitem>
-		  <para>The MMBase Security Framework (<ulink id="securityframework"
-		  url="administrators/security-framework.html">HTML</ulink>, <ulink
-		  id="securityframework.pdf" url="administrators/security-framework.pdf">PDF</ulink>)</para>
-		</listitem>
 
-		<listitem>
-		  <para>Installing and using Context Security (<ulink
-		  id="securitycontext" url="administrators/context-security.html">HTML</ulink>,
-		  <ulink id="securitycontext.pdf"
-		  url="administrators/context-security.pdf">PDF</ulink>)</para>
-		</listitem>
+     <listitem>
+      <para>The MMBase Security Framework (<ulink id="securityframework"
+      url="administrators/security-framework.html">HTML</ulink>, <ulink
+      id="securityframework.pdf" url="administrators/security-framework.pdf">PDF</ulink>)</para>
+    </listitem>
 
-		<listitem>
-		  <para>Installing and using Cloud Security(<ulink
-		  id="securitycloud" url="administrators/cloud-security.html">HTML</ulink>,
-		  <ulink id="securitycloud.pdf"
-		  url="administrators/cloud-security.pdf">PDF</ulink>)</para>
+    <listitem>
+      <para>Installing and using Context Security (<ulink
+      id="securitycontext" url="administrators/context-security.html">HTML</ulink>,
+      <ulink id="securitycontext.pdf"
+      url="administrators/context-security.pdf">PDF</ulink>)</para>
+    </listitem>
+
+    <listitem>
+      <para>Installing and using Cloud Security(<ulink
+      id="securitycloud" url="administrators/cloud-security.html">HTML</ulink>,
+      <ulink id="securitycloud.pdf"
+      url="administrators/cloud-security.pdf">PDF</ulink>)</para>
       </listitem>
-	  
+
     </itemizedlist>
   </section>
 
@@ -177,6 +177,13 @@
         url="backenddevelopers/dbsq.html">HTML</ulink>, <ulink
         id="dbsqintro.pdf" url="backenddevelopers/dbsq.pdf">PDF</ulink>)</para>
       </listitem>
+
+      <listitem>
+        <para>HOW TO: Add a custom function to a nodebuilder (<ulink id="dbsqintro"
+        url="backenddevelopers/custombuilderclass.html">HTML</ulink>, <ulink
+        id="custombuilderclass.pdf" url="backenddevelopers/custombuilderclass.pdf">PDF</ulink>)</para>
+      </listitem>
+
     </itemizedlist>
   </section>
 
@@ -262,11 +269,11 @@
         url="frontenddevelopers/xmlimporter/overview.pdf">PDF</ulink>)</para>
 
         <para>Quick start (<ulink id="xmlimporterquickstart"
-        url="developers/xmlimporter/quickstart.html">HTML</ulink>, 
+        url="developers/xmlimporter/quickstart.html">HTML</ulink>,
         PDF version not available)</para>
 
         <para>Cook Book (<ulink id="xmlimportercookbook"
-        url="developers/xmlimporter/cookbook.html">HTML</ulink>, 
+        url="developers/xmlimporter/cookbook.html">HTML</ulink>,
         PDF version not available)</para>
       </listitem>
     </itemizedlist>
