@@ -16,31 +16,30 @@ import org.mmbase.module.core.*;
 
 
 /**
- * RelDef is one of the meta stucture nodes.<br />
- * It is used to define the possible relation types.<br />
- *
+ * RelDef ,one of the meta stucture nodes, is used to define the possible relation types.
+ * <p>
  * A Relation Definition consists of a source and destination, and a descriptor
- * (direction) for it's use (uni-directional or bi-directional).<br />
- *
- * Relations are often mapped to a builder (by name).<br />
- * This is so that additonal functionality can be added by means of a builder (i.e. AuthRel)
+ * (direction) for it's use (uni-directional or bi-directional).
+ * </p><p>
+ * Relations are mapped to a builder.<br />
+ * This is so that additonal functionality can be added by means of a builder (i.e. AuthRel)<br />
+ * The old system mapped the relations to a builder by name.
  * Unfortunately, this means that some care need be taken when naming relations, as unintentionally
  * naming a relation to a builder can give bad (if not disastrous) results.<br />
  * Relations that are not directly mapped to a builder are mapped (internally) to the {@link InsRel} builder instead.
- *
- * <p>Note:Changed in this version:<br />
- *   Changed fields added to the table:<br />
- *   <code>sname</code> is now the name of the relation
- *   New fields added to the table:<br />
- *   <code>builder</code> is the builder to use (if empty, use sname for backward compatibility).
- * </p>
- *
- * This patched version of RelDef can make use of direct builder references (through the builder field).
+ * </p><p>
+ * The new system uses an additional field to map to a builder.
+ * This 'builder' field contains a reference (otype) to teh builder to be used.
+ * If null or 0, the builder is assumed to refer to the {@link InsRel} builder.
+ * <code>sname</code> is now the name of the relation and serves no function.
+ * </p><p>
+ * This patched version of RelDef can make use of either direct builder references (through the builder field), or the old system of using names.
+ * The system used is determined by examining whether the builder field has been defined in the builder's configuration (xml) file.
  * See the documentation of the relations project at http://www.mmbase.org for more info.
- *
+ * </p>
  * @author Daniel Ockeloen
- * @author Pierre van Rooden (javadoc)
- * @version 21 Sept 1997
+ * @author Pierre van Rooden
+ * @version 3 jan 2001
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -64,7 +63,7 @@ public class RelDef extends MMObjectBuilder {
     }
 
     /**
-    *  Initializes the builder by reading the cache. Also dtermines whether the 'builder' field is used.
+    *  Initializes the builder by reading the cache. Also determines whether the 'builder' field is used.
     *  @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
     *         caught and logged.
     **/
@@ -83,7 +82,7 @@ public class RelDef extends MMObjectBuilder {
     private boolean readCache() {
         // add insrel (default behavior)
 	    relCache.put("insrel",new Integer(-1));
-	    // add relation de3finiation names
+	    // add relation definiation names
 	    for (Enumeration e=search(null);e.hasMoreElements();) {
 	        MMObjectNode n= (MMObjectNode)e.nextElement();
 	        relCache.put(n.getStringValue("sname"),new Integer(n.getIntValue("number")));
@@ -107,6 +106,26 @@ public class RelDef extends MMObjectBuilder {
             return st1+"/"+st2;
         }
     }	
+
+
+    /**
+    * Returns the builder of a relation definition.
+    * @return the builder
+    **/
+    public MMObjectBuilder getBuilder(MMObjectNode node) {
+        String bulname=null;
+  	    if (usesbuilder) {
+  	        int builder = node.getIntValue("builder");
+  	        bulname=mmb.getTypeDef().getValue(builder);
+  	    } else {
+  	        bulname=node.getStringValue("sname");
+  	    }
+  	    if (bulname==null) {
+  	        return mmb.getInsRel();
+  	    } else {
+  	        return mmb.getMMObject(bulname);
+  	    }
+    }
 
     /*
     * Tests whether the data in a node is valid (throws an exception if this is not the case).
