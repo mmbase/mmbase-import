@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
 
   <status>active</status>
   <classfile>PoolBuilder</classfile>
-  
+
   <searchage>1000</searchage>
-  
+
   <names>
     <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Pool</singular>
     <singular xml:lang="fr">Regroupement</singular>
     <singular xml:lang="nl">Poel</singular>
-    <singular xml:lang="en">Pool</singular>
     <singular xml:lang="eo">Grupilo</singular>
     <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="en">Pools</plural>
     <plural xml:lang="fr">Regroupements</plural>
     <plural xml:lang="nl">Poels</plural>
-    <plural xml:lang="en">Pools</plural>
     <plural xml:lang="eo">Grupiloj</plural>
   </names>
 
@@ -25,9 +25,9 @@
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="en">Pools, containers for objects</description>
     <description xml:lang="fr">Regroupements, répients pour des objets</description>
     <description xml:lang="nl">Poels, container voor objects</description>
-    <description xml:lang="en">Pools, containers for objects</description>
     <description xml:lang="eo">Ilo por grupigi objektojn, ujo</description>
   </descriptions>
 
@@ -36,9 +36,9 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="fr">Nom</guiname>
         <guiname xml:lang="nl">Naam</guiname>
-        <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
         <guitype>string</guitype>
       </gui>
@@ -66,9 +66,9 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="fr">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
-        <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
         <guitype>field</guitype>
       </gui>

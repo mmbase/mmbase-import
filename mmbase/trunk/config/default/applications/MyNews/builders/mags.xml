@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
 <!-- <status>
-	what is the status of this builder options : active or inactive
+    what is the status of this builder options : active or inactive
 -->
-<status>active</status>
+<status>inactive</status>
 
 <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Magazine</singular>
     <singular xml:lang="en">Magazine</singular>
+    <singular xml:lang="nl">Magazine</singular>
     <singular xml:lang="eo">Ĵurnalo</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Magazines</plural>
     <plural xml:lang="en">Magazines</plural>
+    <plural xml:lang="nl">Magazines</plural>
     <plural xml:lang="eo">Jurnaloj</plural>
 </names>
 
   <!-- <descriptions>
-	small description of the builder for human reading
+    small description of the builder for human reading
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Magazines</description>
     <description xml:lang="en">Magazines</description>
-    <description xml:lang="en">Ĵurnaloj</description>
+    <description xml:lang="nl">Magazines</description>
+    <description xml:lang="eo">Ĵurnaloj</description>
   </descriptions>
-  
+
   <fieldlist>
     <!-- POS 3 : <field> 'title'  -->
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="eo">Titolo</guiname>
         <guitype>string</guitype>
       </gui>
@@ -61,8 +61,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">SubTitel</guiname>
         <guiname xml:lang="en">SubTitle</guiname>
+        <guiname xml:lang="nl">SubTitel</guiname>
         <guiname xml:lang="eo">Subtitolo</guiname>
         <guitype>string</guitype>
       </gui>
@@ -90,8 +90,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Inleiding</guiname>
         <guiname xml:lang="en">Intro</guiname>
+        <guiname xml:lang="nl">Inleiding</guiname>
         <guiname xml:lang="eo">Enkonduko</guiname>
         <guitype>field</guitype>
       </gui>
@@ -119,8 +119,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
+        <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="eo">Teksto</guiname>
         <guitype>field</guitype>
       </gui>
