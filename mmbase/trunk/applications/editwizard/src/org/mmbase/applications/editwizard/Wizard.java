@@ -19,6 +19,8 @@ import org.mmbase.util.logging.*;
 import org.mmbase.module.core.ClusterBuilder; // just for the search-constants.
 import javax.xml.transform.TransformerException;
 import org.mmbase.util.xml.URIResolver;
+import org.mmbase.cache.Cache;
+import org.mmbase.util.FileWatcher;
 
 /**
  * EditWizard
@@ -27,13 +29,20 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.84 2003-06-02 12:59:56 pierre Exp $
+ * @version $Id: Wizard.java,v 1.85 2003-06-11 17:45:48 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
     // logging
     private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
 
+    // File -> Document (resolved includes/shortcuts)
+    private static WizardSchemaCache wizardSchemaCache;
+
+    static {
+        wizardSchemaCache = new WizardSchemaCache();
+        wizardSchemaCache.putCache();
+    }
     // Some of these variables are placed public, for debugging reasons.
     private Document preform;
 
@@ -789,12 +798,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      */
     private void loadSchema(File wizardSchemaFile) throws WizardException {
-        schema = Utils.loadXMLFile(wizardSchemaFile);
 
-        resolveIncludes(schema.getDocumentElement());
-        resolveShortcuts(schema.getDocumentElement(), true);
+        
+        schema = (Document) wizardSchemaCache.get(wizardSchemaFile);
 
-        log.debug("Schema loaded (and resolved): " + wizardSchemaFile);
+        if (schema == null) {
+            schema = Utils.loadXMLFile(wizardSchemaFile);
+
+            resolveIncludes(schema.getDocumentElement());
+            resolveShortcuts(schema.getDocumentElement(), true);
+
+            wizardSchemaCache.put(wizardSchemaFile, schema);
+
+            log.debug("Schema loaded (and resolved): " + wizardSchemaFile);
+        } else {
+            log.debug("Schema found in cache: " + wizardSchemaFile);
+        }
+
 
         // tag schema nodes
         NodeList fields = Utils.selectNodeList(schema, "//field|//list|//item");
@@ -2112,5 +2132,53 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 return order1.compareToIgnoreCase(order2);
             }
         }
+    }
+    /**
+     * Caches File to  Editwizard schema Document.
+     * @since MMBase-1.7
+     */
+    static class WizardSchemaCache extends Cache {
+
+        WizardSchemaCache() {
+            super(100);
+            fileWatcher.setDelay(10 * 1000); // check every 10 secs
+            fileWatcher.start();
+        }
+        public String getName() { 
+            return "Editwizard schemas";
+        }
+        public String getDescription() {
+            return "File -> Editwizard schema Document (resolved includes/shortcuts)";
+        }
+    
+        public Object put(Object key, Object value) {
+            throw new RuntimeException("wrong types in cache");
+        }
+        synchronized public Object put(File f, Document doc) {
+            Object res = super.put(f, doc);
+            fileWatcher.add(f);
+            return res;
+        }
+
+
+        public Object remove(Object key) {
+            throw new RuntimeException("wrong types in cache");
+        }
+
+        synchronized public Object remove(File f) {
+            return super.remove(f);
+        }
+
+        /**
+         * The Source-s which are based on a file, are added to this FileWatcher, which wil invalidate
+         * the corresponding cache entry when the file changes.
+         */
+        private FileWatcher fileWatcher = new FileWatcher (true) {
+                protected void onChange(File file) {
+                    // invalidate cache.
+                    WizardSchemaCache.this.remove(file);
+                    this.remove(file); 
+                }
+            };
     }
 }
