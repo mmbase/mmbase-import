@@ -4,11 +4,11 @@
 %><mm:import externid="language">en</mm:import>
 <%@include file="settings.jsp" %><html>
 <head>
-<title>Login</title>
-    <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
+  <title><%=getPrompt(m, "Login")%></title>
+  <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
 </head>
 <body class="basic">
-    <h2>Login</h2>
+    <h2><%=getPrompt(m, "Login")%></h2>
      <mm:import externid="logout" />
      <mm:present referid="logout">
       <mm:cloud method="logout" />
@@ -18,21 +18,22 @@
      <mm:import externid="referrer">index.jsp</mm:import>
       <mm:compare referid="reason" value="failed">
         <p class="failed">
-          Failed to log in. Try again.
+          <%=getPrompt(m, "failed")%>
         </p>
       </mm:compare>
       <mm:compare referid="reason" value="rank">
         <p class="failed">
-          Failed to log in (rank too low).
+          <%=getPrompt(m, "failed_rank")%>
         </p>
       </mm:compare>
 
     <table>
       <form method="post" action="<mm:write referid="referrer" />" >
-        <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
-        <tr><td>Password</td><td><input type="password" name="password"></td></tr>
-        <tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr>
+        <tr><td><%=getPrompt(m, "name")%>:</td><td><input type="text" name="username"></td></tr>
+        <tr><td><%=getPrompt(m, "password")%>:</td><td><input type="password" name="password"></td></tr>
+        <!-- tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr-->
         <tr><td /><td><input type="submit" name="command" value="login"></td></tr>
+        <input type="hidden" name="language" value="<mm:write referid="language" />" />
       </form>
     </table>
 </body>
