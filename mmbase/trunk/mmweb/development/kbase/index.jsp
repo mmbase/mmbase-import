@@ -1,5 +1,11 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@page language="java" contentType="text/html; charset=utf-8"%>
+<%
+  response.setHeader("Cache-Controll","no-cache");
+  response.setHeader("Cache-Controll","no-store");
+  response.setHeader("Cache-Controll","must-revalidate");
+  response.setDateHeader("Expires",new Date().getTime());
+%>
 <%@include file="parts/basics.jsp"%>
 <mm:cloud jspvar="wolk" method="asis" >
 
@@ -34,9 +40,10 @@
 	
 <%@include file="/includes/header.jsp"%>
 
-%><td colspan="2" valign="top">
-
-<mm:include page="index_real.jsp" />
+%>
+<td colspan="2" valign="top">
+  <mm:import id="title">MMBase Knowledge Base</mm:import>
+  <mm:include page="index_real.jsp" />
 </td>
 <%@include file="/includes/footer.jsp"
 %></mm:cloud>

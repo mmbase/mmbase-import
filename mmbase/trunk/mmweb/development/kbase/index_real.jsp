@@ -10,12 +10,15 @@
 <mm:import externid="action"/>
 <mm:import externid="type"/>
 <mm:import externid="expanded" jspvar="expanded" vartype="String"/>
+<mm:import externid="title"/>
 
 <mm:import id="realpath"><%=getRealPath(request)%></mm:import>
 <table width="100%" height="80%" border="0" cellpadding="0" cellspacing="0" bordercolor="red">
-  <tr>
-    <td colspan="2" height="50" style="border-bottom:1px solid #797868"><h1>MMBase Knowledge Base</h1></td>
-  </tr>
+  <mm:present referid="title">
+    <tr>
+      <td colspan="2" height="50" style="border-bottom:1px solid #797868"><h1><mm:write referid="title"/></h1></td>
+    </tr>
+  </mm:present>
   <tr>
     <td valign="top" style="width:300px; overflow:auto">
 	<%--  ############## begin tree ############# --%>
