@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.20 2004-06-18 11:29:33 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.21 2004-06-18 12:33:02 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static final Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -40,30 +40,36 @@ public class VirtualNodeManager extends BasicNodeManager {
     VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
         this(cloud);
         // determine fields and field types
-        for (Enumeration e = node.values.keys(); e.hasMoreElements(); ) {
-            String fieldName=(String)e.nextElement();
-            Object value = node.values.get(fieldName);
-            int fieldType = Field.TYPE_UNKNOWN;
-            if (value instanceof MMObjectNode) {
-                fieldType = Field.TYPE_NODE;
-            } else if (value instanceof String) {
-                fieldType = Field.TYPE_STRING;
-            } else if (value instanceof Integer) {
-                fieldType = Field.TYPE_INTEGER;
-            } else if (value instanceof  byte[]) {
-                fieldType = Field.TYPE_BYTE;
-            } else if (value instanceof  Float) {
-                fieldType = Field.TYPE_FLOAT;
-            } else if (value instanceof  Double) {
-                fieldType = Field.TYPE_DOUBLE;
-            } else if (value instanceof  Long) {
-                fieldType = Field.TYPE_LONG;
-            } else if (value instanceof  org.w3c.dom.Node) {
-                fieldType = Field.TYPE_XML;
+        
+        synchronized(node.values) {
+            Iterator i = node.values.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                String fieldName= (String) entry.getKey();
+                Object value     = entry.getValue();
+                if (value == MMObjectNode.VALUE_NULL) continue;
+                int fieldType = Field.TYPE_UNKNOWN;
+                if (value instanceof MMObjectNode) {
+                    fieldType = Field.TYPE_NODE;
+                } else if (value instanceof String) {
+                    fieldType = Field.TYPE_STRING;
+                } else if (value instanceof Integer) {
+                    fieldType = Field.TYPE_INTEGER;
+                } else if (value instanceof  byte[]) {
+                    fieldType = Field.TYPE_BYTE;
+                } else if (value instanceof  Float) {
+                    fieldType = Field.TYPE_FLOAT;
+                } else if (value instanceof  Double) {
+                    fieldType = Field.TYPE_DOUBLE;
+                } else if (value instanceof  Long) {
+                    fieldType = Field.TYPE_LONG;
+                } else if (value instanceof  org.w3c.dom.Node) {
+                    fieldType = Field.TYPE_XML;
+                }
+                FieldDefs fd = new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL);
+                Field ft = new BasicField(fd, this);
+                fieldTypes.put(fieldName, ft);
             }
-            FieldDefs fd = new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL);
-            Field ft = new BasicField(fd, this);
-            fieldTypes.put(fieldName, ft);
         }
     }
 
@@ -86,7 +92,7 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Initializes the NodeManager
      */
     protected void initManager() {
-        noderef.setValue("name", builder.getTableName());
+        noderef.setValue("name",        builder.getTableName());
         noderef.setValue("description", builder.getDescription());
         super.initManager();
     }
