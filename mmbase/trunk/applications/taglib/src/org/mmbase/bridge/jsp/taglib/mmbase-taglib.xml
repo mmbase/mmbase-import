@@ -257,6 +257,7 @@ one or more examplevalue tags is you want to give some example values.
     <name>list</name>
     <extends>nodeprovider</extends>
     <extends>listprovider</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -502,6 +503,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.RelatedTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -613,6 +615,7 @@ one or more examplevalue tags is you want to give some example values.
     <name>listnodes</name>
     <extends>nodeprovider</extends>
     <extends>listprovider</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -682,6 +685,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -961,7 +965,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <name>node</name>
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
-    <extends>cloudreferrer</extends>
+    <extends>cloudreferrer</extends>    
+	<extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
@@ -1342,22 +1347,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>deletenode</name>
-    <extends>cloudreferrer</extends>
-    <extends>nodereferrer</extends>
-    <extends>nodeprovider</extends>
+    <extends>node</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       This tag extends the `node' tag, and is precisely the same. The
       only difference is that after the body the node will be removed.
     </info>
-    <attribute>
-        <name>number</name>
-        <required>false</required>
-        <requirednote>If stand alone, either `number' or `referid' must be supplied.</requirednote>
-        <rtexprvalue>true</rtexprvalue>
-    <refercontext>true</refercontext>
-    </attribute>
     <attribute>
       <name>deleterelations</name>
       <required>false</required>
@@ -1373,6 +1369,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>fieldlist</name>
     <extends>listprovider</extends>
+	<extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>A list of fields. A field can list inside a NodeProvider in which case the NodeManager is found by means of
@@ -1557,17 +1554,26 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
     <info>
-      Checks if a certain id is present in the parent Context tag.
+      Checks if a certain variable is present in the parent Context tag.
     </info>
+	<see>notpresent</see>
+    <attribute>
+      <name>referid</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		Which context variable.
+      </info>
+	</attribute>
   </tag>
   <tag>
     <name>notpresent</name>
-    <extends>condition</extends>
-    <extends>contextreferrer</extends>
+    <extends>present</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
     <info>
-    Checks if a certain id is missing in the parent Context tag.
+	  Checks if a certain variable is missing in the parent Context tag.
     </info>
+	<see>present</see>
   </tag>
   <tag>
     <name>write</name>
@@ -1878,12 +1884,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     </attribute>
   </tag>
-
   <tag>
     <name>compare</name>
-    <extends>condition</extends>
-    <extends>contextreferrer</extends>
-    <extends>writerreferrer</extends>
+    <extends>present</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
     <info>
     Compares the value of a context variable to a String value. Only if
@@ -1912,8 +1915,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>isempty</name>
-    <extends>condition</extends>
-    <extends>writerreferrer</extends>
+    <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsEmptyTag</tagclass>
     <info>
       Checks if parent writer is empty.
@@ -1924,6 +1926,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>nodereferrer</extends>
     <extends>writer</extends>
     <extends>listprovider</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
     <info>
     This is a list which can only live under a NodeProvider. It has to
