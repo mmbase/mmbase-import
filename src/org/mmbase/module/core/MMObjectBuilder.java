@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.176 2002-10-29 15:30:44 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.177 2002-11-01 08:52:03 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1848,7 +1848,7 @@ public class MMObjectBuilder extends MMTable {
         // do the best we can because this method was not implemeted
         // we get the first field in the object and try to make it
         // to a string we can return
-        Vector list = getSortedListFields();
+        List list = getFields(FieldDefs.ORDER_LIST);
         if (list.size() > 0) {
             String fname = ((FieldDefs) list.get(0)).getDBName();
             String str = node.getStringValue( fname );
