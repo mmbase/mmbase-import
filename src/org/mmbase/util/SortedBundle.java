@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.4 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: SortedBundle.java,v 1.5 2005-03-16 19:06:05 michiel Exp $
  */
 public class SortedBundle {
 
@@ -173,15 +173,20 @@ public class SortedBundle {
                             key = c.newInstance(new Object[] { key });
                         }
                     } catch (NoSuchMethodException nsme) {
-                        log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + nsme.getMessage());
+                        log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage());
+                        continue;
                     } catch (SecurityException se) {
-                        log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + se.getMessage());
+                        log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + se.getMessage());
+                        continue;
                     } catch (InstantiationException ie) {
-                        log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + ie.getMessage());
+                        log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ie.getMessage());
+                        continue;
                     } catch (InvocationTargetException ite) {
-                        log.error(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + ite.getMessage());
+                        log.error(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ite.getMessage());
+                        continue;
                     } catch (IllegalAccessException iae) {
-                        log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + iae.getMessage());
+                        log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + iae.getMessage());
+                        continue;
                     }
                 }
 
