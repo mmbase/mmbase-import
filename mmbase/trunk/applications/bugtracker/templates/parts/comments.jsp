@@ -21,7 +21,7 @@
             </td>
             <th valign="top" width="430">
               <mm:first><mm:import id="commentsfound" /></mm:first>
-              <mm:field name="title" />
+              <mm:field name="title" escape="inline,links" />
             </th>
           </tr>
           <tr>
