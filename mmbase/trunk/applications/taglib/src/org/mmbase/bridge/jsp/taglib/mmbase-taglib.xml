@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.267 2004-07-22 13:09:59 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.268 2004-07-23 09:30:04 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -249,25 +249,26 @@ version: $Id: mmbase-taglib.xml,v 1.267 2004-07-22 13:09:59 michiel Exp $
           in this jsp. E.g.: <!-- example by Erik van Oosten -->
           <pre><![CDATA[
 <%!
-  /** 
-   * Comparator to order mmbase nodes on their field named "title".
-   */
-   static private final Collator DUTCH_COLLATOR = Collator.getInstance(new Locale("nl", "NL"));
-   static {
-      // PRIMARY strength ignores differences between &eacute; and e, and between e and E
-      DUTCH_COLLATOR.setStrength(Collator.PRIMARY);
-   }
+/** 
+ * Comparator to order mmbase nodes on their field named "title".
+ */
+ static private final Collator DUTCH_COLLATOR = Collator.getInstance(new Locale("nl", "NL"));
+ static {
+    // PRIMARY strength ignores differences between &eacute; and e, and between e and E
+    DUTCH_COLLATOR.setStrength(Collator.PRIMARY);
+ }
 
-   static public class DutchCaseInsensitiveCollator implements Comparator {
-      public int compare(Object o1, Object o2) {
-          String title1 = ((org.mmbase.bridge.Node) o1).getStringValue("title");
-          String title2 = ((org.mmbase.bridge.Node) o2).getStringValue("title");
-          return DUTCH_COLLATOR.compare(title1, title2);
-      }
-  }
+ static public class DutchCaseInsensitiveCollator implements Comparator {
+    public int compare(Object o1, Object o2) {
+        String title1 = ((org.mmbase.bridge.Node) o1).getStringValue("title");
+        String title2 = ((org.mmbase.bridge.Node) o2).getStringValue("title");
+        return DUTCH_COLLATOR.compare(title1, title2);
+    }
+ }
 %>;
 <mm:listnodescontainer>
-  <!-- make sure the list is not gigantic, when sorting with comparator it happens in memory, not by database! -->
+  <!-- make sure the list is not gigantic, when sorting with 
+       comparator it happens in memory, not by database! -->
   <mm:ageconstraint maxage="7" />
   <mm:listnodes comparator="DutchCaseInsensitiveCollator">
      ...
