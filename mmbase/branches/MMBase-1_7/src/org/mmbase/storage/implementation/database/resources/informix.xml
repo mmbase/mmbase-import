@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
 <storage>
+	<!-- This informix configuration file is slightly different from the origional informix.xml
+	     This configuration file will use some informix functions to manage new objectkey numbers.
+	     The functions that have to be installed into your database can be found at config/databases/informix/keygeneration.sql
+	-->
+
 	<!-- Informix configuration resource. -->
 	<storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
 
-	<!-- use the manager for object related databases -->
+	<!-- use the manager for relational databases -->
 	<storagemanager classname="org.mmbase.storage.implementation.database.DatabaseStorageManager" version="0.1" />
 
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.InformixSqlHandler" />
 
 	<attributes>
+                <attribute name="sequence-buffer-size">10</attribute>
 		<!-- Automatically prefix reserved words with "m_", currently turned OFF!  -->
 		<!-- <attribute name="default-storage-identifier-prefix">m</attribute> -->
 
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
+		<option name="trim-strings" value="true" />
 
 		<!-- remove empty parenthesis in table definitions -->
 		<option name="database-remove-empty-definitions" />
+                           
 
-        <!-- Unique index declaration -->
-        <scheme name="create-composite-key-scheme">UNIQUE ({2}) CONSTRAINT {1}_constraint</scheme>
-        <scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {3} ({4}) CONSTRAINT {1}_{2}_foreignkey</scheme>
+                <!-- Unique index declaration -->
+                <scheme name="create-composite-key-scheme">UNIQUE ({2}) CONSTRAINT {1}_constraint</scheme>
+                <scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {3} ({4}) CONSTRAINT {1}_{2}_foreignkey</scheme>
 
 		<!-- Informix supports extensions and uses row types -->
 		<scheme name="create-rowtype-scheme">create row type {1}_t ({2}) under {3}_t</scheme>
@@ -29,6 +37,12 @@
 		<!-- Informix uses row types -->
 		<scheme name="create-object-rowtype-scheme">create row type {1}_t ({2})</scheme>
 		<scheme name="create-object-table-scheme">create table {1} of type {1}_t ({3} {5})</scheme>
+                
+                <!-- Use informix function to generate keys -->
+                <scheme name="update-sequence-scheme" />
+		<scheme name="read-sequence-scheme">execute function fetchrelkey({2})</scheme>
+                <scheme name="create-sequence-scheme" />
+                <scheme name="init-sequence-scheme" />
 
 	</attributes>
 
@@ -52,6 +66,7 @@
 			 This is a sample
 	-->
 	<disallowed-fields >
+		<disallowed-field name="type" replacement="typ" />
 		<disallowed-field name="database" replacement="dtbs" />
 		<disallowed-field name="max" replacement="mmmax" />
 		<disallowed-field name="count" replacement="mmcount" />
@@ -65,6 +80,7 @@
 		<disallowed-field name="stdev" replacement="mmstdev" />
 		<disallowed-field name="variance" replacement="mmvariance" />
 		<disallowed-field name="avg" replacement="mmavg" />
+		<disallowed-field name="public" replacement="mmpublic" />
 	</disallowed-fields>
 
 </storage>
