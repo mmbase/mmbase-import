@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author  $Author: michiel $
- * @version $Id: MMServers.java,v 1.23 2004-02-02 18:30:59 michiel Exp $
+ * @version $Id: MMServers.java,v 1.24 2004-02-03 08:57:11 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -139,7 +139,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             
             // wait the defined time
             try { 
-                Thread.sleep(thistime);
+                Thread.sleep(thisTime);
             } catch (InterruptedException e) {
                 log.debug(e.toString());
                 break;
