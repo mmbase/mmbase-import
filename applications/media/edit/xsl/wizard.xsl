@@ -6,8 +6,8 @@
 
 
   <xsl:template name="body"> 
-    <body onload="doOnLoad_ew();init('{/wizard/curform}');" onunload="doOnUnLoad_ew();">
-      <xsl:call-template name="bodycontent" />
+  <body onload="doOnLoad_ew();init('{/wizard/curform}');" onunload="doOnUnLoad_ew();">
+    <xsl:call-template name="bodycontent" />
     </body>
   </xsl:template>
 
@@ -20,34 +20,13 @@
   </span>
   </xsl:template>
 
-
-    <!-- forms with 'itemize' will contain an embedded stream viewer -->
-    
+  
   <xsl:template name="formcontent">
     <table class="body">
       <xsl:call-template name="title" />
-        <xsl:call-template name="subtitle" />
-          <tr>
-            <td class="steps">
-              <xsl:if test="/wizard/curform = 'itemize'">    
-              <!-- embed 
-                id="player"
-                src="{$referrerdir}display.ram.jsp?fragment={$objectnumber}" 
-                width="200" 
-                height="165"   
-                type="audio/x-pn-realaudio-plugin"
-                nojava="false" 
-                controls="ImageWindow" 
-                console="Clip1" 
-                autostart="true" 
-                nologo="true"
-                nolabels="true"
-                name="embeddedplayer"></embed -->
-            </xsl:if>
-            <xsl:if test="/wizard/curform = 'itemize-popup'">
-
-              <a href="javascript:void(0)" onClick="javascript:detach();">detach</a>
-            </xsl:if>
+      <xsl:call-template name="subtitle" />
+      <tr>
+        <td class="steps">
           <table width="100%">
             <xsl:apply-templates select="/*/steps-validator" />
           </table>

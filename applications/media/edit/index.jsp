@@ -2,6 +2,8 @@
 <html>
 <head>
 <title>Media editor</title>
+<link rel="icon"          href="images/favicon.ico"" type="image/x-icon" />
+<link rel="shortcut icon" href="images/favicon.ico"  type="image/x-icon" />
 </head>
 <frameset cols="350,*" frameborder="0" border="0">
         <frame src="placeholder.jsp"  name="player" scroll="no">
