@@ -1,17 +1,19 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html>
 <body>
+<%@ include file="menu.jsp"%>
 <h1>context</h1>
 <p>
 To use a context, you can use a context tag. But there is one implicit
-context, named 'context'. This page is using this feature.
+context, named 'context'. This page is using this feature. It is a
+pitty that this doesn't work in Orion 1.5.2, because of a bug in it.
 </p>
 <p>
 To start with, a context is empty, you can put things in it e.g. with
 the 'import' tag, which gets objects from the outside world (like
-parameters).
+parameters), and makes `taglib' variables of them.
 </p>
-<mm:import id="hoi" externid="haj" required="true" jspvar="groet" />
+<mm:import id="hoi" externid="haj" from="parameters" required="true" jspvar="groet" />
 <p>
 There are several ways to write something from the context to the
 page. Here are a few examples with the 'write' tag. The write tag uses
@@ -24,9 +26,9 @@ of the variable:
 <mm:write referid="hoi" jspvar="greet"><%= greet %></mm:write>,
 <%= groet %>
 <p>
-Sometime you also want to use the value of a variable. In that case a
-construction with a dollar sign ($) must be used. Imagine for example
-that the <em>value</em> of the command-line variable 'haj' (which
+Sometimes you also want to use the <em>value</em> of a variable. In
+that case a construction with a dollar sign ($) must be used. Imagine
+for example that the value of the command-line variable 'haj' (which
 internally in this page is named 'hoi') must be used in an url:
 </p>
 <mm:url page="${hoi}.jsp">
