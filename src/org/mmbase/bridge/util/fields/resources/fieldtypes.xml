@@ -8,13 +8,14 @@
 
 -->
 
+<!--
   <fieldtype id="xml">
-    <!-- processors on every field -->
     <setprocessor type="string">
       <class>org.mmbase.core.processors.XMLValidate</class>
     </setprocessor>
 
   </fieldtype>
+-->
 
   
   <fieldtype id="string">
