@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.50 2005-03-01 14:17:39 michiel Exp $
+ * @version $Id: Cloud.java,v 1.51 2005-03-18 12:41:04 michiel Exp $
  */
 public interface Cloud {
 
@@ -360,14 +360,16 @@ public interface Cloud {
 
 
     /**
-     * Returns the name of this cloud.
+     * Returns the name of this cloud. The name of the cloud is the string "mmbase" unless this
+     * Cloud is a {@link Transaction}.
      *
      * @return the name of this cloud
      */
     public String getName();
 
     /**
-     * Returns the description of the cloud.
+     * This may return {@link #getName}, but in principable it could have been localized using the
+     * value also returned by {@link #getLocale}.
      *
      * @return the description of this cloud
      */

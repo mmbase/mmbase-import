@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.22 2005-03-01 14:18:59 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.23 2005-03-18 12:41:04 michiel Exp $
  */
 public interface CloudContext {
 
@@ -51,8 +51,8 @@ public interface CloudContext {
 
      * Returns the cloud with the specified name.
      *
-     * @param name                     the name of the cloud to be returned
-     * @return                         the requested cloud
+     * @param name                The name of the cloud to be returned, this is always "mmbase".
+     * @return                    The requested cloud
      * @throws NotFoundException  if the specified cloud could not be found
      * @throws SecurityException       if no anonymous user can be created
      */
@@ -61,8 +61,8 @@ public interface CloudContext {
     /**
      * Returns the cloud with the specified name, with authentication
      *
-     * @param name                the name of the cloud to be returned
-     * @param authenticationType  the type of authentication, which should be
+     * @param name                The name of the cloud to be returned, always "mmbase".
+     * @param authenticationType  The type of authentication, which should be
      *                            used by the authentication implementation.
      * @param loginInfo           the user related login information.
      * @return                    the requested cloud
@@ -71,6 +71,10 @@ public interface CloudContext {
     public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
 
     /**
+     * Returns the cloud with the specified name, based on an existing User object (e.g. of another {@link cloud#getUser}
+     * @param name                The name of the cloud to be returned, always "mmbase".
+     * @param user                The user object for which this cloud object must be created.
+     * @return                    the requested cloud
      * @since MMBase-1.8
      */
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
