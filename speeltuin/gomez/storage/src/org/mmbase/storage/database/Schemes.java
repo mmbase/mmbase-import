@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.1 2003-07-31 09:53:37 pierre Exp $
+ * @version $Id: Schemes.java,v 1.2 2003-07-31 10:46:09 pierre Exp $
  */
 public final class Schemes {
 
@@ -34,7 +34,7 @@ public final class Schemes {
      *  <code> CREATE ROW TYPE {0}_t ({1}) EXTENDS {2}_t </code>
      * </p>
      */
-    public static final String CREATE_ROW_TYPE_SCHEME = "create.rowtype.scheme";
+    public static final String CREATE_ROW_TYPE = "create.rowtype.scheme";
     
     /**
      *  Name of the scheme for creating a table
@@ -51,13 +51,54 @@ public final class Schemes {
      * You also can define indexes or fields seperate (i.e. in HSQL or in a craete table after a create row type in Informix)
      * or in one go (as you might do with MySQL).
      */
-    public static final String CREATE_TABLE_SCHEME = "create.table.scheme";
+    public static final String CREATE_TABLE = "create.table.scheme";
     
     /**
      *  The default scheme for creating a table.
      */
-    public static final String CREATE_TABLE_SCHEME_DFP = "CREATE TABLE {0} {1}";
+    public static final String CREATE_TABLE_DEFAULT = "CREATE TABLE {0} {1}";
+
+    /**
+     *  Name of the scheme for creating a primary key
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the builder to create the key for</li>
+     *    <li>{1} a symbolic name for the key</li>
+     *    <li>{2} the field to create the key for</li>
+     *    <li>{3} the basic storage element (name of the object table)</li>
+     *  </ul>
+     */
+    public static final String CREATE_PRIMARY_KEY = "create.primary.key";
+
+    /**
+     *  The default scheme for creating a prinary key
+     */
+    public static final String CREATE_PRIMARY_KEY_DEFAULT = "PRIMARY KEY ({2})";
     
+    /**
+     *  Name of the scheme for creating a secondary (unique) key
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the builder to create the key for</li>
+     *    <li>{1} a symbolic name for the key</li>
+     *    <li>{2} the field (or fieldlist) to create the key for</li>
+     *    <li>{3} the basic storage element (name of the object table)</li>
+     *  </ul>
+     */
+    public static final String CREATE_SECONDARY_KEY = "create.secondary.key";
+
+    /**
+     *  Name of the scheme for creating a foreign (referential) key
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the builder to create the key for</li>
+     *    <li>{1} a symbolic name for the key</li>
+     *    <li>{2} the field to create the key for</li>
+     *    <li>{3} the basic storage element referenced (name of the object table)</li>
+     *  </ul>
+     */
+    public static final String CREATE_FOREIGN_KEY = "create.foreign.key";
+
     /**
      *  Name of the scheme for selecting a node type.
      *  The parameters accepted are:
@@ -67,12 +108,12 @@ public final class Schemes {
      *    <li>{2} the number of the object to update (Integer)</li>
      *  </ul>
      */
-    public static final String DELETE_NODE_SCHEME = "delete.node.scheme";
+    public static final String DELETE_NODE = "delete.node.scheme";
     
     /**
      *  The default scheme for selecting a node type.
      */
-    public static final String DELETE_NODE_SCHEME_DFP = "DELETE FROM {0} WHERE {1} = {2,number}";
+    public static final String DELETE_NODE_DEFAULT = "DELETE FROM {0} WHERE {1} = {2,number}";
     
     /**
      *  Name of the scheme for reading a binary field from a node
@@ -84,12 +125,12 @@ public final class Schemes {
      *    <li>{3} the number of the object to update (Integer)</li>
      *  </ul>
      */
-    public static final String GET_BINARY_DATA_SCHEME = "get.binary.data.scheme";
+    public static final String GET_BINARY_DATA = "get.binary.data.scheme";
     
     /**
      *  The default scheme for reading a binary field
      */
-    public static final String GET_BINARY_DATA_SCHEME_DFP = "SELECT {1} FROM {0} WHERE {2} = {3,number}";
+    public static final String GET_BINARY_DATA_DEFAULT = "SELECT {1} FROM {0} WHERE {2} = {3,number}";
     
     /**
      *  Name of the scheme for reading a text field from a node
@@ -101,12 +142,12 @@ public final class Schemes {
      *    <li>{3} the number of the object to update (Integer)</li>
      *  </ul>
      */
-    public static final String GET_TEXT_DATA_SCHEME = "get.text.data.scheme";
+    public static final String GET_TEXT_DATA = "get.text.data.scheme";
     
     /**
      *  The default scheme for reading a text field
      */
-    public static final String GET_TEXT_DATA_SCHEME_DFP = "SELECT {1} FROM {0} WHERE {2} = {3,number}";
+    public static final String GET_TEXT_DATA_DEFAULT = "SELECT {1} FROM {0} WHERE {2} = {3,number}";
     
     /**
      *  Name of the scheme for inserting a node
@@ -119,12 +160,12 @@ public final class Schemes {
      *    <li>{4} the number of the object to update (Integer)</li>
      *  </ul>
      */
-    public static final String INSERT_NODE_SCHEME = "update.node.scheme";
+    public static final String INSERT_NODE = "update.node.scheme";
     
     /**
      *  The default scheme for inserting a node type.
      */
-    public static final String INSERT_NODE_SCHEME_DFP = "INSERT INTO {0} ({1}) VALUES ({2}) WHERE {3} = {4,number}";
+    public static final String INSERT_NODE_DEFAULT = "INSERT INTO {0} ({1}) VALUES ({2}) WHERE {3} = {4,number}";
 
     /**
      *  Name of the scheme for selecting a node.
@@ -135,12 +176,12 @@ public final class Schemes {
      *    <li>{2} the number to locate (Integer)</li>
      *  </ul>
      */
-    public static final String SELECT_NODE_SCHEME = "select.node.scheme";
+    public static final String SELECT_NODE = "select.node.scheme";
     
     /**
      *  The default scheme for selecting a node.
      */
-    public static final String SELECT_NODE_SCHEME_DFP = "SELECT * FROM {0} WHERE {1} = {2,number}";
+    public static final String SELECT_NODE_DEFAULT = "SELECT * FROM {0} WHERE {1} = {2,number}";
 
     /**
      *  Name of the scheme for selecting a node type.
@@ -151,12 +192,12 @@ public final class Schemes {
      *    <li>{2} the number to locate (Integer)</li>
      *  </ul>
      */
-    public static final String SELECT_NODE_TYPE_SCHEME = "select.nodetype.scheme";
+    public static final String SELECT_NODE_TYPE = "select.nodetype.scheme";
     
     /**
      *  The default scheme for selecting a node type.
      */
-    public static final String SELECT_NODE_TYPE_SCHEME_DFP = "SELECT otype FROM {0} WHERE {1} = {2,number}";
+    public static final String SELECT_NODE_TYPE_DEFAULT = "SELECT otype FROM {0} WHERE {1} = {2,number}";
 
     /**
      *  Name of the scheme for updating a node type.
@@ -168,11 +209,11 @@ public final class Schemes {
      *    <li>{3} the number of the object to update (Integer)</li>
      *  </ul>
      */
-    public static final String UPDATE_NODE_SCHEME = "update.node.scheme";
+    public static final String UPDATE_NODE = "update.node.scheme";
     
     /**
      *  The default scheme for updating a node type.
      */
-    public static final String UPDATE_NODE_SCHEME_DFP = "UPDATE {0} SET {1} WHERE {2} = {3,number}";
+    public static final String UPDATE_NODE_DEFAULT = "UPDATE {0} SET {1} WHERE {2} = {3,number}";
 
 }

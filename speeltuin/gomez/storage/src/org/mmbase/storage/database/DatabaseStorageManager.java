@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.8 2003-07-31 09:53:37 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.9 2003-07-31 10:46:09 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -236,7 +236,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
             MMObjectBuilder builder = node.getBuilder();
-            Scheme scheme = factory.getScheme(Schemes.GET_TEXT_DATA_SCHEME, Schemes.GET_TEXT_DATA_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.GET_TEXT_DATA, Schemes.GET_TEXT_DATA_DEFAULT);
             String query = scheme.format(new Object[] { builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
@@ -297,7 +297,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             return readBinaryFromFile(node, field);
         } else try {
             MMObjectBuilder builder = node.getBuilder();
-            Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA_SCHEME, Schemes.GET_BINARY_DATA_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
             String query = scheme.format(new Object[] { builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
@@ -468,7 +468,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             }
         }
         if (fields.size() > 0) {
-            Scheme scheme = factory.getScheme(Schemes.INSERT_NODE_SCHEME, Schemes.INSERT_NODE_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
             try {
                 String query = scheme.format(new Object[] { builder, fieldNames.toString(), fieldValues.toString(), builder.getField("number"), node });
                 getActiveConnection();
@@ -546,7 +546,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             }
         }
         if (fields.size() > 0) {
-            Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE_SCHEME, Schemes.UPDATE_NODE_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
                 String query = scheme.format(new Object[] { builder, setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
@@ -760,7 +760,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             throw new StorageException("cannot delete node "+node.getNumber()+", it still has relations");
         }
         try {
-            Scheme scheme = factory.getScheme(Schemes.DELETE_NODE_SCHEME, Schemes.DELETE_NODE_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.DELETE_NODE, Schemes.DELETE_NODE_DEFAULT);
             String query = scheme.format(new Object[] { builder, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
@@ -781,7 +781,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during the get
      */
     public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
-        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_SCHEME, Schemes.SELECT_NODE_SCHEME_DFP);
+        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
             getActiveConnection();
             String query = scheme.format(new Object[] { builder, builder.getField("number"), new Integer(number)});
@@ -872,7 +872,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during selection
      */
     public int getNodeType(int number) throws StorageException {
-        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_TYPE_SCHEME, Schemes.SELECT_NODE_TYPE_SCHEME_DFP);
+        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_TYPE, Schemes.SELECT_NODE_TYPE_DEFAULT);
         try {
             getActiveConnection();
             MMBase mmbase = factory.getMMBase();
@@ -969,10 +969,12 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 String indexDef = getIndexDefinition(builder, field);
                 if (createFields.length() > 0) createFields.append(", ");
                 createFields.append(fieldDef);
-                if (createIndices.length() > 0) createIndices.append(", ");
-                createIndices.append(indexDef);
-                if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
-                createFieldsAndIndices.append(fieldDef+" "+indexDef);
+                if (indexDef != null) {
+                    if (createIndices.length() > 0) createIndices.append(", ");
+                    createIndices.append(indexDef);
+                    if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
+                    createFieldsAndIndices.append(fieldDef+" "+indexDef);
+                }
             }
         }
 
@@ -980,14 +982,14 @@ public abstract class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             // create a rowtype, if a scheme has been given
             // Note that creating a rowtype is optional
-            Scheme scheme = factory.getScheme(Schemes.CREATE_ROW_TYPE_SCHEME);
+            Scheme scheme = factory.getScheme(Schemes.CREATE_ROW_TYPE);
             if (scheme!=null) {
                 String query = scheme.format(new Object[] { builder, createFields.toString(), parentTableName });
                 Statement s = activeConnection.createStatement();
                 s.executeUpdate(query);
             }
             // create the table
-            scheme = factory.getScheme(Schemes.CREATE_TABLE_SCHEME);
+            scheme = factory.getScheme(Schemes.CREATE_TABLE);
             String query = scheme.format(new Object[] { builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), parentTableName });
             Statement s = activeConnection.createStatement();
             s.executeUpdate(query);
@@ -1001,17 +1003,40 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * @javadoc
      */
-    protected String getFieldDefinition(MMObjectBuilder builder, FieldDefs field) {
+    protected String getFieldDefinition(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+        // determine MMBase type
+        int type = field.getDBType();
+        // determine field name
+        String name = field.getDBName();
+        // determine size
+        int size = field.getDBSize();
+        //String name = mapToTableFieldName(fieldname);
+        //String result = matchType(type,size);
         return null;
     }
     
     /**
      * @javadoc
      */
-    protected String getIndexDefinition(MMObjectBuilder builder, FieldDefs field) {
-        return null;
+    protected String getIndexDefinition(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+        Scheme scheme = null; 
+        if (field.getDBName().equals("number")) {
+            scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
+        } else if (field.isKey()) {
+            // secondary keys should really be pooled and turned into one key...
+            // i.o.w we have to collect these together rather than appying the scheme all at once.
+            // perhaps make this configurable though a complexkey property or something...
+            scheme = factory.getScheme(Schemes.CREATE_SECONDARY_KEY);
+        } else if (field.getDBType() == FieldDefs.TYPE_NODE) {
+            scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY);
+        }
+        if (scheme != null) {
+            return scheme.format(new Object[]{ builder, field, field, factory.getMMBase()} ); 
+        } else {
+            return null;
+        }
     }
-    
+
     /**
      * Create the basic elements for this storage
      * @return <code>true</code> if the storage was succesfully created
