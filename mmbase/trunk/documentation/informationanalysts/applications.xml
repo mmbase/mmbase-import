@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Applications</title>
     <date>2003-02-27</date>
-    <edition>$Id: applications.xml,v 1.9 2003-07-27 17:47:53 henk Exp $</edition>
+    <edition>$Id: applications.xml,v 1.10 2004-01-22 13:49:55 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -92,11 +92,35 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<neededreldeflist><reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" /> ... </neededreldeflist>]]></sgmltag></para>
-          <para>The <sgmltag class="attribute">neededreldeflist</sgmltag> tag contains a list of all relation roles that have to be defined for this application. When you use the MMBase editors to have a look at the RelationDefinition objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;reldef ... /&#62;</sgmltag> descriptions follow these objects.</para>
+          <para>
+            The <sgmltag class="attribute">neededreldeflist</sgmltag> tag contains a list of all
+            relation roles that have to be defined for this application. When you use the MMBase editors to have
+            a look at the RelationDefinition objects in your MMBase installation, you will see how closely the
+            <sgmltag class="attribute">&#60;reldef ... /&#62;</sgmltag> descriptions follow these
+            objects.
+          </para>
+          <para>
+            The most import attributes of every <sgmltag class="attribute">reldef</sgmltag> tag below <sgmltag class="attribute">neededreldeflist</sgmltag> are 
+            `source' and `builder', and the function of a `reldef' is actually to connect those
+            two. Another word for 'source' is 'role' (as it is called often for example in
+            taglib attributes). The `builder' refers to the actual database table in which the
+            relations can be stored, and therefore defines which fields the relations of this type have.
+          </para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<allowedrelationlist><relation from="mags"  to="news"  type="posrel" /> ... </allowedrelationlist>]]></sgmltag></para>
-          <para>The <sgmltag>allowedrelationlist</sgmltag> list what type of relation (role) should be used to relate two object of specified type. When you use the MMBase editors to have a look at the RelationType objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;relation... /&#62;</sgmltag> descriptions follow these objects.</para>
+          <para>
+            The <sgmltag>allowedrelationlist</sgmltag> list what type of relation (what roles)
+            should be used to relate two object of specified type. When you use the MMBase editors to have a
+            look at the RelationType objects in your MMBase installation, you will see how closely the <sgmltag
+            class="attribute">&#60;relation... /&#62;</sgmltag> descriptions follow these objects.
+          </para>
+          <para>
+            The `from' and `to' attributes both refer to builder names (and could also have been
+            called `sourcebuilder' and `destinationbuilder' or `sourcenodetype' and
+            `destinationnodetype'). The `type' attribute then actually defines the role for this allowed
+            relation, so these correspond to the `source' attributes of the <sgmltag class="attribute">reldef</sgmltag> tags.
+          </para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<datasourcelist><datasource builder="mags" path="MyNews/mags.xml" /> ... </datasourcelist>]]></sgmltag></para>
