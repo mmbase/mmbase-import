@@ -17,16 +17,34 @@ import java.util.Comparator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeList.java,v 1.2 2002-09-23 15:57:34 pierre Exp $
+ * @version $Id: BridgeList.java,v 1.3 2002-10-25 11:09:39 pierre Exp $
  * @since  MMBase-1.6
  */
 public interface BridgeList extends List {
 
     /**
-     * Sorts this list according to a default sort order. 
+     * Retrieves a property previously set for this list.
+     * Use this to store and retrieve metadata on whow teh listw as created
+     * (such as what sort-order was specified)
+     * @param key the key of the property
+     * @return the property value
+     */
+    public Object getProperty(Object key);
+
+    /**
+     * Sets a property for this list.
+     * Use this to store and retrieve metadata on whow teh listw as created
+     * (such as what sort-order was specified)
+     * @param key the key of the property
+     * @param the property value
+     */
+    public void setProperty(Object key, Object value);
+
+    /**
+     * Sorts this list according to a default sort order.
      */
     public void sort();
-    
+
     /**
      * Sorts this list according to a specified sort order
      *

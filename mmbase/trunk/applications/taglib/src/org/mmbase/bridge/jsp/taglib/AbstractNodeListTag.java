@@ -171,7 +171,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         }
 
-
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof NodeList)) {
@@ -293,10 +292,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (returnValues.hasNext()){
             currentItemIndex ++;
             Node next = returnValues.nextNode();
-            if (orderby != null && ! "".equals(orderby)) {
+            // use order as stored in the nodelist (the property of the tag may not be set
+            // if you use referid to get the result of a prevuious listtag)
+            String listorder=(String)returnList.getProperty("orderby");
+            if (listorder != null && ! "".equals(listorder)) {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
-                String f = (String)StringSplitter.split(orderby).get(0);
+                String f = (String)StringSplitter.split(listorder).get(0);
                 String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue !=null) {
                     if (value.equals(previousValue)) {
