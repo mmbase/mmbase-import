@@ -109,7 +109,7 @@ import org.mmbase.util.logging.*;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.19 2004-03-14 00:11:34 robmaris Exp $
+ * @version $Id: ConstraintParser.java,v 1.20 2004-03-14 00:59:21 robmaris Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -159,7 +159,7 @@ public class ConstraintParser {
                 fieldType == FieldDefs.TYPE_FLOAT || fieldType == FieldDefs.TYPE_INTEGER ||
                 fieldType == FieldDefs.TYPE_LONG || fieldType == FieldDefs.TYPE_NODE) {
                 // String represents a numerical value.
-                result = new Double(token);
+                result = new Double((String) result);
             }
         } else {
             result = new Double(token);
