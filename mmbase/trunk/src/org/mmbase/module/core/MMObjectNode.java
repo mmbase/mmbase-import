@@ -865,4 +865,44 @@ public class MMObjectNode {
 	}
 
 
+    /**
+     * Get the related nodes of a certain type. The returned nodes are not the
+     * nodes directly attached to this node (the relation nodes) but the nodes
+     * attached to the relation nodes of this node.
+     *
+     * @return      a <code>Vector</code> containing <code>MMObjectNode</code>s
+     */
+    public Vector getRelatedNodes() {
+        Vector result = new Vector();
+        for (Enumeration e = getRelations(); e.hasMoreElements();) {
+            MMObjectNode relNode = (MMObjectNode)e.nextElement();
+            int number = relNode.getIntValue("dnumber");
+            if (number == getIntValue("number")) {
+                number = relNode.getIntValue("snumber");
+            }
+            MMObjectNode destNode = (MMObjectNode)parent.getNode(number);
+            result.addElement(destNode);
+        }
+        return result;
+    }
+
+    /**
+     * Get the related nodes of a certain type. The returned nodes are not the
+     * nodes directly attached to this node (the relation nodes) but the nodes
+     * attached to the relation nodes of this node.
+     *
+     * @param type  the type of objects to be returned
+     * @return      a <code>Vector</code> containing <code>MMObjectNode</code>s
+     */
+    public Vector getRelatedNodes(String type) {
+        Vector allNodes = getRelatedNodes();
+        Vector result = new Vector();
+        for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
+            MMObjectNode node = (MMObjectNode)e.nextElement();
+            if (node.getTableName().equals(type)) {
+                result.addElement(node);
+            }
+        }
+        return result;
+    }
 }
