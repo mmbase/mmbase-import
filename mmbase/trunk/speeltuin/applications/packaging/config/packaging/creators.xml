@@ -19,4 +19,7 @@
 	<creator type="bundle/basic" class="org.mmbase.applications.packaging.projects.creators.BundleBasicCreator">
 		<description>Creates mmp files for function/set packages</description>
 	</creator>
+        <creator type="config/basic" class="org.mmbase.applications.packages.projects.creators.ConfigBasicCreator">
+	       <description>Creates mmp files for config/basic packages</description>
+	</creator>
 </creators>
