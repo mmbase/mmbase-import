@@ -26,7 +26,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-guitype
 		</TD>
 		<TD BGCOLOR="#00425A">
-				explain
+			<A HREF="/mmdocs/config/builders.html#guitype" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 				 <A HREF="builders_setguitype.shtml?$PARAM1+$PARAM2">change</A>
@@ -44,7 +44,7 @@
 			$ITEM2	
 		</TD>
 		<TD BGCOLOR="#00425A">
-			explain
+			<A HREF="/mmdocs/config/builders.html#guiname" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 				 <A HREF="builders_setguiname.shtml?$PARAM1+$PARAM2+$ITEM1">change</A>

@@ -26,7 +26,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbname
 		</TD>
 		<TD BGCOLOR="#00425A">
-				explain
+				<A HREF="/mmdocs/config/builders.html#dbname" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 				change
@@ -42,7 +42,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbmmbasetype
 		</TD>
 		<TD BGCOLOR="#00425A">
-			explain
+			<A HREF="/mmdocs/config/builders.html#dbmmbasetype" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 			<A HREF="builders_setdbmmbasetype.shtml?$PARAM1+$PARAM2">change</A>
@@ -57,7 +57,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbstate
 		</TD>
 		<TD BGCOLOR="#00425A">
-			explain
+			<A HREF="/mmdocs/config/builders.html#dbstate" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 			<A HREF="builders_setdbstate.shtml?$PARAM1+$PARAM2">change</A>
@@ -72,7 +72,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbnotnull
 		</TD>
 		<TD BGCOLOR="#00425A">
-			explain
+			<A HREF="/mmdocs/config/builders.html#dbnotnull" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 			<A HREF="builders_setdbnotnull.shtml?$PARAM1+$PARAM2">change</A>
@@ -88,7 +88,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbkey
 		</TD>
 		<TD BGCOLOR="#00425A">
-			explain
+			<A HREF="/mmdocs/config/builders.html#dbkey" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 			<A HREF="builders_setdbkey.shtml?$PARAM1+$PARAM2">change</A>
@@ -105,7 +105,7 @@
 			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-dbsize
 		</TD>
 		<TD BGCOLOR="#00425A">
-			explain
+			<A HREF="/mmdocs/config/builders.html#dbsize" TARGET="_new">explain</A>
 		</TD>
 		<TD BGCOLOR="#00425A" COLSPAN="2">
 				<A HREF="builders_setdbsize.shtml?$PARAM1+$PARAM2">change</A>
