@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.205 2003-02-11 10:22:11 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.206 2003-02-14 09:06:14 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -792,61 +792,65 @@ public class MMObjectBuilder extends MMTable {
         return getNode(key);
     }
 
-	/**
-	 * Convert virtual nodes to real nodes based on their otype
-	 *
-	 * Normally a multirelations-search will return virtual nodes. These nodes
-	 * will only contain values which where specified in the field-vector.
-	 * This method will make real nodes of those virtual nodes.
-	 *
-	 * @param List containing virtual nodes
-	 * @return List containing real nodes
-	 */
-	public List getNodes(List virtuals) {
-		List            result  = new ArrayList();
-		MMObjectNode    node    = null;
-		Integer         number  = null;
-		String          numbers = "";
-		Iterator        i       = virtuals.iterator();
 
-		while(i.hasNext()) {
-			node    = (MMObjectNode)i.next();
-			number  = new Integer(node.getIntValue("number"));
+    /**
+     * Convert virtual nodes to real nodes based on their otype
+     *
+     * Normally a multirelations-search will return virtual nodes. These nodes
+     * will only contain values which where specified in the field-vector.
+     * This method will make real nodes of those virtual nodes.
+     *
+     * @param List containing virtual nodes
+     * @return List containing real nodes
+     * @since MMBase-1.6.2
+     */
+    public List getNodes(List virtuals) {
+        List            result  = new ArrayList();
+        StringBuffer    numbers = new StringBuffer();
+        boolean         first   = true;
 
-			// check if this node is already in cache
-			if(nodeCache.containsKey(number))
-				result.add(nodeCache.get(number));
-			// else seek it with a search on builder in db
-			else {
-				if(numbers.equals(""))
-					numbers = "" + number;
-				else
-					numbers += "," + number;
-			}
+        Iterator        i       = virtuals.iterator();
+        while(i.hasNext()) {
+            MMObjectNode node    = (MMObjectNode) i.next();
+            Integer      number  = new Integer(node.getIntValue("number"));
 
-			if(numbers.length() > MAX_QUERY_SIZE) {
-				result.addAll(new ArrayList(basicSearch("SELECT * FROM "+getFullTableName()+" WHERE number in ("+numbers+")")));
-				numbers = "";
-			}
-		}
+            // check if this node is already in cache
+            if(nodeCache.containsKey(number)) {
+                result.add(nodeCache.get(number));
+                // else seek it with a search on builder in db
+            } else {
+                if (first) {
+                    first = false;
+                } else {
+                    numbers.append(",");
+                }
+                numbers.append(number);
+            }
 
-		// now that we have a comma seperated string of numbers, we can
-		// the search with a where-clause containing this list
-		if(!numbers.equals("")) {
-			result.addAll(new ArrayList(basicSearch("SELECT * FROM "+getFullTableName()+" WHERE number in ("+numbers+")")));
-		} // else everything from cache
+            if(numbers.length() > MAX_QUERY_SIZE) {
+                result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+                numbers = new StringBuffer();
+                first = true;
+            }
+        }
 
-		// check that we didnt loose any nodes
+        // now that we have a comma seperated string of numbers, we can
+        // the search with a where-clause containing this list
+        if(! numbers.toString().equals("")) {
+            result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+        } // else everything from cache
 
-		// Java 1.4
-		// assert(virtuals.size() == result.size());
+        // check that we didnt loose any nodes
 
-		// Below Java 1.4
-		if(virtuals.size() != result.size()) {
-			log.error("We lost a few nodes during conversion from virtualsnodes("+virtuals.size()+") to realnodes("+result.size()+")");
-		}
-		return result;
-	}
+        // Java 1.4
+        // assert(virtuals.size() == result.size());
+
+        // Below Java 1.4
+        if(virtuals.size() != result.size()) {
+            log.error("We lost a few nodes during conversion from virtualsnodes("+virtuals.size()+") to realnodes("+result.size()+")");
+        }
+        return result;
+    }
 
 
     /**
