@@ -20,16 +20,12 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.32 2004-04-01 20:57:48 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.33 2004-04-29 09:51:40 pierre Exp $
  * @since MMBase-1.7
  */
 
 public class BasicSqlHandler implements SqlHandler {
 
-    /** Empty StepField array. */
-    private static final StepField[] STEP_FIELD_ARRAY = new StepField[0];
-
-    /** Logger instance. */
     private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
     /** MMBase instance. */
@@ -343,16 +339,23 @@ public class BasicSqlHandler implements SqlHandler {
                     sbNodes.append(" AND ");
                 }
                 appendField(sbNodes, step, "number", multipleSteps);
-                sbNodes.append(" IN (");
-                Iterator iNodes = nodes.iterator();
-                while (iNodes.hasNext()) {
-                    Integer node = (Integer) iNodes.next();
-                    sbNodes.append(node);
-                    if (iNodes.hasNext()) {
-                        sbNodes.append(",");
+                if (nodes.size() > 1) {
+                    // only use IN(...) if there are really more numbers
+                    sbNodes.append(" IN (");
+                    Iterator iNodes = nodes.iterator();
+                    while (iNodes.hasNext()) {
+                        Integer node = (Integer) iNodes.next();
+                        sbNodes.append(node);
+                        if (iNodes.hasNext()) {
+                            sbNodes.append(",");
+                        }
                     }
+                    sbNodes.append(")");
+                } else {
+                    // otherwise use equals, which is a LOT faster in some cases
+                    sbNodes.append("=");
+                    sbNodes.append((Integer) nodes.first());
                 }
-                sbNodes.append(")");
             }
 
             // Relation steps.
@@ -593,7 +596,7 @@ public class BasicSqlHandler implements SqlHandler {
 
                 // Field value-in constraint
                 FieldValueInConstraint valueInConstraint = (FieldValueInConstraint) fieldConstraint;
-                Set values = valueInConstraint.getValues();
+                SortedSet values = valueInConstraint.getValues();
                 if (values.size() == 0) {
                     throw new IllegalStateException(
                     "Field value-in constraint specifies no values "
@@ -608,17 +611,26 @@ public class BasicSqlHandler implements SqlHandler {
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
                 }
-                sb.append(overallInverse? " NOT IN (": " IN (");
-                Iterator iValues = values.iterator();
-                while (iValues.hasNext()) {
-                    Object value = iValues.next();
-                    appendFieldValue(sb, value,
-                        !fieldConstraint.isCaseSensitive(), fieldType);
-                    if (iValues.hasNext()) {
-                        sb.append(",");
+
+                if (values.size() > 1) {
+                    // only use IN(...) if there are really more numbers
+                    sb.append(overallInverse? " NOT IN (": " IN (");
+                    Iterator iValues = values.iterator();
+                    while (iValues.hasNext()) {
+                        Object value = iValues.next();
+                        appendFieldValue(sb, value,
+                            !fieldConstraint.isCaseSensitive(), fieldType);
+                        if (iValues.hasNext()) {
+                            sb.append(",");
+                        }
                     }
+                    sb.append(")");
+                } else {
+                    // otherwise use equals, which is a LOT faster in some cases
+                    sb.append(overallInverse? "<>": "=");
+                    appendFieldValue(sb, values.first(),
+                        !fieldConstraint.isCaseSensitive(), fieldType);
                 }
-                sb.append(")");
 
             } else if (fieldConstraint instanceof FieldValueBetweenConstraint) {
 
@@ -651,7 +663,7 @@ public class BasicSqlHandler implements SqlHandler {
                 // Field compare constraint
                 FieldCompareConstraint fieldCompareConstraint = (FieldCompareConstraint) fieldConstraint;
 
-                // Negate by leading NOT, unless it's a LIKE constraint, 
+                // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
                 if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
                     sb.append(overallInverse? "NOT ": "");
