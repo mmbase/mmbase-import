@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.http.*;
 
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
@@ -23,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.41 2003-11-20 11:11:05 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.42 2004-06-02 14:42:16 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -119,6 +120,9 @@ public class ImportTag extends ContextReferrerTag {
             }
 
             if (! found && required.getBoolean(this, false)) {
+                if (from.getString(this).equalsIgnoreCase("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
+                    throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
+                }
                 throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in " + from.getString(this));
             }
             if (found) {
