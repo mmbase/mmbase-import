@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.42 2005-02-10 09:48:12 michiel Exp $
+ * @version $Id: servscan.java,v 1.43 2005-02-24 15:58:59 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -146,12 +146,12 @@ public class servscan extends JamesServlet {
                     throw new PageCRCException("invalid crc");
                 }
                 doSecure(sp,res); // name=doSecure(sp,res); but name not used here
-                long stime=handleTime(sp);
-
+                long stime = handleTime(sp);
                 try {
                     if (handleCache(sp, res, out)) return;
                 } catch (Exception e) {
-                    log.error("servscan - something is wrong with scancache");
+                    log.error("servscan - something is wrong with scancache: " + e.getClass().getName() + " " + e.getMessage());
+                    log.service(Logging.stackTrace(e));                    
                 }
 
                 if (log.isDebugEnabled()) {
@@ -165,6 +165,7 @@ public class servscan extends JamesServlet {
                     if (sp.body != null) {
                         if (sp.rstatus == 0) {
                             sp.mimetype = addCharSet(sp.mimetype);
+                            res.reset();                            
                             res.setContentType(addCharSet(sp.mimetype));
                             if (out == null) {
                                 out = res.getWriter();                            
@@ -187,6 +188,7 @@ public class servscan extends JamesServlet {
                             String tmp = req.getHeader("If-Modified-Since:");
                             if (tmp != null && sp.processor != null) {
                                 res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
+                                res.reset();                            
                                 res.setContentType(addCharSet(sp.mimetype));
                                 if (out == null) {
                                     out = res.getWriter();
@@ -244,10 +246,13 @@ public class servscan extends JamesServlet {
      * This method is 3 times as large as it could be, this should be cleaned!
      */
     private final void setHeaders(scanpage sp, HttpServletResponse res, int len, long lastModDate, long expireDate) {
+        res.reset();
         res.setContentType(addCharSet(sp.mimetype));
         
         // Guess this will be set by the app server if we don't set it.
-        // res.setContentLength(len);
+        // mm: guessed wrong.
+        res.setContentLength(len);
+        
 
     	Date lastmod = null;
         if (lastModDate > 0) {
@@ -263,7 +268,7 @@ public class servscan extends JamesServlet {
             expire = new Date(System.currentTimeMillis() - 7200000); 
         }
         
-//    	String dateStr = RFC1123.makeDate(new Date());
+        //    	String dateStr = RFC1123.makeDate(new Date());
         String lastmodStr = RFC1123.makeDate(lastmod);
         String expireStr = RFC1123.makeDate(expire);
 
@@ -271,7 +276,7 @@ public class servscan extends JamesServlet {
             
         res.setHeader("Expires", expireStr);
         res.setHeader("Last-Modified", lastmodStr);
-//        res.setHeader("Date", dateStr);
+        //        res.setHeader("Date", dateStr);
         
         // You dhoulfn't set the no-cache headers 
         // when you want the browser and proxies to cache the page until it is expired
@@ -285,7 +290,7 @@ public class servscan extends JamesServlet {
         return "extended html parser that adds extra html commands and a interface to modules.";
     }
 
-     void handlePost(scanpage sp, HttpServletResponse res) throws Exception {
+    void handlePost(scanpage sp, HttpServletResponse res) throws Exception {
         String rtn, part, part2, finals, tokje, header;
         Hashtable proc_cmd = new Hashtable();
         Hashtable proc_var = new Hashtable();
@@ -322,7 +327,7 @@ public class servscan extends JamesServlet {
                         sessions.setValue(sp.session, part.substring(8), poster.getPostParameter((String)obj));
                     }
                 }
-            // Personal objects
+                // Personal objects
             } else if (part.indexOf("ID-") == 0) {
                 //SESSION HACK getAuthorization(req.getAcceptor(),"Basic");
                 //aaaa name=getRemoteUser();
@@ -341,14 +346,14 @@ public class servscan extends JamesServlet {
                         // id.setValue(name,part.substring(3),poster.getPostParameter((String)obj));
                     }
                 }
-            // PRC-CMD- commands
+                // PRC-CMD- commands
             } else if (part.indexOf("PRC-CMD-") == 0) {
                 if (poster.checkPostMultiParameter((String)obj)) {
                     proc_cmd.put(part.substring(8), poster.getPostMultiParameter((String)obj));
                 } else {
                     proc_cmd.put(part.substring(8), poster.getPostParameter((String)obj));
                 }
-            // PRC-VAR- vars
+                // PRC-VAR- vars
             } else if (part.indexOf("PRC-VAR-") == 0) {
                 if (poster.checkPostMultiParameter((String)obj)) {
                     proc_var.put(part.substring(8), poster.getPostMultiParameter((String)obj));
@@ -359,100 +364,116 @@ public class servscan extends JamesServlet {
         }
         // If there are cmds process them
         if (!proc_cmd.isEmpty()) parser.do_proc_input(sp.req_line, poster,proc_var, proc_cmd,sp);
-     }
+    }
 
 
     boolean handleCacheSave(scanpage sp, HttpServletResponse res) {
         if (sp.wantCache != null) {
-             String req_line = sp.req_line;
-             if (sp.querystring != null) req_line += "?" + sp.querystring;
-             try {
-                 parser.scancache.newput(sp.wantCache, res, req_line, sp.body, sp.mimetype);
-             } catch (Exception e) {
+            String req_line = sp.req_line;
+            if (sp.querystring != null) req_line += "?" + sp.querystring;
+            try {
+                parser.scancache.newput(sp.wantCache, res, req_line, sp.body, sp.mimetype);
+            } catch (Exception e) {
                 log.error("servscan - something is wrong with scancache");
-             }
+            }
         }
-        return(true);
+        return true;
     }
 
-    boolean handleCache(scanpage sp,HttpServletResponse res,PrintWriter out) {
-            String req_line=sp.req_line;
-            if (sp.querystring != null) req_line += "?" + sp.querystring;
+    boolean handleCache(scanpage sp,HttpServletResponse res, PrintWriter out) {
+        String req_line = sp.req_line;
+        if (sp.querystring != null) req_line += "?" + sp.querystring;
 
-            // new new new scancache setup, needs to be moved
-            // ----------------------------------------------
+        // new new new scancache setup, needs to be moved
+        // ----------------------------------------------
 
-            // This depends on the PRAGMA: no-cache header
-            // Which Internet Explorer does not send.
+        // This depends on the PRAGMA: no-cache header
+        // Which Internet Explorer does not send.
 
-            if (sp.body != null) {
+        if (sp.body != null) {
             	
-                int start = sp.body.indexOf("<CACHE HENK");
-                if (start >= 0) {
-                    start += 11;
-                    int end = sp.body.indexOf(">", start);
-                    sp.wantCache  ="HENK";
+            int start = sp.body.indexOf("<CACHE HENK");
+            if (start >= 0) {
+                start += 11;
+                int end = sp.body.indexOf(">", start);
+                sp.wantCache  ="HENK";
                     
-                    String rst = parser.scancache.get(sp.wantCache, req_line, sp.body.substring(start, end + 1), sp);
-                    if (log.isDebugEnabled()) {
-                        log.debug("handleCache: sp.reload: " + sp.reload);
-                    }
+                String rst = parser.scancache.get(sp.wantCache, req_line, sp.body.substring(start, end + 1), sp);
+                if (log.isDebugEnabled()) {
+                    log.debug("handleCache: sp.reload: " + sp.reload);
+                }
 
-                    if (rst != null && !sp.reload) {
-                    	long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
-                    	long expireDate = parser.scancache.getExpireDate(sp.wantCache, req_line, sp.body.substring(start, end).trim());
+                if (rst != null && !sp.reload) {
+                    long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
+                    long expireDate = parser.scancache.getExpireDate(sp.wantCache, req_line, sp.body.substring(start, end).trim());
 
-                        setHeaders(sp, res,rst.length(),lastModDate, expireDate);
-                        // org.mmbase res.writeHeaders();
+                    setHeaders(sp, res,rst.length(),lastModDate, expireDate);
+                    // org.mmbase res.writeHeaders();
+                    try {                        
+                        if (out == null) {
+                            out = res.getWriter();                            
+                        }                            
                         out.print(rst);
                         out.flush();
                         out.close();
-                        if (log.isDebugEnabled()) {
-                            log.debug("handleCache(): cache.hit(" + req_line + ")");
-                        }
-                        return(true);
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            log.debug("handleCache(): cache.miss(" + req_line + ")");
-                        }
+                    } catch (IOException io) {
+                        log.error(io);                        
+                    }
+                    if (log.isDebugEnabled()) {
+                        log.debug("handleCache(): cache.hit(" + req_line + ")");
+                    }
+                    return(true);
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("handleCache(): cache.miss(" + req_line + ")");
                     }
                 }
-
-            	if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
-
-	                sp.wantCache="PAGE";
-                	String rst=parser.scancache.get(sp.wantCache, req_line, sp);
-                
-        	        if (log.isDebugEnabled()) {
-    	                log.debug("handleCache: sp.reload: " + sp.reload);
-	                }
-	                if (rst != null && !sp.reload) {
-	                	long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
-
-            	    	setHeaders(sp, res,rst.length(),lastModDate,0);
-        	            // org.mmbase res.writeHeaders();
-    	                out.print(rst);
-	                    out.flush();
-                    	out.close();
-                	    if (log.isDebugEnabled()) {
-            	            log.debug("handleCache(): cache.hit(" + req_line + ")");
-        	            }
-    	                return(true);
-	                } else {
-                    	log.debug("handleCache(): cache.miss(" + req_line + ")");
-                	}
-            	}
             }
 
-            return (false);
+            if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
+                    
+                sp.wantCache="PAGE";
+                String rst=parser.scancache.get(sp.wantCache, req_line, sp);
+                    
+                if (log.isDebugEnabled()) {
+                    log.debug("handleCache: sp.reload: " + sp.reload);
+                }
+                if (rst != null && !sp.reload) {
+                    long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
+                        
+                    setHeaders(sp, res,rst.length(),lastModDate,0);
+                    // org.mmbase res.writeHeaders();
+                    try {
+                        
+                        if (out == null) {
+                            out = res.getWriter();                            
+                        }                            
+                        out.print(rst);
+                        out.flush();
+                        out.close();
+                    } catch (IOException io) {
+                        log.error(io);                        
+                    }                    
+                     
+                    if (log.isDebugEnabled()) {
+                        log.debug("handleCache(): cache.hit(" + req_line + ")");
+                    }
+                    return true;
+                } else {
+                    log.debug("handleCache(): cache.miss(" + req_line + ")");
+                }
+            }
         }
+            
+        return  false;
+    }
 
 
     private long handleTime(scanpage sp) {
         if (sp.body != null && sp.body.indexOf("<TIME>") != -1) {
-            return(System.currentTimeMillis());
+            return System.currentTimeMillis();
         }
-        return(-1);
+        return -1;
     }
 
 
@@ -478,11 +499,11 @@ public class servscan extends JamesServlet {
             String thiscrc = "CRC" + crc;
             System.out.println("CRC = " + crc);
             if (checker != null && checker.equals(thiscrc)) {
-                return(true);
+                return true;
             }
-            return(false);
+            return false;
         }
-        return(true);
+        return true;
     }
 
     private String doSecure(scanpage sp, HttpServletResponse res) throws Exception {
@@ -500,9 +521,9 @@ public class servscan extends JamesServlet {
             // check name
             if (name == null) {
                 log.warn("doSecure(" + sp.getUrl() + "): WARNING: no username found!");
-                return(null);
+                return null;
             }
         }
-        return(name);
+        return name;
     }
 }
