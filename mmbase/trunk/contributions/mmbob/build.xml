@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base SYSTEM "../../mmbase/applications/buildbase.xml" > ]
->
-
 <project name="MMBob" default="jar" basedir=".">
   <property name="project.name"   value="mmbob" />
   <property name="project.package"   value="org/mmbase/applications/mmbob" />
@@ -10,7 +5,68 @@
   <property name="source.dir" value="../../mmbase" />
   <property name="project.extra.path" location="../thememanager/build/mmbase-thememanager.jar" />
 
-  &base;
+  <import file="../../mmbase/applications/buildbase-include.xml"/>
+
+  <target name="copysources" description="copy the sources before compiling" 
+          depends="init,copystandard,copy17" if="src.available"/>
+
+  <target name="copystandard">
+    <mkdir dir="${project.build.dir}/classes"/>
+    <echo message="copying to ${project.build.dir}" />
+    <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
+      <fileset dir="${project.source.dir}/src">
+        <include name="**/*.properties"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <exclude name="**/org/mmbase/bridge/util/fields/resources/fieldtypedefinitions17.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="copy17" if="mmbase17x">
+    <copy file="${project.source.dir}/src/org/mmbase/bridge/util/fields/resources/fieldtypedefinitions17.xml"                tofile="${project.build.dir}/classes/org/mmbase/bridge/util/fields/resources/fieldtypedefinitions.xml"
+     overwrite="true"/>
+  </target>
+
+  <target name="compile" description="Compile the source directory" depends="copysources">
+    <echo message="java version: ${ant.java.version}" />
+
+    <echo message="compiling" />
+    <echo message="${project.extra.path}" />
+    <javac srcdir ="${project.source.dir}/src"
+           destdir="${project.build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}"
+           nowarn="${nowarn}"
+           excludes="${compile.excludes}"
+
+      >
+      <classpath id="compile.classpath">
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
+      </classpath>
+      <include name="compat17/**" if="mmbase17x"/>
+      <include name="org/**"/>
+      <exclude name="org/mmbase/applications/mmbob/builders/Postings.java" if="mmbase17x"/>
+    </javac>
+  </target>
+
+  <target name="package" depends="buildbase.package">
+    <zip destfile="${project.zip}" update="true"> 
+      <zipfileset dir="${project.build.dir}/classes" 
+                  includes="org/mmbase/bridge/util/fields/resources/fieldtypedefinitions.xml"
+                  prefix="${zip.name}/web-app/WEB-INF/classes"/>
+    </zip>
+
+  </target>
 
 
 </project>
+
