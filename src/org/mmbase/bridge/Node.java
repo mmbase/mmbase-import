@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.30 2002-04-05 11:47:04 eduard Exp $
+ * @version $Id: Node.java,v 1.31 2002-09-23 13:53:42 michiel Exp $
  */
 public interface Node {
 
@@ -365,6 +365,12 @@ public interface Node {
      * @return             a list of related nodes
      */
     public NodeList getRelatedNodes(String nodeManager);
+
+    /**
+     * @since MMBase-1.6
+     */
+    public NodeList getRelatedNodes(String nodeManager, String role, String direction);
+
 
     /**
      * Returns the number of related nodes that have a specific node manager.

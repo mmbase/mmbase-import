@@ -18,15 +18,17 @@ import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.SizeOf;
 import java.util.*;
 
 /**
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.68 2002-09-23 12:07:11 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.69 2002-09-23 13:53:42 michiel Exp $
  */
-public class BasicCloud implements Cloud, Cloneable {
+public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
 
     // lastRequestId
@@ -69,6 +71,8 @@ public class BasicCloud implements Cloud, Cloneable {
     // MMBaseCop
     MMBaseCop mmbaseCop = null;
 
+
+
     // User context
     protected BasicUser userContext = null;
 
@@ -78,6 +82,15 @@ public class BasicCloud implements Cloud, Cloneable {
     private MultilevelCacheHandler multilevel_cache;
 
     private Locale locale;
+
+
+    public int getByteSize() {
+        return getByteSize(new SizeOf());
+    }
+    public int getByteSize(SizeOf sizeof) {
+        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(relationManagerCache) + sizeof.sizeof(multilevel_cache);
+    }
+
     
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
@@ -175,12 +188,13 @@ public class BasicCloud implements Cloud, Cloneable {
         } catch (RuntimeException e) {
             String message;
             message = "Something went wrong while getting node with number " + nodenumber + " (does it exist?)\n" + Logging.stackTrace(e);
+
             log.error(message);
             throw new NotFoundException(message);
         }
         if (node==null) {
             String message;
-            message = "Node with number " + nodenumber + " does not exist.";
+            message = "Node with number '" + nodenumber + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         } else {
@@ -352,31 +366,31 @@ public class BasicCloud implements Cloud, Cloneable {
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             String message;
-            message = "Role " + roleName + " does not exist.";
+            message = "Role '" + roleName + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         }
         int n1=typedef.getIntValue(sourceManagerName);
         if (n1==-1) {
             String message;
-            message = "Source type " + sourceManagerName + " does not exist.";
+            message = "Source type '" + sourceManagerName + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         }
         int n2=typedef.getIntValue(destinationManagerName);
         if (n2==-1) {
             String message;
-            message = "Destination type " + destinationManagerName
-                      + " does not exist.";
+            message = "Destination type '" + destinationManagerName
+                      + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         }
         RelationManager rm=getRelationManager(n1,n2,r);
         if (rm==null) {
             String message;
-            message = "Relation manager from " + sourceManagerName + " to "
-                      + destinationManagerName + " as " + roleName
-                      + " does not exist.";
+            message = "Relation manager from '" + sourceManagerName + "' to ;"
+                      + destinationManagerName + "' as '" + roleName
+                      + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         } else {
@@ -388,14 +402,14 @@ public class BasicCloud implements Cloud, Cloneable {
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             String message;
-            message = "Role " + roleName + " does not exist.";
+            message = "Role '" + roleName + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         }
         RelationManager rm=getRelationManager(r);
         if (rm==null) {
             String message;
-            message = "Relation manager for " + roleName + " does not exist.";
+            message = "Relation manager for '" + roleName + "' does not exist.";
             log.error(message);
             throw new NotFoundException(message);
         } else {
@@ -671,19 +685,8 @@ public class BasicCloud implements Cloud, Cloneable {
         }
 
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
-        if (searchDir!=null) {
-            searchDir = searchDir.toUpperCase();
-            if ("DESTINATION".equals(searchDir)) {
-                search = ClusterBuilder.SEARCH_DESTINATION;
-            } else if ("SOURCE".equals(searchDir)) {
-                search = ClusterBuilder.SEARCH_SOURCE;
-            } else if ("BOTH".equals(searchDir)) {
-                search = ClusterBuilder.SEARCH_BOTH;
-            } else if ("ALL".equals(searchDir)) {
-                search = ClusterBuilder.SEARCH_ALL;
-            } else if ("EITHER".equals(searchDir)) {
-                search = ClusterBuilder.SEARCH_EITHER;
-            }
+        if (searchDir != null) {
+            search = ClusterBuilder.getSearchDir(searchDir);
         }
 
         Vector snodes = tagger.Values("NODES");
