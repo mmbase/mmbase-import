@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.1 2004-04-19 16:38:59 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.2 2004-04-20 10:53:09 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -37,13 +37,13 @@ public class ClassLogin extends ContextLoginModule {
         if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
         
         
-        String configValue = getModuleValue(userName);
+        String configValue = getModuleValue(userName, null);
         if(configValue == null) {
-            log.info("user with name:" + userName + " doesnt have a value for this module");
+            log.info("No user with name:" + userName);
             return null;
         }
         
-        Rank rank= getRank(userName);
+        Rank rank= getRank(userName, null);
         if(rank == null) {
             log.warn( "expected a rank for user with the name:" + userName + ", canceling a valid login due to the fact that the rank attribute wasnt set");
             return null;
