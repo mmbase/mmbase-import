@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.3 2002-05-27 09:50:47 pierre Exp $
+ * @version  $Id: validator.js,v 1.4 2002-06-28 12:48:22 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -153,11 +153,10 @@ function validateElement_validator(el, silent) {
             }
             if (err.length == 0) {
                 form.elements[id].value = Math.round(ms/1000); // - (60*d.getTimezoneOffset()));
-//alert(form.elements[id].value + " = " + day + " " + month + " " + year + " " + hours + ":" + minutes);
             }
             break;
 
-        case "upload":
+        case "binary":
             alert(el.outerHTML);
             break;
     }
