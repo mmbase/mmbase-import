@@ -1,4 +1,4 @@
-/* -*- tab-width: 4 -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * It can signal a specific remote builder node using HTTP GET.
  *
  * @rename Http
-  * @version $Id: http.java,v 1.15 2003-03-10 11:50:23 pierre Exp $
+  * @version $Id: http.java,v 1.16 2003-03-17 11:30:18 kees Exp $
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {
@@ -94,7 +94,7 @@ public class http implements ProtocolDriver {
                 try {
                         Socket connect=new Socket(remoteHost,remotePort);
                         PrintStream out=new PrintStream(connect.getOutputStream());
-                        DataInputStream in=new DataInputStream(connect.getInputStream());
+                        BufferedReader in=new BufferedReader(new InputStreamReader(connect.getInputStream()));
                         log.debug("signalRemoteNode("+number+","+builder+","+ctype+"): Requesting " + builder
                                 + " node " +number+" in XML format from " + remoteHost + ":" + remotePort
                                     +" using GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
