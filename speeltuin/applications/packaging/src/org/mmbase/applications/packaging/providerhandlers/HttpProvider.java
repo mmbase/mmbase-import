@@ -239,7 +239,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             // ignoring errors since well that servers are down is
             // not a error in this concept.
             log.error("can't get sharedpackagefile : " + url);
-            e.printStackTrace();
+            //e.printStackTrace();
             setState("down");
         }
     }
