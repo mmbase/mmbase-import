@@ -135,7 +135,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
     }
     
     public Node getNode(String id) throws JspTagException {
-        throw new JspTagException("Cannot get Nodes directly from Cloud (use a group tag)");
+        throw new JspTagException("Cannot get Nodes directly from Cloud (use a context tag)");
     }
 
     public String getId() {
