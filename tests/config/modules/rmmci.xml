@@ -4,7 +4,7 @@
   <status>active</status>
   <classfile>org.mmbase.module.RemoteMMCI</classfile>
   <properties>
-   <property name="port">1111</property>
+   <property name="port">1221</property>
    <property name="bindname">remotecontext</property>
    <property name="RMIRegistryServer"></property>
   </properties>

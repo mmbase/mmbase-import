@@ -3,7 +3,7 @@
 <contextconfig>
   <global>
     <allowed operation="read" />    
-  </global> -->
+  </global>
 
   <loginmodules>
     <module name="anonymous" class="org.mmbase.security.implementation.context.AnonymousLogin" />
