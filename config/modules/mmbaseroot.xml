@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <!--
-    The MMBaseRoot module is used to configure the basic properties of mmbase.
+		The MMBaseRoot module is used to configure the basic properties of mmbase.
 -->
 <module maintainer="mmbase.org" version="0">
 
-  <!-- <status>
-  This module is always active.
-  MMBase will not run without it.
-  -->
-  <status>active</status>
+	<!-- <status>
+	This module is always active.
+	MMBase will not run without it.
+	-->
+	<status>active</status>
 
-  <classfile>org.mmbase.module.core.MMBase</classfile>
+	<classfile>org.mmbase.module.core.MMBase</classfile>
 
-  <!-- <properties>
-  You can define properties to be used by the classfile.
-  The properties described here are mandatory.
-  -->
-  <properties>
-	
+	<!-- <properties>
+	You can define properties to be used by the classfile.
+	The properties described here are mandatory.
+	-->
+	<properties>
+
 	<!--
 	name="machinename" defines the name that is used in the mmbase cluster,
 	it is used for the mmservers objects. Make sure that this is different
@@ -30,11 +30,11 @@
 	<!--
 	name="storagemanagerfactory" defines what factory to use for accessing the storage devices.
 	Currently. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices
-        using JDBC. 
-        Uncomment this property to use the storagemanagerfactory code, rather than te old (soon to be depricated) 
+				using JDBC.
+				Uncomment this property to use the storagemanagerfactory code, rather than te old (soon to be depricated)
 	support classes.
 	-->
-	<!-- property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property -->
+	<property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
 
 	<!--
 	name="database" defines which database we are using as defined in your config
@@ -50,14 +50,14 @@
 	** remark : more database are supported or are easy to support, check
 	www.mmbase.org's howto's on this we will complete this list
 	as soon as possble **
-        
-            MyQSL:          mysql
-            PostgrSQL:      postgresql71
-            HyperSonic:     hypersonic
+
+						MyQSL:          mysql
+						PostgrSQL:      postgresql71
+						HyperSonic:     hypersonic
 	-->
-        <!--
-            TODO: Why is this setting not in the jdbc.xml?
-        -->
+				<!--
+						TODO: Why is this setting not in the jdbc.xml?
+				-->
 	<!-- property name="database">mysql</property -->
 
 	<!--
@@ -65,9 +65,9 @@
 	eachother this defines what 'channel' we are talking to its now set
 	to the default local network so unless you know what you are doing
 	leave it to ALL-SYSTEMS.MCAST.NET.
-        
-        When you want to disable the communication between different MMBase-instances,
-        (log message builder xxx not found, can be annoying), leave the value empty:
+
+				When you want to disable the communication between different MMBase-instances,
+				(log message builder xxx not found, can be annoying), leave the value empty:
 	else use a multicat IP address like this
 	<property name="multicasthost">224.0.0.1</property>
 	-->
@@ -79,7 +79,7 @@
 	your network is allready using multicast when you have problems.
 	-->
 	<property name="multicastport">16080</property>
-	
+
 	<!--
 	name="host" the host or ip number of the machine this mmbase node is
 	running on. Its important that this name is set correctly because its
@@ -124,21 +124,21 @@
 	-->
 	<property name="language">nl</property>
 
-	<!-- 
-	name="encoding" 
+	<!--
+	name="encoding"
 
 	The encoding to be used in the database (if the database layer
 	needs to know), and for use as default for the pages.  Recommended
 	is 'UTF-8', since this can be used for virtually every language on
 	the world, and is a superset of ASCII.
-	
+
 	Default though, it is ISO-8859-1, to ensure backwards
 	compatibility. Perhaps this will change to UTF-8 once this is
-	tested well.  
+	tested well.
 	-->
-        <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get urf-8 -->
+				<!-- since, when not mentioned it will be ISO-8859-1, all new systems will get urf-8 -->
 	<property name="encoding">UTF-8</property>
-	
-  </properties>
+
+	</properties>
 </module>
 
