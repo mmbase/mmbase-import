@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.35 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.36 2005-03-24 13:41:30 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -337,7 +337,11 @@ public class ContentTag extends LocaleTag  {
         pageContext.setAttribute(ESCAPER_KEY, esc);
     }
     protected void unsetWriteEscaper() {
-        pageContext.setAttribute(ESCAPER_KEY, prevEscaper);
+        if (prevEscaper == null) {
+            pageContext.removeAttribute(ESCAPER_KEY);
+        } else {
+            pageContext.setAttribute(ESCAPER_KEY, prevEscaper);
+        }
     }
 
 
