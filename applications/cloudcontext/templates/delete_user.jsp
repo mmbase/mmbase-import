@@ -10,7 +10,7 @@
 
   <mm:node id="user" referid="user">
     <h1><mm:field name="gui()" /></h1>
-    Deleted user <mm:field name="gui()" />
+    <%= getPrompt(m, "deleteduser")%> <mm:field name="gui()" />
     <mm:deletenode deleterelations="true" />
   </mm:node>
   

@@ -21,12 +21,12 @@
      </mm:fieldlist>
      <input type="hidden" name="group" value="new" />
     <tr>
-     <td>Create associated security context</td>
+     <td><%=getPrompt(m, "createassociatedcontext")%></td>
      <td>
       <input type="checkbox" name="createcontext" />
       <input name="contextname" />
       </tr>
-      <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
+      <tr><td><input type="submit"  name="submit" value="<%=getPrompt(m, "submit")%>" /></td></tr>
    </table>
    </form>
   </mm:cloud>

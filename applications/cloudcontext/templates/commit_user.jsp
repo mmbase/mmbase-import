@@ -60,20 +60,20 @@
   
   <%@include file="commitGroupOrUserRights.jsp" %>
 </mm:context>
-<h1><mm:field name="gui()" /> (commited)</h1>
+<h1><mm:field name="gui()" /> (<%=getPrompt(m, "commited")%>)</h1>
 <%@include file="edit_user.form.jsp" %>
 </mm:node>
 
 
 <% } catch (org.mmbase.storage.StorageException se) { %>
 <p>
-  Error. Perhaps you tried to create a user with known user name?
+  <%=getPrompt(m, "commitusererror")%>
 </p>
 <p>
    Storage error <%= se.getMessage() %>.
 </p>
 <p>
-  <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_users.jsp</mm:param></mm:url>">back</a>
+  <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_users.jsp</mm:param></mm:url>"><%=getPrompt(m, "back")%></a>
 </p>
 <% } %>
 

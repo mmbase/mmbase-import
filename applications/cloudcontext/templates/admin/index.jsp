@@ -18,7 +18,7 @@
         <table>
           <tr>
             <td>
-              Read from
+              Read security configuration from
             </td>
             <td>
               <input type="text" name="readfrom" value="<%=request.getRealPath("/")%>WEB-INF/config/security/context/config.xml" />

@@ -32,8 +32,9 @@
         <tr><td><%=getPrompt(m, "name")%>:</td><td><input type="text" name="username"></td></tr>
         <tr><td><%=getPrompt(m, "password")%>:</td><td><input type="password" name="password"></td></tr>
         <!-- tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr-->
-        <tr><td /><td><input type="submit" name="command" value="login"></td></tr>
+        <tr><td /><td><input type="submit" name="submit" value="<%=getPrompt(m, "submit")%>" /></td></tr>
         <input type="hidden" name="language" value="<mm:write referid="language" />" />
+        <input type="hidden" name="command" value="login" />
       </form>
     </table>
 </body>

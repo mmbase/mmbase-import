@@ -21,7 +21,7 @@
     <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasegroups" inverse="true">
-    You are not allowed to create new groups.
+      <%=getPrompt(m, "notallowedtocreategroups")%>
   </mm:maycreate>
 </p>
 

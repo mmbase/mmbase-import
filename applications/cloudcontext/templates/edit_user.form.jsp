@@ -75,7 +75,7 @@
           <mm:param name="operation"    value="write" />
           <mm:param name="usertocheck"  value="$usertocheck" />
           <mm:booleanfunction inverse="true" name="may">
-            WARN. User may not edit nodes created by himself.
+            <%=getPrompt(m, "maynoteditself")%>.
           </mm:booleanfunction>
         </mm:functioncontainer>
       </mm:node>
