@@ -1474,7 +1474,21 @@ Version: MMBase build ${version}
     <mkdir dir="${build.dir}/rmmcitmp"/>
     <unjar src="${servlet.jar}" dest="${build.dir}/rmmcitmp" />
     <unjar src="${xml-apis.jar}" dest="${build.dir}/rmmcitmp" />
-    <jar jarfile="${build.dir}/mmbase/rmmci.jar">
+    <echo file="${build.dir}/rmmcitmp/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase Community
+URL: http://www.mmbase.org
+Comment: The Remote MMBase Cloud Interfaces to connect to MMBase.
+Version: ${distro}.${version}
+Distribution: ${distro}
+Build-by: ${ant.version}
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+
+    <jar jarfile="${build.dir}/mmbase/rmmci.jar"
+   	     manifest="${build.dir}/rmmcitmp/manifest.mf"
+    >
        <fileset dir="${build.dir}/classes">
         <include name="org/mmbase/bridge/*.class"/>
         <include name="org/mmbase/bridge/remote/**"/>
