@@ -30,10 +30,10 @@ import org.mmbase.util.logging.Logging;
  * searchMultiLevelVector()}.
  * Other public methods in this builder function to handle the requests for data obtained from this particular node.
  *
- * @application SCAN
+ * @sql should be dropped when the core moves to use of SearchQuery
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.39 2004-10-01 12:32:17 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.40 2004-10-06 12:24:31 pierre Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
