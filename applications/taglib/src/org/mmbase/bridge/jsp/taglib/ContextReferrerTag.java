@@ -167,6 +167,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
     }
 
+    protected Integer getAttributeInteger(String i) throws JspTagException {
+        try {
+            i = getAttributeValue(i);
+            return new Integer(i);
+        } catch (NumberFormatException e) {
+            throw new JspTagException(i + " is not an integer value ");
+        }
+    }
+
     /**
      * Finds a parent tag by class and id. This is a base function for
      * 'getContext', but it is handy in itself, so also available for
@@ -267,11 +276,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * String. This is not always a simple 'toString'. For example a
      * getString on a Node will return the number, which also uniquely
      * identifies it.
+     *
+     * If the object is 'not present' then it returns an empty string.
      */
 
     protected String getString(String key) throws JspTagException {
         Object o = getObject(key);
-        if (o == null) return null;
+        if (o == null) return "";
         if (o instanceof Node) {
             Node n = (Node) o;
             return "" + n.getNumber();
