@@ -25,7 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-# $Id: modules,v 1.26 2004-03-10 22:05:18 keesj Exp $
+# $Id: modules,v 1.27 2005-03-16 14:55:46 michiel Exp $
 
 
 # the mmbase java sources and resources
@@ -48,6 +48,9 @@ tests tests
 
 # Supported applications
 applications applications
+
+# Third party applications
+contributions contributions
 
 # unofficial things
 speeltuin speeltuin
