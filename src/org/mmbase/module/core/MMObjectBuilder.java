@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.128 2002-04-16 14:59:56 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.129 2002-04-16 16:34:36 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2413,13 +2413,12 @@ public class MMObjectBuilder extends MMTable {
      * If this fails, the value set with {@link #setDutchSName} is used instead.
      * @returns the 'dutch' short name
      * @deprecated use {@link #getSingularName} instead.
-     * @deprecated This function is so stupid that it is twice deprecated
      */
-    private String getDutchSName() {
+    public String getDutchSName() {
         if (singularNames!=null) {
             String tmp=(String)singularNames.get(mmb.getLanguage());
             if (tmp==null) {
-               tmp=(String)singularNames.get("nl");
+               tmp=(String)singularNames.get("en");
             }
             return tmp;
         }
