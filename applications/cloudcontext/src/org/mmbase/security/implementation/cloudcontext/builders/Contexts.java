@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.4 2003-06-16 17:35:34 michiel Exp $
+ * @version $Id: Contexts.java,v 1.5 2003-06-17 09:32:18 michiel Exp $
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class.getName());
@@ -69,7 +69,7 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
-     * Implements check function with same arguments of Authorisation security implementation
+     * Implements check function with same arguments of Authorisation security implementation.     
      * @see Verify#check(user, nodeId, sourceNodeI, destinationNodeI, operation);
      */
 
@@ -95,9 +95,10 @@ public class Contexts extends MMObjectBuilder {
                 log.debug("May not increase rank of other user to rank higher than own rank");
                 return false;
             }
-            if (operation == Operation.CREATE) { // may only create such a relation if there are none now.
-                List ranks =  source.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
+            if (operation == Operation.CREATE) { 
+                List ranks =  source.getRelatedNodes("mmbaseranks", "rank", ClusterBuilder.SEARCH_DESTINATION);
                 if (ranks.size() > 0) {
+                    log.debug("May only create relation to rank if there are none now.");
                     return false;
                 }
             }
@@ -227,20 +228,27 @@ public class Contexts extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public MMObjectNode setContext(User user, int i, String s) throws SecurityException {
-        MMObjectNode node = getNode(i);
+    public MMObjectNode setContext(User user, int nodeId, String context) throws SecurityException {
+        MMObjectNode node = getNode(nodeId);
+
+        // during creation of a node, the context is set twice!
+        // (in createNode of BasicNodeManager, but also in create of Authorisation implemetentation called
+        // via basicclou .createSecurityInfo(getNumber());)
+        // so not changing must be allowed always.
+        if (node.getStringValue("owner").equals(context)) return node;
+
         if (node == null) {
-            throw new SecurityException("node #" + i + " not found");
+            throw new SecurityException("node #" + nodeId + " not found");
         }
         if (node.getBuilder() instanceof Groups) { 
             node.setValue("owner", "system");
             node.commit();
             return node;
         }
-        if (!getPossibleContexts(user, i).contains(s)) {
-            throw new SecurityException("could not set the context to " + s + " for node #" + i + "(context name:" + s + " is not a valid context)");
+        if (!getPossibleContexts(user, nodeId).contains(context)) {
+            throw new SecurityException("could not set the context from '" + node.getStringValue("owner") + "' to '" + context + "' for node #" + nodeId + "(context name:" + context + " is not a valid context)");
         }
-        node.setValue("owner", s);
+        node.setValue("owner", context);
         node.commit();
         return node;
     }
@@ -250,6 +258,24 @@ public class Contexts extends MMObjectBuilder {
      * @see Verify#getPossibleContexts
      */
     public Set getPossibleContexts(User user, int nodeId) throws SecurityException {
+        if (user.getRank().getInt() >= Rank.ADMIN_INT) {
+            log.debug("admin may do everything");
+            Enumeration enumeration = search(null);  // list all (readable) Contextes simply..
+            
+            Set hashSet = new HashSet();
+            while (enumeration.hasMoreElements()) {
+                MMObjectNode context = (MMObjectNode) enumeration.nextElement();
+                if (mayDo(user, context.getNumber(), Operation.READ )) {
+                    hashSet.add(context.getStringValue("name"));
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("context with name:" + context.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
+                    }
+                }
+            }
+            return hashSet;
+        }        
+
         MMObjectNode node = getNode(nodeId);
         if (node == null) {
             throw new SecurityException("node #" + nodeId + " not found");
@@ -257,11 +283,13 @@ public class Contexts extends MMObjectBuilder {
         if (node.getBuilder() instanceof Groups) { 
             return new HashSet();  // why?
         }
-        Enumeration enumeration = search(null);  // list all (readable) Contextes simply..
+        
+        List possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", ClusterBuilder.SEARCH_DESTINATION);
 
         Set hashSet = new HashSet();
-        while (enumeration.hasMoreElements()) {
-            MMObjectNode context = (MMObjectNode) enumeration.nextElement();
+        Iterator i = possibleContexts.iterator();
+        while (i.hasNext()) {
+            MMObjectNode context = (MMObjectNode) i.next();
             if (mayDo(user, context.getNumber(), Operation.READ )) {
                 hashSet.add(context.getStringValue("name"));
             } else {
@@ -270,6 +298,7 @@ public class Contexts extends MMObjectBuilder {
                 }
             }
         }
+
         return hashSet;
     }
 
