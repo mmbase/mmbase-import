@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.34 2000-11-08 16:48:12 pierre Exp $
+	$Id: HtmlBase.java,v 1.35 2000-11-19 00:24:48 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.34  2000/11/08 16:48:12  pierre
+	pierre: removeFunctions now recognizes underscores in tablenames
+	
 	Revision 1.33  2000/11/07 12:37:56  vpro
 	Rico: fixed reload bug
 	
@@ -131,7 +134,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.34 2000-11-08 16:48:12 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.35 2000-11-19 00:24:48 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -140,7 +143,7 @@ public class HtmlBase extends ProcessorModule {
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 	private int multilevel_cachesize=150;
 	private LRUHashtable multilevel_cache;
-	private boolean cachedebug=true;
+	private boolean cachedebug=false;
 
 	MMBase mmb=null;
 
