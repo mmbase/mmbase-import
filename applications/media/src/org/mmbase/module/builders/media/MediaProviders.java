@@ -39,6 +39,7 @@ public class MediaProviders extends MMObjectBuilder {
             return (String)properties.get(format);
         } else if(properties.containsKey("default")) {
             // media format to protocol not specifies, so take default from properties.
+            log.warn("No protocol for media format "+format+" found, using default.");
             return (String)properties.get("default");
         } else {
             // Even no default protocol is specifies, give error.
@@ -53,6 +54,7 @@ public class MediaProviders extends MMObjectBuilder {
     public String getProtocol(MMObjectNode mediasource) {
         // Later check extra protocol objects to evaluate the protocol.
         // At this point just use a list specified in mediaproviders.xml.
-        return getDefaultProtocol((String)mediasource.getStringValue("str(format)"));
+        int formatnr = mediasource.getIntValue("format");
+        return getDefaultProtocol(MediaSources.convertNumberToFormat(formatnr));
     }
 }
