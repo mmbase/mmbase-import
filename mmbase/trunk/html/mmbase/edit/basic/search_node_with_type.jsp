@@ -77,6 +77,7 @@
 <a name="searchresult" />
 <table width="100%" class="list"><!-- list table -->      
   <tr align="left"><!-- header -->
+         <th>Gui()</th>
     <mm:fieldlist nodetype="$node_type" type="list">
          <th><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></th>
     </mm:fieldlist>
@@ -88,6 +89,7 @@
                 jspvar="sn"
                 constraints="$where">
   <tr>
+        <td class="listdata"><mm:field name="gui()" />&nbsp;</td>
   <mm:fieldlist type="list">
         <td class="listdata"><mm:fieldinfo type="guivalue" />&nbsp;</td>
    </mm:fieldlist>
