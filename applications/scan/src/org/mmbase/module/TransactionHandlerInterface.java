@@ -14,8 +14,8 @@ import org.mmbase.util.*;
 /**
  * interface for TransactionHandler
  *
- * @author  $Author: vpro $ 
- * @version $Revision: 1.1 $ $Date: 2000-10-13 09:39:26 $
+ * @author  $Author: install $ 
+ * @version $Revision: 1.2 $ $Date: 2000-10-25 14:35:21 $
  */
 public interface TransactionHandlerInterface {
 	
