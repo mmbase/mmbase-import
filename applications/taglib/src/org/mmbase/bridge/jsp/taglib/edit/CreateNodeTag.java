@@ -12,10 +12,9 @@ package org.mmbase.bridge.jsp.taglib.edit;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
-import javax.servlet.jsp.tagext.BodyTag;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
 
 import org.mmbase.bridge.jsp.taglib.NodeTag;
 
@@ -27,38 +26,87 @@ import org.mmbase.util.logging.Logging;
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.14 2003-06-06 10:03:19 pierre Exp $
+ * @version $Id: CreateNodeTag.java,v 1.15 2003-08-07 17:20:09 michiel Exp $
  */
 
-public class CreateNodeTag extends NodeTag implements BodyTag {
+public class CreateNodeTag extends NodeTag {
 
-    private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class);
 
     private Attribute nodeManager = Attribute.NULL;
+    private Attribute makeUniques = Attribute.NULL;
 
     public void setType(String t) throws JspTagException {
         nodeManager = getAttribute(t);
     }
 
+    public void setMakeuniques(String u) throws JspTagException {
+        makeUniques = getAttribute(u);
+    }
+
 
     public int doStartTag() throws JspTagException{
-        Node node;
-        NodeManager nm;
-        nm = getCloud().getNodeManager(nodeManager.getString(this));
+        NodeManager nm = getCloud().getNodeManager(nodeManager.getString(this));
         if (nm == null) {
             throw new JspTagException("Could not find nodemanager " + nodeManager.getString(this));
         }
-        node = nm.createNode();
+        Node node = nm.createNode();
         if (node == null) {
             throw new JspTagException("Could not create node of type " + nm.getName());
+        }
+        if (makeUniques.getBoolean(this, false)) {
+            // smart stuff to avoid unique key constraint violiations
+            FieldIterator fields = nm.getFields().fieldIterator();
+            while (fields.hasNext()) {
+                Field field = fields.nextField();
+                log.debug("checking field " + field); 
+                if (field.getType() == Field.TYPE_NODE) continue; // never mind, may be null
+                // TODO: there is NO field.isNullable(), but NODE fields should be nullable and also 'owner' is a NODE field (which should never be touched)
+                if (field.isUnique()) {
+                    Object baseValue = node.getValue(field.getName());
+                    int seq = 0;
+                    if (baseValue == null) {
+                        if (field.getType() == Field.TYPE_STRING) {
+                            baseValue = field.getGUIName();
+                        } else {
+                            baseValue = new Integer(seq);
+                        }
+                    }
+                    boolean found = false;
+                    while (! found) {
+                        NodeQuery query = nm.createQuery();                        
+                        Constraint cons;
+                        if (field.getType() == Field.TYPE_STRING) {
+                            cons = query.createConstraint(query.getStepField(field), (String) baseValue + seq);
+                        } else {
+                            cons = query.createConstraint(query.getStepField(field), new Integer(seq));
+                        }
+                        query.setConstraint(cons);
+                        if (nm.getList(query).size() == 0) {
+                            found = true;
+                            break;
+                        }
+                        seq++;
+                    }
+                    if (log.isDebugEnabled()) {
+                        log.debug("Setting field " + field.getName() + " to unique value " + baseValue + seq);
+                    }
+                    if (field.getType() == Field.TYPE_STRING) {
+                        node.setValue(field.getName(), (String) baseValue + seq);
+                    } else {
+                        node.setIntValue(field.getName(), seq);
+                    }
+                }
+            }
         }
         setNodeVar(node);
         setModified();
         if (log.isDebugEnabled()) {
-            log.debug("created node " + node.getValue("gui()"));
+            log.debug("created node " + node.getNumber() + ": " + node.getValue("gui()"));
         }
         fillVars();
         return EVAL_BODY_BUFFERED;
     }
+
 
 }
