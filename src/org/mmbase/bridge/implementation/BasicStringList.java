@@ -10,16 +10,18 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.util.Collection;
+import java.util.NoSuchElementException;
 import org.mmbase.bridge.StringList;
 import org.mmbase.bridge.StringIterator;
 import org.mmbase.bridge.BridgeException;
-import java.util.Collection;
-import java.util.NoSuchElementException;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of Clouds
  */
 public class BasicStringList extends BasicList implements StringList {
+    private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());
 
     BasicStringList(Collection c) {
     	super(c);
@@ -41,14 +43,20 @@ public class BasicStringList extends BasicList implements StringList {
 
         public void set(Object o) {
             if (! (o instanceof String)) {
-                throw new BridgeException("Object must be of type String" );
+                String message;
+                message = "Object must be of type String.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.set(index, o);
         }
 
         public void add(Object o) {
             if (! (o instanceof String)) {
-                throw new BridgeException("Object must be of type String" );
+                String message;
+                message = "Object must be of type String.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.add(index, o);
         }

@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class represents a virtual node type information object.
@@ -24,6 +26,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Pierre van Rooden
  */
 public class VirtualNodeManager extends BasicNodeManager {
+    private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
 
     VirtualNodeManager(MMObjectNode node, Cloud cloud) {
         this.cloud=(BasicCloud)cloud;
@@ -62,8 +65,10 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and creating nodes is not allowed.
      */
     public Node createNode() {
-        throw new BridgeException("Cannot create a node from a virtual node "
-                                  + "type");
+        String message;
+        message = "Cannot create a node from a virtual node type.";
+        log.error(message);
+        throw new BridgeException(message);
     }
 
 	/**
@@ -71,7 +76,9 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and searching is not allowed.
      */
     public NodeList getList(String where, String sorted, boolean direction) {
-        throw new BridgeException("Cannot perform search on a virtual node "
-                                  + "type");
+        String message;
+        message = "Cannot perform search on a virtual node type.";
+        log.error(message);
+        throw new BridgeException(message);
     }
 }

@@ -9,12 +9,11 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import java.util.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  *
@@ -22,8 +21,8 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  */
 public class BasicRelation extends BasicNode implements Relation {
-
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
+
     private RelationManager relationManager = null;
     private int snum = 0;
     private int dnum = 0;
@@ -69,8 +68,11 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public void setSource(Node node) {
         if (node.getCloud() != cloud) {
-            throw new BridgeException("Source and relation are not in the same "
-                                      + "transaction or from different clouds");
+            String message;
+            message = "Source and relation are not in the same transaction or "
+                      + "from different clouds.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         edit(ACTION_EDIT);
         ((BasicNode)node).edit(ACTION_LINK);
@@ -87,9 +89,11 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public void setDestination(Node node) {
         if (node.getCloud() != cloud) {
-            throw new BridgeException("Destination and relation are not in the"
-                                      + " same transaction or from different"
-                                      + " clouds");
+            String message;
+            message = "Destination and relation are not in the same "
+                      + "transaction or from different clouds.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         edit(ACTION_EDIT);
         ((BasicNode)node).edit(ACTION_LINK);
@@ -123,13 +127,14 @@ public class BasicRelation extends BasicNode implements Relation {
         int rnumber = getNode().getIntValue("rnumber");
         if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
             if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
-        throw new BridgeException("Source and/or Destination node are "
-                                  + "not of the correct type. ("
-                                  + cloud.getNode(snumtype).getValue("name")
-                                  + ","
-                                  + cloud.getNode(dnumtype).getValue("name")
-                                  + ","
-                                  + cloud.getNode(rnumber).getValue("sname"));
+                String message;
+                message = "Source and/or Destination node are not of the "
+                          + "correct type. ("
+                          + cloud.getNode(snumtype).getValue("name") + ","
+                          + cloud.getNode(dnumtype).getValue("name") + ","
+                          + cloud.getNode(rnumber).getValue("sname") + ").";
+                log.error(message);
+                throw new BridgeException(message);
             }
         }
         
