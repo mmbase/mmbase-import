@@ -86,11 +86,16 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
         return EVAL_BODY_BUFFERED;
     }
 
+
+    protected String getPage() throws JspTagException {
+        return page.getString(this);
+    }
+
     /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        StringBuffer show = new StringBuffer(page.getString(this));
+        StringBuffer show = new StringBuffer(getPage());
         if (show.toString().equals("")) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
             show.append(new java.io.File(req.getRequestURI()).getName());
