@@ -7,10 +7,10 @@
 
 <linkchecker>
 	<!-- Who is the sender of the mail? -->
-	<from>info@mmbase.org</from>
+	<from>linkchecker@mmbase.org</from>
 
 	<!-- To who do you want to send the list of incorrect urls? -->
-	<to>rob@mmbase.org</to>
+	<to>youremail@mmbase.org</to>
 </linkchecker>
 
 
