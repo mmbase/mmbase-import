@@ -26,6 +26,7 @@ public class NodeInfoTag extends NodeReferrerTag {
 
     private static final int TYPE_NODEMANAGER    = 0;
     private static final int TYPE_GUINODEMANAGER = 1;
+    private static final int TYPE_NODENUMBER= 2;
 
     private int type;
 
@@ -36,6 +37,8 @@ public class NodeInfoTag extends NodeReferrerTag {
             type = TYPE_NODEMANAGER;
         } else if ("guinodemanager".equalsIgnoreCase(t) || "guitype".equalsIgnoreCase(t)) {
             type = TYPE_GUINODEMANAGER;
+        } else if ("number".equalsIgnoreCase(t)) {
+            type = TYPE_NODENUMBER;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -57,6 +60,9 @@ public class NodeInfoTag extends NodeReferrerTag {
 
         // set node if necessary:
         switch(type) {
+        case TYPE_NODENUMBER:
+            show = ""+node.getNumber();
+            break;
         case TYPE_NODEMANAGER:
             show = node.getNodeManager().getName();
             break;
