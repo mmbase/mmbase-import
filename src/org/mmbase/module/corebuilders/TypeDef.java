@@ -154,7 +154,6 @@ public class TypeDef extends MMObjectBuilder {
 	}
 
 	public Object getValue(MMObjectNode node,String field) {
-		System.out.println("WWWWWWWWW="+node+" "+field);
 		if (field.equals("state")) {
 			int val=node.getIntValue("state");
 
@@ -168,7 +167,6 @@ public class TypeDef extends MMObjectBuilder {
 			return(""+val);
 		} else if (field.equals("dutchs(name)")) {
 			String name=node.getStringValue("name");
-			System.out.println("WWWWWWWWW40="+name);
 			return(getDutchSName(name));
 		}
 		return(null);
