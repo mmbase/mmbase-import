@@ -18,7 +18,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.Source;
 
 /**
- * Has to live in a formatter tag.
+ * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
  */
@@ -31,16 +31,29 @@ public class XsltTag extends ContextReferrerTag  {
     private String ext;
     private FormatterTag formatter;
 
+
+    /**
+     * If you use the extends attribute in stead of inline <xsl:import />
+     * then the caches can be invalidated (without parsing of xslt beforehand)
+     *
+     * @todo This has to be implemented.
+     */
     public void setExtends(String e) throws JspTagException {
         ext = getAttributeValue(e);
     }
 
     public int doStartTag() throws JspTagException{
-
         // Find the parent formatter.
         formatter = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
         if (formatter == null && getId() == null) {
             throw new JspTagException("No parent formatter found");
+            // living outside a formatter tag can happen the xslttag has an id.
+            // then it can be used as a 'constant'.
+            // like this:
+            //  <mm:xslt id="bla">....</mm:xslt>
+            //  <mm:formatter>xxx <mm:xslt referid="bla" /></mm:formatter>
+            //  <mm:formatter>yyy <mm:xslt referid="bla" /></mm:formatter>
+
         }
         return EVAL_BODY_BUFFERED;
     }
@@ -60,11 +73,11 @@ public class XsltTag extends ContextReferrerTag  {
                 throw new JspTagException("Cannot use body when using 'referid' attribute'.");
             }
         }
-        log.debug("Found xslt: " + xsltString);
+        if (log.isDebugEnabled()) log.debug("Found xslt: " + xsltString);
         if (getId() != null) {
             getContextTag().register(getId(), xsltString);
         }
-        if (formatter != null) {
+        if (formatter != null) { 
             String totalString;
             if (xsltString.startsWith("<xsl:stylesheet")) {
                 totalString = xsltString;
@@ -75,7 +88,7 @@ public class XsltTag extends ContextReferrerTag  {
                     "\n</xsl:stylesheet>";
             }
             Source src = new StreamSource(new java.io.ByteArrayInputStream(totalString.getBytes()));
-            src.setSystemId(xsltString);
+            src.setSystemId("string:" + xsltString.hashCode());
             formatter.setXsltSource(src);
         }
         return EVAL_PAGE;
