@@ -11,23 +11,14 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 /**
- * A Tag which (sometimes) needs to refer to a Writer can implement this
- * interface. For convenience, the implementation is in
- * ContextReferrer, but conceptually this is not really correct.
  *
  * @author Michiel Meeuwissen 
  **/
 
 public interface WriterReferrer {
-
     /**
-     * A WriterReferrer has a 'writer' attribute.
+     * Which writer to use
      */
-    public void setWriter(String w) throws JspTagException;
-
-    /**
-     * Returns the parent writer;
-     */
-    public Writer findWriter() throws JspTagException;
+    public void setWriter(String t) throws JspTagException;
 
 }

@@ -115,7 +115,7 @@ public class MMCI{
             DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFac.newDocumentBuilder();
             DOMImplementation dom= docBuilder.getDOMImplementation();
-            DocumentType doctype = dom.createDocumentType("mmci","//-//MMBase/DTD mmci 1.0//EN//","http://www.mmbase.org/dtd/mmci_1_0.dtd");
+            DocumentType doctype = dom.createDocumentType("mmci","-//MMBase/DTD mmci//EN","http://www.mmbase.org/dtd/mmci_1_0.dtd");
             Document doc = dom.createDocument(null,"mmci",doctype);
             MMCI.addDefaultBridgeClasses(doc.getDocumentElement(), doc);
             if (argv.length==1) {

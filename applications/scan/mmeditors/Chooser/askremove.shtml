@@ -23,14 +23,14 @@
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Editor.shtml" TARGET="_top">
+			<FORM METHOD="POST" ACTION="/mmeditors/Editor.shtml" TARGET="_top">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 				<SELECT NAME="PRC-CMD-STATE-REMOVENODE">
 				<OPTION VALUE="YES">$MOD-MMLANGUAGE-GET-yes
 				<OPTION VALUE="NO" SELECTED>$MOD-MMLANGUAGE-GET-no
 				</SELECT><BR>
-				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
+				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
 			</FORM>
 		</TD>
 	</TR>

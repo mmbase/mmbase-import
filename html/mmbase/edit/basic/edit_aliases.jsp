@@ -27,8 +27,7 @@
 <mm:aliaslist id="alias"> 
     <tr><td><mm:write /></td><td><a href="<mm:url referids="node_number">
          <mm:param name="delete_alias"><mm:write referid="alias" /></mm:param>
-	 </mm:url>">
- <span class="delete"></span><span class="alt">[delete]</span></a>
+	 </mm:url>"><img src="images/delete.gif" alt="[delete]" width="20" height="20" border="0" align="right"/></a></td></tr>
 </mm:aliaslist>
 </table>
 </td></tr>
@@ -36,7 +35,7 @@
 <input type="submit"  name="add" value="add" /></td>
 </td></tr>
 <tr><td><a href="<mm:url page="change_node.jsp" referids="node_number" />" >
-           <span class="previous"></span><span class="alt">[back to node]</span>
+         <img src="images/previous.gif" alt="[back to node]" width="20" height="20" border="0" align="left"/>
 		 </a></td></tr>
 </table>
 </form>

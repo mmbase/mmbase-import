@@ -11,7 +11,6 @@ package org.mmbase.util;
 
 import java.io.*;
 import java.util.*;
-import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.module.core.*;
 
 import org.mmbase.module.corebuilders.*;
@@ -268,14 +267,7 @@ public class XMLApplicationWriter  {
             String name=(String)bset.get("name");
             MMObjectBuilder bul=mmb.getMMObject(name);
             if (bul!=null) {
-                try {
-                    BuilderWriter builderOut=new BuilderWriter(bul);
-                    builderOut.setIncludeComments(true);
-                    builderOut.setExpandBuilder(true);
-                    builderOut.writeToFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml");
-                } catch (Exception ex) {
-                    log.error(Logging.stackTrace(ex));
-                }
+                XMLBuilderWriter.writeXMLFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml",bul);
             }
         }
     }

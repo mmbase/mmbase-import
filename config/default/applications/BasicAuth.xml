@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
 
@@ -6,7 +6,6 @@
 	  <builder maintainer="mmbase.org" version="2">people</builder>
 	  <builder maintainer="mmbase.org" version="2">authrel</builder>
 	  <builder maintainer="mmbase.org" version="2">typedef</builder>
-          <builder maintainer="mmbase.org" version="2">urls</builder>
 	</neededbuilderlist>	
 
 	<neededreldeflist>

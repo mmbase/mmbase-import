@@ -21,6 +21,11 @@
 			<BR>
 			Welcome to Runner the quick unzip & go version of the MMBase Content management system.<BR><BR>
 			This is runtime version aimed at end users of mmbase to allow people to use MMBase within minutes of downloading the system and get going. This version is for people who are oke with the bundled server and database for the other setups or if you want to  develop/change MMBase we advince you to use the MMDistro developers version also available on the <A HREF="http://www.mmbase.org">www.mmbase.org</A> site. That contains full sources and build tools.
+<br /><br />
+Please take some time to answer a few questions at: 
+<a href="http://www.mmbase.org/enquete" target="_ext">http://www.mmbase.org/enquete</a><br />
+This information will be used to improve MMBase.
+
 <BR><BR>
 If you run into problems you can get help from the following sources :<BR><BR>
 readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />

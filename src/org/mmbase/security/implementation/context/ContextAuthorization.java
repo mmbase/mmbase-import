@@ -9,38 +9,36 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.context;
 
+import org.mmbase.security.*;
+import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
+                                              // java.lang
+
+
 import java.util.*;
 import java.io.FileInputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
+
 import org.xml.sax.InputSource;
+
+import org.mmbase.module.core.MMObjectNode;
+
 import org.apache.xpath.XPathAPI;
 import org.apache.xerces.parsers.DOMParser;
 
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.security.*;
-import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
-                                              // java.lang
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-/**
- * Authorization based on a config
- * @javadoc
- *
- * @author Eduard Witteveen
- * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.19 2002-06-07 12:57:00 pierre Exp $
- */
+/** authorization based on a config*/
 public class ContextAuthorization extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(ContextAuthorization.class.getName());
     private Document 	    document;
     private ContextCache    cache= new ContextCache();
 
-    private HashMap 	    replaceNotFound = new HashMap();
-    private HashMap 	    userDefaultContexts = new HashMap();
+    private Map 	    replaceNotFound = new HashMap();
+    private Map 	    userDefaultContexts = new HashMap();
 
     protected void load() {
         log.debug("using: '" + configFile + "' as config file for authentication");
@@ -163,7 +161,7 @@ public class ContextAuthorization extends Authorization {
             }
         }
 
-        HashSet list;
+        Set list;
         synchronized(cache) {
             list = cache.contextGet(currentContext);
             if(list != null) {
@@ -214,14 +212,13 @@ public class ContextAuthorization extends Authorization {
         //  look which groups belong to this,...
         MMObjectNode node = getMMNode(nodeNumber);
         String context = node.getStringValue("owner");
-
+        
         return check(user, context, operation.toString());
     }
 
     private boolean check(UserContext user, int nodeNumber, String operation) throws SecurityException {
         return check(user, getContext(user, nodeNumber), operation);
     }
-
     private boolean check(UserContext user, String context, String operation) throws SecurityException {
         // look if we have this one already inside the positive cache...
         synchronized(cache) {
@@ -232,100 +229,96 @@ public class ContextAuthorization extends Authorization {
             }
         }
 
-        String xpath = "/contextconfig/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']";
-        Node foundContextNode=null;
+        String xpath;
+        xpath = "/contextconfig/contexts/context[@name='"+context+"']";
+        Node found;
         try {
-            log.debug("gonna execute the query:" + xpath );
-            foundContextNode = XPathAPI.selectSingleNode(document, xpath);
+            if (log.isDebugEnabled()) {
+                log.debug("gonna execute the query:" + xpath );
+            }
+            found = XPathAPI.selectSingleNode(document, xpath);
+            
+            if (found == null) { // fall back to default
+                log.warn("context with name :'" + context + "' was not found in the configuration " + configFile );
+                                
+                // retrieve the default context...
+                xpath = "/contextconfig/contexts/context[@name = ancestor::contexts/@default]";
+                
+                if (log.isDebugEnabled()) {
+                    log.debug("gonna execute the query:" + xpath + " on file : " + configFile);
+                }
+
+                found  = XPathAPI.selectSingleNode(document, xpath);
+                
+                if (found == null) {
+                    throw new SecurityException("Configuration error: Context " + context + " not found and no default context found either (change " + configFile + ")");
+                }
+
+                // put it in the cache
+                NamedNodeMap nnm = found.getAttributes();
+                Node defaultContextNode = nnm.getNamedItem("name");
+                String defaultContext = defaultContextNode.getNodeValue();
+
+                synchronized(replaceNotFound) { 
+                        replaceNotFound.put(context, defaultContext);
+                }
+            }
+
+            // found is not null now.
+            // now get the requested operation
+            
+            // now do the same query with the default context...
+            xpath = "operation[@type='" + operation + "']/grant";
+            if (log.isDebugEnabled()) { 
+                log.debug("gonna execute the query:" + xpath + " On " + found.toString());
+            }
+            NodeList grants = XPathAPI.selectNodeList(found, xpath);
+
+            if (log.isDebugEnabled()) {
+                log.debug("Found " + grants.getLength() + " grants on " + operation + " for context " + context) ;
+            }
+                      
+            Set allowedGroups = new HashSet();
+            for(int currentNode = 0; currentNode < grants.getLength(); currentNode++) {
+                Node contains = grants.item(currentNode);
+                NamedNodeMap nnm = contains.getAttributes();
+                Node groupNameNode = nnm.getNamedItem("group");
+                if (groupNameNode == null) {
+                    throw new SecurityException("Configuration error: 'grant' element must contain attribute 'group'");
+                }
+                allowedGroups.add(groupNameNode.getNodeValue());
+                if (log.isDebugEnabled()) {
+                    log.debug("the group "+groupNameNode.getNodeValue() +" is granted for context " + context);
+                }
+            }
+
+            boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
+            if (log.isDebugEnabled()) {
+                if (allowed) {
+                    log.debug("operation " + operation + " was permitted for user with id " + user);
+                } else {
+                    log.debug("operation " + operation + " was NOT permitted for user with id " + user);
+                }
+            }
+            
+            // put it in the cache
+            synchronized(cache) {
+                cache.rightAdd(operation, context, user.getIdentifier(), allowed);
+            }
+            
+            return allowed;
+
         } catch(javax.xml.transform.TransformerException te) {
-            log.error("error executing query: '"+xpath+"' ");
+            log.error("Error executing query.");
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
         }
-
-        // say our context isnt found... do the same query but now on the default context...
-        if(foundContextNode == null) {
-            // well our context wasnt found, give a warning...
-            log.warn("context with name :'"+context+"' was not found in the configuration.");
-
-            // retrieve the default context...
-            String defaultNodeXPath = "/contextconfig/contexts[@default]";
-            Node foundDefaultNode;
-            try {
-                log.debug("gonna execute the query:" + defaultNodeXPath + " on file : " + configFile);
-                foundDefaultNode = XPathAPI.selectSingleNode(document, defaultNodeXPath);
-            } catch(javax.xml.transform.TransformerException te) {
-                log.error("error executing query: '"+defaultNodeXPath+"' on file: '"+configFile+"'" );
-                log.error( Logging.stackTrace(te));
-                throw new java.lang.SecurityException("error executing query: '"+defaultNodeXPath+"' on file: '"+configFile+"'");
-            }
-            if (foundDefaultNode != null) {
-                NamedNodeMap nnm = foundDefaultNode.getAttributes();
-                Node defaultContextNode = nnm.getNamedItem("default");
-                String defaultContext = defaultContextNode.getNodeValue();
-                if (log.isDebugEnabled()) {
-                    log.debug("context with name: " + context + " uses the default context: " + defaultContext);
-                }
-                // now do the same query with the default context...
-                xpath = "/contextconfig/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']";
-                try {
-                    log.debug("gonna execute the query:" + xpath );
-                    foundContextNode = XPathAPI.selectSingleNode(document, xpath);
-                }
-                catch(javax.xml.transform.TransformerException te) {
-                    log.error("error executing query: '"+xpath+"' ");
-                    log.error( Logging.stackTrace(te));
-                    throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
-                }
-                // add it to the plave thing, so that it can be used within the getPossibleUserContexes..
-                synchronized(replaceNotFound) {
-                    replaceNotFound.put(context, defaultContext);
-                }
-            }
-        }
-
-        HashSet allowedGroups = new HashSet();
-        boolean allowed = false;
-        if (foundContextNode!=null) {
-            // obtain all grants within the founbd context
-            xpath = "grant";
-            NodeIterator found;
-            try {
-                found = XPathAPI.selectNodeIterator(foundContextNode, xpath);
-            } catch(javax.xml.transform.TransformerException te) {
-                log.error("error executing query: '"+xpath+"' ");
-                log.error( Logging.stackTrace(te));
-                throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
-            }
-            Node contains;
-            for(contains = found.nextNode(); contains != null; contains = found.nextNode()) {
-                NamedNodeMap nnm = contains.getAttributes();
-                Node contextNameNode = nnm.getNamedItem("group");
-                allowedGroups.add(contextNameNode.getNodeValue());
-                if (log.isDebugEnabled()) {
-                    log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"/*+nodeNumber*/+" by user: " +user);
-                }
-            }
-            allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
-        }
-
-        if (log.isDebugEnabled()) {
-            if (allowed) {
-                log.debug("operation " + operation + " was permitted for user with id " + user);
-            } else {
-                log.debug("operation " + operation + " was NOT permitted for user with id " + user);
-            }
-        }
-
-        synchronized(cache) {
-            cache.rightAdd(operation, context, user.getIdentifier(), allowed);
-        }
-
-        return allowed;
+                
     }
+    
+     
 
-
-    private boolean userInGroups(String user, HashSet groups, HashSet done) {
+    private boolean userInGroups(String user, Set groups, Set done) {
         // look if we have something to do...
         if(groups.size() == 0) {
             log.debug("entering userInGroups(recursive) with username: '"+user+"' without any groups, so user was not found..");
@@ -339,7 +332,7 @@ public class ContextAuthorization extends Authorization {
         }
 
         Iterator i = groups.iterator();
-        HashSet fetchedGroups = new HashSet();
+        Set fetchedGroups = new HashSet();
         while(i.hasNext()) {
             // get the group we are researching....
             String groupname = (String)i.next();
@@ -401,7 +394,7 @@ public class ContextAuthorization extends Authorization {
         }
     }
 
-
+    
     public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) throws SecurityException {
         if (operation == Operation.CREATE) {
             // may link on both nodes
@@ -420,23 +413,23 @@ public class ContextAuthorization extends Authorization {
             if(!check(user, srcNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);
-            }
+                throw new SecurityException(msg);                
+            }  
             if (! check(user, dstNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);
+                throw new SecurityException(msg);                                
             }
         } else if (operation == Operation.CHANGE_RELATION) {
             if(!check(user, srcNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + srcNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);
-            }
+                throw new SecurityException(msg);                
+            }  
             if (! check(user, dstNodeNumber, "link")) {
                 String msg = "Operation 'link' on " + dstNodeNumber + " was NOT permitted to " + user.getIdentifier();
                 log.error(msg);
-                throw new SecurityException(msg);
+                throw new SecurityException(msg);                                
             }
             assert(user, nodeNumber, Operation.WRITE);
         } else {
@@ -454,7 +447,7 @@ public class ContextAuthorization extends Authorization {
                 String msg = "builder 'typedef' not found";
                 log.error(msg);
                 //throw new NotFoundException(msg);
-            throw new SecurityException(msg);
+          	throw new SecurityException(msg);
             }
         }
         MMObjectNode node = builder.getNode(n);

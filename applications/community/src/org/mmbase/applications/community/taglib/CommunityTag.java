@@ -47,6 +47,6 @@ public class CommunityTag extends NodeTag {
         Module community=getCloudContext().getModule("communityprc");
         Node node=getNodeVar();
         community.getInfo("COMMUNITY-"+node.getNumber()+"-"+action,pageContext.getRequest(),pageContext.getResponse());
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 }

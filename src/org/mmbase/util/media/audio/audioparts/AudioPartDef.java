@@ -22,20 +22,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is a wrapper class for the AudioPart object.
- * It is used to provide member functions for selecting, for a wrapped audiopart,
- * the best available rawaudio (or rather, rawaudio wrapper), and then requesting
- * the best  url for that rawaudio (using the best mirror site available).
- *
- * @deprecated Most of the actual functionality for these functions resides in
- * AudioUtils, which is alo the place where these (temporary) objects are created.
- * Presumably, the function of this wrapper is to enhance or speed up the selection
- * of a url (or to cache it), but in reality these wrapper functions only copy data,
- * and do not add functionality that could not be performed on it's own by AudioUtils.
- * @duplicate very similar to {@link org.mmbase.util.media.video.videoparts.VideoPartDef}
- *
+ * @javadoc
  * @author    vpro
- * @version   $Id: AudioPartDef.java,v 1.8 2002-02-20 10:43:28 pierre Exp $
+ * @version   $Id: AudioPartDef.java,v 1.7 2002-01-28 16:35:02 pierre Exp $
  */
 
 public class AudioPartDef {
@@ -44,83 +33,73 @@ public class AudioPartDef {
     private static Logger log    = Logging.getLoggerInstance(AudioPartDef.class.getName());
 
     /**
-     * Audiopart object number
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public int number;
 
     /**
-     * Audiopart object type
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
+     * @deprecated not used, implied by number
      */
     public int otype;
 
     /**
-     * Audiopart object owner
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
+     * @deprecated not used, implied by number
      */
     public String owner;
 
     /**
-     * Audiopart title
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public String title;
 
     /**
-     * Audiopart subtitle
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public String subtitle;
 
     /**
-     * Audiopart title
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public int source;
 
     /**
-     * Audiopart speel duur
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public int playtime;
 
     /**
-     * Audiopart intro tekst
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public String intro;
 
     /**
-     * Audiopart body tekst
-     * @scope private
-     * @deprecated should be retrieved from node reference
+     * @javadoc
      */
     public String body;
 
     /**
-     * Audiopart mono of stereo
+     * @javadoc
      * @scope private
-     * @deprecated should be retrieved from node reference
      */
     public int storage;
 
     /**
-     * Audiopart start tijd
-     * @scope private
+     * @javadoc
      */
     public String starttime;
 
     /**
-     * Audiopart eind tijd
+     * @javadoc
      * @scope private
      */
     public String stoptime;
@@ -140,10 +119,7 @@ public class AudioPartDef {
     }
 
     /**
-     * Creates the wrapper and initializes it by copying the node's fields and values.
-     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
-     * @param number The number of the node to wrap
-     * @performance why are fields stored as properties, rather than the node itself?
+     * @javadoc
      */
     public AudioPartDef(MMBase mmbase, int number) {
         if (!setparameters(mmbase, number)) {
@@ -152,10 +128,7 @@ public class AudioPartDef {
     }
 
     /**
-     * Creates the wrapper and initializes it by copying the node's fields and values.
-     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
-     * @param node The node to wrap
-     * @performance why are fields stored as properties, rather than the node itself?
+     * @javadoc
      */
     public AudioPartDef(MMBase mmbase, MMObjectNode node) {
         if (!setparameters(mmbase, node)) {
@@ -164,10 +137,7 @@ public class AudioPartDef {
     }
 
     /**
-     * Initializes the wrapper by copying the node's fields and values.
-     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
-     * @param number The number of the node to wrap
-     * @performance why are fields stored as properties, rather than the node itself?
+     * @javadoc
      */
     public boolean setparameters(MMBase mmbase, int number) {
         boolean result  = false;
@@ -194,26 +164,25 @@ public class AudioPartDef {
         return result;
     }
 
+
     /**
-     * Initializes the wrapper by copying the node's fields and values.
-     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already passing a node)
-     * @param node The node to wrap
+     * @javadoc
      * @performance why are fields stored as properties, rather than the node itself?
      */
     public boolean setparameters(MMBase mmbase, MMObjectNode node) {
         boolean result  = false;
         if (node != null) {
-            number = node.getIntValue("number"); // not needed
-            otype = node.getIntValue("otype"); // not needed
-            owner = node.getStringValue("owner"); // not needed
+            number = node.getIntValue("number");
+            otype = node.getIntValue("otype");
+            owner = node.getStringValue("owner");
 
-            title = node.getStringValue("title"); // not needed
-            subtitle = node.getStringValue("subtitle"); // not needed
-            source = node.getIntValue("source"); // not needed
-            playtime = node.getIntValue("playtime"); // not needed
-            intro = node.getStringValue("intro"); // not needed
-            body = node.getStringValue("body"); // not needed
-            storage = node.getIntValue("storage"); // not needed
+            title = node.getStringValue("title");
+            subtitle = node.getStringValue("subtitle");
+            source = node.getIntValue("source");
+            playtime = node.getIntValue("playtime");
+            intro = node.getStringValue("intro");
+            body = node.getStringValue("body");
+            storage = node.getIntValue("storage");
 
             getStartStop(mmbase);
 
@@ -221,18 +190,13 @@ public class AudioPartDef {
         } else {
             log.error("AudioPartsDef(" + node + "): Node is null!");
         }
+
         return result;
     }
 
+
     /**
-     * Attempts to selects the best available rawaudio object for the given speed and channels
-     * The result of this method is deciding for the outcome of the {@link @getRealAudioUrl} call.
-     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already wrapping a node)
-     * @param wantedspeed the desired speed of the audio
-     * @param wantedchannels  the desired nr of channels for the audio
-     * @param sorted whether to sort the available audios first (?)
-     * @return true if a raw audio could be found. If true, the rawaudio is remembered by the object,
-     *          for use by a subsequent call to {@link @getRealAudioUrl}
+     * @javadoc
      */
     public boolean getRawAudios(MMBase mmbase, int wantedspeed, int wantedchannels, boolean sorted) {
         boolean result  = false;
@@ -252,10 +216,9 @@ public class AudioPartDef {
         return result;
     }
 
+
     /**
-     * Determine start and stop time values of the given object.
-     * The values are retrieved from the properties builder (?) and stored in the wrapper object.
-     * @param mmbase The mmbase to use (a bit strange as a parameter, as you are already wrapping a node)
+     * @javadoc
      */
     public void getStartStop(MMBase mmbase) {
         if (mmbase != null) {
@@ -285,15 +248,15 @@ public class AudioPartDef {
         }
     }
 
+
     /**
      * Gets the Realaudio url and ads the 'title','start' and 'end' name and values
-     * parameters.
-     * The result of this method is dependent on the outcome of the previous {@link @getRawAudios} call,
-     * which makes it unsafe for use in a multithreaded environment.
-     * @deprecation-used contains commented-out code (SMIL does not accept quoted values)
-     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
-     * @param sp the scanpage
-     * @return a String with the url.
+     * parameters. davzev: Removed the double quotes around the values since Real SMIL
+     * doesn't handle it correctly.
+     * @deprecation-used contains commented-out code
+     * @dependency scanpage (SCAN)
+     * @param sp  the scanpage
+     * @return    a String with the url.
      */
     public String getRealAudioUrl(scanpage sp) {
         String result  = null;
@@ -335,8 +298,9 @@ public class AudioPartDef {
         return result;
     }
 
+
     /**
-     * Returns a string representation of this object, for debugging purposes.
+     * @javadoc
      */
     public String toText() {
         String classname  = this.getClass().getName();
@@ -359,8 +323,9 @@ public class AudioPartDef {
         return b.toString();
     }
 
+
     /**
-     * Returns a string representation of this object, for debugging purposes.
+     * @javadoc
      */
     public String toString() {
         return this.getClass().getName() + "( number(" + number + ") otype(" + otype + ") owner(" + owner + ") title(" + title + ") subtitle(" + subtitle + ") source(" + source + ") playtime(" + playtime + ") intro(" + intro + ") body(" + body + ") storage(" + storage + "), starttime(" + starttime + "), stoptime(" + stoptime + "), rawaudios(" + rawaudios.size() + "), rawaudio(" + rawaudio.toString() + ")";

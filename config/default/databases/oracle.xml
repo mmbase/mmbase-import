@@ -1,59 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE database PUBLIC "-//MMBase/DTD database config 1.1//EN" "http://www.mmbase.org/dtd/database_1_1.dtd">
+<!DOCTYPE database PUBLIC "-//MMBase/DTD database config 1.0//EN" "http://www.mmbase.org/dtd/database_1_0.dtd">
 <database>
 
-    <!-- <name>
-        The Name of the Database we are running, only used for display
-    -->
-    <name>Oracle</name>
+	<!-- <name>
+		The Name of the Database we are running, only used for display
+	-->
+	<name>Oracle</name>
 
 
-    <!-- <mmbasedriver>
-        Defines the database driver that handles the abstraction between
-        mmbase and the given jdbs/database we are using.
-    -->
-    <mmbasedriver>org.mmbase.module.database.support.MMOracle</mmbasedriver>
+	<!-- <mmbasedriver>
+		Defines the database driver that handles the abstraction between
+		mmbase and the given jdbs/database we are using.
+	-->
+	<mmbasedriver>org.mmbase.module.database.support.MMOracle</mmbasedriver>
 
-    <!-- <scheme>
-        Defines the strings for the different scheme database
-        statements.
-    -->
-    <scheme>
-        <create>create table</create>
-        <not-null>not null</not-null>
-        <null>null</null>
-        <primary-key>primary key</primary-key>
-    </scheme>
+	<!-- <scheme>
+		Defines the strings for the different scheme database
+		statements.
+	-->
+	<scheme>
+		<create>create table</create>
+	 	<not-null>not null</not-null>
+	 	<null>null</null>
+		<primary-key>primary key</primary-key>
+	</scheme>
 
-    <!-- <mapping>
-        defines how mmbase should map the different types mmbase to this
-        database.
+	<!-- <mapping>
+		defines how mmbase should map the different types mmbase to this
+		database.
 
-        mmbase-type, the internal mmbase datatypes allways in caps
-        min-size, minimal size this value is valid for
-        max-size, maximum size this value is valid for
-    -->
-    <mapping>
-          <type-mapping mmbase-type="DOUBLE">double</type-mapping>
-          <type-mapping mmbase-type="LONG">long</type-mapping>
-          <type-mapping mmbase-type="FLOAT">float</type-mapping>
-          <type-mapping mmbase-type="INTEGER">int</type-mapping>
-          <type-mapping mmbase-type="NODE">int</type-mapping>
-          <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>
-          <type-mapping mmbase-type="STRING" min-size="256" max-size="16777216">clob</type-mapping>
-          <type-mapping mmbase-type="XML" min-size="1" max-size="255">varchar(size)</type-mapping>
-          <type-mapping mmbase-type="XML" min-size="256" max-size="16777216">clob</type-mapping>
-          <type-mapping mmbase-type="BYTE" min-size="1" max-size="16777216">blob</type-mapping>
-    </mapping>
-
-    <!-- <disallowed>
-        defines disallowed fields, tables etc etc for this database
-        if possible it also explains to mmbase what todo with it.
-        illegal fieldnames for example will be automapped to a
-        replacement if one is defined. This way apps made for mmbase
-        don't need to be changes when running on a different database.
-    -->
-    <disallowed>
+		mmbase-type, the internal mmbase datatypes allways in caps
+		min-size, minimal size this value is valid for
+		max-size, maximum size this value is valid for
+	-->
+	<mapping>
+     	  <type-mapping mmbase-type="DOUBLE">double</type-mapping>
+     	  <type-mapping mmbase-type="LONG">long</type-mapping>
+     	  <type-mapping mmbase-type="FLOAT">float</type-mapping>
+     	  <type-mapping mmbase-type="INTEGER">int</type-mapping>
+       	  <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>
+       	  <type-mapping mmbase-type="STRING" min-size="256" max-size="16777216">clob</type-mapping>
+       	  <type-mapping mmbase-type="BYTE" min-size="1" max-size="16777216">blob</type-mapping>
+	</mapping>
+	
+	<!-- <disallowed>
+		defines disallowed fields, tables etc etc for this database
+		if possible it also explains to mmbase what todo with it. 
+		illegal fieldnames for example will be automapped to a 
+		replacement if one is defined. This way apps made for mmbase
+		don't need to be changes when running on a different database.
+	-->
+	<disallowed>
         <field name="body" replacement="m_body" />
         <field name="comment" replacement="m_comment" />
         <field name="date" replacement="m_date" />
@@ -83,5 +80,5 @@
         <field name="type" replacement="m_type" />
         <field name="use" replacement="m_use" />
         <field name="year" replacement="m_year" />
-    </disallowed>
+	</disallowed>
 </database>

@@ -14,9 +14,6 @@ package org.mmbase.security;
  * and authorization, so that information can be shared.
  * This class is NOT a container class for client related stuff, altrough
  * this is possible.
- * @javadoc
- * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.12 2002-06-07 12:56:56 pierre Exp $
  */
 public class UserContext {
 

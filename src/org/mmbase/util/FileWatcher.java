@@ -18,7 +18,6 @@ package org.mmbase.util;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
 import org.mmbase.util.logging.*;
 
@@ -53,10 +52,6 @@ import org.mmbase.util.logging.*;
 	watcher.exit();
     </code>
  *
- * @author Ceki G&uuml;lc&uuml;    
- * @author Eduard Witteveen
- * @author Michiel Meeuwissen
- * @since  MMBase-1.4
  */
 public abstract class FileWatcher extends Thread {
     static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
@@ -86,25 +81,14 @@ public abstract class FileWatcher extends Thread {
 	    return (lastModified < file.lastModified());
 	}
 
-        /**
-         * Call if changes were treated.
-         */
-        public void updated() {
-            lastModified = file.lastModified();
-        }
-
     	public File getFile() {
 	    return file;
 	}	
-        public String toString() {
-            return file.toString() + ":" + lastModified;
-        }
         
     }
 
-    private List files       = new ArrayList();
-    private List removeFiles = new ArrayList();
-
+    private ArrayList files = new ArrayList();
+    
     /**
      *	The default delay between every file modification check, set to 60
      *  seconds.  
@@ -132,10 +116,10 @@ public abstract class FileWatcher extends Thread {
 
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
-     * @param file The file that was changed..
+     *@param file The file that was changed..
      */
     abstract protected void onChange(File file);
-
+    
     /**
      * Set the delay to observe between each check of the file changes.
      */
@@ -155,24 +139,6 @@ public abstract class FileWatcher extends Thread {
     }
 
     /**
-     * Wether the file is being watched or not.
-     * @param the file to be checked.
-     * @since MMBase-1.6
-     */
-    public boolean contains(File file) {
-        return files.contains(new FileEntry(file));
-    }
-
-    /**
-     * Remove file from the watch-list
-     */
-    public void remove(File file) {
-        synchronized(this) {
-            removeFiles.add(file);
-        }
-    }
-
-    /**
      * Add's a file to be checked...
      *@param file The file which has to be monitored..
      */
@@ -181,58 +147,20 @@ public abstract class FileWatcher extends Thread {
     	    stop = true;
 	}
     }
-
-    /**
-     * Shows the 'contents' of the filewatcher. It shows a list of files/last modified timestamps.
-     */
-    public String toString() {
-        return files.toString();
-    }
     
     /**
-     * Looks if a file has changed. If it is, the 'onChance' for this file is called.
-     *
-     * Before doing so, it removes the files which were requested for
-     * removal from the watchlist.
-     *
+     * looks if a file has changed...
      */
     private boolean changed() {
     	synchronized(this) {
-            // remove files if necessary
-            Iterator ri = removeFiles.iterator();
-            while (ri.hasNext()) {    
-                File f = (File) ri.next();
-                FileEntry found = null;
-                // search the file
-                Iterator i = files.iterator();
-                while (i.hasNext()) {
-                    FileEntry fe = (FileEntry) i.next();
-                    if (fe.getFile().equals(f)) {
-                        found = fe;
-                        break;
-                    }
-                }
-                if (found != null) {
-                    files.remove(found);
-                }
-            }
-            removeFiles.clear();
-
 	    Iterator i = files.iterator();
 	    while(i.hasNext()) {
-	    	FileEntry fe = (FileEntry) i.next();       
+	    	FileEntry fe = (FileEntry) i.next();
 		if(fe.changed()) {
-		    log.service("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
-                    try {
-                        onChange(fe.getFile());
-                    } catch (Throwable e) {
-                        log.warn("onChange of " + fe.getFile().getName() + " lead to exception:");
-                        log.warn(Logging.stackTrace(e));
-                    }
-                    if (continueAfterChange) {                        
-                        fe.updated(); // onChange was called now, it can be marked up-to-date again
-                    } else { // 
-                        return true; // stop watching
+		    log.info("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
+		    onChange(fe.getFile());
+                    if (! continueAfterChange) {
+                        return true;
                     }
 		}
 	    }
@@ -241,7 +169,7 @@ public abstract class FileWatcher extends Thread {
     }
     
     /**
-     * Looks if we have to stop
+     * looks if we have to stop
      */
     private boolean mustStop(){
     	synchronized(this) {
@@ -256,15 +184,13 @@ public abstract class FileWatcher extends Thread {
     public void run() {
     	do {
     	    try {
-    	    	if(log.isDebugEnabled()) { 
-                    log.trace("Filewatcher will sleep for : " + delay / 1000 + " s. " + 
-                              "Currently watching: " + toString());
-                }
+    	    	log.debug("gonna sleep this filewatcher for : " + delay / 1000 + " seconds");	    
 	    	Thread.currentThread().sleep(delay);
-      	    } catch(InterruptedException e) {
+      	    }    
+	    catch(InterruptedException e) {
 	    	// no interruption expected
       	    }
 	// when we found a change, we exit..
-	} while (!mustStop() && !changed());
+	} while(!mustStop() && !changed());
     }
 }

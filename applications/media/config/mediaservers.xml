@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE scripts SYSTEM "dtd/servers_1_0.dtd">
-
-<mediaservers default="play">
-   <server id="streams" description="streams script">http://cgi.omroep.nl/cgi-bin/streams?%s</server>
-   <server id="play"    description="play script"   >http://cgi.omroep.nl/cgi-bin/play?%s</server>
-   <server id="life"    description="life script"   >http://cgi.omroep.nl/cgi-bin/rmlife?%s</server>
-</mediaservers>

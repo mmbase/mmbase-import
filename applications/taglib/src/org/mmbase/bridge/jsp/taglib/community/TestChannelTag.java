@@ -53,13 +53,13 @@ public class TestChannelTag extends NodeTag {
      *
      */
     public int doStartTag() throws JspTagException {
-        if (super.doStartTag()==EVAL_BODY_BUFFERED) {
+        if (super.doStartTag()==EVAL_BODY_TAG) {
             Node node=getNodeVar();
             Module community=getCloudContext().getModule("communityprc");
             String state=community.getInfo("CHANNEL-"+node.getNumber()+"-ISOPEN",pageContext.getRequest(),pageContext.getResponse());
             boolean result=state.equalsIgnoreCase(condition);
             if (result!=reverse)
-                return EVAL_BODY_BUFFERED;
+                return EVAL_BODY_TAG;
         }
         return SKIP_BODY;
     }

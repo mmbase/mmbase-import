@@ -1,6 +1,6 @@
 <%@ page isErrorPage="true" import="java.util.*" 
 %><%@ include file="page_base.jsp"
-%>
+%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
 <mm:write referid="style" />
 <title>MMBase editors - Error</title>
 </header>
@@ -12,8 +12,9 @@ Stacktrace:
   <%= org.mmbase.util.logging.Logging.stackTrace(exception) %>
 </pre>
 
-<p>Click <a href="<%=response.encodeURL("search_node.jsp")%>">here</a> to continue.</p>
+<p>Click <a href="./">here</a> to continue.</p>
 <hr />
 Please contact your system administrator about this.
 
-<%@include file="footfoot.jsp" %>
+<%@ include file="foot.jsp"  %>
+</mm:cloud>

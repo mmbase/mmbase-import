@@ -11,71 +11,58 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
-
-import java.util.Vector;
-import java.util.StringTokenizer;
 import org.mmbase.bridge.Node;
 
 /**
  * Produces a url to 'img.db'. Using this tag makes your pages more
  * portable to other system, and hopefully less sensitive for future
  * changes in how the image servlet works.
- *
- * @author Michiel Meeuwissen
+ * 
+ * @author Michiel Meeuwissen 
  **/
 
-public class ImageTag extends FieldTag {
+public class ImageTag extends NodeReferrerTag  implements Writer {
 
     private String template = null;
+    protected WriterHelper helper = new WriterHelper(); 
+    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    /**
-     * The transformation template
-     */
-
+    public void setVartype(String t) throws JspTagException { 
+        throw new JspTagException("Image tag can only produces Strings");
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() throws JspTagException {
+        return helper.getValue();
+    }
+           
     public void setTemplate(String t) throws JspTagException {
         template = getAttributeValue(t);
     }
-
-    public int doStartTag() throws JspTagException {
-        node = null;
-        Node node = getNodeVar();
+    
+    public int doStartTag() throws JspTagException {  
+        Node node = getNode();
         if (node.getNodeManager().getField("handle") == null) {
-            throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
+            throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be an image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
-
-        // some servlet implementation's 'init' cannot determin this theirselves, help them a little:
-        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
-        String context = req.getContextPath();
-
-        /* perhaps 'getSessionName' should be added to CloudProvider
-         * EXPERIMENTAL 
-         */
-        String sessionName = "";
-
-        if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) { 
-            sessionName = "cloud_mmbase";
-            CloudTag ct = null;
-            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
-            if (ct != null) {
-                sessionName = ct.getSessionName();
-            }        
-        }
-
-        String url;
-        if (template == null) {
-            // the image itself
-            url = node.getStringValue("servletpath(" + sessionName + ",number," + context + ")");
-        } else {
-            // the cached image
-            url = node.getStringValue("servletpath(" + sessionName + ",cache(" + template + ")," + context + ")");
-        }
-        helper.setValue(url);
-        helper.setPageContext(pageContext);
-        helper.setJspvar();
+        HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
+        String page = req.getContextPath() + "/img.db?" + node.getNumber() + (template != null ? "+" + template : "");
+        helper.setValue(page);
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
+
+    public int doEndTag() throws JspTagException {
+        helper.setBodyContent(bodyContent);
+        return helper.doEndTag();
+    }
+
 }
 

@@ -23,18 +23,18 @@ import org.mmbase.util.logging.Logging;
  * This is also more or less the simplest possible implemententation
  * of a 'Writer' tag.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  **/
 
-public class WriteTag extends ContextReferrerTag implements Writer {
+public class WriteTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
 
-    protected WriterHelper helper = new WriterHelper();
+    protected WriterHelper helper = new WriterHelper(); 
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setVartype(String t) throws JspTagException {
+    public void setVartype(String t) throws JspTagException { 
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -46,7 +46,6 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-    public void haveBody() { helper.haveBody(); }
 
     private String sessionvar;
     private String cookie;
@@ -61,16 +60,22 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
     public void setValue(String v) throws JspTagException {
         value = getAttributeValue(v);
-        if (log.isDebugEnabled()) log.debug("found value " + value);
+    }
+    private String writerid = null;
+    public void setWriter(String w) throws JspTagException {
+        writerid = getAttributeValue(w);
+        
     }
 
-
+    
+    
     protected Object getObject() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("getting object " + getReferid());
         }
         if (getReferid() == null && value == null) { // get from parent Writer.
-            return findWriter().getWriterValue();
+            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
+            return w.getWriterValue();
         }
 
         if (value != null) {
@@ -81,16 +86,15 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         }
 
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
-            return getContextTag().getBytes(getReferid()); // a hack..
+            return getContextTag().getBytes(getReferid()); // a hack..            
         }
         return getObject(getReferid());
     }
 
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspTagException {    
         helper.setValue(getObject());
-        helper.setJspvar(pageContext);
-
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -105,21 +109,21 @@ public class WriteTag extends ContextReferrerTag implements Writer {
             Object v = helper.getValue();
             Cookie c;
             if (v instanceof String) {
-                c = new Cookie(cookie, (String) v);
+                c = new Cookie(cookie, (String) v); 
             } else if (v instanceof Integer) {
-                c = new Cookie(cookie, "" + v);
+                c = new Cookie(cookie, "" + v); 
             } else if (v instanceof Node) {
-                c = new Cookie(cookie, "" + ((Node) v).getNumber());
+                c = new Cookie(cookie, "" + ((Node) v).getNumber()); 
             } else {
                 throw new JspTagException(v.toString() + " is not of the right type to write to cookie. It is a (" +  v.getClass().getName() + ")");
             }
             c.setMaxAge(MAX_COOKIE_AGE);
-            ((HttpServletResponse)pageContext.getResponse()).addCookie(c);
+            ((HttpServletResponse)pageContext.getResponse()).addCookie(c); 
             helper.overrideWrite(false);
         }
-        return EVAL_BODY_BUFFERED;
-    }
-
+        return EVAL_BODY_TAG;
+    }    
+    
     public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
         return helper.doEndTag();

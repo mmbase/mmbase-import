@@ -30,8 +30,8 @@ import org.mmbase.util.logging.Logging;
  * no meaning outside the context of the transaction in which they are created.
  *
  * @author Rob van Maris: Finalist IT Group
- * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.3 2002-02-27 16:54:26 pierre Exp $
+ *
+ * @version 1.0
  */
 public class TmpObject {
 

@@ -14,18 +14,17 @@ import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-
 /**
  * StubToLocalMapper is a utitity class that helps
  * a Stub to find it's Local implementation
  * @author Kees Jongenburger
- * @version $Id: StubToLocalMapper.java,v 1.8 2002-07-01 19:25:42 kees Exp $
- **/
+ * @version $Id: StubToLocalMapper.java,v 1.3.2.3 2002-06-11 14:13:22 kees Exp $
+ */
 public class StubToLocalMapper{
     static private Logger log = Logging.getLoggerInstance(StubToLocalMapper.class.getName());
     /**
      * private data member to keep track of mapperCode/object combinations
-     **/
+     */
     private static Hashtable hash = new Hashtable();
     private static Hashtable refcount = new Hashtable();
     
@@ -34,7 +33,7 @@ public class StubToLocalMapper{
      * @param object the object to add to the mapper
      * @return a string that can later be used to find
      * back the object or remove it (MapperCode)
-     **/
+     */
     public static String add(Object object){
         if (object != null){
 
@@ -58,7 +57,7 @@ public class StubToLocalMapper{
 		mapperCode = "" + object;
 	    }
 
-            //code needed to support transactions
+            //code neede to support transactions
             //the generated key (like node:nodemanagername->nodeNumber) is currently wrong
             //since multiple different instances of the node might exist
             //the real fix is to add the BasicCloud.getAccount() to the key
@@ -92,11 +91,6 @@ public class StubToLocalMapper{
 	return "";
     }
 
-    /**
-     * increase the counter of referance for a certain mapper code
-     * @param mapperCode the mapper to for wich we do ref counting
-     * @return the amount of referances known at this point
-     **/
     private static int increaseRefCount(String mapperCode){
 	Integer count = (Integer)refcount.get(mapperCode);
 	if (count == null){
@@ -109,11 +103,6 @@ public class StubToLocalMapper{
 
     }
 
-    /**
-     * decrease the counter of referances for a certain mapper code
-     * @param mapperCode the mapper code for with we do ref counting
-     * @return the number of referances we have for the mapper code
-     **/
     private static int decreaseRefCount(String mapperCode){
 	Integer count = (Integer)refcount.get(mapperCode);
 	if (count == null){
@@ -135,7 +124,7 @@ public class StubToLocalMapper{
      * get an object based on its MapperCode
      * @param mapperCode the Mappercode of the object
      * @return the required object or null if there was no such object
-     **/
+     */
     public static Object get(String mapperCode){
 	log.debug("access=("+ mapperCode +")");
 
@@ -147,11 +136,10 @@ public class StubToLocalMapper{
     }
     
     /**
-     * remove an entry in the StubToLocal mapper the entry is only removed if there
-     * are no other referances to the entry (ref counting)
+     * remove an entry in the StubToLocal mapper
      * @param mapperCode the MapperCode of the object to be removed
-     * @return true if the entry was removed because refcount was 0
-     **/
+     * @return if the entry was removed because refcount was 0
+     */
     public static boolean remove(String mapperCode){
 	if (mapperCode != null && ! mapperCode.equals("")){
 	    int rcount = decreaseRefCount(mapperCode);

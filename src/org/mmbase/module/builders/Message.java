@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.13 2002-05-22 11:58:20 vpro Exp $
+ * @version $Id: Message.java,v 1.10.2.1 2002-04-10 11:00:25 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -1072,13 +1072,7 @@ public class Message extends MMObjectBuilder {
             else
                 return value;
         }                         // ??? Must still cut for new word!
-        
-        Object o = super.getValue(node, field);
-        if (o instanceof String) {
-            if ((field.indexOf("html(")<0) && (field.indexOf("html_")<0))
-                    o = getHTML((String)o);
-        }
-        return o;
+        return super.getValue(node, field);
     }
 
     /**
@@ -1137,7 +1131,6 @@ public class Message extends MMObjectBuilder {
      * @param value the value to store
      */
     private void setInfoField(MMObjectNode message, String field, String value) {
-        value = remove(value, "\n=,\"");
         String info = message.getStringValue(F_INFO);
         StringTagger tagger = new StringTagger(info,'\n', '=', ',', '\"');
         tagger.setValue(field, value);
@@ -1150,17 +1143,6 @@ public class Message extends MMObjectBuilder {
         message.setValue(F_INFO, content);
     }
 
-    private String remove( String s, String r) {
-        if (s==null) return null;
-        String result = "";
-        for(int i=0; i<s.length(); i++) {
-            char c = s.charAt(i);
-            if (r.indexOf(c)<0)
-                result = result + c;
-        }
-        return result;
-    }
-    
     /**
      * Obtain a value from the multi-purpose <code>info</code> field.
      * The info field of the message node contains a StringTagger.
@@ -1172,7 +1154,7 @@ public class Message extends MMObjectBuilder {
     private String getInfoField(MMObjectNode message, String field) {
         String info = message.getStringValue(F_INFO);
         StringTagger tagger = new StringTagger(info,'\n', '=', ',', '\"');
-        return getHTML(tagger.Value(field));
+        return tagger.Value(field);
     }
 
     /**

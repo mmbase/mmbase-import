@@ -17,10 +17,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Class AdminLoginModule
+ * 
  * @javadoc
- * @author Eduard Witteveen
- * @version $Id: AdminLoginModule.java,v 1.4 2002-06-07 12:56:56 pierre Exp $
  */
+
 public class AdminLoginModule implements LoginModule {
     private String key;
     private static Logger log=Logging.getLoggerInstance(AdminLoginModule.class.getName());
@@ -34,7 +34,7 @@ public class AdminLoginModule implements LoginModule {
     }
 
     public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
-        if(!loginInfo.containsKey("key")) throw new org.mmbase.security.SecurityException("key 'key' not found in login information");
+    	if(!loginInfo.containsKey("key")) throw new org.mmbase.security.SecurityException("key 'key' not found in login information");
         if(key.equals(loginInfo.get("key"))) {
             log.info("admin login..");
             // set the identifier

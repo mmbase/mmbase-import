@@ -101,9 +101,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      * @javadoc
      */
     private boolean nodeChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) { 
-            log.debug("Versions -> signal change on " + number + " " + builder + " ctype=" + ctype);
-        }
+        log.service("Versions -> signal change "+number+" "+builder+" "+ctype);
         Vector subs=(Vector)CacheVersionHandlers.get(builder);
         try {
             int inumber=Integer.parseInt(number);

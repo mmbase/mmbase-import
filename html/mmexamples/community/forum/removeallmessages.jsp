@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
 </head>
 <body class="basic">
-<mmcommunity:deleteall channel="$channel" />
+<mmcommunity:deleteall channel="${channel}" />
 <table summary="forum threads" width="93%" cellspacing="1" cellpadding="3" border="0">
 <tr align="left">
   <th class="header" colspan="2">Result of your action</th>

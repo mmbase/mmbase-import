@@ -15,14 +15,14 @@ import javax.servlet.jsp.JspTagException;
 
 /**
 * A very simple tag to check if node may be deleted.
-*
+* 
 * @author Michiel Meeuwissen
 */
 public class MayDeleteTag extends MayWriteTag implements Condition {
-
+               
     public int doStartTag() throws JspTagException {
         if ((getNode().mayDelete()) != inverse) {
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
         }

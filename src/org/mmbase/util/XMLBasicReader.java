@@ -13,8 +13,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
 
 import org.apache.xerces.parsers.DOMParser;
 
@@ -34,90 +34,78 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.17 2002-06-26 11:36:04 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.14 2002-02-05 14:35:31 eduard Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
 
     /** for the document builder of javax.xml. */
     private static DocumentBuilder documentBuilder = null;
-    private static DocumentBuilder altDocumentBuilder = null;
-
+    
     /** set this one to true, and parser will be loaded...  */
 
+    // who has the guts to change this one to true ???
+    // it should be done in the near future, but gives a lot of error messages...
+    private static boolean useJavaxXML = true;
+    
     /** set this one to true, when all document pars */
-    private static final boolean VALIDATE = true;
+    private static boolean validateJavaxXML = true;
 
     protected Document document;
 
     private String xmlFilePath;
 
-
-
     public XMLBasicReader(String path) {
-        this(path, VALIDATE);
-    }
-
-    public XMLBasicReader(String path, boolean validating) {
+        if (log.isDebugEnabled()) {
+            log.debug("Reading XML file " + path);
+        }
         try {
-            DocumentBuilder dbuilder = getDocumentBuilder(validating);
-            if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
-            InputSource source = new InputSource("file:///" + path);
-            if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
-            document = dbuilder.parse(source);
-        }
-        catch(org.xml.sax.SAXException se) {
-            throw new RuntimeException("failure reading document: " + path + "\n" + se);
-        }
-        catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + path + "\n" + ioe);
+            if(useJavaxXML) {
+                xmlFilePath=path; // save for debug
+                document = getDocumentBuilder().parse(path);
+            } else {
+                DOMParser parser = new DOMParser();
+                parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
+                parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+                EntityResolver resolver = new XMLEntityResolver();
+                parser.setEntityResolver(resolver);
+                path="file:///"+path;
+                xmlFilePath=path; // save for debug
+                parser.parse(path);
+                document = parser.getDocument();
+            }
+        } catch(Exception e) {
+            log.error("Error reading " + path);
+            log.error(Logging.stackTrace(e));
         }
     }
 
-    private static DocumentBuilder createDocumentBuilder(boolean validating) {
-        DocumentBuilder db;
+    public static javax.xml.parsers.DocumentBuilder getDocumentBuilder() {
+        // if we already had one, return this one...
+        if(documentBuilder!=null) return documentBuilder;
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
+	    	    
             // turn validating on, or not
-            XMLEntityResolver resolver = new XMLEntityResolver(); // strange to ask the resolver is mmbase is initilized
-            boolean validate = validating && resolver.canResolve();
-
+            XMLEntityResolver resolver = new XMLEntityResolver(); // strange to ask the resolver is mmbase is initilized	    
+	    boolean validate = validateJavaxXML && resolver.canResolve();;
+	    
             // get docuemtn builder AFTER setting the validation
-            dfactory.setValidating(validate);
-            db = dfactory.newDocumentBuilder();
+	    dfactory.setValidating(validate);
+            documentBuilder = dfactory.newDocumentBuilder();
 
-            // set the error handler... which outputs the error's
+    	    // set the error handler... which outputs the error's
             ErrorHandler handler = new XMLErrorHandler();
-            db.setErrorHandler(handler);
+            documentBuilder.setErrorHandler(handler);
 
-            // set the entity resolver... which tell us where to find the dtd's
-            db.setEntityResolver(resolver);
-
+    	    // set the entity resolver... which tell us where to find the dtd's
+            documentBuilder.setEntityResolver(resolver);
+            
         } catch(ParserConfigurationException pce) {
             log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
             log.error(Logging.stackTrace(pce));
             return null;
-        }
-        return db;
-    }
-
-
-    public static DocumentBuilder getDocumentBuilder(boolean validating) {
-        if (validating == VALIDATE) { 
-            return getDocumentBuilder();
-        } else {
-            if (altDocumentBuilder == null) {
-                altDocumentBuilder = createDocumentBuilder(validating);
-            }
-            return altDocumentBuilder;
-        }       
-    }
-
-    public static DocumentBuilder getDocumentBuilder() {
-        if(documentBuilder == null)  {
-            documentBuilder = createDocumentBuilder(VALIDATE);
         }
         return documentBuilder;
     }

@@ -685,10 +685,6 @@ public class Channel extends MMObjectBuilder {
     public Object getValue(MMObjectNode node, String field) {
         // PRE:  The name of a field in the database or the name of a virtual field.
         // POST: The value of the field.
-        if (field.equals(Message.F_REPLY_COUNT)) {
-            return new Integer(messageBuilder.getNrMsgAndHighSeq(node).messageCount);
-        }
-
         if (field.equals(F_READLOGIN)) {
             return new Boolean((node.getIntValue(F_STATE) & STATE_READ_LOGIN)>0);
         }

@@ -1147,7 +1147,7 @@ public class MagicFile  {
     public boolean toXML(File f) throws IOException {
         FileWriter writer = new FileWriter(f);
 
-        writer.write("<!DOCTYPE magic PUBLIC \"-//MMBase/Magic XML config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
+        writer.write("<!DOCTYPE magic PUBLIC \"// MMBase - Magic XML //\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
         Enumeration enum = this.elements();
         while (enum.hasMoreElements()) {
             ((Detector)enum.nextElement()).toXML(writer);

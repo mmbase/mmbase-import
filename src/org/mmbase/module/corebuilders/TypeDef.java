@@ -10,9 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
+import java.sql.*;
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.scanpage;
-import org.mmbase.util.StringTagger;
+import org.mmbase.util.*;
 import org.mmbase.module.ParseException;
 import org.mmbase.util.logging.*;
 
@@ -25,146 +26,139 @@ import org.mmbase.util.logging.*;
  */
 public class TypeDef extends MMObjectBuilder {
 
-    // Logger routine
+    /**
+    * Logger routine
+    */
     private static Logger log = Logging.getLoggerInstance(TypeDef.class.getName());
 
-    /**
-     * Number-to-name cache.
-     * @duplicate should be moved to org.mmbase.cache
-     */
-    private Hashtable nameCache=new Hashtable(); // object number -> typedef name
+    Hashtable nameCache; 						// object number -> typedef name
+    Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
+    Hashtable descriptionCache; 				// object number -> typedef description
+    public boolean broadcastChanges=false;
+    public Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
 
-    /**
-     * Name-to-number cache.
-     * @duplicate should be moved to org.mmbase.cache
-     */
-    private Hashtable numberCache=new Hashtable(); // typedef name -> object number
-
-    /**
-     * List of known builders.
-     */
-    private Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
-
-    /**
-     * Constructor
-     */
     public TypeDef() {
-        // set broadcasting of changes to false
-        broadcastChanges=false;
     }
 
-    /**
-     * Initializes the typedef builder.
-     * Loads a name-to-type and type-to-name cache of active builders.
-     * @return true if init was completed, false if uncompleted.
-     */
     public boolean init() {
-        boolean result = super.init();
+        super.init();
+        mmb.mmobjs.put(tableName,this);
         readCache(); // read type info into the caches
-        return result;
+        return(true);
     }
 
-    /**
-     * Fill the typedef caches with the initial values.
-     * Caches filled are a number-to-name, name-to-number, and
-     * number-to-description cache
-     * @duplicate should be moved to org.mmbase.cache
-     * @return always true
-     */
+
     public boolean readCache() {
-        Integer number;
-        String name;
-        for (Enumeration e=search(null); e.hasMoreElements();) {
-            MMObjectNode n= (MMObjectNode)e.nextElement();
-            number=n.getIntegerValue("number");
-            name=n.getStringValue("name");
-            numberCache.put(name,number);
-            nameCache.put(number,name);
-         }
-        return true;
+        try {
+            MultiConnection con=mmb.getConnection();
+            Statement stmt=con.createStatement();
+            //System.out.println("SELECT * FROM "+mmb.baseName+"_"+tableName);
+            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName);
+            nameCache=new Hashtable();
+            //numberCache=new Hashtable();
+            descriptionCache=new Hashtable();
+            Integer number;String name,desc;
+            while(rs.next()) {
+                number=new Integer(rs.getInt(1));
+                name=rs.getString(4);
+                desc=rs.getString(5);
+                // System.out.println("NUMBER="+number+" NAME="+name+" DESC="+desc);
+                numberCache.put(name,number);
+                nameCache.put(number,name);
+                if (desc==null) desc="";
+                descriptionCache.put(number,desc);
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return(true);
     }
 
+
+    boolean checkRootNode() {
+        try {
+            MultiConnection con=mmb.getConnection();
+            Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_object where number=0");
+            if (rs.next()) {
+                stmt.close();
+                con.close();
+                return(true);
+            } else {
+                stmt.close();
+                con.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return(false);
+    }
+
+
     /**
-     * Obtain the type value of the requested builder
-     * @todo smarter cache update
-     * @param builderName name of the builder
-     * @return the object type as an int, -1 if not defined.
-     */
-    public int getIntValue(String builderName) {
-        Integer result=(Integer)numberCache.get(builderName);
+    * obtain the type value of the requested type, returns -1 if not defined.
+    */
+    public int getIntValue(String value) {
+        Integer result=(Integer)numberCache.get(value);
         if (result!=null) {
-            return result.intValue();
+            return(result.intValue());
         } else {
-            // XXX: a bit ugly to do this every time a match fails...
             readCache();
-            result=(Integer)numberCache.get(builderName);
+            result=(Integer)numberCache.get(value);
             if (result!=null) {
-                return result.intValue();
+                return(result.intValue());
             }
-            return -1;
+            return(-1);
         }
     }
 
     /**
-     * Obtain the buildername of the requested type
-     * @param type the object type
-     * @return the name of the builder as a string, null if not found
-     */
+    * obtain the type value of the requested type, returns -1 if not defined.
+    */
     public String getValue(int type) {
-        String result = (String) nameCache.get(new Integer(type));
-        if (result == null) {
-            // XXX: it is ugly here too (see getIntValue()).
-            // but sometimes necessary (when starting Versions)
-            readCache();
-            result = (String) nameCache.get(new Integer(type));
-            if (result == null) {
-                log.error("Could not find builder name for typdef number " + type);
-            }
-        }
-        return result;
+        return((String)nameCache.get(new Integer(type)));
     }
 
 
     /**
-     * Obtain the buildername of the requested type
-     * @param type the object type
-     * @return the name of the builder as a string, "unknown" if not found
-     */
+    * obtain the type value of the requested type, returns -1 if not defined.
+    */
     public String getValue(String type) {
         try {
-            return (String)nameCache.get(new Integer(Integer.parseInt(type)));
+            return((String)nameCache.get(new Integer(Integer.parseInt(type))));
         } catch(Exception e) {
-            return "unknown";
+            return("unknown");
         }
     }
 
-    /**
-     * @javadoc
-     */
-    public String getSingularName(String builderName, String country) {
-        if (builderName==null) return "unknown";
-        MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(builderName);
+    public String getDutchSName(String name) {
+        if (name==null) return("ERROR");
+        MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(name);
         if (bul!=null) {
-            if (country==null) {
-                return bul.getSingularName();
-            } else {
-                return bul.getSingularName(country);
-            }
+            return(bul.getDutchSName());
         } else {
-            return "inactive ("+builderName+")";
+            return("inactive ("+name+".xml)");
         }
     }
 
-    /**
-     * @javadoc
-     */
-    public boolean isRelationTable(String name) {
-        return mmb.getRelDef().isRelationTable(name);
+
+    public String getEnglishName(String dutchname) {
+        Enumeration enum = mmb.mmobjs.elements();
+        while (enum.hasMoreElements()){
+            MMObjectBuilder bul=(MMObjectBuilder)enum.nextElement();
+            if (bul.getDutchSName().equals(dutchname)) {
+                return(bul.tableName);
+            }
+        }
+        return("inactive ("+dutchname+".xml)");
     }
 
-    /**
-     * @javadoc
-     */
+    public boolean isRelationTable(String name) {
+        return(mmb.getRelDef().isRelationTable(name));
+    }
+
     public Object getValue(MMObjectNode node,String field) {
         if (field.equals("state")) {
             int val=node.getIntValue("state");
@@ -175,23 +169,21 @@ public class TypeDef extends MMObjectBuilder {
                 // state 1 is up and running
                 node.setValue("state",1);
             }
-            return ""+val;
+            //System.out.println("STATE="+val+" "+node);
+            return(""+val);
         } else if (field.equals("dutchs(name)")) {
-            // replace this function with gui(name) ?
-            // but have to change admin pages first
-            return getGUIIndicator("name",node);
+            String name=node.getStringValue("name");
+            return(getDutchSName(name));
         }
         return super.getValue(node,field);
     }
 
-    /**
-     * @javadoc
-     */
+
     public boolean fieldLocalChanged(String number,String builder,String field,String value) {
         if (field.equals("state")) {
             if (value.equals("4")) {
                 // reload request
-                log.service("Reload wanted on : "+builder);
+                System.out.println("Reload wanted on : "+builder);
                 // perform reload
                 MMObjectNode node=getNode(number);
                 String objectname=node.getStringValue("name");
@@ -201,73 +193,85 @@ public class TypeDef extends MMObjectBuilder {
                 }
             }
         }
-        return true;
+        return(true);
     }
 
-    /**
-     * @javadoc
-     */
+
+
     public boolean reloadBuilder(String objectname) {
-        log.service("MMBASE -> Trying to reload builder : "+objectname);
+        System.out.println("MMBASE -> Trying to reload builder : "+objectname);
         // first get all the info we need from the builder allready running
         MMObjectBuilder oldbul=mmb.getMMObject(objectname);
-        String classname=oldbul.getClass().getName();
+        String classname=oldbul.getClassName();
         String description=oldbul.getDescription();
+        String dutchsname=oldbul.getDutchSName();
 
         try {
             Class newclass=Class.forName("org.mmbase.module.builders."+classname);
-            log.debug("TypeDef -> Loaded load class : "+newclass);
+                System.out.println("TypeDef -> Loaded load class : "+newclass);
 
             MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
-            log.debug("TypeDef -> started : "+newclass);
+            System.out.println("TypeDef -> started : "+newclass);
 
             bul.setMMBase(mmb);
             bul.setTableName(objectname);
             bul.setDescription(description);
+            bul.setDutchSName(dutchsname);
+            bul.setClassName(classname);
             bul.init();
             mmb.mmobjs.put(objectname,bul);
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-            return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return(false);
+            }
+            return(true);
         }
-        return true;
-    }
 
-    /**
-     * What should a GUI display for this node.
-     * This method returns the gui name (singular name) of the builder that goes with this node.
-     * @param node The node to display
-     * @return the display of the node as a <code>String</code>
-     */
+
     public String getGUIIndicator(MMObjectNode node) {
         if (node!=null) {
-            return getGUIIndicator("name",node);
-        } else {
-            log.error("TypeDef-> problem node empty");
-            return "problem";
-        }
-    }
-
-    /**
-     * What should a GUI display for this node/field combo.
-     * If the field specified is 'name', this method returns the gui name (singular name) of the
-     * builder that goes with this node.
-     * @param field the name field of the field to display
-     * @param node The node to display
-     * @return the display of the node's field as a <code>String</code>, null if not specified
-     */
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        if (field.equals("name")) {
             String name=node.getStringValue("name");
-            String guiname= getSingularName(name,null);
-            return guiname;
+            if (name==null) {
+                System.out.println("TypeDef-> problem node "+node);
+                return("problem");
+            } else {
+                return(name);
+            }
+        } else {
+            System.out.println("TypeDef-> problem node empty");
+            return("problem");
         }
-        return null;
     }
 
+
     /**
-     * @javadoc
-     */
+    *	Handle a $MOD command
+    */
+    public String replace(scanpage sp, StringTokenizer tok) {
+        if (tok.hasMoreTokens()) {
+            String cmd=tok.nextToken();
+            if (cmd.equals("D2E")) {
+                if (tok.hasMoreTokens()) {
+                    return(getEnglishName(tok.nextToken()));
+                }
+            }
+        }
+        return("");
+    }
+
+
+    /**
+    * return the database type of the objecttype
+    */
+    public int getDBType(String fieldName) {
+        if (fieldName.equals("owner")) return(FieldDefs.TYPE_STRING);
+        if (fieldName.equals("otype")) return(FieldDefs.TYPE_INTEGER);
+        if (fieldName.equals("number")) return(FieldDefs.TYPE_INTEGER);
+        if (fieldName.equals("name")) return(FieldDefs.TYPE_STRING);
+        if (fieldName.equals("description")) return(FieldDefs.TYPE_STRING);
+        return(-1);
+    }
+
     public void loadTypeDef(String name) {
         if(!typedefsLoaded.contains(name)) {
             typedefsLoaded.add(name);
@@ -276,9 +280,6 @@ public class TypeDef extends MMObjectBuilder {
         }
     }
 
-    /**
-     * @javadoc
-     */
     public void unloadTypeDef(String name) {
         if(typedefsLoaded.contains(name)) {
             typedefsLoaded.remove(name);
@@ -287,10 +288,8 @@ public class TypeDef extends MMObjectBuilder {
         }
     }
 
-    /**
-     * @javadoc
-     */
-    public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+    public Vector  getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+        System.out.println("Tataaaaa");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("builders")) {

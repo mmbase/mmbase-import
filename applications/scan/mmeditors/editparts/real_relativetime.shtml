@@ -24,7 +24,7 @@
         <TD>
             <CENTER>
             <FONT FACE="Arial,Helvetica">
-            <FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/annotcalc.shtml?$PARAM1+$PARAM2+$PARAM3" TRGET="Content">
+            <FORM METHOD="POST" ACTION="/mmeditors/editparts/annotcalc.shtml?$PARAM1+$PARAM2+$PARAM3" TRGET="Content">
 				Time:
 				<BR>
   				h<MACRO SELECT SESSION-ANNOTREL-HOUR "RANGE-0-23-1" SELECTED="$MOD-INFO-RELTIME-GETHOURS-$PARAM4" PROC>
@@ -32,7 +32,7 @@
 				s<MACRO SELECT SESSION-ANNOTREL-SECOND "RANGE-0-59-1" SELECTED="$MOD-INFO-RELTIME-GETSECONDS-$PARAM4" PROC>
 				ms<MACRO SELECT SESSION-ANNOTREL-MILLI "RANGE-0-999-100" SELECTED="$MOD-INFO-RELTIME-GETMILLIS-$PARAM4" PROC>
 				<BR>
-                <INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> $MOD-MMLANGAUGE-GET-ok
+                <INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> $MOD-MMLANGAUGE-GET-ok
             </FORM>
         </TD>
     </TR>

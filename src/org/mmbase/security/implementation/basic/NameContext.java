@@ -22,9 +22,6 @@ import org.mmbase.util.logging.Logging;
  *  and authorization, so that information can be shared.
  *  This class is NOT a container class for client related stuff, altrough
  *  this is possible.
- * @javadoc
- * @author Eduard Witteveen
- * @version $Id: NameContext.java,v 1.2 2002-06-07 12:56:57 pierre Exp $
  */
 public class NameContext extends UserContext {
     private static Logger log = Logging.getLoggerInstance(NameContext.class.getName());
@@ -38,12 +35,12 @@ public class NameContext extends UserContext {
 
     public String getIdentifier() {
         if(ident == null) throw new SecurityException("Dont know who we are, was not set by the system. This is required");
-    return ident;
+	return ident;
     }
 
     public Rank getRank() {
         if(rank == null) throw new SecurityException("Dont know who we are, was not set by the system. This is required");
-    return rank;
+	return rank;
     }
 
     void setIdentifier(String ident) {

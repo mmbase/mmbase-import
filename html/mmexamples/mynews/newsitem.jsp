@@ -1,63 +1,49 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %>
+<%@page errorPage="error.jsp"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase">
 <%-- magazine node --%>
 <%-- the page is called with a parameter newsid
 we can use the parameter attribute of node to create a context 
 for the MMBase node --%>
-<mm:import externid="newsid" required="true" />
-<mm:node number="$newsid">
-<html>
- <head>
+<mm:import externid="newsid"/>
+<mm:node number="${newsid}">
+<HTML>
+ <HEAD>
   <%-- we are in the news node  we can ask 
   for fields of this magazine --%>
-  <title><mm:field  name="title"/></title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
- </head>
-<body>
-<center>
-  <table width="90%" cellspacing=1 cellpadding=3 border=0>
-  <tr>
-  <th colspan="2">  
-  <%-- use the title field again --%>
-  <h2><mm:field  name="title"/></h2>
-  <mm:field name="subtitle"><mm:isnotempty><h3><mm:write /></h3></mm:isnotempty></mm:field>
+  <TITLE><mm:field  name="title"/></TITLE>
+ </HEAD>
+<BODY BACKGROUND="../images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+<CENTER>
+  <TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+  <TR>
+  <TD WIDTH="30"></TD>
+  <TD>
   
-  </th><tr>
-  <tr><td width="30" /><td>
+  <%-- use the title field again --%>
+  <H1><mm:field  name="title"/></H1>
 
-  <b><mm:field  name="intro"/></B>
+  <B><mm:field  name="intro"/></B>
 
   <%-- it is possible to call MMBase functions on fields
   this i an example of converting text to html by adding
   brakes and paragraphs --%>
-  <p><mm:field  name="html(body)"/></p>
+  <P><mm:field  name="html(body)"/></P>
 
-  </td></tr>
-  <mm:relatednodes type="images" max="3">
-   <mm:first><tr><th colspan="2">Related images</th></tr><tr><td /><td></mm:first>
-       <img src="<mm:image template="s(200)" />" alt="<mm:field name="title" />" />
-   <mm:last></td></tr></mm:last>
+  <mm:relatednodes type="images">
+   <mm:first>Related images<BR></mm:first>
+    <IMG SRC="<mm:image template="s(200)" />">
   </mm:relatednodes>
 
   <mm:relatednodes type="urls">
-   <mm:first><tr><th colspan="2">Related urls</th></tr><tr><td /><td></mm:first>
-   <a href="<mm:field name="url"/>"><mm:field name="description"/></a><br />
-   <mm:last></td></tr></mm:last>
+   <mm:first>Related urls<BR></mm:first>
+   <A HREF="<mm:field name="url"/>"><mm:field name="description"/></A><BR>
   </mm:relatednodes>
-
-  <mm:relatednodes type="people">
-   <mm:first><tr><th colspan="2">Authors</th></tr><tr><td /><td></mm:first>
-   <em><mm:field name="firstname" /> <mm:field name="lastname" /></em><br />
-   <mm:last></td></tr></mm:last>
-  </mm:relatednodes>
-  </table>
-</center>
-<hr />
-<mm:import externid="magid">default.mags</mm:import>
-<a href="<mm:url referids="magid" page="index.jsp" /> ">back</a><br />
-<a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
- </body>
-</html>
+  </TD>
+  </TR>
+  </TABLE>
+</CENTER>
+ </BODY>
+</HTML>
 </mm:node>
 </mm:cloud>

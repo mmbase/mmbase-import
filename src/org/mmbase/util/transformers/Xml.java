@@ -12,7 +12,6 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Transformations related to escaping in XML.
@@ -32,7 +31,7 @@ public class Xml extends AbstractTransformer implements CharTransformer {
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
+    public HashMap transformers() {
         HashMap h = new HashMap();
         h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Escapes >, < & and \""));
         h.put("escape_html".toUpperCase(), new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
@@ -214,14 +213,5 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
-    public String getEncoding() {
-        switch(to){
-        case ESCAPE:                    return "ESCAPE_XML";
-        case ESCAPE_ATTRIBUTE:          return "ESCAPE_XML_ATTRIBUTE";
-        case ESCAPE_ATTRIBUTE_DOUBLE:   return "ESCAPE_XML_ATTRIBUTE_DOUBLE";
-        case ESCAPE_ATTRIBUTE_SINGLE:   return "ESCAPE_XML_ATTRIBUTE_SINGLE";
-        case ESCAPE_ATTRIBUTE_HTML:     return "ESCAPE_HTML_ATTRIBUTE";
-        default: throw new UnsupportedOperationException("unknown encoding");
-        }
-    }
+
 }

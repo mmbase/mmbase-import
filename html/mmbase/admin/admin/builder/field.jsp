@@ -166,7 +166,7 @@
   <td class="data"><%=name.getStringValue("item2")%></td>
   <td class="linkdata"><a href=<mm:url page="/mmdocs/config/builders.html#guiname" /> ">explain</a></td>
   <td class="navigate">
-    <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=guiname&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%>&country=<%=name.getStringValue("item1")%>"
+    <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=guiname&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%>&country=<%=name.getStringValue("item2")%>"
     ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>

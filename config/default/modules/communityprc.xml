@@ -3,13 +3,13 @@
 <module maintainer="vpro.nl" version="1">
 
   <!-- <status>
-    what is the status of this builder options : active or inactive
+	what is the status of this builder options : active or inactive
   -->
   <status>inactive</status>
 
 
   <!-- <classfile>
-    main classfile that this module is defined in
+	main classfile that this module is defined in
   -->
   <classfile>org.mmbase.module.community.CommunityPrc</classfile>
 

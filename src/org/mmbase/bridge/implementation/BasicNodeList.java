@@ -21,24 +21,27 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.13 2002-06-17 11:58:00 eduard Exp $
+ * @version $Id: BasicNodeList.java,v 1.7 2002-01-31 10:05:12 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
-    protected Cloud cloud;
-    protected NodeManager nodemanager = null;
-    
-    BasicNodeList(Collection c, Cloud cloud) {
-        super(c);
-        this.cloud=cloud;
-    }
 
+    protected Cloud cloud;
+    protected NodeManager nodemanager=null;
+
+    /**
+    * ...
+    */
     BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c);
-        this.nodemanager = nodemanager;
         this.cloud=cloud;
+        this.nodemanager=nodemanager;
     }
-    
+
+    BasicNodeList(Collection c, Cloud cloud) {
+        this(c, cloud, null);
+    }
+
     /**
     *
     */
@@ -46,23 +49,19 @@ public class BasicNodeList extends BasicList implements NodeList {
         if (o instanceof Node) {
             return o;
         }
-        MMObjectNode coreNode = (MMObjectNode) o;
-        MMObjectBuilder coreBuilder = coreNode.getBuilder();
-        Node node = null;
-        NodeManager manager = nodemanager;
-        if(manager == null)  {            
-            manager = cloud.getNodeManager(coreBuilder.getTableName());
+        MMObjectNode mmn= (MMObjectNode)o;
+        NodeManager nm = nodemanager;
+        if (nm==null) {
+            nm=cloud.getNodeManager(mmn.parent.getTableName());
         }
-        if(coreBuilder instanceof InsRel) {
-            // we are an relation,.. this means we have to create a relation..
-            node = new BasicRelation(coreNode, manager);
+        Node n;
+        if (mmn.parent instanceof InsRel) {
+            n = new BasicRelation(mmn,nm);
+        } else {
+            n = new BasicNode(mmn,nm);
         }
-        else {
-            // 'normal' node
-            node = new BasicNode(coreNode, manager);
-        }
-        set(index, node);
-        return node;
+        set(index, n);
+        return n;
     }
 
     /**
@@ -79,19 +78,53 @@ public class BasicNodeList extends BasicList implements NodeList {
         return new BasicNodeList(subList(fromIndex, toIndex),cloud);
     }
 
+
+    /*
+    public NodeList sort(String field, boolean order) {
+           Vector nodesVector = new Vector(this);
+           NodeComparator nodeComparator = new NodeComparator(field, order);
+           java.util.Collections.sort(nodesVector, nodeComparator);
+           return new BasicNodeList((Collection)nodesVector, cloud);
+    }
+    */
+
     /**
      *
-     */    
+     */
     public NodeIterator nodeIterator() {
         return new BasicNodeIterator(this);
-    }   
-     
-     
+    };
+
     public class BasicNodeIterator extends BasicIterator implements NodeIterator {
+
         BasicNodeIterator(BasicList list) {
             super(list);
         }
-                
+
+
+        public void set(Object o) {
+            if (! (o instanceof Node)) {
+                String message;
+                message = "Object must be of type Node.";
+                log.error(message);
+                throw new BridgeException(message);
+            }
+            list.set(index, o);
+        }
+        public void add(Object o) {
+            if (! (o instanceof Node)) {
+                String message;
+                message = "Object must be of type Node.";
+                log.error(message);
+                throw new BridgeException(message);
+            }
+            list.add(index, o);
+        }
+
+
+        // for efficiency reasons, we implement the same methods
+        // without an 'instanceof' (a simple test program proved that
+        // this is quicker)
         public void set(Node n) {
             list.set(index, n);
         }
@@ -102,5 +135,7 @@ public class BasicNodeList extends BasicList implements NodeList {
         public Node nextNode() {
             return (Node)next();
         }
+
     }
+
 }

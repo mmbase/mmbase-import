@@ -3,13 +3,13 @@
 <module>
 
   <!-- <status>
-    what is the status of this builder options : active or inactive
+	what is the status of this builder options : active or inactive
   -->
   <status>active</status>
 
 
   <!-- <classfile>
-    main classfile that this module is defined in
+	main classfile that this module is defined in
   -->
   <classfile>org.mmbase.module.scancache</classfile>
 
@@ -18,8 +18,8 @@
      a key/value system. Its a optional tag.
    -->
   <properties>
-    <property name="status">active</property>
-    <property name="cacheroot">/tmp/</property>
+	<property name="status">active</property>
+	<property name="cacheroot">/tmp/</property>
   </properties>
 
 </module>

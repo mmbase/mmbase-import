@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.62 2002-06-17 15:30:30 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.45.2.2 2002-07-03 09:04:51 michiel Exp $
  */
 public class BasicNode implements Node {
 
@@ -63,10 +63,8 @@ public class BasicNode implements Node {
 
     /**
      * Temporary node ID.
-     * This is necessary since there is otherwise no sure (and quick) way to determine
+     * this is necessary since there is otherwise no sure (and quick) way to determine
      * whether a node is in 'edit' mode (i.e. has a temporary node).
-     * Basically, a temporarynodeid is either -1 (invalid), or a negative number smaller than -1
-     * (a temporary number assigend by the system).
      * @scope private
      */
     protected int temporaryNodeId=-1;
@@ -129,7 +127,7 @@ public class BasicNode implements Node {
     public Cloud getCloud() {
         return nodeManager.getCloud();
     }
-
+    
     public NodeManager getNodeManager() {
         return nodeManager;
     }
@@ -340,27 +338,12 @@ public class BasicNode implements Node {
         return noderef.getStringValue(attribute);
     }
 
-    public Document getXMLValue(String fieldName) {
-        return noderef.getXMLValue(fieldName);
-    }
-
-
-    public Element getXMLValue(String fieldName, Document tree) {
-        Document doc = getXMLValue(fieldName);
-        if(doc==null) return null;
-        return (Element) tree.importNode(doc.getDocumentElement(), true);
-    }
-
-    public void setXMLValue(String fieldName, Document value) {
-        // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(noderef.parent.getField(fieldName).getDBDocType());
-        setValue(fieldName, dc.convert(value, cloud));
-    }
 
     public void commit() {
         if (isnew) {
             cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
+
         edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
@@ -561,7 +544,7 @@ public class BasicNode implements Node {
         } else {
             return getRelations(rolenr);
         }
-    }
+    };
 
     public RelationList getRelations(String role, String nodeManager) {
         if (nodeManager==null) return getRelations(role);
@@ -583,19 +566,19 @@ public class BasicNode implements Node {
             }
         }
         return getRelations(rolenr,otype);
-    }
+    };
 
     public boolean hasRelations() {
         return getNode().hasRelations();
-    }
+    };
 
     public int countRelations() {
         return getRelations().size();
-    }
+    };
 
     public int countRelations(String type) {
         return getRelations(type).size();
-    }
+    };
 
     public NodeList getRelatedNodes() {
         Vector relvector=new Vector();
@@ -609,7 +592,7 @@ public class BasicNode implements Node {
             }
         }
         return new BasicNodeList(relvector,cloud);
-    }
+    };
 
     public NodeList getRelatedNodes(String type) {
         Vector relvector=new Vector();
@@ -631,7 +614,7 @@ public class BasicNode implements Node {
 
     public int countRelatedNodes(String type) {
         return getNode().getRelationCount(type);
-    }
+    };
 
     public StringList getAliases() {
         Vector aliasvector=new Vector();
@@ -643,7 +626,7 @@ public class BasicNode implements Node {
             }
         }
         return new BasicStringList(aliasvector);
-    }
+    };
 
     public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
@@ -657,14 +640,7 @@ public class BasicNode implements Node {
             log.error(message);
             throw new BridgeException(message);
         } else {
-            if (! getNode().parent.createAlias(getNumber(), aliasName)) {
-                Node otherNode = cloud.getNode(aliasName);
-                if (otherNode != null) {
-                    throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
-                } else {
-                    throw new BridgeException("Alias " + aliasName + " could not be created.");
-                }
-            }
+            getNode().parent.createAlias(getNumber(),aliasName);
         }
     }
 
@@ -702,17 +678,17 @@ public class BasicNode implements Node {
                 }
             }
         }
-    }
+    };
 
     public void deleteAlias(String aliasName) {
         edit(ACTION_EDIT);
         deleteAliases(aliasName);
-    }
+    };
 
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         Relation relation = relationManager.createRelation(this,destinationNode);
         return relation;
-    }
+    };
 
 
     /**
@@ -789,24 +765,25 @@ public class BasicNode implements Node {
      * Reverse the buffers, when changed and not stored...
      */
     protected void finalize() throws BridgeException {
-        // When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
-        // when not done it results in node-lists with changes which are not performed on the database...
-        // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
-        // my opinion is that this should happen, as soon as edit-ting starts,..........
-        // when still has modifications.....
-        if(changed) {
-            if(!(cloud instanceof Transaction)) {
-                // cancel the modifications...
-                cancel();
-                // The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the
-                // proper way.
-                // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
-                // This since it is not defined when the finalize method is called
-                // To bad only that nobody will ever see this exceptions :(
-                String msg = "After modifications to the node, either the method commit or cancel must be called\nnode #" + getNumber() + "(" + noderef + ")";
-                log.error(msg);
-                throw new BridgeException(msg);
-            }
-        }
-    }
+    	// When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
+	// when not done it results in node-lists with changes which are not performed on the database...
+	// This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
+	// my opinion is that this should happen, as soon as edit-ting starts,..........	
+    	// when still has modifications.....
+    	if(changed) {
+    	    if(!(cloud instanceof Transaction)) {
+	    	// cancel the modifications...
+	    	cancel();
+		// The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the 
+		// proper way. 
+		// Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.		
+		// This since it is not defined when the finalize method is called
+		// To bad only that nobody will ever see this exceptions :(
+		String msg = "after modifications to the node, either the method commit or cancel must be called";
+		log.error(msg);
+    	    	throw new BridgeException(msg);
+	    }
+	}
+    }    
+
 }

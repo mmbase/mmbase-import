@@ -32,11 +32,11 @@ public class servjumpers extends JamesServlet {
     // reference to the MMBase cloud
     static MMBase mmbase;
 
-    public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servjumpers.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+        log.info("Init of servlet " + config.getServletName() + ".");
         mmbase=(MMBase)getModule("MMBASEROOT");
     }
 
@@ -58,7 +58,7 @@ public class servjumpers extends JamesServlet {
             String tmpr=req.getRequestURI().substring(1);
             if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
             if (url!=null) {
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY); // 301
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY,"OK");
                 res.setContentType("text/html");
                 res.setHeader("Location",url);
                 return; // ??

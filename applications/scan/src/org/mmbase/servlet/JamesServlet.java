@@ -10,14 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.util.*;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import javax.servlet.*;
+import javax.servlet.http.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.AuthorizationException;
 import org.mmbase.util.HttpAuth;
@@ -28,28 +24,61 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * JamesServlet is a adaptor class.
- * It is used to extend the basic Servlet to provide services not found in suns Servlet API.
+ * JamesServlet is a adaptor class its used to extend the basic Servlet
+ * to with the calls that where/are needed for 'James' servlets to provide
+ * services not found in suns Servlet API.
  *
+ * @deprecation-used contains commented-out code
  * @duplicate this code is aimed at the SCAN servlets, and some features (i.e. cookies) do
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.39 2002-06-28 09:25:37 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.33.2.1 2002-04-26 21:15:55 gerard Exp $
  */
 
-public class JamesServlet extends MMBaseServlet {
-    private static Logger log;
-    protected static Logger pageLog;
+public class JamesServlet extends HttpServlet {
+    static Logger log;
+
+    /**
+     * To keep track of the currently running servlets
+     * switch the following boolean to true.
+     */
+    private static final boolean logServlets = true;
+    private static int servletCount; // Number of running servlets
+    /**
+     *  Lock to sync add and remove of threads
+     */
+    private static Object servletCountLock = new Object();
+    /**
+     * Hashtable containing currently running servlets
+     */
+    private static Hashtable runningServlets = new Hashtable();
+    /**
+     * Toggle to print running servlets to log
+     */
+    private static int printCount;
+
+    /**
+     * Debug method for logging.
+     * @deprecated-now use logging classes
+     */
+    protected void debug( String msg ) {
+    //	log.debug(msg + " <deprecated call>"); }
+    }
 
     /**
      * Initializes the servlet.
+     *
+     * @param config  the servlet configuration
      */
-    public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ServletConfig sc = getServletConfig();
+        ServletContext sx = sc.getServletContext();
+        MMBaseContext.init(sx);
+        MMBaseContext.initHtmlRoot();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(JamesServlet.class.getName());
-        pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
     }
 
     /**
@@ -62,6 +91,16 @@ public class JamesServlet extends MMBaseServlet {
     protected final Object getModule(String name) {
         return org.mmbase.module.Module.getModule(name);
     }
+
+    /**
+     * Retrieves an initialization parameter.
+     * Note: overides the normal way to set init params in javax.
+     */
+   /*
+    public String getInitParameter(String var) {
+        return null;
+    }
+   */
 
     /**
      * Retrieves all initialization parameters.
@@ -93,9 +132,13 @@ public class JamesServlet extends MMBaseServlet {
      * @exception AuthorizationException if the authorization fails.
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
-    public String getAuthorization(HttpServletRequest req,HttpServletResponse res) throws AuthorizationException, NotLoggedInException {
-        return getAuthorization(req,res,"www","Basic");
+    public String getAuthorization(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        return HttpAuth.getAuthorization(req,res,"www","Basic");
     }
+// better:
+//    public String getAuthorization(HttpServletRequest req,HttpServletResponse res) throws AuthorizationException, NotLoggedInException {
+//            return getAuthorization(req,res);
+//    }
 
     /**
      * Authenticates a user, If the user cannot be authenticated a login-popup will appear
@@ -108,13 +151,16 @@ public class JamesServlet extends MMBaseServlet {
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
     public String getAuthorization(HttpServletRequest req,HttpServletResponse res,String server, String level) throws AuthorizationException, NotLoggedInException {
-        return HttpAuth.getAuthorization(req,res,server,level);
+            return HttpAuth.getAuthorization(req,res,server,level);
     }
 
     /**
      * This method retrieves the users' MMBase cookie name & value as 'name/value'.
      * When the cookie can't be found, a new cookie will be added.
-     * The cookies domain will be implicit or explicit depending on the MMBASEROOT.properties value.
+     * When an old James cookie is found, the related MMBaseProperty 'value' field will be replaced
+     * with a new MMBase cookie name & value. The cookies domain will be implicit or explicit
+     * depending on the MMBASEROOT.properties value.
+     * @vpro old formats for cookies etc. should be removed.
      * @dependency org.mmbase.module.builder.Properties should not depend on this builder ?
      * @param req The HttpServletRequest.
      * @param res The HttpServletResponse.
@@ -125,10 +171,55 @@ public class JamesServlet extends MMBaseServlet {
 
         String methodName = "getCookie()";
         String HEADERNAME = "COOKIE";
+        String JAMES_COOKIENAME = "James_Ident";
         String MMBASE_COOKIENAME = "MMBase_Ident";
-        String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";   // weird date?
+        String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";
         String PATH = "/";
         String domain = null;
+
+        // somehow client has a cookie but does not return it in getHeader(COOKIE)
+        // this will explain why :)
+
+/*
+        if( debug ) {
+            debug("getCookie(): header of client:");
+            debug("getCookie(): -----------------");
+
+            Enumeration e     = req.getHeaderNames();
+            String        key    = null;
+
+            while( e.hasMoreElements() ) {
+                key = (String)e.nextElement();
+                debug("getCookie(): "+key+"("+req.getHeader(key)+")");
+            }
+            debug("getCookie(): -----------------");
+            debug("getCookie():");
+
+            Cookie[] c = req.getCookies();
+            int      i = 0;
+            if( c != null ) {
+                i = c.length;
+
+                debug("getCookie():Cookies["+i+"]:");
+                debug("getCookie():-----------");
+
+                Cookie cookie = null;
+                for( int j = 0; j<i; j++ ) {
+                    cookie = c[j];
+                    if( cookie != null ) {
+                        debug("getCookie(): cookie["+j+"]: comment("+cookie.getComment()+") domain("+cookie.getDomain()+") maxage("+cookie.getMaxAge()+") name("+cookie.getName()+") path("+cookie.getPath()+") secure("+cookie.getSecure()+") value("+cookie.getValue()+") version("+cookie.getVersion()+")");
+
+                    } else {
+                        debug("getCookie(): cookie["+j+"]: "+cookie);
+                    }
+                }
+            } else {
+                debug("getCookie(): no cookies found in header!");
+            }
+            debug("getCookie():");
+            debug("getCookie():--------");
+        }
+*/
         String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
         if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
@@ -166,6 +257,44 @@ public class JamesServlet extends MMBaseServlet {
             } else {
                 // debug(methodName+": Using explicit domain: "+domain);
                 res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; domain="+domain+"; expires="+FUTUREDATE));
+            }
+
+            if ((cookies!= null) && (cookies.indexOf(JAMES_COOKIENAME) != -1)) {
+
+                // Change all old JAMES cookie entries in the properties table to MMBASE cookie values.
+                // eg. key:'SID' value: 'James_Ident/936797541271' gets value: 'Mmbase_Ident/curtimemillis#'
+
+                MMObjectBuilder propBuilder = null;
+                propBuilder = mmbase.getMMObject("properties");
+                if (propBuilder==null) {
+                    //log.debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
+                }
+                StringTokenizer st = new StringTokenizer(cookies, ";");
+                while (st.hasMoreTokens()) {
+                    String cookie = st.nextToken().trim();
+                    if (cookie.startsWith(JAMES_COOKIENAME)) {
+
+                        // Change the value field of the related property to the mmbaseIdent value.
+                        //log.debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
+                        Enumeration e = propBuilder.search("WHERE key='SID' AND value='"+cookie.replace('=','/')+"'");
+                        if (e.hasMoreElements()) {
+                            MMObjectNode propNode = (MMObjectNode)e.nextElement();
+                            propNode.setValue("value", mmbaseCookie.replace('=','/'));
+                            propNode.commit();
+                        }
+
+                        /* Skipping expiry of old cookie for now.
+                        DateFormat formatter=new SimpleDateFormat("EEEE, dd-MMM-yyyy HH:mm:ss 'GMT'", Locale.US);
+                        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+                        Date d = new Date(System.currentTimeMillis()+24*3600*1000);
+                        String expires = formatter.format(d);
+                        debug("newGC: Found 'old' cookie: "+cookie+" setting new expiry to: "+expires);
+                        res.setHeader("Set-Cookie", (cookie+"; path="+PATH+"; expires="+expires));
+                        */
+                    }
+                }
+            } else {
+                // debug(methodName+": User has no "+JAMES_COOKIENAME+" also, *new user*");
             }
             return mmbaseCookie.replace('=','/');
         }
@@ -216,6 +345,79 @@ public class JamesServlet extends MMBaseServlet {
     }
 
     /**
+     * Return URI with QueryString appended
+     * @param req The HttpServletRequest.
+     */
+    public static String getRequestURL(HttpServletRequest req)
+    {
+        String result = req.getRequestURI();
+        String queryString = req.getQueryString();
+        if (queryString!=null) result += "?" + queryString;
+        return result;
+    }
+
+    /**
+     * Decrease the reference count of the servlet
+     * @param req The HttpServletRequest.
+     */
+    public void decRefCount(HttpServletRequest req) {
+        if (logServlets) {
+            String URL = getRequestURL(req);
+            URL += " " + req.getMethod();
+            synchronized (servletCountLock) {
+                servletCount--;
+                DebugServlet s = (DebugServlet) runningServlets.get(this);
+                if (s!=null) {
+                    if (s.refCount==0) runningServlets.remove(this);
+                    else {
+                        s.refCount--;
+                        int i = s.URIs.indexOf(URL);
+                        if (i>=0) s.URIs.removeElementAt(i);
+                    }
+                }// s!=null
+            }//sync
+        }// if (logServlets)
+    }
+
+    /**
+     * Increase the reference count of the servlet (for debugging)
+     * and send running servlets to log once every 32 requests
+     * @param req The HttpServletRequest.
+     */
+    public void incRefCount(HttpServletRequest req) {
+        if (logServlets) {
+            String URL = getRequestURL(req);
+            URL += " " + req.getMethod();
+            int curCount;
+            synchronized (servletCountLock) {
+                servletCount++; curCount=servletCount; printCount++;
+                DebugServlet s = (DebugServlet) runningServlets.get(this);
+                if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
+                else { s.refCount++; s.URIs.addElement(URL); }
+            }// sync
+
+            if ((printCount & 31)==0) {
+                if (curCount>0) {
+                    log.info("Running servlets: "+curCount);
+                    for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
+                        log.info(e.nextElement());
+                    }
+                }// curCount>0
+            }
+        }
+    }
+
+    /**
+     * Notifies through logging that the servlet was removed.
+     */
+    protected void finalize() {
+        System.out.println("end"); // obsolete call
+        //log.info("end of MMBase \n\n");
+    }
+
+//  ------------------------------------------------------------------------------------------------------------
+
+    /**
      * @javadoc
      * @vpro should be made configurable, possibly per servlet.
      *       The best way would likely be a system where a set of names can be configured
@@ -249,6 +451,8 @@ public class JamesServlet extends MMBaseServlet {
         String  result      = null;
         boolean fromProxy   = false;
         String  addr        = req.getRemoteHost();
+        // fix for bug in Apache mod_jk
+        if(addr==null) addr = "";
 
         if( addr != null && !addr.equals("") ) {
             // from proxy ?
@@ -331,4 +535,43 @@ public class JamesServlet extends MMBaseServlet {
         return hn;
     }
 
+
+}
+
+/**
+ * This class maintains current state information for a running servlet.
+ * It contains a reference count, as well as a list of URI's being handled by the servlet.
+ */
+class DebugServlet {
+    /**
+     * The servlet do debug
+     * @scope private
+     */
+    JamesServlet servlet;
+    /**
+     * List of URIs that call the servlet
+     * @scope private
+     */
+    Vector URIs = new Vector();
+    /**
+     * Nr. of references
+     * @scope private
+     */
+    int refCount;
+
+    /**
+     * Craete a new DebugServlet using teh jamesServlet
+     */
+    DebugServlet( JamesServlet servlet, String URI, int refCount) {
+        this.servlet = servlet;
+        URIs.addElement(URI);
+        this.refCount = refCount;
+    }
+
+    /**
+     * Return a description containing servlet info and URI's
+     */
+    public String toString() {
+        return "servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")";
+    }
 }

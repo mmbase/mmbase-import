@@ -31,7 +31,7 @@ import org.mmbase.servlet.JamesServlet;
  *
  * @rename Scanpage
   * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.19 2002-05-14 12:03:14 eduard Exp $
+ * @version $Id: scanpage.java,v 1.18.2.1 2002-04-26 21:15:55 gerard Exp $
  */
 public class scanpage {
     // logger
@@ -99,7 +99,7 @@ public class scanpage {
 	public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
 		setReq(req);
 		setRes(res);
-		req_line = req.getServletPath();
+		req_line = req.getRequestURI();
 		querystring = req.getQueryString();
 
 		// needs to be replaced (get the context ones)
@@ -309,6 +309,8 @@ public class scanpage {
         String  result      = null;
         boolean fromProxy   = false;
         String  addr        = req.getRemoteHost();
+        // fix for bug in Apache mod_jk
+        if(addr==null) addr = "";
 
         if( addr != null && !addr.equals("") ) {
             // from proxy ?

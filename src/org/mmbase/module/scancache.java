@@ -250,8 +250,7 @@ public class scancache extends Module implements scancacheInterface {
 	                // get the time from memory
 	                Integer tmp2=(Integer)timepool.get(poolName+key);
 	                int then=tmp2.intValue();
-	                log.debug("scancache -> file="+then+" now="+now
-	                        +" now-then="+(now-then)+" interval="+interval);
+	                log.debug("scancache -> file="+then+" now="+now+" interval="+interval);
 	                if (((now-then)-interval)<0) {
 	                    return value;
 	                } else {
@@ -326,7 +325,7 @@ public class scancache extends Module implements scancacheInterface {
     }
 
     /**
-     * Store a file in the indicated pool's cache (both on file system and in the memory cache).
+     * Store a file in the indicated pool's cache (both on file and in teh memory cache).
      * Returns the old value if available.
      * When using the "HENK" pool, this method performs a check on expiration using
      * the default expiration time (6 hours).
@@ -352,7 +351,7 @@ public class scancache extends Module implements scancacheInterface {
         // insert the new item and save to disk
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
-            timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
+            timepool.put(poolName+key,new Integer((int)(DateSupport.currentTimeMillis()/1000))); // store expiration time
             return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
@@ -382,7 +381,6 @@ public class scancache extends Module implements scancacheInterface {
     /**
      * Store a file in the indicated pool's cache (both in file and in the memory cache).
      * Returns the old value if available.
-     * Is used in scanpage to recalculate the cached page.
      * @param poolname name of the cache pool, either "HENK" or "PAGE"
      * @param key URL of the page to store
      * @param value the page content to store
@@ -392,6 +390,7 @@ public class scancache extends Module implements scancacheInterface {
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
+     * @deprecated Temporary hack for solving asis problems (?). Use {@link #newput} instead.
      */
     public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
         if (status==false) return null; // no caching when inactive
@@ -407,7 +406,7 @@ public class scancache extends Module implements scancacheInterface {
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
             // also add time to timepool??
-            timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
+            timepool.put(poolName+key,new Integer((int)(DateSupport.currentTimeMillis()/1000))); // store expiration time
             return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
@@ -494,8 +493,8 @@ public class scancache extends Module implements scancacheInterface {
 
     /**
      * Saves a file to disk.
-     * The file is stored under the cache cache root directory, followed by the poolname
-     * (HENK or PAGE), followed by the 'original' file name.
+     * The file is stored under the cache root directory, with a unique name,
+     * composed of the pool name and the 'original' file name.
      * @param pool The name of the pool
      * @param filename the name of the file
      * @param value the value to store in the file
@@ -533,9 +532,9 @@ public class scancache extends Module implements scancacheInterface {
     }
 
     /**
-     * loads a file from the disk.
-     * The file retrieved is stored in the cache root directory, followed by the poolname
-     * (HENK or PAGE), followed by the 'original' file name.
+     * loads a file to disk.
+     * The file retrieved should be stored under the cache root directory, with a unique name,
+     * composed of the pool name and the 'original' file name.
      * @param pool The name of the pool
      * @param filename the name of the file
      * @return the content of the file in a {@link fileInfo} object.
@@ -598,7 +597,7 @@ public class scancache extends Module implements scancacheInterface {
         body+="Expires: "+expireTime+"\n";
         body+="Date: "+now+"\n";
 		// Internet explorer refuses to see resulting page as HTML
-		// when cache control header added to .asis file
+		// when cache control header added to .asis file 
         // body+="Cache-Control: no-cache\n";
         body+="Pragma: no-cache\n";
         body+="Last-Modified: "+now+"\n\n";

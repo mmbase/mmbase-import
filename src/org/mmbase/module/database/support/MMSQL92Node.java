@@ -20,15 +20,14 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * MMSQL92Node implements the MMJdbc2NodeInterface for
- * sql92 types of database this is the class used to abstact the query's
- * needed for mmbase for each database.
- *
- * @author Daniel Ockeloen
- * @author Pierre van Rooden
- * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.66 2002-07-03 16:42:42 michiel Exp $
- */
+* MMSQL92Node implements the MMJdbc2NodeInterface for
+* sql92 types of database this is the class used to abstact the query's
+* needed for mmbase for each database.
+*
+* @author Daniel Ockeloen
+* @author Pierre van Rooden
+* @version $Id: MMSQL92Node.java,v 1.53.2.2 2002-07-03 20:06:34 michiel Exp $
+*/
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
     /**
@@ -48,22 +47,22 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      * @scope private
      */
-    protected XMLDatabaseReader parser;
+    XMLDatabaseReader parser;
     /**
      * @javadoc
      * @scope private
      */
-    protected Hashtable typeMapping = new Hashtable();
+    Hashtable typeMapping = new Hashtable();
     /**
      * @javadoc
      * @scope private
      */
-    protected Hashtable disallowed2allowed;
+    Hashtable disallowed2allowed;
     /**
      * @javadoc
      * @scope private
      */
-    protected Hashtable allowed2disallowed;
+    Hashtable allowed2disallowed;
     /**
      * @javadoc
      */
@@ -77,7 +76,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      * @scope private
      */
-    protected MMBase mmb;
+    MMBase mmb;
 
     public MMSQL92Node() {
     }
@@ -95,8 +94,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         }
 
         typeMapping=parser.getTypeMapping();
-        disallowed2allowed = parser.getDisallowedFields();
-        allowed2disallowed = getReverseHash(disallowed2allowed);
+        disallowed2allowed=parser.getDisallowedFields();
+        allowed2disallowed=getReverseHash(disallowed2allowed);
         // map the default types
         mapDefaultFields(disallowed2allowed);
         // Check if the numbertable exists, if not one will be created.
@@ -107,87 +106,42 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
-        return decodeDBnodeField(node, fieldname, rs, i, "");
-    }
-
-    /**
-     * Returns whether this database support layer allows for buidler to be a parent builder
-     * (that is, other builders can 'extend' this builder and its database tables).
-     *
-     * @since MMBase-1.6
-     * @param builder the builder to test
-     * @return true if the builder can be extended
-     */
-    public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
-        String buildername=builder.getTableName();
-        return buildername.equals("object") || buildername.equals("insrel");
-    }
-
-    /**
-     * Registers a builder as a parent builder (that is, other buidlers can 'extend' this
-     * builder and its database tables).
-     * At the least, this code should check whether the builder is allowed as a parent builder,
-     * and throw an exception if this is not possible.
-     * This method can be overridden to allow for optimization of code regarding such builders.
-     *
-     * @since MMBase-1.6
-     * @param parent the parent builder to register
-     * @param child the builder to register as the parent's child
-     * @throws UnsupportedDatabaseOperationException when the databse layer does not allow extension of this builder
-     */
-    public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
-        throws UnsupportedDatabaseOperationException {
-        if (!isAllowedParentBuilder(parent)) {
-            throw new UnsupportedDatabaseOperationException("Cannot extend the builder with name "+parent.getTableName());
-        }
+        return(decodeDBnodeField(node,fieldname,rs,i,""));
     }
 
     /**
      * @javadoc
      */
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs, int i, String prefix) {
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
         try {
-            // is this fieldname disallowed ? ifso map it back
-            if (allowed2disallowed.containsKey(fieldname)) {
-                fieldname = (String)allowed2disallowed.get(fieldname);
-            }
-            if (node == null) {
-                log.warn("Cannot decode field " + fieldname + " because given node is null");
-            }
-            int type=node.getDBType(prefix+fieldname);
-            switch (type) {
-            case FieldDefs.TYPE_XML:
-            case FieldDefs.TYPE_STRING: {
-                // original:
-                //String tmp=rs.getString(i);
 
-                String tmp = null;
-                try {
-                    byte[] bytes = rs.getBytes(i);
-                    if (bytes != null) {
-                        tmp = new String(bytes, mmb.getEncoding());
-                    }
-                } catch (Exception e) {
-                    log.error("Getting encoded bytes: " + e.toString());
-                }
-                if (tmp == null) {
-                    node.setValue(prefix + fieldname, "");
+        // is this fieldname disallowed ? ifso map it back
+        if (allowed2disallowed.containsKey(fieldname)) {
+            fieldname=(String)allowed2disallowed.get(fieldname);
+        }
+
+
+        int type=node.getDBType(prefix+fieldname);
+        switch (type) {
+            case FieldDefs.TYPE_STRING:
+                String tmp=rs.getString(i);
+                if (tmp==null) {
+                    node.setValue(prefix+fieldname,"");
                 } else {
-                    node.setValue(prefix + fieldname, tmp);
+                    node.setValue(prefix+fieldname,tmp);
                 }
                 break;
-            }
-            case FieldDefs.TYPE_NODE:
+
             case FieldDefs.TYPE_INTEGER:
-                node.setValue(prefix + fieldname, (Integer)rs.getObject(i));
+                node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
                 break;
             case FieldDefs.TYPE_LONG:
-                node.setValue(prefix + fieldname, (Long)rs.getObject(i));
+                node.setValue(prefix+fieldname,(Long)rs.getObject(i));
                 break;
             case FieldDefs.TYPE_FLOAT:
                 // who does this now work ????
                 //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
-                node.setValue(prefix + fieldname, new Float(rs.getFloat(i)));
+                node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
                 break;
             case FieldDefs.TYPE_DOUBLE:
                 node.setValue(prefix+fieldname,(Double)rs.getObject(i));
@@ -196,12 +150,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 node.setValue(prefix+fieldname,"$SHORTED");
                 break;
             }
-            return node;
+            return (node);
         } catch(SQLException e) {
             log.error("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
             log.error(Logging.stackTrace(e));
         }
-        return node;
+        return(node);
     }
 
     /**
@@ -255,7 +209,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             value=value.substring(pos+1,value.length()-1);
             like=true;
         }
-        if (dbtype==FieldDefs.TYPE_STRING || dbtype==FieldDefs.TYPE_XML) {
+        if (dbtype==FieldDefs.TYPE_STRING) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -267,7 +221,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 }
                 break;
             }
-        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_NODE || dbtype==FieldDefs.TYPE_INTEGER) {
+        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -347,7 +301,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         } else {
             MMObjectNode tn=mmb.getTypeDef().getNode(number);
             String stype=mmb.getTypeDef().getValue(tn.getIntValue("otype"));
-            byte[] result=readBytesFile(datapath+stype+"/"+number+"."+fieldname);
+                byte[] result=readBytesFile(datapath+stype+"/"+number+"."+fieldname);
             return result;
         }
         return null;
@@ -386,27 +340,26 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         String str=null;
         InputStream inp;
         DataInputStream input;
-        byte[] rawchars;
+        byte[] isochars;
         int siz;
 
         if (0==1) return("");
         try {
-            //inp = rs.getAsciiStream(idx);
-            inp = rs.getBinaryStream(idx);
+            inp=rs.getAsciiStream(idx);
             if (inp==null) {
                 //log.debug("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
-                return("");
+                 return("");
             }
             if (rs.wasNull()) {
-                log.trace("MMObjectBuilder -> MMysql42Node DBtext wasNull " + inp);
+                log.trace("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
                 return("");
             }
             siz=inp.available(); // DIRTY
             if (siz==0 || siz==-1) return("");
-            input   =new DataInputStream(inp);
-            rawchars = new byte[siz];
-            input.readFully(rawchars);
-            str = new String(rawchars, mmb.getEncoding());
+            input=new DataInputStream(inp);
+            isochars=new byte[siz];
+            input.readFully(isochars);
+            str=new String(isochars,"ISO-8859-1");
             input.close(); // this also closes the underlying stream
         } catch (Exception e) {
             log.error("MMObjectBuilder -> MMMysql text  exception "+e);
@@ -452,21 +405,21 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             String key = (String)e.nextElement();
             int DBState = node.getDBState(key);
             if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
-                 || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+              || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
                 if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", adding key: "+key);
 
-                // hack for blobs to disk
-                int dbtype=node.getDBType(key);
-                if (!bdm || dbtype!=FieldDefs.TYPE_BYTE) {
-                    fieldAmounts+=",?";
-                } else {
-                }
+                    // hack for blobs to disk
+                    int dbtype=node.getDBType(key);
+                    if (!bdm || dbtype!=FieldDefs.TYPE_BYTE) {
+                        fieldAmounts+=",?";
+                    } else {
+                    }
             } else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                 if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", skipping key: "+key);
             } else {
 
                 if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
-                    fieldAmounts+=",?";
+                        fieldAmounts+=",?";
                 } else {
                     log.error("Insert: DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
                 }
@@ -493,7 +446,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 String key = (String)e.nextElement();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
-                     || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+                  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
                     if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
                     if (setValuePreparedStatement( stmt, node, key, j )) j++;
 
@@ -515,8 +468,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         } catch (SQLException e) {
             log.error("Error on : "+number+" "+owner+" fake");
             try {
-                stmt.close();
-                con.close();
+            stmt.close();
+            con.close();
             } catch(Exception t2) {}
             log.error(Logging.stackTrace(e));
             return -1;
@@ -556,24 +509,22 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             }
         }
 
-        // update the object table unless this is the 'object' builder
-        // since MMbase-1.6 'object' can also appear as a builder
-        if (!tableName.equals("object")) {
-            try {
-                con=mmb.getConnection();
-                stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
-                stmt.setInt(1,number);
-                stmt.setInt(2,node.getIntValue("otype"));
-                stmt.setString(3,node.getStringValue("owner"));
-                stmt.executeUpdate();
-                stmt.close();
-                con.close();
-            } catch (SQLException e) {
-                log.error("Error on : "+number+" "+owner+" fake");
-                log.error(Logging.stackTrace(e));
-                return -1;
-            }
+
+        try {
+            con=mmb.getConnection();
+            stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
+            stmt.setInt(1,number);
+            stmt.setInt(2,node.getIntValue("otype"));
+            stmt.setString(3,node.getStringValue("owner"));
+            stmt.executeUpdate();
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            log.error("Error on : "+number+" "+owner+" fake");
+            log.error(Logging.stackTrace(e));
+            return -1;
         }
+
 
         //bul.signalNewObject(tableName,number);
         if (bul.broadcastChanges) {
@@ -599,17 +550,17 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public void setDBText(int i, PreparedStatement stmt,String body) {
-        byte[] rawchars=null;
+        byte[] isochars=null;
         try {
-            rawchars=body.getBytes(mmb.getEncoding());
+            isochars=body.getBytes("ISO-8859-1");
         } catch (Exception e) {
             log.error("MMObjectBuilder -> String contains odd chars");
             log.error(body);
             log.error(Logging.stackTrace(e));
         }
         try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
-            stmt.setBinaryStream(i,stream,rawchars.length);
+            ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
+            stmt.setAsciiStream(i,stream,isochars.length);
             stream.close();
         } catch (Exception e) {
             log.error("MMObjectBuilder : Can't set ascii stream");
@@ -645,12 +596,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         String builderFieldSql = null;
         boolean changeObjectFields = false;
         boolean changeInsrelFields = false;
-        boolean isInsrelSubTable = node.parent!=null && node.parent instanceof InsRel && !bul.getTableName().equals("insrel");
+        boolean isInsrelSubTable = node.parent!=null && node.parent instanceof InsRel && !bul.tableName.equals("insrel");
 
         // create the prepared statement
         for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
-            String key=(String)e.nextElement();
-            // a extra check should be added to filter temp values
+        String key=(String)e.nextElement();
+        // a extra check should be added to filter temp values
             // like properties
 
             // is this key disallowed ? ifso map it back
@@ -674,12 +625,19 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     log.warn("Changing the otype field - should not be allowed?");
                 }
 
-                // change the status, that object should be updated, unless this is the object builder itself
-                changeObjectFields = !bul.getTableName().equals("object");
-                if (changeObjectFields) {
-                    // if it is a relation, then also adjust the insrel table if it is a sub table of that one..
-                    changeInsrelFields =isInsrelSubTable;
-                    // log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, object)");
+                // change the status, that object should be updated..
+                changeObjectFields = true;
+
+                // if it is a relation, then also adjust the insrel table if it is a sub table of that one..
+                if(isInsrelSubTable) {
+
+                    // change the status, that insrel should be updated..
+                    changeInsrelFields = true;
+
+                    // give a warning that we are changing more then 1 table..
+                    log.warn("changing the '"+key+"' field, could give probems due to update on 3 tables without locking(builder, insrel, object)");
+                } else {
+                    log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, object)");
                 }
             } // object fields
 
@@ -687,13 +645,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             if(isInsrelSubTable && ( key.equals("snumber") || key.equals("dnumber") || key.equals("rnumber") || key.equals("dir")) ) {
                 // change the status, that insrel should be updated..
                 changeInsrelFields = true;
-                // log.warn("changing the '"+key+"' field, could give problems due to update on 2 tables without locking(builder, insrel)");
+                log.warn("changing the '"+key+"' field, could give problems due to update on 2 tables without locking(builder, insrel)");
             } // insrel fields
         } // add all changed fields...
 
         // when we had a update...
         if(builderFieldSql != null) {
-            String sql = "UPDATE "+mmb.baseName+"_"+bul.getTableName()+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number");
+            String sql = "UPDATE "+mmb.baseName+"_"+bul.tableName+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number");
             log.debug("Temporary SQL statement, which will be filled with parameters : " + sql);
 
             try {
@@ -711,9 +669,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
                     // for the right type call the right method..
                     if (type==FieldDefs.TYPE_INTEGER) {
-                        stmt.setInt(currentParameter,node.getIntValue(key));
-                    } else if (type==FieldDefs.TYPE_NODE) {
-                        stmt.setInt(currentParameter,node.getIntValue(key));
+                            stmt.setInt(currentParameter,node.getIntValue(key));
                     } else if (type==FieldDefs.TYPE_FLOAT) {
                         stmt.setFloat(currentParameter,node.getFloatValue(key));
                     } else if (type==FieldDefs.TYPE_DOUBLE) {
@@ -721,8 +677,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     } else if (type==FieldDefs.TYPE_LONG) {
                         stmt.setLong(currentParameter,node.getLongValue(key));
                     } else if (type==FieldDefs.TYPE_STRING) {
-                        setDBText(currentParameter,stmt,node.getStringValue(key));
-                    } else if (type==FieldDefs.TYPE_XML) {
                         setDBText(currentParameter,stmt,node.getStringValue(key));
                     } else if (type==FieldDefs.TYPE_BYTE) {
                         setDBByte(currentParameter,stmt,node.getByteValue(key));
@@ -753,8 +707,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 }
 
                 // also change the object table, when it was a field from there..
-                // update the object table unless this is the 'object' builder
-                // since MMbase-1.6 'object' can also appear as a builder
                 if (changeObjectFields) {
                     String objectSql = "UPDATE  "+mmb.baseName+"_object SET otype="+node.getIntValue("otype")+", owner='"+node.getStringValue("owner")+"'";
                     objectSql += " WHERE " + getNumberString() + "=" + node.getValue("number");
@@ -789,14 +741,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         // broadcast the changes, if nessecary...
         if (bul.broadcastChanges) {
             if (bul instanceof InsRel) {
-                bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"c");
+                bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
                 // figure out tables to send the changed relations
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
                 mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
                 mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
             } else {
-                mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"c");
+                mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
             }
         }
         // done !
@@ -810,28 +762,24 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
         int number=node.getIntValue("number");
         if(log.isDebugEnabled()) {
-            log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.getTableName()+" where "+getNumberString()+"="+number);
+            log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
             log.trace("SAVECOPY "+node.toString());
         }
         Vector rels=bul.getRelations_main(number);
         if (rels!=null && rels.size()>0) {
-            log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.getTableName()+" where "+getNumberString()+"="+number);
+            log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
         } else {
             if (number!=-1) {
-                //first alway's remove the "requested" object from the table it belongs to
                 try {
                     MultiConnection con=mmb.getConnection();
                     Statement stmt=con.createStatement();
-                    stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.getTableName()+" where "+getNumberString()+"="+number);
+                    stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
                     stmt.close();
                     con.close();
                 } catch (SQLException e) {
                     log.error(Logging.stackTrace(e));
                 }
-                //during the OO->relational mapping it wat decided that all relations should remain
-                //in the insrel table. If the node requested to delete is a relation node and it is not insrel
-                //we need to also remove it from the insrel table
-                if (node.parent!=null && (node.parent instanceof InsRel) && !bul.getTableName().equals("insrel")) {
+                if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
                     try {
                         MultiConnection con=mmb.getConnection();
                         Statement stmt=con.createStatement();
@@ -842,17 +790,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         log.error(Logging.stackTrace(e));
                     }
                 }
-                //due to optimalisation when one requests the "relations" that a node has the layer
-                //returns relations of type insrel. If you then call "delete" on that insrel it might
-                //be that case that at this point in the stage of delete that there are still fields
-                //in for example a posrel tables. We need to find out if the object we are trying to delete
-                //is keeps it's information somewhere else so this only happens when the builder when the builder
-                //is InsRel and the table is insrel but the real tables is not insrel
-
-                //if insrel but otype != insrel
                 String otypeString = mmb.getTypeDef().getValue(node.getOType());
-                if (node.parent!=null && (node.parent instanceof InsRel) && bul.getTableName().equals("insrel") &&
-                    !otypeString.equals("insrel")) {
+                if (node.parent!=null && (node.parent instanceof InsRel) && bul.tableName.equals("insrel") && !otypeString.equals("insrel")
+                    ) {
                     log.debug("deleting row in subtable of insrel the subtable is of type("+ otypeString +") and the object number is="+ number);
                     try {
                         MultiConnection con=mmb.getConnection();
@@ -865,25 +805,19 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     }
                 }
 
-                //during the OO->relational mapping the object table is not anymore "automaticatly" updated
-                //so we also need to remove the object from the object table
-                // update the object table unless this is the 'object' builder
-                // since MMbase-1.6 'object' can also appear as a builder
-                if (!bul.getTableName().equals("object")) {
-                    try {
-                        MultiConnection con=mmb.getConnection();
-                        Statement stmt=con.createStatement();
-                        stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
-                        stmt.close();
-                        con.close();
-                    } catch (SQLException e) {
-                        log.error(Logging.stackTrace(e));
-                    }
+                try {
+                    MultiConnection con=mmb.getConnection();
+                    Statement stmt=con.createStatement();
+                    stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
+                    stmt.close();
+                    con.close();
+                } catch (SQLException e) {
+                    log.error(Logging.stackTrace(e));
                 }
             }
         }
         if (bul.broadcastChanges) {
-            mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"d");
+            mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"d");
             if (bul instanceof InsRel) {
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
@@ -900,10 +834,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      */
     private void checkNumberTable() {
         if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> checks if table numberTable exists.");
-        if (!created(mmb.baseName + "_numberTable")) {
+        if(!created(mmb.baseName+"_numberTable")) {
             // We want the current number of object, not next number (that's the -1)
-            int number = getDBKeyOld() - 1;
-            
+            int number = getDBKeyOld()-1;
 
             if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
             String createStatement = getMatchCREATE("numberTable")+"( "+getNumberString()+" integer not null);";
@@ -922,7 +855,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     }
 
     /**
-     * Gives an unique number for a node to be inserted.
+     * Gives an unique number
      * This method will work with multiple mmbases
      * @return unique number
      */
@@ -936,7 +869,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.executeUpdate("update "+mmb.baseName+"_numberTable set "+getNumberString()+" = "+getNumberString()+"+1");
             ResultSet rs=stmt.executeQuery("select "+getNumberString()+" from "+mmb.baseName+"_numberTable;");
             while(rs.next()) {
-                number=rs.getInt(1);
+                        number=rs.getInt(1);
             }
             // not part of sql92, please find new trick (daniel)
             // stmt.executeUpdate("unlock tables;");
@@ -951,13 +884,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     }
 
     /**
-     * Get a new object key without using numberTable, that is, by getting the max number of mm_object.
-     * If object table does not exist (yet), it returns 1.
-     * This is only used when creating the numberTable. 
-     * @deprecated Can be replaced by '1'. Because new installations create the the numberTable when there are not objects yet.
+     * @javadoc
      */
-    protected synchronized int getDBKeyOld() {
-        int number = -1;
+    public synchronized int getDBKeyOld() {
+        int number=-1;
         if(created(mmb.getBaseName() + "_object")) {
             try {
                 MultiConnection con=mmb.getConnection();
@@ -967,17 +897,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     number=rs.getInt(1);
                     number++;
                 } else {
-                    // no objects yet
-                    number = 1;
+                    number=1;
                 }
                 stmt.close();
                 con.close();
             } catch (SQLException e) {
-                log.error("MMBase -> Error getting a new key number:" + e.toString());
-                return 1; // try something.
+                log.error("MMBase -> Error getting a new key number");
+                return 1;
             }
         } else {
-            // no object table yet.
             number = 1;
         }
         return number;
@@ -1029,15 +957,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         int type = node.getDBType(key);
         if (type==FieldDefs.TYPE_INTEGER) {
             stmt.setInt(i, node.getIntValue(key));
-        } else if (type==FieldDefs.TYPE_NODE) {
-            stmt.setInt(i, node.getIntValue(key));
         } else if (type==FieldDefs.TYPE_FLOAT) {
             stmt.setFloat(i, node.getFloatValue(key));
         } else if (type==FieldDefs.TYPE_DOUBLE) {
             stmt.setDouble(i, node.getDoubleValue(key));
         } else if (type==FieldDefs.TYPE_LONG) {
             stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
+        } else if (type==FieldDefs.TYPE_STRING) {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
                 setDBText(i, stmt,tmp);
@@ -1045,20 +971,20 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 setDBText(i, stmt,"");
             }
         } else if (type==FieldDefs.TYPE_BYTE) {
-            if (!bdm) {
-                setDBByte(i, stmt, node.getByteValue(key));
-            } else {
-                String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
-                File file = new File(datapath+stype);
-                try {
-                    file.mkdirs();
-                } catch(Exception e) {
-                    log.error("Can't create dir : "+datapath+stype);
+                if (!bdm) {
+                    setDBByte(i, stmt, node.getByteValue(key));
+                } else {
+                    String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
+                    File file = new File(datapath+stype);
+                    try {
+                        file.mkdirs();
+                    } catch(Exception e) {
+                        log.error("Can't create dir : "+datapath+stype);
+                    }
+                    byte[] value=node.getByteValue(key);
+                    saveFile(datapath+stype+"/"+node.getIntValue("number")+"."+key,value);
+                    return false;
                 }
-                byte[] value=node.getByteValue(key);
-                saveFile(datapath+stype+"/"+node.getIntValue("number")+"."+key,value);
-                return false;
-            }
         } else {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
@@ -1083,6 +1009,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @duplicate move to create()
      */
     public boolean create_real(MMObjectBuilder bul,String tableName) {
+
+        if (!bul.isXMLConfig()) return(false);
 
         // use the builder to get the fields are create a
         // valid create SQL string
@@ -1164,10 +1092,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public boolean addField(MMObjectBuilder bul,String fieldname) {
-        if (tableSizeProtection(bul)) {
-            log.service("Cannot add field to " + bul.getTableName() + " because of tableSizeProtection");
-            return false;
-        }
+        if (tableSizeProtection(bul)) return(false);
 
         log.info("Starting a addField : "+bul.getTableName()+" field="+fieldname);
         String tableName=bul.getTableName();
@@ -1377,13 +1302,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     /**
      * @javadoc
      */
-    protected String matchType(int type, int size, boolean notnull) {
+    String matchType(int type, int size, boolean notnull) {
         String result=null;
         if (typeMapping!=null) {
             dTypeInfos  typs=(dTypeInfos)typeMapping.get(new Integer(type));
             if (typs!=null) {
                 for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
-                    dTypeInfo typ = (dTypeInfo)e.nextElement();
+                     dTypeInfo typ = (dTypeInfo)e.nextElement();
                     // needs smart mapping code
                     if (size==-1) {
                         result=typ.dbType;
@@ -1722,62 +1647,60 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 for (Enumeration e=newfields.elements();e.hasMoreElements();) {
                     FieldDefs def=(FieldDefs)e.nextElement();
                     String newname=def.getDBName();
-                    int dbpos=def.getDBPos();
+                    int dbpos=def.getDBPos()+1;
+                    if (newname.equals("otype")) dbpos=2;
+                    if (newname.equals("number")) dbpos=1;
 
                     o=oldvalues.get(getAllowedField(newname));
 
                     if (o==null) {
                         int type=def.getDBType();
                         switch (type) {
-                        case FieldDefs.TYPE_BYTE:
-                            setDBByte(dbpos,stmt2,new byte[0]);
-                            break;
-                        case FieldDefs.TYPE_XML:
-                        case FieldDefs.TYPE_STRING:
-                            setDBText(dbpos,stmt2,new String());
-                            break;
-                        case FieldDefs.TYPE_NODE:
-                        case FieldDefs.TYPE_INTEGER:
-                            stmt2.setInt(dbpos,-1);
-                            break;
-                        case FieldDefs.TYPE_DOUBLE:
-                            stmt2.setDouble(dbpos,-1);
-                            break;
-                        case FieldDefs.TYPE_FLOAT:
-                            stmt2.setFloat(dbpos,-1);
-                            break;
-                        case FieldDefs.TYPE_LONG:
-                            stmt2.setLong(dbpos,-1);
-                            break;
+                            case FieldDefs.TYPE_BYTE:
+                                setDBByte(dbpos,stmt2,new byte[0]);
+                                break;
+                            case FieldDefs.TYPE_STRING:
+                                 setDBText(dbpos,stmt2,new String());
+                                 break;
+                            case FieldDefs.TYPE_INTEGER:
+                                stmt2.setInt(dbpos,-1);
+                                break;
+                            case FieldDefs.TYPE_DOUBLE:
+                                stmt2.setDouble(dbpos,-1);
+                                break;
+                            case FieldDefs.TYPE_FLOAT:
+                                stmt2.setFloat(dbpos,-1);
+                                break;
+                            case FieldDefs.TYPE_LONG:
+                                stmt2.setLong(dbpos,-1);
+                                break;
                         }
                     } else {
                         int type=def.getDBType();
                         switch (type) {
-                        case FieldDefs.TYPE_BYTE:
-                            setDBByte(dbpos,stmt2,(byte[])o);
-                            break;
-                        case FieldDefs.TYPE_XML:
-                        case FieldDefs.TYPE_STRING:
-                            if (o instanceof byte[]) {
-                                String s=new String((byte[])o);
-                                setDBText(dbpos,stmt2,s);
-                            } else {
-                                setDBText(dbpos,stmt2,o.toString());
-                            }
-                            break;
-                        case FieldDefs.TYPE_NODE:
-                        case FieldDefs.TYPE_INTEGER:
-                            stmt2.setInt(dbpos,((Number)o).intValue());
-                            break;
-                        case FieldDefs.TYPE_DOUBLE:
-                            stmt2.setDouble(dbpos,((Number)o).doubleValue());
-                            break;
-                        case FieldDefs.TYPE_FLOAT:
-                            stmt2.setFloat(dbpos,((Number)o).floatValue());
-                            break;
-                        case FieldDefs.TYPE_LONG:
-                            stmt2.setLong(dbpos,((Number)o).longValue());
-                            break;
+                            case FieldDefs.TYPE_BYTE:
+                                setDBByte(dbpos,stmt2,(byte[])o);
+                                break;
+                            case FieldDefs.TYPE_STRING:
+                                if (o instanceof byte[]) {
+                                    String s=new String((byte[])o);
+                                    setDBText(dbpos,stmt2,s);
+                                } else {
+                                    setDBText(dbpos,stmt2,o.toString());
+                                }
+                                break;
+                            case FieldDefs.TYPE_INTEGER:
+                                stmt2.setInt(dbpos,((Number)o).intValue());
+                                break;
+                            case FieldDefs.TYPE_DOUBLE:
+                                stmt2.setDouble(dbpos,((Number)o).doubleValue());
+                                break;
+                            case FieldDefs.TYPE_FLOAT:
+                                stmt2.setFloat(dbpos,((Number)o).floatValue());
+                                break;
+                            case FieldDefs.TYPE_LONG:
+                                stmt2.setLong(dbpos,((Number)o).longValue());
+                                break;
                         }
                     }
                 }
@@ -1806,5 +1729,5 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             return true;
         }
         return false;
-    }
+     }
 }

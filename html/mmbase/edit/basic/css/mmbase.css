@@ -1,5 +1,3 @@
-
-@import url(base.css);
 body.basic { 
        background-color: white;
 
@@ -12,81 +10,11 @@ body.navigationbar {
              color: white;
 }
 
-
-a:link    { color: #42BDAD; }
+a:link { color: #42BDAD; }
 a:visited { color: #42BDAD; }
-a:active  { color: yellow; }
-a:hover   { color: #32AD8D; }
+a:active { color: yellow; }
 
-span {
-  align: right;
-}
-
-span.alt {
-  display: none;
-}
-
-span.select {
-  background:  url(../images/select.gif); /* makes it work in IE */
-  width: 20px;
-}
-
-span.select:after {
-  content: url(../images/transparent.png); /* makes it work in Mozilla */
-}
-
-span.create {
-  background:  url(../images/create.gif); /* makes it work in IE */
-  width: 20px;
-}
-
-span.create:before {
-  content: url(../images/create.gif); /* makes it work in Mozilla */
-}
-
-span.change {
-  background:  url(../images/select.gif); /* makes it work in IE */
-  width: 20px;
-}
-
-span.change:before {
-  content: url(../images/transparent.png); /* makes it work in Mozilla */
-}
-
-span.delete {
-  background:  url(../images/delete.gif); /* makes it work in IE */
-  width: 20px;
-}
-
-span.delete:before {
-  content: url(../images/transparent.png); /* makes it work in Mozilla */
-}
-
-span.previous {
-  background:  url(../images/previous.gif); /* makes it work in IE */
-  width: 20px;
-}
-
-span.previous:before {
-  content: url(../images/previous.gif); /* makes it work in Mozilla */
-}
-
-span.next {
-  background:  url(../images/next.gif); /* makes it work in IE */
-  width: 20px;
-}
-
-span.next:before {
-  content: url(../images/next.gif); /* makes it work in Mozilla */
-}
-
-
-
-table   { 
-		width : 100%; 
-        float: center;
-}
-
+table   { width : 93%; }
 
 td {
     color: #42BDAD;
@@ -95,18 +23,6 @@ td {
     border-width: 1;		
 }	
 
-table.list td {
-     background-color: #00425A;
-}
-table.edit td {
-     background-color: #00425A;
-}
-table.edit td.navigate {
-   background-color: #42BDAD;
-}
-table.list td.navigate {
-   background-color: #42BDAD;
-}
 th {
    background-color: #42BDAD;
    color: black;
@@ -125,7 +41,6 @@ textarea.big   {
      color: #42BDAD;
 }
 .navigate {
-    text-align: right;
     background-color: #42BDAD;
     color: #00425A;
 }
@@ -155,5 +70,36 @@ textarea.big   {
      background-color: #00425A;
      color: #42BDAD;
      padding-top: 1em;
+}
+
+.currentmenuitem {
+    font-family: arial, verdana, helvetica, geneva;
+    font-size: medium;
+    color: white;
+    text-decoration: none
+}
+.menuitem {
+    font-family: arial, verdana, helvetica, geneva;
+    font-size: medium;
+    color: #42BDAD;
+    text-decoration: none
+}
+
+
+.small {
+    width: 100%;
+}
+
+.buttons {
+    text-align: right
+}
+textarea.small {
+    height: 6em;
+}
+textarea.big {
+    height: 15em;
+    width: 100%;    
+}
+input {
 }
 

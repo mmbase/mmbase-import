@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
+import java.lang.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
-//import java.awt.*;
-//import java.awt.Image;
+import java.awt.*;
+import java.awt.Image;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -31,9 +32,9 @@ import org.mmbase.util.logging.Logging;
  * php3, asp or jsp but has its roots providing a simpler toolset for Interaction
  * designers and gfx designers. It is provided as an option but not demanded, you can
  * also use JSP for a more traditional parser system.
- *
+ * 
  * @rename Servscan
- * @version $Id: servscan.java,v 1.33 2002-06-28 07:49:25 pierre Exp $
+ * @version $Id: servscan.java,v 1.27.2.1 2002-03-21 16:37:31 johannes Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -43,45 +44,44 @@ public class servscan extends JamesServlet {
     private static Logger log;
 
     // modules used in servscan
+    private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
+    // private static idInterface id=null;
+    // private static StatisticsInterface stats=null;
+
+    private static String htmlroot;
+
+    //int lastlistitem=0;
+    private static String  fileroot;
     private scanparser parser;
 
-    // Davzev added on 27-10-1999: Defining constants
+    // Davzev added on 27-10-1999: Defining constants    
     public static final String SHTML_CONTENTTYPE = "text/html";
-    public static final String DEFAULT_CHARSET = "iso-8859-1";
+    public static final String DEFAULT_CHARSET = "iso-8859-1"; 
 
     /**
      * Initialize this servlet
      */
-    public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servscan.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+        log.info("Init of servlet " + config.getServletName() + ".");
         MMBaseContext.initHtmlRoot();
         parser = (scanparser)getModule("SCANPARSER");
-        if(parser == null) {
-            String msg = "module with name 'scanparser' should be active";
-            log.error(msg);
-            throw new ServletException(msg);
-        }
         sessions = (sessionsInterface)getModule("SESSION");
-        if(sessions == null) {
-            String msg = "module with name 'sessions' is not active";
-            log.warn(msg);
-        }
     }
-
+    
     /**
      * Adds DEFAULT_CHARSET to mimetype given by SHTML_CONTENTTYPE for handling
      * of the charset used by the database
      */
     private String addCharSet(String mimetype) {
-        if (mimetype.equals(SHTML_CONTENTTYPE))
-            return mimetype + "; charset=\"" + DEFAULT_CHARSET + "\"";
+        if (mimetype.equals(SHTML_CONTENTTYPE)) 
+            return mimetype + "; charset=\"" + DEFAULT_CHARSET + "\""; 
         return mimetype;
     }
-
+    
     /**
      * handle_line is called by service to parse the SHTML in body.
      * It can be used by children to do their own parsing. The default
@@ -99,23 +99,23 @@ public class servscan extends JamesServlet {
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         incRefCount(req);
         try {
-
-            pageLog.service("Parsing SCAN page: " + req.getRequestURI());
+            
+            log.service("Parsing SCAN page: " + req.getRequestURI());
 
             scanpage sp = new scanpage(this, req, res, sessions);
-
+    
             // POST
             if (req.getMethod().equals("POST")) {
                 handlePost(sp, res);
             }
-
+    
             // Generate page
             PrintWriter out = res.getWriter();
 
             do {
                 sp.rstatus = 0;
                 sp.body = parser.getfile(sp.req_line);
-
+                
                 if (log.isDebugEnabled()) {
                     log.trace("body :" + sp.body);
                 }
@@ -125,16 +125,16 @@ public class servscan extends JamesServlet {
                 doSecure(sp,res); // name=doSecure(sp,res); but name not used here
                 long stime=handleTime(sp);
 
-                try {
+                try {    
                     if (handleCache(sp, res, out)) return;
                 } catch (Exception e) {
-                    log.error("servscan - something is wrong with scancache");
+                    log.error("servscan - something is wrong with scancache");    
                 }
-
+    
                 if (log.isDebugEnabled()) {
                     log.trace("body " + sp.body);
                 }
-
+    
                 if (sp.body != null && !sp.body.equals("")) {
                     long oldtime = System.currentTimeMillis();
                     // Process HTML
@@ -143,23 +143,23 @@ public class servscan extends JamesServlet {
                     if (sp.body != null) {
                         if (sp.rstatus == 0) {
                             sp.mimetype = addCharSet(sp.mimetype);
-                            res.setContentType(sp.mimetype);
+                            res.setContentType(sp.mimetype); 
                             out.print(sp.body);
                             handleCacheSave(sp, res);
                         } else if (sp.rstatus == 1) {
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
-                            res.setContentType(addCharSet(sp.mimetype));
+                            res.setStatus(302, "OK");
+                            res.setContentType(addCharSet(sp.mimetype)); 
                             res.setHeader("Location", sp.body);
                         } else if (sp.rstatus == 2) {
-                            sp.req_line = sp.body;
+                            sp.req_line = sp.body;    
                             if (sp.req_line.indexOf('\n') !=- 1) {
                                 sp.req_line = sp.req_line.substring(0 ,sp.req_line.indexOf('\n'));
                             }
                         } else if (sp.rstatus == 4) {
                             String tmp = req.getHeader("If-Modified-Since:");
                             if (tmp != null && sp.processor != null) {
-                                res.setStatus(res.SC_NOT_MODIFIED); // 304, "Not Modified"
-                                res.setContentType(addCharSet(sp.mimetype));
+                                res.setStatus(304, "Not Modified");
+                                res.setContentType(addCharSet(sp.mimetype)); 
                             } else {
                                 setHeaders(sp, res, sp.body.length());
                                 out.print(sp.body);
@@ -173,16 +173,16 @@ public class servscan extends JamesServlet {
                 } else {
                     break;
                 }
-
+    
                 if (stime != -1) {
                     stime = System.currentTimeMillis()-stime;
                     if (log.isDebugEnabled()) {
                         log.debug("service(" + getRequestURL(req) + "): STIME " + stime + "ms " + (stime/1000) + "sec");
                     }
                 }
-            } while (sp.rstatus == 2);
+            } while (sp.rstatus == 2);    
             // End of page parser
-            pageLog.debug("END parsing SCAN page");
+            log.service("END parsing SCAN page");
             out.flush();
             out.close();
         } catch(NotLoggedInException e) {
@@ -193,7 +193,7 @@ public class servscan extends JamesServlet {
             log.debug("service(): exception on page: " + getRequestURL(req));
             a.printStackTrace();
         } finally { decRefCount(req); }
-
+        
     }
 
     /**
@@ -231,7 +231,7 @@ public class servscan extends JamesServlet {
 //        res.setHeader("Cache-Control","no-cache");
 //        res.setHeader("Pragma","no-cache");
     }
-
+        
 
 
     /* org.mmbase
@@ -239,7 +239,7 @@ public class servscan extends JamesServlet {
     {
         sp.rstatus=4;
         body2=part;
-        return("");
+        return(""); 
     }
     */
 
@@ -265,7 +265,7 @@ public class servscan extends JamesServlet {
         HttpPost poster = new HttpPost(req);
         sp.poster = poster;
         String name=null;
-
+    
         // first check if it has a secure tag.
         String sec = poster.getPostParameter("SECURE");
 
@@ -274,13 +274,13 @@ public class servscan extends JamesServlet {
             name = getAuthorization(req, res);
             if (log.isDebugEnabled()) log.debug("handlePost(" + sp.getUrl() + "): getting cookie to check name");
             String sname = getCookie(req, res);
-            if (name == null) {
+            if (name == null) { 
                 log.debug("handlePost(): Warning Username is null");
                 return;
             }
         }
-
-        // Process method=post information
+    
+        // Process method=post information 
         for (Enumeration t = poster.getPostParameters().keys(); t.hasMoreElements(); ) {
             obj = t.nextElement();
             part = (String)obj;
@@ -292,13 +292,13 @@ public class servscan extends JamesServlet {
                     } else {
                         sessions.setValue(sp.session, part.substring(8), poster.getPostParameter((String)obj));
                     }
-                }
+                } 
             // Personal objects
             } else if (part.indexOf("ID-") == 0) {
                 //SESSION HACK getAuthorization(req.getAcceptor(),"Basic");
                 //aaaa name=getRemoteUser();
                 //name check
-                if (name == null) {
+                if (name == null) { 
                     log.debug("handlePost(): Warning Username is null");
                     return;
                 }
@@ -327,7 +327,7 @@ public class servscan extends JamesServlet {
                     proc_var.put(part.substring(8), poster.getPostParameter((String)obj));
                 }
             }
-        }
+        }    
         // If there are cmds process them
         if (!proc_cmd.isEmpty()) parser.do_proc_input(sp.req_line, poster,proc_var, proc_cmd,sp);
      }
@@ -340,7 +340,7 @@ public class servscan extends JamesServlet {
              try {
                  parser.scancache.newput(sp.wantCache, res, req_line, sp.body, sp.mimetype);
              } catch (Exception e) {
-                log.error("servscan - something is wrong with scancache");
+                log.error("servscan - something is wrong with scancache");    
              }
         }
         return(true);
@@ -367,16 +367,16 @@ public class servscan extends JamesServlet {
                     if (log.isDebugEnabled()) {
                         log.debug("handleCache: sp.reload: " + sp.reload);
                     }
-
+                                            
                     if (rst != null && !sp.reload) {
                         setHeaders(sp, res,rst.length());
                         // org.mmbase res.writeHeaders();
                         out.print(rst);
                         out.flush();
                         out.close();
-                        if (log.isDebugEnabled()) {
+                        if (log.isDebugEnabled()) { 
                             log.debug("handleCache(): cache.hit(" + req_line + ")");
-                        }
+                        }                            
                         return(true);
                     } else {
                         if (log.isDebugEnabled()) {
@@ -443,7 +443,7 @@ public class servscan extends JamesServlet {
             System.out.println("CRC = " + crc);
             if (checker != null && checker.equals(thiscrc)) {
                 return(true);
-            }
+            }    
             return(false);
         }
         return(true);
@@ -462,7 +462,7 @@ public class servscan extends JamesServlet {
             String sname = getCookie(sp.req, res);
 
             // check name
-            if (name == null) {
+            if (name == null) { 
                 log.warn("doSecure(" + sp.getUrl() + "): WARNING: no username found!");
                 return(null);
             }

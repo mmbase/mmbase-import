@@ -25,7 +25,7 @@
 				$AREA-EDITMSG
 				<BR>
 				<BR>
- 				<A HREF="#" onClick="sluitwindow();"><IMG SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif" border=0></A> Ok
+ 				<A HREF="#" onClick="sluitwindow();"><IMG SRC="/mmeditors/beeld/rood.gif" border=0></A> Ok
 				<BR>
 				<BR>
 		</TD>

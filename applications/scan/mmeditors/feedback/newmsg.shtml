@@ -25,7 +25,7 @@
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
 
-<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/feedback/newmsg.shtml" ECTYPE="multipart/form-data">
+<FORM METHOD="POST" ACTION="/mmeditors/feedback/newmsg.shtml" ECTYPE="multipart/form-data">
                 <INPUT TYPE="HIDDEN" NAME="AREA-EDITNEWMSG" VALUE="$MOD-INFO-TIME^">
 				&nbsp;
 				<TEXTAREA COLS=45 ROWS=20 NAME="AREA-EDITMSG" WRAP="ON"></TEXTAREA><BR>

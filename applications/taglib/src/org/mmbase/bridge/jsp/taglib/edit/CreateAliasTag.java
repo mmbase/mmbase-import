@@ -39,7 +39,7 @@ public class CreateAliasTag extends NodeReferrerTag {
         Node node = getNode();
         
         // alias name is in the body if no attribute name is given
-        if (alias == null && bodyContent != null) {
+        if (alias == null && bodyContent !=null) {
             alias = bodyContent.getString();
         } 
 

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.9 2002-07-05 12:56:18 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.4.2.1 2002-03-18 14:24:59 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -176,17 +176,44 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Return a field.
+     * Return a field's database type. The returned value is one of the following values
+     * declared in FieldDefs:
+     * TYPE_STRING,
+     * TYPE_INTEGER,
+     * TYPE_BYTE,
+     * TYPE_FLOAT,
+     * TYPE_DOUBLE,
+     * TYPE_LONG, or
+     * TYPE_UNKNOWN (returned if the original builder of the field cannot be determined)
      * @param the requested field's name
-     * @return the field
+     * @return the field's type.
      */
-    public FieldDefs getField(String fieldName) {
+    public int getDBType(String fieldName) {
         String buildername=getBuilderNameFromField(fieldName);
         if (buildername.length()>0) {
             MMObjectBuilder bul=mmb.getMMObject(buildername);
-            return bul.getField(getFieldNameFromField(fieldName));
+            return bul.getDBType(getFieldNameFromField(fieldName));
         }
-        return null;
+        return FieldDefs.TYPE_UNKNOWN;
+    }
+
+    /**
+     * Return a field's database state. The returned value is one of the following values
+     * declared in FieldDefs:
+     * DBSTATE_VIRTUAL,
+     * DBSTATE_PERSISTENT,
+     * DBSTATE_SYSTEM, or
+     * DBSTATE_UNKNOWN (returned if the original builder of the field cannot be determined)
+     * @param the requested field's name
+     * @return the field's type.
+     */
+    public int getDBState(String fieldName) {
+        String buildername=getBuilderNameFromField(fieldName);
+        if (buildername.length()>0) {
+            MMObjectBuilder bul=mmb.getMMObject(buildername);
+            return bul.getDBState(getFieldNameFromField(fieldName));
+        }
+        return FieldDefs.DBSTATE_UNKNOWN;
     }
 
     /**
@@ -332,8 +359,6 @@ public class ClusterBuilder extends VirtualBuilder {
                     // not very neat... but it works
                     sidx=alltables.indexOf(basenode.parent.tableName);
                     if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
-                    // if we can't find the real parent assume object
-                    if (sidx<0) sidx=alltables.indexOf("object");
                     if (sidx<0) sidx=0;
                 } else {
                     sidx=0;
@@ -841,20 +866,11 @@ public class ClusterBuilder extends VirtualBuilder {
                 desttosrc=(searchdir!=SEARCH_DESTINATION) && typerel.reldefCorrect(ro,so,rnum.intValue());
             } else {
                 MMObjectNode typenode;
-                // get basic object builder
-                // if it exists, you can use 'object' in nodepaths
-                int rootnr=mmb.getRootType();
                 for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
                     // get the allowed relation definitions
                     typenode = (MMObjectNode)e.nextElement();
-                    desttosrc= (searchdir!=SEARCH_DESTINATION) &&
-                               (desttosrc ||
-                                (ro==rootnr) || // ignore root 'object' type
-                                typenode.getIntValue("snumber")==ro);
-                    srctodest= (searchdir!=SEARCH_SOURCE) &&
-                               (srctodest ||
-                               (so==rootnr) || // ignore root 'object' type
-                                typenode.getIntValue("snumber")==so);
+                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
+                    srctodest= (searchdir!=SEARCH_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
                     if (desttosrc && srctodest) break;
                 }
             }

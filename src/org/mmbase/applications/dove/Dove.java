@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.17 2002-07-05 10:09:37 pierre Exp $
+ * @version $Id: Dove.java,v 1.1.2.6 2002-07-05 12:45:31 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -546,7 +546,7 @@ public class Dove extends AbstractDove {
                             } else if (guitype.equals("string")) {
                                 guitype="string/line";
                             } else if (guitype.equals("eventtime")) {
-                                guitype="datetime/datetime";
+                                  guitype="datetime/datetime";
                             } else if (guitype.equals("newimage")) {
                                 guitype="binary/image";
                             } else if (guitype.equals("newfile")) {
@@ -554,9 +554,7 @@ public class Dove extends AbstractDove {
                             } else {
                                 String dttype="string";
                                 int itype=fielddef.getType();
-                                if (itype==Field.TYPE_NODE)
-                                    dttype="int";
-                                else if (itype==Field.TYPE_INTEGER)
+                                if (itype==Field.TYPE_INTEGER)
                                     dttype="int";
                                 else if (itype==Field.TYPE_LONG)
                                     dttype="long";
@@ -727,14 +725,9 @@ public class Dove extends AbstractDove {
                                 String fieldname=field.getAttribute(ELM_NAME);
                                 String href=field.getAttribute(ELM_HREF);
                                 if (!href.equals("")) {
-                                    // binary data.
                                     Object repval=repository.get(href);
                                     if (repval!=null) {
                                         values.put(fieldname,repval);
-                                        // also retrieve and set filename
-                                        if(field.getFirstChild()!=null) {
-                                            values.put("filename",field.getFirstChild().getNodeValue());
-                                        }
                                     }
                                 } else {
                                     if(field.getFirstChild()==null) {

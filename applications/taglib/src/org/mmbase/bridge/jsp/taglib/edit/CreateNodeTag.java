@@ -53,12 +53,12 @@ public class CreateNodeTag extends NodeTag implements BodyTag {
             throw new JspTagException("Could not create node of type " + nodemanager);
         }
         setNodeVar(node);
-        setModified();
+        setModified(); 
         if (log.isDebugEnabled()) {
             log.debug("created node " + node.getValue("gui()"));
         }
         fillVars();
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
 }

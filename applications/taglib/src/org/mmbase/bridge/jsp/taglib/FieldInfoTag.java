@@ -24,18 +24,19 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The FieldInfoTag can be used as a child of a 'FieldProvider' to
- * provide info about the field or fieldtype.
- *
- * @author Michiel Meeuwissen
- * @author Jaco de Groot
+ * The FieldInfoTag can be used as a child of a 'FieldProvider' or
+ * directly under a 'NodeProvider'tag (this last behaviour perhaps
+ * should be deprecated?)
+ * 
+ * @author Michiel Meeuwissen 
+ * @author Jaco de Groot 
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
-
+    
     // Writer implementation:
     protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
+    public void setVartype(String t) throws JspTagException { 
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -47,10 +48,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-    public void haveBody() { helper.haveBody(); }
-
-
-    private static Logger log = Logging.getLoggerInstance(FieldInfoTag.class.getName());
+  
+    private static Logger log = Logging.getLoggerInstance(FieldInfoTag.class.getName()); 
 
     private static final int TYPE_NAME     = 0;
     private static final int TYPE_GUINAME  = 1;
@@ -59,19 +58,15 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static final int TYPE_TYPE      = 4;
     private static final int TYPE_GUITYPE   = 5;
 
-    private static final int TYPE_UNSET     = 100;
-
     // input and useinput produces pieces of HTML
     // very handy if you're creating an editors, but well yes, not very elegant.
     private static final int TYPE_INPUT    = 10;
     private static final int TYPE_USEINPUT = 11;
     private static final int TYPE_SEARCHINPUT = 12;
     private static final int TYPE_USESEARCHINPUT = 13;
-
-    private int type = TYPE_UNSET;
-
-    private String sessionName = "cloud_mmbase,";
-
+    
+    private int type;   
+       
     public void setType(String t) throws JspTagException {
         t = getAttributeValue(t);
         if ("name".equals(t)) {
@@ -88,46 +83,33 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             type = TYPE_GUITYPE;
         } else if ("input".equals(t)) {
             type = TYPE_INPUT;
-        } else if ("useinput".equals(t)) {
+        } else if ("useinput".equals(t)) {       
             type = TYPE_USEINPUT;
-        } else if ("searchinput".equals(t)) {
+        } else if ("searchinput".equals(t)) {       
             type = TYPE_SEARCHINPUT;
-        } else if ("usesearchinput".equals(t)) {
+        } else if ("usesearchinput".equals(t)) {       
             type = TYPE_USESEARCHINPUT;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
     }
-    private String options;
-    public void setOptions(String o) throws JspTagException {
-        options = getAttributeValue(o);        
-    }
 
     public int doStartTag() throws JspTagException{
-
+        
         Field field;
         Node node = null;
         FieldProvider fieldProvider = findFieldProvider();
 
         field = ((FieldProvider) fieldProvider).getFieldVar();
 
-        /* perhaps 'getSessionName' should be added to CloudProvider
-         * EXPERIMENTAL 
-         */
-        CloudTag ct = null;
-        ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
-        if (ct != null) {
-            sessionName = ct.getSessionName() + ",";
-        }
-
         // found the field now. Now we can decide what must be shown:
         String show = null;
 
         // set node if necessary:
         switch(type) {
-        case TYPE_INPUT:
+        case TYPE_INPUT: 
             if (node == null) { // try to find nodeProvider
-                node = fieldProvider.getNodeVar();
+                node = fieldProvider.getNodeVar();                
             } // node can stay null.
             break;
             // these types do really need a NodeProvider somewhere:
@@ -135,14 +117,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_VALUE:
         case TYPE_GUIVALUE:
         case TYPE_USEINPUT:
-            if (node == null) {
-                node = fieldProvider.getNodeVar();
+            if (node == null) { 
+                node = fieldProvider.getNodeVar();  
             }
             if (node == null) {
                 throw new JspTagException("Could not find surrounding NodeProvider, which is needed");
             }
             break;
-        default:
+        default:            
         }
 
         switch(type) {
@@ -152,14 +134,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_GUINAME:
             show = field.getGUIName();
             break;
-        case TYPE_VALUE:
+        case TYPE_VALUE:           
             show = decode(node.getStringValue(field.getName()), node);
             break;
         case TYPE_GUIVALUE:
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-            show = decode(node.getStringValue("sgui(" + sessionName + field.getName() + ")"), node);
+            show = decode(node.getStringValue("gui("+field.getName()+")"), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
             }
@@ -175,7 +157,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, true);
             break;
         case TYPE_USESEARCHINPUT:
-            show = whereHtmlInput(field);
+            show = whereHtmlInput(field); 
             break;
         case TYPE_TYPE:
             show = "" + field.getType();
@@ -186,11 +168,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
 
         helper.setValue(show);
-        helper.setJspvar(pageContext);
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
     protected String decode (String value, Node n) throws JspTagException {
@@ -205,7 +187,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Puts a prefix before a name. This is used in htmlInput and
      * useHtmlInput, they need it to get a reasonably unique value for
      * the name attribute of form elements.
-     *
+     * 
      */
     private String prefix(String s) throws JspTagException {
         String id = findFieldProvider().getId();
@@ -234,113 +216,49 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 } else {
                     value = node.getStringValue(field.getName());
                 }
-            }
+            }              
             log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
                       "value: " + value);
         }
         switch(type) {
         case Field.TYPE_BYTE:
-            show = (node != null ? node.getStringValue("sgui(" + sessionName + ")") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
+            show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
-        case Field.TYPE_XML:
-            if(! search) {
-            // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-            show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
-            if (node != null) {
-                try {
-                    // get the XML from this thing....
-                    // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-                    // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
-                    // org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
-                    org.w3c.dom.Document xml = node.getXMLValue(field.getName());
-
-                    if(xml!=null) {
-                        // make a string from the XML
-                        javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
-                        //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-                        javax.xml.transform.Transformer serializer = tfactory.newTransformer();
-                        serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-                        serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
-                        java.io.StringWriter str = new java.io.StringWriter();
-                        // there is a <field> tag placed around it,... we hate it :)
-                        // change this in the bridge?
-                        serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
-
-                        // fill the field with it....
-                        show += Encode.encode("ESCAPE_XML", str.toString());
-                    }
-                }
-                catch(javax.xml.transform.TransformerConfigurationException tce) {
-                    throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
-                }
-                catch(javax.xml.transform.TransformerException te) {
-                    throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
-                }
-            }
-            show += "</textarea>";
-            break;
-            }
-        case Field.TYPE_STRING:
+            //case Field.TYPE_XML:
+        case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
                     // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                     show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
                     if (node != null) {
                         show += Encode.encode("ESCAPE_XML", decode(node.getStringValue(field.getName()), node));
-                    }
-                    show += "</textarea>";
-                    break;
+                    }                    
+                    show += "</textarea>";                
+                    break;                    
                 }
-                if(field.getMaxLength() > 255 )  {
-                    show = "<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">";
+                if(field.getMaxLength() > 255 )  {                
+                    show = "<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
                     if (node != null) {
                         show += Encode.encode("ESCAPE_XML", decode(node.getStringValue(field.getName()), node));
-                    }
+                    }                    
                     show += "</textarea>";
                     break;
                 }
                 show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
-                if (node != null) {
-                    show += Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", decode(node.getStringValue(field.getName()), node));
-                }
-                show += "\" />";
-                break;
+    	    	if (node != null) {
+    	    	    show += Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", decode(node.getStringValue(field.getName()), node));	
+		}
+		show += "\" />";
+    	    	break;
             }
-        case Field.TYPE_NODE:
-            // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
-            if(getCloud().getNodeManagers().contains(field.getGUIType())) {
-                // yippee! the gui was the same a an builder!
-                show = "<select name=\"" + prefix(field.getName()) + "\">\n";                
-                // list all our nodes of the specified builder here...
-                int value = 0;
-                if (node != null) value = node.getIntValue(field.getName());
-                org.mmbase.bridge.NodeIterator nodes = getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();                
-                while(nodes.hasNext()) {
-                    org.mmbase.bridge.Node tmp = nodes.nextNode();
-                    // we have a match on the number!
-                    show += "  <option ";
-                    if(tmp.getNumber() == value) {
-                        // this is the selected one!
-                        show += "selected=\"selected\"";
-                    }
-                    show += "value=\""+tmp.getNumber()+"\">";
-                    show += Encode.encode("ESCAPE_XML", tmp.getStringValue("sgui(" + sessionName + ")"));
-                    show += "</option>\n";
-                }
-                show += "</select>";
-                if (search) {
-                    show += "<input type=\"checkbox\" name=\""+ prefix(field.getName() + "_search") + "\" />\n";
-                }
-                break;
-            }            
-        case Field.TYPE_INTEGER:
+        case Field.TYPE_INTEGER:  
             if (field.getGUIType().equals("types")) {
                 show = "<select name=\"" + prefix(field.getName()) + "\">\n";
                 int value = 0;
                 if (node != null) {
                     value = node.getIntValue(field.getName());
                 }
-                // list all node managers.
+                // list all node managers.   
                 org.mmbase.bridge.Cloud cloud = getCloud();
                 org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
                 org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
@@ -377,7 +295,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 org.mmbase.bridge.Cloud cloud = getCloud();
                 org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
                 org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
-
+                
                 //java.util.Collections.sort(l);
                 while (i.hasNext()) {
                     Node reldef = i.nextNode();
@@ -405,87 +323,68 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 }
                 show = "<input type=\"hidden\" name=\"" + prefix(field.getName()) + "\" value=\"" + cal.getTime().getTime()/1000 + "\" />";
                 // give also present value, this makes it possible to see if user changed this field.
-
-                
-                if (options == null || options.indexOf("date") > -1) {
-                    show +=  "<select name=\"" + prefix(field.getName() + "_day") + "\">\n";
-                    for (int i = 1; i <= 31; i++) {
-                        if (cal.get(Calendar.DAY_OF_MONTH) == i) {
-                            show += "  <option selected=\"selected\">" + i + "</option>\n";
-                        } else {
-                            show += "  <option>" + i + "</option>\n";
-                        }
+                show +=  "<select name=\"" + prefix(field.getName() + "_day") + "\">\n";
+                for (int i = 1; i <= 31; i++) {
+                    if (cal.get(Calendar.DAY_OF_MONTH) == i) {
+                        show += "  <option selected=\"selected\">" + i + "</option>\n";
+                    } else {
+                        show += "  <option>" + i + "</option>\n";
                     }
-                    show += "</select>-";
-                    show += "<select name=\"" + prefix(field.getName() + "_month") + "\">\n";
-                    for (int i = 1; i <= 12; i++) {
-                        if (cal.get(Calendar.MONTH) == (i - 1)) {
-                            show += "  <option selected=\"selected\">" + i + "</option>\n";
-                        } else {
-                            show += "  <option>" + i + "</option>\n";
-                        }
-                    }
-                    show += "</select>-";
-                    show += "<input type =\"text\" size=\"5\" name=\"" + prefix(field.getName() + "_year") + "\" " +
-                        "value=\"" + cal.get(Calendar.YEAR) + "\" />";
-                } else {
-                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_day") + "\" value=\"" + cal.get(Calendar.DAY_OF_MONTH) + "\" />";
-                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_month") + "\" value=\"" + cal.get(Calendar.MONTH) + "\" />";
-                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"" + cal.get(Calendar.YEAR) + "\" />";
                 }
-                if (options == null || options.indexOf("time") > -1) {
-                    show += "&nbsp;&nbsp;<select name=\"" + prefix(field.getName() + "_hour") + "\">\n";
-                    for (int i = 0; i <= 23; i++) {
-                        if (cal.get(Calendar.HOUR_OF_DAY) == i) {
+                show += "</select>-";
+                show += "<select name=\"" + prefix(field.getName() + "_month") + "\">\n";
+                for (int i = 1; i <= 12; i++) {
+                    if (cal.get(Calendar.MONTH) == (i - 1)) {
+                        show += "  <option selected=\"selected\">" + i + "</option>\n";
+                    } else {
+                        show += "  <option>" + i + "</option>\n";
+                    }
+                }
+                show += "</select>-";
+                show += "<input type =\"text\" size=\"5\" name=\"" + prefix(field.getName() + "_year") + "\" " + 
+                    "value=\"" + cal.get(Calendar.YEAR) + "\" />";
+                show += "&nbsp;&nbsp;<select name=\"" + prefix(field.getName() + "_hour") + "\">\n";
+                for (int i = 0; i <= 23; i++) {
+                    if (cal.get(Calendar.HOUR_OF_DAY) == i) {
                         show += "  <option selected=\"selected\">";
-                        } else {
-                            show += "  <option>";
-                        }
-                        if (i<10) show += "0";
-                        show += i + "</option>\n";
+                    } else {
+                        show += "  <option>";
                     }
-                    show += "</select> h :";
-                
-                    show += "<select name=\"" + prefix(field.getName() + "_minute") + "\">\n";
-                    for (int i = 0; i <= 59; i++) {
-                        if (cal.get(Calendar.MINUTE) == i) {
-                            show += "  <option selected=\"selected\">";
-                        } else {
-                            show += "  <option>";
-                        }
-                        if (i< 10) show += "0";
-                        show += i + "</option>\n";
-                    }
-                    show += "</select> m :";
-                    show += "<select name=\"" + prefix(field.getName() + "_second") + "\">\n";
-                    for (int i = 0; i <= 59; i++) {
-                        if (cal.get(Calendar.SECOND) == i) {
-                            show += "  <option selected=\"selected\">";
-                        } else {
-                            show += "  <option>";
-                    }
-                        if (i< 10) show += "0";
-                        show += i + "</option>\n";
-                    }
-                    show += "</select> s";
-                } else {
-                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_hour") + "\" value=\"" + cal.get(Calendar.HOUR_OF_DAY) + "\" />";
-                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"" + cal.get(Calendar.MINUTE) + "\" />";
-                    show += "<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"" + cal.get(Calendar.SECOND) + "\" />";
+                    if (i<10) show += "0";
+                    show += i + "</option>\n";
                 }
+                show += "</select> h :";
+                show += "<select name=\"" + prefix(field.getName() + "_minute") + "\">\n";
+                for (int i = 0; i <= 59; i++) {                  
+                    if (cal.get(Calendar.MINUTE) == i) {
+                        show += "  <option selected=\"selected\">";
+                    } else {
+                        show += "  <option>";
+                    }
+                    if (i< 10) show += "0";
+                    show += i + "</option>\n";
+                }
+                show += "</select> m :";
+                show += "<select name=\"" + prefix(field.getName() + "_second") + "\">\n";
+                for (int i = 0; i <= 59; i++) {
+                    if (cal.get(Calendar.SECOND) == i) {
+                        show += "  <option selected=\"selected\">";
+                    } else {
+                        show += "  <option>";
+                    }
+                    if (i< 10) show += "0";
+                    show += i + "</option>\n";
+                }
+                show += "</select> s";
                 break;
             }
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG:
-
-            show =  "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" " +
+            show =  "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" " + 
                 "value=\"";
             if (node != null) {
                 show +=  node.getStringValue(field.getName());
-            } else if (search) {
-                String searchParam = getContextTag().findAndRegisterString(prefix(field.getName()));
-                show += (searchParam == null ? "" : searchParam);
             }
             show += "\" />";
             break;
@@ -499,7 +398,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Applies a form entry.
      */
 
-    private String useHtmlInput(Node node, Field field) throws JspTagException {
+    private String useHtmlInput(Node node, Field field) throws JspTagException {       
         String fieldName  = field.getName();
         int type = field.getType(); // not to be confused with the attribute 'type' of this tag.
         if (log.isDebugEnabled()) {
@@ -513,27 +412,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 log.debug("Setting bytes of");
                 node.setByteValue(fieldName, bytes);
             } else { // not changed
-                log.debug("Not setting bytes");
+                log.info("Not setting bytes");
             }
             break;
         }
-        case Field.TYPE_XML:
-        case Field.TYPE_STRING: {
-            // do the xml decoding thing...
-            String fieldValue = getContextTag().findAndRegisterString(prefix(fieldName));
-            fieldValue = encode(fieldValue, field);
-            log.debug("got it");
-            if (fieldValue == null) {
-                log.debug("Field " + fieldName + " is null!");
-            } else {
-                log.debug("Field " + fieldName + " -> " + fieldValue);
-                node.setValue(fieldName,  fieldValue);
-                log.debug("set it");
-            }
-
-            break;
-        }
-        case Field.TYPE_INTEGER:
+        case Field.TYPE_INTEGER:             
             if (field.getGUIType().equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
                 try {
@@ -547,15 +430,30 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     if (y < 1902 || y > 2037) {
                         throw new JspTagException("Year must be between 1901 and 2038 (now " + y + ")");
                     }
-                    cal.set(y, month.intValue() - 1, day.intValue(),
+                    cal.set(y, month.intValue() - 1, day.intValue(), 
                             hour.intValue(), minute.intValue(), second.intValue());
                     node.setIntValue(fieldName, (int) (cal.getTime().getTime() / 1000));
                 } catch (java.lang.NumberFormatException e) {
-                    throw new JspTagException("Not a valid number (" + e.toString() + ") in field " + fieldName);
+                    throw new JspTagException("Not a valid number (" + e.toString() + ")");
                 }
                 break;
             }
-        case Field.TYPE_NODE: // maybe add more options?
+            //case Field.TYPE_XML:
+        case Field.TYPE_STRING: {
+            // do the xml decoding thing...
+            String fieldValue = getContextTag().findAndRegisterString(prefix(fieldName));
+	    fieldValue = encode(fieldValue, field);
+            log.debug("got it");
+            if (fieldValue == null) {
+                log.debug("Field " + fieldName + " is null!");
+            } else {
+                log.debug("Field " + fieldName + " -> " + fieldValue);
+                node.setValue(fieldName,  fieldValue);
+                log.debug("set it");
+            }
+            
+            break;	    	 
+        }   	                
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG: {
@@ -568,11 +466,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 node.setValue(fieldName,  fieldValue);
                 log.debug("set it");
             }
-
+            
             break;
         }
         default: log.error("field: " + type );
-        }
+        }  
         return "";
     }
 
@@ -581,15 +479,16 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * If you use a form entry to search, then you can use this functions to create the where part.
      * @param field and this field.
      */
+
     private String whereHtmlInput(Field field) throws JspTagException {
         String show;
         int type = field.getType();
         String guitype = field.getGUIType();
-        String fieldName = field.getName();
+        String fieldName = field.getName();       
         switch(type) {
         case Field.TYPE_BYTE:
             throw new JspTagException("Don't know what to do with bytes()");
-        case Field.TYPE_XML:
+            //case Field.TYPE_XML:
         case Field.TYPE_STRING: {
             String search = getContextTag().findAndRegisterString(prefix(fieldName));
             if (search == null) {
@@ -603,8 +502,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
                 show = "( UPPER([" + fieldName + "]) LIKE '%" + search.toUpperCase() + "%')";
                 break;
-        }
-        case Field.TYPE_INTEGER:
+        }        
+        case Field.TYPE_INTEGER:  
             if (guitype.equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
                 try {
@@ -618,13 +517,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     if (y < 1902 || y > 2037) {
                         throw new JspTagException("Year must be between 1901 and 2038 (now " + y + ")");
                     }
-                    cal.set(y, month.intValue() - 1, day.intValue(),
+                    cal.set(y, month.intValue() - 1, day.intValue(), 
                             hour.intValue(), minute.intValue(), second.intValue());
                 } catch (java.lang.NumberFormatException e) {
                     throw new JspTagException("Not a valid number (" + e.toString() + ")");
                 }
                 // check if changed:
-                if (! getContextTag().findAndRegisterString(prefix(fieldName)).equals("" + cal.getTime().getTime() /1000)) {
+                if (! getContextTag().findAndRegisterString(prefix(fieldName)).equals("" + cal.getTime().getTime() /1000)) { 
                     show = "(" + fieldName + ">" + (cal.getTime().getTime() / 1000) + ")";
                 } else {
                     show = null;
@@ -639,20 +538,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 }
             }
             log.debug("normal integer type, falling through");
-        case Field.TYPE_NODE:
-            if (getCloud().getNodeManagers().contains(field.getGUIType())) {
-                String id = prefix(fieldName + "_search");
-                if (getContextTag().findAndRegister(id, id) == null) {
-                    show = null;
-                    break;
-                }
-            }        
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG: {
                 log.debug("treating simple types");
                 log.debug("1");
-                String search = getContextTag().findAndRegisterString(prefix(fieldName));
+                String search = getContextTag().findAndRegisterString(prefix(fieldName));                
                 if (search == null) {
                     log.error("parameter " + prefix(fieldName) + " could not be found");
                     show =  null;
@@ -670,6 +561,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         return show;
     }
+
+
+
 
     /**
      * Write the value of the fieldinfo.

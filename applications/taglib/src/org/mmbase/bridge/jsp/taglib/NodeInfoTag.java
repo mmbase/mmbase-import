@@ -30,8 +30,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     private static final int TYPE_NODENUMBER= 2;
 
 
-    protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
+    protected WriterHelper helper = new WriterHelper();     
+    public void setVartype(String t) throws JspTagException { 
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -43,7 +43,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-    public void haveBody() { helper.haveBody(); }
+
 
     private int type;
 
@@ -95,12 +95,12 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         default:
         }
 
-        helper.setValue(show);
-        helper.setJspvar(pageContext);
+        helper.setValue(show);        
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
 

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.18 2002-06-07 13:23:19 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.16.2.2 2002-06-18 07:52:32 pierre Exp $
  */
 public class NodeWriter{
 
@@ -35,7 +35,7 @@ public class NodeWriter{
     private String builderName;
     private boolean isRelationNode;
     private File file;
-    private OutputStreamWriter fw;
+    private FileWriter fw;
     private int nrOfNodes;
 
     /**
@@ -62,13 +62,13 @@ public class NodeWriter{
         file = new File(directory + builderName + ".xml");
         try {
             log.debug("Opening " + file + " for writing.");
-            fw = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            fw = new FileWriter(file);
         } catch (Exception e) {
             resultsmsgs.addElement("Failed opening file " + file);
         }
         // Write the header
-        write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        //write("<!DOCTYPE builder PUBLIC \"-//MMBase/data//EN\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
+        write("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+        //write("<!DOCTYPE builder PUBLIC \"-//MMBase/DTD data//EN\" \"http://www.mmbase.org/dtd/data_1_0.dtd\">\n");
         Calendar cal= Calendar.getInstance();
         long htimestamp=cal.get(Calendar.YEAR)*10000+
                        (cal.get(Calendar.MONTH)+1)*100+

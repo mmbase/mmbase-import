@@ -18,8 +18,6 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
- * @deprecated-now use org.mmbase.xml.ModuleWriter instead
  * @author Daniel Ockeloen
  * @version 19 Apr 2001
  */

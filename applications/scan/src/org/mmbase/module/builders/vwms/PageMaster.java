@@ -261,11 +261,11 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
     /**
      * Handles a pages/main service request.
      * The events handled are:<br />
-     * - requests for handling: schedules requests to mirror this page using {@link #doMainRequest}<br />
+     * - requests for handling: schedules requests to mirror this page using {@l;ink #doMainRequest}<br />
      * - changed: page is scheduled to be recalculated<br />
      * - recaculate" page is recaclcutated and scheduled to be handled<br />
      *
-     * @param node the netfiles node that contains the service request
+     * @param node the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -353,7 +353,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
             Enumeration f=getMirrorNodes(service).elements();
             while (f.hasMoreElements()) {
                 MMObjectNode n2=(MMObjectNode)f.nextElement();
-                // hack hack also have to create mirror nodes !
+                // hack hack moet ook mirror nodes aanmaken !
                 mainnode=bul.getNewNode("system");
                 mainnode.setValue("filename",filename);
                 mainnode.setValue("mmserver",n2.getStringValue("name"));

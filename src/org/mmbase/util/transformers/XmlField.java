@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.mmbase.util.StringObject;
 
@@ -40,7 +39,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 
     // for validation only.
     private final static String  XML_HEADER   = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n<!DOCTYPE mmxf PUBLIC \"//NL//OMROEP//MMBASE//DTD//MMXF 1.0//\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";   
-    private final static String  XML_TAGSTART = "<mmxf>";
+    private final static String  XML_TAGSTART = "<mmxf version=\"1\">";
     private final static String  XML_TAGEND   = "</mmxf>";
 
 
@@ -489,7 +488,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     } 
 
 
-    public Map transformers() {
+    public HashMap transformers() {
         HashMap h = new HashMap();
         h.put("mmxf_rich".toUpperCase(),  new Config(XmlField.class, RICH, "Converts to enriched ASCII"));
         h.put("mmxf_poor".toUpperCase(),  new Config(XmlField.class, POOR));
@@ -548,15 +547,5 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 	}
         return result;
     }
-    public String getEncoding() {
-        switch(to){
-        case RICH:  return "MMXF_RICH";
-        case POOR:  return "MMXF_POOR";
-        case ASCII: return "MMXF_ASCII";
-        case XHTML: return "MMXF_XHTML";
-        case BODY:  return "MMXF_BODY";
-        case XML:   return "MMXF_MMXF";
-        default: throw new UnsupportedOperationException("unknown encoding");
-        }
-    }
+
 }

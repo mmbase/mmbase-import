@@ -16,17 +16,17 @@ import java.util.ListIterator;
 import java.util.List;
 import java.util.Collection;
 import java.util.NoSuchElementException;
-import org.mmbase.util.logging.*;
+
 
 /**
  * A list of objects.
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.7 2002-06-17 10:49:47 eduard Exp $
+ * @version $Id: BasicList.java,v 1.6 2002-01-31 10:05:11 pierre Exp $
  */
 public class BasicList extends ArrayList  {
-    private static Logger log = Logging.getLoggerInstance(BasicList.class.getName());
+
     /**
     * ...
     */
@@ -53,7 +53,8 @@ public class BasicList extends ArrayList  {
     // perhaps also those functions must be overrided like toArray.
 
 
-    public abstract class BasicIterator implements ListIterator {        
+    public abstract class BasicIterator implements ListIterator {
+
         protected BasicList list;
         protected int index=-1;
 
@@ -80,20 +81,8 @@ public class BasicList extends ArrayList  {
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(Object o) {
-            String message;
-            message = "Object must be of type Node.";
-            log.error(message);
-            throw new BridgeException(message);
-        }
-
-        public void add(Object o) {
-            String message;
-            message = "Object must be of type Node.";
-            log.error(message);
-            throw new BridgeException(message);
-        }
-        
+        public abstract void set(Object o);
+        public abstract void add(Object o);
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
@@ -102,8 +91,7 @@ public class BasicList extends ArrayList  {
             if (index>=list.size()) {
                 index = list.size()+1;
                 throw new NoSuchElementException("Object does not exist in this list");
-            } 
-            else {
+            } else {
                 return list.get(index);
             }
         }

@@ -144,10 +144,6 @@ public class ContextTag extends ContextReferrerTag {
         cloudContext = cc;
     }
 
-    String getDefaultCharacterEncoding() {
-        if(cloudContext == null) return "UTF-8";
-        return cloudContext.getDefaultCharacterEncoding();
-    }
 
     /**
      * Fills the private member variables for general use. They are
@@ -257,7 +253,7 @@ public class ContextTag extends ContextReferrerTag {
             return multipartRequest;
         } else {
             log.debug("Creating new MultipartRequest");
-            multipartRequest = new MMultipartRequest(getHttpRequest(), getDefaultCharacterEncoding());
+            multipartRequest = new MMultipartRequest(getHttpRequest());
             log.debug("have it");
             multipartChecked = true;
 
@@ -357,35 +353,24 @@ public class ContextTag extends ContextReferrerTag {
             if (log.isDebugEnabled()) {
                 log.debug("searching parameter " + referid);
             }
-            String[] resultvec = getHttpRequest().getParameterValues(referid);
-            if (resultvec != null) {
-                if (resultvec.length > 1) {
-                    Vector rresult = new Vector(resultvec.length);
-                    for (int i=0; i < resultvec.length; i++) {
-                        rresult.add(resultvec[i]);
-                    }
-                    result  = rresult;
-                } else {
-                    // The norms say that Strings in posts are encoding according to ISO-8859-1.
-                    // But of course, this does not need to be true, so we repair it if necessary
-                    try {
-                        String formEncoding = getHttpRequest().getCharacterEncoding();
-                        if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
-                        if (formEncoding == null) {
-                            // The form encoding was not known, so probably the local was used or ISO-8859-1
-                            // lets make sure it is right:
-                            result = new String(resultvec[0].getBytes(),
-                                                getDefaultCharacterEncoding());
-                        } else { // the request encoding was knows, so, I think we can suppose that the Parameter value was interpreted correctly.
-                            result = resultvec[0];
-                        }
-                    } catch (java.io.UnsupportedEncodingException e) {
-                        throw new JspTagException("Unsupported Encoding: " + e.toString());
-                    }
-                }
-            }
+
+              Object[] resultvec = getHttpRequest().getParameterValues(referid);
+              if (resultvec != null) {
+                  if (resultvec.length > 1) {
+                      Vector rresult = new Vector(resultvec.length);
+                      for (int i=0; i < resultvec.length; i++) {
+                          rresult.add(resultvec[i]);       
+                      }
+                      result  = rresult;
+                  } else {
+                      result = (String) resultvec[0];
+                  }
+              }
         }
+    
+        
         break;
+        
         case LOCATION_PARENT:
             if (getParentContext() != null) {
                 if (parent.isRegistered(referid)) {
@@ -675,12 +660,10 @@ class MMultipartRequest {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
     private org.mmbase.util.HttpPost o;
-    private String coding;
 
-    MMultipartRequest(HttpServletRequest req, String c) {
+    MMultipartRequest(HttpServletRequest req) {
         log.debug("Creating HttpPost instance");
         o = new org.mmbase.util.HttpPost(req);
-        coding = c;
         log.debug("created");
     };
 
@@ -699,7 +682,7 @@ class MMultipartRequest {
             result = o.getPostMultiParameter(param);
         } else {
             try {
-                result = new String( o.getPostParameterBytes(param), coding);
+                result = new String( o.getPostParameterBytes(param));
             } catch (Exception e) {
                 log.debug(e.toString());
             }

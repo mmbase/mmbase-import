@@ -10,10 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
- * Thrown by the security classes to indicate a security violation/malfunction.
- * @javadoc
- * @author Eduard Witteveen
- * @version $Id: SecurityException.java,v 1.3 2002-06-07 12:56:56 pierre Exp $
+ *  Thrown by the security classes to indicate a security violation/malfunction.
  */
 public class SecurityException extends java.lang.SecurityException {
 
@@ -22,6 +19,6 @@ public class SecurityException extends java.lang.SecurityException {
      *	@parm message The detail message.
      */
     public SecurityException(String message) {
-        super(message);
+    	super(message);
     }
 }

@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.servlet;
-
+ 
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
@@ -22,8 +22,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-  * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash
+  * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash 
   * based on a template and information from within MMBase
+  $ @version $Id: servflash.java,v 1.6.2.1 2002-03-21 16:37:31 johannes Exp $
   * @rename Servflash
  */
 public class servflash extends JamesServlet {
@@ -31,18 +32,18 @@ public class servflash extends JamesServlet {
 
     private MMFlash gen;
     private static sessionsInterface sessions = null;
-
-    public void init() throws ServletException {
-        super.init();
+    
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servflash.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+        log.info("Init of servlet " + config.getServletName() + ".");
         MMBaseContext.initHtmlRoot();
         gen = (MMFlash)getModule("mmflash");
         sessions = (sessionsInterface)getModule("SESSION");
     }
 
-    /**
+    /** 
      * reload
      */
     public void reload() {
@@ -55,7 +56,7 @@ public class servflash extends JamesServlet {
     public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         incRefCount(req);
         try {
-            pageLog.service("Parsing FLASH page: " + req.getRequestURI());
+            log.service("Parsing FLASH page: " + req.getRequestURI());
             BufferedOutputStream out = null;
             try {
                 out = new BufferedOutputStream(res.getOutputStream());
@@ -80,12 +81,12 @@ public class servflash extends JamesServlet {
                     } else {
                         res.sendError(404);
                     }
-                }
+                }    
             }
-            pageLog.debug("END Parsing FLASH page");
-        }
-        finally {
-            decRefCount(req);
+            log.service("END Parsing FLASH page");
+        }    
+        finally { 
+            decRefCount(req); 
         }
     }
 }

@@ -9,14 +9,16 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import org.mmbase.bridge.implementation.BasicCloudContext;
+import org.mmbase.bridge.implementation.*;
+import org.mmbase.module.core.*;
+import java.util.*;
 
 /**
  * The collection of clouds, and modules within a Java Virtual Machine.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: LocalContext.java,v 1.3 2002-04-13 10:58:44 michiel Exp $
+ * @version $Id: LocalContext.java,v 1.2 2002-01-31 10:05:07 pierre Exp $
  */
 public final class LocalContext extends BasicCloudContext {
 

@@ -55,6 +55,6 @@ public class LogTag extends NodeTag {
         } else {
             community.getInfo("CHANNEL-"+node.getNumber()+"-RECORD-STOP",pageContext.getRequest(),pageContext.getResponse());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 }

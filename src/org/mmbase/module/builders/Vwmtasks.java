@@ -119,12 +119,8 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      */
     public void run() {
         kicker.setPriority(Thread.MIN_PRIORITY+1);
-        log.info("Thread started, entering while loop");
-
+        log.debug("VWMtasks -> getVwmTasks thread started");
         while (kicker!=null) {
-			log.service("Periodically sleep "+SLEEP_TIME
-			    +" seconds and add all new vwmtasks that were created since last check ("
-                +DateSupport.date2string(lastchecked)+").");
             try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){}
             getVwmTasks();
         }
@@ -203,24 +199,19 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
     protected void getVwmTasks() {
         String vwm,task;
         // get out alter ego Vwms Builder to pass the new tasks
-        if (vwms==null)
-        	vwms = (Vwms)mmb.getMMObject("vwms");
-        int checktime = lastchecked;
-        lastchecked= (int)(DateSupport.currentTimeMillis()/1000);
+        if (vwms==null) vwms=(Vwms)mmb.getMMObject("vwms");
+        int checktime=lastchecked;
+        lastchecked=(int)(DateSupport.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
-        log.service("Search vwmtasks "+"WHERE changedtime>"+checktime
-                +" AND wantedcpu='"+getMachineName()+"'"
-                +" AND "+mmb.getDatabase().getAllowedField("status")+"="+STATUS_REQUEST);
-        Enumeration e = search("WHERE changedtime>"+checktime
-                +" AND wantedcpu='"+getMachineName()+"'"
-                +" AND "+mmb.getDatabase().getAllowedField("status")+"="+STATUS_REQUEST);
+        Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND "+mmb.getDatabase().getAllowedField("status")+"="+STATUS_REQUEST);
 
-		for (MMObjectNode node=null; e.hasMoreElements();) {
-			node = (MMObjectNode)e.nextElement();
-           	vwm  = node.getStringValue("vwm");
-	       	task = node.getStringValue("task");
-			log.debug("Adding "+vwm+" tasknode "+node);
-           	vwms.putTask(vwm,node);
+        while(e.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)e.nextElement();
+            log.debug("VWMtasks -> Starting tasks "+node);
+            vwm=node.getStringValue("vwm");
+            task=node.getStringValue("task");
+            if (vwms!=null) vwms.putTask(vwm,node);
         }
     }
+
 }

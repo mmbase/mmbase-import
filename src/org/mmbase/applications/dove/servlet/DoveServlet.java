@@ -11,47 +11,37 @@ package org.mmbase.applications.dove.servlet;
 
 import java.io.*;
 import java.util.*;
-
-import javax.servlet.http.*;
+import java.lang.reflect.*;
 import javax.servlet.*;
-
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.servlet.http.*;
 import org.xml.sax.*;
+import javax.xml.parsers.*;
+import org.apache.xerces.parsers.*;
+import org.apache.xml.serialize.*;
 import org.w3c.dom.*;
-
-import org.apache.xerces.parsers.DOMParser;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.serialize.OutputFormat;
-import org.mmbase.util.XMLEntityResolver;
-
-
+import org.w3c.dom.traversal.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.dove.*;
-import org.mmbase.servlet.MMBaseServlet;
+import org.mmbase.servlet.*;
 
 /**
  * This servlet routes RPC requests (represented in xml) to the intended method of
  * the 'Dove' object.
  *
  * @author Pierre van Rooden
- * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.4 2002-06-26 11:44:55 michiel Exp $
+ * @version 10 May 2001
  */
-public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
+public class DoveServlet extends JamesServlet {
 
     //logger
-    private static Logger log;
+    private static Logger log = Logging.getLoggerInstance(DoveServlet.class.getName());
 
-    public void init() throws ServletException {
-        log = Logging.getLoggerInstance(DoveServlet.class.getName());
-    }
     /**
      * Handles a request using the GET method.
      * No communication is handled through GET - this method is for testing whether the servlet is online.
-     * @param req the HTTP Request object
-     * @param res the HTTP Response object
+     * @param req the HHTP Request object
+     * @param res the HHTP Response object
      */
     public void doGet (HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
@@ -80,8 +70,8 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
      * <br />
      * XXX: We have not yet established how we will use session-info and usercontext.
      *
-     * @param req the HTTP Request object
-     * @param res the HTTP Response object
+     * @param req the HHTP Request object
+     * @param res the HHTP Response object
      */
     public void doPost (HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
@@ -105,12 +95,12 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
             parser.setErrorHandler(errorhandler);
 
 
-            // Right now we read content from parameters
-            // Maybe we want the xml to be directly in the body?
+            // Right now we read conmtent from parameters
+            // Maybe we want teh xml to eb directly in the body?
             // Depends on how the editors will post.
             String s = req.getParameter("xml");
-            log.service("received : "+s);
-            StringReader sin= new StringReader(s);
+            log.info("received : "+s);
+            StringBufferInputStream sin= new StringBufferInputStream(s);
             InputSource in = new InputSource(sin);
 
 // alternate code when not using parameters:
@@ -129,9 +119,9 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
                     Document doc = docBuilder.newDocument();
                     Element rootout =doc.createElement(Dove.RESPONSE);
                     doc.appendChild(rootout);
-                    Dove birdy = new Dove(doc);
-                    birdy.doRequest(rootin, rootout);
-                    res.setStatus(HttpServletResponse.SC_OK);
+                    Dove birdy=new Dove(doc);
+                    birdy.doRequest(rootin,rootout);
+                    res.setStatus(200,"OK");
                     if (plain) {
                         res.setContentType("text/plain");
                     } else {
@@ -159,13 +149,13 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
             errortype="server";
         }
         ServletOutputStream out = res.getOutputStream();
-        res.setStatus(HttpServletResponse.SC_OK);
+        res.setStatus(200,"OK");
         if (plain) {
             res.setContentType("text/plain");
         } else {
             res.setContentType("text/xml");
         }
-        out.println("<response><error type=\"" + errortype + "\">" + error + "</error></response>");
+        out.println("<response><error type=\""+errortype+"\">"+error+"</error></response>");
         out.flush();
     }
 

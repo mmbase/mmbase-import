@@ -19,9 +19,8 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Class AnonymousLoginModule
+ * 
  * @javadoc
- * @author Eduard Witteveen
- * @version $Id: AnonymousLoginModule.java,v 1.4 2002-06-07 12:56:56 pierre Exp $
  */
 
 public class AnonymousLoginModule implements LoginModule {

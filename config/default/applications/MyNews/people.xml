@@ -1,17 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<people exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
-	<node number="8508" owner="admin">
-		<mobile></mobile>
-		<initials></initials>
-		<fax></fax>
-		<function></function>
-		<firstname>Rob</firstname>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<people exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20000602143030">
+	<node number="1075" owner="admin">
+		<email>rob@mmbase.org</email>
 		<account></account>
 		<lastname>Vermeulen</lastname>
-		<phone></phone>
-		<email>rob@mmbase.org</email>
-		<sex></sex>
-		<middle></middle>
+		<firstname>Rob</firstname>
 	</node>
 
 </people>

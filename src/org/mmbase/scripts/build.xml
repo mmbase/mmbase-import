@@ -49,6 +49,17 @@ NetComponents can be found at:
 
   http://www.savarese.org/oro/downloads/index.html#NetComponents
 
+
+Creating a customized jar and avoiding automated downloads
+==========================================================
+
+The compile.cust, jar.cust and javadocs.cust targets will not download any packages.
+Instead they use the classes available in the system's classpath to compile against.
+When using these targets you only need the servlet and xerces classes. All other
+classes are optional and the java files that need them are excluded from the
+compilation process.
+
+
 ============================================================================ -->
 
 <project name="MMBase" default="usage" basedir=".">
@@ -66,20 +77,17 @@ NetComponents can be found at:
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
-  <property name="deprecation" value="on"/>
+  <property name="deprecation" value="off"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmbase-taglib" value="mmbase-taglib.xml"/>
-  <property name="distro"      value="MMBase 1.6.0"/>
+  <property name="manifest"      value="manifest.mf"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="source-config.dir" location="${source.dir}/config"/>
   <property name="source-html.dir" location="${source.dir}/html"/>
   <property name="source-src.dir" location="${source.dir}/src"/>
-  <property name="webapp.dir" value="${build.dir}/mmbase/mmbase-webapp"/>
-  <property name="mmdocs.dir" value="${webapp.dir}/mmdocs"/>
-  <property name="lib.dir" value="${webapp.dir}/WEB-INF/lib"/>
-  <property name="web.dir" value="${webapp.dir}/WEB-INF"/>
-
+  <property name="lib.dir" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+  <property name="web.dir" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF"/>
   <target name="init" depends="check.dir.all">
     <tstamp/>
     <mkdir dir="${build.dir}"/>
@@ -154,11 +162,11 @@ NetComponents can be found at:
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib,jar,web">
+          depends="lib,jar">
     <!-- copy a readme from somewhere -->
     <!-- not in cvs yet -->
     <!-- copy the config -->
-    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config"/>
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config">
       <fileset dir="${source-config.dir}/default">
         <exclude name="**/CVS/*"/>
@@ -170,10 +178,6 @@ NetComponents can be found at:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <!-- use web.xml.sample as default -->
-    <copy file="${webapp.dir}/WEB-INF/web.xml.sample"
-          tofile="${webapp.dir}/WEB-INF/web.xml" overwrite="yes"/>
-   <delete file="${webapp.dir}/WEB-INF/web.xml.sample" />
     <!-- copy builders/modules from application dir into default config dir -->
     <!-- Basics -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
@@ -200,13 +204,11 @@ NetComponents can be found at:
       </fileset>
     </copy>  
     <!-- Community-module -->
-    <!-- isn't in cvs at the moment, so don't try to copy it. Maybe I'll add it
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/Community/modules">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>  
-    -->
     <!-- MyNews -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
@@ -244,7 +246,7 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <target name="lib" description="Create the lib directory"
           depends="init,expand.servlet,expand.xalan,expand.jai,
-                   expand.log4j,expand.junit,get.jspsmartupload">
+                   expand.log4j,expand.junit">
     <mkdir dir="${build.dir}/mmbase/mmbase-webapp"/>
     <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF"/>
     <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
@@ -256,8 +258,7 @@ NetComponents can be found at:
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
-    <copy file="${jspsmartupload.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
-            
+
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
       <fileset dir="${source-src.dir}/org/mmbase/scripts/legal"/>
@@ -392,8 +393,6 @@ NetComponents can be found at:
       <exclude name="org/mmbase/util/logging/log4j2/**" unless="log4j2.in.classpath" />
 
     </javac>
-    <tstamp/>
-    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
   </target>
 
 
@@ -476,7 +475,6 @@ NetComponents can be found at:
     <echo message="Warning: Missing optional package javax.jai."/>
     <echo message="You can't use the java based Image-Converter without this package,"/> 
     <echo message="you've got to use ImageMagick."/>
-
     <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
     <echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
@@ -520,6 +518,50 @@ NetComponents can be found at:
 
 
   <!-- =================================================================== -->
+  <!-- Compile a customized set, dependent on the system classpath         -->
+  <!-- =================================================================== -->
+  <target name="compile.cust"
+          description="Compile a customized set, dependent on the system classpath"
+          depends="compile.local.cust,compile.remote.cust">
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compile a customized set, dependent on the system classpath         -->
+  <!-- =================================================================== -->
+  <target name="compile.local.cust"
+          description="Compile a customized set, dependent on the system classpath (exclude remote)"
+          depends="init.compile.cust,check.package.all">
+    <mkdir dir="${build.dir}/classes"/>
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+      </fileset>
+    </copy>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
+      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
+      <exclude name="**/XSLTransformer.java" unless="xalan.in.classpath"/>
+      <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
+      <exclude name="**/logging/log4j/**"  unless="log4j.in.classpath" />
+      <exclude name="**/logging/log4j/**"  if="log4j2.in.classpath" />
+      <exclude name="**/logging/log4j2/**" unless="log4j2.in.classpath" />
+      <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
+      <exclude name="**/test/bridge/**" unless="junit.in.classpath"/>
+      <exclude name="org/mmbase/module/database/support/PostgreSQL71.java" unless="postgresql.in.classpath"/>
+      <exclude name="org/mmbase/module/RemoteMMCI.java"/>
+      <exclude name="org/mmbase/bridge/ContextProvider.java"/>
+      <exclude name="org/mmbase/bridge/RemoteContext.java"/>
+      <exclude name="org/mmbase/bridge/remote/**"/>
+    </javac>
+  </target>
+
+
+  <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
   <!-- =================================================================== -->
   <target name="clean.compile" description="Clean the compiled classes"
@@ -532,28 +574,16 @@ NetComponents can be found at:
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
   <target name="jar" description="Create the MMBase jar file"
-          depends="compile,taglib.tld">
+          depends="compile,web">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
-
-    <echo file="${build.dir}/manifest.mf">
-Name: org/mmbase
-Vendor: MMBase Community
-URL: http://www.mmbase.org
-Comment: The MMBase Content Managment System
-Version: ${distro}.${version}
-Distribution: ${distro}
-</echo>
-    
-
     <jar jarfile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"
          basedir="${build.dir}/classes"
 	     includes="org/mmbase/**"
-	     manifest="${build.dir}/manifest.mf" >
+	     manifest="${manifest}" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
-
     <delete file="${web.dir}/taglib.tld" />
     <!-- don't delete these, because multiple tld's inside a jar, -->
     <!-- can cause problems on certain servlet-engines -->
@@ -563,96 +593,15 @@ Distribution: ${distro}
   </target>
 
 
-    <property name="config.build.dir" value="${build.dir}/config"/>
-    <property name="webroot.build.dir" value="${build.dir}/webroot"/>
-    
-    <!-- =================================================================== -->
-    <!-- Create the MMBase config build dir                                  -->
-    <!-- =================================================================== -->
-    <target name="war.config" depends="init.compile">
-        <!-- copy the jsp editors to a reasonable place -->
-        <copy todir="${config.build.dir}">
-            <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
-                <!-- the dirs we definitly need -->
-                <include name="databases/**"/>
-                <include name="dtd/**"/>
-                <include name="xslt/**"/>
-                <include name="log/**"/>
-                <include name="security/**"/>
-                <include name="caches.xml"/>
-                <include name="magic.xml" /><!-- used if you switch on 'attachments' -->
-                
-                <!-- the applications we definitly need -->                
-                <include name="applications/CloudSecurity.xml"/>
-                <include name="applications/CloudSecurity/**"/>
-                
-                <!-- the modules we definitly need -->                    
-                <include name="modules/mmbaseroot.xml"/><!-- tells things about mmbase instantion -->
-                <include name="modules/jdbc.xml"/><!-- tells things about jdbc connecion -->
-                <include name="modules/mmadmin.xml"/><!-- to load applications, mmadmin isnt uses further in war -->
-                
-                
-                <!-- the builders we definitly need -->
-                <include name="builders/core/**"/>
-            </fileset>
-        </copy>            
-    </target>
-
-    <!-- =================================================================== -->
-    <!-- Create the MMBase html build dir                                    -->
-    <!-- =================================================================== -->
-    <!--    <target name="war.webroot" depends="init.compile, javadocs">  -->
-    <target name="war.webroot" depends="init.compile,taglib.doc">
-
-        <!-- copy the jsp editors to a reasonable place -->
-        <copy todir="${webroot.build.dir}/mmbase/edit">
-            <fileset dir="${source-html.dir}/mmeditors/jsp"/>
-        </copy>
-                
-        <!-- taglib docs -->
-        <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${mmdocs.dir}/mmbase-taglib.html" />
-        <copy todir="${webroot.build.dir}/mmbase/taglib">
-             <fileset dir="${mmdocs.dir}/taglib"/>
-        </copy>         
-        
-        <!-- javadocs -->
-        <!-- skipping javadocs (also depend on target 'javadocs', when uncommenting.... ) 
-        <copy todir="${webroot.build.dir}/mmbase/docs">
-            <fileset dir="${build.dir}/mmbase-src/docs"/>
-        </copy>
-        -->
-    </target>
-
-
-    <!-- =================================================================== -->
-    <!-- Create the MMBase war file                                          -->
-    <!-- =================================================================== -->
-    <target name="war" description="Create a MMBase war-file" depends="web,jar,war.config,war.webroot,expand.hsqldb">
-        <!-- copy the hsqldb file explicit, war clause doesnt accept the ${hsqldb.jar}  -->
-        <copy file="${hsqldb.jar}" tofile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/hsqldb.jar"/>
-        
-        <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
-
-            <!-- which libs are needed? -->
-            <lib dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" defaultexcludes="true">
-                <include name="mmbase.jar"/>
-                <include name="log4j.jar"/>
-                <include name="xml-apis.jar"/>
-                <include name="xerces.jar"/>
-                <include name="xalan.jar"/>
-                <include name="hsqldb.jar"/>
-                <include name="jspsmartupload.jar"/>
-            </lib>
-            
-            <!-- here our config has to be.. -->
-            <webinf dir="${build.dir}">
-                <include name="config/**"/>
-            </webinf>
-
-            <!-- our file's on the server -->
-            <fileset dir="${build.dir}/webroot"/>
-        </war>
-    </target>
+  <!-- =================================================================== -->
+  <!-- Create a customized MMBase jar file                                 -->
+  <!-- =================================================================== -->
+  <target name="jar.cust" description="Create a customized MMBase jar file"
+          depends="compile.cust">
+    <jar jarfile="${build.dir}/mmbase.jar"
+         basedir="${build.dir}/classes"
+	 includes="org/mmbase/**" />
+  </target>
 
 
   <!-- =================================================================== -->
@@ -683,6 +632,25 @@ Distribution: ${distro}
     </javadoc>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Create the API documentation                                        -->
+  <!-- =================================================================== -->
+  <target name="javadocs.cust"
+          description="Create the API documentation, dependent on the system classpath"
+          depends="init.compile.cust">
+    <mkdir dir="${build.dir}/mmbase/docs/api"/>
+    <javadoc packagenames="${javadoc.packages}"
+             sourcepath="${source-src.dir}"
+             destdir="${build.dir}/mmbase/docs/api"
+             author="true"
+             version="true"
+             use="false"
+             noindex="true"
+             windowtitle="MMBase API"
+             doctitle="MMBase"
+             bottom="MMBase 2002">
+    </javadoc>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Create the web directory                                            -->
@@ -691,20 +659,15 @@ Distribution: ${distro}
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear in the web-servers html directory"
-         depends="init.compile,taglib.tld,taglib.doc,community.tld,community.doc">
-  </target>
-
-  <target name="taglib.tld" description="Make the MMBase taglib  tld"
-          depends="init.compile">          
+         depends="init.compile">
     <mkdir dir="${web.dir}"/>
-    <mkdir dir="${mmdocs.dir}"/>
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
           fork="yes"
           failonerror="yes">
+      <arg value="-Q"/>
       <arg value="-XML"/>
-      <arg value="-DIAG"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
@@ -712,41 +675,26 @@ Distribution: ${distro}
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
-  </target>
-  <target name="taglib.doc" description="Make the MMBase taglib documentation"
-          depends="init.compile">          
-    <mkdir dir="${mmdocs.dir}/taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
           fork="yes"
           failonerror="yes">
-      <arg value="-EDUMP"/>
-      <arg value="-DIAG"/>
-      <arg value="-PARAM"/>
-      <arg value="basedir"/>
-      <arg value="${mmdocs.dir}"/>
-      <arg value="-PARAM"/>
-      <arg value="files"/>
-      <arg value="taglib" />
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+      <arg value="-Q"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
-      <arg value="${mmdocs.dir}/mmbase-taglib.html"/>
+      <arg value="${source-html.dir}/mmdocs/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
-  </target>
-  <target name="community.tld" description="Make the MMBase community taglib tld"
-          depends="init.compile">          
-    <mkdir dir="${web.dir}" />
     <!-- create the mmcommunity tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
           fork="yes"
           failonerror="yes">
       <arg value="-Q"/>
-      <arg value="-DIAG"/>
+      <arg value="-XML"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-OUT"/>
@@ -754,31 +702,81 @@ Distribution: ${distro}
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
-  </target>
-  <target name="community.doc" description="Make the MMBase community taglib documentation"
-          depends="init.compile">          
-    <mkdir dir="${mmdocs.dir}/community-taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
           fork="yes"
           failonerror="yes">
-      <arg value="-DIAG"/>
+      <arg value="-Q"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
-      <arg value="-PARAM"/>
-      <arg value="basedir"/>
-      <arg value="${web.dir}"/>
-      <arg value="-PARAM"/>
-      <arg value="files"/>
-      <arg value="community-taglib" />
       <arg value="-OUT"/>
-      <arg value="${mmdocs.dir}/mmcommunity-taglib.html"/>
+      <arg value="${source-html.dir}/mmdocs/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Create the web directory                                            -->
+  <!-- This directory contains 'compiled' stuff, which must appear in the  -->
+  <!-- html directory of the web-server. A web server specific tag can copy--> 
+  <!-- them from here, depending on this 'web' target                      -->
+  <!-- =================================================================== -->
+  <target name="web.cust" description="Make the things which must appear in the web-servers html directory, using custom classpath"
+         depends="init.compile.cust">
+    <mkdir dir="${web.dir}"/>
+    <!-- create the mmbase-taglib tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
+      <arg value="-OUT"/>
+      <arg value="${build.dir}/mmbase/mmbase-webapp/mmdocs/mmbase-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+    </java>
+    <!-- create the mmcommunity tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmcommunity-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${build.dir}/mmbase/mmbase-webapp/mmdocs/mmcommunity-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+    </java>
+  </target>
  
   <!-- =================================================================== -->
   <!-- Build the JUnit test environment                                    -->
@@ -938,16 +936,7 @@ Distribution: ${distro}
                file="${download.dir}/${hsql.version}.zip"/>
     <available property="hsql.expanded"
                file="${expand.dir}/${hsql.version}"/>
-               
-    <!-- hsqldb -->
-    <property name="hsqldb.version" value="hsqldb_1_7_0_RC6a"/>
-    <property name="hsqldb.url" value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/${hsqldb.version}.zip"/>
-    <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
-    <available property="hsqldb.present"
-               file="${download.dir}/${hsqldb.version}.zip"/>
-    <available property="hsqldb.expanded"
-               file="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
-               
+
     <!-- Xalan and Xerces -->
     <property name="xalan.version" value="xalan-j_2_2"/>
     <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
@@ -968,14 +957,14 @@ Distribution: ${distro}
     <available property="jai.present"
                file="${download.dir}/${jai.version}.tar.gz"/>
     <available property="jai.expanded"
-      file="${expand.dir}/${jai.version}"/>
+               file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
-    <!-- property name="log4j.version" value="1.2.4" /-->
-    <property name="log4j.version" value="1.1.3" /> 
+    <!-- property name="log4j.version" value="1.2beta2" /-->
+	<property name="log4j.version" value="1.1.3"/> 
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
-    <!-- property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar" /-->
-    <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j.jar" />
+    <!-- property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar"/-->
+    <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j.jar"/>
     <available property="log4j.present"
                file="${download.dir}/${log4j.fullversion}.tgz"/>
     <available property="log4j.expanded"
@@ -988,14 +977,6 @@ Distribution: ${distro}
                file="${download.dir}/${junit.version}.zip"/>
     <available property="junit.expanded"
                file="${expand.dir}/${junit.version}"/>
-
-    <!-- JSPSmartUpload -->
-    <property name="jspsmartupload.file" value="jspSmartUpload" />
-    <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
-    <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
-    <available property="jspsmartupload.present" file="${jspsmartupload.jar}" />
-
-
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
@@ -1014,19 +995,6 @@ Distribution: ${distro}
       <fileset dir="${expand.dir}/${servlet.version}/jakarta-servletapi-4"/>
     </move>
     <delete file="${expand.dir}/${servlet.version}.tar"/>
-  </target>
-
-  <target name="get.hsqldb" depends="init.get" unless="hsqldb.present">
-    <get src="${hsqldb.url}"
-         dest="${download.dir}/${hsqldb.version}.zip"
-         verbose="on"
-    />
-  </target>
-
-  <target name="expand.hsqldb" depends="get.hsqldb" unless="hsqldb.expanded">
-    <!-- <mkdir dir="${expand.dir}/${hsqldb.version}"/> -->
-    <!-- <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}/${hsqldb.version}"/> -->
-    <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}"/>    
   </target>
 
   <target name="get.xalan" depends="init.get" unless="xalan.present">
@@ -1087,24 +1055,7 @@ Distribution: ${distro}
     <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
   </target>
 
-  <!-- Jsp Smartupload is necessary for the editwizards -->
-  <target name="get.jspsmartupload" depends="init,init.get" unless="jspsmartupload.present">
-    <get src="${jspsmartupload.url}"
-         dest="${download.dir}/${jspsmartupload.file}.tar.gz" />
-    <mkdir dir="${expand.dir}/jspsmartupload" />
-    <gunzip src="${download.dir}/${jspsmartupload.file}.tar.gz" dest="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar"/>
-    <untar src="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar" dest="${expand.dir}/jspsmartupload"/>
 
-    <echo file="${expand.dir}/jspsmartupload/manifest.mf">
-Name: com/jspsmart/upload
-Version: MMBase build ${version}
-</echo>
-    <jar jarfile="${expand.dir}/jspsmartupload/jspsmartupload.jar"
-         basedir="${expand.dir}/jspsmartupload/jspsmartupload/Web-inf/classes"
-	     includes="com/**"
-	     manifest="${expand.dir}/jspsmartupload/manifest.mf" >
-    </jar>
-  </target>
 
   <!-- =================================================================== -->
   <!-- Clean the download directory                                        -->
@@ -1136,6 +1087,18 @@ Version: MMBase build ${version}
     </javac>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- (Step 1 for remote) Compile the remote generator classes            -->
+  <!-- =================================================================== -->
+  <target name="compile.remote.generator.cust" description="Compile the remote generator classes, using the custom classpath" depends="init.compile.cust">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/remote/generator/*.java"/>
+    </javac>
+  </target>
 
   <!-- =================================================================== -->
   <!-- check if MMCI.xml is present                                        -->
@@ -1149,7 +1112,7 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target name="generate.remote"
           description="Generate the source for the remote classes"
-	depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
+          depends="init,compile.remote.generator,check.mmci.xml.present"
           unless="mmci.xml.present">
     <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
        using the sun jaxp implementation. By forking we do not use the ant classloader -->
@@ -1169,6 +1132,23 @@ Version: MMBase build ${version}
     </java>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- (Step 2 for remote) Generate the source for the remote classes      -->
+  <!-- =================================================================== -->
+  <target name="generate.remote.cust"
+          description="Generate the source for the remote classes, using the custom classpath"
+          depends="init.compile.cust,compile.remote.generator.cust,check.mmci.xml.present"
+          unless="mmci.xml.present">
+    <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
+       using the sun jaxp implementation. By forking we do not use the ant classloader -->
+    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" >
+	<arg value="${source-src.dir}/MMCI.xml"/>
+    </java>
+    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" >
+       <arg value="${source-src.dir}"/>
+       <arg value="${source-src.dir}/MMCI.xml"/>
+    </java>
+  </target>
 
   <!-- =================================================================== -->
   <!-- (Step 3 for remote) Compile the remote classes                      -->
@@ -1202,10 +1182,33 @@ Version: MMBase build ${version}
     </javac>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- (Step 3 for remote) Compile the remote classes                      -->
+  <!-- =================================================================== -->
+  <target name="compile.remote.cust" description="Compile the remote classes, using the custom classpath" depends="init.compile.cust,generate.remote.cust">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/remote/*.java"/>
+           <include name="org/mmbase/bridge/remote/rmi/*.java"/>
+           <include name="org/mmbase/bridge/remote/implementation/*.java"/>
+    </javac>
+    <rmic base="${build.dir}/classes">
+    	<include name="org/mmbase/bridge/remote/rmi/*.class"/>
+    </rmic>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/RemoteContext.java"/>
+           <include name="org/mmbase/bridge/ContextProvider.java"/>
+           <include name="org/mmbase/module/RemoteMMCI.java"/>
+    </javac>
+  </target>
 
-  <!-- =================================================================== -->
-  <!-- Clean the remote-classes                                            -->
-  <!-- =================================================================== -->
   <target name="clean.remote" depends="init">
     <delete>
       <fileset dir="${source-src.dir}">

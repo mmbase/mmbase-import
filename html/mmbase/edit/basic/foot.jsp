@@ -1,10 +1,9 @@
 <hr />
-<p class="foot">
-<%=m.getString("foot.loggedas")%>: <%= cloud.getUser().getIdentifier() %>
+Logged on as: <%= cloud.getUser().getIdentifier() %>
 (<%= cloud.getUser().getRank() %>).<br />
-<%=m.getString("foot.coding")%>:   <%= cloud.getCloudContext().getDefaultCharacterEncoding() %>  <br />
-<mm:write referid="config.lang" jspvar="lang" vartype="string">
-<%=m.getString("foot.language")%>: <%= locale.getDisplayLanguage(locale) /*cloud.getLocale().getDisplayLanguage(cloud.getLocale())*/ %> <br />
-</mm:write>
+<a href="logout.jsp">logout</a> - <a href="<mm:url page="search_node.jsp" />">home</a>
+<p align="right">
+<a href="<mm:url page="config.jsp" />">configure</a> | <a href="<mm:url page="about.jsp" />">about editors</a>
 </p>
-<%@include file="footfoot.jsp" %>
+</body>
+</html>

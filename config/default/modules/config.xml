@@ -8,22 +8,22 @@
 <module>
 
   <!-- <status>
-    What is the status of this builder options : active or inactive
-    This module should normally be active.
-    Making this module inactive may cause problems in some of the administration pages.
+	What is the status of this builder options : active or inactive
+	This module should normally be active.
+	Making this module inactive may cause problems in some of the administration pages.
   -->
   <status>active</status>
 
 
   <!-- <classfile>
-    Classfile used for initalization of this module
+	Classfile used for initalization of this module
   -->
   <classfile>org.mmbase.module.Config</classfile>
 
   <!-- <properties>
      You can define properties to be used by the classfile.
-     This module does not have any properties.
-     This tag should be left empty, but in place.
+	 This module does not have any properties.
+	 This tag should be left empty, but in place.
    -->
   <properties>
   </properties>

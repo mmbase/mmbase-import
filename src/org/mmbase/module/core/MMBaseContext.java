@@ -7,6 +7,77 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: MMBaseContext.java,v 1.22 2001-10-18 11:10:21 pierre Exp $
+
+$Log: not supported by cvs2svn $
+Revision 1.21  2001/10/08 08:23:57  michiel
+michiel: of course the parameter itself should stay mmbase.htmlroot rather then mmbase.htmlRoot
+
+Revision 1.20  2001/10/05 08:49:23  michiel
+eduard/michiel (who am i?): orion tried to reinitialize, when we tried to access getResource in init. So it was moved to a later time.
+
+Revision 1.19  2001/10/04 10:44:08  eduard
+eduard : tried to fix the problem with the images builder trying to generate url's. This functionality should not be there, or the ServletRequest should be passed tru the builders. It can now work with multiple mmbase's and still generate a valid url with reference to valid servlet.
+
+Revision 1.18  2001/10/03 17:33:42  michiel
+michiel: made some member variable private (in stead of package), added function 'init(configpath, initloggin)', private init functions now need a string
+
+Revision 1.17  2001/10/03 14:23:34  michiel
+michiel: Orion needs a slash there...
+
+Revision 1.16  2001/09/25 15:47:26  eduard
+eduard: on failure finding config directory, config will tell what the absolute path of the directory was, wherin it was trying to find the mmbase stuff, furthermore mmbase.config now has default value(otherise null).
+
+Revision 1.15  2001/08/16 14:59:19  pierre
+pierre: fixed the check for configuration security files
+
+Revision 1.14  2001/07/24 11:04:38  jaco
+jaco: Throw a RunTimeException if a get method is called before the init method.
+
+Revision 1.13  2001/07/16 10:08:08  jaco
+jaco: Moved all configuration stuff to MMBaseContext.
+If needed params not found or incorrect a ServletException with a description isthrown.
+It's now again possible to not redirect System.out and System.err to a file.
+Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+
+Revision 1.12  2001/06/26 08:39:19  eduard
+eduard : i want to use logging, so now the value will be set to "mmbase.log" incase there is nothing known of the log file
+
+Revision 1.11  2001/06/26 07:52:13  pierre
+pierre: removed (commented out) recursive call to getLogging() in getOutputFile(), which caused MMBase to crash on startup.
+I suspect this is the correct way to fix this bug, but someone else might need to verify this.
+
+Revision 1.10  2001/06/23 18:07:27  daniel
+oops forgot something
+
+Revision 1.9  2001/06/23 16:13:46  daniel
+added support for servlet params
+
+Revision 1.8  2001/04/10 17:32:05  michiel
+michiel: new logging system
+
+Revision 1.7  2000/12/24 23:26:25  daniel
+removed modules.xml warning
+
+Revision 1.6  2000/10/15 22:50:25  gerard
+gerard: added some checks
+submitted by Eduard Witteveen
+
+Revision 1.5  2000/03/30 13:11:39  wwwtech
+Rico: added license
+
+Revision 1.4  2000/03/29 10:48:19  wwwtech
+Rob: Licenses changed
+
+Revision 1.3  2000/02/24 14:40:44  wwwtech
+Davzev added CVS again
+
+Revision 1.2  2000/02/24 13:57:38  wwwtech
+Davzev added CVS comment.
+
+*/
 package org.mmbase.module.core;
 
 import java.util.*;
@@ -26,11 +97,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.27 2002-06-27 21:07:48 michiel Exp $
+ * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.27 $ $Date: 2002-06-27 21:07:48 $
+ * @$Revision: 1.22 $ $Date: 2001-10-18 11:10:21 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -290,7 +361,7 @@ public class MMBaseContext {
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
             }
-            if (htmlRoot == null){
+            if (htmlRoot == null) {
                 String message = "Parameter mmbase.htmlroot not set.";
                 System.err.println(message);
                 throw new ServletException(message);
@@ -339,18 +410,13 @@ public class MMBaseContext {
      * final <code>File.separator</code>. Before calling this method the
      * init method should be called to make sure this parameter is set.
      *
-     * @return  the mmbase.config parameter or WEB-INF/config
+     * @return  the mmbase.config parameter
      */
     public synchronized static String getConfigPath() {
         if (!initialized) {
-            String config = System.getProperty("mmbase.config");
-            if (config == null) {
-                String message = "The init method should be called first (or start with mmbase.config parameter)";
-                System.err.println(message);
-                throw new RuntimeException(message);
-            } else {
-                return config;
-            }
+            String message = "The init method should be called first.";
+            System.err.println(message);
+            throw new RuntimeException(message);
         }
         return configPath;
     }
@@ -415,17 +481,16 @@ public class MMBaseContext {
         return null;
     }
 
-    private static String CONTEXT_URL_IDENTIFIER = "jndi:/";    
+    
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under 
      * the webserver, what is the root for this instance.
-w
      * this will return '/' or something like '/mmbase/' or so...
      * @return  the HtmlRootUrlPath
      * @deprecated  should not be needed, and this information should be requested from the ServletRequest
      */
     public synchronized static String getHtmlRootUrlPath() {
-        if (! htmlRootUrlPathInitialized) {            
+        if (!htmlRootUrlPathInitialized) {
             if (! initialized) {
                 String message = "The init method should be called first.";
                 System.err.println(message);
@@ -435,53 +500,30 @@ w
                 htmlRootUrlPathInitialized = true; 
                 return htmlRootUrlPath;
             }
-            String initPath = sx.getInitParameter("mmbase.htmlrooturlpath");
-            if (initPath != null) {
-                htmlRootUrlPath = initPath;
-            } else {
-                // init the htmlRootUrlPath
-                // fetch resource path for the current serletcontext root...
-                String contextUrl = convertResourceUrl(sx, "/");
-                
-                // fetch resource path for the root serletcontext root...
-                ServletContext rootContext = sx.getContext("/");
-                String rootContextUrl = convertResourceUrl(rootContext, "/");
-                
-                if(contextUrl != null && rootContextUrl != null) {
-                    // the beginning of contextUrl is the same as the string rootContextUrl, 
-                    // the left part is the current urlPath on the server...
-                    if(contextUrl.startsWith(rootContextUrl)) {
-                        // htmlUrl is gonna be filled
-                        htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
-                    }
-                    else {
-                        log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
-                    }
-                } 
-                // This works on my tomcat (4.03),.. this is supposed to be the reference implementation?
-                // so what should be the code?
-                else if (rootContextUrl == null && contextUrl != null && contextUrl.startsWith(CONTEXT_URL_IDENTIFIER)) {
-                    // the String will be typically something like "jndi:/hostname/contextname/", so we are looking for the first '/' after the hostname..                    
-                    int contextStart = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length()).indexOf('/');
-                    if(contextStart != -1) {
-                        htmlRootUrlPath = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length() + contextStart);
-                    }
-                    else {
-                        log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
-                                 + "\nbut  contextUrl     : '" + contextUrl + "' did start with: '"+CONTEXT_URL_IDENTIFIER + "'");
-                    }
+            // init the htmlRootUrlPath
+            // fetch resource path for the current serletcontext root...
+            String contextUrl = convertResourceUrl(sx, "/");
+            
+            // fetch resource path for the root serletcontext root...
+            ServletContext rootContext = sx.getContext("/");
+            String rootContextUrl = convertResourceUrl(rootContext, "/");
+            
+            if(contextUrl != null && rootContextUrl != null) {
+                // the beginning of contextUrl is the same as the string rootContextUrl, 
+                // the left part is the current urlPath on the server...
+                if(contextUrl.startsWith(rootContextUrl)) {
+                    // htmlUrl is gonna be filled
+                    htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
                 }
                 else {
-                    log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
-                             + "\n  contextUrl     :" + contextUrl
-                             + "\n  rootContextUrl :" + rootContextUrl );
+                    log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
                 }
             }
 	    htmlRootUrlPathInitialized = true;                      
         } 
         return htmlRootUrlPath;
     }
-    
+
     /**
      * Returns whether this class has been initialized.
      * This can be used to determine whether MMBase specific configuration data is accessible.

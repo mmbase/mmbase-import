@@ -17,7 +17,6 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 
 /**
@@ -26,16 +25,11 @@ import org.mmbase.util.logging.*;
 *
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.4 2002-05-28 21:49:38 gerard Exp $
+* @version $Id: MMHsqldb2Node.java,v 1.1.2.1 2002-03-26 22:47:22 gerard Exp $
 *  
 */
 public class MMHsqldb2Node extends MMSQL92Node {
 
-
-   /**
-     * Logging instance
-     */
-    private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
 		fieldname=fieldname.toLowerCase();
@@ -48,27 +42,6 @@ public class MMHsqldb2Node extends MMSQL92Node {
 
 		return(con);
 	}
-
-    public String getDBText(ResultSet rs,int idx) {
-        String result = null;
-        try {
-            result = rs.getString(idx);
-       } catch (Exception e) {
-            log.error("MMObjectBuilder -> MMHsqldb2Node text exception "+e);
-            log.error(Logging.stackTrace(e));
-            return "";
-        }
-        return result;
-    }
-
-    public void setDBText(int i, PreparedStatement stmt,String body) {
-        try {
-            stmt.setString(i,body);
-        } catch (Exception e) {
-            log.error("MMObjectBuilder : Can't set String");
-            log.error(Logging.stackTrace(e));
-        }
-    }
 
 }
 

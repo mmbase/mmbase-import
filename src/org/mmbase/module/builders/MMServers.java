@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author  $Author: vpro $
- * @version $Revision: 1.17 $ $Date: 2002-05-06 14:39:42 $
+ * @version $Revision: 1.16 $ $Date: 2002-01-28 16:08:12 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -286,7 +286,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
                     } catch (Exception f) {
 						log.error("Can't load protocolclass("+protocol+")");
 						log.error(f.getMessage());
-						//log.error(Logging.stackTrace(f));
+						log.error(Logging.stackTrace(f));
                     }
                 }
             }

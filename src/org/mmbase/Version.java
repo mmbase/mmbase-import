@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase;
 
 import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
+import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
@@ -23,72 +22,9 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.16 2002-06-03 15:05:40 michiel Exp $
+ * @version $Id
  */
 public class Version {
-   
-    /**
-     * Returns the 'name' part of the MMBase version. This will normall be 'MMBase'.
-     * @since MMBase-1.6
-     */
-    public static String  getName()   { return "MMBase"; }
-
-    /**
-     * Returns the major version number of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static int     getMajor()  { return 1; }
-    /**
-     * Returns the minor version number of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static int     getMinor()  { return 6; }    
-
-    /**
-     * Returns the patch level numer of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static int     getPatchLevel()  { return 0; }    
-
-    /**
-     * Returns the build date of this MMBase. During the build, the
-     * value of this is stored in builddate.properties.
-     *
-     * @since MMBase-1.6
-     */
-    public static String  getBuildDate() {
-        String resource = "";
-        InputStream builddate = Version.class.getResourceAsStream("builddate.properties");
-        if (builddate != null) {
-            try {
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(builddate));
-                resource = "." + buffer.readLine();
-                buffer.close();
-            } catch(IOException e) {
-                // error
-                resource = "" + e;
-            }
-        }
-        return resource;
-    }
-
-    /**
-     * Returns the version number of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static String  getNumber() { return getMajor() +  "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "" :  getBuildDate()); }    
-
-    /**
-     * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
-     * @since MMBase-1.6
-     */
-    public static boolean isRelease() { return false; };    
-
-    /**
-     * Returns the version of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static String  get()       { return getName() + " " + getNumber(); }
 
     /**
      * @javadoc
@@ -159,7 +95,7 @@ public class Version {
         body+="Created-By: "+maintainer+"\n";
         body+="Implementation-Vendor: mmbase organisation\n";
         body+="Implementation-Version: "+major+"."+minor+"."+(build+1)+"\n";
-        body+="Implementation-Date: "+DateFormat.getDateTimeInstance().format(new Date())+"\n\n";
+        body+="Implementation-Date: "+new Date().toGMTString()+"\n\n";
         String newbody="maintainer="+maintainer+"\n";
         newbody+="major="+major+"\n";
         newbody+="minor="+minor+"\n";
@@ -392,8 +328,8 @@ public class Version {
      * @javadoc
      */
     public static void main(String args[]) {
-        System.out.println("\n\n Version report tool 0.2 - MMBase version "+getNumber());
-        System.out.println("=======================================================\n");
+        System.out.println("\n\n Version report tool 0.2 ");
+        System.out.println("=========================\n");
         if (args.length>0) {
             String cmd=args[0];
             if (cmd.equals("list")) {

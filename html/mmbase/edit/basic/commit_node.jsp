@@ -1,12 +1,12 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud method="http" sessionname="$SESSION" jspvar="cloud">
-<title><%=m.getString("commit_node.commit")%></title>
+%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
+<title>Committing node</title>
+
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />
-<mm:import externid="page">0</mm:import>
 
-<mm:import externid="backpage_cancel" ><mm:url referids="node_type,page" page="search_node.jsp" /></mm:import>
-<mm:import externid="backpage_ok"     ><mm:url referids="node_type,page" page="search_node.jsp" /></mm:import>
+<mm:import externid="backpage_cancel" ><mm:url referids="node_type" page="search_node.jsp" /></mm:import>
+<mm:import externid="backpage_ok"     ><mm:url referids="node_type" page="search_node.jsp" /></mm:import>
 
 <mm:import externid="cancel" />
 <mm:import externid="new" />
@@ -22,11 +22,11 @@
 </mm:present>
 
 <mm:present referid="delete">
-    <mm:deletenode referid="node_number" notfound="skip" />
+    <mm:deletenode referid="node_number" />
 </mm:present>
 
 <mm:present referid="deleterelations">
-    <mm:deletenode deleterelations="true" referid="node_number" notfound="skip" />
+    <mm:deletenode deleterelations="true" referid="node_number" />
 </mm:present>
 
 <mm:present referid="new"><!-- this was a create node -->
@@ -85,9 +85,9 @@
 <mm:write referid="style" />
 </head>
 <body>
-<h1><%=m.getString("redirect")%></h1>
+<h1>Redirecting</h1>
 <a href="<mm:url page="$redirectTo" />">
-<%= m.getString("commit_node.redirect")%></a>
+Redirecting to main editor page</a>
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.11 2002-04-08 12:13:19 pierre Exp $
+ * @version $Id: MultiPool.java,v 1.10.4.1 2002-05-09 23:12:29 gerard Exp $
  */
 public class MultiPool {
 

@@ -1,9 +1,0 @@
-<!-- Author: Michiel Meeuwissen -->
-
-<!ELEMENT caches (cache*)>
-<!ELEMENT cache (status?,size?)>
-<!ATTLIST cache
-  name             ID      #REQUIRED
->
-<!ELEMENT status (#PCDATA)>
-<!ELEMENT size (#PCDATA)>

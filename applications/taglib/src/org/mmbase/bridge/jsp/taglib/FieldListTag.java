@@ -57,7 +57,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public Object getCurrent() {
         return currentField;
     }
-
+    
     public boolean isChanged() {
         return true;
     }
@@ -85,12 +85,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             throw new JspTagException("Unknown field order type " + t);
         }
     }
-    
-    private java.util.List fields = null;
-
-    public void setFields(String f) throws JspTagException {
-        fields = org.mmbase.bridge.jsp.taglib.util.StringSplitter.split(getAttributeValue(f));
-    }
 
     public NodeProvider getNodeProvider() {
         return nodeProvider;
@@ -99,7 +93,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public Node getNodeVar() throws JspTagException {
         if (nodeManagerString != null) {
             return null;
-        }
+        }       
         nodeProvider = findNodeProvider();
         return nodeProvider.getNodeVar();
     }
@@ -116,41 +110,18 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     **/
     public int doStartTag() throws JspTagException{
 
+        NodeManager nodeManager;
 
-        if (getReferid() != null) {
-            if (nodeManagerString != null || type != NO_TYPE) {
-                throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
-            }
-            Object o =  getObject(getReferid());
-            if (! (o instanceof FieldList)) {
-                throw new JspTagException("Context variable " + getReferid() + " is not a FieldList");
-            }
-            returnList = (FieldList) o;
+        if (nodeManagerString == null) { // living as NodeReferrer
+            nodeManager = getNodeVar().getNodeManager();
         } else {
-            NodeManager nodeManager;
+            nodeManager = getCloud().getNodeManager(nodeManagerString);
+        }
 
-            if (nodeManagerString == null) { // living as NodeReferrer
-                nodeManager = getNodeVar().getNodeManager();
-            } else {
-                nodeManager = getCloud().getNodeManager(nodeManagerString);
-            }
-
-            if (type != NO_TYPE) {           
-                returnList = nodeManager.getFields(type);            
-                if (fields != null) {
-                    throw new JspTagException ("Cannot specify fields and type attribute both at the same time fiels = " + fields + " type = " + type);
-                }
-                
-            } else {
-                returnList = nodeManager.getFields();
-                if (fields != null) {
-                    returnList.clear();
-                    java.util.Iterator i = fields.iterator();
-                    while (i.hasNext()) {
-                        returnList.add(nodeManager.getField((String) i.next()));
-                    }                
-                }
-            }
+        if (type != NO_TYPE) {
+            returnList = nodeManager.getFields(type);
+        } else {
+            returnList = nodeManager.getFields();
         }
         returnValues = returnList.fieldIterator();
 
@@ -160,17 +131,17 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY_TAG;
         return SKIP_BODY;
     }
 
     public int doAfterBody() throws JspTagException {
         if (getId() != null) {
             getContextTag().unRegister(getId());
-        }
+        }  
         if (returnValues.hasNext()){
             doInitBody();
-            return EVAL_BODY_AGAIN;
+            return EVAL_BODY_TAG;
         } else {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -185,7 +156,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextTag().register(getId(), returnList);
-        }
+        }        
         return  EVAL_PAGE;
     }
 
@@ -195,7 +166,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             currentField = returnValues.nextField();
             if (getId() != null) {
                 getContextTag().register(getId(), currentField);
-            }
+            }      
         }
     }
 }

@@ -1,4 +1,4 @@
-<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content" ENCTYPE="multipart/form-data">
+<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml?$PARAM3" TARGET="Content" ENCTYPE="multipart/form-data">
 <CENTER>
 <P><TABLE BORDER=0 CELLSPACING=4 CELLPADDING=4>
    <TR>

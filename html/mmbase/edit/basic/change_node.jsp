@@ -1,7 +1,7 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="http" sessionname="$SESSION" jspvar="cloud">
+%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
 <mm:write referid="style" />
-<title><%= m.getString("change_node.change")%></title>
+<title>Change a node</title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
 <mm:context id="change_node">
@@ -17,7 +17,7 @@
 </mm:maywrite>
 <mm:maywrite inverse="true">
  <mm:import id="showtype">guivalue</mm:import>
-<h2><%= m.getString("change_node.maynotedit")%></h2>
+ You may not edit this node.
 </mm:maywrite>
 <%-- create the form
      by the way, it is not necessary to indicate that
@@ -26,22 +26,22 @@
 <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
-  <mm:field name="sgui($SESSION,)" />:
-  <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
+  <mm:field name="gui()" />:
+  Node <mm:field name="number" /> of type <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
   </th></tr>
     <mm:fieldlist id="my_form" type="edit">
       <tr>
         <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
-        <td class="listdata" colspan="2"><mm:fieldinfo type="$showtype" />&nbsp;</td>
+        <td class="listdata" colspan="2"><mm:fieldinfo type="${showtype}" />&nbsp;</td>
       </tr>
     </mm:fieldlist>
     <mm:maychangecontext>
 	<mm:write referid="this_node" vartype="Node" jspvar="node1">
     <tr>
-      <td class="data"><em><%=m.getString("change_node.context")%></em> <small>(<%= node1.getContext() %>)</small></td>
+      <td class="data"><em>Context</em> <small>(<%= node1.getContext() %>)</small></td>
       <td class="listdata" colspan="2">
-      <input type="checkbox" name="_my_form_change_context" /><%=m.getString("change_node.change")%>
+      <input type="checkbox" name="_my_form_change_context" />change
       <select name="_my_form_context"> <%
 	 try{
 	 String context = node1.getContext();
@@ -61,31 +61,28 @@
 	 </mm:maychangecontext>
 <tr>
 <td colspan="3" class="buttons">
-<input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
-<input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
-   <input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" />
-   <input class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
+   <input class="submit"   type ="submit" name="deleterelations"   value="delete with relations" />
+   <input class="submit"   type ="submit" name="delete" value="delete" />
 </mm:maydelete>
+<input class="submit"   type ="submit" name="cancel" value="cancel" />
+<input class="submit"   type ="submit" name="ok" value="ok" />
 </td>
 </tr>
 <tr><td colspan="3" class="search"><hr /></td></tr>
 <tr>
-  <th><%=m.getString("change_node.aliases")%></th>
+  <th>aliases</th>
   <td class="data" width="90%"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
   <td class="navigate" width="0%">
- <mm:maywrite>
- <a  href="<mm:url referids="node_number"  page="edit_aliases.jsp" />">
-       <span class="select"></span><span class="alt">[edit aliases]</span>
-</a>     
-   </mm:maywrite>    
+ <a href="<mm:url referids="node_number" page="edit_aliases.jsp" />"><img src="images/select.gif" alt="[edit aliases]" width="20" height="20" border="0" align="right"/></a>     
+ </td>
 </tr>
 </table>
 </form>
 
 <!-- list relations: -->
 <hr />
-<a name="relations"></a>
+<a name="relations" />
 <%@ include file="relations.jsp"%>
 
 </mm:node>

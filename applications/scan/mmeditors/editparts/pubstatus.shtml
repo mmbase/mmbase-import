@@ -30,7 +30,7 @@ function gotoFunction()
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
+			<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
 
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
@@ -60,7 +60,7 @@ function gotoFunction()
 					<OPTION VALUE="3" SELECTED> WebServer
 				</IF>
 				</SELECT><BR>
-				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
+				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> $MOD-MMLANGUAGE-GET-ok
 			</FORM>
 		</TD>
 	</TR>

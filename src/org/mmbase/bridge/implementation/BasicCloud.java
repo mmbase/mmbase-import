@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.60 2002-07-04 09:45:58 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.52.2.2 2002-03-15 09:50:26 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -101,12 +101,12 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // start multilevel cache
         MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
-        multilevel_cache = MultilevelCacheHandler.getCache();
+        multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
 
     /**
      */
-    BasicCloud(String name, String application, Map loginInfo, CloudContext cloudContext) {
+    BasicCloud(String name, String application, HashMap loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext=(BasicCloudContext)cloudContext;
         MMBase mmb = this.cloudContext.mmb;
@@ -123,7 +123,7 @@ public class BasicCloud implements Cloud, Cloneable {
         org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if (uc == null) {
             String message;
-            message = "Login invalid (login-module: " + application + ")";
+            message = "Login invalid.";
             log.error(message);
             throw new BridgeException(message);
         }
@@ -145,7 +145,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // start multilevel cache
         MultilevelCacheHandler.setMMBase(mmb);
-        multilevel_cache = MultilevelCacheHandler.getCache();
+        multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
 
     // Makes a node otr Relation object based on an MMObjectNode
@@ -201,7 +201,7 @@ public class BasicCloud implements Cloud, Cloneable {
         Vector nodeManagers = new Vector();
         for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
-            if(!bul.isVirtual() && check(Operation.READ, bul.oType)) {
+            if(!bul.isVirtual()) {
                 nodeManagers.add(bul.getTableName());
             }
         }
@@ -210,23 +210,16 @@ public class BasicCloud implements Cloud, Cloneable {
 
     public NodeManager getNodeManager(String nodeManagerName) {
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
-        BasicNodeManager nodeManager=(BasicNodeManager)nodeManagerCache.get(nodeManagerName);
-        MMObjectBuilder bul = cloudContext.mmb.getMMObject(nodeManagerName);
-        // always look if builder exists, since otherwise
-        if (bul == null) {
-            String message;
-            message = "Node manager with name " + nodeManagerName + " does not exist.";
-            log.error(message);
-            throw new BridgeException(message);
-        }
+        NodeManager nodeManager=(NodeManager)nodeManagerCache.get(nodeManagerName);
         if (nodeManager==null) {
-            // not found in cache
-            nodeManager=new BasicNodeManager(bul, this);
-            nodeManagerCache.put(nodeManagerName,nodeManager);
-        }
-        else if (nodeManager.getMMObjectBuilder() != bul) {
-            // cache differs
-            nodeManagerCache.remove(nodeManagerName);
+            MMObjectBuilder bul=cloudContext.mmb.getMMObject(nodeManagerName);
+            if (bul==null) {
+                String message;
+                message = "Node manager with name " + nodeManagerName
+                          + " does not exist.";
+                log.error(message);
+                throw new BridgeException(message);
+            }
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }
@@ -605,11 +598,6 @@ public class BasicCloud implements Cloud, Cloneable {
           pars+=" WHERE='"+constraints.replace(' ','_')+"'";
         }
 
-        if (distinct) {
-            sdistinct="YES";
-            pars+=" DISTINCT='YES'";
-        }
-
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
         if (searchDir!=null) {
             searchDir = searchDir.toUpperCase();
@@ -626,6 +614,7 @@ public class BasicCloud implements Cloud, Cloneable {
             }
         }
 
+        if (distinct) sdistinct="YES";
         Vector snodes = tagger.Values("NODES");
         Vector sfields = tagger.Values("FIELDS");
         Vector tables = tagger.Values("TYPES");

@@ -16,8 +16,8 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
- * A very simple tag to check if node may be changed.
- *
+ * A very simple tag to check if node may be deleted.
+ * 
  * @author Michiel Meeuwissen
  */
 public class MayWriteTag extends NodeReferrerTag implements Condition {
@@ -27,14 +27,15 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
     public void setInverse(Boolean b) {
         inverse = b.booleanValue();
     }
-
+               
     public int doStartTag() throws JspTagException {
         if ((getNode().mayWrite()) != inverse) {
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
         }
     }
+
     public int doAfterBody() throws JspTagException {
         try{
             if(bodyContent != null)
@@ -43,11 +44,10 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
         } catch(java.io.IOException e){
             throw new JspTagException("IO Error: " + e.getMessage());
         }
-    }
+    }   
 
-    public int doEndTag() throws JspTagException {     
+    public int doEndTag() throws JspTagException {
         inverse = false;
         return EVAL_PAGE;
     }
-
 }
