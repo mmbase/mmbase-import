@@ -4,18 +4,25 @@
 	<link rel="stylesheet" type="text/css" href="../style.css" />
    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
    <!-- Very straightforward example -->
-  <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
   <mm:import externid="language">nl</mm:import>
+  <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%>?language=<mm:write referid="language" /></mm:import>
 </head>
 <body>
 <form>
-	<h1>Editwizard - samples, 'dutch' version</h1>
+  <mm:write referid="language" jspvar="lang" vartype="string" >
+	<h1>Editwizard - samples, '<%= new java.util.Locale(lang, "").getDisplayLanguage(java.util.Locale.US)%>' version</h1>
+  </mm:write>
   <p>
-   This example uses the default editwizard XSL's, much like the 'simple' editwizard example.
-   It also overrides the 'prompts' xsl stylesheet, which in this case means that all feedback of the
-   editwizard is shown in dutch instead of the standard english.<br />
-   You can make your own 'international' version of teh editors by editing the xsl/prompts.xsl file, replacing 
-   the values in there with prompts and tooltips in your own preferered lanuage.
+   This example uses the default editwizard XSL's, much like the
+   'simple' editwizard example. It does however orders the editwizards
+   to present as much in dutch as possible by passing the
+   'language=nl' argument.
+  </p>
+  <p>
+   Support for other languages can be added in
+   [editwizard-home]/data/i18n, and of course also in the builder
+   xml's. Hard-coded texts in editwizard-xml's cannot yet be specified
+   in more than one language at the time.
   </p>
 	<table>
   <tr><td>
@@ -37,7 +44,12 @@
   <hr />
 
   <a href="../index.html">back</a><br />
-  <a href="index.jsp?language=fr">french?</a><br />
+  <a href="index.jsp?language=<%=java.util.Locale.getDefault().getLanguage()%>">default</a><br />
+  <a href="index.jsp?language=en">english</a><br />
+  <a href="index.jsp?language=nl">dutch</a><br />
+  <a href="index.jsp?language=fr">french</a><br />
+  <a href="index.jsp?language=eo">esperanto</a><br />
+  <a href="mailto:mihxil@komputilo.org">Offer your help to improve/add support for your language</a><br />
  
 </form>
 </body>
