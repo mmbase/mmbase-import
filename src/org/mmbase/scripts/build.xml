@@ -99,6 +99,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="source-src.dir" location="${source.dir}/src"/>
   <property name="build.dir" value="${source.dir}/build"/>
   <property name="lib.dir" value="${build.dir}/mmbase/lib"/>
+  <property name="web.dir" value="${build.dir}/mmbase/web"/>
   <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
@@ -246,6 +247,45 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the web directory                                            -->
+  <!-- This directory contains 'compiled' stuff, which must appear in the  -->
+  <!-- html directory of the web-server. A web server specific tag can copy--> 
+  <!-- them from here, depending on this 'web' target                      -->
+  <!-- =================================================================== -->
+
+  <target name="web" description="Make the things which must appear web-servers html directory"
+          depends="init.compile">
+    <mkdir dir="${web.dir}"/>
+
+    <!-- create the mmbase-taglib tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile"
+          fork="yes" >
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmbase-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile"
+          fork="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+    </java>
   </target>
 
 
@@ -487,7 +527,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Install MMBase on top of Tomcat without database                    -->
   <!-- =================================================================== -->
   <target name="tomcat"
-          depends="init,jar,expand.tomcat,expand.xalan,expand.jai,expand.log4j">
+          depends="init,jar,expand.tomcat,expand.xalan,expand.jai,expand.log4j,web">
     <mkdir dir="${build.dir}/tomcat"/>
     <mkdir dir="${build.dir}/tomcat/webapps/ROOT"/>
     <copy todir="${build.dir}/tomcat">
@@ -533,29 +573,12 @@ Change directory to ${build.dir}/orion and run:
     </copy>
     <copy file="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml.tomcat"
           tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"/>
-    <java classname="org.apache.xalan.xslt.Process"
-          classpathref="compile"
-          fork="yes">
-      <arg value="-Q"/>
-      <arg value="-XML"/>
-      <arg value="-IN"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
-      <arg value="-OUT"/>
-      <arg value="${build.dir}/tomcat/webapps/ROOT/WEB-INF/mmbase-taglib.tld"/>
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
-    </java>
-    <java classname="org.apache.xalan.xslt.Process"
-          classpathref="compile"
-          fork="yes">
-      <arg value="-Q"/>
-      <arg value="-IN"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
-      <arg value="-OUT"/>
-      <arg value="${build.dir}/tomcat/webapps/ROOT/mmdocs/mmbase-taglib.html"/>
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
-    </java>
+
+    <copy file="${web.dir}/mmbase-taglib.tld"
+          tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/mmbase-taglib.tld" />
+    <copy file="${web.dir}/mmbase-taglib.html"
+          tofile="${build.dir}/tomcat/webapps/ROOT/mmdocs/mmbase-taglib.html"/>
+    
   </target>
 
 
@@ -622,7 +645,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Install MMBase on top of Orion without database                     -->
   <!-- =================================================================== -->
   <target name="orion"
-          depends="init,jar,expand.orion,expand.xalan,expand.jai,expand.log4j">
+          depends="init,jar,expand.orion,expand.xalan,expand.jai,expand.log4j,web">
     <mkdir dir="${build.dir}/orion"/>
     <mkdir dir="${build.dir}/orion/default-web-app"/>
     <copy todir="${build.dir}/orion">
@@ -651,6 +674,11 @@ Change directory to ${build.dir}/orion and run:
     </copy>
     <copy file="${build.dir}/orion/default-web-app/WEB-INF/web.xml.orion"
           tofile="${build.dir}/orion/default-web-app/WEB-INF/web.xml"/>
+ 
+    <copy file="${web.dir}/mmbase-taglib.tld"
+          tofile="${build.dir}/orion/default-web-app/WEB-INF/mmbase-taglib.tld" />
+    <copy file="${web.dir}/mmbase-taglib.html"
+          tofile="${build.dir}/orion/default-web-app/mmdocs/mmbase-taglib.html"/>
   </target>
 
 
