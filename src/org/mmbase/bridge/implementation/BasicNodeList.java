@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.22 2003-09-02 20:16:16 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.23 2003-09-03 20:56:23 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
@@ -41,6 +41,8 @@ public class BasicNodeList extends BasicList implements NodeList {
         this.nodeManager = nodeManager;
         this.cloud = nodeManager.getCloud();
     }
+
+    
 
     /**
      *
@@ -75,8 +77,11 @@ public class BasicNodeList extends BasicList implements NodeList {
                 String tablePrefix = query.getNodeStep().getAlias();
                 //if (tablePrefix == null) tablePrefix = query.getNodeStep().getTableName();
                 MMObjectNode newNode = new MMObjectNode(((BasicNodeManager) nodeManager).builder, (ClusterNode) coreNode, tablePrefix);
-
-                node = new BasicNode(newNode, nodeManager);
+                if (coreNode.getOType() != nodeManager.getNumber()) {
+                    node = cloud.getNode(coreNode.getNumber()); // should be smarter, should be queried all together!
+                } else {
+                    node = new BasicNode(newNode, nodeManager);
+                }
                 // will lead exceptions of ClusterNode is not a 'node' result.
             } else {
                 // 'normal' node
