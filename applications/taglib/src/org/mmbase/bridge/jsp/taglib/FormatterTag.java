@@ -192,11 +192,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
-        // get a documentBuilder.
-        // the uriResolver must be set per page, because it can be the same instance for all formatters on this page.
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile(); 
-
     }            
     
     public int doStartTag() throws JspTagException {  
@@ -335,14 +332,57 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false)).haltTimer(timerHandle);
         }
         return helper.doAfterBody();
-    }
+    } // doEndTag
+
+
 
 
     /**
+     * @return the Factory which must be used for XSL transformations in this directory.
+     */
+
+    private TransformerFactory getFactory() {
+        return FactoryCache.getCache().getFactory(cwd);
+    }
+
+    /*
      * Base function for XSL conversions, which this Tag does.
      *
-     * It returns a String, even if it goes wrong, in which case the string contains the error message.
-     *
+     * It returns a String, even if it goes wrong, in which case the string contains the error
+     * message.
+     * @param A Source (representing the XSLT).
+     * @return The result ot the transformation.
+     */
+    private String xslTransform(Source xsl) throws JspTagException {
+        log.debug("transforming");
+        
+        TemplateCache cache= TemplateCache.getCache();
+        Templates cachedXslt = cache.getTemplates(xsl);
+        if (cachedXslt == null) { 
+            try {
+                cachedXslt = getFactory().newTemplates(xsl);
+                cache.put(xsl, cachedXslt);
+            } catch (javax.xml.transform.TransformerConfigurationException e) {
+                throw new JspTagException(e.toString());
+            }
+        } else {
+            if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
+        }
+        
+        // set some parameters to the XSLT style sheet.
+        java.util.Map params = new java.util.HashMap();
+        String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath(); 
+        params.put("formatter_requestcontext",  context);
+        params.put("formatter_imgdb", context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);        
+        // getting the language from the locale, this is perhaps not a very good idea, 
+        // but for the moment, I don't know a sensible other place to get it from.
+        params.put("formatter_language", java.util.Locale.getDefault().getLanguage());
+        
+        return ResultCache.getCache().get(cachedXslt, xsl,  params, null, xmlGenerator.getDocument());
+    
+    }
+    /**    
+     * @see #xslTransform
      * @param A name of an XSLT file.
      */
     private String xslTransform(String xsl) {
@@ -356,57 +396,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
     }
 
-    /*
-    private String xsltCacheKey(String subKey) {
-        return cwd.toString() + "." + subKey;
-    }
-    */
-
-    private TransformerFactory getFactory() {
-        return FactoryCache.getCache().getFactory(cwd);
-    }
-
-    private String xslTransform(Source xsl) {
-        log.debug("transforming");
-        try {     
-            TemplateCache cache= TemplateCache.getCache();
-            //Transformer trans = cachedXSLT.newTransformer();
-            Templates cachedXslt = cache.getTemplates(xsl);
-            if (cachedXslt == null) {                                
-                cachedXslt = getFactory().newTemplates(xsl);
-                cache.put(xsl, cachedXslt);
-            } else {
-                if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
-            }
-            javax.xml.transform.Transformer transformer = cachedXslt.newTransformer();
-          
-            // set some parameters to the XSLT style sheet.
-            // transformer.setParameter("formatter_xsltpath", baseXsltPath);        
-            // necessary when extending XSLT's (this will problably not be used yet)
-            // no idea if I get that working.
-           
-            String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath(); 
-            transformer.setParameter("formatter_requestcontext",  context);
-                             
-            transformer.setParameter("formatter_imgdb", context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);
-            // necessary to generate Image urls.
-
-            // getting the language from the locale, this is perhaps not a very good idea, 
-            // but for the moment, I don't know a sensible other place to get it from.
-            transformer.setParameter("formatter_language",  
-                                     java.util.Locale.getDefault().getLanguage());
-            
-            java.io.StringWriter res = new java.io.StringWriter();
-            transformer.transform(new javax.xml.transform.dom.DOMSource(xmlGenerator.getDocument()),
-                                  new javax.xml.transform.stream.StreamResult(res));
-            return res.toString();
-        } catch (Exception e) {
-            String msg =  "XSL transformation did not succeed: " + e.toString();
-            log.service(msg); // don't log this as warning or error, because web site builders can generate their own XSLT, which can contain errors.
-            log.error(Logging.stackTrace(e));
-            return msg + "\n";
-        }
-    }
 
 }
 
