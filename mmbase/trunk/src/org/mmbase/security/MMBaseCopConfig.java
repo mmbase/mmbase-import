@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.8 2002-06-25 12:30:45 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.9 2002-10-25 13:09:52 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
@@ -90,7 +90,7 @@ public class MMBaseCopConfig {
         cop = mmbaseCop;
 
         String configPath = configFile.getAbsolutePath();
-        XMLBasicReader reader = new XMLBasicReader(configPath);
+        XMLBasicReader reader = new XMLBasicReader(configPath, this.getClass());
 
         // are we active ?
         String sActive = reader.getElementAttributeValue(reader.getElementByPath("security"),"active");
