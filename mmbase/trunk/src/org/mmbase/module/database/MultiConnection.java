@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.18 2003-04-18 10:30:27 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.19 2003-04-18 12:21:49 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -562,10 +562,8 @@ public class MultiConnection implements Connection {
      *              do not use!
      * @since MMBase 1.5
      */
-    /*
     private class Savepoint {
     }
-    */
 }
 
 
