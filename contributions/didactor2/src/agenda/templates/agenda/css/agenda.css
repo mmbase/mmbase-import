@@ -27,13 +27,15 @@
 
 /* Days that fall outside the current month */
 .calDayNotThisMonth {
-  color: #888888;
+   cursor: pointer;
+ color: #888888;
 }
 
 /* Days that fall inside the current month */
 .calDayThisMonth {
   background-color: #ffffff;
-  color: #444444;
+   cursor: pointer;
+ color: #444444;
 }
 
 /* Days that are highlighted (because events are happening), but they
@@ -52,4 +54,7 @@
 /* Today */
 .calToday {
   border: 1px solid black;
+  cursor: pointer;
 }
+
+

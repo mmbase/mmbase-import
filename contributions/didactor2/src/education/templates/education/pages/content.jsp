@@ -95,7 +95,7 @@
 
   <div class="urls">
     <mm:relatednodes type="urls">
-      <a href="<mm:field name="url" />"><mm:field name="name"/></a>(<mm:field name="url"/>)
+      <a href="<mm:field name="url" />"><mm:field name="name"/></a>
       <br/>
       <mm:field name="description"/>
       <br/>
