@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.21 2000-06-08 18:00:12 wwwtech Exp $
+	$Id: Images.java,v 1.22 2000-06-14 15:21:34 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.21  2000/06/08 18:00:12  wwwtech
+	Rico: reduced/switched-off debug
+	
 	Revision 1.20  2000/06/07 17:27:44  wwwtech
 	Rico: fixed debug message
 	
@@ -74,7 +77,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.21 2000-06-08 18:00:12 wwwtech Exp $
+ * @version $Id: Images.java,v 1.22 2000-06-14 15:21:34 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -87,7 +90,7 @@ public class Images extends MMObjectBuilder {
 	protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick";
 	protected static String ConverterRoot = "/usr/local/";
 	protected static String ConverterCommand = "bin/convert";
-	protected int MaxConcurrentRequests=2;
+	protected int MaxConcurrentRequests=3;
 
 	protected int MaxRequests=32;
 	protected Queue imageRequestQueue=new Queue(MaxRequests);
@@ -121,7 +124,7 @@ public class Images extends MMObjectBuilder {
 
 		ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
 		// Startup parrallel converters
-		ireqprocessors=new ImageRequestProcessor[2];
+		ireqprocessors=new ImageRequestProcessor[MaxConcurrentRequests];
 		debug("Starting "+MaxConcurrentRequests+" Converters");
 		for (int i=0;i<MaxConcurrentRequests;i++) {
 			ireqprocessors[i]=new ImageRequestProcessor(bul,imageconvert,imageRequestQueue,imageRequestTable);
