@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.219 2003-11-20 16:22:00 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.220 2003-12-04 13:13:41 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4438,7 +4438,7 @@ The 0 is just counter, which starts at 0 on every page.
 		<attribute>
 			<name>expires</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 			<info>
 				<p>
 					When this page expires (in seconds after now). If you set this, this has influence on some
