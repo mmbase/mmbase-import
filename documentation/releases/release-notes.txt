@@ -47,12 +47,19 @@ General New Features:
 - Scan has been turned off by default
 - Centralized caches configuration (caches.xml)
 - Automatic builder installation for applications
-- auto detection of some databases (see <mmbase-webapp/WEB-INF/modules/mmbaseroot.xml> for more info)
+- auto detection of some databases (see
+  <mmbase-webapp/WEB-INF/modules/mmbaseroot.xml> for more info)
 - Use of webapplication server resources (JNDI)
 - DTD's are available in the jar (and removed from the config dir)
 - Richtext 0.5
 - Security 1.0
 - Builder extension (not completely finished)
+
+
+--------------------------
+Documentation New Features:
+--------------------------
+- Added first draft of a taglib tutorial.
 
 
 ---------------------
@@ -103,7 +110,16 @@ General Bug Fixes:
 - XML importer handles binary values using Base64 decoding: #5087
 - More efficient Base64 encoding/decoding: #5073
 - attachment-tag attachment-servlet bugs: #4895, #4876 
-- builder inheritance: #4864
+- MMObjectNode.getRelationCount(String) does not consider builder
+  inheritance: #4864
+- Fixed a bug that could come up if the platform's default charset
+  isn't ISO-8859-1
+- TemplatesCaches didn't use its FileWatcher, and if it did, it would
+  fail to remove the watch on expired entries: #5028
+- MMInformix42Node uses deprecated SortedDBLayout: #5125
+- MMInformix42Node' decodeDBNodeField won't apply String/Clob from
+  clusternodes: #5129
+- MMInformix42Node is not UTF8 complient: #5133
 [1.6.0]
 - Fixed a problem with memory allocation in the bridge, which could cause
   MMBase to claim disproportional parts of memory when using the Multilevel
@@ -115,18 +131,19 @@ General Bug Fixes:
 - When removing a builder from MMBase,referring nodes in
   typerel/reldef are also removed.
 - MMBase works inside webapp contexts
-- Performance issue resolved regarding MMObjectNode::getRelated() and
-  MMObjectNode::getRelated(type) where type is a builder 
 - Connection pool can run on a lower amount of connections
 - Nodes are always returned with the correct type of builder
 
 
+---------------------
+Application bug fixes:
+---------------------
+- Using comments in application files results in errors in the log:
+  #4952 
+
 ------------------
 Security Bug Fixes:
 ------------------
-
-[1.6.1]
-Upgrading from 1.6.0 to 1.6.1 can be done by replacing the mmbase.jar
 
 [1.6.0]
 - Fixed a problem with checking whether relations can be added (bug #3602)
@@ -142,15 +159,29 @@ Taglib Bug Fixes:
 
 [1.6.1]
 - Function-values can be something else then string now:  bug #4988
+- Image-tag's attribute 'template' cannot be empty string any more:
+  #5059
+- list tag caches errors with orion tag reuse: #5082
+
 [1.6.0]
 - Taglib works with Tomcat 4.1.x (version 4.1.12 is the first version
   it's working) 
 
 
+-----------------
+Example Bug Fixes:
+-----------------
+- advanced editwizard example didn't make much sense, becuase original
+  list.xml changed.
+
 ========
 Upgrade:
 ========
 [1.6.1]
+- On a deployment server upgrading from 1.6.0 to 1.6.1 can be done by
+  replacing the mmbase.jar.
+- On other systems: there has been one bugfix in the editwizards
+  examples and some documentation has been fixed/added.
 [1.6.0]
 When you're upgrading from a previous MMBase-version it's important to
 know there have been made a few changes in the xml configuration of
@@ -164,7 +195,11 @@ the builders:
 Known Issues and Problems:
 ========================
 [1.6.1]
-No known issues solved
+- No known issues solved
+- The following bugfix was mistakenly added to the 1.6.0 releasenotes:
+  "Performance issue resolved regarding MMObjectNode::getRelated() and
+  MMObjectNode::getRelated(type) where type is a builder". It will be
+  fixed in MMBase-1.6.2. 
 [1.6.0]
 - Jsp-editors aren't working completly when using Tomcat 4.0.x, you'll
   get an "Illegal target of jump or branch"-error when trying to add
@@ -294,7 +329,7 @@ Applicationservers
 ------------------
 - Tomcat 4.0.4 (although Tomcat 4.1.x is recommended because it's a lot faster than 4.0.x)
 - Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
-logfiles in this version, catalina.out and localhost_log), 4.1.17
+logfiles in this version, catalina.out and localhost_log), 4.1.17, 4.1.18
 - Orion 1.5.2, 1.5.4, 1.6.0 (experimental)
 - Jetty 4.0.0
 - Resin 2.1.0, Resin 2.1.4 (Taglib attribute problems, filed as bug #3823 in
