@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import java.io.IOException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import java.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.14 2005-01-05 18:45:53 michiel Exp $ 
+ * @version $Id: LocaleTag.java,v 1.15 2005-01-05 19:18:25 michiel Exp $ 
  */
 
 public class LocaleTag extends ContextReferrerTag  {
@@ -71,7 +72,7 @@ public class LocaleTag extends ContextReferrerTag  {
         }
         // compatibility with jstl fmt tags:
         // should use the constant, but that would make compile-time dependency.
-        pageContext.setAttribute("javax.servlet.jsp.jstl.fmt.localizationContext", locale.toString());
+        pageContext.setAttribute("javax.servlet.jsp.jstl.fmt.locale.page", locale, PageContext.PAGE_SCOPE);
         return EVAL_BODY;
     }
     public int doAfterBody() throws JspTagException {
