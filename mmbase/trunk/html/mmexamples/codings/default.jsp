@@ -53,13 +53,13 @@
     <h1>Included pages</h1>
     <p><em>With mm:include (utf-8 page):</em></p>
     <% try { %>
-    <mm:include page="included.jsp?node=$node" />
+    <mm:include referids="node" page="included.jsp" />
     <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
     <% } %>
     <p><em>With mm:include (iso-8859-1 page):</em></p>
     <% try { %>
-    <mm:include page="included1.jsp?node=$node" />
+    <mm:include referids="node" page="included1.jsp" />
     <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
     <% } %>

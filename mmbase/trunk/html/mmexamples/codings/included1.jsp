@@ -4,7 +4,7 @@
 <p>mmbase:  
   <mm:import externid="node" from="parameters">codings</mm:import> 
   <mm:cloud>
-		<mm:node number="$node" notfound="skip">
+		subtitle of node '<mm:write referid="node" />': <mm:node number="$node" notfound="skip">
       <mm:field name="subtitle" />
     </mm:node>
   </mm:cloud>
