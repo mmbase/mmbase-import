@@ -13,7 +13,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.JspException;
+
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Field;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +30,7 @@ public class FieldTag extends BodyTagSupport {
 
     private String parentNodeId = null;
     private String name;   
-    private String type = "NODE"; // could be handy to specifiy this.
+    private String head;
     
     public void setNode(String node){
         parentNodeId = node;
@@ -37,8 +39,9 @@ public class FieldTag extends BodyTagSupport {
     public void setName(String n) {
         name = n;
     }
-    public void setType(String t) {
-        type = t;
+
+    public void setHead(String h) {
+        head = h;
     }
 
     public int doStartTag() throws JspException{
@@ -50,6 +53,7 @@ public class FieldTag extends BodyTagSupport {
      **/
     public int doAfterBody() throws JspException {
         
+        // firstly, search the node:
         Node node;
         NodeLikeTag nodeLikeTag;
         Class nodeLikeTagClass;
@@ -73,21 +77,40 @@ public class FieldTag extends BodyTagSupport {
             }
         }
 
-        node = nodeLikeTag.getNode();
+        node = nodeLikeTag.getNodeVar();
         if (node == null) {
             throw new JspException ("Parent of field did not  set node");  
         }
 
-        String field = "" + node.getValue(name);
+        // found the node now. Now we can decide what must be shown:
 
-        if (field == null) {
-            throw new JspException ("Could not find field " + name);  
+        String show;
+       
+        if (name != null) { // name not null, head perhaps.
+            log.debug("using name " + name );
+            show = "" + node.getValue(name);
+            if (head != null) {
+                throw new JspException ("Could not indicate both  'name' and 'head' attribute");  
+            }
+        } else if (head !=null) { // name null, head isn't.
+            log.debug("using head " + head);
+            Field f = node.getNodeManager().getField(head);
+            if (f == null) {
+                throw new JspException ("Could not find field " + head);  
+            }
+            show = "" + f.getGUIName();
+        } else { // both null
+            throw new JspException ("Should use  'name' or 'head' attribute");  
         }
-        log.debug("tadaaam " + node.getValue("gui()"));
-        try {
+
+        if (show == null) {
+            throw new JspException ("Could not find field " + name + " /"  +  head);  
+        }
+
+        try {         
             BodyContent bodyOut = getBodyContent();
             bodyOut.clearBody();
-            bodyOut.print(field);
+            bodyOut.print(show);
             bodyOut.writeOut(bodyOut.getEnclosingWriter());
         } catch (java.io.IOException e) {
             throw new JspException (e.toString());            
