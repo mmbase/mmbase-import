@@ -13,5 +13,6 @@
       <x:doctype name="taglib"  publicId="-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" systemId="http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd"/>
       <x:transform xslt="xml2tld.xslt"  xml="src/java/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
     </j:file>
+     <attainGoal name="taglib:convert" />
   </postGoal>
 </project>
