@@ -84,16 +84,15 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     }
 
     public void run () {
-		// Wait till all builders are loaded.
-		try { Thread.sleep(10000); } catch (Exception wait) { }
+		try { Thread.sleep(300000); } catch (Exception wait) { } //wait 5 minutes
+
+		// init variables for mail.
         String from=getInitParameter("from");
         String to=getInitParameter("to");
-
-		
 		String data="";
 
         try {
-			// Get the urls and Jumper builders.
+			// Get the urls builder,  Jumper builder, and sendmail module.
 			if(urls==null) {
    				urls=(MMObjectBuilder)mmbase.getMMObject("urls");
     		}
@@ -112,9 +111,9 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             	String theUrl = ""+url.getValue("url");
 				// Check if an url is correct.
 				if(!checkUrl(theUrl)) {
-					//System.out.println("LinkChecker -> Error in url "+theUrl +" (objectnumber="+number+")");
 					data+="Error in url "+theUrl +" (objectnumber="+number+")\n";
 				}
+				try { Thread.sleep(5000); } catch (Exception wait) { } //wait 5 seconds
     		}
 			// Get all jumpers.
          	e = jumpers.search("");
@@ -124,13 +123,18 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             	String theUrl = ""+jumper.getValue("url");
 				// Check if an jumper is correct.
 				if(!checkUrl(theUrl)) {
-					//System.out.println("LinkChecker -> Error in jumper "+theUrl +" (objectnumber="+number+")");
 					data+="Error in jumper "+theUrl +" (objectnumber="+number+")\n";
 				}
+				try { Thread.sleep(5000); } catch (Exception wait) { } //wait 5 seconds
     		}
 
-			// Send Email
-			sendmail.sendMail(from,to,data);
+			// Send Email if needed.
+			if(!data.equals("")) {
+				Mail mail = new Mail(from,to);
+				mail.setSubject("List of incorrect urls and jumpers");
+				mail.setText(data);
+				sendmail.sendMail(mail);
+			}
         } catch (Exception e) {
             System.out.println("LinkChecker -> Error in Run()");
             e.printStackTrace();
