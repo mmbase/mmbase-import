@@ -26,11 +26,11 @@ import org.mmbase.util.logging.*;
  * can be combined with this one).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.5 2003-02-18 17:08:57 michiel Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.6 2003-07-15 12:50:24 vpro Exp $
  * @see     ClientFormatSorter
  */
 public class ServerFormatSorter extends  PreferenceSorter {
-    private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class);
 
     public static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".preferredSource";
     public static final String FORMAT_ATT = "format";

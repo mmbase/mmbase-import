@@ -26,11 +26,11 @@ import java.lang.reflect.Method;
  * be online/offline. 
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.9 2003-07-15 12:26:35 vpro Exp $
+ * @version $Id: MediaProviders.java,v 1.10 2003-07-15 12:50:23 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(MediaProviders.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaProviders.class);
 
     public final static int STATE_ON  = 1;
     public final static int STATE_OFF = 2;

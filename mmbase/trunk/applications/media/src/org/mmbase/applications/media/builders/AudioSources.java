@@ -24,11 +24,11 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: AudioSources.java,v 1.3 2003-02-05 15:44:09 rob Exp $
+ * @version $Id: AudioSources.java,v 1.4 2003-07-15 12:50:23 vpro Exp $
  * @since MMBase-1.7
  */
 public class AudioSources extends MediaSources {    
-    private static Logger log = Logging.getLoggerInstance(AudioSources.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AudioSources.class);
     
     /**
      * Creates a new audiosource and relates it to an audiofragment.

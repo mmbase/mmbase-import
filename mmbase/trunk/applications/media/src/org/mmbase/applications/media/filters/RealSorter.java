@@ -31,10 +31,10 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.5 2003-03-04 16:35:28 rob Exp $
+ * @version $Id: RealSorter.java,v 1.6 2003-07-15 12:50:24 vpro Exp $
  */
 public class RealSorter extends  ChainSorter {
-    private static Logger log = Logging.getLoggerInstance(RealSorter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(RealSorter.class);
 
     // XML subtag
     public static final String CONFIG_TAG          = "config.realAudio";
