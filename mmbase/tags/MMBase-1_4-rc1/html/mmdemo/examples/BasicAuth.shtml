@@ -1,0 +1,29 @@
+<FORM ACTION="/mmadmin/examples.shtml" METHOD="POST">
+        <INPUT TYPE="hidden" NAME="SESSION-INSTALLED" VALUE="OKE">
+	<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+	<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMEXAMPLES">
+	<INPUT TYPE="hidden" NAME="PRC-CMD-INSTALL">
+Again not really a example but a 'ill do it for you' help installer to install the
+basic authorisation system in mmbase. You still need rto do several things yourself
+this only installs the needed relations makes a example account and gives it rights
+to most default builders.<BR>
+<BR>
+Ones this is installed make sure to read the comments below the form several steps still have to be made to fully use it.
+<BR>
+<BR>
+Objects that will be added : <BR>
+1 person, called 'admin'<BR>
+1 reldef called 'authrel'<BR>
+1 typerel to allow relations between 'person' and 'editor' of type 'authrel'
+x relations between Editors and the person 'admin' 
+<BR>
+<BR>
+Select to install <INPUT TYPE="checkbox" NAME="PRC-VAR-NAME-BasicAuth">  and  <INPUT TYPE="SUBMIT" VALUE="submit">
+<BR>
+<BR>
+Once the install is done, change the authtype in ROOTMMBASE.properties from <BR>
+authtype=none to authtype=basic<BR>
+<BR>
+Restart server/mmbase and login as admin (see accounts.properties for password) you should now see all editors but you can create new users (have to be defined in accounts.properties) and link them to editors that they are allowed to use. For more into see the howto's on these topics.
+<BR> 
+<FORM>

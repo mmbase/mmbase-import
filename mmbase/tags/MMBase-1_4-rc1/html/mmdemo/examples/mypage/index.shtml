@@ -1,0 +1,11 @@
+<PART login/updateUser.shtml>
+<HTML>
+<HEAD>
+   <TITLE>MyPage</TITLE>
+</HEAD>
+<IF $MOD-MMBASE-BUILDER-users-number^==>
+<PART index_anon.shtml>
+<ELSE>
+<PART index_user.shtml>
+</IF>
+</HTML>

@@ -1,0 +1,37 @@
+<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+	  <builder maintainer="mmbase.org" version="2">people</builder>
+	  <builder maintainer="mmbase.org" version="2">authrel</builder>
+	  <builder maintainer="mmbase.org" version="2">typedef</builder>
+	</neededbuilderlist>	
+
+	<neededreldeflist>
+	  <reldef source="authrel" target="authrel" direction="bidirectional" guisourcename="AuthRel" guitargetname="AuthRel" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	  <relation from="people" to="typedef" type="authrel" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+	  <datasource builder="people" path="BasicAuth/people.xml" /> 
+	  <datasource builder="typedef" path="BasicAuth/typedef.xml" /> 
+	</datasourcelist>
+
+	<relationsourcelist>
+	  <relationsource builder="authrel" path="BasicAuth/authrel.xml" /> 
+	</relationsourcelist>
+
+
+	<contextsourcelist>
+		<contextsource path="BasicAuth/backup.xml" type="depth" goal="backup"/>
+	</contextsourcelist>
+	<description>
+		basic authorisation demo, not working 100% in this version of MMDemo
+	</description>
+
+	<install-notice>
+		Turn authorisation on in mmbaseroot.xml and restart the server
+	</install-notice>
+</application>

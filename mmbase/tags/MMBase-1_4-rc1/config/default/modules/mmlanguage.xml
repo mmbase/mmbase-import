@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<!--
+-->
+<module>
+
+
+  <!-- <status>
+	what is the status of this builder options : active or inactive
+  -->
+  <status>active</status>
+
+  <!-- <classfile>
+	main classfile that this module is defined in
+  -->
+  <classfile>org.mmbase.module.gui.html.MMLanguage</classfile>
+
+
+  <!-- <properties>
+     you can define properties to be used by the classfile (if used) it uses
+     a key/value system. Its a optional tag.
+   -->
+  <properties>
+	<!-- nl, dutch -->
+	<property name="nl_other_editors">Andere Editors</property>
+	<property name="nl_search">Zoeken</property>
+	<property name="nl_ok">Ok</property>
+	<property name="nl_new">Nieuw</property>
+	<property name="nl_fields">Velden</property>
+	<property name="nl_relations">Relaties</property>
+	<property name="nl_remove">Verwijder</property>
+	<property name="nl_display">Weergave</property>
+	<property name="nl_to">tot</property>
+	<property name="nl_of_total">van totaal</property>
+	<property name="nl_back">terug</property>
+	<property name="nl_yes">Ja</property>
+	<property name="nl_no">Nee</property>
+	<property name="nl_remove_object">Object Verwijderen</property>
+	<property name="nl_change_field">Verander Veld</property>
+	<property name="nl_go_to">Ga Naar</property>
+	<property name="nl_save_changes">Veranderingen Bewaren</property>
+	<property name="nl_do_not_save_changes">Veranderingen Niet Bewaren</property>
+	<property name="nl_create_relation">Relatie Aanmaken</property>
+	<property name="nl_remove_relation">Relatie Verwijderen</property>
+	<property name="nl_do_not_create_relation">Relatie Niet Aanmaken</property>
+	<property name="nl_age">Leeftijd</property>
+	<property name="nl_none">Geen</property>
+	<property name="nl_results_found">resultaten gevonden</property>
+
+	<!-- us, english -->
+	<property name="us_other_editors">Other Editors</property>
+	<property name="us_search">Search</property>
+	<property name="us_ok">Oke</property>
+	<property name="us_new">New</property>
+	<property name="us_fields">Fields</property>
+	<property name="us_relations">Relations</property>
+	<property name="us_remove">Remove</property>
+	<property name="us_display">Display</property>
+	<property name="us_to">to</property>
+	<property name="us_of_total">of total</property>
+	<property name="us_back">Back</property>
+	<property name="us_yes">Yes</property>
+	<property name="us_no">No</property>
+	<property name="us_remove_object">Remove Object</property>
+	<property name="us_change_field">Change Field</property>
+	<property name="us_go_to">Go To</property>
+	<property name="us_save_changes">Save Changes</property>
+	<property name="us_do_not_save_changes">Don't Save Changes</property>
+	<property name="us_create_relation">Create Relation</property>
+	<property name="us_remove_relation">Remove Relation</property>
+	<property name="us_do_not_create_relation">Don't Create Relation</property>
+	<property name="us_age">Age</property>
+	<property name="us_none">No</property>
+	<property name="us_results_found">results found</property>
+  </properties>
+</module>

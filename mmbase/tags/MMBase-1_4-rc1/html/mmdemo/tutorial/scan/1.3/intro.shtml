@@ -1,0 +1,19 @@
+<TR>
+	<TD><IMG SRC="../../images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>1.3 Listing mode than 1 node</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			Ofcourse its important not only to get content from just one node that you allready know the number of but you also want to list / search them based on their type. In this example we list all the nodes of the url type. <P>
+We use the 'LIST OBJECTS' command for this, this command has 3 parts, the 'LISTOBJECTS' command where you define what you want. The end command '/LIST' and the area in between (the template area) where you define the html you want to see for each node.<P>
+The 'OBJECTS' part tells mmbase we want to list multiple nodes from one type<P>
+The TYPE="urls" tells mmbase we want a list of url nodes<P>
+The FIELDS="number,url,description" tells mmbase we want to use number, url and the description field of each url node.<P>e
+		</TD>
+</TR>
