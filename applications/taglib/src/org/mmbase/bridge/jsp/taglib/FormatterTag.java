@@ -72,6 +72,7 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
     protected String   xslt    = null;
     protected int      format  = FORMAT_UNSET;
     protected String   options = null;
+    protected int      wants   = WANTS_DEFAULT;
 
     protected Source   xsltSource = null;
 
@@ -92,6 +93,8 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
     private static final int FORMAT_ESCAPEXMLPRETTY = 500;
 
 
+    private static final int FORMAT_LIMIT_WANTXML         = 1000; // if smaller then this, then need XML.
+
     // These formats take the body as a string. So the body doesn't need to be valid XML.
     private static final int FORMAT_ESCAPEXML       = 1001;
     private static final int FORMAT_DATE            = 1002;
@@ -100,6 +103,11 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
 
 
     private static final int FORMAT_UNSET           = -1;
+
+
+    private static final int WANTS_DEFAULT         = -1;
+    private static final int WANTS_DOM             = 1;
+    private static final int WANTS_STRING          = 2;
 
 
     static {
@@ -160,8 +168,24 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
         }
     }
 
+    /**
+     * The 'options' attribute can be used to provide option to the transformation to be done
+     */
     public void setOptions(String o) throws JspTagException {
         options = getAttributeValue(o);
+    }
+
+    public void setWants(String w) throws JspTagException {
+        String ww = getAttributeValue(w);
+        if ("default".equalsIgnoreCase(ww)) {
+            wants = WANTS_DEFAULT;            
+        } else if ("DOM".equalsIgnoreCase(ww)) {
+            wants = WANTS_DOM;            
+        } else if ( "string".equalsIgnoreCase(ww)) {
+            wants = WANTS_STRING;
+        } else {
+            throw new JspTagException("Unknown value '" + ww + "' for wants attribute.");
+        }         
     }
 
     /**
@@ -184,9 +208,7 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
      * this tag. If wantXML evaluates false, they must simply write to
      * the page, and formatter will pick it up.
      */
-    public final boolean wantXML() {
-        // what would evaluate quicker?
-        // return format < 1000;
+    public final boolean wantXML() {   
         return xmlGenerator != null;
     }
 
@@ -207,12 +229,22 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
         }
 
         xsltSource = null;
+
         if (format > FORMAT_UNSET  && xslt != null) {
             throw new JspTagException ("One of the attributes xslt and format must be specified, or none (then you have to use an mm:xslt subtag.");
         }
 
-        if (format < 1000) {  // also if format is unset.
-            xmlGenerator = new Generator(documentBuilder, getCloud());
+        if ((wants == WANTS_DEFAULT && format < FORMAT_LIMIT_WANTXML) || wants == WANTS_DOM) { // also if format is unset, that means: use xslt
+            CloudProvider cp = findCloudProvider(false);
+            if (cp != null) {
+                xmlGenerator = new Generator(documentBuilder, cp.getCloudVar());     
+            } else {
+                if (wants == WANTS_DOM) { // explicitely wanted DOM, but not possible
+                    throw new JspTagException("Needs a cloud for wants='dom'");   
+                } else {
+                    xmlGenerator = null; // cannot use Bridge DOM functionality
+                }                 
+            } 
         } else {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }
@@ -226,34 +258,39 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
             helper.overrideWrite(true);
         }
 
-        // If there is some bodycontent, then we can add also that to
-        // the Document. This is of course mainly useful for debugging purposes.
+        Document doc;
+
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if(wantXML() && body.length() > 0) {
-            if (xmlGenerator.getDocument().getDocumentElement() != null) {
-                throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body.");
+        if(format < FORMAT_LIMIT_WANTXML) { // determin the Document 
+            if (xmlGenerator != null && xmlGenerator.getDocument().getDocumentElement().getFirstChild() != null) {
+                if (body.length() > 0) {
+                    throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body. Perhaps you want to use the attribute wants='string'?");
+                } else {
+                    doc = xmlGenerator.getDocument();
+                }                
             } else {
-                if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");
-                Document bodyContentDocument;
+                if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");                               
                 try {
-                    bodyContentDocument = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8")));
+                    // TODO, we cannot get the default encoding from the bridge yet, so UTF-8 is assumed now.
+                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8")));
                 } catch (Exception e) {
                     throw new JspTagException(body + ":" +  e.toString());
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("created an element: " + bodyContentDocument.getDocumentElement().getTagName());
+                    log.debug("created an element: " + doc.getDocumentElement().getTagName());
                 }
-                Document doc = xmlGenerator.getDocument();
-                org.w3c.dom.Node field = doc.importNode(bodyContentDocument.getDocumentElement(), true);
-                doc.appendChild(field);
-            }
+            }      
+            
+        } else {
+            doc = null;
         }
+        
 
         if (log.isDebugEnabled()) {
-            if (wantXML()) {
-                log.trace("XSL converting document: " + xmlGenerator.toString(true));
+            if (doc != null) {
+                log.trace("XSL converting document: " + prettyXML(doc));
             } else {
                 log.trace("Converting: " + body);
             }
@@ -275,23 +312,24 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
             }
             switch(format) {
             case FORMAT_XHTML:
-                helper.setValue(xslTransform("xslt/2xhtml.xslt"));
+                helper.setValue(xslTransform(doc, "xslt/2xhtml.xslt"));
                 break;
             case FORMAT_PRESENTXML:
-                helper.setValue(xslTransform("xslt/2xml.xslt"));
+                helper.setValue(xslTransform(doc, "xslt/2xml.xslt"));
                 break;
             case FORMAT_CODE:
-                helper.setValue(xslTransform("xslt/code2xml.xslt"));
+                helper.setValue(xslTransform(doc, "xslt/code2xml.xslt"));
                 break;
             case FORMAT_TEXTONLY:
-                helper.setValue(xslTransform("xslt/2ascii.xslt"));
+                helper.setValue(xslTransform(doc, "xslt/2ascii.xslt"));
                 break;
             case FORMAT_RICH:
-                helper.setValue(xslTransform("xslt/mmxf2rich.xslt"));
+                helper.setValue(xslTransform(doc, "xslt/mmxf2rich.xslt"));
                 break;
             case FORMAT_ESCAPEXMLPRETTY:
-                helper.setValue(Encode.encode("ESCAPE_XML", xmlGenerator.toString(true)));
+                helper.setValue(Encode.encode("ESCAPE_XML", prettyXML(doc)));
                 break;
+            // -- FORMAT_LIMIT_XML
             case FORMAT_ESCAPEXML:
                 helper.setValue(Encode.encode("ESCAPE_XML", body));
                 break;
@@ -308,21 +346,26 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
             }
         } else {
 
-            if (xslt != null) {
+            if (xslt != null) {                
                 if (xsltSource != null) {
                     throw new JspTagException("Cannot use  'xslt' subtag and the 'xslt' attribute");
                 }
                 if (log.isDebugEnabled()) log.debug("Transforming with " + xslt);
 
-                helper.setValue(xslTransform(xslt));
+                helper.setValue(xslTransform(doc, xslt));
             } else {
                 if (xsltSource == null) {
                     throw new JspTagException("No 'format' attribute, no 'xslt' attribute and no 'xslt' subtag. Don't know what to do.");
                 }
-                helper.setValue(xslTransform(xsltSource));
+                helper.setValue(xslTransform(doc, xsltSource));
             }
         }
 
+        if (log.isDebugEnabled()) {
+            log.trace("found result " + helper.getValue());
+            
+        }
+        
 
         helper.setJspvar(pageContext);
 
@@ -355,7 +398,7 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
      * @param A Source (representing the XSLT).
      * @return The result ot the transformation.
      */
-    private String xslTransform(Source xsl) throws JspTagException {
+    private String xslTransform(Document doc, Source xsl) throws JspTagException {
         log.debug("transforming");
 
         TemplateCache cache= TemplateCache.getCache();
@@ -364,10 +407,9 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
             try {
                 log.debug("getting for " + cwd);
                 cachedXslt = getFactory().newTemplates(xsl);
-                log.debug("hoi");
                 cache.put(xsl, cachedXslt);
             } catch (javax.xml.transform.TransformerConfigurationException e) {
-                // throw new JspTagException(e.toString());
+                // throw new JspTagException(e.toString())
                 return e.toString() + ": " + Logging.stackTrace(e);
             }
         } else {
@@ -383,18 +425,38 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
         // but for the moment, I don't know a sensible other place to get it from.
         params.put("formatter_language", java.util.Locale.getDefault().getLanguage());
 
-        return ResultCache.getCache().get(cachedXslt, xsl,  params, null, xmlGenerator.getDocument());
+        return ResultCache.getCache().get(cachedXslt, xsl,  params, null, doc);
 
     }
     /**
-     * @see #xslTransform
+     * @see   xslTransform
      * @param A name of an XSLT file.
      */
-    private String xslTransform(String xsl) throws JspTagException {
+    private String xslTransform(Document doc, String xsl) throws JspTagException {
         try {
-            return xslTransform(getFactory().getURIResolver().resolve(xsl, null));
+            return xslTransform(doc, getFactory().getURIResolver().resolve(xsl, null));
          } catch (javax.xml.transform.TransformerException e) {
              throw new JspTagException(e.toString() + ": " + Logging.stackTrace(e)); // probably the file could not be found.
          }
+    }
+
+    private String prettyXML(Document doc) {
+        if ( log.isDebugEnabled() ) {
+            log.trace("pretty XML " + doc);   
+        }
+        try {
+            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
+            format.setIndenting(true);
+            format.setPreserveSpace(false);
+            format.setOmitXMLDeclaration(true);
+            format.setOmitDocumentType(true);
+            java.io.StringWriter result = new java.io.StringWriter();
+            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
+            prettyXML.serialize(doc);
+            return result.toString();
+        }
+        catch (Exception e) {
+            return e.toString();
+        }
     }
 }
