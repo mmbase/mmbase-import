@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.112 $ $Date: 2002-01-08 09:47:32 $
+ * @version $Revision: 1.113 $ $Date: 2002-01-25 10:57:58 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -729,11 +729,6 @@ public class MMObjectBuilder extends MMTable {
         if (usecache) {
             node=(MMObjectNode)nodeCache.get(integerNumber);
             if (node!=null) {
-                // lets add a extra asked counter to make a smart cache
-                // XXX: better as a separate property?
-                int c=node.getIntValue("CacheCount");
-                c++;
-                node.setValue("CacheCount",c);
                 return node;
             }
         }
@@ -1874,8 +1869,8 @@ public class MMObjectBuilder extends MMTable {
      * @param nodeNumber the numbve ror alias of the node to filter on
      * @param version the version number (or <code>null</code> if not applicable) to filter on
      * @return the found path as a <code>String</code>, or <code>null</code> if not found
-	 * This method should be added to the bridge so jsp can make use of it. 
-	 * This method can be overriden to make an even smarter search possible.
+     * This method should be added to the bridge so jsp can make use of it.
+     * This method can be overriden to make an even smarter search possible.
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         File dir = new File(documentRoot+path);
@@ -1904,8 +1899,7 @@ public class MMObjectBuilder extends MMTable {
         int j=0;
         for (Enumeration e=nodeCache.elements();e.hasMoreElements();) {
             MMObjectNode n=(MMObjectNode)e.nextElement();
-            int c=n.getIntValue("CacheCount");
-            if (n.getOType()==i && c!=-1) j++;
+            if (n.getOType()==i) j++;
         }
         return j;
     }
@@ -1917,13 +1911,10 @@ public class MMObjectBuilder extends MMTable {
         String results="";
         for (Enumeration e=nodeCache.elements();e.hasMoreElements();) {
             MMObjectNode n=(MMObjectNode)e.nextElement();
-            int c=n.getIntValue("CacheCount");
-            if (c!=-1) {
-                if (!results.equals("")) {
-                    results+=","+n.getNumber();
-                } else {
-                    results+=n.getNumber();
-                }
+            if (!results.equals("")) {
+                results+=","+n.getNumber();
+            } else {
+                results+=n.getNumber();
             }
         }
         return results;
@@ -2645,8 +2636,8 @@ public class MMObjectBuilder extends MMTable {
      *  @param fieldname the name of the field to change
      *  @param fieldValue the value to assign
      *  @param originalValue the value which was original in the field
-     *  @return <code>true</code> When an update is required(when changed), 
-	 *	<code>false</code> if original value was set back into the field.
+     *  @return <code>true</code> When an update is required(when changed),
+     *	<code>false</code> if original value was set back into the field.
      */
     public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
         return setValue(node,fieldname);
@@ -2664,8 +2655,8 @@ public class MMObjectBuilder extends MMTable {
     public boolean setValue(MMObjectNode node,String fieldname) {
         return true;
     }
-	
-	
+
+
 
 
     /**
