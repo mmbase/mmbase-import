@@ -31,7 +31,6 @@
   <mm:field name="state">
 	<mm:import id="tstate"><mm:field name="state" /></mm:import>
   	<mm:compare value="closed"><mm:import id="noedit">true</mm:import></mm:compare>
-  	<mm:compare value="pinned"><mm:import id="noedit">true</mm:import></mm:compare>
   </mm:field>
 </mm:node>
 
