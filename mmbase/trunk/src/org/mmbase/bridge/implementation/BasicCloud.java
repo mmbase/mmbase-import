@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.119 2004-10-29 13:32:08 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.120 2004-10-29 13:42:27 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -711,10 +711,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 } else {
                     nodenr = node.getIntValue("number");
                 }
-
                 if (nodenr != -1) {
-                    mayRead = auth.check(user, nodenr, Operation.READ);
-                    if (!mayRead) break;
+                    mayRead = auth.check(user, nodenr, Operation.READ);            
                 }
             }
             if (!mayRead) {
