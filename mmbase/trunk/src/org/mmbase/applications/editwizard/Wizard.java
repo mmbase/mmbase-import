@@ -11,10 +11,13 @@ package org.mmbase.applications.editwizard;
 
 import java.util.*;
 import java.io.Writer;
+import java.io.File;
 import javax.servlet.ServletRequest;
 import org.w3c.dom.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
+import javax.xml.transform.TransformerFactory;
+import org.mmbase.util.xml.URIResolver;
 
 /**
  * EditWizard
@@ -23,25 +26,23 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.17 2002-04-12 11:21:25 pierre Exp $
+ * @version $Id: Wizard.java,v 1.18 2002-04-19 20:22:51 michiel Exp $
  *
  */
 public class Wizard {
     // logging
     private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
 
-    public final static short ERROR   = 1;
-    public final static short WARNING = 2;
     // Some of these variables are placed public, for debugging reasons.
-    public Document preform;
+    private Document preform;
 
     /**
      * The cloud used to connect to MMBase
      */
     private Cloud cloud;
 
-    // basepath where all data files reside. Will be set from the jsp files.
-    private String path="";
+    // This object will be used the revolve URI's, for example those of XSL's and XML's.
+    private URIResolver uriResolver = null;
 
     private String context = null;
 
@@ -53,18 +54,17 @@ public class Wizard {
     private String wizardName;
 
     /**
-     * @scope private
+     * @javadoc
      */
-    public  String wizardDataid;
+    private  String dataId;
 
     // stores the current formid
     private String currentformid;
 
-    // expanded filename of the wizard
-    private String wizardSchemaFilename;
-
     // filename of the stylesheet which should be used to make the html form.
-    private String wizardStylesheetFilename;
+    private File wizardStylesheetFile;
+
+    private String sessionId;
 
     /**
      * public xmldom's: the schema, the data and the originaldata is stored.
@@ -72,8 +72,8 @@ public class Wizard {
      * @scope private
      */
     public Document schema;
-    public Document data;
-    public Document originaldata;
+    private Document data;
+    private  Document originaldata;
 
     // not yet committed uploads are stored in there hashmaps
     private HashMap uploads;
@@ -95,28 +95,26 @@ public class Wizard {
     /**
      * This boolean tells the jsp that the wizard may be closed, as far as he is concerned.
      *
-     * @scope private
      */
-    public boolean mayBeClosed = false;
+    private boolean mayBeClosed = false;
 
 
     /**
      * This list stores all errors and warnings occured
-     *
-     * @scope private
+     *     
      */
-    public Vector errors;
+    private List errors;
 
     /**
      * Constructor. Setup initial variables. No connection to mmbase is made yet.
      * Make sure a valid path is supplied.
      * Use initialize() to really startup the wizard and start communicating with mmbase
      *
-     * @param apath       the path should point to the data directory of the editwizard. From that dir the wizard schema's and the xsl's will be loaded
+     * @param uri  With the help of this URIResolverthe wizard schema's and the xsl's will be loaded
      */
-    protected Wizard(String c, String apath) throws WizardException{
+    protected Wizard(String c, URIResolver uri) throws WizardException {
         context = c;
-        path = apath;
+        uriResolver = uri;
         uploads = new HashMap();
         uploadnames = new HashMap();
         uploadpaths = new HashMap();
@@ -130,11 +128,11 @@ public class Wizard {
      * Make sure a valid path is supplied.
      * Use initialize() to really startup the wizard and start communicating with mmbase
      *
-     * @param apath       the path should point to the data directory of the editwizard. From that dir the wizard schema's and the xsl's will be loaded
+     * @param uri  With the help of this URIResolverthe wizard schema's and the xsl's will be loaded
      */
-    public Wizard(String context, String apath, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
-        this(context, apath);
-        initialize(wizardname,dataid,cloud);
+    public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
+        this(context, uri);
+        initialize(wizardname, dataid, cloud);
     }
 
     /**
@@ -151,7 +149,34 @@ public class Wizard {
         // add username to variables
         variables.put("username", cloud.getUser().getIdentifier());
         // actually load the wizard
-        loadWizard(wizardname,dataid);
+        loadWizard(wizardname, dataid);
+    }
+
+    public void setSessionId(String s) {
+        sessionId = s;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+    public boolean error() {
+        return errors.size() > 0;
+    }
+    public Iterator getErrors() {
+        return errors.iterator();
+    }
+    public String getErrorString() {
+        String str = "";
+        Iterator iter = getErrors();
+        while (iter.hasNext()) {
+            str += (String)iter.next() + "\n";
+        }
+        return str;
+    }
+
+
+    public boolean mayBeClosed() {
+        return mayBeClosed;
     }
 
     /**
@@ -160,27 +185,33 @@ public class Wizard {
      * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
      * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
      */
-    public void loadWizard(String wizardname, String dataid) throws WizardException, SecurityException {
+    protected void loadWizard(String wizardname, String di) throws WizardException, SecurityException {
+
+        if (wizardname == null) throw new WizardException("Wizardname may not be null");
+        // if (di         == null) throw new WizardException("Objectnumber may not be null");       
         wizardName = wizardname;
-        wizardDataid = dataid;
-        wizardSchemaFilename = path + "/" + wizardName + ".xml";
-        wizardStylesheetFilename = path + "/xsl/wizard.xsl";
+        dataId = di;
+        File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
+        wizardStylesheetFile = uriResolver.resolveToFile("xsl/wizard.xsl");
 
         // store variables so that these can be used in the wizard schema
-        variables.put("wizardname",wizardname);
-        if (dataid!=null) variables.put("objectnumber", dataid);
+        variables.put("wizardname", wizardname);
+        if (dataId != null) variables.put("objectnumber", dataId);
+        // TODO: dataId == null only means that this wizard object is being abused in list.jsp
+        //       should not allow this kind of hackery.
 
         // load wizard schema
-        loadSchema();
+        loadSchema(wizardSchemaFile);    // expanded filename of the wizard
 
         // setup original data
-        originaldata = Utils.EmptyDocument();
+        originaldata = Utils.emptyDocument();
 
         // If the given dataid=new, we have to create a new object first, given
         // by the object definition in the schema.
         // If dataid equals null, we don't need to do anything. Wizard will not be used to show or save data; just to load schema information.
-        if (dataid!=null) {
-            if (dataid.equals("new")){
+        if (dataId != null) {
+            if (dataId.equals("new")){
+                log.debug("Creating new xml");
                 // Get the definition and create a copy of the object-definition.
                 Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
                 if (objectdef==null) {
@@ -195,21 +226,21 @@ public class Wizard {
                 Node newobject = dbconn.createObject(data, parent, objectdef, variables);
                 parent.appendChild(newobject);
                 dbconn.tagDataNodes(data);
-                dataid = Utils.getAttribute(newobject,"number");
+                dataId = Utils.getAttribute(newobject,"number");
                 if (log.isDebugEnabled()) {
-                    log.debug("Created object " + newobject.getNodeName() + " type " + Utils.getAttribute(newobject,"type") + ", id " + dataid);
+                    log.debug("Created object " + newobject.getNodeName() + " type " + Utils.getAttribute(newobject,"type") + ", id " + dataId);
                 }
             } else {
                 // - load data.
                 // - tags the datanodes
                 try{
-                    data = dbconn.load(schema.getDocumentElement(), dataid);
+                    data = dbconn.load(schema.getDocumentElement(), dataId);
                     if (data==null) {
-                        throw new WizardException("The requested object could not be loaded from MMBase. Objectnumber:"+dataid+". Does the object exists and do you have enough rights to load this object.");
+                        throw new WizardException("The requested object could not be loaded from MMBase. Objectnumber:" + dataId + ". Does the object exists and do you have enough rights to load this object.");
                     }
                     // store original data, so that the put routines will know what to save/change/add/delete
                     originaldata.appendChild(originaldata.importNode(data.getDocumentElement().cloneNode(true), true));
-                } catch (SecurityException secure){
+                } catch (org.mmbase.security.SecurityException secure){
                     log.warn("Wizard failed to login: " + secure.getMessage());
                     throw secure;
                 } catch (Exception e){
@@ -251,12 +282,15 @@ public class Wizard {
         // Build the preHtml version of the form.
         preform = createPreHtml(schema.getDocumentElement(), currentformid, datastart, instancename);
         Validator.validate(preform, schema);
-        Map params = new HashMap();
-        params.put("ew_path", path);
+        Map params = new HashMap();    
         params.put("ew_context", context);
-        // juck juck
-        params.put("ew_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
-        Utils.transformNode(preform, wizardStylesheetFilename, out, params);
+        params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
+        params.put("sessionid", sessionId);
+        try {
+            Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
+        } catch (javax.xml.transform.TransformerException e) {
+            throw new WizardException(e.toString());
+        }
     }
 
     /////////////////////////////////////
@@ -567,16 +601,14 @@ public class Wizard {
      * This method loads the schema using the properties of the wizard. It loads the wizard using #wizardSchemaFilename,
      * resolves the includes, and 'tags' all datanodes. (Places temp. ids in the schema).
      *
-     * No params needed.
      */
-    private void loadSchema() throws WizardException {
-        schema = Utils.loadXMLFile(wizardSchemaFilename);
-
-        resolveIncludes(schema.getDocumentElement(), path);
-
+    private void loadSchema(File wizardSchemaFile) throws WizardException {
+        schema = Utils.loadXMLFile(wizardSchemaFile);
+        
+        resolveIncludes(schema.getDocumentElement());
         resolveShortcuts(schema.getDocumentElement(), true);
 
-        log.debug("Schema loaded (and resolved):"+wizardSchemaFilename);
+        log.debug("Schema loaded (and resolved): " + wizardSchemaFile);
 
         // tag schema nodes
         NodeList fields = Utils.selectNodeList(schema, "//field|//list|//item");
@@ -592,10 +624,9 @@ public class Wizard {
      * This method is a recursive one. Included files are also scanned again for includes.
      *
      * @param       node    The node from where to start searching for include and extends attributes.
-     * @param       basepath allows you to give a 'basepath' from where the includes should be found.
      *
      */
-    private void resolveIncludes(Node node, String basepath) throws WizardException {
+    private void resolveIncludes(Node node) throws WizardException {
         // Resolve references to elements in other wizards. This can be by inclusion
         // or extension.
         NodeList externalReferences = Utils.selectNodeList(node, "//*[@include or @extends]");
@@ -615,12 +646,12 @@ public class Wizard {
                         url = includeUrl.substring(0, includeUrl.indexOf('#'));
                         externalId = includeUrl.substring(includeUrl.indexOf('#') + 1);
                     }
-                    url = basepath + "/" + url;
+                    File file = uriResolver.resolveToFile(url);
 
                     // Load the external file.
-                    Document externalDocument = Utils.loadXMLFile(url);
+                    Document externalDocument = Utils.loadXMLFile(file);
                     if (externalDocument==null) {
-                        throw new WizardException("Could not load and parse included file. Filename:"+url);
+                        throw new WizardException("Could not load and parse included file. Filename:" + file);
                     }
 
                     // Add a copy of the external part to our schema here, to replace the
@@ -638,8 +669,8 @@ public class Wizard {
                         externalPart = Utils.selectSingleNode(externalDocument, "//node()[@id='" + externalId + "']");
                     }
 
-                        // recurse!
-                        resolveIncludes(externalPart, basepath);
+                    // recurse!
+                    resolveIncludes(externalPart);
 
                     // place loaded external part in parent...
                     Node parent = referer.getParentNode();
