@@ -9,57 +9,62 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-// import the needed packages
-import java.io.*;
 import java.util.*;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.mmbase.module.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.builders.Properties;
-import org.mmbase.util.*;
+import org.mmbase.util.AuthorizationException;
+import org.mmbase.util.HttpAuth;
+import org.mmbase.util.NotLoggedInException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
 /**
-* JamesServlet is a addaptor class its used to extend the basic Servlet
-* to with the calls that where/are needed for 'James' servlets to provide
-* services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.32 2001-12-19 17:28:49 vpro Exp $
-*/
-
+ * JamesServlet is a adaptor class its used to extend the basic Servlet
+ * to with the calls that where/are needed for 'James' servlets to provide
+ * services not found in suns Servlet API.
+ *
+ * @deprecation-used contains commented-out code
+ * @duplicate this code is aimed at the SCAN servlets, and some features (i.e. cookies) do
+ *            not communicate well with jsp pages. Functionality might need to be moved
+ *            or adapted so that it uses the MMCI.
+ * @author vpro
+ * @version $Id: JamesServlet.java,v 1.33 2002-02-07 13:29:34 pierre Exp $
+ */
 
 public class JamesServlet extends HttpServlet {
-	static Logger log;
+    static Logger log;
 
-	/**
-	* To keep track of the currently running servlets
-	* switch the following boolean to true.
-	*/
-	private static final boolean logServlets = true;
-	private static int servletCount; // Number of running servlets
-	/**
-	*  Lock to sync add and remove of threads
-	*/
-	private static Object servletCountLock = new Object();
-	/**
-	* Hashtable containing currently running servlets
-	*/
-	private static Hashtable runningServlets = new Hashtable();
-	/**
-	* Toggle to print running servlets to log
-	*/
-	private static int printCount;
+    /**
+     * To keep track of the currently running servlets
+     * switch the following boolean to true.
+     */
+    private static final boolean logServlets = true;
+    private static int servletCount; // Number of running servlets
+    /**
+     *  Lock to sync add and remove of threads
+     */
+    private static Object servletCountLock = new Object();
+    /**
+     * Hashtable containing currently running servlets
+     */
+    private static Hashtable runningServlets = new Hashtable();
+    /**
+     * Toggle to print running servlets to log
+     */
+    private static int printCount;
 
-	/**
-	* Debug method for logging. obsolete
-	*/
-	protected void debug( String msg ) {
-	//	log.debug(msg + " <deprecated call>"); }
-	}
+    /**
+     * Debug method for logging.
+     * @deprecated-now use logging classes
+     */
+    protected void debug( String msg ) {
+    //	log.debug(msg + " <deprecated call>"); }
+    }
 
     /**
      * Initializes the servlet.
@@ -79,11 +84,12 @@ public class JamesServlet extends HttpServlet {
     /**
      * Retrieves a module.
      * Creates the module if it hasn't been created yet (but does not initialize).
+     * @todo type returned should be Module
      * @param name the name of the module to retrieve
      * @return the {@link Module}, or <code>null</code> if it doesn't exist.
      */
     protected final Object getModule(String name) {
-        return Module.getModule(name);
+        return org.mmbase.module.Module.getModule(name);
     }
 
     /**
@@ -120,6 +126,7 @@ public class JamesServlet extends HttpServlet {
 
     /**
      * Try to get the default authorisation
+     * @deprecation-used should call Security, not HttpAuth
      * @param req The HttpServletRequest.
      * @param res The HttpServletResponse.
      * @exception AuthorizationException if the authorization fails.
@@ -135,6 +142,7 @@ public class JamesServlet extends HttpServlet {
 
     /**
      * Authenticates a user, If the user cannot be authenticated a login-popup will appear
+     * @deprecation-used should call Security, not HttpAuth
      * @param req The HttpServletRequest.
      * @param res The HttpServletResponse.
      * @param server server-account. (for exameple 'film' or 'www')
@@ -152,6 +160,8 @@ public class JamesServlet extends HttpServlet {
      * When an old James cookie is found, the related MMBaseProperty 'value' field will be replaced
      * with a new MMBase cookie name & value. The cookies domain will be implicit or explicit
      * depending on the MMBASEROOT.properties value.
+     * @vpro old formats for cookies etc. should be removed.
+     * @dependency org.mmbase.module.builder.Properties should not depend on this builder ?
      * @param req The HttpServletRequest.
      * @param res The HttpServletResponse.
      * @return A String with the users' MMBase cookie as 'name/value' or null when MMBase core module
@@ -233,7 +243,7 @@ public class JamesServlet extends HttpServlet {
             // ------------------------------------------------------------------------------------------
 
             // debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
-            MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
+            MMBase mmbase = (MMBase)getModule("MMBASEROOT");
             if (mmbase == null) {
                 //log.debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
                 return null;
@@ -254,8 +264,8 @@ public class JamesServlet extends HttpServlet {
                 // Change all old JAMES cookie entries in the properties table to MMBASE cookie values.
                 // eg. key:'SID' value: 'James_Ident/936797541271' gets value: 'Mmbase_Ident/curtimemillis#'
 
-                Properties propBuilder = null;
-                propBuilder = (Properties) mmbase.getMMObject("properties");
+                MMObjectBuilder propBuilder = null;
+                propBuilder = mmbase.getMMObject("properties");
                 if (propBuilder==null) {
                     //log.debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
                 }
@@ -346,55 +356,55 @@ public class JamesServlet extends HttpServlet {
         return result;
     }
 
-	/**
-	* Decrease the reference count of the servlet
-	* @param req The HttpServletRequest.
-	*/
-	public void decRefCount(HttpServletRequest req) {
-		if (logServlets) {
-			String URL = getRequestURL(req);
-			URL += " " + req.getMethod();
-			synchronized (servletCountLock) {
-				servletCount--;
-				DebugServlet s = (DebugServlet) runningServlets.get(this);
-				if (s!=null) {
-					if (s.refCount==0) runningServlets.remove(this);
-					else {
-						s.refCount--;
-						int i = s.URIs.indexOf(URL);
-						if (i>=0) s.URIs.removeElementAt(i);
-					}
-				}// s!=null
-			}//sync
-		}// if (logServlets)
-	}
+    /**
+     * Decrease the reference count of the servlet
+     * @param req The HttpServletRequest.
+     */
+    public void decRefCount(HttpServletRequest req) {
+        if (logServlets) {
+            String URL = getRequestURL(req);
+            URL += " " + req.getMethod();
+            synchronized (servletCountLock) {
+                servletCount--;
+                DebugServlet s = (DebugServlet) runningServlets.get(this);
+                if (s!=null) {
+                    if (s.refCount==0) runningServlets.remove(this);
+                    else {
+                        s.refCount--;
+                        int i = s.URIs.indexOf(URL);
+                        if (i>=0) s.URIs.removeElementAt(i);
+                    }
+                }// s!=null
+            }//sync
+        }// if (logServlets)
+    }
 
-	/**
-	* Increase the reference count of the servlet (for debugging)
-	* and send running servlets to log once evry 32 requests
-	* @param req The HttpServletRequest.
-	*/
-	public void incRefCount(HttpServletRequest req) {
-		if (logServlets) {
-			String URL = getRequestURL(req);
-			URL += " " + req.getMethod();
-			int curCount;
-			synchronized (servletCountLock) {
-				servletCount++; curCount=servletCount; printCount++;
-				DebugServlet s = (DebugServlet) runningServlets.get(this);
-				if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
-				else { s.refCount++; s.URIs.addElement(URL); }
-			}// sync
+    /**
+     * Increase the reference count of the servlet (for debugging)
+     * and send running servlets to log once every 32 requests
+     * @param req The HttpServletRequest.
+     */
+    public void incRefCount(HttpServletRequest req) {
+        if (logServlets) {
+            String URL = getRequestURL(req);
+            URL += " " + req.getMethod();
+            int curCount;
+            synchronized (servletCountLock) {
+                servletCount++; curCount=servletCount; printCount++;
+                DebugServlet s = (DebugServlet) runningServlets.get(this);
+                if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
+                else { s.refCount++; s.URIs.addElement(URL); }
+            }// sync
 
-			if ((printCount & 31)==0) {
-				if (curCount>0) {
-					log.info("Running servlets: "+curCount);
-					for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
-						log.info(e.nextElement());
-					}
-				}// curCount>0
-			}
-		}
+            if ((printCount & 31)==0) {
+                if (curCount>0) {
+                    log.info("Running servlets: "+curCount);
+                    for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
+                        log.info(e.nextElement());
+                    }
+                }// curCount>0
+            }
+        }
     }
 
     /**
@@ -406,18 +416,33 @@ public class JamesServlet extends HttpServlet {
     }
 
 //  ------------------------------------------------------------------------------------------------------------
-// these vars should be renamed!
 
-    private static  String      VPROProxyName    = "vpro6d.vpro.nl";    // name of proxyserver
-    private static  String      VPROProxyAddress = "145.58.172.6";      // address of proxyserver
+    /**
+     * @javadoc
+     * @vpro should be made configurable, possibly per servlet.
+     *       The best way would likely be a system where a set of names can be configured
+     *       (in other words, a hashtable with clientaddress/proxyname value pairs)
+     */
+    private static  String VPROProxyName    = "vpro6d.vpro.nl";    // name of proxyserver
+    /**
+     * @javadoc
+     * @vpro should be made configurable, possibly per servlet
+     */
+    private static  String VPROProxyAddress = "145.58.172.6";      // address of proxyserver
+    /**
+     * @javadoc
+     * @vpro should be made configurable, possibly per servlet
+     */
+    private static  String proxyName    = "zen.vpro.nl";    // name of proxyserver
 
 
     /**
      * Extract hostname from request, get address and determine the proxies between it.
-     * Needed to determine if user a comes from an internal or external host, i.e.
+     * Needed to determine if user comes from an internal or external host, i.e.
      * when using two streaming servers, one for external users and one for internal users.
+     * @javadoc
      * <br>
-     * XXX: uses VPROProxyName, VPROProxyAddress. Should be made more generic.
+     * @vpro uses VPROProxyName, VPROProxyAddress. Should be made more generic.
      * @param req The HTTP request, which contains hostname as ipaddress
      * @return a string containing the proxy chain. in the format
      *         "clientproxy.clientside.com->dialin07.clientside.com"
@@ -444,7 +469,7 @@ public class JamesServlet extends HttpServlet {
         }
         result = getHostNames( addr );
         if( fromProxy ) {
-            result = "zen.vpro.nl->" + result;
+            result = proxyName+"->" + result;
         }
         return result;
     }
@@ -516,32 +541,35 @@ public class JamesServlet extends HttpServlet {
  * It contains a reference count, as well as a list of URI's being handled by the servlet.
  */
 class DebugServlet {
-	/**
-	* The servlet do debug
-	*/
-	JamesServlet servlet;
-	/**
-	* List of URIs that call the servlet
-	*/
-	Vector URIs = new Vector();
-	/**
-	* Nr. of references
-	*/
-	int refCount;
+    /**
+     * The servlet do debug
+     * @scope private
+     */
+    JamesServlet servlet;
+    /**
+     * List of URIs that call the servlet
+     * @scope private
+     */
+    Vector URIs = new Vector();
+    /**
+     * Nr. of references
+     * @scope private
+     */
+    int refCount;
 
-	/**
-	* Craete a new DebugServlet using teh jamesServlet
-	*/
-	DebugServlet( JamesServlet servlet, String URI, int refCount) {
-		this.servlet = servlet;
-		URIs.addElement(URI);
-		this.refCount = refCount;
-	}
+    /**
+     * Craete a new DebugServlet using teh jamesServlet
+     */
+    DebugServlet( JamesServlet servlet, String URI, int refCount) {
+        this.servlet = servlet;
+        URIs.addElement(URI);
+        this.refCount = refCount;
+    }
 
-	/**
-	* Return a description containing servlet info and URI's
-	*/
-	public String toString() {
-		return "servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")";
-	}
+    /**
+     * Return a description containing servlet info and URI's
+     */
+    public String toString() {
+        return "servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")";
+    }
 }
