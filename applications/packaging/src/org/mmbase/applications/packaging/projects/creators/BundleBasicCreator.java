@@ -65,7 +65,6 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"..");
                 rt.createPackage(nv);
 		ProviderManager.discoverPackages();
-                ProviderManager.resetSleepCounter();
                 target.setIncludedVersion(rt.getId(),""+nv);
                 ProviderManager.resetSleepCounter();
         	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"...done");
@@ -136,12 +135,12 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 
 	// do we need to send this to a publish provider ?
 	if (target.getPublishState()) {
-                ProviderManager.resetSleepCounter();
+		ProviderManager.discoverPackages();
         	step=getNextPackageStep();
         	step.setUserFeedBack("publishing to provider : "+target.getPublishProvider());
         	step=getNextPackageStep();
         	step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ...");
-		if (target.publish(newversion)) {
+		if (target.publish(newversion,step)) {
         		step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ... done");
 		} else {
         		step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ... failed");
