@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.1 2004-11-01 12:52:42 jdiepenmaat Exp $
+    @version $Id: wizard.xsl,v 1.2 2004-11-23 13:43:25 jdiepenmaat Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1233,6 +1233,9 @@
     <xsl:call-template name="itemprefix"/>
     <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
     <xsl:choose>
+       <xsl:when test="@displaytype='none'">
+        <!-- don't show a thing -->
+      </xsl:when>
       <xsl:when test="@displaytype='link'">
         <xsl:call-template name="item-link"/>
       </xsl:when>
@@ -1245,7 +1248,7 @@
       <xsl:when test="field[@ftype=&apos;startwizard&apos;] and count(field[@ftype!=&apos;startwizard&apos;]|fieldset) &lt; 3">
         <xsl:call-template name="item-onefield"/>
       </xsl:when>
-      <xsl:otherwise>
+     <xsl:otherwise>
         <xsl:call-template name="item-other"/>
       </xsl:otherwise>
     </xsl:choose>
