@@ -308,6 +308,10 @@ public class BasicCloud implements Cloud, Cloneable {
         return description;
     }
 
+    public User getUser() {
+        return userContext;
+    }
+
     /**
      * Retrieves the current user accountname (unique)
      * @return the account name
