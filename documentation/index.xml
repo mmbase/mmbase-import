@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.22 2003-06-11 14:52:12 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.23 2003-06-11 20:55:16 henk Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -26,6 +26,12 @@
           <ulink url="xml-how-to.html" id="howtousexml">How To Use XML</ulink>
           <ulink url="xml-how-to.pdf" id="howtousexml.pdf">(pdf)</ulink>
         </para>
+      </listitem>
+	  <listitem>
+		  <para>
+			<ulink url="glossary.html" id="glossary">MMBase Glossary</ulink>
+			<ulink url="glossary.pdf" id="glossary.pdf">(pdf)</ulink>
+		  </para>
       </listitem>
     </itemizedlist>
   </section>
