@@ -343,4 +343,36 @@ public class XMLApplicationReader  {
 	}
 	return(results);
     }
+
+
+    /**
+    */
+    public String getInstallNotice() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n2=nm.getNamedItem("install-notice");
+			String name=n2.getNodeValue();
+			return(name);
+		}
+	}
+	return(null);
+    }
+
+
+    /**
+    */
+    public String getDescription() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n2=nm.getNamedItem("description");
+			String name=n2.getNodeValue();
+			return(name);
+		}
+	}
+	return(null);
+    }
 }
