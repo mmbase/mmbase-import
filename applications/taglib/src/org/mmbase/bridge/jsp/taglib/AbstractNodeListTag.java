@@ -100,7 +100,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param sorted A comma separated list of fields on witch the returned
      * nodes should be sorted
      */
-    public void setSorted(String sorted){
+    public void setOrderby(String sorted){
         this.sortedString = sorted;
     }
 
@@ -109,8 +109,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param direction the selection query for the object we are looking for
      * direction
      */
-    public void setDirection(String direction){
-        this.directionString = direction;
+    public void setDirections(String directions){
+        this.directionString = directions;
     }
 
     /**
@@ -119,7 +119,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     public void setMax(String m) throws JspTagException {
         try {
-            max = Integer.parseInt(getAttributeValue(m));
+            if (!"".equals(m)) {
+                max = Integer.parseInt(getAttributeValue(m));
+            }
         } catch (NumberFormatException e) {
             throw new JspTagException("Max should be an integer value "+
                         "(value found was "+m+")");
@@ -141,7 +143,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     public void setOffset(String o) throws JspTagException {
         try {
-            offset = Integer.parseInt(getAttributeValue(o));
+            if (!"".equals(o)) {
+                offset = Integer.parseInt(getAttributeValue(o));
+            }
         } catch (NumberFormatException e) {
             throw new JspTagException("Offset should be an integer value "+
                         "(value found was "+o+")");
@@ -156,7 +160,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Sets the selection query
      * @param where the selection query
      */
-    public void setWhere(String where) {
+    public void setConstraints(String where) {
         this.whereString = where;
     }
 
@@ -239,7 +243,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (returnValues.hasNext()){
             currentItemIndex ++;
             Node next = returnValues.nextNode();
-            if (sortedString != null) { // then you can also ask if 'changed' the node
+            if (sortedString != null && !sortedString.equals("")) { 
+                // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
                 String f = (String)stringSplitter(sortedString).get(0);
                 String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
