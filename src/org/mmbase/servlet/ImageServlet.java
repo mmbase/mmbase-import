@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * cache yourself. The cache() function of Images can be used for
  * this.
  *
- * @version $Id: ImageServlet.java,v 1.5 2002-04-12 09:00:34 pierre Exp $
+ * @version $Id: ImageServlet.java,v 1.6 2002-06-26 11:40:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -50,8 +49,8 @@ public class ImageServlet extends  MMBaseServlet {
         super();
     }
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+    public void init() throws ServletException {
+        super.init();
         log = Logging.getLoggerInstance(ImageServlet.class.getName());
         String origExpires = getInitParameter("expire");
         if (origExpires == null) {
@@ -61,7 +60,7 @@ public class ImageServlet extends  MMBaseServlet {
             originalImageExpires = new Integer(origExpires).intValue() * 1000;
         }
         // make sure this servlet is known to process images
-        associate("image-processing",config.getServletName());
+        associate("image-processing", getServletName());
         // clear the status of images
         // maybe this should be called elsewhere,
         // and servlet-data depending classes should register?
