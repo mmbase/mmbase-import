@@ -45,7 +45,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
             configFile = new File(configFile.getParent() + File.separator + configPath);
             log.debug("will use: " + configFile.getAbsolutePath());
 	}
-        log.info("using: '" + configFile.getAbsolutePath() + "' as config file for security");	
+        log.service("using: '" + configFile.getAbsolutePath() + "' as config file for security");	
 
 	config = new MMBaseCopConfig(this, configFile);
 	if(config.getActive()) {
@@ -53,7 +53,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
 	    config.startWatching();
 	}
 		
-        log.info("done loading security configuration");
+        log.service("done loading security configuration");
     }
 
     
