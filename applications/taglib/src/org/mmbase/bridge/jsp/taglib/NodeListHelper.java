@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.3 2004-03-23 21:42:46 michiel Exp $ 
+ * @version $Id: NodeListHelper.java,v 1.4 2004-03-24 00:59:01 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -208,7 +208,7 @@ public class NodeListHelper implements ListProvider {
     public void doStartTagHelper() throws JspTagException {
 
         // make a (temporary) container
-        collector = new ContextCollector(thisTag.getContextProvider().getContextContainer());
+        collector = new ContextCollector((ListProvider) thisTag);
 
         // serve parent timer tag:
         TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
@@ -241,12 +241,14 @@ public class NodeListHelper implements ListProvider {
             return BodyTagSupport.EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
-            BodyContent bodyContent = thisTag.getBodyContent();
-            if (bodyContent != null) {
-                try {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } catch (IOException ioe){
-                    throw new TaglibException(ioe);
+            if (ContextReferrerTag.EVAL_BODY == BodyTagSupport.EVAL_BODY_BUFFERED) {
+                BodyContent bodyContent = thisTag.getBodyContent();
+                if (bodyContent != null) {
+                    try {
+                        bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                    } catch (IOException ioe){
+                        throw new TaglibException(ioe);
+                    }
                 }
             }
             return BodyTagSupport.SKIP_BODY;
@@ -257,7 +259,7 @@ public class NodeListHelper implements ListProvider {
     public void doEndTag() throws JspTagException {
 
         if (getId() != null) {
-            thisTag.getContextProvider().getContextContainer().register(getId(), returnList);
+            thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
         TagSupport t = thisTag.findParentTag(TimerTag.class, null, false);
         if (t != null) {

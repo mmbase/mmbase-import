@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.2 2004-02-11 20:40:12 keesj Exp $
+ * @version $Id: ListFunctionTag.java,v 1.3 2004-03-24 00:59:01 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
 
@@ -70,7 +70,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
         List list = (List) getFunctionValue();;
 
-        collector = new ContextCollector(getContextProvider().getContextContainer());
+        collector = new ContextCollector(getContextProvider());
 
         helper.overrideWrite(false); // default behavior is not to write to page
         
@@ -110,7 +110,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     }
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), returnList);
+            getContextProvider().getContextContainer().register(getId(), returnList, false);
         }
         return  EVAL_PAGE;
     }

@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.5 2004-01-14 22:01:33 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.6 2004-03-24 00:59:02 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -146,7 +146,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
         shrinkStack = new Stack();
-        collector = new ContextCollector(getContextProvider().getContextContainer());
+        collector = new ContextCollector(getContextProvider());
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
