@@ -8,27 +8,36 @@
 			<field name="title">Don't forget to add a title!</field>
 		</object>
 	</action>
-	
+
 	<action type="delete" />
-	
+
 	<action type="load">
 		<relation destination="people" role="related" />
-		<relation destination="images" role="related" />
-		<relation destination="urls" role="related" />
+		<relation destination="images" role="posrel" />
+		<relation destination="urls" role="posrel" />
 	</action>
-	
+
 	<form-schema id="basics">
 		<title>Basic News</title>
 		<subtitle>foobar</subtitle>
 		<field name="title" />
 		<field name="subtitle" />
-		<field name="intro" />		
+		<field name="intro" />
 		<field name="body" ftype="html" />
 		<!-- field name="date" /-->
 
 
 		<list role="related" destination="people" minoccurs="0"  maxoccurs="3">
-      <title>Authors (notice the search-filters)</title>       
+      <title>Authors (notice the search-filters)</title>
+
+      <item>
+        <fieldset>
+          <prompt>Name</prompt>
+          <field ftype="data" name="firstname" />
+          <field ftype="data" name="lastname" />
+        </fieldset>
+      </item>
+
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname,firstname" age="-1" filterrequired="true">
 				<prompt>People</prompt>
 				<search-filter>
@@ -46,60 +55,70 @@
 				</search-filter>
 			</command>
 
-      <item>
-        <fieldset>
-          <prompt>Name</prompt>
-          <field ftype="data" name="firstname" />
-          <field ftype="data" name="middle" />
-          <field ftype="data" name="lastname" />
-        </fieldset>
-      </item>
-			
 			<action type="create">
 				<relation destinationtype="people" role="related">
 				</relation>
 			</action>
 		</list>
 
-    <list extends="lib/addimages.xml">
-			<action type="create">
-				<relation destinationtype="images" role="related">					
-				</relation>
-			</action>
-    </list>
+		<!-- use the library wizard for adding images -->
+    <list extends="lib/addimages.xml" />
 
-	</form-schema>
+		<!-- use the library wizard for adding attachments -->
+    <list extends="lib/addattachments.xml" />
+
+  </form-schema>
 
 	<form-schema id="url">
 		<field name="title" ftype="data" />
     <title>Relate URL's (example of pop-up wizard)</title>
-    <list fdatapath="relation[object/@type='urls']" minoccurs="0" maxoccurs="*" type="urls">
-		<!-- list role="related" destination="urls" minoccurs="0"  maxoccurs="*"-->
-      <title>Links</title>       
-			<command name="search" nodepath="urls" fields="description,url" orderby="name" age="-1">
-				<prompt>Url (demonstration searching in multipable fields, and of two types of startwizards)</prompt>
-				<search-filter>
-					<name>URL</name>
-					<search-fields>url|description</search-fields>
-				</search-filter>
-			</command>
-			
-      <!-- a not-inline startwizard will pop-up a window to create the new object -->
-      <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" />
-
-      <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
-      <command name="startwizard" inline="true" wizardname="tasks/myurls" objectnumber="new" />
-
-      <!-- samples/urls: you'll not find a samples/urls.xml in this directory. Search in /mmapps/editwizard/data -->
+		<!-- you can also use the library wizard lib/addurls:
+		   <list extends="lib/addurls" />
+		-->
+    <list role="posrel" destination="urls" ordertype="number" orderby="field[@name='pos']">
+      <title>Links</title>
 
       <item>
+        <field name="name" />
         <field name="url" />
         <field name="description" rows="2" />
       </item>
-			
-      <command name="insert" />
+
+      <command name="search" nodepath="urls" fields="name,url" orderby="name" age="-1">
+	  		<prompt>Search for urls</prompt>
+        <search-filter>
+          <name>Name contains</name>
+          <search-fields>name|description</search-fields>
+        </search-filter>
+        <search-filter>
+          <name>URL contains</name>
+          <search-fields>url</search-fields>
+        </search-filter>
+      </command>
+
+      <!-- a not-inline startwizard will pop-up a window to create the new object -->
+      <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" >
+			 <prompt>Add a url in a popup window</prompt>
+			</command>
+
+      <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
+      <command name="startwizard" inline="true" wizardname="tasks/myurls" objectnumber="new" >
+			 <prompt>Add a url on a new page</prompt>
+			</command>
+
+			<action type="add">
+	      <relation role="posrel" destinationtype="urls">
+  	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+			</action>
+
+      <command name="insert" >
+			 <prompt>Insert a url directly in this list</prompt>
+			</command>
+
 			<action type="create">
-				<relation destinationtype="urls" role="related">
+	      <relation role="posrel" destinationtype="urls">
+  	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
           <object type="urls">
             <field name="url">http://</field>
           </object>
