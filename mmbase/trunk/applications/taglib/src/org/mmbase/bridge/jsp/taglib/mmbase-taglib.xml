@@ -1850,7 +1850,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   <tag>
     <name>url</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</tagclass>
     <info>
     Returns an URL with parameters from the context.
     </info>
@@ -1875,14 +1875,61 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>jspvar</name>
+       <name>id</name>
+       <required>false</required>
+	   <info>
+	     The produced string can also be put in the context, for later
+	     reuse with the write tag.
+	   </info>
+    </attribute>
+	    <attribute>
+        <name>write</name>
         <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>image</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+    <info>
+     <p>
+	 Returns an URL to the image servlet. This is a NodeReferrer and
+	 consequently has to live as a child of a (image) node.
+    </p>
+    <p>
+		Using this tag makes your pages more
+		portable to other system, and hopefully less sensitive for future
+		changes in how the image servlet works.
+    </p>
+    </info>
+    <attribute>
+        <name>template</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    	<refercontext>true</refercontext>
 	<info>
-		In stead of writing to the page, you can also write the
-		resulting URL to a jsp variable.
+		A 'transformation' template.
 	</info>
-    </attribute>    
+    <examplevalue>
+        <value>s(100x100)</value>
+    </examplevalue>
+    </attribute>
+    <attribute>
+        <name>page</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
+	<info>
+	The url to refer to. If not specified, then it becomes the
+        result of getRequestURI. 
+	</info>
+    </attribute>
     <attribute>
        <name>id</name>
        <required>false</required>
