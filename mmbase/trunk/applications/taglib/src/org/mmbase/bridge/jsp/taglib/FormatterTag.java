@@ -211,7 +211,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
     
         if (format < 1000) {  // also if format is unset.
-            xmlGenerator = new Generator(documentBuilder.newDocument());
+            xmlGenerator = new Generator(documentBuilder);
         } else {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }
@@ -252,7 +252,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         if (log.isDebugEnabled()) {
             if (wantXML()) {
-                log.trace("XSL converting document: " + xmlGenerator.toStringFormatted());
+                log.trace("XSL converting document: " + xmlGenerator.toString(true));
             } else {
                 log.trace("Converting: " + body);
             }
@@ -289,7 +289,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 helper.setValue(xslTransform("xslt/mmxf2rich.xslt"));
                 break;
             case FORMAT_ESCAPEXMLPRETTY:
-                helper.setValue(Encode.encode("ESCAPE_XML", xmlGenerator.toStringFormatted()));
+                helper.setValue(Encode.encode("ESCAPE_XML", xmlGenerator.toString(true)));
                 break;
             case FORMAT_ESCAPEXML:
                 helper.setValue(Encode.encode("ESCAPE_XML", body));
