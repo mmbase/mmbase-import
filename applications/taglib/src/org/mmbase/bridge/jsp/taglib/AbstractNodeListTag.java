@@ -212,7 +212,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     /**
-     * Creates the node iterator and sets appropriate variables (i.e. listsize).
+     * Creates the node iterator and sets appropriate variables (such as listsize).
      * Takes a node list, and trims it using the offset and
      * max attributes if so indicated.
      * The list is assumed to be already sorted.
