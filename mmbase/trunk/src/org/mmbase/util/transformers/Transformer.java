@@ -35,4 +35,11 @@ public interface Transformer {
      */
     public HashMap transformers();
 
+    /**
+     * Returns the encoding that is currently active
+     *
+     * @return An String representing the coding that is currently used.
+     */
+    public String getEncoding();
+
 }

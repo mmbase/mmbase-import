@@ -213,5 +213,14 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
-
+    public String getEncoding() {
+        switch(to){
+        case ESCAPE:                    return "ESCAPE_XML";
+        case ESCAPE_ATTRIBUTE:          return "ESCAPE_XML_ATTRIBUTE";
+        case ESCAPE_ATTRIBUTE_DOUBLE:   return "ESCAPE_XML_ATTRIBUTE_DOUBLE";
+        case ESCAPE_ATTRIBUTE_SINGLE:   return "ESCAPE_XML_ATTRIBUTE_SINGLE";
+        case ESCAPE_ATTRIBUTE_HTML:     return "ESCAPE_HTML_ATTRIBUTE";
+        default: throw new UnsupportedOperationException("unknown encoding");
+        }
+    }
 }

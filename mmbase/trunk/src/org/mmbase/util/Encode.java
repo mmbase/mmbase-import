@@ -255,7 +255,14 @@ public class Encode {
     public boolean isByteToCharEncoder() {
         return trans instanceof org.mmbase.util.transformers.ByteToCharTransformer;
     }
-
+    /**
+     * Returns the encoding
+     *
+     * @return An String representing the coding that is currently used.
+     */
+    public String getEncoding() {
+        return trans.getEncoding();
+    }
     /**
      * Invocation of the class from the commandline for testing.
      *
