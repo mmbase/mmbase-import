@@ -16,7 +16,7 @@
 <mm:import externid="search" />
 <mm:import externid="page" />
 
-<mm:url referids="node_type,search?,page?" id="thisurl" write="false">
+<mm:url referids="node_type?,search?,page?" id="thisurl" write="false">
   <mm:present referid="search">
     <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
       <mm:fieldinfo type="reusesearchinput" />

@@ -75,7 +75,9 @@
   <td class="data">
     #<mm:field id="node_number"  name="number" />
   </td>
-  <td class="data">
+  <td
+     <%@include file="node_title.jsp" %>
+     class="data">
     <mm:nodeinfo type="gui" />  (<mm:field name="owner" />)
   </td>
   <td class="navigate">
@@ -100,7 +102,9 @@
     <td class="data">
       #<mm:field id="relatednumber" name="number" />
     </td>
-    <td class="data" colspan="2">
+    <td 
+     <%@include file="node_title.jsp" %>
+     class="data" colspan="2">
       <mm:nodeinfo type="gui" /> (<mm:field name="owner" />)
     </td>
     <td class="navigate" colspan="1">
