@@ -31,10 +31,10 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.79 $ $Date: 2002-08-12 21:50:16 $
+ * @version $Revision: 1.80 $ $Date: 2002-08-21 18:26:33 $
  */
 
-public class MMObjectNode {
+public class MMObjectNode implements org.mmbase.util.SizeMeasureable {
     /**
      * Logger routine
      */
@@ -168,7 +168,7 @@ public class MMObjectNode {
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
-        return parent.insert(userName,this);
+        return parent.insert(userName, this);
     }
 
     /**
@@ -181,7 +181,7 @@ public class MMObjectNode {
      *    endangering the separation between content and layout, and has an undefined return value.
      */
     public int insertDone(EditState ed) {
-        return parent.insertDone(ed,this);
+        return parent.insertDone(ed, this);
     }
 
     /**
@@ -1399,5 +1399,12 @@ public class MMObjectNode {
             log.error(message);
             throw new RuntimeException(message);
         }
+    }
+
+    public int getByteSize() {
+        return getByteSize(new org.mmbase.util.SizeOf());
+    }
+    public int getByteSize(org.mmbase.util.SizeOf sizeof) {
+        return sizeof.sizeof(values) + sizeof.sizeof(relations); 
     }
 }
