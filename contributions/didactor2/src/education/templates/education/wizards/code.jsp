@@ -136,7 +136,7 @@ menu.makeLastSubmenu(rolestree, true);
 </di:hasrole>
 
 
- <di:hasrole role="filemanager">
+ <di:hasrole role="contenteditor">
        menu.addItem("<fmt:message key="filemanagement"/>",
                "<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />",
                              null,
