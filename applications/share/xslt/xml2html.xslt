@@ -180,11 +180,12 @@
 
 <xsl:template match="extends">
   <xsl:variable name="e" select="." />
-  <tr><td width="100" valign="top"><a href="#{$e}"><font color="{$extendscolor}"><xsl:value-of select="." /></font></a> attributes</td>
+  <tr>
+      <td width="100" valign="top"><xsl:if test="/taglib/taginterface/name[.=$e]"><a href="#{$e}"><font color="{$extendscolor}"><xsl:value-of select="." /></font></a></xsl:if> attributes</td>
 	  <td>
       <ul>   	   
-       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/attribute" mode="extends" />
-       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/extends"  />
+       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/attribute|/taglib/tag/name[.=$e]/parent::*/attribute"  mode="extends" />
+       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/extends|/taglib/tag/name[.=$e]/parent::*/extends"  />
       </ul>
 	  </td>
 	</tr>
