@@ -24,11 +24,10 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.53 2003-08-15 15:52:41 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.54 2003-11-19 17:03:26 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
-    private static Logger log =
-    Logging.getLoggerInstance(ConvertImageMagick.class);
+    private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);
     
     // Currently only ImageMagick works, this are the default value's
     private static String converterPath = "convert"; // in the path.
@@ -52,21 +51,20 @@ public class ConvertImageMagick implements ImageConvertInterface {
         String converterRoot = "";
         String converterCommand = "convert";
         
-        /* don't think it is necessary.
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
             // on the windows system, we _can_ assume the it uses .exe as extention...
+            // otherwise the check on existance of the program will fail.
             converterCommand += ".exe";
         }
-         */
         
         String tmp;
         tmp = (String) params.get("ImageConvert.ConverterRoot");
-        if (tmp != null) {
+        if (tmp != null && ! tmp.equals("")) {
             converterRoot = tmp;
         }
         
         tmp = (String) params.get("ImageConvert.ConverterCommand");
-        if (tmp != null) {
+        if (tmp != null && ! tmp.equals("")) {
             converterCommand = tmp;
         }
 
@@ -100,75 +98,45 @@ public class ConvertImageMagick implements ImageConvertInterface {
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
         
-		CommandLauncher launcher = new CommandLauncher("ConvertImage");
-		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try {
-			log.debug("Starting convert");
-			launcher.execute(converterPath);
-
-			launcher.waitAndRead(outputStream, errorStream);
-
-			// make stringtokenizer, with nextline as new token..
-			StringTokenizer tokenizer =
-				new StringTokenizer(outputStream.toString(), "\n\r");
-			if (tokenizer.hasMoreTokens()) {
-				log.info(
-					"Will use: " + converterPath + ", " + tokenizer.nextToken());
-			}
-			else {
-				log.error(
-					"converter from location "
-						+ converterPath
-						+ ", gave strange result: "
-						+ outputStream.toString()
-						+ "conv.root='"
-						+ converterRoot
-						+ "' conv.command='"
-						+ converterCommand
-						+ "'");
-				log.error(
-					"converter from location "
-						+ converterPath
-						+ ", gave strange result: "
-						+ errorStream.toString()
-						+ "conv.root='"
-						+ converterRoot
-						+ "' conv.command='"
-						+ converterCommand
-						+ "'");
-			}
-		}
-		catch (ProcessException e) {
-			log.error(
-				"Convert test failed. "
-					+ converterPath
-					+ " ("
-					+ e.toString()
-					+ ") conv.root='"
-					+ converterRoot
-					+ "' conv.command='"
-					+ converterCommand
-					+ "'");
-			log.error(Logging.stackTrace(e));
-		}
-		finally {
-			try {
-				if (outputStream != null) {
-					outputStream.close();
-				}
-			}
-			catch (IOException ioe) {
-			}
-			try {
-				if (errorStream != null) {
-					errorStream.close();
-				}
-			}
-			catch (IOException ioe) {
-			}
-		}
-
+        CommandLauncher launcher = new CommandLauncher("ConvertImage");
+        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            log.debug("Starting convert");
+            launcher.execute(converterPath);
+            
+            launcher.waitAndRead(outputStream, errorStream);
+            
+            // make stringtokenizer, with nextline as new token..
+            StringTokenizer tokenizer =
+                new StringTokenizer(outputStream.toString(), "\n\r");
+            if (tokenizer.hasMoreTokens()) {
+                log.info("Will use: " + converterPath + ", " + tokenizer.nextToken());
+            } else {
+                log.error( "converter from location " + converterPath + ", gave strange result: " + outputStream.toString()
+                           + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+            }
+        } catch (ProcessException e) {
+            log.error("Convert test failed. " + converterPath + " (" + e.toString() + ") conv.root='" + converterRoot
+                      + "' conv.command='" + converterCommand + "'");
+            log.error(Logging.stackTrace(e));
+        }
+        finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException ioe) {
+            }
+            try {
+                if (errorStream != null) {
+                    errorStream.close();
+                }
+            }
+            catch (IOException ioe) {
+            }
+        }
+        
         // Cant do more checking then this, i think....
         tmp = (String) params.get("ImageConvert.ColorizeHexScale");
         if (tmp != null) {
@@ -559,14 +527,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
 					String errorMessage = errorStream.toString();
 
 					if (errorMessage.length() > 0) {
-						log.error(
-							"From stderr with command '"
-								+ command
-								+ "' in '"
-								+ new File("").getAbsolutePath()
-								+ "'  --> '"
+                                            log.error(
+                                                      "From stderr with command '"
+                                                      + command
+                                                      + "' in '"
+                                                      + new File("").getAbsolutePath()
+                                                      + "'  --> '"
 								+ errorMessage
-								+ "'");
+                                                      + "'");
 					}
 					else {
 						log.debug("No information on stderr found");
