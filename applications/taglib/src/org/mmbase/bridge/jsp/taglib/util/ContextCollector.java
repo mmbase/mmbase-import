@@ -17,25 +17,31 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.ContextProvider;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * A helper class for Lists, to implement ContextProvider. This ContextContainer writes every key to
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.12 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ContextCollector.java,v 1.13 2005-03-22 15:02:05 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
+    private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
     
     private Set parentCheckedKeys = new HashSet();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
         super(p.getPageContext(), "CONTEXT-COLLECTOR" + (p.getId() == null ? "" : "-" + p.getId()), p.getContextContainer());
-        backing = new BasicBacking() {
+        backing = new BasicBacking(parent instanceof PageContextContainer ? null : pageContext) {
                 public Object put(Object key, Object value) {
                     if (parentCheckedKeys.contains(key)) {
+                        log.info("Reputting " + key + " => " + value + " in parent " + parent);
                         parent.put(key, value);
                     } else {
+                        log.info("Putting " + key + " => " + value + " in parent " + parent);
                         parentCheckedKeys.add(key);
                         try {
                             parent.register((String) key, value);
@@ -71,8 +77,13 @@ public class  ContextCollector extends StandaloneContextContainer {
 
 
 
-    public void doAfterBody() throws JspTagException {        
+    public void doAfterBody() throws JspTagException { 
         clear();
+    }
+
+    public void release() {
+        parentCheckedKeys.clear();
+        super.release();
     }
 
 }
