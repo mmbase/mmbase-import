@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Forum</title>
-<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body class="basic">
 <mmcommunity:delete message="$thread" />
