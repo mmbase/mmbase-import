@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.29 2002-06-11 22:29:46 michiel Exp $
+ * @version $Id: Wizard.java,v 1.30 2002-06-13 08:31:22 vpro Exp $
  *
  */
 public class Wizard {
@@ -150,6 +150,8 @@ public class Wizard {
         // initialize database connector
         dbconn = new WizardDatabaseConnector();
         dbconn.setUserInfo(cloud);
+        // set cloud
+        this.cloud=cloud;
         // add username to variables
         variables.put("username", cloud.getUser().getIdentifier());
         // actually load the wizard
