@@ -38,7 +38,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
 
-    static private ContextTag pageContextTag;
+    private ContextTag pageContextTag = null;
 
     private String     contextId = null;
     protected String   referid = null;
@@ -47,8 +47,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public void setPageContext(PageContext pc) {
         super.setPageContext(pc);
         if (pageContextTag == null) {
+            pageContextTag=(ContextTag)pc.getAttribute("context");
+        }
+        if (pageContextTag == null) {
             log.debug("making the pageContextTag.");
             pageContextTag = new ContextTag();
+            pc.setAttribute("context",pageContextTag);
             pageContextTag.setPageContext(pc);
             pageContextTag.setId("context");
             // there is one implicit ContextTag in every page.
