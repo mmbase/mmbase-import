@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.logging;
 
+import org.mmbase.util.ResourceLoader;
 import org.apache.log4j.Category;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -151,7 +152,7 @@ public class Performance {
             return doCaseNoSystem();
         }
 
-        Logging.configure(configuration);
+        Logging.configure(ResourceLoader.getConfigurationRoot(), configuration);
         Logger log = Logging.getLoggerInstance("A0123456789.B0123456789.C0123456789");
 
         if(isdebugenabled) {
