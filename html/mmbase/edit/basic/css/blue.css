@@ -10,11 +10,11 @@
 body.basic { 
        background-color: #aaa;
        margin-top: 1em;
-       color: #400; 
+       color: #004; 
 }
 
 body.navigationbar {
-      background-color: #400;
+      background-color: #004;
       color: white;
 }
 
@@ -48,37 +48,37 @@ td {
 }	
 
 table.list td {
-     background-color: #100;
+     background-color: #004;
      color:white;
 }
 table.edit td {
-     background-color: #100;
+     background-color: #004;
      color: white;
 }
 table.edit td.navigate {
-   background-color: #933;
+   background-color: #339;
 }
 table.list td.navigate {
-   background-color: #933;
+   background-color: #339;
 }
 th {
-   background-color: #933;
+   background-color: #339;
    color: #fff;
    font-weight:bold
 }
 
 .data {
-     background-color: #100;
+     background-color: #004;
      color: #fff;
 }
 .navigate {
     text-align: right;
-    background-color: #933;
+    background-color: #339;
     color: #fff;
 }
 
 .edit {
-     background-color: #100;
+     background-color: #004;
      color: white;
 }
 .search {
@@ -87,20 +87,20 @@ th {
 }
 
 .linkdata {
-     background-color: #100;
+     background-color: #004;
      color: white;
      text-align: center;
 }
 
 .listdata {
-     background-color: #100;
-     color: #933;
+     background-color: #004;
+     color: #339;
      text-align: left;
 }
 
 .multidata  {
-     background-color: #100;
-     color: #933;
+     background-color: #004;
+     color: #339;
      padding-top: 1em;
 }
 
