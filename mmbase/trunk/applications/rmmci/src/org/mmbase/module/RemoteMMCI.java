@@ -9,17 +9,13 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module;
 
-import java.rmi.*;
-import java.rmi.registry.*;
+import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.remote.*;
-import org.mmbase.bridge.remote.rmi.*;
-import org.mmbase.bridge.remote.implementation.*;
-
+import org.mmbase.bridge.LocalContext;
+import org.mmbase.bridge.remote.RemoteCloudContext;
+import org.mmbase.bridge.remote.rmi.RemoteCloudContext_Rmi;
 import org.mmbase.util.logging.*;
-
-import org.mmbase.module.ProcessorModule;
 
 
 /**
@@ -28,7 +24,7 @@ import org.mmbase.module.ProcessorModule;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.1.1.1 2003-04-26 11:11:40 kees Exp $
+ * @version $Id: RemoteMMCI.java,v 1.2 2003-07-22 14:44:37 keesj Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
