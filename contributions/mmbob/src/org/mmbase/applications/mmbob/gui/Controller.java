@@ -595,6 +595,44 @@ public class Controller {
         return "ok";
     }
 
+
+    /**
+     * create a new poster proxy, creates a account and puts in the users admin system of the forum
+     *
+     * @param forumid MMBase node number of the forum
+     * @param account account name of the new poster
+     * @param password Password for the new poster
+     * @param firstname Firstname of the new poster
+     * @param lastname Lastname of the new poster
+     * @param email Email address of the new poster
+     * @param gender Gender of the new poster
+     * @param location Location of the new poster
+     * @return Feedback from the create command (accountused for example)
+     */
+    public String createPosterProxy(String forumid, String account, String password, String firstname, String lastname, String email, String gender, String location,String proxypassword) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            Poster p = f.getPoster(account);
+            if (p == null) {
+                p = f.createPoster(account, password);
+                if (p != null) {
+                    p.setFirstName(firstname);
+                    p.setLastName(lastname);
+                    p.setEmail(email);
+                    p.setGender(gender);
+                    p.setLocation(location);
+                    p.setPostCount(0);
+                    p.savePoster();
+                } else {
+                    return "createerror";
+                }
+            } else {
+                return "inuse";
+            }
+        }
+        return "ok";
+    }
+
     /**
      * Provide general info on this postarea within the given forum
      *
@@ -1055,7 +1093,7 @@ public class Controller {
             f.setName(name);
             f.setLanguage(language);
             f.setDescription(description);
-            f.save();
+            f.saveDirect();
         }
         return true;
     }
@@ -1154,7 +1192,7 @@ public class Controller {
 			if (po!=null) {
 				org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
 				String md5passwd = md5.transform(password);
-				if (po.getPassword().equals(password) || po.getPassword().equals(md5passwd)) {
+				if (!password.equals("blocked") && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd))) {
 					virtual.setValue("state","passed");
 					virtual.setValue("posterid",po.getId());
 				} else {
