@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.8 2003-09-25 12:53:10 pierre Exp $
+ * @version $Id: Attributes.java,v 1.9 2004-02-16 12:10:17 keesj Exp $
  */
 public final class Attributes {
 
@@ -104,6 +104,5 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String REMOVE_EMPTY_DEFINITIONS = "database-remove-empty-definitions";
-
 
 }
