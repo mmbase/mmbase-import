@@ -114,8 +114,8 @@ public class Mailbox {
     }
 
   public void signalMailboxChange() {
-	log.info("MAILBOX CHANGED");
 	readStats();
+	parent.mailboxChanged(this);
   }
 
 

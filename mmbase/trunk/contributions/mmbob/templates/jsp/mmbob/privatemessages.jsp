@@ -68,7 +68,7 @@
         <mm:nodefunction set="mmbob" name="getQuotaInfo" referids="forumid,posterid,barsize">
 	<tr><th colspan="3">PM Quota</th></tr>
 	<tr><td colspan="3">You are using <mm:field name="quotausedpercentage" />% of your quota</td></tr>
-	<tr><td colspan="3"><img src="images/green.gif" height="7" width="<mm:field name="quotausedbar" />"></td></tr>
+	<tr><td colspan="3"><img src="images/<mm:field name="quotawarning" />.gif" height="7" width="<mm:field name="quotausedbar" />"></td></tr>
 	<tr><td align="left" width="33%">0%</td><td align="middle" width="34%">50%</td><td align="right" width="33%">100%</td></tr>
 	</mm:nodefunction>
 	</table>
