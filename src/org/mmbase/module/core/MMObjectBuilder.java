@@ -28,14 +28,17 @@ import org.mmbase.module.database.MultiConnection;
 
 /**
  *
- * Main Builder will be extended for different types builders are the
- * core of the MMBase system they create, delete and search the MMObjectNodes
- * Unlike MMObjectNodes they are implemented per object type (url, images etc etc)
- * normally these are only defined as Dummy object or in org.mmase.builders.*
+ * Main Builder.
+ * Will be extended for different types.
+ * Builders are the core of the MMBase system. They create, delete and search the MMObjectNodes.
+ * Unlike MMObjectNodes they are implemented per object type (url, images etc. etc.)
+ * Normally these are only defined as Dummy object or in org.mmbase.builders.*
  * 
  * @author Daniel Ockeloen
  * @author Rob Vermeulen
- * @version 18 juni 2000
+ * @author Pierre van Rooden
+ * @author Eduard Witteveen
+ * @version 8 november 2000
  */
 public class MMObjectBuilder extends MMTable {
     private String classname = getClass().getName();
@@ -270,15 +273,6 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * get ObjectNode
-    */
-    public MMObjectNode getNode(int number) {
-        return(getNode(String.valueOf(number)));
-    }
-
-
-
-    /**
     * is this node cached at this moment ?
     */
     public boolean isNodeCached(int number) {
@@ -291,8 +285,8 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Retrieves an objects type. If necessary, the type is added to the cache.
-    *
-    * added 28/10/2000
+    * @param number The numbe rof the node to search for
+    * @return an <code>int</code> value which is the object type (otype) of the node.
     */
     public int getNodeType(int number)
     {
@@ -327,25 +321,65 @@ public class MMObjectBuilder extends MMTable {
    }
 
     /**
-    * get ObjectNode
+    * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
+    * or the string-form of an integer value (the number field of an object node).
+    * @param key The value to search for
+    * @return <code>null</code> if the node does not exist or the key is invalid, or a
+    *       <code>MMObjectNode</code> containign the contents of the requested node.
+    * @deprecated use getNode(java.util.string) instead.
     */
-    public synchronized MMObjectNode getNode(String number) {
+    public MMObjectNode getAliasedNode(String key) {
+        return(getNode(key));
+    }
 
-        if( number == null ) {
-            debug("getNode("+number+"): ERROR: for tablename("+tableName+"): node is null!");
+    /**
+    * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
+    * or the string-form of an integer value (the number field of an object node).
+    * @param key The value to search for
+    * @return <code>null</code> if the node does not exist or the key is invalid, or a
+    *       <code>MMObjectNode</code> containign the contents of the requested node.
+    */
+    public MMObjectNode getNode(String key) {
+        int nr;
+        MMObjectNode node;
+
+        if( key == null ) {
+            debug("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
             return null;
         }
 
+        try {
+            nr=Integer.parseInt(key);
+        } catch (Exception e) {
+            nr=-1;
+        }
+        if (nr>0) {
+            node=mmb.OAlias.getNode(nr);
+        } else {
+            node=mmb.OAlias.getAliasedNode(key);
+        }
+        return(node);
+    }
+
+    /**
+    * Retrieves a node based on it's number (a unique key).
+    * @param number The numbe rof the node to search for
+    * @return <code>null</code> if the node does not exist or the key is invalid, or a
+    *       <code>MMObjectNode</code> containign the contents of the requested node.
+    */
+    public synchronized MMObjectNode getNode(int number) {
+
         // test with counting
         statCount("getnode");
-        if (number.equals("-1")) {
-            debug(" ("+tableName+") nodenuber == -1");
+        if (number==-1) {
+            debug(" ("+tableName+") nodenumber == -1");
             return(null);
         }
 
         // cache setup
         MultiConnection con;
-        MMObjectNode node=(MMObjectNode)nodeCache.get(new Integer(number));
+        Integer integerNumber=new Integer(number);
+        MMObjectNode node=(MMObjectNode)nodeCache.get(integerNumber);
         if (node!=null) {
             // lets add a extra asked counter to make a smart cache
             int c=node.getIntValue("CacheCount");
@@ -359,7 +393,7 @@ public class MMObjectBuilder extends MMTable {
             String bul="typedef";
 		
 	    // retrieve node's objecttype
-            int bi=getNodeType(Integer.parseInt(number));		
+            int bi=getNodeType(number);		
             if (bi!=0) {
             	bul=mmb.getTypeDef().getValue(bi);
              }
@@ -383,7 +417,7 @@ public class MMObjectBuilder extends MMTable {
                     fieldname=rd.getColumnName(i);
                     node=database.decodeDBnodeField(node,fieldname,rs,i);
                 }
-                nodeCache.put(new Integer(number),node);
+                nodeCache.put(integerNumber,node);
                 stmt.close();
                 con.close();
                 // clear the changed signal
@@ -1308,26 +1342,6 @@ public class MMObjectBuilder extends MMTable {
     public void setDebug(boolean state) {
         debug=state;
     }
-
-
-    public MMObjectNode getAliasedNode(String key) {
-        int nr;
-        MMObjectNode node;
-
-        try {
-            nr=Integer.parseInt(key);
-        } catch (Exception e) {
-            nr=-1;
-        }
-        if (nr>0) {
-            node=mmb.OAlias.getNode(nr);
-        } else {
-            node=mmb.OAlias.getAliasedNode(key);
-        }
-        return(node);
-    }
-
-
 
     /**
     * convert mmnode2sql still new should replace the old mapper soon
