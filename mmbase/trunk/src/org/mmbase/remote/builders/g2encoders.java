@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.11 2001-03-07 14:19:32 vpro Exp $
+$Id: g2encoders.java,v 1.12 2001-03-14 16:42:02 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2001/03/07 14:19:32  vpro
+Davzev: Changed debug when state is busy in method nodeChanged
+
 Revision 1.10  2001/02/20 17:45:17  vpro
 Davzev: Added method comments, more debug and moved doMakeDir() sothat it only will be called when state is encode.
 
@@ -34,7 +37,7 @@ import org.mmbase.service.interfaces.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.11 $ $Date: 2001-03-07 14:19:32 $
+ * @version $Revision: 1.12 $ $Date: 2001-03-14 16:42:02 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;
@@ -150,6 +153,7 @@ public class g2encoders extends RemoteBuilder {
 	private void doVersion() {
 		if (debug) debug("doVersion: Setting state to busy and get the version info.");
 		setValue("state","busy");
+		setValue("info","Busy performing doVersion");	
 		commit();
 	
 		// set the version we got from the encoder	
@@ -174,6 +178,7 @@ public class g2encoders extends RemoteBuilder {
 	private void doEncode() {
 		if (debug) debug("doEncode: Setting state to busy and start encoding.");
 		setValue("state","busy");
+		setValue("info","Busy performing doEncode");	
 		commit();
 	
 		// set the version we got from the encoder	

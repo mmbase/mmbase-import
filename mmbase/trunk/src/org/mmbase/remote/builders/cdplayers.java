@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.8 2001-03-07 14:19:32 vpro Exp $
+$Id: cdplayers.java,v 1.9 2001-03-14 16:42:02 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/03/07 14:19:32  vpro
+Davzev: Changed debug when state is busy in method nodeChanged
+
 Revision 1.7  2001/01/24 13:42:30  vpro
 davzev: Removed StringTagger classvariable (not used) added printStackTrace to catches.
 
@@ -33,7 +36,7 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version $Revision: 1.8 $ $Date: 2001-03-07 14:19:32 $
+ * @version $Revision: 1.9 $ $Date: 2001-03-14 16:42:02 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {
@@ -126,8 +129,8 @@ public class cdplayers extends RemoteBuilder {
 	}
 
 	private void doVersion() {
-
 		setValue("state","busy");
+		setValue("info","Busy Performing doVersion");
 		commit();
 	
 		// set the version we got from the encoder	
@@ -144,9 +147,9 @@ public class cdplayers extends RemoteBuilder {
 		commit();
 	}
 
-
 	private void doGetDir() {
 		setValue("state","busy");
+		setValue("info","Busy Performing doGetDir");
 		commit();
 	
 		// set the version we got from the encoder	
@@ -164,6 +167,7 @@ public class cdplayers extends RemoteBuilder {
 
 	private void doRecord() {
 		setValue("state","busy");
+		setValue("info","Busy Performing doRecord");
 		commit();
 	
 		// set the version we got from the encoder	
