@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.98 2003-03-25 12:47:10 vpro Exp $
+ * @version $Id: MMObjectNode.java,v 1.99 2003-03-25 19:05:19 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1247,7 +1247,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * (huge) databases.
      * @since MMBase-1.6.2
      */
-    private Vector getRelatedNodes(String type, String role, int search_type) {
+    public Vector getRelatedNodes(String type, String role, int search_type) {
         Vector result;
         MMObjectBuilder builder = (MMObjectBuilder) parent.mmb.getBuilder(type);
 
