@@ -51,7 +51,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
     public int doStartTag() throws JspTagException {
         if (getReferid() != null) {
-            helper.setValue(getContext().getObject(getReferid()));
+            helper.setValue(getContextTag().getObject(getReferid()));
         } else {
             log.debug("Search the node.");
             Node node = getNode();
