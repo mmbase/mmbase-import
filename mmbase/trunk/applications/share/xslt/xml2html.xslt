@@ -3,7 +3,7 @@
 	version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:output method="xml"
+  <xsl:output method="xml"
                 version="1.0"
                 encoding="UTF-8"
                 omit-xml-declaration="yes"
@@ -290,11 +290,17 @@
 </xsl:template>
 
 <xsl:template match="info">
-  <xsl:apply-templates select="p|text()" />  
+  <xsl:apply-templates select="p|text()|em" />  
 </xsl:template>
 
 <xsl:template match="p|text()">
   <xsl:copy-of select="." />
+</xsl:template>
+
+<xsl:template match="em">
+	<xsl:copy>
+   	  <xsl:apply-templates />
+	</xsl:copy>
 </xsl:template>
 
 </xsl:stylesheet>
