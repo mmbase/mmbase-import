@@ -26,7 +26,7 @@
 </IF>
 <tr><td>&nbsp;</td></tr>
 <tr>
-<td class="navigate"><a href="forum.shtml" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
+<td class="navigate"><a href="forum.shtml?$PARAM1" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
 <td class="data">Return to forum</td>
 </tr>
 </table>
