@@ -73,7 +73,7 @@
         as the 'owner' of the node.
       </dd>
     </dl>
-    <img src="<mm:url page="${location}/images/Security.jpg" />" />
+    <img src="<mm:url page="${location}images/Security.jpg" />" />
   </p>
 
 </div>
