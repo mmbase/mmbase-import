@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.4 2002-08-14 20:56:03 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.5 2002-08-15 14:44:45 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -75,7 +75,6 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                     return null;
                 }
                 sessionName = query.toString().substring(8, plus);
-                log.info("deleting until   " + plus);
                 query.delete(0, plus + 1);                            
             } 
             cloud = (Cloud) session.getAttribute(sessionName); 
@@ -109,7 +108,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             query = new StringObject(q);
         }
 
-        log.debug("query : " + query);
+        if (log.isDebugEnabled()) log.debug("query : " + query);
         Cloud c = getCloud(req, res, query);
         if (c == null) return null;
         Node node = null;
