@@ -23,12 +23,12 @@ import java.util.*;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.23 2003-06-26 20:52:15 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.24 2003-07-21 08:07:29 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(CompareTag.class);
 
     private Attribute value    = Attribute.NULL;
     private Attribute valueSet = Attribute.NULL;
@@ -113,7 +113,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             }
             
             if (doCompare((Comparable)compare1, (Comparable)compare2) != getInverse() ) {
-                return EVAL_BODY_INCLUDE;
+                return EVAL_BODY_BUFFERED;
             }
         }
         return SKIP_BODY;
