@@ -203,9 +203,10 @@ public class Controller {
      * @param activeid MMBase node number of current Poster (on the page)
      * @param page Page number of the threads we want
      * @param pagesize The number of postings per page
+     * @param imagecontext The context where to find the images (eg smilies)
      * @return List of (virtual) MMObjectNodes representing the postings within the given postthread
      */
-    public List getPostings(String forumid, String postareaid, String postthreadid, int activeid, int page, int pagesize) {
+    public List getPostings(String forumid, String postareaid, String postthreadid, int activeid, int page, int pagesize, String imagecontext) {
         List list = new ArrayList();
        long start = System.currentTimeMillis();
 
@@ -225,7 +226,7 @@ public class Controller {
                         MMObjectNode virtual = builder.getNewNode("admin");
                         virtual.setValue("pos", pos++);
                         virtual.setValue("subject", p.getSubject());
-                        virtual.setValue("body", p.getBody());
+                        virtual.setValue("body", p.getBody(imagecontext));
                         virtual.setValue("edittime", p.getEditTime());
                         Poster po = f.getPoster(p.getPoster());
                         if (po != null) {
@@ -1053,7 +1054,7 @@ public class Controller {
      * @param body new body of the post
      * @return Feedback regarding the success of this action
      */
-    public boolean editPost(String forumid, String postareaid, String postthreadid, int postingid, int activeid, String subject, String body) {
+    public boolean editPost(String forumid, String postareaid, String postthreadid, int postingid, int activeid, String subject, String body, String imagecontext) {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -1066,7 +1067,7 @@ public class Controller {
                     Poster ap = f.getPoster(activeid);
                     if (ap.getId() == activeid || a.isModerator(ap.getAccount())) {
                         p.setSubject(subject);
-                        p.setBody(body);
+                        p.setBody(body,imagecontext);
                         p.setEditTime((int) (System.currentTimeMillis() / 1000));
                         p.save();
                         ap.signalSeen();
