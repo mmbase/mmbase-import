@@ -25,7 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-# $Id: modules,v 1.22 2003-03-07 17:06:51 michiel Exp $
+# $Id: modules,v 1.23 2003-04-08 15:35:23 michiel Exp $
 
 
 # the mmbase java sources and resources
@@ -46,6 +46,9 @@ documentation documentation
 # Testing
 tests tests
 
+# Supported applications
+applications applications
+
 # unofficial things
 speeltuin speeltuin
 
@@ -53,4 +56,4 @@ speeltuin speeltuin
 # to check out everything
 # In all itself is mainly 'build.xml'.
 
-all -d mmbase all &src &config &html &documentation &tests
+all -d mmbase all &src &config &html &documentation &tests &applications
