@@ -95,8 +95,20 @@ public class ImportTag extends WriteTag {
         switch(helper.getVartype()) {
         case WriterHelper.TYPE_NODE:
             throw new JspTagException("Type Node not (yet) supported for this Tag");
+        case WriterHelper.TYPE_DECIMAL:
+            res = new java.math.BigDecimal(bodyContent.getString());
+            break;
         case WriterHelper.TYPE_INTEGER:
             res = new Integer(bodyContent.getString());
+            break;
+        case WriterHelper.TYPE_FLOAT:
+            res = new Float(bodyContent.getString());
+            break;
+        case WriterHelper.TYPE_LONG:
+            res = new Long(bodyContent.getString());
+            break;
+        case WriterHelper.TYPE_DOUBLE:
+            res = new Double(bodyContent.getString());
             break;
         case WriterHelper.TYPE_VECTOR:
         case WriterHelper.TYPE_LIST:

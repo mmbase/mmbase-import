@@ -39,6 +39,8 @@ public class WriterHelper {
     static final int TYPE_DOUBLE  = 7;
     static final int TYPE_LONG    = 8;
     static final int TYPE_FLOAT   = 9;
+    static final int TYPE_DECIMAL = 10;
+
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
@@ -53,6 +55,8 @@ public class WriterHelper {
             return TYPE_CLOUD;
         } else if ("Transaction".equalsIgnoreCase(t)) {
             return TYPE_TRANSACTION;
+        } else if ("decimal".equalsIgnoreCase(t)) {
+            return TYPE_DECIMAL;
         } else if ("Integer".equalsIgnoreCase(t)) {
             return TYPE_INTEGER;
         } else if ("Long".equalsIgnoreCase(t)) {
