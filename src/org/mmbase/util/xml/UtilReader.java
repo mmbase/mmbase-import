@@ -21,11 +21,14 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class reads configuration files for utilities, that are
  * placed in /config/utils/.
- *
+ * @since MMBase-1.6.4
+ * @author Rob Vermeulen
+ * @author Michiel Meeuwissen
+ * @version $Id: UtilReader.java,v 1.5 2003-06-27 09:55:38 michiel Exp $
  */
 public class UtilReader {
 
-    private static Logger log = Logging.getLoggerInstance(UtilReader.class.getName());
+    private static Logger log = null;
     public static final String CONFIG_UTILS = "utils";
 
     /** Public ID of the Utilities config DTD version 1.0 */
@@ -65,6 +68,9 @@ public class UtilReader {
      * @param filename The name of the property file (e.g. httppost.xml).
      */
     public UtilReader(String filename) {
+        if (log == null) {
+            log = Logging.getLoggerInstance(UtilReader.class.getName());
+        }
         File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
         readProperties(file);
         if (file.exists()) {
@@ -101,7 +107,7 @@ public class UtilReader {
                 }
             }
         } else {
-            log.error("File " + f + " does not exist");
+            log.warn("File " + f + " does not exist");
         }
     }
 }
