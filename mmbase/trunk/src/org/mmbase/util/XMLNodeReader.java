@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -21,15 +21,26 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
-*/
+ * This class reads a node from an exported application
+ */
 public class XMLNodeReader  {
 
-    Document document;
+    private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName()); 
+
+    Document  document;
     DOMParser parser;
-    String applicationpath;
+    String    applicationpath;
 
-
+    /**
+     * Constructor
+     * @param filename from the file to read from
+     * @param applicationpath the path where this application was exported to
+     * @param mmbase
+     */
 
     public XMLNodeReader(String filename,String applicationpath,MMBase mmbase) {
         try {
@@ -38,66 +49,64 @@ public class XMLNodeReader  {
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             EntityResolver resolver = new XMLEntityResolver();
             parser.setEntityResolver(resolver);
-	    filename="file:///"+filename;
+            filename="file:///"+filename;
             parser.parse(filename);
             document = parser.getDocument();
-	    this.applicationpath=applicationpath;
-
-
-		/*	
-	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
-	    System.out.println("ExportSource="+getExportSource());	
-	    System.out.println("TimeStamp="+getTimeStamp());	
-	    System.out.println("*** END XML APPLICATION READER FOR : "+filename);	
-		*/
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+            this.applicationpath=applicationpath;            
+            /*	
+                System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
+                System.out.println("ExportSource="+getExportSource());	
+                System.out.println("TimeStamp="+getTimeStamp());	
+                System.out.println("*** END XML APPLICATION READER FOR : "+filename);	
+            */
+        } catch(Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
     }
 
 
     /**
-    * get the name of this application
+    * 
     */
     public String getExportSource() {
-	Vector nodes=new Vector();
-	Node n1=document.getFirstChild();
-	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
-		n1=n1.getNextSibling();
-	}
-	while (n1!=null) {
-		NamedNodeMap nm=n1.getAttributes();
-		if (nm!=null) {
-			Node n2=nm.getNamedItem("exportsource");
-			return(n2.getNodeValue());
-		}
-	}
-	return(null);
+        Vector nodes=new Vector();
+        Node n1=document.getFirstChild();
+        if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+            n1=n1.getNextSibling();
+        }
+        while (n1!=null) {
+            NamedNodeMap nm=n1.getAttributes();
+            if (nm!=null) {
+                Node n2=nm.getNamedItem("exportsource");
+                return(n2.getNodeValue());
+            }
+        }
+        return(null);
     }
 
 
     /**
-    * get the name of this application
+    * 
     */
     public int getTimeStamp() {
-	Vector nodes=new Vector();
-	Node n1=document.getFirstChild();
-	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
-		n1=n1.getNextSibling();
+        Vector nodes=new Vector();
+        Node n1=document.getFirstChild();
+        if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+            n1=n1.getNextSibling();
+        }
+        while (n1!=null) {
+            NamedNodeMap nm=n1.getAttributes();
+            if (nm!=null) {
+                Node n2=nm.getNamedItem("timestamp");
+                int times=DateSupport.parsedatetime(n2.getNodeValue());
+                return(times);
+            }
 	}
-	while (n1!=null) {
-		NamedNodeMap nm=n1.getAttributes();
-		if (nm!=null) {
-			Node n2=nm.getNamedItem("timestamp");
-			int times=DateSupport.parsedatetime(n2.getNodeValue());
-			return(times);
-		}
-	}
-	return(-1);
+        return(-1);
     }
 
     /**
-    * get the name of this application
+    * 
     */
     public Vector getNodes(MMBase mmbase) {
 	Vector nodes=new Vector();
@@ -163,7 +172,7 @@ public class XMLNodeReader  {
 										Node n7=nm2.getNamedItem("file");
 										newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
 									} else { 
-										System.out.println("XMLNodeReader node error : "+key+" "+value+" "+type);
+										log.error("XMLNodeReader node error : "+key+" "+value+" "+type);
 									}
 								}
 							}
@@ -175,7 +184,7 @@ public class XMLNodeReader  {
 				n2=n2.getNextSibling();
 			}
 		} else {
-			System.out.println("XMLNodeReader can't access builder : "+bul);
+            log.error("XMLNodeReader can't access builder : "+bul);
 		}
 		n1=n1.getNextSibling();
 	}
@@ -184,16 +193,16 @@ public class XMLNodeReader  {
 
 
     byte[] readBytesFile(String filename) {
-	File bfile = new File(filename);
-	int filesize = (int)bfile.length();
-	byte[] buffer=new byte[filesize];
-	try {
+        File bfile = new File(filename);
+        int filesize = (int)bfile.length();
+        byte[] buffer=new byte[filesize];
+        try {
 			FileInputStream scan = new FileInputStream(bfile);
-		int len=scan.read(buffer,0,filesize);
-		scan.close();
-	} catch(FileNotFoundException e) {
-		System.out.println("error getfile : "+filename);
- 	} catch(IOException e) {}
-	return(buffer);
+            int len=scan.read(buffer,0,filesize);
+            scan.close();
+        } catch(FileNotFoundException e) {
+            log.error("error getfile : " + filename);
+        } catch(IOException e) {}
+        return(buffer);
     }
 }
