@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.23 2004-05-24 16:19:19 michiel Exp $
+ * @version $Id: XmlField.java,v 1.24 2004-06-04 08:18:02 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -64,14 +64,19 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         // handle lists
         // make <ul> possible (not yet nested), with -'s on the first char of line.
         int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy
-        int pos;
-        if (obj.length() == 0)
+        int pos = 0;
+        if (obj.length() < 3) {
             return;
-        if (obj.charAt(0) == '-') { // hoo, we even _start_ with al list;
+        }
+        if (obj.charAt(0) == '-' && obj.charAt(1) != '-') { // hoo, we even _start_ with a list;
             obj.insert(0, "\n"); // in the loop \n- is deleted, so it must be there.
-            pos = 0;
         } else {
-            pos = obj.indexOf("\n-", 0); // search the first
+            while (true) {
+                pos = obj.indexOf("\n-", pos); // search the first 
+                if (pos == -1 || obj.length() <= pos + 2) break;
+                if (obj.charAt(pos + 2) != '-') break;
+                pos += 2;
+            } 
         }
 
         listwhile : while (pos != -1) {
@@ -79,8 +84,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 inList++; // now we are
                 obj.delete(pos, 2); // delete \n-
                 // remove spaces..
-                while (pos < obj.length() && obj.charAt(pos) == ' ')
+                while (pos < obj.length() && obj.charAt(pos) == ' ') {
                     obj.delete(pos, 1);
+                }
                 obj.insert(pos, "\r<ul>\r<li>"); // insert 10 chars.
                 pos += 10;
 
@@ -116,11 +122,16 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     }
                 }
             } else { // search for next list
-                pos = obj.indexOf("\n-", pos);
+                while (true) {
+                    pos = obj.indexOf("\n-", pos);
+                    if (pos == -1 || obj.length() <= pos + 2) break; 
+                    if (obj.charAt(pos + 2) != '-') break; // should not start with two -'s, because this is some seperation line
+                    pos += 2;
+                } 
             }
         }
         // make sure that the list is closed:
-        while (inList > 0) {
+        while (inList > 0) { // lists in lists not already supported, but if we will...
             obj.insert(obj.length(), "</li></ul>\n");
             inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
         }
