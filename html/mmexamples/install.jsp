@@ -89,7 +89,7 @@ You can return to this installation script any time.<br />
 
 </table>
 <hr />
-<a href="<mm:url page=".." />"> back </a>
+<a href="<mm:url page="." />"> back </a>
 </body>
 </html>
 </mm:cloud>
