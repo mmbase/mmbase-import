@@ -1376,7 +1376,11 @@ Version: MMBase build ${version}
     
   </target>
 
-  <target name="documentation" depends="taglib.doc,community.doc,docbookumentation" />
+  <target name="documentation" depends="taglib.doc,community.doc,docbookumentation">
+    <copy todir="${mmdocs.dir}/" >
+      <fileset dir="${source-html.dir}/mmdocs" />
+    </copy>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Clean the documentation directory                                   -->
