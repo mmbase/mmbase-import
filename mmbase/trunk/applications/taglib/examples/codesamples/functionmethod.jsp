@@ -3,4 +3,4 @@
     return "abracadabra";
   }
 %>
-<mm:function classname="THISPAGE" name="myFunction" />
+<mm:function set="THISPAGE" name="myFunction" />

@@ -27,7 +27,7 @@
 <tr><td colspan="2"> 
 There are more types of functions, than only those on a Node. A simple example
 can be based on a method in the current jsp. This is based on a keyword 'THISPAGE' for the
-'classname' attribute. Another example would be based on the 'set' ('set' means 'collection' and not
+'set' attribute. Other examples would be based on 'set' ('set' means 'collection' and not
 the opposite of 'get') attribute, but there are as yet no generally availabe such set-functions...
 </td></tr>
 <tr valign="top">

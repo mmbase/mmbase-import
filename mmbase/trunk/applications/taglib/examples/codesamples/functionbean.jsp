@@ -14,5 +14,5 @@ public static class MyClass {
 %>
 <mm:functioncontainer>
    <mm:param name="MyParameter">Kloink</mm:param>
-   <mm:function  classname="THISPAGE.MyClass" name="myfunction" />
+   <mm:function  classname="MyClass" name="myfunction" />
 </mm:functioncontainer>

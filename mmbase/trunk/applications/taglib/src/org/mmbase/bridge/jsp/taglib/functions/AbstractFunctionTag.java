@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.11 2004-11-03 18:19:32 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.12 2004-11-11 18:15:31 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -112,22 +112,22 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
             String set = functionSet.getString(this);
-            return FunctionFactory.getFunction(functionSet.getString(this), functionName);
+            if (set.equals(THISPAGE)) {                   
+                Class jspClass = pageContext.getPage().getClass();
+                Method method = MethodFunction.getFirstMethod(jspClass, functionName);
+                return FunctionFactory.getFunction(method, functionName);
+            } else {
+                return FunctionFactory.getFunction(set, functionName);
+            }
         } else if (functionClass != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL || functionSet != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
             String className = functionClass.getString(this);
-            if (className.startsWith(THISPAGE)) {
+            if (className.indexOf(".") == -1) {                
                 Class jspClass = pageContext.getPage().getClass();
-                if (className.equals(THISPAGE)) {                    
-                    Method method = MethodFunction.getFirstMethod(jspClass, functionName);
-                    return FunctionFactory.getFunction(method, functionName);
-                } else {
-                    String innerClassName = className.substring(THISPAGE.length() + 1);
-                    Class  clazz   = BeanFunction.getClass(jspClass, innerClassName);
-                    return FunctionFactory.getFunction(clazz, functionName);
-                }
+                Class  clazz   = BeanFunction.getClass(jspClass, className);
+                return FunctionFactory.getFunction(clazz, functionName);
             } else {
                 try {
                     Class clazz = Class.forName(className);
