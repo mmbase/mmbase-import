@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6 - Release Notes
+                     MMBase 1.6.2 - Release Notes
 ===================================================================
 
 ============
@@ -159,6 +159,11 @@ General Bug Fixes:
 ---------------------
 Application bug fixes:
 ---------------------
+
+[1.6.2]
+- Errors during installation of an application will be displayed in
+the resultpage. 
+
 [1.6.1]
 - Using comments in application files results in errors in the log:
   #4952 
@@ -184,7 +189,17 @@ MMCI Bug Fixes:
 ----------------
 
 [1.6.2]
-- #5568 getAllowedRelations(NodeManager nodeManager, String role, String direction) fails to allow relation between two same types 
+- #5568 getAllowedRelations(NodeManager nodeManager, String role,
+String direction) fails to allow relation between two same types 
+
+----------------
+RMMCI Bug Fixes:
+----------------
+
+[1.6.2]
+- improved support for casting (a nodemanager extends a node etc)
+- iterators are working
+- rmmci target has been added to the build.xml
 
 ----------------
 Taglib Bug Fixes:
@@ -241,6 +256,10 @@ Known Issues and Problems:
 ========================
 [1.6.2]
 - XXXX The jsp-editor update might also have solved the tomcat 4.0 issue?
+- Builder inheritance fails with
+  mysql-connector-java-3.0.6-stable-bin.jar, see bug #5968 for more information.
+- With ImageMagick 5.4.8 and jdk 1.4 uploading images can go wrong,
+  see bug #5877 for more information.
 
 [1.6.1]
 - No known issues solved
