@@ -18,7 +18,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -199,7 +199,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      * @param name The parameter name.
      * @param value The parameter value.
      * @throws IllegalArgumentValue when an invalid argument is supplied.
-     * @see #getParameter
+     * @see #getParameters
      */
     public void setParameter(String name, Object value) {
         if (name.equals(StringSearchConstraint.PARAM_FUZZINESS)
