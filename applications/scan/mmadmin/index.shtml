@@ -19,7 +19,7 @@
    		<FRAME SRC="/mmadmin/$PARAM3.shtml" name="main" scrolling="auto" marginwidth=1 marginheight=0>
 		</IF>
 		<IF $PARAM1==2>	
-   		<FRAME SRC="/mmdemo/$PARAM3.shtml" name="main" scrolling="auto" marginwidth=1 marginheight=0>
+   		<FRAME SRC="/mmexamples/index.html" name="main" scrolling="auto" marginwidth=1 marginheight=0>
 		</IF>
 		<IF $PARAM1==3>	
    		<FRAME SRC="/mmadmin/$PARAM3.shtml" name="main" scrolling="auto" marginwidth=1 marginheight=0>
