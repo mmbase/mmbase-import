@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.6 $ $Date: 2002-04-17 13:17:52 $
+ * @version $Revision: 1.7 $ $Date: 2002-10-07 17:20:58 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -34,18 +34,27 @@ public class XMLErrorHandler implements ErrorHandler {
     public static int NEVER = 4;
 
     private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
-    private int exceptionLevel = FATAL_ERROR;
-    private boolean logMessages = true;
+    private int exceptionLevel;
+    private boolean logMessages;
     private boolean warning = false;
     private boolean error = false;
     private boolean fatal = false;
 
     private StringBuffer messages = new StringBuffer();
 
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    static void reinitLogger() {
+        log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
+    }
+
+
     public XMLErrorHandler() {
         // default keep old behaviour
         logMessages = true;
-        exceptionLevel = FATAL_ERROR;
+        exceptionLevel = NEVER;
     }
 
     public XMLErrorHandler(boolean log, int exceptionLevel) {

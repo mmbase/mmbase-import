@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.20 2002-10-07 16:39:07 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.21 2002-10-07 17:20:58 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -53,7 +53,15 @@ public class XMLBasicReader  {
 
     private String xmlFilePath;
 
-
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    public static void reinitLogger() {
+        log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
+        XMLEntityResolver.reinitLogger();
+        XMLErrorHandler.reinitLogger();
+    }
 
     public XMLBasicReader(String path) {
         this(path, VALIDATE);
