@@ -21,8 +21,9 @@
   <p>
    Support for other languages can be added in
    [editwizard-home]/data/i18n, and of course also in the builder
-   xml's. Hard-coded texts in editwizard-xml's cannot yet be specified
-   in more than one language at the time.
+   xml's. Texts in the  editwizard-xml's can also be specified
+   in more than one language by use of the 'xml:lang' attribute on the
+   elements for which it would be logical.
   </p>
 	<table>
   <tr><td>
