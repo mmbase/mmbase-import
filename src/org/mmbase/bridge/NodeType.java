@@ -80,6 +80,6 @@ public interface NodeType {
      * @param order the field on which you want to sort
      * @param direction true=UP false=DOWN
      */
-    public Vector search(String where, String sorted, boolean direction);
+    public List search(String where, String sorted, boolean direction);
 
 }
