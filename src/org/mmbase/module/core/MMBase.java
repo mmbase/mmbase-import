@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.73 2002-10-09 14:33:20 eduard Exp $
+ * @version $Id: MMBase.java,v 1.74 2002-10-09 14:52:09 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -343,12 +343,13 @@ public class MMBase extends ProcessorModule  {
         sendmail=(SendMailInterface)getModule("sendmail");
         machineName=getInitParameter("MACHINENAME");
 
-        jdbc=(JDBCInterface)getModule("JDBC");
+        jdbc= (JDBCInterface) getModule("JDBC");
+        
 
-        if (multicasthost!=null) {
-            mmc=new MMBaseMultiCast(this);
+        if (multicasthost != null) {
+            mmc = new MMBaseMultiCast(this);
         } else {
-            mmc=new MMBaseChangeDummy(this);
+            mmc = new MMBaseChangeDummy(this);
         }
 
         builderpath = getInitParameter("BUILDERFILE");
@@ -435,6 +436,8 @@ public class MMBase extends ProcessorModule  {
      * @deprecated-now unused
      */
     public void shutdown() {
+        Logging.shutdown();
+        log.service("Shutting down MMBase");
     }
 
     /**
@@ -1235,11 +1238,15 @@ public class MMBase extends ProcessorModule  {
 	    if(databasename == null){
 		DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
 		// How do we know for sure that the JDBC.init() has been called first?
-		// the only way is by using the getModule, (little bit scary to use here)
-		JDBCInterface jdbcModule = (JDBCInterface) getModule("jdbc");
+		// the only way is by using the startModule, (little bit scary to use here)
+                Module m = (Module) jdbc;
+                if(!m.hasStarted()) {
+                    // STUPID
+                    m.startModule();
+                }
 		try {
 		    // dont use the getDirectConnection, upon failure, it will loop,....
-		    databaseConfig = lookup.getDatabaseConfig(jdbcModule.getDirectConnection(jdbcModule.makeUrl()));
+		    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
 		}
 		catch(java.sql.SQLException sqle) {
 		    log.error(sqle);
@@ -1385,4 +1392,5 @@ public class MMBase extends ProcessorModule  {
         }
         return true;
     }
+
 }
