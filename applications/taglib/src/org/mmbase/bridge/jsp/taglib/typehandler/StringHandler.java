@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.26 2004-02-25 23:13:39 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.27 2004-03-22 09:07:56 pierre Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -50,7 +50,7 @@ public class StringHandler extends AbstractTypeHandler {
             EnumHandler eh = new EnumHandler(tag, guiType);
             if (eh.isAvailable()) {
                 return eh.htmlInput(node, field, search);
-            }                
+            }
         }
         StringBuffer buffer = new StringBuffer();
         if(! search) {
@@ -121,7 +121,7 @@ public class StringHandler extends AbstractTypeHandler {
                         buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
                     }
                     buffer.append("\" />");
-                }        
+                }
             }
             return buffer.toString();
         } else { // in case of search
@@ -135,6 +135,7 @@ public class StringHandler extends AbstractTypeHandler {
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
+        String guiType = field.getGUIType();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldName.equals("owner")) {
             if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
@@ -144,7 +145,10 @@ public class StringHandler extends AbstractTypeHandler {
                 return false;
             }
         } else {
-            String guiType = field.getGUIType();
+            if (guiType.indexOf("confirmpassword") > -1) {
+                // do not store 'confirm password' fields
+                return true;
+            }
             if (guiType.indexOf('.') > 0) {
                 EnumHandler eh = new EnumHandler(tag, guiType);
                 if (eh.isAvailable()) {
@@ -155,6 +159,14 @@ public class StringHandler extends AbstractTypeHandler {
 
         fieldValue = tag.encode(fieldValue, field);
         if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
+            if (guiType.indexOf("password") > -1) {
+                String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
+                if (confirmValue!=null) {
+                    if (!confirmValue.equals(fieldValue)) {
+                        throw new JspTagException("Confirmation password not equal to new password value.");
+                    }
+                }
+            }
             node.setStringValue(fieldName,  fieldValue);
             return true;
         }
