@@ -851,8 +851,6 @@ Build-compiler: ${build.compiler}
     <antcall target="documentation" />
   </target>
 
-  </target>
-
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
