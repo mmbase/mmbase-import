@@ -4,13 +4,13 @@
 	- rawaudio related file. 
 */
 
-package nl.vpro.mmbase.util.media.audio;
+package org.mmbase.util.media.audio;
 
 import java.util.*;
 
 import org.mmbase.util.*;
-import nl.vpro.mmbase.util.media.MediaUtils;
-import nl.vpro.mmbase.util.media.audio.audioparts.*;
+import org.mmbase.util.media.MediaUtils;
+import org.mmbase.util.media.audio.audioparts.*;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
