@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.23 2003-09-03 20:08:18 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.24 2003-09-16 09:37:56 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -217,6 +217,9 @@ public class BasicQuery implements Query  {
             InsRel insrel = ((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
             BasicRelationStep step =  addRelationStep(insrel, otherNodeManager, relationDir);
             step.setRole(new Integer(r));
+            if (! cloud.hasNodeManager(role)) {
+                step.setAlias(role);
+            }
             if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, searchDir)) {
                 log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
             }
