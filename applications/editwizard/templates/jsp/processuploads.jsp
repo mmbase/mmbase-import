@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.17 2004-05-24 14:02:43 michiel Exp $
+     * @version  $Id: processuploads.jsp,v 1.18 2004-09-30 09:13:48 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -89,8 +89,10 @@ if (! ewconfig.subObjects.empty()) {
                     fileName = fullFileName.substring(last+1);
                 }
                 if (fi.get().length > 0) { // no need uploading nothing
-                  log.debug("Setting binary " + fi.get() + " " + fi.get().length + " " +  fileName + " " + fullFileName);
-                  wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName);  
+                  if (log.isDebugEnabled()) {
+                     log.debug("Setting binary " + fi.get() + " " + fi.get().length + " " +  fileName + " " + fullFileName);
+                  }
+                  wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName, fi.getContentType());
                   fileCount++;
                 } 
             }
