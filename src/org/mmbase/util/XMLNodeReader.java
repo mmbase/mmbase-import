@@ -45,6 +45,7 @@ public class XMLNodeReader  {
     public XMLNodeReader(String filename,String applicationpath,MMBase mmbase) {
         try {
             parser = new DOMParser();
+	    // are the lines below generic?
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             EntityResolver resolver = new XMLEntityResolver();
@@ -54,20 +55,21 @@ public class XMLNodeReader  {
             document = parser.getDocument();
             this.applicationpath=applicationpath;
             /*
-                System.out.println("*** START XML APPLICATION READER FOR : "+filename);
-                System.out.println("ExportSource="+getExportSource());
-                System.out.println("TimeStamp="+getTimeStamp());
-                System.out.println("*** END XML APPLICATION READER FOR : "+filename);
+	      System.out.println("*** START XML APPLICATION READER FOR : "+filename);
+	      System.out.println("ExportSource="+getExportSource());
+	      System.out.println("TimeStamp="+getTimeStamp());
+	      System.out.println("*** END XML APPLICATION READER FOR : "+filename);
             */
         } catch(Exception e) {
+	    // argh.. no distinction between different type of error messages?
             log.error(Logging.stackTrace(e));
         }
     }
 
 
     /**
-    *
-    */
+     *
+     */
     public String getExportSource() {
         Vector nodes=new Vector();
         Node n1=document.getFirstChild();
@@ -81,13 +83,13 @@ public class XMLNodeReader  {
                 return(n2.getNodeValue());
             }
         }
-        return(null);
+        return null;
     }
 
 
     /**
-    *
-    */
+     *
+     */
     public int getTimeStamp() {
         Vector nodes=new Vector();
         Node n1=document.getFirstChild();
@@ -104,117 +106,124 @@ public class XMLNodeReader  {
                     //int times=DateSupport.parsedatetime(n2.getNodeValue());
                     return times;
                 } catch (java.text.ParseException e) {
+		    log.warn("error retrieving timestamp: " + Logging.stackTrace(e));
                     return -1;
                 }
 
             }
-    }
+	}
         return -1;
     }
 
     /**
-    *
-    */
+     *
+     */
     public Vector getNodes(MMBase mmbase) {
-    Vector nodes=new Vector();
-    Node n1=document.getFirstChild();
-    if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-        n1=n1.getNextSibling();
-    }
-    while (n1!=null) {
-        MMObjectBuilder bul=mmbase.getMMObject(n1.getNodeName());
-        if (bul!=null) {
-            Node n2=n1.getFirstChild();
-            while (n2!=null) {
-                if (n2.getNodeName().equals("node")) {
-                    NamedNodeMap nm=n2.getAttributes();
-                    if (nm!=null) {
-                        Node n4=nm.getNamedItem("owner");
-                        MMObjectNode newnode=bul.getNewNode(n4.getNodeValue());
-                        n4=nm.getNamedItem("alias");
-                        if (n4!=null) newnode.setAlias(n4.getNodeValue());
-                        n4=nm.getNamedItem("number");
-                        try {
-                            int num=Integer.parseInt(n4.getNodeValue());
+	Vector nodes=new Vector();
+	Node n1=document.getFirstChild();
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+	    n1=n1.getNextSibling();
+	}
+	while (n1!=null) {
+	    MMObjectBuilder bul=mmbase.getMMObject(n1.getNodeName());
+	    if (bul!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+		    if (n2.getNodeName().equals("node")) {
+			NamedNodeMap nm=n2.getAttributes();
+			if (nm!=null) {
+			    Node n4=nm.getNamedItem("owner");
+			    MMObjectNode newnode=bul.getNewNode(n4.getNodeValue());
+			    n4=nm.getNamedItem("alias");
+			    if (n4!=null) newnode.setAlias(n4.getNodeValue());
+			    n4=nm.getNamedItem("number");
+			    try {
+				int num=Integer.parseInt(n4.getNodeValue());
 
-                            newnode.setValue("number",num);
-                        } catch(Exception e) {}
-                        Node n5=n2.getFirstChild();
-                        while (n5!=null) {
-                            String key=n5.getNodeName();
-                            if (!key.equals("#text")) {
-                                Node n6=n5.getFirstChild();
-                                String value="";
-                                if (n6!=null) value=n6.getNodeValue();
-                                int type=bul.getDBType(key);
-                                if (type!=-1) {
-                                    if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
-                                        if (value==null) value="";
-                                        newnode.setValue(key,value);
-                                    } 
-                                    else if (type==FieldDefs.TYPE_NODE) {
-                                        try {
-                                            newnode.setValue(key,Integer.parseInt(value));
-                                        } 
-                                        catch(Exception e) {
-                                            newnode.setValue(key,-1);
-                                        }
-                                    } 
-                                    else if (type==FieldDefs.TYPE_INTEGER) {
-                                        try {
-                                            newnode.setValue(key,Integer.parseInt(value));
-                                        } 
-                                        catch(Exception e) {
-                                            newnode.setValue(key,-1);
-                                        }
-                                    } 
-                                    else if (type==FieldDefs.TYPE_FLOAT) {
-                                        try {
-                                            newnode.setValue(key,Float.parseFloat(value));
-                                        } 
-                                        catch(Exception e) {
-                                            newnode.setValue(key,-1);
-                                        }
-                                    } 
-                                    else if (type==FieldDefs.TYPE_DOUBLE) {
-                                        try {
-                                            newnode.setValue(key,Double.parseDouble(value));
-                                        } 
-                                        catch(Exception e) {
-                                            newnode.setValue(key,-1);
-                                        }
-                                    }
-                                    else if (type==FieldDefs.TYPE_LONG) {
-                                        try {
-                                            newnode.setValue(key,Long.parseLong(value));
-                                        } 
-                                        catch(Exception e) {
-                                            newnode.setValue(key,-1);
-                                        }
-                                    } 
-                                    else if (type==FieldDefs.TYPE_BYTE) {
-                                        NamedNodeMap nm2=n5.getAttributes();
-                                        Node n7=nm2.getNamedItem("file");
-                                        newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
-                                    } 
-                                    else {
-                                        log.error("FieldDefs not found for #" + type + " was not known for field with name: '"+key+"' and with value: '"+value+"'");
-                                    }
-                                }
-                            }
-                            n5=n5.getNextSibling();
-                        }
-                        nodes.addElement(newnode);
-                    }
-                }
-                n2=n2.getNextSibling();
-            }
-        } else {
-            log.error("XMLNodeReader can't access builder : "+bul);
-        }
-        n1=n1.getNextSibling();
-    }
-    return(nodes);
+				newnode.setValue("number",num);
+			    } catch(Exception e) {}
+			    Node n5=n2.getFirstChild();
+			    while (n5!=null) {
+				String key=n5.getNodeName();
+				if (!key.equals("#text")) {
+				    Node n6=n5.getFirstChild();
+				    String value="";
+				    if (n6!=null) value=n6.getNodeValue();
+				    int type=bul.getDBType(key);
+				    if (type!=-1) {
+					if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
+					    if (value==null) value="";
+					    newnode.setValue(key,value);
+					} 
+					else if (type==FieldDefs.TYPE_NODE) {
+					    try {
+						newnode.setValue(key,Integer.parseInt(value));
+					    } 
+					    catch(Exception e) {
+						log.warn("error setting node-field " + e);
+						newnode.setValue(key,-1);
+					    }
+					} 
+					else if (type==FieldDefs.TYPE_INTEGER) {
+					    try {
+						newnode.setValue(key,Integer.parseInt(value));
+					    } 
+					    catch(Exception e) {
+						log.warn("error setting integer-field " + e);
+						newnode.setValue(key,-1);
+					    }
+					} 
+					else if (type==FieldDefs.TYPE_FLOAT) {
+					    try {
+						newnode.setValue(key,Float.parseFloat(value));
+					    } 
+					    catch(Exception e) {
+						log.warn("error setting float-field " + e);
+						newnode.setValue(key,-1);
+					    }
+					} 
+					else if (type==FieldDefs.TYPE_DOUBLE) {
+					    try {
+						newnode.setValue(key,Double.parseDouble(value));
+					    } 
+					    catch(Exception e) {
+						log.warn("error setting double-field " + e);
+						newnode.setValue(key,-1);
+					    }
+					}
+					else if (type==FieldDefs.TYPE_LONG) {
+					    try {
+						newnode.setValue(key,Long.parseLong(value));
+					    } 
+					    catch(Exception e) {
+						log.warn("error setting long-field " + e);
+						newnode.setValue(key,-1);
+					    }
+					} 
+					else if (type==FieldDefs.TYPE_BYTE) {
+					    NamedNodeMap nm2=n5.getAttributes();
+					    Node n7=nm2.getNamedItem("file");
+					    newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
+					} 
+					else {
+					    log.error("FieldDefs not found for #" + type + " was not known for field with name: '"+key+"' and with value: '"+value+"'");
+					}
+				    }
+				}
+				n5=n5.getNextSibling();
+			    }
+			    nodes.addElement(newnode);
+			}
+		    }
+		    n2=n2.getNextSibling();
+		}
+	    } 
+	    else {
+		log.error("Could not find builder with name: "+n1.getNodeName()+"'");
+	    }
+	    n1=n1.getNextSibling();
+	}
+	return nodes;
     }
 
 
@@ -226,9 +235,13 @@ public class XMLNodeReader  {
             FileInputStream scan = new FileInputStream(bfile);
             int len=scan.read(buffer,0,filesize);
             scan.close();
-        } catch(FileNotFoundException e) {
-            log.error("error getfile : " + filename);
-        } catch(IOException e) {}
+        } 
+	catch(FileNotFoundException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+        } 
+	catch(IOException e) {
+            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
+	}
         return(buffer);
     }
 }
