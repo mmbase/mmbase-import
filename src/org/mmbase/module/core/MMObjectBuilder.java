@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.270 2004-10-01 08:45:17 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.271 2004-10-08 14:56:34 keesj Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -492,7 +492,9 @@ public class MMObjectBuilder extends MMTable {
             // that imediate 'select' after 'insert' will be correct'.
             QueryResultCache.invalidateAll(this);
 
-            if (n >= 0) safeCache(new Integer(n),node);
+            if (n >= 0) {
+            	node = safeCache(new Integer(n),node);
+            } 
             String alias = node.getAlias();
             if (alias != null) createAlias(n,alias);    // add alias, if provided
             return n;
@@ -817,17 +819,26 @@ public class MMObjectBuilder extends MMTable {
     public int getObjectType() {
         return oType;
     }
+    
+	/**
+	 * Stores a node in the cache provided the cache is not write locked.
+	 * @return a valid node. If the node already was in the cache, the cached node is returned.   
+	 * In that case the node given as parameter should become invalid
+	 */
+	public MMObjectNode safeCache(Integer n, MMObjectNode node) {
+		MMObjectNode retval = (MMObjectNode)nodeCache.get(n);
+		if (retval != null) {
+			return retval;
+		} else {
+			synchronized (nodeCache) {
+				if (cacheLocked == 0) {
+					nodeCache.put(n, node);
+				}
+			}
+			return node;
+		}
 
-    /**
-     * Stores a node in the cache provided the cache is not locked.
-     */
-    public void safeCache(Integer n, MMObjectNode node) {
-        synchronized(nodeCache) {
-            if(cacheLocked == 0) {
-                nodeCache.put(n, node);
-            }
-        }
-    }
+	}
 
     /**
      * Locks the node cache during the commit of a node.
@@ -1090,7 +1101,7 @@ public class MMObjectBuilder extends MMTable {
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      * @throws RuntimeException If the node does not exist (not always true!)
      */
-    public synchronized MMObjectNode getNode(int number, boolean useCache) {
+    public MMObjectNode getNode(int number, boolean useCache) {
         if (number ==- 1) {
             log.warn(" (" + tableName + ") nodenumber == -1");
             return null;
@@ -1135,7 +1146,7 @@ public class MMObjectBuilder extends MMTable {
                 node = mmb.getStorageManager().getNode(builder, number);
                 // store in cache if indicated to do so
                 if (useCache) {
-                    safeCache(numberValue, node);
+                    node = safeCache(numberValue, node);
                 }
                 return node;
             } catch(StorageException se) {
@@ -2186,7 +2197,7 @@ public class MMObjectBuilder extends MMTable {
                 // can someone tell me what this has to do?
                 // clear the changed signal
                 node.clearChanged(); // huh?
-                safeCache(number, node);
+                node = safeCache(number, node);
                 cachePutCount++;
             }
         }
