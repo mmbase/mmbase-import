@@ -21,12 +21,12 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.32 2003-03-21 11:53:44 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.33 2003-11-10 21:18:02 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
     // logging
-    private static Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class);
 
     // MMBase module
     private MMBase mmbase;
