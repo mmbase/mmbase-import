@@ -13,7 +13,7 @@
   |
   <a href="<mm:url page="query.jsp" />" >query</a>
   |
-  <a href="<mm:url page="query2.jsp" />" >query 2</a>
+  <a href="<mm:url page="query2.jsp" />" >advanced query</a>
   |
   <a href="<mm:url page="variables.jsp" />" >variables</a>
   |

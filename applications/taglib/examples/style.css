@@ -19,9 +19,9 @@ table.search {
   position: relative;
 }
 table.search input.small { 
-  width: 10ex;
+  width: 100%;
 }
 
 table.search input { 
-  width: auto;
+  width: 10ex;
 }
