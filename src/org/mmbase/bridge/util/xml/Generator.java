@@ -10,10 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util.xml;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
-
+import org.w3c.dom.*;
 import org.mmbase.bridge.*;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.8 2002-05-15 14:42:07 eduard Exp $
+ * @version $Id: Generator.java,v 1.9 2002-05-30 15:37:14 eduard Exp $
  */
 public  class Generator {
    
@@ -44,7 +43,7 @@ public  class Generator {
      * @param An MMBase bridge Field.
      * @return The field which added.
      */
-    public Element addField(Node node, Field field) {
+    public Element addField(org.mmbase.bridge.Node node, Field field) {
         Element rootElement = getRootElement();
         if(rootElement == null) {
             rootElement = addRootElement(node);
@@ -65,7 +64,7 @@ public  class Generator {
      * @param An MMBase bridge Node.
      * @return The node which added.
      */
-    public Element addNode(Node node) {
+    public Element addNode(org.mmbase.bridge.Node node) {
         Element rootElement = getRootElement();
         if(rootElement == null) {
             rootElement = addRootElement(node);
@@ -112,7 +111,7 @@ public  class Generator {
      * Adds a whole MMBase bridge NodeList to the DOM Document.
      * @param An MMBase bridge NodeList.
      */
-    public void addNodeList(NodeList nodes) {
+    public void addNodeList(org.mmbase.bridge.NodeList nodes) {
         NodeIterator i = nodes.nodeIterator();
         while(i.hasNext()) {
             addNode(i.nextNode());
@@ -195,7 +194,7 @@ public  class Generator {
         return getXMLElement(tree, "/objects");
     }
 
-    private Element getNodeElement(Element rootElement, Node node) {
+    private Element getNodeElement(Element rootElement, org.mmbase.bridge.Node node) {
         return getXMLElement(rootElement, "object[@id='" + node.getNumber() + "']");
     }
 
@@ -203,7 +202,7 @@ public  class Generator {
         return getXMLElement(nodeElement, "field[@name='" + field.getName() + "']");
     }
 
-    private Element addRootElement(Node node) {        
+    private Element addRootElement(org.mmbase.bridge.Node node) {        
         Element rootElement = tree.createElement("objects");
         org.w3c.dom.Attr attr = tree.createAttribute("root");
         attr.setValue("" + node.getNumber());
@@ -212,7 +211,7 @@ public  class Generator {
         return rootElement;
     }
 
-    private Element addNodeElement(Element rootElement, Node node) {
+    private Element addNodeElement(Element rootElement, org.mmbase.bridge.Node node) {
         Element nodeElement = tree.createElement("object");
 
         // the id...
@@ -229,7 +228,7 @@ public  class Generator {
         return nodeElement;
     }
 
-    private Element addFieldElement(Element nodeElement, Node node, Field field) {
+    private Element addFieldElement(Element nodeElement, org.mmbase.bridge.Node node, Field field) {
         Element fieldElement = tree.createElement("field");
 
         org.w3c.dom.Attr attr;
@@ -237,7 +236,7 @@ public  class Generator {
         attr = tree.createAttribute("name");
         attr.setValue(field.getName());
         fieldElement.setAttributeNode(attr);
-
+/*
         // position create
         attr = tree.createAttribute("position-create");
         attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_CREATE)));
@@ -257,7 +256,7 @@ public  class Generator {
         attr = tree.createAttribute("position-list");
         attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_LIST)));
         fieldElement.setAttributeNode(attr);
-
+*/
         // format
         attr = tree.createAttribute("format");
         attr.setValue(getFieldFormat(node, field));
@@ -270,7 +269,7 @@ public  class Generator {
                 // only fill the field, if field has a value..
                 if(doc!= null) {                    
                     // put the xml inside the field...
-                    fieldElement.appendChild(importDocument(tree, doc));
+                    fieldElement.appendChild(importDocument(fieldElement, doc));
                 }
             break;
             case Field.TYPE_BYTE:
@@ -283,12 +282,101 @@ public  class Generator {
         return fieldElement;
     }
     
-    private org.w3c.dom.Node importDocument(Document document, Document toImport) {
-        // TODO: we need to put it inside a namespace
-        return document.importNode(toImport.getDocumentElement(), true); 
+    private org.w3c.dom.Element importDocument(org.w3c.dom.Element fieldElement, Document toImport) {
+        // Element body = document.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "SOAP-ENV:Body");
+        String namespace = toImport.getDoctype().getSystemId();
+        String prefix = toImport.getDocumentElement().getTagName() + ":";        
+        log.debug("using namepace: " + namespace + " with prefix: " + prefix);        
+        return importElement(fieldElement, toImport.getDocumentElement(), namespace, prefix);
     }
 
-    private String getFieldFormat(Node node, Field field) {
+    private org.w3c.dom.Element importElement(org.w3c.dom.Element parent, org.w3c.dom.Element toImport, String namespace, String prefix) {
+        // first create the Element
+        Element current = parent.getOwnerDocument().createElementNS(namespace, prefix + toImport.getTagName());
+        
+        // add all the attributs..
+        org.w3c.dom.NamedNodeMap namednodes = toImport.getAttributes();        
+        for(int i=0; i < namednodes.getLength(); i++) {
+            org.w3c.dom.Node namesnode = namednodes.item(i);
+            switch(namesnode.getNodeType()) {
+                case org.w3c.dom.Node.ATTRIBUTE_NODE:
+                    Attr attr = (Attr)namesnode;
+                    if(attr.getNamespaceURI() == null) {
+                        String name = attr.getName();
+                        // when there is a : inside the name, assume that it _should_ be a namespace :p
+                        if(name.indexOf(':') != -1) {
+                            // we have somekinda namespace thingie...
+                            current.setAttribute(attr.getName(), attr.getValue());
+                        }
+                        else {
+                            current.setAttributeNS(namespace, prefix + attr.getName(), attr.getValue());
+                        }                        
+                    }
+                    else {
+                        current.setAttribute(attr.getName(), attr.getValue());
+                    }                    
+                break;
+                case org.w3c.dom.Node.CDATA_SECTION_NODE:
+                case org.w3c.dom.Node.COMMENT_NODE:
+                case org.w3c.dom.Node.ELEMENT_NODE:
+                case org.w3c.dom.Node.TEXT_NODE:
+                case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE :
+                case org.w3c.dom.Node.DOCUMENT_NODE:
+                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE:
+                case org.w3c.dom.Node.ENTITY_NODE:
+                case org.w3c.dom.Node.ENTITY_REFERENCE_NODE:
+                case org.w3c.dom.Node.NOTATION_NODE:
+                case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE:
+                    throw new RuntimeException("type #" + namesnode.getNodeType() +"not implemented is not implemented");
+                default:
+                    throw new RuntimeException("type #" + namesnode.getNodeType() + "was unknown!");
+            }
+        }
+        // add to the parent
+        parent.appendChild(current);        
+        
+        // add all the childnodes...
+        org.w3c.dom.Node childnode = toImport.getFirstChild();
+        while(childnode != null) {
+             switch(childnode.getNodeType()) {              
+                case org.w3c.dom.Node.CDATA_SECTION_NODE:
+                    // throw new RuntimeException("not implemented");
+                    CDATASection cdata = current.getOwnerDocument().createCDATASection(((CDATASection)childnode).getData());
+                    current.appendChild(cdata);
+                break;
+                case org.w3c.dom.Node.COMMENT_NODE:
+                    Comment comment = current.getOwnerDocument().createComment(((Comment)childnode).getData());
+                    current.appendChild(comment);
+                break;                    
+                case org.w3c.dom.Node.ELEMENT_NODE:
+                    importElement(current, (Element)childnode, namespace, prefix);
+                break;
+                case org.w3c.dom.Node.TEXT_NODE:
+                    Text text = current.getOwnerDocument().createTextNode(((Text)childnode).getData()); 
+                    current.appendChild(text);
+                break;
+                
+                case org.w3c.dom.Node.ATTRIBUTE_NODE:
+                case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE :
+                case org.w3c.dom.Node.DOCUMENT_NODE:
+                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE:
+                case org.w3c.dom.Node.ENTITY_NODE:
+                case org.w3c.dom.Node.ENTITY_REFERENCE_NODE:
+                case org.w3c.dom.Node.NOTATION_NODE:
+                case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE:
+                    throw new RuntimeException("type #" + childnode.getNodeType() +"not implemented is not implemented");
+                default:
+                    throw new RuntimeException("type #" + childnode.getNodeType() + "was unknown!");
+            }
+            // go to nextone..
+            childnode = childnode.getNextSibling();
+        }
+        // return the Element...
+        return current;
+    }
+
+
+    private String getFieldFormat(org.mmbase.bridge.Node node, Field field) {
         switch (field.getType()) {
             case Field.TYPE_XML:
                 return "xml";
@@ -319,7 +407,7 @@ public  class Generator {
             case Field.TYPE_BYTE:
                 return "bytes";
             default:
-                return "unknown";
+                throw new RuntimeException("could not find field-type for:" + field.getType() + " for field: " + field);
         }
     }
 
@@ -338,7 +426,7 @@ public  class Generator {
 
         // we have to know what the relation type was...
         Cloud cloud = relation.getCloud();
-        Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
+        org.mmbase.bridge.Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
 
 
         org.w3c.dom.Attr attr;
