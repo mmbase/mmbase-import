@@ -17,7 +17,7 @@ Reusing it in the same page:
    <mm:field name="title" />
 </mm:node>
 <hr />
-<a href="context.jsp">back</a>
+<a href="context4.jsp">next page</a>
 </mm:cloud>
 </body>
 </html>
