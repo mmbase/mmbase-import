@@ -39,6 +39,9 @@ Obsolete Features:
   referencing ObjectTypes should reference TypeDef instead. This includes the
   typedef.xml builder configuration file.
 
+- The storage configuration files were originally located in the mmbase.jar.
+  In 1.8, these files have been moved to the storage/database directory in the mmbase config directory. Files that override the storage configuration need to be moved to the new directory.
+
 - The 'Config' module and the 'AppTool' utility have been dropped from the
   code. Both tools provided visual input regarding configuration or
   application makeup, but were concidered outdated.
@@ -84,22 +87,22 @@ Know Issues and Problems:
 
 - If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new'
   web.xml or resin 3), then the new EL (Expression Language) syntax
-  collides with the Expression language of mmbase taglib. 
+  collides with the Expression language of mmbase taglib.
 
   MMBase Taglib JSP's using the ${} syntax might not work then. Often
   the {} can be avoided, otherwise the only option is to add <%@page
-  isELIgnored="true" %> to the page. 
+  isELIgnored="true" %> to the page.
 
   The generic JSP-editors in /mmbase/edit/basic could not be fixed to
   work with and without EL. When you want to use these editors in a EL
   environment isELIgnored must manually be added to
   /mmbase/edit/basic/page_base_functionality.jsp (Unfortunately it
   cannot always be present, because this setting can cause errors in a
-  JSP1 environment). 
+  JSP1 environment).
 
   The EL and MMBase Taglib expressions languages are actually very
   similar to each other. We will try to make MMBase Taglib compatible
-  (perhaps optionally so) with EL in a next release. 
+  (perhaps optionally so) with EL in a next release.
 
 - The old database support classes are still in this release, but are
   not fully tested. These are deprecated please DO NOT use them
@@ -143,7 +146,7 @@ Know Issues and Problems:
 
 - Sometimes it is needed to copy xml-apis.jar to
   <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing
-  xslt-transformation or if you're using the editwizards. 
+  xslt-transformation or if you're using the editwizards.
 
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
