@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.5 2000-10-16 21:54:57 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.6 2000-10-16 22:22:18 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -16,7 +16,7 @@
 # change this to your MMBase-dir
 MMBASE_HOME=..
 # change this to your Tomcat directory
-TOMCAT_HOME=/home/gerard/data/apache/jakarta/build/tomcat
+TOMCAT_HOME=/usr/local/java/apache/jakarta-tomcat
 
 # change this to your mmbase path where the classes are or to the mmbase.jar
 MMBASE_JAR=$MMBASE_HOME/lib/mmbase.jar
@@ -27,7 +27,7 @@ MMBASE_HTML=webapps/ROOT
 # change this to the location where you'd like to see the mmbase.log
 MMBASE_LOG=$MMBASE_HOME/log/mmbase.log
 # change this to your JDBC-driver
-JDBC_CLASSPATH=/usr/local/java/vpro/orion/lib/mysql_uncomp.jar
+JDBC_CLASSPATH=/usr/local/lib/java/mysql.jar
 
 if [ -f $HOME/.tomcatrc ] ; then 
   . $HOME/.tomcatrc
