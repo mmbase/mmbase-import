@@ -579,6 +579,7 @@ Change directory to ${build.dir}/orion and run:
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
+  		  	 maxmemory="100M"
              bottom="MMBase 2001">
       <classpath>
         <fileset dir="${build.dir}/mmbase/lib">
