@@ -66,7 +66,6 @@ public class PostArea {
 
 
 	config  = parent.getPostAreaConfig(getName());
-	log.info("POST AREA CONFIG = "+getName()+" "+config);
 
         this.viewcount = node.getIntValue("viewcount");
         if (viewcount == -1) viewcount = 0;
@@ -455,7 +454,6 @@ public class PostArea {
         }
 
         long end = System.currentTimeMillis();
-        //log.info("TIME="+start+" "+end+" "+(end-start));
     }
 
     /**
@@ -576,7 +574,6 @@ public class PostArea {
      */
     public void resort(PostThread child) {
         // move to the top of the queue
-        log.info("POSTTHREADS=" + postthreads + " CHILD=" + child);
         if (postthreads.remove(child)) {
             if (child.getState().equals("pinned")) {
                 postthreads.add(0, child);

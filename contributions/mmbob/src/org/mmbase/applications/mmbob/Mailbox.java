@@ -132,7 +132,7 @@ public class Mailbox {
 			if ( viewstate == 0 ) {
 				messageunreadcount = messageunreadcount + 1;
 			}
-			log.info ("p="+parent.getLastSessionEnd()+" c="+node.getIntValue("createtime"));
+			//log.info ("p="+parent.getLastSessionEnd()+" c="+node.getIntValue("createtime"));
 			if (parent.getLastSessionEnd() < node.getIntValue("createtime")) messagenewcount =  messagenewcount + 1;
 		}
 	}

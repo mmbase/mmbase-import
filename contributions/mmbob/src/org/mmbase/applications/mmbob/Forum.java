@@ -85,7 +85,6 @@ public class Forum {
 
 	// get out config node
 	config = ForumManager.getForumConfig(name);
-	log.info("MY CONFIG = "+config);
 
         // read postareas
         preCachePosters();
@@ -247,7 +246,6 @@ public class Forum {
      * @return <code>true</code>
      */
     public boolean saveDirect() {
-	log.info("SAVE DIRECT = "+node);
 	node.commit();
         return true;
     }
