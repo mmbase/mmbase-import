@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.5 2002-04-16 15:38:54 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.6 2002-04-16 16:41:49 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -42,7 +42,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     /**
      * Format attribute used for displaying the dates.
      */
-    private String format;
+    private DateFormat dateFormat;
     
     /**
      * Fast way to find the day number of a day
@@ -81,10 +81,35 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         this.time = getAttributeValue(time);
     }
     
-    public void setFormat(String format) throws JspTagException {
-        this.format = getAttributeValue(format);
+    public void setFormat(String f) throws JspTagException {
+        String format = getAttributeValue(f);
+        Locale locale; 
+                       
+        LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
+        if (localeTag != null) {
+            locale = localeTag.getLocale();
+        } else {
+            locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
+        }              
+
+        // symbolic formats. Perhaps will be moved to another attribute or so.
+        if (format.charAt(0) == ':') {
+            log.debug("found symbolic format");
+            if (format.charAt(1) == '.') {
+                dateFormat = DateFormat.getTimeInstance(getDateFormatStyle(format.substring(2)), locale);
+            } else if (format.indexOf('.') == -1) {
+                dateFormat = DateFormat.getDateInstance(getDateFormatStyle(format.substring(1)), locale);
+            } else {
+                int i = format.indexOf('.');
+                dateFormat = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)), 
+                                                            getDateFormatStyle(format.substring(i+1)), locale);
+            }
+        } else {
+            dateFormat = new SimpleDateFormat(format, locale);
+        }
 
     }
+    
     
     public void setInputformat(String inputformat) throws JspTagException {
         this.inputformat = getAttributeValue(inputformat);
@@ -112,11 +137,9 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }        
-        // Strange, release is not always invoked.
-        time = null;
-        inputformat = null;
-        offset = null;
-        format = null;
+        time = null; // time variable is set without use of setTime,
+                     // precautionally we set it to null here. I don't
+                     // think it is really needed.
         return helper.doAfterBody();
     }
     
@@ -124,7 +147,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         time = null;
         inputformat = null;
         offset = null;
-        format = null;
+        dateFormat = null;
     }
        
 
@@ -155,60 +178,35 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      */
     private String evaluateTime() throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.debug("TIME="+time+" OFFSET="+offset+" FORMAT="+format+" INPUTFORMAT="+inputformat);
+            log.debug("TIME="+time+" OFFSET="+offset+" FORMAT="+dateFormat+" INPUTFORMAT="+inputformat);
         }
-        DateFormat dateFormat = null;
-        if (format != null) {            
-            Locale locale = Locale.getDefault();
-                       
-            LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
-            if (localeTag != null) {
-                locale = localeTag.getLocale();
-            } else {
-                locale = Locale.getDefault();
-            }           
-
-            if (format.charAt(0) == ':') {
-                log.debug("found symbolic format");
-                if (format.charAt(1) == '.') {
-                    dateFormat = DateFormat.getTimeInstance(getDateFormatStyle(format.substring(2)), locale);
-                } else if (format.indexOf('.') == -1) {
-                    dateFormat = DateFormat.getDateInstance(getDateFormatStyle(format.substring(1)), locale);
-                } else {
-                    int i = format.indexOf('.');
-                    dateFormat = DateFormat.getDateTimeInstance(getDateFormatStyle(format.substring(1, i)), 
-                                                               getDateFormatStyle(format.substring(i+1)), locale);
-                }
-            } else {
-                dateFormat = new SimpleDateFormat(format, locale);
-            }
-        }
-        
 
         Date date = null; 
         // If the time attribute is not set, check if referid is used, otherwise check if the parent set the time.
         // Otherwise use current time
-        if(time==null) {
-            try {
-                if(getReferid()!=null) {
-                    time = (String)getString(getReferid());
-                } else {
-                    Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
+        if(time == null) {
+
+            if(getReferid() != null) { // try to get it from other time tag
+                time = getString(getReferid());
+            } else {                   // try to get it from parent writer.
+                Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null, false);
+                if (w != null) {
                     time = "" + w.getWriterValue();
                 }
-            } catch (Exception e) {
-                log.debug(e);
             }
-            if(time==null) {
+            if(time == null) { // still not found? Take current time.
                 date = new Date();
             }
-        } else {        
+        } else { // time was given in attribute
+
             // Is the time given in second from EPOC (UTC)?
             try {
                 long timeFromEpoc = Long.parseLong(time);
                 date = new Date(timeFromEpoc*1000);
             } catch (NumberFormatException nfe) {
                 // perhaps it was a keyWord... 
+                // this will be explored hereafter.
+                // TODO Should we depend on exceptions? I think this is slow (?), and also ugly (though that is a matter of taste).
             }
         }
         
@@ -257,15 +255,15 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         }
         
         // Calculate the offset
-        if(offset!=null) {
+        if(offset != null) {
             long calculatedDate = date.getTime();
             long os = Long.parseLong(offset)*1000;
-            date = new Date(calculatedDate+os);
+            date = new Date(calculatedDate + os);
         }
         
-        if (format==null) {
+        if (dateFormat == null) {
             // If no format is specifyd, we return the time in second from EPOC (UTC)
-            return ""+date.getTime()/1000;
+            return "" + date.getTime()/1000;
         } else {
             return dateFormat.format(date);
         }
