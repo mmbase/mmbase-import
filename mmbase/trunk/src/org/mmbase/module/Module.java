@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.36 $ $Date: 2002-04-19 12:03:04 $
+ * @version $Revision: 1.37 $ $Date: 2002-09-05 11:16:16 $
  */
 public abstract class Module {
 
@@ -362,7 +362,7 @@ public abstract class Module {
      * @return a reference to a <code>Module</code>, or <code>null</code> if the
      *      module does not exist or is inactive.
      */
-    public static Object getModule(String name, boolean startOnLoad) {
+    synchronized public static Object getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules==null) {
             modules=loadModulesFromDisk();
@@ -439,7 +439,8 @@ public abstract class Module {
                             String cname=parser.getClassFile();
                             // try starting the module and give it its properties
                             try {
-                                Class newclass=Class.forName(cname);
+                                log.service("Loading module " + bname + " with class " + cname);
+                                Class newclass = Class.forName(cname);
                                 Object mod = newclass.newInstance();
                                 if (mod!=null) {
                                     results.put(bname,mod);
