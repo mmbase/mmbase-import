@@ -12,14 +12,14 @@ package org.mmbase.storage;
 /**
  * This exception gets thrown when something goes wrong in the storage layer.
  * @todo This exception implements a few constructors also found in java 1.4.
- * These implementations need be adjusted for java 1.4 to enable excpetion chaining.
+ * These implementations need be adjusted for java 1.4 to enable exception chaining.
  * To adjust, replace the constructor bodies with the 1.4 commented-out code (so that these
  * tasks are delegated to Exception), and remove the private field cause and the methods
  * initCause() and getCause();
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.1 2003-07-21 09:31:02 pierre Exp $
+ * @version $Id: StorageException.java,v 1.2 2003-08-04 14:23:20 pierre Exp $
  */
 public class StorageException extends Exception {
 

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.19 2003-08-04 13:28:17 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.20 2003-08-04 14:23:20 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -202,18 +202,16 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    abstract public int createKey() throws StorageException;
+    public int createKey() throws StorageException {
+        return createKeyFromNumberTable();
+    }
 
-    // create key using number table
-    // use schemes???
+    //  create key using number table
+    //  maybe we should use schemes ??? 
     //
-    //  GET_CURRENT_NUMBER = SELECT max({1}) FROM {0}
-    //  CREATE_SEQUENCE = CREATE TABLE {0}_numberTable {1] {2}
-    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_numberTable ({1}) VALUES ({2}) 
     //  UPDATE_SEQUENCE  =  UPDATE {0}_numberTable SET {1} = {1} +1
     //  GET_SEQUENCE == SELECT {1} FROM {0}_numberTable
-    
-    private int createKeyFromNumberTable () throws StorageException {
+    private int createKeyFromNumberTable() throws StorageException {
         try {
             Scheme scheme = new Scheme(factory, "UPDATE {0}_numberTable SET {1} = {1} +1");
             String query = scheme.format(new Object[] { this, "number" });
@@ -1138,8 +1136,33 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Keys can be obtained from the sequence by calling {@link #createKey()}.
      * @throws StorageException when the sequence can not be created
      */
-    abstract protected void createSequence() throws StorageException;
-    
+    protected void createSequence() throws StorageException  {
+        createSequenceFromNumberTable();
+    }
+
+    //  create sequence using number table
+    //  maybe we should use schemes ??? 
+    //
+    //  CREATE_SEQUENCE = CREATE TABLE {0}_numberTable {1] {2}
+    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_numberTable ({1}) VALUES ({2}) 
+    private void createSequenceFromNumberTable() throws StorageException {
+        try {
+            getActiveConnection();
+            Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_numberTable {1] {2}");
+            String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), "int(11)" });
+            Statement s = activeConnection.createStatement();
+            s.executeUpdate(query);
+
+            scheme = new Scheme(factory, "INSERT INTO {0}_numberTable ({1}) VALUES {2,number}");
+            query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1) });
+            s.executeUpdate(query);
+
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
     
     // javadoc is inherited
     public boolean exists(MMObjectBuilder builder) throws StorageException {
