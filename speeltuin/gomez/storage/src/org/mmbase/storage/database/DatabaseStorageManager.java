@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.13 2003-08-01 08:08:40 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.14 2003-08-01 11:56:21 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -197,7 +197,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    abstract public int createKey();
+    abstract public int createKey() throws StorageException;
 
     public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
@@ -834,26 +834,29 @@ public abstract class DatabaseStorageManager implements StorageManager {
     // (but not added to the MMObjects list)
     private MMObjectBuilder getRootBuilder() {
         if (rootBuilder == null) {
-            rootBuilder = new MMObjectBuilder();
-            rootBuilder.setMMBase(factory.getMMBase());
-            rootBuilder.setTableName("object");
-            Vector xmlfields = new Vector();
-            // number field  (note: state = 'system')
-            FieldDefs def=new FieldDefs("Object","integer",10,10,"number",FieldDefs.TYPE_INTEGER,1,FieldDefs.DBSTATE_SYSTEM);
-            def.setDBPos(1);
-            def.setDBNotNull(true);
-            xmlfields.add(def);
-            // otype field
-            def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,FieldDefs.DBSTATE_SYSTEM);
-            def.setDBPos(2);
-            def.setDBNotNull(true);
-            xmlfields.add(def);
-            // owner field
-            def=new FieldDefs("Owner","string",11,11,"owner",FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_SYSTEM);
-            def.setDBPos(3);
-            def.setDBNotNull(true);
-            xmlfields.add(def);
-            rootBuilder.setXMLValues(xmlfields);
+            rootBuilder = factory.getMMBase().getRootBuilder();
+            if (rootBuilder == null) {
+                rootBuilder = new MMObjectBuilder();
+                rootBuilder.setMMBase(factory.getMMBase());
+                rootBuilder.setTableName("object");
+                Vector xmlfields = new Vector();
+                // number field  (note: state = 'system')
+                FieldDefs def=new FieldDefs("Object","integer",10,10,"number",FieldDefs.TYPE_INTEGER,1,FieldDefs.DBSTATE_SYSTEM);
+                def.setDBPos(1);
+                def.setDBNotNull(true);
+                xmlfields.add(def);
+                // otype field
+                def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,FieldDefs.DBSTATE_SYSTEM);
+                def.setDBPos(2);
+                def.setDBNotNull(true);
+                xmlfields.add(def);
+                // owner field
+                def=new FieldDefs("Owner","string",11,11,"owner",FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_SYSTEM);
+                def.setDBPos(3);
+                def.setDBNotNull(true);
+                xmlfields.add(def);
+                rootBuilder.setXMLValues(xmlfields);
+            }
         }
         return rootBuilder;
     }
@@ -1047,12 +1050,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
 
     public void create() throws StorageException {
         MMBase mmbase = factory.getMMBase();
-        MMObjectBuilder object = mmbase.getRootBuilder(); 
-        // XXX: fallback for old code - this should be done in MMBase.java  
-        if (object!=null) {
-            object = getRootBuilder();
-        }
-        create(object);
+        create(getRootBuilder()); 
         createSequence();
     }
 
@@ -1060,51 +1058,89 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * Creates a means for the database to pre-create keys with increasing numbers.
      * A sequence can be a databse routine, a number table, or anything else that can be used to create unique numbers.
-     * Keys can be obtained from teh sequence by calling {@link #createKey()}.
+     * Keys can be obtained from the sequence by calling {@link #createKey()}.
      * @throws StorageException when the sequence can not be created
      */
-    abstract protected void createSequence();
+    abstract protected void createSequence() throws StorageException;
     
+    
+    public boolean exists(MMObjectBuilder builder) throws StorageException {
+        return exists((String)factory.getStorageIdentifier(builder));
+    }
+
     /**
      * Queries the database metadata to test whether a given table exists.
      * @param tableName name of the table to look for
      * @throws StorageException when the metadata could not be retrieved
      * @return <code>true</code> if the table exists
      */
-    protected boolean hasTable(String tableName) throws StorageException {
-        boolean result = false;
+    protected boolean exists(String tableName) throws StorageException {
         try {
             getActiveConnection();
             DatabaseMetaData metaData = activeConnection.getMetaData();
             ResultSet res = metaData.getTables(null, null, tableName, null);
-            result = res.next();
+            return res.next();
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
         } finally {
             releaseActiveConnection();
         }
-        return result;
     }
 
-    public boolean created(MMObjectBuilder builder) throws StorageException {
-        return hasTable(builder.getFullTableName());
+    public boolean exists() throws StorageException {
+        return exists(getRootBuilder());
     }
 
-    abstract public boolean created() throws StorageException;
+    public int size(MMObjectBuilder builder) throws StorageException {
+        try {
+            getActiveConnection();
+            Scheme scheme = factory.getScheme(Schemes.GET_TABLE_SIZE, Schemes.GET_TABLE_SIZE_DEFAULT);
+            String query = scheme.format(new Object[] { this, builder });
+            Statement s = activeConnection.createStatement();
+            ResultSet res = s.executeQuery(query);
+            return res.getInt(1);
+        } catch (Exception e) {
+            throw new StorageException(e.getMessage());
+        } finally {
+            releaseActiveConnection();
+        }
+    }
 
-    abstract public int size(MMObjectBuilder builder);
+    public int size() throws StorageException {
+        return size(getRootBuilder());
+    }
 
-    abstract public int size();
+    public void drop(MMObjectBuilder builder) throws StorageException {
+        int size = size(builder);
+        if (size != 0) {
+            throw new StorageException("Can not drop builder, it still contains "+size+" node(s)");
+        }
+        try {
+            getActiveConnection();
+            Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
+            String query = scheme.format(new Object[] { this, builder });
+            Statement s = activeConnection.createStatement();
+            s.executeUpdate(query);
+            scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
+            if (scheme!=null) {
+                query = scheme.format(new Object[] { this, builder });
+                s = activeConnection.createStatement();
+                s.executeUpdate(query);
+            }
+        } catch (Exception e) {
+            throw new StorageException(e.getMessage());
+        } finally {
+            releaseActiveConnection();
+        }
+    }
 
-    abstract public boolean drop(MMObjectBuilder builder);
+    abstract public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
 
-    abstract public boolean addField(MMObjectBuilder builder,String fieldname);
+    abstract public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
 
-    abstract public boolean removeField(MMObjectBuilder builder,String fieldname);
+    abstract public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
 
-    abstract public boolean changeField(MMObjectBuilder builder,String fieldname);
-
-    abstract public boolean updateStorage(MMObjectBuilder builder);
+    abstract public void updateStorage(MMObjectBuilder builder) throws StorageException;
 
 }
 
