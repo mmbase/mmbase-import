@@ -1,13 +1,18 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
+
 <mm:cloud name="mmbase" method="asis">
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>License Information</title>
 <link rel="stylesheet" type="text/css" href="../css/mmbase.css" />
 </head>
+
 <body class="basic" >
+
 <table summary="license information" width="93%" cellspacing="1" cellpadding="3" border="0">
 <tr align="left">
   <th class="header" colspan="2">License Information & Thanks to</th>
@@ -22,14 +27,17 @@ The Source distro includes all the sources to build your own MMBase.
 
 			</p>
 <p>
-If you run into problems you can get help from the following sources :<br/ ><br />
-readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />
-website - <a href="http://www.mmbase.org" target="_ext">http://www.mmbase.org</a><br />
-mailing lists - <a href="http://www.mmbase.org/communication" target="_ext">http://www.mmbase.org/communication</a><br />
-irc channel - #mmbase on <a href="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" target="_ext">ircnet</a> (for example irc.xs4all.nl)<br />
-bugreporting - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a><br />
+If you run into problems you can get help from the following sources :
+<ul>
+<li>readme, releasenotes and installation docs - These documents are in the root
+of the binary distro</li>
+<li>website - <a href="http://www.mmbase.org" target="_ext">http://www.mmbase.org</a></li>
+<li>mailing lists - <a href="http://www.mmbase.org/communication" target="_ext">http://www.mmbase.org/communication</a></li>
+<li>irc channel - for details about the channel see <a href="http://www.mmbase.org/irc" target="_ext">irc info page of mmbase</a></li>
+<li>bugreporting - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a></li>
+</ul>
 </p>
-<p>	
+<p>
 		The MMBase Release Team.
 </p>
 
@@ -49,5 +57,7 @@ hsqldb is a relational database engine written in Java, with a JDBC driver, supp
 </tr>
 
 </table>
+
 </body></html>
+
 </mm:cloud>
