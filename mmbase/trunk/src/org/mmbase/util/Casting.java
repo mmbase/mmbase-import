@@ -17,6 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: Casting.java,v 1.24 2004-09-20 12:04:28 pierre Exp $
  */
 
 import java.util.*;
