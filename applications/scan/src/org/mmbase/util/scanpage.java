@@ -29,9 +29,9 @@ import org.mmbase.servlet.JamesServlet;
  * hold all request related information, because we want to extend the model
  * of offline page generation.
  *
- * @rename Scanpage
-  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.19 2002-05-14 12:03:14 eduard Exp $
+ * @rename ScanPage
+ * @author Daniel Ockeloen
+ * @version $Id: scanpage.java,v 1.19.2.1 2003-07-16 10:21:31 pierre Exp $
  */
 public class scanpage {
     // logger
@@ -296,38 +296,41 @@ public class scanpage {
     // -------
 
     /**
-    * Extract hostname from scanpage, get address and determine the proxies between it.<br>
-    * Needed to determine if user comes from internal or external host, because
-    * we use two streaming servers, one for external users and one for internal users.
-    * <br>
-    * input     : scanpage sp, contains hostname as ipaddress<br>
-    * output    : String "clientproxy.clientside.com->dialin07.clientside.com"<br>
-    * <br>
-    * uses      : VPROProxyName, VPROProxyAddress
-    */
+     * Extract hostname from scanpage, get address and determine the proxies between it.<br />
+     * Needed to determine if user comes from internal or external host, because
+     * we use two streaming servers, one for external users and one for internal users.
+     * <br />
+     * input     : scanpage sp, contains hostname as ipaddress<br />
+     * output    : String "clientproxy.clientside.com->dialin07.clientside.com"<br />
+     * <br />
+     * uses      : VPROProxyName, VPROProxyAddress
+     */
     public String getAddress() {
         String  result      = null;
         boolean fromProxy   = false;
         String  addr        = req.getRemoteHost();
 
-        if( addr != null && !addr.equals("") ) {
-            // from proxy ?
-            // ------------
-            if( addr.indexOf( VPROProxyName ) != -1 || addr.indexOf( VPROProxyAddress ) != -1 ) {
-                // get real address
-                fromProxy = true;
-                addr = req.getHeader("X-Forwarded-For");
-                if( addr != null && !addr.equals("") ) {
-                    result = addr;
-                }
-            } else {
-                result = addr;
+        // check whether the user came through a proxy
+        // This code tests for a specific vpro proxy server
+        // should probably be made generic
+        // Not sure how to do this, maybe just test for X-Forwarded-For header?
+        if( addr != null && (addr.indexOf( VPROProxyName ) != -1 || addr.indexOf( VPROProxyAddress ) != -1 )) {
+            // get real address
+            fromProxy = true;
+            addr = req.getHeader("X-Forwarded-For");
+        }
+        if (addr != null) {
+            // get hostnames for this user 
+            result = getHostNames( addr );
+            
+            // extend the path with a proxy (?) server
+            // vpro specific server, so should be made generic 
+            // (no idea how, maybe make configurable?)
+            if( fromProxy ) {
+                result = "zen.vpro.nl->" + result;
             }
         }
-        result = getHostNames( addr );
-        if( fromProxy ) {
-            result = "zen.vpro.nl->" + result;
-        }
+
         return result;
     }
 
@@ -395,6 +398,10 @@ public class scanpage {
         }
     }
 
+    /**
+     * Creates a duplicate of this scanpage
+     * @return the duplicate scanpage
+     */
 	public scanpage duplicate() {
 		scanpage dup=new scanpage();
 		dup.res=null;
@@ -413,6 +420,6 @@ public class scanpage {
 		dup.partlevel=this.partlevel;
 		dup.loadmode=this.loadmode;
     	dup.reload=this.reload;
-		return(dup);
+		return dup;
 	}
 }
