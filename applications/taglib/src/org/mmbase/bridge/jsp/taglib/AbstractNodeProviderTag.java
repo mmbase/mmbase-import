@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
@@ -30,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.23 2003-06-06 10:03:05 pierre Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.24 2003-06-17 18:07:37 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -84,8 +87,8 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         if (jspvar != null && node != null) {
             pageContext.setAttribute(jspvar, node);
         }
-        if (id != null) {
-            getContextProvider().getContainer().registerNode(id, node);
+        if (id != Attribute.NULL) {
+            getContextProvider().getContainer().registerNode(getId(), node);
         }
     }
                
@@ -126,7 +129,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
     
     public int doEndTag() throws JspTagException {
-        id = null; // setting attriubtes to null is perhaps not that prudent.
         node = null;
         modified = false;
         return EVAL_PAGE;
