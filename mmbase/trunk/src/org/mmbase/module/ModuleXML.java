@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.7 $ $Date: 2000-07-18 18:59:43 $
+ * @version $Revision: 1.8 $ $Date: 2000-07-22 21:10:56 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -77,7 +77,6 @@ public abstract class ModuleXML extends Module {
 				curdir=curdir.substring(0,curdir.length()-6);
 			}
 			mmbaseconfig=curdir+"/config";
-			System.out.println("DEMO CONFIG="+mmbaseconfig);
 		} else {
        		 	mmbaseconfig=System.getProperty("mmbase.config");
 		}
