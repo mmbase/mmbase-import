@@ -12,7 +12,7 @@
         Defines the database driver that handles the abstraction between
         mmbase and the given jdbs/database we are using.
     -->
-    <mmbasedriver>org.mmbase.module.database.support.PostgreSQL71</mmbasedriver>
+    <mmbasedriver>org.mmbase.module.database.support.PostgreSQL72</mmbasedriver>
 
     <!-- <mapping>
         defines how mmbase should map the different types mmbase to this
@@ -44,7 +44,7 @@
         <type-mapping mmbase-type="STRING">TEXT</type-mapping>
         <type-mapping mmbase-type="XML">TEXT</type-mapping>
 
-        <type-mapping mmbase-type="BYTE">bytea</type-mapping> <!-- was OID for 7.1.x -->
+        <type-mapping mmbase-type="BYTE">bytea</type-mapping>
     </mapping>
 
     <!-- <disallowed>
