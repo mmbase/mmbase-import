@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
 public class XMLModuleReader extends XMLBasicReader {
 
     public XMLModuleReader(String filename) {
-        super(filename);
+        super(filename, XMLModuleReader.class);
     }
 
     /**
