@@ -137,28 +137,28 @@ public class MMAdmin extends ProcessorModule {
 			} else if (token.equals("MODULESAVE")) {
 				if (kioskmode) {
 					System.out.println("MMAdmin> refused to write module , im in kiosk mode");
-					return;
-				}
-				String modulename=(String)cmds.get(cmdline);
-				String savepath=(String)vars.get("PATH");
-				Module mod=(Module)getModule(modulename);
-				if (mod!=null) {
-					XMLModuleWriter.writeXMLFile(savepath,mod);
-					lastmsg="Writing finished, no problems.<BR><BR>\n";
-					lastmsg+="A clean copy of "+modulename+".xml can be found at : "+savepath+"<BR><BR>\n";
+				} else {
+					String modulename=(String)cmds.get(cmdline);
+					String savepath=(String)vars.get("PATH");
+					Module mod=(Module)getModule(modulename);
+					if (mod!=null) {
+						XMLModuleWriter.writeXMLFile(savepath,mod);
+						lastmsg="Writing finished, no problems.<BR><BR>\n";
+						lastmsg+="A clean copy of "+modulename+".xml can be found at : "+savepath+"<BR><BR>\n";
+					}
 				}
 			} else if (token.equals("BUILDERSAVE")) {
 				if (kioskmode) {
 					System.out.println("MMAdmin> refused to write builder , im in kiosk mode");
-					return;
-				}
-				String buildername=(String)cmds.get(cmdline);
-				String savepath=(String)vars.get("PATH");
-				MMObjectBuilder bul=mmb.getMMObject(buildername);
-				if (bul!=null) {
-					XMLBuilderWriter.writeXMLFile(savepath,bul);
-					lastmsg="Writing finished, no problems.<BR><BR>\n";
-					lastmsg+="A clean copy of "+buildername+".xml can be found at : "+savepath+"<BR><BR>\n";
+				} else {
+					String buildername=(String)cmds.get(cmdline);
+					String savepath=(String)vars.get("PATH");
+					MMObjectBuilder bul=mmb.getMMObject(buildername);
+					if (bul!=null) {
+						XMLBuilderWriter.writeXMLFile(savepath,bul);
+						lastmsg="Writing finished, no problems.<BR><BR>\n";
+						lastmsg+="A clean copy of "+buildername+".xml can be found at : "+savepath+"<BR><BR>\n";
+					}
 				}
 			}
 
@@ -733,7 +733,7 @@ public class MMAdmin extends ProcessorModule {
 	private boolean	writeApplication(String appname,String targetpath,String goal) {
 		if (kioskmode) {
 			System.out.println("MMAdmin> refused to write application , im in kiosk mode");
-			return;
+			return(false);
 		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
