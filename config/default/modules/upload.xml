@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE stats PUBLIC "//MMBase - stats module//" "http://www.mmbase.org/dtd/stats.dtd">
+<upload>
+	<fileUploadDirectory>/tmp/</fileUploadDirectory>
+</upload>
