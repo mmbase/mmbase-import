@@ -20,72 +20,75 @@ import org.mmbase.module.corebuilders.*;
  * @author Pierre van Rooden
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
-	
+
     private MMObjectNode typeRelNode = null;
     private MMObjectNode relDefNode = null;
     private int snum = 0;
     private int dnum = 0;
     int roleID  = 0;
-  	
-  	BasicRelationManager(MMObjectNode node, Cloud cloud) {
-  	    typeRelNode = node;
-  	    snum=node.getIntValue("snumber");
-  	    dnum=node.getIntValue("dnumber");
-  	    roleID=node.getIntValue("rnumber");
-  	    RelDef reldef = ((BasicCloudContext)cloud.getCloudContext()).mmb.getRelDef();
-  	    relDefNode= reldef.getNode(roleID);
-  	    builder=reldef.getBuilder(relDefNode);
-  	    init(builder,cloud);
-  	}
 
     /**
-     * Creates a new initialized relation node.
-     * The returned node will not be visible in the cloud until the commit() method is called on this node.
-     *
-     * @return a node of type <code>Relation</code>
+     * Creates a new instance of Relation manager.
+     * The type of manager (a strictly constrained manager or a reole manager)
+     * is dependend on type the passed node (from eitehr the reldef of typerel
+     * builder).
+     * @param node the node on whcih to base the relation manager
+     * @param cloud the cloud for which to create the manager
      */
-    public Node createNode() {
-        cloud.assert(Operation.CREATE,typeRelNode.getNumber());
-        // create object as a temporary node
-        int id = cloud.uniqueId();
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
-        // if we are in a transaction, add the node to the transaction;
-        if (cloud instanceof BasicTransaction) {
-            ((BasicTransaction)cloud).add(currentObjectContext);
+    BasicRelationManager(MMObjectNode node, Cloud cloud) {
+        RelDef reldef = ((BasicCloudContext)cloud.getCloudContext()).mmb.getRelDef();
+        if (node.parent==reldef) {
+            relDefNode = node;
+            roleID=node.getNumber();
+        } else {
+            typeRelNode = node;
+            snum=node.getIntValue("snumber");
+            dnum=node.getIntValue("dnumber");
+            roleID=node.getIntValue("rnumber");
+            relDefNode= reldef.getNode(roleID);
         }
-        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
-        // set the owner to userName instead of account
-//        node.setValue("owner",cloud.getUserName());
-        node.setValue("owner","bridge");
-        return new BasicRelation(node, this, id);
+        builder=reldef.getBuilder(relDefNode);
+        init(builder,cloud);
+      }
+
+    public Node createNode() {
+        Node relation = super.createNode();
+        relation.setIntValue("rnumber",roleID);
+        return relation;
     }
 
-	public String getForwardRole() {
-	    return relDefNode.getStringValue("sname");
-	}
+    public String getForwardRole() {
+        return relDefNode.getStringValue("sname");
+    }
 
-	public String getReciprocalRole() {
-	    return relDefNode.getStringValue("dname");
-	}
+    public String getReciprocalRole() {
+        return relDefNode.getStringValue("dname");
+    }
 
     public int getDirectionality() {
-	    return relDefNode.getIntValue("dir");
-	}
+        return relDefNode.getIntValue("dir");
+    }
 
     public NodeManager getSourceManager() {
-	    int nr=typeRelNode.getIntValue("snumber");
-	    return cloud.getNodeManager(nr);
-	}
+        if (typeRelNode==null) {
+          throw new BasicBridgeException("This relationmanager does not contain source information.");
+        }
+        int nr=typeRelNode.getIntValue("snumber");
+        return cloud.getNodeManager(nr);
+    }
 
     public NodeManager getDestinationManager() {
-	    int nr=typeRelNode.getIntValue("dnumber");
-	    return cloud.getNodeManager(nr);
-	}
-	
+        if (typeRelNode==null) {
+          throw new BasicBridgeException("This relationmanager does not contain destination information.");
+        }
+        int nr=typeRelNode.getIntValue("dnumber");
+        return cloud.getNodeManager(nr);
+    }
+
     public Relation createRelation(Node sourceNode, Node destinationNode) {
         //
         // checks whether all components are part of the same cloud/transaction
-        // maybe should be amde more flexible?
+        // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
             throw new BasicBridgeException("Relationmanager and source node are not in the same transaction or in different clouds");
@@ -96,24 +99,16 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         if (!(cloud instanceof Transaction)  &&
              (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
             throw new BasicBridgeException("Cannot add a relation to a new node that has not been committed.");
-	    }
+        }
 
-	    // check types of source and destination	
-	    if (!sourceNode.getNodeManager().equals(getSourceManager())) {
-            throw new BasicBridgeException("Source node is not of the correct type.");
-	    }
-	    if (!destinationNode.getNodeManager().equals(getDestinationManager())) {
-            throw new BasicBridgeException("Destination node is not of the correct type.");
-	    }
-	
-       Relation relation = (Relation)createNode();
+       BasicRelation relation = (BasicRelation)createNode();
        relation.setSource(sourceNode);
        relation.setDestination(destinationNode);
-       relation.setIntValue("rnumber",roleID);
-       relation.commit();
+       relation.checkValid();
+//       relation.commit();
        return relation;
     }
-	
+
     /**
      * Compares two relationmanagers, and returns true if they are equal.
      * This effectively means that both objects are relationmanagers, and they both use to the same builder type
@@ -128,6 +123,9 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * This effectively returns the object number of the typerel record
      */
     public int hashCode() {
-        return  typeRelNode.getNumber();
+        if (typeRelNode==null) {
+          return relDefNode.getNumber();
+        }
+        return typeRelNode.getNumber();
     }
 }

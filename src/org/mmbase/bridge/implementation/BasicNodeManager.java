@@ -64,7 +64,6 @@ public class BasicNodeManager implements NodeManager {
         cloud.assert(Operation.CREATE,builder.oType);
         // create object as a temporary node
         int id = cloud.uniqueId();
-        System.out.println();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
         // if we are in a transaction, add the node to the transaction;
         if (cloud instanceof BasicTransaction) {
@@ -74,7 +73,11 @@ public class BasicNodeManager implements NodeManager {
         // set the owner to userName instead of account
 //        node.setValue("owner",cloud.getUserName());
         node.setValue("owner","bridge");
-        return new BasicNode(node, this, id);
+        if (builder instanceof InsRel) {
+            return new BasicRelation(node, (RelationManager)this, id);
+        } else {
+            return new BasicNode(node, this, id);
+        }
     }
 
     public Cloud getCloud() {
@@ -112,7 +115,7 @@ public class BasicNodeManager implements NodeManager {
 	public FieldList getFields() {
 	    return new BasicFieldList(fieldTypes.values(),cloud,this);
 	}
-	
+
 	public FieldList getFields(int order) {
 	    if (order == ORDER_EDIT) {
 	        return new BasicFieldList(builder.getSortedFields(),cloud,this);
@@ -129,7 +132,7 @@ public class BasicNodeManager implements NodeManager {
 	    Field f= (Field)fieldTypes.get(fieldName);
 	    return f;
 	}
-	
+
     public NodeList getList(String constraints, String orderby,
             String directions) {
         String where = null;
@@ -159,7 +162,7 @@ public class BasicNodeManager implements NodeManager {
 	    StringTokenizer tokens= new StringTokenizer(command,"-");
 	    return builder.replace(BasicCloudContext.getScanPage(req, resp),tokens);
 	}
-	
+
 	public NodeList getList(String command, Hashtable parameters){
 	    return getList(command,parameters,null,null);
 	}
