@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE caches SYSTEM "dtd/caches_1_0.dtd">
+<!-- 
+  Not all caches are configurable already, but those which are, can be 
+  configured here. It can also be done by the admin pages, but 
+  changing it here works just as well.
+
+  @since   MMBase-1.6
+  @version $Id:
+  @author  Michiel Meeuwissen
+-->
+<caches>
+   <cache name="MultilevelCache">
+     <status>active</status>
+     <size>300</size>
+   </cache>
+   <cache name="XSLTemplates">
+     <status>active</status>
+     <size>50</size>
+   </cache>
+   <cache name="XSLFactories">
+     <status>active</status>
+     <size>50</size>
+   </cache>
+   <cache name="XSLTResults">
+     <status>inactive</status>
+     <size>50</size>
+   </cache>
+</caches>
