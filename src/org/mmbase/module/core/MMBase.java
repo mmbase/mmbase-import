@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.121 2004-10-11 11:08:48 pierre Exp $
+ * @version $Id: MMBase.java,v 1.122 2004-10-27 15:43:05 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -386,18 +386,7 @@ public class MMBase extends ProcessorModule {
             createMMBase();
         }
 
-
         log.debug("Objects started");
-
-        // weird place needs to rethink (daniel).
-        Vwms bul = (Vwms)getMMObject("vwms");
-        if (bul != null) {
-            bul.startVwms();
-        }
-        Vwmtasks bul2 = (Vwmtasks)getMMObject("vwmtasks");
-        if (bul2 != null) {
-            bul2.start();
-        }
 
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
@@ -445,7 +434,7 @@ public class MMBase extends ProcessorModule {
     private void initializeSharedStorage(String sharedStorageClass) {
         if (sharedStorageClass != null) {
             log.debug("Starting Multicasting: " + sharedStorageClass);
-            
+
             Class newclass;
             try {
                 newclass = Class.forName(sharedStorageClass);
