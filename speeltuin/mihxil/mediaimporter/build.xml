@@ -7,6 +7,8 @@
   <property name="project.name"    value="mediaimporter" />
   <property name="project.package" value="nl/omroep/mediaimporter" />
 	<property name="project.extra.path" location="../crontab/build/mmbase-crontab.jar" />
-
+  <property name="test.class"   value="nl.omroep.mmbase.MediaImporter" />
+  <property name="test.arg"     value="aa bb" />
+  <property name="test.jvmarg"     value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
   &base;
 </project>
