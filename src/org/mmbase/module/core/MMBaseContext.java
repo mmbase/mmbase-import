@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.12 2001-06-26 08:39:19 eduard Exp $
+$Id: MMBaseContext.java,v 1.13 2001-07-16 10:08:08 jaco Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2001/06/26 08:39:19  eduard
+eduard : i want to use logging, so now the value will be set to "mmbase.log" incase there is nothing known of the log file
+
 Revision 1.11  2001/06/26 07:52:13  pierre
 pierre: removed (commented out) recursive call to getLogging() in getOutputFile(), which caused MMBase to crash on startup.
 I suspect this is the correct way to fix this bug, but someone else might need to verify this.
@@ -60,150 +63,289 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * Using MMBaseContext class you can retrieve the servletContext from anywhere using the get method.
- * Currently the servletContext is set by class servscan in the init() method.
+ * Using MMBaseContext class you can retrieve the servletContext from anywhere
+ * using the get method.
  *
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.12 $ $Date: 2001-06-26 08:39:19 $
+ * @author Jaco de Groot
+ * @$Revision: 1.13 $ $Date: 2001-07-16 10:08:08 $
  */
 public class MMBaseContext {
-
     private static Logger log;
+    static boolean initialized = false;
+    static boolean htmlRootInitialized = false;
+    static ServletContext sx;
+    static String userdir;
+    static String configpath;
+    static String htmlroot;
+    static String outputfile;
 
-    static ServletContext servletContext;
-	static String configpath;
-	static String htmlroot;
-	static String outputfile;
-
-	public static boolean setServletContext(ServletContext sx) {
-		servletContext=sx;
-		return(true);
-	}
-
-	public static ServletContext getServletContext() {
-		return(servletContext);
-	}
-
-	public static boolean setOutputFile(String c) {
-		outputfile=c;
-		setLogging();
-		return(true);
-	}
-
-	public static String getOutputFile() {
-		if (outputfile==null) {
-        		outputfile = System.getProperty("mmbase.outputfile");
-			if(outputfile == null) {
-			    // when not specified, 
-			    // put a value in it to prevent a loop on the null value between getOutPutFile and setLogging()
-			    outputfile = "mmbase.log";
-			}
-			setLogging();
-		}
-		return(outputfile);
-	}
-
-
-	public static boolean setHtmlRoot(String c) {
-		htmlroot=c;
-		return(true);
-	}
-
-	public static String getHtmlRoot() {
-		if (htmlroot==null) {
-        		htmlroot = System.getProperty("mmbase.htmlroot");
-		}
-		return(htmlroot);
-	}
-
-	public static void setLogging() {
-
-        // Remaining output and error can still be redirected.
-        String outputfile = getOutputFile();
-        if (outputfile != null) {
+    /**
+     * Initialize MMBase using a <code>SevletContext</code>. This method will
+     * check the servlet configuration for context parameters mmbase.outputfile
+     * and mmbase.config. If not found it will look for system properties.
+     *
+     * @throws ServletException  if mmbase.configpath is not set or is not a
+     *                           directory or doesn't contain the expected
+     *                           config files.
+     *
+     */
+    public synchronized static void init(ServletContext servletContext)
+             throws ServletException {
+        if (!initialized) {
+            sx = servletContext;
+            // Get the current directory using the user.dir property.
+            userdir = System.getProperty("user.dir");
+            // Init outputfile.
+            outputfile = sx.getInitParameter("mmbase.outputfile");
+            if (outputfile == null) {
+                outputfile = System.getProperty("mmbase.outputfile");
+            }
+            initOutputfile();
+            // Init configpath.
+            configpath = sx.getInitParameter("mmbase.config");
+            if (configpath == null) {
+                configpath = System.getProperty("mmbase.config");
+            }
             try {
-                PrintStream mystream=new PrintStream(new FileOutputStream(outputfile,true));
-                System.setOut(mystream);
-                System.setErr(mystream);
-                System.err.println("Setting mmbase.outputfile to "+outputfile);
-            } catch (IOException e) {
-                System.err.println("Oops, failed to set mmbase.outputfile '"+outputfile+"'");
-                e.printStackTrace();
+                initConfigpath();
+            } catch(Exception e) {
+                throw new ServletException(e.getMessage());
             }
-        } else {
-            System.err.println("mmbase.outputfile = null, no redirection of System.out to file");
+            // Init logging.
+            initLogging();
+            initialized = true;
         }
-
-
-        /* Michiel:
-           This doesn't seem to be such a bad place to initialise our logging stuff.
-        */
-        System.out.println("MMBase starts now");
-        Logging.configure(MMBaseContext.getConfigPath() + File.separator + "log" + File.separator + "log.xml");
-        log = Logging.getLoggerInstance(MMBaseContext.class.getName());
-        System.out.println("Logging starts now");
-        log.info("\n====================\nStarting MMBase\n====================");
-	}
-
-	public static boolean setConfigPath(String c) {
-	System.out.println("PATH="+c);
-        boolean returnValue=true;
-
-        // the config dir has to contain the following files:
-        // - accounts.properties
-        // - modules.xml
-        // - magic.xml  (dont know if i have 2 check this one 4 sure)
-        File accounts= new File(c + "/accounts.properties");
-        File modules= new File(c + "/modules.xml");
-        File mmbaseroot= new File(c + "/modules/mmbaseroot.xml");
-        File jdbc = new File(c + "/modules/jdbc.xml");
-        File modulesdir = new File(c + "/modules");
-        File builders = new File(c + "/builders");
-
-        // if all missing, great change that config path is wrong
-        boolean allMissing= !(accounts.exists() || modules.exists() || mmbaseroot.exists()
-                              || jdbc.exists() || modulesdir.exists() || builders.exists());
-
-        if(allMissing) {
-            log.error("wrong configdirectory");
-            returnValue = false;
-        } else {
-            if(! accounts.exists()) {
-                log.error("file 'accounts.properties' missing in mmbase.config dir");
-                returnValue = false;
-            }
-            if(! modules.exists()) {
-                // log.error("file 'modules.xml' missing in mmbase.config dir");
-                returnValue = false;
-            }
-            if(! mmbaseroot.exists()) {
-                log.error("file 'modules/mmbaseroot.xml' missing in mmbase.config dir");
-                returnValue = false;
-            }
-            if(! jdbc.exists()) {
-                log.error("file 'modules/jdbc.xml' missing in mmbase.config dir");
-                returnValue = false;
-            }
-            if(! modulesdir.exists()) {
-                log.error("dir 'modules' missing in mmbase.config dir");
-                returnValue = false;
-            }
-            if(! builders.exists()) {
-                log.error("dir 'builders' missing in mmbase.config dir");
-                returnValue = false;
-            }
-        }
-        configpath=c;
-        return(returnValue);
     }
 
-	public static String getConfigPath() {
-		if (configpath==null) {
-        		configpath = System.getProperty("mmbase.config");
-		}
-		return(configpath);
-	}
+    /**
+     * Initialize MMBase using system properties only. This may be useful in
+     * cases where MMBase is used without a servlet. For example when running
+     * JUnit tests.
+     *
+     * @throws Exception  if mmbase.configpath is not set or is not a
+     *                    directory or doesn't contain the expected
+     *                    config files.
+     *
+     */
+    public synchronized static void init() throws Exception {
+        if (!initialized) {
+            // Get the current directory using the user.dir property.
+            userdir = System.getProperty("user.dir");
+            // Init outputfile.
+            outputfile = System.getProperty("mmbase.outputfile");
+            initOutputfile();
+            // Init configpath.
+            configpath = System.getProperty("mmbase.config");
+            initConfigpath();
+            // Init logging.
+            initLogging();
+            initialized = true;
+        }
+    }
+
+    private static void initOutputfile() {
+        if (outputfile != null) {
+            if (!new File(outputfile).isAbsolute()) {
+                outputfile = userdir + File.separator + outputfile;
+            }
+            try {
+                 FileOutputStream fos;
+                 fos = new FileOutputStream(outputfile, true);
+                 PrintStream mystream = new PrintStream(fos);
+                 System.setOut(mystream);
+                 System.setErr(mystream);
+            } catch (IOException e) {
+                 outputfile = null;
+                 System.err.println("Failed to set mmbase.outputfile to '"
+                                    + outputfile + "'.");
+                 e.printStackTrace();
+            }
+        }
+    }
+
+    private static void initConfigpath() throws Exception {
+        if (configpath == null) {
+            userdir = null;
+            configpath = null;
+            String message = "Parameter mmbase.config not set.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        File fileConfigpath = new File(configpath);
+        if (userdir != null && !fileConfigpath.isAbsolute()) {
+            configpath = userdir + File.separator + configpath;
+            fileConfigpath = new File(configpath);
+        } 
+        // Make it absolute. Needed for servscan and servdb to
+        // to startup properly.
+        configpath = fileConfigpath.getAbsolutePath();
+        if (!fileConfigpath.isDirectory()) {
+            userdir = null;
+            configpath = null;
+            String message = "Parameter mmbase.config is not pointing to "
+                             + "a directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if(!new File(configpath + "/accounts.properties").isFile()) {
+            userdir = null;
+            configpath = null;
+            String message = "File 'accounts.properties' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if(!new File(configpath + "/builders").isDirectory()) {
+            userdir = null;
+            configpath = null;
+            String message = "Directory 'builders' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if(!new File(configpath + "/modules").isDirectory()) {
+            userdir = null;
+            configpath = null;
+            String message = "Directory 'modules' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if(!new File(configpath + "/modules/mmbaseroot.xml").isFile()) {
+            userdir = null;
+            configpath = null;
+            String message = "File 'modules/mmbaseroot.xml' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if(!new File(configpath + "/modules/jdbc.xml").isFile()) {
+            userdir = null;
+            configpath = null;
+            String message = "File 'modules/jdbc.xml' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if(!new File(configpath + "/log/log.xml").isFile()) {
+            userdir = null;
+            configpath = null;
+            String message = "File 'log/log.xml' missing in "
+                             + "mmbase.config directory.";
+            System.err.println(message);
+            throw new Exception(message);
+        }
+        if (configpath.endsWith(File.separator)) {
+            configpath = configpath.substring(0, configpath.length() - 1);
+        }
+    }
+
+    private static void initLogging() {
+        Logging.configure(configpath + "/log/log.xml");
+        // Initializing log here because log4j has to be initialized first.
+        log = Logging.getLoggerInstance(MMBaseContext.class.getName());
+        log.info("===========================");
+        log.info("MMBase logging initialized.");
+        log.info("===========================");
+        log.info("user.dir          : " + userdir);
+        log.info("mmbase.config     : " + configpath);
+        log.info("mmbase.outputfile : " + outputfile);
+    }
+
+    /**
+     * Initialize mmbase.htmlroot parameter. This method is only needed for
+     * SCAN related servlets and should be called after the init(ServletContext)
+     * method. If the mmbase.htmlroot parameter is not found in the servlet
+     * context or system properties this method will try to set it to the
+     * root directory of the webapp.
+     *
+     * @throws ServletException  if mmbase.htmlroot is not set or is not a
+     *                           directory
+     *
+     */
+    public synchronized static void initHtmlRoot() throws ServletException {
+        if (!htmlRootInitialized) {
+            // Init htmlroot.
+            htmlroot = sx.getInitParameter("mmbase.htmlroot");
+            if (htmlroot == null) {
+                htmlroot = System.getProperty("mmbase.htmlroot");
+            }
+            if (htmlroot == null) {
+                htmlroot = sx.getRealPath("");
+            }
+            if (htmlroot == null) {
+                String message = "Parameter mmbase.htmlroot not set.";
+                System.err.println(message);
+                throw new ServletException(message);
+            } else {
+                if (userdir != null && !new File(htmlroot).isAbsolute()) {
+                    htmlroot = userdir + File.separator + htmlroot;
+                }
+                if (!new File(htmlroot).isDirectory()) {
+                    userdir = null;
+                    configpath = null;
+                    htmlroot = null;
+                    String message = "Parameter mmbase.htmlroot is not pointing "
+                                     + "to a directory.";
+                    System.err.println(message);
+                    throw new ServletException(message);
+                } else {
+                    if (htmlroot.endsWith(File.separator)) {
+                        htmlroot = htmlroot.substring(0, htmlroot.length() - 1);
+                    }
+                    htmlRootInitialized = true;
+                    log.info("mmbase.htmlroot   : " + htmlroot);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the <code>ServeltContext</code> used to initialize MMBase.
+     *
+     * @return  the <code>ServeltContext</code> used to initialize MMBase or
+     *          <code>null</code> if MMBase was initilized without
+     *          <code>ServletContext</code>
+     */
+    public synchronized static ServletContext getServletContext() {
+        return sx;
+    }
+
+    /**
+     * Returns a string representing the mmbase.config parameter without a
+     * final <code>File.separator</code>. Before calling this method the
+     * init method should be called to make sure this parameter is set.
+     *
+     * @return  the mmbase.config parameter
+     */
+    public synchronized static String getConfigPath() {
+        return configpath;
+    }
+
+    /**
+     * Returns a string representing the mmbase.htmlroot parameter without a
+     * final <code>File.separator</code>.
+     *
+     * @return  the mmbase.htmlroot parameter or <code>null</code> if not
+     *          initialized
+     */
+    public synchronized static String getHtmlRoot() {
+       return htmlroot;
+    }
+
+    /**
+     * Returns a string representing the mmbase.outputfile parameter. If set,
+     * this is the file to wich all <code>System.out</code> and
+     * <code>System.err</code> output is redirected.
+     *
+     * @return  the mmbase.htmlroot parameter or <code>null</code> if not
+     *          set
+     */
+    public synchronized static String getOutputFile() {
+        return outputfile;
+    }
 
 }

@@ -29,6 +29,13 @@ public class AllTests {
     }
 
     public static Test suite() {
+        // Init MMBase
+        try{
+            MMBaseContext.init();
+        } catch(Exception e) {
+            System.err.println("Could not initialize MMBase: "
+                               + e.getMessage());
+        }
         // Startup MMBase
         MMBase mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
         Versions versions = (Versions)mmb.getMMObject("versions");

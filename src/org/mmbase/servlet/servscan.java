@@ -33,15 +33,14 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.20 2001-03-29 22:37:57 daniel Exp $
+ * @version $Id: servscan.java,v 1.21 2001-07-16 10:08:13 jaco Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
  * @author Rob Vermeulen
  */
 public class servscan extends JamesServlet {
-
-	private static Logger log = Logging.getLoggerInstance(servscan.class.getName()); 
+	private static Logger log;
 
 	// modules used in servscan
 	private static ProcessorModule grab=null;
@@ -60,28 +59,15 @@ public class servscan extends JamesServlet {
 	public static final String SHTML_CONTENTTYPE = "text/html";
  	public static final String DEFAULT_CHARSET = "iso-8859-1"; 
 
-	/**
-	 * Init the servscan, this is needed because it was created using
-	 * a newInstanceOf().
-	 *
-	 * @param int worker id
-	 */
-	public void init() {
-		super.init();
-		//Roots=getRoots();
-		// org.mmbase start();
-		parser=(scanparser)getModule("SCANPARSER");
-		//id=(idInterface)getModule("ID");
-		sessions=(sessionsInterface)getModule("SESSION");
-		// org.mmbase stats=(StatisticsInterface)getModule("STATS");
-
-		// Set the servletcontext in class MMBaseContext sothat it can be requested by everyone using
-		// static method MMBaseContext.getServletContext() added on 23 December 1999 by daniel & davzev.
-		// Removed on 24 - feb -2000 by Wilbert, done by super.init()
-		// ServletConfig sc=getServletConfig();
-		// ServletContext sx=sc.getServletContext();
-		// MMBaseContext.setServletContext(sx);
-	}
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // Initializing log here because log4j has to be initialized first.
+        log = Logging.getLoggerInstance(servscan.class.getName());
+        log.info("Init of servlet " + config.getServletName() + ".");
+        MMBaseContext.initHtmlRoot();
+        parser=(scanparser)getModule("SCANPARSER");
+        sessions=(sessionsInterface)getModule("SESSION");
+    }
 	
 	/**
 	 * Adds DEFAULT_CHARSET to mimetype given by SHTML_CONTENTTYPE for handling

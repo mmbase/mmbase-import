@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.9 $ $Date: 2001-07-09 12:30:06 $
+ * @version $Revision: 1.10 $ $Date: 2001-07-16 10:08:16 $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -50,28 +50,9 @@ public class XMLEntityResolver implements EntityResolver {
             if (systemId.indexOf("http://www.mmbase.org/") != -1) {
                 int i = systemId.indexOf("/dtd/");
                 String dtdName = systemId.substring(i+5);
-                // 11 sept 2000, changed MMBaseContext to getProperty call to be able to use from cmdline
-                //String configpath = MMBaseContext.getConfigPath();
-                // fixed fo mmdemo String configpath = System.getProperty("mmbase.config");
-                String configpath = null;
-                String dtmp=System.getProperty("mmbase.mode");
-                if (dtmp!=null && dtmp.equals("demo")) {
-                        String curdir=System.getProperty("user.dir");
-                        if (curdir.endsWith("orion")) {
-                                curdir=curdir.substring(0,curdir.length()-6);
-                        }
-                        configpath=curdir+"/config";
-                } else {
-                        configpath = MMBaseContext.getConfigPath();
-                }
-
-
-
-                String separator = "";
-                if (!configpath.endsWith(File.separator)) {
-                    separator = File.separator;
-                }
-                String dtdLocation = configpath+separator+"dtd"+File.separator+dtdName;
+                String configpath = MMBaseContext.getConfigPath();
+                String dtdLocation = configpath + File.separator + "dtd"
+		                     + File.separator + dtdName;
                 log.debug("dtdLocation = "+dtdLocation);
                 InputStreamReader dtdInputStreamReader =
                     new InputStreamReader(new FileInputStream(dtdLocation));

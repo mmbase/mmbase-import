@@ -39,8 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
-
-    private static Logger log = Logging.getLoggerInstance(servdb.class.getName());
+    private static Logger log;
 	/**
 	 * when set to true you can use yourhost/xml.db?objectnumber to get the XML representation of that object
 	 */
@@ -84,44 +83,26 @@ public class servdb extends JamesServlet {
 
     public void shutdown() {}
 
-    /**
-     * Init the mapfile, this is needed because it was created using
-     * a newInstanceOf().
-     *
-     * @param int worker id
-     */
-    public void init() {
-		log.service("initializing servlet..");
-
-        // org.mmbase Roots		= getRoots();
-
-        playlists	= (PlaylistsInterface)	getModule("PLAYLISTS");
-
-        cache		= (cacheInterface)		getModule("cache");
-		if( cache == null )
-			log.error("Could not find module with name 'cache'!");
-
-        //images		= (imagesInterface)		getModule("IMAGES");
-		//if( images == null ) 
-		//	log.error("Could not find module with name 'IMAGES'!");
-
-        mmbase		= (MMBase)		getModule("MMBASEROOT");
-		if( mmbase == null ) 
-			log.error("Could not find module with name 'MMBASEROOT'!");
-
-        sessions	= (sessionsInterface)	getModule("SESSION");
-		if( sessions == null )
-			log.error("Could not find module with name 'SESSION'!");
-
-        // org.mmbase stats		= (StatisticsInterface)	getModule("STATS");
-		// if stats == null 0 
-		// 		log.error("Could not find module with name 'STATS'!");
-
-        //org.mmbase start();
-
-        lastmod 	= new Date();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // Initializing log here because log4j has to be initialized first.
+        log = Logging.getLoggerInstance(servdb.class.getName());
+        log.info("Init of servlet " + config.getServletName() + ".");
+        playlists = (PlaylistsInterface) getModule("PLAYLISTS");
+        cache = (cacheInterface) getModule("cache");
+        if (cache == null) {
+            log.error("Could not find module with name 'cache'!");
+        }
+        mmbase = (MMBase) getModule("MMBASEROOT");
+        if (mmbase == null) {
+            log.error("Could not find module with name 'MMBASEROOT'!");
+        }
+        sessions = (sessionsInterface) getModule("SESSION");
+        if (sessions == null) {
+            log.error("Could not find module with name 'SESSION'!");
+        }
+        lastmod = new Date();
     }
-
 
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         incRefCount(req);

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.39 2001-07-08 13:25:54 daniel Exp $
+$Id: INFO.java,v 1.40 2001-07-16 10:08:07 jaco Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.39  2001/07/08 13:25:54  daniel
+added version test tag
+
 Revision 1.38  2001/07/08 13:21:22  daniel
 added version test tag
 
@@ -73,7 +76,7 @@ import org.mmbase.util.logging.Logger;
  * @author Pierre van Rooden
  * @version $Version:$
  *
- * @$Revision: 1.39 $ $Date: 2001-07-08 13:25:54 $
+ * @$Revision: 1.40 $ $Date: 2001-07-16 10:08:07 $
  */
 public class INFO extends ProcessorModule {
 
@@ -99,14 +102,7 @@ public class INFO extends ProcessorModule {
      * Determines the document root by reading system properties.
      */
     public void init() {
-        String dtmp=System.getProperty("mmbase.mode");
-        if (dtmp!=null && dtmp.equals("demo")) {
-            String curdir=System.getProperty("user.dir");
-            documentroot=curdir+"/default-web-app/";
-        } else {
-            //documentroot=System.getProperty("mmbase.htmlroot");
-            documentroot=MMBaseContext.getHtmlRoot();
-        }
+        documentroot=MMBaseContext.getHtmlRoot();
         // org.mmbase super.init();
         rnd=new RandomPlus();
     }

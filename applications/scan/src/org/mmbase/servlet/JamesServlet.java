@@ -28,23 +28,12 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.27 2001-07-02 06:39:06 daniel Exp $
+* @version $Id: JamesServlet.java,v 1.28 2001-07-16 10:08:10 jaco Exp $
 */
 
 
 public class JamesServlet extends HttpServlet {
-
-    /**
-     * File to which to send logging output.
-     * Needed for the most simple logging system.
-     */
-    static String outputfile=null;
-
-    /**
-     * Logging
-     */
-    // static Logger log;
-
+    static Logger log;
     private static int servletCount;
     private static Object servletCountLock = new Object();
     private static Hashtable runningServlets = new Hashtable();
@@ -57,41 +46,18 @@ public class JamesServlet extends HttpServlet {
 	//	log.debug(msg + " <deprecated call>"); }
     }
 
-    // Initializing the servlet.
-    // This starts and configures the logging system.
-    static {
-
-        // Remaining output and error can still be redirected.
-	/** moved to MMBaseContext
-        String outputfile = MMBaseContext.getOutputFile();
-        if (outputfile != null) {
-            try {
-                PrintStream mystream=new PrintStream(new FileOutputStream(outputfile,true));
-                System.setOut(mystream);
-                System.setErr(mystream);
-                System.err.println("Setting mmbase.outputfile to "+outputfile);
-            } catch (IOException e) {
-                System.err.println("Oops, failed to set mmbase.outputfile '"+outputfile+"'");
-                e.printStackTrace();
-            }
-        } else {
-            System.err.println("mmbase.outputfile = null, no redirection of System.out to file");
-        }
-	*/
-
-
-        /* Michiel:
-           This doesn't seem to be such a bad place to initialise our logging stuff.
-        */
-	/*
-        System.out.println("MMBase starts now");
-        //Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + "log.xml");
-        Logging.configure(MMBaseContext.getConfigPath() + File.separator + "log" + File.separator + "log.xml");
+    /**
+     * Initializes the servlet.
+     *
+     * @param config  the servlet configuration
+     */
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ServletConfig sc = getServletConfig();
+        ServletContext sx = sc.getServletContext();
+        MMBaseContext.init(sx);
+        // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(JamesServlet.class.getName());
-        System.out.println("Logging starts now");
-        log.info("\n====================\nStarting MMBase\n====================");
-	*/
-
     }
 
     /**
@@ -414,64 +380,6 @@ public class JamesServlet extends HttpServlet {
 			}
         }
 	*/
-    }
-
-    /**
-     * Initializes the servlet.
-     * @param config the servlet configuration
-     */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        init();
-    }
-
-    /**
-     * Initializes the servlet.
-     */
-    public void init() {
-        //log.debug("init van JamesServlet");
-        System.out.println("init van JamesServlet "+this);
-         String curdir=System.getProperty("user.dir");
-
-	if (MMBaseContext.getConfigPath()==null) {
-		String tmp=getInitParameter("mmbase.config");
-		if (tmp!=null) {
-			if (!tmp.startsWith("/") && !tmp.startsWith("\\")) {
-				// so local path add start root
-				tmp=curdir+"/"+tmp;
-			}
-			System.out.println(tmp);
- 			MMBaseContext.setConfigPath(tmp);
-		}
-	}
-
-	if (MMBaseContext.getHtmlRoot()==null) {
-		String tmp=getInitParameter("mmbase.htmlroot");
-		if (tmp!=null) {
-			if (!tmp.startsWith("/") && !tmp.startsWith("\\")) {
-				// so local path add start root
-				tmp=curdir+"/"+tmp;
-			}
-			System.out.println(tmp);
-			MMBaseContext.setHtmlRoot(tmp);
-		}
-	}
-
-	if (MMBaseContext.getOutputFile()==null) {
-		String tmp=getInitParameter("mmbase.outputfile");
-		if (tmp!=null) {
-			if (!tmp.startsWith("/") && !tmp.startsWith("\\")) {
-				// so local path add start root
-				tmp=curdir+"/"+tmp;
-			}
-			System.out.println(tmp);
-			MMBaseContext.setOutputFile(tmp);
-		}
-	}
-
-        ServletConfig sc=getServletConfig();
-        ServletContext sx=sc.getServletContext();
-        MMBaseContext.setServletContext(sx);
     }
 
     /**

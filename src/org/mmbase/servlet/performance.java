@@ -22,9 +22,14 @@ import org.mmbase.util.logging.*;
  * we are running on (very basic test).
  */
 public class performance extends JamesServlet {
-    static Logger log = Logging.getLoggerInstance(performance.class.getName());
+    static Logger log;
 	
-	public void init() { }
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // Initializing log here because log4j has to be initialized first.
+        log = Logging.getLoggerInstance(performance.class.getName());
+        log.info("Init of servlet " + config.getServletName() + ".");
+    }
 
 	public void reload() { }
 
