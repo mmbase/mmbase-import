@@ -6,6 +6,7 @@
 	  <builder maintainer="mmbase.org" version="2">people</builder>
 	  <builder maintainer="mmbase.org" version="2">authrel</builder>
 	  <builder maintainer="mmbase.org" version="2">typedef</builder>
+          <builder maintainer="mmbase.org" version="2">urls</builder>
 	</neededbuilderlist>	
 
 	<neededreldeflist>
