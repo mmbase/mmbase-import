@@ -14,9 +14,9 @@ package org.mmbase.bridge.jsp.taglib;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.7 2003-08-08 09:22:54 michiel Exp $ 
+ * @version $Id: ListProvider.java,v 1.8 2003-12-18 11:52:42 michiel Exp $ 
  */
-public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.taglib.containers.NodeListContainerOrListProvider {
+public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider {
     /**
      * @return the size of the list
      *

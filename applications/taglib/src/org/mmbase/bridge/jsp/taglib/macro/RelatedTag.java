@@ -18,8 +18,8 @@ import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.*;
+
 
 /**
  * Shortcut for List where the start node is the parent node.
@@ -27,10 +27,10 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.23 2003-08-27 21:33:40 michiel Exp $
+ * @version $Id: RelatedTag.java,v 1.24 2003-12-18 11:52:42 michiel Exp $
  */
 public class RelatedTag extends ListTag {
-    private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
+    // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
 
     protected Node getBaseNode() throws JspTagException {
         if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
@@ -52,8 +52,8 @@ public class RelatedTag extends ListTag {
         return getBaseNode().getNodeManager().getName() + "0," + path.getString(this);
     }
 
-    protected NodeListContainer getListContainer() throws JspTagException {
-        return (NodeListContainer) findParentTag(RelatedContainerTag.class, (String) container.getValue(this), false);
+    protected QueryContainer getListContainer() throws JspTagException {
+        return (QueryContainer) findParentTag(RelatedContainerTag.class, (String) container.getValue(this), false);
     }
 
 }

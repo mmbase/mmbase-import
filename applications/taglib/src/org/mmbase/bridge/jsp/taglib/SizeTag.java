@@ -22,10 +22,10 @@ import org.mmbase.util.logging.*;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.20 2003-12-03 06:57:39 keesj Exp $ 
+ * @version $Id: SizeTag.java,v 1.21 2003-12-18 11:52:42 michiel Exp $ 
  */
 
-public class SizeTag extends ListReferrerTag implements Writer, NodeListContainerReferrer {
+public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
     private static final Logger log = Logging.getLoggerInstance(SizeTag.class);
 
@@ -42,7 +42,7 @@ public class SizeTag extends ListReferrerTag implements Writer, NodeListContaine
      * When in a list-container only, the size can be predicted by altering the query with "count()".
      * @since MMBase-1.7
      */
-    protected void nodeListContainerSize(NodeListContainer c) throws JspTagException {       
+    protected void nodeListContainerSize(QueryContainer c) throws JspTagException {       
         Query query = c.getQuery();
         int res = Queries.count(query) - query.getOffset();
         int max = query.getMaxNumber();
@@ -67,14 +67,14 @@ public class SizeTag extends ListReferrerTag implements Writer, NodeListContaine
             if (parentListId != Attribute.NULL) {
                 throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
             }
-            NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
             nodeListContainerSize(c);            
         } else if (parentListId != Attribute.NULL) {
             listProviderSize(getList());            
         } else {
-            NodeListContainerOrListProvider tag = (NodeListContainerOrListProvider) findParentTag(NodeListContainerOrListProvider.class, null);
-            if (tag instanceof NodeListContainer) {
-                nodeListContainerSize((NodeListContainer) tag);
+            QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
+            if (tag instanceof QueryContainer) {
+                nodeListContainerSize((QueryContainer) tag);
             } else {
                 listProviderSize((ListProvider) tag);
             }
