@@ -30,8 +30,8 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.13 2003-04-03 13:13:31 michiel Exp $
-* @since MMBase-1.7
+ * @version $Id: MediaFragments.java,v 1.14 2003-06-17 12:24:30 rob Exp $
+ * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
@@ -56,15 +56,16 @@ public class MediaFragments extends MMObjectBuilder {
     // This filter is able to find the best mediasource by a mediafragment.
     // private  static MainFilter mediaSourceFilter = null;
     
-   // Is the mediafragment builders already inited ?
+    // Is the mediafragment builder already initialised?
     // this class is used for several builders (mediafragments and descendants)
-
     private static boolean           initDone           = false;
     
  
     public boolean init() {
-        if(initDone) return super.init();
-        log.service("Init of media-fragments");
+        if(initDone) {
+	    return super.init();
+	}
+        log.service("Init of Media Fragments builder");
         initDone = true;  // because of inheritance we do init-protections
         
         boolean result = super.init();       
@@ -156,7 +157,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     
     /**
-     * calculate the length of a mediafragment
+     * Calculate the length of a mediafragment
      * @param node the mediafragment
      * @return length in milliseconds
      */
@@ -176,8 +177,8 @@ public class MediaFragments extends MMObjectBuilder {
     
     /**
      * Will show the title (clickable if possible)
-     * @param node the mediapart node
-     * @return the title of the mediapart
+     * @param node the mediafragment node
+     * @return the title of the mediafragment
      */
     public String getGUIIndicator(MMObjectNode node) {
         String url = node.getFunctionValue(FUNCTION_URL, null).toString();
