@@ -1,7 +1,53 @@
 <?xml version="1.0"?>
-<!DOCTYPE navigation SYSTEM "navigation.dtd">
 <navigation name="sites" id="1" visible="false">
-  <navigation name="bugtracker" id="bugtracker">
-    <property name="template">/templateengine/index.jsp</property>
+  <navigation name="Web" id="4032058">
+    <property name="template">/frontend/web/index.jsp</property>
+    <navigation name="Dagboeken" id="12276989">
+      <property name="template">/frontend/web/dagboeken/index.jsp</property>
+    </navigation>
+  </navigation>
+  <navigation name="Tv" id="3788353">
+    <property name="template">/frontend/tv/index.jsp</property>
+    <navigationparam class="org.mmbase.applications.templateengine.TimeNavigation" type="time" field="dd-MM-yyyy">
+      <property name="template">/fdsfasdsfrontend/tv/index.jsp</property>
+    </navigationparam>
+  </navigation>
+  <navigation name="Radio" id="3769557">
+    <property name="template">/frontend/radio/index.jsp</property>
+    <navigationparam class="org.mmbase.applications.templateengine.TimeNavigation" type="time" field="dd-MM-yyyy">
+      <property name="template">/fdsfasdsfrontend/tv/index.jsp</property>
+    </navigationparam>
+  </navigation>
+  <navigation name="Backstage" id="3788358">
+    <property name="template">/frontend/backstage/index.jsp</property>
+  </navigation>
+  <navigation name="Gids" id="10824338">
+    <property name="template">/frontend/gids/index.jsp</property>
+  </navigation>
+  <navigation name="Winkel" id="10824338">
+    <property name="template">/frontend/winkel/index.jsp</property>
+		<navigation name="Dragers">
+      <navigationparam class="org.mmbase.applications.templateengine.EnumNavigation" type="enum" field="cds,videotapes,dvds,public,clothes,overigprod">
+        <property name="template">/fdsfasdsfrontend/tv/index.jsp</property>
+      </navigationparam>
+    </navigation>
+		<navigation name="Categorie">
+			<!-- type = categorie -->
+      <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="object" field="number" guifield="owner">
+        <property name="template">/fdsfasdsfrontend/tv/index.jsp</property>
+      </navigationparam>
+    </navigation>
+    <navigation name="Producten">
+			<!-- type = products -->
+      <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="object" field="number" guifield="owner">
+        <property name="template">/fdsfasdsfrontend/tv/index.jsp</property>
+      </navigationparam>
+    </navigation>
+  </navigation>
+  <navigation name="Vragen" id="3788383">
+    <property name="template">/frontend/vragen/index.jsp</property>
+  </navigation>
+  <navigation name="Zoeken" id="">
+    <property name="template">/frontend/search/index.jsp</property>
   </navigation>
 </navigation>
