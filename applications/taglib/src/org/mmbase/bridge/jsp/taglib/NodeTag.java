@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.Tag;
@@ -42,7 +42,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     }
     
     
-    public int doStartTag() throws JspException{            
+    public int doStartTag() throws JspTagException{            
         Node node;
         
         if (number != null) { 
@@ -56,13 +56,13 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                                                          Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider"));
                 node = nodeProvider.getNodeVar();
             } catch (ClassNotFoundException e){
-                throw new JspException("Could not find NodeProvider class");
+                throw new JspTagException("Could not find NodeProvider class");
             }
         }
         //keesj
         //FIXME does not make sence
         if(node == null) {
-            throw new JspException("Cannot find Node with number " + number);
+            throw new JspTagException("Cannot find Node with number " + number);
         }         
         setNodeVar(node);        
         log.debug("found node " + node.getValue("gui()"));
@@ -71,7 +71,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         return EVAL_BODY_TAG; // should perhaps give a SKIP_BODY if 'field' is given.
     }
     
-    public void doInitBody() throws JspException {       
+    public void doInitBody() throws JspTagException {       
         fillVars();    
     } 
     
@@ -80,13 +80,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     /**
     * this method writes the content of the body back to the jsp page
     **/
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         
         try {
-            BodyContent bodyOut = getBodyContent();
-            bodyOut.writeOut(bodyOut.getEnclosingWriter());
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe){
-            throw new JspException(ioe.toString());
+            throw new JspTagException(ioe.toString());
         }
         return SKIP_BODY;
     }

@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.macro;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
 *  shortcut for listContdition even
 */
 public class ListEvenTag extends ListConditionTag{
-	public int doStartTag() throws JspException{
+	public int doStartTag() throws JspTagException{
 		setValue("even");
 		return super.doStartTag();
 	}
