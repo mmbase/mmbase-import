@@ -39,7 +39,7 @@ one or more examplevalue tags is you want to give some example values.
   <tlibversion>1.0</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
-  <uri></uri>
+  <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>Tag library for MMBase based on MMCI(MMBase Cloud Interface).</info>
   <tag>
     <name>list</name>
@@ -417,7 +417,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>    
   </tag>
   <tag>
-    <name>field</name>    
+    <name>field</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
     <info>
       Gets the field 'name' from node 'node' (can also be
@@ -447,6 +447,22 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	<info>
 	  Like 'name', but does not return the value of the field, but
 	  the GUI-name of the field.
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>addAlias</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.AddAliasTag</tagclass>
+    <info>
+      Lives in a NodeProvider. Adds the bodycontent as an alias to the node.
+    </info>
+    <attribute>
+        <name>parameter</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  In stead of giving it in the body, you can also indicate in
+	  which request parameter the new alias name is.
 	</info>
     </attribute>
   </tag>
@@ -597,6 +613,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>createNode</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
     Creates a new node
     </info>
@@ -654,16 +671,27 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>transaction</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
      The transaction tag creates a transaction. A transaction is
      a context too.
     </info>
     <attribute>
-      <name>id</name>
+      <name>name</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>The name of the transaction.</info>
+      <examplevalue>
+        <value>my_transaction</value>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The id of the transactions and name of its jsp-variable
+      (default is 'cloud').</info>
       <examplevalue>
         <value>my_transaction</value>
       </examplevalue>
@@ -682,6 +710,34 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <possiblevalue>
         <value>false</value>
       </possiblevalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>cancel</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.CancelTag</tagclass>
+    <bodycontent>none</bodycontent>
+    <info>
+      Can cancel a transaction with this. 
+    </info>
+    <attribute>
+      <name>transaction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The id of the transaction.</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>commit</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.CommitTag</tagclass>
+    <bodycontent>none</bodycontent>
+    <info>
+      Can commit a transaction with this. 
+    </info>
+    <attribute>
+      <name>transaction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The id of the transaction.</info>
     </attribute>
   </tag>
   <tag>
