@@ -12,7 +12,7 @@
 
   <target name="dependent.jar" depends="community.tld,jar" />
   <target name="dependent.package" depends="dependent.jar,community.doc,package" />
-
+	<target name="dependent.install" depends="dependent.jar,install" />
 
   <target name="community.tld.check">
     <uptodate property="community.tld.uptodate" targetfile="${project.metainf.dir}/taglib.tld" >
