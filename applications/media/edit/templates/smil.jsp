@@ -3,6 +3,7 @@
 %><mm:import externid="fragment" required="true"  />
 <mm:import externid="format" >rm</mm:import>
 <mm:cloud>
+<h1>Moet nog smil van gemaakt worden</h1>
 <mm:node  number="$fragment">
   <a href="<mm:field name="url($format)" />"><mm:field name="title"  /></a> 
   <mm:nodeinfo id="actualtype" type="type" write="false" />
@@ -12,9 +13,7 @@
     <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos">
        <mm:context>
         <mm:node id="fragment" element="${actualtype}2">
-           <li>
-               <a href="<mm:field name="url($format)" />"><mm:field name="title" /></a>
-           </li>
+           <li><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a></li>
         </mm:node>
       </mm:context>
      </mm:related>

@@ -13,7 +13,9 @@
 		<relation destination="&type;fragments"    role="parent" />
 		<relation destination="&type;fragments"    role="posrel" />
 		<relation destination="&type;fragments"    role="previous"  searchdir="destination" /><!-- role='next' searchdir='source' would be more logical, but editwizards suck -->
-		<relation destination="publishtimes"   role="related" />
+		<relation destination="publishtimes"   role="related">
+       <object />
+    </relation>
 		<relation destination="templates"   role="related" />
 	</action>
 
