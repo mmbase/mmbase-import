@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
+ * @version $Id: XMLApplicationReader.java,v 1.18 2003-03-18 16:21:47 pierre Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 
@@ -80,12 +81,15 @@ public class XMLApplicationReader extends XMLBasicReader {
             Element n3=(Element)ns.nextElement();
             Map bset=new HashMap();
             bset.put("name",getElementAttributeValue(n3,"name"));
+            addAttribute(bset,n3,"maintainer");
+            addAttribute(bset,n3,"version");
+            addAttribute(bset,n3,"type");
             results.add(bset);
         }
         return results;
     }
 
-    private void addAttribute(Hashtable bset, Element n, String attribute) {
+    private void addAttribute(Map bset, Element n, String attribute) {
         String val=n.getAttribute(attribute);
         if (!val.equals("")) {
             bset.put(attribute,val);

@@ -25,9 +25,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  *
- *  @javadoc
- *  @move org.mmbase.util.xml
- *  @deprecation-used Can use Xerces functionality to write an XML, isn't it?
+ * @javadoc
+ * @move org.mmbase.util.xml
+ * @deprecation-used Can use Xerces functionality to write an XML, isn't it?
+ * @version $Id: XMLApplicationWriter.java,v 1.22 2003-03-18 16:21:47 pierre Exp $
  */
 public class XMLApplicationWriter  {
 
@@ -104,7 +105,14 @@ public class XMLApplicationWriter  {
         for (Iterator i=apps.iterator();i.hasNext();) {
             Map bset=(Map)i.next();
             String name=(String)bset.get("name");
-            body+="\t\t<requires name=\""+name+"\" />\n";
+            String maintainer=(String)bset.get("maintainer");
+            String version=(String)bset.get("version");
+            String type=(String)bset.get("type");
+            if (type==null) type="application";
+            body+="\t\t<requires type=\""+type+"\" name=\""+name+"\"";
+            if (maintainer!=null) body+=" maintainer=\""+maintainer+"\"";
+            if (version!=null) body+=" version=\""+version+"\"";
+            body+=" />\n";
         }
         body+="\t</requirements>\n\n";
         return body;
@@ -136,8 +144,7 @@ public class XMLApplicationWriter  {
             String guitargetname=(String)bset.get("guitargetname");
             body+="\t\t<reldef source=\""+source+"\" target=\""+target+"\" direction=\""+dir+"\" guisourcename=\""+guisourcename+"\" guitargetname=\""+guitargetname+"\"";
             String builder=(String)bset.get("builder");
-            if (builder!=null)
-                body+=" builder=\""+builder+"\"";
+            if (builder!=null) body+=" builder=\""+builder+"\"";
             body+=" />\n";
         }
         body+="\t</neededreldeflist>\n\n";
