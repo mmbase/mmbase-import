@@ -96,6 +96,7 @@ public class BasicCloud implements Cloud, Cloneable {
         // determine security manager for this cloud
 
 //        securityManager=SecurityHandler.getAuthorization();
+//        cloud.userContext=new UserContext();
 
         // normally, we want the cloud to read it's context from an xml file.
         // the current system does not support multiple clouds yet,
@@ -294,6 +295,7 @@ public class BasicCloud implements Cloud, Cloneable {
      * @return a <code>Transaction</code> on this cloud
      */
     public Transaction createTransaction(String name){
+      getAccount();
       if (name==null) {
         name="Tran"+uniqueId();
       } else if (transactions.get(name)!=null) {
