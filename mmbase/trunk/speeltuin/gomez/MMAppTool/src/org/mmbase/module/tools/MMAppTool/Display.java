@@ -22,6 +22,7 @@ public class Display extends Frame implements WindowListener,ActionListener {
 	private MenuBar bar;
 	private AppCanvas can;
 	private MMAppTool parent;
+	private String filename;
 
 	public Display(MMAppTool parent) {
 		this.parent=parent;
@@ -36,20 +37,19 @@ public class Display extends Frame implements WindowListener,ActionListener {
 
 	public Display(MMAppTool parent,String filename) {
 		this.parent=parent;
+		this.filename=filename;
 		setSize(640,480);
 		bar=createMenus();
 		setMenuBar(bar);
 		setTitle("MMAppTool - Display");
 		can=new AppCanvas(this);
-		add(can);
 
 		XMLApplicationReader app=new XMLApplicationReader(filename);
 		if (can!=null) {
 			can.setApplication(app);
-			can.repaint();
 		}
 
-		XMLAppToolReader con=new XMLAppToolReader("/tmp/mmapptoolconfig.xml");
+		XMLAppToolReader con=new XMLAppToolReader(filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
 		if (con.ok) {
 			can.setBackGroundColor(con.getColor("backgroundcolor"));
 			can.setObjectColor(con.getColor("objectcolor"));
@@ -69,6 +69,7 @@ public class Display extends Frame implements WindowListener,ActionListener {
 				}
 			}
 		}
+		add(can);
 	}
 
 	public void windowDeiconified(WindowEvent event) {
@@ -125,19 +126,56 @@ public class Display extends Frame implements WindowListener,ActionListener {
 
 	private void doSnapshot() {
 		if (can!=null) {
-			XMLAppToolWriter.writeXMLFile(can,"/tmp/apptoolcondig.xml");	
+			if (filename!=null) {
+				// create the dir for the Data & resource files
+				File file = new File(filename.substring(0,filename.length()-4)+"/tools/");
+				try {
+					file.mkdirs();
+				} catch(Exception e) {
+					System.out.println("Can't create dir : "+filename.substring(0,filename.length()-4)+"/tools/");
+				} 
+
+
+				XMLAppToolWriter.writeXMLFile(can,filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
+				System.out.println("Snapshot = "+filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
+			}
 		}
 	}
 
 	private void doOpen() {
 		FileDialog df=new FileDialog(this,"Open Application xml",FileDialog.LOAD);
 		df.show();
-		String filename=df.getDirectory()+df.getFile();
+		filename=df.getDirectory()+df.getFile();
 
 		XMLApplicationReader app=new XMLApplicationReader(filename);
 		if (can!=null) {
 			can.setApplication(app);
-			can.repaint();
 		}
+
+		XMLAppToolReader con=new XMLAppToolReader(filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
+		if (con.ok) {
+			can.setBackGroundColor(con.getColor("backgroundcolor"));
+			can.setObjectColor(con.getColor("objectcolor"));
+			can.setTextColor(con.getColor("textcolor"));
+			can.setLineColor(con.getColor("linecolor"));
+			can.setActiveColor(con.getColor("activecolor"));
+
+			
+			for (Enumeration e=can.getBuilderOvals().elements();e.hasMoreElements();) {
+				BuilderOval b=(BuilderOval)e.nextElement();
+				String name=b.getName();
+				int x=con.getX(name);
+				int y=con.getY(name);
+				if (x!=-1 && y!=-1) {
+					b.setX(x);
+					b.setY(y);
+				}
+			}
+		}
+		can.repaint();
+	}
+
+	public String getFilename() {
+		return(filename);
 	}
 }

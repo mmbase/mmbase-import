@@ -112,10 +112,14 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 			String to=(String)bset.get("to");
 
 			BuilderOval fb=getBuilderOval(from);
+			if (fb==null) System.out.println("missing datasource : "+from);
 			BuilderOval tb=getBuilderOval(to);
+			if (tb==null) System.out.println("missing datasource : "+to);
 
-			RelationLine rel=new RelationLine(this,fb,tb);
-			relations.add(rel);
+			if (fb!=null && tb!=null) {
+				 RelationLine rel=new RelationLine(this,fb,tb);
+				relations.add(rel);
+			}
 		}
 
 	}
