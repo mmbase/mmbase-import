@@ -9,6 +9,7 @@ distribution:
 
 - A MMBase source distribution.
 - A MMBase binary distribution.
+- A customized mmbase.jar.
 - A ready to run MMBase build on top of Tomcat and Hypersonic. 
 - A test environment.
 
@@ -35,6 +36,7 @@ The build.dir will have the following sub directory's:
   mmbase              (the MMBase binary distribution)
   mmbase-src          (the MMBase source distribution)
   tomcat              (the Tomcat distribution adjusted to run MMBase)
+  orion               (the Orion distribution adjusted to run MMBase)
 
 
 Ant
@@ -47,23 +49,21 @@ more information about the Ant build tool.
 Automated downloads
 ===================
 
-To use the targets for automated downloads you first have to download
+To use the targets that depend on automated downloads you first have to download
 NetComponents and put the NetComponents.jar in your Ant lib directory.
 NetComponents can be found at:
 
   http://www.savarese.org/oro/downloads/index.html#NetComponents
 
-By default all packages containing needed jar files are downloaded and extracted
-if not available yet.
 
-If you don't like the download feature or if you don't want some of the optional
-jar files you can set the use-customized-lib property (any value will do) and
-put the needed jar files for your target into:
+Creating a customized jar and avoiding automated downloads
+==========================================================
 
-  ${build.dir}/mmbase/lib
-
-It is also possible to specify another lib directory to be used by the compile
-and javadocs targets by setting property lib.dir to this directory.
+The compile.cust and jar.cust targets will not download any packages. Instead
+they use the classes available in the system's classpath to compile against.
+When using these targets you only need the servlet and xerces classes. All other
+classes are optional and the java files that need them are excluded from the
+compilation process.
 
 
 Starting Tomcat
@@ -236,8 +236,8 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the lib directory                                            -->
   <!-- =================================================================== -->
   <target name="lib" description="Create the lib directory"
-          depends="init,expand.tomcat,expand.xalan,expand.jai,expand.log4j,expand.junit"
-          unless="use-customized-lib">
+          depends="init,expand.servlet,expand.tomcat,expand.xalan,expand.jai,
+                   expand.log4j,expand.junit">
     <mkdir dir="${build.dir}/mmbase/lib"/>
     <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${webserver.jar}" todir="${build.dir}/mmbase/lib"/>
@@ -249,13 +249,301 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
   </target>
 
+
+  <!-- =================================================================== -->
+  <!-- Check the directory structure                                       -->
+  <!-- =================================================================== -->
+  <target name="init.check.dir">
+    <available property="dir.src.present"
+               file="${source-src.dir}"/>
+    <available property="dir.org.present"
+               file="${source-src.dir}/org"/>
+    <available property="dir.mmbase.present"
+               file="${source-src.dir}/org/mmbase"/>
+  </target>
+
+  <target name="check.dir.src" depends="init.check.dir"
+          unless="dir.src.present">
+    <echo message=""/>
+    <echo message="Ant expects a src directory in ${source.dir}"/>
+    <echo message=""/>
+    <fail message="Invalid directory structure"/>
+  </target>
+
+  <target name="check.dir.org" depends="init.check.dir"
+          unless="dir.org.present">
+    <echo message=""/>
+    <echo message="Ant expects a org directory in ${source-src.dir}"/>
+    <echo message=""/>
+    <fail message="Invalid directory structure"/>
+  </target>
+
+  <target name="check.dir.mmbase" depends="init.check.dir"
+          unless="dir.mmbase.present">
+    <echo message=""/>
+    <echo message="Ant expects a mmbase directory in ${source-src.dir}/org"/>
+    <echo message=""/>
+    <fail message="Invalid directory structure"/>
+  </target>
+
+  <target name="check.dir.all"
+          depends="check.dir.src,check.dir.org,check.dir.mmbase"/>
+
+
+  <!-- =================================================================== -->
+  <!-- Prepare for compilation                                             -->
+  <!-- =================================================================== -->
+  <target name="init.compile" depends="lib">
+    <available property="dummy" classname="dummy">
+      <classpath id="compile">
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
+      </classpath>
+    </available>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Compile the source directory                                        -->
+  <!-- =================================================================== -->
+  <target name="compile" description="Compile the source directory"
+          depends="init.compile,check.dir.all">
+    <mkdir dir="${build.dir}/classes"/>
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+      </fileset>
+    </copy>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
+      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
+    </javac>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Prepare for customized compilation                                  -->
+  <!-- =================================================================== -->
+  <target name="init.compile.cust">
+    <!-- needed packages -->
+    <available property="xerces.in.classpath"
+               classname="org.apache.xerces.parsers.DOMParser"/>
+    <available property="servlet.in.classpath"
+               classname="javax.servlet.http.HttpServlet"/>
+    <!-- optional packages -->
+    <available property="xalan.in.classpath"
+               classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
+    <available property="jai.in.classpath"
+               classname="javax.media.jai.JAI"/>
+    <available property="log4j.in.classpath"
+               classname="org.apache.log4j.Category"/>
+    <available property="junit.in.classpath"
+               classname="junit.runner.BaseTestRunner"/>
+    <available property="tomcat.in.classpath" 
+               classname="org.apache.tomcat.startup.Tomcat"/>
+    <!-- check directory structure -->
+    <available property="dir.src.present"
+               file="${source-src.dir}"/>
+    <available property="dir.org.present"
+               file="${source-src.dir}/org"/>
+    <available property="dir.mmbase.present"
+               file="${source-src.dir}/org/mmbase"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Check the needed packages                                           -->
+  <!-- =================================================================== -->
+  <target name="check.needed.xerces" depends="init.compile.cust"
+          unless="xerces.in.classpath">
+    <echo message=""/>
+    <echo message="Error: Missing needed package Xerces."/>
+    <echo message="You first need to install Xerces (http://xml.apache.org/xerces-j/)"/>
+    <echo message="and add it to your classpath, before you can compile and use MMBase."/>
+    <echo message=""/>
+    <fail message="Missing needed package Xerces."/>
+  </target>
+
+  <target name="check.needed.servlet" depends="init.compile.cust"
+          unless="servlet.in.classpath">
+    <echo message=""/>
+    <echo message="Error: Missing needed package javax.servlet."/>
+    <echo message="You first need to add servlet.jar to your classpath,"/>
+    <echo message="before you can compile and use MMBase."/>
+    <echo message="You'll probably find it somewhere in your servlet-engine dir."/>
+    <echo message=""/>
+    <fail message="Missing needed package javax.servlet."/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Check the optional packages                                         -->
+  <!-- =================================================================== -->
+  <target name="check.optional.xalan" depends="init.compile.cust"
+          unless="xalan.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package Xalan."/>
+    <echo message="You first need to install Xalan (http://xml.apache.org/xalan/)"/>
+    <echo message="and add it to your classpath, before you can use all the features of MMBase."/>
+    <echo message="MMBase will compile and run without this package,"/> 
+    <echo message="if you remove the xslconvert module from your modules.xml."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.jai" depends="init.compile.cust"
+          unless="jai.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.jai."/>
+    <echo message="You can't use the java based Image-Converter without this package,"/> 
+    <echo message="you've got to use ImageMagick."/>
+    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
+    <echo message="MMBase will compile and run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.log4j" depends="init.compile.cust"
+          unless="log4j.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package Log4j."/>
+    <echo message="Logging capabalities will be very limited."/> 
+    <echo message="Log4j can be downloaded from http://jakarta.apache.org/log4j/"/>
+    <echo message="The Log4j Implementation of MMBase will not compile,"/> 
+    <echo message="but MMBase will run without this package though."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.junit" depends="init.compile.cust"
+          unless="junit.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package JUnit."/>
+    <echo message="You will not be able to run tests."/> 
+    <echo message="JUnit can be downloaded from http://www.unit.org/"/>
+    <echo message="The JUnit tests for MMBase will not compile,"/> 
+    <echo message="but MMBase will run without this package though."/>
+    <echo message=""/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Check packages needed by a specific servlet-engine                  -->
+  <!-- =================================================================== -->
+  <target name="check.needed.for.tomcat" depends="init.compile.cust"
+          unless="tomcat.in.classpath">
+    <echo message=""/>
+    <echo message="Message: Missing package Tomcat."/>
+    <echo message="If you're running MMBase with Apache Tomcat, "/>
+    <echo message="you'll need this package for the Jumpers."/>
+    <echo message="Add the webserver.jar from tomcat/lib to your classpath "/>
+    <echo message="and compile again."/>
+    <echo message="MMBase will compile and run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.package.all"
+          depends="check.needed.xerces,check.needed.servlet,
+                   check.optional.xalan,check.optional.jai,check.optional.log4j,
+                   check.optional.junit,check.needed.for.tomcat"/>
+
+
+  <!-- =================================================================== -->
+  <!-- Compile a customized set, dependent on the system classpath         -->
+  <!-- =================================================================== -->
+  <target name="compile.cust"
+          description="Compile a customized set, dependent on the system classpath"
+          depends="init.compile.cust,check.package.all,check.dir.all">
+    <mkdir dir="${build.dir}/classes"/>
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+      </fileset>
+    </copy>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
+      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
+      <exclude name="**/XSLTransformer.java" unless="xalan.in.classpath"/>
+      <exclude name="**/jumpersInterceptor.java" unless="tomcat.in.classpath"/>
+      <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
+      <exclude name="**/logging/log4j/**" unless="log4j.in.classpath"/>
+      <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
+      <exclude name="**/bridgetest/**" unless="junit.in.classpath"/>
+    </javac>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the compiled classes                                          -->
+  <!-- =================================================================== -->
+  <target name="clean.compile" description="Clean the compiled classes">
+    <delete dir="${build.dir}/classes"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the MMBase jar file                                          -->
+  <!-- =================================================================== -->
+  <target name="jar" description="Create the MMBase jar file"
+          depends="compile">
+    <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
+         basedir="${build.dir}/classes"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create a customized MMBase jar file                                 -->
+  <!-- =================================================================== -->
+  <target name="jar.cust" description="Create a customized MMBase jar file"
+          depends="compile.cust">
+    <jar jarfile="${build.dir}/mmbase.jar"
+         basedir="${build.dir}/classes"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation                                        -->
+  <!-- =================================================================== -->
+  <target name="javadocs"
+          description="Create the API documentation"
+          depends="init">
+    <mkdir dir="${build.dir}/mmbase/docs/api"/>
+    <javadoc packagenames="${javadoc.packages}"
+             sourcepath="${source-src.dir}"
+             destdir="${build.dir}/mmbase/docs/api"
+             author="true"
+             version="true"
+             use="false"
+             noindex="true"
+             windowtitle="MMBase API"
+             doctitle="MMBase"
+             bottom="MMBase 2001">
+      <classpath>
+        <fileset dir="${build.dir}/mmbase/lib">
+          <include name="*.jar"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc>
+  </target>
+
+
   <!-- =================================================================== -->
   <!-- Create the web directory                                            -->
   <!-- This directory contains 'compiled' stuff, which must appear in the  -->
   <!-- html directory of the web-server. A web server specific tag can copy--> 
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
-
   <target name="web" description="Make the things which must appear web-servers html directory"
           depends="init.compile">
     <mkdir dir="${web.dir}"/>
@@ -286,240 +574,6 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Prepare for compilation                                             -->
-  <!-- =================================================================== -->
-  <target name="init.compile" depends="lib">
-    <available property="dummy" classname="dummy">
-      <classpath id="compile">
-        <fileset dir="${lib.dir}">
-          <include name="*.jar"/>
-          <exclude name="mmbase.jar"/>
-        </fileset>
-      </classpath>
-    </available>
-    <!-- needed packages -->
-    <available property="xerces.in.classpath"
-               classpathref="compile"
-               classname="org.apache.xerces.parsers.DOMParser"/>
-    <available property="servlet.in.classpath"
-               classpathref="compile"
-               classname="javax.servlet.http.HttpServlet"/>
-    <!-- optional packages -->
-    <available property="xalan.in.classpath"
-               classpathref="compile"
-               classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
-    <available property="jai.in.classpath"
-               classpathref="compile"
-               classname="javax.media.jai.JAI"/>
-    <available property="log4j.in.classpath"
-               classpathref="compile"
-               classname="org.apache.log4j.Category"/>
-    <available property="junit.in.classpath"
-               classpathref="compile"
-               classname="junit.runner.BaseTestRunner"/>
-    <!-- only needed for runnning MMBase with Apache Tomcat -->
-    <available property="tomcat.in.classpath" 
-               classpathref="compile"
-               classname="org.apache.tomcat.startup.Tomcat"/>
-    <!-- check directory structure -->
-    <available property="dir.src.present"
-               file="${source-src.dir}"/>
-    <available property="dir.org.present"
-               file="${source-src.dir}/org"/>
-    <available property="dir.mmbase.present"
-               file="${source-src.dir}/org/mmbase"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Check the needed packages                                           -->
-  <!-- =================================================================== -->
-  <target name="check.needed.xerces" depends="init.compile" unless="xerces.in.classpath">
-    <echo message=""/>
-    <echo message="Error: Missing needed package Xerces."/>
-    <echo message="You first need to install Xerces (http://xml.apache.org/xerces-j/)"/>
-    <echo message="and add it to your classpath, before you can compile and use MMBase."/>
-    <echo message=""/>
-    <fail message="Missing needed package Xerces."/>
-  </target>
-
-  <target name="check.needed.servlet" depends="init.compile" unless="servlet.in.classpath">
-    <echo message=""/>
-    <echo message="Error: Missing needed package javax.servlet."/>
-    <echo message="You first need to add servlet.jar to your classpath,"/>
-    <echo message="before you can compile and use MMBase."/>
-    <echo message="You'll probably find it somewhere in your servlet-engine dir."/>
-    <echo message=""/>
-    <fail message="Missing needed package javax.servlet."/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Check the optional packages                                         -->
-  <!-- =================================================================== -->
-  <target name="check.optional.xalan" depends="init.compile"
-          unless="xalan.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package Xalan."/>
-    <echo message="You first need to install Xalan (http://xml.apache.org/xalan/)"/>
-    <echo message="and add it to your classpath, before you can use all the features of MMBase."/>
-    <echo message="MMBase will compile and run without this package,"/> 
-    <echo message="if you remove the xslconvert module from your modules.xml."/>
-    <echo message=""/>
-  </target>
-  <target name="check.optional.jai" depends="init.compile"
-          unless="jai.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package javax.jai."/>
-    <echo message="You can't use the java based Image-Converter without this package,"/> 
-    <echo message="you've got to use ImageMagick."/>
-    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
-    <echo message="MMBase will compile and run without this package."/>
-    <echo message=""/>
-  </target>
-  <target name="check.optional.log4j" depends="init.compile"
-          unless="log4j.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package Log4j."/>
-    <echo message="Logging capabalities will be very limited."/> 
-    <echo message="Log4j can be downloaded from http://jakarta.apache.org/log4j/"/>
-    <echo message="The Log4j Implementation of MMBase will not compile,"/> 
-    <echo message="but MMBase will run without this package though."/>
-    <echo message=""/>
-  </target>
-  <target name="check.optional.junit" depends="init.compile"
-          unless="junit.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package JUnit."/>
-    <echo message="You will not be able to run tests."/> 
-    <echo message="JUnit can be downloaded from http://www.unit.org/"/>
-    <echo message="The JUnit tests for MMBase will not compile,"/> 
-    <echo message="but MMBase will run without this package though."/>
-    <echo message=""/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Check packages needed by a specific servlet-engine                  -->
-  <!-- =================================================================== -->
-  <target name="check.needed.for.tomcat" depends="init.compile"
-          unless="tomcat.in.classpath">
-    <echo message=""/>
-    <echo message="Message: Missing package Tomcat."/>
-    <echo message="If you're running MMBase with Apache Tomcat, "/>
-    <echo message="you'll need this package for the Jumpers."/>
-    <echo message="Add the webserver.jar from tomcat/lib to your classpath "/>
-    <echo message="and compile again."/>
-    <echo message="MMBase will compile and run without this package."/>
-    <echo message=""/>
-  </target>
-  <target name="check.package.all"
-          depends="check.needed.xerces,check.needed.servlet,
-                   check.optional.xalan,check.optional.jai,check.optional.log4j,
-                   check.optional.junit,check.needed.for.tomcat"/>
-
-
-  <!-- =================================================================== -->
-  <!-- Check the directory structure                                       -->
-  <!-- =================================================================== -->
-  <target name="check.dir.src" depends="init.compile" unless="dir.src.present">
-    <echo message=""/>
-    <echo message="Ant expects a src directory in ${source.dir}"/>
-    <echo message=""/>
-    <fail message="Invalid directory structure"/>
-  </target>
-  <target name="check.dir.org" depends="init.compile" unless="dir.org.present">
-    <echo message=""/>
-    <echo message="Ant expects a org directory in ${source-src.dir}"/>
-    <echo message=""/>
-    <fail message="Invalid directory structure"/>
-  </target>
-  <target name="check.dir.mmbase" depends="init.compile"
-          unless="dir.mmbase.present">
-    <echo message=""/>
-    <echo message="Ant expects a mmbase directory in ${source-src.dir}/org"/>
-    <echo message=""/>
-    <fail message="Invalid directory structure"/>
-  </target>
-  <target name="check.dir.all"
-          depends="check.dir.src,check.dir.org,check.dir.mmbase"/>
-
-
-  <!-- =================================================================== -->
-  <!-- Compile the source directory                                       -->
-  <!-- =================================================================== -->
-  <target name="compile" description="Compile the source directory"
-          depends="init.compile,check.package.all,check.dir.all">
-    <mkdir dir="${build.dir}/classes"/>
-    <copy todir="${build.dir}/classes">
-      <fileset dir="${source-src.dir}">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-      </fileset>
-    </copy>
-    <javac srcdir="${source-src.dir}"
-           destdir="${build.dir}/classes"
-           classpathref="compile"
-           debug="${debug}"
-           optimize="${optimize}"
-           deprecation="${deprecation}">
-      <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
-      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
-      <exclude name="**/XSLTransformer.java" unless="tomcat.in.classpath"/>
-      <exclude name="**/jumpersInterceptor.java" unless="tomcat.in.classpath"/>
-      <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
-      <exclude name="**/logging/log4j/**" unless="log4j.in.classpath"/>
-      <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
-      <exclude name="**/bridgetest/**" unless="junit.in.classpath"/>
-    </javac>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the compiled classes                                          -->
-  <!-- =================================================================== -->
-  <target name="clean.compile" description="Clean the compiled classes">
-    <delete dir="${build.dir}/classes"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Create the MMBase jar file                                          -->
-  <!-- =================================================================== -->
-  <target name="jar" description="Create the MMBase jar file"
-          depends="compile">
-    <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
-         basedir="${build.dir}/classes"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Create the API documentation                                       -->
-  <!-- =================================================================== -->
-  <target name="javadocs"
-          description="Create the API documentation"
-          depends="init">
-    <mkdir dir="${build.dir}/mmbase/docs/api"/>
-    <javadoc packagenames="${javadoc.packages}"
-             sourcepath="${source-src.dir}"
-             destdir="${build.dir}/mmbase/docs/api"
-             author="true"
-             version="true"
-             use="false"
-             noindex="true"
-             windowtitle="MMBase API"
-             doctitle="MMBase"
-             bottom="MMBase 2001">
-      <classpath>
-        <fileset dir="${build.dir}/mmbase/lib">
-          <include name="*.jar"/>
-          <exclude name="mmbase.jar"/>
-        </fileset>
-      </classpath>
-    </javadoc>
   </target>
 
 
@@ -825,21 +879,32 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Various targets for automated downloads and cvs checkouts           -->
+  <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
   <property name="download.dir" value="${build.dir}/download"/>
   <property name="expand.dir" value="${download.dir}/expanded"/>
 
   <target name="init.get">
+    <!-- Servlet -->
+    <property name="servlet.version" value="jakarta-servletapi-3.2"/>
+    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.1/bin/${servlet.version}.tar.gz"/>
+    <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
+    <available property="servlet.present"
+               file="${download.dir}/${servlet.version}.tar.gz"/>
+    <available property="servlet.expanded"
+               file="${expand.dir}/${servlet.version}"/>
+    <available property="servlet.jar.present"
+               file="${servlet.jar}"/>
     <!-- Tomcat -->
     <property name="tomcat.version" value="jakarta-tomcat-3.2.1"/>
     <property name="tomcat.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.1/bin/${tomcat.version}.tar.gz"/>
     <property name="webserver.jar" value="${expand.dir}/${tomcat.version}/lib/webserver.jar"/>
-    <property name="servlet.jar" value="${expand.dir}/${tomcat.version}/lib/servlet.jar"/>
     <available property="tomcat.present"
                file="${download.dir}/${tomcat.version}.tar.gz"/>
     <available property="tomcat.expanded"
                file="${expand.dir}/${tomcat.version}"/>
+    <available property="webserver.jar.present"
+               file="${webserver.jar}"/>
     <!-- Orion -->
     <property name="orion.version" value="orion1.4.5"/>
     <property name="orion.url" value="http://www.orionserver.com/mirrordownload.jsp?file=${orion.version}.zip"/>
@@ -898,6 +963,18 @@ Change directory to ${build.dir}/orion and run:
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
+  </target>
+
+  <target name="get.servlet" depends="init.get" unless="servlet.present">
+    <get src="${servlet.url}"
+         dest="${download.dir}/${servlet.version}.tar.gz"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.servlet" depends="get.servlet" unless="servlet.expanded">
+    <gunzip src="${download.dir}/${servlet.version}.tar.gz" dest="${expand.dir}"/>
+    <untar src="${expand.dir}/${servlet.version}.tar" dest="${expand.dir}"/>
+    <delete file="${expand.dir}/${servlet.version}.tar"/>
   </target>
 
   <target name="get.tomcat" depends="init.get" unless="tomcat.present">
@@ -1003,7 +1080,7 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Clean the download directory                                       -->
+  <!-- Clean the download directory                                        -->
   <!-- =================================================================== -->
   <target name="clean.download" description="Clean the download directory">
     <delete dir="${download.dir}"/>
@@ -1011,7 +1088,7 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Clean the expand directory                                         -->
+  <!-- Clean the expand directory                                          -->
   <!-- =================================================================== -->
   <target name="clean.expand" description="Clean the expand directory">
     <delete dir="${expand.dir}"/>
