@@ -76,6 +76,7 @@ Applications build file
      <ant dir="cloudcontext"    target="clean" />
      <ant dir="bugtracker"      target="clean" />
      <ant dir="community"      target="clean" />
+     <ant dir="email"      target="clean" />
     <delete dir="${applications.build.dir}" />
   </target>
 
