@@ -140,13 +140,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     public String getAttributeValue(String attribute) throws JspTagException {
-        String result = "";
+        StringBuffer result = new StringBuffer();
 
         // search all occurences of $
         int foundpos     = attribute.indexOf('$');
         int pos          = 0;
         while (foundpos >= 0) { // we found a variable!
-            result += attribute.substring(pos, foundpos); // piece of string until now is ready.
+            result.append(attribute.substring(pos, foundpos)); // piece of string until now is ready.
             foundpos ++;
             if (foundpos >= attribute.length()) { // end of string
                 break;
@@ -175,33 +175,33 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
                 if (varName.charAt(0) == '+') { // make simple aritmetic possible
                     ExprCalc cl = new ExprCalc(varName.substring(1));
-                    result += cl.getResult();
+                    result.append(cl.getResult());
                 } else {
-                    result += getString(varName);
+                    result.append(getString(varName));
                 }
             } else { // not using parentheses.
-                String varName = ""; //
+                StringBuffer varName = new StringBuffer(); //
                 char c = attribute.charAt(pos = foundpos);
                 if (c == '$') { // make escaping of $ possible
-                    result += c;
+                    result.append(c);
                     pos++; 
                 } else {        // search until non-identifier
                     while (ContextTag.isContextIdentifierChar(c)) {
-                        varName += c;
+                        varName.append(c);
                         pos++;
                         if (pos >= attribute.length()) break; // end of string
                         c = attribute.charAt(pos);
                     }
                     if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
-                    result += getString(varName);
+                    result.append(getString(varName.toString()));
                 }
             }
             // ready with this $, search next occasion;
             foundpos = attribute.indexOf("$", pos);
         }
         // no more $'es, add rest of string
-        result += attribute.substring(pos);
-        return result;
+        result.append(attribute.substring(pos));
+        return result.toString();
     }
 
 
@@ -221,8 +221,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         try {
             i = getAttributeValue(i);
             return new Integer(i);
-        } catch (NumberFormatException e) {
-            throw new JspTagException(i + " is not an integer value ");
+        } catch (NumberFormatException e) { // try first if it was a flout
+            try {
+                return new Integer(new java.math.BigDecimal(i).intValue());
+            } catch (NumberFormatException e2) {
+                throw new JspTagException(i + " is not an integer value ");
+            }
         }
     }
 
@@ -319,7 +323,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
-        return getContextTag().getContainerObject(key);
+        Object r = getContextTag().getContainerObject(key);
+        if (r == null) return "";
+        return r;
     }
     /**
      * Gets an object from the Context, and returns it as a
@@ -332,7 +338,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected String getString(String key) throws JspTagException {
         Object o = getObject(key);
-        if (o == null) return "";
         if (o instanceof Node) {
             Node n = (Node) o;
             return "" + n.getNumber();
