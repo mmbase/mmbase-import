@@ -118,5 +118,6 @@
           <field name="vacuum" replacement="m_vacuum"/>
           <field name="verbose" replacement="m_verbose"/>
           <field name="version" replacement="m_version"/>
+          <field name="default" replacement="m_default"/>
     </disallowed>
 </database>
