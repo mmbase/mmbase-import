@@ -1,8 +1,11 @@
+@import url("../../mmbase/style/css/mmbase.css");
+
+/* Style below this needs review */
 .pagenav,
 .pagenav-disabled,
 .pagenav-current,
-a.pagenav
-			{ font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; font-size: 8pt; font-weight:900;}
+a.pagenav { font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; font-size: 8pt; font-weight:900;
+}
 a.pagenav		{ color: #18248C; text-decoration:none;}
 a.pagenav:hover	{ color: #18248C; text-decoration:underline;}
 
