@@ -9,10 +9,11 @@
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler" />
 
 	<attributes>
-		<!-- Postgresql is a hell when is comes to blobs, so store as file instead of in the database-->
-		<option name="database-stores-binary-as-file" />
 		<!-- No file path, then use webdir -->
 		<attribute name="database-binary-file-path" ></attribute>
+
+		<!-- Postgresql is a hell when is comes to blobs, so store as file instead of in the database-->
+		<option name="database-stores-binary-as-file" />
 
 		<!-- Foreignkeys don't work well under postgresql -->
 		<scheme name="create-foreign-key-scheme" />
