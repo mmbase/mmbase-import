@@ -350,11 +350,18 @@ public class XMLApplicationReader  {
     public String getInstallNotice() {
 	Node n1=document.getFirstChild();
 	if (n1!=null) {
-		NamedNodeMap nm=n1.getAttributes();
-		if (nm!=null) {
-			Node n2=nm.getNamedItem("install-notice");
-			String name=n2.getNodeValue();
-			return(name);
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("install-notice")) {
+				Node n3=n2.getFirstChild();
+		    		String value="";
+				if (n3!=null) {
+					value=n3.getNodeValue();
+				}
+				return(value);
+			
+			}
+			n2=n2.getNextSibling();
 		}
 	}
 	return(null);
@@ -366,11 +373,18 @@ public class XMLApplicationReader  {
     public String getDescription() {
 	Node n1=document.getFirstChild();
 	if (n1!=null) {
-		NamedNodeMap nm=n1.getAttributes();
-		if (nm!=null) {
-			Node n2=nm.getNamedItem("description");
-			String name=n2.getNodeValue();
-			return(name);
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("description")) {
+				Node n3=n2.getFirstChild();
+		    		String value="";
+				if (n3!=null) {
+					value=n3.getNodeValue();
+				}
+				return(value);
+			
+			}
+			n2=n2.getNextSibling();
 		}
 	}
 	return(null);
