@@ -1,11 +1,12 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content language="en" escaper="inline" postprocessor="reducespace">
 
 <%-- get the current magazine, if there is no magazine use the default magazine with alias default.mags --%>
 <mm:import externid="magid">default.mags</mm:import>
 
 <%-- MMBase data can only be used inside a cloud tag --%>
-<mm:cloud name="mmbase">
+<mm:cloud>
 
 <%-- This whole page is base on a magazine node --%>
 <mm:node number="$magid" id="mag">
@@ -28,9 +29,7 @@
     <td width="30" />
     <td>
       <em><mm:field  name="intro"/></em><br />
-      <p>
-       <mm:field  name="html(body)"/>
-      </p>
+      <mm:field  escape="p" name="body"/>
     </td>
   </tr>
   <%-- we are still in the magazine node, we can now ak for related news items  by using the relatednodes tag --%>
@@ -59,3 +58,4 @@
 </html>
 </mm:node>
 </mm:cloud>
+</mm:content>

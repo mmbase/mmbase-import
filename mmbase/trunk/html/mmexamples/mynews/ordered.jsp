@@ -1,6 +1,6 @@
 <%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content language="en" postprocessor="reducespace">
+%><mm:content language="en" postprocessor="reducespace" escaper="inline">
 <mm:import externid="magid">default.mags</mm:import>
 <mm:cloud>
 <mm:node number="$magid" id="mag">
@@ -23,9 +23,7 @@
      <td width="30" />
      <td>
        <em><mm:field  name="intro"/></em><br />
-       <p>
-        <mm:field  name="html(body)"/>
-      </p>
+       <mm:field  escape="p" name="body"/>
      </td>
    </tr>
    <%-- we have to use the related tag if we want to order with pos --%>

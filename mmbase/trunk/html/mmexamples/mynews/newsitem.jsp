@@ -1,6 +1,7 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase">
+<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content language="en" escaper="inline" postprocessor="reducespace">
+<mm:cloud>
 <%-- magazine node --%>
 <%-- the page is called with a parameter newsid
 we can use the parameter attribute of node to create a context
@@ -26,12 +27,13 @@ for the MMBase node --%>
   </th><tr>
   <tr><td width="30" /><td>
 
-  <b><mm:field  name="intro"/></B>
+  <b><mm:field  name="intro"/></b>
 
-  <%-- it is possible to call MMBase functions on fields
-  this i an example of converting text to html by adding
-  brakes and paragraphs --%>
-  <p><mm:field  name="html(body)"/></p>
+  <%--
+    The default escape behaviour can be changed on tags producing output.
+    escape="p"  generates p-tags, to escape newlines.
+ --%>
+  <mm:field  escape="p" name="body"/>
 
   </td></tr>
   <mm:related path="posrel,images" orderby="posrel.pos" max="3">
@@ -63,3 +65,4 @@ for the MMBase node --%>
 </html>
 </mm:node>
 </mm:cloud>
+</mm:content>
