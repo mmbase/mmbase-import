@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.33 2002-07-17 14:13:43 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.34 2002-09-23 20:45:35 michiel Exp $
  */
 public class BasicNodeManager implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -178,16 +178,17 @@ public class BasicNodeManager implements NodeManager, Comparable {
         return builder.replace(BasicCloudContext.getScanPage(req, resp),tokens);
     }
 
-    public NodeList getList(String command, Hashtable parameters){
+    public NodeList getList(String command, Map parameters){
         return getList(command,parameters,null,null);
     }
 
-    public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
         StringTagger params= new StringTagger("");
         if (parameters!=null) {
-            for (Enumeration keys=parameters.keys(); keys.hasMoreElements(); ) {
-                String key=(String)keys.nextElement();
-                Object o = parameters.get(key);
+            for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String key=(String) entry.getKey();
+                Object o = entry.getValue();
                 if (o instanceof Vector) {
                     params.setValues(key,(Vector)o);
                 } else {
