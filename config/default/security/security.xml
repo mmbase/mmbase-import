@@ -25,7 +25,7 @@
 	 -->
   	<authentication class="org.mmbase.security.Authentication" url="" />
   	<!-- <authentication class="org.mmbase.security.implementation.AuthenticationHandler" 
-			url="/usr/local/mmbase/config/security/authentication.xml" /> -->
+			url="authentication.xml" /> -->
 
 	<!--
 		tag authorization:
