@@ -213,18 +213,21 @@ public class MediaSources extends MMObjectBuilder {
      * create a new mediasource, and relate it with specified mediafragment.
      *
      * @param mediafragment the media fragment to which this source belongs
+     * @param status of the media source
      * @param format the format of the source (Real, Mp3)
      * @param channels stereo/mono
+     * @param url the file name of the media source
      * @param owner creator of the new object
      * @return the new <code>MediaSource</code>
      */
-    public MMObjectNode createSource(MMObjectNode mediafragment, int status, int format, int speed, int channels, String owner) {
+    public MMObjectNode createSource(MMObjectNode mediafragment, int status, int format, int speed, int channels, String url, String owner) {
         // creating media source
         MMObjectNode source = getNewNode(owner);
         source.setValue("status",status);
         source.setValue("format",format);
         source.setValue("speed",speed);
         source.setValue("channels",channels);
+        source.setValue("url",url);
         source.insert(owner);
         
         // creating relation between media source and media fragment
