@@ -12,7 +12,7 @@ package org.mmbase.bridge.jsp.taglib.tree;
 import java.io.IOException;
 import java.util.Stack;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.util.Casting;
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ShrinkTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
+ * @version $Id: ShrinkTag.java,v 1.3 2004-06-30 17:51:57 michiel Exp $
  */
 public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer { 
 
@@ -45,7 +45,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
     }
 
 
-    public int doStartTag() throws JspException {
+    public int doStartTag() throws JspTagException {
         log.debug("starttag");
         doStartTagHelper();
 
@@ -94,7 +94,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
         super.doInitBody();
     }
 
-    public int doEndTag() throws JspException {
+    public int doEndTag() throws JspTagException {
         log.debug("endtag");
         if (! foundBody) { // write everything to page!
             log.debug("no body, doing work");
@@ -110,15 +110,16 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
                 depth = entry.depth;
             }
             helper.setValue(value.toString());
+            super.doEndTag();
             return helper.doEndTag();
         } else {
             log.debug("handled by doAfterBodies");
-            return EVAL_PAGE;
+            return super.doEndTag();
         }
 
     }
 
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         log.debug("afterbody");
         collector.doAfterBody();
         if (index == 0) {

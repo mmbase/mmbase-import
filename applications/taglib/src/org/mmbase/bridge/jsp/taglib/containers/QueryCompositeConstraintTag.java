@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.3 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.4 2004-06-30 17:51:55 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -104,6 +104,10 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
             } 
         }
         return SKIP_BODY;
+    }
+    public int doEndTag() throws JspTagException {
+        constraints = null;
+        return super.doEndTag();
     }
 
 

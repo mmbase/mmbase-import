@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.9 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.10 2004-06-30 17:51:55 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
     // nodereferrer because RelatedNodesContainer extension
@@ -99,6 +99,10 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             } 
         }
         return SKIP_BODY;        
+    }
+    public int doEndTag() throws JspTagException {
+        query = null;
+        return super.doEndTag();
     }
 
 }

@@ -12,9 +12,7 @@ package org.mmbase.bridge.jsp.taglib.debug;
 import java.io.IOException;
 import javax.servlet.jsp.JspTagException;
 
-import java.util.Vector;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
@@ -36,16 +34,16 @@ class LongContainer {
  * times' overview.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TimerTag.java,v 1.7 2003-08-27 21:33:39 michiel Exp $ 
+ * @version $Id: TimerTag.java,v 1.8 2004-06-30 17:51:55 michiel Exp $ 
  */
 
 public class TimerTag extends ContextReferrerTag {
 
-    private static final Logger log = Logging.getLoggerInstance(TimerTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TimerTag.class);
 
-    private Vector timers;
-    private Vector timerIds;
-    private HashMap totalTimes;
+    private List timers;
+    private List timerIds;
+    private Map totalTimes;
 
     private int lastTimer;
     private Attribute name = Attribute.NULL;
@@ -106,8 +104,8 @@ public class TimerTag extends ContextReferrerTag {
      */
     public int doStartTag() throws JspTagException {
         log.info("Starting timer " + name.getString(this));
-        timers     = new Vector(1);
-        timerIds   = new Vector(1);
+        timers     = new ArrayList(1);
+        timerIds   = new ArrayList(1);
         totalTimes = new HashMap();
         lastTimer = 0;
         startTimer(getId(), getClass().getName());
@@ -137,6 +135,12 @@ public class TimerTag extends ContextReferrerTag {
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
+    }
+    public int doEndTag() throws JspTagException {
+        timers = null;
+        timerIds = null;
+        totalTimes = null;
+        return super.doEndTag();
     }
 
 }

@@ -10,15 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.*;
 
 
 /**
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.2 2004-02-18 20:33:27 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.3 2004-06-30 17:51:54 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag {
@@ -53,12 +52,13 @@ public class ParamTag extends ContextReferrerTag {
         return super.doAfterBody();
     }
 
-    public int doEndTag() throws JspException {
+    public int doEndTag() throws JspTagException {
         if (! handled && value != Attribute.NULL) {
             helper.setValue(value.getString(this)); // to deal with 'vartype' casting
             paramHandler.addParameter(name.getString(this), helper.getValue());
         }
-        return SKIP_BODY;
+        paramHandler = null;
+        return super.doEndTag();
     }
 
 }

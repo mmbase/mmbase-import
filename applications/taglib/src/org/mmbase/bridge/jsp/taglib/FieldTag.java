@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.*;
 
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.43 2004-06-15 09:53:34 michiel Exp $ 
+ * @version $Id: FieldTag.java,v 1.44 2004-06-30 17:51:53 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -186,7 +185,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
         }
-
+        node = null;
+        nodeProvider = null;
+        field = null;
+        fieldName = null;
+        super.doEndTag();
         return helper.doEndTag();
     }
 }

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.23 2004-06-14 14:29:21 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.24 2004-06-30 17:51:52 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -328,6 +328,7 @@ public class ContentTag extends LocaleTag  {
                         if (user != null) {
                             // This page is using the non-anonymous cloud. Cache control must be private.
                             cacheControl = "private";
+                            user = null;
                         }
                         long later = System.currentTimeMillis() + exp * 1000;
                         response.setDateHeader("Expires", later);
