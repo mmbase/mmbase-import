@@ -1979,6 +1979,15 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		Reuses a previously defined list. In this way you can use the
+		same result more than once.
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>relatednode</name>
