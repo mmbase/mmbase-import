@@ -37,6 +37,7 @@
  <mm:compare value="packages"><%@ include file="packages/index.jsp" %></mm:compare>
  <mm:compare value="providers"><%@ include file="providers/index.jsp" %></mm:compare>
  <mm:compare value="sharing"><%@ include file="sharing/index.jsp" %></mm:compare>
+ <mm:compare value="manual"><%@ include file="manual/index.jsp" %></mm:compare>
  <mm:compare value="settings"><%@ include file="settings/index.jsp" %></mm:compare>
 </mm:write>
 
