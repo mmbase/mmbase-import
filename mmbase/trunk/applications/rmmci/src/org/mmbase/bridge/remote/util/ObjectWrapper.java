@@ -27,7 +27,19 @@ public abstract class ObjectWrapper {
         if (o == null) {
             return null;
         }
-
+		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof SortedSet) {
+			
+			SortedSet in = (SortedSet)o;
+			log.debug("convert treeset from "+ in);
+			SortedSet set = new TreeSet();
+			Iterator i = in.iterator();
+			while(i.hasNext()){
+				set.add(localToRMIObject(i.next()));
+			}
+			log.debug("convert treeset to "+ set);
+			return set;
+		}
+		
         if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
             List source = (List)o;
             List list = new Vector();
@@ -62,6 +74,19 @@ public abstract class ObjectWrapper {
         if (o == null) {
             return null;
         }
+        
+		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof SortedSet) {
+			SortedSet in = (SortedSet)o;
+			System.err.println("convert treeset from "+ in);
+			SortedSet set = new TreeSet();
+			Iterator i = in.iterator();
+			while(i.hasNext()){
+				set.add(rmiObjectToRemoteImplementation(i.next()));
+			}
+			System.err.println("convert treeset to"+ in);
+			return set;
+		}
+
 		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
             List source = (List)o;
             List list = new Vector();
