@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.107 2004-02-05 14:25:17 pierre Exp $
+ * @version $Id: MMBase.java,v 1.108 2004-02-23 14:56:11 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -90,6 +90,12 @@ public class MMBase extends ProcessorModule {
      * @scope private, non-static
      */
     public static int multicastport = -1;
+
+    /**
+     * Time in seconds, when mmbase was started.
+     * @since MMBase-1.7
+     */
+    public static final int startTime = (int) System.currentTimeMillis() / 1000;
 
     /**
      * Builds a MultiCast Thread to receive and send
@@ -517,7 +523,7 @@ public class MMBase extends ProcessorModule {
      * Retrieves the MMBase module('mmbaseroot').
      * @return the active MMBase module
      */
-    static public MMBase getMMBase() {
+    public static MMBase getMMBase() {
         if (mmbaseroot == null) {
             mmbaseroot = (MMBase) getModule("mmbaseroot", true);
         }
