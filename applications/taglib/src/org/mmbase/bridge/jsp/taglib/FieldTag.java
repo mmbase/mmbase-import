@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+* The FieldTag can be used as a child of a 'NodeProvider' tag.   
 * 
 * @author Michiel Meeuwissen
 */
@@ -61,13 +62,13 @@ public class FieldTag extends NodeReferrerTag {
         String show;
         
         if (name != null) { // name not null, head perhaps.
-            log.debug("using name " + name );
+            log.trace("using name " + name );
             show = "" + node.getValue(name);
             if (head != null) {
                 throw new JspException ("Could not indicate both  'name' and 'head' attribute");  
             }
         } else if (head !=null) { // name null, head isn't.
-            log.debug("using head " + head);
+            log.trace("using head " + head);
             Field f = node.getNodeManager().getField(head);
             if (f == null) {
                 throw new JspException ("Could not find field " + head);  

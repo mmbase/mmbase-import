@@ -21,7 +21,9 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-**
+* Tag which are meant to live as a child of the CloudTag, could extend this
+* class. 
+*
 * @author Michiel Meeuwissen 
 **/
 
@@ -30,10 +32,12 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     private static Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
 
     /**
-    * This method tries to find an ancestor object of type NodeProvider
+    * This method tries to find an ancestor object of type CloudTag
     * @param id the id of the parent we are looking for , this id might be null or ""
-    * in that case the first node provider found will be taken
-    * @return the NodeProvider if found else an exception.
+    * in that case the first node provider found will be taken.
+    * REMARK: the CloudTag does not yet have 'id', i think. We dont'
+    * have multiple cloud support yet.
+    * @return the CloudTag if found, else an exception.
     *
     */
 	
@@ -74,8 +78,25 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     public CloudTag findCloudTag() throws JspException {
         return findCloudTag(null);
     }
+    
+    /**
+    * @return the default cloud being the cloud with name equals to the DEFAULT_CLOUD_NAME
+    * defined in this class. 
+    **/
 
     public Cloud getDefaultCloud() throws JspException {
+        return findCloudTag().getCloud();
+    }
+
+    /**
+    * @return the page cloud being the cloud set with the <mm:cloud>
+    * tag
+    *
+    * REMARK: now exist 'getDefaultCloud' and 'getPageCloud'. I think
+    * one such a function would be sufficient.
+    **/
+
+    public Cloud getPageCloud() throws JspException {
         return findCloudTag().getCloud();
     }
 

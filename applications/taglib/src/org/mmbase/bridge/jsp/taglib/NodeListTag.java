@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Kees Jongenburger
 **/
-public class NodeListTag extends AbstractNodeProviderTag implements BodyTag ,ListItemInfo{
+public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, ListItemInfo{
     //this class is growing to big.. 
     //need to look at the MMCI again. I am shure MMCI can handle more nows
     
@@ -499,7 +499,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag ,Lis
                 sb.append("ERROR: NodeManager with name("+ managerName +") does not exist , nullpointer exception while debuging ARGGGG\n");
             }
         }
-        throw new JspException("MMList error\n" + sb.toString());
+        throw new JspException("NodeList error\n" + sb.toString());
     }
 }
 
