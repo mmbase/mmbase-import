@@ -21,39 +21,19 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.8 2002-06-27 20:13:26 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.9 2002-06-28 20:50:05 michiel Exp $
  * @since   MMBase-1.6
  */
-public abstract class AbstractImages extends MMObjectBuilder {
+public abstract class AbstractImages extends AbstractServletBuilder {
 
     private static Logger log = Logging.getLoggerInstance(AbstractImages.class.getName());
 
-    /**
-     * Static Image servlet path
-     */
-    private static String imageServletPath = null;
 
- 
-    /**
-     * clear Static Image servlet path
-     */
-    public static void clear() {
-        imageServletPath=null;
+    protected String getAssociation() {
+        return "images";
     }
-
-    public static String getImageServletPath(String context) {
-        if (imageServletPath == null) {
-            imageServletPath = MMBaseServlet.getServletPath(context, "images",  "img.db");
-        }
-       return  imageServletPath;
-    }
-
-
-    /**
-     * Returns the path to the image serlvet.
-     */
-    protected String getServlet() {
-        return getImageServletPath(MMBaseContext.getHtmlRootUrlPath());
+    protected String getDefaultPath() {
+        return "img.db";
     }
 
     /**
@@ -77,17 +57,49 @@ public abstract class AbstractImages extends MMObjectBuilder {
         return null;
     }
 
-    abstract public String getImageMimeType(List params);
+    /**
+     * Returns the format of the image. Like 'jpg' or 'gif'.
+     */ 
+    abstract protected String getImageFormat(MMObjectNode node);
 
     /**
-     * Returns an image which belongs to the given parameter set.
-     * The parameters exist of a list of string values, staring with the proginal image object alias or number,
-     * followed by operations (format and transformation instructions)
+     * Determine the MIME type of this image node. If the node is not
+     * an icache node, but e.g. an images node, then it will return
+     * the default mime format, which is 'jpg'. This should be done
+     * better, since there is a field itype in the images table.
+     *
+     */
+    public String getImageMimeType(MMObjectNode node) {
+        return mmb.getMimeType(getImageFormat(node));
+    }
+
+    /**
+     * Returns an image which belongs to the given parameter set.  The
+     * parameters exist of a list of string values, staring with the
+     * proginal image object alias or number, followed by operations
+     * (format and transformation instructions)
+     *
+     * This function is not used by ImageServlet. Perhaps it should be deprecated.
      *
      * @param params A list of parameters, containign at least the id of the image, possibly followed by operations
      * @return the image as a <a>byte[]</code>, or <code>null</code> if something went wrong
      */
     abstract public byte[] getImageBytes(List params);
+
+    /**
+     * Every image of course has a format and a mimetype. Two extra functions to get them.
+     *
+     */
+
+    protected Object executeFunction(MMObjectNode node, String function, String field) {
+        if (function.equals("mimetype")) {
+            return getImageMimeType(node);
+        } else if (function.equals("format")) {
+            return getImageFormat(node);
+        } else {
+            return super.executeFunction(node, function, field);
+        }
+    }
 
 }
 
