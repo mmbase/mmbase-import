@@ -9,18 +9,30 @@
 
 <body>
 
+<%@ include file="menu.jsp"%>
+
+<h1>Home</h1>
+
 <p>
-Click <a href="../../../mmdocs/mmbase-taglib.html">here</a> to read the MMBase taglib documentation.
+The pages found here are made to give some taglib examples. Things are kept
+simple so that the page sources are as clear as possible.
 </p>
 
 <p>
-Here's a simple list of jumpers to see if it's working:
+This page should work after building Tomcat or Orion from the build file. The
+other example pages use an additional taglib from the Jakarta project. Please
+download and install the request taglib from
+<a href="http://jakarta.apache.org/taglibs/doc/request-doc/intro.html">the jakarta website</a>.
+</p>
+
+<p>
+Here's a simple list of jumpers to see if the MMBase taglib is working:
 </p>
 
 <mm:list type="jumpers" fields="name,url">
  <mm:first><ul></mm:first>
  <li>
-   <%=name%><mm:field name="name"/> redirects to <%=url%> <mm:field name="url"/>
+   <mm:field name="name"/> redirects to <mm:field name="url"/>
    <mm:first>(first)</mm:first>
    <mm:last>(last)</mm:last>
    <mm:odd>(odd)</mm:odd>
