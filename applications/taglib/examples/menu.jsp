@@ -1,3 +1,4 @@
+<mm:import id="taglibdoc">/mmdocs/frontenddevelopers/taglib</mm:import>
 <p>
   <a href="<mm:url page="index.jsp" />">home</a>
   |
@@ -35,9 +36,11 @@
   |
   <a href="<mm:url page="upload.jsp" />" >upload</a>
   |
+  <a href="<mm:url page="functions.jsp" />" >functions</a>
+  |
   <a href="<mm:url page="tipsandtricks.jsp" />" >Tips and Tricks (FAQ)</a>
   |
   <a href="<mm:url page="1.1/" />" >what's new</a>
   |
-  <a href="<mm:url page="/mmdocs/reference/taglib/toc.html" />" >Taglib documentation</a>
+  <a href="<mm:url page="$taglibdoc/toc.html" />" >Taglib documentation</a>
 </p>
