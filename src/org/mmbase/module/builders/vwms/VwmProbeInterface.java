@@ -15,8 +15,32 @@ import java.sql.*;
 
 import org.mmbase.module.core.*;
 
+/**
+ * Virtual Web Master Probe interface.
+ * A VWM that runs a scheduler should implement this interface.
+ * The routines defined here are entry routines for the probe, needed to perform scheduled tasks.
+ *
+ * @author Daniel Ockeloen
+ * @author Pierre van Rooden (javadocs)
+ * @version 5-Apr-2001
+ */
 public interface VwmProbeInterface {
-	public boolean probeCall();
-	public String getName();
-	public boolean performTask(MMObjectNode node);
+
+    /**
+    * Performs general periodic maintenance.
+    * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise
+    */
+    public boolean probeCall();
+
+    /**
+    * Returns the name of the VWM.
+    */
+    public String getName();
+
+    /**
+    * Performs maintenance based on a Vwmtasknode.
+    * @param node The Vwmtask node that describes the task to be performed.
+    * @return <code>true</code> if maintenance was performed, <code>false</code> if it failed
+    */
+    public boolean performTask(MMObjectNode node);
 }
