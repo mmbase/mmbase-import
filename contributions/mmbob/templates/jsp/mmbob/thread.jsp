@@ -102,18 +102,25 @@
 			</tr>
 			<tr>
 			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
-			<b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />"><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-	    <mm:field name="avatar">
-		<mm:compare value="-1" inverse="true">
-               <mm:node number="$_">
-                 <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-               </mm:node>
-		</mm:compare>
-	    </mm:field>
-			</a>
-			<p />
-			<mm:field name="guest">
+                        <p>
+                        <mm:field name="guest">
+                        <mm:compare value="true">
+				<b><mm:field name="poster" /></b>
+                        </mm:compare>
+
 			<mm:compare value="true" inverse="true">
+			
+                            <b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />"><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+                            <mm:field name="avatar">
+                              <mm:compare value="-1" inverse="true">
+                                <mm:node number="$_">
+                                  <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+                                </mm:node>
+                              </mm:compare>
+                            </mm:field>
+                        </a>
+                        <p />
+
 			Level : <mm:field name="level" /><br />
 			Posts : <mm:field name="accountpostcount" /><br />
 			Geslacht : <mm:field name="gender" /><br />
@@ -121,10 +128,9 @@
 			Lid sinds : <mm:field name="firstlogin"><mm:time format="d MMMM  yyyy" /></mm:field><br />
 			Laatste bezoek : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
 			</mm:compare>
-			<mm:compare value="true">
-			</mm:compare>
 			</mm:field>
 			<br /><br /><br /><br /><br />
+                        </p>
 			</td>
 			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
 			<mm:field name="edittime"><mm:compare value="-1" inverse="true">** Laatste keer aangepast op : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
