@@ -11,6 +11,7 @@ package org.mmbase.util.xml;
 
 import javax.xml.transform.Source;
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 import org.mmbase.module.core.MMBaseContext;
 
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.8 2002-10-08 13:37:37 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.9 2002-11-11 21:56:52 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
@@ -227,8 +228,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
             path = new File(href);
             
             if (! path.isAbsolute()) { // an opportunity to use base of cwd
-                if (base.startsWith("file://")) {
-                    path = new File(new File(base.substring(7)).getParent(), href);
+                if (base.startsWith("file:/")) {
+                    try {
+                        path = new File(new File(new URL(base).getFile()).getParent(), href); 
+                        // would like java.net.URI, but only in 1.4
+                    } catch (java.net.MalformedURLException e) {
+                        throw new IllegalArgumentException("base: " + base + " is not a valid file: " + e.toString());
+                    }
                 } else { // I don't know what is in base, but I do know that I don't know how to use it. Use cwd.
                     path = new File(cwd, href); // look in cwd.
                 }
@@ -245,7 +251,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
         }
         if (log.isDebugEnabled()) log.debug("using " + path.toString());
         if (! path.isFile()) {
-            throw new IllegalArgumentException("Could not resolve '" + href + "'\n with path " + this);
+            throw new IllegalArgumentException("Could not resolve '" + href + "'\n with path " + this + " and href: '" + href + "'   base: '" + base + "'");
         }
         if (! path.canRead()) {
             throw new IllegalArgumentException("Resolved to non-readable file ('" + path + "')\n with path " + this);
