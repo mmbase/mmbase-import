@@ -15,12 +15,14 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @version 3 Dec 2000
  */
 public class BugReports extends MMObjectBuilder {
+    private static Logger log = Logging.getLoggerInstance(BugReports.class.getName());
 
 	private int starttime;
 
@@ -32,7 +34,7 @@ public class BugReports extends MMObjectBuilder {
 	private boolean nodeChanged(String number,String builder,String ctype) {
 		int nowtime=(int)(System.currentTimeMillis()/1000);
 		if ((nowtime-starttime)>30) {
-			System.out.println("BugReport ="+number+" "+ctype);
+			log.debug("BugReport ="+number+" "+ctype);
 			if (ctype.equals("c") && builder.equals("bugreports")) changedReport(number);
 		}
 		return(true);
@@ -73,7 +75,7 @@ public class BugReports extends MMObjectBuilder {
 			String firstname=n2.getStringValue("firstname");
 			String lastname=n2.getStringValue("lastname");
 			String email=n2.getStringValue("email");
-			System.out.println("EMAIL="+email);	
+			log.debug("EMAIL="+email);	
 
 			Mail mail=new Mail(email,"bugs@mmbase.org");
 			mail.setSubject("Mail from BugTracker");
@@ -81,7 +83,7 @@ public class BugReports extends MMObjectBuilder {
 			mail.setReplyTo("bugs@mmbase.org"); // should be from
 			mail.setText(body);
 			if (mmb.getSendMail().sendMail(mail)==false) {
-				System.out.println("bugreports -> mail failed");
+				log.error("bugreports -> mail failed");
 			}
 		}
 	}
