@@ -25,7 +25,9 @@
         <p>
           <a href="<mm:url page="install.jsp" />">Demo-application installation page</a> (default name/password is admin/admin2k)
         </p>
-        <br />
+        <p>
+          It is adviced to remove the complete /mmexamples directory, which contains these demos, from a production environment.
+        </p>
       </td>
     </tr>
     
