@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.38 2005-03-02 23:05:59 michiel Exp $
+ * @version $Id: Casting.java,v 1.39 2005-03-04 09:59:58 michiel Exp $
  */
 
 import java.util.*;
@@ -197,6 +197,8 @@ public class Casting {
      * page (taglib calls Casting, but they of course don't).
      *
      * @todo  Not everything is wrapped (and can be unwrapped) already.
+     * @param o        The object to be wrapped
+     * @param escaper  <code>null</code> or a CharTransformer to pipe the strings through
      * @since MMBase-1.8
      */
 
@@ -241,7 +243,11 @@ public class Casting {
                 return o;
             }
         } else {
-            return escape(escaper, "" + o);
+            if (o instanceof String) {                
+                return escape(escaper, (String) o);
+            } else {
+                return o;                
+            }
         }
 
     }
