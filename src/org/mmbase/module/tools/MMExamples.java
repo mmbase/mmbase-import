@@ -90,14 +90,190 @@ public class MMExamples extends ProcessorModule {
 	}
 
 	public void doInstall(Hashtable cmds, Hashtable vars) {
-		System.out.println("MMExport -> doInstall started");
-		System.out.println("MMExport -> cmd="+cmds);
-		System.out.println("MMExport -> vars="+vars);
 
 		if ((String)vars.get("NAME-Basics")!=null) installBasics();
 		if ((String)vars.get("NAME-MyYahoo")!=null) installMyYahoo();
+		if ((String)vars.get("NAME-MyYahoo2")!=null) installApplication("MyYahoo");
 		if ((String)vars.get("NAME-MyNews")!=null) installMyNews();
 		if ((String)vars.get("NAME-BasicAuth")!=null) installBasicAuth();
+	}
+
+	private void installApplication(String applicationname) {
+		System.out.println("INSTALL APP ="+applicationname);
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
+		if (app!=null) {
+			//System.out.println(app.getApplicationName());
+			//System.out.println(app.getApplicationVersion());
+			if (areBuildersLoaded(app.getNeededBuilders())) {
+				if (checkRelDefs(app.getNeededRelDefs())) {
+					if (checkAllowedRelations(app.getAllowedRelations())) {
+						if (installDataSources(app.getDataSources())) {
+							if (installRelationSources(app.getRelationSources())) {
+							} else {
+								System.out.println("Application installer stopped : can't install relationsources");
+							}
+						} else {
+							System.out.println("Application installer stopped : can't install datasources");
+						}
+					} else {
+						System.out.println("Application installer stopped : can't install allowed relations");
+					}
+				} else {
+					System.out.println("Application installer stopped : can't install reldefs");
+				}
+			} else {
+				System.out.println("Application installer stopped : not all needed builders present");
+			}
+		}
+	}
+
+	boolean installDataSources(Vector ds) {
+		for (Enumeration h = ds.elements();h.hasMoreElements();) {
+			Hashtable bh=(Hashtable)h.nextElement();	
+			String path=(String)bh.get("path");
+			path=MMBaseContext.getConfigPath()+("/applications/")+path;
+			XMLNodeReader nodereader=new XMLNodeReader(path,mmb);
+			
+			String exportsource=nodereader.getExportSource();
+			int timestamp=nodereader.getTimeStamp();
+
+			MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
+			if (syncbul!=null) {
+				for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
+					MMObjectNode newnode=(MMObjectNode)n.nextElement();
+					int exportnumber=newnode.getIntValue("number");
+					String query="exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'";
+					Enumeration b=syncbul.search(query);
+					if (b.hasMoreElements()) {
+						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
+						System.out.println("node allready installed : "+exportnumber);
+					} else {
+						newnode.setValue("number",-1);
+						int localnumber=newnode.insert("import");
+						if (localnumber!=-1) {
+							MMObjectNode syncnode=syncbul.getNewNode("import");
+							syncnode.setValue("exportsource",exportsource);
+							syncnode.setValue("exportnumber",exportnumber);
+							syncnode.setValue("timestamp",timestamp);
+							syncnode.setValue("localnumber",localnumber);
+							syncnode.insert("import");
+						}
+					}
+				}
+			} else {
+				System.out.println("Application installer : can't reach syncnodes builder");
+			}
+		}
+		return(true);
+	}
+
+
+	boolean installRelationSources(Vector ds) {
+		for (Enumeration h = ds.elements();h.hasMoreElements();) {
+			Hashtable bh=(Hashtable)h.nextElement();	
+			String path=(String)bh.get("path");
+			path=MMBaseContext.getConfigPath()+("/applications/")+path;
+			XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
+			
+			String exportsource=nodereader.getExportSource();
+			int timestamp=nodereader.getTimeStamp();
+
+			MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
+			if (syncbul!=null) {
+				for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
+					MMObjectNode newnode=(MMObjectNode)n.nextElement();
+					int exportnumber=newnode.getIntValue("number");
+					Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
+					if (b.hasMoreElements()) {
+						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
+						System.out.println("node allready installed : "+exportnumber);
+					} else {
+						newnode.setValue("number",-1);
+						
+						// find snumber
+
+						int snumber=newnode.getIntValue("snumber");
+						b=syncbul.search("exportnumber=="+snumber+"+exportsource=='"+exportsource+"'");
+						if (b.hasMoreElements()) {
+							MMObjectNode n2=(MMObjectNode)b.nextElement();
+							snumber=n2.getIntValue("localnumber");
+						} else {
+							snumber=-1;
+						}
+
+
+						// find dnumber
+						int dnumber=newnode.getIntValue("dnumber");
+						b=syncbul.search("exportnumber=="+dnumber+"+exportsource=='"+exportsource+"'");
+						if (b.hasMoreElements()) {
+							MMObjectNode n2=(MMObjectNode)b.nextElement();
+							dnumber=n2.getIntValue("localnumber");
+						} else {
+							dnumber=-1;
+						}
+					
+						newnode.setValue("snumber",snumber);
+						newnode.setValue("dnumber",dnumber);
+						System.out.println("REL="+newnode);	
+						int localnumber=-1;	
+						if (snumber!=-1 && dnumber!=-1) localnumber=newnode.insert("import");
+						if (localnumber!=-1) {
+							MMObjectNode syncnode=syncbul.getNewNode("import");
+							syncnode.setValue("exportsource",exportsource);
+							syncnode.setValue("exportnumber",exportnumber);
+							syncnode.setValue("timestamp",timestamp);
+							syncnode.setValue("localnumber",localnumber);
+							syncnode.insert("import");
+						}
+					}
+				}
+			} else {
+				System.out.println("Application installer : can't reach syncnodes builder");
+			}
+		}
+		return(true);
+	}
+
+	boolean checkRelDefs(Vector reldefs) {
+		for (Enumeration h = reldefs.elements();h.hasMoreElements();) {
+			Hashtable bh=(Hashtable)h.nextElement();	
+			String source=(String)bh.get("source");
+			String target=(String)bh.get("target");
+			String direction=(String)bh.get("direction");
+			String guisourcename=(String)bh.get("guisourcename");
+			String guitargetname=(String)bh.get("guitargetname");
+			if (direction.equals("bidirectional")) {
+				checkRelDef(source,target,2,guisourcename,guitargetname);
+			} else {
+				checkRelDef(source,target,1,guisourcename,guitargetname);
+			}
+		}
+		return(true);
+	}
+
+	boolean checkAllowedRelations(Vector relations) {
+		for (Enumeration h = relations.elements();h.hasMoreElements();) {
+			Hashtable bh=(Hashtable)h.nextElement();	
+			String from=(String)bh.get("from");
+			String to=(String)bh.get("to");
+			String type=(String)bh.get("type");
+			checkTypeRel(from,to,type,-1);
+		}
+		return(true);
+	}
+
+	boolean areBuildersLoaded(Vector neededbuilders) {
+		for (Enumeration h = neededbuilders.elements();h.hasMoreElements();) {
+			Hashtable bh=(Hashtable)h.nextElement();	
+			String name=(String)bh.get("name");
+			MMObjectBuilder bul=mmb.getMMObject(name);
+			if (bul==null) {
+				System.out.println("Application installer error : builder '"+name+"' not loaded");
+				return(false);
+			}
+		}		
+		return(true);
 	}
 
 	private void installMyNews() {
