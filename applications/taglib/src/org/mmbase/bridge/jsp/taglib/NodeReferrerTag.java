@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen 
 **/
 
-public abstract class NodeReferrerTag extends BodyTagSupport {
+public abstract class NodeReferrerTag extends CloudReferrerTag {
 	
     private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
 
