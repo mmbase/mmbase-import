@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.132 2004-07-20 11:31:18 pierre Exp $
+    @version $Id: wizard.xsl,v 1.133 2004-08-23 09:52:46 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -874,7 +874,11 @@
         <xsl:when test="@dttype=&apos;binary&apos; and not(upload)">
           <div class="imageupload">
             <div>
-              <input type="hidden" name="{@fieldname}" value="YES"/>
+              <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
+                <xsl:if test="@dtrequired=&apos;true&apos;">
+                  <xsl:attribute name="dtrequired">true</xsl:attribute>
+                </xsl:if>
+              </input>
               <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
                 <xsl:call-template name="prompt_image_upload"/>
               </a>
@@ -888,7 +892,11 @@
         </xsl:when>
         <xsl:when test="@dttype=&apos;binary&apos; and upload">
           <div class="imageupload">
-            <input type="hidden" name="{@fieldname}" value="YES"/>
+            <input type="hidden" name="{@fieldname}" value="YES" dttype="binary" ftype="image" >
+              <xsl:if test="@dtrequired=&apos;true&apos;">
+                <xsl:attribute name="dtrequired">true</xsl:attribute>
+              </xsl:if>
+            </input>
             <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128"/>
             <br/>
             <span>
@@ -925,9 +933,13 @@
         </a>
       </xsl:when>
       <xsl:otherwise>
-        <input type="hidden" name="{@fieldname}" value="YES"/>
         <xsl:choose>
           <xsl:when test="not(upload)">
+            <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="file" >
+              <xsl:if test="@dtrequired=&apos;true&apos;">
+                <xsl:attribute name="dtrequired">true</xsl:attribute>
+              </xsl:if>
+            </input>
             <xsl:call-template name="prompt_no_file"/>
             <br/>
             <xsl:if test="not(starts-with(@number, &apos;n&apos;))">
@@ -938,6 +950,11 @@
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
+            <input type="hidden" name="{@fieldname}" value="YES" dttype="binary" ftype="file" >
+              <xsl:if test="@dtrequired=&apos;true&apos;">
+                <xsl:attribute name="dtrequired">true</xsl:attribute>
+              </xsl:if>
+            </input>
             <xsl:call-template name="prompt_uploaded"/>
             <xsl:value-of select="upload/@name"/>
             <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
