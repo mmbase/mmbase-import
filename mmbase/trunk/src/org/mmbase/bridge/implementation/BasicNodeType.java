@@ -9,10 +9,10 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+import java.util.List;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import java.util.*;
 
 /**
  * This interface represents a node's type information object - what used to be the 'builder'.
@@ -131,4 +131,15 @@ public class BasicNodeType implements NodeType {
 	public List getFields() {
 	    return getFields(((BasicCloudContext)cloud.getCloudContext()).mmb.getLanguage());
 	}
+
+	/**
+     * search nodes of this type
+     * @param where the contraint
+     * @param order the field on which you want to sort
+     * @param direction true=UP false=DOWN
+     */
+    public List search(String where, String sorted, boolean direction) {
+        return builder.searchVector(where,sorted,direction);
+    }
+
 }
