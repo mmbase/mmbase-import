@@ -32,27 +32,27 @@ import org.mmbase.util.logging.Logging;
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
-    private Transaction transaction;     
+    private Transaction transaction;
     private static boolean commit = true;
-    
+
     private String name = null;
 
     static final String DEFAULT_TRANS_JSPVAR = "trans";
     private String jspvar = DEFAULT_TRANS_JSPVAR;
-    
+
     public void setCommitonclose(boolean c) {
         log.debug("Set commitonclose to " + c);
         commit = c;
     }
-    
+
     public Cloud getCloudVar() throws JspTagException {
         return transaction;
-    }  
+    }
 
     public void setName(String s) {
         name = s;
     }
-    
+
     public void setJspvar(String jv) {
         jspvar = jv;
     }
@@ -61,10 +61,13 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     *  Creates the transaction.
     */
     public int doStartTag() throws JspTagException{
-        if (getId() != null) { // look it up from session            
+        transaction =null;
+        if (getId() != null) { // look it up from session
             log.debug("looking up transaction in session");
-            transaction = (Transaction) getContextTag().getObject(getId());
-            log.debug("found " + transaction);
+            try {
+                transaction = (Transaction) getContextTag().getObject(getId());
+                log.debug("found " + transaction);
+            } catch (JspTagException e) { }
         }
         if (transaction == null) { // not found in context
             if (name == null) {
@@ -79,7 +82,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         pageContext.setAttribute(jspvar, transaction);
         return EVAL_BODY_TAG;
     }
-  
+
 
     public int doAfterBody() throws JspTagException {
         if (commit) {
@@ -90,7 +93,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         }
 
         try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());            
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
