@@ -1,52 +1,41 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE taglib
-        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
-	"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
-
-<!-- a tag library descriptor -->
-
+<!--
+This "enhanced" tld file will be converted to a "normal" tld and a html file.
+-->
 <taglib>
-  <!-- after this the default space is
-	"http://java.sun.com/j2ee/dtds/jsptaglibrary_1_2.dtd"
-   -->
-
   <tlibversion>1.0</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri></uri>
-  <info>
-	tab library for MMBase based on MMCI(MMBase Cloud Interface)
-  </info>
+  <info>Tag library for MMBase based on MMCI(MMBase Cloud Interface).</info>
   <tag>
     <name>list</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.ListTag</teiclass>
     <bodycontent>JSP</bodycontent>
-    <info>
-	The list tag provides a syntax to list objects managed by MMBase 
-    </info>
-
+    <info>The list tag provides a syntax to list objects managed by MMBase.</info>
     <attribute>
       <name>nodes</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>Comma-separated list of nodes, this attribute defines the starting point of the list. The parameter is equivalent to node.</info>
     </attribute>
-
     <attribute>
       <name>node</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>Node number, or node alias. This attribute defines the starting point of the list.</info>
     </attribute>
-
     <attribute>
       <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot; examples &quot;mags&quot; &quot;mags,news&quot; or &quot;mags,related,news&quot; &quot;mags,news,images&quot; or &quot;mags,related,news,related,images&quot;.</info>
     </attribute>
     <attribute>
       <name>fields</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>Comma-separated list of fields that should be made available in the page. The fields are selected from attributes of the corresponding  node managers defined in type. If the type fields contains more elements eq type=&quot;mags,news&quot; then it is required to append a prefix to each field listed eq fields=&quot;mags.title,news.title&quot;.In the jsp page the values are available in form of Strings eq mags.title is available as mags_title and can be accessed using &lt;%= mags_title &gt;.</info>
     </attribute>
     <attribute>
       <name>where</name>
@@ -77,53 +66,59 @@
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>The maximum allowed results.</info>
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>The start index.</info>
     </attribute>
     <attribute>
       <name>id</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <example>&lt;mm:list node="123" type="mags,news" fields="mags.title,news.number"&gt;
+  &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+  &lt;%= mags_title %&gt;
+&lt;/mm:list&gt;</example>
   </tag>
   <tag>
     <name>head</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.MMListHead</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is the fist item in the list </info>
+    <info>The tag can be used in a list to determine if this is the fist item in the list.</info>
   </tag>
   <tag>
     <name>tail</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.MMListTail</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is the fist item in the list </info>
+    <info>The tag can be used in a list to determine if this is the fist item in the list.</info>
   </tag>
   <tag>
     <name>cloud</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.CloudTag</teiclass>
     <bodycontent>JSP</bodycontent>
-    <info>
-    The cloud tag initializes the cloud to use
-    </info>
-
+    <info>The cloud tag initializes the cloud to use.</info>
     <attribute>
       <name>name</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>The name of the cloud eq &quot;mmbase&quot;.</info>
     </attribute>
     <attribute>
       <name>logon</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>The authentication name to use (account).</info>
     </attribute>
     <attribute>
       <name>pwd</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>The password to use to logon to the cloud.</info>
     </attribute>
     <attribute>
       <name>method</name>
@@ -139,7 +134,7 @@
   <tag>
     <name>mod</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.MMMod</tagclass>
-    <info>this tag can be used to call features provided by Modules in MMBase</info>
+    <info>This tag can be used to call features provided by Modules in MMBase.</info>
     <attribute>
         <name>name</name>
         <required>true</required>
@@ -153,8 +148,7 @@
   <tag>
     <name>info</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.InfoTag</tagclass>
-    <info>this tag can be used to call getInfo from Module (can also
-    be done with mod)  and NodeManager</info>
+    <info>This tag can be used to call getInfo from Module (can also be done with mod) and NodeManager.</info>
     <bodycontent>JSP</bodycontent>
     <attribute>
         <name>nodeManager</name>
@@ -201,6 +195,7 @@
         <name>type</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+        <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot; examples &quot;mags&quot; &quot;mags,news&quot; or &quot;mags,related,news&quot; &quot;mags,news,images&quot; or &quot;mags,related,news,related,images&quot;.</info>
     </attribute>
   </tag>
   <tag>
