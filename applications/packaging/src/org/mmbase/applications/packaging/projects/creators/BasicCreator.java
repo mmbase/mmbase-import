@@ -497,7 +497,6 @@ public class BasicCreator implements CreatorInterface {
 	long length=tfile.length();
 	long lastmodified=tfile.lastModified();
 	long fileage=(System.currentTimeMillis()-lastmodified)/1000;
-	// log.info("EXCLUDE FILTER = "+name+" "+length+" "+lastmodified);
 	StringTokenizer tok =  new StringTokenizer(excludestring,",\n\r");
 	while (tok.hasMoreTokens()) {
 		String ex=tok.nextToken();
