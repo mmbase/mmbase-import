@@ -22,11 +22,11 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.8 2004-05-07 09:33:42 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.9 2004-07-13 12:05:51 michiel Exp $
  */
 public class UtilReader {
 
-    private static Logger log = Logging.getLoggerInstance(UtilReader.class);
+    private static final Logger log = Logging.getLoggerInstance(UtilReader.class);
 
     public static final String CONFIG_UTILS = "utils";
 
@@ -49,13 +49,17 @@ public class UtilReader {
     }
 
     private class UtilFileWatcher extends FileWatcher {
-
-        public UtilFileWatcher() {
+        private WrappedFileWatcher wrappedFileWatcher;
+        public UtilFileWatcher(WrappedFileWatcher f) {
             super(true); // true: keep reading.
+            wrappedFileWatcher = f;
         }
 
         public void onChange(File file) {
             readProperties(file);
+            if (wrappedFileWatcher != null) {
+                wrappedFileWatcher.onChange(file);
+            }
         }
     }
 
@@ -68,10 +72,23 @@ public class UtilReader {
     public UtilReader(String filename) {
         File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
         readProperties(file);
-        watcher = new UtilFileWatcher();
+        watcher = new UtilFileWatcher(null);
         watcher.add(file);
         watcher.start();
     }
+    /**
+     * @since MMBase-1.8
+     * @param w A unstarted WrappedFileWatcher without files. (It will be only be called from the filewatcher in this reader).
+     */
+    public UtilReader(String filename, WrappedFileWatcher w) {
+        File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
+        readProperties(file);
+        watcher = new UtilFileWatcher(w);
+        watcher.add(file);
+        watcher.start();
+
+    }
+
 
     /**
      * Get the properties of this utility.
@@ -91,13 +108,35 @@ public class UtilReader {
             Element e = reader.getElementByPath("util.properties");
             if (e != null) {
                 Enumeration enumeration = reader.getChildElements(e, "property");
-                Element p;
-                String name, value;
                 while (enumeration.hasMoreElements()) {
-                    p = (Element)enumeration.nextElement();
-                    name = reader.getElementAttributeValue(p, "name");
-                    value = reader.getElementValue(p);
-                    properties.put(name, value);
+                    Element p = (Element)enumeration.nextElement();
+                    String name = reader.getElementAttributeValue(p, "name");
+                    String type = reader.getElementAttributeValue(p, "type");
+                    if (type.equals("map")) {
+                        Enumeration entries = reader.getChildElements(p, "entry");
+                        Map map = new LinkedHashMap();
+                        while(entries.hasMoreElements()) {
+                            Element entry = (Element) entries.nextElement();
+                            Enumeration en = reader.getChildElements(entry, "*");
+                            String key = null;
+                            String value = null;
+                            while(en.hasMoreElements()) {
+                                Element keyorvalue = (Element) en.nextElement();
+                                if (keyorvalue.getTagName().equals("key")) {
+                                    key = reader.getElementValue(keyorvalue);
+                                } else {
+                                    value = reader.getElementValue(keyorvalue);
+                                }
+                            }
+                            if (key != null && value != null) {
+                                map.put(key, value);                            
+                            }
+                        }
+                        properties.put(name, map);
+                    } else {
+                        String value = reader.getElementValue(p);
+                        properties.put(name, value);
+                    }
                 }
             }
         } else {
