@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.6 2003-05-02 14:24:02 michiel Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.7 2003-05-02 14:57:39 michiel Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -150,7 +150,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      */
     private void checkNumberTable() {
         if (log.isDebugEnabled()) log.trace("checks if table numberTable exists.");
-        if(!created(getFullTableName("numberTable"))) {
+        if(! created(getFullTableName("numberTable"))) {
             // Get the current object number
             int number = getCurrentKey();
             // integer should use getDataType?
@@ -176,16 +176,16 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      * @javadoc
      */
     private synchronized int getCurrentKey() {
-        int number=0;
-        DatabaseTransaction trans=null;
+        int number = 0;
+        DatabaseTransaction trans = null;
         try {
-            trans=createDatabaseTransaction();
-            String sqlselect=selectSQL(getFullTableName("object"),"max("+getNumberString()+")");
+            trans = createDatabaseTransaction();
+            String sqlselect = selectSQL(getFullTableName("object"), "max(" + getNumberString() + ")");
             trans.executeQuery(sqlselect);
             number=trans.getIntegerResult();
             trans.commit();
         } catch (StorageException e) {
-            log.error(e.toString());
+            log.debug(e.toString()); // probably object table did not exist yet, which is all right
             if (trans!=null) trans.rollback();
         }
         return number;
@@ -199,7 +199,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      * @throws StorageException if an error occurred while obtaining the key
      */
     public synchronized int createKey(Transaction trans) throws StorageException {
-        DatabaseTransaction dbtrans = (DatabaseTransaction)trans;
+        DatabaseTransaction dbtrans = (DatabaseTransaction) trans;
         dbtrans.executeUpdate("UPDATE "+getFullTableName("numberTable")+" SET "+getNumberString()+" = "+getNumberString()+"+1;");
         String sqlselect=selectSQL(getFullTableName("numberTable"),getNumberString());
         dbtrans.executeQuery(sqlselect);
