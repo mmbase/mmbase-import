@@ -23,13 +23,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: HSqlStorage.java,v 1.6 2003-06-18 15:25:10 kees Exp $
+ * @version $Id: HSqlStorage.java,v 1.7 2003-07-09 18:13:40 michiel Exp $
  */
 public class HSqlStorage extends RelationalDatabaseStorage {
-    /**
-     * Logging instance
-     */
-    private static Logger log = Logging.getLoggerInstance(HSqlStorage.class.getName());
+
+    private static Logger log = Logging.getLoggerInstance(HSqlStorage.class);
 
     public HSqlStorage() {
         super();
