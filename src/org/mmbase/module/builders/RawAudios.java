@@ -7,34 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: RawAudios.java,v 1.10 2001-04-10 12:20:39 michiel Exp $
-$Log: not supported by cvs2svn $
-Revision 1.9  2000/08/02 15:10:50  gerard
-gerard: changed .ra into .mp3 for getFullName and type=mp3
-
-Revision 1.8  2000/07/04 11:51:12  vpro
-davzev: Fixed a bug in method getHostName having to do with string manipulation of the url field.
-
-Revision 1.7  2000/03/30 13:11:33  wwwtech
-Rico: added license
-
-Revision 1.6  2000/03/30 12:42:57  wwwtech
-Rico: added warning to these VPRO dependent builders
-
-Revision 1.5  2000/03/29 10:59:24  wwwtech
-Rob: Licenses changed
-
-Revision 1.4  2000/03/21 15:38:53  wwwtech
-- (marcel) Removed debug (globally declared in MMOBjectNode)
-
-Revision 1.3  2000/03/20 13:17:30  wwwtech
-Rico: added super.getValue for global function support
-
-Revision 1.2  2000/02/24 12:35:44  wwwtech
-Davzev fixed getFileName() & getHostName() and added getProtocolName().
-
-*/
 
 /*************************************************************************
  * NOTE This Builder needs significant changes to operate on NON-VPRO
@@ -57,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.10 $ $Date: 2001-04-10 12:20:39 $
+ * @$Revision: 1.11 $ $Date: 2001-05-16 15:16:36 $
  *
  */
 public class RawAudios extends MMObjectBuilder {
@@ -73,6 +45,7 @@ public class RawAudios extends MMObjectBuilder {
 	public final static int PCM_FORMAT         = 4;
 	public final static int MP2_FORMAT         = 5;
 	public final static int SURESTREAM_FORMAT  = 6; 
+	public final static int EXCERPT_FORMAT     = 7; 
 	public final static int GEDAAN = 3;
 
 	public RawAudios() {
@@ -106,6 +79,7 @@ public class RawAudios extends MMObjectBuilder {
 				case 4: return("pcm");
 				case 5: return("mp2");
 				case 6: return("g2/sure");
+				case 7: return("excerpt");
 				default: return("Onbepaald");
 			}
 		} else if (field.equals("channels")) {
