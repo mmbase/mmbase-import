@@ -22,7 +22,13 @@
 			class.
 
 	 -->
-  	<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="basic/authentication.xml" />
+	<!-- the following one provides a user->group*->context->object structure -->
+	<authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />	 
+	
+	<!-- the following one provides a login, the same as in the standard editors
+	     this means that the login will be looked up inside the account.properties 
+	 -->
+  	<!--<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="basic/authentication.xml" />-->
 
 	<!--
 		tag authorization:
@@ -34,7 +40,13 @@
 			be used for configuration of of the authorization
 			class.
 	 -->
-    	<authorization  class="org.mmbase.security.implementation.basic.OwnerAuthorization" url="../accounts.properties" />
+	<!-- the following one provides a user->group*->context->object structure -->	 
+	<authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />
+	
+	<!-- the following one provides the checking, which means that a username from accounts.properties
+	is used inside the owner field
+	 -->	
+    	<!--<authorization  class="org.mmbase.security.implementation.basic.OwnerAuthorization" url="../accounts.properties" /> -->
 
 	<!--
             shared secret:
