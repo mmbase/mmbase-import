@@ -173,7 +173,7 @@ public class Email extends MMObjectBuilder {
 			} else {
 				dubcheck.addElement(ckey);
 				if (dubcheck.size()>100) {
-					dubcheck.removeElementAt(99);
+					dubcheck.removeElementAt(0);
 				}
 			}
 
@@ -195,7 +195,7 @@ public class Email extends MMObjectBuilder {
 			// it will then send the webpage defined by the
 			// url as the body !! (only  local url's are
 			// now supported that use html or shtml
-			String url=node.getStringValue("url");
+			String url=node.getStringValue("bodyurl");
 			if (url!=null && !url.equals("")) {
 				// get the page
 				String tmpbody=getPage(url);
