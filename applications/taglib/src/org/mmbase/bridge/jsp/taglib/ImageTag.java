@@ -45,12 +45,11 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     }
     
     public int doStartTag() throws JspTagException {  
-        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-
         Node node = getNode();
-        if (! "images".equals(node.getNodeManager().getName())) {
-            throw new JspTagException("Found parent node is not of type 'images'. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
+        if (node.getNodeManager().getField("handle") == null) {
+            throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be an image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
+        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         String page = req.getContextPath() + "/img.db?" + node.getNumber() + (template != null ? "+" + template : "");
         helper.setValue(page);
         helper.setJspvar(pageContext);  
