@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.125 2004-04-07 12:36:00 pierre Exp $
+    @version $Id: wizard.xsl,v 1.125.2.1 2004-04-15 11:12:41 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -107,7 +107,7 @@
           var htmlAreas = new Array();
         ]]></xsl:text>
 
-      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/descendant::*[@ftype=&apos;html&apos;]">
+      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/descendant::*[@ftype=&apos;html&apos; and @maywrite!=&apos;false&apos;]">
         htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
       </xsl:for-each>
 
@@ -641,7 +641,14 @@
   </xsl:template>
 
   <xsl:template name="ftype-line">
-    <xsl:apply-templates select="value" mode="inputline"/>
+    <xsl:choose>
+      <xsl:when test="@maywrite!=&apos;false&apos;">
+        <xsl:apply-templates select="value" mode="inputline"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="ftype-data"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="ftype-html">
@@ -649,32 +656,39 @@
   </xsl:template>
 
   <xsl:template name="ftype-text">
-    <span>
-      <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
-        <xsl:if test="not(@cols)">
-          <xsl:attribute name="cols"><xsl:value-of select="$default-cols" /></xsl:attribute>
-        </xsl:if>
-        <xsl:if test="not(@rows)">
-          <xsl:attribute name="rows"><xsl:value-of select="$default-rows" /></xsl:attribute>
-        </xsl:if>
-        <xsl:apply-templates select="@*"/>
+    <xsl:choose>
+      <xsl:when test="@maywrite!=&apos;false&apos;">
+        <span>
+          <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
+            <xsl:if test="not(@cols)">
+              <xsl:attribute name="cols"><xsl:value-of select="$default-cols" /></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="not(@rows)">
+              <xsl:attribute name="rows"><xsl:value-of select="$default-rows" /></xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="@*"/>
 
-        <xsl:choose>
-          <xsl:when test="@ftype='text'">
-            <xsl:call-template name="replace-string">
-              <xsl:with-param name="text">
+            <xsl:choose>
+              <xsl:when test="@ftype='text'">
+                <xsl:call-template name="replace-string">
+                  <xsl:with-param name="text">
+                    <xsl:value-of disable-output-escaping="yes" select="value"/>
+                  </xsl:with-param>
+                  <xsl:with-param name="replace" select="'&amp;'"/>
+                  <xsl:with-param name="with" select="'&amp;amp;'"/>
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise>
                 <xsl:value-of disable-output-escaping="yes" select="value"/>
-              </xsl:with-param>
-              <xsl:with-param name="replace" select="'&amp;'"/>
-              <xsl:with-param name="with" select="'&amp;amp;'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of disable-output-escaping="yes" select="value"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </textarea>
-    </span>
+              </xsl:otherwise>
+            </xsl:choose>
+          </textarea>
+        </span>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="ftype-data"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="ftype-relation">
@@ -682,26 +696,33 @@
   </xsl:template>
 
   <xsl:template name="ftype-enum">
-    <select name="{@fieldname}" class="selectinput">
-      <xsl:apply-templates select="@*"/>
-      <xsl:choose>
-        <xsl:when test="optionlist/option[@selected=&apos;true&apos;]"/>
-        <xsl:when test="@dtrequired=&apos;true&apos;"/>
-        <xsl:otherwise>
-          <option value="-">
-            <xsl:call-template name="prompt_select"/>
-          </option>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:for-each select="optionlist/option">
-        <option value="{@id}">
-          <xsl:if test="@selected=&apos;true&apos;">
-            <xsl:attribute name="selected">true</xsl:attribute>
-          </xsl:if>
-          <xsl:value-of select="."/>
-        </option>
-      </xsl:for-each>
-    </select>
+    <xsl:choose>
+      <xsl:when test="@maywrite!=&apos;false&apos;">
+        <select name="{@fieldname}" class="selectinput">
+          <xsl:apply-templates select="@*"/>
+          <xsl:choose>
+            <xsl:when test="optionlist/option[@selected=&apos;true&apos;]"/>
+            <xsl:when test="@dtrequired=&apos;true&apos;"/>
+            <xsl:otherwise>
+              <option value="-">
+                <xsl:call-template name="prompt_select"/>
+              </option>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:for-each select="optionlist/option">
+            <option value="{@id}">
+              <xsl:if test="@selected=&apos;true&apos;">
+                <xsl:attribute name="selected">true</xsl:attribute>
+              </xsl:if>
+              <xsl:value-of select="."/>
+            </option>
+          </xsl:for-each>
+        </select>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="ftype-enumdata"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="ftype-enumdata">
@@ -715,25 +736,32 @@
   </xsl:template>
 
   <xsl:template name="ftype-datetime">
-    <div>
-      <input type="hidden" name="{@fieldname}" value="{value}" id="{@fieldname}">
-        <xsl:apply-templates select="@*"/>
-      </input>
+    <xsl:choose>
+      <xsl:when test="@maywrite!=&apos;false&apos;">
+        <div>
+          <input type="hidden" name="{@fieldname}" value="{value}" id="{@fieldname}">
+            <xsl:apply-templates select="@*"/>
+          </input>
 
-      <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;)">
-        <xsl:call-template name="ftype-datetime-date"/>
-      </xsl:if>
+          <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;)">
+            <xsl:call-template name="ftype-datetime-date"/>
+          </xsl:if>
 
-      <xsl:if test="@ftype=&apos;datetime&apos;">
-        <span class="time_at">
-          <xsl:value-of select="$time_at"/>
-        </span>
-      </xsl:if>
+          <xsl:if test="@ftype=&apos;datetime&apos;">
+            <span class="time_at">
+              <xsl:value-of select="$time_at"/>
+            </span>
+          </xsl:if>
 
-      <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;time&apos;) or (@ftype=&apos;duration&apos;)">
-        <xsl:call-template name="ftype-datetime-time"/>
-      </xsl:if>
-    </div>
+          <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;time&apos;) or (@ftype=&apos;duration&apos;)">
+            <xsl:call-template name="ftype-datetime-time"/>
+          </xsl:if>
+        </div>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="ftype-data"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="ftype-datetime-date">
