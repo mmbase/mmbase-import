@@ -535,12 +535,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       Lives in a NodeProvider. Creates the bodycontent as an alias for the node.
     </info>
     <attribute>
-        <name>parameter</name>
+        <name>name</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	  In stead of giving it in the body, you can also indicate in
-	  which request parameter the new alias name is.
+	  In stead of giving it in the body, you can also indicate it
+	  with this parameter.
 	</info>
     </attribute>
   </tag>
@@ -1082,15 +1082,16 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	The key of the variable to get.
+	The key of the variable to get. 
 	</info>
     </attribute>
     <attribute>
         <name>jspvar</name>
-        <required>true</required>
+        <required>false</required>
         <rtexprvalue>false</rtexprvalue>
 	<info>
-	The name of the variable to create/used.
+	The name of the variable to create/used. If not specified,
+	then the value will only be written to the page.
 	</info>
     </attribute>
     <attribute>
@@ -1156,10 +1157,21 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>file</name>
-        <required>true</required>
+        <name>extraparameters</name>
+        <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>	
+	You can also add some new parameters like this. A list of
+        key=value.
+	</info>
+    </attribute>
+    <attribute>
+        <name>file</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>	
+	The url to refer to. If not specified, then it becomes the
+        result of getRequestURI.
 	</info>
     </attribute>
     <attribute>
