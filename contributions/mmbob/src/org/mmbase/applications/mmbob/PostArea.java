@@ -42,6 +42,7 @@ public class PostArea {
     private Vector postthreads = null;
     private Hashtable namecache = new Hashtable();
     private boolean firstcachecall = true;
+    private PostAreaConfig config;
 
     private int viewcount;
     private int postcount;
@@ -61,7 +62,11 @@ public class PostArea {
     public PostArea(Forum parent, Node node) {
         this.parent = parent;
         this.node = node;
-        this.id = node.getNumber();
+	this.id = node.getNumber();
+
+
+	config  = parent.getPostAreaConfig(getName());
+	log.info("POST AREA CONFIG = "+getName()+" "+config);
 
         this.viewcount = node.getIntValue("viewcount");
         if (viewcount == -1) viewcount = 0;

@@ -2,12 +2,25 @@
    mmbobconfig.dtd
 -->
 
-<!ELEMENT mmbobconfig (forum*)>
+<!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forum (generatedata*)>
+<!ELEMENT forums (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,forum*)>
+<!ATTLIST forums account CDATA #IMPLIED>
+<!ATTLIST forums password CDATA #IMPLIED>
+<!ATTLIST forums language CDATA #IMPLIED>
+
+<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
+<!ATTLIST forum language CDATA #IMPLIED>
+
+<!ELEMENT postarea (generatedata*)>
+<!ATTLIST postarea id CDATA #IMPLIED>
+<!ATTLIST postarea account CDATA #IMPLIED>
+<!ATTLIST postarea password CDATA #IMPLIED>
+<!ATTLIST postarea language CDATA #IMPLIED>
+
 
 <!ELEMENT generatedata (#PCDATA)>
 <!ATTLIST generatedata role CDATA #IMPLIED>
@@ -26,3 +39,15 @@
 <!ATTLIST alias externfield CDATA #IMPLIED>
 <!ATTLIST alias key CDATA #IMPLIED>
 <!ATTLIST alias externkey CDATA #IMPLIED>
+
+<!ELEMENT accountcreation (#PCDATA)>
+<!ATTLIST accountcreation type CDATA #IMPLIED>
+
+<!ELEMENT accountremoval (#PCDATA)>
+<!ATTLIST accountremoval type CDATA #IMPLIED>
+
+<!ELEMENT loginmode (#PCDATA)>
+<!ATTLIST loginmode type CDATA #IMPLIED>
+
+<!ELEMENT logoutmode (#PCDATA)>
+<!ATTLIST logoutmode type CDATA #IMPLIED>
