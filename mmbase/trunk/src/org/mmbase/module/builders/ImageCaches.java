@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.36 2004-02-13 15:32:03 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.37 2004-02-23 19:05:00 pierre Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -96,7 +96,7 @@ public class ImageCaches extends AbstractImages {
      * This is done because caching on ckey is not necesarry when caching templates.
      * @since MMBase-1.6
      **/
-    protected int getCachedNodeNumber(String ckey) {
+    protected MMObjectNode getCachedNode(String ckey) {
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -106,46 +106,19 @@ public class ImageCaches extends AbstractImages {
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
             log.error(e.toString());
-            return -1;
+            return null;
         }
 
         if (nodes.size() == 0) {
             log.debug("Did not find cached images with key ("+ ckey +")");
-            return -1 ;
+            return null;
         }
         if (nodes.size() > 1) {
             log.warn("found more then one cached image with key ("+ ckey +")");
         }
-        MMObjectNode node = (MMObjectNode) nodes.get(0);
-        return node.getNumber();
+        return (MMObjectNode) nodes.get(0);
     }
 
-    /**
-     * Gets the handle bytes from a node.
-     * @param n The node to receive the bytes from. It might be null, then null is returned.
-     */
-    private  byte[] getImageBytes(MMObjectNode n) {
-        if (n == null) {
-            log.warn("method called with null MMObjectNode, returing null");
-            return null;
-        } else {
-            byte[] bytes = n.getByteValue("handle");
-            if (bytes == null) {
-                log.warn("handle was null for node with number ("+ n.getNumber() +")!");
-                return null;
-            }
-            if (log.isDebugEnabled()) log.debug("found " + bytes.length + " bytes");
-            return bytes;
-        }
-    }
-
-    private  byte[] getImageBytes(int number) {
-        return getImageBytes(getNode(number));
-    }
-
-    private byte[] getImageBytes(String number) {
-        return getImageBytes(getNode(number));
-    }
     /**
      * Returns the bytes of a cached image. It accepts a list, just
      * because it is also like this in Images.java. But of course a
@@ -157,47 +130,49 @@ public class ImageCaches extends AbstractImages {
      * If the node does not exists, it returns empty byte array
      */
     public byte[] getImageBytes(List params) {
-        return getImageBytes("" + params.get(0));
+        MMObjectNode node = getNode("" + params.get(0));
+        if (node == null) {
+            return null;
+        } else {
+            return node.getByteValue("handle");
+        }
     }
 
     /**
-     * Return the bytes for the cached image with a certain ckey, or null, if not cached.
+     * Return a @link{ ByteFieldContainer} containing the bytes and object number
+     * for the cached image with a certain ckey, or null, if not cached.
+     * @param ckey teh ckey to search for
+     * @return null, or a @link{ ByteFieldContainer} object
      */
-    public byte[] getCkeyNode(String ckey) {
+    public ByteFieldContainer getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
         if(handleCache.contains(ckey)) {
             // found the node in the cache..
-            return (byte []) handleCache.get(ckey);
+            return (ByteFieldContainer) handleCache.get(ckey);
         }
         log.debug("not found in handle cache, getting it from database.");
-        int number = getCachedNodeNumber(ckey);
-
-        if (number == -1) {
+        MMObjectNode node = getCachedNode(ckey);
+        if (node == null) {
             // we dont have a cachednode yet, return null
             log.debug("cached node not found for key (" + ckey + "), returning null");
             return null;
         }
-
-        // cached node can be found with the number nunmber
-        byte data[] = getImageBytes(number);
-
+        // find binary data
+        byte data[] = node.getByteValue("handle");
         if (data == null) {
             // if it didn't work, also cache this result, to avoid concluding that again..
             // should this trow an exception every time? I think so, otherwise we would generate an
             // image every time it is requested, which also net very handy...
-            // handleCache.put(ckey, new byte[0]);
-            // this should be done differenty.
-            String msg = "The node(#"+number+") which should contain the cached result for ckey:" + ckey + " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
+            String msg = "The node(#"+node.getNumber()+") which should contain the cached result for ckey:" + ckey + " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
             log.error(msg);
             throw new RuntimeException(msg);
         }
-
         // is this not configurable?
         // only cache small images.
         if (data.length< (100*1024))  {
-            handleCache.put(ckey, data);
+            handleCache.put(ckey, node);
         }
-        return data;
+        return new ByteFieldContainer(node.getNumber(),data);
     }
 
     /**
@@ -287,9 +262,9 @@ public class ImageCaches extends AbstractImages {
         return getImageMimeType(getNode("" + params.get(0)));
     }
 
-    public int insert(String owner, MMObjectNode node) {      
+    public int insert(String owner, MMObjectNode node) {
         int res = super.insert(owner, node);
-        // just te make sure, make sure there is no such thing with this ckey cached
+        // make sure there is no such thing with this ckey cached
         ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getStringValue("ckey"));
         return res;
     }
