@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author   Robin van Meteren
-    @version $Id: wizard.xsl,v 1.134 2004-08-26 17:29:00 pierre Exp $
+    @version $Id: wizard.xsl,v 1.135 2004-09-07 11:34:23 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1155,6 +1155,9 @@
       <xsl:for-each select="command[@name=&apos;search&apos;]">
         <table class="searchcontent">
           <tr>
+            <xsl:if test="prompt">
+              <td><xsl:call-template name="prompt"/></td>
+            </xsl:if>
             <td>
               <xsl:call-template name="listsearch-age"/>
             </td>
