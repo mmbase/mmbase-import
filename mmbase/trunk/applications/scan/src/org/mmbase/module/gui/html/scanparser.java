@@ -1,5 +1,5 @@
 /*
-$Id: scanparser.java,v 1.7 2000-03-10 14:15:19 wwwtech Exp $
+$Id: scanparser.java,v 1.8 2000-03-27 15:08:33 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/10 14:15:19  wwwtech
+Wilbert: Added  to retrieve number of parameters querystring in method do_param()
+
 Revision 1.6  2000/03/10 12:09:58  wwwtech
 Rico: added circular part detection to scanparser, it is also now possilbe to subclass ParseException and throw that in scanparser for those unholdable situations.
 
@@ -38,7 +41,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.7 $ $Date: 2000-03-10 14:15:19 $
+ * @$Revision: 1.8 $ $Date: 2000-03-27 15:08:33 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -50,8 +53,6 @@ public class scanparser extends ProcessorModule {
 
 	public static scancacheInterface scancache=null;
     private static ProcessorModule grab=null;
-    private static pagesInterface pages=null;
-    private static areasInterface areas=null;
     private static sessionsInterface sessions=null;
     private static idInterface id=null;
     private static Hashtable processors = new Hashtable();
@@ -78,9 +79,6 @@ public class scanparser extends ProcessorModule {
     public void init() {
         Roots=getRoots();
         // org.mmbase start();
-        pages=(pagesInterface)getModule("PAGE");
-        // areas=(areasInterface)getModule("AREA");
-        // id=(idInterface)getModule("ID");
         sessions=(sessionsInterface)getModule("SESSION");
 		scancache=(scancacheInterface)getModule("SCANCACHE");
 		counter=(CounterInterface)getModule("COUNTER");
@@ -460,7 +458,7 @@ public class scanparser extends ProcessorModule {
 						newbody.append(do_id(body.substring(prepostcmd,postcmd),sp));
 						break;
 					case 4: // '$OBJ-' , '$VAR-' , '$COLOR-' '$TEXT-' and '$LBJ-'
-						newbody.append(do_replace(body.substring(prepostcmd,postcmd)));
+						newbody.append(body.substring(prepostcmd,postcmd));
 						break;
 					case 5: // '<INCLUDE '
 						newbody.append(do_include(body.substring(prepostcmd,postcmd),session,sp));
@@ -498,7 +496,7 @@ public class scanparser extends ProcessorModule {
 						//	newbody.append(do_page(body.substring(prepostcmd,postcmd)));
 						break;
 					case 15: // '$AREA-'
-						newbody.append(do_area(body.substring(prepostcmd,postcmd)));
+						newbody.append(body.substring(prepostcmd,postcmd));
 						break;
 					case 16: // '$SESSION-'
 						newbody.append(do_session(body.substring(prepostcmd,postcmd),session));
@@ -808,21 +806,8 @@ public class scanparser extends ProcessorModule {
 
 
     private final String do_session(String part2,sessionInfo session) {
-        if (pages!=null && sessions!=null) {
+        if (sessions!=null) {
             String value=sessions.getValue(session,part2);
-            if (value!=null) {
-                return(value);
-            } else {
-                return("");
-            }
-        } else {
-            return("");
-        }
-    }
-
-    private final String do_area(String part2) {
-        if (pages!=null && areas!=null) {
-            String value=areas.getValue(part2);
             if (value!=null) {
                 return(value);
             } else {
@@ -927,9 +912,7 @@ public class scanparser extends ProcessorModule {
 		pnt=part.indexOf('=');
 		part2=part.substring(pnt+1);
 		part1=part.substring(0,pnt);
-		if (part1.indexOf("AREA-")==0) {
-			if (areas!=null) areas.setValue(part1.substring(5),part2);
-		} else if (part1.indexOf("SESSION-")==0) {
+		if (part1.indexOf("SESSION-")==0) {
 			if (sessions!=null) sessions.setValue(session,part1.substring(8),part2);
 		} else if (part1.indexOf("ID-")==0) {
 			String name=HttpAuth.getRemoteUser(sp);
@@ -953,13 +936,6 @@ public class scanparser extends ProcessorModule {
             return("");
         }
     }
-
-    private final String do_replace(String part2) {
-        String part="";
-        if (areas!=null) return(areas.getValue(part2));
-        return(null);
-    }
-
 
     private final String do_id(String part2,scanpage sp) {
         String name=HttpAuth.getRemoteUser(sp);
@@ -1651,22 +1627,6 @@ public class scanparser extends ProcessorModule {
 		return;	
 	}
 
-    /*
-    private final String do_page(String part2) {
-        if (pages!=null) {
-            String value=pages.getValue(page,part2);
-            if (value!=null) {
-                return(value);
-            } else {
-                return("");
-            }
-        } else {
-            return("");
-        }
-    }
-    */
-
-	
 	/** 
 	* maintainance call, will be called by the admin to perform managment
 	* tasks. This can be used instead of its own thread.

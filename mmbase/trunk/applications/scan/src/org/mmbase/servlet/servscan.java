@@ -44,8 +44,6 @@ public class servscan extends JamesServlet {
 
 	// modules used in servscan
 	private static ProcessorModule grab=null;
-	private static pagesInterface pages=null;
-	private static areasInterface areas=null;
 	private static sessionsInterface sessions=null;
 	// private static idInterface id=null;
 	// private static StatisticsInterface stats=null;
@@ -73,8 +71,6 @@ public class servscan extends JamesServlet {
 		super.init();
 		//Roots=getRoots();
 		// org.mmbase start();
-		pages=(pagesInterface)getModule("PAGE");
-		//areas=(areasInterface)getModule("AREA");
 		parser=(scanparser)getModule("SCANPARSER");
 		//id=(idInterface)getModule("ID");
 		sessions=(sessionsInterface)getModule("SESSION");
@@ -104,7 +100,7 @@ public class servscan extends JamesServlet {
 	 * implementation calls parser.handle_line (from module scanparser)
 	 * to do the parsing.
 	 */
-	protected String handle_line(String body, sessionInfo session, scanpage sp) {
+	protected String handle_line(String body, sessionInfo session, scanpage sp) throws ParseException {
 		return parser.handle_line(body, session, sp);
 	}
 
@@ -289,20 +285,7 @@ public class servscan extends JamesServlet {
 				for (Enumeration t=poster.getPostParameters().keys();t.hasMoreElements();) {
 					obj=t.nextElement();
 					part=(String)obj;
-					if (part.indexOf("AREA-")==0) {
-						if (areas!=null) areas.setValue(part.substring(5),poster.getPostParameter((String)obj));
-					} else if (part.indexOf("PAGE-")==0) {
-						/*
-						if (page!=null) {
-							if (poster.checkPostMultiParameter((String)obj)) {
-								// MULTIPLE SUPPORT
-								// pages.setValue(page,part.substring(5),poster.getPostMultiParameter((String)obj));
-							} else {
-								pages.setValue(page,part.substring(5),poster.getPostParameter((String)obj));
-							}
-						}
-						*/
-					} else if (part.indexOf("SESSION-")==0) {
+					if (part.indexOf("SESSION-")==0) {
 						if (sp.session!=null) {
 							if (poster.checkPostMultiParameter((String)obj)) {
 								// MULTIPLE SUPPORT
