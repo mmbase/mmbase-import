@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.17 2004-01-08 12:01:50 pierre Exp $
+ * @version $Id: DateSupport.java,v 1.18 2004-03-22 17:05:05 rob Exp $
  */
 public class DateSupport {
 
@@ -446,7 +446,7 @@ public class DateSupport {
         Date v = new Date((long) val * 1000);
         Calendar c = Calendar.getInstance();
         c.setTime(v);
-        return c.get(Calendar.DAY_OF_WEEK);
+        return c.get(Calendar.DAY_OF_WEEK)-1;
     }
 
     /**
