@@ -60,14 +60,48 @@
 	</td>
 	</tr>
 </table>
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-   <tr><th width="15">&nbsp;</th><th width="15">&nbsp;</th><th><mm:write referid="mlg_topic"/></th><th><mm:write referid="mlg_author"/></th><th><mm:write referid="mlg_replies"/></th><th><mm:write referid="mlg_views"/></th><th><mm:write referid="mlg_last_posting"/></th><mm:compare referid="ismoderator" value="true"><th><mm:write referid="mlg_moderator"/></th></mm:compare></tr>
-  	  <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
-			<tr><td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td><td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg_by"/> <mm:field name="lastposter" /></td><mm:compare referid="ismoderator" value="true"><td>
-<a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">X</a> / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a></td></mm:compare></tr>
-		  
-		  </mm:nodelistfunction>
+  <tr>
+    <th width="15">&nbsp;</th>
+    <th width="15">&nbsp;</th>
+    <th><mm:write referid="mlg_topic"/></th>
+    <th><mm:write referid="mlg_author"/></th>
+    <th><mm:write referid="mlg_replies"/></th>
+    <th><mm:write referid="mlg_views"/></th>
+    <th><mm:write referid="mlg_last_posting"/></th>
+    <mm:compare referid="ismoderator" value="true">
+      <th><mm:write referid="mlg_moderator"/></th>
+    </mm:compare>
+  </tr>
+
+  <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
+  <tr>
+    <td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td>
+    <td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td>
+    <td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td>
+    <td align="left"><mm:field name="creator" /></td>
+    <td align="left"><mm:field name="replycount" /></td>
+    <td align="left"><mm:field name="viewcount" /></td>
+    <td align="left">
+      <mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> 
+      <mm:write referid="mlg_by"/>
+      <mm:field name="lastposternumber">
+        <mm:compare value="-1" inverse="true">
+          <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a>
+        </mm:compare>
+        <mm:compare value="-1" ><mm:field name="lastposter" /></mm:compare>
+      </mm:field>
+    </td>
+    <mm:compare referid="ismoderator" value="true">
+    <td>
+      <a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">X</a> / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a>
+    </td>
+    </mm:compare>
+  </tr>
+  </mm:nodelistfunction>
 </table>
+
 <mm:compare referid="pagecount" value="1" inverse="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;" align="right">
 	<tr>
