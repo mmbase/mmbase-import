@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.23 2002-10-28 17:42:47 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.24 2002-10-29 23:54:19 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -87,7 +87,9 @@ public class XMLBasicReader  {
 
     public XMLBasicReader(InputSource source, boolean validating, Class resolveBase) {
         try {
+            xmlFilePath = source.getSystemId();
             DocumentBuilder dbuilder = getDocumentBuilder(validating, new XMLEntityResolver(validating, resolveBase));
+            
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
