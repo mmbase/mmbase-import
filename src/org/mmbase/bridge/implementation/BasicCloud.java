@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.93 2003-07-25 20:44:30 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.94 2003-07-29 15:05:48 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -328,24 +328,40 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
         RelationManager rm = getRelationManager(n1, n2, r);
         if (rm == null) {
-            throw new NotFoundException(
-                "Relation manager from '" + sourceManagerName + "' to '" + destinationManagerName + "' as '" + roleName + "' does not exist.");
+            throw new NotFoundException("Relation manager from '" + sourceManagerName + "' to '" + destinationManagerName + "' as '" + roleName + "' does not exist.");
         } else {
             return rm;
         }
     }
 
+    public RelationManager getRelationManager(NodeManager source, NodeManager destination, String roleName) throws NotFoundException {
+        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
+        if (r == -1) {
+            throw new NotFoundException("Role '" + roleName + "' does not exist.");
+        }
+        RelationManager rm = getRelationManager(source.getNumber(), destination.getNumber(), r);
+        if (rm == null) {
+            throw new NotFoundException("Relation manager from '" + source + "' to '" + destination + "' as '" + roleName + "' does not exist.");
+        } else {
+            return rm;
+        }
+        
+    }
+
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
         int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
-        if (r == -1)
-            return false;
+        if (r == -1)  return false;
         int n1 = typedef.getIntValue(sourceManagerName);
-        if (n1 == -1)
-            return false;
+        if (n1 == -1) return false;
         int n2 = typedef.getIntValue(destinationManagerName);
-        if (n2 == -1)
-            return false;
+        if (n2 == -1) return false;
         return getRelationManager(n1, n2, r) != null;
+    }
+
+    public boolean  hasRelationManager(NodeManager source, NodeManager destination, String roleName) {
+        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
+        if (r == -1) return false;
+        return getRelationManager(source.getNumber(), destination.getNumber(), r) != null;
     }
 
     public RelationManager getRelationManager(String roleName) throws NotFoundException {
@@ -548,27 +564,27 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     private String convertClausePartToDBS(String constraints) {
         // obtain dbs for fieldname checks
         MMJdbc2NodeInterface dbs = BasicCloudContext.mmb.getDatabase();
-        String result = "";
+        StringBuffer result = new StringBuffer();
         int posa = constraints.indexOf('[');
         while (posa > -1) {
             int posb = constraints.indexOf(']', posa);
             if (posb == -1) {
                 posa = -1;
             } else {
-                String fieldname = constraints.substring(posa + 1, posb);
-                int posc = fieldname.indexOf('.', posa);
+                String fieldName = constraints.substring(posa + 1, posb);
+                int posc = fieldName.indexOf('.', posa);
                 if (posc == -1) {
-                    fieldname = dbs.getAllowedField(fieldname);
+                    fieldName = dbs.getAllowedField(fieldName);
                 } else {
-                    fieldname = fieldname.substring(0, posc + 1) + dbs.getAllowedField(fieldname.substring(posc + 1));
+                    fieldName = fieldName.substring(0, posc + 1) + dbs.getAllowedField(fieldName.substring(posc + 1));
                 }
-                result += constraints.substring(0, posa) + fieldname;
+                result.append(constraints.substring(0, posa)).append(fieldName);
                 constraints = constraints.substring(posb + 1);
                 posa = constraints.indexOf('[');
             }
         }
-        result = result + constraints;
-        return result;
+        result.append(constraints);
+        return result.toString();
     }
 
     /**
@@ -577,11 +593,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * XXX: todo: escape characters for '[' and ']'.
      */
     String convertClauseToDBS(String constraints) {
-        if (constraints.startsWith("MMNODE"))
+        if (constraints.startsWith("MMNODE")) {
             return constraints;
-        if (constraints.startsWith("ALTA"))
+        } else if (constraints.startsWith("ALTA")) {
             return constraints.substring(5);
-        String result = "";
+        }
+        StringBuffer result = new StringBuffer();
         int posa = constraints.indexOf('\'');
         while (posa > -1) {
             int posb = constraints.indexOf('\'', 1);
@@ -589,19 +606,54 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 posa = -1;
             } else {
                 String part = constraints.substring(0, posa);
-                result += convertClausePartToDBS(part) + constraints.substring(posa, posb + 1);
+                result.append(convertClausePartToDBS(part)).append(constraints.substring(posa, posb + 1));
                 constraints = constraints.substring(posb + 1);
                 posa = constraints.indexOf('\'');
             }
         }
-        result += convertClausePartToDBS(constraints);
-        if (!constraints.startsWith("WHERE "))
-            result = "WHERE " + result;
-        return result;
+        result.append(convertClausePartToDBS(constraints));
+        if (!constraints.startsWith("WHERE ")) {
+            result.insert(0, "WHERE ");
+        }
+        return result.toString();
     }
 
     // javadoc inherited
     public NodeList getList(Query query) {
+        if (query.getFields().get(0) instanceof AggregatedField) { // should this perhaps be a seperate method?                   
+            return getResultNodeList(query);
+        } else {
+            return getClusterNodeList(query);
+        }
+    }
+
+
+    /**
+     * Aggregating query result.
+     * @since MMBase-1.7
+     */
+    protected NodeList getResultNodeList(Query query) {
+        try {
+            ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
+            List resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
+            NodeManager tempNodeManager;
+            if (resultList.size() > 0) {
+                tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
+            } else {
+                tempNodeManager = new VirtualNodeManager(this);
+            }
+            NodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
+            resultNodeList.setProperty("query", query);
+            return resultNodeList;
+        } catch (SearchQueryException sqe) {
+            throw new BridgeException(sqe);
+        }
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected NodeList getClusterNodeList(Query query) {
 
         List resultList; // result with all Cluster - MMObjectNodes (without security)
 
