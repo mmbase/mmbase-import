@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author  $Author: michiel $
- * @version $Id: MMServers.java,v 1.25 2004-02-23 14:56:12 michiel Exp $
+ * @version $Id: MMServers.java,v 1.26 2004-02-25 23:14:23 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -171,8 +171,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 createMySelf(machineName);
             }
 	} catch(Exception e) {
-            log.error("Something went wrong in MMServers Checkup Thread");
-            e.printStackTrace();
+            log.error("Something went wrong in MMServers Checkup Thread" + Logging.stackTrace(e));
 	}
     }
 
