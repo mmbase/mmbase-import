@@ -320,7 +320,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 			}
 			// get the number from the database by a search
 	
-			String alias2=Escape.singlequote(alias);
+			String alias2=Encode.encode("ESCAPE_SINGLE_QUOTES", alias);
 	
 			// hack hack (marcel) 
 			// gives:
