@@ -12,7 +12,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-
+import java.util.*;
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
@@ -146,14 +146,21 @@ public class WriterHelper  {
         switch (vartype) { 
             // these accept a value == null (meaning that they are empty)
         case TYPE_LIST:
-            if (v instanceof java.lang.String) {
-                if (! "".equals(value)) {
+            if (v instanceof String || v == null) {
+                if (! "".equals(v)) {
                     value = StringSplitter.split((String) v);
-                } else { 
-                    value = new java.util.Vector(); 
+                } else {
+                    value = new ArrayList();
                 }
-                return;
+            } else if (v instanceof List) {
+                value = v;
+            } else if (v instanceof Collection) {
+                value = new ArrayList((Collection) v);
+            } else { // dont' know any more
+                value = v; // wil perhaps fail
+                
             }
+            return;
         case TYPE_VECTOR: // I think the type Vector should be deprecated?
             if (v == null) {
                 // if a vector is requested, but the value is not present,
