@@ -76,7 +76,11 @@ NetComponents can be found at:
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
   <property name="distro"      value="MMBase 1.6.2"/>
+
+  <!-- documentation related settings -->
   <property name="documentation.builders.language" value="en" />
+  <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
+
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
   <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
@@ -1508,7 +1512,7 @@ Version: MMBase build ${version}
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt"
               token="[BASESTYLESHEET]" 
-              value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+              value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
 
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
@@ -1547,7 +1551,7 @@ Version: MMBase build ${version}
           fork="yes"
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
-      <jvmarg value="-mx100m" />
+      <jvmarg value="-mx150m" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
@@ -1555,6 +1559,7 @@ Version: MMBase build ${version}
       <arg value="${build.dir}/docbook2xhtml.xslt" />
       <arg value="${source-documentation.dir}" />
       <arg value="${mmdocs.dir}" />
+      <arg value="usecache=false" />
     </java>
 
   </target>
