@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.224 2003-04-11 17:48:32 kees Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.225 2003-04-11 19:16:12 kees Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3381,8 +3381,10 @@ public class MMObjectBuilder extends MMTable {
      * @return the short name in that language, or <code>null</code> if it is not available
      */
     public String getSingularName(String lang) {
-        if (singularNames==null) return null;
-	String retval = (String)singularNames.get(lang);
+	String retval = null;
+        if (singularNames !=null) {
+            retval = (String)singularNames.get(lang);
+	}
         if (retval == null){ 
             return getSingularName();
         }
@@ -3408,9 +3410,11 @@ public class MMObjectBuilder extends MMTable {
      * @return the long name in that language, or <code>null</code> if it is not available
      */
     public String getPluralName(String lang) {
-        if (pluralNames==null) return null;
-        String retval = (String)pluralNames.get(lang);
-        if (retval != null){
+        String retval = null;
+        if (pluralNames !=null){
+          retval = (String)pluralNames.get(lang);
+	}
+        if (retval == null){
             return getPluralName();
         }
         return retval;
