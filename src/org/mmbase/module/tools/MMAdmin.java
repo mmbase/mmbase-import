@@ -12,6 +12,7 @@ package org.mmbase.module.tools;
 import java.util.*;
 import java.io.File;
 
+import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.xml.ModuleWriter;
@@ -26,19 +27,17 @@ import org.mmbase.module.tools.MMAppTool.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
 /**
  * @javadoc
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.69 2003-05-08 06:09:18 kees Exp $
+ * @version $Id: MMAdmin.java,v 1.70 2003-05-19 07:39:17 kees Exp $
  */
 public class MMAdmin extends ProcessorModule {
-    
+
     // logging routines
     private static Logger log = Logging.getLoggerInstance(MMAdmin.class.getName());
-    
 
     // true: ready (probeCall was called)
     private boolean state = false;
@@ -51,40 +50,39 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      * @scope private
      */
-    MMAdminProbe probe=null;
+    MMAdminProbe probe = null;
     /**
      * @javadoc
      * @scope private
      */
-    String lastmsg="";
+    String lastmsg = "";
     /**
      * @javadoc
      */
-    private boolean restartwanted=false;
+    private boolean restartwanted = false;
     /**
      * @javadoc
      */
-    private boolean kioskmode=false;
-    
+    private boolean kioskmode = false;
+
     /**
      * @javadoc
      */
-    public MMAdmin() {
-    }
-    
+    public MMAdmin() {}
+
     /**
      * @javadoc
      */
     public void init() {
-        String dtmp=System.getProperty("mmbase.kiosk");
-        if (dtmp!=null && dtmp.equals("yes")) {
-            kioskmode=true;
+        String dtmp = System.getProperty("mmbase.kiosk");
+        if (dtmp != null && dtmp.equals("yes")) {
+            kioskmode = true;
             log.info("*** Server started in kiosk mode ***");
         }
-        mmb = (MMBase) getModule("MMBASEROOT");
+        mmb = (MMBase)getModule("MMBASEROOT");
         probe = new MMAdminProbe(this);
     }
-    
+
     /**
      * Returns a virtual builder used to create node lists from the results
      * returned by getList().
@@ -94,10 +92,10 @@ public class MMAdmin extends ProcessorModule {
      * @param command the LIST command for which to retrieve the builder
      * @param params contains the attributes for the list
      */
-    public MMObjectBuilder getListBuilder(String command,Map params) {
+    public MMObjectBuilder getListBuilder(String command, Map params) {
         return new VirtualBuilder(mmb);
     }
-    
+
     /**
      * Retrieves a specified builder.
      * The builder's name can be extended with the subpath of that builder's configuration file.
@@ -106,232 +104,260 @@ public class MMAdmin extends ProcessorModule {
      * @return a <code>MMObjectBuilder</code> is found, <code>null</code> otherwise
      */
     public MMObjectBuilder getMMObject(String path) {
-        int pos=path.lastIndexOf(File.separator);
-        if (pos!=-1) {
-            path=path.substring(pos+1);
+        int pos = path.lastIndexOf(File.separator);
+        if (pos != -1) {
+            path = path.substring(pos + 1);
         }
         return mmb.getMMObject(path);
     }
-    
+
     /**
      * Generate a list of values from a command to the processor
      * @javadoc
      */
-    public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
-        String line = Strip.DoubleQuote(value,Strip.BOTH);
-        StringTokenizer tok = new StringTokenizer(line,"-\n\r");
+    public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException {
+        String line = Strip.DoubleQuote(value, Strip.BOTH);
+        StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
-            if(!checkUserLoggedOn(sp,cmd,false)) return new Vector();
+            String cmd = tok.nextToken();
+            if (!checkUserLoggedOn(sp, cmd, false))
+                return new Vector();
             if (cmd.equals("APPLICATIONS")) {
-                tagger.setValue("ITEMS","5");
-                return getApplicationsList();
+                tagger.setValue("ITEMS", "5");
+                try {
+                    return getApplicationsList();
+                } catch (SearchQueryException e) {
+                    log.warn(Logging.stackTrace(e));
+                }
             }
             if (cmd.equals("BUILDERS")) {
-                tagger.setValue("ITEMS","4");
+                tagger.setValue("ITEMS", "4");
                 return getBuildersList(tok);
             }
             if (cmd.equals("FIELDS")) {
-                tagger.setValue("ITEMS","4");
+                tagger.setValue("ITEMS", "4");
                 return getFields(tok.nextToken());
             }
             if (cmd.equals("MODULEPROPERTIES")) {
-                tagger.setValue("ITEMS","2");
+                tagger.setValue("ITEMS", "2");
                 return getModuleProperties(tok.nextToken());
             }
             if (cmd.equals("ISOGUINAMES")) {
-                tagger.setValue("ITEMS","2");
-                return getISOGuiNames(tok.nextToken(),tok.nextToken());
+                tagger.setValue("ITEMS", "2");
+                return getISOGuiNames(tok.nextToken(), tok.nextToken());
             }
             if (cmd.equals("MODULES")) {
-                tagger.setValue("ITEMS","4");
+                tagger.setValue("ITEMS", "4");
                 return getModulesList();
             }
             if (cmd.equals("DATABASES")) {
-                tagger.setValue("ITEMS","4");
+                tagger.setValue("ITEMS", "4");
                 return getDatabasesList();
             }
             if (cmd.equals("MULTILEVELCACHEENTRIES")) {
-                tagger.setValue("ITEMS","8");
+                tagger.setValue("ITEMS", "8");
                 return getMultilevelCacheEntries();
             }
             if (cmd.equals("NODECACHEENTRIES")) {
-                tagger.setValue("ITEMS","4");
+                tagger.setValue("ITEMS", "4");
                 return getNodeCacheEntries();
             }
         }
         return null;
     }
-    
+
     /**
      * @javadoc
      */
     private boolean checkAdmin(scanpage sp, String cmd) {
         return checkUserLoggedOn(sp, cmd, true);
     }
-    
+
     /**
      * @javadoc
      */
     private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
         String user = null;
         try {
-            user=HttpAuth.getAuthorization(sp.req,sp.res,"www","Basic");
-        } catch (javax.servlet.ServletException e) { }
-        boolean authorized=(user!=null) && (!adminonly || "admin".equals(user));
+            user = HttpAuth.getAuthorization(sp.req, sp.res, "www", "Basic");
+        } catch (javax.servlet.ServletException e) {}
+        boolean authorized = (user != null) && (!adminonly || "admin".equals(user));
         if (!authorized) {
-            lastmsg="Unauthorized access : "+cmd+" by "+user;
+            lastmsg = "Unauthorized access : " + cmd + " by " + user;
             log.info(lastmsg);
         }
         return authorized;
     }
-    
+
     /**
      * Execute the commands provided in the form values
      * @javadoc
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-        String cmdline,token;
-        
-        for (Enumeration h = cmds.keys();h.hasMoreElements();) {
-            cmdline=(String)h.nextElement();
-            if(!checkAdmin(sp,cmdline)) return false;
-            StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
+    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+        String cmdline, token;
+
+        for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
+            cmdline = (String)h.nextElement();
+            if (!checkAdmin(sp, cmdline))
+                return false;
+            StringTokenizer tok = new StringTokenizer(cmdline, "-\n\r");
             token = tok.nextToken();
             if (token.equals("SERVERRESTART")) {
-                String user=(String)cmds.get(cmdline);
+                String user = (String)cmds.get(cmdline);
                 doRestart(user);
             } else if (token.equals("LOAD") && !kioskmode) {
-                ApplicationResult result=new ApplicationResult(this);
-                String appname=(String)cmds.get(cmdline);
-                if (installApplication(appname, -1,null,result,new HashSet(),false)) {
-                    lastmsg=result.getMessage();
-                } else {
-                    lastmsg="Problem installing application : "+appname+"\n"+result.getMessage();
+                ApplicationResult result = new ApplicationResult(this);
+                String appname = (String)cmds.get(cmdline);
+                try {
+                    if (installApplication(appname, -1, null, result, new HashSet(), false)) {
+                        lastmsg = result.getMessage();
+                    } else {
+                        lastmsg = "Problem installing application : " + appname + "\n" + result.getMessage();
+                    }
+                } catch (SearchQueryException e) {
+                    log.warn(Logging.stackTrace(e));
                 }
-                if (vars!=null) vars.put("RESULT",lastmsg);
+                if (vars != null)
+                    vars.put("RESULT", lastmsg);
             } else if (token.equals("SAVE")) {
-                String appname=(String)cmds.get(cmdline);
-                String savepath=(String)vars.get("PATH");
-                String goal=(String)vars.get("GOAL");
-                log.info("APP="+appname+" P="+savepath+" G="+goal);
-                writeApplication(appname,savepath,goal);
+                String appname = (String)cmds.get(cmdline);
+                String savepath = (String)vars.get("PATH");
+                String goal = (String)vars.get("GOAL");
+                log.info("APP=" + appname + " P=" + savepath + " G=" + goal);
+                writeApplication(appname, savepath, goal);
             } else if (token.equals("APPTOOL")) {
-                String appname=(String)cmds.get(cmdline);
+                String appname = (String)cmds.get(cmdline);
                 startAppTool(appname);
             } else if (token.equals("BUILDER")) {
-                doBuilderPosts(tok.nextToken(),cmds,vars);
+                doBuilderPosts(tok.nextToken(), cmds, vars);
             } else if (token.equals("MODULE")) {
-                doModulePosts(tok.nextToken(),cmds,vars);
+                doModulePosts(tok.nextToken(), cmds, vars);
             } else if (token.equals("MODULESAVE")) {
                 if (kioskmode) {
                     log.warn("MMAdmin> refused to write module, am in kiosk mode");
                 } else {
-                    String modulename=(String)cmds.get(cmdline);
-                    String savepath=(String)vars.get("PATH");
-                    Module mod=(Module)getModule(modulename);
-                    if (mod!=null) {
+                    String modulename = (String)cmds.get(cmdline);
+                    String savepath = (String)vars.get("PATH");
+                    Module mod = (Module)getModule(modulename);
+                    if (mod != null) {
                         try {
-                            ModuleWriter moduleOut=new ModuleWriter(mod);
+                            ModuleWriter moduleOut = new ModuleWriter(mod);
                             moduleOut.setIncludeComments(true);
                             moduleOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred\n\n"+
-                            "Error encountered="+e.getMessage()+"\n\n";
+                            lastmsg =
+                                "Writing finished, problems occurred\n\n"
+                                    + "Error encountered="
+                                    + e.getMessage()
+                                    + "\n\n";
                             return false;
                         }
-                        lastmsg="Writing finished, no problems.\n\n"+
-                        "A clean copy of "+modulename+".xml can be found at : "+savepath+"\n\n";
+                        lastmsg =
+                            "Writing finished, no problems.\n\n"
+                                + "A clean copy of "
+                                + modulename
+                                + ".xml can be found at : "
+                                + savepath
+                                + "\n\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
                 if (kioskmode) {
                     log.warn("MMAdmin> refused to write builder, am in kiosk mode");
                 } else {
-                    String buildername=(String)cmds.get(cmdline);
-                    String savepath=(String)vars.get("PATH");
-                    MMObjectBuilder bul=getMMObject(buildername);
-                    if (bul!=null) {
+                    String buildername = (String)cmds.get(cmdline);
+                    String savepath = (String)vars.get("PATH");
+                    MMObjectBuilder bul = getMMObject(buildername);
+                    if (bul != null) {
                         try {
-                            BuilderWriter builderOut=new BuilderWriter(bul);
+                            BuilderWriter builderOut = new BuilderWriter(bul);
                             builderOut.setIncludeComments(true);
                             builderOut.setExpandBuilder(false);
                             builderOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred\n\n"+
-                            "Error encountered="+e.getMessage()+"\n\n";
+                            lastmsg =
+                                "Writing finished, problems occurred\n\n"
+                                    + "Error encountered="
+                                    + e.getMessage()
+                                    + "\n\n";
                             return false;
                         }
-                        lastmsg="Writing finished, no problems.\n\n"+
-                        "A clean copy of "+buildername+".xml can be found at : "+savepath+"\n\n";
+                        lastmsg =
+                            "Writing finished, no problems.\n\n"
+                                + "A clean copy of "
+                                + buildername
+                                + ".xml can be found at : "
+                                + savepath
+                                + "\n\n";
                     }
                 }
             }
-            
+
         }
         return false;
     }
-    
+
     // basically replaces linefeeds and some characters.
     private String escape(String s) {
-        if (s==null) {
+        if (s == null) {
             return "";
         } else {
-            StringObject obj=new StringObject(s);
-            obj.replace("&","&amp;");
-            obj.replace(">","&gt;");
-            obj.replace("<","&lt;");
-            obj.replace("\"","&quot;");
-            obj.replace("\n","<br />");
+            StringObject obj = new StringObject(s);
+            obj.replace("&", "&amp;");
+            obj.replace(">", "&gt;");
+            obj.replace("<", "&lt;");
+            obj.replace("\"", "&quot;");
+            obj.replace("\n", "<br />");
             return obj.toString();
         }
     }
-    
+
     /**
      * Handle a $MOD command
      * @javadoc
      */
     public String replace(scanpage sp, String cmds) {
-        if(!checkUserLoggedOn(sp,cmds,false)) return "";
-        StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
+        if (!checkUserLoggedOn(sp, cmds, false))
+            return "";
+        StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
+            String cmd = tok.nextToken();
             if (cmd.equals("VERSION")) {
-                return ""+getVersion(tok.nextToken());
+                return "" + getVersion(tok.nextToken());
             } else if (cmd.equals("DESCRIPTION")) {
                 return escape(getDescription(tok.nextToken()));
             } else if (cmd.equals("LASTMSG")) {
                 // return lastmsg in html-format.
                 return escape(lastmsg);
             } else if (cmd.equals("BUILDERVERSION")) {
-                return ""+getBuilderVersion(tok.nextToken());
+                return "" + getBuilderVersion(tok.nextToken());
             } else if (cmd.equals("BUILDERCLASSFILE")) {
-                return ""+getBuilderClass(tok.nextToken());
+                return "" + getBuilderClass(tok.nextToken());
             } else if (cmd.equals("BUILDERDESCRIPTION")) {
-                return ""+getBuilderDescription(tok.nextToken());
+                return "" + getBuilderDescription(tok.nextToken());
             } else if (cmd.equals("GETGUINAMEVALUE")) {
-                return getGuiNameValue(tok.nextToken(),tok.nextToken(),tok.nextToken());
+                return getGuiNameValue(tok.nextToken(), tok.nextToken(), tok.nextToken());
             } else if (cmd.equals("GETBUILDERFIELD")) {
-                return getBuilderField(tok.nextToken(),tok.nextToken(),tok.nextToken());
+                return getBuilderField(tok.nextToken(), tok.nextToken(), tok.nextToken());
             } else if (cmd.equals("GETMODULEPROPERTY")) {
-                return getModuleProperty(tok.nextToken(),tok.nextToken());
+                return getModuleProperty(tok.nextToken(), tok.nextToken());
             } else if (cmd.equals("MODULEDESCRIPTION")) {
-                return ""+getModuleDescription(tok.nextToken());
+                return "" + getModuleDescription(tok.nextToken());
             } else if (cmd.equals("MODULECLASSFILE")) {
-                return ""+getModuleClass(tok.nextToken());
+                return "" + getModuleClass(tok.nextToken());
             } else if (cmd.equals("MULTILEVELCACHEHITS")) {
-                return(""+MultilevelCache.getCache().getHits());
+                return ("" + MultilevelCache.getCache().getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
-                return(""+MultilevelCache.getCache().getMisses());
+                return ("" + MultilevelCache.getCache().getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
-                return(""+(MultilevelCache.getCache().getHits()+MultilevelCache.getCache().getMisses()));
+                return ("" + (MultilevelCache.getCache().getHits() + MultilevelCache.getCache().getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
-                return(""+(MultilevelCache.getCache().getRatio()*100));
+                return ("" + (MultilevelCache.getCache().getRatio() * 100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
                 if (tok.hasMoreTokens()) {
-                    String state=tok.nextToken();
+                    String state = tok.nextToken();
                     if (state.equalsIgnoreCase("On")) {
                         MultilevelCache.getCache().setActive(true);
                         log.info("turned multilevelcache on");
@@ -347,81 +373,85 @@ public class MMAdmin extends ProcessorModule {
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return(""+(MultilevelCache.getCache().getSize()));
+                return ("" + (MultilevelCache.getCache().getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
-                return(""+MMObjectBuilder.nodeCache.getHits());
+                return ("" + MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
-                return(""+MMObjectBuilder.nodeCache.getMisses());
+                return ("" + MMObjectBuilder.nodeCache.getMisses());
             } else if (cmd.equals("NODECACHEREQUESTS")) {
-                return(""+(MMObjectBuilder.nodeCache.getHits()+MMObjectBuilder.nodeCache.getMisses()));
+                return ("" + (MMObjectBuilder.nodeCache.getHits() + MMObjectBuilder.nodeCache.getMisses()));
             } else if (cmd.equals("NODECACHEPERFORMANCE")) {
-                return(""+(MMObjectBuilder.nodeCache.getRatio()*100));
+                return ("" + (MMObjectBuilder.nodeCache.getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
-                return(""+(MMObjectBuilder.nodeCache.getSize()));
+                return ("" + (MMObjectBuilder.nodeCache.getSize()));
             } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
-                return(""+(MMObjectBuilder.TemporaryNodes.size()));
+                return ("" + (MMObjectBuilder.TemporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
-                return(""+MMObjectNode.getRelationCacheHits());
+                return ("" + MMObjectNode.getRelationCacheHits());
             } else if (cmd.equals("RELATIONCACHEMISSES")) {
-                return(""+MMObjectNode.getRelationCacheMiss());
+                return ("" + MMObjectNode.getRelationCacheMiss());
             } else if (cmd.equals("RELATIONCACHEREQUESTS")) {
-                return(""+(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()));
+                return ("" + (MMObjectNode.getRelationCacheHits() + MMObjectNode.getRelationCacheMiss()));
             } else if (cmd.equals("RELATIONCACHEPERFORMANCE")) {
-                
-                return(""+(1.0*MMObjectNode.getRelationCacheHits())/(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()+0.0000000001)*100);
+
+                return (
+                    ""
+                        + (1.0 * MMObjectNode.getRelationCacheHits())
+                            / (MMObjectNode.getRelationCacheHits() + MMObjectNode.getRelationCacheMiss() + 0.0000000001)
+                            * 100);
             }
         }
         return "No command defined";
     }
-    
+
     /**
      * @javadoc
      */
     int getVersion(String appname) {
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-        XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
-        if (app!=null) {
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
+        if (app != null) {
             return app.getApplicationVersion();
         }
         return -1;
     }
-    
+
     /**
      * @javadoc
      */
     int getBuilderVersion(String appname) {
-        String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
-        if (app!=null) {
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        XMLBuilderReader app = new XMLBuilderReader(path + appname + ".xml", mmb);
+        if (app != null) {
             return app.getBuilderVersion();
         }
         return -1;
     }
-    
+
     /**
      * @javadoc
      */
     String getBuilderClass(String bulname) {
-        String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml",mmb);
-        if (bul!=null) {
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        XMLBuilderReader bul = new XMLBuilderReader(path + bulname + ".xml", mmb);
+        if (bul != null) {
             return bul.getClassFile();
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
     String getModuleClass(String modname) {
-        String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
-        XMLModuleReader mod=new XMLModuleReader(path+modname+".xml");
-        if (mod!=null) {
+        String path = MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator;
+        XMLModuleReader mod = new XMLModuleReader(path + modname + ".xml");
+        if (mod != null) {
             return mod.getClassFile();
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
@@ -430,23 +460,23 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused module property set, am in kiosk mode");
             return;
         }
-        String modname=(String)vars.get("MODULE");
-        String key=(String)vars.get("PROPERTYNAME");
-        String value=(String)vars.get("VALUE");
-        Module mod=(Module)getModule(modname);
-        log.debug("MOD="+mod);
-        if (mod!=null) {
-            mod.setInitParameter(key,value);
-            syncModuleXML(mod,modname);
+        String modname = (String)vars.get("MODULE");
+        String key = (String)vars.get("PROPERTYNAME");
+        String value = (String)vars.get("VALUE");
+        Module mod = (Module)getModule(modname);
+        log.debug("MOD=" + mod);
+        if (mod != null) {
+            mod.setInitParameter(key, value);
+            syncModuleXML(mod, modname);
         }
-        
+
     }
-    
+
     /**
      * @javadoc
      * @todo should obtain data from the configuration file
      */
-    String getModuleProperty(String modname,String key) {
+    String getModuleProperty(String modname, String key) {
         /*
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
         XMLModuleReader mod=new XMLModuleReader(path+modname+".xml");
@@ -456,35 +486,36 @@ public class MMAdmin extends ProcessorModule {
             return value;
         }
          */
-        Module mod=(Module)getModule(modname);
-        if (mod!=null) {
-            String value=mod.getInitParameter(key);
-            if (value!=null) return value;
+        Module mod = (Module)getModule(modname);
+        if (mod != null) {
+            String value = mod.getInitParameter(key);
+            if (value != null)
+                return value;
         }
         return "";
-        
+
     }
-    
+
     /**
      * @javadoc
      */
     String getDescription(String appname) {
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-        XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
-        if (app!=null) {
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
+        if (app != null) {
             return app.getDescription();
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
     String getBuilderDescription(String appname) {
-        String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
-        if (app!=null) {
-            Hashtable desc=app.getDescriptions();
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        XMLBuilderReader app = new XMLBuilderReader(path + appname + ".xml", mmb);
+        if (app != null) {
+            Hashtable desc = app.getDescriptions();
             String english = (String)desc.get("en");
             if (english != null) {
                 return english;
@@ -492,25 +523,25 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
     String getModuleDescription(String modulename) {
-        Module mod=(Module)getModule(modulename);
-        if (mod!=null) {
-            String value=mod.getModuleInfo();
-            if (value!=null) return value;
+        Module mod = (Module)getModule(modulename);
+        if (mod != null) {
+            String value = mod.getModuleInfo();
+            if (value != null)
+                return value;
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
-    public void maintainance() {
-    }
-    
+    public void maintainance() {}
+
     /**
      * @javadoc
      * @bad-literal time for MMAdminProbe should be a constant or configurable
@@ -520,12 +551,12 @@ public class MMAdmin extends ProcessorModule {
             log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
             return;
         }
-        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds\n\n";
-        log.info("Server Reset requested by '"+user+"' Restart in 3 seconds");
-        restartwanted=true;
-        probe = new MMAdminProbe(this,3*1000);
+        lastmsg = "Server Reset requested by '" + user + "' Restart in 3 seconds\n\n";
+        log.info("Server Reset requested by '" + user + "' Restart in 3 seconds");
+        restartwanted = true;
+        probe = new MMAdminProbe(this, 3 * 1000);
     }
-    
+
     /**
      * @javadoc
      */
@@ -534,15 +565,15 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused starting app tool, am in kiosk mode");
             return false;
         }
-        
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-        log.info("Starting apptool with : "+path+File.separator+appname+".xml");
-        MMAppTool app=new MMAppTool(path+File.separator+appname+".xml");
-        lastmsg="Started a instance of the MMAppTool with path : \n\n";
-        lastmsg+=path+File.separator+appname+".xml\n\n";
+
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        log.info("Starting apptool with : " + path + File.separator + appname + ".xml");
+        MMAppTool app = new MMAppTool(path + File.separator + appname + ".xml");
+        lastmsg = "Started a instance of the MMAppTool with path : \n\n";
+        lastmsg += path + File.separator + appname + ".xml\n\n";
         return true;
     }
-    
+
     /**
      * Installs the application
      * @param applicationName Name of the application file, without the xml extension
@@ -555,14 +586,19 @@ public class MMAdmin extends ProcessorModule {
      * @param autoDeploy if true, the installation is only installed if the application is set to autodeploy
      * @return true if succesfull, false otherwise
      */
-    private boolean installApplication(String applicationName, int requiredVersion, String requiredMaintainer,
-    ApplicationResult result, Set installationSet,
-    boolean autoDeploy) {
+    private boolean installApplication(
+        String applicationName,
+        int requiredVersion,
+        String requiredMaintainer,
+        ApplicationResult result,
+        Set installationSet,
+        boolean autoDeploy)
+        throws SearchQueryException {
         if (installationSet.contains(applicationName)) {
-            return result.error("Circular reference to application with name "+applicationName);
+            return result.error("Circular reference to application with name " + applicationName);
         }
-        String path = MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-        XMLApplicationReader app = new XMLApplicationReader(path+applicationName+".xml");
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + applicationName + ".xml");
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (app != null) {
             // test autodeploy
@@ -572,17 +608,36 @@ public class MMAdmin extends ProcessorModule {
             String name = app.getApplicationName();
             String maintainer = app.getApplicationMaintainer();
             if (requiredMaintainer != null && !maintainer.equals(requiredMaintainer)) {
-                return result.error("Install error: "+name+" requires maintainer '"+requiredMaintainer+"' but found maintainer '"+maintainer+"'");
+                return result.error(
+                    "Install error: "
+                        + name
+                        + " requires maintainer '"
+                        + requiredMaintainer
+                        + "' but found maintainer '"
+                        + maintainer
+                        + "'");
             }
-            int version=app.getApplicationVersion();
+            int version = app.getApplicationVersion();
             if (requiredVersion != -1 && version != requiredVersion) {
-                return result.error("Install error: "+name+" requires version '"+requiredVersion+"' but found version '"+version+"'");
+                return result.error(
+                    "Install error: "
+                        + name
+                        + " requires version '"
+                        + requiredVersion
+                        + "' but found version '"
+                        + version
+                        + "'");
             }
-            int installedVersion = ver.getInstalledVersion(name,"application");
+            int installedVersion = ver.getInstalledVersion(name, "application");
             if (installedVersion == -1 || version > installedVersion) {
-                if(!name.equals(applicationName)) {
-                    result.warn("Application name "+name+" not the same as the base filename "+applicationName+".\n"+
-                    "This may cause problems when referring to this application.");
+                if (!name.equals(applicationName)) {
+                    result.warn(
+                        "Application name "
+                            + name
+                            + " not the same as the base filename "
+                            + applicationName
+                            + ".\n"
+                            + "This may cause problems when referring to this application.");
                 }
                 // We should possibly check whether the maintainer is valid here (see sample code below).
                 // There is currently no way to do this, though, unless we use awful queries.
@@ -601,16 +656,22 @@ public class MMAdmin extends ProcessorModule {
                     String reqType = (String)reqapp.get("type");
                     if (reqType == null || reqType.equals("application")) {
                         String appName = (String)reqapp.get("name");
-                        int installedAppVersion = ver.getInstalledVersion(appName,"application");
+                        int installedAppVersion = ver.getInstalledVersion(appName, "application");
                         String appMaintainer = (String)reqapp.get("maintainer");
                         int appVersion = -1;
                         try {
                             String appVersionAttr = (String)reqapp.get("version");
-                            if (appVersionAttr != null) appVersion = Integer.parseInt(appVersionAttr);
+                            if (appVersionAttr != null)
+                                appVersion = Integer.parseInt(appVersionAttr);
                         } catch (Exception e) {}
                         if (installedAppVersion == -1 || appVersion > installedAppVersion) {
-                            log.service("Application '"+applicationName+"' requires : "+appName);
-                            if (!installApplication(appName,appVersion,appMaintainer,result,installationSet,false)) {
+                            log.service("Application '" + applicationName + "' requires : " + appName);
+                            if (!installApplication(appName,
+                                appVersion,
+                                appMaintainer,
+                                result,
+                                installationSet,
+                                false)) {
                                 return false;
                             }
                         } else if (appMaintainer != null) {
@@ -628,24 +689,31 @@ public class MMAdmin extends ProcessorModule {
                 }
                 // note: currently name and application file name should be the same
                 if (installedVersion == -1) {
-                    log.info("Installing application : "+name);
+                    log.info("Installing application : " + name);
                 } else {
-                    log.info("installing application : "+name+" new version from "+installedVersion+" to "+version);
+                    log.info(
+                        "installing application : "
+                            + name
+                            + " new version from "
+                            + installedVersion
+                            + " to "
+                            + version);
                 }
-                if (installBuilders(app.getNeededBuilders(), path + applicationName,result) &&
-                installRelDefs(app.getNeededRelDefs(),result) &&
-                installAllowedRelations(app.getAllowedRelations(),result) &&
-                installDataSources(app.getDataSources(),applicationName, result) &&
-                installRelationSources(app.getRelationSources(), result)) {
+                if (installBuilders(app.getNeededBuilders(), path + applicationName, result)
+                    && installRelDefs(app.getNeededRelDefs(), result)
+                    && installAllowedRelations(app.getAllowedRelations(), result)
+                    && installDataSources(app.getDataSources(), applicationName, result)
+                    && installRelationSources(app.getRelationSources(), result)) {
                     if (installedVersion == -1) {
-                        ver.setInstalledVersion(name,"application",maintainer,version);
+                        ver.setInstalledVersion(name, "application", maintainer, version);
                     } else {
-                        ver.updateInstalledVersion(name,"application",maintainer,version);
+                        ver.updateInstalledVersion(name, "application", maintainer, version);
                     }
-                    log.info("Application '"+name+"' deployed succesfully.");
-                    result.success("Application loaded oke\n\n"+
-                    "The application has the following install notice for you : \n\n"+
-                    app.getInstallNotice());
+                    log.info("Application '" + name + "' deployed succesfully.");
+                    result.success(
+                        "Application loaded oke\n\n"
+                            + "The application has the following install notice for you : \n\n"
+                            + app.getInstallNotice());
                 }
                 // installed or failed - remove from installation set
                 installationSet.remove(applicationName);
@@ -653,69 +721,71 @@ public class MMAdmin extends ProcessorModule {
                 // only return this message if the application is the main (first) application
                 // and if it was not auto-deployed (as in that case messages would not be deemed very useful)
                 if (installationSet.size() == 1) {
-                    result.success("Application was allready loaded (or a higher version)\n\n"+
-                    "To remind you here is the install notice for you again : \n\n"+
-                    app.getInstallNotice());
+                    result.success(
+                        "Application was allready loaded (or a higher version)\n\n"
+                            + "To remind you here is the install notice for you again : \n\n"
+                            + app.getInstallNotice());
                 }
             }
         } else {
-            result.error("Install error: can't find xml file: "+path+applicationName+".xml");
+            result.error("Install error: can't find xml file: " + path + applicationName + ".xml");
         }
         return result.isSuccess();
     }
-    
+
     /**
      * @javadoc
      */
-    boolean installDataSources(Vector ds,String appname, ApplicationResult result) {
-        MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
-        if (syncbul!=null) {
-            for (Enumeration h = ds.elements();h.hasMoreElements();) {
-                Hashtable bh=(Hashtable)h.nextElement();
-                String path=(String)bh.get("path");
-                String prepath=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-                
-                if (fileExists(prepath+path)) {
-                    XMLNodeReader nodereader=new XMLNodeReader(prepath+path,prepath+appname+File.separator,mmb);
-                    String exportsource=nodereader.getExportSource();
-                    int timestamp=nodereader.getTimeStamp();
-                    Vector importednodes= new Vector();
-                    for (Enumeration n = nodereader.getNodes(mmb).elements();n.hasMoreElements();) {
-                        MMObjectNode newnode=(MMObjectNode)n.nextElement();
-                        int exportnumber=newnode.getIntValue("number");
-                        String query="exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'";
-                        Enumeration b=syncbul.search(query);
+    boolean installDataSources(Vector ds, String appname, ApplicationResult result) {
+        MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
+        if (syncbul != null) {
+            for (Enumeration h = ds.elements(); h.hasMoreElements();) {
+                Hashtable bh = (Hashtable)h.nextElement();
+                String path = (String)bh.get("path");
+                String prepath = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+
+                if (fileExists(prepath + path)) {
+                    XMLNodeReader nodereader =
+                        new XMLNodeReader(prepath + path, prepath + appname + File.separator, mmb);
+                    String exportsource = nodereader.getExportSource();
+                    int timestamp = nodereader.getTimeStamp();
+                    Vector importednodes = new Vector();
+                    for (Enumeration n = nodereader.getNodes(mmb).elements(); n.hasMoreElements();) {
+                        MMObjectNode newnode = (MMObjectNode)n.nextElement();
+                        int exportnumber = newnode.getIntValue("number");
+                        String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
+                        Enumeration b = syncbul.search(query);
                         if (b.hasMoreElements()) {
                             // XXX To do : we may want to load the node and check/change the fields
-                            MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-                            log.debug("node allready installed : "+exportnumber);
+                            MMObjectNode syncnode = (MMObjectNode)b.nextElement();
+                            log.debug("node allready installed : " + exportnumber);
                         } else {
-                            newnode.setValue("number",-1);
-                            int localnumber=doKeyMergeNode(newnode,result);
-                            if (localnumber!=-1) {
-                                MMObjectNode syncnode=syncbul.getNewNode("import");
-                                syncnode.setValue("exportsource",exportsource);
-                                syncnode.setValue("exportnumber",exportnumber);
-                                syncnode.setValue("timestamp",timestamp);
-                                syncnode.setValue("localnumber",localnumber);
+                            newnode.setValue("number", -1);
+                            int localnumber = doKeyMergeNode(newnode, result);
+                            if (localnumber != -1) {
+                                MMObjectNode syncnode = syncbul.getNewNode("import");
+                                syncnode.setValue("exportsource", exportsource);
+                                syncnode.setValue("exportnumber", exportnumber);
+                                syncnode.setValue("timestamp", timestamp);
+                                syncnode.setValue("localnumber", localnumber);
                                 syncnode.insert("import");
-                                if ((localnumber==newnode.getNumber()) &&
-                                (newnode.parent instanceof Message)) {
+                                if ((localnumber == newnode.getNumber()) && (newnode.parent instanceof Message)) {
                                     importednodes.add(newnode);
                                 }
                             }
                         }
                     }
-                    for (Enumeration n = importednodes.elements();n.hasMoreElements();) {
-                        MMObjectNode importnode=(MMObjectNode)n.nextElement();
-                        int exportnumber=importnode.getIntValue("thread");
-                        int localnumber=-1;
-                        Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
+                    for (Enumeration n = importednodes.elements(); n.hasMoreElements();) {
+                        MMObjectNode importnode = (MMObjectNode)n.nextElement();
+                        int exportnumber = importnode.getIntValue("thread");
+                        int localnumber = -1;
+                        Enumeration b =
+                            syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
-                            MMObjectNode n2=(MMObjectNode)b.nextElement();
-                            localnumber=n2.getIntValue("localnumber");
+                            MMObjectNode n2 = (MMObjectNode)b.nextElement();
+                            localnumber = n2.getIntValue("localnumber");
                         }
-                        importnode.setValue("thread",localnumber);
+                        importnode.setValue("thread", localnumber);
                         importnode.commit();
                     }
                 }
@@ -725,75 +795,76 @@ public class MMAdmin extends ProcessorModule {
             return result.error("Application installer : can't reach syncnodes builder");
         }
     }
-    
+
     /**
      * @javadoc
      */
     private int doKeyMergeNode(MMObjectNode newnode, ApplicationResult result) {
-        MMObjectBuilder bul=newnode.parent;
-        if (bul!=null) {
-            String checkQ="";
-            Vector vec=bul.getFields();
-            for (Enumeration h = vec.elements();h.hasMoreElements();) {
-                FieldDefs def=(FieldDefs)h.nextElement();
+        MMObjectBuilder bul = newnode.parent;
+        if (bul != null) {
+            String checkQ = "";
+            Vector vec = bul.getFields();
+            for (Enumeration h = vec.elements(); h.hasMoreElements();) {
+                FieldDefs def = (FieldDefs)h.nextElement();
                 if (def.isKey()) {
-                    int type=def.getDBType();
-                    String name=def.getDBName();
-                    if (type==FieldDefs.TYPE_STRING) {
-                        String value=newnode.getStringValue(name);
+                    int type = def.getDBType();
+                    String name = def.getDBName();
+                    if (type == FieldDefs.TYPE_STRING) {
+                        String value = newnode.getStringValue(name);
                         if (checkQ.equals("")) {
-                            checkQ+=name+"=='"+value+"'";
+                            checkQ += name + "=='" + value + "'";
                         } else {
-                            checkQ+="+"+name+"=='"+value+"'";
+                            checkQ += "+" + name + "=='" + value + "'";
                         }
                     }
                 }
             }
             if (!checkQ.equals("")) {
-                Enumeration r=bul.search(checkQ);
+                Enumeration r = bul.search(checkQ);
                 if (r.hasMoreElements()) {
-                    MMObjectNode oldnode=(MMObjectNode)r.nextElement();
+                    MMObjectNode oldnode = (MMObjectNode)r.nextElement();
                     return oldnode.getIntValue("number");
                 }
             }
-            int localnumber=newnode.insert("import");
-            if (localnumber==-1) {
-                result.error("Insert of node "+newnode+" failed.");
+            int localnumber = newnode.insert("import");
+            if (localnumber == -1) {
+                result.error("Insert of node " + newnode + " failed.");
             }
             return localnumber;
-            
+
         } else {
-            result.error("Application installer can't find builder for : "+newnode);
+            result.error("Application installer can't find builder for : " + newnode);
             return -1;
         }
     }
-    
+
     /**
      * @javadoc
      */
     boolean installRelationSources(Vector ds, ApplicationResult result) {
-        MMObjectBuilder syncbul=mmb.getMMObject("syncnodes");
-        if (syncbul!=null) {
-            for (Enumeration h = ds.elements();h.hasMoreElements();) {
-                Hashtable bh=(Hashtable)h.nextElement();
-                String path=(String)bh.get("path");
-                path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator+path;
+        MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
+        if (syncbul != null) {
+            for (Enumeration h = ds.elements(); h.hasMoreElements();) {
+                Hashtable bh = (Hashtable)h.nextElement();
+                String path = (String)bh.get("path");
+                path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator + path;
                 if (fileExists(path)) {
-                    XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
-                    
-                    String exportsource=nodereader.getExportSource();
-                    int timestamp=nodereader.getTimeStamp();
-                    
-                    for (Enumeration n = (nodereader.getNodes(mmb)).elements();n.hasMoreElements();) {
-                        MMObjectNode newnode=(MMObjectNode)n.nextElement();
-                        int exportnumber=newnode.getIntValue("number");
-                        Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
+                    XMLRelationNodeReader nodereader = new XMLRelationNodeReader(path, mmb);
+
+                    String exportsource = nodereader.getExportSource();
+                    int timestamp = nodereader.getTimeStamp();
+
+                    for (Enumeration n = (nodereader.getNodes(mmb)).elements(); n.hasMoreElements();) {
+                        MMObjectNode newnode = (MMObjectNode)n.nextElement();
+                        int exportnumber = newnode.getIntValue("number");
+                        Enumeration b =
+                            syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
                             // XXX To do : we may want to load the relation node and check/change the fields
-                            MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-                            log.debug("node allready installed : "+exportnumber);
+                            MMObjectNode syncnode = (MMObjectNode)b.nextElement();
+                            log.debug("node allready installed : " + exportnumber);
                         } else {
-                            newnode.setValue("number",-1);
+                            newnode.setValue("number", -1);
                             // The following code determines the 'actual' (synced) numbers for the destination and source nodes
                             // This will normally work well, however:
                             // It is _theoretically_ possible that one or both nodes are _themselves_ relation nodes.
@@ -801,42 +872,49 @@ public class MMAdmin extends ProcessorModule {
                             // Due to the order in which syncing takles place, it is possible that such structures will fail
                             // to get imported.
                             // ye be warned.
-                            
+
                             // find snumber
-                            int snumber=newnode.getIntValue("snumber");
-                            b=syncbul.search("exportnumber=="+snumber+"+exportsource=='"+exportsource+"'");
+                            int snumber = newnode.getIntValue("snumber");
+                            b = syncbul.search("exportnumber==" + snumber + "+exportsource=='" + exportsource + "'");
                             if (b.hasMoreElements()) {
-                                MMObjectNode n2=(MMObjectNode)b.nextElement();
-                                snumber=n2.getIntValue("localnumber");
+                                MMObjectNode n2 = (MMObjectNode)b.nextElement();
+                                snumber = n2.getIntValue("localnumber");
                             } else {
-                                snumber=-1;
+                                snumber = -1;
                             }
-                            
+
                             // find dnumber
-                            int dnumber=newnode.getIntValue("dnumber");
-                            b=syncbul.search("exportnumber=="+dnumber+"+exportsource=='"+exportsource+"'");
+                            int dnumber = newnode.getIntValue("dnumber");
+                            b = syncbul.search("exportnumber==" + dnumber + "+exportsource=='" + exportsource + "'");
                             if (b.hasMoreElements()) {
-                                MMObjectNode n2=(MMObjectNode)b.nextElement();
-                                dnumber=n2.getIntValue("localnumber");
+                                MMObjectNode n2 = (MMObjectNode)b.nextElement();
+                                dnumber = n2.getIntValue("localnumber");
                             } else {
-                                dnumber=-1;
+                                dnumber = -1;
                             }
-                            
-                            newnode.setValue("snumber",snumber);
-                            newnode.setValue("dnumber",dnumber);
-                            int localnumber=-1;
-                            if (snumber!=-1 && dnumber!=-1) {
-                                localnumber=newnode.insert("import");
-                                if (localnumber!=-1) {
-                                    MMObjectNode syncnode=syncbul.getNewNode("import");
-                                    syncnode.setValue("exportsource",exportsource);
-                                    syncnode.setValue("exportnumber",exportnumber);
-                                    syncnode.setValue("timestamp",timestamp);
-                                    syncnode.setValue("localnumber",localnumber);
+
+                            newnode.setValue("snumber", snumber);
+                            newnode.setValue("dnumber", dnumber);
+                            int localnumber = -1;
+                            if (snumber != -1 && dnumber != -1) {
+                                localnumber = newnode.insert("import");
+                                if (localnumber != -1) {
+                                    MMObjectNode syncnode = syncbul.getNewNode("import");
+                                    syncnode.setValue("exportsource", exportsource);
+                                    syncnode.setValue("exportnumber", exportnumber);
+                                    syncnode.setValue("timestamp", timestamp);
+                                    syncnode.setValue("localnumber", localnumber);
                                     syncnode.insert("import");
                                 }
                             } else {
-                                result.error("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
+                                result.error(
+                                    "Cannot sync relation (exportnumber=="
+                                        + exportnumber
+                                        + ", snumber:"
+                                        + snumber
+                                        + ", dnumber:"
+                                        + dnumber
+                                        + ")");
                             }
                         }
                     }
@@ -847,7 +925,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return result.isSuccess();
     }
-    
+
     /**
      * Checks and if required installs needed relation definitions.
      * Retrieves, for each reldef entry, the attributes, and passes these on to {@link #installRelDef}
@@ -856,33 +934,35 @@ public class MMAdmin extends ProcessorModule {
      * @return Always <code>true</code> (?)
      */
     boolean installRelDefs(Vector reldefs, ApplicationResult result) {
-        for (Enumeration h = reldefs.elements();h.hasMoreElements();) {
-            Hashtable bh=(Hashtable)h.nextElement();
-            String source=(String)bh.get("source");
-            String target=(String)bh.get("target");
-            String direction=(String)bh.get("direction");
-            String guisourcename=(String)bh.get("guisourcename");
-            String guitargetname=(String)bh.get("guitargetname");
+        for (Enumeration h = reldefs.elements(); h.hasMoreElements();) {
+            Hashtable bh = (Hashtable)h.nextElement();
+            String source = (String)bh.get("source");
+            String target = (String)bh.get("target");
+            String direction = (String)bh.get("direction");
+            String guisourcename = (String)bh.get("guisourcename");
+            String guitargetname = (String)bh.get("guitargetname");
             // retrieve builder info
-            int builder=-1;
+            int builder = -1;
             if (mmb.getRelDef().usesbuilder) {
-                String buildername=(String)bh.get("builder");
+                String buildername = (String)bh.get("builder");
                 // if no 'builder' attribute is present (old format), use source name as builder name
-                if (buildername==null) {
-                    buildername=(String)bh.get("source");
+                if (buildername == null) {
+                    buildername = (String)bh.get("source");
                 }
-                builder=mmb.getTypeDef().getIntValue(buildername);
+                builder = mmb.getTypeDef().getIntValue(buildername);
             }
             // is not explicitly set to unidirectional, direction is assumed to be bidirectional
             if ("unidirectional".equals(direction)) {
-                if (!installRelDef(source,target,1,guisourcename,guitargetname,builder,result)) return false;
+                if (!installRelDef(source, target, 1, guisourcename, guitargetname, builder, result))
+                    return false;
             } else {
-                if (!installRelDef(source,target,2,guisourcename,guitargetname,builder,result)) return false;
+                if (!installRelDef(source, target, 2, guisourcename, guitargetname, builder, result))
+                    return false;
             }
         }
         return true;
     }
-    
+
     /**
      * Checks and if required installs needed allowed type relations.
      * Retrieves, for each allowed relation entry, the attributes, and passes these on to {@link #installTypeRel}
@@ -891,16 +971,17 @@ public class MMAdmin extends ProcessorModule {
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
     boolean installAllowedRelations(Vector relations, ApplicationResult result) {
-        for (Enumeration h = relations.elements();h.hasMoreElements();) {
-            Hashtable bh=(Hashtable)h.nextElement();
-            String from=(String)bh.get("from");
-            String to=(String)bh.get("to");
-            String type=(String)bh.get("type");
-            if (!installTypeRel(from,to,type,-1,result)) return false;
+        for (Enumeration h = relations.elements(); h.hasMoreElements();) {
+            Hashtable bh = (Hashtable)h.nextElement();
+            String from = (String)bh.get("from");
+            String to = (String)bh.get("to");
+            String type = (String)bh.get("type");
+            if (!installTypeRel(from, to, type, -1, result))
+                return false;
         }
         return true;
     }
-    
+
     /**
      * Lists the required builders for this application, and makes attempts to install any builders that are
      * not present.
@@ -913,60 +994,68 @@ public class MMAdmin extends ProcessorModule {
      */
     boolean installBuilders(List neededbuilders, String applicationRoot, ApplicationResult result) {
         for (Iterator i = neededbuilders.iterator(); i.hasNext();) {
-            Map builderdata= (Map) i.next();
-            String name = (String) builderdata.get("name");
+            Map builderdata = (Map)i.next();
+            String name = (String)builderdata.get("name");
             MMObjectBuilder bul = getMMObject(name);
             // if builder not loaded
-            if (bul==null) {
+            if (bul == null) {
                 // if 'inactive' in the config/builder path, fail
                 String path = mmb.getBuilderPath(name, "");
-                if(path != null) {
-                    result.error("The builder '" + name + "' was already on our system, but inactive."+
-                    "To install this application, make the builder '" +
-                    path + name +  ".xml" + "' active");
+                if (path != null) {
+                    result.error(
+                        "The builder '"
+                            + name
+                            + "' was already on our system, but inactive."
+                            + "To install this application, make the builder '"
+                            + path
+                            + name
+                            + ".xml"
+                            + "' active");
                     continue;
                 }
                 // attempt to open the application root
                 File appFile = new File(applicationRoot);
-                if(!appFile.exists()) {
+                if (!appFile.exists()) {
                     return result.error("Could not find application directory :  '" + appFile + "'");
                 }
                 // attempt to open the %application%/builders/ folder
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + "builders");
-                if(!appFile.exists()) {
-                    return result.error("Could not find the 'builders' folder inside the application directory  '" + appFile + "'");
+                if (!appFile.exists()) {
+                    return result.error(
+                        "Could not find the 'builders' folder inside the application directory  '" + appFile + "'");
                 }
                 // attempt to open the applicationfile
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + name + ".xml");
-                if(!appFile.exists()) {
+                if (!appFile.exists()) {
                     result.error("Could not find the builderfile :  '" + appFile + "'(builder '" + name + "')");
                     continue;
                 }
                 // check the presence of typedef (if not present, fail)
                 MMObjectBuilder objectTypes = mmb.getTypeDef();
-                if(objectTypes == null) {
+                if (objectTypes == null) {
                     return result.error("Could not find the typedef builder.");
                 }
                 // try to add a node to typedef, same as adding a builder...
                 MMObjectNode type = objectTypes.getNewNode("system");
                 // fill the name....
                 type.setValue("name", name);
-                
+
                 // fill the config...
                 org.w3c.dom.Document config = null;
                 try {
-                    config =  org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(appFile);
-                }
-                catch(org.xml.sax.SAXException se) {
+                    config =
+                        org.mmbase.util.XMLBasicReader.getDocumentBuilder(
+                            org.mmbase.util.XMLBuilderReader.class).parse(
+                            appFile);
+                } catch (org.xml.sax.SAXException se) {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
-                    result.error("A XML parsing error occurred ("+se.toString()+"). Check the log for details.");
+                    result.error("A XML parsing error occurred (" + se.toString() + "). Check the log for details.");
                     continue;
-                }
-                catch(java.io.IOException ioe) {
+                } catch (java.io.IOException ioe) {
                     String msg = "builder '" + name + "':\n" + ioe.toString() + "\n" + Logging.stackTrace(ioe);
                     log.error(msg);
-                    result.error("A file I/O error occurred ("+ioe.toString()+"). Check the log for details.");
+                    result.error("A file I/O error occurred (" + ioe.toString() + "). Check the log for details.");
                     continue;
                 }
                 type.setValue("config", config);
@@ -977,8 +1066,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return result.isSuccess();
     }
-    
-    
+
     /**
      * Checks whether a given relation definition exists, and if not, creates that definition.
      * @param sname source name of the relation definition
@@ -989,29 +1077,35 @@ public class MMAdmin extends ProcessorModule {
      * @param builder references the builder to use (only in new format)
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
-    private boolean installRelDef(String sname, String dname, int dir,String sguiname, String dguiname, int builder,
-    ApplicationResult result) {
-        RelDef reldef=mmb.getRelDef();
-        if (reldef!=null) {
-            if(reldef.getNumberByName(sname+"/"+dname)==-1) {
-                MMObjectNode node=reldef.getNewNode("system");
-                node.setValue("sname",sname);
-                node.setValue("dname",dname);
-                node.setValue("dir",dir);
-                node.setValue("sguiname",sguiname);
-                node.setValue("dguiname",dguiname);
+    private boolean installRelDef(
+        String sname,
+        String dname,
+        int dir,
+        String sguiname,
+        String dguiname,
+        int builder,
+        ApplicationResult result) {
+        RelDef reldef = mmb.getRelDef();
+        if (reldef != null) {
+            if (reldef.getNumberByName(sname + "/" + dname) == -1) {
+                MMObjectNode node = reldef.getNewNode("system");
+                node.setValue("sname", sname);
+                node.setValue("dname", dname);
+                node.setValue("dir", dir);
+                node.setValue("sguiname", sguiname);
+                node.setValue("dguiname", dguiname);
                 if (reldef.usesbuilder) {
                     // if builder is unknown (falsely specified), use the InsRel builder
-                    if (builder<=0) {
-                        builder=mmb.getInsRel().oType;
+                    if (builder <= 0) {
+                        builder = mmb.getInsRel().oType;
                     }
-                    node.setValue("builder",builder);
+                    node.setValue("builder", builder);
                 }
-                int id=reldef.insert("system",node);
-                if (id!=-1) {
-                    log.debug("RefDef ("+sname+","+dname+") installed");
+                int id = reldef.insert("system", node);
+                if (id != -1) {
+                    log.debug("RefDef (" + sname + "," + dname + ") installed");
                 } else {
-                    return result.error("RelDef ("+sname+","+dname+") could not be installed");
+                    return result.error("RelDef (" + sname + "," + dname + ") could not be installed");
                 }
             }
         } else {
@@ -1019,7 +1113,7 @@ public class MMAdmin extends ProcessorModule {
         }
         return true;
     }
-    
+
     /**
      * Checks and if required installs an allowed type relation (typerel object).
      * @param sname source type name of the type relation
@@ -1028,48 +1122,47 @@ public class MMAdmin extends ProcessorModule {
      * @param count cardinality of the type relation
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
-    private boolean installTypeRel(String sname, String dname, String rname, int count,
-    ApplicationResult result) {
-        TypeRel typerel=mmb.getTypeRel();
-        if (typerel!=null) {
-            TypeDef typedef=mmb.getTypeDef();
-            if (typedef==null) {
+    private boolean installTypeRel(String sname, String dname, String rname, int count, ApplicationResult result) {
+        TypeRel typerel = mmb.getTypeRel();
+        if (typerel != null) {
+            TypeDef typedef = mmb.getTypeDef();
+            if (typedef == null) {
                 return result.error("Can't get typedef builder");
             }
-            RelDef reldef=mmb.getRelDef();
-            if (reldef==null) {
+            RelDef reldef = mmb.getRelDef();
+            if (reldef == null) {
                 return result.error("Can't get reldef builder");
             }
-            
+
             // figure out rnumber
-            int rnumber=reldef.getNumberByName(rname);
-            if (rnumber==-1) {
-                return result.error("No reldef with role '"+rname+"' defined");
+            int rnumber = reldef.getNumberByName(rname);
+            if (rnumber == -1) {
+                return result.error("No reldef with role '" + rname + "' defined");
             }
-            
+
             // figure out snumber
-            int snumber=typedef.getIntValue(sname);
-            if (snumber==-1) {
-                return result.error("No builder with name '"+sname+"' defined");
+            int snumber = typedef.getIntValue(sname);
+            if (snumber == -1) {
+                return result.error("No builder with name '" + sname + "' defined");
             }
-            
+
             // figure out dnumber
-            int dnumber=typedef.getIntValue(dname);
-            if (dnumber==-1) {
-                return result.error("No builder with name '"+dname+"' defined");
+            int dnumber = typedef.getIntValue(dname);
+            if (dnumber == -1) {
+                return result.error("No builder with name '" + dname + "' defined");
             }
-            
-            if (!typerel.contains(snumber,dnumber,rnumber,TypeRel.STRICT)) {
-                MMObjectNode node=typerel.getNewNode("system");
-                node.setValue("snumber",snumber);
-                node.setValue("dnumber",dnumber);
-                node.setValue("rnumber",rnumber);
-                node.setValue("max",count);
-                int id = typerel.insert("system",node);
+
+            if (!typerel.contains(snumber, dnumber, rnumber, TypeRel.STRICT)) {
+                MMObjectNode node = typerel.getNewNode("system");
+                node.setValue("snumber", snumber);
+                node.setValue("dnumber", dnumber);
+                node.setValue("rnumber", rnumber);
+                node.setValue("max", count);
+                int id = typerel.insert("system", node);
                 if (id != -1) {
-                    log.debug("TypeRel ("+sname+","+dname+","+rname+") installed");
+                    log.debug("TypeRel (" + sname + "," + dname + "," + rname + ") installed");
                 } else {
-                    return result.error("TypeRel ("+sname+","+dname+","+rname+") could not be installed");
+                    return result.error("TypeRel (" + sname + "," + dname + "," + rname + ") could not be installed");
                 }
             }
             return true;
@@ -1077,53 +1170,54 @@ public class MMAdmin extends ProcessorModule {
             return result.error("Can't get typerel builder");
         }
     }
-    
+
     /**
      * @javadoc
      * @deprecated-now not used (?)
      */
     private void checkRelation(int snumber, int dnumber, String rname, int dir) {
-        InsRel insrel=mmb.getInsRel();
-        if (insrel!=null) {
-            RelDef reldef=mmb.getRelDef();
-            if (reldef==null) {
+        InsRel insrel = mmb.getInsRel();
+        if (insrel != null) {
+            RelDef reldef = mmb.getRelDef();
+            if (reldef == null) {
                 log.warn("can't get reldef builder");
             }
             // figure out rnumber
-            int rnumber=reldef.getNumberByName(rname);
-            if (rnumber==-1) {
-                log.warn("no reldef : "+rname+" defined");
+            int rnumber = reldef.getNumberByName(rname);
+            if (rnumber == -1) {
+                log.warn("no reldef : " + rname + " defined");
                 return;
             }
-            
-            MMObjectNode node=insrel.getRelation(snumber,dnumber,rnumber);
-            if (node==null) {
-                node=insrel.getNewNode("system");
-                node.setValue("snumber",snumber);
-                node.setValue("dnumber",dnumber);
-                node.setValue("rnumber",rnumber);
+
+            MMObjectNode node = insrel.getRelation(snumber, dnumber, rnumber);
+            if (node == null) {
+                node = insrel.getNewNode("system");
+                node.setValue("snumber", snumber);
+                node.setValue("dnumber", dnumber);
+                node.setValue("rnumber", rnumber);
                 if (insrel.usesdir) {
-                    if (dir<=0) {
+                    if (dir <= 0) {
                         // have to get dir value form reldef
                         MMObjectNode relnode = reldef.getNode(rnumber);
                         dir = relnode.getIntValue("dir");
                     }
                     // correct if value is invalid
-                    if (dir<=0) dir=2;
-                    node.setValue("dir",dir);
+                    if (dir <= 0)
+                        dir = 2;
+                    node.setValue("dir", dir);
                 }
-                int id=insrel.insert("system",node);
+                int id = insrel.insert("system", node);
             }
         } else {
             log.warn("can't get insrel builder");
         }
     }
-    
+
     /**
      * @javadoc
      */
-    public void probeCall() {
-        
+    public void probeCall() throws SearchQueryException {
+
         if (restartwanted) {
             System.exit(0);
         }
@@ -1137,12 +1231,18 @@ public class MMAdmin extends ProcessorModule {
         File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
-            if (files == null) return;
-            for (int i=0;i<files.length;i++) {
-                String aname=files[i];
+            if (files == null)
+                return;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
                 if (aname.endsWith(".xml")) {
-                    ApplicationResult result= new ApplicationResult(this);
-                    if (!installApplication(aname.substring(0,aname.length()-4),-1,null,result,new HashSet(),true)) {
+                    ApplicationResult result = new ApplicationResult(this);
+                    if (!installApplication(aname.substring(0, aname.length() - 4),
+                        -1,
+                        null,
+                        result,
+                        new HashSet(),
+                        true)) {
                         log.error("Problem installing application : " + aname);
                     }
                 }
@@ -1150,7 +1250,7 @@ public class MMAdmin extends ProcessorModule {
         }
         state = true;
     }
-    
+
     /**
      * Wether MMAdmin module was completely initialized (applications auto-deployed and so on).
      * @since MMBase-1.7
@@ -1160,59 +1260,59 @@ public class MMAdmin extends ProcessorModule {
         return state;
     }
 
-
     /**
      * @javadoc
      */
-    private boolean writeApplication(String appname,String targetpath,String goal) {
+    private boolean writeApplication(String appname, String targetpath, String goal) {
         if (kioskmode) {
             log.warn("refused to write application, am in kiosk mode");
             return false;
         }
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-        XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
-        Vector savestats=XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
-        lastmsg="Application saved oke\n\n";
-        lastmsg+="Some statistics on the save : \n\n";
-        for (Enumeration h = savestats.elements();h.hasMoreElements();) {
-            String result=(String)h.nextElement();
-            lastmsg+=result+"\n\n";
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
+        XMLApplicationReader app = new XMLApplicationReader(path + appname + ".xml");
+        Vector savestats = XMLApplicationWriter.writeXMLFile(app, targetpath, goal, mmb);
+        lastmsg = "Application saved oke\n\n";
+        lastmsg += "Some statistics on the save : \n\n";
+        for (Enumeration h = savestats.elements(); h.hasMoreElements();) {
+            String result = (String)h.nextElement();
+            lastmsg += result + "\n\n";
         }
         return true;
     }
-    
+
     /**
      * @javadoc
      */
-    Vector getApplicationsList() {
-        Versions ver=(Versions)mmb.getMMObject("versions");
-        if (ver==null) {
+    Vector getApplicationsList() throws SearchQueryException {
+        Versions ver = (Versions)mmb.getMMObject("versions");
+        if (ver == null) {
             log.warn("Versions builder not installed, Can't get to apps");
             return null;
         }
-        Vector results=new Vector();
-        
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
+        Vector results = new Vector();
+
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
-            if (files == null) return results;
-            for (int i=0;i<files.length;i++) {
-                String aname=files[i];
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
                 if (aname.endsWith(".xml")) {
-                    XMLApplicationReader app=new XMLApplicationReader(path+aname);
-                    String name=app.getApplicationName();
+                    XMLApplicationReader app = new XMLApplicationReader(path + aname);
+                    String name = app.getApplicationName();
                     results.addElement(name);
-                    results.addElement(""+app.getApplicationVersion());
-                    int installedversion=ver.getInstalledVersion(name,"application");
-                    if (installedversion==-1) {
+                    results.addElement("" + app.getApplicationVersion());
+                    int installedversion = ver.getInstalledVersion(name, "application");
+                    if (installedversion == -1) {
                         results.addElement("no");
                     } else {
-                        results.addElement("yes (ver : "+installedversion+")");
+                        results.addElement("yes (ver : " + installedversion + ")");
                     }
                     results.addElement(app.getApplicationMaintainer());
-                    boolean autodeploy=app.getApplicationAutoDeploy();
+                    boolean autodeploy = app.getApplicationAutoDeploy();
                     if (autodeploy) {
                         results.addElement("yes");
                     } else {
@@ -1223,134 +1323,141 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     Vector getBuildersList() {
         return getBuildersList(null);
     }
-    
+
     /**
      * @javadoc
      */
     Vector getBuildersList(StringTokenizer tok) {
-        String subpath="";
-        if ((tok!=null) && (tok.hasMoreTokens())) {
-            subpath=tok.nextToken();
+        String subpath = "";
+        if ((tok != null) && (tok.hasMoreTokens())) {
+            subpath = tok.nextToken();
         }
-        Versions ver=(Versions)mmb.getMMObject("versions");
-        if (ver==null) {
+        Versions ver = (Versions)mmb.getMMObject("versions");
+        if (ver == null) {
             log.warn("Versions builder not installed, Can't get to builders");
             return null;
         }
-        String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
         return getBuildersList(path, subpath, ver);
     }
-    
+
     /**
      * @javadoc
      */
     Vector getBuildersList(String configpath, String subpath, Versions ver) {
-        Vector results=new Vector();
-        File bdir = new File(configpath+subpath);
+        Vector results = new Vector();
+        File bdir = new File(configpath + subpath);
         if (bdir.isDirectory()) {
             if (!"".equals(subpath)) {
-                subpath=subpath+File.separator;
+                subpath = subpath + File.separator;
             }
             String files[] = bdir.list();
-            if (files == null) return results;
-            for (int i=0;i<files.length;i++) {
-                String aname=files[i];
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
                 if (aname.endsWith(".xml")) {
-                    String name=aname;
-                    String sname=name.substring(0,name.length()-4);
-                    XMLBuilderReader app=new XMLBuilderReader(configpath+subpath+aname,mmb);
-                    results.addElement(subpath+sname);
-                    results.addElement(""+app.getBuilderVersion());
-                    int installedversion=ver.getInstalledVersion(sname,"builder");
-                    if (installedversion==-1) {
+                    String name = aname;
+                    String sname = name.substring(0, name.length() - 4);
+                    XMLBuilderReader app = new XMLBuilderReader(configpath + subpath + aname, mmb);
+                    results.addElement(subpath + sname);
+                    results.addElement("" + app.getBuilderVersion());
+                    int installedversion = -1;
+                    try {
+                        installedversion = ver.getInstalledVersion(sname, "builder");
+                    } catch (SearchQueryException e) {
+                        log.warn(Logging.stackTrace(e));
+                    }
+                    if (installedversion == -1) {
                         results.addElement("no");
                     } else {
                         results.addElement("yes");
                     }
                     results.addElement(app.getBuilderMaintainer());
                 } else {
-                    results.addAll(getBuildersList(configpath,subpath+aname,ver));
+                    results.addAll(getBuildersList(configpath, subpath + aname, ver));
                 }
             }
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     Vector getModuleProperties(String modulename) {
-        Vector results=new Vector();
-        String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
-        XMLModuleReader mod=new XMLModuleReader(path+modulename+".xml");
-        if (mod!=null) {
-            Hashtable props=mod.getProperties();
-            for (Enumeration h = props.keys();h.hasMoreElements();) {
-                String key=(String)h.nextElement();
-                String value=(String)props.get(key);
+        Vector results = new Vector();
+        String path = MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator;
+        XMLModuleReader mod = new XMLModuleReader(path + modulename + ".xml");
+        if (mod != null) {
+            Hashtable props = mod.getProperties();
+            for (Enumeration h = props.keys(); h.hasMoreElements();) {
+                String key = (String)h.nextElement();
+                String value = (String)props.get(key);
                 results.addElement(key);
                 results.addElement(value);
             }
-            
+
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     Vector getFields(String buildername) {
-        Vector results=new Vector();
-        String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul = new XMLBuilderReader(path+buildername+".xml", mmb);
-        if (bul!=null) {
-            Vector defs=bul.getFieldDefs();
-            for (Enumeration h = defs.elements();h.hasMoreElements();) {
-                FieldDefs def=(FieldDefs)h.nextElement();
-                results.addElement(""+def.getDBPos());
-                results.addElement(""+def.getDBName());
+        Vector results = new Vector();
+        String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        XMLBuilderReader bul = new XMLBuilderReader(path + buildername + ".xml", mmb);
+        if (bul != null) {
+            Vector defs = bul.getFieldDefs();
+            for (Enumeration h = defs.elements(); h.hasMoreElements();) {
+                FieldDefs def = (FieldDefs)h.nextElement();
+                results.addElement("" + def.getDBPos());
+                results.addElement("" + def.getDBName());
                 results.addElement(def.getDBTypeDescription());
-                int size=def.getDBSize();
-                if (size==-1) {
+                int size = def.getDBSize();
+                if (size == -1) {
                     results.addElement("fixed");
                 } else {
-                    results.addElement(""+size);
+                    results.addElement("" + size);
                 }
             }
-            
+
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     Vector getModulesList() {
-        Vector results=new Vector();
-        
-        String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
+        Vector results = new Vector();
+
+        String path = MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
-            if (files == null) return results;
-            for (int i=0;i<files.length;i++) {
-                String aname=files[i];
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
                 if (aname.endsWith(".xml")) {
-                    String name=aname;
-                    String sname=name.substring(0,name.length()-4);
-                    XMLModuleReader app=new XMLModuleReader(path+aname);
+                    String name = aname;
+                    String sname = name.substring(0, name.length() - 4);
+                    XMLModuleReader app = new XMLModuleReader(path + aname);
                     results.addElement(sname);
-                    
-                    results.addElement(""+app.getModuleVersion());
-                    String status=app.getStatus();
+
+                    results.addElement("" + app.getModuleVersion());
+                    String status = app.getStatus();
                     if (status.equals("active")) {
                         results.addElement("yes");
                     } else {
@@ -1362,32 +1469,33 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     Vector getDatabasesList() {
-        Versions ver=(Versions)mmb.getMMObject("versions");
-        if (ver==null) {
+        Versions ver = (Versions)mmb.getMMObject("versions");
+        if (ver == null) {
             log.warn("Versions builder not installed, Can't get to builders");
             return null;
         }
-        Vector results=new Vector();
-        
-        String path = MMBaseContext.getConfigPath()+File.separator+"databases"+File.separator;
+        Vector results = new Vector();
+
+        String path = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
-            if (files == null) return results;
-            for (int i=0;i<files.length;i++) {
-                String aname=files[i];
+            if (files == null)
+                return results;
+            for (int i = 0; i < files.length; i++) {
+                String aname = files[i];
                 if (aname.endsWith(".xml")) {
-                    String name=aname;
-                    String sname=name.substring(0,name.length()-4);
+                    String name = aname;
+                    String sname = name.substring(0, name.length() - 4);
                     XMLDatabaseReader app = new XMLDatabaseReader(path + aname);
                     results.addElement(sname);
-                    
+
                     results.addElement("0");
                     results.addElement("yes");
                     results.addElement("mmbase.org");
@@ -1396,26 +1504,26 @@ public class MMAdmin extends ProcessorModule {
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     private boolean fileExists(String path) {
-        File f=new File(path);
+        File f = new File(path);
         if (f.exists() && f.isFile()) {
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
      * @javadoc
      */
-    private String getBuilderField(String buildername,String fieldname, String key) {
-        MMObjectBuilder bul=getMMObject(buildername);
-        if (bul!=null) {
-            FieldDefs def=bul.getField(fieldname);
+    private String getBuilderField(String buildername, String fieldname, String key) {
+        MMObjectBuilder bul = getMMObject(buildername);
+        if (bul != null) {
+            FieldDefs def = bul.getField(fieldname);
             if (key.equals("dbkey")) {
                 if (def.isKey()) {
                     return "true";
@@ -1431,9 +1539,9 @@ public class MMAdmin extends ProcessorModule {
             } else if (key.equals("dbname")) {
                 return def.getDBName();
             } else if (key.equals("dbsize")) {
-                int size=def.getDBSize();
-                if (size!=-1) {
-                    return ""+size;
+                int size = def.getDBSize();
+                if (size != -1) {
+                    return "" + size;
                 } else {
                     return "fixed";
                 }
@@ -1442,25 +1550,25 @@ public class MMAdmin extends ProcessorModule {
             } else if (key.equals("dbmmbasetype")) {
                 return def.getDBTypeDescription();
             } else if (key.equals("editorinput")) {
-                int pos=def.getGUIPos();
-                if (pos==-1) {
+                int pos = def.getGUIPos();
+                if (pos == -1) {
                     return "not shown";
                 } else {
-                    return ""+pos;
+                    return "" + pos;
                 }
             } else if (key.equals("editorsearch")) {
-                int pos=def.getGUISearch();
-                if (pos==-1) {
+                int pos = def.getGUISearch();
+                if (pos == -1) {
                     return "not shown";
                 } else {
-                    return ""+pos;
+                    return "" + pos;
                 }
             } else if (key.equals("editorlist")) {
-                int pos=def.getGUIList();
-                if (pos==-1) {
+                int pos = def.getGUIList();
+                if (pos == -1) {
                     return "not shown";
                 } else {
-                    return ""+pos;
+                    return "" + pos;
                 }
             } else if (key.equals("guitype")) {
                 return def.getGUIType();
@@ -1468,53 +1576,53 @@ public class MMAdmin extends ProcessorModule {
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
     private Vector getISOGuiNames(String buildername, String fieldname) {
-        Vector results=new Vector();
-        MMObjectBuilder bul=getMMObject(buildername);
-        if (bul!=null) {
-            FieldDefs def=bul.getField(fieldname);
-            Map guinames=def.getGUINames();
-            for (Iterator h = guinames.entrySet().iterator();h.hasNext();) {
-                Map.Entry me=(Map.Entry)h.next();
+        Vector results = new Vector();
+        MMObjectBuilder bul = getMMObject(buildername);
+        if (bul != null) {
+            FieldDefs def = bul.getField(fieldname);
+            Map guinames = def.getGUINames();
+            for (Iterator h = guinames.entrySet().iterator(); h.hasNext();) {
+                Map.Entry me = (Map.Entry)h.next();
                 results.addElement(me.getKey());
                 results.addElement(me.getValue());
             }
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
-    private String getGuiNameValue(String buildername, String fieldname,String key) {
-        MMObjectBuilder bul=getMMObject(buildername);
-        if (bul!=null) {
-            FieldDefs def=bul.getField(fieldname);
-            String value=def.getGUIName(key);
-            if (value!=null) {
+    private String getGuiNameValue(String buildername, String fieldname, String key) {
+        MMObjectBuilder bul = getMMObject(buildername);
+        if (bul != null) {
+            FieldDefs def = bul.getField(fieldname);
+            String value = def.getGUIName(key);
+            if (value != null) {
                 return value;
             }
         }
         return "";
     }
-    
+
     /**
      * @javadoc
      */
-    public void doModulePosts(String command,Hashtable cmds,Hashtable vars) {
+    public void doModulePosts(String command, Hashtable cmds, Hashtable vars) {
         if (command.equals("SETPROPERTY")) {
             setModuleProperty(vars);
         }
     }
-    
+
     /**
      * @javadoc
      */
-    public void doBuilderPosts(String command,Hashtable cmds,Hashtable vars) {
+    public void doBuilderPosts(String command, Hashtable cmds, Hashtable vars) {
         if (command.equals("SETGUINAME")) {
             setBuilderGuiName(vars);
         } else if (command.equals("SETGUITYPE")) {
@@ -1541,7 +1649,7 @@ public class MMAdmin extends ProcessorModule {
             removeBuilderField(vars);
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1550,19 +1658,19 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused gui name set, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String country=(String)vars.get("COUNTRY");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
-            def.setGUIName(country,value);
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String country = (String)vars.get("COUNTRY");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
+            def.setGUIName(country, value);
         }
-        syncBuilderXML(bul,builder);
+        syncBuilderXML(bul, builder);
     }
-    
+
     /**
      * @javadoc
      */
@@ -1571,18 +1679,18 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused gui type set, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             def.setGUIType(value);
         }
-        syncBuilderXML(bul,builder);
+        syncBuilderXML(bul, builder);
     }
-    
+
     /**
      * @javadoc
      */
@@ -1591,21 +1699,21 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused editor input set, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             try {
-                int i=Integer.parseInt(value);
+                int i = Integer.parseInt(value);
                 def.setGUIPos(i);
             } catch (Exception e) {}
         }
-        syncBuilderXML(bul,builder);
+        syncBuilderXML(bul, builder);
     }
-    
+
     /**
      * @javadoc
      */
@@ -1614,21 +1722,21 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused editor list set, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             try {
-                int i=Integer.parseInt(value);
+                int i = Integer.parseInt(value);
                 def.setGUIList(i);
             } catch (Exception e) {}
         }
-        syncBuilderXML(bul,builder);
+        syncBuilderXML(bul, builder);
     }
-    
+
     /**
      * @javadoc
      */
@@ -1637,21 +1745,21 @@ public class MMAdmin extends ProcessorModule {
             log.warn("refused editor pos set, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             try {
-                int i=Integer.parseInt(value);
+                int i = Integer.parseInt(value);
                 def.setGUISearch(i);
             } catch (Exception e) {}
         }
-        syncBuilderXML(bul,builder);
+        syncBuilderXML(bul, builder);
     }
-    
+
     /**
      * @javadoc
      */
@@ -1660,23 +1768,23 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set DBSize field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             try {
-                int i=Integer.parseInt(value);
+                int i = Integer.parseInt(value);
                 def.setDBSize(i);
             } catch (Exception e) {}
         }
-        if (mmb.getDatabase().changeField(bul,fieldname)) {
-            syncBuilderXML(bul,builder);
+        if (mmb.getDatabase().changeField(bul, fieldname)) {
+            syncBuilderXML(bul, builder);
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1685,20 +1793,20 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set setDBMMBaseType field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             def.setDBType(value);
         }
-        if (mmb.getDatabase().changeField(bul,fieldname)) {
-            syncBuilderXML(bul,builder);
+        if (mmb.getDatabase().changeField(bul, fieldname)) {
+            syncBuilderXML(bul, builder);
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1707,20 +1815,20 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set DBState field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             def.setDBState(value);
         }
-        if (mmb.getDatabase().changeField(bul,fieldname)) {
-            syncBuilderXML(bul,builder);
+        if (mmb.getDatabase().changeField(bul, fieldname)) {
+            syncBuilderXML(bul, builder);
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1729,22 +1837,22 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set dbkey field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             if (value.equals("true")) {
                 def.setDBKey(true);
             } else {
                 def.setDBKey(false);
             }
         }
-        syncBuilderXML(bul,builder);
+        syncBuilderXML(bul, builder);
     }
-    
+
     /**
      * @javadoc
      */
@@ -1753,24 +1861,24 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set NotNull field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("VALUE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        FieldDefs def=bul.getField(fieldname);
-        if (def!=null) {
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("VALUE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        FieldDefs def = bul.getField(fieldname);
+        if (def != null) {
             if (value.equals("true")) {
                 def.setDBNotNull(true);
             } else {
                 def.setDBNotNull(false);
             }
         }
-        if (mmb.getDatabase().changeField(bul,fieldname)) {
-            syncBuilderXML(bul,builder);
+        if (mmb.getDatabase().changeField(bul, fieldname)) {
+            syncBuilderXML(bul, builder);
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1779,53 +1887,53 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused add builder field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        MMObjectBuilder bul=getMMObject(builder);
-        if (bul!=null) {
+        String builder = (String)vars.get("BUILDER");
+        MMObjectBuilder bul = getMMObject(builder);
+        if (bul != null) {
             // Determine position of new field.
             // This should be the number of the last field as denied in the builder xml,
             // as the DBPos field is incremented for each field in that file.
-            int pos=bul.getFields(FieldDefs.ORDER_CREATE).size()+1;
-            
-            FieldDefs def=new FieldDefs();
+            int pos = bul.getFields(FieldDefs.ORDER_CREATE).size() + 1;
+
+            FieldDefs def = new FieldDefs();
             def.setDBPos(pos);
-            
+
             def.setGUIPos(pos);
             def.setGUIList(-1);
             def.setGUISearch(pos);
-            
-            String value=(String)vars.get("dbname");
+
+            String value = (String)vars.get("dbname");
             def.setDBName(value);
-            def.setGUIName("en",value);
-            
+            def.setGUIName("en", value);
+
             log.service("Adding field " + value);
-            
-            value=(String)vars.get("mmbasetype");
+
+            value = (String)vars.get("mmbasetype");
             def.setDBType(value);
-            
-            value=(String)vars.get("dbstate");
+
+            value = (String)vars.get("dbstate");
             def.setDBState(value);
-            
-            value=(String)vars.get("dbnotnull");
+
+            value = (String)vars.get("dbnotnull");
             def.setDBNotNull(value.equals("true"));
-            
-            value=(String)vars.get("dbkey");
+
+            value = (String)vars.get("dbkey");
             def.setDBKey(value.equals("true"));
-            
-            value=(String)vars.get("dbsize");
+
+            value = (String)vars.get("dbsize");
             try {
-                int i=Integer.parseInt(value);
+                int i = Integer.parseInt(value);
                 def.setDBSize(i);
             } catch (Exception e) {
                 log.debug("dbsize had invalid value, not setting size");
             }
-            
-            value=(String)vars.get("guitype");
+
+            value = (String)vars.get("guitype");
             def.setGUIType(value);
-            
+
             bul.addField(def);
             if (mmb.getDatabase().addField(bul, def.getDBName())) {
-                syncBuilderXML(bul,builder);
+                syncBuilderXML(bul, builder);
             } else {
                 log.warn("Could not sync builder XML because addField returned false (tablesizeprotection?)");
             }
@@ -1833,7 +1941,7 @@ public class MMAdmin extends ProcessorModule {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1842,31 +1950,32 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused remove builder field, am in kiosk mode");
             return;
         }
-        String builder=(String)vars.get("BUILDER");
-        String fieldname=(String)vars.get("FIELDNAME");
-        String value=(String)vars.get("SURE");
-        
-        MMObjectBuilder bul=getMMObject(builder);
-        if (bul!=null && value!=null && value.equals("Yes")) {
-            FieldDefs def=bul.getField(fieldname);
-            int dbpos=def.getDBPos();
+        String builder = (String)vars.get("BUILDER");
+        String fieldname = (String)vars.get("FIELDNAME");
+        String value = (String)vars.get("SURE");
+
+        MMObjectBuilder bul = getMMObject(builder);
+        if (bul != null && value != null && value.equals("Yes")) {
+            FieldDefs def = bul.getField(fieldname);
+            int dbpos = def.getDBPos();
             bul.removeField(fieldname);
-            if (mmb.getDatabase().removeField(bul,def.getDBName())) {
-                syncBuilderXML(bul,builder);
+            if (mmb.getDatabase().removeField(bul, def.getDBName())) {
+                syncBuilderXML(bul, builder);
             } else {
                 bul.addField(def);
             }
         }
     }
-    
+
     /**
      * @javadoc
      */
-    public void syncBuilderXML(MMObjectBuilder bul,String builder) {
-        String savepath=MMBaseContext.getConfigPath()+File.separator + "builders" + File.separator + builder + ".xml";
+    public void syncBuilderXML(MMObjectBuilder bul, String builder) {
+        String savepath =
+            MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + builder + ".xml";
         log.service("Syncing builder xml (" + savepath + ") for builder " + builder);
         try {
-            BuilderWriter builderOut=new BuilderWriter(bul);
+            BuilderWriter builderOut = new BuilderWriter(bul);
             builderOut.setIncludeComments(false);
             builderOut.setExpandBuilder(false);
             builderOut.writeToFile(savepath);
@@ -1874,29 +1983,30 @@ public class MMAdmin extends ProcessorModule {
             log.error(Logging.stackTrace(e));
         }
     }
-    
+
     /**
      * @javadoc
      */
-    public void syncModuleXML(Module mod,String modname) {
-        String savepath=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator+modname+".xml";
+    public void syncModuleXML(Module mod, String modname) {
+        String savepath =
+            MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator + modname + ".xml";
         try {
-            ModuleWriter moduleOut=new ModuleWriter(mod);
+            ModuleWriter moduleOut = new ModuleWriter(mod);
             moduleOut.setIncludeComments(false);
             moduleOut.writeToFile(savepath);
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
     }
-    
+
     /**
      * @javadoc
      */
-    public Vector  getMultilevelCacheEntries() {
+    public Vector getMultilevelCacheEntries() {
         Vector results = new Vector();
         Iterator res = MultilevelCache.getCache().getOrderedEntries().iterator();
         while (res.hasNext()) {
-            Map.Entry entry = (Map.Entry) res.next();
+            Map.Entry entry = (Map.Entry)res.next();
             /*
             StringTagger tagger=en.getTagger();
             Vector type=tagger.Values("TYPE");
@@ -1925,70 +2035,73 @@ public class MMAdmin extends ProcessorModule {
             results.addElement(tagger.ValuesString("ALL"));
             */
             results.add(entry.getKey());
-            results.addElement(""+MultilevelCache.getCache().getCount(entry.getKey()));
+            results.addElement("" + MultilevelCache.getCache().getCount(entry.getKey()));
         }
         return results;
     }
-    
+
     /**
      * @javadoc
      */
     public Vector getNodeCacheEntries() {
-        Vector results=new Vector();
-        Enumeration res=MMObjectBuilder.nodeCache.getOrderedElements();
+        Vector results = new Vector();
+        Enumeration res = MMObjectBuilder.nodeCache.getOrderedElements();
         while (res.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)res.nextElement();
-            results.addElement(""+MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
-            results.addElement(""+node.getIntValue("number"));
+            MMObjectNode node = (MMObjectNode)res.nextElement();
+            results.addElement("" + MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
+            results.addElement("" + node.getIntValue("number"));
             results.addElement(node.getStringValue("owner"));
             results.addElement(mmb.getTypeDef().getValue(node.getIntValue("otype")));
         }
         return results;
     }
-    
+
     class ApplicationResult {
-        
+
         protected String resultMessage;
         protected boolean success;
         protected MMAdmin adminModule;
-        
+
         ApplicationResult(MMAdmin adminModule) {
-            this.adminModule=adminModule;
+            this.adminModule = adminModule;
             resultMessage = "";
             success = true;
         }
-        
+
         String getMessage() {
             return resultMessage;
         }
-        
+
         boolean isSuccess() {
             return success;
         }
-        
+
         boolean error(String message) {
-            success=false;
+            success = false;
             log.error(message);
-            if (!resultMessage.equals("")) resultMessage += "\n";
+            if (!resultMessage.equals(""))
+                resultMessage += "\n";
             resultMessage += message;
             return false;
         }
-        
+
         boolean warn(String message) {
-            success=false;
+            success = false;
             log.warn(message);
-            if (!resultMessage.equals("")) resultMessage += "\n";
+            if (!resultMessage.equals(""))
+                resultMessage += "\n";
             resultMessage += message;
             return false;
         }
-        
+
         boolean success(String message) {
-            success=true;
-            if (!resultMessage.equals("")) resultMessage += "\n";
+            success = true;
+            if (!resultMessage.equals(""))
+                resultMessage += "\n";
             resultMessage += message;
             return true;
         }
-        
+
     }
-    
+
 }
