@@ -1,5 +1,4 @@
 /*
-
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.13.2.2 2004-08-25 09:42:18 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.13.2.3 2004-08-25 11:32:08 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -184,7 +183,7 @@ public class MultiStatement implements Statement {
     protected Statement checkAfterException() throws SQLException {
         // check wether connection is still functional
         try {
-            s.executeQuery("SELECT 1 FROM " + org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getFullTableName()); // if this goes wrong too it can't be the query); 
+            s.executeQuery("SELECT 1 FROM " + org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query); 
         } catch (SQLException isqe) {
              // so, connection must be broken.
             log.service("Found broken connection, will try to fix it.");

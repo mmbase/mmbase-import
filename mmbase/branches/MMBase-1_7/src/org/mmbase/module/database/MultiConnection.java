@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.33.2.2 2004-08-25 09:42:19 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.33.2.3 2004-08-25 11:32:08 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -153,7 +153,7 @@ public class MultiConnection implements Connection {
         try {
             // check wether connection is still functional 
             Statement s = createStatement();
-            s.executeQuery("SELECT 1 FROM " + MMBase.getMMBase().getBuilder("object").getFullTableName()); // if this goes wrong too it can't be the query
+            s.executeQuery("SELECT 1 FROM " + MMBase.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
             s.close();
         } catch (SQLException isqe) {
              // so, connection must be broken.
