@@ -19,10 +19,26 @@ import org.mmbase.util.logging.Logging;
  * show the number of relations the node has.
  * 
  * @author Jaco de Groot
+ * @author Michiel Meeuwissen
  */
-public class CountRelationsTag extends NodeReferrerTag {
+public class CountRelationsTag extends NodeReferrerTag implements Writer {
+
+    // Writer implementation:
+    protected WriterHelper helper = new WriterHelper();
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getValue() {
+        return helper.getValue();
+    }
+
     private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
-    protected Node node;
     private String type;   
 
     /**
@@ -33,27 +49,23 @@ public class CountRelationsTag extends NodeReferrerTag {
         this.type = getAttributeValue(type);
     }
 
-    public int doStartTag() throws JspTagException{
+    public int doStartTag() throws JspTagException {
+        log.debug("Search the node.");
+        Node node = getNode();
+        if (type == null) {
+            helper.setValue(new Integer(node.countRelations())); 
+        } else {
+            helper.setValue(new Integer(node.countRelatedNodes(type)));
+        }        
+        helper.setJspvar(pageContext);  
+        if (getId() != null) {
+            getContextTag().register(getId(), helper.getValue());
+        }
         return EVAL_BODY_TAG;
     }
 
     public int doAfterBody() throws JspTagException {
-        log.debug("Search the node.");
-        node = getNode();
-        if (node == null) {
-            throw new JspTagException ("Did not find node in the parent node provider");
-        }
-        try {         
-            log.debug("Check if the type attribute is set.");
-            if (type == null) {
-                bodyContent.print(node.countRelations());
-            } else {
-                bodyContent.print(node.countRelatedNodes(type));
-            }
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
-        }
-        return SKIP_BODY;
+        helper.setBodyContent(bodyContent);
+        return helper.doAfterBody();
     }
 }

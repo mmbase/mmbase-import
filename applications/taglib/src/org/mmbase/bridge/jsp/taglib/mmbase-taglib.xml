@@ -1093,29 +1093,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
-    <name>nodefield</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.NodeFieldTag</tagclass>
-    <info>
-    Shows a field from a node without the need of use a node tag with a field tag in its body.
-    </info>
-    <attribute>
-        <name>number</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>field</name>
-        <required>false</required>
-	    <requirednote>Use 'name'. 'field' is obsolete. But use one of them.</requirednote>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>name</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  <tag>
     <name>context</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ContextTag</tagclass>
     <bodycontent>JSP</bodycontent>
@@ -2134,6 +2111,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   <tag>
     <name>countrelations</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.CountRelationsTEI</teiclass>
     <info>
       This tag can be used inside a node tag to show the number of relations
       the node has.
@@ -2146,6 +2124,26 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         If specified only the number of relations to the type of nodes
         specified by this attribute are returned.
       </info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>write</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
     </attribute>
   </tag>
   <tag>
@@ -2232,6 +2230,21 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	  Create a JSP variable with this in the body. If you have defined `fields' too,
 	  then these fields will have jsp-variables prefixed with
 	  jspvar and an underscore.
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>formatter</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
+    <info>
+    </info>
+    <attribute>
+        <name>xslt</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    	<refercontext>true</refercontext>
+	<info>
+
 	</info>
     </attribute>
   </tag>
