@@ -61,18 +61,21 @@ public class RelDef extends MMObjectBuilder {
 		return(true);
 	}
 
+    public String getGUIIndicator(MMObjectNode node) {
+        int dir=node.getIntValue("dir");
+        if (dir==2) {
+            return(node.getStringValue("sguiname"));   
+ 
+            // *** was: return(node.getStringValue("SGUIname"));
+            // ***  returned, IMC, an empty string.
 
-	public String getGUIIndicator(MMObjectNode node) {
-		int dir=node.getIntValue("dir");
-		if (dir==2) {
-			return(node.getStringValue("sGUIName"));
-		} else if (dir==1) {
-			String st1=node.getStringValue("sguiname");
-			String st2=node.getStringValue("dguiname");
-			return(st1+"/"+st2);
-		}
-		return("");
-	}		
+        } else if (dir==1) {
+            String st1=node.getStringValue("sguiname");
+            String st2=node.getStringValue("dguiname");
+            return(st1+"/"+st2);
+        }
+        return("");
+    }	
 
 	public boolean isRelationTable(String name) {
 		boolean rtn=false;
@@ -108,13 +111,21 @@ public class RelDef extends MMObjectBuilder {
 		return(-1);
 	}
 
-	public int getGuessedByName(String buildername) {
-		Enumeration e=search("WHERE sname='"+buildername+"' AND dname='"+buildername+"'");
-		if (e.hasMoreElements()) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			return(node.getIntValue("number"));
-		} else {
-			return(-1);
-		}
-	}
+    public int getGuessedByName(String buildername) {
+        Enumeration e=search("WHERE sname='"+buildername+"' OR dname='"+buildername+"'");
+ 
+        // *** was: Enumeration e=search("WHERE sname='"+buildername+"' AND dname='"+buildername+"'");
+        // *** doesn't work when you have a different sname/dname.
+
+        if (e.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)e.nextElement();
+            return(node.getIntValue("number"));
+        } else {
+            return(-1);
+        }
+    }
 }
+
+
+
+
