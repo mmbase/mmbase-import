@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.44 2003-08-27 14:15:10 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.45 2003-09-02 20:06:43 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -77,7 +77,9 @@ public class ClusterBuilder extends VirtualBuilder {
     public static final int SEARCH_EITHER= 4;
 
     // logging variable
-    private static Logger log= Logging.getLoggerInstance(ClusterBuilder.class.getName());
+    private static final Logger log= Logging.getLoggerInstance(ClusterBuilder.class);
+
+
 
     /**
      * Creates <code>ClusterBuilder</code> instance.
@@ -89,15 +91,17 @@ public class ClusterBuilder extends VirtualBuilder {
         super(m, "clusternodes");
     }
 
+
     /**
      * Translates a string to a search direction constant.
      *
      * @since MMBase-1.6
      */
     public static int getSearchDir(String search) {
-        if (search == null)
+        if (search == null) {
             return SEARCH_EITHER;
-        search= search.toUpperCase();
+        }
+        search = search.toUpperCase();
         if ("DESTINATION".equals(search)) {
             return SEARCH_DESTINATION;
         } else if ("SOURCE".equals(search)) {
@@ -224,10 +228,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param fieldname the name of the field
      * @return the name of the field without its builder
      */
-    public String getFieldNameFromField(String fieldname) {
+    public static String getFieldNameFromField(String fieldname) {
         int pos= fieldname.indexOf(".");
         if (pos != -1) {
-            fieldname= fieldname.substring(pos + 1);
+            fieldname = fieldname.substring(pos + 1);
         }
         return fieldname;
     }
@@ -521,6 +525,7 @@ public class ClusterBuilder extends VirtualBuilder {
             return null;
         }
     }
+
 
     /**
      * Executes query, returns results as {@link ClusterNode clusternodes}.
@@ -1250,7 +1255,7 @@ public class ClusterBuilder extends VirtualBuilder {
             //and add it to the query, the ConstraintParser takes a query as argument 
             //in order to be abble to resolve tablenames etc..
             query.setConstraint(new ConstraintParser(query).toConstraint(where));
-        }
+       }
         return query;
     }
 
@@ -1506,8 +1511,7 @@ public class ClusterBuilder extends VirtualBuilder {
         MMObjectBuilder builder= mmb.getBuilder(step.getTableName());
         FieldDefs fieldDefs= builder.getField(fieldName);
         if (fieldDefs == null) {
-            throw new IllegalArgumentException(
-                "Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
+            throw new IllegalArgumentException("Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
         }
 
         // Add the stepfield.
@@ -1605,8 +1609,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
             // Not found, then try again with parentbuilder.
             builder= builder.getParentBuilder();
-        }
-        while (builder != null && result == null);
+        } while (builder != null && result == null); 
 
         return result;
     }
