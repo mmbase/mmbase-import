@@ -30,16 +30,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.10 2003-05-08 15:25:54 kees Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.11 2003-07-09 18:14:51 michiel Exp $
  * @todo This function contains a lot of methods which do not seem
  *       specific for a 'relational' database. They should perhaps be moved
  *        to 'abstract' databasestorage
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
-    /**
-     * Logging instance
-     */
-    private static Logger log = Logging.getLoggerInstance(RelationalDatabaseStorage.class.getName());
+
+    private static Logger log = Logging.getLoggerInstance(RelationalDatabaseStorage.class);
 
     /**
      * Constructs the Ansi SQL database layer support class
@@ -192,8 +190,8 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
         MMObjectBuilder parent = getParentBuilder(builder);
 
         // call the database to update the parent table
-        if (parent!=null) {
-            insertIntoTable(parent,node,trans);
+        if (parent != null) {
+            insertIntoTable(parent, node, trans);
         } else if (!builder.getTableName().equals("object")) {
             // parent is object table
             insertObjectTable(node,trans);
