@@ -2246,7 +2246,7 @@ transaction was commited, following should result anything:
         Specify additional parameters for the presentation/manipulation of the field. [***EXPERIMENTAL***]
       </info>
       <examplevalue>
-        <value>daytime</value>
+        <value>datetime</value>
         <info>If the value is a date-time, treat it as a date time combination [***EXPERIMENTAL***]</info>
       </examplevalue>
       <examplevalue>
