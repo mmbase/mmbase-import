@@ -16,7 +16,7 @@ package org.mmbase.bridge;
  *
  * @author Jaco de Groot
  */
-public class NodeManagerTest extends BridgeTest {
+public class NodeManagerTest extends org.mmbase.tests.BridgeTest {
     Cloud cloud;
     Node node;
     int nrOfTestNodes;

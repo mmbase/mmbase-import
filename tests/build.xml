@@ -187,6 +187,7 @@
       <src path="${tests.source.dir}/typerel"/>
       <src path="${tests.source.dir}/convertimage"/>
       <src path="${tests.source.dir}/dbsq"/>
+      <src path="${tests.source.dir}/common"/>
       <include name="**/*.java"/>
     </javac>
   </target>
