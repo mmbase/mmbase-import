@@ -12,6 +12,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
 import java.io.IOException;
 
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen 
  */
 
-public class WriterHelper {
+public class WriterHelper  {
 
     private static Logger log = Logging.getLoggerInstance(WriterHelper.class.getName());
 
@@ -123,7 +125,79 @@ public class WriterHelper {
         return jspvar;
     }
 
-    public void setValue(Object v) {
+    public void setValue(Object v) throws JspTagException {
+        switch (vartype) { // these accept a value == null
+        case TYPE_LIST:
+            if (v instanceof java.lang.String) {
+                if (! "".equals(value)) {
+                    value = StringSplitter.split((String) v);
+                } else { 
+                    value = new java.util.Vector(); 
+                }
+                return;
+            }
+        case TYPE_VECTOR: // I think the type Vector should be deprecated?
+            if (v == null) {
+                // if a vector is requested, but the value is not present,
+                // make a vector of size 0.
+                value = new java.util.Vector();
+            }
+            if (! (v instanceof java.util.Vector)) {
+                // if a vector is requested, but the value is not a vector,
+                if (! (v instanceof java.util.Collection)) {
+                    // not even a Collection!
+                    // make a vector of size 1.
+                    value = new java.util.Vector();
+                    ((java.util.Vector)value).add(v);
+                } else {
+                    value = new java.util.Vector((java.util.Collection)v);
+                }
+            } else {
+                value = v;
+            }            
+            return;
+        }
+        if (v == null) {
+            value = null;
+            return;
+        } 
+
+        switch (vartype) {
+        case TYPE_INTEGER:
+            if (! (v instanceof Integer)) {
+                value = new Integer(v.toString());
+                return;
+            }
+            break;
+        case TYPE_DOUBLE:
+            if (! (v instanceof Double)) {
+                value = new Double(v.toString());
+                return;
+            }
+            break;
+        case TYPE_LONG:
+            if (! (v instanceof Long)) {
+                value = new Long(v.toString());
+                return;
+            }
+        case TYPE_FLOAT:
+            if (! (v instanceof Float)) {
+                value =  new Float(v.toString());
+                return;
+            }
+            break;
+        case TYPE_STRING:
+            if (! (v instanceof String)) {
+                value = v.toString();
+                return;
+            } 
+            break;
+        case TYPE_NODE:
+            if (! (v instanceof org.mmbase.bridge.Node)) {
+                throw new JspTagException("Variable is not of type Node. Conversion is not yet supported by this Tag");
+            }
+            break;
+        }
         value = v;
     }
     public void setBodyContent(BodyContent b) {
@@ -141,80 +215,9 @@ public class WriterHelper {
       
         if (jspvar == null) return;
         if (log.isDebugEnabled()) {
-            log.debug("Setting variable " + jspvar + " to " + value);
+            log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
-        switch (vartype) {
-        case TYPE_LIST:
-            if (value instanceof java.util.List) {
-                pageContext.setAttribute(jspvar, value);
-                return;
-            }
-        case TYPE_VECTOR:
-            if (value == null) {
-                // if a vector is requested, but the value is not present,
-                // make a vector of size 0.
-                value = new java.util.Vector();
-            }
-            if (! (value instanceof java.util.Vector)) {
-                // if a vector is requested, but the value is not a vector,
-                if (! (value instanceof java.util.Collection)) {
-                    // not even a Collection!
-                    // make a vector of size 1.
-                    java.util.Vector v = new java.util.Vector();
-                    v.add(value);
-                    value = v;
-                } else {
-                    value = new java.util.Vector((java.util.Collection)value);
-                }
-            }                         
-            pageContext.setAttribute(jspvar, value);         
-            return;
-        }
-        if (value == null) {
-            // pageContext.setAttribute(jspvar, null);
-            return;
-        } 
-
-        switch (vartype) {
-        case TYPE_INTEGER:
-            if (! (value instanceof Integer)) {
-                pageContext.setAttribute(jspvar, new Integer(value.toString()));
-                return;
-            } 
-            break;
-        case TYPE_DOUBLE:
-            if (! (value instanceof Double)) {
-                pageContext.setAttribute(jspvar, new Double(value.toString()));
-                return;
-            }
-            break;
-        case TYPE_LONG:
-            if (! (value instanceof Long)) {
-                pageContext.setAttribute(jspvar, new Long(value.toString()));
-                return;
-            }
-            break;
-        case TYPE_FLOAT:
-            if (! (value instanceof Float)) {
-                pageContext.setAttribute(jspvar, new Float(value.toString()));
-                return;
-            }
-            break;
-        case TYPE_STRING:
-            if (! (value instanceof String)) {
-                pageContext.setAttribute(jspvar, value.toString());
-                return;
-            } 
-            break;
-        case TYPE_NODE:
-            if (! (value instanceof org.mmbase.bridge.Node)) {
-                throw new JspTagException("Variable is not of type Node. Conversion is not yet supported by this Tag");
-            }
-            break;
-        }
-        log.trace("setting as object");
         pageContext.setAttribute(jspvar, value);
-
     }
 
 

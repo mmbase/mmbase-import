@@ -68,12 +68,6 @@ public class ImportTag extends WriteTag {
         required = b;
     }
 
-    /*
-    public void setDefault(String d) {
-        defaultValue = d;
-    }
-    */
-
     /**
      * From which external source
      */
@@ -112,77 +106,38 @@ public class ImportTag extends WriteTag {
         } 
         if (found) {
             helper.setValue(value);
+            if (id != null) {
+                getContextTag().reregister(id, helper.getValue());
+            }
             return SKIP_BODY;        
         } else {
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_AGAIN;
         }
 
-    }
-
-    /**
-     * The body of the import tag can contain a (default) value for the context variable to be created.
-     *
-     */
-
-    private Object getFromBodyContent() throws JspTagException {
-        Object res;
-        switch(helper.getVartype()) {
-        case WriterHelper.TYPE_NODE:
-            throw new JspTagException("Type Node not (yet) supported for this Tag");
-        case WriterHelper.TYPE_DECIMAL:
-            res = new java.math.BigDecimal(bodyContent.getString());
-            break;
-        case WriterHelper.TYPE_INTEGER:
-            res = new Integer(bodyContent.getString());
-            break;
-        case WriterHelper.TYPE_FLOAT:
-            res = new Float(bodyContent.getString());
-            break;
-        case WriterHelper.TYPE_LONG:
-            res = new Long(bodyContent.getString());
-            break;
-        case WriterHelper.TYPE_DOUBLE:
-            res = new Double(bodyContent.getString());
-            break;
-        case WriterHelper.TYPE_VECTOR:
-        case WriterHelper.TYPE_LIST:
-            String bod = bodyContent.getString();
-            if (! "".equals(bod)) {
-                res = StringSplitter.split(bod);
-            } else { res = ""; }
-            break;
-        default:
-            res = bodyContent.getString();
-        }
-        return res;
     }
 
     public int doAfterBody() throws JspTagException {  
-        Object value;
         if (externid != null) {
             if (! found ) {
                 if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
                 // try to find a default value in the body.
-                Object body = getFromBodyContent();
+                Object body = bodyContent.getString();
                 if (! "".equals(body)) { // hey, there is a body content!
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    getContextTag().unRegister(id); // first unregister the empty value;
-                    getContextTag().register(id, body);
-                    value = body;
-                    helper.setValue(value);
+                    helper.setValue(body);
+                    getContextTag().reregister(id, helper.getValue());
                     found = true;
                 }                
             }
         } else { // get value from the body of the tag.
-            value = getFromBodyContent();
-            helper.setValue(value);
+            helper.setValue(bodyContent.getString());
             if (id != null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Setting " + id + " to " + value);
+                    log.debug("Setting " + id + " to " + helper.getValue());
                 }
-                getContextTag().register(id, value);                        
+                getContextTag().register(id, helper.getValue());
             } else {
                 if (helper.getJspvar() == null) {
                     throw new JspTagException("Attributes externid, id and jspvar cannot be all missing");
