@@ -1,7 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=utf-8" session="false"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content type="text/html">
+%><mm:content type="text/html" language="en">
+
 <html>
   <head>
     <title>Welcome to MMBase</title>
@@ -13,7 +14,7 @@
 <body >
 <table>
   <tr>
-    <th class="main" colspan="3">Welcome to MMBase</th> 
+    <th class="main" colspan="3">Welcome to MMBase</th>
   </tr>
   <tr>
     <td colspan="3">
@@ -21,7 +22,8 @@
         You are running <a href="<mm:url page="/version" />"><%=org.mmbase.Version.get() %></a>
       </p>
       <p>
-        This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
+        This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the 
+        <a href="http://www.opensource.org/">Open Source Initiative</a>.
       </p>
       <p>
         MMBase has been build under the <a href="<mm:url page="mmbase/mpl-1.0.jsp" />">Mozilla Public License, Version 1.0</a>
@@ -52,6 +54,7 @@
     <th colspan="2">Description</th>
   </tr>  
   
+    <% if (pageContext.getServletContext().getResource("/mmexamples") != null) { %>  
   <tr>
     <td>MMBase Demos</td>
     <td>
@@ -64,6 +67,7 @@
       <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>
+  <% } %>
 
   <tr>
     <td>Manage your MMBase installation</td>
@@ -78,7 +82,8 @@
       <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>  
-  
+
+    <% if (pageContext.getServletContext().getResource("/mmdocs") != null) { %>  
   <tr>
     <td>MMBase Documentation</td>
     <td>
@@ -88,6 +93,7 @@
       <a href="<mm:url page="mmdocs/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
     </td>
   </tr>
+   <% } %>
   
   <tr>
     <td>www.mmbase.org</td>
