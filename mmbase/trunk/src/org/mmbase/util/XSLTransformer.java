@@ -16,14 +16,21 @@ import org.apache.xerces.parsers.*;
 
 import org.apache.xalan.*;
 import org.apache.xalan.xslt.*;
+import org.apache.xalan.xpath.xml.*;
+import org.apache.xalan.xpath.xdom.*;
 
 /**
  * Make XSL Transformations
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.3 2000-10-18 12:48:53 case Exp $
+ * @version $Id: XSLTransformer.java,v 1.4 2000-10-19 11:54:12 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/10/18 12:48:53  case
+ * cjr: added a method to cut off the <?xml version blabla ?> part that prevents
+ * XSL from being used to create merely part of a new xml document.
+ * I hope someone knows a real xml/xsl way to accomplish the same result.
+ *
  * Revision 1.2  2000/08/10 19:53:54  case
  * cjr: Removed an obsolete comment
  *
@@ -52,7 +59,12 @@ public class XSLTransformer {
      */
     public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
-            processor = XSLTProcessorFactory.getProcessor();
+	    
+	    XMLParserLiaison liaison = (XMLParserLiaison)(new XercesLiaison());
+            EntityResolver resolver = new XMLEntityResolver();
+            liaison.setEntityResolver(resolver);
+	    
+            processor = XSLTProcessorFactory.getProcessor(liaison);
 
             StringWriter res = new StringWriter();
 
@@ -73,6 +85,7 @@ public class XSLTransformer {
 	    return s;
 
         } catch (SAXException e) {
+	    e.printStackTrace(System.out);
             return "Fout bij XSLT tranformatie: "+e.getMessage();
         }
     }
