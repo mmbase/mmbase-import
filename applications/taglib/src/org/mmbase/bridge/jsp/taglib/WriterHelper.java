@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.53 2005-01-03 17:58:34 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.54 2005-01-03 18:11:31 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -336,7 +336,9 @@ public class WriterHelper extends BodyTagSupport {
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
         if (pushed) {
-            log.info("Value was set already by this tag");
+            if (log.isDebugEnabled()) {
+                log.debug("Value was set already by this tag");
+            }
             _Stack.set(_Stack.size() - 1, value);
         } else {
             _Stack.push(value);
@@ -344,7 +346,9 @@ public class WriterHelper extends BodyTagSupport {
         }
 
         pageContext.setAttribute("_", value);
-        log.info("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
+        if (log.isDebugEnabled()) {
+            log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
+        }
         setJspvar();
     }
 
@@ -444,7 +448,9 @@ public class WriterHelper extends BodyTagSupport {
     private void pop_Stack() throws JspTagException {
         if (_Stack != null) {
             Object pop = _Stack.pop();
-            log.info("Removed " + pop +  "( " + pop.getClass().getName() + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
+            if (log.isDebugEnabled()) {
+                log.debug("Removed " + pop +  "( " + pop.getClass().getName() + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
+            }
             if (_Stack.empty()) {
                 pageContext.removeAttribute("_");
             } else {
