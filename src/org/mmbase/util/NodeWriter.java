@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.19 2002-11-09 09:01:17 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.20 2003-10-24 10:09:15 pierre Exp $
  */
 public class NodeWriter{
 
@@ -132,23 +132,25 @@ public class NodeWriter{
     Enumeration nd=bul.getFields().elements();
         while (nd.hasMoreElements()) {
             FieldDefs def=(FieldDefs)nd.nextElement();
-            String key=def.getDBName();
-            if (isRelationNode) {
-                // note that the routine below assumes
-                // fields in a relation node cannot contain binary blobs
-                //
-                if (!key.equals("number") && !key.equals("owner")
-                        && !key.equals("otype")
-                        && !key.equals("snumber") && !key.equals("dnumber")
-                        && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
-                    write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
-                }
-            } else {
-                //due to current tcp implementation sometimes nodeField are created
-                //those fiels always start with an underscore. If a node starts with
-                //we skip it
-                if (!key.startsWith("_")) {
-                        write(writeXMLField(key, node, directory, mmb));
+            if (def.inStorage()) {
+                String key=def.getDBName();
+                if (isRelationNode) {
+                    // note that the routine below assumes
+                    // fields in a relation node cannot contain binary blobs
+                    //
+                    if (!key.equals("number") && !key.equals("owner")
+                            && !key.equals("otype")
+                            && !key.equals("snumber") && !key.equals("dnumber")
+                            && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
+                        write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
+                    }
+                } else {
+                    //due to current tcp implementation sometimes nodeField are created
+                    //those fiels always start with an underscore. If a node starts with
+                    //we skip it
+                    if (!key.startsWith("_")) {
+                            write(writeXMLField(key, node, directory, mmb));
+                    }
                 }
             }
         }
