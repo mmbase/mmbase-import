@@ -34,7 +34,7 @@ public class AreasHandler extends Handler {
     private String inforum;
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(AreasHandler.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(AreasHandler.class); 
 
     public AreasHandler(int generatecount, int delaytime, String inforum) {
 	this.generatecount=generatecount;
