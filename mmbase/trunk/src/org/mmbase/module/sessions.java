@@ -1,17 +1,10 @@
 /*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
-
-/*
- $Id: sessions.java,v 1.4 2000-03-24 11:16:15 wwwtech Exp $
+ $Id: sessions.java,v 1.5 2000-03-29 10:05:00 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.4  2000/03/24 11:16:15  wwwtech
+ Rico: added test when saving the session values if the needed builders are loaded (properties,users)
+
  Revision 1.3  2000/03/09 16:21:29  wwwtech
  Rico: fixed bug in sessions, when it would try to get the hostname out of the request when used by calcPage when no request is available
 
@@ -37,7 +30,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.4 2000-03-24 11:16:15 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.5 2000-03-29 10:05:00 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 

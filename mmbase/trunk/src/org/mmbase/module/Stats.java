@@ -18,53 +18,6 @@
 	WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING       
 	-----------------------------------------------------------------------
 
-    Copyright (C) 1996 Daniel Ockeloen , Rico Jansen
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details (Found as in this
-	package or at http://www.vpro.nl/interaktief/java/beta/GNU).
-
-	The author(s) thanks the VPRO for allowing us to work on some of these 
-	silly programs/projects.
-
-	Thanks also to Sun Netherlands ( http://www.sun.nl ) for their support
-	and to the Java design team for recreating something that was almost 
-	lost on the web but was the driving force behind the Internet.
-
-	Author : Daniel Ockeloen, Rico Jansen
-
-	email for bugs : daniel@vpro.nl (Daniel Ockeloen) 
-	email for bugs : rico@vpro.nl (Rico Jansen) 
-	our java pages : http://www.vpro.nl/java
-
-	* VPRO is a non-commercial national broadcasting company which makes 
-	radio and television programs for the Dutch national public television 
-	service. VPRO is the domain of what we call 'programmakers'. 
-	Programmakers make use of a large creative and journalistic autonomy. 
-	VPRO as a whole thrives on the basis of this point of view. Originality
-	and quality are major considerations within VPRO. To surprise the 
-	audience with unusual and controversial programs is considered more
-	important than the number of viewers or listeners. This concept has 
-	enabled VPRO to develop an explicit VPRO-style, which is characterized 
-	by open mindedness, independency and a critical aproach. The society 
-	is watched analytically and without prejudice as it continually changes.
-	VPRO strives to be open minded about the future and about experiments 
-	on new ideas and technologies, in subject as well as in design. This 
-	has brought about a vast number of award-winning programs, both on 
-	local and international festivals.  VPRO has since its foundation in 
-	1926 achieved loyal supporters as well as fierce opposers. The free 
-	minded programs have resulted in riots, witchhunts and official 
-	reprimands, but also in pleasure to many viewers and listeners and to 
-	many healthy discussions. VPRO is an association with approximatly 
-	500,000 members and holds statutes.
-
 */
 
 package org.mmbase.module;

@@ -1,19 +1,3 @@
-/*
-
-$Id: cache.java,v 1.3 2000-02-24 13:50:38 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2000/02/24 13:48:10  wwwtech
-- (marcel) changed Hashtable into LRUHashtable and changed System.out into debug
-
-*/
-
 package org.mmbase.module;
 
 import java.lang.*;
@@ -27,7 +11,7 @@ import org.mmbase.util.LRUHashtable;
  * Simple file cache system that can be used by any servlet
  *
  * @author  $Author: wwwtech $ 
- * @version $Revision: 1.3 $ $Date: 2000-02-24 13:50:38 $
+ * @version $Revision: 1.4 $ $Date: 2000-03-29 10:04:59 $
  */
 public class cache extends Module implements cacheInterface {
 
