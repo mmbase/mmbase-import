@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.3 2003-07-25 20:59:56 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.4 2003-07-25 21:14:03 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -72,8 +72,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
             return FieldCompareConstraint.GREATER_EQUAL;
         } else if (op.equals("LIKE")) {
             return FieldCompareConstraint.LIKE;
-        } else if (op.equals("~") || op.equals("REGEXP")) {
-            return FieldCompareConstraint.REGEXP;
+        //} else if (op.equals("~") || op.equals("REGEXP")) {
+        //  return FieldCompareConstraint.REGEXP;
         } else {
             throw new JspTagException("Unknown Field Compare Operator '" + op + "'");
         }
