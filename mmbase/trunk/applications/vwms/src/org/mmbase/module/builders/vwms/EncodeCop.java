@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.11 2000-08-01 09:53:31 install Exp $
+$Id: EncodeCop.java,v 1.12 2000-10-09 12:03:43 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/08/01 09:53:31  install
+changed imports
+
 Revision 1.10  2000/08/01 09:11:32  vpro
 Rico: removed CDTrack references
 
@@ -46,8 +49,22 @@ import org.mmbase.util.media.audio.*;
 import org.mmbase.util.media.audio.audioparts.*;
 
 /**
+ * The EncodeCop vwm class observes changes of MMObjectnodes that are related to the
+ * audio ripping encoding process. The nodes that are observed are AudioParts, 
+ * RawAudios and g2encoders nodes. Depending on type of change that performed on this
+ * node, a related EncodeHandler will be created that will handle the actual audio job.
+ * 
+ * The following node changed types exist in mmbase (stored in ctype variable: 
+ * passed ctype:
+ * d: node deleted
+ * c: node changed
+ * n: new node
+ * f: node field changed
+ * r: node relation changed
+ * x: some xml notify?
+ * 
  * @author Daniel Ockeloen
- * @version $Revision: 1.11 $ $Date: 2000-08-01 09:53:31 $
+ * @version $Revision: 1.12 $ $Date: 2000-10-09 12:03:43 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -97,6 +114,13 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		return(true);
 	}
 
+	/**
+	 * Checks if g2encoders node has an EncoderHandler running for it and calls a mehod
+	 * to signal that it's encoder is free.
+	 * @param number - a String containing the object nr of this g2encoders node.
+	 * @param ctype - a String with the node changed type.
+	 * @return true, always.
+	 */
 	public boolean encoderChanged(String number,String ctype) {
 		if( debug ) debug("encoderChanged("+number+","+ctype+")");
 
@@ -116,6 +140,13 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		return(true);
 	}
 
+	/**
+	 * Creates an EncodeHandler with task 'g2encode' for this changed rawaudio node, 
+	 * depending on the node state and format value.
+	 * @param number - a String containing the object nr of this rawaudios node.
+	 * @param ctype - a String with the node changed type.
+	 * @return true, always.
+	 */
 	public boolean rawaudioChanged(String number,String ctype) {
 		if( debug ) debug("rawaudioChanged("+number+","+ctype+")");
 		// debug("rawaudioChanged(): sees that rawaudio "+number+" has changed type="+ctype);
@@ -135,6 +166,14 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		return(true);
 	}
 
+	/**
+	 * Creates a EncodeHandler with task 'newcdtrack' for this newly created audiopart 
+	 * node, depending on it's audiosource value.
+	 * @param number - a String containing the object nr of this audioparts node.
+	 * @param ctype - a String with the node changed type.
+	 * @return true, always.
+	 * @param number
+	 */
 	public boolean audiopartsChanged(String number,String ctype) {
 		if( debug ) debug("audiopartsChanged("+number+","+ctype+")");
 		if (ctype.equals("n")) {
