@@ -152,6 +152,7 @@ public class MediaProviderFilter {
             if(filter.equals("sortProviders")) {
                 mediaproviders = sortMediaProviders(mediaproviders);
             } else if(filter.equals("filterOnHost")) {
+                // How are we going to get information about the ip ?
                 mediaproviders = filterHostOnDomain("userinfo", mediaproviders);
             } else {
                 MediaProviderFilterInterface mpfi = (MediaProviderFilterInterface)externFilters.get(filter);
@@ -216,12 +217,13 @@ public class MediaProviderFilter {
     protected List filterHostOnDomain(String userhost, List mediaproviders) {
         
         String result = null;
-        
+        log.debug("userhost = "+userhost);
+                
         while(!hostFilter.containsKey(userhost)) {
             int point = userhost.indexOf(".");
             if(point==-1) {
-                if(hostFilter.containsKey("")) {
-                    result = (String)hostFilter.get("");
+                if(hostFilter.containsKey("*")) {
+                    userhost="*";
                     break;
                 } else {
                     log.error("Please specify a default provider.");
