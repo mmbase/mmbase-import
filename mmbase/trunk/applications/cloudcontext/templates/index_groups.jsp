@@ -47,7 +47,7 @@
         <td class="commands">
           <a href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="Wijzigen" title="Wijzigen" /></a>
           <mm:maydelete>
-            <mm:relatednodescontainer type="object" role="contains" searchdirs="destination">
+            <mm:relatednodescontainer role="contains" searchdirs="destination">
               <mm:size>
                 <mm:compare value="0">
                   <a href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="Verwijderen" title="Verwijderen" /></a>
