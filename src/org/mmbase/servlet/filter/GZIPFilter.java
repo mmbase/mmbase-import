@@ -185,7 +185,7 @@ import org.mmbase.util.logging.Logging;
  *   see http://www.orionserver.com/tutorials/filters
  *
  * @author Marcel Maatkamp, VPRO Netherlands (marmaa_at_vpro.nl)
- * @version %version%
+ * @version $Version$
  */
 
 public class GZIPFilter extends GenericFilter {
