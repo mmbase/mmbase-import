@@ -4,8 +4,8 @@
 	<title></title>
 	<field name="title" dtminlength="1" ><prompt>Titel (eventueel #NZ#...)</prompt></field>
 	<field name="subtitle" ><prompt>Subtitel</prompt></field>
-	<field name="intro" ftype="html" rows="8" ><prompt>Introductie</prompt></field>
-	<field name="body" ftype="html" rows="8" ><prompt>Tekst</prompt></field>
+	<field name="intro" ftype="text" rows="8" ><prompt>Introductie</prompt></field>
+	<field name="body" ftype="text" rows="8" ><prompt>Tekst</prompt></field>
 	<field name="source"><prompt>Bronvermelding - optioneel</prompt></field>
 	<field name="lastmodified"><prompt>Datum laatste wijziging</prompt></field>
 	<field name="copyright" dtminlength="0" ftype="line"><prompt>Laatste wijziging door</prompt></field>
