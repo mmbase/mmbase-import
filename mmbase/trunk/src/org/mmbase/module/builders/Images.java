@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.19 2000-06-06 21:31:58 wwwtech Exp $
+	$Id: Images.java,v 1.20 2000-06-07 17:27:44 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.19  2000/06/06 21:31:58  wwwtech
+	Rico: fixed a serious bug in which incorrect icaches entries where created
+	
 	Revision 1.18  2000/06/05 15:42:15  wwwtech
 	Rico: fixed count in number of requests
 	
@@ -68,7 +71,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.19 2000-06-06 21:31:58 wwwtech Exp $
+ * @version $Id: Images.java,v 1.20 2000-06-07 17:27:44 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -261,7 +264,7 @@ public class Images extends MMObjectBuilder {
 										imageRequestTable.put(ckey,req);
 										imageRequestQueue.append(req);
 									} else {
-										debug("ConvertImage: a conversion in progress...  (requests="+req.count()+1+")");
+										debug("ConvertImage: a conversion in progress...  (requests="+(req.count()+1)+")");
 									}
 								}
 								picture=req.getOutput();
