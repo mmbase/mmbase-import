@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.33 2003-04-10 13:51:37 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.34 2003-04-11 10:11:29 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -93,6 +93,8 @@ public class XMLBasicReader  {
 
     private static InputSource getInputSource(String path) {
         try {
+            // remove file protocol if present to avoid errors in accessing file
+            if (path.startsWith("file://")) path= path.substring(7);
             InputSource is = new InputSource(new FileInputStream(path));
             is.setSystemId("file://" + path);
             return is;
@@ -249,7 +251,11 @@ public class XMLBasicReader  {
             return null;
         } else {
             String root = st.nextToken();
-            if (!e.getNodeName().equals(root)) {
+            if (e.getNodeName().equals("error")) {
+                // path should start with document root element
+                log.error("Error occurred : (" + getElementValue(e) + ")");
+                return null;
+            } else if (!e.getNodeName().equals(root)) {
                 // path should start with document root element
                 log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getNodeName()+"): incorrect xml file" +
                           "("+xmlFilePath+")");
