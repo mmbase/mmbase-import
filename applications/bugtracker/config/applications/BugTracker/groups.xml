@@ -10,8 +10,8 @@
 		<description></description>
 	</node>
 
-	<node number="99" owner="admin" alias="BugTracker.Commitors">
-		<name>BugTrackerCommitors</name>
+	<node number="99" owner="admin" alias="BugTracker.Committors">
+		<name>BugTracker Committors</name>
 		<description></description>
 	</node>
 
