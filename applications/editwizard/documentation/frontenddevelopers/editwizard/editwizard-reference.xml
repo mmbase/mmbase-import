@@ -19,7 +19,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.1 2004-11-04 11:46:38 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.2 2004-11-30 15:15:20 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -261,12 +261,12 @@
 					<term>search</term>
 					<listitem>
 						<para>The search parameter specified when the list should show a search box, and whether searching is mandatory. There are four possible values:</para>
-						<para><emphasis>false</emphasis> turns searching off. If other parameters such as searchfields and searchvalue are given, the search is performed using those parameters but a searchbox is not displayed.</para>
-						<para><emphasis>true</emphasis> turns searching on, displaying a searchbox on top of the list, using defaults for parameters such as searchfields, if these are not specified.</para>
-						<para><emphasis>force</emphasis> is like TRUE, but searching (and showing a resultlist) is not performed until a searchvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
+						<para><emphasis>no</emphasis> turns searching off. If other parameters such as searchfields and searchvalue are given, the search is performed using those parameters but a searchbox is not displayed.</para>
+						<para><emphasis>yes</emphasis> turns searching on, displaying a searchbox on top of the list, using defaults for parameters such as searchfields, if these are not specified.</para>
+						<para><emphasis>force</emphasis> is like YES, but searching (and showing a resultlist) is not performed until a searchvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
 						<para><emphasis>auto</emphasis> makes searching dependent on the presence of the searchfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para>
 						<note><para>Available from MMBase 1.6.4 and up</para></note>
-						<programlisting format="linespecific">search=true</programlisting>
+						<programlisting format="linespecific">search=yes</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
