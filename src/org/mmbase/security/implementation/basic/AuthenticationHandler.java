@@ -25,10 +25,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Authentication based on a config file..
- * @javadoc
+ * Authentication based on a config files. There is an XML file (`authentication.xml') which defines
+ * several modules (conected to the 'module/method' String). There are now three moduiles in this
+ * implementation. 'anonymous' for the anonyunous user. 'name/password' for 'basic users'. The
+ * username/passwords of the basic users are defined in an account.properties file. The last module
+ * is 'admin' which authenticates only on password.
+ *
+ * @todo MM: I think it should be possible for admin to login with name/password to, how else could
+ * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.6 2004-02-16 14:03:40 keesj Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.7 2004-04-08 11:03:54 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
