@@ -207,9 +207,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  @link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        if (trim && (max>-1 || offset > 0)) {
+        if (trim && (max > -1 || offset > 0)) {
             int currentSize = nodes.size();
-            int maxx = (max>currentSize ? currentSize : max);
+            int maxx = (max > currentSize ? currentSize : max);
+            if (max == -1 ) maxx = currentSize;
             int to = maxx + offset;
             if (to >= currentSize) {
                 to = currentSize;
