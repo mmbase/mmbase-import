@@ -11,6 +11,7 @@ package org.mmbase.applications.editwizard;
 
 import java.util.*;
 import java.io.File;
+import java.net.URL;
 import org.mmbase.util.xml.URIResolver;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.51 2004-05-02 15:02:00 nico Exp $
+ * @version $Id: Config.java,v 1.52 2004-05-17 22:10:22 michiel Exp $
  */
 
 public class Config {
@@ -514,7 +515,7 @@ public class Config {
         protected HttpServletResponse response;
         private   Config config;
 
-        public Configurator(PageContext pageContext, Config c) throws WizardException {
+        public Configurator(PageContext pageContext, Config c) throws WizardException, java.net.MalformedURLException {
             page = pageContext;
             request = (HttpServletRequest)page.getRequest();
             response = (HttpServletResponse)page.getResponse();
@@ -572,19 +573,25 @@ public class Config {
                    That means that xml can be placed relative to this page, and xsl's int xsl-dir.
                  */
                 File refFile;
-                // capture direct reference of http:// and shttp:// referers
+                // capture direct reference of http:// and https:// referers
                 int protocolPos= config.backPage.indexOf(PROTOCOL);
 
-                if (protocolPos >=0 ) { // given absolutely
-                    String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
-                    // Using URL.getPath() would be nicer, but is not available in java 1.2
-                    // suppose it is from the same server, web can find back the directory then:
-                    refFile = new File(getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
 
+
+
+                if (protocolPos >=0 ) { // given absolutely
+                    String path = new URL(config.backPage).getPath();
+                    refFile = new File(getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
                     // TODO: What if it happened to be not from the same server?
                 } else {
-                    // Was given relatively, that's easy:
-                    refFile = new File(getRealPath(config.backPage)).getParentFile();
+                    // Was given relatively, that's trickie, becaues cannot use URL object to take of query.
+                    String path = getRealPath(config.backPage);                    
+                    int questionPos = path.indexOf('?');
+                    if (questionPos != -1) {
+                        path = path.substring(0, questionPos);
+                    }
+                    
+                    refFile = new File(path).getParentFile();
                 }
                 if (refFile.exists()) {
                     if (! config.language.equals("")) {
@@ -594,6 +601,8 @@ public class Config {
                         }
                     }
                     extraDirs.add("ref:", refFile);
+                } else {
+                    log.warn("" + refFile + " does not exist");
                 }
 
                 /* Optionally, you can indicate with a 'templates' option where the xml's and
