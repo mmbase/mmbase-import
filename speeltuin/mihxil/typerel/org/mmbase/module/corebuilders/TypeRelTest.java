@@ -8,13 +8,20 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.7 2003-02-27 16:38:46 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.8 2003-02-28 17:19:16 michiel Exp $
  */
 public class TypeRelTest extends TestCase {
 
-    static protected String UNIDIRROLE = "unidirectionalrelation";
-    static protected String  BIDIRROLE = "bidirectionalrelation";
-    static protected String  INHROLE   = "inheritancerelation";
+    static protected String UNIDIR_ROLE = "unidirectionalrelation";
+    static protected String  BIDIR_ROLE = "bidirectionalrelation";
+    static protected String  INH_ROLE   = "inheritancerelation";
+    static protected String  OTHER_ROLE   = "this_role_does_not_exist";
+    static protected String  RELATED_ROLE   = "related";
+
+    static protected String  SOURCE        = "source";
+    static protected String  DESTINATION   = "destination";
+    static protected String  BOTH          = "both";
+
 
     static protected Cloud cloud = null;
     static protected NodeManager relDefManager;
@@ -27,6 +34,7 @@ public class TypeRelTest extends TestCase {
 
     static protected Node        news;
     static protected Node        url;
+    static protected Node        typerel;
 
     public TypeRelTest(String testName) {
         super(testName);
@@ -59,9 +67,9 @@ public class TypeRelTest extends TestCase {
     /**
      * Create bidirection relation type, and check if relationmanager in both directions can be found.
      */
-    public void testBidirectionRelation() {               
-        Node reldef = createRelDefNode(BIDIRROLE, 2);
-        Node typerel = typeRelManager.createNode();
+    public void testBidirectionalCloud1() {
+        Node reldef = createRelDefNode(BIDIR_ROLE, 2);
+        typerel = typeRelManager.createNode();
         typerel.setNodeValue("snumber", newsManager);
         typerel.setNodeValue("dnumber", urlsManager);
         typerel.setNodeValue("rnumber", reldef);
@@ -69,72 +77,187 @@ public class TypeRelTest extends TestCase {
         createdNodes.add(typerel);
 
         // now this relation must exist.
+        
 
-        RelationManagerList rml1 = cloud.getRelationManagers(newsManager, urlsManager, BIDIRROLE);
-        assertTrue(rml1.size() > 0);
+        // check if it can be found by cloud
+        RelationManagerList rml = cloud.getRelationManagers(newsManager, urlsManager, BIDIR_ROLE);
 
-        RelationManager rm1 = rml1.getRelationManager(0);
-
-        Relation r1 = rm1.createRelation(news, url);
-        createdNodes.add(r1);
-        // no exception should have occured.
-       
-        RelationManagerList rml2 = cloud.getRelationManagers(urlsManager, newsManager, BIDIRROLE);
-        assertTrue(rml2.size() > 0);
-
-        RelationManager rm2 = rml2.getRelationManager(0);
-        Relation r2 = rm2.createRelation(url,  news);
-        // no exception should have occured.
-        createdNodes.add(r2);
-
-        // using rm1 to create relation other direction should work?
-        Relation r3 = rm1.createRelation(url,  news);
-        createdNodes.add(r3);
-
-                    
+        assertTrue(rml.size() > 0);          
+        assertTrue(rml.contains(typerel));
     }
+
+    public void testBidirectionalCloud2() {
+        RelationManagerList rml = cloud.getRelationManagers(urlsManager, newsManager, BIDIR_ROLE);
+        assertTrue(rml.size() > 0);
+        assertTrue(rml.contains(typerel));
+    }
+
+
+    public void testBidirectionalNodeManagerAllowedRelations1() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations((NodeManager) null, null, null);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testBidirectionalNodeManagerAllowedRelations2() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, null, null);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testBidirectionalNodeManagerAllowedRelations3() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, null);
+        assertTrue(rml.contains(typerel));
+    }
+
+
+    public void testBidirectionalNodeManagerAllowedRelations4() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, DESTINATION);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testBidirectionalNodeManagerAllowedRelations5() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, SOURCE);
+        assertFalse(rml.contains(typerel));
+    }
+    public void testBidirectionalNodeManagerAllowedRelations6() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, BOTH);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testBidirectionalNodeManagerAllowedRelations7() {
+        // by source-manager
+        try {
+            RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
+            fail("Should have thrown exception for non-existing relations");
+        } catch (NotFoundException e) {
+        };
+    }
+    public void testBidirectionalNodeManagerAllowedRelations8() {
+        // by source-manager        
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, RELATED_ROLE, null);
+        assertFalse(rml.contains(typerel));
+    }
+
+    public void testBidirectionalNodeManagerAllowedRelations9() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations();
+        assertTrue(rml.contains(typerel));
+    }
+
+
+    public void testBidirectionalNodeManagerAllowedRelations10() {
+        // by destination-manager
+        RelationManagerList rml = urlsManager.getAllowedRelations();
+        assertTrue(rml.contains(typerel));
+    }
+    
     /*
      * Create unidirection relation type, and check if relationmanager in only one direction can be found.
      */
 
-    public void testUnidirectionalRelation() {
-        Node reldef = createRelDefNode(UNIDIRROLE, 1);
+    public void testUnidirectionalCloud() {
+        Node reldef = createRelDefNode(UNIDIR_ROLE, 1);
 
-        Node typerel = typeRelManager.createNode();
+        typerel = typeRelManager.createNode();
         typerel.setNodeValue("snumber", newsManager);
         typerel.setNodeValue("dnumber", urlsManager);
-
         typerel.setNodeValue("rnumber", reldef);
         typerel.commit();
         createdNodes.add(typerel);
 
 
         // now this relation must exist.
-        RelationManagerList rml1 = cloud.getRelationManagers(newsManager, urlsManager, UNIDIRROLE);
-        assertTrue(rml1.size() > 0);
+        RelationManagerList rml = cloud.getRelationManagers(newsManager, urlsManager, UNIDIR_ROLE);
+        assertTrue(rml.size() > 0);
+        assertTrue(rml.contains(typerel));
+    }
 
-        RelationManager rm1 = rml1.getRelationManager(0);
+    public void testUnidirectionalCloud2() {
+        RelationManagerList rml = cloud.getRelationManagers(urlsManager, newsManager, UNIDIR_ROLE);
+        assertTrue(rml.size() == 0);
+        assertFalse(rml.contains(typerel));
+    }
 
-        Relation r1 = rm1.createRelation(news, url);
-        createdNodes.add(r1);
 
+    public void testUnidirectionalNodeManagerAllowedRelations1() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations((NodeManager) null, null, null);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testUnidirectionalNodeManagerAllowedRelations2() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, null, null);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testUnidirectionalNodeManagerAllowedRelations3() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, null);
+        assertTrue(rml.contains(typerel));
+    }
+
+
+    public void testUnidirectionalNodeManagerAllowedRelations4() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, DESTINATION);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testUnidirectionalNodeManagerAllowedRelations5() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, SOURCE);
+        assertFalse(rml.contains(typerel));
+    }
+    public void testUnidirectionalNodeManagerAllowedRelations6() {
+        // by source-manager
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, BOTH);
+        assertTrue(rml.contains(typerel));
+    }
+    public void testUnidirectionalNodeManagerAllowedRelations7() {
         try {
-            Relation r2 = rm1.createRelation(url, news);
-            fail("Should not have allowed unidirection relation the other way");
+            RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, OTHER_ROLE, null);
+            fail("Should have thrown exception for non-existing relations");
+        } catch (NotFoundException e) {
+        };
+    }
+    public void testUnidirectionalNodeManagerAllowedRelations8() {
+        RelationManagerList rml = newsManager.getAllowedRelations(urlsManager, RELATED_ROLE, null);
+        assertFalse(rml.contains(typerel));
+    }
+
+    public void testUnidirectionalNodeManagerAllowedRelations9() {
+        RelationManagerList rml = newsManager.getAllowedRelations();
+        assertTrue(rml.contains(typerel));
+    }
+
+    public void testUnidirectionalNodeManagerAllowedRelations10() {
+        RelationManagerList rml = urlsManager.getAllowedRelations();
+        assertFalse(rml.contains(typerel));
+    }
+
+        
+
+    public void testUnidirectionalNode1() {
+        RelationManager rm = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, DESTINATION).getRelationManager(0);
+        Relation r = rm.createRelation(news, url);
+        createdNodes.add(r);
+        // no exception should have occured.
+    }
+
+    public void testUnidirectionalNode2() {
+        RelationManager rm = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, DESTINATION).getRelationManager(0);
+        try {
+            Relation r = rm.createRelation(url, news);
+            createdNodes.add(r);
+            fail("Should not have been allowed");
         } catch (BridgeException e) {
         }
     }
 
-    public void testUnidirectionRelationCreate() {
-
-        RelationManagerList rml2 = cloud.getRelationManagers(urlsManager, newsManager, UNIDIRROLE);
-        assertTrue("Found the relations also the other way around, but it is unidirectional", rml2.size() == 0);
 
 
-    }
 
     public void testInheritanceRelations() {
-        Node reldef = createRelDefNode(INHROLE, 2);
+        Node reldef = createRelDefNode(INH_ROLE, 2);
 
         Node typerel = typeRelManager.createNode();
         typerel.setNodeValue("snumber", objectManager);
@@ -144,10 +267,10 @@ public class TypeRelTest extends TestCase {
         createdNodes.add(typerel);
 
         // now this relation must exist.
-        RelationManagerList rm1 = cloud.getRelationManagers(objectManager, urlsManager, INHROLE);
+        RelationManagerList rm1 = cloud.getRelationManagers(objectManager, urlsManager, INH_ROLE);
         assertTrue(rm1.size() > 0);
 
-        RelationManagerList rm2 = cloud.getRelationManagers(newsManager, urlsManager, INHROLE);
+        RelationManagerList rm2 = cloud.getRelationManagers(newsManager, urlsManager, INH_ROLE);
         assertTrue(rm2.size() > 0);       
     }
 
