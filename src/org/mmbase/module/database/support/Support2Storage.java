@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.1 2002-04-08 12:21:33 pierre Exp $
+ * @version $Id: Support2Storage.java,v 1.2 2002-04-17 10:29:28 pierre Exp $
  */
 public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -68,7 +68,7 @@ public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInt
 
     abstract public boolean commit(MMObjectNode node);
 
-    abstract public void delete(MMObjectNode node);
+    abstract public boolean delete(MMObjectNode node);
 
     abstract public boolean createObjectStorage();
 

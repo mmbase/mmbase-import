@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Storage.java,v 1.1 2002-04-08 12:21:30 pierre Exp $
+ * @version $Id: Storage.java,v 1.2 2002-04-17 10:29:26 pierre Exp $
  */
 public interface Storage  {
 
@@ -121,14 +121,14 @@ public interface Storage  {
      * Delete a node
      * @param node The node to delete
      */
-    public void delete(MMObjectNode node);
+    public boolean delete(MMObjectNode node);
 
     /**
      * Delete a node within a transaction
      * @param node The node to delete
      * @param trans the transaction to perform the insert in
      */
-    public void delete(MMObjectNode node, Transaction trans) throws StorageException;
+    public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;
 
     /**
      * Select a node from a specified builder
