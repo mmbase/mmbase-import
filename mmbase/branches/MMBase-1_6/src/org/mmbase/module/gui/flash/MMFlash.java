@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.16.2.2 2002-11-20 10:58:50 rob Exp $
+ * @version $Id: MMFlash.java,v 1.16.2.3 2003-05-23 10:53:32 vpro Exp $
  */
 public class MMFlash extends Module {
 
@@ -127,6 +127,7 @@ public class MMFlash extends Module {
 
         // cache stage 1
         // -------------
+       
         if (!sp.reload) {
             result =(byte[])lru.get(url+query);
             if (result!=null) {
@@ -192,7 +193,6 @@ public class MMFlash extends Module {
 
             File inputFile = createTemporaryFile("input", ".sws");
             inputFile.delete();
-
             tempFiles.add(inputFile);
             saveFile(inputFile.getAbsolutePath(), body);
 
@@ -201,7 +201,7 @@ public class MMFlash extends Module {
             result = readBytesFile(outputFile.getAbsolutePath());
             lru.put(url+query,result);
             saveDiskCache(filename,query,result);
-	    cleanup(tempFiles);
+            cleanup(tempFiles);
         } else { 
             // log.debug("cache hit"); 
         }   
@@ -438,6 +438,7 @@ public class MMFlash extends Module {
                 }
                 String src=(String)rep.get("src");
                 if (src!=null) {
+                    // bad way to test for MMBase images! 
                     if (src.startsWith("/img.db?")) {
                         String result=mapImage(src.substring(8),tempFiles);
                         part+=" \""+result+"\"";
@@ -701,13 +702,13 @@ public class MMFlash extends Module {
             StringTokenizer tok = new StringTokenizer(imageline,"+\n\r");
             while (tok.hasMoreTokens()) {
                 params.addElement(tok.nextToken());
-                scanpage sp=new scanpage();
-                byte[] bytes=bul.getImageBytes(sp,params);
-                File tempFile = createTemporaryFile("image", ".jpg");
-                saveFile(tempFile.getAbsolutePath(), bytes);
-                tempFiles.add(tempFile);
-                return tempFile.getAbsolutePath();
             }
+            scanpage sp=new scanpage();
+            byte[] bytes=bul.getImageBytes(sp,params);
+            File tempFile = createTemporaryFile("image", ".jpg");
+            saveFile(tempFile.getAbsolutePath(), bytes);
+            tempFiles.add(tempFile);
+            return tempFile.getAbsolutePath();
         } else {
             log.error("Cannot locate images builder, make sure you activated it!");
         }
