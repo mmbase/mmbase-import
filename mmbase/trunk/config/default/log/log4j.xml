@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.17 2002-08-07 10:08:51 michiel Exp $
+   @version $Id: log4j.xml,v 1.18 2002-08-07 10:31:33 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -19,7 +19,6 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
-    <!ENTITY mmlogger   "org.mmbase.util.logging.log4j2.Log4jImpl" >
     <!ENTITY mmlevel    "org.mmbase.util.logging.log4j2.Log4jLevel" >
     <!ENTITY logdir   "/tmp/" >
 ]>
@@ -78,39 +77,39 @@
   
   <!-- categories -->
   
-  <!-- examples: different priority for a few subtrees -->
-  <category name="org.mmbase.bridge" class ="&mmlogger;">
-    <priority class="&mmlevel;" value ="info" />
-  </category>
+  <!-- examples: different level for a few subtrees -->
+  <logger name="org.mmbase.bridge" >
+    <level class="&mmlevel;" value ="info" />
+  </logger>
 
-  <category name="org.mmbase.security" class ="&mmlogger;">
-    <priority class="&mmlevel;" value ="info" />
-  </category>
+  <logger name="org.mmbase.security" >
+    <level class="&mmlevel;" value ="info" />
+  </logger>
 
 
   <!-- 'page logging' goes to a different appender -->
-  <category name="org.mmbase.PAGE" class ="&mmlogger;" additivity="false" >
-    <priority class="&mmlevel;" value ="service" />
+  <logger name="org.mmbase.PAGE"  additivity="false" >
+    <level class="&mmlevel;" value ="service" />
     <appender-ref ref="pagedebug" />
-  </category>
+  </logger>
 
   
   <!-- perhaps you use your own extensions to MMBase -->
-  <category name="nl.omroep" class ="&mmlogger;">
-    <priority class="&mmlevel;" value ="trace" />
-  </category>
+  <logger name="nl.omroep" >
+    <level class="&mmlevel;" value ="trace" />
+  </logger>
   
   <!-- 
-  STDERR is a special Category, to wich stderr will be written
-  (always with priority 'warn' or higher)  
+  STDERR is a special Logger, to wich stderr will be written
+  (always with level 'warn' or higher)  
   -->
   
-  <category name="STDERR" class ="&mmlogger;">
-    <priority class="&mmlevel;" value ="info" />	
-  </category>
+  <logger name="STDERR">
+    <level class="&mmlevel;" value ="info" />	
+  </logger>
   
   <root>
-    <priority class="&mmlevel;" value ="service" />
+    <level class="&mmlevel;" value ="service" />
     <appender-ref ref="logfile" />
   </root>
 
