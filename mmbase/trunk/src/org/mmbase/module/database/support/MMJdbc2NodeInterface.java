@@ -37,4 +37,5 @@ public interface MMJdbc2NodeInterface {
 	public void init(MMBase mmb);
 	public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
 	public boolean created(String tableName);
+	public boolean createXML(MMObjectBuilder bul);
 }

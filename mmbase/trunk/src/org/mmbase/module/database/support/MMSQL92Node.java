@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.4 2000-05-15 14:47:48 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.5 2000-06-06 20:36:25 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/05/15 14:47:48  wwwtech
+Rico: fixed double close() bug in getDBText en getDBBtye()
+
 Revision 1.3  2000/04/18 23:16:17  wwwtech
 new decodefield routine
 
@@ -47,9 +50,13 @@ import java.sql.*;
 
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
 
+
+//XercesParser
+import org.apache.xerces.parsers.*;
+import org.xml.sax.*;
 
 /**
 * MMSQL92Node implements the MMJdbc2NodeInterface for
@@ -58,7 +65,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.4 $ $Date: 2000-05-15 14:47:48 $
+* @$Revision: 1.5 $ $Date: 2000-06-06 20:36:25 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -66,7 +73,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	String createString="CREATETABLE_SQL92";
+	String name="mysql";
 	Hashtable typesmap = new Hashtable();
+	XMLDatabaseReader parser;
+	Hashtable typeMapping = new Hashtable();
 
 	MMBase mmb;
 
@@ -80,8 +90,18 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("VARSTRING",new Integer(TYPE_STRING));
 		typesmap.put("STRING",new Integer(TYPE_STRING));
 		typesmap.put("LONG",new Integer(TYPE_INTEGER));
+		typesmap.put("INTEGER",new Integer(TYPE_INTEGER));
 		typesmap.put("text",new Integer(TYPE_TEXT));
+		typesmap.put("TEXT",new Integer(TYPE_TEXT));
 		typesmap.put("BLOB",new Integer(TYPE_BLOB));
+
+		// start of new code for XML config support
+
+		String path=MMBaseContext.getConfigPath()+("/databases/");
+		if ((new File(path+name+".xml")).exists()) {
+			parser=new XMLDatabaseReader(path+name+".xml");
+			typeMapping=parser.getTypeMapping();
+		}
 	}
 
 	public void init(MMBase mmb) {
@@ -102,12 +122,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 
 			if (createtable!=null && !createtable.equals("")) {	
-    		createtable = Strip.DoubleQuote(createtable,Strip.BOTH);
+    			createtable = Strip.DoubleQuote(createtable,Strip.BOTH);
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
-				// informix	stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t "+createtable+" under "+mmb.baseName+"_object");
-				//System.out.println("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
 				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
 				stmt.close();
 				con.close();
@@ -204,7 +222,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			value=value.substring(pos+1,value.length()-1);
 			like=true;
 		}
-		// System.out.println("fieldname="+fieldname+" type="+dbtype);
+		System.out.println("fieldname="+fieldname+" type="+dbtype);
 		if (dbtype.equals("var") || dbtype.equals("varchar")) {
 			switch (operatorChar) {
 			case '=':
@@ -378,7 +396,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		int number=node.getIntValue("number");
 		// did the user supply a number allready, ifnot try to obtain one
 		if (number==-1) number=getDBKey();
-
 		// did it fail ? ifso exit 
 		if (number == -1) return(-1);
 
@@ -863,4 +880,105 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
  		}
  		return(number);
  	}
+
+	/**
+	* will be removed once the xml setup system is done
+	*/
+	public boolean createXML(MMObjectBuilder bul) {
+		
+
+		// use the builder to get the fields are create a
+		// valid create SQL string
+		String result=null;
+
+		Vector sfields=bul.sortedDBLayout;
+	
+		if (sfields!=null) {
+			for (Enumeration e=sfields.elements();e.hasMoreElements();) {
+				String name=(String)e.nextElement();
+				FieldDefs def=bul.getField(name);
+				String part=convertXMLType(def);
+				if (result==null) {
+					result=part;
+				} else {
+					result+=", "+part;
+				}	
+			}
+		}
+		result=getMatchCREATE(bul.getTableName())+"( number integer, "+result+" );";
+		System.out.println("XMLCREATE="+result);
+		return(true);
+	}
+
+	public String convertXMLType(FieldDefs def) {
+		
+		// get the wanted mmbase type
+		String type=def.getDBType();
+		// get the wanted mmbase type
+		String name=def.getDBName();
+
+		// weird extra code to map to old types
+		if (type.equals("varchar")) type="VARCHAR";
+		if (type.equals("int")) type="INTEGER";
+		// end of weird map
+	
+		// get the wanted size
+		int size=def.getDBSize();
+
+		// get the wanted notnull
+		boolean notnull=def.getDBNotNull();
+
+		String result=name+" "+matchType(type,size,notnull);
+		if (notnull) result+=" "+parser.getNotNullScheme();
+		return(result);
+	}	
+
+	
+	String matchType(String type, int size, boolean notnull) {
+		String result=null;
+		if (typeMapping!=null) {
+			dTypeInfos  typs=(dTypeInfos)typeMapping.get(type);
+			if (typs!=null) {
+				for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
+					 dTypeInfo typ = (dTypeInfo)e.nextElement();
+					// System.out.println("WWW="+size+" "+typ.minSize+" "+typ.maxSize+typ.dbType+" "+typs.maps.size());
+					// needs smart mapping code
+					if (typ.minSize!=-1) {
+						if (size>=typ.minSize) {
+							if (typ.maxSize!=-1) {
+								if (size<=typ.maxSize) {
+									result=mapSize(typ.dbType,size);
+								}
+							} else {
+								result=mapSize(typ.dbType,size);
+							}
+						}	
+					} else if (typ.maxSize!=-1) {
+						if (typ.maxSize!=-1) {
+							if (size<=typ.maxSize) {
+								result=mapSize(typ.dbType,size);
+							}
+						}
+					} else {
+						result=typ.dbType;
+					}
+				}
+			} 
+		}
+		return(result);
+	}
+
+	String mapSize(String line, int size) {
+		int pos=line.indexOf("size");
+		if (pos!=-1) {
+			String tmp=line.substring(0,pos)+size+line.substring(pos+4);
+			return(tmp);
+		}
+		return(line);
+	}
+
+	public String getMatchCREATE(String tableName) {
+		return(parser.getCreateScheme()+" "+mmb.baseName+"_"+tableName+" ");
+	}
+
 }
