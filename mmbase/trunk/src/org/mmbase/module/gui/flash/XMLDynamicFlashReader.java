@@ -43,14 +43,14 @@ public class XMLDynamicFlashReader {
             //parser.setErrorHandler(errors);
 			File file = new File(filename);
         	if(!file.exists()) {
-  				log.error("Database file "+filename+" does not exist (check <DATABASE> tag in mmbaseroot.xml)");
+  				log.error("xml file "+filename+" does not exist");
            	}
             parser.parse(filename);
             document = parser.getDocument();
 
-	} catch(Exception e) {
-	    log.error(Logging.stackTrace(e));
-	}
+		} catch(Exception e) {
+		    log.error(Logging.stackTrace(e));
+		}
     }
 
 
@@ -64,9 +64,9 @@ public class XMLDynamicFlashReader {
             parser.parse(new InputSource(reader));
             document = parser.getDocument();
 
-	} catch(Exception e) {
-	    log.error(Logging.stackTrace(e));
-	}
+		} catch(Exception e) {
+		    log.error(Logging.stackTrace(e));
+		}
     }
 
 
