@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
 <builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
@@ -48,6 +50,17 @@
 	<description xml:lang="en">Images</description>
 	<description xml:lang="us">Images</description>
 </descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+	<property name="MaxConcurrentRequests">3</property>
+	<property name="ImageConvert.ConverterCommand">bin/convert</property>
+	<property name="ImageConvert.ConverterRoot">/usr/local/</property>
+	<property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -106,6 +119,10 @@
 				<search>11</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">12</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -136,6 +153,10 @@
 				<search>1</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">255</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -166,6 +187,10 @@
 				<search>2</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">1024</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -226,6 +251,10 @@
 				<search>-1</search>
 			</positions>
 		</editor>
+		<!-- constraints related -->
+		<constraints>
+			<constraint type="maxLength">32</constraint>
+		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->

@@ -1,7 +1,7 @@
 <contextdepth>
 	<startnode>
 		<builder>mags</builder>
-		<where>title=='MMbase.org'</where>
+		<where>title=='MyNews magazine'</where>
 	</startnode>
 
 	<depth>3</depth>
