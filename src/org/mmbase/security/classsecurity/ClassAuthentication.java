@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.security.SecurityException;
+import org.mmbase.security.MMBaseCopConfig;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
@@ -28,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  * 
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.3 2004-05-04 09:43:23 keesj Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.4 2005-01-20 18:20:41 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -44,7 +45,7 @@ public class ClassAuthentication {
     }
     private static List authenticatedClasses = null;
 
-    static FileWatcher watcher = null;
+    static ResourceWatcher watcher = null;
 
     /**
      * Stop watchin the config file, if there is watched one. This is needed when security
@@ -60,9 +61,9 @@ public class ClassAuthentication {
     /**
      * Reads the configuration file and instantiates and loads the wrapped Authentication.
      */
-    protected static void load(File configFile) throws SecurityException {
+    protected static void load(String configFile) throws SecurityException {
         try {
-            InputSource in = new InputSource(new FileInputStream(configFile));
+            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configFile);
             Document document = DocumentReader.getDocumentBuilder(true, // validate aggresively, because no further error-handling will be done
                         new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
                         new XMLEntityResolver(true, ClassAuthentication.class) // validate
@@ -114,16 +115,19 @@ public class ClassAuthentication {
      */
     public static Login classCheck(String application) {
         if (authenticatedClasses == null) {
-            String configPath = MMBaseContext.getConfigPath();
-            if (configPath == null) return null; // not yet initialized.
-            File configFile = new File(configPath, "security" + File.separator + "classauthentication.xml");
-            if (! configFile.canRead()) {
-                log.info("File " + configFile + " cannot be read");
+            String configFile = "classauthentication.xml";
+            try {
+                InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configFile);
+                if (in == null) {
+                    return null;
+                }
+            } catch (IOException ioe) {
+                log.info(ioe);
                 return null;
             }
             load(configFile);
-            watcher = new FileWatcher() {
-                public void onChange(File file) {
+            watcher = new ResourceWatcher() {
+                public void onChange(String file) {
                     load(file);
                 }
             };
