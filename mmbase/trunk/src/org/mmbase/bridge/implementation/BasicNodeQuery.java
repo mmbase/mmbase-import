@@ -26,12 +26,12 @@ import org.mmbase.util.logging.*;
  * Nodes of this type can be used as an argument to function which do return 'real' nodes (so not clusternodes).
  *
  * @todo perhaps it would be nice to have the possibllity to query also two complete steps (also one of the neigbouring 'relation' steps).
- *         this would give nice efficient implementations of things like <mm:relatednode (of mm:listrelations)
+ *         this would give nice efficient implementations of things like mm:relatednode (of mm:listrelations)
  *
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.16 2004-02-16 17:27:03 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.17 2004-02-20 07:31:55 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -85,10 +85,10 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     // overridden from BasicQuery (a node query does not have '.' in its field names)
     public StepField createStepField(String fieldName) {
-        if (fieldName.indexOf('.') == -1) { 
+        if (fieldName.indexOf('.') == -1) {
             BasicStepField stepField = (BasicStepField) getStepField(getNodeManager().getField(fieldName));
             // stepField.setAlias(fieldName);
-            if (stepField == null) throw new  NotFoundException("No field '" + fieldName + "' found in " + getSteps()); 
+            if (stepField == null) throw new  NotFoundException("No field '" + fieldName + "' found in " + getSteps());
             return stepField;
         } else {
             // It does contain dot? Perhaps one of the other steps.
@@ -112,7 +112,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
             }
         }
-        //throw new  NotFoundException("Could not find field '" + field + "' in " + this); 
+        //throw new  NotFoundException("Could not find field '" + field + "' in " + this);
         return null; // hmm.
     }
 
@@ -147,7 +147,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         // Make sure the query _starts_ with the Node-fields.
         // otherwise BasicQueryHandler.getNodes could do it wrong...
         query.removeFields();
-        query.addFields(step);         
+        query.addFields(step);
         addFields(explicitFields);
         if (! isDistinct() ) {
             addFields(implicitFields);
@@ -158,7 +158,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
     public Query cloneWithoutFields() {
-        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS); 
+        BasicSearchQuery bsq = new BasicSearchQuery(query, BasicSearchQuery.COPY_WITHOUTFIELDS);
         BasicNodeQuery clone = new BasicNodeQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = false;
