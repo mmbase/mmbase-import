@@ -145,7 +145,8 @@ public abstract class FileWatcher extends Thread {
     
     /**
      * Add's a file to be checked...
-     *@param file The file which has to be monitored..
+     * @param file The file which has to be monitored..
+     * @throws RuntimeException If file is null or does not exist.
      */
     public void add(File file) {
     	FileEntry fe = new FileEntry(file);
