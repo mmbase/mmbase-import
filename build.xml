@@ -169,11 +169,26 @@ several MMBase-checkouts.
     <copy todir="${build.dir}/mmbase-src/html">
       <fileset dir="${source-html.dir}" defaultexcludes="yes"/>
     </copy>
+    <!-- copy the application files -->
+    <mkdir dir="${build.dir}/mmbase-src/applications"/>
+    <copy todir="${build.dir}/mmbase-src/applications">
+      <fileset dir="${applications.home}" defaultexcludes="yes"/>
+    </copy>
+    <!-- copy the test files -->
+    <mkdir dir="${build.dir}/mmbase-src/tests"/>
+    <copy todir="${build.dir}/mmbase-src/tests">
+      <fileset dir="${source.dir}/tests" defaultexcludes="yes"/>
+    </copy>
+
+
     <!-- copy the build file -->
     <copy file="${source.dir}/build.xml"
           todir="${build.dir}/mmbase-src"/>
     <copy file="${source.dir}/build-example.properties"
           tofile="${build.dir}/mmbase-src/build-example.properties"/>
+
+    <copy file="${source.dir}/build.properties.default"
+          tofile="${build.dir}/mmbase-src/build.properties.default"/>
 
     <!-- create build.properties needed for the srcdist -->
     <echo file="${build.dir}/mmbase-src/build.properties">
