@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.59 2002-04-18 14:43:00 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.60 2002-05-08 13:41:09 vpro Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -48,22 +48,22 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      * @scope private
      */
-    XMLDatabaseReader parser;
+    protected XMLDatabaseReader parser;
     /**
      * @javadoc
      * @scope private
      */
-    Hashtable typeMapping = new Hashtable();
+    protected Hashtable typeMapping = new Hashtable();
     /**
      * @javadoc
      * @scope private
      */
-    Hashtable disallowed2allowed;
+    protected Hashtable disallowed2allowed;
     /**
      * @javadoc
      * @scope private
      */
-    Hashtable allowed2disallowed;
+    protected Hashtable allowed2disallowed;
     /**
      * @javadoc
      */
@@ -77,7 +77,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      * @scope private
      */
-    MMBase mmb;
+    protected MMBase mmb;
 
     public MMSQL92Node() {
     }
@@ -1359,7 +1359,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     /**
      * @javadoc
      */
-    String matchType(int type, int size, boolean notnull) {
+    protected String matchType(int type, int size, boolean notnull) {
         String result=null;
         if (typeMapping!=null) {
             dTypeInfos  typs=(dTypeInfos)typeMapping.get(new Integer(type));
