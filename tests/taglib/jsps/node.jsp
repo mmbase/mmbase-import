@@ -54,7 +54,7 @@
 <em>see <a href="<mm:url page="${taglibdoc}/aliaslist.jsp" />">aliaslist</a></em><br />
 <mm:node referid="node">
   <mm:setfield name="subtitle"><mm:field name="subtitle" />edited</mm:setfield>
-   <!-- mm:createalias>default.mags</mm:createalias CANNOT catch bridgeexception in jsp in orion!!!--> 
+   <!-- mm:createalias default.mags mm:createalias CANNOT catch  bridgeexception in jsp in orion!!! --> 
   subtitle: <mm:field name="subtitle" /><br />
   <mm:createalias><mm:field name="subtitle" /></mm:createalias>
 </mm:node>
@@ -147,17 +147,33 @@ using list tag: <br />
      title: <mm:field name="title" /><br />
      <em>should follow four times the related URL:</em><br />
      <mm:relatednodes type="urls">
-        related url (used relatednodes): <mm:field name="url" /><br />
+       1  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
      <mm:relatednodes type="urls" orderby="description">
-        related url (used relatednodes): <mm:field name="url" /><br />
+       2  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
+     <mm:relatednodes type="urls" role="posrel" searchdir="destination">
+       3  related url (used relatednodes): <mm:field name="url" /><br />
+     </mm:relatednodes>  
+     <mm:relatednodes type="urls" searchdir="destination">
+       4  related url (used relatednodes): <mm:field name="url" /><br />
+     </mm:relatednodes>  
+     <mm:relatednodes type="urls" searchdir="source">
+         SHOULD NOT SEE THIS <br />
+     </mm:relatednodes>  
+     <mm:relatednodes type="urls" role="related">
+         SHOULD NOT SEE THIS (role is not 'related' but 'posrel') <br />
+     </mm:relatednodes>  
+     <mm:relatednodes type="urls" role="posrel" searchdir="source">
+         SHOULD NOT SEE THIS (excplitiy asked for other direction)<br />
+     </mm:relatednodes>  
      <mm:relatednodes type="urls" orderby="description" constraints="">
-        related url (used relatednodes): <mm:field name="url" /><br />
+       5  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
      <mm:related path="urls">
-        related url (used related): <mm:field name="urls.url" /><br />
+       6  related url (used related): <mm:field name="urls.url" /><br />
      </mm:related>  
+
    </mm:node>
 </mm:list>
 

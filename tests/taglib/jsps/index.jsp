@@ -18,6 +18,7 @@
   occuring. It could be that these pages don't work well in the orion
   application server. 
 </p>
+<mm:log>0</mm:log>
 <p>
   Start <a href="<mm:url page="transaction.jsp" />">here for transaction-tests</a>.
 </p>
