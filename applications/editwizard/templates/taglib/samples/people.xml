@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<wizard-schema id="empty">
+	<title>Example 1 people editor</title>
+	<action type="load">
+		<relation destination="news"   role="related"  />
+    <relation destination="images" role="related" />	
+	</action>
+	
+	<action type="create">
+		<object type="people">
+			<field name="firstname" ftype="string">John</field>
+			<field name="lastname" ftype="string">Doe</field>
+		</object>
+	</action>
+	
+	<form-schema id="step1">
+		<title>test</title>
+		<field name="firstname" ftype="html" xdttype="html">
+			<prompt>First name</prompt>
+		</field>
+		<field name="lastname" ftype="html" xdttype="html">
+			<prompt>Last name</prompt>
+		</field>
+		
+		<list role="related" destination="news" minoccurs="0" maxoccurs="*">
+			<command name="search" nodepath="news" fields="title" age="-1"  >
+				<prompt>Search for article</prompt>
+				<search-filter>
+					<name>title contains</name>
+					<search-fields>title</search-fields>
+				</search-filter>
+			</command>
+			<title>Artikelen</title>
+			<item>
+				<list role="related" destination="images">
+					<title>imagelist</title>
+					<command name="search" nodepath="images" fields="title" age="-1"  >
+						<prompt>Search</prompt>
+						<search-filter>
+							<name>title</name>
+							<search-fields>title</search-fields>
+						</search-filter>
+					</command>
+					<item>
+						<field fdatapath=".//object[@type='images']" ftype="image">
+							<prompt>Image</prompt>
+						</field>
+					</item>
+					<action type="create">
+						<relation destinationtype="images" role="related">
+						</relation>
+					</action>
+				</list>
+			</item>
+			
+			<action type="create">
+				<relation role="related" destinationtype="news">
+				</relation>
+				<action type="set">
+					<field fdatapath="../field[@name='name']">{relation/object/@number}</field>
+				</action>
+			</action>
+		</list>
+		
+	</form-schema>
+</wizard-schema>
