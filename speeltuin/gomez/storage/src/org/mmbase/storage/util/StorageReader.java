@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.9 2003-08-05 11:12:20 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.10 2003-08-18 14:42:47 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -260,7 +260,7 @@ public class StorageReader extends DocumentReader  {
             for (int i=0; i<typeMappingTagList.getLength(); i++) {
                 Element typeMappingTag = (Element)typeMappingTagList.item(i);
                 TypeMapping typeMapping = new TypeMapping();
-                typeMapping.name = typeMappingTag.getAttribute("type");
+                typeMapping.name = typeMappingTag.getAttribute("name");
                 // require a type-mapping name (a MMBase type)
                 // if not given, skip the option.
                 if (typeMapping.name != null) {

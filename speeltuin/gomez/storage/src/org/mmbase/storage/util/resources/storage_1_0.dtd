@@ -6,8 +6,8 @@
 	The main tag. You can specify a name and version for administration purposes.  
 -->
 <!ELEMENT storage (storagemanagerfactory?,storagemanager?,searchqueryhandler?,attributes?,type-mappings?,disallowed-fields?)>
-<!ATTLIST attribute name CDATA #REQUIRED>
-<!ATTLIST attribute version CDATA #REQUIRED>
+<!ATTLIST storage name CDATA #IMPLIED>
+<!ATTLIST storage version CDATA #IMPLIED>
 
 <!--
 	The class of the storagemanagerfactory.
@@ -16,8 +16,8 @@
 	If the configuration is loaded by the wrong factory, it should abort the operation.
 -->
 <!ELEMENT storagemanagerfactory EMPTY>
-<!ATTLIST attribute classname CDATA #REQUIRED>
-<!ATTLIST attribute version CDATA #REQUIRED>
+<!ATTLIST storagemanagerfactory classname CDATA #IMPLIED>
+<!ATTLIST storagemanagerfactory version CDATA #IMPLIED>
 
 <!--
 	The class to use for instantiation of the storagemanager
@@ -25,14 +25,14 @@
 	If you specify a version, the factory will abort the operation if the class instantiated if of a lower version.
 -->
 <!ELEMENT storagemanager EMPTY>
-<!ATTLIST attribute classname CDATA #REQUIRED>
-<!ATTLIST attribute version CDATA #REQUIRED>
+<!ATTLIST storagemanager classname CDATA #REQUIRED>
+<!ATTLIST storagemanager version CDATA #REQUIRED>
 
 <!--
 	The class to use for instantiation of the searchqueryhandler
 -->
 <!ELEMENT searchqueryhandler EMPTY>
-<!ATTLIST attribute classname CDATA #REQUIRED>
+<!ATTLIST searchqueryhandler classname CDATA #REQUIRED>
 
 <!--
 	Tag that holds all attributes, options, schemes, and maps
@@ -51,7 +51,7 @@
 -->
 <!ELEMENT option EMPTY>
 <!ATTLIST option name CDATA #REQUIRED>
-<!ATTLIST option set (true|false) #IMPLIED>
+<!ATTLIST option value (true|false) #IMPLIED>
 
 <!--
 	Specifies one scheme. The value is in the tag body
@@ -64,7 +64,7 @@
 	Contains the type mappings for MMBase
 	These map the MMBase types to expressions that the storage manager can use.
 -->
-<!ELEMENT type-mappings (type-mappings*)>
+<!ELEMENT type-mappings (type-mapping*)>
 
 <!--
 	Map a MMBase type to a en expression that the storage manager can handle (such as a database field type).

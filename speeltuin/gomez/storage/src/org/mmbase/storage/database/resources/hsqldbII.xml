@@ -2,11 +2,11 @@
 <!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
 <storage>
 
-  <storagemanagerfactory classname="org.mmbase.storage.database.DatabaseStorageManagerFactory" version="1.0" />
+  <storagemanagerfactory classname="org.mmbase.storage.database.DatabaseStorageManagerFactory" version="0.1" />
 
-  <storagemanager classname="org.mmbase.storage.database.RelationalDatabaseStorageManager" version="1.0" />
+  <storagemanager classname="org.mmbase.storage.database.RelationalDatabaseStorageManager" version="0.1" />
 
-	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.MySqlSqlHandler" />
+	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.HSqlSqlHandler" />
 
 	<attributes>
 	 <!-- uncoment to automatically prefix reserved words with "m_" 
@@ -18,7 +18,9 @@
 
     <scheme name="create.foreign.key.scheme" >INDEX ({2})</scheme>
     <scheme name="create.secondary.key.scheme">UNIQUE ({2})</scheme>
-		
+		<scheme name="create.table.scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+		<scheme name="create.object.table.scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
+
 	</attributes>
 
 	<type-mappings>

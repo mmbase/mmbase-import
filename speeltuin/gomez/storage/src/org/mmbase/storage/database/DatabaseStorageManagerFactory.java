@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.12 2003-08-05 11:12:20 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.13 2003-08-18 14:42:46 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -207,7 +207,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             String databaseName =mmbase.getInitParameter("database");
             if (databaseName != null) {
                 // if databsename is specified, use that database resource
-                databaseResourcePath = "/org/mmbase/storage/database/resource/"+databaseName+".xml";
+                databaseResourcePath = "/org/mmbase/storage/database/resources/"+databaseName+".xml";
             } else {
                 // otherwise, search for supported drivers using the lookup xml
                 DatabaseStorageLookup lookup = new DatabaseStorageLookup();
@@ -224,9 +224,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     }
                 }
             }
+log.info("Use: "+databaseResourcePath);
             // get configuration
             InputStream stream = DatabaseStorageManagerFactory.class.getResourceAsStream(databaseResourcePath);
+log.info("stream: "+stream);
             InputSource in = new InputSource(stream);
+log.info("source: "+in);
             reader = new StorageReader(this, in);
         }
         return reader;
