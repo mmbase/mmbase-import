@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.57 $ $Date: 2002-05-14 09:05:10 $
+ * @$Revision: 1.58 $ $Date: 2002-07-05 12:13:06 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -622,6 +622,7 @@ public class scanparser extends ProcessorModule {
 
 		String part="",filename,paramline=null;;
 		Vector oldparams=sp.getParamsVector();
+        String oldQueryString = sp.querystring;
 
 		sp.partlevel++;
 
@@ -632,19 +633,21 @@ public class scanparser extends ProcessorModule {
 		if (pos!=-1) {
 			filename=part2.substring(0,pos);
 			paramline=part2.substring(pos+1);
-			sp.setParamsLine(paramline);
 			if (sp.req_line==null) sp.req_line=filename;
 		} else {
-			filename=part2;
+			filename = part2;
+            paramline = "";
 		}
 
 		if (filename.indexOf("..")>=0) {
-			sp.setParamsVector(oldparams);
 			sp.partlevel--;
 			log.error("do_part: Usage of '..' in filepath not allowed!");
 			return("Usage of '..' in filepath not allowed!");
 		}
-
+        
+        // Set new params for part
+        sp.querystring = paramline;
+		sp.setParamsLine(paramline);
 
  		if ((filename.length()>0) && (filename.charAt(0)!='/')) {
  			String servletPath = sp.req_line;
@@ -693,10 +696,12 @@ public class scanparser extends ProcessorModule {
 			}
 
 			sp.setParamsVector(oldparams);
+            sp.querystring = oldQueryString;
 			sp.partlevel--;
 			return(part);
 		} else {
 			sp.setParamsVector(oldparams);
+            sp.querystring = oldQueryString;
 			sp.partlevel--;
 			return("");
 		}
@@ -1187,7 +1192,7 @@ public class scanparser extends ProcessorModule {
         sp.rstatus=1;
         return(part);
     }
-    
+
     /**
      * Check request host against wanted host and optional backend host
      * Handles <HOST [host[,backendhost]]> tag
@@ -1204,8 +1209,8 @@ public class scanparser extends ProcessorModule {
             if (i<wantedHost.length()-1) backendHost = wantedHost.substring( i+1 ).trim();
             wantedHost = wantedHost.substring(0, i).trim();
         }
-        if (wantedHost.length() < 1) return null; 
-        
+        if (wantedHost.length() < 1) return null;
+
         if (sp.req==null) return null;
         String requestHost = sp.req.getHeader("Host");
         if (requestHost==null) return null; // No such header
@@ -1215,11 +1220,11 @@ public class scanparser extends ProcessorModule {
         i = requestHost.indexOf(':');
         if (i==0) return null; // First char :, no host only port....
         if (i>0) requestHost = requestHost.substring(0, i);
-        
+
         if (log.isDebugEnabled()) log.debug("Request host: " + requestHost + ", wanted host: " + wantedHost + " backend host: " + backendHost);
 		if (requestHost.equalsIgnoreCase(wantedHost) || requestHost.equalsIgnoreCase(backendHost))
             return null; // The page runs on the requested host or on the backend host
-        
+
         // Rederict the request to the wanted host
         sp.rstatus = 1;
         String url = "http://" + wantedHost + sp.getUrl();
@@ -2178,9 +2183,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.57 2002-05-14 09:05:10 vpro Exp $
+$Id: scanparser.java,v 1.58 2002-07-05 12:13:06 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.57  2002/05/14 09:05:10  vpro
+Wilbert: Don't redirect when sp.req null (from calcPage)
+
 Revision 1.56  2002/05/10 10:59:40  vpro
 Wilbert: added <HOST [host[,backendhost]]> tag redirecting to host if not running on host or optional backend host
 
