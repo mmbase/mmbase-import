@@ -18,25 +18,6 @@ package org.mmbase.bridge;
  *  certain that you will receive the same User interface back !
  */
 public interface User {
-    /**
-     *	gets a property of the User, this is used to get the 
-     *	information from the User.
-     * @param key   The string which represents the key which has to
-     *	    	    be set with the value in the properties.
-     * @param value The Object which has to be linked on the key.
-     * @return      value
-     */
-    public Object put(String key, Object value);
-
-    /**
-     *	gets a property of the User, this is used to get the 
-     *	information from the User.
-     * @param key   The string which represents the key which has to
-     *	    	    be looked up in the properties.
-     * @return      null, if the value wasn't set, otherwise the Object.
-     */
-    public Object get(String key);
-
 
     /**
      *  Get the unique identifier for this user. This should be unique 
