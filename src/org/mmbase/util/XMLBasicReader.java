@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.15 2002-04-17 13:17:51 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.16 2002-06-12 11:47:57 eduard Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -43,10 +43,6 @@ public class XMLBasicReader  {
     private static DocumentBuilder documentBuilder = null;
 
     /** set this one to true, and parser will be loaded...  */
-
-    // who has the guts to change this one to true ???
-    // it should be done in the near future, but gives a lot of error messages...
-    private static boolean useJavaxXML = true;
 
     /** set this one to true, when all document pars */
     private static boolean validateJavaxXML = true;
@@ -60,23 +56,15 @@ public class XMLBasicReader  {
             log.debug("Reading XML file " + path);
         }
         try {
-            if(useJavaxXML) {
-                xmlFilePath=path; // save for debug
-                document = getDocumentBuilder().parse(path);
-            } else {
-                DOMParser parser = new DOMParser();
-                parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-                parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-                EntityResolver resolver = new XMLEntityResolver();
-                parser.setEntityResolver(resolver);
-                path="file:///"+path;
-                xmlFilePath=path; // save for debug
-                parser.parse(path);
-                document = parser.getDocument();
-            }
-        } catch(Exception e) {
-            log.error("Error reading " + path);
-            log.error(Logging.stackTrace(e));
+            javax.xml.parsers.DocumentBuilder builder = getDocumentBuilder();
+            if(builder == null) throw new RuntimeException("failure retrieving document builder");
+            document = builder.parse(path);
+        }
+        catch(org.xml.sax.SAXException se) {
+            throw new RuntimeException("failure reading document: " + path + "\n" + se);
+        }
+        catch(java.io.IOException ioe) {
+            throw new RuntimeException("failure reading document: " + path + "\n" + ioe);
         }
     }
 

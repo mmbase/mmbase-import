@@ -9,23 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
-
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-
+import org.w3c.dom.Element;
+import java.util.Hashtable;
+import java.util.Enumeration;
 import org.mmbase.module.corebuilders.*;
 
 /**
  */
 public class XMLModuleReader extends XMLBasicReader {
-
-    Document document;
-    DOMParser parser;
-
 
     public XMLModuleReader(String filename) {
         super(filename);
