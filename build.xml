@@ -77,7 +77,11 @@ NetComponents can be found at:
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
   <property name="distro"      value="MMBase 1.7.0"/>
+
+  <!-- documentation related settings -->
   <property name="documentation.builders.language" value="en" />
+  <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
+
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
   <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
@@ -1185,7 +1189,7 @@ Build-compiler: ${build.compiler}
     <available property="jspsmartupload.expanded" file="${jspsmartupload.jar}" />
 
     <!-- Docbook XSL -->
-    <property name="docbook-xsl.version" value="docbook-xsl-1.57.0"  />
+    <property name="docbook-xsl.version" value="docbook-xsl-1.60.1"  />
     <property name="docbook-xsl.file" value="${docbook-xsl.version}.tar.gz"  />
     <property name="docbook-xsl.url" value="http://belnet.dl.sourceforge.net/sourceforge/docbook/${docbook-xsl.file}" />
     <available property="docbook-xsl.present"  file="${download.dir}/${docbook-xsl.file}" />
@@ -1503,7 +1507,9 @@ Version: MMBase build ${version}
 
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
-    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+    <replace  file="${build.dir}/docbook2xhtml.xslt" 
+              token="[BASESTYLESHEET]" 
+              value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
 
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
