@@ -69,6 +69,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
 
     private int multilevel_cachesize=300;
+
     private MultilevelCacheHandler multilevel_cache;
 
     /**
@@ -91,9 +92,8 @@ public class BasicCloud implements Cloud, Cloneable {
         account= cloud.account;
 
 	// start multilevel cache	
-        MMBase mmb = this.cloudContext.mmb;
-        multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
-
+        MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
+        multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
 
     /**
@@ -136,7 +136,8 @@ public class BasicCloud implements Cloud, Cloneable {
         account="U"+uniqueId();
 
 	// start multilevel cache	
-        multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
+        MultilevelCacheHandler.setMMBase(mmb);
+        multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
 
     public Node getNode(int nodenumber) {
@@ -600,11 +601,14 @@ public class BasicCloud implements Cloud, Cloneable {
 	// start of test for multilevel cache in mmci
 	Integer hash=multilevel_cache.calcHashMultiLevel(tagger); 
 
-	Vector v=null; // ugly way  
+	Vector v=null;
 	if (multilevel_cache.isActive()) {
-		v=(Vector)multilevel_cache.get(hash);
-		if (v==null) {
+		Vector vc=(Vector)multilevel_cache.get(hash);
+		if (vc==null) {
        			v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+            		multilevel_cache.put(hash,v,tables,tagger);
+		} else {
+			v=(Vector)vc.clone();
 		}
 	} else {
        		v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
@@ -612,7 +616,6 @@ public class BasicCloud implements Cloud, Cloneable {
 
         if (v!=null) {
 	    //  store Vector in cache for future use
-            if (multilevel_cache.isActive()) multilevel_cache.put(hash,v,tables,tagger);
 
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
