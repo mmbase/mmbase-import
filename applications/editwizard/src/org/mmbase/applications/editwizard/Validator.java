@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.5 2003-04-16 07:16:37 pierre Exp $
+ * @version $Id: Validator.java,v 1.6 2003-04-16 07:38:05 pierre Exp $
  */
 
 public class Validator {
@@ -90,24 +90,25 @@ public class Validator {
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
         if ("string".equals(dttype)) {
-            // string or html
+            int len = value.length();
             int dtminlength = 0;
             try {
                 dtminlength = Integer.parseInt(Utils.getAttribute(field,"dtminlength", "0"));
-            }catch (Exception e){
+            } catch (Exception e) {
                 // don't mind that
             }
-            int dtmaxlength = 640000;
-            try {
-                dtmaxlength = Integer.parseInt(Utils.getAttribute(field,"dtmaxlength","640000"));
-            }catch (Exception e){
-                // don't mind that again
-            }
-            int len = value.length();
-
-            if (len<dtminlength || len>dtmaxlength) {
-                // to long or to short text entered
-                addValidationError(val, 1, "Entered text is too long or too short.");
+            if (len<dtminlength) {
+                addValidationError(val, 1, "Entered text is too short.");
+            } else {
+                int dtmaxlength = 640000;
+                try {
+                    dtmaxlength = Integer.parseInt(Utils.getAttribute(field,"dtmaxlength","640000"));
+                } catch (Exception e){
+                    // don't mind that again
+                }
+                if (len>dtmaxlength) {
+                    addValidationError(val, 1, "Entered text is too long.");
+                }
             }
         }
         if ("int".equals(dttype)) {
