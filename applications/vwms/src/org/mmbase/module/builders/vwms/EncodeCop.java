@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.9 2000-08-01 08:53:32 install Exp $
+$Id: EncodeCop.java,v 1.10 2000-08-01 09:11:32 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/08/01 08:53:32  install
+Rob: removed method that was not needed antmore
+
 Revision 1.8  2000/06/05 10:56:55  wwwtech
 Rico: added support for new 3voor12
 
@@ -37,12 +40,11 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 
 import nl.vpro.mmbase.util.media.audio.*;
-//import nl.vpro.mmbase.util.media.audio.cdtracks.*;
 import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.9 $ $Date: 2000-08-01 08:53:32 $
+ * @version $Revision: 1.10 $ $Date: 2000-08-01 09:11:32 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -88,7 +90,6 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			if (builder.equals("audioparts")) audiopartsChanged(number,ctype);	
 			if (builder.equals("g2encoders")) encoderChanged(number,ctype);	
 			if (builder.equals("rawaudios")) rawaudioChanged(number,ctype);	
-			// if (builder.equals("cdtracks")) cdtracksChanged(number,ctype);	
 		}
 		return(true);
 	}
@@ -130,23 +131,6 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		}
 		return(true);
 	}
-
-
-	/*
-	public boolean cdtracksChanged(String number,String ctype) {
-		if( debug ) debug("cdtracksChanged("+number+","+ctype+")");
-		if (ctype.equals("n")) {
-			CDTracks bul=(CDTracks)Vwms.mmb.getMMObject("cdtracks");
-			if (bul!=null) {
-				MMObjectNode node=bul.getNode(number);
-				EncoderHandlers.addElement( new EncodeHandler(this,"newcdtrack",node) );
-			} else {
-				debug("cdtracksChanged(): no reference could be make to cdtracks");
-			}
-		}
-		return(true);
-	}
-	*/
 
 	public boolean audiopartsChanged(String number,String ctype) {
 		if( debug ) debug("audiopartsChanged("+number+","+ctype+")");
