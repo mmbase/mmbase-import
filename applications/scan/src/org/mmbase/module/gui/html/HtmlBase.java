@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.39 2001-03-12 09:00:12 pierre Exp $
+	$Id: HtmlBase.java,v 1.40 2001-05-11 12:10:38 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.39  2001/03/12 09:00:12  pierre
+	pierre: added SEARCH attribute to the LIST MULTILEVEL tag. Values are BOTH, DESTINATION, SOURCE, ALL, and EITHER.
+	Default value of this attribute is EITHER, which simulates the old list behavior.
+	
 	Revision 1.38  2001/03/09 10:10:47  pierre
 	pierre: adapted mmeditor classes to new relations system and added logging
 	
@@ -147,7 +151,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.39 2001-03-12 09:00:12 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.40 2001-05-11 12:10:38 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -655,6 +659,12 @@ public class HtmlBase extends ProcessorModule {
 				// Get the number for a alias
 				if (OAlias==null) OAlias=(OAlias)mmb.getMMObject("oalias");
 				return(""+OAlias.getNumber(tok.nextToken()));
+			} else if (cmd.equals("FIELDLENGTH")) {
+				String s = getObjectField(sp,tok);
+				if (s==null) 
+					return "0"; 
+				else 
+					return ""+s.length();
 			}
 		}
 		return("No command defined");
