@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.2 2003-05-23 12:05:13 michiel Exp $
+ * @version $Id: Ranks.java,v 1.3 2003-06-26 20:58:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -44,10 +44,59 @@ public class Ranks extends MMObjectBuilder {
 
     // javadoc inherited
     public boolean init() {
+        boolean res = super.init();
         mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
-        return super.init();
+         Enumeration allRanks = search(null);  
+         while (allRanks.hasMoreElements()) {
+             MMObjectNode rank = (MMObjectNode) allRanks.nextElement();
+             String name = rank.getStringValue("name");
+             Rank r = Rank.getRank(name);
+             if (r == null) {                  
+                 Rank.registerRank(rank.getIntValue("rank"), name);
+             }
+         }
+         return res;
     }
+    /**
+     * If a rank is inserted, it must be registered
+     */
+    public int insert(String owner, MMObjectNode node) {
+        int res = super.insert(owner, node);
+        int rank = node.getIntValue("rank");
+        String name  = node.getStringValue("name");
+        Enumeration allRanks = search(null);  
+        while (allRanks.hasMoreElements()) {
+            MMObjectNode otherNode = (MMObjectNode) allRanks.nextElement();
+            if (node.getNumber() == otherNode.getNumber()) continue;
+            Rank r = getRank(otherNode);
+            if(r.getInt() == rank) {
+                // there is a unique key on rank so insert will have failed.
+                // this tells us why.                
+                throw new SecurityException("Cannot insert rank '" + name + "', because there is already is a rank with rank weight " + rank + " (" + r + ")");
+            }
+        }
+        Rank.registerRank(rank, name);      
+        return res;
+    }
+
+
+    /**
+     * A rank may only be removed if there are no users of that rank.
+     *
+     */
+    public void removeNode(MMObjectNode node) {
+        List users =  node.getRelatedNodes("mmbaseusers", ClusterBuilder.SEARCH_SOURCE);
+        if (users.size() > 1) {
+            // cannot happen?
+            throw new SecurityException("Rank " + node + " cannot be removed because there are users with this rank: " + users);
+        }
+        String name = node.getStringValue("name");
+        Rank.unregisterRank(name);                  
+        super.removeNode(node);
+    }
+
+    
 
     /**
      * Converts this MMObjectNode to a real rank.
@@ -59,16 +108,21 @@ public class Ranks extends MMObjectBuilder {
         } else {
             String name = node.getStringValue("name");
             Rank r = Rank.getRank(name);
-            if (r == null) { // unknown rank?
-                r = Rank.registerRank(rank, name);
-            }
             return r;
         }
     }
 
-    //javadoc inherited
+    /**
+     * Only the description of a rarnk may be changed.
+     *
+     */
     public boolean setValue(MMObjectNode node, String field, Object originalValue) {
-        return true;
+        if (field.equals("name") || field.equals("rank")) {
+            if ( (!node.getValue(field).equals(originalValue)) && (originalValue != null)) {
+                throw new SecurityException("Cannot change " + field + " field of rank objects");
+            }
+        }
+        return true; 
     }
 
     //javadoc inherited
