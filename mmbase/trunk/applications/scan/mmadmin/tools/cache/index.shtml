@@ -80,7 +80,7 @@
 	<TD BGCOLOR="42BDAD" COLSPAN="4">
 	<FONT COLOR="000000">
 	<CENTER>
-	<B><A HREF="showmultilevellru.shtml">Show first 100 entry's of the LRU</A></B>
+	<B><A HREF="showmultilevellru.shtml">Show first 500 entry's of the LRU</A></B>
 	</TD>
 </TR>
 
@@ -151,7 +151,7 @@
 	<TD BGCOLOR="42BDAD" COLSPAN="4">
 	<FONT COLOR="000000">
 	<CENTER>
-	<B><A HREF="shownodelru.shtml">Show first 100 entry's of the LRU</A></B>
+	<B><A HREF="shownodelru.shtml">Show first 1000 entry's of the LRU</A></B>
 	</TD>
 </TR>
 
