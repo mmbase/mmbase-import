@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesSender.java,v 1.9 2004-07-16 10:39:03 pierre Exp $
+ * @version $Id: MultiCastChangesSender.java,v 1.10 2004-07-16 11:23:58 pierre Exp $
  */
 public class MultiCastChangesSender implements Runnable {
 
@@ -62,7 +62,7 @@ public class MultiCastChangesSender implements Runnable {
     /**
      * Time To Live for datapackets send by Multicast
      */
-    byte mTTL=1;
+    int mTTL=1;
     /**
      * @javadoc
      * @scope private
@@ -123,6 +123,7 @@ public class MultiCastChangesSender implements Runnable {
                 ia = InetAddress.getByName(parent.multicastaddress);
                 ms = new MulticastSocket();
                 ms.joinGroup(ia);
+                ms.setTimeToLive(mTTL);
             } catch(Exception e) {
                 log.error(Logging.stackTrace(e));
             }
@@ -137,19 +138,16 @@ public class MultiCastChangesSender implements Runnable {
      * @todo check what encoding to sue for getBytes()
      */
     private void doWork() {
-        byte[] data;
-        DatagramPacket dp;
-        String chars;
-        while(kicker!=null) {
-            chars=(String)nodesTosend.get();
+        while(kicker != null) {
+            String chars = (String)nodesTosend.get();
             parent.incount++;
-            data = chars.getBytes();
-            dp = new DatagramPacket(data, data.length, ia,mport);
+            byte[] data = chars.getBytes();
+            DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
             try {
                 if (log.isDebugEnabled()) {
                     log.debug("SEND=>" + new String(chars));
                 }
-                ms.send(dp, mTTL);
+                ms.send(dp);
             } catch (IOException e) {
                 log.error("can't send message");
                 log.error(Logging.stackTrace(e));

@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.117 2004-07-16 10:39:03 pierre Exp $
+ * @version $Id: MMBase.java,v 1.118 2004-07-16 11:23:58 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -97,7 +97,7 @@ public class MMBase extends ProcessorModule {
      * Determines the Time To Live for a multicast datapacket
      * @todo move this property and configuration to MultiCast class
      */
-    byte multicastTTL = 1;
+    int multicastTTL = 1;
 
     /**
      * Time in seconds, when mmbase was started.
@@ -374,7 +374,7 @@ public class MMBase extends ProcessorModule {
         tmp = getInitParameter("MULTICASTTTL");
         if (tmp != null && !tmp.equals("")) {
             try {
-                multicastTTL = Byte.parseByte(tmp);
+                multicastTTL = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
