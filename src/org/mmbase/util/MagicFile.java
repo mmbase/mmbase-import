@@ -27,7 +27,7 @@ import org.mmbase.util.magicfile.MagicXMLReader;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.9 2003-02-10 23:44:36 nico Exp $
+ * @version $Id: MagicFile.java,v 1.10 2003-04-22 13:36:29 kees Exp $
  */
 public class MagicFile {
    private static Logger log =
@@ -116,6 +116,7 @@ public class MagicFile {
       if (input.length > BUFSIZE) {
          lithmus = new byte[BUFSIZE];
          System.arraycopy(input, 0, lithmus, 0, BUFSIZE);
+	 log.debug("getMimeType was called with big bytearray cutting to " + BUFSIZE +" bytes");
       }
       else {
          lithmus = input;
