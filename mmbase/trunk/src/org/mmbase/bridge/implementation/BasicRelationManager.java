@@ -130,7 +130,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
             throw new BasicBridgeException("Relationmanager type and destination node are not in the same transaction or in different clouds");
         }
         if (!(cloud instanceof Transaction)  &&
-             (((BasicNode)sourceNode).isNew()) || (((BasicNode)destinationNode).isNew())) {
+             (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
             throw new BasicBridgeException("Cannot add a relation to a new node that has not been committed.");
 	    }
 
