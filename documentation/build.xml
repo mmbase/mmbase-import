@@ -223,7 +223,8 @@
              classpathref="fop.classpath"/>
     
     <!-- transform xsl-fo into pdf --> 
-    <fop format="application/pdf" outdir="${documentation.dest.dir}">
+    <fop format="application/pdf" outdir="${documentation.dest.dir}"
+         messagelevel="error">
       <fileset dir="${documentation.temp.dir}">
         <include name="**/*.fo"/>
         <!-- fop runs crazy on this document -->
@@ -342,5 +343,4 @@
     <delete file="${download.dir}/file.zip"/>
   </target>
 
-  <target name="documentation.all" depends="documentation.html,documentation.pdf"/>
 </project>
