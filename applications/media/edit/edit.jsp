@@ -9,7 +9,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: edit.jsp,v 1.4 2003-02-17 18:07:20 pierre Exp $
+    @version  $Id: edit.jsp,v 1.5 2003-04-02 15:21:20 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -19,7 +19,7 @@
 <mm:import id="startnodes"><mm:write referid="origin" /></mm:import>
 
 <body  onload="init('poolselector');">
-   <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->     
+  <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->     
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%>?origin=<mm:write referid="origin" /></mm:import>
   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
 
@@ -76,7 +76,7 @@
          </select>
          <input type="text" name="searchvalue"
          /><input type="hidden" name="wizard" value="tasks/clipping/videofragments"
-         /><input type="hidden" name="nodepath" value="pools,videofragments,parent,videofragments2"
+         /><input type="hidden" name="nodepath" value="pools,videofragments,posrel,videofragments2"
          /><input type="hidden" name="fields" value="videofragments2.number,videofragments.number,videofragments.title,videofragments2.title"
          /><input type="hidden" name="orderby" value="videofragments.title,videofragments2.title"
          /><input type="hidden" name="directions" value="down"
@@ -115,7 +115,7 @@
            </select>
            <input type="text" name="searchvalue"
            /><input type="hidden" name="wizard" value="tasks/clipping/audiofragments"
-           /><input type="hidden" name="nodepath" value="pools,audiofragments,parent,audiofragments2"
+           /><input type="hidden" name="nodepath" value="pools,audiofragments,posrel,audiofragments2"
            /><input type="hidden" name="fields" value="audiofragments2.number,audiofragments.number,audiofragments.title,audiofragments2.title"
            /><input type="hidden" name="orderby" value="audiofragments.title,audiofragments2.title"
            /><input type="hidden" name="startnodes" value="media.myfragments"
