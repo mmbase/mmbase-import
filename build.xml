@@ -380,20 +380,22 @@ NetComponents can be found at:
     <available property="informix.in.classpath"
                classpathref="compile.classpath"
                classname="com.informix.jdbc.IfxCblob" />
+    <antcall target="check.optional.informix" />
 
     <available property="oracle.in.classpath"
                classpathref="compile.classpath"
                classname="oracle.jdbc.OracleDriver" />
+    <antcall target="check.optional.oracle" />
 
-    <available
-      property="naming.in.classpath"
+    <available property="naming.in.classpath"
       classpathref="compile.classpath"
       classname="javax.naming.Context" />
+    <antcall target="check.optional.naming" />
 
-    <available
-      property="sqlconnection.in.classpath"
+    <available property="sqlconnection.in.classpath"
       classpathref="compile.classpath"
       classname="javax.sql.DataSource" />
+    <antcall target="check.optional.sqlconnection" />
 
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
@@ -407,7 +409,7 @@ NetComponents can be found at:
       <exclude name="org/mmbase/bridge/ContextProvider.java"/>
       <exclude name="org/mmbase/bridge/RemoteContext.java"/>
       <exclude name="org/mmbase/bridge/remote/**"/>
-      <exclude name="org/mmbase/module/JMSendMail.java"    unless="naming.in.classpath" />
+      <exclude name="org/mmbase/module/JMSendMail.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
       <exclude name="org/mmbase/module/database/support/MMOracle.java" unless="oracle.in.classpath" />
@@ -417,126 +419,71 @@ NetComponents can be found at:
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
   </target>
 
-
-  <!-- =================================================================== -->
-  <!-- Prepare for customized compilation                                  -->
-  <!-- =================================================================== -->
-  <target name="init.compile.cust">
-    <!-- needed packages -->
-    <available property="xerces.in.classpath"
-               classname="org.apache.xerces.parsers.DOMParser"/>
-    <available property="servlet.in.classpath"
-               classname="javax.servlet.http.HttpServlet"/>
-    <!-- optional packages -->
-    <available property="xalan.in.classpath"
-               classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
-    <available property="jai.in.classpath"
-               classname="javax.media.jai.JAI"/>
-    <available property="log4j.in.classpath"
-                classname="org.apache.log4j.Logger"/>
-    <available property="junit.in.classpath"
-               classname="junit.runner.BaseTestRunner"/>
-    <available property="informix.in.classpath"
-               classname="com.informix.jdbc.IfxCblob"/>
-
-    <!-- javax.naming only appears in jdk 1.3 -->
-    <available property="naming.in.classpath" classname="javax.naming.Context" />
-
-    <!-- check directory structure -->
-    <available property="dir.src.present"
-               file="${source-src.dir}"/>
-    <available property="dir.org.present"
-               file="${source-src.dir}/org"/>
-    <available property="dir.mmbase.present"
-               file="${source-src.dir}/org/mmbase"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Check the needed packages                                           -->
-  <!-- =================================================================== -->
-  <target name="check.needed.xerces" depends="init.compile.cust"
-          unless="xerces.in.classpath">
-    <echo message=""/>
-    <echo message="Error: Missing needed package Xerces."/>
-    <echo message="You first need to install Xerces (http://xml.apache.org/xerces-j/)"/>
-    <echo message="and add it to your classpath, before you can compile and use MMBase."/>
-    <echo message=""/>
-    <fail message="Missing needed package Xerces."/>
-  </target>
-
-  <target name="check.needed.servlet" depends="init.compile.cust"
-          unless="servlet.in.classpath">
-    <echo message=""/>
-    <echo message="Error: Missing needed package javax.servlet."/>
-    <echo message="You first need to add servlet.jar to your classpath,"/>
-    <echo message="before you can compile and use MMBase."/>
-    <echo message="You'll probably find it somewhere in your servlet-engine dir."/>
-    <echo message=""/>
-    <fail message="Missing needed package javax.servlet."/>
-  </target>
-
-
   <!-- =================================================================== -->
   <!-- Check the optional packages                                         -->
   <!-- =================================================================== -->
-  <target name="check.optional.xalan" depends="init.compile.cust"
-          unless="xalan.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package Xalan."/>
-    <echo message="You first need to install Xalan (http://xml.apache.org/xalan/)"/>
-    <echo message="and add it to your classpath, before you can use all the features of MMBase."/>
-    <echo message="MMBase will compile and run without this package,"/>
-    <echo message="if you remove the xslconvert module from your modules.xml."/>
-    <echo message=""/>
-  </target>
 
-  <target name="check.optional.jai" depends="init.compile.cust"
-          unless="jai.in.classpath">
+  <target name="check.optional.jai" unless="jai.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package javax.jai."/>
     <echo message="You can't use the java based Image-Converter without this package,"/>
     <echo message="you've got to use ImageMagick."/>
-
     <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
     <echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
   </target>
 
-  <target name="check.optional.log4j" depends="init.compile.cust" unless="log4j.in.classpath">
+  <target name="check.optional.log4j" unless="log4j.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package Log4j."/>
     <echo message="Logging capabalities will be very limited."/>
     <echo message="Log4j can be downloaded from http://jakarta.apache.org/log4j/"/>
     <echo message="The Log4j Implementation of MMBase will not compile,"/>
-    <echo message="but MMBase will run without this package though."/>
+    <echo message="but MMBase will run without this package."/>
     <echo message=""/>
   </target>
 
-  <target name="check.optional.junit" depends="init.compile.cust"
-          unless="junit.in.classpath">
+  <target name="check.optional.junit" unless="junit.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package JUnit."/>
     <echo message="You will not be able to run tests."/>
     <echo message="JUnit can be downloaded from http://www.unit.org/"/>
     <echo message="The JUnit tests for MMBase will not compile,"/>
-    <echo message="but MMBase will run without this package though."/>
+    <echo message="but MMBase will run without this package."/>
     <echo message=""/>
   </target>
 
-  <target name="check.optional.informix" depends="init.compile.cust"
-          unless="informix.in.classpath">
+  <target name="check.optional.oracle" unless="oracle.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package oracle.jdbc."/>
+    <echo message="Oracle support for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.informix" unless="informix.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package com.informix.jdbc."/>
     <echo message="Informix support for MMBase will not be compiled,"/>
-    <echo message="but MMBase will run without this package though."/>
+    <echo message="but MMBase will run without this package."/>
     <echo message=""/>
   </target>
 
-  <target name="check.package.all"
-          depends="check.needed.xerces,check.needed.servlet,
-                   check.optional.xalan,check.optional.jai,check.optional.log4j,
-                   check.optional.junit,check.optional.informix"/>
+  <target name="check.optional.naming" unless="naming.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.naming."/>
+    <echo message="J2EE database and email support for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.sqlconnection" unless="sqlconnection.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.sql."/>
+    <echo message="J2EE database detection for MMBase will not be compiled,"/>
+    <echo message="but MMBase will run without this package."/>
+    <echo message=""/>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
@@ -545,8 +492,6 @@ NetComponents can be found at:
           depends="clean.lib">
     <delete dir="${build.dir}/classes"/>
   </target>
-
-
 
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
@@ -744,7 +689,6 @@ Build-compiler: ${build.compiler}
       </webinf>
     </war>
   </target>
-
 
   <!-- =================================================================== -->
   <!-- Create the API documentation                                        -->
