@@ -576,7 +576,7 @@ a.treeNavigation:hover {
 .contentBody {
 	font-weight: normal;
 	color: #000000;
-	overflow: auto;
+	overflow: visible;
 	top: 5.2em;
 	height: 100%;
 	left: 0em;
@@ -590,7 +590,7 @@ a.treeNavigation:hover {
 .contentBodywit {
 	font-weight: normal;
 	color: #000000;
-	overflow: auto;
+	overflow: visible;
 	top: 5.2em;
 	height: 100%;
 	left: 0em;
