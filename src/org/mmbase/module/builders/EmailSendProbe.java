@@ -148,7 +148,7 @@ public class EmailSendProbe implements Runnable {
 								log.error("emailsendprobe : performTask failed"+anode);
 								tasks.removeElement(anode);
 								// oke set node on error
-								anode.setValue("mailstate",parent.STATE_FAILED);
+								anode.setValue("mailstatus",parent.STATE_FAILED);
 								anode.commit();
 							}
 				
