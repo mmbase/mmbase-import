@@ -7,13 +7,8 @@
 	int settings_maxupload = 4 * 1024 * 1024; // 1 MByte max uploadsize
 %><%
     if(settings_basedir == null) {
-        // get the requested jsp...
-        java.io.File f = new java.io.File(request.getRequestURI());
-        // remove the jsp, and add the 'data' dir to it....
-        String webDataDir = f.getParent() + java.io.File.separator + "data";
-        // ask how this dir is absolute on the server... 
-        String diskDataDir = getServletConfig().getServletContext().getRealPath(webDataDir);
-        f = new java.io.File(diskDataDir);
-        settings_basedir = f.getAbsolutePath();
+        String jspFile = getServletContext().getRealPath(request.getRequestURI().substring(request.getContextPath().length()));
+        java.io.File f = new java.io.File(jspFile);
+        settings_basedir = f.getParentFile().getAbsolutePath() + java.io.File.separator + "data";
     }
 %>
