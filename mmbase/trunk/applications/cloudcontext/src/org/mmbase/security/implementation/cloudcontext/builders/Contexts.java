@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.19 2003-09-10 18:55:53 michiel Exp $
+ * @version $Id: Contexts.java,v 1.20 2003-09-22 11:51:53 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -710,6 +710,16 @@ public class Contexts extends MMObjectBuilder {
             return false;
         }
     }
+
+
+    /**
+     * Makes sure unique values and not-null's are filed
+     */
+    public void setDefaults(MMObjectNode node) {
+        setUniqueValue(node, "name", "context");
+    }
+
+
 
 
 

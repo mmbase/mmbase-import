@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.15 2003-09-22 11:12:25 michiel Exp $
+ * @version $Id: Users.java,v 1.16 2003-09-22 11:51:54 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -41,6 +41,7 @@ public class Users extends MMObjectBuilder {
     public final static String FIELD_STATUS      = "status";
     public final static String FIELD_USERNAME    = "username";
     public final static String FIELD_PASSWORD    = "password";
+    public final static String FIELD_DEFAULTCONTEXT    = "defaultcontext";
 
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
@@ -143,10 +144,6 @@ public class Users extends MMObjectBuilder {
         return true;
     }
 
-    //javadoc inherited
-    public void setDefaults(MMObjectNode node) {
-        node.setValue(FIELD_PASSWORD, "");
-    }
 
     /**
      * @javadoc
@@ -181,7 +178,7 @@ public class Users extends MMObjectBuilder {
         } 
 
 
-        if (encode(password).equals(user.getStringValue("password"))) {
+        if (encode(password).equals(user.getStringValue(FIELD_PASSWORD))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
@@ -240,14 +237,14 @@ public class Users extends MMObjectBuilder {
      */
 
     public String getDefaultContext(MMObjectNode node)  {
-        return node.getNodeValue("defaultcontext").getStringValue("name");
+        return node.getNodeValue(FIELD_DEFAULTCONTEXT).getStringValue("name");
     }
 
     /**
      * @return The string representation the username of the User node.
      */
     public String getUserName(MMObjectNode node) {
-         return node.getStringValue("username");
+         return node.getStringValue(FIELD_USERNAME);
     }
 
     /**
@@ -283,33 +280,15 @@ public class Users extends MMObjectBuilder {
     /**
      * Makes sure unique values and not-null's are filed
      */
-    public MMObjectNode getNewNode(String owner) {
-        MMObjectNode node = super.getNewNode(owner);
-        MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(owner);
-        node.setValue("defaultcontext", defaultDefaultContext);
-        
-        String baseValue = node.getStringValue("username");
-        if ("".equals(baseValue)) baseValue = "user";
-        int seq = 0;
-        boolean found = false;
-        try {
-            while (! found) {
-                NodeSearchQuery query = new NodeSearchQuery(this);
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("username")), baseValue + seq);      
-                query.setConstraint(constraint);            
-                if (getNodes(query).size() == 0) {
-                    found = true;
-                    break;
-                }
-                seq++;
-            }
-            node.setValue("username",  baseValue + seq);
-        } catch (SearchQueryException e) {
-            node.setValue("username",  baseValue + System.currentTimeMillis());
-        }
-        return node;
-        
+    public void setDefaults(MMObjectNode node) {
 
+        MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
+        node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
+
+        node.setValue(FIELD_PASSWORD, "");
+
+        setUniqueValue(node, FIELD_USERNAME, "user");
+        
     }
 
 
