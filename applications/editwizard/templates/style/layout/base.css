@@ -4,46 +4,46 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version  $Id: base.css,v 1.1 2003-12-19 11:09:43 nico Exp $
+  @version  $Id: base.css,v 1.2 2004-01-20 18:00:51 michiel Exp $
 */
 body  {         
-        font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-        font-size: 11px;
-        font-weight: normal;
-        margin: 10px 10px 0px 10px;
-        overflow: hidden ;
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  margin: 10px 10px 0px 10px;
+  overflow: hidden ;
 } 
 
 input, textarea, select  {         
-        font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-        font-size: 11px;
-        font-weight: normal;
-        text-align: left;
-        letter-spacing: 0.05em;
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: left;
+  letter-spacing: 0.05em;
 }
 input, textarea,  {         
-        width: 100%;
+  width: 100%;
 } 
 
 a:link  {         
-        text-decoration: none;
-        font-size: 11px;
-        font-weight: normal;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: normal;
 }
 a:visited  {         
-        text-decoration: none;
-        font-size: 11px;
-        font-weight: normal;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: normal;
 }
 a:hover  {         
-        text-decoration: none;
-        font-size: 11px;
-        font-weight: normal;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: normal;
 } 
 a:active  {         
-        text-decoration: none;
-        font-size: 11px;
-        font-weight: normal;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: normal;
 }
 
 /**
