@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.41.2.4 2003-03-27 17:31:41 robmaris Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.5 2003-04-24 13:04:08 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -286,7 +286,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         String fieldType = getDbFieldType(def, def.getDBSize(), fieldRequired);
         String result = fieldName + " " + fieldType;
         if (fieldRequired) {
-            result += " "+parser.getNotNullScheme();
+            result += " " + parser.getNotNullScheme();
         }
         if (fieldUnique) {
             //TODO : parser.getKeyScheme()+ "("+name+") so make a
@@ -553,7 +553,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      * @param i parameterIndex 1 is the first value, 2 is the second value, ...
      */
     private void setValuePreparedStatement(PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
-        if (log.isDebugEnabled()) log.trace(" ");
         switch (node.getDBType(key)) {
             case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
@@ -571,13 +570,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING:
                 // Getting dbType info in case were dealing with a clob
-                FieldDefs def = node.getBuilder().getField(key);
-                String dbType = getDbFieldType(def, def.getDBSize(), false);
-                log.debug("DBType: " + dbType);
+                ResultSetMetaData rd = stmt.getMetaData();
+                String dbType = rd.getColumnTypeName(i);
+
                 if (dbType.equals("clob")) {
                     setDBClob(i, stmt, node.getStringValue(key));
-                }
-                if (!dbType.equals("clob")) {
+                } else {
                     setDBText(i, stmt, node.getStringValue(key));
                 }
                 break;
@@ -629,33 +627,17 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             switch (type) {
                 case FieldDefs.TYPE_XML:
                 case FieldDefs.TYPE_STRING:
-                    log.trace("FieldType is String");
-
                     // First, figure out what kind of String we're dealing with
-                    FieldDefs def = node.parent.getField(fieldname);
-                    if (def == null) {
-                        // Hmmm. No fielddefs found. Lets try to add the prefix
-                        def = node.getBuilder().getField(prefix + fieldname);
-                        if (def == null) {
-                            // No Fielddefs found for the parentbuilder of this node.
-                            dbType = "String";
-                        } else {
-                            // Fielddefs found at second try.
-                            dbType = getDbFieldType(def, def.getDBSize(), false);
-                        }
-                    } else {
-                        // Fielddefs found.
-                        dbType = getDbFieldType(def, def.getDBSize(), false);
-                    }
+                    ResultSetMetaData rd = rs.getMetaData();
+                    dbType = rd.getColumnTypeName(i);
 
-                    // dbType = getDbFieldType(def, def.getDBSize(), false);
                     String contentString = null;
                     String encodedString = null;
                     byte[] contentBytes = null;
 
                     try {
                         contentString = rs.getString(i);
-                        if (contentString!=null) {
+                        if (contentString != null) {
                             contentBytes = contentString.getBytes();
                             encodedString = new String(contentBytes, mmb.getEncoding());
                         }
@@ -680,6 +662,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                             node.setValue(prefix + fieldname, contentString.trim());
                         }
                     }
+
                     break;
                 case FieldDefs.TYPE_NODE:
                 case FieldDefs.TYPE_INTEGER:
@@ -712,7 +695,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             log.error("mmObject->" + fieldname + " node=" + node.getIntValue("number"));
             log.error(Logging.stackTrace(e));
         }
-
         return (node);
     }
 
@@ -1081,35 +1063,41 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             try {
                 MultiConnection con = mmb.getConnection();
                 PreparedStatement stmt = con.prepareStatement(values);
-                int type;
+
                 int i = 1;
                 for (Enumeration e = node.getChanged().elements(); e.hasMoreElements();) {
                     key = (String) e.nextElement();
-                    type = node.getDBType(key);
 
-                    // Getting dbType info in case were dealing with a clob
-                    FieldDefs def = node.getBuilder().getField(key);
-                    String dbType = getDbFieldType(def, def.getDBSize(), false);
-                    if (log.isDebugEnabled()) log.debug("DBType: " + dbType);
-
-                    if (type == FieldDefs.TYPE_INTEGER) {
-                        stmt.setInt(i, node.getIntValue(key));
-                    } else if (type == FieldDefs.TYPE_FLOAT) {
-                        stmt.setFloat(i, node.getFloatValue(key));
-                    } else if (type == FieldDefs.TYPE_DOUBLE) {
-                        stmt.setDouble(i, node.getDoubleValue(key));
-                    } else if (type == FieldDefs.TYPE_LONG) {
-                        stmt.setLong(i, node.getLongValue(key));
-                    } else if (type == FieldDefs.TYPE_STRING && dbType.equals("clob")) {
-                        setDBClob(i, stmt, node.getStringValue(key));
-                    } else if (type == FieldDefs.TYPE_STRING && !dbType.equals("clob")) {
-                        setDBText(i, stmt, node.getStringValue(key));
-                        // setString doesn't seem to take care of charset
-                        //stmt.setString(i, node.getStringValue(key));
-                    } else if (type == FieldDefs.TYPE_BYTE) {
-                        setDBByte(i, stmt, node.getByteValue(key));
-                    } else {
-                        stmt.setString(i, node.getStringValue(key));
+                    switch (node.getDBType(key)) {
+                        case FieldDefs.TYPE_NODE:
+                        case FieldDefs.TYPE_INTEGER:
+                            stmt.setInt(i, node.getIntValue(key));
+                            break;
+                        case FieldDefs.TYPE_FLOAT:
+                            stmt.setFloat(i, node.getFloatValue(key));
+                            break;
+                        case FieldDefs.TYPE_DOUBLE:
+                            stmt.setDouble(i, node.getDoubleValue(key));
+                            break;
+                        case FieldDefs.TYPE_LONG:
+                            stmt.setLong(i, node.getLongValue(key));
+                            break;
+                        case FieldDefs.TYPE_STRING:
+                        case FieldDefs.TYPE_XML:
+                            // Getting dbType info in case were dealing with a clob
+                            ResultSetMetaData rd = stmt.getMetaData();
+                            if (rd.getColumnTypeName(i).equals("clob")) {
+                                setDBClob(i, stmt, node.getStringValue(key));
+                            } else {
+                                setDBText(i, stmt, node.getStringValue(key));
+                            }
+                            break;
+                        case FieldDefs.TYPE_BYTE:
+                            setDBByte(i, stmt, node.getByteValue(key));
+                            break;
+                        default:
+                            stmt.setString(i, node.getStringValue(key));
+                            break;
                     }
                     i++;
                 }
@@ -1186,7 +1174,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      *
      */
     public synchronized int getDBKeyOld() {
-        if (log.isDebugEnabled()) log.trace(" ");
+        if (log.isDebugEnabled()) log.trace("GetDBKeyOld");
         return getDBKey();
     }
 
@@ -1201,7 +1189,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      *
      */
     public synchronized int getDBKey() {
-        if (log.isDebugEnabled()) log.trace(" ");
+        if (log.isDebugEnabled()) log.trace("GetDBKey");
         // get a new key
 
         if (currentdbkey != -1) {
