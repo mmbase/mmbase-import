@@ -51,6 +51,9 @@ transaction was commited, following should result anything:
   <mm:createrelation source="node1" destination="node2" role="posrel">
    <mm:setfield name="pos">10</mm:setfield>
   </mm:createrelation>
+  <mm:createrelation source="node1" destination="node2" role="sorted">
+   <mm:setfield name="pos">100</mm:setfield>
+  </mm:createrelation>
 </mm:transaction>
 <hr />
 logged on as: <%= cloud.getUser().getIdentifier() %><br />
