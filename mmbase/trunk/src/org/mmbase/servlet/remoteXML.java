@@ -25,7 +25,7 @@ import org.mmbase.module.core.*;
  * XML and will respond with a 200 OK if the xml was understood by the
  * mmbase system.
  *
- * @version $Revision: 1.9 $ $Date: 2000-06-08 17:45:46 $
+ * @version $Revision: 1.10 $ $Date: 2000-07-20 08:55:05 $
  */
 public class remoteXML extends JamesServlet {
 
@@ -207,7 +207,7 @@ public class remoteXML extends JamesServlet {
 			String value=(String)values.get(key);
 
 			// set the node
-			String dbtype=node.getDBType(key);
+			int dbtype=node.getDBType(key);
 			if (!key.equals("number") 
 				&& !key.equals("otype") 
 				&& !key.equals("buildername") 
