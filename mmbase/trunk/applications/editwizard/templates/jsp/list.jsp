@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.16 2002-07-09 14:12:53 pierre Exp $
+     * @version  $Id: list.jsp,v 1.17 2002-07-10 11:23:20 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -138,9 +138,7 @@ String title = "editwizard list";
 
 if (listConfig.wizard != null) {
 
-    log.info("Create wizard: "+listConfig.wizard+".");
     Wizard wiz = null;
-
     wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, listConfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
@@ -217,7 +215,7 @@ for (int i=start; i< end; i++) {
 }
 
 
-// place pge information
+// place page information
 int pagecount = new Double(Math.floor(results.size() / len)).intValue();
 if (results.size() % len>0) pagecount++;
 int currentpage = new Double(Math.floor((start / len))).intValue();
