@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.30 2004-03-15 15:40:03 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.31 2004-03-19 07:03:32 eduard Exp $
  * @since MMBase-1.7
  */
 
@@ -156,7 +156,6 @@ public class BasicSqlHandler implements SqlHandler {
         disallowed2Allowed = new HashMap(disallowedValues);
         if (log.isDebugEnabled()) {
             log.debug("disallowed2Allowed=" + disallowed2Allowed);
-            log.trace(Logging.stackTrace());
         }
     }
 
