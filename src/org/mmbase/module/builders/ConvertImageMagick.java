@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.4 2000-08-06 16:02:43 daniel Exp $
+	$Id: ConvertImageMagick.java,v 1.5 2000-10-04 13:36:47 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/08/06 16:02:43  daniel
+	changed some debug
+	
 	Revision 1.3  2000/07/06 08:54:41  install
 	Rico: added debug to see paths
 	
@@ -33,7 +36,7 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.4 2000-08-06 16:02:43 daniel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.5 2000-10-04 13:36:47 vpro Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
@@ -158,7 +161,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 				} else if (type.equals("wave")) {
 					cmds.addElement("-wave "+cmd);
 				} else if (type.equals("t")) {
-					cmds.addElement("-transparency #"+cmd+"");
+					cmds.addElement("-transparency #"+cmd.toLowerCase()+"");
 				} else if (type.equals("part")) {
 					StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
 					try {
