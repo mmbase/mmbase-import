@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.9 2005-02-07 15:59:37 keesj Exp $
+  @version $Id: caches.xml,v 1.10 2005-02-07 16:03:47 keesj Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -64,10 +64,13 @@
     <size>128</size>
   </cache>
 
-  <!-- Object type cache in MMObjectBuilder -->
+  <!-- Object type cache in MMObjectBuilder.
+       Used by MMBase to perform
+       object number to object type lookup
+  -->
   <cache name="TypeCache">
     <status>active</status>
-    <size>200</size>
+    <size>100000</size>
   </cache>
 
   <!-- ================================================================================
