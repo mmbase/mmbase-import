@@ -35,19 +35,9 @@ String node_type = "";
 	<mm:notpresent referid="delete">
 		<form method="post" action="<mm:url referids="nr" />">
 		<table border="0" cellspacing="0" cellpadding="4" class="table-form">
-<<<<<<< delete_object.jsp
 		<tr bgcolor="#CCCCCC">
 	  	  <td align="center" class="title-s"># <mm:write referid="nr" /></td>
 		  <td class="title-s">Delete node of type <b><mm:write referid="n_gui" /></b> (<%= node_type %>)</td>
-=======
-		<tr bgcolor="#CCCCCC">
-	  	  <td align="center" class="title-s"># <mm:write referid="nr" /></td>
-<<<<<<< delete_object.jsp
-		  <td class="title-s">Delete node of type <b><%= node_gui %></b> (<%= node_type %>)</td>
->>>>>>> 1.5
-=======
-		  <td class="title-s">Delete node of type <b><mm:write referid="n_gui" /></b> (<%= node_type %>)</td>
->>>>>>> 1.7
 		</tr>
 		<mm:fieldlist type="list">
 			<tr valign="top">
