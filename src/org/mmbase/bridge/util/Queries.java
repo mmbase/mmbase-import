@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.6 2003-09-16 09:36:04 michiel Exp $
+ * @version $Id: Queries.java,v 1.7 2003-09-16 18:50:42 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -252,9 +252,10 @@ public class Queries {
 
     /**
      * Adds a 'legacy' constraint to the query. Alreading existing constraints remain ('AND' is used)
+     * @return the new constraint, or null if nothing changed added.
      */
-    public static Query addConstraints(Query query, String constraints) {
-        if (constraints == null || constraints.equals("")) return query;
+    public static Constraint addConstraints(Query query, String constraints) {
+        if (constraints == null || constraints.equals("")) return null;
         constraints = convertClauseToDBS(constraints);
         if (!validConstraints(constraints)) {
             throw new BridgeException("invalid constraints:" + constraints);
@@ -263,25 +264,28 @@ public class Queries {
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
             log.debug("compositing constraint");
-            newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            Constraint compositeConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            query.setConstraint(compositeConstraint);           
+        } else {
+            query.setConstraint(newConstraint);
         }
-        query.setConstraint(newConstraint);
-
-        return query;
-
+        return newConstraint;
     }
 
     /**
      * Adds sort orders to the query, using two strings. Like in 'getList' of Cloud. Several tag-attributes need this.
      *
      * @todo implement for normal query.
+     * @return The new sort orders
      */
-    public static Query addSortOrders(NodeQuery query, String sorted, String directions) {
+    public static List addSortOrders(NodeQuery query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
-        if (sorted == null) return query;
+        if (sorted == null) return query.getSortOrders().subList(0, 0);
         if (directions == null) {
             directions = "";
         }
+        List list = query.getSortOrders();
+        int initialSize = list.size();
        
         StringTokenizer sortedTokenizer     = new StringTokenizer(sorted, ",");
         StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
@@ -308,10 +312,11 @@ public class Queries {
                 } else {
                     dir = SortOrder.ORDER_ASCENDING;
                 }
-                }
+            }
             query.addSortOrder(sf, dir);
         }
-        return query;
+
+        return list.subList(initialSize, list.size());
     }
 
     /**
@@ -326,13 +331,17 @@ public class Queries {
     /**
      * Adds path of steps to an existing query. The query may contain steps already. Per step also
      * the 'search direction' may be specified.
+     * @return The new steps.
      */
-    public static Query addPath(Query query, String path, String searchDirs) {
-        if (path == null || path.equals("")) return query;
+    public static List addPath(Query query, String path, String searchDirs) {
+        if (path == null || path.equals("")) return query.getSteps().subList(0, 0);
         if (searchDirs == null) {
             searchDirs = "";
         }
-       
+
+        List list = query.getSteps();
+        int initialSize = list.size();
+
         StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
         StringTokenizer searchDirsTokenizer = new StringTokenizer(searchDirs, ",");
 
@@ -365,7 +374,9 @@ public class Queries {
                 String nodeManagerName  = removeDigits(nodeManagerAlias);
                 NodeManager nodeManager = cloud.getNodeManager(nodeManagerName);
                 RelationStep relationStep = query.addRelationStep(nodeManager, token, searchDir);
-                if (! cloud.hasNodeManager(completeToken)) {
+
+                /// make it possible to postfix with numbers manually
+                if (! cloud.hasRole(completeToken)) {
                     query.setAlias(relationStep, completeToken);
                 }
                 if (! nodeManagerName.equals(nodeManagerAlias)) {
@@ -375,13 +386,15 @@ public class Queries {
             } else {
                 NodeManager nodeManager  = cloud.getNodeManager(token);
                 Step step = query.addRelationStep(nodeManager, null, searchDir);
-                if (! token.equals(completeToken)) query.setAlias(step, completeToken);
+                if (! completeToken.equals(nodeManager.getName())) {
+                    query.setAlias(step, completeToken);
+                }
             }
         }
         if (searchDirsTokenizer.hasMoreTokens()) {
             throw new BridgeException("Too many search directions (" + path + "/" + searchDirs + ")" );
         }
-        return query;
+        return list.subList(initialSize, list.size());
     }
 
     /**
@@ -397,6 +410,24 @@ public class Queries {
                                  AggregatedField.AGGREGATION_TYPE_COUNT);        
         Node result = (Node) cloud.getList(count).get(0);
         return result.getIntValue("number");
+    }
+
+    /**
+     * Searches a list of Steps for a step with a certain name. (alias or tableName)
+     * @return The Step if found, otherwise null
+     * @throws ClassCastException if list does not contain only Steps
+     */
+    public static Step searchStep(List steps, String stepAlias) {
+        Iterator i = steps.iterator();
+        while (i.hasNext()) {
+            Step step = (Step) i.next();
+            if (stepAlias.equals(step.getAlias())) {
+                return step;
+            } else if (stepAlias.equals(step.getTableName())) {
+                return step;
+            }
+        }
+        return null;
     }
 
 }
