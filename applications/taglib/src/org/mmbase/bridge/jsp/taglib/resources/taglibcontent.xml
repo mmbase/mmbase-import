@@ -20,7 +20,19 @@
     <class config="POOR" back="true">org.mmbase.util.transformers.XmlField</class>
   </escaper>
 
-  <postprocessor id="tidy">
+  <postprocessor id="reducespace">
     <class>org.mmbase.util.transformers.SpaceReducer</class>
+  </postprocessor>
+  <postprocessor id="entities">
+    <class>org.mmbase.util.transformers.SpaceReducer</class>
+    <class>org.mmbase.util.transformers.XmlEntities</class>
+  </postprocessor>
+  <postprocessor id="xmetodo">
+    <class>org.mmbase.util.transformers.SpaceReducer</class>
+    <class config="XMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
+  </postprocessor>
+  <postprocessor id="hmetodo">
+    <class>org.mmbase.util.transformers.SpaceReducer</class>
+    <class config="HMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
   </postprocessor>
 </taglibcontent>
