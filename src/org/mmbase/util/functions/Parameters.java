@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.4 2004-02-02 10:41:37 michiel Exp $
+ * @version $Id: Parameters.java,v 1.5 2004-02-09 17:58:05 michiel Exp $
  * @see Parameter
  */
 
@@ -180,8 +180,8 @@ public class Parameters extends AbstractList implements List  {
     public void checkRequiredParameters() {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
-            if (a.isRequired() && (get(a.getName()) == null)) {
-                throw new IllegalArgumentException("Required parameter '" + a.getName() + "' is null");
+            if (a.isRequired() && (get(a.key) == null)) {
+                throw new IllegalArgumentException("Required parameter '" + a.key + "' is null");
             }
         }
     }
@@ -217,7 +217,7 @@ public class Parameters extends AbstractList implements List  {
     }
 
     public Parameters set(Parameter arg, Object value) {
-        return set(arg.getName(), value);
+        return set(arg.key, value);
     }
 
     public Parameters setAll(Map map) {
@@ -249,6 +249,11 @@ public class Parameters extends AbstractList implements List  {
     public Object get(String arg) {
         return backing.get(arg);
     }
+
+    public Object get(Parameter arg) {
+        return backing.get(arg.key);
+    }
+
     public String getString(String arg) {
         return Casting.toString(get(arg));
     }
