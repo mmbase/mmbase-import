@@ -576,7 +576,7 @@ public class MMExamples extends ProcessorModule {
 						int installedversion=ver.getInstalledVersion(name,"application");
 						if (installedversion==-1 || version>installedversion) {
 							if (installedversion==-1) {
-								System.out.println("Auto deploy application : "+aname);
+								System.out.println("Auto deploy application : "+aname+" started");
 							} else {	
 								System.out.println("Auto deploy application : "+aname+" new version from "+installedversion+" to "+version);
 							}
@@ -586,6 +586,7 @@ public class MMExamples extends ProcessorModule {
 								} else {
 									ver.updateInstalledVersion(name,"application",maintainer,version);
 								}
+								System.out.println("Auto deploy application : "+aname+" done");
 							} else {
 								System.out.println("Problem installing application : "+name);
 							}
