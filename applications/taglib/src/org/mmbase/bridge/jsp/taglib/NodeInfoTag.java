@@ -14,19 +14,36 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
 
 /**
-* Lives under a nodeprovider. Can give information about the node,
-* like what its nodemanager is.
-*
-* @author Michiel Meeuwissen
-*/
+ * Lives under a nodeprovider. Can give information about the node,
+ * like what its nodemanager is.
+ *
+ * @author Michiel Meeuwissen
+ */
 
-public class NodeInfoTag extends NodeReferrerTag {
+public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
     private static final int TYPE_NODEMANAGER    = 0;
     private static final int TYPE_GUINODEMANAGER = 1;
     private static final int TYPE_NODENUMBER= 2;
+
+
+    protected WriterHelper helper = new WriterHelper();     
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getValue() {
+        return helper.getValue();
+    }
+
 
     private int type;
 
@@ -44,40 +61,54 @@ public class NodeInfoTag extends NodeReferrerTag {
         }
     }
 
-    public int doStartTag() throws JspTagException{
-        return EVAL_BODY_TAG;
+    private String nodeManagerString;
+    public void setNodetype(String t) throws JspTagException {
+        nodeManagerString = getAttributeValue(t);
     }
 
+    public int doStartTag() throws JspTagException{
 
-    /**
-    * Write the value of the nodeinfo.
-    */
-    public int doAfterBody() throws JspTagException {
+        NodeManager nodeManager = null;
 
-        Node node = getNode();
-
+        switch(type) {
+        case TYPE_NODEMANAGER:
+        case TYPE_GUINODEMANAGER:
+            if (nodeManagerString == null) { // living as NodeReferrer
+                nodeManager = getNode().getNodeManager();
+            } else {
+                nodeManager = getCloud().getNodeManager(nodeManagerString);
+            }
+        }
         String show = "";
 
         // set node if necessary:
         switch(type) {
         case TYPE_NODENUMBER:
-            show = ""+node.getNumber();
+            show = ""+getNode().getNumber();
             break;
         case TYPE_NODEMANAGER:
-            show = node.getNodeManager().getName();
+            show = nodeManager.getName();
             break;
         case TYPE_GUINODEMANAGER:
-            show = node.getNodeManager().getGUIName();
+            show = nodeManager.getGUIName();
             break;
         default:
         }
 
-        try {
-            bodyContent.print(show);
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());
+        helper.setValue(show);        
+        helper.setJspvar(pageContext);  
+        if (getId() != null) {
+            getContextTag().register(getId(), helper.getValue());
         }
-        return SKIP_BODY;
+        return EVAL_BODY_TAG;
+    }
+
+
+    /**
+     * Write the value of the nodeinfo.
+     */
+    public int doAfterBody() throws JspTagException {
+        helper.setBodyContent(bodyContent);
+        return helper.doAfterBody();
     }
 }
