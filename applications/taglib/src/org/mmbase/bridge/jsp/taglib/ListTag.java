@@ -112,7 +112,7 @@ public class ListTag extends AbstractNodeListTag {
             throw new JspTagException("Path attribute is mandatory if referid not speficied");
         }
 
-        String searchString = search.getString(this);
+        String searchString = search.getString(this).toUpperCase();
         if (searchString.equals("")) {
             searchString="BOTH";
         } else if ( !searchString.equals("BOTH") &&
