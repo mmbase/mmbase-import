@@ -17,9 +17,10 @@ import javax.servlet.ServletException;
  * that's specified in HttpPost.
  * @deprecated-now not used by any CVS classes (probably local code)
  * @rename FileTooLargeException
+ * @move org.mmbase.servlet
  *
  * @author vpro
- * @version $Id: FileToLargeException.java,v 1.7 2004-09-30 08:52:11 pierre Exp $
+ * @version $Id: FileToLargeException.java,v 1.8 2004-09-30 14:07:10 pierre Exp $
  */
 public class FileToLargeException extends ServletException {
 

@@ -13,6 +13,10 @@ import java.util.*;
 
 /**
  * RowVectorCompare compares a given row element in two Vectors.
+ *
+ * @deprecated-now not used anywhere
+ * @author vpro
+ * @version $Id: RowVectorCompare.java,v 1.6 2004-09-30 14:07:13 pierre Exp $
  */
 public class RowVectorCompare implements CompareInterface {
     int comparePos=1;

@@ -15,6 +15,10 @@ import javax.servlet.ServletException;
 /**
  * This exception gets thrown when a Cyclic Redundancy Check
  * fails.
+ * @application SCAN
+ * @move org.mmbase.servlet
+ * @author vpro
+ * @version $Id: PageCRCException.java,v 1.4 2004-09-30 14:07:11 pierre Exp $
  */
 public class PageCRCException extends ServletException {
 

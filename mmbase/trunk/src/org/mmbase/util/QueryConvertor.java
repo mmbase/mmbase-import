@@ -40,9 +40,10 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * Note that if the expression to convert starts with "WHERE", it is not converted at all,
  * but returned as is.
  *
+ * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.24 2004-02-09 13:50:35 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.25 2004-09-30 14:07:11 pierre Exp $
  */
 public class QueryConvertor {
 

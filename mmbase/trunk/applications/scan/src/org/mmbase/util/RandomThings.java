@@ -16,7 +16,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Class for doing random things.
+ * @deprecated-now not used anywhere
  * @author Rico Jansen
+ * @version $Id: RandomThings.java,v 1.9 2004-09-30 14:07:13 pierre Exp $
  */
 public class RandomThings {
 
@@ -29,12 +31,11 @@ public class RandomThings {
      * @deprecated java.util.Collections#shuffle
      */
     static public void shuffleVector(Vector v) {
-        int siz;
         int src,dst;
-        siz=v.size();
+        int siz = v.size();
 
-        for (dst=siz-1;dst>0;dst--) {
-            src=Math.abs(rnd.nextInt())%(dst+1);
+        for (dst = siz-1; dst > 0; dst--) {
+            src = Math.abs(rnd.nextInt())%(dst+1);
             swap(v,src,dst);
         }
     }
@@ -44,9 +45,7 @@ public class RandomThings {
      * @deprecated java.util.Collections#shuffle and clone
      */
     static public Vector shuffleCloneVector(Vector v) {
-        Vector newv;
-
-        newv=(Vector)v.clone();
+        Vector newv = (Vector)v.clone();
         shuffleVector(newv);
         return newv;
     }
@@ -56,15 +55,14 @@ public class RandomThings {
      * @deprecated use java.util.
      */
     static public void shuffleArray(int arr[]) {
-        int siz;
         int src,dst,t;
-        siz=arr.length;
+        int siz = arr.length;
 
-        for (dst=siz-1;dst>0;dst--) {
-            src=Math.abs(rnd.nextInt())%(dst+1);
-            t=arr[src];
-            arr[src]=arr[dst];
-            arr[dst]=t;
+        for (dst = siz-1; dst > 0; dst--) {
+            src = Math.abs(rnd.nextInt())%(dst+1);
+            t = arr[src];
+            arr[src] = arr[dst];
+            arr[dst] = t;
         }
     }
 
@@ -72,9 +70,8 @@ public class RandomThings {
      * @deprecated use Collections.swap
      */
     private static void swap(Vector v,int i,int j) {
-        Object ob1,ob2;
-        ob1=v.elementAt(i);
-        ob2=v.elementAt(j);
+        Object ob1 = v.elementAt(i);
+        Object ob2 = v.elementAt(j);
         v.setElementAt(ob1,j);
         v.setElementAt(ob2,i);
     }
@@ -84,21 +81,21 @@ public class RandomThings {
      * No duplicates will be given.
      */
     public static Vector giveRandomFrom(Vector v,int max) {
-        Vector newv=new Vector();
+        Vector newv = new Vector();
         Object ob;
-        int siz=v.size();
+        int siz = v.size();
 
-        if (max>=siz) {
-            newv=shuffleCloneVector(v);
+        if (max >= siz) {
+            newv = shuffleCloneVector(v);
         } else {
-            int idx[]=new int[siz];
+            int idx[] = new int[siz];
             int i;
 
-            for (i=0;i<siz;i++) idx[i]=i;
+            for (i = 0; i < siz; i++) idx[i] = i;
             shuffleArray(idx);
 
-            for (i=0;i<max;i++) {
-                ob=v.elementAt(idx[i]);
+            for (i = 0; i < max; i++) {
+                ob = v.elementAt(idx[i]);
                 newv.addElement(ob);
             }
         }
@@ -110,24 +107,24 @@ public class RandomThings {
      * For testing
      */
     public static void main(String args[]) {
-        Vector v=new Vector();
-        int siz=128;
-        int idx[]=new int[siz];
+        Vector v = new Vector();
+        int siz = 128;
+        int idx[] = new int[siz];
         int i;
 
-        for (i=0;i<siz;i++) {
+        for (i = 0; i < siz; i++) {
             v.addElement(new Integer(i));
-            idx[i]=i;
+            idx[i] = i;
         }
-        log.info("shuffleCloneVector "+shuffleCloneVector(v));
-        log.info("giveRandomFrom "+giveRandomFrom(v,64));
+        log.info("shuffleCloneVector " + shuffleCloneVector(v));
+        log.info("giveRandomFrom " + giveRandomFrom(v,64));
         shuffleArray(idx);
-        log.info("shuffleArray "+idx);
-        for (i=0;i<siz;i++) {
-            if (i==0)
-                log.info(""+idx[i]);
+        log.info("shuffleArray " + idx);
+        for (i = 0; i < siz; i++) {
+            if (i == 0)
+                log.info("" + idx[i]);
             else
-                log.info(","+idx[i]);
+                log.info("," + idx[i]);
         }
         log.info("");
     }
