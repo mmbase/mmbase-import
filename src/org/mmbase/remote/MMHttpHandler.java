@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: MMHttpHandler.java,v 1.5 2000-11-27 13:12:19 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote;
 
 import java.lang.*;
@@ -16,7 +21,7 @@ import java.io.*;
 
 /**
  *
- * @version 27 Mar 1997
+ * @version $Revision: 1.5 $ $Date: 2000-11-27 13:12:19 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable {
@@ -29,9 +34,11 @@ public class MMHttpHandler implements Runnable {
 
 	Socket clientsocket;
 	Hashtable listeners;
+	
+	public final static String REMOTE_REQUEST_URI_FILE = "remoteXML.db";
 
 	public MMHttpHandler(Socket clientsocket,Hashtable listeners) {
-		if( debug ) debug("MMHttpHandler("+clientsocket+","+listeners+")");
+		if (debug) debug("MMHttpHandler("+clientsocket+","+listeners+"): Created, initializing..");
 		this.clientsocket=clientsocket;
 		this.listeners=listeners;
 		init();
@@ -41,21 +48,26 @@ public class MMHttpHandler implements Runnable {
 		this.start();	
 	}
 
-
 	/**
 	 * Starts the admin Thread.
 	 */
 	public void start() {
 		/* Start up the main thread */
 		if (kicker == null) {
-			kicker = new Thread(this,"MMHttpAcceptor");
+			debug("start(): Creating and starting new Thread.");
+			kicker = new Thread(this,"MMHttpHandler");
 			kicker.start();
+		} else {
+			debug("start(): No create needed, thread already up and running, name:"+kicker.getName());
 		}
 	}
 	
+	/**
+	 * Connects and retrieves HTTP method and checks for GET and POST to react to.
+	 */
 	public void run() {
 		try {
-			DataInputStream in=new DataInputStream(clientsocket.getInputStream());
+			DataInputStream in = new DataInputStream(clientsocket.getInputStream());
 			PrintStream out = new PrintStream(clientsocket.getOutputStream());
 
 			String line=in.readLine();
@@ -63,52 +75,70 @@ public class MMHttpHandler implements Runnable {
 				StringTokenizer tok=new StringTokenizer(line," \n\r\t");
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
-					//if( debug ) debug("run(): got method(+method+")");
+					if (debug) debug("run(): Got method: "+method);
 					if (method.equals("GET")) doGet(tok,in,out);
 					if (method.equals("POST")) doPost(tok,in,out);
 				}
 			}
-
 			clientsocket.close();	
 		} catch(Exception e) {
-			debug("run(): ERROR: exception: ");
+			debug("run(): ERROR: exception: "+e);
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Gets the querystring from the GET cmd and passes it on to doXMLSignal.
+	 * @param tok the StringTokenizer with the remaining GET info.
+	 * @param in the DataInputStream
+	 * @param out the PrintStream
+	 */
 	void doGet(StringTokenizer tok, DataInputStream in, PrintStream out) {
 		if (tok.hasMoreTokens()) {
-			String query=tok.nextToken();
-			if (query.indexOf("/remoteXML.db?")==0) {
-				doXMLSignal(query.substring(14));
-			}
-			else
-				debug("doGet("+query+"): WARNING: unknown query!");
+			String requestUrl=tok.nextToken();
+			int filePos = requestUrl.indexOf(REMOTE_REQUEST_URI_FILE);
+			if (filePos!=-1){
+				if (debug) debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
+				int queryPos = requestUrl.indexOf("?");
+				if (queryPos!=-1){
+					String queryString=requestUrl.substring(queryPos+1); //+1 ='?' char.
+					if (debug) debug("doGet: Retrieved querystring: "+queryString);
+					doXMLSignal(queryString);
+				} else
+					debug("doGet: ERROR: No querystring: "+requestUrl);
+			}else
+				debug("doGet: WARNING: unknown requesturl:"+requestUrl);
 		}
 		out.println("200 OK");
 		out.flush();
 	}
-
 	
-	void doXMLSignal(String line) {
-		if( debug ) debug("doXMLSignal("+line+")");
+	/**
+	 * Gets the servicebuilder instance using the querystring info and signals it using a
+	 * nodeRemoteChanged to tell the service that it was changed on another server. 
+	 * The service reference is the key to getting the service builder.
+	 * @param queryString Contains the service reference, buildername and changetype.
+	 */
+	void doXMLSignal(String queryString) {
+		if (debug) debug("doXMLSignal("+queryString+"): Getting info from queryString");
 
-		StringTokenizer tok=new StringTokenizer(line,"+ \n\r\t");
+		StringTokenizer tok=new StringTokenizer(queryString,"+ \n\r\t");
 		if (tok.hasMoreTokens()) {
-			String number=tok.nextToken();
+			String serviceRef=tok.nextToken(); //Contains the service builder reference.
 			if (tok.hasMoreTokens()) {
-				String builder=tok.nextToken();
+				String builderName=tok.nextToken();
 				if (tok.hasMoreTokens()) {
 					String ctype=tok.nextToken();
-					RemoteBuilder serv=(RemoteBuilder)listeners.get(number);
+					RemoteBuilder serv=(RemoteBuilder)listeners.get(serviceRef);
 					if (serv==null) {
-						debug("doXMLSignal("+line+"): ERROR: no remote builder found for number("+number+")");
+						debug("doXMLSignal("+queryString+"): ERROR: no remote builder found for service reference:"+serviceRef);
 					} else {
-						serv.nodeRemoteChanged(number,builder,ctype);
+						debug("doXMLSignal("+queryString+"): Send nodeRemoteChanged signal to notify service that it's state has changed.");
+						serv.nodeRemoteChanged(serviceRef,builderName,ctype);
 					}
-				} else debug("doXMLSignal("+line+"): ERROR: no 'ctype' found!");
-			} else debug("doXMLSignal("+line+"): ERROR: no 'builder' found!");
-		} else debug("doXMLSignal("+line+"): ERROR: no 'number' found!");
+				} else debug("doXMLSignal("+queryString+"): ERROR: no 'ctype' found!");
+			} else debug("doXMLSignal("+queryString+"): ERROR: no 'buildername' found!");
+		} else debug("doXMLSignal("+queryString+"): ERROR: no 'service reference' found!");
 	}
 
 	void doPost(StringTokenizer tok, DataInputStream in, PrintStream out) {
