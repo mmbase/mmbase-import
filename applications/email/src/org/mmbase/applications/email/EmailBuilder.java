@@ -99,7 +99,7 @@ public class EmailBuilder extends MMObjectBuilder {
         if (usersEmailField == null) usersEmailField = "email";
 
         groupsBuilder = getInitParameter("groups-builder");
-        if (groupsBuilder == null) usersBuilder = "groups";
+        if (groupsBuilder == null) groupsBuilder = "groups";
 
         return true;
     }
@@ -146,7 +146,7 @@ public class EmailBuilder extends MMObjectBuilder {
                 log.warn("Trying to mail a node with unsupported type " + mailType);
             }
             return null;
-        } else if (function.equals("startmail")) {         // function mail(type) called (starts a background thread)
+        } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
             
             // check if we have arguments ifso call setType()
             if (arguments.size() > 0) {
@@ -159,11 +159,11 @@ public class EmailBuilder extends MMObjectBuilder {
             case TYPE_ONESHOT :
                 // deleting the node happens in EmailExpireHandler
             case TYPE_ONESHOTKEEP : 
-                EmailBackgroundHandler mailer = new EmailBackgroundHandler(node);
+                new EmailBackgroundHandler(node);
                 break;
             case TYPE_REPEATMAIL : 
             default: 
-                log.warn("Trying to mail a node with unsupported type " + mailType);
+                log.warn("Trying to start a mail of a node with unsupported type " + mailType);
             }
             return null;
         } else {
