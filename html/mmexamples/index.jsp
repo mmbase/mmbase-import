@@ -7,7 +7,7 @@
 <title>MMBase Demos</title>
 <style>
 <!--
- body {  background-color: #00425A;
+ body {  background-color: white;
          color:42BDAD;
  	   font-size:medium;}
  a:link { color: black; }
@@ -22,6 +22,10 @@
        color:#00425A;
 	 font-size:large;
 	 font-weight:bold; }
+ td    {  background-color: #00425A;
+         color:#44BDAD;
+	 font-size:medium;
+	 font-weight:normal; }
  td.link {  background-color: #44BDAD;
        color:#00425A;
 	 font-size:medium;
