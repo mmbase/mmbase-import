@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.175 2002-10-25 18:49:59 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.176 2002-10-29 15:30:44 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -332,13 +332,12 @@ public class MMObjectBuilder extends MMTable {
 
 	// get property dof maximum number of queries..
 	String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERY);
-	if(property!=null) {
+	if(property != null) {
 	    try {
 		maxNodesFromQuery = Integer.parseInt(property);
-		log.service(getTableName()+" returns not more than "+maxNodesFromQuery+" from a query.");
-	    }
-	    catch(NumberFormatException nfe) {
-		log.warn("property:"+MAX_NODES_FROM_QUERY_PROPERY+ " contained an invalid integer value:'" + property +"'("+nfe+")");
+		log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
+	    } catch(NumberFormatException nfe) {
+		log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
 	    }
 	}
         return true;
