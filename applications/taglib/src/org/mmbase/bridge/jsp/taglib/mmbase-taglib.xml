@@ -1691,6 +1691,15 @@ transaction was commited, following should result anything:
       <refercontext>true</refercontext>
     </attribute>
     <attribute>
+      <name>fields</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        You can specify a comma seperated list of fields you want to
+        list too. Use this attribute or the type attribute.
+      </info>
+    </attribute>
+    <attribute>
       <name>type</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
