@@ -30,10 +30,10 @@ import org.mmbase.util.Casting;
     </c:otherwise>
   </c:choose>
 </mm:cloud>
- *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.1 2005-01-03 21:35:27 michiel Exp $
+ * @version $Id: Functions.java,v 1.2 2005-01-03 22:10:45 michiel Exp $
+ * @todo    EXPERIMENTAL
  */
 public class Functions {
 
@@ -50,5 +50,23 @@ public class Functions {
         }
         if (col.contains(obj)) return true;
         return col.contains(Casting.toString(obj));
+    }
+
+    /**
+     * MMBase specific 'remove' (for Collections).
+     */
+    public static void remove(Collection col, Object obj) {
+        if (obj instanceof Collection) { // like removeAll
+            Iterator i = ((Collection) obj).iterator();
+            while (i.hasNext()) {
+                remove(col, i.next());
+            }
+        } else {
+            if (obj instanceof Node) {
+                col.remove(new Integer(((Node) obj).getNumber()));
+            }
+            col.remove(Casting.toString(obj));
+            col.remove(obj);
+        }
     }
 }
