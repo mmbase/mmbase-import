@@ -9,16 +9,14 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.35 2002-07-10 19:41:36 michiel Exp $
+  @version $Id: wizard.xsl,v 1.36 2002-07-11 08:25:24 michiel Exp $
   -->
 
-  <xsl:import href="base.xsl" />
+  <xsl:import href="xsl/base.xsl" />
 
   <xsl:variable name="defaultsearchage">7</xsl:variable>
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
-
-
 
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of wizard
@@ -27,6 +25,7 @@
   <xsl:template name="style"> <!-- It can be usefull to add a style, change the title -->
      <title><xsl:value-of select="title" /></title>
      <link rel="stylesheet" type="text/css" href="../style.css" />
+     <xsl:call-template name="extrastyle" /> <!-- see base.xsl -->
   </xsl:template>
 
   <xsl:template name="body"> <!-- You can put stuff before and after then. Don't forget to call 'bodycontent' -->

@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
        @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.11 2002-07-10 19:39:22 michiel Exp $
+  @version $Id: base.xsl,v 1.12 2002-07-11 08:25:24 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -65,8 +65,13 @@
   
   <xsl:variable name="javascriptdir">../javascript/</xsl:variable>
   <xsl:variable name="mediadir">../media/</xsl:variable>
+
+  <!-- ================================================================================
+       General appearance
+       ================================================================================ -->
+
   <xsl:variable name="imagesize">+s(128x128)</xsl:variable>
-  
+  <xsl:template name="extrastyle" />
   
 </xsl:stylesheet>
   

@@ -7,10 +7,10 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: baselist.xsl,v 1.2 2002-05-07 13:32:41 michiel Exp $
+  @version $Id: baselist.xsl,v 1.3 2002-07-11 08:25:24 michiel Exp $
   --> 
 
-  <xsl:import href="base.xsl" />
+  <xsl:import href="xsl/base.xsl" />
   <xsl:param name="wizard"></xsl:param>
 
 </xsl:stylesheet>
