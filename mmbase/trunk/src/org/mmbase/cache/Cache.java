@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.4 2002-06-27 13:22:58 michiel Exp $
+ * @version $Id: Cache.java,v 1.5 2002-07-17 16:39:14 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable {
 
@@ -202,7 +202,7 @@ abstract public class Cache extends LRUHashtable {
     /**
      * Wether this cache is active or not.
      */
-    public boolean isActive() {
+    public final boolean isActive() {
         return active;
     }
 }
