@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.11 2000-04-17 09:58:07 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.12 2000-05-15 14:47:48 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/04/17 09:58:07  wwwtech
+Removed some debug for informix install
+
 Revision 1.10  2000/04/15 20:40:03  wwwtech
 fixes for informix and split in sql92
 
@@ -54,7 +57,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.11 $ $Date: 2000-04-17 09:58:07 $
+* @$Revision: 1.12 $ $Date: 2000-05-15 14:47:48 $
 */
 public class MMInformix42Node extends MMOORel2Node implements MMJdbc2NodeInterface {
 
@@ -219,8 +222,7 @@ public class MMInformix42Node extends MMOORel2Node implements MMJdbc2NodeInterfa
 			isochars=new byte[siz];
 			input.readFully(isochars);
 			str=new String(isochars,"ISO-8859-1");
-			input.close();
-			inp.close();
+			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
 			debug("Informix42Node text  exception "+e);
 			e.printStackTrace();
@@ -243,8 +245,7 @@ public class MMInformix42Node extends MMOORel2Node implements MMJdbc2NodeInterfa
 			input=new DataInputStream(inp);
 			bytes=new byte[siz];
 			input.readFully(bytes);
-			input.close();
-			inp.close();
+			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
 			debug("Informix42Node byte  exception "+e);
 			e.printStackTrace();
