@@ -13,7 +13,7 @@
 %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0" >
    		<frame src="nav.jsp?menu=1&submenu=1" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
-   		<frame src="about/license.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+   		<frame src="about/about.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
 	</frameset>
 <% } else { %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0">
@@ -43,6 +43,18 @@
 </tr>
 <tr>
   <td class="data"><a href="about/license.jsp">License</a></td>
+</tr>
+<tr>
+  <td class="data"><a href="about/about.jsp">About</a></td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr align="left">
+  <th class="header">Demos</td>
+</tr>
+<tr>
+  <td class="data"><a href="/mmexamples/">Demos</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
