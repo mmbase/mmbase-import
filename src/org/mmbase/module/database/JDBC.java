@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: JDBC.java,v 1.13 2000-07-22 10:52:59 daniel Exp $
+	$Id: JDBC.java,v 1.14 2000-12-28 11:37:54 pierre Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2000/07/22 10:52:59  daniel
+	Removed some debug
+	
 	Revision 1.12  2000/06/25 13:09:15  wwwtech
 	Daniel.. changed/added method for getConnection per database driver
 	
@@ -55,7 +58,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.13 2000-07-22 10:52:59 daniel Exp $
+ * @version $Id: JDBC.java,v 1.14 2000-12-28 11:37:54 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -171,6 +174,14 @@ private String defaultpassword;
 		defaultname=getInitParameter("user");
 		defaultpassword=getInitParameter("password");
 		databasesupportclass=getInitParameter("supportclass");
+		
+		debug("JDBCdriver="+JDBCdriver);
+		debug("JDBCurl="+JDBCurl);
+		debug("JDBChost="+JDBChost);
+		debug("defaultname="+defaultname);
+		debug("defaultpassword="+defaultpassword);
+		debug("databasesupportclass="+databasesupportclass);
+		
 		if (defaultname==null) {
 			defaultname="wwwtech";
 		}
