@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.92 2003-07-04 13:57:27 pierre Exp $
+ * @version $Id: MMBase.java,v 1.93 2003-07-17 08:52:57 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -292,8 +292,13 @@ public class MMBase extends ProcessorModule {
      * Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
      */
     public void init() {
-
         log.service("Init of " + org.mmbase.Version.get());
+
+        // Set the mmbaseroot singleton var
+        // This prevents recursion if MMBase.getMMBase() is called while
+        // this method is run
+        mmbaseroot = this;
+        
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");
         if (tmp != null) {
