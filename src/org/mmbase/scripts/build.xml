@@ -643,8 +643,13 @@ Change directory to ${build.dir}/orion and run:
     <replace file="${build.dir}/tomcat/bin/tomcat.sh"
              token="-Dtomcat.home=${TOMCAT_HOME}"
              value="-Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${TOMCAT_HOME}/conf.mmbase -Dmmbase.htmlroot=${TOMCAT_HOME}/webapps/ROOT"/>
-    <chmod file="${build.dir}/tomcat/bin/tomcat.sh"
-           perm="ugo+rx"/>
+    <chmod perm="ugo+x">
+      <fileset dir="${build.dir}/tomcat/bin">
+        <include name="*.sh"/>
+        <include name="ant"/>
+        <include name="antRun"/>
+      </fileset>
+    </chmod>
     <copy file="${mmbase.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/tomcat/lib"/>
@@ -969,7 +974,7 @@ Change directory to ${build.dir}/orion and run:
                file="${expand.dir}/${xalan.version}"/>
     <!-- JAI -->
     <property name="jai.version" value="jai1_0_2-lib-solaris"/>
-    <property name="jai.url" value="http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html"/>
+    <property name="jai.url" value="http://java.sun.com/Download3?protocol=HTTP%20download&amp;referer=http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html&amp;download-name=jai1_0_2-lib-solaris.tar.gz&amp;config-file=jai1_0_2.config&amp;platform=solaris&amp;domain-checked="/>
     <property name="jai_codec.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_codec.jar"/>
     <property name="jai_core.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_core.jar"/>
     <available property="jai.present"
@@ -1065,20 +1070,9 @@ Change directory to ${build.dir}/orion and run:
   </target>
 
   <target name="get.jai" depends="init.get" unless="jai.present">
-    <echo message=""/>
-    <echo message="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
-    <echo message="We can't download JAI for you, you will have to do this manually."/>
-    <echo message="Go to:"/>
-    <echo message=""/>
-    <echo message="${jai.url}"/>
-    <echo message=""/>
-    <echo message="and download &quot;JAI Implementation GZIP Format&quot; into:"/>
-    <echo message=""/>
-    <echo message="${download.dir}"/>
-    <echo message=""/>
-    <echo message="After you've downloaded JAI you can start Ant again."/>
-    <echo message="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
-    <fail message="JAI needs to be downloaded manually."/>
+    <get src="${jai.url}"
+         dest="${download.dir}/${jai.version}.tar.gz"
+         verbose="on"/>
   </target>
 
   <target name="expand.jai" depends="get.jai" unless="jai.expanded">
