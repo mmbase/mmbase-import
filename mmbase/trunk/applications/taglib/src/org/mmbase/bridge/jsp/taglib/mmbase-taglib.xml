@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.230 2004-01-14 15:54:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.231 2004-01-14 22:08:30 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1803,17 +1803,58 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListFunctionTag</tagclass>
     <info>
-      Gets the function value of function `name' from surrounding nodeprovider.  The function value is supposed to be Collection, and this tags acts as a 'listprovider' tag.
+      Gets the function value from surrounding functionprovider.  The function value is supposed to be Collection, and this tags acts as a 'listprovider' tag.
     </info>
     <since>MMBase-1.7</since>
     <see tag="node" />
     <see tag="booleanfunction" />
     <see tag="function" />
+    <see tag="functioncontainer" />
+    <see tag="listnodesfunction" />
     <attribute>
       <name>comparator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="comparator" />
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>listnodesfunction</name>
+    <extends>listprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <extends>functiontag</extends>
+    <extends>nodeprovider</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesFunctionTag</tagclass>
+    <info>
+      Gets the function value of function `name' from surrounding nodeprovider.  The function value
+      is supposed to be NodeList, and this tags acts as a 'listprovider' tag and 'nodeprovider'.
+    </info>
+    <since>MMBase-1.7</since>
+    <see tag="node" />
+    <see tag="booleanfunction" />
+    <see tag="function" />
+    <see tag="functioncontainer" />
+    <see tag="listfunction" />    
+    <attribute>
+      <name>comparator</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="comparator" />
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="max" />
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="offset" />
     </attribute>
   </tag>
 
