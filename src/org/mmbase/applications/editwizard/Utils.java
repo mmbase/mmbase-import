@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.14 2002-06-28 11:21:56 pierre Exp $
+ * @version $Id: Utils.java,v 1.15 2002-07-05 21:01:57 michiel Exp $
  */
 public class Utils {
 
@@ -356,7 +356,7 @@ public class Utils {
      * Same as above, but now you can supply a Vector with names which should NOT be copied.
      */
 
-    public static void copyAllAttributes(Node source, Node dest, Vector except) {
+    public static void copyAllAttributes(Node source, Node dest, List except) {
         NamedNodeMap attrs = source.getAttributes();
         for (int i=0; i<attrs.getLength(); i++) {
             String attrname = attrs.item(i).getNodeName();
@@ -421,10 +421,10 @@ public class Utils {
      * For debugging purposes. Return the constructed document as a String.
      */
 
-    private static String stringFormatted(Node node) {
+    public static String stringFormatted(Node node) {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("node " + node);
+                log.debug("node " +node);
                 log.debug("doc " + node.getOwnerDocument());
             }
             Document doc;
