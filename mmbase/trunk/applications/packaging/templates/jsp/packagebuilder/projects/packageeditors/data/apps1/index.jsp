@@ -8,6 +8,19 @@
 <mm:import externid="name" id="project" />
 <mm:import externid="package" />
 <mm:import externid="package" id="target" />
+
+<!-- action check -->
+<mm:import externid="action" />
+<mm:present referid="action">
+  <mm:write referid="action">
+    <mm:compare value="setDataFileType">
+	 <mm:import externid="newtype">saasa</mm:import>
+         <mm:function set="mmpb" name="setDataFileType" referids="project,target,newtype" />
+    </mm:compare>
+  </mm:write>
+</mm:present>
+
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="55%">
 <tr>
 	<th colspan="3">
@@ -18,9 +31,9 @@
 <mm:nodefunction set="mmpb" name="getTypeInfo" referids="project,target">
 <tr>
 	<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
-	<input type="hidden" name="action" value="setpackagevalue" />
+	<input type="hidden" name="action" value="setDataFileType" />
 	<th width="150">DataSet type</ht>
-	<td><select name="newvalue">
+	<td><select name="newtype">
 		<mm:field name="type">
 		<option <mm:compare value="depth">selected</mm:compare>>depth
 		<option <mm:compare value="table">selected</mm:compare>>table
