@@ -75,6 +75,9 @@
 
         text = text.replaceAll("<p>\\s*<table","<table");
         text = text.replaceAll("</table>\\s*</p>","</table>");
+        text = text.replaceAll("\\x93","\"");
+        text = text.replaceAll("\\x91","'");
+
 //    System.err.println("Result: '"+text+"'");
 
 %>  

@@ -9,6 +9,15 @@
     font-size: 10px;
 }
 
+.calDayThisMonth, 
+.calDayNotThisMonth, 
+.calDayNotThisMonthHighlight, 
+.calDayToday {
+    border: 1px solid #606060;
+}
+
+
+
 .calHeader {
   text-align: center;
   text-decoration: bold;
@@ -33,7 +42,12 @@
 /* Days that fall outside the current month */
 .calDayNotThisMonth {
    cursor: pointer;
- color: #888888;
+   color: #888888;
+}
+
+td.calDayNotThisMonth:hover {
+    background-color: #aaaaaa;
+    color: #444444;
 }
 
 /* Days that fall inside the current month */
@@ -43,13 +57,20 @@
  color: #444444;
 }
 
+td.calDayThisMonth:hover {
+    background-color: #888888;
+}
+
 /* Days that are highlighted (because events are happening), but they
    fall outside the current month */
 .calDayNotThisMonthHighlight {
   background-color: #bb0000;
   color: #444444;
    cursor: pointer;
+}
 
+td.calDayNotThisMonthHighlight:hover {
+    background-color: #bb8888; 
 }
 
 /* Days that are highlighed, and they fall inside the current month */
@@ -57,13 +78,19 @@
   background-color: #ff0000;
   color: #000000;
    cursor: pointer;
+}
 
+td.calDayThisMonthHighlight:hover {
+    background-color: #ff8888;
 }
 
 /* Today */
 .calToday {
-  border: 1px solid black;
-  cursor: pointer;
+    cursor: pointer;
+    font-weight: bold;
 }
 
+td.calToday:hover {
+     background-color: #888888;
+}
 
