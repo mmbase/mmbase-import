@@ -258,6 +258,28 @@ public class Project {
 
 
     /**
+     *  Gets the target attribute of the Project object
+     *
+     * @param  name  Description of the Parameter
+     * @return       The target value
+     */
+    public Target getTargetById(String id) {
+	// find the target with the same package id
+        Iterator e = packagetargets.values().iterator();
+        while (e.hasNext()) {
+            Target t = (Target) e.next();
+	    log.info("T="+t.getId());
+	    log.info("T2="+id);
+	    if (t.getId().equals(id)) {
+	    	log.info("T3="+id);
+		return t;
+	    }
+	}
+        return null;
+    }
+
+
+    /**
      *  Gets the packageTargets attribute of the Project object
      *
      * @return    The packageTargets value
