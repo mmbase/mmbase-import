@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.25 2003-08-19 14:18:31 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.26 2003-08-20 09:20:40 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -224,7 +224,7 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             debug("query:"+query);            
             s.executeUpdate(query);
-            scheme = new Scheme(factory, "SELECT {2} FROM {0}_{1}");
+            scheme = new Scheme(factory, "SELECT MAX({2}) FROM {0}_{1}");
             query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number") });
             debug("query:"+query);            
             ResultSet result = s.executeQuery(query);
@@ -822,13 +822,15 @@ public class DatabaseStorageManager implements StorageManager {
      * Attempts to return a single field value from the resultset of a query.
      * @param result the resultset
      * @param index the index of the field in the resultset
-     * @param field the expected MMBase field type
+     * @param field the expected MMBase field type. This can be null
      * @return the value
      * @throws StorageException if the value cannot be retrieved from the resultset
      */
     protected Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
         try {
-            switch (field.getDBType()) {
+            int dbtype = FieldDefs.TYPE_UNKNOWN;
+            if (field !=null) dbtype = field.getDBType();
+            switch (dbtype) {
                 // string-type fields
                 case FieldDefs.TYPE_XML:
                 case FieldDefs.TYPE_STRING: {
@@ -898,6 +900,7 @@ public class DatabaseStorageManager implements StorageManager {
                 xmlfields.add(def);
                 // owner field
                 def=new FieldDefs("Owner","string",11,11,"owner",FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_SYSTEM);
+                def.setDBSize(12);
                 def.setDBPos(3);
                 def.setDBNotNull(true);
                 xmlfields.add(def);
@@ -1052,7 +1055,7 @@ public class DatabaseStorageManager implements StorageManager {
         // search type mapping
         List typeMappings = factory.getTypeMappings();
         
-            debug("Map:"+mapping);
+        debug("Map:"+mapping);
 
         int found = typeMappings.indexOf(mapping);
         if (found > -1) {
