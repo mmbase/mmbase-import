@@ -321,10 +321,20 @@ one or more examplevalue tags is you want to give some example values.
       <possiblevalue>
         <value>http</value>
         <info>
-          use http protocol to ask name and password
+          Use http protocol to ask name and password
           from the user. If the 'logon' attribute is specified too, then
           logging on will fail if the user does not use that
           username. The 'pwd' attribute will be ignored.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>logout</value>
+        <info>
+	  When used 'http' to logon, the browser will store name and
+          password. If you want to logon again, then you can first
+          'logout'. Then the 'realm' of the http authenication will be
+          changed, and you obtain a new possibility to logon after
+          that. The cloud you obtain is anonymous.
         </info>
       </possiblevalue>
       <possiblevalue>
@@ -370,6 +380,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 &lt;/mm:list&gt;
 &lt;/mm:cloud&gt;
     </example>
+    <example>
+&lt;!-- To logon on as a different user on my_page.jsp, make a ref to a page with this:  --&gt;
+&lt;mm:cloud method="logout" /&gt;
+&lt;% response.sendRedirect("http://my_host/my_page.jsp"); %&gt;
+    </example>
+
   </tag>
   <tag>
     <name>info</name>
