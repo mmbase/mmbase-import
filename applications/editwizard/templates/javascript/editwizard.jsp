@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.28 2003-07-07 12:11:49 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.29 2003-07-23 19:12:28 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -118,6 +118,7 @@ function doOnLoad_ew() {
     }
 
     //restore the scroll position
+
     var st = readCookie_general("scrollTop", 0);
     var pf = readCookie_general("prevForm", "-");
     if (pf == document.forms[0].id) {
@@ -125,6 +126,7 @@ function doOnLoad_ew() {
     } else {
         if (firstfield!=null) firstfield.focus();
     }
+
 
     doValidateAndUpdateButtons();
 }
@@ -339,6 +341,7 @@ function doGotoForm(formid) {
     fld.name = "cmd/goto-form//"+formid+"//";
     fld.value = "";
     document.forms[0].submit();
+    document.body.scrollTop = 0;
 }
 
 function doSendCommand(cmd, value) {
@@ -405,6 +408,7 @@ function setButtonsInactive() {
 function doCancel() {
     setButtonsInactive();
     doSendCommand("cmd/cancel////");
+    document.body.scrollTop = 0;
 }
 
 function doSave() {
@@ -413,6 +417,7 @@ function doSave() {
         setButtonsInactive();
         doSendCommand("cmd/commit////");
     }
+    document.body.scrollTop = 0;
 }
 
 /*
