@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.15 2004-08-25 09:38:41 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.16 2004-08-25 11:33:30 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -174,7 +174,7 @@ public class MultiStatement implements Statement {
 
     /**
      * Tries to fix the parent connection, if it proves to be broken. It is supposed to be broken if
-     * the query "SELECT 1 FROM <OBJECT TABLE>" does yield an exception. 
+     * the query "SELECT 1 FROM <OBJECT TABLE> WHERE 1 = 0" does yield an exception. 
      * This method is meant to be called in the catch after trying to exceute a statement.
      *
      * @return A new Statement object if a new Connection was successfully obtained. Or null, if 'SELECT 1' did succeed.
@@ -184,7 +184,7 @@ public class MultiStatement implements Statement {
     protected Statement checkAfterException() throws SQLException {
         // check wether connection is still functional
         try {
-            s.executeQuery("SELECT 1 FROM " + org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getFullTableName()); // if this goes wrong too it can't be the query); 
+            s.executeQuery("SELECT 1 FROM " + org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query); 
         } catch (SQLException isqe) {
              // so, connection must be broken.
             log.service("Found broken connection, will try to fix it.");
