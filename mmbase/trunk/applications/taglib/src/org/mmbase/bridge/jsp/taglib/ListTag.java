@@ -26,7 +26,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeComparator;
 import org.mmbase.bridge.implementation.BasicNodeList;
 
 
