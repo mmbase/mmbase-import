@@ -207,5 +207,14 @@ public interface NodeManager {
 	 * @param resp the Response item to use for redirecting users. For backward compatibility.
 	 */
 	public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp);
+	
+    /**
+     * Check if the current user may create a new node of this type.
+     *
+     * @return  Check if the current user may create a new node of this type.
+     */
+    public boolean mayCreateNode();
+
+	
 
 }
