@@ -7,32 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: cdplayers.java,v 1.9 2001-04-10 12:20:39 michiel Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.8  2001/02/15 13:37:34  vpro
-Davzev: Removed empty constructor and changed and added debug
-
-Revision 1.7  2001/01/11 13:33:29  vpro
-Davzev: Changed systemouts to debugs in method getValue and added more method comments
-
-Revision 1.6  2000/11/27 14:18:25  vpro
-davzev: Added method comments and debug
-
-Revision 1.5  2000/03/31 13:27:52  wwwtech
-Wilbert: Introduction of ParseException for method getList
-
-Revision 1.4  2000/03/30 13:11:35  wwwtech
-Rico: added license
-
-Revision 1.3  2000/03/29 10:59:26  wwwtech
-Rob: Licenses changed
-
-Revision 1.2  2000/03/17 12:36:49  wwwtech
-- (marcel) added better support for functions in getValue
-
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -48,72 +22,42 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-// import org.module.hardware.linux.cdrom.*;
-
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.9 $ $Date: 2001-04-10 12:20:39 $ 
+ * @version $Revision: 1.10 $ $Date: 2001-05-03 10:06:07 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
-    private static Logger log = Logging.getLoggerInstance(Users.class.getName()); 
+	private static Logger log = Logging.getLoggerInstance(Users.class.getName()); 
 
 	/**
-	 * Calls its super method and than calls nodeChanged. 
-     * @param number object number of node who's state has been changed remotely.
-     * @param builder a String with the buildername of the node that was changed remotely.
-     * @param ctype a String with the node change type.
-	 * @return result value of nodeChanged call.
+	 * Calls super.
+	 * @param number object number of node who's state has been changed remotely.
+	 * @param builder a String with the buildername of the node that was changed remotely.
+	 * @param ctype a String with the node change type.
+	 * @return result value of suer which is either true or false.
 	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged(" + number + "," + builder +
-                      "," + ctype + "): Calling super.");
-        }
-		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+		return super.nodeRemoteChanged(number,builder,ctype);
 	}
 
 	/**
-	 * Calls its super method and than calls nodeChanged. 
-     * @param number object number of node who's state has been changed.
-     * @param builder a String with the buildername of the node that was changed.
-     * @param ctype a String with the node change type.
-	 * @return result value of nodeChanged call.
+	 * Calls super.
+	 * @param number object number of node who's state has been changed.
+	 * @param builder a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 * @return result value of suer which is either true or false.
 	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged(" + number + "," + builder +
-                      "," + ctype + "): Calling super.");
-        }
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+		return super.nodeLocalChanged(number,builder,ctype);
 	}
 
-	/**
-	 * Does nothing, returns immediately.
-     * @param number object number of node who's state has been changed.
-     * @param builder a String with the buildername of the node that was changed.
-     * @param ctype a String with the node change type.
-	 * @return true, always.
-	 */
-	public boolean nodeChanged(String number,String builder,String ctype) {
-		MMObjectNode node = getNode(number);
-		if (log.isDebugEnabled()) {
-            debug("nodeChanged(" + number + "," + builder + "," +
-                  ctype + "): Printing state=" +
-                  node.getStringValue("state") + " and info=" +
-                  node.getStringValue("info") + " , returning.");
-        }
-		return true;
-	}
-
-
-	// changed need to be handles from data driven to its implementation interface. so for example "record" needs to be mapped to impl.doRecord.
 	/**
 	 * Returns the value for a requested node field.
-	 * When the field is 'getdir(info)' the node state is set to 'getdir' and we wait until node is changed.
-	 * If the state has become 'waiting' we return info field value, else we wait again.
+	 * When the field is 'getdir(info)' the node state is set to 'getdir'
+	 * and we wait until node is changed.
+	 * If the state has become 'waiting' we return info field value, 
+	 * else we wait again.
 	 * @param node a cdplayers type node
 	 * @param field the field requested
 	 * @return the request field value
@@ -124,8 +68,9 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 			node.setValue("state","getdir");
 			node.commit();
 			if (log.isDebugEnabled()) {
-                log.debug("getValue: State set to getdir, now wait until node is changed sothat dir is available.");
-            }
+				log.info("State set to getdir, now wait until node is changed "
+				        + " sothat dir is available.");
+			}
 			boolean changed=false;
 			MMObjectNode newnode=null;
 			while (!changed) {	
@@ -136,16 +81,16 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 					changed=true;
 				else 
 					if (log.isDebugEnabled()) {
-                        log.debug("getValue: Retrieved node " + 
-                                  newnode.getStringValue("name") + " ("+newnode.getIntValue("number") + 
-                                  "), state is " + state + "!=waiting, entering waitUntilNodeChanged again");
-                    }
+						log.debug("Retrieved node " + newnode.getStringValue("name")
+						        + " ("+newnode.getIntValue("number") + "), state is "+state
+						        + "!=waiting, entering waitUntilNodeChanged again");
+					}
 			}
 			String val=newnode.getStringValue("info");
 			if (log.isDebugEnabled()) {
-                log.debug("getValue: " + newnode.getStringValue("name") + "("+newnode.getIntValue("number") + 
-                          ") State is waiting again, returning: " + val);
-            }
+				log.debug(newnode.getStringValue("name")+"("+newnode.getIntValue("number")
+			        + ") State is waiting again, " +"returning: " + val);
+			}
 			return(val);
 		} else return super.getValue(node, field);
 	}
@@ -158,16 +103,19 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @param tok tokenizer with the listing command.
 	 * @return a Vector with the tracklisting
 	 */
-	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
+	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) 
+	        throws ParseException {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
-			if (cmd.equals("getdir")) return(getHTMLDir(tagger,tok));
+			if (cmd.equals("getdir")) 
+				return(getHTMLDir(tagger,tok));
 		}
 		return null;
 	}
 
 	/**
-	 * Requests for the trackslisting and parses it and returns it as a vector (tracknr,title,length).
+	 * Requests for the trackslisting and parses it and returns it as a 
+	 * vector (tracknr,title,length).
 	 * @param tagger the StringTagger object with the rest of the list commands.
 	 * @param tok tokenizer object
 	 * @return a vector with the tracklisting
@@ -189,11 +137,12 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 					result.addElement(trlen);
 				}
 			} catch(Exception e) {
-				log.error("getHTMLDir: Error, NROFTRACKS doesn't contain an integer! " + e);
+				log.error("NROFTRACKS value is not an integer!");
+				e.printStackTrace();
 			}
 		}
 		tagger.setValue("ITEMS","3");
-		log.service("getHTMLDir: returning result: " + result);
+		log.service("Returning result: " + result);
 		return result;
 	}
 
@@ -208,12 +157,12 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
 			if (log.isDebugEnabled()) {
-                log.debug("replace: Token is " + cmd);
-            }
+				log.debug("Token is " + cmd);
+			}
 			if (cmd.equals("claim")) {
 				if (log.isDebugEnabled()) { 
-                    log.debug("replace: Command is 'claim', calling doClaim(sp,tok)");
-                }
+					log.info("Command is 'claim', calling doClaim(sp,tok)");
+				}
 				doClaim(sp,tok);
 			}
 		}
