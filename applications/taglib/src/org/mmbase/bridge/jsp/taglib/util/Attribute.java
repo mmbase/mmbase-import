@@ -19,6 +19,7 @@ import org.mmbase.util.ExprCalc;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.StringSplitter;
 
 /**
  * MMBase Taglib attributes can contain $-variables. Parsing of these $-variable is
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.7 2003-03-25 17:55:14 michiel Exp $
+ * @version $Id: Attribute.java,v 1.8 2003-05-16 07:55:48 kees Exp $
  * @since   MMBase-1.7
  */
 
