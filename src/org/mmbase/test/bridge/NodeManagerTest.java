@@ -51,9 +51,9 @@ public class NodeManagerTest extends TestCase {
         NodeManager nodeManager = cloud.getNodeManager("aa");
         NodeList nodeList;
         nodeList = nodeManager.getList(null, null, null);
-        assert(nodeList.size() == nrOfTestNodes);
+        assertTrue(nodeList.size() == nrOfTestNodes);
         nodeList = nodeManager.getList("", "", "");
-        assert(nodeList.size() == nrOfTestNodes);
+        assertTrue(nodeList.size() == nrOfTestNodes);
     }
     
     // Add some more list test.

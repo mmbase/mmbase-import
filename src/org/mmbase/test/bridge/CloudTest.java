@@ -81,7 +81,7 @@ public class CloudTest extends TestCase {
         NodeList nodeList;
         nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "bytefield",
                                  "", "", "", "", false);
-        assert(nodeList.size() == nrOfBBNodes);
+        assertTrue(nodeList.size() == nrOfBBNodes);
     }
 
     public void testGetListWithNullParameters() {
@@ -104,14 +104,14 @@ public class CloudTest extends TestCase {
         NodeList nodeList;
         nodeList = cloud.getList(null, "aa,bb", "bytefield", "", "", "", "",
                                  false);
-        assert(nodeList.size() == nrOfBBNodes + 1);
+        assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
     public void testGetListWithEmptyParameterStartNodes() {
         NodeList nodeList;
         nodeList = cloud.getList("", "aa,bb", "bytefield", "", "", "", "",
                                  false);
-        assert(nodeList.size() == nrOfBBNodes + 1);
+        assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
     public void testGetListWithInvalidParameterStartNodes() {

@@ -42,9 +42,9 @@ public class EmptyNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             if (fieldTypes[i].equals("byte")) {
                 byte[] bytes = (byte[])node.getValue(fieldTypes[i] + "field");
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else {
-                assert(node.getValue(fieldTypes[i] + "field") == null);
+                assertTrue(node.getValue(fieldTypes[i] + "field") == null);
             }
         }
     }
@@ -53,17 +53,17 @@ public class EmptyNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             byte[] bytes = node.getByteValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("double")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("float")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("int")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("long")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("string")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else {
                 fail();
             }
@@ -71,31 +71,31 @@ public class EmptyNodeTest extends NodeTest {
     }
     public void testGetDoubleValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assert(node.getDoubleValue(fieldTypes[i] + "field") == -1);
+            assertTrue(node.getDoubleValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetFloatValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assert(node.getFloatValue(fieldTypes[i] + "field") == -1);
+            assertTrue(node.getFloatValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetIntValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assert(node.getIntValue(fieldTypes[i] + "field") == -1);
+            assertTrue(node.getIntValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetLongValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assert(node.getLongValue(fieldTypes[i] + "field") == -1);
+            assertTrue(node.getLongValue(fieldTypes[i] + "field") == -1);
         }
     }
 
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assert("".equals(node.getStringValue(fieldTypes[i] + "field")));
+            assertTrue("".equals(node.getStringValue(fieldTypes[i] + "field")));
         }
     }
 

@@ -178,7 +178,7 @@ public abstract class NodeTest extends TestCase {
                 String alias = (String)i.next();
                 if ("node_alias".equals(alias)) found = true;
             }        
-            assert(found);
+            assertTrue(found);
         } catch (Exception e) {
             fail(e.toString());
         }
@@ -204,7 +204,7 @@ public abstract class NodeTest extends TestCase {
             node.setContext(otherContext);
 
             // now, the new context must be equal to otherContext
-            assert(otherContext.equals(node.getContext()));
+            assertTrue(otherContext.equals(node.getContext()));
 
         } catch (Exception e){
             fail(e.toString());

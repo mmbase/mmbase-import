@@ -34,7 +34,7 @@ public class CloudContextTest extends TestCase {
                 defaultCloudFound = true;
             }
         }
-        assert(defaultCloudFound);
+        assertTrue(defaultCloudFound);
     }
 
 }
