@@ -55,6 +55,8 @@ public class MMObjectBuilder extends MMTable {
     private int version=0;
     String maintainer="mmbase.org";
 
+	public static Hashtable TemporaryNodes=new Hashtable(1024);
+
     public Vector sortedDBLayout = null;
 
     String GUIIndicator="no info";
@@ -388,6 +390,45 @@ public class MMObjectBuilder extends MMTable {
             return(null);
         }
     }
+
+	/**
+	 * Temporary node code
+	 */
+
+	/**
+	 * Create a new temporary node and put it in the temporary
+	 * node space
+	 */
+	public MMObjectNode getNewTmpNode(String owner,String key) {
+		MMObjectNode node=null;
+		node=getNewNode(owner);
+		node.setValue("_number",key);
+		TemporaryNodes.put(key,node);
+		return(node);
+	}
+
+	/**
+	 * Get nodes from the temporary node space
+	 */
+	public MMObjectNode getTmpNode(String key) {
+		MMObjectNode node=null;
+		node=(MMObjectNode)TemporaryNodes.get(key);
+		if (node==null) {
+			debug("getTmpNode(): node not found "+key);
+		}
+		return(node);
+	}
+
+	/**
+	 * Remove a node from the temporary node space
+	 */
+	public void removeTmpNode(String key) {
+		MMObjectNode node;
+		node=(MMObjectNode)TemporaryNodes.remove(key);
+		if (node==null) debug("removeTmpNode): node with "+key+" didn't exists");
+	}
+
+	/**************************************************************************/
 
     /**
     * Enumerate all the objects that match the searchkeys
