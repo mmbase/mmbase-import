@@ -389,18 +389,166 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
     <title>Reference</title>
     <para>This reference describes the syntax of the wizards and how to access them using a browser.</para>
     <section>
-      <title>General</title>
-      <para>The editwizards need a xml file with a definition of the wizard to operate. Default, those are found in the subdirectory /editwizard/data/ . This reference describes what the syntax of the wizard definitions is.</para>
+      <title>General - wizard definition schemas</title>
+      <para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (whichd efine layout) elsewhere.</para>
+			<para>When the wizards search for a requested file (a wizard xsl stylesheet or a wizard xml schema), they look for the referenced file in the following order:
+			</para>
+      <variablelist>
+        <varlistentry>
+          <term>The referer page directory</term>
+          <listitem>
+            <para>You call the editwizard scripts (list.jsp and wizxard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referer page.</para>
+						<para>Example: if the file requested is data/my_wizard.xml, and the referencing page is /myeditors/index.jsp, the system first checks for the file /myeditors/data/my_wizard.xml.
+						</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>The editwizard home directory</term>
+          <listitem>
+            <para>The editwizard home is the directory that contains the ditwizard basic stylesheets, data library, and jsp pages. It is one directory lower than the location of the list.jsp and  wizard.jsp files. In the standard distribution, this location is /mmapps/editwizard/ (the list.jsp and wizard.jsp are located in /mmapps/editwizard/jsp/), but you can place the wizards wherever you like.
+						</para>
+						<para>Example: if the file requested is data/my_wizard.xml, and the editwizard home is in mmapps/ediwtizard/, the system checks for the file /mmapps/editwizard/data/my_wizard.xml.
+						</para>
+          </listitem>
+        </varlistentry>
+			</variablelist>
     </section>
     <section>
       <title>list.jsp</title>
-      <para>To run a wizard, you'll need list.jsp (or wizard.jsp for that matter). You need to use parameters to tell the list.jsp what wizard, what nodes and what fields should be shown. list.jsp fires a query (a given by the parameters shown below) and loads the given wizard. It shows a list of all found nodes and shows edit, delete and create buttons (if the wizard defined such actions). Mainly, list.jsp will create a HTML page which will in contain references to wizard.jsp to start the wizard itself. Note that the list.jsp does NOT run an editwizard itself, it is just a ' starter' . Use wizard.jsp if you want to start a wizard directly. The syntax of the list.jsp is as follows:</para>
-      <programlisting format="linespecific">list.jsp?wizard=[wizardname with path] &amp;startnodes=[mmbase-objectnumber-to-start-with-when querying] &amp;nodepath=[buildername] &amp;fields=[enumeration of fields to be shown] &amp;orderby=[orderby clause] &amp;constraints=[where-part] &amp;title=[other wizard title]</programlisting>
+      <para>To run a wizard, you'll need to call either list.jsp or wizard.jsp. These scripts are located in the jsp subdirectory of the editwizard home directory. In the standard distribution, this is mmapps/editwizard/jsp/.</para>
+			<para>List.jsp starts with running a search query on MMBase to create a list of items to search from. It shows a list of all found nodes and allows you to select one of these items to edit, to remove an item, or to add a new item. The actual options given depend on the security settings (if you are allowed to do this by MMBase), and the possibilities offered by the wizard. Note that the list.jsp does NOT run an editwizard itself, it is just a 'starter'. It eventually calls wizard.jsp (see below) to actually edit or create an item.</para>
+			<para>You need to specify a number of parameters to tell the list.jsp what wizard should be used, and what nodes and fields should be shown in the list.</para>
+			<variablelist>
+        <title>The following parameters MUST be specified (list.jsp does not work if you do not specify them):</title>
+        <varlistentry>
+          <term>wizard</term>
+          <listitem>
+            <para>The wizard to use. This is a relative reference to the xml schema file. Do not specify the ".xml" prefix.</para>
+						<programlisting format="linespecific">wizard=data/simple.xml</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>nodepath</term>
+          <listitem>
+            <para>The nodepath defines the object types to list. This can be one object type, or a comma-separated list of types, which are treated as a relation chain, like in path attribute of the taglib's &lt;mm:list&gt; tag.
+						The last objecttype listed is the object that is used as the objecttype to edit in the wizard.</para>
+						<programlisting format="linespecific">nodepath=people or nodepath=people,news</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>fields</term>
+          <listitem>
+            <para>The fields to show in the list. If you query only one nodetype (see nodepath), you can use simple field names. Otherwise, you need to preface the fieldnames with the name of the objecttype they belong to.
+						If the first field listed is a number field, teh objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<programlisting format="linespecific">fields=firstname,lastname or fields=news.title,people.firstname,people.lastname</programlisting>
+          </listitem>
+        </varlistentry>
+			</variablelist>
+			<variablelist>
+        <title>The following parameters MAY be specified:</title>
+        <varlistentry>
+          <term>orderby</term>
+          <listitem>
+            <para>A list of fieldnames used to order the returning list. This parameter is similar to the orderby attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<programlisting format="linespecific">orderby=lastname or  orderby=people.lastname,news.title</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>directions</term>
+          <listitem>
+            <para>A list of one or more UP/DOWN keywords. Each keyword determines whether the order of a matching field specified in the orderby parameter is ascending (UP) or descending (DOWN). This parameter is similar to the directions attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<programlisting format="linespecific">directions=UP or  directions=UP,UP</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>constraints</term>
+          <listitem>
+            <para>A SQL-like constraint, used to filter the list. If you use fieldnames in a constraint, surround it with brackets ([]). This allows MMAbse to recognize the fields and optimize the query. This parameter is similar to the constraints attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<programlisting format="linespecific">constraints=[news.title] like '%Brasil%'</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>distinct</term>
+          <listitem>
+            <para>If true, double entries in a list are returned only once.</para>
+						<programlisting format="linespecific">distinct=true</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>pagelength</term>
+          <listitem>
+            <para>The maximum number of entries shown on one list page. Default value is 50.</para>
+						<programlisting format="linespecific">pagelength=50</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maxpagecount</term>
+          <listitem>
+            <para>The maximum number of pages available to browse through. Default value is 10.</para>
+						<programlisting format="linespecific">maxpagecount=10</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>start</term>
+          <listitem>
+            <para>The number of the item in the list where to start listing.
+						  This value is used to skip to a certain page when brosing a large list.
+						 	Default is 0.</para>
+						<programlisting format="linespecific">age=31</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>age</term>
+          <listitem>
+            <para>The maximum age (in days) of the objects to list. Default is no age restriction.</para>
+						<programlisting format="linespecific">age=31</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>searchfields</term>
+          <listitem>
+            <para>The field(s) on which to make a search, using the value specified in the search parameter and the type of comparison specified in the search type.</para>
+						<para>You can specify more than one field (separated by commas). if you do, a search matches if one or more of the specified fields matches.</para>
+						<programlisting format="linespecific">searchfields=news.title,news.subtitle</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>search</term>
+          <listitem>
+            <para>The term or value to search for. This is only valid if you also specify the searchfields parameter.</para>
+						<programlisting format="linespecific">search=Brasil</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>searchtype</term>
+          <listitem>
+            <para>Determines what type of search is used to filter on the searchfields, using the specified search value.  This is only valid if you also specify the searchfields parameter.</para>
+						<para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare teh feild to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
+						</para>
+						<programlisting format="linespecific">searchtype=like</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>origin</term>
+          <listitem>
+            <para>A node alias or number, which will be passed to the underlying editwizard. the value can then be referenced in the editwizard schema using the {$origin} variable.
+						This can be used to create relations to nodes whose 'origin' is determined outside the wizard (i.e. in a complex search or determined through user preferences).
+						</para>
+						<programlisting format="linespecific">origin=my_start_node</programlisting>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>title</term>
+          <listitem>
+            <para>An optional title to use by the list. In general, you should specify this in the editwizard schema.</para>
+						<programlisting format="linespecific">title=News of The Week</programlisting>
+          </listitem>
+        </varlistentry>
+			</variablelist>
       <example>
         <title>How to use list.jsp to list objects</title>
-        <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;nodepath=people&amp;fields=firstname,lastname&amp;title=My First Wizard&amp;orderby=lastname</programlisting>
-        <programlisting format="linespecific">list.jsp?wizard=practice/people&amp;nodepath=people&amp;fields=title</programlisting>
-        <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;startnodes=1&amp;nodepath=people,news&amp;fields=people.firstname,news.title</programlisting>
+        <programlisting format="linespecific">list.jsp?wizard=practice/people&amp;nodepath=people&amp;fields=firstname,lastname</programlisting>
+        <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;startnodes=1&amp;nodepath=people,news&amp;fields=news.title,people.firstname,people.lastname</programlisting>
       </example>
     </section>
     <section>
@@ -586,13 +734,25 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
         <varlistentry>
           <term>Possible parents</term>
           <listitem>
-            <para>&lt;wizard /&gt;</para>
+            <para>&lt;wizard-schema /&gt;</para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term>Example</term>
           <listitem>
-            <programlisting format="linespecific">&lt;action type="create"&gt; &lt;object type="news"&gt; &lt;relation destination="13234" role="related"/&gt; &lt;relation role="posrel"&gt; &lt;field name="pos"&gt;42&lt;/field&gt; &lt;object type="images"&gt; &lt;field name="title"&gt;new image&lt;/field&gt; &lt;/object&gt; &lt;/relation&gt; &lt;/object&gt; &lt;/action&gt;</programlisting>
+            <programlisting format="linespecific"><![CDATA[
+<action type="create">
+	<object type="news">
+		<relation destination="13234" role="related"/>
+		<relation role="posrel">
+			<field name="pos">42</field>
+			<object type="images">
+				<field name="title">new image</field>
+			</object>
+		</relation>
+	</object>
+</action>
+						]]></programlisting>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -643,7 +803,28 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
         <varlistentry>
           <term>Example</term>
           <listitem>
-            <programlisting format="linespecific">&lt;list role="posrel" destination="images" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number"&gt; &lt;title&gt;Images&lt;/title&gt; &lt;item displaymode="section" displaytype="image"&gt; &lt;title&gt;Overview&lt;/title&gt; &lt;field fdatapath="." ftype="startwizard" objectnumber="{object/@number}" wizardname="images"&gt; &lt;prompt&gt;Change this image&lt;/prompt&gt; &lt;/field&gt; &lt;field name="title" ftype="data"&gt; &lt;prompt&gt;Title&lt;/prompt&gt;&lt;/field&gt; &lt;/item&gt; &lt;command name="insert"/&gt; &lt;action type="create"&gt; &lt;relation role="posrel"&gt; &lt;object type="images" &gt; &lt;field name="pos"&gt;2&lt;/field&gt; &lt;/object&gt; &lt;/relation&gt; &lt;/action&gt; &lt;/list&gt;</programlisting>
+            <programlisting format="linespecific"><![CDATA[
+<list role="posrel" destination="images" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
+  <title>Images</title>
+  <item displaymode="section" displaytype="image">
+    <title>Overview</title>
+		<field fdatapath="." ftype="startwizard" objectnumber="{object/@number}" wizardname="images">
+		  <prompt>Change this image</prompt>
+		</field>
+		<field name="title" ftype="data">
+		  <prompt>Title</prompt>
+		</field>
+	</item>
+	<command name="insert"/>
+	<action type="create">
+		<relation role="posrel">
+			<object type="images" >
+				<field name="pos">2</field>
+			</object>
+		</relation>
+	</action>
+</list>
+					  ]]></programlisting>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -689,13 +870,19 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
         <varlistentry>
           <term>Possible parents</term>
           <listitem>
-            <para>&lt;wizard /&gt;</para>
+            <para>&lt;wizard-schema /&gt;</para>
+            <para>&lt;list /&gt;</para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term>Example</term>
           <listitem>
-            <programlisting format="linespecific">&lt;action type="delete"&gt; &lt;prompt&gt;Wilt u echt dit newitem deleten?&lt;/prompt&gt; &lt;description&gt;Click here to delete this newitem&lt;/description&gt; &lt;/action&gt;</programlisting>
+            <programlisting format="linespecific"><![CDATA[
+<action type="delete">
+  <prompt>Are you sure yoiu eant to delete this news item?</prompt>
+	<description>Click here to delete this news item</description>
+</action>
+						]]></programlisting>
           </listitem>
         </varlistentry>
       </variablelist>
