@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.9 2003-02-13 15:39:07 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.10 2003-02-13 16:22:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
     
@@ -800,36 +800,37 @@ public class MMObjectBuilder extends MMTable {
      */
     public List getNodes(List virtuals) {
         List            result  = new ArrayList();
-        MMObjectNode    node    = null;
-        Integer         number  = null;
-        String          numbers = "";
-        Iterator        i       = virtuals.iterator();
+        StringBuffer    numbers = new StringBuffer();
+        boolean         first   = true;
 
+        Iterator        i       = virtuals.iterator();
         while(i.hasNext()) {
-            node    = (MMObjectNode)i.next();
-            number  = new Integer(node.getIntValue("number"));
+            MMObjectNode node    = (MMObjectNode) i.next();
+            Integer      number  = new Integer(node.getIntValue("number"));
 
             // check if this node is already in cache
-            if(nodeCache.containsKey(number))
+            if(nodeCache.containsKey(number)) {
                 result.add(nodeCache.get(number));
-            // else seek it with a search on builder in db
-            else {
-                if(numbers.equals(""))
-                    numbers = "" + number;
-                else
-                    numbers += "," + number;
+                // else seek it with a search on builder in db
+            } else {
+                if (first) {
+                    first = false;
+                } else {
+                    numbers.append(",");
+                }
+                numbers.append(number);
             }
 
             if(numbers.length() > MAX_QUERY_SIZE) {
-                result.addAll(new ArrayList(basicSearch("SELECT * FROM "+getFullTableName()+" WHERE number in ("+numbers+")")));
-                numbers = "";
+                result.addAll(basicSearch("SELECT * FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+                numbers = new StringBuffer();
             }
         }
 
         // now that we have a comma seperated string of numbers, we can
         // the search with a where-clause containing this list
-        if(!numbers.equals("")) {
-            result.addAll(new ArrayList(basicSearch("SELECT * FROM "+getFullTableName()+" WHERE number in ("+numbers+")")));
+        if(! numbers.toString().equals("")) {
+            result.addAll(basicSearch("SELECT * FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
         } // else everything from cache
 
         // check that we didnt loose any nodes
