@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.36 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ContextAuthorization.java,v 1.37 2005-03-16 16:05:33 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -321,7 +321,7 @@ public class ContextAuthorization extends Authorization {
             // now get the requested operation
 
             // now do the same query with the default context...
-            xpath = "operation[@type='" + operation.toString() + "']/grant";
+            xpath = "operation[@type='" + operation + "']/grant";
             if (log.isDebugEnabled()) {
                 log.debug("going to execute the query:" + xpath + " On " + found.toString());
             }

@@ -23,10 +23,26 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.27 2005-03-13 18:58:50 nico Exp $
+ * @version $Id: Authentication.java,v 1.28 2005-03-16 16:05:33 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
+
+
+    static {
+        try {
+            PARAMETER_USERNAME.setBundle(STRINGS);
+            PARAMETER_PASSWORD.setBundle(STRINGS);
+            PARAMETER_USERNAMES.setBundle(STRINGS);
+            PARAMETER_RANK.setBundle(STRINGS);
+            PARAMETER_SESSIONNAME.setBundle(STRINGS);
+            PARAMETER_LOGOUT.setBundle(STRINGS);
+            PARAMETER_AUTHENTICATE.setBundle(STRINGS);
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
+
 
     /**
      *  This method will verify the login, and give a UserContext back if the login procedure was successful.
