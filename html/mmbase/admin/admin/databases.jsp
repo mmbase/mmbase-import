@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase" method="http" rank="administrator">
+<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
@@ -32,7 +32,10 @@
 </tr>
 <%
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
-   NodeList databases=mmAdmin.getList("DATABASES",null,request,response);
+   java.util.Map params = new java.util.Hashtable();
+   params.put("CLOUD", cloud);
+
+   NodeList databases=mmAdmin.getList("DATABASES",params,request,response);
    for (int i=0; i<databases.size(); i++) {
     Node database=databases.getNode(i);
 %>
@@ -57,7 +60,7 @@
 </tr>
 <%
    Module jdbc=LocalContext.getCloudContext().getModule("jdbc");
-   NodeList pools=jdbc.getList("POOLS",null,request,response);
+   NodeList pools=jdbc.getList("POOLS",params,request,response);
    for (int i=0; i<pools.size(); i++) {
     Node pool=pools.getNode(i);
 %>
