@@ -22,7 +22,15 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* A base class for tags which provide a node (And some fields).
+* A base class for tags which provide a node (And some fields). The
+* general attributes for a NodeProvider are
+* <ul>
+* <li> id: The identifier. Used as a key for the Context. If this
+* attribute is missing, the Node variable will not be imported in the Context. </li>
+* <li> jspvar: An identifier for a jsp variable available in the
+* body. If this attribute is missing, no jsp-variable will be
+* created.</li>
+* </ul>
 *
 * @author Michiel Meeuwissen
 * @author Kees Jongenburger
@@ -33,6 +41,17 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     
     private   Node   node;        
     protected String fields = "";
+    private   String jspvar = null;
+    
+
+    // general attributes for NodeProviders
+    // id from TagSupport
+
+    public void setJspvar(String jv) {
+        jspvar = jv;
+        if ("".equals(jspvar)) jspvar = null;
+    }
+
         
     /**
     * For use by children, they can find the currend 'node' belonging
@@ -71,8 +90,10 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
             //                         "" + node.getValue(field));
         }
         String id = getId();
-        if (id != null && id != "") {
-            findCloudProvider().registerNode(id, node);
+        if (jspvar != null) {
+            findCloudProvider().registerNode(jspvar, node);
+        }
+        if (id != null && ! "".equals(id)) {
             pageContext.setAttribute(id, node);
         }
     }
@@ -98,19 +119,19 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         return stringSplitter(string, ",");
     }
     
-    private String getSimpleReturnValueName(String fieldName){
-        return getSimpleReturnValueName(getId(), fieldName);
+    private String getSimpleReturnValueName(String fieldName){        
+        return getSimpleReturnValueName(jspvar, fieldName);
     }
     /**
      * Generates the variable-name for a field.
      *
-     * @param id The id of the node.
+     * @param prefix A prefix to use. Can be null.
      * @param fieldName The name of the field.
      */
-    static String getSimpleReturnValueName(String id, String fieldName){
+    static String getSimpleReturnValueName(String prefix, String fieldName){
         String field = fieldName.replace('.','_');
-        if (id != null && ! "".equals(id)) {
-            field = id + "_" + field;
+        if (prefix != null && ! "".equals(prefix)) {
+            field = prefix + "_" + field;
         }
         return field;
     }
