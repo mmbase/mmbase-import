@@ -14,9 +14,12 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 /*
-	$Id: TemporaryNodeManager.java,v 1.8 2000-11-08 14:46:29 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.9 2000-11-08 16:11:52 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/11/08 14:46:29  vpro
+	Rico: added splitting into datatypes
+	
 	Revision 1.7  2000/11/08 14:31:23  vpro
 	Rico: returns right keys
 	
@@ -44,7 +47,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.8 2000-11-08 14:46:29 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.9 2000-11-08 16:11:52 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -63,7 +66,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectBuilder builder=mmbase.getMMObject(type);
 		MMObjectNode node;
 		if (builder!=null) {
-			node=builder.getNewTmpNode(owner,makeKey(owner,key));
+			node=builder.getNewTmpNode(owner,getTmpKey(owner,key));
 			if (_debug) debug("New tmpnode "+node);
 		} else {
 			debug("Can't find builder "+type);
@@ -73,15 +76,15 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
 	public String deleteTmpNode(String owner,String key) {
 		MMObjectBuilder b=mmbase.getMMObject("typedef");
-		b.removeTmpNode(makeKey(owner,key));
-		if (_debug) debug("delete node "+makeKey(owner,key));
+		b.removeTmpNode(getTmpKey(owner,key));
+		if (_debug) debug("delete node "+getTmpKey(owner,key));
 		return(key);
 	}
 
 	public MMObjectNode getNode(String owner,String key) {
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		MMObjectNode node;
-		node=bul.getTmpNode(makeKey(owner,key));
+		node=bul.getTmpNode(getTmpKey(owner,key));
 		// fallback to normal nodes
 		if (node==null) {
 			if (_debug) debug("getNode tmp not node found "+key);
@@ -93,14 +96,14 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	public String getObject(String owner,String key,String dbkey) {
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		MMObjectNode node;
-		node=bul.getTmpNode(makeKey(owner,key));
+		node=bul.getTmpNode(getTmpKey(owner,key));
 		if (node==null) {
 			if (_debug) debug("getObject not tmp node found "+key);
 			node=bul.getNode(dbkey);
 			if (node==null) {
 				debug("Node not found in database "+dbkey);
 			} else {
-				bul.putTmpNode(makeKey(owner,key),node);
+				bul.putTmpNode(getTmpKey(owner,key),node);
 			}
 		}
 		if (node != null) {
@@ -204,7 +207,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(rtn);
 	}
 
-	private String makeKey(String owner,String key) {
+	public String getTmpKey(String owner,String key) {
 		return(owner+"_"+key);
 	}
 }
