@@ -4,7 +4,7 @@
 -->
 <!ENTITY % putstatus "(change,delete,new)">
 <!ENTITY % searchdir "(source,destination,both)">
-<!ENTITY % createdir "(source,destination)">
+<!ENTITY % createdir "(source,destination,either)">
 
 <!ELEMENT request (security?|(getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put)+) >
 
