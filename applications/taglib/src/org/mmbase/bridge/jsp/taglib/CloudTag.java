@@ -365,7 +365,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * simultaniously with different clouds, but in the same session.
      */
     public String getSessionName() {
-        if (sessionName == null) {
+        if (sessionName == null || sessionName.equals("")) {
             return "cloud_" + cloudName;
         } else {
             return sessionName;
