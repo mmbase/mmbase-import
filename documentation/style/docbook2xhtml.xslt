@@ -33,8 +33,10 @@
   <xsl:param name="root.filename" select="substring($filename, 1, 1)"/>
   <!-- aaarch, starting at 1 and not at 0!! -->
   <xsl:param name="html.ext" select="concat(substring($filename, 2), '.html')"/>
-  <xsl:param name="use.id.as.filename" select="'1'"/>
-  <xsl:param name="chunk.quietly" select="1"/>
+	<xsl:param name="chunk.section.depth" select="count(/article[@class='specification' or @class='faq'])+1" />
+  <xsl:param name="use.id.as.filename" select="'$chunk.section.depth'"/>
+  <xsl:param name="chunk.quietly" select="$chunk.section.depth"/>
+
   <!-- set to 0 if you want to know what's happening -->
 
   <!-- use a custom css -->
