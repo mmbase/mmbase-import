@@ -53,8 +53,9 @@
     <property name="ImageConvert.ConverterCommand">convert</property>
     <property name="ImageConvert.ConverterRoot"></property>
 
-    <!-- generic property for all converters -->
+    <!-- generic properties for all converters -->
     <property name="MaxConcurrentRequests">3</property>
+    <property name="DefaultImageType">jpg</property>
   </properties>
 
   <!-- <fieldlist>
