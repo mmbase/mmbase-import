@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.18 2003-04-24 21:10:27 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.19 2003-05-13 08:30:09 pierre Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -129,6 +129,9 @@
       </listitem>
       <listitem>
         <para><ulink url="templaters/editwizard/editwizard-doc.html">Editwizards</ulink></para>
+      </listitem>
+      <listitem>
+        <para><ulink url="templaters/editwizard/editwizard-reference.html">Editwizard Syntax Reference</ulink></para>
       </listitem>
       <listitem>
         <para>MMBase taglib reference (<ulink url="reference/taglib/toc.html">JSP</ulink> <ulink url="reference/mmbase-taglib.html">HTML</ulink>)</para>
