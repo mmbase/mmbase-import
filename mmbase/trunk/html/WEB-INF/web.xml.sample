@@ -128,4 +128,23 @@
     <taglib-location>/WEB-INF/mmcommunity-taglib.tld</taglib-location>
   </taglib>
 
+  <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)-->
+  <resource-ref>
+    <description>
+      Mail resource for MMBase
+    </description>
+    <res-ref-name>mail/MMBase</res-ref-name>
+    <res-type>javax.mail.Session</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <!-- for the org.mmbase.module.database.Naming class -->
+  <resource-ref>
+    <description>
+      Datasource for the MMBase Database
+    </description>
+    <res-ref-name>jdbc/MMBase</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
 </web-app>
