@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.2 2003-06-26 11:56:25 gerard Exp $
+# $Id: build.properties.default,v 1.3 2003-06-30 16:23:02 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -16,10 +16,10 @@
 #proxy.use=on
 
 # ----- Default build dir -----
-build.dir=${basedir}/build
+documentation.build.dir=${basedir}/build
 
 # ----- Default Base Path for required Packages -----
-download.dir=${build.dir}/download
+# download.dir=${documentation.build.dir}/download
 
 
 # --------------------------------------------------
