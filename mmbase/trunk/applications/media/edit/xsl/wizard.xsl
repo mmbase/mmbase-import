@@ -3,20 +3,21 @@
   <!-- Stream manager -->
 
   <xsl:import href="ew:xsl/wizard.xsl" /> <!-- extend from standard  editwizard xslt -->
-  
-  <xsl:output
-    method="xml"
-    version="1.0"
-    encoding="utf-8"
-    omit-xml-declaration="no"
-    standalone="yes"
-    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//"
-    indent="yes"
-    />
 
 
-  <xsl:template name="extrajavascript">
-    <script language="javascript" src="{$referrerdir}style/streammanager.js.jsp?dir={$referrerdir}&amp;fragment={$objectnumber}"><xsl:comment>help IE</xsl:comment></script>
+  <xsl:template name="body"> 
+    <body onload="doOnLoad_ew();init('{/wizard/curform}');" onunload="doOnUnLoad_ew();">
+      <xsl:call-template name="bodycontent" />
+    </body>
+  </xsl:template>
+
+
+  <xsl:template name="realposition">    
+  <span style="width:128;">
+    <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
+    <xsl:apply-templates select="@*" />
+    </input><input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = parent.frames['player'].document.embeddedplayer.GetPosition();" /></nobr>
+  </span>
   </xsl:template>
 
 
@@ -28,8 +29,8 @@
         <xsl:call-template name="subtitle" />
           <tr>
             <td class="steps">
-              <xsl:if test="/wizard/curform = 'itemize-embeded'">    
-              <embed 
+              <xsl:if test="/wizard/curform = 'itemize'">    
+              <!-- embed 
                 id="player"
                 src="{$referrerdir}display.ram.jsp?fragment={$objectnumber}" 
                 width="200" 
@@ -41,11 +42,11 @@
                 autostart="true" 
                 nologo="true"
                 nolabels="true"
-                name="embeddedplayer"></embed>
-              <a href="javascript:void(0)" onClick="javascript:detach();">detach</a>
+                name="embeddedplayer"></embed -->
             </xsl:if>
-            <xsl:if test="/wizard/curform = 'itemize-popup'">    
+            <xsl:if test="/wizard/curform = 'itemize-popup'">
 
+              <a href="javascript:void(0)" onClick="javascript:detach();">detach</a>
             </xsl:if>
           <table width="100%">
             <xsl:apply-templates select="/*/steps-validator" />
