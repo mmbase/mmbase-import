@@ -4,6 +4,13 @@
  */
 
 
+
+body.basic table, body.basic p { 
+  margin-left: 0%;
+  width: 100%;
+}
+
+
 /* submit buttons */
 .buttons {
     text-align: right
