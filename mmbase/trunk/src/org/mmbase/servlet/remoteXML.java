@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.19 $ $Date: 2001-04-13 11:51:57 $
+ * @version $Revision: 1.20 $ $Date: 2001-04-17 15:30:49 $
  */
 public class remoteXML extends JamesServlet {
 	private static Logger log = Logging.getLoggerInstance(remoteXML.class.getName());
@@ -119,30 +119,23 @@ public class remoteXML extends JamesServlet {
 		MMObjectBuilder bul=mmbase.getMMObject(buildername);
 		if (bul!=null) {
 			int number=-1;
-			String numberStr=bul.getNumberFromName(nodename);
-			if (numberStr!=null) {
-				log.info("Found number "+numberStr+" for nodename:"+nodename);
-				try { number = Integer.parseInt(numberStr);} catch (NumberFormatException nfe) {
-					log.error("number:"+numberStr+" is not a number.");
-					nfe.printStackTrace();
-				}
-			} else {
+			MMObjectNode node=getNodeThroughField(bul,"name",nodename);
+			if (node==null) {
 				log.info("Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
 				if (bul instanceof ServiceBuilder) {
 					ServiceBuilder serviceBuilder=(ServiceBuilder)bul;	
 					number = insertRemoteBuilderNode(serviceBuilder,buildername,nodename,remoteUrl);
-					log.info("INSERTED "+buildername+" node:"+nodename+" object:"+number);
+					if (number!=-1) {
+						log.info("INSERTED "+buildername+" node:"+nodename+" object:"+number);
+						node=bul.getNode(number);
+					} else
+						log.error("number="+number+" node insert failed or node is wrong type.");
 				} else
 					log.warn("Requested node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
 			}
-			if (number!=-1) {
-				String body="";
-				MMObjectNode node=bul.getNode(number);
-				if (node!=null) {
-					log.info("Filling body with xml version of "+buildername+" node:"+nodename);
-					body=node.toXML();	
-				} else 
-					log.error("Can't get node for number:"+number+", node="+node);
+			if (node!=null) {
+				log.info("Filling body with xml version of "+buildername+" node:"+nodename);
+				String body=node.toXML();	
 				try {
 					log.info("Sending body back to client.");
 					// Open	a output stream so you can write to the client
@@ -156,8 +149,8 @@ public class remoteXML extends JamesServlet {
 					log.error("Sending requested data for GET failed.");
 					e.printStackTrace();
 				}
-			} else
-				log.error("number="+number+" node insert failed or node is wrong type, cancelling request.");
+			} else 
+				log.error("Can't get node for number:"+number+", node="+node+" cancelling GET request.");
 		} else
 			log.error("Can't get builder: "+buildername+" from mmbase.");
 	}
@@ -215,7 +208,7 @@ public class remoteXML extends JamesServlet {
 		log.info("Storing xmlnode in db, xml:"+xml);
 		Hashtable values=getXMLValues(xml);
 
-		// hack for braindead psion jdk
+		// HACK for braindead psion jdk, ask daniel...
 		String remhost=req.getRemoteAddr();
 		String givenhost=(String)values.get("host");
 		if (givenhost!=null && givenhost.indexOf("http://localhost")!=-1) {
@@ -228,38 +221,29 @@ public class remoteXML extends JamesServlet {
 		if (bul!=null) {
 			String nodename=(String)values.get("name");
 			int number=-1;
-			String numberStr=bul.getNumberFromName(nodename);
-			if (numberStr!=null) {
-				log.info("Found number "+numberStr+" for nodename:"+nodename);
-				try { number = Integer.parseInt(numberStr);} catch (NumberFormatException nfe) {
-					log.error("number:"+numberStr+" is not a number.");
-					nfe.printStackTrace();
-					return false;
-				}
-			} else {
+			MMObjectNode node=getNodeThroughField(bul,"name",nodename);
+			if (node==null) {
 				log.error("Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
 				if (bul instanceof ServiceBuilder) {
 					ServiceBuilder serviceBuilder=(ServiceBuilder)bul;	
 					String remoteUrl=(String)values.get("host");
 					number = insertRemoteBuilderNode(serviceBuilder,buildername,nodename,remoteUrl);
+					if (number!=-1) {
+						log.info("INSERTED "+buildername+" node:"+nodename+" object:"+number);
+						node=bul.getNode(number);
+					} else
+						log.error("number="+number+" node insert failed or node is wrong type.");
 				} else {
 					log.warn("Posted node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
 					return false;
 				}
 			}
-			if (number!=-1) {
-				log.info("Getting node for "+buildername+" obj "+number);
-				MMObjectNode node=bul.getNode(number);
-				if (node!=null) {
-					mergeXMLNode(node,values); //merges related fields. in node.
-					node.commit();
-					return true;
-				} else {
-					log.error("Can't get node for number:"+number+", node="+node);
-					return false;
-				}
+			if (node!=null) {	
+				mergeXMLNode(node,values); //merges related fields. in node.
+				node.commit();
+				return true;
 			} else {
-				log.error("number="+number+" node insert failed or node is wrong type, cancelling post.");
+				log.error("Can't get node for number:"+number+", node="+node);
 				return false;
 			}
 		} else {
@@ -281,7 +265,7 @@ public class remoteXML extends JamesServlet {
 			String key=(String)t.nextElement();
 			String value=(String)values.get(key);
 
-			// setting node , skipping system fields.
+			// setting node, skipping system fields.
 			if (!key.equals("number") 
 				&& !key.equals("otype") 
 				&& !key.equals("buildername") 
@@ -329,5 +313,35 @@ public class remoteXML extends JamesServlet {
 			bpos=nodedata.indexOf("<");
 		}
 		return(values);
+	}
+	
+	/**
+	 * Searches all nodes where field name equals a certain String value and returns the first node found.
+	 * @param bul builder reference.
+	 * @param field fieldname.
+	 * @param value a String value.
+	 * @return the first node found or null when nothing was found.
+	 */
+	private MMObjectNode getNodeThroughField(MMObjectBuilder bul,String field,String value) {
+		Enumeration e=bul.search("WHERE "+field+"='"+value+"'");
+		if (e.hasMoreElements())
+			return (MMObjectNode)e.nextElement();
+		else 
+			return null;
+	}
+
+	/**
+	 * Searches all nodes where field name equals a certain int value and returns the first node found.
+	 * @param bul builder reference.
+	 * @param field fieldname.
+	 * @param value a int value.
+	 * @return the first node found or null when nothing was found.
+	 */
+	private MMObjectNode getNodeThroughField(MMObjectBuilder bul,String field,int value) {
+		Enumeration e=bul.search("WHERE "+field+"="+value);
+		if (e.hasMoreElements())
+			return (MMObjectNode)e.nextElement();
+		else 
+			return null;
 	}
 }
