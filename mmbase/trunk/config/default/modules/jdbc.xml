@@ -69,7 +69,7 @@
     <!--
     <property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
     -->
-    <property name="url">jdbc:hsqldb://$DBM</property>
+    <property name="url">jdbc:hsqldb:$DBM</property>
 
     <!--
     name="user", what is the user we will use to login to the database, if set to 'url' it
