@@ -99,7 +99,7 @@ public class ContextTag extends ContextReferrerTag {
         } else if ("cookie".equalsIgnoreCase(s)) {
             location = ContextTag.LOCATION_COOKIE;
         } else {
-            throw new JspTagException("Unknown context-type " + s);
+            throw new JspTagException("Unknown context-type '" + s + "'");
         }
         return location;
     }
