@@ -14,18 +14,6 @@
 	-->
 	<mmbasedriver>org.mmbase.module.database.support.PostgreSQL71</mmbasedriver>
 
-	<!-- <scheme>
-		Defines the strings for the different scheme database
-		statements.
-	-->
-	<scheme>
-		<create>create table</create>
-	 	<not-null>not null</not-null>
-	 	<null>null</null>
-		<primary-key>primary key</primary-key>
-        <key>unique</key>
-	</scheme>
-
 	<!-- <mapping>
 		defines how mmbase should map the different types mmbase to this
 		database.
