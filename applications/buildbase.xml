@@ -50,8 +50,12 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
   <property name="project.javadoc.dir" value="${project.build.dir}/documentation/javadoc/${project.name}" />
 
-  <property name="project.extra.path" value="" />
-  <property name="project.extra.path2" value="" />
+  <property name="project.extra.path"  value="" />  <!-- deprecated ! -->
+  <property name="project.extra.path2" value="" /><!-- deprecated ! -->
+
+
+  <property name="project.jars.dir"      location=".." />
+  <property name="project.jars.includes" value="${project.extra.path}${project.extra.path2}" />
 
   <property name="project.package"      value="org/mmbase" />
   <property name="project.main.class"   value="org/mmbase/Version" />
@@ -296,8 +300,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </fileset>
     </copy>
 
-    <echo message="compiling" />
-    <echo message="${project.extra.path}" />
+    <echo message="compiling ${project.jars.includes}" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
@@ -305,9 +308,9 @@ web-app/*                All kind of templates. They problably can (need?) to be
            deprecation="${deprecation}"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
-
       >
       <classpath id="compile.classpath">
+        <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
@@ -317,6 +320,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
         <pathelement path="${project.extra.path2}" />
+
       </classpath>
       <include name="**/*.java"/>
     </javac>
@@ -372,6 +376,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     failonerror="false"
     bottom="${project.name} build ${version}">
       <classpath>
+        <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
@@ -379,8 +384,6 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${fileupload.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
-        <pathelement path="${project.extra.path}" />
-        <pathelement path="${project.extra.path2}" />
       </classpath>
       <!-- mmbase custom tags -->
       <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
@@ -458,6 +461,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <jvmarg value="${test.jvmarg}" />
       <arg    value="${test.arg}" />
       <classpath id="run.classpath">
+        <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
@@ -465,8 +469,6 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
-        <pathelement path="${project.extra.path}" />
-        <pathelement path="${project.extra.path2}" />
         <fileset dir="${tests.lib}">
           <include name="*.jar"/>
           <include name="*.zip"/>
