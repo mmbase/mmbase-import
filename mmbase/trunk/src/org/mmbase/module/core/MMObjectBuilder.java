@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.97 $ $Date: 2001-05-02 10:10:29 $
+ * @version $Revision: 1.98 $ $Date: 2001-05-04 13:48:52 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1933,12 +1933,13 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Called when a remote node is changed.
     * Should be called by subclasses if they override it.
+    * @param machine Name of the machine that changed the node.
     * @param number Number of the changed node as a <code>String</code>
     + @param builder type of the changed node
     + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return always <code>true</code>
     */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
@@ -1949,7 +1950,8 @@ public class MMObjectBuilder extends MMTable {
                     nodeCache.remove(i);
                 }
             } catch (Exception e) {
-                log.error("nodeRemoteChanged(): Not a number");
+                log.error("Not a number");
+				e.printStackTrace();
             }
         } else if (ctype.equals("r")) {
             try {
@@ -1958,14 +1960,16 @@ public class MMObjectBuilder extends MMTable {
                 if (node!=null) {
                     node.delRelationsCache();
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+				e.printStackTrace();
+			}
 
         }
 
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
         for (Enumeration e=remoteObservers.elements();e.hasMoreElements();) {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
-            o.nodeRemoteChanged(number,builder,ctype);
+            o.nodeRemoteChanged(machine,number,builder,ctype);
         }
         return true;
     }
@@ -1973,12 +1977,13 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Called when a local node is changed.
     * Should be called by subclasses if they override it.
+    * @param machine Name of the machine that changed the node.
     * @param number Number of the changed node as a <code>String</code>
     + @param builder type of the changed node
     + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return always <code>true</code>
     */
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
@@ -1989,7 +1994,8 @@ public class MMObjectBuilder extends MMTable {
                     nodeCache.remove(i);
                 }
             } catch (Exception e) {
-                log.error("nodeRemoteChanged(): Not a number");
+                log.error("Not a number");
+				e.printStackTrace();
             }
         } else
         if (ctype.equals("r")) {
@@ -1999,13 +2005,15 @@ public class MMObjectBuilder extends MMTable {
                 if (node!=null) {
                     node.delRelationsCache();
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+				e.printStackTrace();
+			}
 
         }
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
         for (Enumeration e=localObservers.elements();e.hasMoreElements();) {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
-            o.nodeLocalChanged(number,builder,ctype);
+            o.nodeLocalChanged(machine,number,builder,ctype);
         }
         return true;
     }

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Builds a MultiCast Thread to receive  and send 
  * changes from other MMBase Servers.
  *
- * @version 12 May 1999
+ * @version $Revision: 1.12 $ $Date: 2001-05-04 13:48:52 $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  */
@@ -140,12 +140,12 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 		}
 		if (machine.equals(parent.machineName)) {
 			if (bul!=null) {
-				new MMBaseMultiCastProbe(this,bul,id,tb,ctype,false);
+				new MMBaseMultiCastProbe(this,bul,machine,id,tb,ctype,false);
 			}
 		} else {
 			try { 
 				if (!ctype.equals("g")) {
-					new MMBaseMultiCastProbe(this,bul,id,tb,ctype,true);
+					new MMBaseMultiCastProbe(this,bul,machine,id,tb,ctype,true);
 				} else {
 					if (bul!=null) {
 						MMObjectNode node=bul.getNode(id);
