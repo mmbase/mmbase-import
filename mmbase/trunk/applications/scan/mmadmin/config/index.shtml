@@ -13,7 +13,7 @@ Display main configuration categories
 <tr>
     <td align=center><a href="builderlist.shtml">builders</a></td>
     <td align=center><a href="databaseslist.shtml?databases">databases</a></td>
-    <td align=center><a href="configlist.shtml?modules">modules</a></td>
+    <td align=center><a href="moduleslist.shtml?modules">modules</a></td>
   </tr>
   <tr>
     <td colspan=3 align=left>
