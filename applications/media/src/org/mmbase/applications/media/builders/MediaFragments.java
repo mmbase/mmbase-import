@@ -29,8 +29,8 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.10 2003-02-19 20:50:21 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: MediaFragments.java,v 1.11 2003-02-26 12:24:34 michiel Exp $
+* @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
@@ -49,6 +49,7 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_SUBFRAGMENTS = "subfragments";
     public static final String FUNCTION_AVAILABLE   = "available";
     public static final String FUNCTION_FORMAT      = "format";
+    public static final String FUNCTION_DURATION    = "duration";
 
     
     // This filter is able to find the best mediasource by a mediafragment.
@@ -143,8 +144,10 @@ public class MediaFragments extends MMObjectBuilder {
             return getURL(getRootFragment(node), info);
         } else if (FUNCTION_FORMAT.equals(function)) {
             return getFormat(node, translateURLArguments(args, null));
-        } else if (function.equals("showlength")) {
-            return ""+calculateLength(node);
+        } else if (FUNCTION_DURATION.equals(function)) {
+            StringBuffer buf = new StringBuffer();
+            org.mmbase.applications.media.urlcomposers.RealURLComposer.appendTime(calculateLength(node), buf);
+            return buf.toString();
         }
         log.debug("Function not matched in mediafragments");
         return super.executeFunction(node, function, args);
