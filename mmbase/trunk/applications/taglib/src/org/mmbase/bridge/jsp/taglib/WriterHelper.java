@@ -35,11 +35,13 @@ public class WriterHelper {
     static final int TYPE_VECTOR  = 2;
     static final int TYPE_INTEGER = 3;
     static final int TYPE_STRING  = 4;
-    static final int TYPE_NODE    = 5;
     static final int TYPE_BYTES   = 6;
     static final int TYPE_DOUBLE  = 7;
     static final int TYPE_LONG    = 8;
     static final int TYPE_FLOAT   = 9;
+    static final int TYPE_NODE    = 20;
+    static final int TYPE_CLOUD   = 21;
+    static final int TYPE_TRANSACTION   = 22;
 
 
     static final int stringToType(String t) {
@@ -47,6 +49,10 @@ public class WriterHelper {
             return TYPE_STRING;
         } else if ("Node".equalsIgnoreCase(t)) {
             return TYPE_NODE;
+        } else if ("Cloud".equalsIgnoreCase(t)) {
+            return TYPE_CLOUD;
+        } else if ("Transaction".equalsIgnoreCase(t)) {
+            return TYPE_TRANSACTION;
         } else if ("Integer".equalsIgnoreCase(t)) {
             return TYPE_INTEGER;
         } else if ("Long".equalsIgnoreCase(t)) {
