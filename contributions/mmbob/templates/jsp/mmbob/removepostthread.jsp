@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <TITLE>MMBob</TITLE>
-</HEAD>
-<body>
+
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -21,15 +16,29 @@
 </mm:present>
 <!-- end action check -->
 
+<!-- login part -->
+  <%@ include file="getposterid.jsp" %>
+<!-- end login part -->
+                                                                                                                    
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+                                                                                                                    
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <TITLE>MMBob</TITLE>
+</HEAD>
+<body>
+
 <div class="header">
     <%@ include file="header.jsp" %>
 </div>
                                                                                               
 <div class="bodypart">
 
-
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
-  <tr><th colspan="3">Onderwerp : <mm:node referid="postthreadid">'<mm:field name="subject" />'</mm:node> echt verwijderen ??</th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg_Delete"/> <mm:write referid="mlg_topic"/>: <mm:node referid="postthreadid">'<mm:field name="subject" />'</mm:node> </th></tr>
+  <tr><td colspan="3"><mm:write referid="mlg_Are_you_sure"/></td></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid,postthreadid" />" method="post">
 	<input type="hidden" name="admincheck" value="true">
@@ -62,6 +71,8 @@
 
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
 

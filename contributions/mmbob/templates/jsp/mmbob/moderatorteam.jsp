@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">moderatorteam</mm:import>
@@ -19,6 +14,8 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -26,6 +23,13 @@
  <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
 
 <div class="header">
     <%@ include file="header.jsp" %>
@@ -36,7 +40,7 @@
 <mm:include page="path.jsp?type=$pathtype" />
 <mm:node referid="forumid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-	<tr><th>Administrators</th><th>Location</th><th>Last Seen</th></tr>
+	<tr><th><mm:write referid="mlg_Administrators" /></th><th><mm:write referid="mlg_Location" /></th><th><mm:write referid="mlg_Last_seen" /></th></tr>
 	<mm:related path="rolerel,posters" constraints="rolerel.role like '%administrato%'">
 	<mm:node element="posters">
 
@@ -47,7 +51,7 @@
 
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-	<tr><th>Moderators</th><th>Location</th><th>Last Seen</th></tr>
+	<tr><th><mm:write referid="mlg_Moderators" /></th><th><mm:write referid="mlg_Location" /></th><th><mm:write referid="mlg_Last_seen" /></th></tr>
 	<mm:related path="postareas">
 	<mm:node element="postareas">
 		<tr><th><mm:field name="name" /></th><th></th><th></th></tr>
@@ -70,6 +74,7 @@
                                                                                                        
 </body>
 </html>                                                                                                        
-</mm:content>
 
+</mm:locale>
+</mm:content>
 </mm:cloud>
