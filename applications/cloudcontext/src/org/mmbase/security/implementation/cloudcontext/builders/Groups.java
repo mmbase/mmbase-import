@@ -26,7 +26,7 @@ import org.mmbase.storage.search.implementation.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.9 2003-09-05 17:39:45 michiel Exp $
+ * @version $Id: Groups.java,v 1.10 2003-09-22 11:51:53 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
@@ -107,7 +107,7 @@ public class Groups extends MMObjectBuilder {
                     break;
                 } else if (recurse != null) { // recursively call on groups
                     log.trace("recursively");
-                    if (! recurse.contains(new Integer(source))) { // TODO check logic
+                    if (! recurse.contains(new Integer(source))) { 
                         recurse.add(new Integer(source));
                         if (contains(containingGroupNode, source, recurse)) {
                             result = Boolean.TRUE;
@@ -153,6 +153,9 @@ public class Groups extends MMObjectBuilder {
     }
      */
 
+    public void setDefaults(MMObjectNode node) {
+        setUniqueValue(node, "name", "group");
+    }
 
 
     public String toString(MMObjectNode n) {
