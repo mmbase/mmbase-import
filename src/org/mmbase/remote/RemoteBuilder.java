@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/11/28 16:44:38  vpro
+davzev: Added some method comments and debug to figure out what goes on...
+
 Revision 1.7  2000/11/27 12:33:11  vpro
 davzev: Changed debug and classname var to public
 
@@ -25,7 +28,7 @@ import java.util.*;
 
 
 /**
- * @version $Revision: 1.8 $ $Date: 2000-11-28 16:44:38 $  
+ * @version $Revision: 1.9 $ $Date: 2000-11-29 13:29:03 $  
  * @author Daniel Ockeloen
  */
 public class RemoteBuilder {
@@ -97,7 +100,7 @@ public class RemoteBuilder {
 	}
 
 	/**
-	 * XML Parses the body parameter retrieving .
+	 * XML Parses the body parameter and saving the xml info as a hashtable as key = value.
 	 * @param body a String with information in xml format.
 	 */
 	public synchronized void gotXMLValues(String body) {
@@ -121,7 +124,7 @@ public class RemoteBuilder {
 			String value=nodedata.substring(nodedata.indexOf(begintoken)+begintoken.length());
 			value=value.substring(0,value.indexOf(endtoken));
 
-			if (debug) debug("gotXMLValues("+body+"): Storing in hashtable key:"+key+", value:"+value);
+			if (debug) debug("gotXMLValues: Storing in hashtable with key:"+key+", value:"+value);
 			values.put(key,value);
 
 			nodedata=nodedata.substring(nodedata.indexOf(endtoken)+endtoken.length());
@@ -163,7 +166,7 @@ public class RemoteBuilder {
 	 * @return a String with XML contents.
 	 */
 	public String toXML() {
-		if (debug) debug("toXML(): Read out the hashtable(=node) and write it in XML.");
+		if (debug) debug("toXML(): Read out the hashtable(=node) and write it in XML format.");
 		String body="<?xml version=\"1.0\"?>\n";
 		// body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";
 		body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";
