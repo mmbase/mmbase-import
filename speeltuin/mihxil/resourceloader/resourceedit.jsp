@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page language="java" contentType="text/html;charset=utf-8" session="true" import="org.mmbase.util.*,org.mmbase.util.transformers.*,java.io.*,java.net.*,org.w3c.dom.*,java.util.*,javax.servlet.jsp.PageContext"
+<%@page language="java" contentType="text/html;charset=utf-8" session="true" import="org.mmbase.util.*,org.mmbase.util.transformers.*,java.io.*,java.net.*,org.w3c.dom.*,java.util.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content type="text/html" expires="0">
 <html>
@@ -26,12 +26,15 @@
            || resourceLoader.equals(ResourceLoader.getWebRoot()) ) {
           if (dir.equals("..")) dir = ""; // can hapen in case of lost session (server restart)
         }
-        resourceLoader = new ResourceLoader(resourceLoader, dir); 
+        resourceLoader = resourceLoader.getChildResourceLoader(dir); 
         session.setAttribute("resourceedit_resourceloader", resourceLoader);
     %>    
     </mm:isnotempty>
   </mm:write>
   <mm:import externid="root" />
+
+
+  <%-- changing root --%>
   <mm:present referid="root">
     <mm:write referid="root" >
       <mm:compare value="web">
@@ -50,12 +53,17 @@
       </mm:compare>
     </mm:write>
   </mm:present>
+
+
   <mm:import externid="resource" vartype="string" jspvar="resource" />
   <mm:import externid="recursive" />
   <% boolean recursive = false; %>
   <mm:present referid="recursive"><% recursive = true; %></mm:present>
   <mm:import externid="keepsearch"><%=ResourceLoader.XML_PATTERN.pattern()%></mm:import>
   <mm:import externid="search" vartype="string" jspvar="search" ><mm:write referid="keepsearch" escape="none" /></mm:import>
+
+
+  <%-- general header --%>
   <tr>
     <th class="main" colspan="2">
       <mm:present referid="resource">
@@ -73,7 +81,11 @@
          <option value="config" <%= parent.equals(ResourceLoader.getConfigurationRoot()) ? "selected=\"selected\"" : "" %> >configuration root</option>
          <option value="web"    <%= parent.equals(ResourceLoader.getWebRoot())           ? "selected=\"selected\"" : "" %> >web root</option>
       </select>
+      <% if (resourceLoader.getParentResourceLoader() != null) { %>      
+         <a href="<mm:url referids="search,recursive?"><mm:param name="dirs" value=".." /></mm:url>"><%= resourceLoader.toInternalForm("") %></a>
+      <% } else { %>
       <%= resourceLoader.toInternalForm("") %>
+      <% } %>
       <select name="dirs" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">
         <option value=""></option>
         <% if (resourceLoader.getParentResourceLoader() != null) {
@@ -81,7 +93,7 @@
            <option value="..">..</option>
         <%
            }
-           Iterator diri = resourceLoader.getResourceContexts(null, false).iterator(); 
+           Iterator diri = resourceLoader.getChildContexts(null, false).iterator(); 
            while (diri.hasNext()) {
            String dir = (String) diri.next();
         %>
@@ -90,12 +102,17 @@
            }
         %>
       </select>      
-      recursive: <input type="checkbox" name="recursive" <mm:present referid="recursive">checked="checked"</mm:present> onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();" />
+        recursive: <input type="checkbox" name="recursive" <mm:present referid="recursive">checked="checked"</mm:present> onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();" />
       </mm:notpresent>
     </th>
   </tr> 
+
   <input type="hidden" name="keepsearch" value="<mm:write referid="search" />" />
-  <mm:notpresent referid="resource">
+
+
+
+<%-- browsing --%>
+<mm:notpresent referid="resource">
     <tr>
       <td>Search (regular expression):</td>
       <td colspan="2">
@@ -137,17 +154,21 @@
       out.println("<td>"  + res + "</td><td>" + url  + "</td></tr>");
 }
 %>
-</mm:notpresent>
-   <mm:present referid="resource">
-   <%  URL url = resourceLoader.findResource(resource); 
+</mm:notpresent><%-- resource --%>
+
+
+<%-- showing one resource --%> 
+<mm:present referid="resource">
+   <mm:import externid="save" />
+   <mm:import externid="wasxml">TEXT</mm:import>
+   <mm:import externid="xml"><mm:write referid="wasxml" /></mm:import>
+
+
+   <%  URL url = resourceLoader.getResource(resource); 
        URLConnection con = url.openConnection();
    %>
   <tr>
-    <td colspan="3">
-      <mm:import externid="save" />
-      <mm:import externid="wasxml">TEXT</mm:import>
-      <mm:import externid="xml"><mm:write referid="wasxml" /></mm:import>
-     
+    <td colspan="3">     
         Resource: 
         <input type="text" name="resource" style="width: 200px;" value="<%=resource%>" />
         <input type="submit" name="load" value="load" />
@@ -156,6 +177,9 @@
          <% } else { %>
              READONLY
          <% } %>
+
+
+         <%-- XML mode --%>
         <mm:compare referid="xml" value="XML">          
           <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
           <input type="submit" name="xml" value="TEXT" />
@@ -174,10 +198,10 @@
               out.println("<br />Resource does not exist");
             } else {
 %>
-      <mm:present referid="save">
+   <mm:present referid="save">
+     <% resourceLoader.storeDocument(resource, doc); %>     
+   </mm:present>
 
-        <% resourceLoader.storeDocument(resource, doc); %>
-      </mm:present>
 <%
             NodeList list =  doc.getChildNodes();
             out.println("<br />");
@@ -222,14 +246,28 @@
         </mm:compare>
     </td>
   </tr>
+   <tr>
+     <td colspan="3">
+       Resolve-scheme.
+       <table>
+         <tr><th>URL</th><th>read</th><th>write</th></tr>
+         <% Iterator urls = resourceLoader.findResourceList(resource).iterator();
+            while (urls.hasNext()) {
+              URL u = (URL) urls.next();
+              URLConnection uc = u.openConnection();
+          %>
+          <tr><td title="<%=uc.getClass().getName()%>"><%=u.toString()%></td><td><%=uc.getDoInput()%></td><td><%=uc.getDoOutput()%></td></tr>
+          <% }
+            %>
+       </table>      
+     </td>
+   </tr>
+
+
   </mm:present>
 
 </mm:cloud>
 </table>
-<hr />
-<p>
-  Current resourceLoader :<%= resourceLoader %>
-</p>
 </form>
 </body>
 </html>
