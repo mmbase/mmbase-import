@@ -54,10 +54,14 @@
     </mm:listcontainer>
   </mm:compare>
 
-  <%-- if no provider can be found, we will set it to 'providers', so that
-       a leafinclude or treeinclude might still go well --%>
   <mm:notpresent referid="provider">
-    <mm:import id="provider">providers</mm:import>
+    <%-- see if we get a provider id from the request --%>
+    <mm:import externid="provider"/>
+    <%-- if no provider can be found, we will set it to 'providers', so that
+     a leafinclude or treeinclude might still go well --%>
+     <mm:notpresent referid="provider">
+        <mm:import id="provider">providers</mm:import>
+    </mm:notpresent>
   </mm:notpresent>
 
   <mm:import id="includePath"><mm:write referid="provider" /></mm:import>
