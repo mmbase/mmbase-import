@@ -29,8 +29,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @author     danielockeloen
- * @created    July 20, 2004
+ * @author     Daniel Ockeloen
  */
 public class ShareServlet extends BridgeServlet {
 
