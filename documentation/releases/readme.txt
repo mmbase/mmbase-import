@@ -19,7 +19,7 @@ building.txt                Instruction for building MMBase from
                             source-distro (only included in
 			                source-distro) 
 readme.txt                  This file
-releasenotes-1.6.0.txt      Releasenotes for this distro (contains
+releasenotes-1.7.0.txt      Releasenotes for this distro (contains
                             changes/bugfixes/know issues) 
 installation.txt            Instructions for installing MMBase
 mmbase-webapp/              Webapplication dir, this dir goes into
@@ -31,32 +31,41 @@ mmbase-webapp/              Webapplication dir, this dir goes into
       applications/         Applications that can be installed
       builders/             All builders that can be used, including
                             core builders and optional builders. Not
-			                all builders are activated by default.
+			    all builders are activated by default.
       caches.xml            Configuration file for cache configuration
       databases/            Databaseconfig for databases that can be
                             used with MMBase
       dtd/                  A few dtds, used in some xslt-transformation
       log/                  Logging configuration
+      magic.xml
       modules/              All modules that can be used, including
                             core modules and optional modules. Not all
-			                modules are activated by default 
+			    modules are activated by default 
       security/             Configuration for the security
+      utils/                All config related to org.mmbase.util-classes 
+        httppost.xml        Config related to upload files (max size,
+                            upload-dir, etc)
       xslt/                 Some xslt's for displaying config files in
                             adminpages
     lib/                    All jars needed by MMBase
-      legal		            Contains licenses for external jars MMBase
+      legal		    Contains licenses for external jars MMBase
                             is redistributing
     web.xml                 a default configuration file for MMBase as
                             a webapp, should be sufficient for most
-			                basic configurations
-  mmadmin/                  (scan) Admin pages (deprecated)
-    jsp/                    (jsp) Admin pages
-  mmapps/                   Directory for jsp/html/etc for MMBase-applications
-    xmlimporter             Jsps needed by xmlimporter
+     		            basic configurations
+  mmbase/
+    admin/
+    edit/
+      basic/
+      mmeditors/
+      my_editors/
+      wizards/
+    index.jsp
+    mpl-1.0.jsp
+    style
+    xmlimporter
   mmdocs/                   Documentation for different groups of
-                            users (templaters/administrators/etc)  
-  mmeditors/                (scan) Editors (deprecated)
-    jsp/                    (jsp) Editors
+                            users (templaters/administrators/etc) 
   mmexamples/               Examples directory
     share/                  Directory for shared files between examples
     jsp/                    Jsp-examples
