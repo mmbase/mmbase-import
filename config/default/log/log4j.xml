@@ -60,9 +60,15 @@
     <layout class="org.apache.log4j.PatternLayout">
          <param name="ConversionPattern" value="%d{ISO8601} %p - %m%n" />
     </layout>
-
-    <!-- layout class="org.apache.log4j.xml.XMLLayout" / --> <!-- also possible -->
 </appender>
+
+<!-- another example, logging in xml: -->
+<appender name="xmlfile" class="org.apache.log4j.FileAppender">
+    <param name="File"   value="/tmp/mmlog4j.log" />
+    <param name="Append" value="true" />
+    <layout class="org.apache.log4j.xml.XMLLayout" /> 
+</appender>
+
 
 
 <!-- categories -->
