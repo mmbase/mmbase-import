@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <id>mmbase-taglib</id>
+  <name>mmbase-taglib</name>
+  <groupId>mmbase</groupId>
+  <currentVersion>1.1</currentVersion>
+  <organization>
+    <name>MMBase.org</name>
+    <url>http://www.mmbase.org</url>
+  </organization>
+  <inceptionYear>2001</inceptionYear>
+  <package>org.mmbase.bridge.jsp.taglib</package>
+  <shortDescription>JSP taglib for the MMBase, content management system</shortDescription>
+  <url>http://www.mmbase.org/</url>
+  <repository>
+    <connection>scm:cvs:pserver:guest@www.mmbase.org:/usr/local/cvs:mmbase-taglib</connection>
+    <url>http://www.mmbase.org/viewcvs/</url>
+  </repository>
+  <mailingLists>
+    <mailingList>
+      <name>MMBase User List</name>
+      <subscribe>users-request@mmbase.org?subject=subscribe</subscribe>
+      <unsubscribe>users-request@mmbase.org?subjet=unsubscribe</unsubscribe>
+      <archive>http://www.mail-archive.com/users@mmbase.org/</archive>
+    </mailingList>
+    <mailingList>
+      <name>MMBase Developer List</name>
+      <subscribe>developers-request@mmbase.org?subject=subscribe</subscribe>
+      <unsubscribe>developers-request@mmbase.org?subjet=unsubscribe</unsubscribe>
+      <archive>http://www.mail-archive.com/developers@mmbase.org/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <name>Michiel Meeuwissen</name>
+      <id>michiel</id>
+      <email>Michiel.Meeuwissen@omroep.nl</email>
+      <organization>Publieke Omroep</organization>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <id>servletapi</id>
+      <version>2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-core</artifactId>
+      <version>1.7-rc3</version>
+      <url>http://www.mmbase.org/</url>
+    </dependency>
+  </dependencies>
+  <reports>
+    <report>maven-changelog-plugin</report>
+    <report>maven-changes-plugin</report>
+    <report>maven-developer-activity-plugin</report>
+    <report>maven-file-activity-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jdepend-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-license-plugin</report>
+    <report>maven-linkcheck-plugin</report>
+    <report>maven-pmd-plugin</report>
+  </reports>
+  <build>
+    <nagEmailAddress>maven@keesj.dds.nl</nagEmailAddress>
+    <sourceDirectory>src</sourceDirectory>
+    <aspectSourceDirectory/>
+    <integrationUnitTest/>
+    <jars/>
+  </build>
+</project>
