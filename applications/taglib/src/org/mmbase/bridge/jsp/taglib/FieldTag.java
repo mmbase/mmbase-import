@@ -29,6 +29,7 @@ public class FieldTag extends NodeReferrerTag {
     private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName()); 
     
     private String parentNodeId = null;
+    protected Node node;
     private String name;   
     private String head;
     
@@ -47,6 +48,16 @@ public class FieldTag extends NodeReferrerTag {
     public int doStartTag() throws JspTagException{
         return EVAL_BODY_TAG;
     }
+
+    /**
+     * Does something with the generated output. This default
+     * implementation does nothing, but extending classes could
+     * override this function.
+     * 
+     **/
+    protected String convert (String s) throws JspTagException { // virtual
+        return s;
+    }
     
     /**
     * write the value of the field.
@@ -54,7 +65,6 @@ public class FieldTag extends NodeReferrerTag {
     public int doAfterBody() throws JspTagException {
         
         // firstly, search the node:
-        Node node;
         NodeProvider nodeLikeTag = findNodeProvider(parentNodeId);
         node = nodeLikeTag.getNodeVar();
         
@@ -64,6 +74,7 @@ public class FieldTag extends NodeReferrerTag {
         if (name != null) { // name not null, head perhaps.
             log.trace("using name " + name );
             show = "" + node.getValue(name);
+            show = convert(show);
             if (head != null) {
                 throw new JspTagException ("Could not indicate both  'name' and 'head' attribute");  
             }
