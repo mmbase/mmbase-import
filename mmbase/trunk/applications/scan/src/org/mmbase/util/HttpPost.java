@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.13 2002-07-31 08:40:54 eduard Exp $
+ * @version $Id: HttpPost.java,v 1.14 2002-07-31 13:22:47 eduard Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -144,7 +144,7 @@ public class HttpPost {
         if (!postDecoded) decodePost(req);
         return postValues;
     }
-1
+
     /**
     * This method returns the value of the postparameter as a String.
     * If it is a parameter with multiple values it returns the first one.
