@@ -16,7 +16,6 @@ import java.util.*;
 
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
-import org.mmbase.service.implementations.*;
 
 
 /**
@@ -25,10 +24,7 @@ import org.mmbase.service.implementations.*;
  */
 public class g2encoders extends RemoteBuilder {
 
-	private	String	_classname 	= getClass().getName();
-	private boolean _debug = true;
-	private void debug( String msg ) { System.out.println( _classname + ":" + msg ); } 
-
+	private boolean debug = true;
 	private g2encoderInterface impl;
 	private String classname;
 	StringTagger tagger;
@@ -93,7 +89,7 @@ public class g2encoders extends RemoteBuilder {
 
 		if (impl!=null) {
 			String cmds=getStringValue("info");
-			if( _debug ) debug("doEncode(): starting imp.doEncode("+cmds+")");
+			if( debug ) debug("doEncode(): starting imp.doEncode("+cmds+")");
 		    setValue("info",impl.doEncode(cmds));	
 		} else {
 			debug("doEncode(): ERROR: cannot encode! No implementation!");
@@ -107,7 +103,7 @@ public class g2encoders extends RemoteBuilder {
 
 	void getConfig() {
 		classname=(String)props.get("implementation");
-		if( _debug ) debug("getConfig(): loading("+classname+")");
+		if( debug ) debug("getConfig(): loading("+classname+")");
 		try {
 			Class newclass=Class.forName(classname);
 			impl = (g2encoderInterface)newclass.newInstance();
