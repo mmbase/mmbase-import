@@ -169,7 +169,7 @@
     sometime connections take a long time, every now and then the
     database connection pooling has to check/kill queries that take to long
     probetime is the time in seconds between the checks. Connections that are
-    running for more then 120 seconds will be killed
+    running for more than 120 seconds will be killed
     -->
     <property name="probetime">30</property>
   </properties>
