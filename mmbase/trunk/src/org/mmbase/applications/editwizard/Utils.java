@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.15 2002-07-05 21:01:57 michiel Exp $
+ * @version $Id: Utils.java,v 1.16 2002-07-17 11:28:07 pierre Exp $
  */
 public class Utils {
 
@@ -255,7 +255,7 @@ public class Utils {
                 return x.toString();
             }
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+            log.error(Logging.stackTrace(e)+", evaluating xpath:"+xpath);
         }
         return defaultvalue;
     }
@@ -547,9 +547,9 @@ public class Utils {
                 part = templateParts.nextToken();
                 part = selectSingleNodeText(context, part,"");
                 result.append(part);
-            }else if (part.equals("}")){
+            } else if (part.equals("}")){
                 // Nothing, go to the next part.
-            }else{
+            } else{
                 result.append(part);
             }
         }
@@ -610,6 +610,8 @@ public class Utils {
         Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
+            // accept both $xxx and {$xxx}
+            text = multipleReplace(text,"{$"+entry.getKey()+"}", (String) entry.getValue());
             text = multipleReplace(text,"$"+entry.getKey(), (String) entry.getValue());
         }
         return text;
