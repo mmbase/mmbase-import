@@ -116,7 +116,7 @@
 		<gui>
 			<guiname xml:lang="nl">Start</guiname>
 			<guiname xml:lang="en">Start</guiname>
-			<guitype>lengtestartstop</guitype>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
