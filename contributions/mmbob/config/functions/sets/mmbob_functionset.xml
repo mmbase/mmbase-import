@@ -95,6 +95,29 @@
 	</function>
 
 
+	<function name="getForumsConfig">
+		<description>Provide configuration info of a forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumsConfig</method>
+		<return type="Node"> 
+			<field name="language" type="String" description="language code of this forum" />
+			<field name="accountcreationtype" type="String" description="TODO" />
+			<field name="accountremovaltype" type="String" description="TODO" />
+			<field name="loginmodetype" type="String" description="TODO" />
+			<field name="logoutmodetype" type="String" description="TODO" />
+			<field name="avatarsuploadenabled" type="String" description="TODO" />
+			<field name="avatarsgalleryenabled" type="String" description="TODO" />
+                        <field name="privatemessagesenabled" type="String" description="TODO" />
+                        <field name="smileysenabled" type="String" description="TODO" />
+                        <field name="privatemessagesenabled" type="String" description="TODO" />
+                        <field name="postingsperpage" type="String" description="TODO" />
+                        <field name="fromaddress" type="String" description="TODO" />
+                        <field name="headerpath" type="String" description="TODO" />
+                        <field name="footerpath" type="String" description="TODO" />
+		</return> 
+	</function>
+
 	<function name="getForumConfig">
 		<description>Provide configuration info of a forum</description>
 		<type>class</type>

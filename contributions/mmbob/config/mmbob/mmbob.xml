@@ -34,33 +34,5 @@
     <privatemessages enable="true"/>
     <postingsperpage value="15"/>
 
-    <forum id="submarine" language="nl">
-      <accountcreation type="closed" />
-      <accountremoval type="closed" />
-      <loginmode type="closed" />
-      <logoutmode type="closed" />
-      <postarea id="Algemeen" language="nl">
-      </postarea>
-      <postarea id="Misc" language="nl">
-      </postarea>
-      <email from="your.otheremailaddress@yourdomain.org"/>
-      <layout>
-        <header path="header2.jsp"/>
-        <footer path="footer2.jsp"/>
-      </layout>
-    </forum>
-
-    <forum id="test" language="nl">
-      <guestreadmode type="open" />
-      <guestwritemode type="closed" />
-      <postarea id="gast gebied" language="nl">
-        <guestreadmode type="open" />
-        <guestwritemode type="open" />
-      </postarea>
-      <postarea id="leden gebied" language="nl">
-        <guestreadmode type="closed" />
-        <guestwritemode type="closed" />
-      </postarea>
-    </forum>
   </forums>
 </mmbobconfig>
