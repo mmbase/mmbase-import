@@ -251,7 +251,10 @@ public class VideoUtils extends MediaUtils
                             }
                             if (author==null) author="";
                             debug2("getVideoUrl("+number+","+speed+","+channels+"): for videopart: found author("+author+").");
-                            url += "&author=\""+author+"\"";
+                            //url += "&author=\""+author+"\"";
+                			//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
+                			url += "&author="+author;
+
                         }
                     }
                     else
