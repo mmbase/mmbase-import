@@ -18,6 +18,12 @@ import java.util.*;
  * @mmbase-relationmanager-source bugcategory
  * @mmbase-relationmanager-destination bugcategory
  * @mmbase-relationmanager-nodemanager catrel
+ *
+ * @mmbase-relationmanager-name bugcatrel
+ * @mmbase-relationmanager-directionality unidirectional
+ * @mmbase-relationmanager-source bugcategory
+ * @mmbase-relationmanager-destination bugreport
+ * @mmbase-relationmanager-nodemanager catrel
  */
 public class BugCategory implements Comparable{
     Relation parentRelation = null;

@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * This is a utility class to serialize configurations to xml
  * @author Kees Jongenburger
- * @version $Id: ConfigurationXMLWriter.java,v 1.7 2002-06-27 19:20:30 kees Exp $
+ * @version $Id: ConfigurationXMLWriter.java,v 1.8 2002-11-16 13:59:53 kees Exp $
  **/
 public abstract class ConfigurationXMLWriter{
     
@@ -181,6 +181,7 @@ public abstract class ConfigurationXMLWriter{
         builder.addProperty("maintainer",nodeManagerConfiguration.getMaintainer());
         builder.addProperty("version",nodeManagerConfiguration.getVersion());
         builder.addProperty("extends",nodeManagerConfiguration.getExtends());
+        builder.addProperty("name",nodeManagerConfiguration.getName());
         
 	if (nodeManagerConfiguration.getClassFile() != null){
 		XMLElement classFileElement = new XMLElement();
