@@ -31,7 +31,12 @@ import org.mmbase.util.logging.*;
  *  Example:
     <code>
     	class FooFileWatcher extends FileWatcher {
-	    public onChange(File file) {
+
+            public FooFileWatcher() {
+                super(true); // true: keep reading.
+            }
+
+	    public void onChange(File file) {
 		System.out.println(file.getAbsolutePath());
 	    }
     	}
@@ -55,7 +60,7 @@ public abstract class FileWatcher extends Thread {
     	// static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
     	private long lastModified; 
     	private File file;
-	
+        	
 	public FileEntry(File file) {
 	    if(file == null) {
 	    	String msg = "file was null";
@@ -79,6 +84,7 @@ public abstract class FileWatcher extends Thread {
     	public File getFile() {
 	    return file;
 	}	
+        
     }
 
     private ArrayList files = new ArrayList();
@@ -95,9 +101,16 @@ public abstract class FileWatcher extends Thread {
      */
     private long delay = DEFAULT_DELAY; 
     private boolean stop = false;
+    private boolean continueAfterChange = false;
   
     protected FileWatcher() {
     	// make it end when parent treath ends..
+    	setDaemon(true);
+    }
+
+    protected FileWatcher(boolean c) {
+    	// make it end when parent treath ends..
+        continueAfterChange = c;
     	setDaemon(true);
     }
 
@@ -146,7 +159,9 @@ public abstract class FileWatcher extends Thread {
 		if(fe.changed()) {
 		    log.info("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
 		    onChange(fe.getFile());
-		    return true;
+                    if (! continueAfterChange) {
+                        return true;
+                    }
 		}
 	    }
 	}
