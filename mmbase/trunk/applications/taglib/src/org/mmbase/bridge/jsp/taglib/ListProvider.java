@@ -14,7 +14,7 @@ package org.mmbase.bridge.jsp.taglib;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.4 2003-06-06 10:03:08 pierre Exp $ 
+ * @version $Id: ListProvider.java,v 1.5 2003-08-05 18:42:55 michiel Exp $ 
  */
 public interface ListProvider extends ContextProvider {
     /**
@@ -28,6 +28,13 @@ public interface ListProvider extends ContextProvider {
      *
      */
     public int getIndex();
+
+
+    /**
+     * @return The offset of the index (normally this will return 1)
+     * @since MMBase-1.7
+     */
+    public int getOffset();
 
     /**
      * @return the current item in a list
