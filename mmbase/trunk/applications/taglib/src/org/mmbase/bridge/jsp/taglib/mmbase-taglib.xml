@@ -203,8 +203,16 @@ one or more examplevalue tags is you want to give some example values.
       The related tag is the same as the list tag except that is doesn't
       provide a node attribute. Instead it will take the surrounding node tag
       as his startnode.
+      Path should not contain the parent node's nodemanager. 
+      This is automatically added by the tag.
     </info>
     <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Referer to the parent node.</info>
+    </attribute>
+    <attribute>  
       <name>path</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
