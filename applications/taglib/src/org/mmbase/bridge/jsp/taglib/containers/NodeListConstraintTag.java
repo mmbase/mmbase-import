@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.5 2003-07-29 17:08:09 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.6 2003-07-31 20:31:40 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -80,16 +80,9 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     }
 
-    public int doStartTag() throws JspTagException {        
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
-
-        Query query = c.getQuery();
-
-        Constraint newConstraint;
-        int operator = getOperator();
+    public static void addConstraint(Query query, String field, int operator, String stringValue) throws JspTagException {
         Object compareValue;
         if (operator < FieldCompareConstraint.LIKE) {
-            String stringValue = value.getString(this);
             try {
                 compareValue = new Integer(stringValue);
             } catch (NumberFormatException e) {
@@ -100,17 +93,24 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
                 }
             } 
         } else {
-            compareValue = value.getValue(this);
+            compareValue = stringValue;
         }
-
-        newConstraint = query.createConstraint(query.createStepField(field.getString(this)), getOperator(), compareValue);
-
+        Constraint newConstraint;
+        newConstraint = query.createConstraint(query.createStepField(field), operator, compareValue);
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
             newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
             
         }
         query.setConstraint(newConstraint);
+
+    }
+
+    public int doStartTag() throws JspTagException {        
+        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+
+        Query query = c.getQuery();
+        addConstraint(query, field.getString(this), getOperator(), value.getString(this));
                 
         return SKIP_BODY;
     }

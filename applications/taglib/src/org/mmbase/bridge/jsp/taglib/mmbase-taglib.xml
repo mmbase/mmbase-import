@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.178 2003-07-29 17:08:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.179 2003-07-31 20:31:39 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4112,7 +4112,8 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>constraint</name>
-    <see tag="function" />
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag</tagclass>
     <info>
       Surrounds a (node) list tag, provides a query object, and can contain the result.
@@ -4137,6 +4138,37 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <info>
 
+      </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>ageconstraint</name>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListAgeConstraintTag</tagclass>
+    <info>
+      Surrounds a (node) list tag, provides a query object, and can contain the result.
+    </info>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>minage</name>
+      <required>false</required>
+      <info>
+          Minimal age of the object in days.
+      </info>
+    </attribute>
+    <attribute>
+      <name>maxage</name>
+      <required>false</required>
+      <info>
+          Maximal age of the object in days.
       </info>
     </attribute>
   </tag>
