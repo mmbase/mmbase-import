@@ -112,19 +112,19 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         return false;
     }
 
-	
+
     /**
-     * What should this do, when is this called? (MM)
+     * What should this do, when is this called?
      * @deprecated called by nothing
      * @javadoc
      */
-    
+
      public void reload() {
      }
 
 
     /**
-     * What should this do, when is this called? (MM)
+     * What should this do, when is this called?
      * @deprecated called by nothing
      * @javadoc
      */
