@@ -11,16 +11,18 @@
   <mm:locale language="$language">
   <mm:cloud>
  <hr />
-  <mm:listnodes type="mediafragments">
+  <mm:listnodes type="mediafragments" >
       <mm:field name="title" />:<br />
-      issub: <mm:field name="subfragment()" /><br />
+        issub: <mm:field name="subfragment()" /><br />
       <a href="<mm:field name="url()" />">url</a>,
       <a href="<mm:field name="url(rm)" />">rm-url</a>,
       <a href="<mm:field name="url(asf)" />">asf-url</a>,   
      <hr />
   </mm:listnodes>
   <mm:listnodes type="mediasources">
-    <mm:field name="mimetype()" />:     <mm:field name="format()" />   <br />
+    <mm:field name="mimetype()" />:     <mm:field name="format()" />
+    <br />
+    <mm:field name="urls()" />
   </mm:listnodes> 
   </mm:cloud>
   </mm:locale>

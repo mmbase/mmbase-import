@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page import="java.util.*,org.mmbase.module.builders.media.ResponseInfo"
+%><%@ page import="java.util.*"
 %><%@include file="../config/read.jsp" %>
 <mm:locale language="$config.lang"><mm:cloud jspvar="cloud" loginpage="../login.jsp"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -29,7 +29,7 @@
   <mm:context>
   <mm:node  id="fragment" element="$type">
      <mm:nodeinfo id="actualtype" type="type" write="false" />
-  <tr><td><img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /><mm:field name="gui()" /> </td>
+  <tr class="view"><td><img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /><mm:field name="gui()" /> </td>
       <td>      
         <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
 
