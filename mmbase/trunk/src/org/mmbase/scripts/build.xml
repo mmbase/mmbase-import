@@ -470,11 +470,7 @@ NetComponents can be found at:
     <available property="jai.in.classpath"
                classname="javax.media.jai.JAI"/>
     <available property="log4j.in.classpath"
-               classname="org.apache.log4j.ConsoleAppender"/>
-    <!-- ConsoleAppender ensures that you have a version > 1.04 -->
-    <available property="log4j2.in.classpath"
-               classname="org.apache.log4j.Logger"/>
-    <!-- Logger ensures version > 1.2 -->
+                classname="org.apache.log4j.Logger"/>
     <available property="junit.in.classpath"
                classname="junit.runner.BaseTestRunner"/>
     <available property="informix.in.classpath" 
@@ -544,8 +540,7 @@ NetComponents can be found at:
     <echo message=""/>
   </target>
 
-  <target name="check.optional.log4j" depends="init.compile.cust"
-          unless="log4j.in.classpath">
+  <target name="check.optional.log4j" depends="init.compile.cust" unless="log4j.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package Log4j."/>
     <echo message="Logging capabalities will be very limited."/> 
@@ -589,6 +584,7 @@ NetComponents can be found at:
   </target>
 
 
+
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
@@ -607,6 +603,7 @@ Distribution: ${distro}
 Build-by: ${ant.version} 
 Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
+Main-Class: org.mmbase.Version
 </echo>
     
     <mkdir dir="${release.lib.dir}" />
@@ -635,7 +632,7 @@ Build-compiler: ${build.compiler}
     <!-- =================================================================== -->
     <!-- Create the MMBase config build dir                                  -->
     <!-- =================================================================== -->
-    <target name="minimalistic.war.config" depends="init.compile">
+  <target name="minimalistic.war.config" depends="init.compile">
         <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${minconfig.build.dir}">
             <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
@@ -672,6 +669,40 @@ Build-compiler: ${build.compiler}
       </fileset>
     </copy>
   </target>
+
+
+    <!-- =================================================================== -->
+    <!-- Create a mmbase-dtds.jar                                            -->
+    <!-- =================================================================== -->
+
+  <target name="dtds.jar">
+        <echo file="${build.dir}/manifest.mf">
+Name: org/mmbase/resources/dtds
+Vendor: MMBase Community
+URL: http://www.mmbase.org
+Comment: The MMBase Content Managment System
+Version: ${distro}.${version}
+Distribution: ${distro}
+Build-by: ${ant.version} 
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+
+    <mkdir dir="${build.dir}/dtd" />
+    <copy todir="${build.dir}/dtd" flatten="true">
+      <fileset dir="${source-src.dir}"  defaultexcludes="true">        
+        <include name="**/*.dtd"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${build.dir}/mmbase-dtds.jar"
+         basedir="${build.dir}/dtd"
+	     includes="**" 
+	     manifest="${build.dir}/manifest.mf" 
+      />
+  </target>
+
+  
+
 
     <!-- =================================================================== -->
     <!-- Create the MMBase html build dir                                    -->
