@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.6 2002-06-07 12:57:01 pierre Exp $
+ * @version $Id: ContextLoginModule.java,v 1.7 2002-10-29 23:19:48 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -57,7 +57,7 @@ public abstract class ContextLoginModule {
 
     protected Rank getRank(String username) throws org.mmbase.security.SecurityException {
         String xpath = "/contextconfig/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
-        log.debug("gonna execute the query:" + xpath);
+        if (log.isDebugEnabled()) log.debug("gonna execute the query:" + xpath);
         Node found;
         try {
             found = XPathAPI.selectSingleNode(document, xpath);
@@ -76,7 +76,7 @@ public abstract class ContextLoginModule {
         NamedNodeMap nnm = found.getAttributes();
         Node rankNode = nnm.getNamedItem("rank");
         Rank rank = Rank.getRank(rankNode.getNodeValue());
-        log.debug("retrieved the rank for user:" + username + " in module: " + name + " rank: " + rank);
+        if (log.isDebugEnabled()) log.debug("retrieved the rank for user:" + username + " in module: " + name + " rank: " + rank);
         return rank;
     }
 
