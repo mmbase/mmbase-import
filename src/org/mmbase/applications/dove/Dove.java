@@ -48,7 +48,7 @@ import org.mmbase.bridge.*;
  * out, as we can then assumes a correct model. This will optimize processing.
  *
  * @author Pierre van Rooden
- * @version $Id: Dove.java,v 1.2 2002-02-21 16:12:52 pierre Exp $
+ * @version $Id: Dove.java,v 1.3 2002-02-27 12:17:56 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -187,10 +187,8 @@ public class Dove extends AbstractDove {
                 while (relation!=null) { // select all child tags, should be 'relation'
                     if (relation.getTagName().equals(RELATION)) {
                         String role=(String)relation.getAttribute(ELM_ROLE);
-                        log.info("role:" +role);
                         if ("".equals(role)) role=null;
                         String destination=(String)relation.getAttribute(ELM_DESTINATION);
-                        log.info("destination:" +destination);
                         if ("".equals(destination)) destination=null;
                         try {
                             // XXX: a bit of a hack, as MMCI does not really support this:
@@ -684,8 +682,6 @@ public class Dove extends AbstractDove {
         Map orgrelations=new HashMap();
         Map newrelations=new HashMap();
 
-        log.warn("PUT IS WORKING");
-
         // get all the needed info from the xml stream
         Element query=getFirstElement(in);
         while (query!=null) { // select child tags, should be 'original' or 'new'
@@ -767,7 +763,6 @@ public class Dove extends AbstractDove {
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element oe = (Element)me.getValue();
                         oe.setAttribute(ELM_NUMBER,n.getStringValue("number"));
-                        log.info("new node changed number to ':"+n.getStringValue("number"));
                     }
                     // retrieve all numbers, snumbers, dnumbers and reset them to the right value
                     for (Iterator i = relationsadded.entrySet().iterator(); i.hasNext(); ) {
@@ -775,11 +770,8 @@ public class Dove extends AbstractDove {
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element re = (Element)me.getValue();
                         re.setAttribute(ELM_NUMBER,n.getStringValue("number"));
-                        log.info("new relation changed number to ':"+n.getStringValue("number"));
                         re.setAttribute(ELM_SOURCE,n.getStringValue("snumber"));
-                        log.info("new relation changed snumber to ':"+n.getStringValue("snumber"));
                         re.setAttribute(ELM_DESTINATION,n.getStringValue("dnumber"));
-                        log.info("new relation changed dnumber to ':"+n.getStringValue("dnumber"));
                     }
                 } catch (RuntimeException e) {
                     Element err=addContentElement(ERROR,"Transaction failed : "+e.getMessage(),out);
@@ -1073,7 +1065,6 @@ public class Dove extends AbstractDove {
                     objectelement.setAttribute(ELM_TYPE,type);
                     objectelement.setAttribute(ELM_NUMBER,alias);
                     if (!fillFields(alias,mmbasenode,objectelement,values,orgvalues)) return false;
-                    log.debug("CHANGED NODE="+mmbasenode);
                     mmbasenode.commit();
                     // add node to response
                     out.appendChild(objectelement);
@@ -1114,7 +1105,6 @@ public class Dove extends AbstractDove {
      */
     protected boolean mergeClouds(Map orgnodes, Map newnodes, Map orgrelations, Map newrelations,
                                   Map nodesadded, Map relationsadded, Element out, Cloud cloud) {
-        log.info("merge cloud called");
         Map aliases=new HashMap(); // hash from alias names to real names
 
         // create new tag and add it to response
@@ -1266,8 +1256,6 @@ public class Dove extends AbstractDove {
         Element data=doc.createElement(SECURITY);
         out.appendChild(data);
 
-        log.info("Authentication starts");
-
         if (command!=null && command.getTagName().equals(SECURITY)) {
             String username = command.getAttribute(SECURITY_NAME); // retrieve name
             try {
@@ -1281,17 +1269,16 @@ public class Dove extends AbstractDove {
                     user.put("username", username);
                     user.put("password", password);
                 }
-                log.info("Authentication ("+methodname+") : "+username);
                 Cloud cloud = LocalContext.getCloudContext().getCloud(cloudname,methodname,user);
                 return cloud;
             } catch (RuntimeException e) {
                 // most likely security failed...
-                log.info("Authentication error : "+e.getMessage());
+                log.warn("Authentication error : "+e.getMessage());
                 Element err=addContentElement(ERROR,"Authentication error : "+e.getMessage(),data);
                 err.setAttribute(ELM_TYPE,IS_CLIENT);
             }
         } else {
-            log.info("Authentication error  (security info missing)");
+            log.warn("Authentication error  (security info missing)");
             Element err=addContentElement(ERROR,"Authentication error (security info missing).",data);
             err.setAttribute(ELM_TYPE,IS_CLIENT);
         }
