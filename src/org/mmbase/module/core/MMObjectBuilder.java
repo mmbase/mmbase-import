@@ -396,7 +396,7 @@ public class MMObjectBuilder extends MMTable {
 	 */
 
 	/**
-	 * Create a new temporary node and put it in the temporary
+	 * Create a new temporary node and put it in the temporary _exist
 	 * node space
 	 */
 	public MMObjectNode getNewTmpNode(String owner,String key) {
@@ -405,6 +405,14 @@ public class MMObjectBuilder extends MMTable {
 		node.setValue("_number",key);
 		TemporaryNodes.put(key,node);
 		return(node);
+	}
+	
+	/*
+	 * added JohnB 20/10/2000
+	 */
+	public void putinTemporaryNodes(String key, MMObjectNode node) {
+		node.setValue("_number",key);
+		TemporaryNodes.put(key,node);
 	}
 
 	/**
