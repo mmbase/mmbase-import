@@ -129,6 +129,24 @@ public class XMLNodeReader  {
 										} catch(Exception e) {
 											newnode.setValue(key,-1);
 										}
+									} else if (type==FieldDefs.TYPE_FLOAT) {
+										try { 
+											newnode.setValue(key,Float.parseFloat(value));
+										} catch(Exception e) {
+											newnode.setValue(key,-1);
+										}
+									} else if (type==FieldDefs.TYPE_DOUBLE) {
+										try { 
+											newnode.setValue(key,Double.parseDouble(value));
+										} catch(Exception e) {
+											newnode.setValue(key,-1);
+										}
+									} else if (type==FieldDefs.TYPE_LONG) {
+										try { 
+											newnode.setValue(key,Long.parseLong(value));
+										} catch(Exception e) {
+											newnode.setValue(key,-1);
+										}
 									} else if (type==FieldDefs.TYPE_BYTE) {
 										NamedNodeMap nm2=n5.getAttributes();
 										Node n7=nm2.getNamedItem("file");
