@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.26 2004-03-11 18:14:12 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.27 2004-06-02 07:49:17 mark Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -186,7 +186,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         MMJdbc2NodeInterface database = mmbase.getDatabase();        
 
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber) ) {
+        while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
             ClusterNode node = new ClusterNode(builder, numberOfSteps);
             node.start();   
             for (int i = 0; i < fields.length; i++) {                
@@ -214,7 +214,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
         MMJdbc2NodeInterface database = mmbase.getDatabase();        
 
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber) ) {
+        while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
+
             ResultNode node = new ResultNode((ResultBuilder) builder);
             node.start();
             for (int i = 0; i < fields.length; i++) {                
@@ -238,7 +239,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         MMJdbc2NodeInterface database = mmbase.getDatabase();        
 
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber) ) {
+        while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
             MMObjectNode node = new MMObjectNode(builder);
             node.start();
             for (int i = 0; i < fields.length; i++) {                
