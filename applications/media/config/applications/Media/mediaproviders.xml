@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+<mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021122141550">
 	<node number="166" owner="admin">
 		<rooturl>cgi.omroep.nl/cgi-bin/streams</rooturl>
 		<state>1</state>

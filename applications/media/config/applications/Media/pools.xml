@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+<pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021122141550">
 	<node number="271" owner="michiel">
 		<name>Other streams</name>
 		<description></description>
