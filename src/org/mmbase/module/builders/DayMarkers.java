@@ -17,7 +17,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.10 2000-07-03 11:10:16 vpro Exp $
+ * @version $Id: DayMarkers.java,v 1.11 2000-07-05 09:59:20 vpro Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -240,7 +240,7 @@ public class DayMarkers extends MMObjectBuilder {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select min(daycount) from "+mmb.baseName+"_"+tableName+" where mark<"+number);
+			ResultSet rs=stmt.executeQuery("select max(daycount) from "+mmb.baseName+"_"+tableName+" where mark<"+number);
 			if (rs.next()) {
 				mday=rs.getInt(1);
 			}
