@@ -9,18 +9,14 @@
    <!--
 
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.17 2003-09-24 10:07:41 michiel Exp $ 
+    @version  $Id: entrancepage.jsp,v 1.18 2003-09-24 20:47:19 michiel Exp $ 
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <head>
-<body>
-  <p>
-    <ul>
-     <li><a href="<mm:url page="edit.jsp" />">Edit</a></li>
-     <li><a href="<mm:url page="search.jsp" />">Search</a></li>
-     <li><a target="content" href="<mm:url page="help_${config.lang}.jsp" />">Help</a></li>
-    </ul>
-  </p>
+<body class="left">
+  <mm:import id="current">none</mm:import>
+  <%@include file="submenu.jsp" %>
+  <hr />
   <p align="right">
     <img src="images/mmbase.png" />
   </p>

@@ -11,7 +11,7 @@
 
 	<action type="load">
 		<relation destination="&type;fragments"    role="posrel" />
-		<relation destination="&type;fragments"    role="previous"  searchdir="destination" />
+		<relation destination="&type;fragments"    role="previous" />
 		<relation destination="publishtimes"   role="related">
        <object />
     </relation>
@@ -51,23 +51,43 @@
     <field name="intro" />
     <field name="body" />
 
-  <list role="previous" destination="&type;fragments" minoccurs="0" maxoccurs="1" >
-    <title xml:lang="en">Introduction (optional)</title>
-    <title xml:lang="nl">Introductie (optioneel)</title>
-    <command name="search" nodepath="&type;fragments" fields="title" orderby="title" age="-1" >
+    <list role="previous" destination="&type;fragments" minoccurs="0" maxoccurs="1" searchdir="destination" >
+      <title xml:lang="en">Introduction (optional)</title>
+      <title xml:lang="nl">Introductie (optioneel)</title>
+      <command name="search" nodepath="&type;fragments" fields="title" orderby="title" age="-1" >
         <search-filter>
           <name>Title</name>
           <search-fields>title</search-fields>
           <default>intro</default>
         </search-filter>
-    </command>
-    <item>
-      <field ftype="data" name="title" />
-    </item>
-    <action type="create">
-      <relation role="previous" />
-    </action>
-  </list>
+      </command>
+      <item>
+        <field ftype="data" name="title" />
+      </item>
+      <action type="create">
+        <relation role="previous" />
+      </action>
+    </list>
+
+    <list role="previous" destination="&type;fragments" minoccurs="0" maxoccurs="1" searchdir="source">
+      <title xml:lang="en">Outtroduction (optional)</title>
+      <title xml:lang="nl">Uittroductie (optioneel)</title>
+      <command name="search" nodepath="&type;fragments" fields="title" orderby="title" age="-1" >
+        <search-filter>
+          <name>Title</name>
+          <search-fields>title</search-fields>
+          <default>intro</default>
+        </search-filter>
+      </command>
+      <item>
+        <field ftype="data" name="title" />
+      </item>
+      <action type="create">
+        <relation role="previous" createdir="source" />
+      </action>
+    </list>
+
+
   <list role="related" destination="templates" minoccurs="0" maxoccurs="3">
     <title xml:lang="en">Default template (optional)</title>
     <title xml:lang="nl">Default sjabloon (optioneel)</title>

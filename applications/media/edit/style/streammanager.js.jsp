@@ -108,6 +108,8 @@ function getLeftURL(form) {
         return '<mm:write value="poolselector.jsp" />';
     } else if (form == "itemize") {    
         return '<mm:write value="${dir}player.jsp?fragment=$fragment" />';  
+    } else if (form == "security") {    
+        return '<mm:write value="security.jsp" />';  
     } else {
         return '<mm:write value="${dir}placeholder.jsp" />';
     }

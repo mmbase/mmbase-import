@@ -11,7 +11,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: edit.jsp,v 1.7 2003-09-24 10:07:41 michiel Exp $
+    @version  $Id: edit.jsp,v 1.8 2003-09-24 20:47:19 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -54,7 +54,7 @@
                   action="<mm:url referids="referrer,language,origin,startnodes" page="${jsps}list.jsp" />" 
                   method="post">
          <select name="searchfields">
-             <mm:write referid="videofieldoptions" />
+             <mm:write referid="videofieldoptions" escape="none" />
          </select>
          <input type="text" name="searchvalue"
          /><input type="hidden" name="wizard" value="tasks/clipping/videofragments"
@@ -72,7 +72,7 @@
 
    <tr><td><%=m.getString("clippingaudio")%></td><td><form style="display: inline; " id="clippingaudio" action="<mm:url referids="referrer,language" page="${jsps}list.jsp" />" method="post">
            <select name="searchfields">
-               <mm:write referid="audiofieldoptions" />
+               <mm:write referid="audiofieldoptions" escape="none" />
            </select>
            <input type="text" name="searchvalue"
            /><input type="hidden" name="wizard" value="tasks/clipping/audiofragments"
@@ -98,7 +98,7 @@
             action="<mm:url referids="referrer,language,origin,startnodes" page="${jsps}list.jsp" />" 
             method="post">
            <select name="searchfields">
-               <mm:write referid="videofieldoptions" />
+               <mm:write referid="videofieldoptions" escape="none" />
            </select>
            <input type="text" name="searchvalue" 
            /><input type="hidden" name="wizard" value="tasks/base/videofragments" 
@@ -115,7 +115,7 @@
   <tr>
    <td><%=m.getString("baseaudio")%></td><td><form style="display:inline; " id="baseaudio" action="<mm:url referids="referrer,language" page="${jsps}list.jsp" />" method="post">
            <select name="searchfields">
-              <mm:write referid="audiofieldoptions" />             
+              <mm:write referid="audiofieldoptions" escape="none" />             
            </select>
            <input type="text" name="searchvalue"
            /><input type="hidden" name="wizard" value="tasks/base/audiofragments"
@@ -135,6 +135,7 @@
 
   </table>
   <hr />
+  
   <%--p align="right"><mm:context>
    <mm:url id="referrer" write="false" referids="origin" page="entrancepage.jsp" />
    <a href="<mm:url referids="referrer" page="logout.jsp" />"><%=m.getString("logout")%></a>
