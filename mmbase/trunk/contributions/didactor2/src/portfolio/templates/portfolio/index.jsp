@@ -315,7 +315,7 @@
 
   </div>
 
-  <div class="contentBodyWit">
+  <div class="contentBodywit">
     <mm:import id="gfx_attachment"><mm:treefile page="/portfolio/gfx/mijn documenten.gif" objectlist="$includePath" referids="$referids" /></mm:import>
     <mm:import id="gfx_url"><mm:treefile page="/portfolio/gfx/bronnen.gif" objectlist="$includePath" referids="$referids" /></mm:import>
     <mm:import id="gfx_page"><mm:treefile page="/portfolio/gfx/pagina.gif" objectlist="$includePath" referids="$referids" /></mm:import>
@@ -478,7 +478,7 @@
 
 <mm:compare referid="typeof" value="-1">
 
-  <div class="contentBody">
+  <div class="contentBodywit">
 
 <mm:import externid="edit"/>
 <mm:compare referid="edit" value="true" inverse="true">

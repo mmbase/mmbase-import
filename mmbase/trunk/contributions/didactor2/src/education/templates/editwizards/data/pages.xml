@@ -78,7 +78,7 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
-        <field name="text" ftype="html">
+        <field name="text" ${wizards.pages.text.type}>
             <prompt>Tekst</prompt>
         </field>
         <field name="layout" ftype="enum">

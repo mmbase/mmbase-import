@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@page import="java.util.*"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -87,8 +88,8 @@
   <mm:relatednodescontainer type="learnblocks" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
     <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
-    <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
-    <tr><% if (depth.intValue() > 2) { %><td colspan="<%= depth.intValue() - 2 %>"></td><% } %><td><mm:field name="name"/></td></tr>
+        <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
+        <tr><% if (depth.intValue() > 2) { %><td colspan="<%= depth.intValue() - 2 %>"></td><% } %><td><mm:field name="name"/></td></tr>
    </mm:tree>
   </mm:relatednodescontainer>
 </mm:node>
@@ -126,20 +127,23 @@
   </mm:relatedcontainer>
 
 <mm:node number="$education">
-  <% String blockName = null; %>
+  <% List blockName = new ArrayList(); %>
   <mm:relatednodescontainer type="learnblocks" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
     <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+        <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
+        <% 
+            for (int i = blockName.size() - 1; i < depth.intValue() -1; i++) {
+                blockName.add(null);
+            }
+            while (depth.intValue() -1 < blockName.size()) {
+                blockName.remove( blockName.size() -1);
+            }
+ 
+        %>
       <mm:field name="name" jspvar="thisBlockName" vartype="String">
-        <%
-            if (blockName != null) {
-                blockName = blockName + "&gt;" + thisBlockName;
-            }
-            else {
-                blockName = thisBlockName;
-            }
-        %>      
-        </mm:field>
+        <% blockName.set(blockName.size()-1,thisBlockName); %>
+      </mm:field>
 
         <mm:relatednodescontainer type="tests" role="posrel">
           <mm:sortorder field="posrel.pos" direction="up"/>
@@ -147,7 +151,7 @@
         <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>
         <mm:field id="feedback" name="feedbackpage" write="false"/>
         <tr> 
-        <td class="listItem"><%= blockName %></td>
+        <td class="listItem"><% for (int i=0; i<blockName.size(); i++) {%><%= (String) blockName.get(i) %><% if (i < blockName.size()-1 ) { %> &gt; <% } } %></td>
 
         <td class="listItem"><mm:field name="name"/></td>
 
@@ -188,7 +192,6 @@
         <mm:remove referid="madetestscore"/>
          <mm:remove referid="save_madetestscore"/>
          <mm:remove referid="testNo"/>
-            <mm:last><% blockName = null; %></mm:last>
         </mm:relatednodes> <%-- tests --%>
       </mm:relatednodescontainer>
     </mm:tree>

@@ -4,5 +4,6 @@
 <util>
     <properties>
         <property name="maxfilesize">1048576</property>
+        <property name="maxrequestsize">209715200</property><!-- about 200 MB -->
     </properties>
 </util>

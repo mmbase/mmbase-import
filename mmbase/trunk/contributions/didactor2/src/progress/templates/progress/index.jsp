@@ -6,10 +6,13 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
-<di:hasrole role="student">
-    <jsp:forward page="student.jsp"/>
+<di:hasrole role="teacher" inverse="true">
+    <di:hasrole role="student">
+        <jsp:forward page="student.jsp"/>
+    </di:hasrole>
 </di:hasrole>
 
+<di:hasrole role="teacher">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title>Voortgang</title>
@@ -98,6 +101,7 @@
 
  </div>
 </div>
+</di:hasrole>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </mm:cloud>
 </mm:content>
