@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.19 2002-11-27 12:41:14 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.20 2002-11-27 13:03:38 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -442,7 +442,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     for (int i=1;i<=rd.getColumnCount();i++) {
                         prefix=selectTypes.elementAt(i-1)+".";
                         fieldname=rd.getColumnName(i);
-                        database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i,prefix);
                     }
                     node.initializing=false;
                     results.addElement(node);
