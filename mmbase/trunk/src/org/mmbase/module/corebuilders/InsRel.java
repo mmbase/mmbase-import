@@ -147,11 +147,11 @@ public class InsRel extends MMObjectBuilder {
 		if( owner != null ) { 
 			if( node != null ) { 
 				int snumber=node.getIntValue("snumber");
-				if( snumber > 0 ) {
+				if( snumber >= 0 ) {
 					int dnumber=node.getIntValue("dnumber");
-					if( dnumber > 0 ) { 
+					if( dnumber >= 0 ) { 
 						int rnumber=node.getIntValue("rnumber");
-						if( rnumber > 0 ) { 	
+						if( rnumber >= 0 ) { 	
 							node=alignRelNode(node);
 
 							if( debug ) 
@@ -170,7 +170,7 @@ public class InsRel extends MMObjectBuilder {
 						} else 
 							debug("insert("+owner+","+node+"): ERROR: rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
 					} else 
-						debug("insert("+owner+","+node+"): ERROR: dnumber("+dnumber+" is not greater than 0! (something is seriously wrong)");
+						debug("insert("+owner+","+node+"): ERROR: dnumber("+dnumber+") is not greater than 0! (something is seriously wrong)");
 				} else 
 					debug("insert("+owner+","+node+"): ERROR: snumber("+snumber+") is not greater than 0! (something is seriously wrong)");
 			} else
