@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%-- @ taglib uri="oscache" prefix="cache" --%><%@page errorPage="error.jsp" session="false"%>
-<mm:content type="text/html" expires="300">
+<mm:content type="text/html" expires="300" postprocessor="none">
 <html>
 <head>
  <title>The formatter tag mm:formatter</title>
