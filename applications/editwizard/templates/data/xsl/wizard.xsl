@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.8 2002-04-19 20:03:09 michiel Exp $
+  @version $Id: wizard.xsl,v 1.9 2002-05-07 13:32:42 michiel Exp $
   --> 
 
 
@@ -43,7 +43,7 @@
         <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
         
         
-        <form name="form" method="post" action="" id="{/wizard/curform}">
+        <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}">
           <input type="hidden" name="curform" value="{/wizard/curform}" />
           <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
           
@@ -187,7 +187,7 @@
               <tr>
                 <td align="right" valign="top" class="search" width="100%">
                   <nobr>
-                    <a href="wizard.jsp{$sessionid}?wizard={@wizardname}|{@did}&amp;objectnumber={@objectnumber}&amp;popup=true"><img src="{$mediadir}new.gif" border="0" /></a>
+                    <a href="{$wizardpage}&amp;wizard={@wizardname}|{@did}&amp;objectnumber={@objectnumber}&amp;popup=true"><img src="{$mediadir}new.gif" border="0" /></a>
                     <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
                   </nobr>
                 </td>
@@ -196,7 +196,7 @@
           </div>
         </xsl:when>
         <xsl:when test="@ftype='startwizard'">
-          <nobr><a href="popupwizard.jsp{$sessionid}?wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start new wizard)</a>
+          <nobr><a href="{$popuppage}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start new wizard)</a>
           </nobr>
         </xsl:when>
         <xsl:when test="@ftype='upload'">
@@ -254,7 +254,7 @@
       <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
       <xsl:choose>
         <xsl:when test="@displaytype='link'">
-          <span style="width:600;"><a href="wizard.jsp{$sessionid}?wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value" /></a></span>
+          <span style="width:600;"><a href="{$wizardpage}&amp;wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value" /></a></span>
         </xsl:when>
         <xsl:when test="@displaytype='image'">
           <span style="width:128; height:168;" >
@@ -466,7 +466,7 @@
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
-                <a href="popupwizard.jsp{$sessionid}?wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
+                <a href="{$popuppage}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
                 <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
               </nobr>
             </td>

@@ -5,12 +5,11 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.3 2002-04-19 20:03:09 michiel Exp $
+  @version $Id: list.xsl,v 1.4 2002-05-07 13:32:42 michiel Exp $
   --> 
 
   <xsl:import href="baselist.xsl" />
   
-  <xsl:variable name="homeurl"><xsl:value-of select="$url" />&amp;remove=true</xsl:variable>
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="deletable">false</xsl:param>
@@ -22,7 +21,7 @@
     <span class="pagenav">
       <xsl:choose>
         <xsl:when test="page[@previous='true']">
-          <a class="pagenav" href="{$url}&amp;start={page[@previous='true']/@start}">&lt;&lt;</a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          <a class="pagenav" href="{$listpage}&amp;start={page[@previous='true']/@start}">&lt;&lt;</a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           &lt;&lt;<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
@@ -33,7 +32,7 @@
       
       <xsl:choose>
         <xsl:when test="page[@next='true']">
-          <a class="pagenav" href="{$url}&amp;start={page[@next='true']/@start}">&gt;&gt;</a>
+          <a class="pagenav" href="{$listpage}&amp;start={page[@next='true']/@start}">&gt;&gt;</a>
         </xsl:when>
         <xsl:otherwise>
           &gt;&gt;
@@ -43,7 +42,7 @@
   </xsl:template>
   
   <xsl:template match="page">
-    <a class="pagenav" href="{$url}&amp;start={@start}"><xsl:value-of select="position()" /></a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+    <a class="pagenav" href="{$listpage}&amp;start={@start}"><xsl:value-of select="position()" /></a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
   
   
@@ -140,9 +139,9 @@
                 </xsl:if>
                 
                 <xsl:for-each select="object[@number&gt;0]">
-                  <tr class="itemrow" onmouseover="objMouseOver(this);" onmousedown="objClick(this);" onmouseout="objMouseOut(this);" href="wizard.jsp{$sessionid}?wizard={$wizard}&amp;objectnumber={@number}">
+                  <tr class="itemrow" onmouseover="objMouseOver(this);" onmousedown="objClick(this);" onmouseout="objMouseOut(this);" href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber={@number}">
                     <xsl:if test="$deletable='true'">
-                      <td class="deletebutton"><a href="deletelistitem.jsp{$sessionid}?wizard={$wizard}&amp;objectnumber={@number}"><img src="{$mediadir}remove.gif" border="0" width="20" height="20" title="{$deletedescription}" onmousedown="cancelClick=true;" onclick="return doDelete('{$deleteprompt}');" /></a><img src="{$mediadir}nix.gif" width="10" height="1" /></td>
+                      <td class="deletebutton"><a href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"><img src="{$mediadir}remove.gif" border="0" width="20" height="20" title="{$deletedescription}" onmousedown="cancelClick=true;" onclick="return doDelete('{$deleteprompt}');" /></a><img src="{$mediadir}nix.gif" width="10" height="1" /></td>
                     </xsl:if>
                     <td valign="top"><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                     </td>
@@ -153,7 +152,7 @@
               </table>
               <br />
               <div width="100%" align="right">
-                <a href="wizard.jsp{$sessionid}?wizard={$wizard}&amp;objectnumber=new" title="create new"><img src="{$mediadir}new.gif" border="0" /></a>
+                <a href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new" title="create new"><img src="{$mediadir}new.gif" border="0" /></a>
               </div>
 
             </td>
@@ -166,7 +165,7 @@
             </td>
           </tr>
           
-          <tr class="itemrow" ><td colspan="2" align="center" ><a href="{$homeurl}">( index )</a> <a href="{$homeurl}&amp;logout=true">( logout )</a></td></tr>		
+          <tr class="itemrow" ><td colspan="2" align="center" ><a href="{$listpage}&amp;remove=true">( index )</a> <a href="{$listpage}&amp;logout=true&amp;remove=true">( logout )</a></td></tr>		
 					
         </table>
         
