@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+	<articleinfo>
+		<date>07 February 2003</date>
+		<title>How To Use XML</title>
+		<authorgroup>
+			<author>
+				<firstname>Henk</firstname>
+				<surname>Hangyi</surname>
+			</author>
+			<author>
+				<firstname>Pierre</firstname>
+				<surname>van Rooden</surname>
+			</author>
+		</authorgroup>
+		<revhistory>
+			<revision>
+				<revnumber>0.3</revnumber>
+				<date>30 January 2003</date>
+				<revremark>Henk Hangyi, hangyi@xs4all.nl. Part of the context-security document</revremark>
+			</revision>
+			<revision>
+				<revnumber>0.4</revnumber>
+				<date>07 February 2003</date>
+				<revremark>Pierre van Rooden. Turned this into a separate document</revremark>
+			</revision>
+		</revhistory>
+	</articleinfo>
+	<section id="introduction">
+		<title>Introduction</title>
+		<para>XML stands for "EXtensible Markup Language"</para>
+		<itemizedlist>
+			<listitem>
+				<para>XML is a mark-up language</para>
+			</listitem>
+			<listitem>
+				<para>XML describes data</para>
+			</listitem>
+			<listitem>
+				<para>XML uses a DTD(Document Type Definition) for describing the data-structure within the document.</para>
+			</listitem>
+			<listitem>
+				<para>XML is developed with a DTD, so it should be self explaining.</para>
+			</listitem>
+			<listitem>
+				<para>XML Layout [todo: what is meant with this]</para>
+			</listitem>
+		</itemizedlist>
+	</section>
+	<section id="simple_xml">
+		<title>A very simple XML could be the following</title>
+		<para>Within MMBase is a security framework, in which different security implementations can be used. In this way it is possible to adapt MMBase to the needs of the environment in which it runs. Currently there are a few different implementations ready. The context security and the cloud security are the most advanced schemes available.</para>
+		<programlisting><![CDATA[
+<?xml version="1.0&" encoding="utf-8"?>
+<!DOCTYPE root SYSTEM "definition.dtd">
+<root></root>
+		]]></programlisting>
+		<para>This XML uses &quot;utf-8&quot; as encoding and uses definition.dtd to validate the XML file for correctness.</para>
+	</section>
+	<section id="dtd_layout">
+		<title>DTD Layout</title>
+		<para>The simple XML document which is shown above, could be described by a DTD like:</para>
+		<programlisting>&lt;!ELEMENT root #PCDATA)&gt;</programlisting>
+		<para>The element allows only the use of &lt;root&gt; tags in the document. The PCDATA indicates that text may be entered within the &lt;root&gt; tag. [todo: There should be more text here but it seems to be missing. The DTD needs some more work. ]</para>
+	</section>
+	<section id="xpath">
+		<title>XPath</title>
+		<para>With the use of XPath is it possible to denote a certain location in a xml file. The location can be enclosed in an element or a field of an element. For XPath / counts as the root of the document. To separate elements you should use a &#39;/&#39; between those elements. In the case that you point to a field inside an element you should use &#39;element[@fieldname]&#39;</para>
+	</section>
+	<section id="more_info">
+		<title>More information</title>
+		<para>XML is a W3C standard, a beginners course can be found at: http://www.w3schools.com/xml/</para>
+		<para>An explanation of XPath can be found at the following point: http://www.zvon.org/xxl/XPathTutorial/General/examples.html</para>
+	</section>
+</article>

@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+	<articleinfo>
+		<date>07 February 2003</date>
+		<title>The MMBase Security Framework</title>
+		<authorgroup>
+			<author>
+				<firstname>Eduard</firstname>
+				<surname>Witteveen</surname>
+			</author>
+			<author>
+				<firstname>Sjoerd</firstname>
+				<surname>de Heer</surname>
+			</author>
+			<author>
+				<firstname>Henk</firstname>
+				<surname>Hangyi</surname>
+			</author>
+			<author>
+				<firstname>Pierre</firstname>
+				<surname>van Rooden</surname>
+			</author>
+		</authorgroup>
+		<revhistory>
+			<revision>
+				<revnumber>0.1</revnumber>
+				<date>Undated</date>
+				<revremark>Eduard Witteveen, part of the context security document</revremark>
+			</revision>
+			<revision>
+				<revnumber>0.2</revnumber>
+				<date>25 October 2002</date>
+				<revremark>Sjoerd de Heer, s.a.deheer@student.utwente.nl</revremark>
+			</revision>
+			<revision>
+				<revnumber>0.3</revnumber>
+				<date>30 January 2003</date>
+				<revremark>Henk Hangyi, hangyi@xs4all.nl</revremark>
+			</revision>
+			<revision>
+				<revnumber>0.4</revnumber>
+				<date>07 February 2003</date>
+				<revremark>Pierre van Rooden. Made this a separate document.</revremark>
+			</revision>
+		</revhistory>
+	</articleinfo>
+	<section id="introduction">
+		<title>Introduction</title>
+		<section id="requirements">
+			<title>Security framework within MMBase</title>
+			<para>Within MMBase is a security framework, in which different security implementations can be used. In this way it is possible to adapt MMBase to the needs of the environment in which it runs. Currently there are a few different implementations ready. The context security and the cloud security are the most advanced schemes available.</para>
+		</section>
+	</section>
+	<section id="configuration">
+		<title>How to configure the security-framework</title>
+		<tip>
+			<para>When you alter one of the xml files related to the security implementation the whole security implementation shall be reloaded within a minute. If there are errors within the configuration file a message shall be given and the old configuration will be kept active.</para>
+		</tip>
+		<section id="general">
+			<title>General</title>
+			<para>The security framework makes it possible to use different implementations for security within MMBase. The implementation that will be used depends on the configuration file which can be found in your configuration directory and then in the sub-dir called security. The file security.xml is the file you are looking for. The file security.xml should look like this (All comment lines have been left out)</para>
+			<programlisting><![CDATA[
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE security PUBLIC "//MMBase - security//" "http://www.mmbase.org/dtd/security.dtd">
+<security active="true">
+	<authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />
+	<authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />
+	<sharedsecret>my_secret_acces_code</sharedsecret>
+</security>
+			]]></programlisting>
+			<para>Within this document you can alter the following items:</para>
+			<itemizedlist>
+				<listitem>
+					<para>/security[@active] : Valid values are &#39;true&#39; and &#39;false&#39;. If the value is set to true then the selected security shall be loaded. If the value is &#39;false&#39; then there will be no security implementation loaded, but the document will also not be checked for changes so no reloads will occur. [to do: what means the last part of the sentence]</para>
+				</listitem>
+				<listitem>
+					<para>/security/authentication[@class] : This denotes which implementation will be loaded as security. Setting this parameter to org.mmbase.security.NoAuthentication will disable authentication.</para>
+				</listitem>
+				<listitem>
+					<para>/security/authentication[@url] : In this element you can give parameter for the security implementation like a configuration file for that security type.</para>
+				</listitem>
+				<listitem>
+					<para>/security/authorization[@class] : The implementation that will check if the requested operation is valid for this user in MMBase. Setting this parameter to org.mmbase.security.NoAuthorization will disable authorization.</para>
+				</listitem>
+				<listitem>
+					<para>/security/authorization[@url] : Same as with authentication, you can give additional parameters here. Like the location of a configuration file.</para>
+				</listitem>
+				<listitem>
+					<para>/security/sharedsecret : It is possible to run more than one MMBase on the same data source if that is true then they will use this password to communicate.</para>
+				</listitem>
+			</itemizedlist>
+			<para>The security.xml shown above thus states that:</para>
+			<itemizedlist>
+				<listitem>
+					<para>&lt;security active="true"&gt;: the selected security systems shall be loaded</para>
+				</listitem>
+				<listitem>
+					<para>&lt;authentication class=&quot;org.mmbase.security.implementation.context.ContextAuthentication&quot; url=&quot;context/config.xml&quot; /&gt;: Context security is used to implementate the login procedure. The file config.xml defines the rights for users, groups and ranks.</para>
+				</listitem>
+				<listitem>
+					<para>&lt;authorization class=&quot;org.mmbase.security.implementation.context.ContextAuthorization&quot; url=&quot;context/config.xml&quot; /&gt;: Context security is used to for checking which operations a user is allowed to carry out inside MMBase. The file config.xml defines the rights for users, groups and ranks.</para>
+				</listitem>
+				<listitem>
+					<para>&lt;sharedsecret&gt;appelmoes&lt;/sharedsecret&gt;: When there are more MMBase installations running on this data source, they can communicate with each other if they also have "appelmoes " as their shared secret.</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+	</section>
+	<section id="context_dtd">
+		<title>Framework DTD for security XML</title>
+		<para>This is the DTD om which the previous XML is based:</para>
+		<programlisting><![CDATA[
+<!ELEMENT security ( authentication, authorization, sharedsecret ) >
+<!ATTLIST security active (true|false) #REQUIRED >
+
+<!ELEMENT authentication EMPTY >
+<!ATTLIST authentication class NMTOKEN #REQUIRED >
+<!ATTLIST authentication url CDATA #REQUIRED >
+
+<!ELEMENT authorization EMPTY >
+<!ATTLIST authorization class NMTOKEN #REQUIRED >
+<!ATTLIST authorization url CDATA #REQUIRED >
+
+<!ELEMENT sharedsecret ( #PCDATA ) >
+			]]></programlisting>
+	</section>
+</article>
