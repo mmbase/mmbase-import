@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.4 2000-10-08 21:54:35 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.5 2000-10-16 21:54:57 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -16,7 +16,7 @@
 # change this to your MMBase-dir
 MMBASE_HOME=..
 # change this to your Tomcat directory
-TOMCAT_HOME=/usr/local/tomcat
+TOMCAT_HOME=/home/gerard/data/apache/jakarta/build/tomcat
 
 # change this to your mmbase path where the classes are or to the mmbase.jar
 MMBASE_JAR=$MMBASE_HOME/lib/mmbase.jar
@@ -135,7 +135,12 @@ export CLASSPATH
 if [ "$1" = "start" ] ; then 
   shift 
   echo Using classpath: ${CLASSPATH}
+  if [ "$1" = "-security" ] ; then
+    echo Starting with a SecurityManager
+    $JAVACMD $TOMCAT_OPTS -Djava.security.manager -Djava.security.policy==${TOMCAT_HOME}/conf/tomcat.policy -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}/${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" &
+  else
   $JAVACMD $TOMCAT_OPTS -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}/${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" &
+  fi
 #   $JAVACMD org.apache.tomcat.shell.Startup "$@" &
 
 elif [ "$1" = "stop" ] ; then 
@@ -147,7 +152,12 @@ elif [ "$1" = "stop" ] ; then
 elif [ "$1" = "run" ] ; then 
   shift 
   echo Using classpath: ${CLASSPATH}
+  if [ "$1" = "-security" ] ; then
+    echo Starting with a SecurityManager
+    $JAVACMD $TOMCAT_OPTS -Djava.security.manager -Djava.security.policy==${TOMCAT_HOME}/conf/tomcat.policy -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}/${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@"
+  else
   $JAVACMD $TOMCAT_OPTS -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}/${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" 
+  fi
 #  $JAVACMD org.apache.tomcat.shell.Startup "$@" 
   # no &
 
@@ -172,6 +182,7 @@ else
   echo "tomcat (start|env|run|stop|ant)"
   echo "        start - start tomcat in the background"
   echo "        run   - start tomcat in the foreground"
+  echo "              -security - use a SecurityManager when starting"
   echo "        stop  - stop tomcat"
   echo "        env  -  set CLASSPATH and TOMCAT_HOME env. variables"
   echo "        ant  - run ant script in tomcat context ( classes, directories, etc)"
@@ -187,3 +198,43 @@ if [ "$oldCP" != "" ]; then
 else
     unset CLASSPATH
 fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
