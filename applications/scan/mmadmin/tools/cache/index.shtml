@@ -22,6 +22,24 @@
 	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 	<TD BGCOLOR="42BDAD" COLSPAN="2">
 	<FONT COLOR="000000">
+	<B>Multilevel cache status</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<IF $MOD-MMADMIN-MULTILEVELCACHESTATE^==On>
+	&nbsp;
+	 <A HREF="setMultilevelCache.shtml?Off"><FONT COLOR="#FFFFFF"><B>On</B></FONT></A>
+	</IF>
+	<IF $MOD-MMADMIN-MULTILEVELCACHESTATE^==Off>
+	 &nbsp;
+	 <A HREF="setMultilevelCache.shtml?On"><FONT COLOR="#FFFFFF"><B>Off</B></FONT></A>
+	</IF>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
 	<B>Multilevel cache requests</B>
 	</TD>
 	<TD BGCOLOR="00445B" COLSPAN="2">
@@ -203,23 +221,6 @@
 	</TD>
 	<TD BGCOLOR="00445B" COLSPAN="2">
 	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-RELATIONCACHEPERFORMANCE^%</B></FONT>
-	</TD>
-</TR>
-
-<TR>
-	<TD>
-	&nbsp;
-	</TD>
-</TR>
-
-<TR>
-	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="42BDAD" COLSPAN="2">
-	<FONT COLOR="000000">
-	<B>Temporary node cache size</B>
-	</TD>
-	<TD BGCOLOR="00445B" COLSPAN="2">
-	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-TEMPORARYNODECACHESIZE^</B></FONT>
 	</TD>
 </TR>
 
