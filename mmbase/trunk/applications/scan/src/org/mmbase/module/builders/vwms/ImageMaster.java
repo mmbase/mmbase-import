@@ -40,13 +40,11 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 
 	public boolean probeCall() {
-		debug("probe");
 		if (first) {
 			first=false;
 		} else {
 			try {
 				Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
-				debug("probeCall: resolving unresolved main requests");
 				Enumeration e=bul.search("WHERE service='images' AND subservice='main' AND status=1 ORDER BY number DESC");
 				int i=0;
 				while (e.hasMoreElements() && i<maxSweep) {
@@ -55,7 +53,6 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					i++;
 				}
 				try { Thread.sleep(1500); } catch(InterruptedException x) {}
-				debug("probeCall: resolving unresolved mirror requests");
 				Enumeration f=bul.search("WHERE service='images' AND subservice='mirror' AND status=1 ORDER BY number DESC");
 				i=0;
 				while (f.hasMoreElements() && i<maxSweep) {
