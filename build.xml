@@ -405,6 +405,20 @@ version=1.7.0-dev
   <target name="build"   description="Compile and generate tld's"
      depends="taglib.tld,community.tld,compile" >
   </target>
+
+
+  <target name="resources">
+    <copy todir="${build.dir}/classes"  preservelastmodified="true">
+      <fileset dir="${source-src.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+
   <!-- =================================================================== -->
   <!-- Compile the source directory (exclude remote)                       -->
   <!-- =================================================================== -->
@@ -429,15 +443,6 @@ version=1.7.0-dev
     <condition property="java14"><equals arg1="${ant.java.version}" arg2="1.4" /></condition>
     <antcall target="info14" />
     <antcall target="startcompile" />
-
-    <copy todir="${build.dir}/classes">
-      <fileset dir="${source-src.dir}">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-      </fileset>
-    </copy>
 
     <available property="informix.in.classpath"
                classpathref="compile.classpath"
@@ -547,8 +552,24 @@ version=1.7.0-dev
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
+
+
+  <target name="jar.uptodatecheck">
+    <uptodate property="jar.uptodate" targetfile="${mmbase.jar}" >
+      <srcfiles dir="${build.dir}/classes" includes="**/*.class"/>
+      <srcfiles dir="${build.dir}/classes" includes="**/*.tld"/>
+      <srcfiles dir="${build.dir}/classes" includes="**/*.dtd"/>
+      <srcfiles dir="${build.dir}/classes" includes="**/*.resources"/>
+    </uptodate>   
+  </target>
+
+  <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
+    <echo message="${mmbase.jar} is up-to-date" />
+  </target>
+    
+
   <target name="jar" description="Create the MMBase jar file"
-          depends="compile,taglib.tld,community.tld">
+          depends="compile,taglib.tld,community.tld,resources,jar.check" unless="jar.uptodate">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
 
@@ -569,6 +590,7 @@ Main-Class: org.mmbase.Version
     <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
        includes="org/mmbase/**"
+       update="false"
        manifest="${build.dir}/manifest.mf" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
