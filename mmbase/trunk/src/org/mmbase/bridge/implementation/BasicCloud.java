@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.108 2003-11-10 16:47:14 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.109 2003-11-10 17:51:44 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -144,11 +144,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     // Makes a node or Relation object based on an MMObjectNode
-    Node makeNode(MMObjectNode node, String nodenumber) {
+    Node makeNode(MMObjectNode node, String nodeNumber) {
         NodeManager nm = getNodeManager(node.parent.getTableName());
         int nodenr = node.getNumber();
         if (nodenr == -1) {
-            int nodeid = Integer.parseInt(nodenumber);
+            int nodeid = Integer.parseInt(nodeNumber);
             if (node.parent instanceof TypeDef) {
                 return new BasicNodeManager(node, this, nodeid);
             } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
@@ -172,50 +172,50 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
     }
 
-    public Node getNode(String nodenumber) throws NotFoundException {
+    public Node getNode(String nodeNumber) throws NotFoundException {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodenumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber, e);
+            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage(), e);
         }
         if (node == null) {
-            throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
+            throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
         } else {
-            return makeNode(node, nodenumber);
+            return makeNode(node, nodeNumber);
         }
     }
 
-    public Node getNode(int nodenumber) throws NotFoundException {
-        return getNode("" + nodenumber);
+    public Node getNode(int nodeNumber) throws NotFoundException {
+        return getNode("" + nodeNumber);
     }
 
     public Node getNodeByAlias(String aliasname) throws NotFoundException {
         return getNode(aliasname);
     }
 
-    public Relation getRelation(int nodenumber) throws NotFoundException {
-        return getRelation("" + nodenumber);
+    public Relation getRelation(int nodeNumber) throws NotFoundException {
+        return getRelation("" + nodeNumber);
     }
 
-    public Relation getRelation(String nodenumber) throws NotFoundException {
-        return (Relation)getNode(nodenumber);
+    public Relation getRelation(String nodeNumber) throws NotFoundException {
+        return (Relation)getNode(nodeNumber);
     }
 
-    public boolean hasNode(int nodenumber) {
-        return hasNode("" + nodenumber, false);
+    public boolean hasNode(int nodeNumber) {
+        return hasNode("" + nodeNumber, false);
     }
 
-    public boolean hasNode(String nodenumber) {
-        return hasNode(nodenumber, false);
+    public boolean hasNode(String nodeNumber) {
+        return hasNode(nodeNumber, false);
     }
 
     // check if anode exists.
     // if isrelation is true, the method returns false if the node is not a relation
-    private boolean hasNode(String nodenumber, boolean isrelation) {
+    private boolean hasNode(String nodeNumber, boolean isrelation) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodenumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
         } catch (RuntimeException e) {
             return false; // error - node inaccessible or does not exist
         }
@@ -229,12 +229,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
     }
 
-    public boolean hasRelation(int nodenumber) {
-        return hasNode("" + nodenumber, true);
+    public boolean hasRelation(int nodeNumber) {
+        return hasNode("" + nodeNumber, true);
     }
 
-    public boolean hasRelation(String nodenumber) {
-        return hasNode(nodenumber, true);
+    public boolean hasRelation(String nodeNumber) {
+        return hasNode(nodeNumber, true);
     }
 
     public NodeManagerList getNodeManagers() {
@@ -647,7 +647,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             try {
                 resultList = clusterBuilder.getClusterNodes(query);
             } catch (SearchQueryException sqe) {
-                throw new BridgeException(query.toString(), sqe);
+                throw new BridgeException(query.toString() + ":" + sqe.getMessage(), sqe);
             }
             multilevelCache.put(query, resultList);
         }
@@ -841,19 +841,19 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return locale;
     }
 
-    public boolean mayRead(int nodenumber) {
-        return mayRead(nodenumber + "");
+    public boolean mayRead(int nodeNumber) {
+        return mayRead(nodeNumber + "");
     }
 
-    public boolean mayRead(String nodenumber) {
+    public boolean mayRead(String nodeNumber) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account, nodenumber);
+            node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber, e);
+            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage(), e);
         }
         if (node == null) {
-            throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
+            throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
         } else {
             int nodenr = node.getNumber();
             if (nodenr == -1) {
