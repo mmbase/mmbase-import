@@ -93,7 +93,9 @@ public class MMObjectBuilder extends MMTable {
 				oType=mmb.TypeDef.getIntValue(tableName);
 			}
 		} else {
-			debug("init(): for tablename("+tableName+") -> can't get to typeDef");
+			if(!tableName.equals("typedef")) {
+				debug("init(): for tablename("+tableName+") -> can't get to typeDef");
+			}
 		}
 		// hack to override the hard  fields by database (bootstrap)
 		// Hashtable tmp=initFields();
@@ -976,7 +978,7 @@ public class MMObjectBuilder extends MMTable {
 			val=getHTML(val);
 			return(val);
 		} else if (field.indexOf("wap_")==0) {
-			String val=node.getStringValue(field.substring(5));
+			String val=node.getStringValue(field.substring(4));
 			val=getWAP(val);
 			return val;
 		} 
@@ -1020,7 +1022,6 @@ public class MMObjectBuilder extends MMTable {
 		String result = "";
 		if( body != null ) {
 			StringObject obj=new StringObject(body);
-
 			obj.replace("\"","&#34;");
 			obj.replace("&","&#38;#38;");
 			obj.replace("'","&#39;");
