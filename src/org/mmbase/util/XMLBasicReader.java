@@ -13,6 +13,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -35,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.24 2002-10-29 23:54:19 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.25 2002-11-06 21:08:39 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -63,21 +66,31 @@ public class XMLBasicReader  {
         XMLErrorHandler.reinitLogger();
     }
 
+    private static InputSource getInputSource(String path) {
+        try {
+            return new InputSource(new FileInputStream(path));
+        } catch (java.io.FileNotFoundException e) {
+            log.error("Error reading " + path + ": " + e.toString());
+            log.service("Using empty source");
+            return new InputSource();
+        }
+    }
+
     public XMLBasicReader(String path) {
-        this(path, VALIDATE);
+        this(getInputSource(path), VALIDATE);
     }
     public XMLBasicReader(InputSource source, Class resolveBase) {
         this(source, VALIDATE, resolveBase);
     }
-    public XMLBasicReader(String source, Class resolveBase) {
-        this(new InputSource("file:///" + source), VALIDATE, resolveBase);
+    public XMLBasicReader(String path, Class resolveBase) {
+            this(getInputSource(path), VALIDATE, resolveBase);
     }
     public XMLBasicReader(InputSource source) {
         this(source, VALIDATE);
     }
 
     public XMLBasicReader(String path, boolean validating) {
-        this(new InputSource("file:///" + path), validating);
+        this(getInputSource(path), validating);
     }
 
     public XMLBasicReader(InputSource source, boolean validating) {
