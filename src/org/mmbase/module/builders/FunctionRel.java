@@ -19,10 +19,11 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
+ * @deprecated-now does not add functionality
  * @author Rico Jansen
  */
 public class FunctionRel extends InsRel {
 
-	public FunctionRel() {
-	}
+    public FunctionRel() {
+    }
 }

@@ -20,220 +20,245 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @application Basic [builder]
+ * @rename Pools (compliant with other builder names)
+ * @javadoc
+ * @code-conventions
+ * @sql in various methods
  * @author Hans Speijer
  */
 public class PoolBuilder extends MMObjectBuilder {
-	
-    private static Logger log = Logging.getLoggerInstance(PoolBuilder.class.getName()); 
 
-	String cacheTableName;
+    private static Logger log = Logging.getLoggerInstance(PoolBuilder.class.getName());
 
-	
-	public Vector getPool(String pool, int status, int value) {
-		SortedVector results = new SortedVector(new MMObjectCompare("number"));
+    /** @scope private */
+    String cacheTableName;
 
-		int poolId = 0;
-		String poolSet = "{";
-		Teasers teaserBuilder = (Teasers)mmb.getMMObject("teasers");
+    /**
+     * @javadoc
+     * @sql
+     */
+    public Vector getPool(String pool, int status, int value) {
+        SortedVector results = new SortedVector(new MMObjectCompare("number"));
 
-		log.info("Getting Teasers for :" + pool);
+        int poolId = 0;
+        String poolSet = "{";
+        Teasers teaserBuilder = (Teasers)mmb.getMMObject("teasers");
 
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" WHERE name = '"+pool+"'");
+        log.info("Getting Teasers for :" + pool);
 
-			while(rs.next()) {
-				poolId = rs.getInt(1);
-			}
-			stmt.close();
-			con.close();
+        try {
+            MultiConnection con=mmb.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" WHERE name = '"+pool+"'");
 
-			con=mmb.getConnection();
-			stmt = con.createStatement();
+            while(rs.next()) {
+                poolId = rs.getInt(1);
+            }
+            stmt.close();
+            con.close();
 
-			rs = stmt.executeQuery(
-								   "SELECT a.decay, a.basedecay, a.online, b.number, b.title, b.body, b.value FROM "
-								   +mmb.baseName+"_"+mmb.getMMObject("decayrel").tableName+" a, "
-								   +mmb.baseName+"_"+mmb.getMMObject("teasers").tableName+" b"
-								   +" WHERE (a.snumber = "+poolId+" OR a.dnumber = "+poolId+")  AND (b.number = a.dnumber or b.number = a.snumber ) AND b.state >"+status+" AND b.value >"+value);
-			results = convertResultSet(rs,results);
-			stmt.close();
-			con.close();	
-			
-			teaserBuilder.insertRelations(results);
-			results.setCompare(new MMObjectDCompare("basedecay"));
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			log.error(Logging.stackTrace(e));
-			return(null);
-		}		
-	
-		return (results);
-	}
+            con=mmb.getConnection();
+            stmt = con.createStatement();
 
-	public Vector searchFlat(String sqlWhere) {
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+cacheTableName+" WHERE "+sqlWhere);
-			Vector results;
+            rs = stmt.executeQuery(
+                                   "SELECT a.decay, a.basedecay, a.online, b.number, b.title, b.body, b.value FROM "
+                                   +mmb.baseName+"_"+mmb.getMMObject("decayrel").tableName+" a, "
+                                   +mmb.baseName+"_"+mmb.getMMObject("teasers").tableName+" b"
+                                   +" WHERE (a.snumber = "+poolId+" OR a.dnumber = "+poolId+")  AND (b.number = a.dnumber or b.number = a.snumber ) AND b.state >"+status+" AND b.value >"+value);
+            results = convertResultSet(rs,results);
+            stmt.close();
+            con.close();
 
-			results = convertResultSet(rs);
+            teaserBuilder.insertRelations(results);
+            results.setCompare(new MMObjectDCompare("basedecay"));
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+            return(null);
+        }
 
-			stmt.close();
-			con.close();
-	
-			return (results);
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			log.error(Logging.stackTrace(e));
-			return(null);
-		}		
-	}
+        return (results);
+    }
 
-	public Vector getChildren(String pool) {
-		Vector results;
-		int poolId = 0;
-		String poolSet = "(";
-		String insRelName = mmb.getMMObject("insrel").tableName;
+    /**
+     * @javadoc
+     * @sql
+     */
+    public Vector searchFlat(String sqlWhere) {
+        try {
+            MultiConnection con=mmb.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+cacheTableName+" WHERE "+sqlWhere);
+            Vector results;
 
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" WHERE name = '"+pool+"'");
+            results = convertResultSet(rs);
 
-			while(rs.next()) {
-				poolId = rs.getInt(1);
-			}
-			stmt.close();
-			con.close();
+            stmt.close();
+            con.close();
 
-			con=mmb.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT  dnumber FROM "+mmb.baseName+"_"+insRelName+" WHERE snumber = "+poolId);
-			
-			while(rs.next()) {
-				if (poolSet.equals("(")) {
-					poolSet += rs.getInt(1);
-				}
-				else {
-					poolSet += ","+rs.getInt(1);
-				}
-			}
-			poolSet += ")";
-			stmt.close();
-			con.close();
+            return (results);
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+            return(null);
+        }
+    }
 
-			if (!poolSet.equals("()")) {
-			con=mmb.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT name FROM "+mmb.baseName+"_"+tableName+" WHERE number in "+poolSet);
+    /**
+     * @javadoc
+     * @sql
+     */
+    public Vector getChildren(String pool) {
+        Vector results;
+        int poolId = 0;
+        String poolSet = "(";
+        String insRelName = mmb.getMMObject("insrel").tableName;
 
-			results = convertResultSet(rs);
-			
-			stmt.close();
-			con.close();
-			} else {
-				results=new Vector();
-			}
+        try {
+            MultiConnection con=mmb.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" WHERE name = '"+pool+"'");
 
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			log.error(Logging.stackTrace(e));
-			return(null);
-		}		
-		
-		return (results);
-	}
+            while(rs.next()) {
+                poolId = rs.getInt(1);
+            }
+            stmt.close();
+            con.close();
+
+            con=mmb.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT  dnumber FROM "+mmb.baseName+"_"+insRelName+" WHERE snumber = "+poolId);
+
+            while(rs.next()) {
+                if (poolSet.equals("(")) {
+                    poolSet += rs.getInt(1);
+                }
+                else {
+                    poolSet += ","+rs.getInt(1);
+                }
+            }
+            poolSet += ")";
+            stmt.close();
+            con.close();
+
+            if (!poolSet.equals("()")) {
+            con=mmb.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT name FROM "+mmb.baseName+"_"+tableName+" WHERE number in "+poolSet);
+
+            results = convertResultSet(rs);
+
+            stmt.close();
+            con.close();
+            } else {
+                results=new Vector();
+            }
+
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+            return(null);
+        }
+
+        return (results);
+    }
 
 
 
-	/**
-	 * Converts a result set into a Vector containing MMObjectNodes for the 
-	 * different items in the JDBC Result Set
-	 */
-	public Vector convertResultSet(ResultSet rs) {
-		try {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numberOfColumns = rsmd.getColumnCount();	
-			MMObjectNode node;
-			Vector results=new Vector();
-			
-			while(rs.next()) {
-				node = new MMObjectNode(this);
-				for (int index = 1; index <= numberOfColumns; index++) {
-					String type=rsmd.getColumnTypeName(index);	
-					String fieldname=rsmd.getColumnName(index);
-					node=database.decodeDBnodeField(node,fieldname,rs,index);
-				}
-				results.addElement(node);
-			}	
+    /**
+     * Converts a result set into a Vector containing MMObjectNodes for the
+     * different items in the JDBC Result Set
+     * @javadoc
+     * @sql (uses recordsets)
+     */
+    public Vector convertResultSet(ResultSet rs) {
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numberOfColumns = rsmd.getColumnCount();
+            MMObjectNode node;
+            Vector results=new Vector();
 
-			return (results);
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			log.error(Logging.stackTrace(e));
-		}
-		
-		return (null);		 
-	}
+            while(rs.next()) {
+                node = new MMObjectNode(this);
+                for (int index = 1; index <= numberOfColumns; index++) {
+                    String type=rsmd.getColumnTypeName(index);
+                    String fieldname=rsmd.getColumnName(index);
+                    node=database.decodeDBnodeField(node,fieldname,rs,index);
+                }
+                results.addElement(node);
+            }
 
-	/**
-	 * Converts a result set into a Vector containing MMObjectNodes for the 
-	 * different items in the JDBC Result Set
-	 */
-	public Hashtable convertResultSet(ResultSet rs, String columnName) {
-		try {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numberOfColumns = rsmd.getColumnCount();	
-			MMObjectNode node;
-			Hashtable results=new Hashtable();
-			Object key = null;
-			
-			while(rs.next()) {
-				node = new MMObjectNode(this);
-				for (int index = 1; index <= numberOfColumns; index++) {
-					//String type=rsmd.getColumnTypeName(index);	
-					String fieldname=rsmd.getColumnName(index);
-					node=database.decodeDBnodeField(node,fieldname,rs,index);
-				}
-				results.put(key, node);
-			}	
+            return (results);
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+        }
 
-			return (results);
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			log.error(Logging.stackTrace(e));
-		}
-		
-		return (null);		 
-	}
+        return (null);
+    }
 
-	public SortedVector convertResultSet(ResultSet rs, SortedVector sv) {
-		try {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numberOfColumns = rsmd.getColumnCount();	
-			MMObjectNode node;
-			
+    /**
+     * Converts a result set into a Vector containing MMObjectNodes for the
+     * different items in the JDBC Result Set
+     * @javadoc
+     * @sql (uses recordsets)
+     */
+    public Hashtable convertResultSet(ResultSet rs, String columnName) {
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numberOfColumns = rsmd.getColumnCount();
+            MMObjectNode node;
+            Hashtable results=new Hashtable();
+            Object key = null;
 
-			while(rs.next()) {
-				node = new MMObjectNode(this);
-				for (int index = 1; index <= numberOfColumns; index++) {
-					//String type=rsmd.getColumnTypeName(index);	
-					String fieldname=rsmd.getColumnName(index);
-					node=database.decodeDBnodeField(node,fieldname,rs,index);
-				}
-				sv.addUniqueSorted(node);
-			}	
+            while(rs.next()) {
+                node = new MMObjectNode(this);
+                for (int index = 1; index <= numberOfColumns; index++) {
+                    //String type=rsmd.getColumnTypeName(index);
+                    String fieldname=rsmd.getColumnName(index);
+                    node=database.decodeDBnodeField(node,fieldname,rs,index);
+                }
+                results.put(key, node);
+            }
 
-			return (sv);
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			log.error(Logging.stackTrace(e));
-		}
-		
-		return (null);
-	}
+            return (results);
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+        }
+
+        return (null);
+    }
+
+    /**
+     * @javadoc
+     * @sql (uses recordsets)
+     */
+    public SortedVector convertResultSet(ResultSet rs, SortedVector sv) {
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numberOfColumns = rsmd.getColumnCount();
+            MMObjectNode node;
+
+
+            while(rs.next()) {
+                node = new MMObjectNode(this);
+                for (int index = 1; index <= numberOfColumns; index++) {
+                    //String type=rsmd.getColumnTypeName(index);
+                    String fieldname=rsmd.getColumnName(index);
+                    node=database.decodeDBnodeField(node,fieldname,rs,index);
+                }
+                sv.addUniqueSorted(node);
+            }
+
+            return (sv);
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+        }
+
+        return (null);
+    }
 
 }

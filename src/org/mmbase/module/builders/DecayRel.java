@@ -18,12 +18,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
+ * @deprecated-now does not add functionality
  * @author Hans Speijer
  */
 public class DecayRel extends InsRel {
 
-	public DecayRel() {
-	}
+    public DecayRel() {
+    }
 
 }
 
