@@ -77,10 +77,9 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public boolean init() {
 		database=mmb.getDatabase();
-		//System.out.println("DATABASE="+database);
 
 		if (!created()) {
-			System.out.println("Create "+tableName);
+			debug("init(): Create "+tableName);
 			create();
 		}
 		if (!tableName.equals("object") && mmb.TypeDef!=null) {
@@ -94,7 +93,7 @@ public class MMObjectBuilder extends MMTable {
 				oType=mmb.TypeDef.getIntValue(tableName);
 			}
 		} else {
-			if (!tableName.equals("typedef")) System.out.println(tableName+" -> can't get to typeDef");
+			debug("init(): for tablename("+tableName+") -> can't get to typeDef");
 		}
 		// hack to override the hard  fields by database (bootstrap)
 		// Hashtable tmp=initFields();
@@ -129,8 +128,8 @@ public class MMObjectBuilder extends MMTable {
 		try {
 		return(database.insert(this,owner,node));
 		} catch(Exception e) {
-			System.out.println("MMObjectBuilder -> ERROR INSERT PROBLEM !");
-			System.out.println("Error node="+node);
+			debug("ERROR INSERT PROBLEM !");
+			debug("Error node="+node);
 			e.printStackTrace();
 			return(-1);
 		}
@@ -208,7 +207,7 @@ public class MMObjectBuilder extends MMTable {
 			fieldDefCache.put(new Integer(oType),results);
 			fields=results;
 		} catch (SQLException e) {
-			System.out.println("MMObjectBuilder -> can't load fielddefs yet because table fielddef not found");
+			debug("initFields(): can't load fielddefs yet because table fielddef not found");
 		}
 	}
 
@@ -259,7 +258,7 @@ public class MMObjectBuilder extends MMTable {
 			con.close();
 		
 		} catch (SQLException e) {
-			System.out.println("MMObjectBuilder -> can't load fielddefs yet because table fielddef not found");
+			debug("initAllFields(): can't load fielddefs yet because table fielddef not found");
 		}
 	}
 
@@ -356,18 +355,6 @@ public class MMObjectBuilder extends MMTable {
 		}
 	}
 
-	/*
-	public MMObjectNode getNode(String number) {
-		if (!qlist.contains(number)) {
-			qlist.addElement(number);
-		}
-		System.out.println("QL->"+tableName+" "+qlist.size());
-		MMObjectNode node=realgetNode(number);
-		qlist.removeElement(number);
-		return(node);
-	}
-	*/
-
 	/**
 	* get ObjectNode
 	*/
@@ -376,7 +363,7 @@ public class MMObjectBuilder extends MMTable {
 		// test with counting
 		statCount("getnode");
 		if (number.equals("-1")) {
-			System.out.println("MMObjectBuilder ("+tableName+") nodenuber == -1");
+			debug(" ("+tableName+") nodenuber == -1");
 			return(null);
 		}
 
@@ -421,7 +408,7 @@ public class MMObjectBuilder extends MMTable {
 				con.close();
 			}
 			if (bul==null) {
-				System.out.println("MMOBjectNode got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
+				debug("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
 				return(null);
 			}
 
@@ -431,18 +418,16 @@ public class MMObjectBuilder extends MMTable {
 			con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE number="+number);
-//			System.out.println("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE number="+number);
 			if (rs.next()) {
 				// create a new object and add it to the result vector
 				MMObjectBuilder bu=mmb.getMMObject(bul);
-				if (bu==null) System.out.println("MMObjectNode -> getMMObject did not return builder on : "+bul);
+				if (bu==null) debug("getMMObject did not return builder on : "+bul);
 				node=new MMObjectNode(bu);
 				ResultSetMetaData rd=rs.getMetaData();
 				String fieldname;String fieldtype;
 				for (int i=1;i<=rd.getColumnCount();i++) {
 					fieldname=rd.getColumnName(i);	
 					fieldtype=rd.getColumnTypeName(i);	
-					//System.out.println("fieldname="+fieldname+" fieldtype="+fieldtype);
 					node=database.decodeDBnodeField(node,fieldtype,fieldname,rs,i);
 				}
 				nodeCache.put(new Integer(number),node);
@@ -453,7 +438,7 @@ public class MMObjectBuilder extends MMTable {
 			} else {
 				stmt.close();
 				con.close();
-				System.out.println("MMObjectBuilder -> Node not found "+number);
+				debug("getNode(): Node not found "+number);
 				node=null; // not found
 			}
 
@@ -519,7 +504,7 @@ public class MMObjectBuilder extends MMTable {
 			return(results);
 		} catch (Exception e) {
 			// something went wrong print it to the logs
-			System.out.println("MMObjectBuilder -> ERROR in search "+query);
+			debug("basicSearch(): ERROR in search "+query);
 			try {
 				if (stmt!=null) stmt.close();
 			} catch(Exception g) {}
@@ -782,10 +767,10 @@ public class MMObjectBuilder extends MMTable {
 	* return the database type of the objecttype
 	*/
 	public String getDBType(String fieldName) {
-		if (fields==null) System.out.println("MMObjectBuilder -> fielddefs are null on object : "+tableName);
+		if (fields==null) debug("getDBType(): fielddefs are null on object : "+tableName);
 		FieldDefs node=(FieldDefs)fields.get(fieldName);
 		if (node==null) {
-			System.out.println("PROBLEM Can't find fielddef on : "+fieldName+" builder="+tableName);
+			debug("getDBType(): PROBLEM Can't find fielddef on : "+fieldName+" builder="+tableName);
 			return(null);
 		}
 		return(node.getDBType());
@@ -947,7 +932,7 @@ public class MMObjectBuilder extends MMTable {
 	// called main to prevent override by insrel;
 	public Vector getRelations_main(int src) {
 		InsRel bul=(InsRel)mmb.getMMObject("insrel");
-		if (bul==null) System.out.println("MMObjectBuilder-> InsRel not yet loaded");
+		if (bul==null) debug("getMMObject(): InsRel not yet loaded");
 		return(bul.getRelationsVector(src));
 	}
 
@@ -1052,8 +1037,7 @@ public class MMObjectBuilder extends MMTable {
 		try {
 			isochars=body.getBytes("ISO-8859-1");
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> String contains odd chars");
-			System.out.println(body);
+			debug("setDBText(): String contains odd chars");
 			e.printStackTrace();
 		}
 		try {
@@ -1061,7 +1045,7 @@ public class MMObjectBuilder extends MMTable {
 			stmt.setAsciiStream(i,stream,isochars.length);
 			stream.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : Can't set ascii stream");
+			debug("setDBText(): Can't set ascii stream");
 			e.printStackTrace();
 		}
 	}
@@ -1078,7 +1062,7 @@ public class MMObjectBuilder extends MMTable {
 			stmt.setBinaryStream(i,stream,bytes.length);
 			stream.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : Can't set byte stream");
+			debug("setDBByte(): Can't set byte stream");
 			e.printStackTrace();
 		}
 	}
@@ -1114,7 +1098,7 @@ public class MMObjectBuilder extends MMTable {
 					nodeCache.remove(i);	
 				}
 			} catch (Exception e) {
-				System.out.println("MMObjectBuilder -> Not a number");
+				debug("nodeRemoteChanged(): Not a number");
 			}
 		} else if (ctype.equals("r")) {
 			try {
@@ -1168,7 +1152,7 @@ public class MMObjectBuilder extends MMTable {
 	* called then a local field is changed
 	*/
 	public boolean fieldLocalChanged(String number,String builder,String field,String value) {
-		System.out.println("FLC="+number+" BUL="+builder+" FIELD="+field+" value="+value);
+		debug("FLC="+number+" BUL="+builder+" FIELD="+field+" value="+value);
 		return(true);
 	}
 
@@ -1196,7 +1180,7 @@ public class MMObjectBuilder extends MMTable {
 	*  used to create a default teaser by any builder (will be removed?)
 	*/
 	public MMObjectNode getDefaultTeaser(MMObjectNode node,MMObjectNode tnode) {
-		System.out.println("MMObjectBuilder-> Generate Teaser,Should be overridden");
+		debug("getDefaultTeaser(): Generate Teaser,Should be overridden");
 		return(tnode);
 	}
 	
@@ -1211,7 +1195,7 @@ public class MMObjectBuilder extends MMTable {
 	* getList all for frontend code
 	*/
 	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
-		System.out.println("MMObjectBuilder -> getlist called should be overridden");
+		debug("getList(): getlist called should be overridden");
 		return(null);
 	}
 
@@ -1220,7 +1204,7 @@ public class MMObjectBuilder extends MMTable {
 	* replace all for frontend code
 	*/
 	public String replace(scanpage sp, StringTokenizer tok) {
-		System.out.println("MMObjectBuilder -> replace called should be overridden");
+		debug("replace(): replace called should be overridden");
 		return("");
 	}
 
@@ -1253,9 +1237,9 @@ public class MMObjectBuilder extends MMTable {
 	* convert mmnode2sql still new should replace the old mapper soon
 	*/	
 	public String convertMMNode2SQL(String where) {
-		if (debug) System.out.println("MMObjectBuilder->"+where);
+		if (debug) debug("convertMMNode2SQL(): "+where);
 		String result="WHERE "+database.getMMNodeSearch2SQL(where,this);
-		if (debug) System.out.println("MMObjectBuilder->"+result);
+		if (debug) debug("convertMMNode2SQL(): results : "+result);
 		return(result);
 	}
 
@@ -1418,7 +1402,7 @@ public class MMObjectBuilder extends MMTable {
 		// we need to find out what the DBState is of this field so we know
 		// who to notify of this change
 		int state=getDBState(fieldname);
-		System.out.println("MMObjectBuilder -> Changed field="+fieldname+" dbstate="+state);
+		debug("Changed field="+fieldname+" dbstate="+state);
 
 		// still a large hack need to figure out remote changes
 		if (state==0) {
