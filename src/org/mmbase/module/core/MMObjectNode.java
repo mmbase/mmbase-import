@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.90 2003-01-03 18:56:56 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.91 2003-01-06 13:01:34 kees Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1025,7 +1025,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount(String wantedtype) {
-        int count=0;
         int count = 0;
         MMObjectBuilder type = parent.mmb.getBuilder(wantedtype);
         if (type != null) {
