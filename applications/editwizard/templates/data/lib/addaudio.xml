@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<list fdatapath="relation[object/@type='audioparts']" minoccurs="0" maxoccurs="*" type="audio"
-		defaultdisplaymode="summarize" hidecommand="">
+<list fdatapath="relation[object/@type='audioparts']" minoccurs="0" maxoccurs="*" type="audio" hidecommand="">
 	<title>Related audio</title>
 	<description>These are the audio fragments that are related to this news item.</description>
 
@@ -8,15 +7,12 @@
 		<prompt>Search and relate audio</prompt>
 	</command>
 
-	<item displaymode="summarize" displaytype="audio">
+	<item displaytype="audio">
 		<description></description>
 		<field name="name" fdatapath="object/field[@name='title']" ftype="data" />
 	</item>
 
-	<item displaymode="add">
-		<action type="create">
-			<relation role="related" destinationtype="audioparts" >
-			</relation>
-		</action>
-	</item>
+	<action type="add">
+		<relation role="related" destinationtype="audioparts" />
+	</action>
 </list>

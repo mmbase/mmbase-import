@@ -1,21 +1,14 @@
 <?xml version="1.0"?>
-<list fdatapath="relation[object/@type='mmevents']" minoccurs="0" maxoccurs="*" defaultdisplaymode="summarize" hidecommand="">
+<list fdatapath="relation[object/@type='mmevents']" minoccurs="0" maxoccurs="*" hidecommand="">
 	<title>Related mmevents</title>
-	<description></description>
 
-<!--	<command name="search" nodepath="mmevents" fields="start,stop">
-		<prompt>Search and relate video</prompt>
-	</command>-->
-
-	<item displaymode="summarize">
-		<description></description>
+	<item>
 		<field name="name" fdatapath="object/field[@name='start']" ftype="datetime" />
 	</item>
 
-	<item displaymode="add">
-		<action type="create">
-			<relation role="related" destinationtype="mmevents" >
-			</relation>
-		</action>
-	</item>
+	<action type="insert">
+		<relation role="related" destinationtype="mmevents" >
+			<object type="mmevents" />
+		</relation>
+	</action>
 </list>
