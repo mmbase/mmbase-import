@@ -585,12 +585,11 @@ Change directory to ${build.dir}/orion and run:
   <target name="web" description="Make the things which must appear web-servers html directory"
          depends="init.compile">
     <mkdir dir="${web.dir}"/>
-
-    <echo message="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
-          fork="yes" >
+          fork="yes"
+          failonerror="yes">
       <arg value="-Q"/>
       <arg value="-XML"/>
       <arg value="-IN"/>
@@ -600,11 +599,11 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
-
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
-          fork="yes">
+          fork="yes"
+          failonerror="yes">
       <arg value="-Q"/>
       <arg value="-IN"/>
       <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
@@ -634,16 +633,10 @@ Change directory to ${build.dir}/orion and run:
       </fileset>
     </copy>
     <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
-             token="!ENTITY logdir   &quot;/tmp/&quot; "
-             value="!ENTITY logdir   &quot;${build.dir}/tomcat/logs/&quot; " />
-    <!--
-    <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
-             token="DOCTYPE log4j:configuration"
-             value="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"/>
-    -->
+             token="!ENTITY logdir   &quot;/tmp/&quot;"
+             value="!ENTITY logdir   &quot;../logs/&quot;"/>
     <!-- Prevent multiple replaces by multiple builds by allways copying the
          file. -->
-
     <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
           todir="${build.dir}/tomcat/bin"
           overwrite="yes"/>
@@ -677,17 +670,15 @@ Change directory to ${build.dir}/orion and run:
     </copy>
     <copy file="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml.tomcat"
           tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"/>
-
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/mmbase-taglib.tld" />
     <copy file="${web.dir}/mmbase-taglib.html"
           tofile="${build.dir}/tomcat/webapps/ROOT/mmdocs/mmbase-taglib.html"/>
-    
   </target>
 
 
   <!-- =================================================================== -->
-  <!-- Clean the Tomcat installation                                      -->
+  <!-- Clean the Tomcat installation                                       -->
   <!-- =================================================================== -->
   <target name="clean.tomcat" description="Clean the Tomcat installation"
           depends="clean.compile">
@@ -762,7 +753,6 @@ Change directory to ${build.dir}/orion and run:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <echo message="log4j.dtd:  ${log4j.dtd}" />
     <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
              token="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"
              value="DOCTYPE log4j:configuration SYSTEM &quot;${log4j.dtd}&quot;"/>
