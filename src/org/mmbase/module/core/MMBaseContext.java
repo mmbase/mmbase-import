@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.11 2001-06-26 07:52:13 pierre Exp $
+$Id: MMBaseContext.java,v 1.12 2001-06-26 08:39:19 eduard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2001/06/26 07:52:13  pierre
+pierre: removed (commented out) recursive call to getLogging() in getOutputFile(), which caused MMBase to crash on startup.
+I suspect this is the correct way to fix this bug, but someone else might need to verify this.
+
 Revision 1.10  2001/06/23 18:07:27  daniel
 oops forgot something
 
@@ -62,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.11 $ $Date: 2001-06-26 07:52:13 $
+ * @$Revision: 1.12 $ $Date: 2001-06-26 08:39:19 $
  */
 public class MMBaseContext {
 
@@ -91,7 +95,12 @@ public class MMBaseContext {
 	public static String getOutputFile() {
 		if (outputfile==null) {
         		outputfile = System.getProperty("mmbase.outputfile");
-//			setLogging();
+			if(outputfile == null) {
+			    // when not specified, 
+			    // put a value in it to prevent a loop on the null value between getOutPutFile and setLogging()
+			    outputfile = "mmbase.log";
+			}
+			setLogging();
 		}
 		return(outputfile);
 	}
