@@ -4,7 +4,7 @@ An Introduction to CVS
 Short Short Version:
 
 Local access: export CVSROOT=/usr/local/cvs 
-Remote access: export CVS_RSH=ssh ; export CVSROOT=:ext:you@host:/usr/local/cvs' ; cvs login (after that cvs logout)
+Remote access: export CVS_RSH=ssh ; export CVSROOT=:ext:you@host:/usr/local/cvs' 
 Getting the source the 1st time: cvs checkout myproj
 Commiting changes: cvs commit -m 'I did this thing'
 Getting new versions of files: cvs update -P -d
@@ -22,9 +22,9 @@ For that you have to set CVSROOT to ':ext:<username>@<host>:/usr/local/cvs'
 and set CVS_RSH to either 'ssh' or 'rsh'.
 The 'pserver' method uses an inetd server running on the remote host.
 For that you set CVSROOOT to ':pserver:<username>@<host>:usr/local/cvs'
-When you have set the environment variables you use 'cvs login' to
+When you use the 'pserver' method you use 'cvs login' to
 make yourself known to the system (like a login). After that all cvs commands work
-as usual (excpet the resulting delays from the network)
+as usual (expect the resulting delays from the network)
 Note this assumes unix systems as what your development environment.
 After you are done 'cvs logout' logs you out.
 
