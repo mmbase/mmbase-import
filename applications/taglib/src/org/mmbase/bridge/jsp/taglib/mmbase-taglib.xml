@@ -3706,7 +3706,13 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The time attribute specifies the time to be used, this can be done in multiple ways. 1) Specify the time in seconds from EPOC (this is the way how MMBase handles times). 2) By using keywords, such as: yesterday, tomorrow, today, now. 3) By specifying the time in a human readable way, such as: Friday 10 January 2002. If the 'inputformat' attribute is specified, then the time will be parsed according to it.
+        The time attribute specifies the time to be used, this can be
+        done in multiple ways, in order of preference: 1) If the
+        'inputformat' attribute is used, this is used to parse the
+        content of the 'time' attribute, one can define 'human
+        readable format' like this. 2) Specify the time in seconds
+        from EPOC (this is the way how MMBase handles times). 3) By
+        using keywords, such as: yesterday, tomorrow, today, now.
       </info>
     </attribute>
     <attribute>
@@ -3714,9 +3720,9 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The inputformat attribute should only be used when the time
-        attribute contains a human readable time. The comprehensive
-        syntax for this attribute can be found at
+        The inputformat attribute cat be used to specify how the time
+        attribute should be parsed. The comprehensive syntax for this
+        attribute can be found at
         http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html. Notice
         that if times have the following form they will be parsed
         automatically, and this attribute can be omitted: yyyy/mm/dd
