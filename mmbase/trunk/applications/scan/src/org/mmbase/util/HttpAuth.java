@@ -35,6 +35,10 @@ public class HttpAuth {
 	public HttpAuth() {
 	}
 
+	static {
+		p_base64=readPasswordFromDisk();
+	}
+
 	private static Hashtable readPasswordFromDisk() {
 		Hashtable results=new Hashtable();
 
