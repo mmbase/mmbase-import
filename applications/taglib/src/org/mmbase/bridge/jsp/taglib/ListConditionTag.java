@@ -22,12 +22,12 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.16 2003-06-06 10:03:08 pierre Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.17 2003-08-27 21:33:33 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
 
-    private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName());
 
     private Attribute  value        = Attribute.NULL;
     private Attribute  parentListId = Attribute.NULL;

@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.15 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.16 2003-08-27 21:33:42 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
 
-    private static Logger log = Logging.getLoggerInstance(StringHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
     
     /**
      * Constructor for StringHandler.

@@ -21,13 +21,13 @@ import javax.xml.transform.Source;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.9 2003-08-11 15:27:24 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.10 2003-08-27 21:33:38 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
 
 
-    private static Logger log = Logging.getLoggerInstance(XsltTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(XsltTag.class.getName());
 
     private Attribute ext = Attribute.NULL;
     private FormatterTag formatter;

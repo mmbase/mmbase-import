@@ -26,11 +26,11 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.6 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.7 2003-08-27 21:33:42 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
-    private static Logger log = Logging.getLoggerInstance(ByteHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(ByteHandler.class);
     /**
      * Constructor for ByteHandler.
      * @param context

@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.18 2003-08-11 15:27:27 michiel Exp $ 
+ * @version $Id: TransactionTag.java,v 1.19 2003-08-27 21:33:40 michiel Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
-    private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;
     private Attribute commit = Attribute.NULL;
     private Attribute name   = Attribute.NULL;

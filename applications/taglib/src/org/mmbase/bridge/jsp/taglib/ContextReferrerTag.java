@@ -32,17 +32,17 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.44 2003-08-11 15:27:15 michiel Exp $ 
+ * @version $Id: ContextReferrerTag.java,v 1.45 2003-08-27 21:33:30 michiel Exp $ 
  * @see ContextTag
  */
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
     
-    private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
 
     public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
-    private static Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
+    private static final Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
 
     protected ContextTag pageContextTag = null;
 

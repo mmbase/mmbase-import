@@ -26,11 +26,11 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.5 2003-08-11 15:26:35 michiel Exp $
+ * @version $Id: FunctionTag.java,v 1.6 2003-08-27 21:33:32 michiel Exp $
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(FunctionTag.class);
+    private static final Logger log = Logging.getLoggerInstance(FunctionTag.class);
 
 
     public int doStartTag() throws JspTagException {     

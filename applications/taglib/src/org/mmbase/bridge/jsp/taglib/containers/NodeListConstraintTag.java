@@ -24,13 +24,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.9 2003-08-18 14:13:46 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.10 2003-08-27 21:33:38 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
     private static final int BETWEEN = -1; // not FieldCompareConstraint
 
-    private static Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
 

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.25 2003-08-11 15:27:14 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.26 2003-08-27 21:33:29 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -41,7 +41,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     // a node provider is a nodereferrer as well...
     // this is especially useful for some extended classes (like 'relatednodes').
     
-    private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class);
     
     private   Node   node;        
     private   String jspvar = null;

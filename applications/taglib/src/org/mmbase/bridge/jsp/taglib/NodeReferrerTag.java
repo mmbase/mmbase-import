@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.13 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.14 2003-08-27 21:33:35 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
 
-    private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
+    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
 
     private Attribute parentNodeId = Attribute.NULL;
 

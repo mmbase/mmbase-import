@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logging;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.4 2003-08-12 15:02:59 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.5 2003-08-27 21:33:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
-    private static Logger log = Logging.getLoggerInstance(ContextCollector.class);
+    private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
     private ContextContainer contextContainer;
     private Map              collector;
 

@@ -27,13 +27,13 @@ import org.mmbase.util.logging.Logging;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.7 2003-08-11 15:27:20 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.8 2003-08-27 21:33:37 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { // need to extend NodeRefferer becasue of AliasListTag, no MI in java.
 
-    private static Logger log = Logging.getLoggerInstance(StringListTag.class);
+    private static final Logger log = Logging.getLoggerInstance(StringListTag.class);
 
     protected  List    returnList;
     protected Iterator iterator;

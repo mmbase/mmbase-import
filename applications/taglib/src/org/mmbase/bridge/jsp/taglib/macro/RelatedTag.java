@@ -27,10 +27,10 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.22 2003-08-18 12:44:07 michiel Exp $
+ * @version $Id: RelatedTag.java,v 1.23 2003-08-27 21:33:40 michiel Exp $
  */
 public class RelatedTag extends ListTag {
-    private static Logger log = Logging.getLoggerInstance(RelatedTag.class);
+    private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
 
     protected Node getBaseNode() throws JspTagException {
         if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {

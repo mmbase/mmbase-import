@@ -23,11 +23,11 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.7 2003-08-15 11:17:43 michiel Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.8 2003-08-27 21:33:34 michiel Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(ListRelationsTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ListRelationsTag.class);
 
     private Attribute type = Attribute.NULL;
     private Attribute role = Attribute.NULL;

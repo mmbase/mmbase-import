@@ -43,13 +43,13 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.60 2003-08-11 15:27:15 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.61 2003-08-27 21:33:31 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
 
 public class ContextTag extends ContextReferrerTag implements ContextProvider {
-    private static Logger log = Logging.getLoggerInstance(ContextTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ContextTag.class);
 
     static String CONTEXTTAG_KEY = "__context";
     public static String DEFAULTENCODING_KEY = "__defaultencoding";

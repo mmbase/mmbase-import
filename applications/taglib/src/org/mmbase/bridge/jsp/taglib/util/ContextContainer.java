@@ -24,11 +24,11 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.12 2003-08-12 15:02:59 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.13 2003-08-27 21:33:42 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
-    private static Logger log = Logging.getLoggerInstance(ContextContainer.class);
+    private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
     public static final int LOCATION_PAGE           = 0;

@@ -24,11 +24,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.2 2003-08-15 19:35:46 michiel Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.3 2003-08-27 21:33:29 michiel Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(BooleanFunctionTag.class);
+    private static final Logger log = Logging.getLoggerInstance(BooleanFunctionTag.class);
 
     protected Attribute  inverse      = Attribute.NULL;
 

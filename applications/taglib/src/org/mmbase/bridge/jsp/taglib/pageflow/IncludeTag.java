@@ -32,13 +32,13 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.37 2003-06-06 10:03:25 pierre Exp $
+ * @version $Id: IncludeTag.java,v 1.38 2003-08-27 21:33:40 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
 
-    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
-    private static Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
+    private static final Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
+    private static final Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
 
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;
@@ -438,7 +438,7 @@ class ResponseWrapper extends HttpServletResponseWrapper {
 
     private static String DEFAULT_CHARSET = "utf-8";
     private static String DEFAULT_CONTENTTYPE = "text/html;charset=" + DEFAULT_CHARSET;
-    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(IncludeTag.class.getName());
 
     private CharArrayWriter caw;
     private PrintWriter writer;

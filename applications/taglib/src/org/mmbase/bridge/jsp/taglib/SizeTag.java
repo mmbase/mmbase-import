@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.16 2003-08-11 15:27:20 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.17 2003-08-27 21:33:36 michiel Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer, NodeListContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(SizeTag.class);
+    private static final Logger log = Logging.getLoggerInstance(SizeTag.class);
 
     private Attribute container = Attribute.NULL;
 

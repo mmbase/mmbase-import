@@ -20,11 +20,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.23 2003-08-11 15:27:26 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.24 2003-08-27 21:33:40 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
-    private static Logger log = Logging.getLoggerInstance(SetFieldTag.class);
+    private static final Logger log = Logging.getLoggerInstance(SetFieldTag.class);
 
     protected String convert (String s) throws JspTagException {
         return s;
