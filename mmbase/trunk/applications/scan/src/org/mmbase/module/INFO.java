@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.11 $ $Date: 2000-05-18 16:04:38 $
+ * @$Revision: 1.12 $ $Date: 2000-05-19 16:01:17 $
  */
 public class INFO extends ProcessorModule {
 
@@ -154,12 +154,29 @@ public class INFO extends ProcessorModule {
 			return("Illegal browser command");	
 		} else {
 			String tmp=sp.req.getHeader("User-Agent");
-			if (tmp.indexOf("Windows 95")!=-1 || tmp.indexOf("Win95")!=-1) {
+			tmp.toLowerCase();
+			if (tmp.indexOf("windows 95")!=-1 || tmp.indexOf("win95")!=-1) {
 				return("WIN95");
-			} else if (tmp.indexOf("Mac")!=-1) {
+			} else if (tmp.indexOf("win98")!=-1) {
+				return("Windows 98");
+			} else if (tmp.indexOf("winnt")!=-1 || tmp.indexOf("windows nt")!=-1) {
+				return("Windows NT");
+			} else if (tmp.indexOf("win")!=-1) { 
+				return("Windows");
+			} else if (tmp.indexOf("mac")!=-1) {
 				return("MAC");
+			} else if (tmp.indexOf("sun")!=-1) {
+				return("Unix");
+			} else if (tmp.indexOf("irix")!=-1) {
+				return("Irix");
+			} else if (tmp.indexOf("freebsd")!=-1) {
+				return("FreeBSD");
+			} else if (tmp.indexOf("hp-ux")!=-1) {
+				return("HP Unix");
+			} else if (tmp.indexOf("aix")!=-1) {
+				return("AIX");
 			}
-			return("UNIX");
+			return("Unknown OS");
 		}
 	}
 
