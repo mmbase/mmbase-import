@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content expires="0" type="text/html">
+%><%@ page errorPage="error.jsp" %><mm:content expires="0" type="text/html">
 
 <mm:cloud>
 
