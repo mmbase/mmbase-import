@@ -248,7 +248,6 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
-    <property name="log4j.dtd" value="jar:file:${build.dir}/mmbase/lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd" />
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${postgresql.jar}" todir="${build.dir}/mmbase/lib"/>
   </target>
@@ -888,12 +887,17 @@ Change directory to ${build.dir}/orion and run:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
+    
+    <!-- the log4J dtd  location -->
+    <property name="log4j.dtd" value="jar:file:${build.dir}/orion/lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd" />            
     <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
              token="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"
              value="DOCTYPE log4j:configuration SYSTEM &quot;${log4j.dtd}&quot;"/>
+	     
     <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
              token="!ENTITY logdir   &quot;/tmp/&quot;"
              value="!ENTITY logdir   &quot;${build.dir}/orion/log/&quot;" />
+	     
     <copy file="${mmbase.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/orion/lib"/>
