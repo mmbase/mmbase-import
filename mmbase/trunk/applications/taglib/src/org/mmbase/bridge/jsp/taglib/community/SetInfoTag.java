@@ -53,7 +53,7 @@ public class SetInfoTag extends NodeReferrerTag {
     public int doAfterBody() throws JspTagException {
         String value=bodyContent.getString();
         Module community=getCloudContext().getModule("communityprc");
-        community.getInfo("MESSAGE-"+node.getNumber()+"-SETINFOFIELD-"+value,pageContext.getRequest(),pageContext.getResponse());
+        community.getInfo("MESSAGE-"+node.getNumber()+"-SETINFOFIELD-"+key+"-"+value,pageContext.getRequest(),pageContext.getResponse());
         return SKIP_BODY;
     }
 }
