@@ -46,9 +46,9 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         
         // get the parent ListRelationsTag
         ListRelationsTag lr = (ListRelationsTag) findParentTag("org.mmbase.bridge.jsp.taglib.ListRelationsTag", listRelationsId);
-        Node otherNode    = lr.getRelatedtoNode();
+        Node otherNode    = lr.getRelatedfromNode();
         Node relationNode = lr.getNodeVar();
-        
+
         int number;
         // now look what node would have been.
         if (otherNode.getNumber() == relationNode.getIntValue("dnumber")) {
