@@ -19,7 +19,7 @@ import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.QueryConvertor;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.NodeQuery; //jikes!
+
 
 /**
  * The builder for {@link ClusterNode clusternodes}.
@@ -41,7 +41,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.54 2003-12-01 14:42:40 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.55 2003-12-17 20:44:25 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -538,15 +538,9 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
-
-        if (query instanceof NodeQuery) {
-            NodeQuery nq = (NodeQuery) query;
-            List results = mmb.getDatabase().getNodes(nq, this);
-            mmb.getBuilder(nq.getNodeManager().getName()).processSearchResults(results);
-            return results;
-        } else {
-            return mmb.getDatabase().getNodes(query, this);
-        }
+        
+        return mmb.getDatabase().getNodes(query, this);
+            
     }
 
     /**
