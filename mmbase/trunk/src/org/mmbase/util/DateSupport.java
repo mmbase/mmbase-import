@@ -26,7 +26,8 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version 21 Mar 1997, 14 Sept 2000
+ * @version $Id: DateSupport.java,v 1.8 2002-03-29 22:55:43 michiel Exp $
+ * @deprecated java.util is powerfull enough. Must used functions from Date are deprecated.
  */
 public class DateSupport {
 
@@ -509,7 +510,7 @@ public class DateSupport {
      * and returns the number of the day in the week as an integer
      *
      * @param val Number of seconds from 1-Jan-1970 00:00:00
-     * @return Integer containing the number of the day in the week (1 to 7)
+     * @return Integer containing the number of the day in the week (0 to 6)
      * @see DateSupport#getTime
      * @see DateSupport#getTimeSec
      * @see DateSupport#getTimeSecLen
