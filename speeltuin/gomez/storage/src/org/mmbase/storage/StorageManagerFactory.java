@@ -14,6 +14,8 @@ import java.util.*;
 import org.xml.sax.InputSource;
 
 import org.mmbase.storage.search.SearchQueryHandler;
+import org.mmbase.storage.search.implementation.database.BasicQueryHandler;
+import org.mmbase.storage.search.implementation.database.SqlHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.16 2003-08-05 11:12:19 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.17 2003-08-18 14:42:45 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -188,22 +190,6 @@ public abstract class StorageManagerFactory {
             throw new StorageConfigurationException("No StorageManager class specified, and no default available.");
         }
         
-        // get the queryhandler class
-        configuredClass = reader.getSearchQueryHandlerClass();
-        if (configuredClass != null) {
-            queryHandlerClass = configuredClass;
-        } else if (queryHandlerClass == null) {
-            throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
-        }
-        // intantiate handler
-        try {
-            queryHandler = (SearchQueryHandler)queryHandlerClass.newInstance();
-        } catch (IllegalAccessException iae) {
-            throw new StorageConfigurationException(iae);
-        } catch (InstantiationException ie) {
-            throw new StorageConfigurationException(ie);
-        }
-
         // get attributes
         setAttributes(reader.getAttributes());
         // get disallowed fields
@@ -211,6 +197,45 @@ public abstract class StorageManagerFactory {
         // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
         Collections.sort(typeMappings);
+        
+        // get the queryhandler class
+        // has to be done last, as we have to passing the disallowedfields map (doh!)
+        configuredClass = reader.getSearchQueryHandlerClass();
+        if (configuredClass != null) {
+            queryHandlerClass = configuredClass;
+        } else if (queryHandlerClass == null) {
+            throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
+        }
+        // instantiate handler
+        try {
+            java.lang.reflect.Constructor constructor = queryHandlerClass.getConstructor(new Class[] {Map.class});
+            SqlHandler sqlHandler = (SqlHandler)  constructor.newInstance( new Object[] { disallowedFields } );
+            log.info("Instantiated SqlHandler of type " + queryHandlerClass.getName());
+
+            // Chained handlers, to be implemented later.
+            /*
+            Iterator iHandlers = reader.getChainedHandlerClasses().iterator();
+            while (iHandlers.hasNext()) {
+                Class handlerClass = (Class) iHandlers.next();
+                constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
+                queryHandler = (SearchQueryHandler) constr2.newInstance(new Object[] {queryHandler});
+                log.info("Instantiated chained SearchQueryHandler of type " 
+                    + handlerClass.getName());
+            }
+            */
+            // initialize query handler.
+            queryHandler = new BasicQueryHandler(sqlHandler);
+
+        } catch (NoSuchMethodException nsme) {
+            throw new StorageConfigurationException(nsme);
+        } catch (java.lang.reflect.InvocationTargetException ite) {
+            throw new StorageConfigurationException(ite);
+        } catch (IllegalAccessException iae) {
+            throw new StorageConfigurationException(iae);
+        } catch (InstantiationException ie) {
+            throw new StorageConfigurationException(ie);
+        }
+
     }
 
     /**

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.3 2003-07-31 11:49:36 pierre Exp $
+ * @version $Id: TypeMapping.java,v 1.4 2003-08-18 14:42:47 pierre Exp $
  */
 public class TypeMapping implements Comparable {
 
@@ -95,14 +95,18 @@ public class TypeMapping implements Comparable {
     public boolean equals(Object o) {
         return o instanceof TypeMapping &&
                name.equals(((TypeMapping)o).name) &&
-               (( minSize >= ((TypeMapping)o).minSize &&
-                  (maxSize <= ((TypeMapping)o).maxSize || (((TypeMapping)o).maxSize == -1)) ) ||
-                ( ((TypeMapping)o).minSize >= minSize &&
-                  (((TypeMapping)o).maxSize <= maxSize || (maxSize == -1)) ));
+               (( (minSize <= ((TypeMapping)o).minSize || (((TypeMapping)o).minSize <= 0)) && 
+                  (maxSize <= ((TypeMapping)o).maxSize || (((TypeMapping)o).maxSize <= 0)) ) ||
+                ( (((TypeMapping)o).minSize >= minSize || (minSize <= 0)) &&
+                  (((TypeMapping)o).maxSize <= maxSize || (maxSize <= 0)) ));
     }
     
     public String getType(int size) {
         return MessageFormat.format(type,new Object[]{ new Integer(size) });
+    }
+    
+    public String toString() {
+        return name+" ("+minSize+","+maxSize+")+>"+type;
     }
 
 }
