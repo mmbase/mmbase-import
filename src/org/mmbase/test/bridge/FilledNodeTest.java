@@ -55,21 +55,21 @@ public class FilledNodeTest extends NodeTest {
             Object object = node.getValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
                 byte[] bytes = (byte[])object;
-                assert("Hello world!".equals(new String(bytes)));
+                assertTrue("Hello world!".equals(new String(bytes)));
             } else if (fieldTypes[i].equals("double")) {
-                assert(new Double(Double.MAX_VALUE).compareTo((Double)object)
+                assertTrue(new Double(Double.MAX_VALUE).compareTo((Double)object)
                        == 0);
             } else if (fieldTypes[i].equals("float")) {
-                assert(new Float(Float.MAX_VALUE).compareTo((Float)object)
+                assertTrue(new Float(Float.MAX_VALUE).compareTo((Float)object)
                        == 0);
             } else if (fieldTypes[i].equals("int")) {
-                assert(new Integer(Integer.MAX_VALUE).compareTo((Integer)object)
+                assertTrue(new Integer(Integer.MAX_VALUE).compareTo((Integer)object)
                        == 0);
             } else if (fieldTypes[i].equals("long")) {
-                assert(new Long(Long.MAX_VALUE).compareTo((Long)object)
+                assertTrue(new Long(Long.MAX_VALUE).compareTo((Long)object)
                        == 0);
             } else if (fieldTypes[i].equals("string")) {
-                assert("Bridge testing!".equals((String)object));
+                assertTrue("Bridge testing!".equals((String)object));
             } else {
                 fail();
             }
@@ -82,18 +82,18 @@ public class FilledNodeTest extends NodeTest {
             if (fieldTypes[i].equals("byte")) {
                 byte[] check = {72,101,108,108,111,32,119,111,114,108,100,33};
                 for (int j = 0; j < bytes.length; j++) {
-                    assert(bytes[j] == check[j]);
+                    assertTrue(bytes[j] == check[j]);
                 }
             } else if (fieldTypes[i].equals("double")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("float")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("int")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("long")) {
-                assert(bytes.length == 0);
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("string")) {
-                assert("Bridge testing!".equals(new String(bytes)));
+                assertTrue("Bridge testing!".equals(new String(bytes)));
             } else {
                 fail();
             }
@@ -104,17 +104,17 @@ public class FilledNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             double d = node.getDoubleValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                assert(d == -1);
+                assertTrue(d == -1);
             } else if (fieldTypes[i].equals("double")) {
-                assert(d == Double.MAX_VALUE);
+                assertTrue(d == Double.MAX_VALUE);
             } else if (fieldTypes[i].equals("float")) {
-                assert(d == Float.MAX_VALUE);
+                assertTrue(d == Float.MAX_VALUE);
             } else if (fieldTypes[i].equals("int")) {
-                assert(d == Integer.MAX_VALUE);
+                assertTrue(d == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("long")) {
-                assert(d == Long.MAX_VALUE);
+                assertTrue(d == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
-                assert(d == -1);
+                assertTrue(d == -1);
             } else {
                 fail();
             }
@@ -125,17 +125,17 @@ public class FilledNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             float f = node.getFloatValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                assert(f == -1);
+                assertTrue(f == -1);
             } else if (fieldTypes[i].equals("double")) {
-                assert("Infinity".equals(String.valueOf(f)));
+                assertTrue("Infinity".equals(String.valueOf(f)));
             } else if (fieldTypes[i].equals("float")) {
-                assert(f == Float.MAX_VALUE);
+                assertTrue(f == Float.MAX_VALUE);
             } else if (fieldTypes[i].equals("int")) {
-                assert(f == Integer.MAX_VALUE);
+                assertTrue(f == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("long")) {
-                assert(f == Long.MAX_VALUE);
+                assertTrue(f == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
-                assert(f == -1);
+                assertTrue(f == -1);
             } else {
                 fail();
             }
@@ -146,17 +146,17 @@ public class FilledNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             int integer = node.getIntValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                assert(integer == -1);
+                assertTrue(integer == -1);
             } else if (fieldTypes[i].equals("double")) {
-                assert(integer == Integer.MAX_VALUE);
+                assertTrue(integer == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("float")) {
-                assert(integer == Integer.MAX_VALUE);
+                assertTrue(integer == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("int")) {
-                assert(integer == Integer.MAX_VALUE);
+                assertTrue(integer == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("long")) {
-                assert(integer == new Long(Long.MAX_VALUE).intValue());
+                assertTrue(integer == new Long(Long.MAX_VALUE).intValue());
             } else if (fieldTypes[i].equals("string")) {
-                assert(integer == -1);
+                assertTrue(integer == -1);
             } else {
                 fail();
             }
@@ -167,17 +167,17 @@ public class FilledNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             long l = node.getLongValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                assert(l == -1);
+                assertTrue(l == -1);
             } else if (fieldTypes[i].equals("double")) {
-                assert(l == Long.MAX_VALUE);
+                assertTrue(l == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("float")) {
-                assert(l == Long.MAX_VALUE);
+                assertTrue(l == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("int")) {
-                assert(l == Integer.MAX_VALUE);
+                assertTrue(l == Integer.MAX_VALUE);
             } else if (fieldTypes[i].equals("long")) {
-                assert(l == Long.MAX_VALUE);
+                assertTrue(l == Long.MAX_VALUE);
             } else if (fieldTypes[i].equals("string")) {
-                assert(l == -1);
+                assertTrue(l == -1);
             } else {
                 fail();
             }
@@ -188,17 +188,17 @@ public class FilledNodeTest extends NodeTest {
         for (int i = 0; i < fieldTypes.length; i++) {
             String string = node.getStringValue(fieldTypes[i] + "field");
             if (fieldTypes[i].equals("byte")) {
-                assert("Hello world!".equals(string));
+                assertTrue("Hello world!".equals(string));
             } else if (fieldTypes[i].equals("double")) {
-                assert(String.valueOf(Double.MAX_VALUE).equals(string));
+                assertTrue(String.valueOf(Double.MAX_VALUE).equals(string));
             } else if (fieldTypes[i].equals("float")) {
-                assert(String.valueOf(Float.MAX_VALUE).equals(string));
+                assertTrue(String.valueOf(Float.MAX_VALUE).equals(string));
             } else if (fieldTypes[i].equals("int")) {
-                assert(String.valueOf(Integer.MAX_VALUE).equals(string));
+                assertTrue(String.valueOf(Integer.MAX_VALUE).equals(string));
             } else if (fieldTypes[i].equals("long")) {
-                assert(String.valueOf(Long.MAX_VALUE).equals(string));
+                assertTrue(String.valueOf(Long.MAX_VALUE).equals(string));
             } else if (fieldTypes[i].equals("string")) {
-                assert("Bridge testing!".equals(string));
+                assertTrue("Bridge testing!".equals(string));
             } else {
                 fail();
             }
