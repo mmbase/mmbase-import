@@ -87,7 +87,7 @@ public class MultiPool
 				con=(MultiConnection)e.nextElement();
 				diff=nowTime-con.getStartTime();
 				if (diff>5) {
-					 debug("MultiPool -> Checking a busy connection "+con);
+					 if (debug) debug("MultiPool -> Checking a busy connection "+con);
 				}
 				if (diff<30) {
 					// below 30 we still wait
