@@ -76,7 +76,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (where == null) { // empty list, so use that one.
                 nodes = initialnodes;
             } else {
-                where = "number in (" + where + ")";
+                where = "[number] in (" + where + ")";
                 if (constraints != null) where= "(" + constraints + ") AND " + where;
                 nodes = manager.getList(where, orderby, directions);
             }
