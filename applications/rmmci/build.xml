@@ -151,13 +151,14 @@ Build-compiler: ${build.compiler}
     <jar jarfile="${project.jar.dir}/rmmci.jar" manifest="build/rmmcitmp/manifest.mf" >
        <fileset dir="build/classes">
         <include name="org/mmbase/bridge/remote/*"/>
-        <include name="org/mmbase/bridge/remote/rmi/*Stub.class"/>
+        <include name="org/mmbase/bridge/remote/rmi/*"/>
         <include name="org/mmbase/bridge/remote/util/*"/>
         <include name="org/mmbase/bridge/remote/implementation/*"/>
        </fileset>
        <fileset dir="build/rmmcitmp">
         <include name="org/mmbase/bridge/*"/>
-        <include name="org/mmbase/storage/search/SearchQuery.class"/>
+        <include name="org/mmbase/storage/search/*"/>
+        <include name="org/mmbase/util/logging/**"/>
         <include name="org/w3c/dom/Document.class"/>
         <include name="org/w3c/dom/Node.class"/>
         <include name="org/w3c/dom/Element.class"/>
