@@ -295,7 +295,33 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 show += "\" />";
                 break;
             }
-        case Field.TYPE_NODE: // maybe add more options?
+        case Field.TYPE_NODE:
+            // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
+            if(getCloud().getNodeManagers().contains(field.getGUIType())) {
+                // yippee! the gui was the same a an builder!
+                show = "<select name=\"" + prefix(field.getName()) + "\">\n";                
+                // list all our nodes of the specified builder here...
+                int value = 0;
+                if (node != null) value = node.getIntValue(field.getName());
+                org.mmbase.bridge.NodeIterator nodes = getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();                
+                while(nodes.hasNext()) {
+                    org.mmbase.bridge.Node tmp = nodes.nextNode();
+                    // we have a match on the number!
+                    show += "  <option ";
+                    if(tmp.getNumber() == value) {
+                        // this is the selected one!
+                        show += "selected=\"selected\"";
+                    }
+                    show += "value=\""+tmp.getNumber()+"\">";
+                    show += Encode.encode("ESCAPE_XML", tmp.getStringValue("gui()"));
+                    show += "</option>\n";
+                }
+                show += "</select>";
+                if (search) {
+                    show += "<input type=\"checkbox\" name=\""+ prefix(field.getName() + "_search") + "\" />\n";
+                }
+                break;
+            }            
         case Field.TYPE_INTEGER:
             if (field.getGUIType().equals("types")) {
                 show = "<select name=\"" + prefix(field.getName()) + "\">\n";
@@ -603,6 +629,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             log.debug("normal integer type, falling through");
         case Field.TYPE_NODE:
+            if (getCloud().getNodeManagers().contains(field.getGUIType())) {
+                String id = prefix(fieldName + "_search");
+                if (getContextTag().findAndRegister(id, id) == null) {
+                    show = null;
+                    break;
+                }
+            }        
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG: {
