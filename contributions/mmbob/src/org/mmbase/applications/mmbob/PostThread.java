@@ -243,13 +243,9 @@ public class PostThread {
 		if (p!=null) {
 			pnode.setIntValue("posternumber",p.getId());
 		}
-	       //start and end tag must be added, this is not the correct place to do this
-               //this must be done in somewhere in the bridge (fieldtypes?)
-		if (body.indexOf("<")!=-1) {
-			pnode.setStringValue("body","<body>"+body+"</body>");
-		} else {
-			pnode.setStringValue("body",body);
-		}
+
+		pnode.setStringValue("body",body);
+
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();
                 RelationManager rm=ForumManager.getCloud().getRelationManager("postthreads","postings","related");
