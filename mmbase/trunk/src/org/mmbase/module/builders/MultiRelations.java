@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.22 2001-03-13 16:43:07 daniel Exp $
+ * @version $Id: MultiRelations.java,v 1.23 2001-04-02 13:21:36 pierre Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 
@@ -282,24 +282,29 @@ public class MultiRelations extends MMObjectBuilder {
 
 		// Get ALL tables (including missing reltables)
 		alltables=getAllTables(tables);
+log.debug("alltables "+alltables);
         if (alltables==null) return null;
 		
 		// Get the destination select string;
 		select=getSelectString(alltables,fields);
+log.debug("select "+select);
         if (select==null) return null;
 
 		// Get the tables names corresponding to the fields (for the mapping)
 		selectTypes=getSelectTypes(alltables,select);
+log.debug("selecttypes "+selectTypes);
 
 		// create the order parts
 		order=getOrderString(alltables,orderVec,direction);
+log.debug("order "+order);
 
 		// get all the table names 
 		stables=getTableString(alltables);
+log.debug("stables "+stables);
 
 		// Supporting more then 1 source node or no source node at all
 		// Note that node number -1 is seen as no source node
-		if (snodes.size()>0) {
+		if ((snodes!=null) && (snodes.size()>0)) {
 			String str;
 			snode = -1;
 			
@@ -323,7 +328,9 @@ public class MultiRelations extends MMObjectBuilder {
 			
 			if (snode>0) {
 				basenode=getNode(""+snode);
+				// not very neat... but it works
 				sidx=alltables.indexOf(basenode.parent.tableName);
+				if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
 				if (sidx<0) sidx=0;
 				str=idx2char(sidx);
 				bb.append(getNodeString(str,snodes));
@@ -338,6 +345,7 @@ public class MultiRelations extends MMObjectBuilder {
 		
 		// get the relation string
 		relstring=getRelationString(alltables, searchdir);
+log.debug("relstring "+relstring);
 		if ((relstring.length()>0) && (basenodestring.length()>0)) {
 				relstring=" AND "+relstring;
 		}
@@ -353,6 +361,7 @@ public class MultiRelations extends MMObjectBuilder {
 		} else {
 			where="";
 		}
+log.debug("where "+where);
 
 		try {
             MultiConnection con=null;
@@ -406,7 +415,7 @@ public class MultiRelations extends MMObjectBuilder {
 		Vector result=new Vector();
 		String val;
 		int pos;
-		for (Enumeration e=getFunctionParameters(fields).elements();e.hasMoreElements();) {
+		for (Enumeration e=getFunctionParameters(fields).elements();e.hasMoreElements();) {		
 			val=(String)e.nextElement();
 			int idx=val.charAt(0) - 'a';
 			result.addElement(alltables.get(idx));
@@ -418,19 +427,19 @@ public class MultiRelations extends MMObjectBuilder {
 	/**
 	* Creates a full chain of table names.
 	* This includes adding relation tables when not specified, and converting table names by
-	* removing numeric extensions (such as peopl1,people2).
+	* removing numeric extensions (such as people1,people2).
 	* @param tables the original chain of tables
 	* @return an expanded list of tablesnames
 	*/
 	private Vector getAllTables(Vector tables) {
 		Vector alltables=new Vector();
 		boolean lastrel=true;  // true: prevents the first tab;le to be preceded by a relation table
-		String curtable;
+		String orgtable,curtable;
 
 		for (Enumeration e=tables.elements();e.hasMoreElements();) {
-			curtable=(String)e.nextElement();
+			orgtable=(String)e.nextElement();
 //    		curtable= getTableName(Strip.DoubleQuote(curtable,Strip.BOTH));
-    		curtable= getTableName(curtable);
+    		curtable= getTableName(orgtable);
     		// check builder - should throw exception if builder doesn't exist ?
     		MMObjectBuilder bul = mmb.getMMObject(curtable);
     		if (bul==null) {
@@ -438,14 +447,14 @@ public class MultiRelations extends MMObjectBuilder {
     		    return null;
     		}
     		if (bul instanceof InsRel) {
-			    alltables.addElement(curtable);
+			    alltables.addElement(orgtable);
 			    lastrel=!lastrel;  // toggle lastrel - allows for relations to be made to relationnnodes
             } else {
 				// nonrel, nonrel
 				if (!lastrel) {
 				    alltables.addElement("insrel");
 				}
-				alltables.addElement(curtable);
+				alltables.addElement(orgtable);
 				lastrel=false;
 			}
 		}
@@ -492,7 +501,8 @@ public class MultiRelations extends MMObjectBuilder {
 	* @return the SQL table name as a <code>String</code>
 	*/
 	private String getSQLTableName(Vector alltables,String table) {
-	    int x=getTableNumber(table);
+	    int idx=alltables.indexOf(table);
+/*	    int x=getTableNumber(table);
 	    int idx=-1;
 	    if (x<0) {
 	        idx=alltables.indexOf(table);
@@ -504,7 +514,7 @@ public class MultiRelations extends MMObjectBuilder {
 	            y++;
 	        }
 	    }
-		if (idx>=0) {
+*/  if (idx>=0) {
 		    return idx2char(idx);
 		} else {
 		    return null;
@@ -533,7 +543,8 @@ public class MultiRelations extends MMObjectBuilder {
 	        }
 	    } else {
 	        // field has no type
-	        log.error("getSQLFieldName(): The field '"+fieldName+"' has no type specified");
+	        log.warn("getSQLFieldName(): The field '"+fieldName+"' has no type specified");
+	        return mmb.getDatabase().getAllowedField(fieldName);
 	    }
 	    return null;
 	}
@@ -589,6 +600,7 @@ public class MultiRelations extends MMObjectBuilder {
 			val=(String)r.nextElement();			
 //    		val=Strip.DoubleQuote(val,Strip.BOTH);
             field=parseSelectField(alltables,val);
+            log.debug("field="+field);
             if(!field.equals("")) {
                 if (!result.equals("")) result+=",";
                 result+=field;
@@ -715,7 +727,7 @@ public class MultiRelations extends MMObjectBuilder {
 		for (Enumeration r=alltables.elements();r.hasMoreElements();) {
 			val=(String)r.nextElement();
 			if (!result.toString().equals("")) result.append(", ");
-			result.append(mmb.baseName+"_"+val);
+			result.append(mmb.baseName+"_"+getTableName(val));
 			result.append(" "+idx2char(idx));	
 			idx++;
 		}
@@ -766,8 +778,8 @@ public class MultiRelations extends MMObjectBuilder {
 		for (int i=0;i<siz;i+=2) {
 		    boolean desttosrc=false;
 		    boolean srctodest=false;
-			src=(String)alltables.elementAt(i);							// name of the source table
-			dst=(String)alltables.elementAt(i+2);						// name of destination table
+			src=getTableName((String)alltables.elementAt(i));							// name of the source table
+			dst=getTableName((String)alltables.elementAt(i+2));						// name of destination table
 
 			rnum=-1;
 			so=typedef.getIntValue(src);								// get the number of the source
