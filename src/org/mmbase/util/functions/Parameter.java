@@ -21,7 +21,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.11 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: Parameter.java,v 1.12 2005-03-01 15:12:39 michiel Exp $
  * @see Parameters
  */
 
@@ -32,7 +32,7 @@ public class Parameter extends AbstractDataType {
      */
     public static final Parameter LANGUAGE = new Parameter("language", String.class);
     public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
-    public static final Parameter USER     = new Parameter("user",     org.mmbase.bridge.User.class);
+    public static final Parameter USER     = new Parameter("user",     org.mmbase.security.UserContext.class);
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
@@ -54,7 +54,7 @@ public class Parameter extends AbstractDataType {
      * @param type the class of the parameter's possible value
      */
     public Parameter(String name, Class type) {
-        super(name,type);
+        super(name, type);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Parameter extends AbstractDataType {
      * @param required whether the parameter requires a value (default is <code>false</code>)
      */
     public Parameter(String name, Class type, boolean required) {
-        super(name,type);
+        super(name, type);
         this.required = required;
     }
 
