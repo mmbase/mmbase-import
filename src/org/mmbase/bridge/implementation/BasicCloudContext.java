@@ -67,7 +67,7 @@ public class BasicCloudContext implements CloudContext {
             try {
                 securityManager = new org.mmbase.security.SecurityManager(MMBaseContext.getConfigPath()+File.separator+"security"+File.separator+"security.xml");
             } catch (Exception e) {
-                throw new BasicBridgeException(e.toString()+"/n"+Logging.stackTrace(e));
+                throw new BasicBridgeException(e);
             }
 
             // create transaction manager and temporary node manager
