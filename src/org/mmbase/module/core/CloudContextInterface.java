@@ -50,6 +50,6 @@ public interface CloudContextInterface {
 	 * Retrieve a remote CloudContext
 	 * @param cloudcontextUrl place of the remote CloudContext
 	 * @return remote CloudContext
+	 * public CloudContext getCloudContext(String cloudcontextUrl);
 	 */
-	public CloudContext getCloudContext(String cloudcontextUrl);
 }
