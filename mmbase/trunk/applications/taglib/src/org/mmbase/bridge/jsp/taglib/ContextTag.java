@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.68 2005-01-04 13:44:43 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.69 2005-01-06 20:24:33 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -51,8 +51,9 @@ import org.mmbase.util.logging.*;
 public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(ContextTag.class);
 
-    public static final String CONTEXTTAG_KEY = "org.mmbase.taglib.context";
+    public static final String CONTEXTTAG_KEY      = "org.mmbase.taglib.context";
     public static final String DEFAULTENCODING_KEY = "org.mmbase.taglib.defaultencoding";
+    public static final String ISELIGNORED_PARAM   = "mmbase.taglib.defaultencoding";
 
     private ContextContainer container = null;
     private ContextProvider  parent = null;
@@ -110,7 +111,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
      */
     void createContainer(ContextContainer c) { //throws JspTagException {
-        if (c == null && ! ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.isELIgnored")))) {
+        if (c == null && (!"true".equals(pageContext.getServletContext().getInitParameter(ISELIGNORED_PARAM)))) {
             container = new PageContextContainer(pageContext);
         } else {
             container = new StandaloneContextContainer(pageContext, getId(), c);

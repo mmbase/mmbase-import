@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The page context container stores variables directly in the page context, like JSTL does.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PageContextContainer.java,v 1.4 2005-01-04 13:44:43 michiel Exp $
+ * @version $Id: PageContextContainer.java,v 1.5 2005-01-06 20:24:33 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -68,13 +68,13 @@ public class PageContextContainer extends ContextContainer {
                                                     }
                                                     public Object getValue() {
                                                         if (nul == null) {
-                                                            return pageContext.getAttribute(name, SCOPE);
+                                                            return Casting.unWrap(pageContext.getAttribute(name, SCOPE));                                                            
                                                         } else {
                                                             return null;
                                                         }
                                                     }
                                                     public Object setValue(Object value) {
-                                                        Object was = pageContext.getAttribute(name, SCOPE);
+                                                        Object was = Casting.unWrap(pageContext.getAttribute(name, SCOPE));
                                                         pageContext.setAttribute(name, Casting.wrapToString(value), SCOPE);
                                                         if (value == null) {
                                                             nulls.add(name);
@@ -101,7 +101,7 @@ public class PageContextContainer extends ContextContainer {
                 }
 
                 public Object put(Object key, Object value) {
-                    Object was = pageContext.getAttribute((String) key, SCOPE);
+                    Object was = Casting.unWrap(pageContext.getAttribute((String) key, SCOPE));
                     if (value == null) {
                         nulls.add(key);
                     } else {

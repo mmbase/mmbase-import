@@ -24,14 +24,14 @@ import org.mmbase.util.logging.Logging;
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.3 2005-01-05 20:49:36 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.4 2005-01-06 20:24:33 michiel Exp $
  * @since MMBase-1.8
  **/
 
 public class StandaloneContextContainer extends ContextContainer {
-    
-    private static final int SCOPE = PageContext.PAGE_SCOPE;
 
+    private static final Logger log = Logging.getLoggerInstance(StandaloneContextContainer.class);    
+    private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     /**
      * A simple map, which besides to itself also registers to page-context.
@@ -65,9 +65,18 @@ public class StandaloneContextContainer extends ContextContainer {
      */
 
     class BasicBacking extends AbstractMap {
-        // contains the values originally in the pageContext, so that they can be restored.
-        protected Map originalPageContextValues = new HashMap();        
+        protected final Map originalPageContextValues;
         private final Map b = new HashMap();
+        private final boolean isELIgnored;
+        BasicBacking() {
+            isELIgnored = "true".equals(StandaloneContextContainer.this.pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
+            if (! isELIgnored) {
+                originalPageContextValues = new HashMap();
+            } else {
+                originalPageContextValues = null;
+            }
+        }
+        // contains the values originally in the pageContext, so that they can be restored.
         public Set entrySet() {
             return new AbstractSet() {
                     public int size() {
@@ -86,26 +95,37 @@ public class StandaloneContextContainer extends ContextContainer {
                                 }
                                 public void remove() {
                                     i.remove();
-                                    pageContext.removeAttribute((String) last.getKey());
+                                    if (! isELIgnored) {
+                                        String key = (String) last.getKey();
+                                        if (! originalPageContextValues.containsKey(key)) {
+                                            originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
+                                        }
+                                        pageContext.removeAttribute(key);
+                                    }
                                 }
                             };
                     }
                 };
         }
         public Object put(Object key, Object value) {
-            if (! b.containsKey(key)) {
-                originalPageContextValues.put((String) key, pageContext.getAttribute((String) key, SCOPE));
-            } 
-            if (value != null) {
-                pageContext.setAttribute((String) key, Casting.wrapToString(value), SCOPE);
-            } else {
-                pageContext.removeAttribute((String) key, SCOPE);
+            if (! isELIgnored) {
+                if (! originalPageContextValues.containsKey(key)) {
+                    // log.debug("Storing pageContext key " + key);
+                    originalPageContextValues.put((String) key, pageContext.getAttribute((String) key, SCOPE));
+                }
+
+                if (value != null) {
+                    pageContext.setAttribute((String) key, Casting.wrapToString(value), SCOPE);
+                } else {
+                    pageContext.removeAttribute((String) key, SCOPE);
+                }
             }
             return b.put(key, value);
         }
         
         public void release() {
             if (originalPageContextValues != null) {
+                //log.debug("Restoring pageContext with " + originalPageContextValues);
                 // restore the pageContext
                 Iterator i = originalPageContextValues.entrySet().iterator();
                 while (i.hasNext()) {
