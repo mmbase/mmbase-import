@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterHelper.java,v 1.27 2003-06-06 10:03:10 pierre Exp $ 
+ * @version $Id: WriterHelper.java,v 1.28 2003-07-07 14:49:12 michiel Exp $ 
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -122,6 +122,7 @@ public class WriterHelper extends BodyTagSupport {
 
     /**
      * For implementation of the escape attribute.
+     * @since MMBase-1.7
      */
 
     public void setEscape(Attribute e) {
@@ -129,6 +130,15 @@ public class WriterHelper extends BodyTagSupport {
             log.debug("Setting escape to " + e);
         }
         escape = e;
+    }
+
+    /**
+     * Gets specified escaper (as a string) or null (if not set)
+     * @since MMBase-1.7
+     */
+
+    public String getEscape() throws JspTagException {
+        return (String) escape.getValue(thisTag);
     }
 
     /**
