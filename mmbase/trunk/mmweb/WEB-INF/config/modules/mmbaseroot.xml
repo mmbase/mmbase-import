@@ -4,9 +4,9 @@
   <status>active</status>
   <classfile>org.mmbase.module.core.MMBase</classfile>
   <properties>
-    <property name="machinename">MMBaseserver</property>
-    <property name="database">mysql</property>
-    <property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
+    <property name="machinename">MMBaseTest</property>
+    <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
+    <property name="multicasthost">ALL-SYSTEMS.MCAST.NET</property>
     <property name="multicastport">16083</property>
     <property name="host">127.0.0.1</property>
     <property name="authtype">none</property>
