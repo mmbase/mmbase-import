@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.64 2002-06-17 13:12:00 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.65 2002-06-27 14:29:19 pierre Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -679,7 +679,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 if (changeObjectFields) {
                     // if it is a relation, then also adjust the insrel table if it is a sub table of that one..
                     changeInsrelFields =isInsrelSubTable;
-                    log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, object)");
+                    // log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, object)");
                 }
             } // object fields
 
@@ -687,7 +687,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             if(isInsrelSubTable && ( key.equals("snumber") || key.equals("dnumber") || key.equals("rnumber") || key.equals("dir")) ) {
                 // change the status, that insrel should be updated..
                 changeInsrelFields = true;
-                log.warn("changing the '"+key+"' field, could give problems due to update on 2 tables without locking(builder, insrel)");
+                // log.warn("changing the '"+key+"' field, could give problems due to update on 2 tables without locking(builder, insrel)");
             } // insrel fields
         } // add all changed fields...
 
