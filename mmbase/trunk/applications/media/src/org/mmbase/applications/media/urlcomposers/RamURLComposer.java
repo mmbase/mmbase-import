@@ -15,7 +15,6 @@ import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.media.Format;
 import java.util.*;
-import java.net.*;
 
 
 /**
@@ -25,8 +24,6 @@ import java.net.*;
  * Depends on mediafragment.ram.jsp and mediafragment.asf.jsp in the
  * templates dir. These can be mapped to something else in
  * web.xml. The servlet name must be media-asf and media-rm then.
- * 
- *
  *
  * @author Michiel Meeuwissen
  * @author Rob Vermeulen (VPRO)
@@ -38,11 +35,10 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     
     protected  Format          format;
     
-    /*
-    public RamURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
-        super(provider, source, fragment, info, cacheExpireObjects);
-        this.format = Format.get(source.getIntValue("format"));
-    }*/
+    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
+        super.init(provider, source, fragment, info, cacheExpireObjects);
+        format = Format.get(source.getIntValue("format"));
+    }
     
     protected StringBuffer  getURLBuffer() {
         List servlets = MMBaseServlet.getServletMappings("media-" + format);
