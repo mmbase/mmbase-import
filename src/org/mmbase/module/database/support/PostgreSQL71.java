@@ -137,6 +137,35 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    catch(Exception other) {}
 	    return false;
 	}	
+
+	// now update create the number table,.....   
+    	try {
+	    con = mmb.getConnection();
+    	    stmt=con.createStatement();
+	    String sql =  "CREATE TABLE "+ getNumberTableString()+" (";
+	    // primary key will mean that and unique and not null...
+	    // TODO : create this one also in a generic way !
+	    sql += getNumberString()+" INTEGER PRIMARY KEY DEFAULT NEXTVAL('"+baseName+"_autoincrement')) ";
+	    log.info("gonna execute the following sql statement: " + sql);
+    	    stmt.executeUpdate(sql);
+    	    stmt.close();
+    	    con.close();
+	} 
+	catch (SQLException sqle) {
+	    log.error("error, could not create number table..");
+	    for(SQLException e = sqle;e != null; e = e.getNextException()){
+    		log.error("\tSQLState : " + e.getSQLState());
+    		log.error("\tErrorCode : " + e.getErrorCode());
+    		log.error("\tMessage : " + e.getMessage());			
+	    }
+    	    try {
+            	if(stmt!=null) stmt.close();
+	    	// con.rollback();
+                con.close();
+            }
+	    catch(Exception other) {}
+	    return false;
+	}
 	
 	// now update create the object table, with the auto update thignie    
     	try {
@@ -145,7 +174,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    String sql =  "CREATE TABLE "+baseName+"_object (";
 	    // primary key will mean that and unique and not null...
 	    // TODO : create this one also in a generic way !
-	    sql += getNumberString()+" INTEGER PRIMARY KEY DEFAULT NEXTVAL('"+baseName+"_autoincrement'), ";
+	    sql += getNumberString()+" INTEGER PRIMARY KEY, ";
 	    sql += getOTypeString()+" INTEGER NOT NULL, ";
 	    sql += getOwnerString()+" TEXT NOT NULL);";
 	    log.info("gonna execute the following sql statement: " + sql);
@@ -200,6 +229,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     public String getOwnerString() {
     	log.debug("getOwnerString");
 	return getAllowedField("owner");
+    }
+    
+    private String getNumberTableString() {
+    	return mmb.baseName + "_" + getAllowedField("numbertable");
     }
 
     public boolean create(MMObjectBuilder bul) {
@@ -358,16 +391,17 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {    	
     	log.debug("insert");    
 	String tableName = bul.getTableName();
+
+    	int number=node.getIntValue("number");
+	// did the user supply a number allready,...
+	if (number==-1) {   
+	    // if not try to obtain one
+	    number=getDBKey();
+	    node.setValue("number",number);
+	}
 	
 	// do the actual insert..
-    	String oid = insertRecord(bul, owner, node);
-
-    	// now we have to retieve the node number from the record, where the iod is known.. 
-	// this is the number of our just inserted node...
-	int number = getNumberFromOid(oid);
-    	
-	// set the value of our number to our new number value...
-    	node.setValue("number",number);
+    	number = insertRecord(bul, owner, node);
 	
     	//bul.signalNewObject(bul.tableName,number);
         if (bul.broadcastChanges) {
@@ -390,8 +424,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         return number;
     }    
     
-    //* returns the oid of the new inserted record !!*/
-    private String insertRecord(MMObjectBuilder bul,String owner, MMObjectNode node) {
+    private int insertRecord(MMObjectBuilder bul,String owner, MMObjectNode node) {
 	String tableName = bul.getTableName();
 
         String sql = insertPreSQL(tableName, bul.sortedDBLayout.elements(), node);    
@@ -424,9 +457,6 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    catch(Exception other) {}	   
             throw new RuntimeException(sqle.toString());
     	}	
-	// will contain the database unique number...
-    	String oid;
-	
 	// fill the fields...
         try {
             preStmt.setEscapeProcessing(false);
@@ -457,29 +487,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	    	    }
     	    	}
             }
-	    preStmt.executeUpdate();
-	    
-	    // every record in porstgrSQL has a oid field, this is a database wide unique value for this table/record
-	    // (notitice that inherited stuff always has the same oid)
-	    //  combination,...
-	    // we want to know the value of this oid, so that we can retract the number field from it...	        	    
-
-	    // org.postgresql.jdbc2.Statement
-	    // org.postgresql.jdbc1.Statement
-	    // do casting and retrieve the thingie by reflect.. to allow casting all time..
-	    //	oid : The ResultSet.getStatusString() and Statement.getResultStatusString() methods give you access to this number.
-	    org.postgresql.jdbc2.Statement postStmt = (org.postgresql.jdbc2.Statement) preStmt;
-	    String oidString = postStmt.getResultStatusString();
-	    // oidString = postStmt.getResultStatusString();
-	    // log.debug("status string : '"+ oidString+"'");
-	    // should be something like "INSERT 31786 1"
-	    // strip the front (the "INSERT " thingie...)
-	    oid = oidString.substring(7);
-	    // log.debug("temp oid = '" + oid +"'");
-	    // strip everything after the blank.. the " 1" part...
-	    // NOTICE IT IS NOT A SPACE !!!!!
-	    oid = oid.substring(0, oid.indexOf(" "));
-	    log.debug("oid : '"+ oid+"'");
+	    preStmt.executeUpdate();	    
 	    preStmt.close();
 	    con.commit();
     	    con.setAutoCommit(true);	    
@@ -501,43 +509,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    catch(Exception other) {}	   
             throw new RuntimeException(sqle.toString());
 	}    
-    	return oid;
-    }
-
-    private int getNumberFromOid(String oid) {
-    	String sql =  "SELECT "+getNumberString()+" FROM "+mmb.baseName+"_object WHERE oid="+oid;
-	int number = -1;
-	
-	// do the select ...
-	Statement stmt = null;
-    	MultiConnection con=null;	
-    	try {
-	    con=mmb.getConnection();
-    	    stmt=con.createStatement();
-	    log.debug("executing following select : " + sql);
-	    ResultSet rs=stmt.executeQuery(sql);
-    	    if (rs.next()) number=rs.getInt(1);
-	    else log.warn("could not retieve the number for oid : " + oid);
-    	    stmt.close();
-	    con.close();
-    	} 
-	catch (SQLException sqle) {
-	    log.error("could not retieve the number for oid : " + oid);
-    	    log.error(Logging.stackTrace(sqle));	    
-	    for(SQLException se = sqle;se != null; se = se.getNextException()){
-    		log.error("\tSQLState : " + se.getSQLState());
-    		log.error("\tErrorCode : " + se.getErrorCode());
-    		log.error("\tMessage : " + se.getMessage());			
-	    }	    
-    	    try {
-            	if(stmt!=null) stmt.close();
-		// con.rollback();
-                con.close();
-            } 
-	    catch(Exception other) {}
-            throw new RuntimeException(sqle.toString());
-	}    
-	return number;
+    	return node.getIntValue("number");
     }
     
     private String insertPreSQL(String tableName, Enumeration fieldLayout, MMObjectNode node) {
@@ -574,7 +546,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                 }
             }
      	}    
-	String sql = "INSERT INTO "+mmb.baseName+"_"+tableName+" ("+fieldNames+") VALUES ("+fieldValues+")";
+	String sql = "INSERT INTO "+mmb.baseName+"_"+tableName+" ("+ getNumberString() +", "+ fieldNames+") VALUES ("+node.getIntValue("number")+", "+fieldValues+")";
 	log.trace("created pre sql: " + sql);
         return sql;	
     }    
@@ -1103,12 +1075,86 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	throw new UnsupportedOperationException("setDBByte");
     }	
     
-    /** is next function nessecary? */
-    public int getDBKey() {
-    	log.debug("getDBKey(retrieve a new unique number...)");    
-    	log.fatal("This function is not implemented !!");
-    	throw new UnsupportedOperationException("getDBKey(retrieve a new unique number...)");
+    /** research for a better way to resolve the unique number... */
+    public int getDBKey() {    
+    	MultiConnection con=null;
+        PreparedStatement stmt=null;
+	String sql = "INSERT INTO " + getNumberTableString() + " DEFAULT VALUES";
+	String oidString = "";
+    	try {
+	    log.debug("executing following insert : " + sql);
+            con = mmb.getConnection();
+	    // since the otherone is wrapped aournd the wrapper...
+            stmt = con.prepareStatement(sql);
+    	    stmt.executeUpdate();	 
+	    oidString = ((org.postgresql.Statement)stmt).getResultStatusString();
+    	    stmt.close();
+            con.close();
+	    
+        } 
+	catch (SQLException sqle) {
+	    log.error("error, could not create new record in number table");
+	    for(SQLException se = sqle;se != null; se = se.getNextException()){
+    		log.error("\tSQLState : " + se.getSQLState());
+    		log.error("\tErrorCode : " + se.getErrorCode());
+    		log.error("\tMessage : " + se.getMessage());			
+	    }
+    	    try {
+            	if(stmt!=null) stmt.close();
+                con.close();
+            } 
+	    catch(Exception other) {}	   
+            throw new RuntimeException(sqle.toString());
+    	}
+	// as in definition : http://www.postgresql.org/idocs/index.php?sql-insert.html
+	// should be something like "INSERT %oidnumber% 1"
+	// strip the front (the "INSERT " thingie...)
+    	String oid = oidString.substring(7);
+	// strip everything after the blank.. the " 1" part...
+	// NOTICE IT IS NOT A SPACE !!!!!
+    	oid = oid.substring(0, oid.indexOf(" "));
+	log.debug("oid : '"+ oid+"'");
+	
+	return getNumberFromOid(oid, getNumberTableString());
     }
+    
+    private int getNumberFromOid(String oid, String tablename) {
+    	String sql =  "SELECT "+getNumberString()+" FROM "+tablename+" WHERE oid="+oid;
+	int number = -1;
+	
+	// do the select ...
+	Statement stmt = null;
+    	MultiConnection con=null;	
+    	try {
+	    con=mmb.getConnection();
+    	    stmt=con.createStatement();
+	    log.debug("executing following select : " + sql);
+	    ResultSet rs=stmt.executeQuery(sql);
+    	    if (rs.next()) number=rs.getInt(1);
+	    else log.warn("could not retieve the number for oid : " + oid);
+    	    stmt.close();
+	    con.close();
+    	} 
+	catch (SQLException sqle) {
+	    log.error("could not retieve the number for oid : " + oid);
+    	    log.error(Logging.stackTrace(sqle));	    
+	    for(SQLException se = sqle;se != null; se = se.getNextException()){
+    		log.error("\tSQLState : " + se.getSQLState());
+    		log.error("\tErrorCode : " + se.getErrorCode());
+    		log.error("\tMessage : " + se.getMessage());			
+	    }	    
+    	    try {
+            	if(stmt!=null) stmt.close();
+		// con.rollback();
+                con.close();
+            } 
+	    catch(Exception other) {}
+            throw new RuntimeException(sqle.toString());
+	}    
+	log.debug("number found#" + number);
+	return number;
+    }     
+    
     
     /** is next function nessecary? */
     public String getShortedText(String tableName, String fieldname, int number) {
