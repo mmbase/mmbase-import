@@ -28,7 +28,8 @@ import org.mmbase.util.*;
 public class Email extends MMObjectBuilder {
 
 	private EmailSendProbe sendprobe;
-
+	public final static int ONESHOT=1;
+	public final static int REPEATMAIL=2;
 
 	public boolean init() {
 		super.init ();
@@ -44,7 +45,6 @@ public class Email extends MMObjectBuilder {
 		// check the type of change on the object
 		if (ctype.equals("n")) {
 			// its a new object so lets check if we should mail
-			//checkNewMailNode(number);
 			MMObjectNode node=getNode(number);
 			sendprobe.putTask(node);	
 		}
@@ -55,13 +55,8 @@ public class Email extends MMObjectBuilder {
 	* check the message object, now if state is 1 (oneshot)
 	* it mails and removed itself from the cloud when done
 	*/
-	public void checkNewMailNode(MMObjectNode node) {
+	public void checkOneShotMail(MMObjectNode node) {
 
-		// get the message object from the cloud
-		// MMObjectNode node=getNode(number);	
-
-		// obtain all the needed fields from the object
-		int mailtype=node.getIntValue("mailtype");
 		String subject=node.getStringValue("subject");
 		String to=node.getStringValue("to");
 		String from=node.getStringValue("from");
@@ -81,32 +76,101 @@ public class Email extends MMObjectBuilder {
 
 		// if its a oneshot mail then create mail and send it
 		// at the end remove the object from the cloud
-		if (mailtype==1) {
-			// its one shot so lets mail and zap the node
+		// its one shot so lets mail and zap the node
 
-			Mail mail=new Mail(to,from);
-			mail.setSubject(subject);
-			mail.setDate();
-			if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
-			mail.setText(body);
+		Mail mail=new Mail(to,from);
+		mail.setSubject(subject);
+		mail.setDate();
+		if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
+		mail.setText(body);
 
-			// little trick if it seems valid html page set
-			// the headers for html mail
-			if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
-				mail.setHeader("Mime-Version","1.0");
-				mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
-			}
+		// little trick if it seems valid html page set
+		// the headers for html mail
+		if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
+			mail.setHeader("Mime-Version","1.0");
+			mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
+		}
 		
-			// send the message to the user defined
-			if (mmb.getSendMail().sendMail(mail)==false) {
-				System.out.println("Email -> mail failed");
-			} else {
-				System.out.println("Email -> mail send to : "+to);
-			}
+		// send the message to the user defined
+		if (mmb.getSendMail().sendMail(mail)==false) {
+			System.out.println("Email -> mail failed");
+		} else {
+			System.out.println("Email -> mail send to : "+to);
+		}
 		
-			// remove message from the cloud
-			removeNode(node);
-		} else if (mailtype==2) {
+		// remove message from the cloud
+		removeNode(node);
+	}
+
+
+	/**
+	* check the message object, now if state is 1 (oneshot)
+	* it mails and removed itself from the cloud when done
+	*/
+	public void checkRepeatMail(MMObjectNode node) {
+
+		String subject=node.getStringValue("subject");
+		String to=node.getStringValue("to");
+		String from=node.getStringValue("from");
+		String replyto=node.getStringValue("replyto");
+		String body=node.getStringValue("body");
+
+		// now if a url is defined it overrides the body
+		// it will then send the webpage defined by the
+		// url as the body !! (only  local url's are
+		// now supported that use html or shtml
+		String url=node.getStringValue("url");
+		if (url!=null && !url.equals("")) {
+			// get the page
+			String tmpbody=getPage(url);
+			if (tmpbody!=null) body=tmpbody;
+		}
+
+		// if its a oneshot mail then create mail and send it
+		// at the end remove the object from the cloud
+		// its one shot so lets mail and zap the node
+
+		Mail mail=new Mail(to,from);
+		mail.setSubject(subject);
+		mail.setDate();
+		if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
+		mail.setText(body);
+
+		// little trick if it seems valid html page set
+		// the headers for html mail
+		if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
+			mail.setHeader("Mime-Version","1.0");
+			mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
+		}
+		
+		// send the message to the user defined
+		if (mmb.getSendMail().sendMail(mail)==false) {
+			System.out.println("Email -> mail failed");
+		} else {
+			System.out.println("Email -> mail send to : "+to);
+		}
+		
+	}
+
+
+	/**
+	* check the message object, now if state is 1 (oneshot)
+	* it mails and removed itself from the cloud when done
+	*/
+	public void checkMailNode(MMObjectNode node) {
+
+		// get the message object from the cloud
+		// MMObjectNode node=getNode(number);	
+
+		// obtain all the needed fields from the object
+		int mailtype=node.getIntValue("mailtype");
+		switch(mailtype) {
+			case ONESHOT :
+				checkOneShotMail(node);	
+				break;
+			case REPEATMAIL:
+				checkRepeatMail(node);	
+				break;
 		}
 	}
 
@@ -148,7 +212,7 @@ public class Email extends MMObjectBuilder {
 
 	public boolean performTask(MMObjectNode node) {
 		System.out.println("GOT perform="+node);
-		checkNewMailNode(node);
+		checkMailNode(node);
 		return(true);
 	}
 
