@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.33.2.3 2003-06-02 16:38:00 vpro Exp $
+ * @version $Id: servscan.java,v 1.33.2.4 2003-06-02 16:55:46 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -97,7 +97,7 @@ public class servscan extends JamesServlet {
         incRefCount(req);
         try {
 
-            log.service("Parsing SCAN page: " + req.getRequestURI());
+            // pageLog.service("Parsing SCAN page: " + req.getRequestURI());
 
             scanpage sp = new scanpage(this, req, res, sessions);
 
@@ -180,7 +180,7 @@ public class servscan extends JamesServlet {
                 }
             } while (sp.rstatus == 2);
             // End of page parser
-            log.service("END parsing SCAN page");
+            // pageLog.debug("END parsing SCAN page");
             out.flush();
             out.close();
         } catch(NotLoggedInException e) {
@@ -201,7 +201,8 @@ public class servscan extends JamesServlet {
     private final void setHeaders(scanpage sp, HttpServletResponse res, int len, long lastModDate, long expireDate) {
         res.setContentType(addCharSet(sp.mimetype));
         
-        res.setContentLength(len);
+        // Guess this will be set by the app server if we don't set it.
+        // res.setContentLength(len);
 
     	Date lastmod = null;
 		if (lastModDate > 0) {
@@ -376,16 +377,6 @@ public class servscan extends JamesServlet {
 
             	if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
 
-                    // Start VPRO specific hack, not committed to CVS!!!
-                    // Redirect if browsing on WWW
-                    String host = sp.req.getServerName();
-                    if (host.equals("www.vpro.nl") || host.equals("3voor12.vpro.nl") || host.equals("bieslog.vpro.nl")) {
-                            res.setStatus(302,"OK");
-                            res.setHeader("Location","http://pages.vpro.nl" + req_line);
-                            return true;
-                    }
-                    // End VPRO specific hack, not committed to CVS!!
-
 	                sp.wantCache="PAGE";
                 	String rst=parser.scancache.get(sp.wantCache, req_line, sp);
                 
@@ -457,14 +448,7 @@ public class servscan extends JamesServlet {
             if (log.isDebugEnabled()) {
                 log.debug("doSecure(" + sp.getUrl() + "): Secure tag found, calling getAuthorization()...");
             }
-	    try {
-            	 name = getAuthorization(sp.req, res);
-	    } catch (AuthorizationException e) {
-		    log.warn("User failed to login, sending user to /mmeditors/loginerror.html");
-		    res.setStatus(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
-		    res.setHeader("WWW-Authenticate","Basic realm=\"test\"");
-		    res.sendRedirect("/mmeditors/loginerror.html");
-	    }
+            name = getAuthorization(sp.req, res);
             if (log.isDebugEnabled()) {
                 log.debug("doSecure(" + sp.getUrl() + "): getting cookie from user...");
             }
