@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.4 2000-11-15 12:17:05 vpro Exp $
+	$Id: TransactionResolver.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/11/15 12:17:05  vpro
+	Rico: fixed resolver for existing nodes
+	
 	Revision 1.3  2000/11/13 16:11:01  vpro
 	Rico: added more debug
 	
@@ -30,7 +33,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.4 2000-11-15 12:17:05 vpro Exp $
+ * @version $Id: TransactionResolver.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -54,7 +57,7 @@ public class TransactionResolver {
 		Integer neg=new Integer(-1),num;
 		MMObjectBuilder bul;
 		FieldDefs fd;
-		String field,tmpfield,key;
+		String field,tmpfield,key,exists;
 		int state,number,ikey,dbtype,tmpstate;
 		Vector v;
 		boolean rtn=true;
@@ -97,14 +100,17 @@ public class TransactionResolver {
 								} else {
 									debug("Can't find key for field "+tmpfield+" node "+node+" (warning)");
 								}
-								if (field.equals("number")) node.setValue("_exists","no");
+								if (field.equals("number")) node.setValue("_exists",TransactionManager.EXISTS_NO);
 							} else {
 								// Key is already set
 								debug("Key for value "+field+" is already set "+ikey);
 								// Mark it as existing
-								// node.removeValue(tmpfield);
 								if (field.equals("number")) {
-									node.setValue("_exists","yes");
+									// test for remove here
+									exists=node.getStringValue("_exists");
+									if (exists!=null && !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
+										node.setValue("_exists",TransactionManager.EXISTS_YES);
+									}
 									key=node.getStringValue(tmpfield);
 									if (key!=null) {
 										numbers.put( key, new Integer(ikey));
