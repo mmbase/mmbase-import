@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.16 2002-07-09 14:12:53 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.17 2002-07-10 11:54:51 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -30,6 +30,8 @@
             if (c.template==null) {
                 c.template = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
             }
+            c.pagelength   = getParam("pagelength", new Integer(c.pagelength)).intValue();
+            c.maxpagecount   = getParam("maxpagecount", new Integer(c.maxpagecount)).intValue();
             c.wizard      = getParam("wizard", c.wizard);
             c.startNodes  = getParam("startnodes", c.startNodes);
             c.nodePath    = getParam("nodepath", c.nodePath);
