@@ -4,10 +4,10 @@
 // as many browsers as possible should not cache:
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma","no-cache");
-String now = org.mmbase.util.RFC1123.makeDate(new java.util.Date());
-response.setHeader("Expires",  now);
-response.setHeader("Last-Modified",  now);
-response.setHeader("Date",  now);
+long now = System.currentTimeMillis();
+response.setDateHeader("Expires",  now);
+response.setDateHeader("Last-Modified",  now);
+response.setDateHeader("Date",  now);
 %><%@ page language="java" contentType="text/html; charset=utf-8"
 %><html>
 <head>
