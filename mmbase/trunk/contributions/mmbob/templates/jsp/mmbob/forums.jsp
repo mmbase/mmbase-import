@@ -40,6 +40,7 @@
 	<p />
 	<a href="<mm:url page="newforum.jsp"></mm:url>">Forum toevoegen</a><br />
 	<a href="<mm:url page="removeforum.jsp"></mm:url>">Forum verwijderen</a><br />
+	<a href="<mm:url page="changeforums.jsp"></mm:url>">Forums settings</a><br />
 	<p />
 	</td>
 	</tr>

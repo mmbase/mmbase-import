@@ -260,6 +260,21 @@
 </mm:compare>
 
 
+<mm:compare value="changeconfigs" referid="action">
+	<mm:import externid="loginmodetype" />
+	<mm:import externid="logoutmodetype" />
+	<mm:import externid="guestreadmodetype" />
+	<mm:import externid="guestwritemodetype" />
+	<mm:import externid="avatarsuploadenabled" />
+	<mm:import externid="avatarsgalleryenabled" />
+	<mm:import externid="contactinfoenabled" />
+	<mm:import externid="smileysenabled" />
+	<mm:import externid="privatemessagesenabled" />
+	<mm:import externid="postingsperpage" />
+	<mm:booleanfunction set="mmbob" name="changeForumsConfig" referids="loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled,contactinfoenabled,smileysenabled,privatemessagesenabled,postingsperpage" >
+	</mm:booleanfunction>
+</mm:compare>
+
 <mm:compare value="removeforum" referid="action">
 	<mm:import externid="remforum" />
 	<mm:booleanfunction set="mmbob" name="removeForum" referids="remforum">

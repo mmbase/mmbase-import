@@ -1,8 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:cloud>
 <mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
 <mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
+</mm:cloud>
 <mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <%@ include file="thememanager/loadvars.jsp" %>
 
@@ -39,7 +41,7 @@
 <div class="header">
 </div>
 
-<div class="bodypart">
+<div class="bodypart" align="center">
 
 <mm:include page="path.jsp?type=$pathtype" />
 <table cellpadding="0" cellspacing="0" style="margin-top : 20px;" width="95%">

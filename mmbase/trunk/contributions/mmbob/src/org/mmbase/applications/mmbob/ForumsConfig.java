@@ -337,25 +337,69 @@ public class ForumsConfig {
         return loginmodetype;
    }
 
+   public void setLoginModeType(String mode) {
+	loginmodetype = mode;
+   }
+
    public String getLogoutModeType() {
         return logoutmodetype;
+   }
+
+   public void setLogoutModeType(String mode) {
+	logoutmodetype = mode;
    }
 
    public String getGuestReadModeType() {
         return guestreadmodetype;
    }
 
+   public void setGuestReadModeType(String mode) {
+	guestreadmodetype = mode;
+   }
+
    public String getGuestWriteModeType() {
         return guestwritemodetype;
+   }
+
+   public void setGuestWriteModeType(String mode) {
+	guestwritemodetype = mode;
    }
 
     public String getAvatarsUploadEnabled() {
         return avatarsUploadEnabled;
     }
 
+   public void setAvatarsUploadEnabled(String mode) {
+	avatarsUploadEnabled = mode;
+   }
+
+   public void setPostingsPerPage(String number) {
+	try {
+		postingsPerPage = Integer.parseInt(number);
+	} catch(Exception e) {
+		log.info("Illegal number for postings per page");
+	}
+   }
+
+   public void setContactInfoEnabled(String mode) {
+	contactInfoEnabled = mode;
+   }
+
+   public void setSmileysEnabled(String mode) {
+	smileysEnabled = mode;
+   }
+
+   public void setPrivateMessagesEnabled(String mode) {
+	privateMessagesEnabled = mode;
+   }
+
     public String getAvatarsGalleryEnabled() {
         return avatarsGalleryEnabled;
     }
+
+   public void setAvatarsGalleryEnabled(String mode) {
+	avatarsGalleryEnabled = mode;
+   }
 
     public String getXSLTPostingsOdd() {
         return xsltpostingsodd;
@@ -439,6 +483,10 @@ public class ForumsConfig {
 	     body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" />\n";
     	     body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" />\n";
 	     body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
+	     body += "\t\t\t<avatars>\n\n";
+	     body += "\t\t\t\t<upload enable=\""+forum.getAvatarsUploadEnabled()+"\"/>\n";
+	     body += "\t\t\t\t<gallery enable=\""+forum.getAvatarsGalleryEnabled()+"\"/>\n";
+	     body += "\t\t\t</avatars>\n\n";
              for (Enumeration postareas = forum.getPostAreas(); postareas.hasMoreElements();) {
              	PostArea postarea = (PostArea) postareas.nextElement();
 	        body += "\t\t\t<postarea id=\""+postarea.getName()+"\" language=\"nl\">\n";

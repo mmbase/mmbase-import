@@ -9,6 +9,7 @@
 <mm:import externid="postareaid" />
 <mm:import externid="postingid" />
 <mm:import externid="postthreadid" />
+<mm:import externid="page">1</mm:import>
 
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
@@ -58,7 +59,15 @@
 		</mm:compare>
 	</td></tr>
 	<tr><th width="150"><mm:write referid="mlg_Topic"/></th><td colspan="2"><input name="subject" style="width: 100%" value="<mm:field name="subject" />" ></td></th>
-	<tr><th valign="top"><mm:write referid="mlg_Message"/><center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></textarea>
+	<tr><th valign="top"><mm:write referid="mlg_Message"/><center>
+
+<mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
+<mm:field name="smileysenabled"><mm:compare value="true">
+<table><tr><th width="100"><%@ include file="includes/smilies.jsp" %></th></tr></table>
+</mm:compare></mm:field>
+</mm:nodefunction>
+
+</center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><mm:formatter xslt="xslt/posting2textarea.xslt"><mm:field name="body" /></mm:formatter></textarea>
 </td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="editpost">
