@@ -85,7 +85,10 @@
 				<p>
 					Didactor versie 2.0 Beta
 				</p>
-            </div>
+            <p>
+    <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+    </p>
+    </div>
 			<div class="columnRight">
 				<div class="titlefield2">
 				  <fmt:message key="NEWS" />

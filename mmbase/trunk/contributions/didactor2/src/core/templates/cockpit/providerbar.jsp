@@ -16,6 +16,7 @@
  
 
 <div class="providerMenubar" style="white-space: nowrap">
+<mm:isgreaterthan referid="user" value="0">
   <mm:import id="providerbaritems" vartype="list">search,pop,address,agenda,portfolio,email</mm:import>
   
   <%-- first show all the items in a predefined order --%>
@@ -98,5 +99,6 @@
     </mm:related>
   </mm:node>
   <mm:remove referid="providerbaritems" />
+</mm:isgreaterthan>
 </div>
 </mm:cloud>

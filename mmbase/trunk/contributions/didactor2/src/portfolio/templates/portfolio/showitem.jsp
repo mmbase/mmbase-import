@@ -6,21 +6,27 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="none" expires="0">
+<!-- get cloud -->
 <mm:cloud method="asis" jspvar="cloud">
+<!-- get imports -->
 <%@include file="/shared/setImports.jsp" %>
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
+<!-- get cockpit header -->
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><fmt:message key="OPENITEM" /></title>
   </mm:param>
 </mm:treeinclude>
+<!-- header done -->
 
+<mm:import externid="contact"/>
 <mm:import externid="currentitem"/>
 <mm:import externid="currentfolder"/>
 <mm:import externid="typeof"/>
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
 <mm:notpresent referid="currentitem">
+    <mm:import externid="contact" from="multipart" required="true"/>
     <mm:import externid="currentitem" from="multipart" required="true"/>
     <mm:import externid="currentfolder" from="multipart" required="true"/>
     <mm:import externid="typeof" from="multipart"/>
@@ -29,7 +35,7 @@
 
 
 </mm:notpresent>
-
+<!-- testing stuff -->
 <mm:import id="mayread">false</mm:import>
 <mm:isgreaterthan referid="user" value="0">
 <mm:node number="$currentitem">
@@ -63,11 +69,25 @@
 </mm:node>
 </mm:isgreaterthan>
 
+<mm:compare referid="user" value="0">
+ <mm:node number="$currentitem">
+    <mm:relatednodes type="portfoliopermissions" max="1">
+        <mm:field name="readrights">
+           <mm:compare value="4">
+                <mm:import id="mayread" reset="true">true</mm:import>
+            </mm:compare>
+        </mm:field>
+    </mm:relatednodes>
+ </mm:node>
+</mm:compare>
+
+<%--<h1>mayread: <mm:write referid="mayread"/>, user: <mm:write referid="user"/></h1>--%>
+
 <mm:compare referid="mayread" value="true">
 
 <%-- Check if the back button is pressed --%>
 <mm:present referid="action2">
-    <mm:redirect referids="$referids,currentfolder,typeof" page="index.jsp"/>
+    <mm:redirect referids="$referids,contact,currentfolder,typeof" page="index.jsp"/>
 </mm:present>
 
 <mm:notpresent referid="action2">
@@ -80,40 +100,40 @@
 
 <%-- user may edit if he's a teacher of this portfolio's owner--%>
 <mm:isgreaterthan referid="user" value="0">
-<di:hasrole role="teacher">
-    <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
-         <mm:import id="mayeditthis" reset="true">true</mm:import>
+    <di:hasrole role="teacher">
+        <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+             <mm:import id="mayeditthis" reset="true">true</mm:import>
+        </mm:list>
+    </di:hasrole>
+
+    <%-- user may edit if he's the owner and this is not the assessment portfolio --%>
+    <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder and portfolios.m_type != 1" max="1">
+        <mm:import id="mayeditthis" reset="true">true</mm:import>
     </mm:list>
-</di:hasrole>
 
-<%-- user may edit if he's the owner and this is not the assessment portfolio --%>
-<mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder and portfolios.m_type != 1" max="1">
-    <mm:import id="mayeditthis" reset="true">true</mm:import>
-</mm:list>
+    <mm:compare referid="mayeditthis" value="true">
+    <%-- edit the content of the object --%>
+    <mm:node number="$currentitem">
+    <mm:present referid="action1">
+          <mm:fieldlist fields="title?,name?,description?,url?,text?,filename?,handle?">
+            <mm:fieldinfo type="useinput" />
+          </mm:fieldlist>
+    </mm:present>
 
-<mm:compare referid="mayeditthis" value="true">
-<%-- edit the content of the object --%>
-<mm:node number="$currentitem">
-<mm:present referid="action1">
-      <mm:fieldlist fields="title?,name?,description?,url?,text?,filename?,handle?">
-        <mm:fieldinfo type="useinput" />
-      </mm:fieldlist>
-</mm:present>
+    <mm:import id="numrelations"><mm:countrelations type="portfoliopermissions"/></mm:import>
+    <mm:compare referid="numrelations" value="0">
+        <mm:createnode type="portfoliopermissions" id="permissions"/>
+        <mm:createrelation source="currentitem" destination="permissions" role="related"/>
+    </mm:compare>
 
-<mm:import id="numrelations"><mm:countrelations type="portfoliopermissions"/></mm:import>
-<mm:compare referid="numrelations" value="0">
-    <mm:createnode type="portfoliopermissions" id="permissions"/>
-    <mm:createrelation source="currentitem" destination="permissions" role="related"/>
-</mm:compare>
+    <mm:relatednodes type="portfoliopermissions" max="1">
+        <mm:fieldlist fields="readrights,allowreactions">
+            <mm:fieldinfo type="useinput" />
+        </mm:fieldlist>
+    </mm:relatednodes>
 
-<mm:relatednodes type="portfoliopermissions" max="1">
-    <mm:fieldlist fields="readrights,allowreactions">
-        <mm:fieldinfo type="useinput" />
-    </mm:fieldlist>
-</mm:relatednodes>
-
-</mm:node>
-</mm:compare>
+    </mm:node>
+    </mm:compare>
 
 </mm:isgreaterthan>
 
@@ -261,7 +281,8 @@
       </mm:node>
       <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>"/>
       <input type="hidden" name="currentitem" value="<mm:write referid="currentitem"/>"/>
-      <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
+      <input type="hidden" name="contact" value="<mm:write referid="contact"/>"/>
+     <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
       <tr><td>
       <mm:compare referid="mayeditthis" value="true"><input class="formbutton" type="submit" name="action1" value="<fmt:message key="SAVE" />" /></mm:compare>
       <input class="formbutton" type="submit" name="action2" value="<fmt:message key="BACK" />" />
@@ -295,6 +316,7 @@
       <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>"/>
       <input type="hidden" name="currentitem" value="<mm:write referid="currentitem"/>"/>
       <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
+      <input type="hidden" name="contact" value="<mm:write referid="contact"/>"/>
  
         
             <input type="hidden" name="add_message" value="1">
