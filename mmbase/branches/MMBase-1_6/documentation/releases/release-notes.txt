@@ -23,6 +23,8 @@ NEW FEATURES:
 General New Features:
 --------------------
 
+[1.6.3]
+
 [1.6.2]
  - getRelatedNodes speedup, avoiding databasequeries when casting to actual type
  - Inheritance support in relations. It is possible to define
@@ -67,6 +69,7 @@ General New Features:
 Documentation New Features:
 --------------------------
 
+[1.6.3]
 [1.6.2] 
 - Chunked output. This takes very long. Put
   docbook.stylesheet=xhtml/docbook.xsl in build.properties, for
@@ -79,6 +82,7 @@ Documentation New Features:
 ---------------------
 MMCI New Features:
 ---------------------
+[1.6.3]
 [1.6.2]
 - Inheritance support in getAllowed relations
 
@@ -101,6 +105,7 @@ MMCI New Features:
 -------------------
 Taglib New Features:
 -------------------
+[1.6.3]
 [1.6.2]
 [1.6.1]
 [1.6.0]
@@ -113,6 +118,7 @@ Taglib New Features:
 ---------------------
 Examples New Features:
 ---------------------
+[1.6.3]
 [1.6.2]
 - jsp editors use MMCI 1.2 features now (getAllowedRelations etc), and use their error-page
 - new version of my_editors
@@ -128,6 +134,8 @@ BUG FIXES AND IMPROVEMENTS:
 ------------------
 General Bug Fixes:
 ------------------
+
+[1.6.3]
 
 [1.6.2]
  - Bytearray fields are not queried by default any more this was resulting in
@@ -168,6 +176,8 @@ General Bug Fixes:
 Application bug fixes:
 ---------------------
 
+[1.6.3]
+
 [1.6.2]
 - Errors during installation of an application will be displayed in
 the resultpage. 
@@ -179,6 +189,9 @@ the resultpage.
 ------------------
 Security Bug Fixes:
 ------------------
+
+[1.6.3]
+-  #5976  mm:relatednodes doesn't check read rights of destination node 
 
 [1.6.2]
 - #5396  context-security. No sensible error if user does not exist. 
@@ -197,6 +210,7 @@ Security Bug Fixes:
 MMCI Bug Fixes:
 ----------------
 
+
 [1.6.2]
 - #5568 getAllowedRelations(NodeManager nodeManager, String role,
   String direction) fails to allow relation between two same types 
@@ -213,6 +227,9 @@ RMMCI Bug Fixes:
 ----------------
 Taglib Bug Fixes:
 ----------------
+
+[1.6.3]
+-  #5979  FieldInfo's NodeHandler implements check for NodeManager wrong 
 
 [1.6.2]
 - #5587  TEI-class for Fieldinfo tag.    
@@ -242,6 +259,9 @@ Example Bug Fixes:
 ========
 Upgrade:
 ========
+[1.6.3]
+- Replace mmbase.jar
+
 [1.6.2]
 - Replace mmbase.jar
 - upgrade jsp-editors
@@ -264,6 +284,9 @@ the builders:
 ========================
 Known Issues and Problems:
 ========================
+[1.6.3]
+ - No new issues.
+
 [1.6.2]
 - XXXX The jsp-editor update might also have solved the tomcat 4.0 issue?
 - Builder inheritance fails with
@@ -413,7 +436,7 @@ Applicationservers
 ------------------
 - Tomcat 4.0.4 (although Tomcat 4.1.x is recommended because it's a lot faster than 4.0.x)
 - Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
-logfiles in this version, catalina.out and localhost_log), 4.1.17, 4.1.18
+logfiles in this version, catalina.out and localhost_log), 4.1.17, 4.1.18, 4,1,21
 - Orion 1.5.2, 1.5.4, 1.6.0 (experimental)
 - Jetty 4.0.0
 - Resin 2.1.0, Resin 2.1.4 (Taglib attribute problems, filed as bug #3823 in
