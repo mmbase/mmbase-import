@@ -1,15 +1,15 @@
-<?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module>
 
   <!-- <status>
-	what is the status of this builder options : active or inactive
+    what is the status of this builder options : active or inactive
   -->
   <status>active</status>
 
 
   <!-- <classfile>
-	main classfile that this module is defined in
+    main classfile that this module is defined in
   -->
   <classfile>org.mmbase.module.gui.html.MMEdit</classfile>
 
