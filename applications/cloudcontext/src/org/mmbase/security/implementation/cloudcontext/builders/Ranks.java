@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.7 2003-09-24 21:11:02 michiel Exp $
+ * @version $Id: Ranks.java,v 1.8 2003-09-24 22:30:29 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -75,6 +75,13 @@ public class Ranks extends MMObjectBuilder {
                 // this tells us why.                
                 throw new SecurityException("Cannot insert rank '" + name + "', because there is already is a rank with rank weight " + rank + " (" + r + ")");
             }
+            if(r.toString().equals(name)) {
+                // there is a unique key on name so insert will have failed.
+                // this tells us why.                           
+                throw new SecurityException("Cannot insert rank '" + name + "', because there is already a rank with that name");
+            }
+
+            // TODO, fix core!  peculiar checks, only because core give unclear messages!! 
         }
         Rank.createRank(rank, name);      
         return res;
@@ -127,8 +134,9 @@ public class Ranks extends MMObjectBuilder {
 
     //javadoc inherited
     public void setDefaults(MMObjectNode node) {
-        setUniqueValue(node, "name", "rank");
-        setUniqueValue(node, "rank", 200);        
+        // does not work because setValue disallowes changing
+        //setUniqueValue(node, "name", "rank");
+        //setUniqueValue(node, "rank", 200);        
     }
 
 
