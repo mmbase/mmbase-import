@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.7 2003-08-01 11:03:27 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.8 2003-08-04 20:19:09 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -80,7 +80,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     }
 
-    public static void addConstraint(Query query, String field, int operator, String stringValue) throws JspTagException {
+    public static FieldConstraint addConstraint(Query query, String field, int operator, String stringValue) throws JspTagException {
         Object compareValue;
         if (operator < FieldCompareConstraint.LIKE) {
             try {
@@ -95,7 +95,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         } else {
             compareValue = stringValue;
         }
-        Constraint newConstraint;
+        FieldConstraint newConstraint;
         StepField stepField = query.createStepField(field);
         log.debug(stepField);
         if (stepField == null) log.warn("Could not create stepfield with '" + field + "'");
@@ -103,12 +103,12 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
             log.debug("compositing constraint");
-            newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            Constraint compConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            query.setConstraint(compConstraint);
+        } else {
+            query.setConstraint(newConstraint);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("setting constraint " + newConstraint);
-        }
-        query.setConstraint(newConstraint);
+        return newConstraint;
 
     }
 
