@@ -251,6 +251,15 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
         if (syncbul != null) {
             JarEntry je = jf.getJarEntry(path);
+	    if (je == null) {
+		if (path.indexOf('/') != -1 ) {
+			path.replace('/','\\');
+		}
+		if (path.indexOf('\\') != -1 ) {
+			path.replace('\\','/');
+		}
+                je = jf.getJarEntry(path);
+	    }
             if (je != null) {
                 try {
                     InputStream input = jf.getInputStream(je);

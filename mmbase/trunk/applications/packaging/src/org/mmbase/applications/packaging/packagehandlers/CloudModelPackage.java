@@ -328,6 +328,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
                 // fill the config...
                 JarEntry je = jf.getJarEntry("builders/" + name + ".xml");
+                if (je == null) je = jf.getJarEntry("builders\\" + name + ".xml");
                 try {
                     InputStream input = jf.getInputStream(je);
 

@@ -43,7 +43,7 @@ public class PackageVersionContainer {
      * @param  p  Description of the Parameter
      */
     public PackageVersionContainer(PackageInterface p) {
-        packages.put(p.getProvider(), p);
+
         version = p.getVersion();
     }
 
@@ -165,9 +165,9 @@ public class PackageVersionContainer {
      */
     public PackageInterface getPackageByScore() {
         PackageInterface winner = null;
-        Iterator e = packages.keySet().iterator();
+        Iterator e = packages.values().iterator();
         while (e.hasNext()) {
-            PackageInterface p = (PackageInterface) e.next();
+            PackageInterface p = (PackageInterface)e.next();
             if (winner == null) {
                 winner = p;
             } else if (p.getProvider().getBaseScore() > winner.getProvider().getBaseScore()) {
