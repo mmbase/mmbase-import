@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.277 2004-11-01 12:44:40 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.278 2004-11-01 12:48:07 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3247,26 +3247,6 @@ public class MMObjectBuilder extends MMTable {
         if (!localObservers.contains(obs)) {
             localObservers.addElement(obs);
         }
-        return true;
-    }
-
-    /**
-     * Adds a remote observer to this builder.
-     * The observer is notified whenever an object of this builder is changed, added, or removed.
-     * @return always <code>true</code>
-     */
-    public boolean removeRemoteObserver(MMBaseObserver obs) {
-        remoteObservers.removeElement(obs);
-        return true;
-    }
-
-    /**
-     * Adds a local observer to this builder.
-     * The observer is notified whenever an object of this builder is changed, added, or removed.
-     * @return always <code>true</code>
-     */
-    public boolean removeLocalObserver(MMBaseObserver obs) {
-        localObservers.removeElement(obs);
         return true;
     }
 
