@@ -25,49 +25,75 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 
 	public void receive( String msg ) {
 		debug("#"+msg);
+
 		IrcMessage im = new IrcMessage(msg);
 		msg=im.getMessage();
-		if(msg.toLowerCase().indexOf("mmbeest")!=-1) { 
-			com.sendPublic("Ahum, my name is MMBase not MMBeest");
-		}
-		if(msg.toLowerCase().indexOf("hi mmbase")!=-1) { 
-			com.sendPublic("Hi "+im.getFromNick());
-		}
-
-		try {
 		StringTokenizer st = new StringTokenizer(msg);
-		String name = st.nextToken(); 
-		if(name.equals("mmbase")) {
-			String number = st.nextToken();
-			String antwoord = "";
-			while (st.hasMoreTokens()) {
-				antwoord+=st.nextToken()+" ";
+
+		if(st.hasMoreTokens()) {
+			String firstToken=st.nextToken();
+
+			if(firstToken.equals("mmbase")) {
+				String secondToken=st.nextToken();
+
+				if(secondToken.equals("say")) {
+					String antwoord = "";
+					while (st.hasMoreTokens()) {
+						antwoord+=st.nextToken()+" ";
+					}
+					com.sendPublic(antwoord);
+				}
+
+				if(secondToken.equals("tell")) {
+				}
+
+				if(secondToken.equals("answer")) {
+					try { 
+						st.nextToken(); //to
+						st.nextToken(); //question
+						// resolve number
+						String number = st.nextToken();
+						st.nextToken(); //is
+						// resolve answer
+						String antwoord = "";
+						while (st.hasMoreTokens()) {
+							antwoord+=st.nextToken()+" ";
+						}
+						addAnswerToQuestion(number, antwoord);
+					} catch (Exception e) {
+						com.sendPrivate(im.getFromNick(),"Syntax of message is wrong, it should be mmbase answer to question x is ...");
+					}
+				}
 			}
-			MMObjectNode answer = answers.getNewNode("irc");
-			answer.setValue("body",antwoord);
-			answer.insert("irc");
-			number2answer.put(number,answer);
 
-			//create relations
-			debug(""+(answer.getValue("number")));
-			int rnumber = mmbase.InsRel.getGuessedNumber("related");
-			debug("rnumber"+new Integer(rnumber));
-			debug(""+answer);
-			MMObjectNode question = (MMObjectNode)number2question.get(number);
-			debug(""+new Integer(question.getIntValue("number")));
-
-			mmbase.InsRel.insert("irc",answer.getIntValue("number"),question.getIntValue("number"),rnumber);
-			
-		}
-		} catch (Exception e) {
-			System.out.println(e);
- 			e.printStackTrace();
-
+			if(msg.toLowerCase().indexOf("mmbeest")!=-1) { 
+				com.sendPublic("Ahum, my name is MMBase not MMBeest");
+			}
+		
+			if(msg.toLowerCase().indexOf("hi mmbase")!=-1) { 
+				com.sendPublic("Hi "+im.getFromNick());
+			}
 		}
 	}
 
-	private void debug( String msg )
-	{
+	/**
+	 * add answer to question
+	 */
+	private void addAnswerToQuestion(String number, String antwoord) {
+		// create answer
+		MMObjectNode answer = answers.getNewNode("irc");
+		answer.setValue("title",antwoord);
+		answer.setValue("body",antwoord);
+		answer.insert("irc");
+		number2answer.put(number,answer);
+
+		// make relation between question and answer
+		int rnumber = mmbase.InsRel.getGuessedNumber("related");
+		MMObjectNode question = (MMObjectNode)number2question.get(number);
+		mmbase.InsRel.insert("irc",answer.getIntValue("number"),question.getIntValue("number"),rnumber);
+	}
+
+	private void debug( String msg ) {
 		System.out.println( classname +":"+ msg );
 	}
 
