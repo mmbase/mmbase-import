@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.25 2004-07-19 15:22:42 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.26 2004-11-12 21:58:27 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -194,6 +194,23 @@
   <escaper id="trimmer">
     <class>org.mmbase.util.transformers.Trimmer</class>    
     <info>Trims leading and trailing whitespace</info>
+  </escaper>
+
+  <escaper id="cp1252">
+    <class>org.mmbase.util.transformers.CP1252Surrogator</class>    
+    <info>
+      Escapes the CP1252 characters which are not in ISO-8859-1. You don't want to serve your
+      pages as CP1252 (it is not a standard encoding). It is adviceable to do it using UTF-8, but if
+      you really want to use ISO-8859-1, you can create reasonable surrogates by this (nicer then question marks).
+    </info>
+  </escaper>
+
+  <escaper id="cp1252wrong">
+    <class config="WRONG_ENCODED">org.mmbase.util.transformers.CP1252Surrogator</class>    
+    <info>
+      Escapes	the CP1252 characters, but suppose that the String was originally wrongly encoded
+      (CP1252 bytes were incorrectly supposed ISO-8859-1)
+    </info>	
   </escaper>
 
   <!-- The content-tag then can 'postprocess' everything in its body.
