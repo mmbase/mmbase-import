@@ -18,7 +18,7 @@
   <property file="${source.dir}/build.properties"/> <!-- use the same overriding -->
 
   <property name="build.dir"            value="${source.dir}/build" />
-  <property name="dowload.dir"          value="${build.dir}/download" />
+  <property name="download.dir"         value="${build.dir}/download" />
   <property name="expand.dir"           value="${download.dir}/expanded" />
 
   <property name="source-config.dir"    value="${source.dir}/config"/>
