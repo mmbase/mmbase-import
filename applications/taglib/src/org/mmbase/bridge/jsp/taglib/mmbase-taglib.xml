@@ -187,7 +187,7 @@ See mmexamples/taglib for more elaborated examples.
   <info>
     <p>
       These are the MMBase tags which relate to the MMBase security
-      system. 
+      system.
     </p>
   </info>
   </type>
@@ -1169,45 +1169,45 @@ See mmexamples/taglib for more elaborated examples.
       <name>loginpage</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>      
+      <refercontext>true</refercontext>
       <info>
         <p>
             You can use the loginpage attribute to specify the (relative) path to a security login page.
             i.e.:
         <pre>
-        <![CDATA[               
+        <![CDATA[
             <mm:cloud name="mmbase" loginpage="login.jsp">
             ...
             </mm:cloud>
         ]]>
         </pre>
             The attribute has effect whenever someone who is not already logged on to the cloud requests the page containing the cloud tag.
-            In that case, the tag checks whether the page has been called with a predefined set of parameters. 
+            In that case, the tag checks whether the page has been called with a predefined set of parameters.
         </p>
         <p>
-            If the page was called with the 'command' parameter set to 'login', the tag assumes a request is being made to log on using the parameters passed. 
+            If the page was called with the 'command' parameter set to 'login', the tag assumes a request is being made to log on using the parameters passed.
             The actual names of the parameter passed differs by security method chosen, which is defined by the 'authenticate' attribute.
             For instance, with authenticate method 'username/password', the following additional parameters are recognized:
-            
-            
+
+
             cloud: similar to the cloudtag's 'name' attribute
             username: similar to the  cloudtag's 'logon' attribute
             password: similar to the  cloudtag's 'pwd' attribute
 
             If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
-            This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page. 
+            This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
             The page may also implement its own method of authentication.
 
-            The 'command=login' parameter has no effect when the loginpage attribute was not specified.      
+            The 'command=login' parameter has no effect when the loginpage attribute was not specified.
         </p>
         <p>
         The page should link page to the page which is supplied in the reference parameter.
         The login page itselve should have a parameter 'command' with value 'login', 'authenticate' with the authentication method which is wanted.
         Additional parameters will be passed to the underlying security implementation.
-        
+
         A simple login page could contain the following jsp-code:
         <pre>
-        <![CDATA[              
+        <![CDATA[
         <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"%>
         <html>
         <mm:import externid="referrer" required="true" />
@@ -1225,7 +1225,7 @@ See mmexamples/taglib for more elaborated examples.
             <input type="text" name="username" value="">
             <br />
             <input type="password" name="password" value="">
-            <br />        
+            <br />
             <input type="submit" name="Login" value="login">
         </form>
         </html>
@@ -1403,13 +1403,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 &lt;mm:cloud method="logout" /&gt;
 &lt;% response.sendRedirect("http://my_host/my_page.jsp"); %&gt;
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/cloud.jsp.1" />
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/cloud.jsp.2" />
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/logout.jsp.1" />
     </example>
   </tag>
@@ -1762,16 +1762,16 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
   &lt;mm:import id="hoi_again"&gt;greetings from hilversum&lt;/mm:import&gt;
   &lt;mm:write referid="hoi_again" /&gt;
 &lt;/mm:context&gt;</example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/context.jsp.1" />
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/context.jsp.2" />
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/context.jsp.3" />
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/context.jsp.4" />
     </example>
   </tag>
@@ -2573,7 +2573,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <info>
         The id of the variable to be removed>
-      </info>      
+      </info>
     </attribute>
     <example>
      Set variable 'a' to something.
@@ -2877,14 +2877,14 @@ like the parameter list or the session (where ever it is available) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
     <info>
       Checks if parent writer, or contextvar, is not empty.
-    </info>    
+    </info>
     <attribute>
       <name>referid</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="compare" attribute="referid" />
     </attribute>
-    <example>         
+    <example>
           &lt;mm:field name="html(title)"&gt;
             &lt;mm:isempty&gt;
               No title!
@@ -2927,7 +2927,7 @@ like the parameter list or the session (where ever it is available) --&gt;
           &lt;/mm:isempty&gt;
         &lt;/mm:field&gt;
      </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/empty.jsp" />
     </example>
   </tag>
@@ -3353,7 +3353,6 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>treeinclude</name>
     <type>util</type>
     <extends>include</extends>
-    <extends>treefile</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeIncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
@@ -3400,6 +3399,15 @@ like the parameter list or the session (where ever it is available) --&gt;
         </ul>
       </p>
     </info>
+    <attribute>
+      <name>objectlist</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+                 The list of objects
+        </info>
+    </attribute>
     <see tag="include" />
     <see tag="treefile" />
     <see tag="leafinclude" />
@@ -3411,7 +3419,6 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>leafinclude</name>
     <type>util</type>
     <extends>include</extends>
-    <extends>leaffile</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafIncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
@@ -3419,6 +3426,15 @@ like the parameter list or the session (where ever it is available) --&gt;
       The only difference is when Treeinclude cannot find a file to include. In that case,
       Leafinclude will use the type of the nodes from the objectlist to find a file to include.
     </info>
+    <attribute>
+      <name>objectlist</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+                 The list of objects
+        </info>
+    </attribute>
     <see tag="include" />
     <see tag="leaffile" />
     <see tag="param" />
@@ -3474,7 +3490,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       This tag performs XSL and other transformations.
     </info>
     <attribute>
-      <name>xslt</name>       
+      <name>xslt</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
@@ -3615,7 +3631,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     </info>
     <extends>contextreader</extends>
     <see tag="formatter" />
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/xsltinline.jsp" />
     </example>
   </tag>
@@ -3697,7 +3713,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <example>
       &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
     </example>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/timelocale.jsp" />
     </example>
     <example>
@@ -3719,7 +3735,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       Logs the body or creates a Logger variable in it.  You can log
       to the MMBase log with this.  It logs its body on 'service'
       within the category 'org.mmbase.PAGE.LOGTAG', followed by the file name
-      of the JSP which is executed. 
+      of the JSP which is executed.
     </info>
     <attribute>
       <name>jspvar</name>
@@ -3798,7 +3814,7 @@ The 0 is just counter, which starts at 0 on every page.
         A jspvar of type Locale can be created.
       </info>
     </attribute>
-    <example>     
+    <example>
       <include base="examples.taglib" href="codesamples/timelocale.jsp" />
     </example>
   </tag>
