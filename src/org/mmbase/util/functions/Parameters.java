@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.7 2004-03-05 12:34:46 michiel Exp $
+ * @version $Id: Parameters.java,v 1.8 2004-05-27 17:04:10 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -45,7 +45,10 @@ public class Parameters extends AbstractList implements List  {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
-            if ( ! Arrays.equals(a.definition, def))  throw new IllegalArgumentException("Given parameters '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
+            Parameter[] resolvedDef = (Parameter []) define(def, new ArrayList()).toArray(new Parameter[0]); // resolve the wrappers
+            if ( ! Arrays.equals(a.definition, resolvedDef))  {
+                throw new IllegalArgumentException("Given parameters '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
+            }
         } else {
             a = new Parameters(def, args);
         }
@@ -101,7 +104,8 @@ public class Parameters extends AbstractList implements List  {
         }
     }
     /**
-     * If you happen to have a List of parameters, then you can wrap it into an Parameters with this constructor
+     * If you happen to have a List of parameters, then you can wrap it into an Parameters with this constructor.
+     * 
      * @throws NullPointerException if definition is null
      * @see #Parameters(Parameter[])
      */
@@ -293,6 +297,7 @@ public class Parameters extends AbstractList implements List  {
     public Map toMap() {
         return Collections.unmodifiableMap(backing);
     }
+
 
 
 }
