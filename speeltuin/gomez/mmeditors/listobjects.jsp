@@ -7,6 +7,7 @@
       String role = state.getProperty("role");
       String search = state.getProperty("search");
       Module mmlanguage = cloud.getCloudContext().getModule("mmlanguage");
+      NodeManager daymarks = cloud.getNodeManager("daymarks");
   %>
   <mm:import id="nodetype"><%=managerName%></mm:import>
   <head>
@@ -16,20 +17,15 @@
 <%@include file="css/mmeditors.css" %>     
     </style>
   </head>
-  <body>
+  <body> V2.
     <mm:import externid="offset" vartype="Integer" jspvar="offset">0</mm:import>
     <mm:import externid="max" vartype="Integer" jspvar="max">20</mm:import>
 <mm:import externid="search_age" />
 <mm:import id="age_constraint" />
 <mm:isnotempty referid="search_age">
-   <mm:remove referid="age_constraint" />     
-   <mm:import id="daycount_constraint"> [daycount] <=  <mm:write referid="search_age" jspvar="maxage" vartype="integer"><%=(int)(System.currentTimeMillis()/(1000*60*60*24)) - maxage.intValue()%></mm:write></mm:import>
-   <mm:listnodes type="daymarks" constraints="$daycount_constraint" max="1" orderby="daycount" directions="DOWN">
-      <mm:import id="age_constraint"> [number] >= <mm:field name="mark" /></mm:import>
-   </mm:listnodes>
-    <mm:notpresent referid="age_constraint">
-     <mm:import id="age_constraint"> [number] = -1 </mm:import><!-- will not find a thing -->
-   </mm:notpresent>
+   <mm:remove referid="age_constraint" />
+   <mm:import id="age_constraint" >[number] >= <mm:write referid="search_age" jspvar="maxage" vartype="integer"
+       ><%=daymarks.getInfo("COUNTAGE-"+maxage)%></mm:write></mm:import>
 </mm:isnotempty>
 <mm:import id="constraint"><mm:context
   ><mm:fieldlist id="search_form" nodetype="$nodetype" type="search"
