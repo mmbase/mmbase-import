@@ -28,8 +28,9 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.23 2001-04-25 09:50:11 pierre Exp $
+* @version $Id: JamesServlet.java,v 1.24 2001-04-25 11:19:32 vpro Exp $
 */
+
 
 public class JamesServlet extends HttpServlet {
 
@@ -400,13 +401,16 @@ public class JamesServlet extends HttpServlet {
             if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
             else { s.refCount++; s.URIs.addElement(URL); }
         }// sync
-        /*
+        
         if ((printCount & 31)==0) {
-            debug("Running servlets: "+curCount);
-            for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
-                System.out.println(e.nextElement());
+			if (curCount>0) {
+	            log.info("Running servlets: "+curCount);
+	            for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
+	                log.info(e.nextElement());
+				}
+			}
         }
-        */
+       
     }
 
     /**
