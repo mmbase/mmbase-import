@@ -178,5 +178,33 @@ public abstract class NodeTest extends TestCase {
             fail(e.toString());
         }
     }
+    
+    public void testSetContext() {
+        try {
+            String context = node.getContext();
+            String otherContext = context;
+            StringIterator possibleContexts = node.getPossibleContexts().stringIterator();
+            while (possibleContexts.hasNext()) {
+                String listContext = possibleContexts.nextString();              
+                if (! context.equals(listContext)){
+                    otherContext = listContext;
+                    break;
+                }
+            }
+            if (otherContext.equals(context)) {
+                System.err.println("TESTWARNING testSetContext: Could not find other context than " + context);
+            }
+
+            // set context to something different:
+            node.setContext(otherContext);
+
+            // now, the new context must be equal to otherContext
+            assert(otherContext.equals(node.getContext()));
+
+        } catch (Exception e){
+            fail(e.toString());
+        }
+        
+    }
 
 }
