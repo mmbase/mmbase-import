@@ -8,7 +8,7 @@ import java.util.HashMap;
  *  This class is NOT a container class for client related stuff, altrough 
  *  this is possible.
  */
-public class UserContext {
+public class UserContext implements org.mmbase.bridge.User {
     /** Container for login information */
     private HashMap properties= new HashMap();
     
