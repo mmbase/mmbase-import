@@ -17,9 +17,9 @@ import org.mmbase.util.logging.*;
  * The relative time value has to be provided as either one integer value (representing the time in milliseconds),
  * or as a set of time attribute integers (hours,minutes,seconds and milliseconds).
  *
- * @application SCAN (INFO, AnnotRel builder)
+ * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.6 2004-09-30 14:07:13 pierre Exp $
+ * @version $Id: RelativeTime.java,v 1.7 2004-10-12 11:17:44 pierre Exp $
  */
 public class RelativeTime {
 
