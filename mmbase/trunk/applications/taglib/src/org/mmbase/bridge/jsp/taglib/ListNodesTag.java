@@ -15,6 +15,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.SortOrder;
+import java.util.List;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,14 +25,14 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.15 2003-10-13 08:34:22 keesj Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.16 2003-11-05 15:50:59 pierre Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
     private static final Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
     protected Attribute type      = Attribute.NULL;
-    protected Attribute container = Attribute.NULL; 
+    protected Attribute container = Attribute.NULL;
 
 
     public void setContainer(String c) throws JspTagException {
@@ -64,7 +66,7 @@ public class ListNodesTag extends AbstractNodeListTag {
         if (c == null || type != Attribute.NULL) {
             if (type == Attribute.NULL) {
                 throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
-            }            
+            }
             nodeManager = getCloud().getNodeManager(type.getString(this));
             NodeList nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
             return nodes;
@@ -74,10 +76,16 @@ public class ListNodesTag extends AbstractNodeListTag {
 
             Queries.addConstraints(query, (String) constraints.getValue(this));
             Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
-
             NodeList nodes = getCloud().getList(query);
+
+            // get orderby value fro mm:changed tag
+            List ls = query.getSortOrders();
+            if (ls.size()>0) {
+                orderby = getAttribute(((SortOrder)ls.get(0)).getField().getFieldName());
+            }
+
             return nodes;
-        }        
+        }
     }
 
     /**

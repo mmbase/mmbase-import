@@ -15,6 +15,9 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Query;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+import java.util.List;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.33 2003-09-08 12:05:13 michiel Exp $ 
+ * @version $Id: ListTag.java,v 1.34 2003-11-05 15:50:59 pierre Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -131,7 +134,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory if referid not speficied");
             }
-            
+
             String searchString = search.getString(this).toUpperCase();
             if (searchString.equals("")) {
                 searchString="BOTH";
@@ -143,7 +146,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                 throw new JspTagException("Search should be one of BOTH, SOURCE, "+
                                           "DESTINATION, EITHER, or ALL (value found was " + searchString + ")");
             }
-            
+
             String distinctString = distinct.getString(this);
             boolean searchDistinct = false;
             if ("true".equals(distinctString) || "yes".equals(distinctString)) {
@@ -164,19 +167,26 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                                                 searchDistinct);
             return setReturnValues(nodes, true);
         } else {   // container found!
-            if (constraints != Attribute.NULL || 
-                orderby != Attribute.NULL || 
-                directions != Attribute.NULL || 
-                fields != Attribute.NULL || 
-                path != Attribute.NULL || 
-                nodes != Attribute.NULL  || 
+            if (fields != Attribute.NULL ||
+                path != Attribute.NULL ||
+                nodes != Attribute.NULL  ||
                 distinct != Attribute.NULL ||
                 search != Attribute.NULL) {
-                throw new JspTagException("Extra attributes not supported in container-referrer use");
+                throw new JspTagException("fields, path, nodes, distinct and search attributes not supported within a container.");
                 // (some of these could be implemented)
             }
             Query query = (Query) c.getQuery();
+            Queries.addConstraints(query, (String) constraints.getValue(this));
+            // doesn't work yet (needs NodeQuery)
+            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+
             NodeList nodes = getCloud().getList(query);
+            // get orderby value fro mm:changed tag
+            List ls = query.getSortOrders();
+            if (ls.size()>0) {
+                StepField sf= ((SortOrder)ls.get(0)).getField();
+                orderby = getAttribute(sf.getStep().getAlias()+'.'+sf.getFieldName());
+            }
             return setReturnValues(nodes, true);
         }
     }
