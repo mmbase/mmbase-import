@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.36 2002-06-28 12:49:16 pierre Exp $
+ * @version $Id: Wizard.java,v 1.37 2002-06-28 21:20:39 michiel Exp $
  *
  */
 public class Wizard {
@@ -348,7 +348,7 @@ public class Wizard {
         Validator.validate(preform, schema);
         Map params = new HashMap();
         params.put("ew_context", context);
-        params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
+        // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
         params.put("sessionkey", sessionKey);
         params.put("referrer", referrer);
