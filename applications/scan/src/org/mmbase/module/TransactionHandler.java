@@ -39,6 +39,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
+	private static Upload upload = null;
 	private static String version="2.3.4";
 
 	// Cashes all transactions belonging to a user.
@@ -66,6 +67,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	public void init(){
 		if (_debug) debug(">> init TransactionHandler Module version " + version, 0);
 		mmbase=(MMBase)getModule("MMBASEROOT");
+		upload=(Upload)getModule("upload");
  		sessions = (sessionsInterface)getModule("SESSION");
 		tmpObjectManager = new TemporaryNodeManager(mmbase);
 		transactionManager = new TransactionManager(mmbase,tmpObjectManager);
@@ -522,7 +524,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 		for (int k = 0; k < fieldContextList.getLength(); k++) {
 			String fieldName = null;
-			String fieldValue = "";
+			Object fieldValue = "";
 					
 			Node fieldContext = fieldContextList.item(k);
 			if (fieldContext.getNodeName().equals("#text")) continue;
@@ -537,17 +539,24 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				if (fieldName==null) {
 					 throw new TransactionHandlerException("<setField name=\"fieldname\">value</setField> is missing the NAME attribute!");
 				}
-				Node setFieldValue = fieldContext.getFirstChild();
-				if(setFieldValue!=null) {
-					fieldValue = setFieldValue.getNodeValue();
+
+				// Is value set by url? Or just between the setField tags?
+				currentObjectArgumentNode = nm3.getNamedItem("url");
+				if (currentObjectArgumentNode != null) {
+					String url = currentObjectArgumentNode.getNodeValue();
+					fieldValue = upload.getFile(url);
+					upload.deleteFile(url);
+					if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + url, 3);
+				} else {
+
+					Node setFieldValue = fieldContext.getFirstChild();
+					if(setFieldValue!=null) {
+						fieldValue = setFieldValue.getNodeValue();
+					}
+					if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
 				}
-				if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
 				userTransactionInfo.trace.addTrace("setField " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3, true);
 		
-				//check that we are inside object context
-				//if (currentObjectContext == null) {
-				//	 throw new TransactionHandlerException(oId + " set field " + fieldName + " to " + fieldValue);
-				//}
 				try {
 					tmpObjectManager.setObjectField(userTransactionInfo.user.getName(),currentObjectContext, fieldName, fieldValue);
 				} catch (Exception e) {
