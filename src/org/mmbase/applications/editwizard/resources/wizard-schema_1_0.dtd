@@ -92,6 +92,7 @@
 <!ATTLIST field fdatapath CDATA #IMPLIED >
 <!ATTLIST field dttype NMTOKEN #IMPLIED >
 <!ATTLIST field ftype NMTOKEN #IMPLIED >
+<!ATTLIST field size NMTOKEN #IMPLIED >
 <!ATTLIST field name CDATA #IMPLIED >
 <!ATTLIST field rows NMTOKEN #IMPLIED >
 <!ATTLIST field inline NMTOKEN #IMPLIED >
