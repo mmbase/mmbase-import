@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
 %><%@ page import="org.mmbase.applications.editwizard.SecurityException,org.mmbase.applications.editwizard.Config"
@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.4 2002-05-07 13:37:57 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.5 2002-05-15 09:51:37 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -39,10 +39,10 @@
 
         // which parameter to use to configure a wizard page
         public void config(Config.WizardConfig c) {
-            c.objectNumber = getParam("objectnumber");        
+            c.objectNumber = getParam("objectnumber");
         }
     }
-        
+
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
 Configurator configurator; // Fills the ewconfig if necessary.
 
@@ -69,11 +69,15 @@ log.trace("done setting headers");
 String instanceName = request.getParameter("instanceName");
 if (instanceName == null) instanceName = "editwizard";
 
-boolean proceed = "yes".equals(request.getParameter("proceed")) || (request.getParameter("popup") != null);
+// proceed with the current wizard only if explicitly stated,
+// if this page is a popup, or if this page is a debug page
+
+boolean proceed = "yes".equals(request.getParameter("proceed")) ||
+                  (request.getParameter("popup") != null) ||
+                  (request.getRequestURI().endsWith("debug.jsp"));
 
 // Look if there is already a configuration in the session.
 Object configObject = session.getAttribute(instanceName);
-
 if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) { // nothing (ok) in the session
     log.debug("creating new configuration (in session is " + configObject + ")");
     ewconfig = new Config();
@@ -87,23 +91,23 @@ log.trace("backpage in config is " + refer);
 
 if (request.getParameter("logout") != null) {
     %><mm:cloud method="logout" /><%
-    // what to do if 'logout' is requested? 
+    // what to do if 'logout' is requested?
     // return to the deeped backpage and clear the session.
     log.debug("logout parameter given, clearing session");
     session.removeAttribute(instanceName);
     log.debug("Redirecting to " + refer);
     if (! refer.startsWith("http:")) {
         refer = response.encodeURL(request.getContextPath() + refer);
-    } 
+    }
     response.sendRedirect(refer);
     return;
-} 
+}
 
 ewconfig.sessionKey = instanceName;
 configurator = new Configurator(request, response, ewconfig);
 
 // removing top page from the session
-if (request.getParameter("remove") != null) { 
+if (request.getParameter("remove") != null) {
     log.debug("Removing top object requested from " + request.getHeader("Referer"));
     if(ewconfig.subObjects.size() > 0) ewconfig.subObjects.pop();
     String redir;
@@ -119,7 +123,7 @@ if (request.getParameter("remove") != null) {
     log.debug("Redirecting to " + redir);
     response.sendRedirect(redir);
     return;
-} 
+}
 
 log.service("Doing for wizard " + ewconfig.wizard);
 log.debug("Stack "            + ewconfig.subObjects);
