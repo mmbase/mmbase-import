@@ -10,19 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.util.List;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
-import java.util.List;
+import org.mmbase.util.logging.*;
+
 
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.1 2003-07-21 15:24:50 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.2 2003-07-21 15:45:48 michiel Exp $
  */
 public class BasicQuery implements Query {
+
+    private static Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
     BasicSearchQuery query = new BasicSearchQuery();
 
@@ -61,7 +65,7 @@ public class BasicQuery implements Query {
     }
 
     public RelationStep addRelationStep(RelationManager rm) {
-        InsRel insrel =   (InsRel)    BasicCloudContext.mmb.getBuilder("" + ((BasicRelationManager)rm).getBuilder());
+        InsRel insrel =  (InsRel) ((BasicRelationManager)rm).builder;
         MMObjectBuilder otherBuilder = ((BasicNodeManager) rm.getDestinationManager()).builder;        
         return query.addRelationStep(insrel, otherBuilder);
     }
