@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.17 2003-04-18 10:06:01 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.18 2003-04-18 10:30:27 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -188,7 +188,14 @@ public class MultiConnection implements Connection {
      */
     public void close() throws SQLException {
         if (log.isDebugEnabled()) {
-            log.debug("SQL querytimer measures " + (System.currentTimeMillis() - getStartTimeMillis()) + " mSec for query: " + getLastSQL());
+            StringBuffer mes = new StringBuffer();
+            long time = System.currentTimeMillis() - getStartTimeMillis();
+            if (time < 10) mes.append(' ');
+            if (time < 100) mes.append(' ');
+            if (time < 1000) mes.append(' ');
+            mes.append(time);
+            mes.append(" ms: ").append(getLastSQL());
+            log.debug(mes.toString());
         }
         state=CON_FINISHED;
         parent.putBack(this);
