@@ -1,4 +1,4 @@
-body.basic { background-image: url("/mmadmin/jsp/images/back.gif");
+body.basic { background-image: url("/mmadmin/jsp/images/background.gif");
        background-color: white;
        background-repeat: repeat-y;
        margin-top: 1em;
@@ -16,8 +16,7 @@ a:active { color: yellow; }
 
 table   { width : 93%; }
 
-td { padding : 2;
-	 vertical-align : top;
+td { vertical-align : top;
      horizontal-align : left;	
      border-width: 1;		
 }	

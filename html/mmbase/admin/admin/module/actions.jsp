@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String module = request.getParameter("module"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -38,7 +38,7 @@
    }
 %>
 <tr align="left">
- <th class="header" colspan="5">Description of <%=module%></td>
+ <th class="header" colspan="5">Description of <%=module%></th>
 </tr>
 <tr>
  <td class="multidata" colspan="5">
@@ -50,9 +50,9 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-<th class="header">Setting</td>
-  <th class="header" colspan="3">Value</td>
-  <th class="header" >Change</td>
+<th class="header">Setting</th>
+  <th class="header" colspan="3">Value</th>
+  <th class="header" >Change</th>
 </tr>
 <tr>
  <td class="data">Classfile</td>
@@ -65,9 +65,9 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-<th class="header">Property</td>
-  <th class="header" colspan="3">Value</td>
-  <th class="header">Change</td>
+<th class="header">Property</th>
+  <th class="header" colspan="3">Value</th>
+  <th class="header">Change</th>
 </tr>
 <%
     NodeList props=mmAdmin.getList("MODULEPROPERTIES-"+module,null,request,response);
@@ -78,7 +78,7 @@
  <td class="data"><%=prop.getStringValue("item1")%></td>
  <td class="data" colspan="3"><%=prop.getStringValue("item2")%>&nbsp;</td>
  <td class="navigate">
-    <a href="setproperty.jsp?module=<%=module%>&property=<%=prop.getStringValue("item1")%>"><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    <a href="setproperty.jsp?module=<%=module%>&property=<%=prop.getStringValue("item1")%>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -88,7 +88,7 @@
  <td class="data">add new</td>
  <td class="data" colspan="3">&nbsp;</td>
  <td class="navigate">
-    <a href="newproperty.jsp?module=<%=module%>"><img src="../../images/pijl.gif" alt="add" border="0" align="right" /></a>
+    <a href="newproperty.jsp?module=<%=module%>"><img src="../../images/next.gif" alt="add" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -96,9 +96,9 @@
 
 <form action="result.jsp" method="POST">
 <tr align="left">
-<th class="header">Action</td>
-  <th class="header" colspan="3">Path</td>
-  <th class="header">Confirm</td>
+<th class="header">Action</th>
+  <th class="header" colspan="3">Path</th>
+  <th class="header">Confirm</th>
 </tr>
 <tr>
  <td class="data">Save</td>
@@ -120,9 +120,9 @@
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
 <tr align="left">
-<th class="header">Action</td>
-  <th class="header" colspan="3">Status</td>
-  <th class="header" >View</td>
+<th class="header">Action</th>
+  <th class="header" colspan="3">Status</th>
+  <th class="header" >View</th>
 </tr>
 <tr>
  <td class="data">XML-check</td>
@@ -145,7 +145,7 @@
 <% } %>
 
 <tr>
-<td class="navigate"><a href="../modules.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../modules.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Module Overview</td>
 </tr>
 </table>

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
    String name=request.getParameter("name");
@@ -28,13 +28,13 @@
 %>
 <table summary="builder field property data" width="93%" cellspacing="1" cellpadding="3">
 <tr align="left">
-  <th class="header">Property</td>
+  <th class="header">Property</th>
   <% if (cmd.equals("newguiname")) { %>
-    <th class="header">Country Code / Value</td>
+    <th class="header">Country Code / Value</th>
   <% } else { %>
-    <th class="header">Value</td>
+    <th class="header">Value</th>
   <% } %>
-  <th class="header">Change</td>
+  <th class="header">Change</th>
 </tr>
 
 <form action="field.jsp" method="POST">
@@ -78,7 +78,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="field.jsp?builder=<%=builder%>&field=<%=field%>"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="field.jsp?builder=<%=builder%>&field=<%=field%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Builder Field Administration</td>
 </tr>
 </table>

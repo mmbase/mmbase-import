@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String builder = request.getParameter("builder"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -42,7 +42,7 @@
    }
 %>
 <tr align="left">
- <th class="header" colspan="5">Description of <%=builder%></td>
+ <th class="header" colspan="5">Description of <%=builder%></th>
 </tr>
 <tr>
  <td class="multidata" colspan="5">
@@ -54,9 +54,9 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-<th class="header">Setting</td>
-  <th class="header" colspan="2">Value</td>
-  <th class="header" colspan="2">Change</td>
+<th class="header">Setting</th>
+  <th class="header" colspan="2">Value</th>
+  <th class="header" colspan="2">Change</th>
 </tr>
 <tr>
  <td class="data">Classfile</td>
@@ -69,11 +69,11 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-<th class="header">Field</td>
-  <th class="header">Name</td>
-  <th class="header">Type</td>
-  <th class="header">Size</td>
-  <th class="header">More</td>
+<th class="header">Field</th>
+  <th class="header">Name</th>
+  <th class="header">Type</th>
+  <th class="header">Size</th>
+  <th class="header">More</th>
 </tr>
 <%
     NodeList fields=mmAdmin.getList("FIELDS-"+builder,null,request,response);
@@ -86,7 +86,7 @@
  <td class="data"><%=field.getStringValue("item3")%></td>
  <td class="data"><%=field.getStringValue("item4")%></td>
  <td class="navigate">
-    <a href="field.jsp?builder=<%=builder%>&field=<%=field.getStringValue("item2")%>"><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    <a href="field.jsp?builder=<%=builder%>&field=<%=field.getStringValue("item2")%>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -97,7 +97,7 @@
  <td class="data">&nbsp;</td>
  <td class="data">&nbsp;</td>
  <td class="navigate">
-    <a href="newfield.jsp?builder=<%=builder%>"><img src="../../images/pijl.gif" alt="add new" border="0" align="right" /></a>
+    <a href="newfield.jsp?builder=<%=builder%>"><img src="../../images/next.gif" alt="add new" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -105,9 +105,9 @@
 
 <form action="result.jsp" method="POST">
 <tr align="left">
-<th class="header">Action</td>
-  <th class="header" colspan="2">Path</td>
-  <th class="header" colspan="2">Confirm</td>
+<th class="header">Action</th>
+  <th class="header" colspan="2">Path</th>
+  <th class="header" colspan="2">Confirm</th>
 </tr>
 <tr>
  <td class="data">Save</td>
@@ -129,9 +129,9 @@
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
 <tr align="left">
-<th class="header">Action</td>
-  <th class="header" colspan="2">Status</td>
-  <th class="header" colspan="2">View</td>
+<th class="header">Action</th>
+  <th class="header" colspan="2">Status</th>
+  <th class="header" colspan="2">View</th>
 </tr>
 <tr>
  <td class="data">XML-check</td>
@@ -154,7 +154,7 @@
 <% } %>
 
 <tr>
-<td class="navigate"><a href="../builders.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../builders.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Builder Overview</td>
 </tr>
 </table>

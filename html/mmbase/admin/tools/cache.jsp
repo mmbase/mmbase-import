@@ -18,8 +18,7 @@
 %>
 
 <tr align="left">
-  <th class="header" colspan="2">Cache Monitor - v1.0
-</td>
+  <th class="header" colspan="2">Cache Monitor - v1.0</th>
 </tr>
 <tr>
   <td class="multidata" colspan="2"><p>This tools hows the performance of the various MMBase caches.</p></td>
@@ -53,7 +52,7 @@
 <tr>
   <td class="data">Show first 500 entry's of the cache</td>
   <td class="navigate">
-    <a href="cache/multilevelcache.jsp"><img src="../images/pijl.gif" alt="next" border="0" align="right"></a>
+    <a href="cache/multilevelcache.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 
@@ -85,7 +84,7 @@
 <tr>
   <td class="data">Show first 1000 entry's of the cache</td>
   <td class="navigate">
-    <a href="cache/nodecache.jsp"><img src="../images/pijl.gif" alt="next" border="0" align="right"></a>
+    <a href="cache/nodecache.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 
@@ -114,7 +113,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>

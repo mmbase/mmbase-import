@@ -11,7 +11,7 @@
 
 <table summary="license information" width="93%" cellspacing="1" cellpadding="3" border="0">
 <tr align="left">
-  <th class="header" colspan="2">MMBase Basic Editors</td>
+  <th class="header" colspan="2">MMBase Basic Editors</th>
 </tr>
 <tr>
   <td class="multidata" colspan="2">
@@ -24,18 +24,18 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header" colspan="2">URL</td>
+  <th class="header" colspan="2">URL</th>
 </tr>
 <tr>
   <td class="linkdata" colspan="2"><a href="/edit" target="editors">The MMBase Editors (SCAN) : http://host:port/edit</a></td>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="/mmeditors/jsp/">The MMBase Editors (jsp) : http://host:port/mmeditiors/jsp/</a></td>
+  <td class="linkdata" colspan="2"><a href="/mmeditors/jsp/">The MMBase Editors (jsp) : http://host:port/mmeditiors/jsp/</a> (coming soon)</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>
