@@ -39,7 +39,7 @@ public class CrontabModule extends WatchedReloadableModule {
      * whatever you like most.
      <pre>
       &lt;cron time&gt;
-      &lt;class name of a JCronJob&gt;
+      &lt;class name of a CronJob&gt;
       [&lt;description&gt;] 
       [&lt;configuration-string&gt;] 
       </pre>

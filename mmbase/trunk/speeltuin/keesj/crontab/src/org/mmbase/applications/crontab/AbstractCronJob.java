@@ -14,31 +14,28 @@ package org.mmbase.applications.crontab;
  * @author Michiel Meeuwissen
  */
 
-
 public abstract class AbstractCronJob implements CronJob {
 
-    protected CronEntry jCronEntry;
+    protected CronEntry cronEntry;
 
     /**
      * {@inheritDoc}
      * Only stores the JCronEntry in protected member jCronEntry
      */
-    public void init(CronEntry j) {
-        jCronEntry = j;
+    public void init(CronEntry cronEntry) {
+        this.cronEntry = cronEntry;
         init();
     }
 
     /**
      * You can init by overriding this too (no need to call super.init)
      */
-    protected void init() {
-    }
+    protected void init() {}
 
     /**
      * Empty implementation (probably that's what you want)
      */
-    public void stop() {
-    }
+    public void stop() {}
 
     /**
      * Implement this.
