@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 * class. 
 *
 * @author Michiel Meeuwissen 
-**/
+*/
 
 public abstract class CloudReferrerTag extends BodyTagSupport {
 	
@@ -45,10 +45,17 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     /**
      * If there are more clouds to choose from, you can have a 'cloud'
      * attribute in your tag, in wich you can indicate the id of the
-     * cloud you mean.
-     *
-     **/
+     * cloud you mean.    
+     */
     public void setCloud(String c) {
+        cloudId = c;
+    }
+
+    /**
+     * You can also call it context, if you prefer.
+     */
+
+    public void setContext(String c) {
         cloudId = c;
     }
     
@@ -58,7 +65,6 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     * REMARK: the CloudTag does not yet have 'id', i think. We dont'
     * have multiple cloud support yet.
     * @return the CloudTag if found, else an exception.
-    *
     */
 	
     protected CloudProvider findCloudProvider() throws JspTagException {
@@ -96,7 +102,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
      * findCloudProvider every time.
      *
      * @return a Cloud
-     **/
+     */
 
     protected Cloud getCloudProviderVar() throws JspTagException {
         if (cloudTag == null) {
@@ -105,10 +111,20 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
         return cloudTag.getCloudVar();
     }
 
+    protected Object getObject(String id) throws JspTagException {
+        if (cloudTag == null) {
+            cloudTag = findCloudProvider();
+        }
+        return cloudTag.getObject(id);
+    }
+    protected String getString(String id) throws JspTagException {
+        return (String) getObject(id);
+    }
+
 
     /**
     * @return the cloud context 
-    **/
+    */
     protected CloudContext getCloudContext(){
         if (cloudContext == null){
             cloudContext = LocalContext.getCloudContext();
