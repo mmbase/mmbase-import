@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: JamesServlet.java,v 1.7 2000-05-01 14:21:06 wwwtech Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.servlet;
 
 // import the needed packages
@@ -16,6 +21,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.Properties;
 import org.mmbase.util.*;
 
 
@@ -23,6 +29,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
+* @version $Id: JamesServlet.java,v 1.7 2000-05-01 14:21:06 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -41,12 +48,14 @@ class DebugServlet {
 	}
 	
 	public String toString() {
-		return classname +" servlet("+servlet+"), refcount("+refCount+"), uri's("+URIs+")"; 
+		return classname +" servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")"; 
 	}
 }
 	
 public class JamesServlet extends HttpServlet {
-
+    public String classname = getClass().getName();
+    public boolean debug = true;
+    public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	// org.mmbase
 
 	static String outputfile=null;
@@ -75,7 +84,6 @@ public class JamesServlet extends HttpServlet {
 		return(Module.getModule(name));
 	}	
 
-
 	/**
 	 *
 	 */ 
@@ -84,15 +92,12 @@ public class JamesServlet extends HttpServlet {
 		return(null);
 	}
 
-
 	/**
 	 *
 	 */ 
 	protected final Hashtable getInitParameters() {
 		return(null);
 	}
-
-
 
 	/**
 	 * Gets properties. If allowed
@@ -108,7 +113,6 @@ public class JamesServlet extends HttpServlet {
 		return(null);
 	}
 
-
 	/**
 	* Try to get the default authorisation 
 	* @exception Exception throws an AuthorisationFailedException if
@@ -118,9 +122,6 @@ public class JamesServlet extends HttpServlet {
 	public String getAuthorization(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		return(HttpAuth.getAuthorization(req,res,"www","Basic"));
 	}
-
-
-
 
 	/** 
 	 * Authenticates a user, If the user cannot be authenticated a login-popup will appear
@@ -133,30 +134,98 @@ public class JamesServlet extends HttpServlet {
 			return(HttpAuth.getAuthorization(req,res,server,level));
 	} 
 
+	/**
+	 * getCookie: This method retrieves the users' MMBase cookie name & value as 'name/value'.
+	 * When the cookie can't be found, a new cookie will be added.
+	 * When an old James cookie is found, the related MMBaseProperty 'value' field will be replaced 
+	 * with a new MMBase cookie name & value. The cookies domain will be implicit or explicit 
+	 * depending on the MMBASEROOT.properties value. 
+	 * @param req The HttpServletRequest. 
+	 * @param res The HttpServletResponse.
+	 * @return A String with the users' MMBase cookie as 'name/value' or null when MMBase core module 
+	 * can't be found, or when the MMBase cookie is located but can't be retrieved from the cookies list.
+	 */
+	public String getCookie(HttpServletRequest req, HttpServletResponse res) {
 
-    public String getCookie(HttpServletRequest req, HttpServletResponse res)
-    {
-		String name=null;
+		String methodName = "getCookie"; 
+		String HEADERNAME = "COOKIE";
+		String JAMES_COOKIENAME = "James_Ident";
+		String MMBASE_COOKIENAME = "MMBase_Ident"; 
+		String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";
+		String PATH = "/";
+		String domain = null;
+		// debug(methodName+": Getting cookies from request header");
+		String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
-        String string1 = req.getHeader("Cookie");
-        if (string1 == null || string1.indexOf("James_Ident=") == -1)
-        {
-            string1 = "James_Ident=" + System.currentTimeMillis();
-	            //res.setHeader("Set-Cookie", string1 + "; path=/; expires=Sunday, 09-Dec-99 23:59:59 GMT");
-	            res.setHeader("Set-Cookie", string1 + "; path=/; expires=Sunday, 09-Dec-2020 23:59:59 GMT");
-        	return (string1.replace('=','/'));
-            // bug fix, daniel 23 Okt return string1;
-        }
-        int i = string1.indexOf("James_Ident=");
-        String string2 = string1.substring(i);
-		//System.out.println(string2);
-        if (string2.indexOf(59) != -1)
-            string2 = string2.substring(0, string2.indexOf(59));
+		if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
+			// debug(methodName+": User has a "+MMBASE_COOKIENAME+" cookie, returning it now.");
+			StringTokenizer st = new StringTokenizer(cookies, ";");
+			while (st.hasMoreTokens()) { 
+				String cookie = st.nextToken().trim();
+				if (cookie.startsWith(MMBASE_COOKIENAME)) { // Return the first cookie with a MMBASE_COOKIENAME.
+					return cookie.replace('=','/');
+				}
+			}
+			System.out.println("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
+			return null;
+		} else {
+			debug(methodName+": User has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
+			MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
+			if (mmbase == null) {
+				System.out.println("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
+				return null;
+			}
 
-        //fix to return just one cookiie line return string1;
-//		System.out.println("Cookie="+string2.replace('=','/'));
-        return (string2.replace('=','/'));
-    }
+			String mmbaseCookie = MMBASE_COOKIENAME+"="+System.currentTimeMillis();
+			domain = mmbase.getCookieDomain();
+			if (domain == null) {
+				// debug(methodName+": Using implicit domain.");
+				res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; expires="+FUTUREDATE));
+			} else {
+				// debug(methodName+": Using explicit domain: "+domain);
+				res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; domain="+domain+"; expires="+FUTUREDATE));
+			}
+
+			if ((cookies!= null) && (cookies.indexOf(JAMES_COOKIENAME) != -1)) {
+
+				// Change all old JAMES cookie entries in the properties table to MMBASE cookie values.
+				// eg. key:'SID' value: 'James_Ident/936797541271' gets value: 'Mmbase_Ident/curtimemillis#'
+
+				Properties propBuilder = null;
+				propBuilder = (Properties) mmbase.getMMObject("properties");
+				if (propBuilder==null) {
+					System.out.println("JamesServlet:"+methodName+": ERROR: propBuilder="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary.");
+				}
+				StringTokenizer st = new StringTokenizer(cookies, ";");
+				while (st.hasMoreTokens()) {
+					String cookie = st.nextToken().trim();
+					if (cookie.startsWith(JAMES_COOKIENAME)) {
+
+						// Change the value field of the related property to the mmbaseIdent value.
+						debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
+						Enumeration e = propBuilder.search("WHERE key='SID' AND value='"+cookie.replace('=','/')+"'");
+						if (e.hasMoreElements()) {
+							MMObjectNode propNode = (MMObjectNode)e.nextElement();
+							propNode.setValue("value", mmbaseCookie.replace('=','/'));
+							propNode.commit();
+						}			
+
+						/* Skipping expiry of old cookie for now.
+						DateFormat formatter=new SimpleDateFormat("EEEE, dd-MMM-yyyy HH:mm:ss 'GMT'", Locale.US);
+						formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+						Date d = new Date(System.currentTimeMillis()+24*3600*1000);
+						String expires = formatter.format(d);
+						System.out.println("newGC: Found 'old' cookie: "+cookie+" setting new expiry to: "+expires);
+						res.setHeader("Set-Cookie", (cookie+"; path="+PATH+"; expires="+expires));
+						*/
+					}
+				}
+			} else {
+				// debug(methodName+": User has no "+JAMES_COOKIENAME+" also, *new user*");
+			}
+			return mmbaseCookie.replace('=','/');
+		}
+	}
 
 
 	/**
@@ -234,8 +303,8 @@ public class JamesServlet extends HttpServlet {
 			if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
 			else { s.refCount++; s.URIs.addElement(URL); }
 		}// sync
-		if ((printCount & 15)==0) {
-			System.out.println("Running servlets: "+curCount);
+		if ((printCount & 31)==0) {
+			debug("Running servlets: "+curCount);
 			for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
 				System.out.println(e.nextElement());
 		}
