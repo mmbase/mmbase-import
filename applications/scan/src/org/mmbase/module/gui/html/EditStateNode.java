@@ -113,16 +113,6 @@ public class EditStateNode {
 
 	public void setEditNode(String number,String userName) {
 		node = mmObjectBuilder.getNode(number);
-		// fix pop name to overide to username
-		if (node!=null) {
-			String ow=node.getStringValue("owner");
-			if (ow.equals("pop")) {
-				node.setValue("owner",userName);
-				node.clearChanged();
-
-				debug("setEditNode("+number+","+userName+"): Replaced owner 'pop' with owner '+userName+'");
-			}	
-		}
 		editNode = number;
 	}
 

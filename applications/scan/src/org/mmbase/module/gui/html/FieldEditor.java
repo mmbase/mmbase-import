@@ -136,7 +136,10 @@ public class FieldEditor implements CommandHandlerInterface {
 		int type=def.getDBType();
 		String value=(String)cmds.get("EDIT-SETFIELDVALUE-"+fieldname);
 		MMObjectNode node=ed.getEditNode();
-		if (node!=null) node.setValue( fieldname, type, value );
+		if (node!=null) {
+			node.setValue( fieldname, type, value );
+			replaceOwner(ed,node);
+		}
 		return(true);
 	}
 
@@ -147,7 +150,10 @@ public class FieldEditor implements CommandHandlerInterface {
 		FieldDefs def=obj.getField(fieldname);
 		int type=def.getDBType();
 		MMObjectNode node=ed.getEditNode();
-		if (node!=null) node.setValue( fieldname, type, value );
+		if (node!=null) {
+			node.setValue( fieldname, type, value );
+			replaceOwner(ed,node);
+		}
 		return("");
 	}
 
@@ -305,6 +311,20 @@ public class FieldEditor implements CommandHandlerInterface {
 		return(-1);
 	}
 
+
+ 	private void replaceOwner(EditState ed,MMObjectNode node) {
+ 		// fix pop name to overide to username
+ 		if (node!=null) {
+ 
+ 			String ow=node.getStringValue("owner");
+ 			String userName=ed.getUser();
+ 			if (ow.equals("pop")) {
+ 				node.setValue("owner",userName);
+ 
+ 				System.out.println("FieldEditor -> replaceOwner("+node.getValue("number")+","+userName+"): Replaced owner 'pop' with owner '"+userName+"'");
+ 			}	
+ 		}
+ 	}
 
 	/**
 	 * getFile: This method creates a byte array using the specified filepath argument.

@@ -21,7 +21,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.7 2000-10-05 11:21:13 vpro Exp $
+ * @version $Id: EditState.java,v 1.8 2000-11-06 12:40:12 vpro Exp $
  */
 public class EditState {
 
@@ -32,8 +32,10 @@ public class EditState {
 	Vector nodes=new Vector();
 	EditStateNode curNode;
 	MMBase mmBase;
+
+	private String user;
 	
-	public EditState(MMBase mmBase) {
+	public EditState(String user,MMBase mmBase) {
 		if( mmBase != null )
 		{
 			this.mmBase=mmBase;
@@ -41,6 +43,11 @@ public class EditState {
 		}
 		else
 			debug("EditState("+mmBase+"): ERROR: MMBase is not valid!");
+		if (user!=null) {
+			this.user=user;
+		} else {
+			debug("EditState("+user+"): ERROR: User is not valid");
+		}
 	}
 
 	public boolean pushState() {
@@ -330,6 +337,7 @@ public class EditState {
 	}
 
 	public boolean addRelation(String owner) {
+		boolean result=false;
 		// relations are not saved by themself but saved or dropped
 		// by there caller !!
 		int pos=nodes.indexOf(curNode);		
@@ -337,9 +345,12 @@ public class EditState {
 		EditStateNode node2=(EditStateNode)nodes.elementAt(pos-1);
 		if (node2!=null) {
 			debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
+			mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
+			result=true;
+		} else {
+ 			debug("addRelation("+owner+"): ERROR: src("+src+"), pos("+pos+"), cannot create relation from "+node2+" to "+src+" reltype 2");
 		}
-		mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
-		return(true);
+		return(result);
 	}
 
 	public boolean getInsSave() {
@@ -364,5 +375,9 @@ public class EditState {
 
 	public String getLanguage() {
 		return(mmBase.getLanguage());
+	}
+
+	public String getUser() {
+		return(user);
 	}
 }
