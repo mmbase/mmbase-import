@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.14 2002-06-24 15:37:18 michiel Exp $
+ * @version $Id: Generator.java,v 1.15 2002-06-25 17:18:38 michiel Exp $
  */
 public class Generator {
 
@@ -42,6 +42,7 @@ public class Generator {
         DOMImplementation impl = documentBuilder.getDOMImplementation();        
         this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects",  "-//MMBase/DTD objects config 1.0//EN", "http://www.mmbase.org/dtd/objects_1_0.dtd"));
         this.cloud = cloud;
+        if (cloud != null) addCloud();
         this.document.getDocumentElement().setAttribute("xmlns", "http://www.mmbase.org/objects");
         //Element rootElement = document.createElement("objects");
         //document.appendChild(rootElement);
@@ -90,7 +91,11 @@ public class Generator {
             return e.toString();
         }
     }
-    
+
+
+    private void addCloud() {
+        document.getDocumentElement().setAttribute("cloud", cloud.getName());
+    }
     
     /**
      * Adds a field to the DOM Document. This means that there will
@@ -101,7 +106,7 @@ public class Generator {
     public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
         if (cloud == null) {
             cloud = node.getCloud();
-            document.getDocumentElement().setAttribute("cloud", cloud.getName());    
+            addCloud();
         }
 
         Element object = getNode(node);
