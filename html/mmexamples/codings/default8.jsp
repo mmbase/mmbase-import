@@ -2,6 +2,7 @@
        pageEncoding="UTF-8" contentType="text/html;charset=utf-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:import externid="postprocessor">reducespace</mm:import><mm:content type="text/html" postprocessor="$postprocessor">
+<mm:import externid="cite">false</mm:import>
 <mm:cloud>
 <html>
   <head>
@@ -91,11 +92,11 @@
       <h2>Including XML's</h2>
       <p><em>With mm:include (iso-8859-1 xml):</em></p>
 <pre>
-<mm:include page="included1.xml" escape="text/xml" />
+<mm:include page="included1.xml" escape="text/xml" cite="$cite" />
 </pre>
       <p><em>With mm:include (UTF-8 xml):</em></p>
 <pre>
-<mm:include page="included8.xml" escape="text/xml" />
+<mm:include page="included8.xml" escape="text/xml" cite="$cite" />
 </pre>
       <p><em>With jsp:include (iso-8859-1 xml):</em></p>
 <pre>
