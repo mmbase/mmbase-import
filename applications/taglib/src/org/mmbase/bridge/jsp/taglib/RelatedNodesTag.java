@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.26 2003-09-08 12:05:13 michiel Exp $ 
+ * @version $Id: RelatedNodesTag.java,v 1.27 2003-11-05 15:50:59 pierre Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -37,7 +37,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     protected Attribute role      = Attribute.NULL;
     protected Attribute searchDir = Attribute.NULL;
 
-    protected Attribute container = Attribute.NULL; 
+    protected Attribute container = Attribute.NULL;
 
 
     public void setContainer(String c) throws JspTagException {
@@ -87,23 +87,23 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (parentNode == null) {
                 throw new JspTagException("Could not find parent node!!");
             }
-            
+
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.addNode(step1, parentNode);
-            
+
             NodeManager otherManager;
             if (type == Attribute.NULL) {
                 otherManager = cloud.getNodeManager("object");
             } else {
                 otherManager = cloud.getNodeManager(type.getString(this));
             }
-            
+
             RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
             Step step3 = step2.getNext();
-            
+
             query.setNodeStep(step3);  // makes it ready for use as NodeQuery
-            
+
             Queries.addConstraints(query, (String) constraints.getValue(this));
             Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
         } else {
@@ -111,11 +111,15 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             query = (NodeQuery) c.getQuery();
             Queries.addConstraints(query, (String) constraints.getValue(this));
             Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
-
         }
-                                           
+
         NodeList nodes = cloud.getList(query);
 
+        // get orderby value fro mm:changed tag
+        List ls = query.getSortOrders();
+        if (ls.size()>0) {
+            orderby = getAttribute(((SortOrder)ls.get(0)).getField().getFieldName());
+        }
         return setReturnValues(nodes, true);
     }
 }

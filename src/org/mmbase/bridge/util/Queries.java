@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.7 2003-09-16 18:50:42 michiel Exp $
+ * @version $Id: Queries.java,v 1.8 2003-11-05 15:50:59 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -41,7 +41,7 @@ public class Queries {
      *
      * It can also be simply handy to specify things as Strings.
      */
-    public static Query createQuery(Cloud cloud,                            
+    public static Query createQuery(Cloud cloud,
                                     String startNodes,
                                     String nodePath,
                                     String fields,
@@ -51,7 +51,7 @@ public class Queries {
                                     String searchDir,
                                     boolean distinct) {
 
-        
+
         {
             // the bridge test case say that you may also specifiy empty string (why?)
             if ("".equals(startNodes))
@@ -110,8 +110,8 @@ public class Queries {
     }
 
 
-    /** 
-     * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) 
+    /**
+     * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
      * This is used by createQuery (i wonder if it still makes sense)
      */
     static private boolean validConstraints(String constraints) {
@@ -265,7 +265,7 @@ public class Queries {
         if (constraint != null) {
             log.debug("compositing constraint");
             Constraint compositeConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-            query.setConstraint(compositeConstraint);           
+            query.setConstraint(compositeConstraint);
         } else {
             query.setConstraint(newConstraint);
         }
@@ -278,7 +278,7 @@ public class Queries {
      * @todo implement for normal query.
      * @return The new sort orders
      */
-    public static List addSortOrders(NodeQuery query, String sorted, String directions) {
+    public static List addSortOrders(Query query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
         if (sorted == null) return query.getSortOrders().subList(0, 0);
         if (directions == null) {
@@ -286,24 +286,22 @@ public class Queries {
         }
         List list = query.getSortOrders();
         int initialSize = list.size();
-       
+
         StringTokenizer sortedTokenizer     = new StringTokenizer(sorted, ",");
         StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
-        
-        Step step = query.getNodeStep();
-        NodeManager nodeManager = query.getNodeManager();
-        
+
         while (sortedTokenizer.hasMoreTokens()) {
             String    fieldName = sortedTokenizer.nextToken().trim();
             int dot = fieldName.indexOf('.');
-            
+
             StepField sf;
-            if (dot == -1) {
-                sf = query.getStepField(nodeManager.getField(fieldName));
+            if (dot == -1 && query instanceof NodeQuery) {
+                NodeManager nodeManager = ((NodeQuery)query).getNodeManager();
+                sf = ((NodeQuery)query).getStepField(nodeManager.getField(fieldName));
             } else {
-                sf =  query.createStepField(fieldName);
+                sf = query.createStepField(fieldName);
             }
-            
+
             int dir = SortOrder.ORDER_ASCENDING;
             if (directionsTokenizer.hasMoreTokens()) {
                 String direction = directionsTokenizer.nextToken().trim();
@@ -360,8 +358,8 @@ public class Queries {
 
         String searchDir = null; // outside the loop, so defaulting to previous searchDir
         while (pathTokenizer.hasMoreTokens()) {
-            String completeToken = pathTokenizer.nextToken().trim();                          
-            String token      = removeDigits(completeToken); 
+            String completeToken = pathTokenizer.nextToken().trim();
+            String token      = removeDigits(completeToken);
 
             if (searchDirsTokenizer.hasMoreTokens()) {
                  searchDir = searchDirsTokenizer.nextToken();
@@ -382,7 +380,7 @@ public class Queries {
                 if (! nodeManagerName.equals(nodeManagerAlias)) {
                     Step next = relationStep.getNext();
                     query.setAlias(next, nodeManagerAlias);
-                }                
+                }
             } else {
                 NodeManager nodeManager  = cloud.getNodeManager(token);
                 Step step = query.addRelationStep(nodeManager, null, searchDir);
@@ -402,12 +400,12 @@ public class Queries {
      *
      */
     public static int count(Query query) {
-        Cloud cloud = query.getCloud();       
-        Query count = query.aggregatingClone();        
+        Cloud cloud = query.getCloud();
+        Query count = query.aggregatingClone();
         Step step = (Step) (count.getSteps().get(0));
-        count.addAggregatedField(step, 
-                                 cloud.getNodeManager(step.getTableName()).getField("number"), 
-                                 AggregatedField.AGGREGATION_TYPE_COUNT);        
+        count.addAggregatedField(step,
+                                 cloud.getNodeManager(step.getTableName()).getField("number"),
+                                 AggregatedField.AGGREGATION_TYPE_COUNT);
         Node result = (Node) cloud.getList(count).get(0);
         return result.getIntValue("number");
     }
