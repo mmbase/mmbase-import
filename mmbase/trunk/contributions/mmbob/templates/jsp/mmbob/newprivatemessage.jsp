@@ -2,12 +2,14 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBob</title>
 </head>
+<body>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -24,7 +26,12 @@
 </mm:present>
 <!-- end action check -->
 
-<center>
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+                                                                                              
+<div class="bodypart">
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3">Stuur prive bericht</th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
@@ -54,7 +61,14 @@
   	</form>
 	</td>
 	</tr>
-
-</mm:cloud>
 </table>
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                              
+</body>
 </html>
+</mm:content>
+</mm:cloud>

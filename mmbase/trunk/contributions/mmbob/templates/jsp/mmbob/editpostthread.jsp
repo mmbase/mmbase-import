@@ -2,12 +2,14 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBob</title>
 </head>
+<body>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -30,7 +32,11 @@
    <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
 </mm:nodefunction>
 
-<center>
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+                                                                                              
+<div class="bodypart">
 
 <mm:compare referid="ismoderator" value="false">
   <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">
@@ -100,5 +106,13 @@
   </table>
 </mm:compare>
 
-</mm:cloud>
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                              
+</body>
 </html>
+</mm:content>
+</mm:cloud>

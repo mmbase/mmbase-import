@@ -2,6 +2,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
@@ -10,6 +11,7 @@
    <script language="JavaScript1.1" type="text/javascript" src="js/smilies.js"></script>
 
 </head>
+<body>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -33,7 +35,12 @@
   </mm:field>
 </mm:node>
 
-<center>
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+                                                                                              
+<div class="bodypart">
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <mm:import externid="postingid" />
   
@@ -95,7 +102,17 @@
 	</td>
 	</tr>
 	</mm:present>
-
-</mm:cloud>
 </table>
+
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                              
+</body>
 </html>
+</mm:content>
+</mm:cloud>
+
+
