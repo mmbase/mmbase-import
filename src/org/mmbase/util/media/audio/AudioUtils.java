@@ -252,6 +252,7 @@ public class AudioUtils extends MediaUtils
 				//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
 				//url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
 				//Our Real server can't handle urlencoded strings, aargh.
+				author=makeRealCompatible(author);
 				url += "&author="+author;
 			}
 		} else
