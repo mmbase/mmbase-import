@@ -12,12 +12,17 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-
+import org.mmbase.util.logging.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
 */
 public class XMLContextDepthWriter  {
+
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(XMLContextDepthWriter.class.getName());
 
     public static boolean writeContext(XMLApplicationReader app,XMLContextDepthReader capp,String targetpath,MMBase mmb,Vector resultmsgs) {
 
@@ -39,7 +44,7 @@ public class XMLContextDepthWriter  {
 	try {
 		file.mkdirs();
 	} catch(Exception e) {
-		System.out.println("Can't create dir : "+targetpath+"/"+app.getApplicationName());
+		log.error("Can't create dir : "+targetpath+"/"+app.getApplicationName());
 	}
 
 	// write DataSources
@@ -107,7 +112,7 @@ public class XMLContextDepthWriter  {
 		// write the footer	
 		body+="</"+name+">\n";
 		String filename=targetpath+"/"+app.getApplicationName()+"/"+name+".xml";
-		System.out.println("Writing DataSource="+filename);
+		log.info("Writing DataSource="+filename);
 		saveFile(filename,body);
 	
 		resultmsgs.addElement("Saving "+nrofnodes+" "+name+" to : "+filename);
@@ -152,7 +157,16 @@ public class XMLContextDepthWriter  {
 					int dnumber=node.getIntValue("dnumber");
 	
 					// start the node
-					body+="\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+snumber+"\" dnumber=\""+dnumber+"\" rtype=\""+namedrel+"\">\n";
+					body+="\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+snumber+"\" dnumber=\""+dnumber+"\" rtype=\""+namedrel+"\"";
+
+					// add directionality if used					
+					if (InsRel.usesdir) {
+					    int dir=node.getIntValue("dir");
+					    body+=" dir=\""+dir+"\"";
+					}
+
+					body+=">\n";
+					
 					// write the values of the node
 					Hashtable values=node.getValues();	
 					Enumeration nd=values.keys();
@@ -160,7 +174,8 @@ public class XMLContextDepthWriter  {
 						String key=(String)nd.nextElement();
 		
 						if (!key.startsWith("_")) {
-							if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount") && !key.equals("snumber") && !key.equals("dnumber") && !key.equals("rnumber")) {
+							if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount") &&
+							    !key.equals("snumber") && !key.equals("dnumber") && !key.equals("rnumber") && !key.equals("dir")) {
 								body+="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
 							}
 						}
@@ -176,7 +191,7 @@ public class XMLContextDepthWriter  {
 		body+="</"+name+">\n";
 		String filename=targetpath+"/"+app.getApplicationName()+"/"+name+".xml";
 		resultmsgs.addElement("Saving "+nrofnodes+" "+name+" to : "+filename);
-		System.out.println("Writing RelationSource="+filename);
+		log.info("Writing RelationSource="+filename);
 		saveFile(filename,body);
 	}
    }	
@@ -227,7 +242,7 @@ public class XMLContextDepthWriter  {
 		if (value!=-1) {
 			results.addElement(new Integer(value));
 		} else {
-			System.out.println("XMLContextDepthWriter -> can't get intvalue for : "+name);
+			log.error("XMLContextDepthWriter -> can't get intvalue for : "+name);
 		}
 	}
 	return(results);
@@ -238,9 +253,10 @@ public class XMLContextDepthWriter  {
 	// check if it has a alias
 	String alias=capp.getStartAlias();
 	if (alias!=null) {
+        log.debug("alias ="+alias);
 		OAlias bul=(OAlias)mmb.getMMObject("oalias");
 		int number=bul.getNumber(alias);
-		if (number==-1) System.out.println("Invalid Start Node Alias please make sure its valid");
+		if (number==-1) log.error("Invalid Start Node Alias. Please make sure its valid");
 		return(number);
 	} else {
 		String builder=capp.getStartBuilder();
@@ -253,10 +269,10 @@ public class XMLContextDepthWriter  {
 				return(node.getIntValue("number"));
 			}
 		} else {
-			System.out.println("ContextDepthWriter-> can't find builder ("+builder+")");
+			log.error("ContextDepthWriter-> can't find builder ("+builder+")");
 		}
 	}
-	System.out.println("Invalid Start Node please fix your where settings or use a alias");
+	log.error("Invalid Start Node please fix your where settings or use a alias");
 	return(-1);
     }
 
@@ -315,7 +331,7 @@ public class XMLContextDepthWriter  {
 			try {
 				file.mkdirs();
 			} catch(Exception e) {
-				System.out.println("Can't create dir : "+targetpath+stype);
+				log.error("Can't create dir : "+targetpath+stype);
 			}
 			byte[] value=node.getByteValue(key);
 			saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);

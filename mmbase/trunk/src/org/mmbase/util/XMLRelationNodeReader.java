@@ -123,7 +123,24 @@ public class XMLRelationNodeReader  {
 							// figure out rnumber
 							int rnumber=reldef.getGuessedNumber(rname);
 							newnode.setValue("rnumber",rnumber);
-					
+							
+							// directionality
+							
+							if (InsRel.usesdir) {
+							    n4=nm.getNamedItem("dir");
+							    int dir=0;
+							    if (n4!=null) {
+							        dir=Integer.parseInt(n4.getNodeValue());
+							    } else {
+				                    MMObjectNode relnode = reldef.getNode(rnumber);
+				                    if (relnode!=null) {
+				                        dir = relnode.getIntValue("dir");
+				                    }
+							    }
+							    if (dir<=0) dir=2;
+				                newnode.setValue("dir",dir);
+							}
+							
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
