@@ -22,7 +22,7 @@ import org.mmbase.storage.util.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.11 2003-07-30 10:19:40 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.12 2003-07-31 09:53:36 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -198,6 +198,15 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         this.disallowedFields = new HashMap(disallowedFields);
     }
 
+    /**
+     * Obtains the identifier for the basic storage element.
+     * @return the storage-specific identifier
+     * @throws StorageException if the object cannot be given a valid identifier
+     */
+    public Object getStorageIdentifier() throws StorageException {
+        return getStorageIdentifier(mmbase);
+    }
+    
     /**
      * Obtains a identifier for an MMBase object.
      * The default implementation returns the following type of identifiers:
