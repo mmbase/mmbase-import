@@ -2438,7 +2438,6 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <attribute>
       <name>required</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
       <info>
     If this object is required to be present. If it has to be
     present, then the present tag will always evaluate. If nothing
@@ -2446,6 +2445,28 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     body is missing too, then an exception will follow if required
     is true.
     </info>
+    </attribute>
+    <attribute>
+      <name>reset</name>
+      <!-- Should this be a contextwriter attribute? -->
+      <required>false</required>
+      <info>
+        <p>
+          On default, this tag will throw an exception if the id to be
+          registered is registered already. This will protect you against
+          accidentely using the same id twice, thus obfuscating your
+          code.
+        </p>
+        <p>
+          If though you really want it then you can set the attribute
+          'reset' to true.
+        </p>
+        <p>
+          Consider also `scoping' your variables with a mm:context tag
+          (especially useful for includes and list bodies).
+        </p>
+      </info>
+      <see tag="context" />
     </attribute>
     <attribute>
       <name>from</name>
