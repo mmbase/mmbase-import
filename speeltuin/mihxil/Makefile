@@ -1,5 +1,3 @@
-
-
 # Buildfile to generate the NOS specific mmbase-taglib.tld (and .html)
 # Michiel Meeuwissen
 
