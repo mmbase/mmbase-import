@@ -151,6 +151,17 @@
 </mm:compare>
 
 
+<mm:compare value="addpackagescreenshot" referid="action">
+	<mm:import id="project" externid="name" />
+	<mm:import id="target" externid="bundle" />
+	<mm:notpresent referid="target"><mm:import id="target" externid="package" reset="true" /></mm:notpresent>
+	 <mm:import externid="newname" />
+	 <mm:import externid="newfile" />
+	 <mm:import externid="newdescription" />
+	 <mm:booleanfunction set="mmpb" name="addPackageScreenshot" referids="project,target,newname,newfile,newdescription">
+	</mm:booleanfunction>
+</mm:compare>
+
 <mm:compare value="delpackageinitiator" referid="action">
 	<mm:import id="project" externid="name" />
 	<mm:import id="target" externid="bundle" />

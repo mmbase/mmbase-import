@@ -465,6 +465,40 @@ function refresh()
 	</td>
 </tr>
 </form>
+
+
+<tr>
+<form action="<mm:url page="index.jsp" referids="main,sub,name,bundle,mode" />" method="post">
+	<td colspan="2" valign="top">
+                <b>Bundle Screenshots</b><p />
+		<p />
+		Name / File / Description <br />
+		<table>
+	        <mm:nodelistfunction set="mmpb" name="getTargetScreenshots" referids="project,target">
+		<tr>
+		<td><input name="newname" value="<mm:field name="name" />" size="12" /> <input name="newfile" value="<mm:field name="link" />" size="20"> <input name="newdescription" value="<mm:field name="description" />" size="60" />  <input type="submit" value="save"></td>
+			<td>
+		 		<input type="hidden" name="action" value="delpackagescreenshot" />
+				<input type="submit" value="delete" />
+			</td>
+
+		</tr>
+		</mm:nodelistfunction>
+		<tr>
+		<td colsnap="2">
+		<form action="<mm:url page="index.jsp" referids="main,sub,name,bundle,mode" />" method="post">
+		<input type="hidden" name="action" value="addpackagescreenshot" />
+		<input name="newname" value="" size="12"> <input name="newfile" value="screenshots/" size="20" /> <input name="newname" value="" size="60"> <input type="submit" value="add">
+<img src="<mm:write referid="image_help" />"  valign="middle" title="Screenshots related to the bundle for example newsoverview, screenshots/news.jpg, Example of a newsoverview page" />
+		<br />
+		</form>
+		</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</form>
+
 <tr>
 	<td valign="top">
 		<br />
