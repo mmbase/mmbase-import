@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.42 2003-11-19 13:34:27 pierre Exp $
+ * @version $Id: Config.java,v 1.43 2003-12-02 14:15:25 michiel Exp $
  */
 
 public class Config {
@@ -264,7 +264,8 @@ public class Config {
             searchType      = configurator.getParam("searchtype", searchType);
             searchFields    = configurator.getParam("searchfields", searchFields);
             searchValue     = configurator.getParam("searchvalue", searchValue);
-            searchDir       = configurator.getParam("searchdir",searchDir);
+            searchDir       = configurator.getParam("searchdir", searchDir);
+            searchDir       = configurator.getParam("searchdirs", searchDir);
             baseConstraints = configurator.getParam("constraints", baseConstraints);
             String searchString =  configurator.getParam("search", (String) null);
             if (searchString != null) {
