@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen 
 **/
 
-public class ListConditionTag extends BodyTagSupport {
+public class ListConditionTag extends BodyTagSupport implements ConditionTag {
     
     private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName()); 
     

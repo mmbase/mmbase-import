@@ -12,6 +12,8 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 
+import org.mmbase.bridge.jsp.taglib.ConditionTag;
+
 import javax.servlet.jsp.JspTagException;
 
 
@@ -22,7 +24,7 @@ import javax.servlet.jsp.JspTagException;
 * @author Michiel Meeuwissen 
 */
 
-public class CompareTag extends PresentTag {
+public class CompareTag extends PresentTag implements ConditionTag {
 
     private String value;
 
@@ -31,7 +33,7 @@ public class CompareTag extends PresentTag {
     }
                
     public int doStartTag() throws JspTagException {
-        if (value.equals(getContextTag().getObject(getReferid()))) {
+        if (value.equals(getContextTag().getObject(getReferid())) != inverse ) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
