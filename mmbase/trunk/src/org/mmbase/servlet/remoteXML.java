@@ -32,7 +32,9 @@ import org.mmbase.util.logging.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.23 $ $Date: 2001-07-02 16:41:04 $
+ * All incoming requests are checked for the shared secret key before handling them.
+ * 
+ * @version $Revision: 1.24 $ $Date: 2001-07-02 16:43:08 $
  */
 public class remoteXML extends JamesServlet {
 	private static Logger log = Logging.getLoggerInstance(remoteXML.class.getName());
