@@ -121,7 +121,6 @@
       <% } %>
 
       <mm:remove referid="size"/>
-      <br/>
     </mm:compare>
 
 
@@ -129,18 +128,18 @@
       <b>Gegeven antwoord:</b> 
       <mm:related path="posrel,rankinganswers">
         <mm:field id="rankinganswersnumber" name="rankinganswers.number" write="false"/>
-        <div class="images">
           
           <mm:node referid="rankinganswersnumber">
             <mm:relatednodes type="images">
+             <mm:first><div class="images"></mm:first>
               <mm:field name="title"/><br/>
               <img src="<mm:image />" width="200" border="0" /><br/>
               <mm:field name="description" escape="none"/> 
               <mm:remove referid="hasimage"/>
               <mm:import id="hasimage"/>
+             <mm:last></div></mm:last>
             </mm:relatednodes>
           </mm:node>
-        </div>
 
         <mm:notpresent referid="hasimage">
           <mm:field name="rankinganswers.text" escape="none"/>
