@@ -21,6 +21,9 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+
+import org.mmbase.util.ExprCalc;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -130,32 +133,84 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * possible for the user of the taglib to include ids of values stored in
      * the context.
      *
-     * The method replaces all occurrences of ${x}, where x is a reference to
-     * a attribute value, possibly prefixed with context names.
+     * The method replaces all occurrences of ${x} and $x, where x is a reference to
+     * a attribute value, possibly prefixed with context names. The
+     * end of the variable if determined by the closing bracket (${x})
+     * or by the first non ContextIndentifierChar or end of string ($x).
+     *
+     * Simple aritmetic is possible with ${+...}, and since you can
+     * even use $-vars inside ${}, you can do in this way some
+     * arithmetic on variables.
      *
      */
-    protected String getAttributeValue(String attribute) throws JspTagException {
+
+    public String getAttributeValue(String attribute) throws JspTagException {
         String result = "";
-        int beginpos  = attribute.indexOf("${");
-        int endpos    = 0;
-        while (beginpos >= 0) {
-            result += attribute.substring(endpos, beginpos);
-            endpos = attribute.indexOf("}", beginpos);
-            if (endpos>=0) {
-                String varName  = attribute.substring(beginpos + 2, endpos);
-                String varValue = getString(varName);
-                if (varValue == null) { 
-                    // This means that the variable was registered, but is not 'present'.
-                    varValue = ""; // don't whine too much.
-                }
-                result += varValue;
+
+        // search all occurences of $
+        int foundpos     = attribute.indexOf('$');
+        int pos          = 0;
+        while (foundpos >= 0) { // we found a variable!
+            result += attribute.substring(pos, foundpos); // piece of string until now is ready.
+            foundpos ++;
+            if (foundpos >= attribute.length()) { // end of string
+                break;
             }
-            endpos += 1;
-            beginpos = attribute.indexOf("${", endpos);
+
+            if (attribute.charAt(foundpos) == '{') { // using parentheses
+                // find matching closing parenthes
+                pos = ++foundpos;
+                int opened = 1;
+                while (opened > 0) {
+                    log.debug("pos " + pos);
+                    int posclose = attribute.indexOf("}", pos); 
+                    int posopen  = attribute.indexOf("{", pos);
+                    if (posclose == -1) {
+                        throw new JspTagException("Unbalanced parentheses in '" + attribute + "'");
+                    }
+                    if (posopen > -1 && posopen < posclose) { // another one was opened!
+                        opened++;
+                        pos = posopen + 1;
+                    } else {
+                        opened--;
+                        pos = posclose + 1;
+                    }
+                }
+                String varName = getAttributeValue(attribute.substring(foundpos, pos - 1)); // even variable names can be in a variable, why not...
+                if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
+                if (varName.charAt(0) == '+') { // make simple aritmetic possible
+                    ExprCalc cl = new ExprCalc(varName.substring(1));
+                    result += cl.getResult();
+                } else {
+                    result += getString(varName);
+                }
+            } else { // not using parentheses.
+                String varName = ""; //
+                char c = attribute.charAt(pos = foundpos);
+                if (c == '$') { // make escaping of $ possible
+                    result += c;
+                    pos++; 
+                } else {        // search until non-identifier
+                    while (ContextTag.isContextIdentifierChar(c)) {
+                        varName += c;
+                        pos++;
+                        if (pos >= attribute.length()) break; // end of string
+                        c = attribute.charAt(pos);
+                    }
+                    if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
+                    result += getString(varName);
+                }
+            }
+            // ready with this $, search next occasion;
+            foundpos = attribute.indexOf("$", pos);
         }
-        result += attribute.substring(endpos);
+        // no more $'es, add rest of string
+        result += attribute.substring(pos);
         return result;
     }
+
+
+
     protected Boolean getAttributeBoolean(String b) throws JspTagException {
         String r = getAttributeValue(b);
         if ("true".equalsIgnoreCase(r)) {
