@@ -44,7 +44,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     public void setRole(String role) throws JspTagException {
         this.role = getAttributeValue(role);
     }
-    
+
     /**
      * Performs the search
      */
@@ -58,16 +58,16 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if (parentNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
-        
+
         NodeList nodes;
         if ( (constraints != null && !constraints.equals(""))
-             || 
+             ||
              (orderby != null && !orderby.equals(""))
              ) { // given orderby or constraints, start hacking:
 
             if (type == null) {
                 throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
-            } 
+            }
             NodeManager manager = getCloud().getNodeManager(type);
             NodeList initialnodes;
 
@@ -76,7 +76,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             } else {
                 initialnodes = parentNode.getRelatedNodes(type, role, directions);
             }
-            
+
             StringBuffer where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
                 Node n = i.nextNode();
@@ -89,7 +89,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (where == null) { // empty list, so use that one.
                 nodes = initialnodes;
             } else {
-                where.insert(0, "number in (").append(")");
+                where.insert(0, "[number] in (").append(")");
                 if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
                 nodes = manager.getList(where.toString(), orderby, directions);
             }
