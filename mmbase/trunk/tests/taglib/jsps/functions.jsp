@@ -21,7 +21,15 @@
       <mm:functioncontainer>
         <mm:listnodes type="news" max="2">
           <mm:param name="language" value="nl" />
-          <mm:function  name="gui" /><br />
+          <mm:function  name="gui" />          
+          <pre>
+            <mm:functioncontainer>
+              <mm:param name="field" value="title" />
+              <mm:param name="length" value="10" />
+              <mm:function name="wrap" escape="none" />
+            </mm:functioncontainer>
+          </pre>
+          <br />
         </mm:listnodes>
       </mm:functioncontainer>
       <hr />
@@ -29,7 +37,8 @@
       <mm:functioncontainer>
         <mm:param name="template" value="s(100x100)" />
         <mm:listnodes type="news" max="5">
-          <mm:function  name="gui" /><br />
+          <mm:function  name="gui" />
+          <br />
         </mm:listnodes>
       </mm:functioncontainer>
       --%>
