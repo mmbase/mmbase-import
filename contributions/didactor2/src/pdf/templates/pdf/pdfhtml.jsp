@@ -1,4 +1,4 @@
-<%@ taglib prefix="jtidy" uri="http://jtidy.sf.net" %><jtidy:tidy config="indent: none; output-xhtml: true; doctype: none;">
+<%@ taglib prefix="jtidy" uri="http://jtidy.sf.net" %><jtidy:tidy config="indent: no; indent-content: no; output-xhtml: true; indent-content: no;">
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:content postprocessor="reducespace" expires="0">

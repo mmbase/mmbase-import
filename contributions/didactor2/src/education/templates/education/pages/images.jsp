@@ -53,6 +53,7 @@
         <br clear="all"/>
         
       <mm:field name="description"/>
+      <br clear="all"/>
      </mm:node>
     </mm:related>
     </mm:compare>

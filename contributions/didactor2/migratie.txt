@@ -6,7 +6,7 @@ Migratie issues
  alter table mmb_attachments modify column title varchar(255);
  alter table mmb_people modify column email varchar(255);
  alter table mmb_contacts modify column email varchar(255);
- 
+ alter table mmb_images modify column description blob; 
 
 
 2004-12-01
