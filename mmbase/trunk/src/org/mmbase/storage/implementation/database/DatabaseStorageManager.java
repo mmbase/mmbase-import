@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.77 2004-09-29 11:09:19 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.78 2004-09-29 11:21:41 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2060,7 +2060,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @param builder the builder for which to drop the composite key
      * @throws StorageException if the composite index cannot be deleted
      * @throws SQLException when a database error occurs
-     * @throws
      */
     protected void deleteCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
         if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
