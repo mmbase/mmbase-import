@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.172 2003-07-07 14:50:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.173 2003-07-10 11:04:53 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1179,14 +1179,22 @@ See mmexamples/taglib for more elaborated examples.
       </examplevalue>
     </attribute>
     <attribute>
-      <name>logon</name>
+      <name>username</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>The authentication name to use (account). When used together with
       e.g. the method="http" option, validation only succeeds if
-      the username equals logon. In this case it is also possible to
+      the username equals this attribute. In this case it is also possible to
       supply a list of usernames here (comma separated)</info>
+    </attribute>
+    <attribute>
+      <name>logon</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>Synonym to 'username'</info>
+      <see tag="cloud" attribute="username" />
     </attribute>
     <attribute>
       <name>rank</name>
@@ -1229,8 +1237,8 @@ See mmexamples/taglib for more elaborated examples.
 
 
             cloud: similar to the cloudtag's 'name' attribute
-            username: similar to the  cloudtag's 'logon' attribute
-            password: similar to the  cloudtag's 'pwd' attribute
+            username: similar to the  cloudtag's 'username' attribute
+            password: similar to the  cloudtag's 'password' attribute
 
             If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
             This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
@@ -1312,11 +1320,19 @@ See mmexamples/taglib for more elaborated examples.
       </info>
     </attribute>
     <attribute>
-      <name>pwd</name>
+      <name>password</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>The password to use to logon to the cloud.</info>
+    </attribute>
+    <attribute>
+      <name>pwd</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>Synonym to 'password'</info>
+      <see tag="cloud" attribute="password" />
     </attribute>
     <attribute>
       <name>method</name>
@@ -1329,9 +1345,9 @@ See mmexamples/taglib for more elaborated examples.
         <value>http</value>
         <info>
           Use http protocol to ask name and password
-          from the user. If the `logon' attribute is specified too, then
+          from the user. If the `username' attribute is specified too, then
           logging on will fail if the user does not use that
-          username. The `pwd' attribute will be ignored.
+          username. The `password' (or 'pwd')  attribute will be ignored.
         </info>
       </possiblevalue>
       <possiblevalue>
@@ -2622,7 +2638,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>false</rtexprvalue>
       <see tag="writer" attribute="escape" />
       <info>
-        The import tag does write anything to the page, so for that the 'escape' attribute is not
+        The import tag does not write anything to the page, so for that the 'escape' attribute is not
         usefull. The escape attribute from the import tag is therefore used to escape the actual
         value of the generated taglib variable. You can for example use it to uppercase an URL
         parameter or so (for searching).
