@@ -39,7 +39,7 @@ public class TransactionTag extends ContextTag implements CloudProvider {
     
     private String name = null;
     
-    public void setCommitOnClose(boolean c) {
+    public void setCommitonclose(boolean c) {
         commit = c;
     }
     
