@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>How To Use XML</title>
 		<date>12 February 2003</date>
-		<edition>$Id: xml-how-to.xml,v 1.4 2003-02-14 15:13:56 pierre Exp $</edition>
+		<edition>$Id: xml-how-to.xml,v 1.5 2003-06-30 12:34:26 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Henk</firstname>
@@ -79,7 +79,7 @@
 	<section id="more_info">
 		<title>More information</title>
 		<itemizedlist>
-			<title>For more information on how to read DTD's, see:</title>
+			<title>For more information on how to read DTDs, see:</title>
 			<listitem>
 				<para>W3 Schools: <ulink url="http://www.w3schools.com/dtd/default.asp">http://www.w3schools.com/dtd/default.asp</ulink>
 				</para>
