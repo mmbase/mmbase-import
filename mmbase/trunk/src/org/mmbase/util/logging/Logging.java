@@ -85,6 +85,13 @@ public class Logging {
 
 			configuration_file = new File(configfile);
 			configuration_file = configuration_file.getAbsoluteFile();
+
+			if (! configuration_file.exists() || 
+				! configuration_file.isFile() ||
+				! configuration_file.canRead() ) { // not a readable file, return and warn that logging cannot be configured.
+				System.out.println("Log configuration file is not accessible, default logging implementation will be used.");
+				return;
+			}
 			
 			configfile = configuration_file.getAbsolutePath();
 			//configfile = configfile.replace('/',(System.getProperty("file.separator")).charAt(0));
