@@ -11,7 +11,7 @@
         <br/>
         <h3><mm:field name="articles.title"/></h3>
         <br/>
-        <mm:field name="articles.body"/>
+        <mm:field name="html(articles.body)"/>
     </mm:list>
     <mm:list path="pages,documentation" nodes="$page">
         <li><a href="/index.jsp?portal=199&page=25011&docnr=<mm:field name="documentation.number"/>"><mm:field name="documentation.title"/></a>
