@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.42 2003-12-03 08:37:51 michiel Exp $
+ * @version $Id: ListTag.java,v 1.43 2003-12-04 18:25:45 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -125,6 +125,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             searchDistinct = true;
         }
 
+        Query query;
         if (c == null || path != Attribute.NULL) {
             // old-style, container-less working
             if (path == Attribute.NULL) {
@@ -148,8 +149,8 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                 log.debug("directions " + directions);
                 log.debug("searchString " + searchString);
             }
-            NodeList nodes =
-                getCloud().getList(
+
+            query = Queries.createQuery(getCloud(),
                     getSearchNodes(),
                     getPath(),
                     fields.getString(this),
@@ -158,14 +159,12 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                     (String) directions.getValue(this),
                     searchString,
                     searchDistinct);
-            return setReturnValues(nodes, true);
         } else {   // container found!
             if (path != Attribute.NULL || search != Attribute.NULL) {
                 throw new JspTagException("search and path attributes not supported within a container.");
-                // (some of these could be implemented)
             }
 
-            Query query = (Query) c.getQuery();
+            query = (Query) c.getQuery();
             if (constraints != Attribute.NULL) {
                 Queries.addConstraints(query, (String) constraints.getValue(this));
             }
@@ -181,9 +180,11 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                 Queries.addStartNodes(query, nodes.getString(this));
             }
 
-            NodeList nodes = getCloud().getList(query);
-            return setReturnValues(nodes, true);
         }
+
+        NodesAndTrim result = getNodesAndTrim(query);
+        return setReturnValues(result.nodeList, result.needsTrim);
+
     }
 
 }

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.19 2003-12-03 06:57:38 keesj Exp $
+ * @version $Id: ListNodesTag.java,v 1.20 2003-12-04 18:25:44 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -43,39 +43,30 @@ public class ListNodesTag extends AbstractNodeListTag {
         type = getAttribute(t);
     }
 
-    protected NodeManager nodeManager;
 
     /**
      * @since MMBase-1.7
      */
-    protected NodeManager getNodeManager() {
-        return nodeManager;
-    }
-
-    /**
-     * @since MMBase-1.7
-     */
-    protected NodeList getNodes() throws JspTagException {
+    protected NodeQuery getQuery() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
-        NodeList nodes;
+        NodeQuery query;
         if (c == null || type != Attribute.NULL) {
             if (type == Attribute.NULL) {
                 throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
             }
-            nodeManager = getCloud().getNodeManager(type.getString(this));
-            nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
-        } else {
-            NodeQuery query = (NodeQuery) c.getQuery();
-            if (constraints != Attribute.NULL) {
-                Queries.addConstraints(query, (String) constraints.getValue(this));
-            }
-            if (orderby != Attribute.NULL) {
-                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
-            }
-            nodes = getCloud().getList(query);
+            NodeManager nodeManager = getCloud().getNodeManager(type.getString(this));
+            query = nodeManager.createQuery();            
+        } else {            
+            query = (NodeQuery) c.getQuery();
         }
-        return nodes;
+        if (constraints != Attribute.NULL) {
+            Queries.addConstraints(query, (String) constraints.getValue(this));
+        }
+        if (orderby != Attribute.NULL) {
+            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+        }
+        return query;
     }
 
     /**
@@ -86,7 +77,8 @@ public class ListNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        return setReturnValues(getNodes(), true);
+        NodesAndTrim result = getNodesAndTrim(getQuery());
+        return setReturnValues(result.nodeList, result.needsTrim);
 
     }
 

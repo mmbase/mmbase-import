@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.30 2003-12-03 06:57:39 keesj Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.31 2003-12-04 18:25:45 michiel Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -99,23 +99,17 @@ public class RelatedNodesTag extends AbstractNodeListTag {
 
             query.setNodeStep(step3); // makes it ready for use as NodeQuery
 
-            if (constraints != Attribute.NULL) {
-                Queries.addConstraints(query, (String) constraints.getValue(this));
-            }
-            if (orderby != Attribute.NULL) {
-                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
-            }
         } else {
             query = (NodeQuery) c.getQuery();
-            if (constraints != Attribute.NULL) {
-                Queries.addConstraints(query, (String) constraints.getValue(this));
-            }
-            if (orderby != Attribute.NULL) {
-                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
-            }
+        }
+        if (constraints != Attribute.NULL) {
+            Queries.addConstraints(query, (String) constraints.getValue(this));
+        }
+        if (orderby != Attribute.NULL) {
+            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
         }
 
-        NodeList nodes = cloud.getList(query);
-        return setReturnValues(nodes, true);
+        NodesAndTrim result = getNodesAndTrim(query);
+        return setReturnValues(result.nodeList, result.needsTrim);
     }
 }
