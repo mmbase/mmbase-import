@@ -9,8 +9,10 @@
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title>POP</title>
+    <link rel="stylesheet" type="text/css" href="css/pop.css" />
   </mm:param>
 </mm:treeinclude>
+
 <!-- TODO where are the different roles described -->
 <!-- TODO different things to do with different roles? -->
 
@@ -25,6 +27,12 @@
 
 <%-- right section --%>
 <div class="mainContent">
+<mm:compare referid="currentpop" value="-1">
+<div class="contentBody"> 
+  <p>Er is geen POP voor jou aangemaakt. Neem contact op met de systeembeheerder om een POP voor je aan te maken.</p>
+</div>
+</mm:compare>
+<mm:compare referid="currentpop" value="-1" inverse="true">
 <mm:compare referid="currentfolder" value="-1">
   <div class="contentHeader">Competenties <mm:compare referid="currentprofile" value="-1" inverse="true"
       ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
@@ -72,6 +80,12 @@
     </jsp:include>
   </mm:compare>
 </mm:compare>
+<mm:compare referid="currentfolder" value="1">
+  <div class="contentHeader">Voortgangsmonitor</div>
+  <jsp:include page="voortgang.jsp">
+    <jsp:param name="msg" value="<%= msgString %>"/>
+  </jsp:include>
+</mm:compare>
 <mm:compare referid="currentfolder" value="2">
   <div class="contentHeader">Persoonlijke taken</div>
   <%@ include file="todo.jsp" %>
@@ -83,6 +97,7 @@
 </mm:compare>
   </div>
 </div>
+</mm:compare>
 </di:hasrole>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </fmt:bundle>
