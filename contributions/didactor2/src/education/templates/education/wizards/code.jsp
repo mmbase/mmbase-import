@@ -6,10 +6,6 @@
    String sAltText = "";
 %>
 
-   <%
-      System.out.println("Start");
-   %>
-
 <%
    if(session.getAttribute("education_topmenu_mode") == null)
    {//Default active element in education top menu
@@ -270,7 +266,7 @@ var menu = new MTMenu();
 
 <mm:compare referid="education_top_menu" value="educations">
    <% //----------------------- Educations came from here ----------------------- %>
-   menu.addItem("<fmt:message key="educations"/>","<mm:write referid="listjsp"/>?wizard=metastandard&nodepath=educations&fields=name&orderby=name",null,"<mm:treefile write="true" page="/education/wizards/gfx/edit_education.gif" objectlist="$includePath" />");
+   menu.addItem("<fmt:message key="educations"/>","<mm:write referid="listjsp"/>?wizard=educations&nodepath=educations&fields=name&orderby=name",null,"<mm:treefile write="true" page="/education/wizards/gfx/edit_education.gif" objectlist="$includePath" />");
 
    var edutree = new MTMenu();
    <% //new education item %>
@@ -395,6 +391,3 @@ var menu = new MTMenu();
 </mm:content>
 </fmt:bundle>
 
-<%
-   System.out.println("Finish");
-%>
