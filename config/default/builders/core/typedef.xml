@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
-  <classfile>org.mmbase.module.corebuilders.TypeDef</classfile>
+<builder extends="object" maintainer="mmbase.org" version="0">
+  <classfile>org.mmbase.module.corebuilders.ObjectTypes</classfile>
 
   <searchage>1000</searchage>
 
@@ -15,10 +15,12 @@
 	 <singular xml:lang="nl">Editor</singular>
 	 <singular xml:lang="en">Editor</singular>
 	 <singular xml:lang="eo">Objekttipo</singular>
+	 <singular xml:lang="fy">Object Tiepe</singular>
 	 <!-- multiple per language as defined by ISO 639 -->
 	 <plural xml:lang="nl">Editors</plural>
 	 <plural xml:lang="en">Editors</plural>
 	 <plural xml:lang="eo">Objekttipoj</plural>
+	 <plural xml:lang="fy">Object Tiepes</plural>
   </names>
 
   <!-- <descriptions>
@@ -29,6 +31,7 @@
 	 <description xml:lang="nl">Definitie van object types</description>
 	 <description xml:lang="en">Defines object types</description>
 	 <description xml:lang="eo">Difinoj de objekttipoj</description>
+	 <description xml:lang="fy">Definitsie fan de object tiepes</description>
   </descriptions>
 
   <fieldlist>
@@ -40,6 +43,7 @@
 		  <guiname xml:lang="nl">Naam</guiname>
 		  <guiname xml:lang="en">Name</guiname>
 		  <guiname xml:lang="eo">Nomo</guiname>
+		  <guiname xml:lang="fy">Namme</guiname>
 		  <guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -56,9 +60,9 @@
 		<!-- database related  -->
 		<db>
 		  <!-- name of the field in the database -->
-		  <name>name</name>
+		  <name xml:lang="en">name</name>
 		  <!-- MMBase datatype and demands on it -->
-		  <type state="persistent" size="32" notnull="false" key="true">STRING</type>
+		  <type key="true" notnull="false" size="32" state="persistent">STRING</type>
 		</db>
 	 </field>
 
@@ -69,6 +73,7 @@
 		  <guiname xml:lang="nl">Omschrijving</guiname>
 		  <guiname xml:lang="en">Description</guiname>
 		  <guiname xml:lang="eo">Priskribo</guiname>
+		  <guiname xml:lang="fy">Beskrowing</guiname>
 		  <guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -85,12 +90,40 @@
 		<!-- database related  -->
 		<db>
 		  <!-- name of the field in the database -->
-		  <name>description</name>
+		  <name xml:lang="en">description</name>
 		  <!-- MMBase datatype and demands on it -->
-		  <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+		  <type key="false" notnull="false" size="255" state="persistent">STRING</type>
 		</db>
 	 </field>
 
+	 <!-- POS 5 : <field> 'config'  -->
+	 <field>
+		<!-- gui related -->
+		<gui>
+		  <guiname xml:lang="nl">Configuratie</guiname>
+		  <guiname xml:lang="en">Configuration</guiname>
+		  <guiname xml:lang="eo">Agordo</guiname>
+		  <guiname xml:lang="fy">Ynstellings</guiname>
+		  <guitype>field</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+		  <positions>
+			 <!-- position in the input area of the editor -->
+			 <input>3</input>
+			 <!-- position in list area of the editor -->
+			 <list>-1</list>
+			 <!-- position in search area of the editor -->
+			 <search>-1</search>
+		  </positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+		  <!-- name of the field in the database -->
+		  <name xml:lang="en">config</name>
+		  <!-- MMBase datatype and demands on it -->
+		  <type doctype="&lt;!DOCTYPE builder PUBLIC &quot;//MMBase - builder//&quot; &quot;http://www.mmbase.org/dtd/builder.dtd&quot;&gt;" key="false" notnull="true" state="virtual">XML</type>
+		</db>
+	 </field>
   </fieldlist>
-
 </builder>
