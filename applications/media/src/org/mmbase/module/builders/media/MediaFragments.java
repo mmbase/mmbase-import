@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.17 2003-01-07 09:06:33 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.18 2003-01-07 22:27:36 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -50,6 +50,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     // let the compiler check for typo's:
     public static final String FUNCTION_URLS        = "urls";
+    public static final String FUNCTION_SORTEDURLS  = "sortedurls";
     public static final String FUNCTION_URL         = "url";
     public static final String FUNCTION_PARENT      = "parent";    
     public static final String FUNCTION_SUBFRAGMENT = "subfragment";
@@ -85,7 +86,7 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("The builder mediasources is retrieved.");
         }
         
-        mediaSourceFilter = new MediaSourceFilter(this, mediaSourceBuilder);        
+        mediaSourceFilter = new MediaSourceFilter();
 
         // deprecated:
         retrieveClassificationInfo();
@@ -108,6 +109,7 @@ public class MediaFragments extends MMObjectBuilder {
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.ResponseInfo's)");
             info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
             info.put(FUNCTION_SUBFRAGMENT, "() Wether this fragment is a subfragment (returns a Boolean)");
+            info.put(FUNCTION_AVAILABLE, "() Wether this fragment is 'available'. A fragment can be unaivable when there is a related publishtimes which defines it 'unpublished'");
             // info.put("urlresult", "(<??>) ");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
 
@@ -118,6 +120,8 @@ public class MediaFragments extends MMObjectBuilder {
             }            
         } else if (FUNCTION_URLS.equals(function)) {
             return getURLs(node, args);
+        } else if (FUNCTION_SORTEDURLS.equals(function)) {
+            return getSortedURLs(node, args);
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
             return new Boolean(isSubFragment(node));
         } else if (FUNCTION_PARENT.equals(function)) {
@@ -147,7 +151,7 @@ public class MediaFragments extends MMObjectBuilder {
             return getLongURL(node, new Hashtable());
         } else if (function.equals("contenttype")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getContentType(node, new Hashtable());
+            //            return getContentType(node, new Hashtable());
         } else if (function.equals("showlength")) {
             return ""+calculateLength(node);
         }
@@ -227,10 +231,16 @@ public class MediaFragments extends MMObjectBuilder {
         }
         arguments.remove(0);
         return result;        
+    }   
+
+    protected List getSortedURLs(MMObjectNode fragment, List args) {
+        List urls =  getURLs(fragment, args);
+        Collections.sort(urls, mediaSourceFilter);
+        return urls;
     }
 
       
-    /**
+    /** 
      * Retrieves the url (e.g. pnm://www.mmbase.org/music/test.ra) of the 
      * mediasource that matches best.
      *
@@ -239,18 +249,17 @@ public class MediaFragments extends MMObjectBuilder {
      * @return the url of the audio file
      */
     protected URL getURL(MMObjectNode fragment, List args) throws java.net.MalformedURLException  {
-        log.debug("Getting url of a fragment.");
-        List urls = getURLs(fragment, args);
-
-        // lets try it simple first.
+        log.debug("Getting url of a fragment.");        
+        List urls = getSortedURLs(fragment, args);
+        if (args.size() == 1) { // explicitely request format, in any case honor that!
+            Collections.sort(urls, new org.mmbase.util.media.FormatComparator((String)args.get(0)));
+        }
         if (urls.size() > 0) {
-            if (args.size() > 0) {
-                Collections.sort(urls, new FormatFilter((String) args.get(0)));
-            }
-            return ((MediaURLComposers.ResponseInfo)urls.get(0)).getURL();
+            return ((ResponseInfo)urls.get(0)).getURL();
         } else {
             return new URL(""); //no sources 
         }
+
         /*
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
         if(mediaSource == null) {
@@ -261,20 +270,24 @@ public class MediaFragments extends MMObjectBuilder {
         */
     }
     
+
+
     /**
      * Find the most appropriate media source
      * @param mediafragment a media fragment
      * @param info additional information provider by a user
      * @return the most appropriate media source
      */
-    private MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {
+    private MMObjectNode filterMediaSource(MMObjectNode fragment, Map info) {
         if (log.isDebugEnabled()) {
             log.debug("mediasourcefilter " + mediaSourceFilter + " info " + info);
         }
-        MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, info);
-        if(mediaSource == null) {
-            log.error("No matching media source found by media fragment (" + mediaFragment.getIntValue("number") + ")");
+        List urls = getSortedURLs(fragment, new ArrayList()); // todo: should use info
+        if(urls.size() == 0) {
+            log.error("No matching media source found by media fragment (" + fragment.getIntValue("number") + ")");
+            return null;
         }
+        MMObjectNode mediaSource = (MMObjectNode) urls.get(0);
         return mediaSource;
     }
     
@@ -285,6 +298,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, etc.)
      * @return the content type
      */
+    /*
     private String getContentType(MMObjectNode mediaFragment, Hashtable info) {
         log.debug("Getting content type");
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);        
@@ -292,8 +306,9 @@ public class MediaFragments extends MMObjectBuilder {
             log.error("Cannot determine content type");
             return "";
         }
-        return mediaSourceBuilder.getContentType(mediaSource);
+        return mediaSourceBuilder.getMimeType(mediaSource);
     }
+    */
     
     /**
      * If a mediafragment is coupled to another mediafragment instead of being directly
@@ -394,28 +409,4 @@ public class MediaFragments extends MMObjectBuilder {
          return;
      }
      
-    /**
-     * This can sort a list with the requested formats on top.
-     * @author mm
-     */
-
-    
-     class FormatFilter implements Comparator {
-         private String wantedFormat;
-         FormatFilter(String f) {
-             wantedFormat = f;
-         }
-         
-         public int compare(Object o1, Object o2) {
-             MediaURLComposers.ResponseInfo ri1  = (MediaURLComposers.ResponseInfo) o1;
-             MediaURLComposers.ResponseInfo ri2  = (MediaURLComposers.ResponseInfo) o2;
-             int result1 = ri1.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null).equals(wantedFormat) ? 1 : -1;
-             int result2 = ri2.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null).equals(wantedFormat) ? 1 : -1;
- 
-             if (! ri1.isAvailable() ) result1 -= 10;
-             if (! ri2.isAvailable() ) result2 -= 10;
-            return result2 - result1;
-         }
-     }
-
 }
