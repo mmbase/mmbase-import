@@ -42,7 +42,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?application="+app%>' />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data">Return to Application Administration</td>
 </tr>
 
