@@ -37,7 +37,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.116 2004-01-06 10:51:20 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.117 2004-01-08 15:03:56 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -167,7 +167,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * temporarily holds a new context for a node
      * @since MMBase-1.7
      */
-    
+
     private String newContext = null;
 
     /**
@@ -403,13 +403,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Stores a value in the values hashtable.
+     * This is a low-level method that circumvents typechecking and the triggers of extended classes.
+     * You should normally call {@link #setValue()} to change fields.
      * @todo This should become a synchronized method, once values becomes a private HashMap instead of a
      * public Hashtable.
      *
      * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      */
-    protected void storeValue(String fieldName,Object fieldValue) {
+    public void storeValue(String fieldName, Object fieldValue) {
         if (fieldValue==null) {
             values.remove(fieldName);
         } else {
@@ -419,11 +421,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Retrieves a value from the values hashtable.
+     * This is a low-level method that circumvents typechecking and the triggers of extended classes.
+     * You should normally call {@link #getValue()} to load fields.
      *
      * @param fieldName the name of the field to change
      * @return the value of the field
      */
-    protected Object retrieveValue(String fieldName) {
+    public Object retrieveValue(String fieldName) {
         return values.get(fieldName);
     }
 
