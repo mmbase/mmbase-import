@@ -22,21 +22,15 @@ import javax.servlet.http.*;
  */
 public class performance extends JamesServlet {
 	
-	public void init() {
-	}
+	public void init() { }
 
-	/** 
-	 * reload
-	 */
-	public void reload() {
-	}
+	public void reload() { }
 
 	/**
- 	* service call will be called by the server when a request is done
-	* by a user.
- 	*/
-	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
-	{	
+ 	 * service call will be called by the server when a request is done
+	 * by a user.
+ 	 */
+	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {	
 		// Open	a output stream so you can write to the client
 		PrintStream out = new PrintStream(res.getOutputStream());
 
@@ -60,7 +54,6 @@ public class performance extends JamesServlet {
 		out.println("methodloop = "+method()+"<BR>");
 		out.println("</BODY>");
 		out.println("</HTML>");
-
 	}
 
 	 private long intloop() {
@@ -85,15 +78,13 @@ public class performance extends JamesServlet {
         return end-begin;
 	}
 	
-	private void stub(){
+	private void stub() {
 	}
- 
-
 
 	/**
-	* Info method, provides the user/server with some basic info on
-	* this Servlet
- 	*/
+	 * Info method, provides the user/server with some basic info on
+	 * this Servlet
+ 	 */
 	public String getServletInfo() {
 		return ("Performance tester, for jit and other things - Rob Vermeulen");
 	}
