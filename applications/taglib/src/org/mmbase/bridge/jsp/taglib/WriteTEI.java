@@ -45,20 +45,22 @@ public class WriteTEI extends TagExtraInfo {
             String typeAttribute    = (String) data.getAttribute("type"); 
             if (typeAttribute == null) typeAttribute = defaultType();           
             String type;
-            
-            if ("Object".equalsIgnoreCase(typeAttribute)) {
-                type = "java.lang.Object";
-            } else if ("String".equalsIgnoreCase(typeAttribute)) {
-                type = "java.lang.String";
-            } else if ("Node".equalsIgnoreCase(typeAttribute)) {
-                type = "org.mmbase.bridge.Node";
-            } else if ("Integer".equalsIgnoreCase(typeAttribute)) {
-                type = "java.lang.Integer";
-            } else if ("Vector".equalsIgnoreCase(typeAttribute)) {
-                type = "java.util.Vector";
-            } else if ("bytes".equalsIgnoreCase(typeAttribute)) {
-                type = "bytes"; // not supported
-            } else {
+            switch (WriteTag.stringToType(typeAttribute)) {
+            case WriteTag.TYPE_OBJECT:
+                type = "java.lang.Object"; break;
+            case WriteTag.TYPE_STRING:
+                type = "java.lang.String"; break;
+            case WriteTag.TYPE_NODE:
+                type = "org.mmbase.bridge.Node"; break;
+            case WriteTag.TYPE_INTEGER:
+                type = "java.lang.Integer"; break;
+            case WriteTag.TYPE_VECTOR:// deprecated
+                type = "java.util.Vector"; break;
+            case WriteTag.TYPE_LIST:
+                type = "java.util.List"; break;
+            case WriteTag.TYPE_BYTES:
+                type = "bytes"; break;// not supported 
+            default:
                 //type = "java.lang.Object"; 
                 throw new RuntimeException("Unknown type '" + typeAttribute + "'");
             }

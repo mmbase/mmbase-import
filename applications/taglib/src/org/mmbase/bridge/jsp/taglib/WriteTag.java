@@ -30,13 +30,47 @@ public class WriteTag extends ContextReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
 
-    protected String  jspvar = null;
-    private String  extraBodyContent = null;
-    protected String  type = null;
+    static final int TYPE_UNKNOWN = -10;
+    static final int TYPE_UNSET   = -1;
+    static final int TYPE_OBJECT  = 0;
+    static final int TYPE_LIST    = 1;
+    static final int TYPE_VECTOR  = 2;
+    static final int TYPE_INTEGER = 3;
+    static final int TYPE_STRING  = 4;
+    static final int TYPE_NODE    = 5;
+    static final int TYPE_BYTES   = 6;
 
-    public void setType(String t) {
+    static final int stringToType(String t) {
+        if ("String".equalsIgnoreCase(t)) {
+            return TYPE_STRING;
+        } else if ("Node".equalsIgnoreCase(t)) {
+            return TYPE_NODE;
+        } else if ("Integer".equalsIgnoreCase(t)) {
+            return TYPE_INTEGER;
+        } else if ("Vector".equalsIgnoreCase(t)) {
+            return TYPE_VECTOR;
+        } else if ("List".equalsIgnoreCase(t)) {
+            return TYPE_LIST;
+        } else if ("bytes".equalsIgnoreCase(t)) {
+            return TYPE_BYTES;
+        } else if ("Object".equalsIgnoreCase(t)) {
+            return TYPE_OBJECT;
+        } else {
+            return TYPE_UNKNOWN;
+        }
+    }
+
+
+    protected String  jspvar = null;
+    private   String  extraBodyContent = null;
+    protected int type = TYPE_UNSET;
+
+    public void setType(String t) throws JspTagException {
         // nothing to do, the type property is only used in the TEI.
-        type = t;
+        type = stringToType(t);
+        if (type == TYPE_UNKNOWN) {
+            throw new JspTagException("Type " + t + " is not known");
+        }
     }
 
     public void setJspvar(String j) {
@@ -56,7 +90,13 @@ public class WriteTag extends ContextReferrerTag {
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value);
         }
-        if ("Vector".equalsIgnoreCase(type)) {
+        switch (type) {
+        case TYPE_LIST:
+            if (value instanceof java.util.List) {
+                pageContext.setAttribute(jspvar, value);
+                return;
+            }
+        case TYPE_VECTOR:
             if (value == null) {
                 // if a vector is requested, but the value is not present,
                 // make a vector of size 0.
@@ -74,17 +114,35 @@ public class WriteTag extends ContextReferrerTag {
                     value = new java.util.Vector((java.util.Collection)value);
                 }
             }                         
-        } else if (value == null) {
-            pageContext.setAttribute(jspvar, null);
-        } else if ("Integer".equalsIgnoreCase(type) && ! (value instanceof Integer)) {
-            pageContext.setAttribute(jspvar, new Integer(value.toString()));
-        } else if ("String".equalsIgnoreCase(type) && ! (value instanceof String)) {
-            pageContext.setAttribute(jspvar, value.toString());
-        } else if ("Node".equalsIgnoreCase(type) && ! (value instanceof org.mmbase.bridge.Node)) {
-            throw new JspTagException("Variable is not of type Node. Conversion is not yet supported by this Tag");
-        } else {
-            pageContext.setAttribute(jspvar, value);
+            pageContext.setAttribute(jspvar, value);         
+            return;
         }
+        if (value == null) {
+            pageContext.setAttribute(jspvar, null);
+            return;
+        } 
+
+        switch (type) {
+        case TYPE_INTEGER:
+            if (! (value instanceof Integer)) {
+                pageContext.setAttribute(jspvar, new Integer(value.toString()));
+                return;
+            } 
+            break;
+        case TYPE_STRING:
+            if (! (value instanceof String)) {
+                pageContext.setAttribute(jspvar, value.toString());
+                return;
+            } 
+            break;
+        case TYPE_NODE:
+            if (! (value instanceof org.mmbase.bridge.Node)) {
+                throw new JspTagException("Variable is not of type Node. Conversion is not yet supported by this Tag");
+            }
+            break;
+        }
+        pageContext.setAttribute(jspvar, value);
+
     }
     
 
@@ -93,7 +151,7 @@ public class WriteTag extends ContextReferrerTag {
         if (log.isDebugEnabled()) {
             log.debug("getting object " + getReferid());
         }
-        if ("bytes".equalsIgnoreCase(type)) { 
+        if (type == TYPE_BYTES) { 
             log.debug("Indicated that this are bytes");
             // writing bytes to the page?? We write uuencoded...
             if (jspvar != null) {
@@ -114,17 +172,14 @@ public class WriteTag extends ContextReferrerTag {
             if (jspvar != null) { // a jspvar was defined, don't write to page. 
                 setJspVar(value);                
             } else { // write to page, (set extraBodyContent)
-                if (type != null) {
+                if (type == TYPE_UNSET) {
                     throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute (unless the type is 'bytes'");
                 }
                 if (value != null) {
                     extraBodyContent = value.toString();
                 }
-            }            
-           
-
-        }
-    
+            }                       
+        }    
         return EVAL_BODY_TAG;
     }    
     
