@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.10 2003-09-05 10:52:12 pierre Exp $
+ * @version $Id: MMTable.java,v 1.11 2003-11-10 21:17:36 michiel Exp $
  */
 public class MMTable {
 
-    private static Logger log = Logging.getLoggerInstance(MMTable.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MMTable.class);
 
     /**
      * The MMBase module that this table belongs to
@@ -99,11 +99,11 @@ public class MMTable {
      */
     public boolean created() {
         StorageManagerFactory factory = mmb.getStorageManagerFactory();
-        if (factory!=null) {
+        if (factory != null) {
             try {
                 return factory.getStorageManager().exists((MMObjectBuilder)this);
             } catch (StorageException se) {
-                log.error(se.getMessage());
+                log.error(se.getMessage() + Logging.stackTrace(se));
                 return false;
             }
         } else {
