@@ -31,8 +31,8 @@ import org.mmbase.util.logging.Logging;
  * The classification, and replace methods are added for backwards compatibility.
  *
  * @author Rob Vermeulen (VPRO)
- * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.28 2003-08-26 09:28:27 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: MediaFragments.java,v 1.29 2003-11-11 15:11:21 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -243,24 +243,28 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("Getting url of a fragment.");        
 	String key = URLCache.toKey(fragment, info);
         if(cache.containsKey(key)) {
-		log.service("Cache hit, key = "+key);
-		String url =  (String)cache.get(key);
-		log.service("Resolved url = "+url);
-		return url;
+            String url = (String) cache.get(key);
+            if (log.isDebugEnabled()) {
+                log.debug("Cache hit, key = " + key);
+                log.debug("Resolved url = " + url);
+            }
+            return url;
 	} else {
-		log.service("No cache hit, key = "+key);
+            log.debug("No cache hit, key = " + key);
 	}
 
 	Set cacheExpireObjects = new HashSet();
-        List urls = getFilteredURLs(fragment, info,cacheExpireObjects);
+        List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
 	String result = "";
         if (urls.size() > 0) {
             result = ((URLComposer) urls.get(0)).getURL();
         } 
+        if (log.isDebugEnabled()) {
+            log.debug("Add to cache, key = " + key);
+            log.debug("Resolved url = " + result);
+        }
 	// put result in cache
-	log.service("Add to cache, key = "+key);
-	cache.put(key,result,cacheExpireObjects);
-	log.service("Resolved url = "+result);
+	cache.put(key, result, cacheExpireObjects);
 	return result;
     }
 
