@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.36 2003-10-24 08:23:29 pierre Exp $
+ * @version $Id: ImportTag.java,v 1.37 2003-11-10 20:46:58 michiel Exp $
  */
 
-public class ImportTag extends WriteTag {
+public class ImportTag extends ContextReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(ImportTag.class);
 
     protected Attribute required = Attribute.NULL;
@@ -35,17 +35,6 @@ public class ImportTag extends WriteTag {
 
     private   boolean found = false;
     private   String  useId = null;
-
-
-    /**
-     * Release all allocated resources.
-     */
-    public void release() {
-        log.debug("releasing" );
-        super.release();
-        externid = Attribute.NULL;
-        id = Attribute.NULL;
-    }
 
     /**
      * The extern id it the identifier in some external source.
@@ -100,7 +89,9 @@ public class ImportTag extends WriteTag {
         }
 /*
         if (reset.getBoolean(this, false)) { // should this be more general? Also in other contextwriters?
-            if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
+            if (log.isDebugEnabled()) {
+                log.trace("Resetting variable " + useId);
+            }
             getContextProvider().getContextContainer().unRegister(useId);
         }
 */
