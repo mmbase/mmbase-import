@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -630,6 +630,20 @@ public class BasicSqlHandler implements SqlHandler {
             throw new IllegalArgumentException(
             "Illegal constraint type for this method: "
             + constraint.getClass().getName());
+        } else if (constraint instanceof LegacyConstraint) {
+            LegacyConstraint legacyConstraint = (LegacyConstraint) constraint;
+            if (legacyConstraint.getConstraint().trim().length() != 0) {
+                if (overallInverse) {
+                    sb.append("NOT ");
+                }
+                if (overallInverse || inComposite) {
+                    sb.append("(");
+                }
+                sb.append(legacyConstraint.getConstraint());
+                if (overallInverse || inComposite) {
+                    sb.append(")");
+                }
+            }
         } else {
             throw new UnsupportedOperationException(
             "Unknown constraint type: "
