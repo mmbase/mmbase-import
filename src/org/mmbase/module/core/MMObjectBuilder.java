@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.118 $ $Date: 2002-02-27 16:21:32 $
+ * @version $Revision: 1.119 $ $Date: 2002-03-19 20:47:38 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -347,7 +347,8 @@ public class MMObjectBuilder extends MMTable {
             return n;
         } catch(Exception e) {
             log.error("ERROR INSERT PROBLEM ! Error node="+node);
-            log.error(Logging.stackTrace(e));
+            log.error(Logging.stackTrace(e));            
+            // TODO: Research if we _should_ throw an runtime exception, instead of returning -1
             return -1;
         }
     }

@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.63 $ $Date: 2002-03-05 15:57:49 $
+ * @version $Revision: 1.64 $ $Date: 2002-03-19 20:47:38 $
  */
 
 public class MMObjectNode {
@@ -1255,38 +1255,36 @@ public class MMObjectNode {
     
     private Document convertStringToXml(String fieldName, String value) {
         log.debug("converting from string to xml");
-        // Depending on the gui type choose conversion....    
-        if (value.indexOf("<") != 0) { // not XML, make it XML
-            // for the moment only mmxf is supported.
-            if (log.isDebugEnabled()) { 
-                log.debug("field was not xml, trying to convert " + value);
+
+        // not XML, make it XML, when conversion specified, use it...
+        if (value.indexOf("<") != 0) { 
+            String propertyName = fieldName + ".xmlconversion";
+            String conversion = parent.getInitParameter(propertyName);
+            if(conversion == null) {                
+                conversion = "MMXF_POOR";
+                log.warn("didnt know how to convert a string to xml for xml field: '" + fieldName + "' using the default: '" + conversion + "'");
             }
-            // MMXF_POOR, this is the rich format we use, it is little less rich then MMXF_RICH...                                
-            value = org.mmbase.util.Encode.decode("MMXF_POOR", (String) value);
+            value = org.mmbase.util.Encode.decode(conversion, (String) value);
         }        
+        
+        // add the header stuff...
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
+        String doctype = parent.getField(fieldName).getDBDocType();
+        if(doctype != null) {
+            xmlHeader += "\n" + doctype;
+        }
+        value = xmlHeader + "\n" + value;
         
         /////////////////////////////////////////////
         // TODO: RE-USE THE PARSER EVERY TIME !    //
-        if(parent.getField(fieldName).getGUIType().equals("mmxf")) {
-            // when the doc-type wasnt there... set it...
-            if(value.indexOf("<?xml") == 0) {
-                log.warn("incorrect xml?");
-            }
-            String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
-            String xmlDocType = "<!DOCTYPE mmxf PUBLIC \"//MMBase - mmxf//\" \"http://www.mmbase.org/dtd/mmxf.dtd\">";
-            value = xmlHeader + "\n" + xmlDocType + "\n" + value;
-        }
-        else {
-            // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
-            // till that time, we only accept as guitype 'mmxf', when not, we will put an message in the log
-            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + " with field:"+fieldName+")");
-        }
-        
         try {                
             // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
             // or ask it from BasicReader ?
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dfactory.setValidating(true);
+            if(doctype != null) {
+                log.debug("validating the xmlfield for field with name:" + fieldName + " with doctype: " + doctype);
+                dfactory.setValidating(true);
+            }
             javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
             documentBuilder.setErrorHandler(new org.mmbase.util.XMLErrorHandler());
             documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
@@ -1316,22 +1314,24 @@ public class MMObjectNode {
     
     private String convertXmlToString(String fieldName, Document xml) {
         log.debug("converting from xml to string");
+        
         // check if we are using the right DOC-type for this field....
-        org.w3c.dom.DocumentType docType =  xml.getDoctype();
-        if(parent.getField(fieldName).getGUIType().equals("mmxf")) {
-            if(!docType.getName().equals("mmxf")) {
-	        throw new RuntimeException("invalid xml name in doctype('"+docType.getName()+"')");
+        String doctype = parent.getField(fieldName).getDBDocType();
+        if(doctype != null) {
+            // we have a doctype... the doctype of the document has to mach the doctype of the doctype which is needed..
+            org.w3c.dom.DocumentType type =  xml.getDoctype();
+            String publicId = type.getPublicId();
+            if(doctype.indexOf(publicId) == -1) {
+                throw new RuntimeException("doctype('"+doctype+"') required by field '"+fieldName+"' and public id was NOT in it : '"+publicId+"'");
             }
-            if(!docType.getSystemId().equals("http://www.mmbase.org/dtd/mmxf.dtd")) {
-	        throw new RuntimeException("invalid system id in the doctype('"+docType.getSystemId()+"')");
-            }
+            log.warn("doctype check can not completely be trusted");
         }
-        else {
-            // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
-            // till that time, we only accept as guitype 'mmxf', when not, we will put an message in the log
-            log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + " with field:"+fieldName+")");
-        }
+        /////////////////////////////////////////////
+        // TODO: RE-USE THE PARSER EVERY TIME !    //
         try {
+            // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
+            // or ask it from BasicReader ?
+        
             //make a string from the XML
             javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
             //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));

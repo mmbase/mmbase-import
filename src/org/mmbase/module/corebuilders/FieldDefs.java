@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @$Revision: 1.20 $ $Date: 2002-02-22 12:17:07 $
+ * @$Revision: 1.21 $ $Date: 2002-03-19 20:47:39 $
  */
 public class FieldDefs  {
     public final static int DBSTATE_MINVALUE = 0;
@@ -66,6 +66,7 @@ public class FieldDefs  {
     public int GUIPos;
     public int DBState = DBSTATE_UNKNOWN;
     public boolean DBNotNull=false;
+    public String DBDocType = null;
     public boolean isKey=false;
     public int DBPos;
     public int DBSize=-1;
@@ -264,8 +265,15 @@ public class FieldDefs  {
     /**
      * Retrieve whether the field can be left blank.
      */
-    public boolean getDBNotNull() {
+    public boolean getDBNotNull() {    
         return DBNotNull;
+    }
+
+    /**
+     * Retrieve the doctype  
+     */
+    public String getDBDocType() {
+        return DBDocType;
     }
 
     /**
@@ -430,6 +438,14 @@ public class FieldDefs  {
     }
 
     /**
+     * Set whether the field has an doctype to validate
+     * @param doctype the doctype, which has to be used for the field
+     */
+    public void setDBDocType(String doctype) {
+        DBDocType=doctype;
+    }
+
+    /**
      * Retrieves the parent builder for this field
      */
     public MMObjectBuilder getParent() {
@@ -454,6 +470,6 @@ public class FieldDefs  {
                " DBType="+getDBTypeDescription()+
                " DBSTATE="+getDBTypeDescription()+
                " DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+
-               " isKey="+isKey);
+               " isKey="+isKey+" DBDocType="+DBDocType);
     }
 }

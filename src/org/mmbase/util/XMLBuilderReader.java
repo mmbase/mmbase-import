@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.21 2001-10-18 13:13:29 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.22 2002-03-19 20:47:39 eduard Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -144,6 +144,14 @@ public class XMLBuilderReader extends XMLBasicReader {
         def.setDBKey(key != null && key.equalsIgnoreCase("true"));
         String state = getElementAttributeValue(dbtype,"state");
         def.setDBState(state);
+        String doctype = getElementAttributeValue(dbtype,"doctype");
+        if(doctype.equals("")) {
+            // i want to be null, when not specified inside the builder file..
+            // but getElementAttributeValue makes it automatic ""... 
+            // you will never know difference between empty attribute and not specified            
+            doctype = null;
+        }
+        def.setDBDocType(doctype);
         return def.getDBType();
     }
 
@@ -242,4 +250,3 @@ public class XMLBuilderReader extends XMLBasicReader {
         }
     }
 }
-
