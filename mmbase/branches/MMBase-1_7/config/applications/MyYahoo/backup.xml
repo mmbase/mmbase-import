@@ -1,0 +1,10 @@
+<contextdepth>
+
+	<startnode>
+		<builder>pools</builder>
+		<where>name=='MyYahoo'</where>
+	</startnode>
+
+	<depth>3</depth>
+
+</contextdepth>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
+<storage>
+	<!-- MySQLdb configuration resource. -->
+
+	<storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
+
+	<!-- use the manager for relational databases -->
+	<storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
+
+	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.MySqlSqlHandler" />
+
+	<attributes>
+		<!-- MySQL does not default support transactions, but it's Metadata object claims that it does
+				 So set support to false.
+		-->
+		<option name="database-supports-transactions" value="false" />
+
+		<!-- Explictly encode text when storing it in the database	-->
+		<option name="database-force-encode-text" />
+
+		<!-- Use Blobs	-->
+		<option name="database-supports-blob" />
+
+		<!-- uses different syntax for creating constraints -->
+		<scheme name="create-unique-key-scheme" >UNIQUE INDEX {2} ({2})</scheme>
+		<scheme name="create-composite-key-scheme" >UNIQUE INDEX {1}_key ({2})</scheme>
+		<!-- MySQL does not properly support foreign keys, Still create a least an index -->
+		<scheme name="create-foreign-key-scheme" >INDEX {2} ({2})</scheme>
+
+		<!-- uses different syntax for deleting constraints -->
+		<scheme name="delete-constraint-scheme" >ALTER TABLE {1} DROP INDEX {2}</scheme>
+
+	</attributes>
+
+	<!-- MySQL type mappings 	-->
+	<type-mappings>
+		<type-mapping name="DOUBLE" type="double" />
+		<type-mapping name="LONG" type="bigint" />
+		<type-mapping name="FLOAT" type="float" />
+		<type-mapping name="INTEGER" type="integer" />
+		<type-mapping name="NODE" type="integer" />
+		<type-mapping name="STRING" min-size="1" max-size="255" type="varchar({0})" />
+		<type-mapping name="STRING" min-size="256" max-size="65535" type="blob" />
+		<type-mapping name="STRING" min-size="65536" max-size="16777216" type="mediumblob" />
+		<type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
+		<type-mapping name="XML" min-size="256" max-size="65535" type="blob" />
+		<type-mapping name="XML" min-size="65536" max-size="16777216" type="mediumblob" />
+		<type-mapping name="BYTE" min-size="1" max-size="65535" type="blob" />
+		<type-mapping name="BYTE" min-size="65536" max-size="16777216" type="mediumblob" />
+	</type-mappings>
+
+	<!-- MySQL disallowed fields (copied from the old configurations) 	-->
+	<disallowed-fields>
+		<disallowed-field name="parent" replacement="m_parent"/>
+		<disallowed-field name="type" replacement="m_type"/>
+		<disallowed-field name="data" replacement="m_data"/>
+		<disallowed-field name="key" replacement="m_key"/>
+		<disallowed-field name="keys" replacement="m_keys"/>
+		<disallowed-field name="from" replacement="m_from"/>
+		<disallowed-field name="global" replacement="m_global"/>
+		<disallowed-field name="use" replacement="m_use"/>
+		<disallowed-field name="time" replacement="m_time"/>
+		<disallowed-field name="status" replacement="m_status"/>
+		<disallowed-field name="month" replacement="m_month"/>
+		<disallowed-field name="day" replacement="m_day"/>
+		<disallowed-field name="hour" replacement="m_hour"/>
+		<disallowed-field name="comment" replacement="m_comment"/>
+		<disallowed-field name="hosts" replacement="m_hosts"/>
+		<disallowed-field name="to" replacement="m_to"/>
+		<disallowed-field name="second" replacement="m_second"/>
+		<disallowed-field name="local" replacement="m_local"/>
+		<disallowed-field name="group" replacement="m_group"/>
+		<disallowed-field name="fields" replacement="m_fields"/>
+		<disallowed-field name="int" replacement="m_int"/>
+		<disallowed-field name="create" replacement="m_create"/>
+		<disallowed-field name="read" replacement="m_read"/>
+		<disallowed-field name="write" replacement="m_write"/>
+		<disallowed-field name="column" replacement="m_column"/>
+		<disallowed-field name="order" replacement="m_order"/>
+		<disallowed-field name="references" replacement="m_references"/>
+	</disallowed-fields>
+
+</storage>

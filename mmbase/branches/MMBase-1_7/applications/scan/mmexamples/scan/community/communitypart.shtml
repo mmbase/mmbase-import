@@ -1,0 +1,28 @@
+   <PROCESSOR MMBASE>
+   <ul>
+    <LIST RELATIONS NODE="$PARAM1" TYPE="channel" FIELDS="number,html(title),gui(state),gui(maxusers)">
+     <li>
+        <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^==open>
+            <a href="forum/forum.shtml?$ITEM1"><strong>$ITEM2</strong></a> is open<br />
+        </IF>
+        <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^==readonly>
+            <a href="forum/forum.shtml?$ITEM1"><strong>$ITEM2</strong></a> is open for reading only<br />
+        </IF>
+        <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^==closed>
+            <strong>$ITEM2</strong> is closed.<br />
+        </IF>
+        Security : $ITEM3<br />
+        Maximum users : $ITEM4<br />
+        <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^=Nclosed>
+            <a href="community.shtml?$ITEM1+CLOSE+channel">Close channel</a><br />
+        </IF>
+        <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^=Nopen>
+            <a href="community.shtml?$ITEM1+OPEN+channel">Open channel</a><br />
+        </IF>
+        <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^=Nreadonly>
+            <a href="community.shtml?$ITEM1+READONLY+channel">Make channel read only</a><br />
+        </IF>
+        &nbsp;
+     </li>
+    </LIST>
+  </ul>
