@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.107 2003-11-10 16:41:35 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.108 2003-11-19 13:03:10 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -42,7 +42,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public static final int ACTION_COMMIT = 10; // commit a node after changes
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
-
 
     private boolean changed = false;
 
@@ -476,12 +475,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();
             if (isnew) {
-                node.insert(cloud.getUser().getIdentifier());
-                //node.insert("bridge");
+                node.insert(((BasicUser)cloud.getUser()).getUserContext());
                 cloud.createSecurityInfo(getNumber());
                 isnew = false;
             } else {
-                node.getBuilder().safeCommit(node);
+                node.commit(((BasicUser)cloud.getUser()).getUserContext());
                 cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
@@ -570,7 +568,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public String toString() {
         //return getNode().toString() + "(" + getNode().getClass().getName() + ")";
-        return getNode().toString(); 
+        return getNode().toString();
     }
 
     /**
@@ -722,7 +720,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         while (it.hasNext()) {
             Relation relation = it.nextRelation();
             switch(dir) {
-            case ClusterBuilder.SEARCH_DESTINATION: 
+            case ClusterBuilder.SEARCH_DESTINATION:
                 if(relation.getSource().getNumber() == getNumber()) {
                     result.add(relation);
                 }
@@ -732,7 +730,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     result.add(relation);
                 }
                 break;
-            default: 
+            default:
                 result.add(relation); // er..
             }
         }
@@ -749,7 +747,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public int countRelations(String type) {
         //err
-        return countRelatedNodes(cloud.getNodeManager("object"), type, "BOTH"); 
+        return countRelatedNodes(cloud.getNodeManager("object"), type, "BOTH");
     }
 
 
@@ -820,7 +818,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
         Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
-        q.setConstraint(c);        
+        q.setConstraint(c);
         NodeList aliases = cloud.getList(q);
         StringList result = new BasicStringList();
         NodeIterator i = aliases.nodeIterator();
@@ -904,7 +902,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     // javadoc inherited (from Node)
     public void setContext(String context) {
-        cloud.setContext(getNumber(), context);
+        // set the context on the node (run after insert).
+        getNode().setContext(((BasicUser)cloud.getUser()).getUserContext(),context, !isnew && !(cloud instanceof Transaction));
     }
 
     // javadoc inherited (from Node)
