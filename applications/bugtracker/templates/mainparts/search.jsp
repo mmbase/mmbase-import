@@ -1,3 +1,4 @@
+
 <form action="<mm:url referids="parameters,$parameters" />" method="post">
 
 <table class="list">
@@ -152,6 +153,7 @@
   
   <mm:sortorder  field="bugreports.bugid" direction="down" />
 
+  <%-- what a mess --%>
   <mm:write referid="sissue">
     <mm:isnotempty><mm:constraint field="bugreports.issue" operator="LIKE" value="%$_%" /></mm:isnotempty>
   </mm:write>
