@@ -33,13 +33,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.41 2003-10-30 14:05:07 pierre Exp $
+ * @version $Id: IncludeTag.java,v 1.42 2003-12-16 13:54:09 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
 
-    private static final Logger log = Logging.getLoggerInstance(IncludeTag.class);
-    private static final Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
+    private static  final Logger log = Logging.getLoggerInstance(IncludeTag.class);
+    private static  final Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
 
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;
@@ -120,9 +120,11 @@ public class IncludeTag extends UrlTag {
             } else {
                 try {
                     in = new BufferedReader(new InputStreamReader (connection.getInputStream(), coding));
-                }  catch (java.io.UnsupportedEncodingException e) { // sometimes there are strange things there...
+                }  catch (UnsupportedEncodingException e) { // sometimes there are strange things there...
                     log.debug("Found a strange encoding in connection: " + coding);
                     in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+                } catch (Exception e) {
+                    throw new TaglibException(e.getMessage(), e);
                 }
             }
 
@@ -139,7 +141,7 @@ public class IncludeTag extends UrlTag {
                 log.debug("found string: " + helper.getValue());
             }
 
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             throw new TaglibException (e);
         }
     }
@@ -236,7 +238,7 @@ public class IncludeTag extends UrlTag {
                 }
 
             }
-            java.io.File file = new java.io.File(urlFile);
+            File file = new File(urlFile);
 
             if (file.isDirectory()) {
                 throw new JspTagException("Cannot cite a directory");
@@ -248,15 +250,15 @@ public class IncludeTag extends UrlTag {
 
 
             if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
-            java.io.FileReader reader = new java.io.FileReader(file);
-            java.io.StringWriter string = new java.io.StringWriter();
+            FileReader reader = new FileReader(file);
+            StringWriter string = new StringWriter();
             int c = reader.read();
             while (c != -1) {
                 string.write(c);
                 c = reader.read();
             }
             helper.setValue(debugStart(urlFile) + string.toString() + debugEnd(urlFile));
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             throw new TaglibException (e);
         }
     }
@@ -294,8 +296,8 @@ public class IncludeTag extends UrlTag {
             if (log.isDebugEnabled()) {
                 log.debug("Found nude url " + nudeUrl);
             }
-            javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+            HttpServletRequest request   = (HttpServletRequest) pageContext.getRequest();
+            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
 
             if (nudeUrl.indexOf(':') == -1) { // relative
@@ -304,15 +306,15 @@ public class IncludeTag extends UrlTag {
                 // This breaks relative includes of more than 1 level.
 
                 // Fetch includelevel en reqeust URI from Attributes.
-                Integer level=(Integer)request.getAttribute("includeTagLevel");
-                if (level==null) {
-                    includeLevel=0;
+                Integer level = (Integer) request.getAttribute("includeTagLevel");
+                if (level == null) {
+                    includeLevel = 0;
                 } else {
-                    includeLevel=level.intValue();
+                    includeLevel = level.intValue();
                 }
-                includeURI=(String)request.getAttribute("includeTagURI");
-                if (includeLevel==0 || includeURI==null) {
-                    includeURI=request.getRequestURI();
+                includeURI = (String) request.getAttribute("includeTagURI");
+                if (includeLevel == 0 || includeURI==null) {
+                    includeURI = request.getRequestURI();
                     paramsIndex = includeURI.indexOf('?');
                     if (paramsIndex != -1) {
                         includeURI = includeURI.substring(0, paramsIndex);
@@ -327,13 +329,15 @@ public class IncludeTag extends UrlTag {
                     urlString = gotUrl;
                 } else {
                     log.debug("URL was relative");
+                    File currentDir = new File(includeURI + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)
+                    
                     urlString =
                         // find the parent directory of the relativily given URL:
                         // parent-file: the directory in which the current file is.
                         // nude-Url   : is the relative path to this dir
                         // canonicalPath: to get rid of /../../ etc
                         // replace:  windows uses \ as path seperator..., but they may not be in URL's..
-                        new java.io.File(new java.io.File(includeURI).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
+                        new File(currentDir.getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
 
                     // getCanonicalPath gives also gives c: in windows:
                     // take it off again if necessary:
@@ -347,10 +351,10 @@ public class IncludeTag extends UrlTag {
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute("includeTagLevel",new Integer(includeLevel));
+                request.setAttribute("includeTagLevel", new Integer(includeLevel));
                 // keep current URI so we can retrieve it after the include
-                previncludeURI=includeURI;
-                includeURI=urlString;
+                previncludeURI = includeURI;
+                includeURI = urlString;
                 paramsIndex = includeURI.indexOf('?');
                 if (paramsIndex != -1) {
                     includeURI = includeURI.substring(0, paramsIndex);
@@ -382,7 +386,7 @@ public class IncludeTag extends UrlTag {
                 }
             }
 
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
@@ -430,7 +434,7 @@ public class IncludeTag extends UrlTag {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
         case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
-        case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
+         case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
         default: return "";
         }
     }
@@ -478,14 +482,14 @@ class ResponseWrapper extends HttpServletResponseWrapper {
      * Return the OutputStream. This is a 'MyServletOutputStream' that
      * wraps around the PrintWriter
      */
-    public ServletOutputStream getOutputStream() throws java.io.IOException {
+    public ServletOutputStream getOutputStream() throws IOException {
         return msos;
     }
 
     /**
      * Return the PrintWriter
      */
-    public PrintWriter getWriter() throws java.io.IOException {
+    public PrintWriter getWriter() throws IOException {
         return writer;
     }
 
