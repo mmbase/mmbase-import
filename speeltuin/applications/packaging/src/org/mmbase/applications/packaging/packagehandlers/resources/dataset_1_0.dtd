@@ -1,0 +1,16 @@
+<!--
+     dataset.dtd
+-->
+
+<!ELEMENT dataset (objectsets?,relationsets?)>
+
+<!ELEMENT objectsets (objectset*)>
+<!ELEMENT objectset (#PCDATA)>
+<!ATTLIST objectset builder CDATA #IMPLIED>
+<!ATTLIST objectset path CDATA #IMPLIED>
+
+<!ELEMENT relationsets (relationset*)>
+<!ELEMENT relationset (#PCDATA)>
+<!ATTLIST relationset builder CDATA #IMPLIED>
+<!ATTLIST relationset path CDATA #IMPLIED>
+
