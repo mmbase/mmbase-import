@@ -273,7 +273,6 @@ public class ContextTag extends ContextReferrerTag {
                     log.debug("not a multipart request");
                 }
             }
-            log.info("returning");
             return multipartRequest;          
         }
 
@@ -506,6 +505,16 @@ public class ContextTag extends ContextReferrerTag {
         container.remove(key);
     }
 
+    /**
+     * Registers an variable again. This can be used to change the type of a variable, e.g.
+     *
+     * @since MMBase-1.6
+     */
+    public void reregister(String id, Object n) throws JspTagException {
+        unRegister(id);
+        register(id, n);
+    }
+
 
     /**
      * 'present' means 'not null'. 'null' means 'registered, but not present'.
@@ -686,7 +695,7 @@ class MMultipartRequest {
     public Object getParameterValues(String param) {
         Object result = null;
         if (o.checkPostMultiParameter(param)) {
-            log.info("This is a multiparameter!");
+            log.debug("This is a multiparameter!");
             result = o.getPostMultiParameter(param);
         } else {                
             try {
