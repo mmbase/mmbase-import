@@ -35,11 +35,13 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.10 2004-09-17 09:23:48 pierre Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.11 2004-11-03 18:19:32 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractFunctionTag.class);
+
+    public static final String THISPAGE = "THISPAGE";
 
     protected Attribute container   = Attribute.NULL;
     protected Attribute name        = Attribute.NULL;
@@ -49,6 +51,8 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     protected Attribute nodeManager = Attribute.NULL;
 
     protected Attribute functionSet = Attribute.NULL;
+
+    protected Attribute functionClass = Attribute.NULL;
 
     protected Attribute referids    = Attribute.NULL;
 
@@ -78,6 +82,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         functionSet = getAttribute(s);
     }
 
+    public void setClassname(String c) throws JspTagException {
+        functionClass = getAttribute(c);
+    }
+
     public void setReferids(String r) throws JspTagException {
         referids = getAttribute(r);
     }
@@ -90,32 +98,45 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         Function function;
         // now determin on what the object the function must be done.
         if (nodeManager != Attribute.NULL) {
-            if (module != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
-                throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
+            if (module != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
+                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
             return  FunctionFactory.getFunction(getCloudVar().getNodeManager(nodeManager.getString(this)), functionName);
         } else if (module != Attribute.NULL) {
-            if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
-                throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
+            if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
+                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
             return FunctionFactory.getFunction(getCloudContext().getModule(module.getString(this)), functionName);
         } else if (functionSet != Attribute.NULL) {
-            if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL) {
-                throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
+            if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL || functionClass != Attribute.NULL) {
+                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
             String set = functionSet.getString(this);
-            if (set.startsWith("THISPAGE")) {
-                Class claz = pageContext.getPage().getClass();
-
-                if (set.equals("THISPAGE")) {
-                    Method method = MethodFunction.getFirstMethod(claz, functionName);
-                    return  FunctionFactory.getFunction(method, functionName);
+            return FunctionFactory.getFunction(functionSet.getString(this), functionName);
+        } else if (functionClass != Attribute.NULL) {
+            if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL || functionSet != Attribute.NULL) {
+                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
+            }
+            String className = functionClass.getString(this);
+            if (className.startsWith(THISPAGE)) {
+                Class jspClass = pageContext.getPage().getClass();
+                if (className.equals(THISPAGE)) {                    
+                    Method method = MethodFunction.getFirstMethod(jspClass, functionName);
+                    return FunctionFactory.getFunction(method, functionName);
                 } else {
-                    throw new UnsupportedOperationException("Local beans not yet supported");
+                    String innerClassName = className.substring(THISPAGE.length() + 1);
+                    Class  clazz   = BeanFunction.getClass(jspClass, innerClassName);
+                    return FunctionFactory.getFunction(clazz, functionName);
                 }
             } else {
-                return FunctionFactory.getFunction(functionSet.getString(this), functionName);
+                try {
+                    Class clazz = Class.forName(className);
+                    return FunctionFactory.getFunction(clazz, functionName);
+                } catch (ClassNotFoundException cnfe) {
+                    throw new TaglibException(cnfe);
+                }
             }
+
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
 
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
@@ -180,10 +201,23 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     protected final Object getFunctionValue() throws JspTagException {
 
+        String functionName = name.getString(this);
+
+        if (getReferid()  != null) {
+            if (! "".equals(functionName)) {
+                throw new TaglibException("Cannot specify both 'referid' and 'name' attributes on a function tag");
+            }
+            Object value = getObject(getReferid());
+            if (getId() != null) {
+                getContextProvider().getContextContainer().register(getId(), value);
+            }
+            return value;
+        } 
+
         FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
         log.debug("Getting function value. Container " + functionContainer);
 
-        String functionName = name.getString(this);
+
 
         Function function;
         if ("".equals(functionName)) {  // no name given, certainly must use container.
@@ -224,7 +258,11 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
         params.checkRequiredParameters();
 
-        return function.getFunctionValue(params);
+        Object value =  function.getFunctionValue(params);
+        if (getId() != null) {
+            getContextProvider().getContextContainer().register(getId(), value);
+        }
+        return value;
     }
 
 }
