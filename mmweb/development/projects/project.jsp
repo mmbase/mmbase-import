@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page language="java" contentType="text/html; charset=iso8859-1" %>
+<mm:content type="text/html">
 <mm:cloud>
 <mm:import externid="project" required="true" />
 <%@include file="/includes/getids.jsp" %>
@@ -10,7 +11,7 @@
   <table width="100%">
     <tr>
       <td rowspan=2 width="60%" class="projectIntro">
-        <mm:field name="body" />
+        <mm:field name="body" escape="p" />
         <p>
         
       </td>
@@ -32,3 +33,4 @@
 
 <%@include file="/includes/footer.jsp" %>
 </mm:cloud>
+</mm:content>
