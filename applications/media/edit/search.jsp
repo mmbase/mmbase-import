@@ -14,21 +14,21 @@
    <link href="style/streammanager.css" type="text/css" rel="stylesheet"><!-- help IE --></link>
    <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>
-<mm:import externid="origin">media.myyfragments</mm:import>
+<mm:import externid="origin">media.myfragments</mm:import>
 <body class="left"  onload="initLeft('entrance');">
   <%@include file="submenu.jsp" %>
   <hr />
- <h1>Zoek</h1>
+ <h1><%=m.getString("search")%></h1>
   <p>
   <table>
   <form target="content" action="<mm:url page="view/index.jsp" />" >   
-    <tr><td>Type</td><td><select name="type">
-       <option value="mediafragments">Audio/Video</option>
-       <option value="audiofragments">Audio</option>
-       <option value="videofragments">Video</option>
+    <tr><td><%=m.getString("type")%></td><td><select name="type">
+       <option value="mediafragments"><%=m.getString("audio")%>/<%=m.getString("video")%></option>
+       <option value="audiofragments"><%=m.getString("audio")%></option>
+       <option value="videofragments"><%=m.getString("video")%></option>
      </select></td></tr>
-    <tr><td>Group</td><td><select name="origin">
-       <option value="">Any</option>
+    <tr><td><%=m.getString("category")%></td><td><select name="origin">
+       <option value=""><%=m.getString("any")%></option>
        <mm:node number="media.streams">
        <mm:related path="parent,pools2" orderby="pools2.name">
         <mm:context>
@@ -39,9 +39,9 @@
        </mm:related>
        </mm:node>
      </select></td></tr>
-    <tr><td>Owner</td><td><input type="text" name="owner" /></td></tr>
-    <tr><td>Tekst</td><td><input type="text" name="searchvalue" /></td></tr>
-    <tr><td>Verzenden</td><td><button type="submit"><img src="media/search.gif" /></button></td></tr>
+    <tr><td><%=m.getString("owner")%></td><td><input type="text" name="owner" /></td></tr>
+    <tr><td><%=m.getString("text")%></td><td><input type="text" name="searchvalue" /></td></tr>
+    <tr><td><%=m.getString("send")%></td><td><button type="submit"><img src="media/search.gif" /></button></td></tr>
   </form>
   </table>
   </p>

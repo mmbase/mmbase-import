@@ -9,8 +9,7 @@
 >
 
 <wizard-schema id="media">
-  <title>Video clip editor</title>
-  <title xml:lang="nl">Video knipper</title>
-
+  <title>Videoclip-editor</title>
+  <title xml:lang="nl">Video-knipper</title>
   &base;
 </wizard-schema>
