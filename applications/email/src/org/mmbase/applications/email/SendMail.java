@@ -9,17 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import java.net.*;
 import java.util.*;
-import javax.naming.*;
+
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
+import javax.naming.*;
 
 import org.mmbase.module.core.MMBase;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-
 
 /**
  * Module providing mail functionality based on JavaMail, mail-resources.
@@ -28,12 +25,12 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.8 2004-06-10 09:16:12 pierre Exp $
+ * @version $Id: SendMail.java,v 1.9 2004-07-15 12:01:56 keesj Exp $
  */
 public class SendMail extends org.mmbase.module.AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
 
-    public static final String DEFAULT_MAIL_ENCODING="ISO-8859-1";
+    public static final String DEFAULT_MAIL_ENCODING = "ISO-8859-1";
 
     public static String mailEncoding = DEFAULT_MAIL_ENCODING;
 
@@ -45,7 +42,7 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
 
             MimeMessage msg = constructMessage(from, to, headers);
 
-        msg.setContent(mmpart);
+            msg.setContent(mmpart);
 
             Transport.send(msg);
             log.debug("JMimeSendMail done.");
@@ -60,11 +57,9 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
     /**
      * {@inheritDoc}
      */
-
     public String getModuleInfo() {
-        return("Sends mail through J2EE/JavaMail, supporting MultiPart");
+        return ("Sends mail through J2EE/JavaMail, supporting MultiPart");
     }
-
 
     /**
      * =========================================================================================================
@@ -89,10 +84,11 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
             MMBase mmb = MMBase.getMMBase();
             mailEncoding = mmb.getEncoding();
             String encoding = getInitParameter("encoding");
-            if (encoding != null && !encoding.equals("")) mailEncoding = encoding;
+            if (encoding != null && !encoding.equals(""))
+                mailEncoding = encoding;
 
-            String smtphost   = getInitParameter("mailhost");
-            String context    = getInitParameter("context");
+            String smtphost = getInitParameter("mailhost");
+            String context = getInitParameter("context");
             String datasource = getInitParameter("datasource");
             session = null;
             if (smtphost == null) {
@@ -106,9 +102,9 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
                 }
 
                 Context initCtx = new InitialContext();
-                Context envCtx = (Context) initCtx.lookup(context);
-                session = (Session) envCtx.lookup(datasource);
-                log.info("Module JMSendMail started (datasource = " + datasource +  ")");
+                Context envCtx = (Context)initCtx.lookup(context);
+                session = (Session)envCtx.lookup(datasource);
+                log.info("Module JMSendMail started (datasource = " + datasource + ")");
             } else {
                 if (context != null) {
                     log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
@@ -116,22 +112,22 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
                 if (datasource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
-                log.info("EMail module is configured using 'mailhost' proprerty.\n" +
-                         "Consider using J2EE compliant 'context' and 'datasource'\n" +
-                         "Which means to put something like this in your web.xml:\n" +
-                         "  <resource-ref>\n" +
-                         "     <description>Email module mail resource</description>\n" +
-                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" +
-                         "     <res-type>javax.mail.Session</res-type>\n" +
-                         "     <res-auth>Container</res-auth>\n" +
-                         "  </resource-ref>\n" +
-                         " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)"
-                         );
+                log.info(
+                    "EMail module is configured using 'mailhost' proprerty.\n"
+                        + "Consider using J2EE compliant 'context' and 'datasource'\n"
+                        + "Which means to put something like this in your web.xml:\n"
+                        + "  <resource-ref>\n"
+                        + "     <description>Email module mail resource</description>\n"
+                        + "     <res-ref-name>mail/MMBase</res-ref-name>\n"
+                        + "     <res-type>javax.mail.Session</res-type>\n"
+                        + "     <res-auth>Container</res-auth>\n"
+                        + "  </resource-ref>\n"
+                        + " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)");
 
                 Properties prop = System.getProperties();
                 prop.put("mail.smtp.host", smtphost);
                 session = Session.getInstance(prop, null);
-                log.info("Module JMSendMail started (smtphost = " + smtphost +  ")");
+                log.info("Module JMSendMail started (smtphost = " + smtphost + ")");
             }
 
         } catch (javax.naming.NamingException e) {
@@ -143,31 +139,30 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
      */
-
     protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
         if (log.isServiceEnabled()) {
             log.service("JMSendMail sending mail to " + to);
         }
         // construct a message
         MimeMessage msg = new MimeMessage(session);
-        if (from != null && ! from.equals("")) {
+        if (from != null && !from.equals("")) {
             msg.addFrom(InternetAddress.parse(from));
         }
 
         msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
         if (headers.get("CC") != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("CC")));
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("CC")));
         }
         if (headers.get("BCC") != null) {
-            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("BCC")));
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String)headers.get("BCC")));
         }
 
         if (headers.get("Reply-To") != null) {
-            msg.setReplyTo(InternetAddress.parse((String) headers.get("Reply-To")));
+            msg.setReplyTo(InternetAddress.parse((String)headers.get("Reply-To")));
         }
 
-        msg.setSubject((String) headers.get("Subject"));
+        msg.setSubject((String)headers.get("Subject"));
 
         return msg;
     }
@@ -179,7 +174,7 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
         try {
             MimeMessage msg = constructMessage(from, to, headers);
 
-            msg.setText(data,mailEncoding);
+            msg.setText(data, mailEncoding);
             Transport.send(msg);
             log.debug("JMSendMail done.");
             return true;
@@ -189,9 +184,4 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
         }
         return false;
     }
-
-
-
-
-
 }
