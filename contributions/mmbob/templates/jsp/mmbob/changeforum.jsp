@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud name="mmbase" method="http" rank="administrator">
-<mm:content type="text/html" encoding="UTF-8" escaper="entities">
+<mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:import externid="forumid" />
@@ -44,7 +44,7 @@
 	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
 	</td></tr>
 	<tr><th><mm:write referid="mlg_Language"/></th><td colspan="2">
-	<input name="language" size="2" value="<mm:field name="language" />" >
+	<input name="newlang" size="2" value="<mm:field name="language" />" >
 	</td></tr>
 	<tr><th><mm:write referid="mlg_Description"/></th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"><mm:field name="description" /></textarea>
