@@ -42,9 +42,7 @@
       </item>
       
       <action type="create">
-        <relation role="related" destinationtype="news">
-          <field name="title">{relation/object/@number}</field>
-        </relation>
+        <relation role="related" destinationtype="news" />
       </action>
     </list>
         <list role="related" destination="images">
