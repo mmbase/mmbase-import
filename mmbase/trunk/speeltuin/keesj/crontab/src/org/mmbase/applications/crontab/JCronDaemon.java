@@ -7,9 +7,11 @@ import org.mmbase.util.logging.*;
  * JCronDaemonn is a "crontab" clone written in java.
  * The daemon starts a thread that wakes up every minute
  *(it keeps sync by calculating the time to sleep)
- * @author Kees JongenBurger
+ *
+ * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- **/
+ * @todo   Should we user java.util.Timer?
+ */
 public class JCronDaemon implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(JCronDaemon.class);
@@ -17,7 +19,10 @@ public class JCronDaemon implements Runnable {
     private static JCronDaemon jCronDaemon;
     private Thread cronThread;
     private Set jCronEntries;
-    
+
+    /**
+     * JCronDaemon is a Singleton. This makes the one instance and starts the Thread.
+     */
     private JCronDaemon() {
         jCronEntries = Collections.synchronizedSet(new HashSet());
         start();
@@ -36,18 +41,30 @@ public class JCronDaemon implements Runnable {
         log.info("Removed from JCronDaemon " + entry);
     }
     
+    /** 
+     * Starts the daemon, which you might want to do if you have stopped if for some reason. The
+     * daemon is already started on default.
+     */
     public void start(){
         log.info("Starting JCronDaemon");
         cronThread = new Thread(this, "JCronDaemon");
-        //cronThread.setDaemon(true);
+        cronThread.setDaemon(true);
         cronThread.start();
     }
+
+    /**
+     * If you like to temporary stop the daemon, call this.
+     */
     
     public void stop(){
         log.info("Stopping JCronDaemon");
         cronThread.interrupt();
         cronThread=  null;
     }
+
+    /**
+     * Gets (and instantiates, and starts) the one JCronDaemon instance.
+     */
     
     public static synchronized JCronDaemon getInstance(){
         if (jCronDaemon == null){
@@ -56,7 +73,10 @@ public class JCronDaemon implements Runnable {
         return jCronDaemon;
     }
     
-    
+    /**
+     * The main loop of the daemon, which of course is a Thread, implemented in run() to satisfy the
+     * 'Runnable' interface.
+     */
     public void run() {
         Thread thisThread = Thread.currentThread();
 
@@ -87,6 +107,10 @@ public class JCronDaemon implements Runnable {
             }
         }
     }
+
+    /**
+     * main only for testing purposes
+     */
     
     public static void main(String[] argv) throws Exception{
         JCronDaemon d = JCronDaemon.getInstance();

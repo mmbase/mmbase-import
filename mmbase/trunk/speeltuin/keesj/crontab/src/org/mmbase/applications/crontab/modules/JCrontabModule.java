@@ -8,7 +8,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Starts a crontab for MMBase.
+ * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
  */
@@ -16,13 +16,26 @@ public class JCrontabModule extends ReloadableModule {
     private static final Logger log = Logging.getLoggerInstance(JCrontabModule.class);
     protected JCronDaemon jCronDaemon = null;
     
-
+    /** 
+     * Need to remember which crontab entries where 'mine', to known which must be removed if
+     * configuration changes.
+     */
     private Set myEntries = new HashSet();
 
     public JCrontabModule() {
         jCronDaemon = JCronDaemon.getInstance();
     }
 
+    /**
+     * Interpretates all initParameters as crontab entries. The key is not very important but must
+     * be unique. The value are actually two or three values, separated by tabs newlines or '|',
+     * whatever you like most.
+     <pre>
+      &lt;cron time&gt;
+      [&lt;description&gt;] 
+      &lt;class name of a JCronJob&gt;
+      </pre>
+     */
     public void init() {
         Map params = getInitParameters();
         Iterator i = getInitParameters().entrySet().iterator();
@@ -61,6 +74,10 @@ public class JCrontabModule extends ReloadableModule {
         }
     }
 
+    /**
+     * All previously added entries are removed from the cron-daemon and the currently configured
+     * ones are added (init is called).
+     */
     public void reload() {
         log.info("Reloading crontab");
         Iterator i = myEntries.iterator();

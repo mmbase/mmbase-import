@@ -3,6 +3,13 @@ package org.mmbase.applications.crontab;
 
 import java.util.*;
 
+/**
+ * One the fields of the 'crontab' syntax, which is something like '*' or '* /5' or 5-23. See 'man 5 crontab'
+ *
+ * @author Kees Jongenburger
+ * @version $Id: JCronEntryField.java,v 1.3 2004-04-01 22:16:47 michiel Exp $
+ */
+
 public class JCronEntryField {
     private String content;
     

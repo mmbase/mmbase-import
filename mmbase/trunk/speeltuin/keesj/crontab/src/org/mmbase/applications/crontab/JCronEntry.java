@@ -4,6 +4,14 @@ package org.mmbase.applications.crontab;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
+/**
+ * Defines one entry for JCronDaemon.
+ *
+ * @author Kees Jongenburger
+ * @author Michiel Meeuwissen
+ * @version $Id: JCronEntry.java,v 1.5 2004-04-01 22:16:47 michiel Exp $
+ */
+
 public class JCronEntry {
     
     private static final Logger log = Logging.getLoggerInstance(JCronEntry.class);
@@ -24,7 +32,11 @@ public class JCronEntry {
     private JCronEntryField dayOfMonth;//1-31
     private JCronEntryField month     ;//1-12
     private JCronEntryField dayOfWeek ;//0-7 (0 or 7 is sunday)
-    
+   
+
+    /**
+     * @throws ClassCastException if className does not refer to a Runnable.
+     */ 
     public JCronEntry(String id, String cronTime, String name, String className) throws Exception {
         this.id = id;
         this.name = name;
@@ -43,7 +55,7 @@ public class JCronEntry {
         setTimeVal(cronTime);
     }
     
-    public boolean kick() {
+    protected boolean kick() {
         if (thread != null && thread.isAlive()) {
             return false;
         } else {
@@ -56,7 +68,7 @@ public class JCronEntry {
 
     }
     
-    public void setTimeVal(String cronTime){
+    protected void setTimeVal(String cronTime){
         StringTokenizer st = new StringTokenizer(cronTime," ");
         if (st.countTokens() > 5) {
             throw new RuntimeException("Too many (" + st.countTokens() + "> 6)  tokens in " + cronTime);
@@ -82,7 +94,7 @@ public class JCronEntry {
         return name;
     }
     
-    public boolean mustRun(Date date){
+    boolean mustRun(Date date){
         Calendar cal = Calendar.getInstance();
         if (
         minute.valid(cal.get(cal.MINUTE)) &&

@@ -3,7 +3,7 @@ package org.mmbase.applications.crontab;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
-public class TestCronJob2 implements Runnable {
+public class TestCronJob implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(TestCronJob2.class);
 
