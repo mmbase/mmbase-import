@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: User.java,v 1.1 2003-05-22 17:14:03 michiel Exp $
+ * @version $Id: User.java,v 1.2 2003-06-17 09:32:18 michiel Exp $
  */
 public class User extends UserContext implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(User.class.getName());
@@ -39,27 +39,34 @@ public class User extends UserContext implements MMBaseObserver {
         Users.getBuilder().addLocalObserver(this);
     }
 
-    /**
-     * @javadoc
-     */
+    // javadoc inherited
     public String getIdentifier()  {
-        if (node==null) {
+        if (node == null) {
             return "anonymous";
         } else {
             return Users.getBuilder().getUserName(node);
         }
     }
 
-    /**
-     * @javadoc
-     */
+
+    // javadoc inherited
     public Rank getRank() throws SecurityException {
-        if (node==null) {
+        if (node == null) {
             return Rank.ANONYMOUS;
         } else {
             return Users.getBuilder().getRank(node);
         }
     }
+
+    // javadoc inherited
+    public String getOwnerField() {
+        if (node == null) {
+            return "system";
+        } else {
+            return Users.getBuilder().getDefaultContext(node);
+        }
+    }
+
 
     /**
      * @javadoc
@@ -84,16 +91,6 @@ public class User extends UserContext implements MMBaseObserver {
         return (otherNode != null) && (node.getNumber() == otherNode.getNumber());
     }
 
-    /**
-     * @javadoc
-     */
-    String getDefaultContext() {
-        if (node==null) {
-            return "";
-        } else {
-            return Users.getBuilder().getDefaultContext(node);
-        }
-    }
 
     /**
      * An MMObjectNode (of type 'mmbaseusers') is associated with this User object.

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: Verify.java,v 1.3 2003-06-16 17:35:33 michiel Exp $
+ * @version $Id: Verify.java,v 1.4 2003-06-17 09:32:18 michiel Exp $
  */
 public class Verify extends Authorization {
     private static Logger    log = Logging.getLoggerInstance(Verify.class.getName());
@@ -32,7 +32,8 @@ public class Verify extends Authorization {
     // javadoc inherited
     public void create(UserContext userContext, int nodeId) {
         User user = (User) userContext;
-        Contexts.getBuilder().setContext((User) user, nodeId, user.getDefaultContext());
+        // odd, getOwnerField is called in BasicNodeManager yet, so I wonder when this is called.
+        Contexts.getBuilder().setContext((User) user, nodeId, user.getOwnerField());
     }
 
     // javadoc inherited
@@ -63,9 +64,9 @@ public class Verify extends Authorization {
 
 
     // javadoc inherited
-    public void setContext(UserContext userContext, int i, String s) throws org.mmbase.security.SecurityException {
+    public void setContext(UserContext userContext, int nodeId, String context) throws org.mmbase.security.SecurityException {
         //log.debug("[node #" + i + "] changed to context: " + s + " by [" + usercontext.getIdentifier() + "]");
-        Contexts.getBuilder().setContext((User) userContext, i, s);
+        Contexts.getBuilder().setContext((User) userContext, nodeId, context);
     }
 
     // javadoc inherited
