@@ -52,16 +52,26 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
 
     /**
-    * This method tries to find an ancestor object of type CloudTag
-    * in that case the first node provider found will be taken.
-    * REMARK: the CloudTag does not yet have 'id', i think. We dont'
-    * have multiple cloud support yet.
+    * This method tries to find an ancestor object of type CloudProvider.
+    *
     * @return the CloudTag if found, else an exception.
     */
 	
     protected CloudProvider findCloudProvider() throws JspTagException {
         return (CloudProvider) findParentTag("org.mmbase.bridge.jsp.taglib.CloudProvider", cloudId);
     }
+
+
+    /**
+     * This method tries to find an ancestor object of type CloudProvider.
+     *
+     * @return the CloudProvider or null.
+     *
+    */	
+    public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {        
+        return (CloudProvider) findParentTag("org.mmbase.bridge.jsp.taglib.CloudProvider", cloudId, throwexception);
+    }
+
     
     /**
      * Find the CloudProvider and return its cloud variable in one
@@ -71,7 +81,6 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
      * @return a Cloud
      */
-
     protected Cloud getCloud() throws JspTagException {
         return findCloudProvider().getCloudVar();
     }
