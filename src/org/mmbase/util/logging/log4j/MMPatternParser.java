@@ -9,7 +9,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Adds the  conversion pattern 'q' which returns a truncated level (from the _end_, not from the beginning as log4j itself would do) . To 3 chars. So it is like 'p'. Also add 'k' which give the currently memory in use (in kb).
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternParser.java,v 1.6 2003-03-04 13:28:50 nico Exp $
+ * @version $Id: MMPatternParser.java,v 1.7 2005-03-16 09:33:18 michiel Exp $
  */
 public class MMPatternParser extends PatternParser {
 
@@ -30,7 +30,7 @@ public class MMPatternParser extends PatternParser {
         }
     }
     
-    private class TruncatedLevelPatternConverter extends PatternConverter {
+    private static class TruncatedLevelPatternConverter extends PatternConverter {
         TruncatedLevelPatternConverter(FormattingInfo formattingInfo) {
             super(formattingInfo);
         }
@@ -40,7 +40,7 @@ public class MMPatternParser extends PatternParser {
         }
     }  
     
-    private class MemoryPatternConverter extends PatternConverter {        
+    private static class MemoryPatternConverter extends PatternConverter {        
         MemoryPatternConverter(FormattingInfo formattingInfo) {
             super(formattingInfo);
         }
