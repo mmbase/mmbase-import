@@ -271,7 +271,7 @@ public class PackageManager {
         // this checks all the packages if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last package update
-        Iterator e = packages.values().iterator();
+        Iterator e = ((HashMap)packages.clone()).values().iterator();
         while (e.hasNext()) {
             PackageContainer pc = (PackageContainer)e.next();
             Iterator e2 = pc.getVersions();

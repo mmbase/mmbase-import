@@ -34,7 +34,7 @@ public class PackageVersionContainer {
     private ShareInfo shareinfo;
     private String version;
 
-    private Hashtable packages = new Hashtable();
+    private HashMap packages = new HashMap();
 
 
     /**
@@ -106,7 +106,7 @@ public class PackageVersionContainer {
      * @return    The packages value
      */
     public Iterator getPackages() {
-        return packages.values().iterator();
+        return ((HashMap)packages.clone()).values().iterator();
     }
 
 
@@ -165,9 +165,9 @@ public class PackageVersionContainer {
      */
     public PackageInterface getPackageByScore() {
         PackageInterface winner = null;
-        Enumeration e = packages.elements();
-        while (e.hasMoreElements()) {
-            PackageInterface p = (PackageInterface) e.nextElement();
+        Iterator e = packages.keySet().iterator();
+        while (e.hasNext()) {
+            PackageInterface p = (PackageInterface) e.next();
             if (winner == null) {
                 winner = p;
             } else if (p.getProvider().getBaseScore() > winner.getProvider().getBaseScore()) {

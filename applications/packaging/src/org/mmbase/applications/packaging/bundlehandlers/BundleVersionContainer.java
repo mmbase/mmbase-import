@@ -69,7 +69,7 @@ public class BundleVersionContainer  {
     } 
 
    public Iterator getBundles() {
-       return bundles.values().iterator();
+       return ((HashMap)bundles.clone()).values().iterator();
    }
 
 

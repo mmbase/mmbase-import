@@ -160,7 +160,7 @@ public class BundleContainer implements BundleInterface {
     }
 
     public Iterator getVersions() {
-        return versions.values().iterator();
+        return ((HashMap)versions.clone()).values().iterator();
     }
 
     public BundleInterface getVersion(String version,ProviderInterface provider) {
