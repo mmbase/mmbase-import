@@ -23,7 +23,7 @@ import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 
 /**
- * My first taglib code, so don't be angry :-)
+ * MMNode provides the fields of a node 
  * @author Rob Vermeulen
  */
 public class MMNode extends MMTaglib implements BodyTag {
