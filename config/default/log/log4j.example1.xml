@@ -41,10 +41,6 @@
 </appender>
 
 <!-- categories -->
-<root>
-    <priority class="&priority;" value ="info" />
-   	<appender-ref ref="logfile" />
-</root>
 
 <!-- base category for all MMBase classes -->
 <category name="org.mmbase" class ="&logger;">
@@ -59,5 +55,10 @@
 <category name="STDERR" class ="&logger;">
     <priority class="&priority;" value ="debug" />	
 </category>
+
+<root>
+    <priority class="&priority;" value ="info" />
+   	<appender-ref ref="logfile" />
+</root>
 
 </log4j:configuration>
