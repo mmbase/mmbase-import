@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.40 2003-11-19 16:57:43 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.41 2003-12-24 00:33:17 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -127,6 +127,13 @@ public class WriterHelper extends BodyTagSupport {
             log.debug("Setting write to " + w);
         }
         write = w;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public Attribute getWrite() {
+        return write;
     }
 
     /**
@@ -441,6 +448,7 @@ public class WriterHelper extends BodyTagSupport {
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 log.debug("writing to page");
+                if (pageContext == null) throw new JspTagException("PageContext is null. No value set?");
                 getPageString(pageContext.getOut()).write(body);
             } else {
                 log.debug("not writing to page");
