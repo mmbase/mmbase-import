@@ -83,7 +83,7 @@
     <% } %>
     <table class="editlist">
       <% String path=request.getContextPath()+request.getServletPath();
-         path=path.substring(0,path.length()-13)+"previews/"+managerName+".jsp";
+         path=path.substring(0,path.length()-13)+"/previews/"+managerName+".jsp";
       %>
       <% if (new java.io.File(page.getServletConfig().getServletContext().getRealPath(path)).exists()) { %>
   	  <tr>
