@@ -24,7 +24,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.23 2002-07-03 17:53:51 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.24 2002-08-16 18:17:02 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -142,4 +142,10 @@ public class BasicCloudContext implements CloudContext {
     public String getDefaultCharacterEncoding() {
         return mmb.getEncoding();
     }
+
+
+    public java.util.Locale getDefaultLocale() {
+        return new java.util.Locale(mmb.getLanguage(), "");
+    }
+
 }
