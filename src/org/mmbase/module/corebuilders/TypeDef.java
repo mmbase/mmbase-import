@@ -274,12 +274,24 @@ public class TypeDef extends MMObjectBuilder {
      */
     public String getGUIIndicator(String field,MMObjectNode node) {
         if (field.equals("name")) {
-            String name=node.getStringValue("name");
-            String guiname= getSingularName(name,null);
+            String name = node.getStringValue("name");
+            String guiname= getSingularName(name, null);
             return guiname;
         }
         return null;
     }
+
+    /**
+     * The GUIIndicator can depend on the locale. Override this function
+     * @since MMBase-1.6
+     */
+    protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
+        if (field == null || "".equals(field) || "name".equals(field)){
+            return getSingularName(node.getStringValue("name"), locale.getLanguage());
+        }
+        return null;
+    }
+
 
     /**
      * @javadoc
@@ -315,5 +327,39 @@ public class TypeDef extends MMObjectBuilder {
         }
         return null;
     }
+
+
+
+
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        log.debug("executefunction of typdef");
+        if (function.equals("info")) {
+            List empty = new ArrayList();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            info.put("gui", info.get("info") + " (localized)");
+            if (args == null || args.size() == 0) {
+                return info;
+            } else {
+                return info.get(args.get(0));
+            }                    
+        } else if (function.equals("gui")) {
+            log.debug("GUI of servlet builder with " + args);
+            if (args == null || args.size() ==0) {
+                return getGUIIndicator(node);
+            } else {
+                String rtn;
+                if (args.size() <= 2) {
+                    rtn = getGUIIndicator((String) args.get(0), node);
+                } else {
+                    rtn = getLocaleGUIIndicator(new Locale((String) args.get(2), ""), (String) args.get(0), node);
+                }
+                if (rtn == null) return super.executeFunction(node, function, args);
+                return rtn;
+            }
+        } else {                   
+            return super.executeFunction(node, function, args);
+        }    
+    }
+
 
 }
