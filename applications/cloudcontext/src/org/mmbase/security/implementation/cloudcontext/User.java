@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.11 2004-01-19 17:27:24 michiel Exp $
+ * @version $Id: User.java,v 1.12 2004-09-07 13:57:51 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends UserContext implements MMBaseObserver {
@@ -100,20 +100,19 @@ public class User extends UserContext implements MMBaseObserver {
         return node;
     }
 
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-        return nodeChanged(number,ctype);
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        return nodeChanged(number, ctype);
     }
 
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        return nodeChanged(number,ctype);
+    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+        return nodeChanged(number, ctype);
     }
 
-    private boolean nodeChanged(String number,String ctype) {
-        if ((node!=null) && (node.getNumber()==Integer.parseInt(number))) {
+    private boolean nodeChanged(String number, String ctype) {
+        if ((node != null) && (node.getNumber() == Integer.parseInt(number))) {
             if (ctype.equals("d")) {
                 node = null; // invalidate
-            }
-            if (ctype.equals("c")) {
+            } else if (ctype.equals("c")) {
                 node = Users.getBuilder().getNode(number);
             }
         }
