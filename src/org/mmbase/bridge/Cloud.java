@@ -247,9 +247,6 @@ public interface Cloud {
      *                      be used as a starting point for all traversals
      *                      or <code>null</code> if all nodes of the first node
      *                      manager in <code>nodePath</code> should be used.
-     *                      The nodes specified as start nodes have to be a
-     *                      member of the first node manager in the
-     *                      <code>nodePath</code> parameter.
      * @param nodePath      A comma seperated list of node manager names
      *                      which specifies the path that should be followed.
      *                      It is possible to explicitly specify a relation
