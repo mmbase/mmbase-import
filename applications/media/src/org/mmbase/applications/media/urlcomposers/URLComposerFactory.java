@@ -10,8 +10,14 @@ See http://www.MMBase.org/license
 
 
 package org.mmbase.applications.media.urlcomposers;
+import org.mmbase.applications.media.Format;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.*;
+import org.w3c.dom.Element;
 import java.util.*;
+import java.io.File;
 /**
  * The URLComposerFactory contains the code to decide which kind of
  * URLComposer is instatiated.  This is a default implementation,
@@ -22,15 +28,77 @@ import java.util.*;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.2 2003-02-03 22:50:55 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.3 2003-02-03 23:51:00 michiel Exp $
  */
 
 public class URLComposerFactory  {
 
+    private static Logger log = Logging.getLoggerInstance(URLComposerFactory.class.getName());
+    private static final String MAIN_TAG     = "urlcomposers";
+    private static final String DEFAULT_TAG  = "default";
+    private static final String COMPOSER_TAG = "urlcomposer";
+    private static final String FORMAT_ATT   = "format";
+
     private static URLComposerFactory instance = new URLComposerFactory();
 
-    private URLComposerFactory() { 
+    private Map urlComposerClasses = new HashMap();
+    private Class defaultUrlComposer;
+
+    private FileWatcher configWatcher = new FileWatcher(true) {
+        protected void onChange(File file) {
+            readConfiguration(file);
+        }
+    };
+    
+
+    /**
+     * Construct the MainFilter
+     */
+    private URLComposerFactory() {
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), 
+                                   "media" + File.separator + "urlcomposers.xml");
+        if (! configFile.exists()) {
+            log.error("Configuration file for URLComposerFactory " + configFile + " does not exist");
+            return;
+        }
+        readConfiguration(configFile);
+        configWatcher.add(configFile);
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
     }
+
+
+
+    /**
+     * read the MainFilter configuration
+     */
+    private synchronized void readConfiguration(File configFile) {
+        if (log.isServiceEnabled()) {
+            log.service("Reading " + configFile);
+        }
+        urlComposerClasses.clear();
+
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        try {
+            defaultUrlComposer = Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG));
+        } catch (java.lang.ClassNotFoundException e) {
+            log.error(e.toString());
+        }
+              
+        for(Enumeration e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasMoreElements();) {
+            Element element = (Element)e.nextElement();
+            String  clazz   =  reader.getElementValue(element);
+            Format  format  =  Format.get(element.getAttribute(FORMAT_ATT));
+            try {
+                urlComposerClasses.put(format, Class.forName(clazz));
+            } catch (ClassNotFoundException ex) {
+                log.error("Cannot load urlcomposer " + clazz);
+            } 
+
+        }
+    }
+
+
 
     public  static URLComposerFactory getInstance() {
         return instance;
