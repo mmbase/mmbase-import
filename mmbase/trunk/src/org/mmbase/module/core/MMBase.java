@@ -203,6 +203,7 @@ public class MMBase extends ProcessorModule  {
 	* is this mmbase as defined in baseName created ?
 	*/
 	boolean checkMMBase() {
+		if (database==null) database=getDatabase();
 		try {
 			MultiConnection con=getConnection();
 			Statement stmt=con.createStatement();
@@ -258,7 +259,10 @@ public class MMBase extends ProcessorModule  {
 	 */
 	public MultiConnection getConnection() {
 		try {
-			MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
+			//MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
+			//MultiConnection con=jdbc.getConnection("jdbc:HypersonicSQL:.","sa","");
+			//MultiConnection con=jdbc.getConnection("jdbc:HypersonicSQL:mmbase","sa","");
+			MultiConnection con=database.getConnection(jdbc);
 			return(con);
 		} catch (SQLException e) {
 			debug("Can't get a JDBC connection (database error)"+e);
