@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.4 2004-11-02 18:35:32 michiel Exp $
+ * @version $Id: FunctionFactory.java,v 1.5 2004-11-11 17:07:10 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {
@@ -118,7 +118,7 @@ public class FunctionFactory {
         } catch (ClassNotFoundException cnfe) {
             log.info("No implementation found for '" + impl + "', this functionality is not available");
         } catch (NoSuchMethodException nsme) {
-            log.error("There is not method 'getFunction' in " + impl + " (with args " + Arrays.asList(args) + ")");
+            log.error("There is no method 'getFunction' in " + impl + " (with args " + Arrays.asList(args) + ")");
         }
         return null;
     }
