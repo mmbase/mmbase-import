@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.181.2.3 2002-12-04 18:55:18 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.4 2002-12-06 15:53:36 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2073,7 +2073,8 @@ public class MMObjectBuilder extends MMTable {
                 if (log.isDebugEnabled()) {
                     log.debug("function= " + function + ", fieldname =" + name);
                 }
-                rtn = getFunctionValue(node, function, getFunctionParameters(name));
+                List a = new ArrayList(); a.add(name);
+                rtn = getFunctionValue(node, function, a);
             }
         }
         return rtn;
@@ -2113,13 +2114,15 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      */
     final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
-
         Object rtn = null;
         if (arguments == null) arguments = new Vector();
-        // for backwards compatibility
+
+        // for backwards compatibility (calling with string function with more then one argument)
         if (arguments.size() == 1 && arguments.get(0) instanceof String) {
-            rtn =  executeFunction(node, function, (String) arguments.get(0));
+            String arg = (String) arguments.get(0);
+            rtn =  executeFunction(node, function, arg);
             if (rtn != null) return rtn;
+            arguments = getFunctionParameters(arg);
         }
         return executeFunction(node, function, arguments);
 
@@ -2247,7 +2250,7 @@ public class MMObjectBuilder extends MMTable {
         }
 
         String field;
-        if (arguments.size() == 0) {
+        if (arguments == null || arguments.size() == 0) {
             field = "";
         } else {
             field = (String) arguments.get(0);
@@ -2328,7 +2331,14 @@ public class MMObjectBuilder extends MMTable {
              return  "" + nf.format(val);
         } else {
             // old manner: parsing list from string. That is ugly.
-            return getObjectValue(node, field);
+            StringBuffer arg = new StringBuffer(field);
+            if (arguments != null) {
+                for (int i = 1; i < arguments.size(); i++) {
+                    if (arg.length() > 0) arg.append(',');
+                    arg.append(arguments.get(i));
+                }
+            }
+            return executeFunction(node, function, arg.toString());
         }
         return null;
     }

@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.196 2002-12-06 10:09:29 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.197 2002-12-06 15:58:25 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2343,7 +2343,9 @@ public class MMObjectBuilder extends MMTable {
                 if (log.isDebugEnabled()) {
                     log.debug("function= " + function + ", fieldname =" + name);
                 }
-                rtn = getFunctionValue(node, function, getFunctionParameters(name));
+                List a = new ArrayList(); a.add(name);
+                rtn = getFunctionValue(node, function, a);
+
             }
         }
         return rtn;
@@ -2391,11 +2393,13 @@ public class MMObjectBuilder extends MMTable {
     final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
 
         Object rtn = null;
-        if (arguments == null) arguments = new Vector();
-        // for backwards compatibility
+        if (arguments == null) arguments = new Vector();        
+        // for backwards compatibility (calling with string function with more then one argument)
         if (arguments.size() == 1 && arguments.get(0) instanceof String) {
-            rtn =  executeFunction(node, function, (String) arguments.get(0));
+            String arg = (String) arguments.get(0);
+            rtn =  executeFunction(node, function, arg);
             if (rtn != null) return rtn;
+            arguments = getFunctionParameters(arg);            
         }
         return executeFunction(node, function, arguments);
 
@@ -2523,7 +2527,7 @@ public class MMObjectBuilder extends MMTable {
         }
 
         String field;
-        if (arguments.size() == 0) {
+        if (arguments == null || arguments.size() == 0) {
             field = "";
         } else {
             field = (String) arguments.get(0);
@@ -2603,8 +2607,14 @@ public class MMObjectBuilder extends MMTable {
              NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
              return  "" + nf.format(val);
         } else {
-            // old manner: parsing list from string. That is ugly.
-            return getObjectValue(node, field);
+            StringBuffer arg = new StringBuffer(field);
+             if (arguments != null) {
+                 for (int i = 1; i < arguments.size(); i++) {
+                     if (arg.length() > 0) arg.append(',');
+                     arg.append(arguments.get(i));
+                 }
+             }
+             return executeFunction(node, function, arg.toString());
         }
         return null;
     }
