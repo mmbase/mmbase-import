@@ -130,7 +130,12 @@ public class MMBase extends ProcessorModule  {
 
 		jdbc=(JDBCInterface)getModule("JDBC");
 
-		mmc=new MMBaseMultiCast(this);
+
+		if (multicasthost!=null) {
+			mmc=new MMBaseMultiCast(this);
+		} else {
+			mmc=new MMBaseChangeDummy(this);
+		}
 
 		if (!checkMMBase()) {
 			// there is no base defined yet, create the core objects
