@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.io.File;
-
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -23,15 +21,15 @@ import org.mmbase.util.logging.Logger;
  *
  * @author   Michiel Meeuwissen
  * @since    MMBase-1.8
- * @version  $Id: WatchedReloadableModule.java,v 1.1 2004-04-19 14:59:59 michiel Exp $
+ * @version  $Id: WatchedReloadableModule.java,v 1.2 2004-11-11 17:12:58 michiel Exp $
  */
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
     private static final Logger log = Logging.getLoggerInstance(WatchedReloadableModule.class);
 
-    private FileWatcher fileWatcher = new FileWatcher() {
-            public void onChange(File file) {
-                if (reloadConfiguration(file)) {
+    private ResourceWatcher configWatcher = new ResourceWatcher() {
+            public void onChange(String resource) {
+                if (reloadConfiguration(resource)) {
                     reload();
                 }
             }
@@ -43,10 +41,9 @@ public abstract class WatchedReloadableModule extends ReloadableModule {
      * super.onload if you need to override this.
      */
     public void onload() {
-        File dir = new File(MMBaseContext.getConfigPath(), "modules");        
-        fileWatcher.setDelay(10 * 1000);
-        fileWatcher.add(new File(dir, getName() + ".xml"));
-        fileWatcher.start();
+        configWatcher.setDelay(10 * 1000);
+        configWatcher.start();
+        configWatcher.add("modules/" +  getName() + ".xml");
     }
 
 
