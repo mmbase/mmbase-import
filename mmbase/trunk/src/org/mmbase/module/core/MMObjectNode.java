@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86 2002-11-12 16:57:48 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.87 2002-11-22 20:55:35 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -346,6 +346,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public boolean setValue(String fieldName,int fieldValue) {
         return setValue(fieldName,new Integer(fieldValue));
+    }
+
+    public boolean setValue(String fieldName,long fieldValue) {
+        return setValue(fieldName,new Long(fieldValue));
     }
 
     /**
