@@ -311,9 +311,9 @@ public class DirectoryLister {
     /**
      * Creates preview entry from original entry by cutting out the file
      * number and replacing the index symbol in previewfmt with this number.
-     * <br>
-     * Eg:entry = fullsize.36.jpg -> <br>
-     * previewentry = fullsize-s.36.jpg <br>
+     * <br />
+     * Eg:entry = fullsize.36.jpg -> <br />
+     * previewentry = fullsize-s.36.jpg <br />
      * previewfmt= fullsize-s.#.jpg
      */
     private String createPreviewEntry(String indexsymbol,String typefmt,String previewfmt,String entry) {

@@ -32,10 +32,10 @@ import org.mmbase.util.logging.*;
  * <li>String size        : if not null the HTML tag SIZE=size is added </li>
  * <li>boolean multiple   : if true the HTML tag MULTIPLE is added.</li>
  * <li>boolean empty      : if true an empty option value is added.</li>
- * </el>
+ * </ul>
  *
  * @author Jan van Oosterom
- * @version $Id: HTMLElementSelect.java,v 1.5 2003-03-07 08:50:33 pierre Exp $
+ * @version $Id: HTMLElementSelect.java,v 1.6 2003-03-07 11:49:25 pierre Exp $
  */
 
 public class HTMLElementSelect  extends HTMLElement  {

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.5 2003-02-21 12:01:53 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.6 2003-03-07 11:49:19 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -619,7 +619,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     /**
      * Returns the fields of a builder in the order in which
      * they should be created.
-     * <br>
+     * <br />
      * Note: order is not of import with this particular database layer,
      * which refers to fields by name (not index).
      * However, older databases DO rely on a specific order of the fields,

@@ -24,9 +24,9 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * Some routines to support dates better<br><br>
+ * Some routines to support dates better<br /><br />
  *
- * The problem that generally occurs is with timezones. Therefore, we have made the following structure:<br>
+ * The problem that generally occurs is with timezones. Therefore, we have made the following structure:<br />
  * <ul>
  * <li> If a date is stored in a database, it is in GMT
  * <li> If a date is displayed, it happens in the timezone of the machine that is calling.
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.12 2003-03-07 08:50:29 pierre Exp $
+ * @version $Id: DateSupport.java,v 1.13 2003-03-07 11:49:23 pierre Exp $
  * @deprecated java.util is powerful enough. Most used functions from Date are deprecated.
  */
 public class DateSupport {
@@ -145,7 +145,7 @@ public class DateSupport {
     }
 
     /**
-     * Return a date, based on a year, a week and the day of that week  <br>
+     * Return a date, based on a year, a week and the day of that week  <br />
      * For instance: 1999, 40, 4 = The 4th day of the 40th week of 1999
      *
      * @param year The year
@@ -163,7 +163,7 @@ public class DateSupport {
 
     /**
      * Create date strings in the form yyyy-mm-dd for a given Date object
-     * <br>This format is used in several database (dbm's)
+     * <br />This format is used in several database (dbm's)
      * @param da The date input
      * @return A string in the form yyyy-mm-dd
      * @see DateSupport#parsedbmdate
@@ -178,7 +178,7 @@ public class DateSupport {
 
     /**
      * Parse date strings in the form yyyy-mm-dd
-     *  <br>This format is used in several database (dbm's)
+     *  <br />This format is used in several database (dbm's)
      * @param wh The string representing the date in 'yyyy-mm-dd' format
      * @return A Date object for the given date
      * @see DateSupport#makedbmdate
@@ -626,8 +626,8 @@ public class DateSupport {
     }
 
     /**
-     * Convert date to long with timezone-offset <br>
-     * example : <br>convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br>
+     * Convert date to long with timezone-offset <br />
+     * example : <br />convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br />
      *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
      * @param date Date to be converted in format:  hour:minute:second day/month/year
      * @param hour Hour-part of the timezone-offset (int)

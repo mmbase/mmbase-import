@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.storage.search.legacy;
 
@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * <li><b>UPPER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>LIKE</b> <em>value</em>
  * <li><b>LOWER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>LIKE</b> <em>value</em>
  * <li><em>field</em> <b>IS</b> [<b>NOT</b>] <b>NULL</b>
- * <li><em>field</em> [<b>NOT</b>] <b>IN 
+ * <li><em>field</em> [<b>NOT</b>] <b>IN
  *     (</b><em>value1</em><b>,</b> <em>value2</em><b>,</b> ..<b>)</b>
  * <li><em>field</em> [<b>NOT</b>] <b>BETWEEN</b> <em>value1</em> <b>AND</b> <em>value2</em>
  * <li><b>UPPER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>BETWEEN</b> <em>value1</em> <b>AND</b> <em>value2</em>
@@ -90,28 +90,28 @@ import org.mmbase.util.logging.*;
  * <li><b>false</b>
  * </ul>
  * <em>fuzziness</em> must be a float value between 0.0 and 1.0,
- * <em>proximity</em> must be a int value &gt; 0<br>
+ * <em>proximity</em> must be a int value &gt; 0<br />
  * <p>
- * See {@link org.mmbase.storage.search.StringSearchConstraint 
+ * See {@link org.mmbase.storage.search.StringSearchConstraint
  * StringSearchConstraint} for more info on string-search constraints.
  * <p>
  * A search condition that is not of one of these forms will be converted to a
- * {@link org.mmbase.storage.search.LegacyConstraint LegacyConstraint}, i.e. 
+ * {@link org.mmbase.storage.search.LegacyConstraint LegacyConstraint}, i.e.
  * in that case the search condition string will not be interpreted, but
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
-    
+
     // Logger instance.
-    private final static Logger log = 
+    private final static Logger log =
         Logging.getLoggerInstance(ConstraintParser.class.getName());
-    
+
     private List steps = null;
-    
+
     /**
      * Parses string or numerical value from list of tokens.
      * If the first token is not "'", it is interpreted as a numerical value,
@@ -143,7 +143,7 @@ public class ConstraintParser {
         }
         return result;
     }
-    
+
     /**
      * Parses SQL search condition string into separate tokens, discarding
      * white spaces, concatenating strings between (single/double) quotes,
@@ -161,7 +161,7 @@ public class ConstraintParser {
         tokenize:
             while (st.hasMoreTokens()) {
                 String token = st.nextToken(" ()'\"=<>!,");
-                
+
                 // String, delimited by single or double quotes.
                 if (token.equals("'") || token.equals("\"")) {
                     tokens.add("'");
@@ -193,7 +193,7 @@ public class ConstraintParser {
                         }
                     }
                 }
-                
+
                 // Add token, but skip white spaces.
                 if (!token.equals(" ")) {
                     tokens.add(token);
@@ -201,7 +201,7 @@ public class ConstraintParser {
             }
             return tokens;
     }
-    
+
     /**
      * Creates <code>StepField</code> corresponding to field indicated by
      * token, of one of the specified steps.
@@ -222,7 +222,7 @@ public class ConstraintParser {
         if (idx == -1) {
             if (steps.size() > 1) {
                 throw new IllegalArgumentException(
-                "Fieldname not prefixed with table alias: \"" 
+                "Fieldname not prefixed with table alias: \""
                 + token + "\"");
             }
             step = (BasicStep) steps.get(0);
@@ -240,7 +240,7 @@ public class ConstraintParser {
         BasicStepField field = new BasicStepField(step, fieldDefs);
         return field;
     }
-    
+
     /**
      * Finds step by alias.
      *
@@ -260,22 +260,22 @@ public class ConstraintParser {
                 return step;
             }
         }
-        
+
         // Not found.
         throw new IllegalArgumentException(
         "Unknown table alias: \"" + alias + "\"");
     }
-    
+
     /** Creates a new instance of ConstraintParser */
     public ConstraintParser(BasicSearchQuery query) {
         this.steps = query.getSteps();
     }
-    
+
     /**
-     * Parses <em>SQL-search-condition</em>, and produces a corresponding 
+     * Parses <em>SQL-search-condition</em>, and produces a corresponding
      * {@link org.mmbase.storage.search.Constraint Constraint} object.
      * <p>
-     * See {@link ConstraintParser above} for the format of a 
+     * See {@link ConstraintParser above} for the format of a
      * <em>SQL-search-condition</em>
      *
      * @param sqlConstraint The SQL constraint string.
@@ -286,7 +286,7 @@ public class ConstraintParser {
         try {
             ListIterator iTokens = tokenize(sqlConstraint).listIterator();
             result = parseCondition(iTokens);
-            
+
         // If this doesn't work, fall back to legacy code.
         } catch (Exception e) {
             if (log.isServiceEnabled()) {
@@ -298,19 +298,19 @@ public class ConstraintParser {
             }
             result = new BasicLegacyConstraint(sqlConstraint);
         }
-        
+
         if (log.isDebugEnabled()) {
-            log.debug("Parsed constraint \"" + sqlConstraint 
+            log.debug("Parsed constraint \"" + sqlConstraint
                 + "\" to :\n" + result);
         }
         return result;
     }
-    
+
     /**
-     * Parses a <em>field</em> string, and produces a corresponding 
+     * Parses a <em>field</em> string, and produces a corresponding
      * <code>StepField</code> object.
      * <p>
-     * See {@link ConstraintParser above} for the format of a 
+     * See {@link ConstraintParser above} for the format of a
      * <em>field</em>
      *
      * @param token The token.
@@ -322,10 +322,10 @@ public class ConstraintParser {
     }
 
     /**
-     * Parses <em>SQL-search-condition</em> string from list of tokens, and 
+     * Parses <em>SQL-search-condition</em> string from list of tokens, and
      * produces a corresponding <code>BasicConstraint</code> object.
      * <p>
-     * See {@link ConstraintParser above} for the format of a 
+     * See {@link ConstraintParser above} for the format of a
      * <em>SQL-search-condition</em>
      *
      * @param iTokens Tokens iterator, must be positioned before the (first)
@@ -346,7 +346,7 @@ public class ConstraintParser {
             }
 
             if (token.equals("(")) {
-                // Start of (simple or composite) constraint 
+                // Start of (simple or composite) constraint
                 // between parenthesis.
                 constraint = parseCondition(iTokens);
             } else {
@@ -360,11 +360,11 @@ public class ConstraintParser {
             if (composite != null) {
                 composite.addChild(constraint);
             }
-            
+
             if (iTokens.hasNext()) {
                 token = (String) iTokens.next();
                 if (token.equals(")")) {
-                    // Start of (simple or composite) constraint 
+                    // Start of (simple or composite) constraint
                     // between parenthesis.
                     break;
                 }
@@ -382,12 +382,12 @@ public class ConstraintParser {
                     composite = new BasicCompositeConstraint(logicalOperator).
                     addChild(constraint);
                 }
-                
+
                 if (composite.getLogicalOperator() != logicalOperator) {
                     composite = new BasicCompositeConstraint(logicalOperator).
                     addChild(composite);
                 }
-                
+
                 if (!iTokens.hasNext()) {
                     throw new IllegalArgumentException(
                     "Unexpected end of tokens after \"" + token + "\"");
@@ -400,12 +400,12 @@ public class ConstraintParser {
             return constraint;
         }
     }
-    
+
     /**
-     * Parses a <em>simple-SQL-search-condition</em> string from list of tokens, 
+     * Parses a <em>simple-SQL-search-condition</em> string from list of tokens,
      * and produces a corresponding <code>BasicConstraint</code> object.
      * <p>
-     * See {@link ConstraintParser above} for the format of a 
+     * See {@link ConstraintParser above} for the format of a
      * <em>simple-SQL-search-condition</em>
      *
      * @param iTokens Tokens iterator, must be positioned before the (first)
@@ -415,13 +415,13 @@ public class ConstraintParser {
     // package visibility!
     BasicConstraint parseSimpleCondition(ListIterator iTokens) {
         BasicConstraint result = null;
-        
+
         String token = (String) iTokens.next();
         if (token.equalsIgnoreCase("StringSearch")) {
             // StringSearch constraint.
             return parseStringSearchCondition(iTokens);
         }
-        
+
         String function = token.toUpperCase();
         if (function.equals("LOWER") || function.equals("UPPER")) {
             if (iTokens.next().equals("(")) {
@@ -435,9 +435,9 @@ public class ConstraintParser {
         } else {
             function = null;
         }
-                
+
         StepField field = getField(token);
-        
+
         token = (String) iTokens.next();
         if (function != null) {
             if (!token.equals(")")) {
@@ -458,17 +458,17 @@ public class ConstraintParser {
                 && !token.equalsIgnoreCase("BETWEEN")) {
                     throw new IllegalArgumentException(
                         "Unexpected token (expected "
-                        + "\"LIKE\" OR \"IN\" OR \"BETWEEN\"): \"" 
+                        + "\"LIKE\" OR \"IN\" OR \"BETWEEN\"): \""
                         + token + "\"");
             }
         }
-        
+
         if (token.equalsIgnoreCase("LIKE")) {
             // LIKE 'value'
             String value = (String) parseValue(iTokens);
             boolean caseSensitive = true;
             if (function != null) {
-                if ((function.equals("LOWER") 
+                if ((function.equals("LOWER")
                     && value.equals(value.toLowerCase()))
                 || (function.equals("UPPER")
                     && value.equals(value.toUpperCase()))) {
@@ -478,7 +478,7 @@ public class ConstraintParser {
             result = new BasicFieldValueConstraint(field, value)
                 .setOperator(FieldValueConstraint.LIKE)
                 .setCaseSensitive(caseSensitive);
-            
+
         } else if (token.equalsIgnoreCase("IS")) {
             // IS [NOT] NULL
             token = (String) iTokens.next();
@@ -501,10 +501,10 @@ public class ConstraintParser {
                     "Unexpected token (expected \"(\"): \""
                     + separator + "\"");
             }
-            BasicFieldValueInConstraint fieldValueInConstraint 
+            BasicFieldValueInConstraint fieldValueInConstraint
                 = new BasicFieldValueInConstraint(field);
             if (!iTokens.next().equals(")")) {
-                
+
                 iTokens.previous();
                 do {
                     Object value = parseValue(iTokens);
@@ -531,21 +531,21 @@ public class ConstraintParser {
             }
             Object value2 = parseValue(iTokens);
             boolean caseSensitive = true;
-            if (function != null 
+            if (function != null
                     && value1 instanceof String && value2 instanceof String) {
                 String strValue1 = (String) value1;
                 String strValue2 = (String) value2;
-                if ((function.equals("LOWER") 
-                    && strValue1.equals(strValue1.toLowerCase()) 
+                if ((function.equals("LOWER")
+                    && strValue1.equals(strValue1.toLowerCase())
                     && strValue2.equals(strValue2.toLowerCase()))
-                || (function.equals("UPPER") 
-                    && strValue1.equals(strValue1.toUpperCase()) 
+                || (function.equals("UPPER")
+                    && strValue1.equals(strValue1.toUpperCase())
                     && strValue2.equals(strValue2.toUpperCase()))) {
                         caseSensitive = false;
                 }
             }
 
-            BasicFieldValueBetweenConstraint fieldValueBetweenConstraint 
+            BasicFieldValueBetweenConstraint fieldValueBetweenConstraint
                 = (BasicFieldValueBetweenConstraint)
                     new BasicFieldValueBetweenConstraint(field, value1, value2)
                         .setCaseSensitive(caseSensitive);
@@ -575,7 +575,7 @@ public class ConstraintParser {
                     boolean caseSensitive = true;
                     if (function != null && value instanceof String) {
                         String strValue = (String) value;
-                        if ((function.equals("LOWER") 
+                        if ((function.equals("LOWER")
                             && strValue.equals(strValue.toLowerCase()))
                         || (function.equals("UPPER")
                             && strValue.equals(strValue.toUpperCase()))) {
@@ -697,19 +697,19 @@ public class ConstraintParser {
             throw new IllegalArgumentException(
                 "Unexpected token: \"" + token + "\"");
         }
-        
+
         if (inverse) {
             result.setInverse(!result.isInverse());
         }
-        
+
         return result;
     }
-    
+
     /**
-     * Parses a <em>stringsearch-condition</em> string from list of tokens, 
+     * Parses a <em>stringsearch-condition</em> string from list of tokens,
      * and produces a corresponding <code>BasicStringSearchConstraint</code> object.
      * <p>
-     * See {@link ConstraintParser above} for the format of a 
+     * See {@link ConstraintParser above} for the format of a
      * <em>stringsearch-condition</em>
      *
      * @param iTokens Tokens iterator, must be positioned after the (first)
@@ -718,27 +718,27 @@ public class ConstraintParser {
      */
     private BasicStringSearchConstraint parseStringSearchCondition(
             ListIterator iTokens) {
-        
+
         BasicStringSearchConstraint result = null;
-        
+
         String token = (String) iTokens.next();
         if (!token.equals("(")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \")\"): \""
                 + token + "\"");
         }
-        
+
         // Field
         token = (String) iTokens.next();
         StepField field = getField(token);
-        
+
         token = (String) iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \",\"): \""
                 + token + "\"");
         }
-        
+
         // Searchtype
         int searchType;
         token = (String) iTokens.next();
@@ -753,14 +753,14 @@ public class ConstraintParser {
                 "Invalid searchtype (expected \"PHRASE\", \"PROXIMITY\" "
                 + "or \"WORD\": \"" + token + "\"");
         }
-        
+
         token = (String) iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \",\"): \""
                 + token + "\"");
         }
-        
+
         // Matchtype
         int matchType;
         token = (String) iTokens.next();
@@ -775,14 +775,14 @@ public class ConstraintParser {
                 "Invalid matchtype (expected \"FUZZY\", \"LITERAL\" "
                 + "or \"SYNONYM\": \"" + token + "\"");
         }
-        
+
         token = (String) iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \",\"): \""
                 + token + "\"");
         }
-        
+
         // SearchTerms
         String searchTerms;
         token = (String) iTokens.next();
@@ -798,14 +798,14 @@ public class ConstraintParser {
             "Unexpected token (expected \"'\" or \"\"\"): \""
             + token + "\"");
         }
-        
+
         token = (String) iTokens.next();
         if (!token.equals(",")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \",\"): \""
                 + token + "\"");
         }
-        
+
         // CaseSensitive property
         boolean caseSensitive;
         token = (String) iTokens.next();
@@ -818,14 +818,14 @@ public class ConstraintParser {
                 "Invalid caseSensitive value (expected \"true\" "
                 + "or \"false\": \"" + token + "\"");
         }
-        
+
         token = (String) iTokens.next();
         if (!token.equals(")")) {
             throw new IllegalArgumentException(
                 "Unexpected token (expected \")\"): \""
                 + token + "\"");
         }
-        
+
         result = (BasicStringSearchConstraint)
             new BasicStringSearchConstraint(
                 field, searchType, matchType, searchTerms)
@@ -845,18 +845,18 @@ public class ConstraintParser {
                     "Unexpected token (expected \"(\"): \""
                     + token + "\"");
             }
-            
+
             String parameterName = (String) iTokens.next();
-            
+
             token = (String) iTokens.next();
             if (!token.equals(",")) {
                 throw new IllegalArgumentException(
                     "Unexpected token (expected \",\"): \""
                     + token + "\"");
             }
-        
+
             String parameterValue = (String) iTokens.next();
-            
+
             token = (String) iTokens.next();
             if (!token.equals(")")) {
                 throw new IllegalArgumentException(
@@ -865,7 +865,7 @@ public class ConstraintParser {
             }
 
             if (parameterName.equalsIgnoreCase("FUZZINESS")) {
-                result.setParameter(StringSearchConstraint.PARAM_FUZZINESS, 
+                result.setParameter(StringSearchConstraint.PARAM_FUZZINESS,
                     new Float(parameterValue));
             } else if (parameterName.equalsIgnoreCase("PROXIMITY_LIMIT")) {
                 result.setParameter(

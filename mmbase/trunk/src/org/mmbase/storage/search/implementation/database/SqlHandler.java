@@ -11,51 +11,51 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.storage.search.*;
 /**
- * Interface for handler classes that are used to create SQL string 
+ * Interface for handler classes that are used to create SQL string
  * representations of {@link SearchQuery SearchQuery} objects.
  * <p>
  * A number of <code>SqlHandler</code> objects can create a chain of handlers,
  * following the <em>Chain Of Responsibility</em> design pattern.
  * <p>
- * In short: 
+ * In short:
  * <ul>
  * <li>A chain is formed of <code>SqlHandler</code> objects, where each
- * element in the chain, except the last one, is called a <em>chained</em> 
- * handler. 
- * Each chained handler has a <em>successor</em>, which is the next element 
+ * element in the chain, except the last one, is called a <em>chained</em>
+ * handler.
+ * Each chained handler has a <em>successor</em>, which is the next element
  * in the  chain.
- * <li>The first element receives all requests first (a <em>request</em> = 
- * call of one of the methods in the interface). 
- * When a chained element receives a request, it can either handle it or pass 
- * it on to its successor. 
- * <li>The last element in the chain, handles all remaining requests. 
+ * <li>The first element receives all requests first (a <em>request</em> =
+ * call of one of the methods in the interface).
+ * When a chained element receives a request, it can either handle it or pass
+ * it on to its successor.
+ * <li>The last element in the chain, handles all remaining requests.
  * </ul>
  * <p>
- * Each handler in the chain adds functionality to its successor(s), 
- * in a way similar to subclassing. The chained design 
+ * Each handler in the chain adds functionality to its successor(s),
+ * in a way similar to subclassing. The chained design
  * enables a chain of handlers to be configured and created
- * at runtime. 
+ * at runtime.
  * <p>
- * In addition to the methods defined in the interface, the concrete 
+ * In addition to the methods defined in the interface, the concrete
  * <code>SqlHandler</code> class for the last element in the chain
  * is required to have a constructor with this signature:
  * <blockquote><code>
     public &lt;constructor&gt;(Map disallowedValues) { .. }
  * </code></blockquote>
- * where <code>disallowedValues</code> is a map that maps disallowed 
+ * where <code>disallowedValues</code> is a map that maps disallowed
  * table/fieldnames to allowed alternatives.
  * <p>
- * The concrete <code>SqlHandler</code> class for the other, chained, 
- * elements in the chain are required to have a constructor 
+ * The concrete <code>SqlHandler</code> class for the other, chained,
+ * elements in the chain are required to have a constructor
  * with this signature:
  * <blockquote><code>
     public &lt;constructor&gt;(SqlHandler successor) { .. }
  * </code></blockquote>
- * where <code>successor</code> is the successor in the chain 
+ * where <code>successor</code> is the successor in the chain
  * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public interface SqlHandler {
@@ -74,7 +74,7 @@ public interface SqlHandler {
     /**
      * Represents body of a SearchQuery object as a string in SQL format,
      * using the database configuration. Appends this to a stringbuffer.
-     * <br>
+     * <br />
      * The body of the SQL query string is defined as the substring containing
      * fields, tables, constraints and orders.
      *
@@ -82,11 +82,11 @@ public interface SqlHandler {
      * @param query The searchquery.
      * @param firstInChain The first element in the chain of handlers.
      *        At some point <code>appendConstraintToSql()</code> will have
-     *        to be called on this handler, to generate the constraints in 
+     *        to be called on this handler, to generate the constraints in
      *        the query.
      * @return SQL string representation of the query.
      */
-    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) 
+    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
     throws SearchQueryException;
 
     /**
@@ -104,11 +104,11 @@ public interface SqlHandler {
      *        a composite expression.
      */
     void appendConstraintToSql(StringBuffer sb, Constraint constraint,
-    SearchQuery query, boolean inverse, boolean inComposite) 
+    SearchQuery query, boolean inverse, boolean inComposite)
     throws SearchQueryException;
 
     /**
-     * Gets the level at which a feature is supported for a query 
+     * Gets the level at which a feature is supported for a query
      * by this handler. This is one of either:
      * <ul>
      * <li>{@link SearchQueryHandler#SUPPORT_NONE SUPPORT_NONE}
@@ -118,7 +118,7 @@ public interface SqlHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    public int getSupportLevel(int feature, SearchQuery query) 
+    public int getSupportLevel(int feature, SearchQuery query)
     throws SearchQueryException;
 
     /**
@@ -132,7 +132,7 @@ public interface SqlHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    public int getSupportLevel(Constraint constraint, SearchQuery query) 
+    public int getSupportLevel(Constraint constraint, SearchQuery query)
     throws SearchQueryException;
 
     /**

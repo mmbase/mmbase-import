@@ -18,24 +18,24 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Generates from the MACRO Strings a HTML FORM.
- *<br>
- * <strong>input</strong> Macro Vector of Strings, Proc Processor.<br>
- * <strong>output</strong> HTML FORM Element(String).<br>
+ *<br />
+ * <strong>input</strong> Macro Vector of Strings, Proc Processor.<br />
+ * <strong>output</strong> HTML FORM Element(String).<br />
  * <p>
- * How should a macro look like in your HTML file?<br>
- * &lt;MACRO ELEMENT NAME VALUE [TAG(S)]&gt;<br>
- * The "MACRO" word will be stripped in de servscan Servlet and does not enters this object.<br>
- * ELEMENT: (if you are fimiliar with HTML FORMs this should be known stuff   <br>
- * TEXTAREA, SELECT, PASSWORD, RADIO, CHECKBOX  <br>
- * NAME:<br>
- * The name of this HTML Element <br>
- * VALUE:<br>
- * This can do 2 things: <br>
- * 1. if the PROC TAG is present, this value will be sent to the processor <br>
- * 2. else ( no PROC TAG) this will be the VALUE of the HTML Element <br>
- * TAG(S) <br>
- * there can be more TAGS (some TYPES does support them and some don't ...)<br>
- * some need an argument some don't (some can handle both :-)<br>
+ * How should a macro look like in your HTML file?<br />
+ * &lt;MACRO ELEMENT NAME VALUE [TAG(S)]&gt;<br />
+ * The "MACRO" word will be stripped in de servscan Servlet and does not enters this object.<br />
+ * ELEMENT: (if you are fimiliar with HTML FORMs this should be known stuff   <br />
+ * TEXTAREA, SELECT, PASSWORD, RADIO, CHECKBOX  <br />
+ * NAME:<br />
+ * The name of this HTML Element <br />
+ * VALUE:<br />
+ * This can do 2 things: <br />
+ * 1. if the PROC TAG is present, this value will be sent to the processor <br />
+ * 2. else ( no PROC TAG) this will be the VALUE of the HTML Element <br />
+ * TAG(S) <br />
+ * there can be more TAGS (some TYPES does support them and some don't ...)<br />
+ * some need an argument some don't (some can handle both :-)<br />
  * <pre>
  * TAG                     WHAT DOES IT?                                                 SUPPORTED BY WHICH ELEMENT?
  * <hr />
@@ -53,24 +53,24 @@ import org.mmbase.util.logging.Logging;
  * DOUBLE                  Tell the processor to get a paired list of values             SELECT RADIO CHECKBOX
  * </pre>
  *
- * <strong>example</strong>: SELECT name ProcessorTag SELECTED="selected_item" MULTIPLE SIZE=10 PROC VERTICAL.<br>
- * This generates a SELECT HTML FORM with NAME=name the OPTIONs are filled with<br>
- * the list which is received from the Processor.getList("ProcessorTag") call<br>
- * If the "selected_item" is presend in the list it is "&lt;OPTION SELECTED&gt;" item" <br>
- * The SIZE is the number of displayed items and MULTIPLE tells that multiple <br>
- * selections are posible. <br>
- *  VERTICAL tells that you want a &lt;BR&gt; after every &lt;OPTION&gt;<br>
- * <br> <strong> Generated</strong>  from <strong>example</strong>:<br>
- * &lt;SELECT NAME=name SIZE=10 MULTIPLE&gt; <br>
- * &lt;OPTION&gt; item1 &lt;BR&gt;<br>
- * &lt;OPTION SELECTED&gt; sleceted_item &lt;BR&gt;<br>
- * &lt;OPTION&gt; item3 &lt;BR&gt;<br>
- * &lt;/SELECT&gt; <br>
+ * <strong>example</strong>: SELECT name ProcessorTag SELECTED="selected_item" MULTIPLE SIZE=10 PROC VERTICAL.<br />
+ * This generates a SELECT HTML FORM with NAME=name the OPTIONs are filled with<br />
+ * the list which is received from the Processor.getList("ProcessorTag") call<br />
+ * If the "selected_item" is presend in the list it is "&lt;OPTION SELECTED&gt;" item" <br />
+ * The SIZE is the number of displayed items and MULTIPLE tells that multiple <br />
+ * selections are posible. <br />
+ *  VERTICAL tells that you want a &lt;BR&gt; after every &lt;OPTION&gt;<br />
+ * <br /> <strong> Generated</strong>  from <strong>example</strong>:<br />
+ * &lt;SELECT NAME=name SIZE=10 MULTIPLE&gt; <br />
+ * &lt;OPTION&gt; item1 &lt;BR&gt;<br />
+ * &lt;OPTION SELECTED&gt; sleceted_item &lt;BR&gt;<br />
+ * &lt;OPTION&gt; item3 &lt;BR&gt;<br />
+ * &lt;/SELECT&gt; <br />
  *<P>
  *
  *
  * @author Jan van Oosterom
- * @version $Id: HTMLFormGenerator.java,v 1.7 2003-03-07 09:31:13 pierre Exp $
+ * @version $Id: HTMLFormGenerator.java,v 1.8 2003-03-07 11:49:26 pierre Exp $
  */
 public class HTMLFormGenerator {
     // logger

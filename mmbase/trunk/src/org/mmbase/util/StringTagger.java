@@ -282,8 +282,8 @@ public class StringTagger implements Map {
 
     /**
      * Returns the value of a key as an Object.
-     * The value returned is a single, unseparated, string.<br>
-     * Use {@link #Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * The value returned is a single, unseparated, string.<br />
+     * Use {@link #Values} to get a list of multi-values as a <code>Vector</code>.<br />
      * Use {@link #Value} to get the first value as a String
      * @param ob the key of the value to retrieve
      */
@@ -402,8 +402,8 @@ public class StringTagger implements Map {
 
     /**
      * Returns the values as a Vector that contains the separated values.
-     * <br>
-     * Use {@link #get} to get the list of values as a <code>String</code><br>
+     * <br />
+     * Use {@link #get} to get the list of values as a <code>String</code><br />
      * Use {@link #Value} to get the first value as a String
      * @param token the key of the value to retrieve
      */
@@ -424,8 +424,8 @@ public class StringTagger implements Map {
      * Returns the first value as a <code>String</code>.
      * In case of a single value, it returns that value. In case of multiple values,
      * it returns the
-     * Use {@link #get} to get the list of values as a <code>String</code><br>
-     * Use {@link #Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * Use {@link #get} to get the list of values as a <code>String</code><br />
+     * Use {@link #Values} to get a list of multi-values as a <code>Vector</code>.<br />
      * @param token the key of the value to retrieve
      */
     public String Value(String token) {

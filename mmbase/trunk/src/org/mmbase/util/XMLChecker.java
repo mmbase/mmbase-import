@@ -96,7 +96,7 @@ public class XMLChecker  {
          */
     public void error(SAXParseException e) {
         errorCount++;
-        out.println("<font color=\""+error_color+"\">error:</font> "+e.getMessage()+"<br>\n");
+        out.println("<font color=\""+error_color+"\">error:</font> "+e.getMessage()+"<br />\n");
     }
 
         /**
@@ -106,7 +106,7 @@ public class XMLChecker  {
          */
     public void fatalError(SAXParseException e) {
         fatalErrorCount++;
-        out.println("<font color=\""+fatalerror_color+"\">fatal error:</font> "+e.getMessage()+"<br>\n");
+        out.println("<font color=\""+fatalerror_color+"\">fatal error:</font> "+e.getMessage()+"<br />\n");
     }
 
         /**
@@ -116,7 +116,7 @@ public class XMLChecker  {
          */
     public void warning(SAXParseException e) {
         warningCount++;
-        out.println("<font color=\""+warning_color+"\">warning:</font> "+e.getMessage()+"<br>\n");
+        out.println("<font color=\""+warning_color+"\">warning:</font> "+e.getMessage()+"<br />\n");
     }
 
         /**

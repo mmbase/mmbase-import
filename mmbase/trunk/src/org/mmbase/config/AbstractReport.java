@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.config;
 
@@ -22,8 +22,8 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Case Roole, cjr@dds.nl
- * 
- * $Id: AbstractReport.java,v 1.7 2003-03-04 13:50:53 nico Exp $
+ *
+ * $Id: AbstractReport.java,v 1.8 2003-03-07 11:49:11 pierre Exp $
  *
  *
  */
@@ -32,26 +32,26 @@ public abstract class AbstractReport implements ReportInterface {
     protected Hashtable specialChars;
     protected String configpath;
 
-    private static Logger log = Logging.getLoggerInstance(AbstractReport.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(AbstractReport.class.getName());
     //protected String classname = getClass().getName();
     //protected boolean debug = false;
 
     // --- public methods ------------------------------------------
     public void init(String mode, String encoding) {
-	this.mode = mode;
-	this.encoding = encoding;
-	if (encoding.equalsIgnoreCase("HTML")) {
-	    specialChars = getHTMLChars();
-	} else if (encoding.equalsIgnoreCase("TEXT")) {
-	    specialChars = getTEXTChars();
-	} else {
-	    specialChars = getTEXTChars();
-	}
-	configpath = getMMBaseConfigPath();
+        this.mode = mode;
+        this.encoding = encoding;
+        if (encoding.equalsIgnoreCase("HTML")) {
+            specialChars = getHTMLChars();
+        } else if (encoding.equalsIgnoreCase("TEXT")) {
+            specialChars = getTEXTChars();
+        } else {
+            specialChars = getTEXTChars();
+        }
+        configpath = getMMBaseConfigPath();
     }
-    
+
     public String report() {
-	return "";
+        return "";
     }
 
     // --- protected utility methods --------------------------------
@@ -65,18 +65,18 @@ public abstract class AbstractReport implements ReportInterface {
      * @return <code>s</code> with substring <code>sub</code> replaced with <code>rep</code>
      */
     protected String stringReplace(String s, String sub, String rep) {
-	String res;
-	int n = s.indexOf(sub);
-	if (n >= 0) {
-	    return s.substring(0,n) + rep + s.substring(n+sub.length());
-	} else {
-	    return s;
-	}
+        String res;
+        int n = s.indexOf(sub);
+        if (n >= 0) {
+            return s.substring(0,n) + rep + s.substring(n+sub.length());
+        } else {
+            return s;
+        }
     }
 
     /**
      * Retrieve all xml files in a directory
-     * 
+     *
      * @param path Directory path
      * @return String array containing the names of the xml files in the directory, without the extension
      *
@@ -94,53 +94,53 @@ public abstract class AbstractReport implements ReportInterface {
             return v;
         }
     }
-    
+
 
     /**
      * Read an XML file in which key/value pairs are represented as tag and content
      *
      * @param path Full path to XML file
-     * 
+     *
      * @return Hashtable with the key/value pairs or an empty Hashtable if something went wrong.
      * @duplicate A lot of very familiar code from other classes, which depends on Xerces, even.
      */
     protected Hashtable getPropertiesFromXML(String path) {
-	XMLProperties xmlReader = new XMLProperties();
-	SAXParser parser = new SAXParser();
-	// Telling the parser it must not use some features
-	// we're not using right now as dtd-validation and namespaces
-	try {
-	    parser.setFeature("http://xml.org/sax/features/validation",false);
-	    parser.setFeature("http://xml.org/sax/features/namespaces",false);
-	} catch (SAXNotSupportedException ex) {
-	    log.debug("Config::databaseIsActive: failed because parser doesn't support feature");
-	    ex.printStackTrace();
-	}
-	catch (SAXNotRecognizedException ex) {
-	    log.debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
-	    ex.printStackTrace();
-	}
-	// create new ContentHandler and let the parser use it
-	xmlReader = new XMLProperties();
-	parser.setContentHandler(xmlReader);
-	
-	// get us a (normal) propertie reader
-	Hashtable mods = null;
-	
-	// load the
-	String filename=configpath+File.separator+path;
-	// filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
-	// filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
-	
-	// check if there's a xml-configuration file
-	try {
-	    parser.parse(new InputSource(filename));
-	    mods = xmlReader.getProperties();
-	} catch (Exception e) {
-	    log.error("Error reading xml properties file " + path + ". Returning empty hashtable.");
-	    mods = new Hashtable();
-	}
-	return mods;
+        XMLProperties xmlReader = new XMLProperties();
+        SAXParser parser = new SAXParser();
+        // Telling the parser it must not use some features
+        // we're not using right now as dtd-validation and namespaces
+        try {
+            parser.setFeature("http://xml.org/sax/features/validation",false);
+            parser.setFeature("http://xml.org/sax/features/namespaces",false);
+        } catch (SAXNotSupportedException ex) {
+            log.debug("Config::databaseIsActive: failed because parser doesn't support feature");
+            ex.printStackTrace();
+        }
+        catch (SAXNotRecognizedException ex) {
+            log.debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
+            ex.printStackTrace();
+        }
+        // create new ContentHandler and let the parser use it
+        xmlReader = new XMLProperties();
+        parser.setContentHandler(xmlReader);
+
+        // get us a (normal) propertie reader
+        Hashtable mods = null;
+
+        // load the
+        String filename=configpath+File.separator+path;
+        // filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
+        // filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
+
+        // check if there's a xml-configuration file
+        try {
+            parser.parse(new InputSource(filename));
+            mods = xmlReader.getProperties();
+        } catch (Exception e) {
+            log.error("Error reading xml properties file " + path + ". Returning empty hashtable.");
+            mods = new Hashtable();
+        }
+        return mods;
     }
 
     /**
@@ -167,54 +167,54 @@ public abstract class AbstractReport implements ReportInterface {
     }
 
     protected String xmlErrorMessage(String path, XMLParseResult pr) {
-	String eol = (String)specialChars.get("eol");
-	LineNumberReader f = null;
-	try {
-	    f = new LineNumberReader(new FileReader(path));
-	} catch (IOException canthappen) {
-	}
+        String eol = (String)specialChars.get("eol");
+        LineNumberReader f = null;
+        try {
+            f = new LineNumberReader(new FileReader(path));
+        } catch (IOException canthappen) {
+        }
 
-	String res = "";
-	List fatalList = pr.getFatalList();
-	for (int j=0;j<fatalList.size();j++) {
-	    ErrorStruct fatalerror = (ErrorStruct)fatalList.get(j);
-	    int lineno = fatalerror.getLineNumber();
-	    int col = fatalerror.getColumnNumber();
-	    String msg = fatalerror.getMessage();
-	    
-	    if (f != null) {
-		try {
-		    int i = f.getLineNumber();
-		    while (f.ready() && i<lineno-1) {
-			f.readLine();
-			i++;
-		    }
-		    String line = f.readLine();
-		    if (line != null) {
-			if (encoding.equalsIgnoreCase("html")) {
-			    line = htmlEntities(line);
-			}
-			res = res + "*** line "+lineno+": column "+col+": "+msg + eol;
-			res = res + "*** " + line + eol;
-		    }
-		} catch (IOException e) {
-		    res = res + "*** IOException reading line " + lineno + " in " + path + ":" + eol + e.getMessage();
-		}
-	    }
-	}
-	return res;
+        String res = "";
+        List fatalList = pr.getFatalList();
+        for (int j=0;j<fatalList.size();j++) {
+            ErrorStruct fatalerror = (ErrorStruct)fatalList.get(j);
+            int lineno = fatalerror.getLineNumber();
+            int col = fatalerror.getColumnNumber();
+            String msg = fatalerror.getMessage();
+
+            if (f != null) {
+                try {
+                    int i = f.getLineNumber();
+                    while (f.ready() && i<lineno-1) {
+                        f.readLine();
+                        i++;
+                    }
+                    String line = f.readLine();
+                    if (line != null) {
+                        if (encoding.equalsIgnoreCase("html")) {
+                            line = htmlEntities(line);
+                        }
+                        res = res + "*** line "+lineno+": column "+col+": "+msg + eol;
+                        res = res + "*** " + line + eol;
+                    }
+                } catch (IOException e) {
+                    res = res + "*** IOException reading line " + lineno + " in " + path + ":" + eol + e.getMessage();
+                }
+            }
+        }
+        return res;
     }
-    
+
     // --- private methods -------------------------------------------
-    
+
     /**
      * @return Hashtable with some special characters represented for HTML
      */
     private Hashtable getHTMLChars() {
-	Hashtable h = new Hashtable();
-	h.put("amp","&amp;amp");
-	h.put("eol","<br>\n");
-	return h;
+        Hashtable h = new Hashtable();
+        h.put("amp","&amp;amp");
+        h.put("eol","<br />\n");
+        return h;
     }
 
 
@@ -222,13 +222,13 @@ public abstract class AbstractReport implements ReportInterface {
      * @return Hashtable with some special characters represented for TEXT
      */
     private Hashtable getTEXTChars() {
-	Hashtable h = new Hashtable();
-	h.put("amp","&amp;");
-	h.put("eol","\n");
-	return h;
+        Hashtable h = new Hashtable();
+        h.put("amp","&amp;");
+        h.put("eol","\n");
+        return h;
     }
 
     private String getMMBaseConfigPath() {
-	return MMBaseContext.getConfigPath();
+        return MMBaseContext.getConfigPath();
     }
 }

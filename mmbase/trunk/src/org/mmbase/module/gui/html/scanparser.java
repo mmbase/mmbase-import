@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Scanparser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.63 2003-03-07 08:50:25 pierre Exp $
+ * @version $Id: scanparser.java,v 1.64 2003-03-07 11:49:17 pierre Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1420,7 +1420,7 @@ public class scanparser extends ProcessorModule {
                         tokje=htmlgen.getHTMLElement(sp, sp.processor,cmds);
                 } else {
                         log.error("do_macro(): No processor() specified in page("+sp.getUrl()+")");
-                        tokje="<B> No Processor specified in page </B><BR>";
+                        tokje="<B> No Processor specified in page </B><br />";
                 }
                 return(tokje);
         }
@@ -1812,11 +1812,11 @@ public class scanparser extends ProcessorModule {
                                 }
                                 // org.mmbase lastlistitem=curitem;
                         } else {
-                                rtn.append(" Processor failed to process command <br>");
+                                rtn.append(" Processor failed to process command <br />");
                                 log.error("do_list(): Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
                         }
                 } else {
-                        rtn.append(" No Processor specified in page <br>");
+                        rtn.append(" No Processor specified in page <br />");
                 }
                 } else if (version.equals("2.0")) {
                 // is there a proccesor defined ?
@@ -1921,11 +1921,11 @@ public class scanparser extends ProcessorModule {
                                 //debug("do_list(): LIST 2.0 -> PROCESSTEMPLATE="+(ltime2-ltime1));
                                 ltime1=ltime2;
                         } else {
-                                rtn.append(" Processor failed to process command <br>");
+                                rtn.append(" Processor failed to process command <br />");
                                 log.error("do_list(): Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
                         }
                 } else {
-                        rtn.append(" No Processor specified in page <br>");
+                        rtn.append(" No Processor specified in page <br />");
                 }
                 //debug("do_list(): LIST 2.0 -> End");
                 }
