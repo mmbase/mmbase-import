@@ -2640,7 +2640,7 @@ public class MMObjectBuilder extends MMTable {
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
-        if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
+        if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeRemoteChanged(machine, number, builder, ctype);
         }
@@ -2692,8 +2692,8 @@ public class MMObjectBuilder extends MMTable {
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
-        if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
-            log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
+        if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
+            log.debug("Builder "+tableName+" sending signal '"+ctype+"' to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeLocalChanged(machine, number, builder, ctype);
         }
 
