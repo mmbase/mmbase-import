@@ -1,4 +1,5 @@
 <%@page import="java.util.Enumeration"%>
+<%@page import="java.util.Vector"%>
 <%!
     public Enumeration convertToEnumeration(String value) {
         int i = 0;
