@@ -150,7 +150,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>snumber</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -180,7 +180,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>dnumber</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -210,7 +210,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>rnumber</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
 	</field>
 
