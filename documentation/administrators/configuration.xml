@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: configuration.xml,v 1.11 2002-10-16 18:40:05 michiel Exp $</date>
+    <date>$Id: configuration.xml,v 1.12 2002-10-25 22:10:56 michiel Exp $</date>
     <title>MMBase configuration documentation</title>
   </articleinfo>
   <section>
@@ -283,7 +283,8 @@
     <para>
       Sometimes it is useful to run (parts of) MMBase outside a servlet environment, for example
       when you are a developer and want to test only a certain part without the overhead of
-      starting up a whole application server.
+      starting up a whole application server. Another example is when
+      you make a data-importer.
     </para>
     <para>
       In such cases the JVM option (-D) mmbase.config might come in handy, because most parts of
@@ -300,7 +301,44 @@
       In these older versions of MMBase also the `mmbase.htmlroot' command line option was
       needed. It still is supported (though not by JSP), but I can't think of any situation in which
       it would be needed (besided when using a very old MMBase or perhaps a very old application
-      server), and I think this option can now be considered fully deprecated.
+      server), and I think this option can now be considered fully
+      deprecated. --> perhaps in junit tests?
+    </para>
+    <para>
+      To complete this description of how to run MMBase outside a
+      servlet environment 
+      <example>
+        <title>Example java code to start MMBase</title>        
+        <programlisting id="examplenowebxml">
+  try {
+     //MMBaseContext.init("HERE YOUR CONFIG_DIR",true); // no need for -Dmmbase.config then.
+     MMBaseContext.init();
+     MMBase mmb = (MMBase) MMBase.getMMBase();
+     
+     // now you have the "MMBase" object
+     // All data can be accessed now.
+
+     // with the core:     
+     MMObjectBuilder images = mmb.getBuilder("episode");
+     MMObjectNode node=images.getNewNode("admin");
+     node.setValue("title",(Object) "TEST");
+     node.insert("admin");
+
+     // or nicer, with the bridge:
+     Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase"));
+     NodeManager images = cloud.getNodeManager("episode");
+     Node node = images.createNode();
+     node.setField("title", "TEST");
+     node.commit();
+
+   } catch (Exception e) { 
+     System.out.println("Something went wrong" + e.toString());
+   }
+          </programlisting>
+        </example>
+      You have to make sure that mmbase.jar and your servlet.jar are
+     in the classpath. The above code shows you how to access the MMBase
+     Data.
     </para>
   </section>
   <section id="builders">
