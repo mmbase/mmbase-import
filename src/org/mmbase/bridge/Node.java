@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.37 2002-10-17 10:55:17 pierre Exp $
+ * @version $Id: Node.java,v 1.38 2002-10-17 16:57:56 pierre Exp $
  */
 public interface Node {
 
@@ -477,6 +477,17 @@ public interface Node {
      */
     public RelationList getRelations(String role, String nodeManager);
 
+    /**
+     * Returns all relation nodes attached to this node that have a specific
+     * role, or refer a node from a specific nodemanager
+     *
+     * @param role  the name of the role the returned
+     *              relation nodes should have
+     * @param nodeManager  the nodemanager for the nodes the returned
+     *                     relation nodes should have a relation to (can be null)
+     * @return      a list of relation nodes
+     */
+    public RelationList getRelations(String role, NodeManager nodeManager);
 
     /**
      * Returns the number of relations this node has with other nodes.
@@ -522,7 +533,7 @@ public interface Node {
      * relation nodes) but the nodes attached to the relation nodes of this
      * node.
      *
-     * @param nodeManager  the node manager the returned nodes should have
+     * @param nodeManager  the node manager the returned nodes should have, can be null
      * @return             a list of related nodes
      */
     public NodeList getRelatedNodes(NodeManager nodeManager);
