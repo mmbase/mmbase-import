@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AnnotRel.java,v 1.8 2000-03-31 13:27:48 wwwtech Exp $
+$Id: AnnotRel.java,v 1.9 2001-01-18 13:55:02 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/03/31 13:27:48  wwwtech
+Wilbert: Introduction of ParseException for method getList
+
 Revision 1.7  2000/03/30 13:11:29  wwwtech
 Rico: added license
 
@@ -41,7 +44,7 @@ import org.mmbase.util.RelativeTime;
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999 
- * @$Revision: 1.8 $ $Date: 2000-03-31 13:27:48 $
+ * @$Revision: 1.9 $ $Date: 2001-01-18 13:55:02 $
  */
 public class AnnotRel extends InsRel {
 
@@ -59,29 +62,17 @@ public class AnnotRel extends InsRel {
     public final static int COLS    = 9;
 */
 
-	int relnumber=-1;
-
 	/**
 	 * setDefaults for a node
 	 */
 	public void setDefaults(MMObjectNode node) {
+	    super.setDefaults(node);
 		// Set the default value for pos and length to 0 (0:0:0.0)
 		node.setValue("pos",0);
 		node.setValue("end",0);
 		node.setValue("length",0);
 		// All time values are default stored in milliseconds.
 		node.setValue("type",MILLIS);
-
-		if (relnumber==-1) {
-			RelDef bul=(RelDef)mmb.getMMObject("reldef");
-			if (bul!=null) {
-				relnumber=bul.getGuessedByName(tableName);
-				if (relnumber==-1) System.out.println("AnnotRel-> Can not guess name");
-			} else {
-				System.out.println("AnnotRel-> Can not reach RelDef");
-			}
-		}
-		node.setValue("rnumber",relnumber);
 	}
 
 	/**
