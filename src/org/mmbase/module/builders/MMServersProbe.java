@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServersProbe.java,v 1.6 2000-07-22 21:30:20 daniel Exp $
+$Id: MMServersProbe.java,v 1.7 2000-07-22 21:38:35 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/07/22 21:30:20  daniel
+small startup fix
+
 Revision 1.5  2000/07/22 10:47:46  daniel
 Now uses the MMbase up signal
 
@@ -38,7 +41,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.6 $ $Date: 2000-07-22 21:30:20 $ 
+ * @version0 $Revision: 1.7 $ $Date: 2000-07-22 21:38:35 $ 
  */
 public class MMServersProbe implements Runnable {
 
@@ -106,7 +109,7 @@ public class MMServersProbe implements Runnable {
 		int id;
 
 		// ugly pre up polling
-		while (parent.mmb==null && parent.mmb.getState()==false) {
+		while (parent.mmb==null || parent.mmb.getState()==false) {
 			try {
 				Thread.sleep(2*1000);
 			} catch (InterruptedException e){
