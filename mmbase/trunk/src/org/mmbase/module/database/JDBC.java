@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: JDBC.java,v 1.11 2000-04-30 15:31:48 wwwtech Exp $
+	$Id: JDBC.java,v 1.12 2000-06-25 13:09:15 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2000/04/30 15:31:48  wwwtech
+	Rico: robustified the JDBC.makeUrl code
+	
 	Revision 1.10  2000/04/25 21:30:47  wwwtech
 	daniel: fixed a bug that forgot to return sets with 1 value
 	
@@ -49,7 +52,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.11 2000-04-30 15:31:48 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.12 2000-06-25 13:09:15 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -356,4 +359,15 @@ private String defaultpassword;
 		return(results);
 	}
 
+	public String getUser() {
+		return(defaultname);
+	}
+
+	public String getPassword() {
+		return(defaultpassword);
+	}
+	
+	public String getDatabaseName() {
+		return(getInitParameter("database"));
+	}
 }

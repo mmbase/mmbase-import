@@ -29,5 +29,8 @@ public interface JDBCInterface {
 
 	public Connection getDirectConnection(String url) throws SQLException;
 	public Connection getDirectConnection(String url,String name,String password) throws SQLException;
+	public String getUser();
+	public String getPassword();
+	public String getDatabaseName();
 	public void checkTime();
 }
