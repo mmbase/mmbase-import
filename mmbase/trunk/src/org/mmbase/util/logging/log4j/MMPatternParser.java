@@ -1,6 +1,5 @@
 package org.mmbase.util.logging.log4j;
 
-import org.apache.log4j.*;
 import org.apache.log4j.helpers.FormattingInfo;
 import org.apache.log4j.helpers.PatternConverter;
 import org.apache.log4j.helpers.PatternParser;
@@ -10,7 +9,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Adds the  conversion pattern 'q' which returns a shorted level (to 3 chars) (so it is like 'p').
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternParser.java,v 1.2 2002-10-25 14:06:11 michiel Exp $
+ * @version $Id: MMPatternParser.java,v 1.3 2003-02-10 23:44:44 nico Exp $
  */
 public class MMPatternParser extends PatternParser {
 

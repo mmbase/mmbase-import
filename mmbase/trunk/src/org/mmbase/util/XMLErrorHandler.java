@@ -9,21 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
-
-import org.xml.sax.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.8 $ $Date: 2002-12-03 21:24:28 $
+ * @version $Revision: 1.9 $ $Date: 2003-02-10 23:44:37 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {

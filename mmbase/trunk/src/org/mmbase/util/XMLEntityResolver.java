@@ -9,15 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-
-import org.xml.sax.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Map;
 import java.util.Hashtable;
 
-
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Take the systemId and converts it into a local file, using the MMBase config path

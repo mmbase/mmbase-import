@@ -9,13 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+import org.mmbase.storage.search.CompositeConstraint;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldValueConstraint;
+import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
+import org.mmbase.storage.search.implementation.BasicSearchQuery;
+import org.mmbase.storage.search.implementation.BasicStep;
+import org.mmbase.storage.search.implementation.BasicStepField;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 
 /**
@@ -159,7 +167,6 @@ class DBQuery  extends ParseItem {
     public DBQuery(String query) {
         StringTokenizer parser = new StringTokenizer(query, "+-|",true);
         ParseItem item;
-        String token;
 
         while (parser.hasMoreTokens()) {
             item = new DBConditionItem(parser.nextToken());

@@ -9,17 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.util.transformers.*;
-import java.io.*;
+
 import java.util.HashMap;
-import java.util.Map;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Iterator;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.transformers.ByteToCharTransformer;
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.Config;
+import org.mmbase.util.transformers.Transformer;
 /**
  *
  * Class to convert from/to a string (byte[]) from/to a encoded string (byte[])

@@ -9,8 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import org.mmbase.util.logging.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
 * StringTagger, Creates a object with tags and fields from a String.

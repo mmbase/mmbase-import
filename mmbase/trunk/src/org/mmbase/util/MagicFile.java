@@ -9,175 +9,180 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.util.magicfile.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.magicfile.Detector;
+import org.mmbase.util.magicfile.DetectorProvider;
+import org.mmbase.util.magicfile.MagicParser;
+import org.mmbase.util.magicfile.MagicXMLReader;
 
 /**
  * Tries to determin the mime-type of a byte array (or a file).
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.8 2003-01-21 12:30:37 kees Exp $
+ * @version $Id: MagicFile.java,v 1.9 2003-02-10 23:44:36 nico Exp $
  */
-public class MagicFile  {
-    private static Logger log = Logging.getLoggerInstance(MagicFile.class.getName());
+public class MagicFile {
+   private static Logger log =
+      Logging.getLoggerInstance(MagicFile.class.getName());
 
-    public static final String FAILED = "Failed to determine type";
-    // application/octet-stream?
+   public static final String FAILED = "Failed to determine type";
+   // application/octet-stream?
 
-    protected static int BUFSIZE = 4598; // Read a string of maximally this length from the file
-    // Is this garanteed to be big enough?
+   protected static int BUFSIZE = 4598;
+   // Read a string of maximally this length from the file
+   // Is this garanteed to be big enough?
 
-    private static MagicFile instance;
+   private static MagicFile instance;
 
-    protected DetectorProvider detectors;
+   protected DetectorProvider detectors;
 
-    public static MagicFile getInstance() {
-	if (instance == null) {
-	    instance = new MagicFile();
-	}
-	return instance;
-    }
+   public static MagicFile getInstance() {
+      if (instance == null) {
+         instance = new MagicFile();
+      }
+      return instance;
+   }
 
-    /**
-     */
-    private MagicFile(DetectorProvider d) {
-	detectors = d;
-    }
+   /**
+    */
+   private MagicFile(DetectorProvider d) {
+      detectors = d;
+   }
 
-    private MagicFile() {
-	DetectorProvider d = MagicXMLReader.getInstance();  // default, read from XML
-	if (d == null) d = new MagicParser();
-	detectors = d;
-    }
+   private MagicFile() {
+      DetectorProvider d = MagicXMLReader.getInstance();
+      // default, read from XML
+      if (d == null)
+         d = new MagicParser();
+      detectors = d;
+   }
 
-    /**
-     * Returns a list of detectors used by this MagicFile instance
-     */
+   /**
+    * Returns a list of detectors used by this MagicFile instance
+    */
 
-    public List getDetectors() {
-	return detectors.getDetectors();
-    }
+   public List getDetectors() {
+      return detectors.getDetectors();
+   }
 
+   /*
+    * @deprecated use getMimeType(File)
+    */
+   protected String test(String path) {
+      try {
+         return getMimeType(new File(path));
+      }
+      catch (IOException e) {
+         return "File not found " + path;
+      }
+   }
+   /**
+    * @param path Location of file to be checked
+    * @return Type of the file as determined by the magic file
+    */
+   protected String getMimeType(File file) throws IOException {
+      byte[] lithmus = new byte[BUFSIZE];
+      //log.debug("path = "+path);
+      FileInputStream fir = new FileInputStream(file);
+      int res = fir.read(lithmus, 0, BUFSIZE);
+      log.debug("read " + res + "  bytes from " + file.getAbsolutePath());
+      return getMimeType(lithmus);
+   }
 
-    /*
-     * @deprecated use getMimeType(File)
-     */
-    protected String test(String path) {
-        try {
-            return getMimeType(new File(path));
-        } catch (IOException e) {
-            return "File not found " + path;
-        }
-    }
-    /**
-     * @param path Location of file to be checked
-     * @return Type of the file as determined by the magic file
-     */
-    protected String getMimeType(File file) throws IOException {
-	byte[] lithmus = new byte[BUFSIZE];
-        //log.debug("path = "+path);
-        FileInputStream fir = new FileInputStream(file);
-        int res = fir.read(lithmus, 0, BUFSIZE);
-        log.debug("read " + res + "  bytes from " + file.getAbsolutePath());
-        return getMimeType(lithmus);
-    }
+   /**
+    * @deprecated use getMimeType
+    */
+   protected String test(byte[] lithmus) {
+      return getMimeType(lithmus);
+   }
 
+   /**
+    * Tests the byte[] array for the mime type.
+    *
+    * @return The found mime-type or FAILED
+    */
 
+   public String getMimeType(byte[] input) {
+      byte[] lithmus;
 
-    /**
-     * @deprecated use getMimeType
-     */
-    protected String test(byte[] lithmus) {
-        return getMimeType(lithmus);
-    }
+      if (input.length > BUFSIZE) {
+         lithmus = new byte[BUFSIZE];
+         System.arraycopy(input, 0, lithmus, 0, BUFSIZE);
+      }
+      else {
+         lithmus = input;
+      }
 
+      Iterator i = getDetectors().iterator();
+      while (i.hasNext()) {
+         Detector detector = (Detector) i.next();
+         log.debug("Trying " + detector.getMimeType());
+         if (detector != null && detector.test(lithmus)) {
+            //return detector.getDesignation();
+            return detector.getMimeType();
+         }
+      }
+      return FAILED;
+   }
 
-    /**
-     * Tests the byte[] array for the mime type.
-     *
-     * @return The found mime-type or FAILED
-     */
+   /**
+    *
+    */
 
-    public String getMimeType(byte[] input) {
-	byte[] lithmus;
-
-	if (input.length > BUFSIZE){
-	    lithmus = new byte[BUFSIZE];
-	    System.arraycopy(input,0,lithmus,0,BUFSIZE);
-	} else {
-	    lithmus = input;
-	}
-
-        Iterator i = getDetectors().iterator();
-        while (i.hasNext()) {
-            Detector detector = (Detector) i.next();
-            log.debug("Trying " + detector.getMimeType());
-            if (detector != null && detector.test(lithmus)) {
-                //return detector.getDesignation();
-                return detector.getMimeType();
+   public String extensionToMimeType(String extension) {
+      Iterator i = getDetectors().iterator();
+      while (i.hasNext()) {
+         Detector detector = (Detector) i.next();
+         Iterator j = detector.getExtensions().iterator();
+         while (j.hasNext()) {
+            String ex = (String) j.next();
+            if (ex.equalsIgnoreCase(extension)) {
+               return detector.getMimeType();
             }
-        }
-        return FAILED;
-    }
+         }
+      }
+      return FAILED;
+   }
 
-    /**
-     *
-     */
+   public String getMimeType(byte[] data, String extension) {
+      String result;
+      result = getMimeType(data);
+      if (result.equals(FAILED)) {
+         result = extensionToMimeType(extension);
+      }
+      return result;
+   }
 
-    public String extensionToMimeType(String extension) {
-	Iterator i = getDetectors().iterator();
-        while (i.hasNext()) {
-            Detector detector = (Detector) i.next();
-	    Iterator j = detector.getExtensions().iterator();
-	    while (j.hasNext()) {
-		String ex = (String) j.next();
-		if (ex.equalsIgnoreCase(extension)) {
-		    return detector.getMimeType();
-		}
-	    }
-	}
-	return FAILED;
-    }
+   /**
+    * e.g.: java -Dmmbase.config=/home/mmbase/mmbase-app/WEB-INF/config org.mmbase.util.MagicFile test.doc
+    */
+   public static void main(String[] argv) {
+      MagicFile magicFile = MagicFile.getInstance();
 
-    public String getMimeType(byte[] data, String extension) {
-	String result;
-	result = getMimeType(data);
-	if (result.equals(FAILED)) {
-	    result =  extensionToMimeType(extension);
-	}
-        return result;
-    }
-
-    /**
-     * e.g.: java -Dmmbase.config=/home/mmbase/mmbase-app/WEB-INF/config org.mmbase.util.MagicFile test.doc
-     */
-
-    public static void main(String[] argv) {
-	MagicFile magicFile = MagicFile.getInstance();
-
-	if (argv.length == 1) {
-            try {
-                // one argument possible: a file name. Return the mime-type
-                log.info(magicFile.getMimeType(new File(argv[0])));
-            } catch (IOException e) {
-                log.info(argv[0] + " cannot be opened or read: " + e.toString());
-            }
-	} else {
-	    // show the known Detectors;
-	    Iterator i = magicFile.getDetectors().iterator();
-	    while (i.hasNext()) {
-		Detector d = (Detector) i.next();
-		log.info(d.toString());
-	    }
-	}
-    }
+      if (argv.length == 1) {
+         try {
+            // one argument possible: a file name. Return the mime-type
+            log.info(magicFile.getMimeType(new File(argv[0])));
+         }
+         catch (IOException e) {
+            log.info(argv[0] + " cannot be opened or read: " + e.toString());
+         }
+      }
+      else {
+         // show the known Detectors;
+         Iterator i = magicFile.getDetectors().iterator();
+         while (i.hasNext()) {
+            Detector d = (Detector) i.next();
+            log.info(d.toString());
+         }
+      }
+   }
 }

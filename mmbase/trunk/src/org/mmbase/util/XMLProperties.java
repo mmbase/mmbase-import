@@ -9,10 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
 
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 
 /**

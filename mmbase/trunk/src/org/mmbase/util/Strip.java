@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 
 /**

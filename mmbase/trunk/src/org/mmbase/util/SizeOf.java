@@ -1,9 +1,19 @@
 package org.mmbase.util;
 
-import java.lang.reflect.*; // necessary for SizeOf
-import java.util.*;
+// necessary for SizeOf
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Implementation of sizeof.
  *

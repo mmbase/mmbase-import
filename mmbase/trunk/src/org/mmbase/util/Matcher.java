@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.StringTokenizer;
-import org.mmbase.util.logging.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Class for matching two strings and returning an indicator (threshold) on how these compare.

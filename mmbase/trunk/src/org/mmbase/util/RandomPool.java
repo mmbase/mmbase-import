@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
-import java.lang.*;
-import java.util.*;
-
 /**
  * Class for holding a pool of random numbers.
  * Calling {@link #stir} takes care of generating a new 'random' number.

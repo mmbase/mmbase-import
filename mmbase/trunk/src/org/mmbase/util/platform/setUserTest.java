@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.platform;
 
-import java.util.Vector;
-
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -33,8 +31,7 @@ public class setUserTest {
     }
 
     public static void main(String args[]) {
-        setUserTest srv;
-        srv=new setUserTest();
+      setUserTest srv=new setUserTest();
 		System.exit(0);
     }
 }

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.HashMap;
 import java.io.Reader;
 import java.io.Writer;
 

@@ -9,23 +9,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging.log4j;
 
-//import org.mmbase.util.logging.Logger;
-//import org.mmbase.util.logging.Level;
-//import org.mmbase.util.logging.Logging;
-
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.xml.DOMConfigurator;
-
-import java.io.PrintStream;
-import java.io.File;
-import java.util.Vector;
 
 /**
-
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  */
 
 public final class LoggerRepository extends org.apache.log4j.Hierarchy implements org.apache.log4j.spi.LoggerRepository {
