@@ -2,7 +2,7 @@
 <mm:import externid="extraheader" />
 <mm:import externid="extrabody" />
 <mm:content postprocessor="reducespace">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
