@@ -18,7 +18,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.13 2003-12-02 14:25:47 michiel Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.14 2003-12-10 10:54:47 vpro Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -211,7 +211,7 @@
 						<para>The number of the item in the list where to start listing.
 							This value is used to skip to a certain page when browsing a large list.
 							Default is 0.</para>
-						<programlisting format="linespecific">age=31</programlisting>
+						<programlisting format="linespecific">start=0</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
