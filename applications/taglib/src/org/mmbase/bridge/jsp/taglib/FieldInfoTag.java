@@ -514,7 +514,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                             hour.intValue(), minute.intValue(), second.intValue());
                     node.setIntValue(fieldName, (int) (cal.getTime().getTime() / 1000));
                 } catch (java.lang.NumberFormatException e) {
-                    throw new JspTagException("Not a valid number (" + e.toString() + ")");
+                    throw new JspTagException("Not a valid number (" + e.toString() + ") in field " + fieldName);
                 }
                 break;
             }
