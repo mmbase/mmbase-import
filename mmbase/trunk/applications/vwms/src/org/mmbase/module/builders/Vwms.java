@@ -160,6 +160,13 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         MMObjectNode node=bul.getMMServerNode(getMachineName());
         if (node!=null) {
 */
+
+			// Only one mmserver instance may exist, so print ERROR when you find multiple.
+			if (e.hasMoreElements()) {
+				log.error("Multiple mmserver nodes found named: "+getMachineName()+", only single node allowed!!!!");
+				log.error("Please delete all but one mmservers named: "+getMachineName());
+			}
+			
             for (Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms"); f.hasMoreElements();) {
                 MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
                 log.service("Vwms:startVwms -> VWM="+vwmnode);
