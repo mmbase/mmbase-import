@@ -135,7 +135,7 @@ String myUrl = request.getContextPath() + "/login/mmlogin.jsp?orgLocation="+orgL
 			<td class="black"><img src="/media/spacer.gif" alt="" width="204" height="1" /></td>
 		</tr>
 		<tr>
-			<td class="navbar"><img src="/media/spacer.gif" alt="" width="152" height="456" /></td>
+			<td class="navbar"><img src="/media/spacer.gif" alt="" width="152" height="380" /></td>
 <mm:log>nehead</mm:log>
 <%-- /cache:cache --%>
 
