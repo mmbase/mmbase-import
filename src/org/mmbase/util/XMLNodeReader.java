@@ -104,6 +104,8 @@ public class XMLNodeReader  {
 					if (nm!=null) {
 						Node n4=nm.getNamedItem("owner");
 						MMObjectNode newnode=bul.getNewNode(n4.getNodeValue());
+						n4=nm.getNamedItem("alias");
+						if (n4!=null) newnode.setAlias(n4.getNodeValue());
 						n4=nm.getNamedItem("number");
 						try {
 							int num=Integer.parseInt(n4.getNodeValue());
