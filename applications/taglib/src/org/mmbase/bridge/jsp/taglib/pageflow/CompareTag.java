@@ -23,7 +23,7 @@ import java.util.*;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.24 2003-07-21 08:07:29 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.25 2003-07-28 13:02:23 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -49,7 +49,14 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         if (log.isDebugEnabled()) {
             log.debug("comparing " + (v1 != null ? v1.getClass().getName() : "") + "'" + v1 + "' to " + (v2 != null ? v2.getClass().getName() : "")+ "'" + v2 + "'");
         }
-        return v1.compareTo(v2) == 0; // (cannot use 'equals' because BigDecimal then also compares scale, which doesn't interest us too much).
+
+        // TODO this is a bit oddly implemented, perhaps using org.mmbase.util.Casting
+        try {
+            return v1.compareTo(v2) == 0; // (cannot use 'equals' because BigDecimal then also compares scale, which doesn't interest us too much).
+        } catch (Throwable e) {
+            // for example if v1 is a Node and v2 is not, then it throws a ClassCastException, which we of course don't want here.
+            return false;
+        }
     }
 
     protected Object getCompare2() throws JspTagException {
