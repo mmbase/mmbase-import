@@ -180,7 +180,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="documentation" />
     <zipfileset dir="${project.build.dir}"  includes="documentation/**" />
     <zipfileset dir="${project.source.dir}" includes="documentation/**" prefix="src" />
-    <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
+    <fileset dir="${project.build.dir}"     includes="README-PACKAGE.txt"/>
+    <fileset dir="${project.source.dir}">
+      <patternset id="readmes">
+        <include name="README*"/>
+      </patternset>
+    </fileset>
     <fileset dir="${project.source.dir}">
       <patternset id="root.package.files" >
         <include name="src/**"/>
@@ -195,6 +200,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <exclude name="documentation/**" />
         <exclude name="src/**" />
         <exclude name="build*/**" />
+        <exclude name="README*" />
       </patternset>
     </zipfileset>
   </zip>          
