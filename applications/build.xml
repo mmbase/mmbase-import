@@ -33,7 +33,7 @@ Applications build file
 
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,crontab,vwms,scan" />
+  <target name="all18" depends="init,all17,crontab,vwms,scan,packaging" />
 
   <target name="all"   depends="init,all18" />
 
@@ -131,6 +131,12 @@ Applications build file
      </ant>
   </target>
 
+  <target name="packaging" depends="mmbase">
+     <ant dir="packaging"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+     </ant>
+  </target>
+
   <target name="install">
     <ant dir="taglib"        target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -142,6 +148,9 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="rmmci"         target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+    <ant dir="packaging"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
@@ -186,6 +195,7 @@ Applications build file
      <ant dir="bugtracker"      target="clean" inheritAll="false" />
      <ant dir="community"      target="clean" inheritAll="false" />
      <ant dir="email"      target="clean" inheritAll="false" />
+     <ant dir="packaging"      target="clean" inheritAll="false" />
      <ant dir="xmlimporter"   target="clean" inheritAll="false" />
      <ant dir="vwms"      target="clean" inheritAll="false" />
      <ant dir="scan"      target="clean" inheritAll="false" />
