@@ -7,27 +7,37 @@
  String thisServer(javax.servlet.http.HttpServletRequest request, String url) { 
     return "http://" + getHost() + request.getContextPath() + url;
  } 
-%><mm:context id="config"
-><mm:import id="configsubmitted" externid="config" from="parameters" 
-/> <mm:present referid="configsubmitted">
-    <%-- for config-page --%>
-    <mm:import id="lang"    externid="lang"   from="parameters">en</mm:import>
-    <mm:import id="quality" externid="quality" from="parameters">any</mm:import>
-    <mm:import id="player"  externid="player" from="parameters">any</mm:import>
- </mm:present>
- <mm:notpresent referid="configsubmitted">
-    <%-- get config from cookies --%>
-    <mm:import id="lang"    externid="mmjspeditors_language"   from="cookie">nl</mm:import>
-    <mm:import id="quality" externid="mediaeditors_quality"  from="cookie">any</mm:import>
-    <mm:import id="player"  externid="mediaeditors_player"   from="cookie">any</mm:import>
-  </mm:notpresent>
+%>
+<mm:import externid="logout" />
+<mm:present referid="logout">
+  <mm:cloud method="logout" />
+</mm:present>
 
-  <%-- always write cookies --%>
-  <mm:write  referid="lang"       cookie="mmjspeditors_language" />
-  <mm:write  referid="quality"    cookie="mediaeditors_quality" />
-  <mm:write  referid="player"     cookie="mediaeditors_player" />
+<mm:context id="config">
+<mm:cloud method="asis">
+  <%-- get config from cookies --%>
+  <mm:import id="lang"    externid="mmjspeditors_language"   from="parameters,cookie">nl</mm:import>
+  <mm:import id="quality" externid="mediaeditors_quality"    from="parameters,cookie">any</mm:import>
+  <mm:import id="player"  externid="mediaeditors_player"     from="parameters,cookie">any</mm:import>
+  <mm:import              externid="mediaeditors_origin"     from="parameters,cookie" /> <%-- no default, will be ask on first entry --%>
+  
+  <mm:present referid="mediaeditors_origin">
+    <mm:isempty referid="mediaeditors_origin">
+      <mm:import id="mediaeditors_origin_set">yes</mm:import>
+      <mm:write  referid="mediaeditors_origin"  cookie="mediaeditors_origin" />
+    </mm:isempty>
+    <mm:node number="$mediaeditors_origin" notfound="skip">
+      <mm:import id="mediaeditors_origin_set">yes</mm:import>
+      <mm:write  referid="mediaeditors_origin"  cookie="mediaeditors_origin" />
+    </mm:node>
+  </mm:present>
+  
+  <mm:write  referid="lang"    cookie="mmjspeditors_language" />
+  <mm:write  referid="quality" cookie="mediaeditors_quality" />
+  <mm:write  referid="player"  cookie="mediaeditors_player" />
 
   <mm:import id="editwizards"><%=org.mmbase.applications.media.urlcomposers.Config.editwizardsDir == null ? "/mmapps/editwizard" : org.mmbase.applications.media.urlcomposers.Config.editwizardsDir%></mm:import>
+</mm:cloud>
 </mm:context><% 
    java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; 

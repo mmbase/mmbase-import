@@ -2,7 +2,7 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" %><mm:content language="$config.lang" postprocessor="reducespace">
-<mm:cloud jspvar="cloud" loginpage="login.jsp" method="asis">
+<mm:cloud method="asis">
 <html>
 <head>
   <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
@@ -13,7 +13,6 @@
   <h1>Help</h1>
   <h2>Inhoudsopgave</h2>
   <p>
-    De streammanager bestaat uit 2 onderdelen.
     <ul>
       <li><a href="#intro">Introductie</a></li>
       <li><a href="#search">Zoek-mogelijkheid</a></li>

@@ -23,6 +23,7 @@ body.left {
 
 hr {
 	color : #1C5BA2;
+/*	width: 10px; */
 }
 
 #colofon {
@@ -71,7 +72,6 @@ p.menu {
 p.menu .current { 
   background-color: yellow;
 }
-
 
 	
 textarea {

@@ -1,7 +1,8 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" 
-%><html>
+%><mm:content type="text/html">
+<html>
   <head>
     <title>Media editor</title>
     <link rel="icon"          href="images/favicon.ico"" type="image/x-icon" />
@@ -19,17 +20,9 @@
         document.write("</frameset>");
         document.write.document.close();
 }
-
   </script>
 
-  </head>
-  <mm:import externid="logout" />
-
-  <mm:present referid="logout">
-    <mm:cloud method="logout" />
-  </mm:present>
-
-
+  </head>  
   <frameset  rows="75,*" border="0">
       <frame name="header" src ="<mm:url page="header.jsp" />" scrolling="no" frameborder="0" border="0"  framespacing="0">
         <frameset  cols="331,*"><!-- 2 x 2 margin + 32 + 35 td's + 1 * 260 td -->
@@ -38,3 +31,4 @@
        </frameset>
   </frameset>
 </html>
+</mm:content>
