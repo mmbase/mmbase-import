@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.19 2004-11-26 20:48:33 michiel Exp $
+#  $Id: cvsmail,v 1.20 2004-12-03 11:44:40 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -83,8 +83,9 @@ if ($child = fork()) {
 	my $extra = "";
 	if ($cvsuser =~ /cvs/) {
 		$extra = "-e 'my_hdr From: $user <$cvsuser\@mmbase.org>'";
-	}
-	my $mail = new FileHandle("|mutt -s \"$subject\" $toaddress $extra");
+	} 
+	my $reply = "-e 'my_hdr Reply-To: $toaddress'";
+	my $mail = new FileHandle("|mutt -s \"$subject\" $toaddress $reply $extra");
 	# for mutt: 	
 	print $mail $message."\n";
 	
