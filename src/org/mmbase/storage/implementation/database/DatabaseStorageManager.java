@@ -28,12 +28,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.31 2003-10-24 11:38:28 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.32 2003-12-28 19:05:15 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
+    private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
 
     /**
      * The factory that created this manager
@@ -157,6 +157,10 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             inTransaction = false;
             if (factory.supportsTransactions()) {
+                if (activeConnection == null) {
+                    throw new StorageException("No active connection");
+                }
+                
                 try {
                     activeConnection.commit();
                 } catch (SQLException se) {
