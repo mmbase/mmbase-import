@@ -16,7 +16,13 @@
 </mm:present>
 <!-- end action check -->
 
-<center>
+<body>
+
+<div class="header">
+  <%@ include file="header.jsp" %>
+</div>
+                                                                                                              
+<div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
    <tr><th>Forum naam</th><th>berichten</th><th>views</th><th>gebruikers</th></tr>
@@ -40,5 +46,11 @@
 	</tr>
 	</table>
 </mm:cloud>
-</center>
+</div>
+                                                                                                              
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+
+</body>
 </html>

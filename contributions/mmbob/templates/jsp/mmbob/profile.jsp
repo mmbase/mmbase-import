@@ -4,6 +4,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 
 <mm:cloud sessionname="forum">
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">poster_index</mm:import>
@@ -23,14 +24,20 @@
 </mm:present>
 <%-- end action check --%>
 
-  <head>
+<head>
    <title>MMBase Forum Profile</title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBob</title>
-  </head>
-  <body>
+</head>
+<body>
 
-  <mm:include page="path.jsp?type=$pathtype" />
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+                                                                                              
+<div class="bodypart">
+
+<mm:include page="path.jsp?type=$pathtype" />
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
                         <tr><th colspan="2" align="left">
@@ -415,7 +422,14 @@
     </div>
   </mm:compare>
 
-  </body>
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                              
+</body>
 </html>
+</mm:content>
 
 </mm:cloud>

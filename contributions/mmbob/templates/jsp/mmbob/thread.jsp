@@ -2,6 +2,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
@@ -42,7 +43,12 @@
   <mm:import reset="true" id="threadstate">normal</mm:import>
 </mm:compare>
 
-<center>
+<div class="header">
+  <%@ include file="header.jsp" %>
+</div>
+                                                                                                              
+<div class="bodypart">
+
 <mm:include page="path.jsp?type=postthread" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
                         <tr><th colspan="2" align="left">
@@ -221,10 +227,13 @@
 </table>
 </mm:compare>
 </mm:compare>
-<p />
-<p />
-<p />
-<p />
-</mm:cloud>
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+
 </body>
 </html>
+</mm:content>
+</mm:cloud>

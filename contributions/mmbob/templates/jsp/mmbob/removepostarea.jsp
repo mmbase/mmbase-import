@@ -8,6 +8,7 @@
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBob</title>
 </head>
+<body>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 
@@ -17,7 +18,13 @@
  <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
-<center>
+
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+                                                                                              
+<div class="bodypart">
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
   <tr><th colspan="3">Gebied : <mm:node referid="postareaid"><mm:field name="name" /></mm:node> echt verwijderen ??</th></tr>
   <tr><td>
@@ -46,5 +53,15 @@
 	</tr>
 
 </table>
+
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                              
+</body>
+</html>
+
 </mm:cloud>
 

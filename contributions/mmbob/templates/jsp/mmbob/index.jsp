@@ -1,9 +1,10 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
-<HTML>
-<HEAD>
+<html>
+<head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBase forums</title>
 </head>
@@ -18,20 +19,25 @@
 </mm:compare>
 
 <mm:compare referid="forumid" value="unknown" inverse="true">
-  <!-- login part -->
+<!-- login part -->
   <%@ include file="getposterid.jsp" %>
-  <!-- end login part -->
+<!-- end login part -->
 
-  <mm:locale language="$lang"> 
+<mm:locale language="$lang"> 
 
-  <!-- action check -->
-  <mm:import externid="action" />
-  <mm:present referid="action">
-    <mm:include page="actions.jsp" />
-  </mm:present>
-  <!-- end action check -->
+<!-- action check -->
+<mm:import externid="action" />
+<mm:present referid="action">
+  <mm:include page="actions.jsp" />
+</mm:present>
+<!-- end action check -->
 
-  <center>
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+
+<div class="bodypart">
+
   <mm:include page="path.jsp?type=index" />
 
   <table cellpadding="0" cellspacing="0" class="list"  style="margin-top : 10px;" width="95%">
@@ -173,7 +179,13 @@
 </mm:locale>
 </mm:compare>
 
-</mm:cloud>
-</center>
+</div>                                                                                                                           
+<div class="footer">
+  <%@ include file="footer.jsp" %> 
+</div> 
+
 </body>
 </html>
+
+</mm:content>
+</mm:cloud>
