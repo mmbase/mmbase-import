@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.7 2002-11-22 12:14:32 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.8 2002-11-22 21:51:37 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -141,7 +141,32 @@
       <mm:nodeinfo id="type" type="type" write="false" />
       <img src="<mm:url page="media/${type}.gif" />" alt="" />
        <mm:relatednodes id="fragment" type="$type">
-          <a href="<mm:url referids="fragment,language" page="demo.smil.jsp" />" target="new"> <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field></a>
+          <mm:relatednodes type="publishtimes" max="1">
+             <mm:field id="begin" name="begin" write="false" />
+             <mm:field id="end"   name="end"   write="false" />
+             <mm:time  id="now"   time="now"   write="false" />
+          </mm:relatednodes>
+          <mm:present referid="now">
+            <mm:write referid="begin" jspvar="begin" vartype="integer">
+            <mm:write referid="end"   jspvar="end"   vartype="integer">
+            <mm:write referid="now"   jspvar="now"   vartype="integer">
+            <% if (now.intValue() < begin.intValue() || now.intValue() > end.intValue()) { %>
+               <mm:import id="notvalid" />
+            <% } %>
+            </mm:write>
+            </mm:write>  
+            </mm:write>
+          </mm:present>
+          <mm:notpresent referid="notvalid">
+          <a href="<mm:url referids="fragment,language" page="demo.smil.jsp" />" target="new"> 
+          </mm:notpresent>
+             <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field>
+          <mm:notpresent referid="notvalid">
+          </a>
+          </mm:notpresent>
+          <br />
+          showurl <mm:field name="showurl()" /><br />
+          longurl <mm:field name="longurl()" /><br />
        </mm:relatednodes>
       </td>
   </tr>

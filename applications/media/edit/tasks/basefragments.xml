@@ -19,7 +19,7 @@
 		<relation destination="&fragments;" role="parent" />
 		<relation destination="publishtimes"   role="related" />
 	</action>
-
+      
   &formats;
 
 	<form-schema id="basics">

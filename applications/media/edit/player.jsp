@@ -14,15 +14,9 @@
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;language=$language" />" language="javascript"><!--help IE--></script>
-<script language="javascript"><!--
-  function showInfo() {
-    // alert(document.embeddedplayer.GetCopyright());             
-     parent.forms['info'].copyright.value = document.embeddedplayer.GetCopyright();
-  }
---></script>
 </head>
 
-<body onLoad="showInfo();">
+<body>
 <mm:cloud>
 <%-- determin source --%>
 <mm:node number="$fragment" notfound="skip">
@@ -37,16 +31,18 @@
 </mm:node>
 
 <mm:present referid="source">
-  		<table width="350" height="300" border="0" class="movie" background="images/bck_movie.gif" class="movie">
-			 <tr><!-- 3 collumns -->
-    		<td  class="movie" colspan="3" width="340" height="25"><img src="images/extra.gif" width="340" height="25" alt="" border="0" usemap="#nav"></td>
-		  	</tr>
-			  <tr>
-    			<td class="movie" width="35" height="180" ><img src="images/extra.gif" width="35" height="180" alt="" border="0" usemap="#nav"></td>
-    			<td width="260" height="300" class="movie">
-       <embed src="<mm:url referids="source" page="display.ram.jsp" />" 
+
+<table class="movie" border="0" cellspacing="0" cellpadding="0">
+<tr>
+    <td valign="top" width="32" height="27"><img src="images/movie_top_left.gif" alt="" width="32" height="27" border="0"></td>
+    <td valign="top" background="images/movie_top.gif" height="27">&nbsp;</td>
+    <td valign="top" width="35" height="27"><img src="images/movie_top_right.gif" alt="" width="35" height="27" border="0"></td>
+</tr>
+<tr>
+    <td valign="top" background="images/movie_left.gif" width="32" ></td>
+    <td valign="top" bgcolor="#717171"><embed src="<mm:url referids="source" page="display.ram.jsp" />" 
                 width="260" 
-                height="200"   
+                height="300"   
                 type="audio/x-pn-realaudio-plugin"
                 nojava="false" 
                 controls="ImageWindow,PositionSlider,TACCtrl"
@@ -55,36 +51,23 @@
                 nologo="true"
                 nolabels="true"
                 scriptcallbacks="All"
-                onPresentationOpened="alert('ja');"
-                name="embeddedplayer"></embed>
-
-         </td>
-    			<td class="movie" width="45" height="180" ><img src="images/extra.gif" width="45" height="180" alt="" border="0" usemap="#nav"></td>
-			</tr>
-			<tr>
-    			<td class="movie" colspan="3" width="340" height="40"><img src="images/extra.gif" width="340" height="25" alt="" border="0" usemap="#nav">
+                name="embeddedplayer"></embed></td>
+    <td valign="top" background="images/movie_right.gif" width="35"></td>
+</tr>
+<tr>
+    <td valign="top" width="32" height="43"><img src="images/movie_down_left.gif" alt="" width="32" height="43" border="0"></td>
+    <td height="43" align="center" valign="bottom" background="images/movie_down.gif"><img src="images/movie_knoppen.gif" alt="" width="160" height="38" border="0" usemap="#nav">
 				<map name="nav">
-				<area alt="terug" shape="circle" coords="125,10,10"  href="javascript:document.embeddedplayer.SetPosition(0);" />
-				<area alt="play" shape="circle" coords="178,10,10"   href="javascript:document.embeddedplayer.DoPlay();" />
-				<area alt="stop" shape="circle" coords="242,10,10"   href="javascript:document.embeddedplayer.DoStop();" />
-				<area alt="pauze" shape="circle" coords="217,10,10"  href="javascript:document.embeddedplayer.DoPause();" />
-				<area alt="vooruit" shape="circle" coords="295,10,10"  href="javascript:document.embeddedplayer.SetPosition(document.embeddedplayer.getLength());" />
+				<area alt="terug" shape="circle" coords="16,25,10"  href="javascript:document.embeddedplayer.SetPosition(0);" />
+				<area alt="play" shape="circle" coords="48,25,10"   href="javascript:document.embeddedplayer.DoPlay();" />
+				<area alt="stop" shape="circle" coords="112,25,10"   href="javascript:document.embeddedplayer.DoStop();" />
+				<area alt="pauze" shape="circle" coords="87,25,10"  href="javascript:document.embeddedplayer.DoPause();" />
+				<area alt="vooruit" shape="circle" coords="145,25,10"  href="javascript:document.embeddedplayer.SetPosition(document.embeddedplayer.getLength());" />
 				</map>
-       </td>
-			</tr>
-		</table>
-<hr />
-<br />
-<h1>test</h1>
-<form id="info">
-<table>
-  <tr>
-   <td>Copyright</td><td><input id="copyright" value="hoi" /></td>
-  </tr>
+</td>
+    <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
+</tr>
 </table>
-</form>
-   <a href="javascript:showInfo();"> test </a>
-    
 	  </mm:present>
     <mm:notpresent referid="source">
        Could not determin source
