@@ -4,7 +4,4 @@
         <theme id="MMBaseWebsite" file="themes/MMBaseWebsite/theme.xml" />
         <theme id="MMBaseTools" file="themes/MMBaseTools/theme.xml" />
         <theme id="StarField" file="themes/StarField/theme.xml" />
-        <theme id="KennisNetSpace" file="themes/KennisNetSpace/theme.xml" />
-        <theme id="Humanisten" file="themes/Humanisten/theme.xml" />
-        <theme id="Submarine" file="themes/Submarine/theme.xml" />
 </themes>
