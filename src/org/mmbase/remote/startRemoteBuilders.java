@@ -27,9 +27,9 @@ import java.util.*;
  */
 public class startRemoteBuilders {
 
-	private	String 	classname 	= getClass().getName();
-	private boolean	debug		= true;
-	private void	debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	private static String classname;
+	private static boolean debug = true;
+	private static void debug(String msg) {System.out.println(classname +":"+ msg );}
 
 	static Vector runningServices=new Vector();
 
@@ -37,14 +37,16 @@ public class startRemoteBuilders {
     * Main() called from OS with parameters defined above.
     */
     public static void main(String args[]) {
-
-		String classname = "org.remote.startRemoteBuilders"; //getClass().getName();
+		/**
+		 * Created to get the classname for debug() 
+		 */
+		startRemoteBuilders srb = new startRemoteBuilders();	
+		classname = srb.getClass().getName();	
 
 	   /**
 		* misc vars.
 		*/
 		boolean stopit = false;
-
 
 		//MMRemoteMultiCast mmc;
 		MMProtocolDriver con=null;
@@ -78,35 +80,35 @@ public class startRemoteBuilders {
 					port=Integer.parseInt(tmp.substring(pos+1));
 				} catch(Exception e) {}
 			}
-			System.out.println( classname +":main(): Prot="+protocol);
-			System.out.println( classname +":main(): Host="+host);
-			System.out.println( classname +":main(): Port="+port);
+			debug("main(): "+classname +":main(): Prot="+protocol);
+			debug("main(): "+classname +":main(): Host="+host);
+			debug("main(): "+classname +":main(): Port="+port);
 			
 			String name=(String)servprops.get("name");
 			if (protocol.equals("ulticast")) {	
-				System.out.println("starting multicast sender/receiver");
+				debug("main(): starting multicast sender/receiver");
 				con=(MMProtocolDriver)new MMRemoteMultiCast(name,host,port);
 			} else if (protocol.equals("http")) {	
-				System.out.println("starting http sender/receiver");
+				debug("main(): starting http sender/receiver");
 				con=(MMProtocolDriver)new MMHttpAcceptor(name,host,port);
 			}
 
-			System.out.println("starting check probe");
+			debug("main(): starting check probe");
 			//String number=(String)servprops.get("number");
 			probe=new MMRemoteProbe(runningServices,con,name);
 	
 
-			System.out.println("starting services");
+			debug("main(): starting services");
 			int numberofparams=args.length;
 			for (int i=1;i<args.length;i++) {
 				String servicefile=args[i];
 				ExtendedProperties Reader=new ExtendedProperties();
 				Hashtable props = Reader.readProperties(servicefile);
 				String buildername=(String)props.get("buildername");
-				System.out.println("name="+buildername);
+				debug("main(): name="+buildername);
 				try {
 					Class newclass=Class.forName("org.mmbase.remote.builders."+buildername);
-					System.out.println("startRemoteBuilders -> Loaded load class : "+newclass);
+					debug("main(): startRemoteBuilders -> Loaded load class : "+newclass);
 					RemoteBuilder serv = (RemoteBuilder)newclass.newInstance();
 					if (serv!=null) {
 						serv.init(con,servicefile);
@@ -116,7 +118,7 @@ public class startRemoteBuilders {
 					e.printStackTrace();
 				}
 			}
-			System.out.println( classname+":main(): Running");
+			debug("main(): "+classname+":main(): Running");
 		}
 
 
@@ -134,7 +136,7 @@ public class startRemoteBuilders {
 	   /**
 		* Close down the daemon and return to OS.
 		*/
-		System.out.println("Stopping services");
+		debug("main(): Stopping services");
     }
 
 
@@ -189,8 +191,8 @@ public class startRemoteBuilders {
 				connect.close();
 			} catch(Exception e) {}
 		} catch(Exception e) {
-			System.out.println("Error connecting to object host : "+e);
+			debug("postXML(): Error connecting to object host : "+e);
+			e.printStackTrace();
 		}	
 	}
-
 }
