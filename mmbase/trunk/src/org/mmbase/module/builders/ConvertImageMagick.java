@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.45 2003-03-13 13:26:19 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.46 2003-03-13 13:51:37 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -645,37 +645,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
             }
             
             
-
-            //   ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict), process.getOutputStream());
-
-            
-            OutputStream out = new BufferedOutputStream(process.getOutputStream());
-            out.write(pict);
-
-            //log.debug("starting process writer for " + pict.length + " bytes");
-            //pw.start();
-            //log.debug("done with process writer");
+            ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict), process.getOutputStream());
+            log.debug("starting process writer");
+            pw.start();
+            log.debug("done with process writer");
 
             // in grabs the stuff coming from stdout from program...
             in = new BufferedInputStream(process.getInputStream(), 1);
             imagestream = new ByteArrayOutputStream();
-
-            {
-                long start = System.currentTimeMillis();
-                while(true) { 
-                    log.debug("hmm");
-                    if (in.available() > 0) break;                    
-                    Thread.currentThread().sleep(100);
-                    
-                    if (System.currentTimeMillis() - start > 5000) {
-                        log.error("Imagemagick for '" + command + "' took too long");
-                        process.destroy();
-                        return null;
-                    }
-                }
-            }
-            
-            log.debug("Starting to read " + in.available());
 
             {
                 int size = 0;
@@ -686,9 +663,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 }
             }
 
-            out.close();
             log.debug("waiting");
             process.waitFor(); // error code is only certainly available after the process finished
+            
 
             log.debug("retrieved all information");
             byte[] image = imagestream.toByteArray();
@@ -723,17 +700,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
             log.error("converting image with command: '" + command + "' failed  with reason: '" + exception + "'");
         } finally {
             try {
-                if (in != null) {
-                    log.info("closing in"); 
+                if (in != null) {              
                     in.close();
                 }
             } catch (IOException ioe) {
             }
             try {
                 if (imagestream != null) {
-                    log.info("closing image"); 
                     imagestream.close();
-                    log.info("closed image"); 
                 }
             } catch (IOException ioe) {
             }
