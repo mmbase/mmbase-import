@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.21 2002-12-19 10:31:35 rob Exp $
+ * @version $Id: MultiPool.java,v 1.22 2003-01-07 10:57:00 kees Exp $
  */
 public class MultiPool {
     
@@ -109,7 +109,7 @@ public class MultiPool {
         	////
             //// This way the instance is only locked when the method is executing. 
             //// The statements before and after this are not synchronized. 
-            //// When an instnace is not in a synchronized block the instance is not locked 
+            //// When an instance is not in a synchronized block the instance is not locked 
             //// and every thread can modify the instance.
             //// Busypool is in this method not locked and can be modified in getFree and putBack.
             //// if the busypool is iterated and modified at the same time a 
@@ -143,16 +143,16 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newcon = null;
-                    log.warn("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
+                    log.warn("KILLED SQL " + con.lastSql + " time " + diff + " seconds because it took too long");
                     try {
                         Connection realcon = DriverManager.getConnection(url,name,password);
                         initConnection(realcon);
                         newcon = new MultiConnection(this,realcon);
                         if (log.isDebugEnabled()) {
-                            log.debug("WOW added JDBC connection now ("+pool.size()+")");
+                            log.debug("added JDBC connection now ("+pool.size()+")");
                         }
                     } catch(Exception re) {
-                        log.error("ERROR Can't add connection to pool");
+                        log.error("Can't add connection to pool");
                     }
                     if (newcon != null) {
                         pool.add(newcon);
