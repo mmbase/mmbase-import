@@ -18,7 +18,7 @@ import org.mmbase.util.StringTagger;
  * @javadoc
  * @rename MultiLevelCacheEntry
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheEntry.java,v 1.5 2002-03-29 21:23:31 michiel Exp $
+ * @version $Id: MultilevelCacheEntry.java,v 1.6 2002-06-16 23:58:19 daniel Exp $
  */
 public class MultilevelCacheEntry {
     /**
@@ -68,13 +68,15 @@ public class MultilevelCacheEntry {
      * @todo remove itself should be handled by cache handler
      */
     public synchronized void clear() {
+        // remove ourselfs from the cache first
+        han.callbackRemove(hash);
+
+	// call all the listeners to unsubscribe myself
         Enumeration e=listeners.elements();
         while (e.hasMoreElements()) {
             MultilevelSubscribeNode l=(MultilevelSubscribeNode)e.nextElement();
             l.removeCacheEntry(this);
         }
-        // now remove ourselfs from the cache
-        han.callbackRemove(hash);
     }
 
     /**
