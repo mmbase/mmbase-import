@@ -29,7 +29,7 @@ import java.util.*;
  * As AttachmentServlet, but the mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.3 2002-09-06 21:33:38 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.4 2002-11-06 22:04:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -81,7 +81,7 @@ public class HandleServlet extends BridgeServlet {
                 fileName = "mmbase-attachment";
             } 
             // try to add an extension. 
-            String format = node.getStringValue("format()");
+            String format = node.getFunctionValue("format", null).toString();
             if (format != null && !format.equals("")) {
                 fileName = fileName + "." + format;
             }
