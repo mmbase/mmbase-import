@@ -34,6 +34,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.build.dir"  location="./build" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
+  <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
 
 
   <property name="source.dir"   location="../.." />
@@ -42,6 +43,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
   <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+  <property name="documentation.home" value="${source.dir}/documentation" />
 
   <property name="share.dir"    location="../share" />
 
@@ -68,9 +70,10 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.jar" value="${project.jar.dir}/${project.jar.name}.jar"/>
   <property name="project.zip" value="${project.zip.dir}/${project.jar.name}.zip"/>
 
+
   <target name="init" depends="">
     <available property="src.available" file="${project.source.dir}/src"/>
-
+    <available property="documentation.available" file="${project.source.dir}/documentation" />
   
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
@@ -141,6 +144,7 @@ Build-compiler: ${build.compiler}
 
   <target name="package" depends="package.check" unless="package.uptodate">   
     <antcall target="jar" />
+    <antcall target="doc" />
     <echo file="${project.build.dir}/README-PACKAGE.txt">
 This is the '${project.name}' package of MMBase. 
 
@@ -158,13 +162,15 @@ web-app/*                All kind of templates. They problably can (need?) to be
 </echo>
 
   <zip zipfile="${project.zip}">
-    <zipfileset dir="${project.jar.dir}" includes="*.jar"     prefix="web-app/WEB-INF/lib" />
+    <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="web-app/WEB-INF/lib" />
     <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF" />
+    <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="documentation" />
+    <zipfileset dir="${project.build.dir}"  includes="documentation/**" />
     <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
     <fileset dir="${project.source.dir}">
       <patternset id="root.package.files" >
-        <include name="doc/**"/>
         <include name="src/**"/>
+        <include name="documentation/**"/>
       </patternset>
     </fileset>
     <!-- the rest are templates -->
@@ -173,7 +179,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <include name="**"/>
         <exclude name="*.xml" />
         <exclude name="config/**" />
-        <exclude name="doc/**" />
+        <exclude name="documentation/**" />
         <exclude name="src/**" />
         <exclude name="build/**" />
       </patternset>
@@ -224,15 +230,22 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="doc" description="Documentation" depends="javadocs">
+  <target name="doc" description="Documentation" depends="javadocs,docbook">
   </target>
 
-  <target name="javadocs" description="Documentation" depends="init">
+  <target name="docbook" depends="init" if="documentation.available">
+    <ant dir="${documentation.home}" target="documentation.html">
+      <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
+      <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
+    </ant>
+  </target>
+
+  <target name="javadocs" description="Documentation" depends="init" if="src.available">
   <mkdir dir="${project.build.dir}/${project.name}-src/docs"/>
   <mkdir dir="${project.build.dir}/${project.name}-src/docs/api"/>
   <javadoc packagenames="${project.javadoc.packages}"
-    sourcepath="${project.source.dir}"
-    destdir="${project.build.dir}/${project.name}-src/docs/api"
+    sourcepath="${project.source.dir}/src"
+    destdir="${project.build.dir}/api"
     author="true"
     version="true"
     use="false"
