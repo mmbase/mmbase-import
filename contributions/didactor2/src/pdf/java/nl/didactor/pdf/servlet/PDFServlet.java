@@ -18,7 +18,8 @@ public class PDFServlet extends HttpServlet {
             throw new ServletException("Please set 'internalUrl' in the web.xml!");
         }
         int number = Integer.parseInt(req.getParameter("number"));
-        URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number);
+        int provider = Integer.parseInt(req.getParameter("provider"));
+        URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&povider="+provider);
         PDFConverter.pageAsPDF(url, resp.getOutputStream());
    }
 }

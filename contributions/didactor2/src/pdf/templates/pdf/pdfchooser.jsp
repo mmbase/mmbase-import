@@ -17,6 +17,7 @@
         Deze gebruiker heeft geen sent mailbox!
     </mm:notpresent>
 
+    <mm:import jspvar="providerNumber" reset="true"><mm:write referid="provider"/></mm:import>
 <%
     String baseUrl = getServletContext().getInitParameter("internalUrl");
 
@@ -24,7 +25,7 @@
         throw new ServletException("Please set 'internalUrl' in the web.xml!");
     }
 
-    URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number);
+    URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&provider="+providerNumber);
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
     PDFConverter.pageAsPDF(url, outStream);
 %>
@@ -58,7 +59,7 @@
 <title>PDF output</title>
 </head>
 <body>
-     <a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="number"/>">Bekijk als PDF</a> | <a href="pdfchooser.jsp?action=mail&number=<mm:write referid="number"/>" target="_top">Mail als PDF</a>
+     <a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="number"/>&provider=<mm:write referid="provider"/>">Bekijk als PDF</a> | <a href="pdfchooser.jsp?action=mail&number=<mm:write referid="number"/>" target="_top">Mail als PDF</a>
 
    
 </body>
