@@ -1,8 +1,3 @@
-/**
- * 
- */
-
-
 package org.mmbase.service.implementations.cdplayers;
 
 
