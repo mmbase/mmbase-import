@@ -32,7 +32,7 @@ import org.mmbase.storage.search.Constraint;
  * at runtime. 
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface SqlHandler {
     /**
