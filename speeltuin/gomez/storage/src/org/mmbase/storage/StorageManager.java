@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import java.util.Map;
+
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.core.*;
 
@@ -20,7 +21,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.12 2003-08-01 11:56:21 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.13 2003-08-04 10:16:04 pierre Exp $
  */
 public interface StorageManager {
 
