@@ -18,6 +18,7 @@
     <mm:log>Writing lang cookie <mm:write referid="lang" /></mm:log>
  </mm:context>
  <mm:write referid="config" session="mmeditors_config" />
+ <% response.sendRedirect(response.encodeRedirectURL("config.jsp"));%>
 </mm:present>
 
 <title><%= m.getString("config.config") %></title>
@@ -38,8 +39,8 @@
      <tr><td><%= m.getString("config.stylesheet") %></td>
          <td><select name="style_sheet">
              <option value="mmbase.css" <mm:compare referid="config.style_sheet" value="mmbase.css">selected="selected"</mm:compare>>default</option>
-             <option value="classic.css" <mm:compare referid="config.style_sheet" value="mmbase2.css">selected="selected"</mm:compare>>classic</option>
-             <option value="red.css" <mm:compare referid="config.style_sheet" value="mmbase2.css">selected="selected"</mm:compare>>red</option>
+             <option value="classic.css" <mm:compare referid="config.style_sheet" value="classic.css">selected="selected"</mm:compare>>classic</option>
+             <option value="red.css" <mm:compare referid="config.style_sheet" value="red.css">selected="selected"</mm:compare>>red</option>
             </select></td>
      </tr>
      <tr><td><%= m.getString("config.method") %></td>
