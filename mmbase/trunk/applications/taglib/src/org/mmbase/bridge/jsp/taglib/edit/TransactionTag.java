@@ -65,7 +65,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (getId() != null) { // look it up from session
             log.debug("looking up transaction in session");
             try {
-                transaction = (Transaction) getContextTag().getObject(getId());
+                transaction = (Transaction) getObject(getId());
                 log.debug("found " + transaction);
             } catch (JspTagException e) { }
         }
