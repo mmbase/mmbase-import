@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.68 2002-08-21 18:26:32 michiel Exp $
+ * @version $Id: Wizard.java,v 1.69 2002-09-03 17:19:59 eduard Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1282,33 +1282,39 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             log.debug("String value " + value + " in " + did + " for field " + fid);
             log.trace("Using data: " + Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
         }
-        Node dttypeNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@dttype");
+	String xpath =  ".//*[@fid='" + fid + "']/@dttype";
+        Node dttypeNode = Utils.selectSingleNode(schema, xpath);
+	
         if (dttypeNode == null) {
-            throw new WizardException("No node with fid=" + fid + " could be found");
+	    String msg = "No node with fid=" + fid + " could be found";
+	    if(log.isDebugEnabled() && schema != null) {
+		msg += "\nxpath was:" + xpath + "on:\n"  + schema.getDocumentElement();
+	    }
+            throw new WizardException(msg);
         }
+	
         String dttype = dttypeNode.getNodeValue();
-        Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
-        boolean ok = false;
+	xpath = ".//*[@did='" + did + "']";
+        Node datanode = Utils.selectSingleNode(data, xpath);
 
         if (datanode == null){
-            log.debug("Node datanode found!");
-            // Nothing.
-
-        } else if (dttype.equals("binary")) {
+	    String msg = "Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName;
+	    if(log.isDebugEnabled() && data != null) {
+		msg += "\nxpath was:" + xpath + "on:\n"  + data.getDocumentElement();
+	    }
+	    log.warn(msg);
+	    return;
+	}
+	// everything seems to be ok
+	if (dttype.equals("binary")) {
             // binaries are stored differently
             if (getBinary(did) != null) {
                 Utils.setAttribute(datanode, "href", did);
                 Utils.storeText(datanode,getBinaryName(did));
             }
-            ok = true;
-
-        } else {  // default behavior: store content as text
+        } 
+	else {  // default behavior: store content as text
             Utils.storeText(datanode, value);
-            ok = true;
-        }
-
-        if (!ok) {
-            log.warn("Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName);
         }
     }
 
