@@ -1,5 +1,0 @@
-<!-- deinstalls a Display Element -->
-
-<PROCESSOR MMADMIN>
-$MOD-MMADMIN-DEINSTALL-$PARAM1-$PARAM2-$PARAM3
-<GOTO ../elementinfo.shtml?$PARAM1+$PARAM2+$PARAM3>

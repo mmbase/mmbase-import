@@ -1,1 +1,0 @@
-This poll package is developed by Andre van Toly. It is in use on a large number of websites including: www.libelle.nl, www.netwerk.tv, etc.

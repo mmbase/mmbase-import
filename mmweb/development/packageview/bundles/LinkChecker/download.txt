@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://mmapps.sourceforge.net/linkchecker/"><img src="images/arrow-right.gif"></a></td>
-</tr>

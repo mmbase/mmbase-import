@@ -1,3 +1,0 @@
-<PROCESSOR MMADMIN>
-$MOD-MMADMIN-CREATEAPPLICATION-4-$PARAM1^
-<GOTO editComponents.jsp?appname=$PARAM1&elname=$SESSION-datasetname^>
