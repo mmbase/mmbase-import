@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *
  * Postgresql driver for MMBase
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.2 2003-07-02 06:20:45 keesj Exp $
+ * @version $Id: PostgreSQL.java,v 1.3 2004-01-08 16:30:02 robmaris Exp $
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL72.class.getName());
@@ -488,8 +488,8 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                 return false;
             }
         } else {
-            log.warn("tried to update a node without any changes,..");
-            return false;
+            // tried to update a node without any changes,..
+            return true;
         }
 
         // done database update, so clear changed flags..
