@@ -19,7 +19,7 @@ public class RelDefConvert {
 	/**
 	* Logger routine
 	*/
-	private static Logger log = Logging.getLoggerInstance(InsRelConvert.class.getName());
+	private static Logger log = Logging.getLoggerInstance(RelDefConvert.class.getName());
 	
 	private static MMBase mmbaseRoot;
 

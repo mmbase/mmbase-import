@@ -22,14 +22,14 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.10 2001-03-09 11:16:33 pierre Exp $
+ * @version $Id: EditState.java,v 1.11 2002-03-28 09:33:50 johannes Exp $
  */
 public class EditState {
 
     /**
     * Logging instance
     */
-	private static Logger log = Logging.getLoggerInstance(EditStateNode.class.getName());
+	private static Logger log = Logging.getLoggerInstance(EditState.class.getName());
 	
 	private String user;
 	

@@ -28,7 +28,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 */
 public class SetInfoTag extends NodeReferrerTag {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(SetInfoTag.class.getName());
 
     protected Node node;
     private String key=null;
