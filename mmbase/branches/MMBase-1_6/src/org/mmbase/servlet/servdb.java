@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.44.2.6 2003-06-16 13:20:17 vpro Exp $
+ * @version $Id: servdb.java,v 1.44.2.7 2003-07-03 09:08:45 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -85,10 +85,10 @@ public class servdb extends JamesServlet {
         }
 
         // associate explicit mapping 
-        associateMapping("images","img.db",new Integer(10));
-        associateMapping("attachments","attachment.db",new Integer(10));
-        associateMapping("audio","rastreams.db",new Integer(10));
-        associateMapping("video","rmstreams.db",new Integer(10));
+        associateMapping("images","/img.db",new Integer(25));
+        associateMapping("attachments","/attachment.db",new Integer(25));
+        associateMapping("audio","/rastreams.db",new Integer(25));
+        associateMapping("video","/rmstreams.db",new Integer(25));
     }
 
     // utility method for converting strings to bytes
