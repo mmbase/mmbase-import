@@ -22,28 +22,33 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeRel.java,v 1.22 2002-01-17 08:23:36 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.23 2002-01-23 11:49:41 vpro Exp $
  */
-public class TypeRel extends MMObjectBuilder {
+public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName());
 
     /**
      * Maximum size of the Allowed Relation Type (ART) Cache
-     * @bad-constant should be configurable, possibly using builder properties?
      */
-    private static final int ART_CACHE_SIZE = 128;
+    private int art_Cache_Size = 128;
+
     /**
      * Default size of the relation definition cache
-     * @bad-constant should be configurable, possibly using builder properties?
      */
-    private static final int RELDEF_CACHE_SIZE = 128;
+    private int reldef_Cache_Size = 128;
+
+    /**
+     * Initial size of the relationTypes hashtable adjust appropiate to your
+     * installation
+     */
+    private int reltype_Cache_Size = 128;
 
     /**
      * Allowed Relation Type (ART) Cache, holds the last 128 verified type-relation nodes
      * @duplicate similar to the {@link #relDefCorrectCache}
      */
-    private LRUHashtable artCache=new LRUHashtable(ART_CACHE_SIZE);
+    private LRUHashtable artCache;
 
     /**
      * Cache table that holds yes/no if a relation direction
@@ -51,12 +56,122 @@ public class TypeRel extends MMObjectBuilder {
      * This is needed to make sure that a relation is correctly inserted.
      * @duplicated cache mechanisms should be implemented in org.mmbase.cache
      */
-    private Hashtable relDefCorrectCache=new Hashtable(RELDEF_CACHE_SIZE);
+    private Hashtable relDefCorrectCache;
+
+    /**
+     * Cache table that holds all relation types
+     * This avoids having to go to the database every time this is
+     * requested through <code>getAllowedRelations</code>
+     * @duplicated This might need to move to org.mmbase.cache but this might be to difficult due
+     * @duplicated to the nature of the structure (Vector in Hashtable in Hashtable)
+     */
+    private Hashtable relationTypes;
+
+    /**
+     * Enable memory based TypeRel querying or not.
+     */
+    private boolean memTableActive=false;
+
+    /**
+     * Tracks if the memorytable has been initialized
+     */
+    private boolean memTableDone=false;
+
+    /**
+     * Count how many times init is called, we must used second call because otherwise InsRel isn't ready
+     * and doesn't know its directionality value
+     */
+    private int memTableCount=0;
 
     /**
      * Constructor for the TypeRel builder
      */
     public TypeRel() {
+    }
+
+    /**
+     * Initialize this builder and load the caches
+     */
+    public boolean init() {
+        log.debug("Init of TypeRel");
+        super.init();
+
+        // Read parameters set in XML file
+        int val;
+        String str;
+        str=getInitParameter("art_cache_size");
+        if (str!=null && str.length()>0) {
+            val=Integer.parseInt(str);
+            art_Cache_Size=val;
+        }
+		artCache=new LRUHashtable(art_Cache_Size);
+
+        str=getInitParameter("reldef_cache_size");
+        if (str!=null && str.length()>0) {
+            val=Integer.parseInt(str);
+            reldef_Cache_Size=val;
+        }
+		relDefCorrectCache=new Hashtable(reldef_Cache_Size);
+
+        str=getInitParameter("reltype_cache_size");
+        if (str!=null && str.length()>0) {
+            val=Integer.parseInt(str);
+            reltype_Cache_Size=val;
+        }
+		relationTypes=new Hashtable(reltype_Cache_Size);
+
+        str=getInitParameter("reltype_cache_active");
+        if (str!=null && str.length()>0) {
+            if (str.toUpperCase().equals("TRUE") || str.toUpperCase().equals("YES")) memTableActive=true;
+            else memTableActive=false;
+        }
+        log.info("Memory Table usage for getAllowedRelations is "+memTableActive);
+
+        if (memTableActive && relationTypes.size()==0 && memTableCount==1) {
+            readRelationTypes();
+        }
+        memTableCount++;
+        return(true);
+    }
+
+    /**
+     * Load the relationTypes table
+     * The structure created here is a Hashtable keyed on source tabletype (otype)
+     * containing a Hashtable keyed on the destination type. This hashtable contains
+     * a Vector containing the typerels.
+     * This way you can retrieve all typerels for a type with 1 hashtable lookup
+     * and specific typerels with 2 lookups. The Vector is needed for duplicate relations
+     * between the same types
+     */
+    private void readRelationTypes() {
+        Enumeration alltypes;
+        MMObjectNode reltype;
+        
+        log.debug("Reading in relation types");
+        // Find all typerel nodes
+        alltypes=search("WHERE 1=1");
+        while(alltypes.hasMoreElements()) {
+            // For every reltype node :
+            reltype=(MMObjectNode)alltypes.nextElement();
+            addRelationType(reltype);
+        }
+        log.debug("Done reading in relation types");
+        if (log.isDebugEnabled()) {
+            Enumeration x;
+            Hashtable h;
+            Integer i;
+            StringBuffer b=new StringBuffer();
+
+            b.append("[\n");
+            for (x=relationTypes.keys();x.hasMoreElements();) {
+                i=(Integer)x.nextElement();
+                h=(Hashtable)relationTypes.get(i);
+                b.append("("+i+"="+h+")\n");
+            }
+            b.append("]");
+            log.trace("TypeRel : Hashtable "+b.toString());
+        }
+        memTableDone=true;
     }
 
     /**
@@ -139,8 +254,39 @@ public class TypeRel extends MMObjectBuilder {
      *  @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
     public Enumeration getAllowedRelations(int number) {
-        Enumeration e = search("WHERE snumber="+number+" OR dnumber="+number);
-        return clearDirectedRelations(e, number);
+        Enumeration e,f;
+        long l1,l2;
+
+        l1=System.currentTimeMillis();
+        if (memTableActive && memTableDone) {
+            f = getAllowedRelationsTable(number);
+        } else {
+            e = search("WHERE snumber="+number+" OR dnumber="+number);
+               f=clearDirectedRelations(e, number);
+            if (log.isDebugEnabled()) f=printEnum(f);
+        }
+        l2=System.currentTimeMillis();
+        log.info("Time : "+(l2-l1));
+        return(f);
+    }
+
+    /**
+     * Memory version of getAllowedRelations
+     */
+    public Enumeration getAllowedRelationsTable(int number) {
+        Vector res,v;
+        Hashtable h;
+
+        res=new Vector();
+        h=(Hashtable)relationTypes.get(new Integer(number));
+        if (h!=null) {
+            for (Enumeration e=h.elements();e.hasMoreElements();) {
+                v=(Vector)e.nextElement();
+                res.addAll(v);
+            }
+        }
+        log.trace("Result for "+number+" is "+res);
+        return(res.elements());
     }
 
     /**
@@ -150,8 +296,54 @@ public class TypeRel extends MMObjectBuilder {
      *  @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
     public Enumeration getAllowedRelations(int snum, int dnum) {
-        Enumeration e = search("WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+")");
-        return clearDirectedRelations(e, snum);
+        Enumeration e,f;
+        long l1,l2;
+
+        l1=System.currentTimeMillis();
+        if (memTableActive && memTableDone) {
+            f = getAllowedRelationsTable(snum,dnum);
+        } else {
+            e = search("WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+")");
+               f=clearDirectedRelations(e, snum);
+            if (log.isDebugEnabled()) f=printEnum(f);
+        }
+        l2=System.currentTimeMillis();
+        log.info("Time : "+(l2-l1));
+        return(f);
+    }
+
+    /**
+     * Memory version of getAllowedRelations
+     */
+    public Enumeration getAllowedRelationsTable(int snum,int dnum) {
+        Vector res,lev2;
+        Hashtable h;
+
+        res=new Vector();
+        h=(Hashtable)relationTypes.get(new Integer(snum));
+        if (h!=null) {
+            lev2=(Vector)h.get(new Integer(dnum));
+            if (lev2!=null) {
+                res.addAll(lev2);
+            }
+        }
+        log.trace("Result for "+snum+":"+dnum+" is "+res);
+        return(res.elements());
+    }
+
+    private Enumeration printEnum(Enumeration e) {
+        Vector v=new Vector();
+        MMObjectNode node;
+        StringBuffer b=new StringBuffer();
+        b.append("[");
+        while (e.hasMoreElements()) {
+            node=(MMObjectNode)e.nextElement();
+            v.addElement(node);
+            b.append("+"+node);
+        }
+        b.append("]");
+        log.trace("Enumeration "+b.toString());
+        return(v.elements());
     }
 
     /**
@@ -268,7 +460,7 @@ public class TypeRel extends MMObjectBuilder {
      */
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();	//Retrieving command.
+            String cmd=tok.nextToken();    //Retrieving command.
             if (cmd.equals("ALLOWEDRELATIONSNAMES")) {
                 try {
                     String tmp=tagger.Value("TYPE");
@@ -333,4 +525,180 @@ public class TypeRel extends MMObjectBuilder {
         }
         return results;
     }
+
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
+        return(nodeChanged(machine,number,builder,ctype));
+    }
+
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
+        return(nodeChanged(machine,number,builder,ctype));
+    }
+
+    /**
+     * Watch for changes on relation types and adjust our memory table accordingly
+	 * @todo Should update artCache en relDefCorrectCache as wel 
+     */
+    public boolean nodeChanged(String machine,String number,String builder,String ctype) {
+        log.debug("Seeing change on "+number+" : "+ctype);
+        if (builder.equals(getTableName())) {
+            if (ctype.equals("d")) {
+                removeRelationType(Integer.parseInt(number));
+            } else if (ctype.equals("r")) {
+                // do nothing
+            } else if (ctype.equals("c")) {
+                updateRelationType(Integer.parseInt(number));
+            } else if (ctype.equals("n")) {
+                addRelationType(Integer.parseInt(number));
+            } else {
+                log.info("Unknown type received "+ctype);
+            }
+        }
+        return(true);
+    }
+
+    /**
+     * Remove a relation type from the internal table 
+     */
+    private void removeRelationType(int number) {
+        Hashtable level2;
+        Vector v1;
+        MMObjectNode node;
+        int idx=0;
+        boolean remove=false;
+
+        for (Enumeration lev1=relationTypes.elements();lev1.hasMoreElements();) {
+            level2=(Hashtable)lev1.nextElement();
+            for (Enumeration lev2=level2.elements();lev2.hasMoreElements();) {
+                v1=(Vector)lev2.nextElement();
+                log.debug("Looking at Vector "+v1);
+                // Node is already can't use getNode so we use the stupid way;
+                remove=false;
+                for (idx=0;idx<v1.size();idx++) {
+                    node=(MMObjectNode)v1.elementAt(idx);
+                    if (node.getNumber()==number) {
+                        remove=true;
+                        break;
+                    }
+                }
+                log.debug("Done looking at Vector "+idx+" - "+remove);
+                if (remove) {
+                    v1.removeElementAt(idx);
+                }
+            }
+        }
+    }
+
+    /**
+     * Update a relation type in our internal table
+     */
+    private void updateRelationType(int number) {
+        Hashtable level2;
+        Vector v1;
+        MMObjectNode node;
+        int idx=0;
+        boolean update=false;
+
+        for (Enumeration lev1=relationTypes.elements();lev1.hasMoreElements();) {
+            level2=(Hashtable)lev1.nextElement();
+            for (Enumeration lev2=level2.elements();lev2.hasMoreElements();) {
+                v1=(Vector)lev2.nextElement();
+                log.debug("Looking at Vector "+v1);
+                update=false;
+                for (idx=0;idx<v1.size();idx++) {
+                    node=(MMObjectNode)v1.elementAt(idx);
+                    if (node.getNumber()==number) {
+                        update=true;
+                        break;
+                    }
+                }
+                log.debug("Done looking at Vector "+idx+" - "+update);
+                if (update) {
+                    node=getNode(number);
+                    v1.setElementAt(node,idx);
+                }
+            }
+        }
+    }
+
+    /**
+     * Add a relation type to our internal table
+     * This is a callthrough to the real function 
+     */
+    private void addRelationType(int number) {
+        MMObjectNode node;
+        node=getNode(number);
+        if (node!=null) addRelationType(node);
+        else log.info("Node "+number+" doesn't exist");
+    }
+
+    /**
+     * Add a relation type to our internal table
+     * This is the one used to fill the internal table.
+     */
+    private void addRelationType(MMObjectNode reltype) {
+        Hashtable level2;
+        Vector reltypes;
+        MMObjectNode reldefnode;
+        Integer snumber,dnumber;
+        boolean doubledirection;
+        int reldefnr;
+
+        snumber=reltype.getIntegerValue("snumber");
+        dnumber=reltype.getIntegerValue("dnumber");
+
+        log.trace("Processing "+reltype);
+
+        // Add to table indexed on source type
+        log.trace("Doing forward "+snumber);
+        addType(snumber,dnumber,reltype);
+
+        // Check if we are running in directional mode.
+        if (InsRel.usesdir) {
+            reldefnr=reltype.getIntValue("rnumber");
+            reldefnode = getNode(reldefnr); // obtain reldefnode
+            // Only add to reverse when the reltype is bidirectional
+                if ((reldefnode!=null) && (reldefnode.getIntValue("dir")!=1)) {
+                doubledirection=true;
+            } else {
+                doubledirection=false;
+            }
+        } else {
+            doubledirection=true;
+        }
+
+        // Only add reversewhen both directions are allowed
+        if (doubledirection) {
+            log.trace("Doing reverse "+dnumber);
+            addType(dnumber,snumber,reltype);
+        }
+    }
+
+    /**
+     * Add a reltype in our Hashtable,Hashtable,Vector structure
+     */
+    private void addType(Integer lev1,Integer lev2,MMObjectNode reltype) {
+        Hashtable level2;
+        Vector reltypes;
+
+        // Find 2nd level table 
+        level2=(Hashtable)relationTypes.get(lev1);
+        if (level2==null) {
+            level2=new Hashtable();
+            reltypes=new Vector();
+            level2.put(lev2,reltypes);
+            relationTypes.put(lev1,level2);
+        } else {
+            // Fetch 2nd level vector
+            reltypes=(Vector)level2.get(lev2);
+            if (reltypes==null) {
+                reltypes=new Vector();
+                level2.put(lev2,reltypes);
+            }
+        }
+        // Only add if it is not in the list
+        if (!reltypes.contains(reltype)) reltypes.addElement(reltype);
+    }
+
 }
