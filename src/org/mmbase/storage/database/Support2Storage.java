@@ -28,9 +28,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.2 2002-11-12 16:57:54 pierre Exp $
+ * @version $Id: Support2Storage.java,v 1.3 2002-12-05 15:28:56 robmaris Exp $
  */
-public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInterface {
+public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseStorage, MMJdbc2NodeInterface {
 
     /**
      * Constructs the Support2Storage database layer support class
