@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.4 2003-02-27 14:17:32 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.5 2003-02-27 16:09:56 michiel Exp $
  */
 public class TypeRelTest extends TestCase {
 
@@ -24,6 +24,9 @@ public class TypeRelTest extends TestCase {
     static protected NodeManager urlsManager; 
     static protected NodeManager objectManager; 
     static protected NodeList    createdNodes;
+
+    static protected Node        news;
+    static protected Node        url;
 
     public TypeRelTest(String testName) {
         super(testName);
@@ -67,11 +70,26 @@ public class TypeRelTest extends TestCase {
 
         // now this relation must exist.
 
-        RelationManagerList rm1 = cloud.getRelationManagers(newsManager, urlsManager, BIDIRROLE);
-        assertTrue(rm1.size() > 0);
+        RelationManagerList rml1 = cloud.getRelationManagers(newsManager, urlsManager, BIDIRROLE);
+        assertTrue(rml1.size() > 0);
 
-        RelationManagerList rm2 = cloud.getRelationManagers(urlsManager, newsManager, BIDIRROLE);
-        assertTrue(rm2.size() > 0);
+        RelationManager rm1 = rml1.getRelationManager(0);
+
+        Relation r1 = rm1.createRelation(news, url);
+        createdNodes.add(r1);
+        // no exception should have occured.
+       
+        RelationManagerList rml2 = cloud.getRelationManagers(urlsManager, newsManager, BIDIRROLE);
+        assertTrue(rml2.size() > 0);
+
+        RelationManager rm2 = rml2.getRelationManager(0);
+        Relation r2 = rm2.createRelation(url,  news);
+        // no exception should have occured.
+        createdNodes.add(r2);
+
+        // using rm1 to create relation other direction should work?
+        Relation r3 = rm1.createRelation(url,  news);
+        createdNodes.add(r3);
 
                     
     }
@@ -92,11 +110,26 @@ public class TypeRelTest extends TestCase {
 
 
         // now this relation must exist.
-        RelationManagerList rm1 = cloud.getRelationManagers(newsManager, urlsManager, UNIDIRROLE);
-        assertTrue(rm1.size() > 0);
+        RelationManagerList rml1 = cloud.getRelationManagers(newsManager, urlsManager, UNIDIRROLE);
+        assertTrue(rml1.size() > 0);
+
+        RelationManager rm1 = rml1.getRelationManager(0);
+
+        Relation r1 = rm1.createRelation(news, url);
+        createdNodes.add(r1);
+
+        try {
+            Relation r2 = rm1.createRelation(url, news);
+            fail("Should not have allowed unidirection relation the other way");
+        } catch (BridgeException e) {
+        }
+
+
 
         RelationManagerList rm2 = cloud.getRelationManagers(urlsManager, newsManager, UNIDIRROLE);
         assertTrue("Found the relations also the other way around, but it is unidirectional", rm2.size() == 0);
+
+        RelationManager rm = rml1.getRelationManager(0);
     }
 
     public void testInheritanceRelations() {
@@ -116,6 +149,8 @@ public class TypeRelTest extends TestCase {
         RelationManagerList rm2 = cloud.getRelationManagers(newsManager, urlsManager, INHROLE);
         assertTrue(rm2.size() > 0);       
     }
+
+
 
     public void testClearUpMess() {
         System.out.println("Clearing up the mess");
@@ -140,7 +175,7 @@ public class TypeRelTest extends TestCase {
             
             // needed builders for this test.
             try {
-                relDefManager  =  cloud.getNodeManager("reldef");
+                relDefManager  = cloud.getNodeManager("reldef");
                 typeRelManager = cloud.getNodeManager("typerel");
                 insRelManager  = cloud.getNodeManager("insrel");
                 newsManager    = cloud.getNodeManager("news");
@@ -148,10 +183,21 @@ public class TypeRelTest extends TestCase {
                 objectManager  = cloud.getNodeManager("object");
             } catch (NotFoundException e) {
                 throw new Exception("Test cases cannot be performed because " + e.getMessage() + " Please arrange this in your cloud before running this TestCase.");
-            }
+             }
 
             createdNodes = cloudContext.createNodeList();
-            assertNotNull(createdNodes);
+            assertNotNull("Could not create remotely a nodelist" , createdNodes);
+
+            news = newsManager.createNode();
+            news.setValue("title", "test node");
+            news.commit();
+            createdNodes.add(news);
+            
+            url = urlsManager.createNode();
+            url.setValue("url", "http://url");
+            url.commit();
+            createdNodes.add(url);
+
         }
     }
     
