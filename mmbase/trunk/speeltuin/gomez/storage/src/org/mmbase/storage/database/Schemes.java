@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.4 2003-08-01 08:08:40 pierre Exp $
+ * @version $Id: Schemes.java,v 1.5 2003-08-01 11:56:22 pierre Exp $
  */
 public final class Schemes {
 
@@ -163,6 +163,31 @@ public final class Schemes {
     public static final String DELETE_NODE_DEFAULT = "DELETE FROM {1} WHERE {2} = {3,number}";
 
     /**
+     *  Name of the scheme for dropping a row type
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder to drop teh rowtype of (MMObjectBuilder), or the builder table name (String)</li>
+     *  </ul>
+     */
+    public static final String DROP_ROW_TYPE = "drop.rowtype.scheme";
+
+    /**
+     *  Name of the scheme for dropping a table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder to drop (MMObjectBuilder), or the builder table name (String)</li>
+     *  </ul>
+     */
+    public static final String DROP_TABLE = "drop.table.scheme";
+
+    /**
+     *  The default scheme for reading a text field
+     */
+    public static final String DROP_TABLE_DEFAULT = "DROP TABLE {1}";
+
+    /**
      *  Name of the scheme for reading a binary field from a node
      *  The parameters accepted are:
      *  <lu>
@@ -179,6 +204,21 @@ public final class Schemes {
      *  The default scheme for reading a binary field
      */
     public static final String GET_BINARY_DATA_DEFAULT = "SELECT {2} FROM {1} WHERE {3} = {4,number}";
+
+    /**
+     *  Name of the scheme for obtaining the size of a (builder) table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the builder to count the node of (MMObjectBuilder), or the builder table name (String)</li>
+     *  </ul>
+     */
+    public static final String GET_TABLE_SIZE = "get.table.size.scheme";
+
+    /**
+     *  The default scheme for reading a text field
+     */
+    public static final String GET_TABLE_SIZE_DEFAULT = "SELECT count(*) FROM {1}";
 
     /**
      *  Name of the scheme for reading a text field from a node
