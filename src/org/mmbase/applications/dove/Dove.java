@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.24 2002-10-24 12:56:05 pierre Exp $
+ * @version $Id: Dove.java,v 1.25 2002-10-25 12:57:24 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -155,6 +155,9 @@ public class Dove extends AbstractDove {
                     }
                     Element fel=addContentElement(FIELD,val,out);
                     fel.setAttribute(ELM_NAME,fname);
+                } else {
+                    Element err=addContentElement(ERROR,"field with name "+fname+" does not exist",out);
+                    err.setAttribute(ELM_TYPE,IS_PARSER);
                 }
                 field=getNextElement(field,FIELD);
             }

@@ -17,7 +17,7 @@ import java.util.Date;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommand.java,v 1.5 2002-04-19 20:20:28 michiel Exp $
+ * @version $Id: ConnectorCommand.java,v 1.6 2002-10-25 12:57:24 pierre Exp $
  */
 
 public class ConnectorCommand {
@@ -90,7 +90,15 @@ public class ConnectorCommand {
      * @javadoc
      */
     public boolean hasError() {
-        return false;
+        return (responsexml==null) ||
+                (Utils.selectSingleNode(responsexml, "/*/error")!=null);
+    }
+
+    /**
+     * @javadoc
+     */
+    public String getError() {
+        return Utils.selectSingleNodeText(responsexml, "/*/error",null);
     }
 
 }
