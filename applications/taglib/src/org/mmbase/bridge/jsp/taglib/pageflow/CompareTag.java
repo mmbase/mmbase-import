@@ -25,7 +25,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.33 2004-03-23 14:58:48 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.34 2004-03-29 16:21:46 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -113,6 +113,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         Iterator i = compareToSet.iterator();
 
 
+        boolean result = false;
 
         if (compare1 instanceof Number) {
             compare1 = new BigDecimal(compare1.toString()); 
@@ -128,8 +129,10 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                     compare2 = new BigDecimal(compare2.toString());
                 }
 
-                if (doCompare((Comparable)compare1, (Comparable)compare2) != getInverse() ) {
-                    return EVAL_BODY;
+                if (doCompare((Comparable)compare1, (Comparable)compare2)) {
+                    result = true; 
+                    break;
+
                 }
                 
             }
@@ -148,14 +151,18 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                         return EVAL_BODY; 
                     }
                 } else { // both compare1 and compare2 are not Number, simply compare then
-                    if (doCompare((Comparable)compare1, (Comparable)compare2) != getInverse() ) {
-                        return EVAL_BODY; 
+                    if (doCompare((Comparable)compare1, (Comparable)compare2)) {
+                        result = true;
+                        break;
                     }
                 }
             }
         }
-        // found not match, so skip body.
-        return SKIP_BODY;
+        if (result != getInverse() ) {
+            return EVAL_BODY; 
+        } else {
+            return SKIP_BODY;
+        }
 
        
     }
