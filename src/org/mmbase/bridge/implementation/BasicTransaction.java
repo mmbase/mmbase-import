@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.15 2003-12-17 09:16:44 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.16 2004-06-23 12:30:32 pierre Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static final Logger log = Logging.getLoggerInstance(BasicTransaction.class);
@@ -159,17 +159,19 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    /*
-     * Transaction-notification: ceheck whether a node exists in a transaction.
-     * @param node the node to check
-     */
     boolean contains(MMObjectNode node) {
         // additional check, so transaction can still get nodes after it has committed.
         if (transactionContext==null) {
             return false;
         }
-        Vector v = BasicCloudContext.transactionManager.getNodes(account,transactionContext);
-        return (v!=null) && (v.indexOf(node)!=-1);
+        try {
+            Collection transaction = BasicCloudContext.transactionManager.get(account,transactionContext);
+            return transaction.contains(node);
+        } catch (TransactionManagerException tme) {
+            String message = tme.getMessage();
+            log.error(message);
+            throw new BridgeException(message,tme);
+        }
     }
 
     /**
