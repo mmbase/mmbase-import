@@ -34,14 +34,13 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.4 2003-11-27 17:58:42 robmaris Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.5 2003-12-11 12:23:36 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
     /** Logger instance. */
-    private static Logger log
-    = Logging.getLoggerInstance(PostgreSqlSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
     /**
      * Constructor.
@@ -64,12 +63,18 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             case SearchQueryHandler.FEATURE_OFFSET:
                 result = SearchQueryHandler.SUPPORT_OPTIMAL;
                 break;
-
+                /*
+            case SearchQueryHandler.FEATURE_REGEXP:
+                result = SearchQueryHandler.SUPPORT_OPTIMAL;
+                break;
+                */
             default:
                 result = super.getSupportLevel(feature, query);
         }
         return result;
     }
+
+
 
     // javadoc is inherited
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
@@ -95,19 +100,18 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
         firstInChain.appendQueryBodyToSql(sbQuery, query, firstInChain);
 
+
+        int offset = query.getOffset();
         // LIMIT
         if (query.getMaxNumber() != -1) {
             // Maxnumber set.
             sbQuery.append(" LIMIT ").append(query.getMaxNumber());
-            if (query.getOffset() != 0) {
-                sbQuery.append(" OFFSET ").append(query.getOffset());
-            }
         } else {
-            // Offset > 0, maxnumber not set.
-            if (query.getOffset() != 0) {
-                sbQuery.append(" LIMIT ").append(Integer.MAX_VALUE).
-                    append(" OFFSET ").append(query.getOffset());
-            }
+            // could append LIMIT ALL, but why bother
+        }
+
+        if (offset != 0) {
+            sbQuery.append(" OFFSET ").append(offset);
         }
 
         String strSQL = sbQuery.toString();
