@@ -17,7 +17,6 @@ import org.mmbase.module.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.tools.MMAppTool.MMAppTool;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.StorageManagerFactory;
@@ -38,7 +37,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.88 2004-10-25 08:08:39 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.89 2004-10-27 15:31:34 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -245,9 +244,6 @@ public class MMAdmin extends ProcessorModule {
                 String goal = (String)vars.get("GOAL");
                 log.info("APP=" + appname + " P=" + savepath + " G=" + goal);
                 writeApplication(appname, savepath, goal);
-            } else if (token.equals("APPTOOL")) {
-                String appname = (String)cmds.get(cmdline);
-                startAppTool(appname);
             } else if (token.equals("BUILDER")) {
                 doBuilderPosts(tok.nextToken(), cmds, vars);
             } else if (token.equals("MODULE")) {
@@ -576,23 +572,6 @@ public class MMAdmin extends ProcessorModule {
         log.info("Server Reset requested by '" + user + "' Restart in 3 seconds");
         restartwanted = true;
         probe = new MMAdminProbe(this, 3 * 1000);
-    }
-
-    /**
-     * @javadoc
-     */
-    private boolean startAppTool(String appname) {
-        if (kioskmode) {
-            log.warn("refused starting app tool, am in kiosk mode");
-            return false;
-        }
-
-        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
-        log.info("Starting apptool with : " + path + File.separator + appname + ".xml");
-        MMAppTool app = new MMAppTool(path + File.separator + appname + ".xml");
-        lastmsg = "Started a instance of the MMAppTool with path : \n\n";
-        lastmsg += path + File.separator + appname + ".xml\n\n";
-        return true;
     }
 
     /**
