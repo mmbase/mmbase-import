@@ -120,14 +120,26 @@ Applications build file
   </target>
 
   <target name="install">
-    <ant dir="taglib"        target="dependent.install" inheritAll="false" />
-    <ant dir="editwizard"    target="dependent.install" inheritAll="false" />
-    <ant dir="community"     target="dependent.install" inheritAll="false" />
-    <ant dir="dove"          target="install" inheritAll="false" />
-    <ant dir="xmlimporter"   target="install" inheritAll="false" />
+    <ant dir="taglib"        target="dependent.install" inheritAll="false">
+      <property name="destination.dir"        value="${destination.dir}" />
+    </ant>
+    <ant dir="editwizard"    target="dependent.install" inheritAll="false">
+      <property name="destination.dir"        value="${destination.dir}" />
+    </ant>
+    <ant dir="community"     target="dependent.install" inheritAll="false">
+      <property name="destination.dir"        value="${destination.dir}" />
+    </ant>      
+    <ant dir="dove"          target="install" inheritAll="false">
+      <property name="destination.dir"        value="${destination.dir}" />
+    </ant>
+    <ant dir="xmlimporter"   target="install" inheritAll="false">
+      <property name="destination.dir"        value="${destination.dir}" />
+    </ant>
     <!-- ant dir="cloudcontext"  target="install" /-->
     <!-- ant dir="email"         target="install" /-->
-	 <ant dir="rmmci"         target="install" />
+    <ant dir="rmmci"         target="install" inheritAll="false">
+      <property name="destination.dir"        value="${destination.dir}" />
+    </ant>
   </target>
 
   <target name="clean">
