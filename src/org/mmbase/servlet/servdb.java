@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.servlet;
 
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * it provides the communication between the clients browser and the mmbase space.
  *
  * @rename Servdb
-  * @version 23 Oct 1997
+  * @version 23 Oct 1997, current: $Id: servdb.java,v 1.36 2001-12-19 17:28:49 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -104,19 +104,16 @@ public class servdb extends JamesServlet {
 		int filesize;
 
         incRefCount(req);
-		
+
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
 
-            boolean isInternal = sp.isInternalVPROAddress();
+
 
             boolean cacheReq=true;
 
             if (log.isDebugEnabled()) {
                 String msg = "["+sp.getAddress();
-
-                if( isInternal )
-                    msg = msg + "(*)";
 
                 msg = msg + "]"+req.getRequestURI()+"?"+req.getQueryString();
                 log.debug("service("+msg+")");
@@ -299,14 +296,14 @@ public class servdb extends JamesServlet {
                                         log.debug("service(rastream): episode found");
 
                                         if( playlists != null )
-                                            cline.buffer = playlists.getRAMfile( isInternal, vec );
+                                            cline.buffer = playlists.getRAMfile(vec);
                                         else
                                             log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
 
                                     } else {
                                         log.debug("service(rastream): rastream found");
                                         long time = System.currentTimeMillis();
-                                        cline.buffer = getRAStream(vec,sp,res,isInternal);
+                                        cline.buffer = getRAStream(vec,sp,res);
                                         log.info("service(): getRAStreams(): took "+(System.currentTimeMillis()-time)+" ms.");
                                     }
 
@@ -344,12 +341,12 @@ public class servdb extends JamesServlet {
                                         if ( getParamValue("ea", vec)  != null ) {
                                             log.debug("service(rastream): episode found");
                                             if( playlists != null )
-                                                cline.buffer = playlists.getRAMfile(isInternal, vec );
+                                                cline.buffer = playlists.getRAMfile(vec);
                                             else
                                                 log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
                                         } else {
                                             log.debug("service(rastream): rastream found");
-                                            cline.buffer=getRMStream(vec,sp,res,isInternal);
+                                            cline.buffer=getRMStream(vec,sp,res);
                                         }
 
                                         if (cline.buffer!=null) {
@@ -400,7 +397,7 @@ public class servdb extends JamesServlet {
                                             vec=filterSessionMods(sp,vec,res);
                                             vec=checkSessionJingle(sp,vec,res);
                                             // call the playlist module for the playlist wanted
-                                            cline.buffer=playlists.getRAMfile(isInternal, vec);
+                                            cline.buffer=playlists.getRAMfile(vec);
                                             cline.mimetype="audio/x-pn-realaudio";
                                             mimetype=cline.mimetype;
                                             cacheReq=false;
@@ -449,7 +446,7 @@ public class servdb extends JamesServlet {
 	                                            res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
 					    }
                                         }
-									else 
+									else
 										// flash
 										if (req.getRequestURI().indexOf("flash")!=-1) {
                                             cline.buffer=getFlash(getParamVector(req));
@@ -852,8 +849,8 @@ public class servdb extends JamesServlet {
             return null;
         }
     }
-	
-	
+
+
 	/**
      * Return Flash movie
      * @return Byte array with Flash movie
@@ -873,7 +870,7 @@ public class servdb extends JamesServlet {
 			byte[] data = node.getByteValue("handle");
 			return data;
         }
-		
+
 		debug("Failed to get node number "+(String)params.elementAt(0));
 		return null;
     }
@@ -982,9 +979,9 @@ public class servdb extends JamesServlet {
     /**
     *
     */
-    public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp, boolean isInternal ) {
+    public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp) {
 
-		debug("getRAStream("+params+","+sp+","+resp+","+isInternal+")");
+		debug("getRAStream("+params+","+sp+","+resp+")");
 
         byte[]	result		= null;
 
@@ -1047,7 +1044,7 @@ public class servdb extends JamesServlet {
                     // url = getAudiopartUrl( mmbase, number, sp, speed, channels );
                     log.debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found audiopart");
                     url = audioPartsBuilder.getAudiopartUrl( mmbase, sp, number, speed, channels);
-                } else {	
+                } else {
 					log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not audiopart!");
 				}
             } else {
@@ -1068,7 +1065,7 @@ public class servdb extends JamesServlet {
     /**
     *
     */
-    public byte[] getRMStream(Vector params,scanpage sp,HttpServletResponse resp, boolean isInternal ) {
+    public byte[] getRMStream(Vector params,scanpage sp,HttpServletResponse resp) {
         byte[]	result		= null;
 
         String	sNumber		= null;
@@ -1132,7 +1129,7 @@ public class servdb extends JamesServlet {
             //  -------------------------------------------------------------------------------------------------------------
             log.debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
             //  -------------------------------------------------------------------------------------------------------------
-			
+
 			End of original code
 			*/
 
