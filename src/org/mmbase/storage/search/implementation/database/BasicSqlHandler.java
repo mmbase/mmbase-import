@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.31 2004-03-19 07:03:32 eduard Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.32 2004-04-01 20:57:48 robmaris Exp $
  * @since MMBase-1.7
  */
 
@@ -180,7 +180,10 @@ public class BasicSqlHandler implements SqlHandler {
         StringBuffer sbQuery = new StringBuffer("SELECT ");
 
         // DISTINCT
-        if (query.isDistinct()) {
+        // Note that DISTINCT can be omitted for an aggregating query.
+        // It is ommitted to make the resulting SQL more portable,
+        // some databases will otherwise report a syntax error (e.g. Informix).
+        if (query.isDistinct() && !query.isAggregating()) {
             sbQuery.append("DISTINCT ");
         }
 
