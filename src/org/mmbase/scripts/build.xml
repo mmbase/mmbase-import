@@ -247,6 +247,7 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
+    <property name="log4j.dtd" value="jar:file:${build.dir}/mmbase/lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd" />
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
   </target>
 
@@ -393,7 +394,7 @@ Change directory to ${build.dir}/orion and run:
   </target>
 
 
-  <!-- =================================================================== -->
+<!-- =================================================================== -->
   <!-- Check the needed packages                                           -->
   <!-- =================================================================== -->
   <target name="check.needed.xerces" depends="init.compile.cust"
@@ -583,6 +584,7 @@ Change directory to ${build.dir}/orion and run:
           depends="init.compile">
     <mkdir dir="${web.dir}"/>
 
+    <echo message="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -590,7 +592,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-Q"/>
       <arg value="-XML"/>
       <arg value="-IN"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
@@ -603,7 +605,7 @@ Change directory to ${build.dir}/orion and run:
           fork="yes">
       <arg value="-Q"/>
       <arg value="-IN"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.html"/>
       <arg value="-XSL"/>
@@ -630,8 +632,8 @@ Change directory to ${build.dir}/orion and run:
       </fileset>
     </copy>
     <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
-             token="DOCTYPE configuration"
-             value="DOCTYPE log4j"/>
+             token="DOCTYPE log4j:configuration"
+             value="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"/>
     <!-- Prevent multiple replaces by multiple builds by allways copying the
          file. -->
     <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
@@ -752,9 +754,10 @@ Change directory to ${build.dir}/orion and run:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
+    <echo message="log4j.dtd:  ${log4j.dtd}" />
     <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
-             token="DOCTYPE configuration SYSTEM &quot;log4j.dtd&quot;"
-             value="DOCTYPE log4j SYSTEM &quot;jar:file:lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd&quot;"/>
+             token="DOCTYPE log4j:configuration"
+             value="DOCTYPE log4j:configuration SYSTEM &quot;${log4j.dtd}&quot;"/>
     <copy file="${mmbase.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/orion/lib"/>
@@ -964,10 +967,10 @@ Change directory to ${build.dir}/orion and run:
     <available property="hsql.expanded"
                file="${expand.dir}/${hsql.version}"/>
     <!-- Xalan and Xerces -->
-    <property name="xalan.version" value="xalan-j_1_2_2"/>
-    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/old/${xalan.version}.tar.gz"/>
-    <property name="xalan.jar" value="${expand.dir}/${xalan.version}/xalan.jar"/>
-    <property name="xerces.jar" value="${expand.dir}/${xalan.version}/xerces.jar"/>
+    <property name="xalan.version" value="xalan-j_2_0_1"/>
+    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}.tar.gz"/>
+    <property name="xalan.jar" value="${expand.dir}/${xalan.version}/bin/xalan.jar"/>
+    <property name="xerces.jar" value="${expand.dir}/${xalan.version}/bin/xerces.jar"/>
     <available property="xalan.present"
                file="${download.dir}/${xalan.version}.tar.gz"/>
     <available property="xalan.expanded"
