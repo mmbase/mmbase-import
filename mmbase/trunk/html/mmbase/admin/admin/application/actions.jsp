@@ -74,13 +74,13 @@
   <th class="header" colspan="2">Status</th>
   <th class="header">View</th>
 </tr>
-<tr>
 <%
     Module mmconfig=LocalContext.getCloudContext().getModule("config");
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-applications-"+app);
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
+<tr>
  <td class="data">XML-check</td>
  <td class="data" colspan="2"><%=check%></td>
  <td class="linkdata" >
