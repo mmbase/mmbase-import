@@ -4,69 +4,27 @@
     <form-schema>
         <title>Videofragmenten</title>
      <list role="related" extends="list/videotapes.xml" />
- 
-        <!-- we need a new list because there can be only one search command per list -->
-        <list minoccurs="0" maxoccurs="*" role="related">
-            <title>Zoeken op tekenreeks</title>
-            <item displaytype="none"></item>
- 
-            <action type="create">
-                <relation role="related" destinationtype="videotapes"/>
-            </action>
-
-
-             <command name="search" nodepath="metalangstring,metadata,videotapes" fields="videotapes.title,metalangstring.value" age="7" orderby="videotapes.number" directions="down" >
-                <prompt>Zoeken op metadata</prompt>
-                <search-filter>
-                    <name>Metadata tekenreeks bevat</name>
-                    <search-fields>metalangstring.value</search-fields>
-                </search-filter>
-           </command>           
-        </list>
-
-        <!-- we need a new list because there can be only one search command per list -->
-        <list minoccurs="0" maxoccurs="*" role="related">
-            <title>Zoeken op vocabulair</title>
-            <item displaytype="none"></item>
- 
-            <action type="create">
-                <relation role="related" destinationtype="videotapes"/>
-            </action>
-
-
-             <command name="search" nodepath="metavocabulary,metadata,videotapes" fields="videotapes.title,metavocabulary.value" age="7" orderby="videotapes.number" directions="down" >
-                <prompt>Zoeken op metadata</prompt>
-                <search-filter>
-                    <name>Metadata vocabulair bevat</name>
-                    <search-fields>metavocabulary.value</search-fields>
-                </search-filter>
-           </command>
-           
-        </list>
 
         <!-- we need a new list because there can be only one search command per list -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" role="related">
-            <title>Zoeken op datum (YYYY-MM-DD HH:MM:SS)</title>
+            <title>Zoeken op metadata</title>
             <item displaytype="none"></item>
- 
+
             <action type="create">
-                <relation role="posrel" destinationtype="videotapes"/>
+                <relation role="related" destinationtype="videotapes">
+                </relation>
             </action>
+             <command name="search" nodepath="metadata,videotapes" fields="videotapes.title,metadata.value" age="-1" orderby="videotapes.number" directions="down" >
 
-
-             <command name="search" nodepath="metadate,metadata,videotapes" fields="videotapes.name,metadate.value" age="7" orderby="videotapes.number" directions="down" >
                 <prompt>Zoeken naar leerobjecten op metadata</prompt>
                 <search-filter>
-                    <name>Metadata datum bevat</name>
-                    <search-fields>FROM_UNIXTIME(metadate.value)</search-fields>
+                    <name>Metadata</name>
+                    <search-fields>metadata.value</search-fields>
                 </search-filter>
            </command>
-           
         </list>
- 
-
 
     </form-schema>
-   
+
 
 
