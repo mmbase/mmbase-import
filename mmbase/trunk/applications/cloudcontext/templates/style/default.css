@@ -94,6 +94,14 @@ tr.even td {
   background-color: #eee;
 }
 
+tr.highlight td { 
+  background-color: yellow;
+}
+
+tr.active td { 
+  background-color: #ffb;
+}
+
 table.rights  { 
 }
 table.rights  td { 

@@ -79,7 +79,7 @@
       </tr>
       <mm:sortorder field="$orderby" direction="$directions" />
       <mm:listnodes id="user">
-      <tr <mm:even>class="even"</mm:even> >
+      <tr id="object<mm:field name="number"/>" <mm:even>class="even"</mm:even> >
         <td>
           <mm:present referid="extrauserlink">
             <mm:include referids="user" page="$extrauserlink" />
@@ -93,13 +93,14 @@
         </td>
         <td class="commands">
           <mm:maywrite>
-            <a href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
+            <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
+            href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           </mm:maywrite>
           <mm:function name="rank" >
             <mm:compare value="<%="" + org.mmbase.security.Rank.ADMIN.getInt()%>" inverse="true">
               <mm:maydelete>
-                <a onclick="return confirm('<%=getPrompt(m,"reallydeleteusers")%>');"
-                href="<mm:url referids="user@deleteuser,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
+                <mm:import id="prompt">reallydeleteusers</mm:import>
+                <a onclick="<%@include file="confirm.js" %>" href="<mm:url referids="user@deleteuser,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
               </mm:maydelete>
             </mm:compare>
           </mm:function>

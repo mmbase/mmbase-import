@@ -36,19 +36,21 @@
         <th />
       </tr>
       <mm:listnodes id="currentcontext">
-        <tr <mm:even>class="even"</mm:even> >
+        <tr id="object<mm:field name="number" />" <mm:even>class="even"</mm:even> >
           <mm:fieldlist fields="$fields">
             <td><mm:fieldinfo type="guivalue" /></td>
           </mm:fieldlist>
           <td class="commands">
-            <a href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
+            <a onclick="document.getElementById('object<mm:field name="number" />').className = 'active'; " 
+               href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
             <mm:maydelete>
               <mm:field id="curcontext"  name="name" write="false" />
               <mm:listnodescontainer type="object">
                 <mm:constraint field="owner" value="$curcontext" />
                 <mm:size>
                   <mm:compare value="0">
-                    <a onclick="return confirm('<%=getPrompt(m,"reallydeletecontexts")%>');"
+                    <mm:import id="prompt">reallydeletecontexts</mm:import>
+                    <a onclick="<%@include file="confirm.js" %>"
                        href="<mm:url referids="currentcontext@context,parameters,$parameters"><mm:param name="url">delete_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
                   </mm:compare>
                 </mm:size>
