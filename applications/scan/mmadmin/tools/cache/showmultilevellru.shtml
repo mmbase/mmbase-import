@@ -9,7 +9,7 @@
 
 <TR>
 	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<TD BGCOLOR="42BDAD" COLSPAN="3">
 	<FONT COLOR="#000000"><B>MMBase cache monitor - v1.0</B></FONT>
 	</TD>
 </TR>
@@ -22,7 +22,11 @@
 	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 	<TD BGCOLOR="42BDAD" COLSPAN="1">
 	<FONT COLOR="000000">
-	<B>key</B>
+	<B>POS</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="1">
+	<FONT COLOR="000000">
+	<B>KEY</B>
 	</TD>
 	<TD BGCOLOR="42BDAD" COLSPAN="1">
 	<FONT COLOR="000000">
@@ -34,6 +38,9 @@
 <LIST MULTILEVELCACHEENTRIES PROCESSOR="MMADMIN" ITEMS="7" MAX="100">
 <TR>
 	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="00445B" COLSPAN="1">
+	<FONT COLOR="#FFFFFF">&nbsp;$ITEMP</FONT>
+	</TD>
 	<TD BGCOLOR="00445B" COLSPAN="1">
 	<FONT COLOR="#FFFFFF">&nbsp;$ITEM1</FONT>
 	</TD>
@@ -51,7 +58,7 @@
 
 <TR>
 	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<TD BGCOLOR="42BDAD" COLSPAN="4">
 	<A HREF="index.shtml"><IMG SRC="../../beeld/pijl2.gif" BORDER="0"></A><B><FONT COLOR="#000000">back to cache index</FONT></B>
 	</TD>
 </TR>
