@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.18 2003-08-04 10:57:35 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.19 2003-08-04 13:28:17 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -259,7 +259,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * i.e by using clobs or streams.
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
-     * @param field the (MMBase) fieldtype
+     * @param field the (MMBase) fieldtype. This value can be null
      * @return the retrieved text
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
@@ -315,7 +315,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * i.e by using clobs or streams.
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
-     * @param field the (MMBase) fieldtype
+     * @param field the (MMBase) fieldtype. This value can be null
      * @return the retrieved text
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
@@ -674,13 +674,13 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
      * @param value the data (byte array) to store
-     * @param field the MMBase field, containing meta-information
+     * @param field the MMBase field, containing meta-information. This value can be null
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setBinaryValue(PreparedStatement statement, int index, byte[] value, FieldDefs field) throws StorageException, SQLException {
         if (value == null) {
-            if (field.getDBNotNull()) {
+            if (field == null || field.getDBNotNull()) {
                 value = new byte[]{};
             } else {
                 statement.setNull(index, java.sql.Types.VARBINARY);

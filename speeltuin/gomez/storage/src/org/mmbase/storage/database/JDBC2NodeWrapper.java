@@ -12,26 +12,36 @@ package org.mmbase.storage.database;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.storage.*;
-import org.mmbase.storage.search.SearchQueryHandler;
+import org.mmbase.storage.search.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.util.XMLDatabaseReader;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.3 2003-08-04 11:38:23 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.4 2003-08-04 13:28:17 pierre Exp $
  */
-public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
+public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(JDBC2NodeWrapper.class);
     
     private StorageManagerFactory factory;
     
     private Map allowedFields;
     
     private Map disallowedFields;
+    
+    private MMBase mmbase;
     
     public JDBC2NodeWrapper() {
     }
@@ -45,52 +55,87 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         // ignore this call
     }
 
-    /**
-     * @javadoc please
-     */
-    abstract public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
-    
-    
-    /**
-     * @javadoc please
-     */
-    abstract public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
+    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldname, ResultSet rs, int i) {
+        return decodeDBnodeField(node, fieldname, rs, i, "");
+    }
 
-    /**
-     * Converts an MMNODE expression to an SQL expression. Returns the
-     * result as an SQL where-clause, but with the leading "WHERE " left out.
-     *
-     * @param where The MMNODE expression.
-     * @param bul The builder for the type of nodes that is queried.
-     * @return The SQL expression.
-     * @see org.mmbase.module.core.MMObjectBuilder#convertMMNode2SQL(String)
-     */
-    abstract public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
+    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldname, ResultSet rs, int i, String prefix) {
+        try {
+            String mmfieldname = prefix+getDisallowedField(fieldname);
+            FieldDefs field = node.getBuilder().getField(mmfieldname);
+            DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
+            // getValue is protected, so can call it from the same package..
+            Object value = sm.getValue(rs, i, field);
+            node.setValue(mmfieldname, value);
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+        }
+        return node;
+    }
+
+    public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
+        throw new UnsupportedOperationException("Storage classes do not support MMNODE syntax. Use SearchQuery.");
+    }
     
     /**
      * @javadoc
      */
-    abstract public String getShortedText(String tableName,String fieldname,int number);
+    public String getShortedText(String tableName,String fieldname,int number) {
+        try {
+            MMObjectBuilder bul = mmbase.getMMObject(tableName);
+            return factory.getStorageManager().getStringValue(bul.getNode(number),bul.getField(fieldname));
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            return null;
+        }
+    }
     
     /**
      * @javadoc
      */
-    abstract public byte[] getShortedByte(String tableName,String fieldname,int number);
+    public byte[] getShortedByte(String tableName,String fieldname,int number) {
+        try {
+            MMObjectBuilder bul = mmbase.getMMObject(tableName);
+            return factory.getStorageManager().getBinaryValue(bul.getNode(number),bul.getField(fieldname));
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            return null;
+        }
+    }
     
-    /**
-     * @javadoc
-     */
-    abstract public byte[] getDBByte(ResultSet rs,int idx);
+    public byte[] getDBByte(ResultSet rs,int idx) {
+        try {
+            DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
+            // getValue is protected, so can call it from the same package..
+            return sm.getBinaryValue(rs, idx, null);
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            return null;
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            return null;
+        }
+    }
     
-    /**
-     * @javadoc
-     */
-    abstract public String getDBText(ResultSet rs,int idx);
+    public String getDBText(ResultSet rs,int idx) {
+        try {
+            DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
+            // getValue is protected, so can call it from the same package..
+            return sm.getStringValue(rs, idx, null);
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            return null;
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            return null;
+        }
+    }
     
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
         try {
             return factory.getStorageManager().create(node);
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return -1;
         }
     }
@@ -100,6 +145,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().change(node);
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
@@ -108,6 +154,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             factory.getStorageManager().delete(node);
         } catch (StorageException se) {
+            log.error(se.getMessage());
         }
     }
     
@@ -121,14 +168,17 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             return factory.getStorageManager().createKey();
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return -1;
         }
     }
     
     public void init(MMBase mmb,XMLDatabaseReader parser) {
+        mmbase = mmb;
         try {
-            this.factory = StorageManagerFactory.newInstance(mmb);
+            this.factory = StorageManagerFactory.newInstance(mmbase);
         } catch (StorageException se) {
+            log.error(se.getMessage());
             throw new StorageError();
         }
         disallowedFields = factory.getDisallowedFields();
@@ -143,22 +193,35 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         }
     }
     
-    /**
-     * @javadoc
-     */
-    abstract public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
+    public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
+        try {
+            DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
+            // getValue is protected, so can call it from the same package..
+            sm.setBinaryValue(stmt, i, bytes, null);
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+        }
+    }
     
-    /**
-     * Tells if a table already exists
-     * @return true if table exists, false if table doesn't exists
-     */
-    abstract public boolean created(String tableName);
+    public boolean created(String tableName) {
+        try {
+            DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
+            // getValue is protected, so can call it from the same package..
+            return sm.exists(tableName);
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            return false;
+        }
+    }
 
     public boolean create(MMObjectBuilder bul) {
         try {
             factory.getStorageManager().create(bul);
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
@@ -168,14 +231,20 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().create();
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
 
-     /**
-     * @javadoc
-     */
-    abstract public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
+    public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
+        javax.sql.DataSource ds = (javax.sql.DataSource)factory.getAttribute("database.dataSource");
+        Connection con = ds.getConnection();
+        if (con instanceof MultiConnection) {
+            return (MultiConnection)con; 
+        } else {
+            return new MultiConnection(null, con);
+        }        
+    }
 
     public String getDisallowedField(String allowedfield) {
         String disallowedfield = (String)allowedFields.get(allowedfield);
@@ -212,6 +281,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().delete(bul);
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
@@ -222,6 +292,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().change(bul);
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
@@ -231,6 +302,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().create(bul.getField(dbname));
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
@@ -240,6 +312,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().delete(bul.getField(dbname));
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
         }
     }
@@ -249,7 +322,32 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().change(bul.getField(dbname));
             return true;
         } catch (StorageException se) {
+            log.error(se.getMessage());
             return false;
+        }
+    }
+    
+    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
+        try {
+            return factory.getSearchQueryHandler().getSupportLevel(feature, query);
+        } catch (StorageException se) {
+            throw new SearchQueryException(se.getMessage());
+        }
+    }
+
+    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException {
+        try {
+            return factory.getSearchQueryHandler().getSupportLevel(constraint, query);
+        } catch (StorageException se) {
+            throw new SearchQueryException(se.getMessage());
+        }
+    }
+
+    public List getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
+        try {
+            return factory.getSearchQueryHandler().getNodes(query, builder);
+        } catch (StorageException se) {
+            throw new SearchQueryException(se.getMessage());
         }
     }
 }
