@@ -23,7 +23,7 @@
 
 <mm:import id="page" externid="$externpageid">0</mm:import>
 
-<mm:write id="offset" value="${+ $page * $config.page_size}" write="false" vartype="integer" />
+<mm:write id="offset" value="$[+ $page * $config.page_size]" write="false" vartype="integer" />
 <mm:maxnumber value="$config.page_size" />
 <mm:offset    value="$offset" />
 
@@ -53,7 +53,7 @@
       </mm:previousbatches>
       <mm:size id="size">
         <mm:isgreaterthan value="0">
-           <mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset+$size}" />/<mm:write referid="totalsize"  />
+           <mm:write vartype="integer" value="$[+$offset + 1]" />-<mm:write vartype="integer" value="$[+$offset+$size]" />/<mm:write referid="totalsize"  />
         </mm:isgreaterthan>
       </mm:size>
       <mm:nextbatches max="1">
