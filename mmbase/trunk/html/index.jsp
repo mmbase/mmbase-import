@@ -8,7 +8,7 @@
 <body>
 <h1>Welcome to <mm:include page="/version" />!</h1>
 <ul>
-  <li><a href="<mm:url page="mmexamples/taglib/index.jsp" />">Taglib demo</a></li>
+  <li><a href="<mm:url page="mmexamples/taglib/whatistaglib.jsp" />">Taglib demo</a></li>
   <li><a href="<mm:url page="mmeditors/jsp/" />">Editors</a></li>
   <li><a href="<mm:url page="mmadmin/jsp/" />">Admin pages</a></li>
   <li><a href="http://www.mmbase.org/">MMBase home page</a></li>
