@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
+import org.mmbase.util.Casting;
 
 /**
  * Entry for Parameters. A (function) argument is specified by a name and type.
@@ -18,7 +19,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.3 2004-01-26 09:25:05 pierre Exp $
+ * @version $Id: Parameter.java,v 1.4 2004-02-02 10:41:36 michiel Exp $
  * @see Parameters
  */
 
@@ -110,10 +111,10 @@ public class Parameter {
 
     /**
      * Sets the default value of this parameter.
-     * @param defaultValue the default value
+     * @param def the default value
      */
-    public void setDefaultValue(Object dev) {
-        defaultValue = dev;
+    public void setDefaultValue(Object def) {
+        defaultValue = def;
     }
 
     /**
@@ -133,25 +134,38 @@ public class Parameter {
     }
 
     /**
-     * Determines if the passed object is of the correct class (compatible with the type of this Parameter).
-     * @param value the value whose type (class) to check
-     * @return <code>true</code> if the the type is compatible
-     */
-    public boolean isType(Object value) {
-        return type.isInstance(value);
-    }
-
-    /**
      * Checks if the passed object is of the correct class (compatible with the type of this Parameter),
      * and throws an IllegalArgumentException if it doesn't.
      * @param value teh value whose type (class) to check
      * @throws IllegalArgumentException if the type is not compatible
      */
     public void checkType(Object value) {
-        if (!isType(value)) {
+        if (! type.isInstance(value)) {
             throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
+
+
+    /**
+     * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
+     * parameter is of type Integer, then the string can be parsed to Integer.
+     * @param value The value to be filled in in this Parameter.     
+     */
+    protected Object autoCast(Object value) {        
+        if (type.equals(Integer.class)) {
+            return Casting.toInteger(value);
+        } else if (type.equals(int.class)) {
+            return Casting.toInteger(value);
+        } else if (type.equals(String.class)) {
+            return Casting.toString(value);
+        } else if (type.equals(List.class)) {
+            return Casting.toList(value);
+        } else {
+            // don't know
+            return value;
+        }
+    }
+
 
     public boolean equals(Object o) {
         if (o instanceof Parameter) {
