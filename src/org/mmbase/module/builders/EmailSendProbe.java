@@ -16,6 +16,7 @@ import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * admin module, keeps track of all the worker pools
@@ -27,6 +28,7 @@ import org.mmbase.util.*;
  */
 public class EmailSendProbe implements Runnable {
 
+    private static Logger log = Logging.getLoggerInstance(EmailSendProbe.class.getName());
 	Thread kicker = null;
 	Email parent=null;
 	SortedVector tasks= new SortedVector(new MMObjectCompare("mailtime"));
@@ -89,7 +91,7 @@ public class EmailSendProbe implements Runnable {
 							try {
 								parent.performTask(anode);
 							} catch (Exception e) {
-								System.out.println("emailsendprobe : performTask failed"+anode);
+								log.error("emailsendprobe : performTask failed"+anode);
 							}
 							tasks.removeElement(anode);
 						} else {

@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.gui.html.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
@@ -27,6 +28,7 @@ import org.mmbase.util.*;
  */
 public class Email extends MMObjectBuilder {
 
+    private static Logger log = Logging.getLoggerInstance(Email.class.getName());
 	private EmailSendProbe sendprobe;
 	public final static int STATE_UNKNOWN=-1;
 	public final static int STATE_WAITING=0;
@@ -152,7 +154,7 @@ public class Email extends MMObjectBuilder {
 				
 				// send the message to the user defined
 				if (to==null || mmb.getSendMail().sendMail(mail)==false) {
-					System.out.println("Email -> mail failed");
+					log.debug("Email -> mail failed");
 					node.setValue("mailstatus",STATE_FAILED);
 				} else {
 					node.setValue("mailstatus",STATE_DELIVERED);
@@ -176,7 +178,7 @@ public class Email extends MMObjectBuilder {
 				}
 			}
 		}
-		System.out.println("TO="+to);
+		log.debug("TO="+to);
 		return(to);
 	}
 
