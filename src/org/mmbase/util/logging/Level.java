@@ -18,44 +18,44 @@ package org.mmbase.util.logging;
 
 public final class Level {
 
-	/** 
-	 * A possible result of {@link #toInt}
-	 */
+    /** 
+     * A possible result of {@link #toInt}
+     */
 
-	public final static int 
-		TRACE_INT   = 5000,
-		DEBUG_INT   = 10000,
-		SERVICE_INT = 15000,
-		INFO_INT    = 20000,
-		WARN_INT    = 30000,
-		ERROR_INT   = 40000,
-		FATAL_INT   = 50000;
+    public final static int 
+        TRACE_INT   = 5000,
+        DEBUG_INT   = 10000,
+        SERVICE_INT = 15000,
+        INFO_INT    = 20000,
+        WARN_INT    = 30000,
+        ERROR_INT   = 40000,
+        FATAL_INT   = 50000;
 
 
-	/** 
-	 * A constant. Main use is for the method {@link Logger#setPriority}
-	 */
-	public final static Level 
-		TRACE   = new Level(TRACE_INT), 
-		DEBUG   = new Level(DEBUG_INT),
-		SERVICE = new Level(SERVICE_INT),
-		INFO    = new Level(INFO_INT),
-		WARN    = new Level(WARN_INT),
-		ERROR   = new Level(ERROR_INT),
-		FATAL   = new Level(FATAL_INT);   
+    /** 
+     * A constant. Main use is for the method {@link Logger#setPriority}
+     */
+    public final static Level 
+        TRACE   = new Level(TRACE_INT), 
+        DEBUG   = new Level(DEBUG_INT),
+        SERVICE = new Level(SERVICE_INT),
+        INFO    = new Level(INFO_INT),
+        WARN    = new Level(WARN_INT),
+        ERROR   = new Level(ERROR_INT),
+        FATAL   = new Level(FATAL_INT);   
 
-	private int level;
-	
-	private Level (int p) {
-		level = p;
-	}
-	
-	/**
-	 * Makes an integer from this object. 
-	 */
-	public final int toInt() {
-		return level;
-	}
-	
-	
+    private int level;
+    
+    private Level (int p) {
+        level = p;
+    }
+    
+    /**
+     * Makes an integer from this object. 
+     */
+    public final int toInt() {
+        return level;
+    }
+    
+    
 }
