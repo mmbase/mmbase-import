@@ -5,7 +5,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.3 2002-05-27 21:35:55 michiel Exp $
+  @version $Id: prompts.xsl,v 1.4 2002-06-10 12:37:44 pierre Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -59,7 +59,6 @@
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">(cancel)</xsl:template>
 <xsl:variable name="tooltip_cancel">Cancel this task, changes will NOT be saved.</xsl:variable>
-<xsl:variable name="tooltip_no_cancel">This task can not be canceled.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step">(step <xsl:value-of select="position()" />)</xsl:template>
 <xsl:variable name="tooltip_step_not_valid" > is NOT valid. Click here to correct the errors.</xsl:variable>

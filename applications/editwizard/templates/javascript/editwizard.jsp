@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.6 2002-05-28 14:02:06 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.7 2002-06-10 12:37:44 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -292,8 +292,8 @@ function showAllProperties(el, values) {
     alert(s);
 }
 
-function doCancel(el) {
-    if (el.className.indexOf("disabled")==-1) doSendCommand("cmd/cancel////");
+function doCancel() {
+    doSendCommand("cmd/cancel////");
 }
 
 function doSave() {
