@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.40 2005-03-15 10:43:07 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.41 2005-03-21 12:11:05 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -150,7 +150,7 @@ public class BasicCloudContext implements CloudContext {
     }
 
     public java.util.Locale getDefaultLocale() {
-        return new java.util.Locale(mmb.getLanguage(), "");
+        return mmb.getLocale();
     }
 
     public FieldList createFieldList() {
