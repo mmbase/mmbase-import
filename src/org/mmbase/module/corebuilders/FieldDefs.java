@@ -14,13 +14,14 @@ import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 
 /**
- * One of the core objects, Defines one field of a object type / builder, has its
- * own builder called FieldDef (hitlisted)
+ * One of the core objects. It is not itself a builder, but is used by builders. Defines one field
+ * of a object type / builder.
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.34 2003-07-03 16:36:49 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.35 2003-07-03 16:46:21 michiel Exp $
+ * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE    = 0;
