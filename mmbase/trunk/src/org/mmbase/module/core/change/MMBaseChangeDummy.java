@@ -7,8 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core;
+package org.mmbase.module.core.change;
 
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseChangeInterface;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,10 +29,13 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
     
     MMBase parent;
 
-    public MMBaseChangeDummy(MMBase parent) {
-        this.parent=parent;
+    /**
+     * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
+     */
+    public void init(MMBase mmb) {
+        this.parent=mmb;
     }
-
+    
     public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
         log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
 
@@ -51,16 +58,6 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
     }
 
     public boolean waitUntilNodeChanged(MMObjectNode node) {
-        return(true);
-    }
-
-
-    public void checkWaitingNodes(String snumber) {
-    }
-
-
-
-    public boolean commitXML(String machine,String vnr,String id,String tb,String ctype,String xml) {
         return(true);
     }
 
