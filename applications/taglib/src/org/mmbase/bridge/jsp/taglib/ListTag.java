@@ -103,6 +103,8 @@ public class ListTag extends AbstractNodeListTag {
         this.distinctString = distinct;
     }
 
+
+    protected String searchNodes = null;
     /**
      * Performs the search
      */
@@ -112,7 +114,9 @@ public class ListTag extends AbstractNodeListTag {
             return superresult;
         }
 
-        String searchNodes= (nodesString == null)? "-1" : nodesString;
+        if (searchNodes == null) {
+            searchNodes = (nodesString == null)? "-1" : nodesString;
+        }
         boolean searchDistinct = false;
         if ("true".equals(distinctString) || "yes".equals(distinctString)) {
             searchDistinct = true;
@@ -126,6 +130,7 @@ public class ListTag extends AbstractNodeListTag {
                                             directions,
                                             searchString,
                                             searchDistinct);
+        searchNodes = null;
         return setReturnValues(nodes,true);
     }
 
