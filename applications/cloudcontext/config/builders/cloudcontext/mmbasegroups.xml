@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mmbasegroups" maintainer="www.mmbase.org" version="1" extends="object">
+<builder extends="object" maintainer="www.mmbase.org" name="mmbasegroups" version="1">
   <classfile>org.mmbase.security.implementation.cloudcontext.builders.Groups</classfile>
   <names>
     <singular xml:lang="en">Security Group</singular>
@@ -29,7 +29,7 @@
       </editor>
       <db>
         <name>name</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type key="false" notnull="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -41,7 +41,7 @@
       </gui>
       <db>
         <name>description</name>
-        <type state="persistent" size="1024" notnull="false">STRING</type>
+        <type notnull="false" size="1024" state="persistent">STRING</type>
       </db>
     </field>
   </fieldlist>
