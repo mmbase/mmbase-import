@@ -12,8 +12,8 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 import org.mmbase.util.logging.Logging;
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.7 2003-06-06 10:03:37 pierre Exp $
+ * @version $Id: IntegerHandler.java,v 1.8 2003-07-31 15:57:13 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -208,6 +208,29 @@ public class IntegerHandler extends AbstractTypeHandler {
             EnumHandler eh = new EnumHandler(context, guiType);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field);
+            }
+        }
+        return null;
+    }
+
+    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+        String guiType = field.getGUIType();
+        String fieldName = field.getName();
+        if (guiType.equals("eventtime")) {
+            return dateHandler.whereHtmlInput(field, query);
+        } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
+            String id = prefix(fieldName + "_search");
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+                return null;
+            } else {
+                return super.whereHtmlInput(field, query);
+            }
+        } else if (guiType.equals("integer") || guiType.equals("")) {
+            return super.whereHtmlInput(field, query);
+        } else {
+            EnumHandler eh = new EnumHandler(context, guiType);
+            if (eh.isAvailable()) {
+                return eh.whereHtmlInput(field, query);
             }
         }
         return null;

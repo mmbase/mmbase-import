@@ -11,8 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 import java.util.*;
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.5 2003-07-15 12:29:25 pierre Exp $
+ * @version $Id: EnumHandler.java,v 1.6 2003-07-31 15:57:13 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -39,18 +38,22 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public EnumHandler(FieldInfoTag context, String enumType) throws JspTagException {
         super(context);
         try {
-            String resource;
-            if (enumType.indexOf('.') == -1 ) {
-                resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
-            } else {
-                resource = enumType;
-
+            Class.forName(enumType);
+        } catch (Exception ee) {
+            try {
+                String resource;            
+                if (enumType.indexOf('.') == -1 ) {
+                    resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
+                } else {
+                    resource = enumType;
+                    
+                }
+                bundle    = ResourceBundle.getBundle(resource, context.getCloud().getLocale(), getClass().getClassLoader());
+                available = true;
+            } catch (java.util.MissingResourceException e) {
+                log.warn(e.toString());
+                available = false;
             }
-            bundle    = ResourceBundle.getBundle(resource, context.getCloud().getLocale(), getClass().getClassLoader());
-            available = true;
-        } catch (java.util.MissingResourceException e) {
-            log.warn(e.toString());
-            available = false;
         }
     }
 
@@ -111,6 +114,18 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             return super.whereHtmlInput(field);
         }
     }        
+
+
+    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+        String fieldName = field.getName();
+        String id = prefix(fieldName + "_search");
+        if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+            return "";
+        } else {
+            return super.whereHtmlInput(field, query);
+        }
+    }        
+
 
 
 }
