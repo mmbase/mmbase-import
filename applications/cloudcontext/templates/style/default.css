@@ -91,6 +91,9 @@ tr.even td {
 
 table.rights  { 
 }
+table.rights  td { 
+  text-align: center;
+}
 
 table.rights td.parent { 
   background-color: #bfb;

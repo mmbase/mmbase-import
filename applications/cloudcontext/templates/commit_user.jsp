@@ -17,7 +17,7 @@
 
 
    <table>
-    <mm:fieldlist type="edit">
+    <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="useinput" /></td></tr>
     </mm:fieldlist>
     <mm:import externid="_groups" vartype="list" jspvar="groups" /> 
@@ -59,11 +59,14 @@
        <mm:createrelation source="user" destination="ranknode" role="rank" />
      </mm:isnotempty>
 
+   <%@include file="commitGroupOrUserRights.jsp" %>
    </table>
 
 
    </mm:node>
   </mm:cloud>
-  <% response.sendRedirect("index.jsp"); %>
+  <mm:write referid="user" jspvar="node" vartype="node">
+  <% response.sendRedirect("edit_user.jsp?user=" + node.getNumber()); %>
+  </mm:write>
   </body>
 </html>
