@@ -133,65 +133,65 @@ public class MMBase extends ProcessorModule  {
     * JDBC drivers differ by sytsem (various database systems provide their own drivers).
     * The configuration for the jdbc class to use for your datanse system is set in the configuration files.
     */
-	JDBCInterface jdbc;
+    JDBCInterface jdbc;
 
 	/**
 	* MultiRelations virtual builder, used for performing multilevel searches.
 	*/
-	MultiRelations MultiRelations;
+    MultiRelations MultiRelations;
 	
-	/**
+    /**
 	* The database to use. Retrieve using getDatabase();
 	*/
-	MMJdbc2NodeInterface database;
+    MMJdbc2NodeInterface database;
 
-	/*
+    /*
 	* Name of the machine used in the mmbase cluster.
 	* it is used for the mmservers objects. Make sure that this is different
 	* for each node in your cluster. This is not the machines dns name
 	* (as defined by host as name or ip number).
 	*/
-	String machineName="unknown";
+    String machineName="unknown";
 	
-	/*
+    /*
 	* The host or ip number of the machine this module is
 	* running on. Its important that this name is set correctly because it is
 	* used for communication between mmbase nodes and external devices
 	*/
-	String host="unknown";
+    String host="unknown";
 	
-	/*
+    /*
 	* Authorisation type. Access using getAuthType()
 	*/
-	String authtype="none";
+    String authtype="none";
 	
-	/*
+    /*
 	* Cookie domain (?). Access using getCookieDomain()
 	*/
-	String cookieDomain=null;
+    String cookieDomain=null;
 
-	/**
-	* Base url for the location of the DTDs. obtained using getDTDBase()
-	*/
-	private String dtdbase="http://www.mmbase.org";
+    /**
+     * Base url for the location of the DTDs. obtained using getDTDBase()
+     */
+    private String dtdbase="http://www.mmbase.org";
 	
-	// debug routines
-	private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+    // debug routines
+    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
 
-	/**
-	* Reference to the sendmail module. Accessible using getSendMail();
-	*/
-	private SendMailInterface sendmail;
+    /**
+     * Reference to the sendmail module. Accessible using getSendMail();
+     */
+    private SendMailInterface sendmail;
 	
-	/**
-	* Currently used language. Access using getLanguage()
-	*/
-	private String language="us";
+    /**
+     * Currently used language. Access using getLanguage()
+     */
+    private String language="us";
 	
-	/**
-	* MMbase 'up state. Access using getState()
-	*/
-	private boolean mmbasestate=false;
+    /**
+     * MMbase 'up state. Access using getState()
+     */
+    private boolean mmbasestate=false;
 
     /**
     * Constructor to create the MMBase root module.
@@ -200,130 +200,135 @@ public class MMBase extends ProcessorModule  {
         log.debug("MMBase constructed");
     }
 
-	/**
-	* Initializes the MMBase module. Evaluates the parameters loaded from the configuration file.
-	* Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
-	*/	
-	public void init() {
-		// first thing to do is load our security system....
-		try {
-	        mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath()+File.separator+"security"+File.separator+"security.xml");		
-		}
-		catch(Exception e)	{
-			log.fatal("error loading the mmbase cop: " + e.toString());
-			// System.exit(0);
-		}
-		// is there a basename defined in MMBASE.properties ?
-		String tmp=getInitParameter("BASENAME");
-		if (tmp!=null) {
-			// yes then replace the default name (def1)
-			baseName=tmp;
-		} else {
-			log.info("init(): No name defined for mmbase using default (def1)");
-		}
+    /**
+     * Initializes the MMBase module. Evaluates the parameters loaded from the configuration file.
+     * Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
+     */	
+    public void init() {
 
-		tmp=getInitParameter("AUTHTYPE");
-		if (tmp!=null && !tmp.equals("")) {
-			authtype=tmp;
-		}
+        log.info("\n---\nInit of MMBase");
+        // first thing to do is load our security system....
+        try {
+            mmbaseCop = new
+                MMBaseCop(MMBaseContext.getConfigPath() +
+                          File.separator + "security" + File.separator + "security.xml"); 
+        }
+        catch(Exception e)	{
+            log.fatal("error loading the mmbase cop: " + e.toString());
+            log.error(Logging.stackTrace(e));
+            //System.exit(0);
+        }
+        // is there a basename defined in MMBASE.properties ?
+        String tmp=getInitParameter("BASENAME");
+        if (tmp!=null) {
+            // yes then replace the default name (def1)
+            baseName=tmp;
+        } else {
+            log.info("init(): No name defined for mmbase using default (def1)");
+        }
+        
+        tmp=getInitParameter("AUTHTYPE");
+        if (tmp!=null && !tmp.equals("")) {
+            authtype=tmp;
+        }
+        
 
+        tmp=getInitParameter("LANGUAGE");
+        if (tmp!=null && !tmp.equals("")) {
+            language=tmp;
+        }
 
-		tmp=getInitParameter("LANGUAGE");
-		if (tmp!=null && !tmp.equals("")) {
-			language=tmp;
-		}
+        tmp=getInitParameter("AUTH401URL");
+        if (tmp!=null && !tmp.equals("")) {
+            HttpAuth.setLocalCheckUrl(tmp);
+        }
+        tmp=getInitParameter("DTDBASE");
+        if (tmp!=null && !tmp.equals("")) {
+            dtdbase=tmp;
+        }
 
-		tmp=getInitParameter("AUTH401URL");
-		if (tmp!=null && !tmp.equals("")) {
-			HttpAuth.setLocalCheckUrl(tmp);
-		}
-		tmp=getInitParameter("DTDBASE");
-		if (tmp!=null && !tmp.equals("")) {
-			dtdbase=tmp;
-		}
+        tmp=getInitParameter("HOST");
+        if (tmp!=null && !tmp.equals("")) {
+            host=tmp;
+        }
 
-		tmp=getInitParameter("HOST");
-		if (tmp!=null && !tmp.equals("")) {
-			host=tmp;
-		}
+        tmp=getInitParameter("MULTICASTPORT");
+        if (tmp!=null && !tmp.equals("")) {
+            try {
+                multicastport=Integer.parseInt(tmp);
+            } catch(Exception e) {}
+        }
 
-		tmp=getInitParameter("MULTICASTPORT");
-		if (tmp!=null && !tmp.equals("")) {
-			try {
-				multicastport=Integer.parseInt(tmp);
-			} catch(Exception e) {}
-		}
+        tmp=getInitParameter("MULTICASTHOST");
+        if (tmp!=null && !tmp.equals("")) {
+            multicasthost=tmp;
+        }
 
-		tmp=getInitParameter("MULTICASTHOST");
-		if (tmp!=null && !tmp.equals("")) {
-			multicasthost=tmp;
-		}
+        tmp=getInitParameter("COOKIEDOMAIN");
+        if (tmp!=null && !tmp.equals("")) {
+            cookieDomain=tmp;
+        }
 
-		tmp=getInitParameter("COOKIEDOMAIN");
-		if (tmp!=null && !tmp.equals("")) {
-			cookieDomain=tmp;
-		}
+        sendmail=(SendMailInterface)getModule("sendmail");
+        machineName=getInitParameter("MACHINENAME");
 
-   		sendmail=(SendMailInterface)getModule("sendmail");
-		machineName=getInitParameter("MACHINENAME");
+        jdbc=(JDBCInterface)getModule("JDBC");
 
-		jdbc=(JDBCInterface)getModule("JDBC");
+        if (multicasthost!=null) {
+            mmc=new MMBaseMultiCast(this);
+        } else {
+            mmc=new MMBaseChangeDummy(this);
+        }
 
+        if (!checkMMBase()) {
+            // there is no base defined yet, create the core objects
+            createMMBase();
+        }
 
-		if (multicasthost!=null) {
-			mmc=new MMBaseMultiCast(this);
-		} else {
-			mmc=new MMBaseChangeDummy(this);
-		}
-
-		if (!checkMMBase()) {
-			// there is no base defined yet, create the core objects
-			createMMBase();
-		}
-
- 		builderpath = getInitParameter("BUILDERFILE");
- 		if (builderpath==null || builderpath.equals("")) {
- 			builderpath=MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
- 		}
+        builderpath = getInitParameter("BUILDERFILE");
+        if (builderpath==null || builderpath.equals("")) {
+            builderpath=MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+        }
  		
-		initBuilders();
+        log.debug("Init builders:");
+        initBuilders();
 
+        log.debug("Objects started");
 
-		log.debug("Objects started");
-
-
-		MultiRelations = new MultiRelations(this);
+        log.debug("Starting MulteRelations Object");
+        MultiRelations = new MultiRelations(this);
+        log.debug("ok");
 
 		// weird place needs to rethink (daniel).
-		Vwms bul=(Vwms)getMMObject("vwms");
-		if (bul!=null) {
-			bul.startVwms();
-		}
-		Vwmtasks bul2=(Vwmtasks)getMMObject("vwmtasks");
-		if (bul2!=null) {
-			bul2.start();
-		}
+        Vwms bul=(Vwms)getMMObject("vwms");
+        if (bul!=null) {
+            bul.startVwms();
+        }
+        Vwmtasks bul2=(Vwmtasks)getMMObject("vwmtasks");
+        if (bul2!=null) {
+            bul2.start();
+        }
 
 
-		String writerpath=getInitParameter("XMLBUILDERWRITERDIR");
-		if (writerpath!=null && !writerpath.equals("")) {
-			Enumeration t = mmobjs.elements(); 
-			while (t.hasMoreElements()) {
-				MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-				String name=fbul.getTableName();
-				log.debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
-				if (!name.equals("multirelations")) {
-					XMLBuilderWriter.writeXMLFile(writerpath+File.separator+fbul.getTableName()+".xml",fbul);
-				}
-			}
-		}
-		// signal that MMBase is up and running
-		mmbasestate=true;
-		log.info("MMBase is up and running");
-		checkUserLevel();
-	}
+        String writerpath=getInitParameter("XMLBUILDERWRITERDIR");
+        if (writerpath!=null && !writerpath.equals("")) {
+            Enumeration t = mmobjs.elements(); 
+            while (t.hasMoreElements()) {
+                MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+                String name=fbul.getTableName();
+                log.debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
+                if (!name.equals("multirelations")) {
+                    XMLBuilderWriter.writeXMLFile(writerpath+File.separator+fbul.getTableName()+".xml",fbul);
+                }
+            }
+        }
+        // signal that MMBase is up and running
+        mmbasestate=true;
+        log.info("MMBase is up and running");
+        checkUserLevel();
+    }
 
-	/**
+    /**
 	* Started when the module is loaded.
 	* Doesn't do anything (so why bother?)
 	*/
@@ -379,12 +384,15 @@ public class MMBase extends ProcessorModule  {
     /**
     * Retrieves a specified builder
     * @param name The name of the builder to retrieve
-    * @return a <code>MMObjectBuilder</code> is found, <code>null</code> otherwise
+    * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
     */
-	public MMObjectBuilder getMMObject(String name) {
-		Object o=mmobjs.get(name);
-  		return (MMObjectBuilder)o;
-	}
+    public MMObjectBuilder getMMObject(String name) {
+        Object o=mmobjs.get(name);
+        if (o == null) {
+            log.trace("MMObject " + name + " could not be found"); // can happen...            
+        }
+        return (MMObjectBuilder)o;
+    }
 
     /**
     * Retrieves the loaded security manager(MMBaseCop).
@@ -793,17 +801,20 @@ public class MMBase extends ProcessorModule  {
  		// new code checks all the *.xml files in builder dir, recursively
  		loadBuilders(path);
 
+                log.debug("mmobjects, inits");
 		Enumeration t = mmobjs.elements();
 		while (t.hasMoreElements()) {
-			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-			fbul.init();
+                    MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+                    log.debug("init " + fbul);
+                    fbul.init();
 		}
-
+                
 		Enumeration t2 = mmobjs.keys(); 
-		while (t2.hasMoreElements()) {
-			TypeDef.loadTypeDef(""+t2.nextElement());
+		while (t2.hasMoreElements()) {                  
+                    TypeDef.loadTypeDef(""+t2.nextElement());
 		}
 
+                log.debug("Versions:");
 		// check and update versions if needed	
 		Versions ver=(Versions)getMMObject("versions");
 		if (ver!=null) {
@@ -813,6 +824,7 @@ public class MMBase extends ProcessorModule  {
 			}
 		}
 
+                log.debug("**** end of initBuilders");
 		return true;
 	}
 
