@@ -27,12 +27,13 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 
 	Hashtable properties;
 	boolean first=true;
+	private boolean debug=false;
 	Object syncobj=new Object();
 	Queue files2copy=new Queue(128);
 	FileCopier filecopier=new FileCopier(files2copy);
 
 	public PageMaster() {
-		System.out.println("PageMaster ready for action");
+		debug("ready for action");
 	}
 
 
@@ -77,12 +78,12 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	}
 
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		System.out.println("Page sees that : "+number+" has changed type="+ctype);
+		debug("sees that : "+number+" has changed type="+ctype);
 		return(true);
 	}
 
 	public boolean fileChange(String service,String subservice,String filename) {
-		System.out.println("PageMaster frontend change -> "+filename);
+		debug("frontend change -> "+filename);
 		// jump to correct subhandles based on the subservice
 		if (subservice.equals("main")) {
 			handleMainCheck(service,subservice,filename);
@@ -91,7 +92,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	}
 
 	public boolean fileChange(String number, String ctype) {
-		System.out.println("PageMaster -> fileChange="+number+" "+ctype);
+		debug("fileChange="+number+" "+ctype);
 		// first get the change node so we can see what is the matter with it.
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		MMObjectNode filenode=bul.getNode(number);
@@ -114,7 +115,6 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	public boolean handleMirror(MMObjectNode filenode,int status,String ctype) {
 		switch(status) {
 			case 1:  // Verzoek
-				System.out.println("PageMaster-> mirror verzoek");
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
@@ -136,15 +136,12 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 */
 				files2copy.append(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename));
 
-				System.out.println("PageMaster-> doing mirror stuff");
 				filenode.setValue("status",3);
 				filenode.commit();
 				break;
 			case 2:  // Onderweg
-				System.out.println("PageMaster-> Mirror Onderweg");
 				break;
 			case 3:  // Gedaan
-				System.out.println("PageMaster-> Mirror Done");
 				break;
 		}
 		return(true);
@@ -154,28 +151,22 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	public boolean handleMain(MMObjectNode filenode,int status,String ctype) {
 		switch(status) {
 			case 1:  // Verzoek
-				System.out.println("PageMaster-> main verzoek");
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
-				System.out.println("PageMaster-> doing main stuff");
 				doMainRequest(filenode);
 				filenode.setValue("status",3);
 				filenode.commit();
 				break;
 			case 2:  // Onderweg
-				System.out.println("PageMaster-> main Onderweg");
 				break;
 			case 3:  // Gedaan
-				System.out.println("PageMaster-> main Done");
 				break;
 			case 4:  // Dirty
-				System.out.println("PageMaster-> main Dirty");
 				filenode.setValue("status",5);
 				filenode.commit();
 				break;
 			case 5:  // Recalc
-				System.out.println("PageMaster-> main Recalc");
 				String filename=filenode.getStringValue("filename");
 				calcPage(filename);
 				filenode.setValue("status",1);
@@ -249,7 +240,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 		scanparser m=(scanparser)Vwms.mmb.getBaseModule("SCANPARSER");
 		url=url.substring(0,url.length()-5);
 		url=url.replace(':','?');
-		System.out.println("getPage="+url);
+		debug("getPage="+url);
 		if (m!=null) {
 			scanpage sp=new scanpage();
 			m.calcPage(url,sp,0);
