@@ -204,7 +204,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return result.toString();
     }
 
-
+    /**
+     * Like getAttributeValue but converts the result to a Boolean,
+     * and throws an exception if this cannot be done.
+     **/
 
     protected Boolean getAttributeBoolean(String b) throws JspTagException {
         String r = getAttributeValue(b);
@@ -216,12 +219,21 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             throw new JspTagException("'" + r + "' cannot be converted to a boolean");
         }
     }
+    /**
+     * Like getAttributeValue but converts the result to an Integer,
+     * and throws an exception if this cannot be done. It the incoming string evaluates to an empty string, then 
+     * it will return 0, unless the second optional parameter specifies another default value;
+     **/
 
     protected Integer getAttributeInteger(String i) throws JspTagException {
+        return getAttributeInteger(i, 0);
+    }
+    protected Integer getAttributeInteger(String i, int def) throws JspTagException {
         try {
             i = getAttributeValue(i);
+            if (i.equals("")) return new Integer(def);
             return new Integer(i);
-        } catch (NumberFormatException e) { // try first if it was a flout
+        } catch (NumberFormatException e) { // try first if it was a float
             try {
                 return new Integer(new java.math.BigDecimal(i).intValue());
             } catch (NumberFormatException e2) {
