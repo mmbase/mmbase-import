@@ -13,7 +13,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.107 2004-01-05 11:12:35 nico Exp $
+    @version $Id: wizard.xsl,v 1.108 2004-01-08 12:40:33 michiel Exp $
     
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -158,11 +158,11 @@
 
   <xsl:template name="title">
     <td>
-        <xsl:value-of select="$wizardtitle" />
+      <xsl:value-of select="$wizardtitle" />
     </td>
     <td>
-        <xsl:call-template name="help" />
-        <xsl:call-template name="debug" />
+      <xsl:call-template name="help" />
+      <xsl:call-template name="debug" />
     </td>
   </xsl:template>
 
@@ -252,9 +252,9 @@
 
   <xsl:template name="formcontent">
     <div id="stepsbar" class="stepscontent">
-			<xsl:apply-templates select="/*/steps-validator" />
-		</div>
-		<div id="editform" class="editform">
+      <xsl:apply-templates select="/*/steps-validator" />
+    </div>
+    <div id="editform" class="editform">
       <xsl:choose>
         <xsl:when test="/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
           <xsl:attribute name="otherforms">invalid</xsl:attribute>
@@ -264,12 +264,12 @@
         </xsl:otherwise>
       </xsl:choose>
 
-			<table class="formcontent">
-				<xsl:apply-templates select="form[@id=/wizard/curform]" />
-			</table>
-		</div>
+      <table class="formcontent">
+        <xsl:apply-templates select="form[@id=/wizard/curform]" />
+      </table>
+    </div>
     <div id="commandbuttonbar" class="buttonscontent">
-	    <xsl:call-template name="buttons" />
+      <xsl:call-template name="buttons" />
     </div>
   </xsl:template>
 
@@ -282,7 +282,7 @@
   <xsl:template match="steps-validator">
     <!-- when multiple steps, otherwise do nothing -->
     <xsl:if test="count(step) > 1">
-        <xsl:call-template name="steps" />
+      <xsl:call-template name="steps" />
     </xsl:if>
   </xsl:template>
 
@@ -341,9 +341,9 @@
     <xsl:attribute name="id">step-<xsl:value-of select="@form-schema" /></xsl:attribute>
     <xsl:attribute name="titlenotvalid"><xsl:value-of select="$tooltip_not_valid" /></xsl:attribute>
     <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=current()/@form-schema]/title" />
-    	<xsl:if test="@valid=&apos;false&apos;">
-        <xsl:value-of select="$tooltip_step_not_valid" />
-      </xsl:if>
+    <xsl:if test="@valid=&apos;false&apos;">
+      <xsl:value-of select="$tooltip_step_not_valid" />
+    </xsl:if>
     </xsl:attribute>
     <xsl:attribute name="class">
       <xsl:if test="@valid=&apos;true&apos;">valid</xsl:if>
@@ -387,20 +387,20 @@
 
   <!-- Buttons are (always) called -->
   <xsl:template name="buttons">
-		<table class="buttonscontent">
-			<tr>
-				<td>
-					<!-- cancel -->
-					<xsl:call-template name="cancelbutton" />
-					<xsl:text> - </xsl:text>
-					<!-- commit  -->
-					<xsl:call-template name="savebutton" />
-					<xsl:text> - </xsl:text>
-					<!-- Saveonly  -->
-					<xsl:call-template name="saveonlybutton"/>
-				</td>
-			</tr>
-		</table>
+    <table class="buttonscontent">
+      <tr>
+        <td>
+          <!-- cancel -->
+          <xsl:call-template name="cancelbutton" />
+          <xsl:text> - </xsl:text>
+          <!-- commit  -->
+          <xsl:call-template name="savebutton" />
+          <xsl:text> - </xsl:text>
+          <!-- Saveonly  -->
+          <xsl:call-template name="saveonlybutton"/>
+        </td>
+      </tr>
+    </table>
   </xsl:template>
 
   <xsl:template name="savebutton">
@@ -1071,92 +1071,90 @@
   -->
   <xsl:template match="list">
   	<table class="listcontent">
-  		<tr>
-				<td class="listprompt">
-					<xsl:call-template name="listprompt" />
-				</td>
-			</tr>
-			<!-- List of items -->
-			<tr class="itemcanvas">
-				<td>
+      <tr>
+        <td class="listprompt">
+          <xsl:call-template name="listprompt" />
+        </td>
+      </tr>
+      <!-- List of items -->
+      <tr class="itemcanvas">
+        <td>
           <xsl:call-template name="listitems"/>
-				</td>
-			</tr>
-  		<tr>
-				<!-- SEARCH input and button -->
-				<td class="listsearch">
-					<xsl:call-template name="listsearch" />
-				</td>
-			</tr>
-  		<tr>
-				<!-- NEW button -->
-				<td class="listnewbuttons">
-					<xsl:call-template name="listnewbuttons" />
-				</td>
-			</tr>
-		</table>
-
+        </td>
+      </tr>
+      <tr>
+        <!-- SEARCH input and button -->
+        <td class="listsearch">
+          <xsl:call-template name="listsearch" />
+        </td>
+      </tr>
+      <tr>
+        <!-- NEW button -->
+        <td class="listnewbuttons">
+          <xsl:call-template name="listnewbuttons" />
+        </td>
+      </tr>
+    </table>      
     <p>
       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     </p>
   </xsl:template>
 
   <xsl:template name="listprompt">
-		<span>
-			<xsl:attribute name="title">
-				<xsl:call-template name="i18n">
-					<xsl:with-param name="nodes" select="description" />
-				</xsl:call-template>
-			</xsl:attribute>
-			<xsl:if test="@status=&apos;invalid&apos;">
-				<xsl:attribute name="class">notvalid</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="i18n">
-				<xsl:with-param name="nodes" select="title" />
-			</xsl:call-template>
-		</span>
+    <span>
+      <xsl:attribute name="title">
+        <xsl:call-template name="i18n">
+          <xsl:with-param name="nodes" select="description" />
+        </xsl:call-template>
+      </xsl:attribute>
+      <xsl:if test="@status=&apos;invalid&apos;">
+        <xsl:attribute name="class">notvalid</xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="i18n">
+        <xsl:with-param name="nodes" select="title" />
+      </xsl:call-template>
+    </span>
   </xsl:template>
 
   <xsl:template name="listnewbuttons">
-		<xsl:if test="command[@name=&apos;add-item&apos;]">
-			<!-- only if less then maxoccurs -->
-			<xsl:if test="not(@maxoccurs) or (@maxoccurs = &apos;*&apos;) or count(item) &lt; @maxoccurs">
-				<!-- create action and startwizard command are present. Open the object into the start wizard -->
-				<xsl:if test="command[@name=&apos;startwizard&apos;]">
-					<xsl:for-each select="command[@name=&apos;startwizard&apos;]">
-
+    <xsl:if test="command[@name=&apos;add-item&apos;]">
+      <!-- only if less then maxoccurs -->
+      <xsl:if test="not(@maxoccurs) or (@maxoccurs = &apos;*&apos;) or count(item) &lt; @maxoccurs">
+        <!-- create action and startwizard command are present. Open the object into the start wizard -->
+        <xsl:if test="command[@name=&apos;startwizard&apos;]">
+          <xsl:for-each select="command[@name=&apos;startwizard&apos;]">
             <!-- The prompts.xsl adds this as a tooltip -->
-						<!-- xsl:if test="prompt">
+            <xsl:if test="prompt">
               <xsl:value-of select="prompt"/>
-            </xsl:if -->
+            </xsl:if>
 						
-						<!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
-						<xsl:if test="@inline=&apos;true&apos;">
-							<a
-								href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">
-								<xsl:call-template name="prompt_add_wizard" />
-							</a>
-						</xsl:if>
-						<xsl:if test="not(@inline=&apos;true&apos;)">
-							<a
-								href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
-								target="_blank">
-								<xsl:call-template name="prompt_add_wizard" />
-							</a>
-						</xsl:if>
-					</xsl:for-each>
-				</xsl:if>
+            <!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
+            <xsl:if test="@inline=&apos;true&apos;">
+              <a
+                href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">
+                <xsl:call-template name="prompt_add_wizard" />
+              </a>
+            </xsl:if>
+            <xsl:if test="not(@inline=&apos;true&apos;)">
+              <a
+                href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
+                target="_blank">
+                <xsl:call-template name="prompt_add_wizard" />
+              </a>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:if>
 
-				<!-- create action is present, but no startwizard command. Add the object into the wizard -->
-				<xsl:if test="not(command[@name=&apos;startwizard&apos;])">
-					<xsl:for-each select="command[@name=&apos;add-item&apos;]">
-						<a href="javascript:doSendCommand(&apos;{@cmd}&apos;);">
-							<xsl:call-template name="prompt_new" />
-						</a>
-					</xsl:for-each>
-				</xsl:if>
-			</xsl:if>
-		</xsl:if>
+        <!-- create action is present, but no startwizard command. Add the object into the wizard -->
+        <xsl:if test="not(command[@name=&apos;startwizard&apos;])">
+          <xsl:for-each select="command[@name=&apos;add-item&apos;]">
+            <a href="javascript:doSendCommand(&apos;{@cmd}&apos;);">
+              <xsl:call-template name="prompt_new" />
+            </a>
+          </xsl:for-each>
+        </xsl:if>
+      </xsl:if>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="listsearch">
@@ -1359,7 +1357,7 @@
       <xsl:call-template name="itemfields-hover" />
 
 			<xsl:for-each select="fieldset|field">
-				<!-- Don't show the startwizrd field here. -->
+				<!-- Don't show the startwizard field here. -->
 				<xsl:if test="not(@ftype=&apos;startwizard&apos;)">
 					<tr class="fieldcanvas">
             <xsl:call-template name="itemfields-click" />
