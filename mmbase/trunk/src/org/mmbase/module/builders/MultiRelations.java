@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.12 2000-07-15 19:18:09 daniel Exp $
+	$Id: MultiRelations.java,v 1.13 2000-11-09 12:16:49 eduard Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2000/07/15 19:18:09  daniel
+	Fixed a bug with new DBType
+	
 	Revision 1.11  2000/07/15 10:14:42  daniel
 	Changed getDBType to int
 	
@@ -55,7 +58,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.12 2000-07-15 19:18:09 daniel Exp $
+ * @version $Id: MultiRelations.java,v 1.13 2000-11-09 12:16:49 eduard Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -203,18 +206,33 @@ public class MultiRelations extends MMObjectBuilder {
 		// Supporting more then 1 source node or no source node at all
 		// Note that node number -1 is seen as no source node
 		if (snodes.size()>0) {
-			String str,bstr;
-			StringBuffer bb=new StringBuffer();
-			int i=0,sidx;
-			str=Strip.DoubleQuote((String)snodes.elementAt(0),Strip.BOTH);
-			snode=Integer.parseInt(str);
+			String str;
+			snode = -1;
+			
+			// go trough the whole list and verify that it are all integers
+			// from last to first,,... since we want snode to be the one that contains the first..
+			for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
+				str = Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
+				try {			
+					snode=Integer.parseInt(str);
+				}
+				catch(NumberFormatException e) {
+					// maybe it was not an integer, hmm lets look in OAlias table then
+					snode = mmb.OAlias.getNumber(str);
+				}
+				snodes.setElementAt(""+snode, i);
+      }
+
+			int sidx;			
+			StringBuffer bb=new StringBuffer();			
+			
 			if (snode>0) {
 				basenode=getNode(""+snode);
 				sidx=alltables.indexOf(basenode.parent.tableName);
 				if (sidx<0) sidx=0;
-				bstr=idx2char(sidx);
+				str=idx2char(sidx);
 				bb.append(" (");
-				bb.append(getNodeString(bstr,snodes));
+				bb.append(getNodeString(str,snodes));
 				// Check if we got a relation to ourself
 				bb.append(") AND ");
 				basenodestring=bb.toString();
