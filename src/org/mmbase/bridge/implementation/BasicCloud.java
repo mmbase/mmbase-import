@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.cache.MultilevelCache;
+import org.mmbase.cache.AggregatedResultCache;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.95 2003-07-29 17:06:11 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.96 2003-07-30 08:52:19 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -70,7 +71,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // User context
     protected BasicUser userContext = null;
 
-    private MultilevelCache multilevelCache;
+    private MultilevelCache multilevelCache; // should be static?
 
     private Locale locale;
 
@@ -634,8 +635,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     protected NodeList getResultNodeList(Query query) {
         try {
-            ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
-            List resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
+            AggregatedResultCache cache = AggregatedResultCache.getCache();
+
+            List resultList = (List) cache.get(query);
+            if (resultList == null) {            
+                ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
+                resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
+                cache.put(query, resultList);
+            }
             NodeManager tempNodeManager;
             if (resultList.size() > 0) {
                 tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
