@@ -932,15 +932,16 @@ public class MMObjectNode {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
-        if (type == null) {
-            debug("getRelatedNodes: type is null");
+        MMObjectBuilder bul=parent.mmb.getMMObject(type);
+        if (bul == null) {
+            debug("getRelatedNodes: "+type+" is not a valid builder");
             return null;
         }
         Vector allNodes = getRelatedNodes();
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
             MMObjectNode node = (MMObjectNode)e.nextElement();
-            if (node.getTableName().equals(type)) {
+            if (node.parent.oType==bul.oType) {
                 result.addElement(node);
             }
         }
