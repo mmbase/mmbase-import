@@ -4,13 +4,12 @@
 
 <mm:cloud name="mmbase">
 
-<mm:import externid="type" jspvar="type"/>
-<mm:import externid="fields" jspvar="fields"/>
-<mm:import externid="constraints" jspvar="constraints"/>
-<mm:import externid="orderby" jspvar="orderby"/>
-<mm:import externid="directions" jspvar="directions"/>
-<mm:import externid="max" jspvar="max"/>
-<mm:import externid="offset" jspvar="offset"/>
+<mm:import externid="type"        />
+<mm:import externid="constraints" />
+<mm:import externid="orderby"     />
+<mm:import externid="directions"  /> 
+<mm:import externid="max"        />
+<mm:import externid="offset"     />
 
 <html>
 
@@ -34,18 +33,11 @@
       <td><input type="text" size="5" name="max" value="<mm:write referid="max"/>"></td>
     </tr>
     <tr>
-      <td>fields</td>
-      <td><input type="text" size="60" name="fields" value="<mm:write referid="fields"/>"></td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>offset</td>
-      <td><input type="text" size="5" name="offset" value="<mm:write referid="offset"/>"></td>
-    </tr>
-    <tr>
       <td>constraints</td>
       <td><input type="text" size="60" name="constraints" value="<mm:write referid="constraints"/>"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>offset</td>
+      <td><input type="text" size="5" name="offset" value="<mm:write referid="offset"/>"></td>
     </tr>
     <tr>
       <td>orderby</td>
@@ -64,25 +56,16 @@
 
 <mm:present referid="type">
   <table border="1">
-    <mm:listnodes type="<%=type%>" fields="<%=fields%>"
-             constraints="<%=constraints%>" orderby="<%=orderby%>"
-             directions="<%=directions%>"
-             max="<%=max%>" offset="<%=offset%>">
+    <mm:listnodes type="${type}" 
+             constraints="${constraints}" orderby="${orderby}"
+             directions="${directions}"
+             max="${max}" offset="${offset}">
       <tr>
-        <mm:compare referid="fields" value="">
           <mm:fieldlist type="list">
             <td>
               <mm:fieldinfo type="value"/>
             </td>
           </mm:fieldlist>
-        </mm:compare>
-        <mm:compare referid="fields" value="" inverse="true">
-          <% for (Enumeration e = convertToEnumeration(fields); e.hasMoreElements();) { %>
-            <td>
-              <mm:field name="<%=(String)e.nextElement()%>"/>
-            </td>
-          <% } %>
-        </mm:compare>
       </tr>
     </mm:listnodes>
   </table>

@@ -4,14 +4,13 @@
 
 <mm:cloud name="mmbase">
 
-<mm:import externid="number" jspvar="number"/>
-<mm:import externid="type" jspvar="type"/>
-<mm:import externid="fields" jspvar="fields"/>
-<mm:import externid="constraints" jspvar="constraints"/>
-<mm:import externid="orderby" jspvar="orderby"/>
-<mm:import externid="directions" jspvar="directions"/>
-<mm:import externid="max" jspvar="max"/>
-<mm:import externid="offset" jspvar="offset"/>
+<mm:import externid="number"  />
+<mm:import externid="type"  />
+<mm:import externid="constraints"  />
+<mm:import externid="orderby"  />
+<mm:import externid="directions"  />
+<mm:import externid="max"  />
+<mm:import externid="offset"  />
 
 <html>
 
@@ -35,7 +34,6 @@
 
 <tr><td colspan="6">&lt;node number=&quot;<input type="text" size="20" name="number" value="<mm:write referid="number"/>">&quot;&gt;</td></tr>
 <tr><td></td><td>&lt;related</td><td>type=</td><td>&quot;</td><td><input type="text" size="20" name="type" value="<mm:write referid="type"/>"></td><td>&quot;</td></tr>
-<tr><td></td><td></td><td>fields=</td><td>&quot;</td><td><input type="text" size="20" name="fields" value="<mm:write referid="fields"/>"></td><td>&quot;</td></tr>
 <tr><td></td><td></td><td>constraints=</td><td>&quot;</td><td><input type="text" size="20" name="constraints" value="<mm:write referid="constraints"/>"></td><td>&quot;</td></tr>
 <tr><td></td><td></td><td>orderby=</td><td>&quot;</td><td><input type="text" size="20" name="orderby" value="<mm:write referid="orderby"/>"></td><td>&quot;</td></tr>
 <tr><td></td><td></td><td>directions=</td><td>&quot;</td><td><input type="text" size="20" name="directions" value="<mm:write referid="directions"/>"></td><td>&quot;</td></tr>
@@ -54,10 +52,10 @@
 
 <mm:present referid="type">
   <table border="1">
-    <mm:node number="<%=number%>">
-      <mm:relatednodes type="<%=type%>" fields="<%=fields%>"
-                       directions="<%=directions%>" constraints="<%=constraints%>"
-                       orderby="<%=orderby%>" max="<%=max%>" offset="<%=offset%>">
+    <mm:node referid="number">
+      <mm:relatednodes type="${type}"
+                       directions="${directions}" constraints="${constraints}"
+                       orderby="${orderby}" max="${max}" offset="${offset}">
         <tr>
           <mm:compare referid="fields" value="">
             <mm:fieldlist type="list">
@@ -67,11 +65,13 @@
             </mm:fieldlist>
           </mm:compare>
           <mm:compare referid="fields" value="" inverse="true">
+			<mm:write vartype="String" jspvar="fields" referid="fields">
             <% for (Enumeration e = convertToEnumeration(fields); e.hasMoreElements();) { %>
               <td>
                 <mm:field name="<%=(String)e.nextElement()%>"/>
               </td>
             <% } %>
+			</mm:write>
           </mm:compare>
         </tr>
       </mm:relatednodes>
