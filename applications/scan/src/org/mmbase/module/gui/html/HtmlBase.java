@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.16 2000-03-31 13:18:19 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.17 2000-03-31 13:21:28 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.16  2000/03/31 13:18:19  wwwtech
+	Wilbert: Introduction of ParseException for method getList
+	
 	Revision 1.15  2000/03/30 13:11:27  wwwtech
 	Rico: added license
 	
@@ -77,7 +80,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.16 2000-03-31 13:18:19 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.17 2000-03-31 13:21:28 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -920,7 +923,7 @@ public class HtmlBase extends ProcessorModule {
 	}
 
 
-	public Vector doBuilder(scanpage sp,StringTagger tagger, StringTokenizer tok) {
+	public Vector doBuilder(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
 		if (tok.hasMoreTokens()) {
 			String type=tok.nextToken();
 			MMObjectBuilder bul=mmb.getMMObject(type);

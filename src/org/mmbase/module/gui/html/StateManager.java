@@ -299,7 +299,7 @@ public class StateManager implements CommandHandlerInterface {
 	/**
 	 * List commands
 	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command){
+	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws org.mmbase.module.ParseException {
 		String token;
 		String userName=HttpAuth.getRemoteUser(sp);
 		EditState state = getEditState(userName);
