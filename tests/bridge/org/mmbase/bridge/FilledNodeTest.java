@@ -22,13 +22,9 @@ import java.util.*;
  */
 public class FilledNodeTest extends NodeTest {
 
-  
-
-
     public FilledNodeTest(String name) {
         super(name);
     }
-
 
     protected Document getEmptyDocument() {
         try {
@@ -54,7 +50,7 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));
         node.setValue("longfield", new Long(Long.MAX_VALUE));
-        node.setValue("stringfield", "Bridge testing!");     
+        node.setValue("stringfield", "Bridge testing!");
         node.setValue("xmlfield", getEmptyDocument());
         node.setValue("nodefield", typedefNode);
         node.setValue("datetimefield", new Date());
@@ -97,7 +93,7 @@ public class FilledNodeTest extends NodeTest {
                 // unimplemented
             } else if (fieldTypes[i].equals("boolean")) {
                 assertTrue(object.equals(Boolean.TRUE));
-            } else if (fieldTypes[i].equals("list")) {                
+            } else if (fieldTypes[i].equals("list")) {
                 // unimplemented
             } else {
                 fail();
@@ -127,6 +123,12 @@ public class FilledNodeTest extends NodeTest {
                 // System.err.println("Don't know what getByteValue on get XML Field should give: " + bytes);
             } else if (fieldTypes[i].equals("node")) {
                 // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("datetime")) {
+                assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("list")) {
+                assertTrue(bytes.length == 0);
             } else {
                 fail();
             }
@@ -152,6 +154,12 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(d == -1);
             } else if (fieldTypes[i].equals("node")) {
                 // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                // undefined
+            } else if (fieldTypes[i].equals("datetime")) {
+                // unimplemented
+            } else if (fieldTypes[i].equals("list")) {
+                assertTrue(d == -1);
             } else {
                 fail();
             }
@@ -177,6 +185,12 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(f == -1);
             } else if (fieldTypes[i].equals("node")) {
                 // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                // undefined
+            } else if (fieldTypes[i].equals("datetime")) {
+                // unimplemented
+            } else if (fieldTypes[i].equals("list")) {
+                assertTrue(f == -1);
             } else {
                 fail();
             }
@@ -202,6 +216,12 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(integer == -1);
             } else if (fieldTypes[i].equals("node")) {
                 // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                // undefined
+            } else if (fieldTypes[i].equals("datetime")) {
+                // unimplemented
+            } else if (fieldTypes[i].equals("list")) {
+                assertTrue(integer == -1);
             } else {
                 fail();
             }
@@ -227,6 +247,12 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(l == -1);
             } else if (fieldTypes[i].equals("node")) {
                 // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                // undefined
+            } else if (fieldTypes[i].equals("datetime")) {
+                // unimplemented
+            } else if (fieldTypes[i].equals("list")) {
+                assertTrue(l == -1);
             } else {
                 fail();
             }
@@ -253,6 +279,12 @@ public class FilledNodeTest extends NodeTest {
                 // System.err.println("Don't know what getStringValue on get XML Field should give: '" + string + "'");
             } else if (fieldTypes[i].equals("node")) {
                 // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                assertTrue(String.valueOf(Boolean.TRUE).equals(string));
+            } else if (fieldTypes[i].equals("datetime")) {
+                // unimplemented
+            } else if (fieldTypes[i].equals("list")) {
+                // unimplemented
             } else {
                 fail();
             }
@@ -290,7 +322,8 @@ public class FilledNodeTest extends NodeTest {
             }
         }
     }
-    public void testGetNodeValue() {
+
+   public void testGetNodeValue() {
         Node nodeValue = node.getNodeValue("nodefield");
         assertTrue(nodeValue != null);
         assertTrue(nodeValue.getNumber() == getCloud().getNodeManager("bb").getNumber());
