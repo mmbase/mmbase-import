@@ -3,6 +3,7 @@
 <head>
    <title>MMBase Administration</title>
    <link rel="stylesheet" href="css/mmbase.css" type="text/css">
+    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </head>
 <%
     String menu=request.getParameter("menu");
@@ -13,13 +14,15 @@
 %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0" >
    		<frame src="nav.jsp?menu=1&submenu=1" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
-   		<frame src="about/license.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+   		<frame src="about/about.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
 	</frameset>
 <% } else { %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0">
    		<frame src="nav.jsp?menu=<%=menu%>&submenu=<%=submenu%>" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
    		<% if (subcategory==null) { %>
 	  	  <frame src="<%=category%>/main.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+        <% } else if (category.equals("demos")) { %>
+		  <frame src="<mm:url page="/mmexamples/index.html" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
 		  <frame src="<%=category%>/<%=subcategory%>.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } %>		
@@ -41,6 +44,18 @@
 </tr>
 <tr>
   <td class="data"><a href="about/license.jsp">License</a></td>
+</tr>
+<tr>
+  <td class="data"><a href="about/about.jsp">About</a></td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr align="left">
+  <th class="header">Demos</td>
+</tr>
+<tr>
+  <td class="data"><a href="<mm:url page="/mmexamples/index.html" />">Demos</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
