@@ -119,7 +119,10 @@ public class Cookies extends MMObjectBuilder {
 				// node found so lets clear its caches
 				flushCache(node.getIntegerValue("number"));
 			}
-		}
+		} else if (ctype.equals("d")) {
+                    // The node is deleted so remove it from the cache.
+                    flushCache(new Integer(number));
+                }
 		
 		return(true);
 	}
