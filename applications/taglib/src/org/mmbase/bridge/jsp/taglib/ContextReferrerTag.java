@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.62 2004-11-08 14:07:05 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.63 2004-12-10 20:25:11 michiel Exp $
  * @see ContextTag
  */
 
@@ -131,6 +131,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public void setId(String i) {
         try {
+            if ("_".equals(i)) {
+                throw new RuntimeException("'_' is not a valid id (it is reserved for the 'current writer')");
+            }
             id = getAttribute(i);
         } catch (JspTagException j) {
             throw new RuntimeException(j);
