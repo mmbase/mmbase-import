@@ -7,10 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib.pageflow;
+package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -19,7 +18,7 @@ import javax.servlet.jsp.JspException;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.8 2003-06-06 10:03:26 pierre Exp $
+ * @version $Id: ParamTag.java,v 1.1 2003-06-17 16:47:42 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag {
