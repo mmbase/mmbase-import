@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page import="java.util.*"
 %><%@include file="../config/read.jsp" %>
-<mm:locale language="$config.lang"><mm:cloud jspvar="cloud" loginpage="../login.jsp"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<mm:locale language="$config.lang"><mm:cloud jspvar="cloud" method="asis"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
