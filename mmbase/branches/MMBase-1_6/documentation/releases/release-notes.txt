@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.0 - Release Notes
+                     MMBase 1.6 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.6.0, relative to the previous release of MMBase (1.5).
+release of MMBase 1.6, relative to the previous release of MMBase (1.5).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -22,7 +22,10 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+[1.6.1]
+ This is a bugfix release, so no new features
 
+[1.6.0]
 - Introduction of `MMBaseServlet' with specialisations like ImageServlet and
   AttachmentServlet.
   There's no need for servdb anymore. Note that ImageServlet does not accept a
@@ -56,6 +59,8 @@ General New Features:
 MMCI New Features:
 ---------------------
 
+[1.6.1]
+[1.6.0]
 - Updated to MMCI 1.2.
 - NodeManagers now extends Node, and can be retrieved by number
 - cloud.hasNode() and hasRelation() methods
@@ -68,6 +73,8 @@ MMCI New Features:
 Taglib New Features:
 -------------------
 
+[1.6.1]
+[1.6.0]
 - mm:formatter, mm:xslt : implement 'Richtext' features  (experimental)
 - mm:attachment : for obtaining download links to mmbase attachment objects
 - mm:time : for formatting mmbase time and date values
@@ -78,6 +85,8 @@ Taglib New Features:
 Examples New Features:
 ---------------------
 
+[1.6.1]
+[1.6.0]
 - Alternative jsp-editors (aka my_editors) added as an example.
 
 
@@ -89,6 +98,10 @@ BUG FIXES AND IMPROVEMENTS:
 General Bug Fixes:
 ------------------
 
+[1.6.1]
+- attachment-tag attachment-servlet bugs: #4895, #4876 
+- builder inheritance: #4864
+[1.6.0]
 - Fixed a problem with memory allocation in the bridge, which could cause
   MMBase to claim disproportional parts of memory when using the Multilevel
   cache. (bug #4282)
@@ -109,6 +122,10 @@ General Bug Fixes:
 Security Bug Fixes:
 ------------------
 
+[1.6.1]
+Upgrading from 1.6.0 to 1.6.1 can be done by replacing the mmbase.jar
+
+[1.6.0]
 - Fixed a problem with checking whether relations can be added (bug #3602)
 - You can no longer delete relations you have no right to delete (bug
   #1932)
@@ -120,6 +137,9 @@ Security Bug Fixes:
 Taglib Bug Fixes:
 ----------------
 
+[1.6.1]
+- Function-values can be something else then string now:  bug #4988
+[1.6.0]
 - Taglib works with Tomcat 4.1.x (version 4.1.12 is the first version
   it's working) 
 
@@ -127,6 +147,8 @@ Taglib Bug Fixes:
 ========
 Upgrade:
 ========
+[1.6.1]
+[1.6.0]
 When you're upgrading from a previous MMBase-version it's important to
 know there have been made a few changes in the xml configuration of
 the builders:
@@ -136,9 +158,11 @@ the builders:
 
 
 ========================
-Know Issues and Problems:
+Known Issues and Problems:
 ========================
-
+[1.6.1]
+No known issues solved
+[1.6.0]
 - Jsp-editors aren't working completly when using Tomcat 4.0.x, you'll
   get an "Illegal target of jump or branch"-error when trying to add
   relations. You could try the my_editors as an alternative or upgrade
