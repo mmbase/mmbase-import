@@ -928,12 +928,15 @@ public class MMObjectNode {
      * Get the related nodes of a certain type. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
-     * @param type the type of objects to be returned (<code>null</code> = don't care)
+     * @param type the type of objects to be returned
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
+        if (type == null) {
+            debug("getRelatedNodes: type is null");
+            return null;
+        }
         Vector allNodes = getRelatedNodes();
-        if (type == null) { return allNodes; }
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
             MMObjectNode node = (MMObjectNode)e.nextElement();
