@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.36 2003-07-25 09:16:20 pierre Exp $</edition>
+    <edition>$Id: index.xml,v 1.37 2003-07-25 09:32:35 pierre Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -82,11 +82,16 @@
           <ulink url="general/architecture.pdf" id="architecturaloverview.pdf">PDF</ulink>)
         </para>
       </listitem>
+    </itemizedlist>
+  </section>
+  <section>
+    <title>MMBase.org</title>
+    <itemizedlist>
       <listitem>
         <para>
           MMC Mission Statement Document
-          (<ulink url="general/mmcmsd.html" id="mmcmsd">HTML</ulink>, 
-          <ulink url="general/mmcmsd.pdf" id="mmcmsd.pdf">PDF</ulink>)
+          (<ulink url="mmbase.org/mmcmissionstatement.html" id="mmcmissionstatement">HTML</ulink>, 
+          <ulink url="mmbase.org/mmcmissionstatement.pdf" id="mmcmissionstatement.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
