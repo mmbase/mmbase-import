@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
