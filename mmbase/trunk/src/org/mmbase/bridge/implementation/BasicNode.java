@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.76 2002-10-18 13:01:52 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.77 2002-10-23 22:23:16 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -744,7 +744,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         int dir  = ClusterBuilder.getSearchDir(direction);
 
-        Enumeration e = getRelationEnumeration(requestedRole,otype);
+        Enumeration e = getRelationEnumeration(requestedRole, otype);
         List result = new Vector();
         if (e != null) {
             while(e.hasMoreElements()) {
@@ -760,16 +760,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         continue;
                     }
                 }
-                result.add(bul.getNode(number));
+                MMObjectNode newNode = bul.getNode(number);
+                if (type != null && ! newNode.getBuilder().getTableName().equals(type)) continue;
+                result.add(newNode);
             }
         }
-        NodeManager rm;
-        if (role!=null) {
-            rm=cloud.getRelationManager(role);
+        if (type != null) {
+            return new BasicNodeList(result, cloud.getNodeManager(type));
         } else {
-            rm=cloud.getNodeManager("insrel");
+            return new BasicNodeList(result, cloud);
         }
-        return new BasicNodeList(result, rm);
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
