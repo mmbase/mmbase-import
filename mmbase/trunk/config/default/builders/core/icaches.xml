@@ -31,6 +31,11 @@
      <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
   </descriptions>
 
+  <properties>
+    <property name="max-nodes-from-query">200</property>
+  </properties>
+
+
   <!-- <fieldlist>
   defines the different fields in this object, be carefull the order is important
   once defined keep them in the same order.
