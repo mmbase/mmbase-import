@@ -39,12 +39,7 @@ import java.sql.Statement;
  */
 public class servdb extends JamesServlet {
 
-    //  ---------------------------------------------------
-    //private String 	classname 	= getClass().getName();
-    private	boolean	debug		= true;
-    //private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-    //  ---------------------------------------------------
-
+    private	boolean	debug = false;
     private		Date 				lastmod 	= null, tempdate;
     private		String 				templine,templine2,templine3,templine4;
     private		int 				y,m,d,u,mi,se;
