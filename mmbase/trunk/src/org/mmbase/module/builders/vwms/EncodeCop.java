@@ -60,7 +60,16 @@ import org.mmbase.util.logging.*;
  * 
  * When all can be found an EncodeHandler is started that will actually handle 
  * the type of recovery needed for that particular service.
- *
+ * 
+ * Finally, another recovery routine is implemented for the case that 
+ * EncodeHandlers are waiting for a g2encoder to come free again, sothat it can 
+ * be used for encoding. In other words, the case that audioparts still need to 
+ * be encoded.
+ * If mmbase is being reset while g2encode EncodeHandlers are queued up then we
+ * lose the queue (well, actually queue=threads that are waiting to be notified).
+ * When rebooted, we look for audioparts created from a CD source whose rawaudio 
+ * state is 'verzoek' (request) and format is g2.
+ * 
  *
  * The following node changed types exist in mmbase (stored in ctype variable: 
  * passed ctype:
@@ -75,7 +84,7 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.20 $ $Date: 2001-05-11 07:57:49 $
+ * @version $Revision: 1.21 $ $Date: 2001-05-14 12:59:00 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -120,6 +129,9 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			recoverForFinishedServices(cdpbul);
 			recoverForBusyServices(g2bul);
 			recoverForFinishedServices(g2bul);
+
+			// Audioparts that still have to be encoded
+			recoverForQueuedAudioparts();
 		}
 		return true;
 	}
@@ -397,6 +409,35 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 				log.info("Service "+servicenode.getStringValue("name")+" "+finishedWith+" correctly.");
 			else
 				log.error("Info field misses either result or id key in service: "+servicenode);
+		}
+	}
+
+	/**
+	 * Searches all rawaudios representing encoded audio that are queued for encoding.
+	 * For every rawaudio found, we find out if the audio source came from a CD. If this is true, 
+	 * then we startup an EncodeHandler that queues this audio for encoding.
+	 * Note: This queue consists of threads that are waiting until they are notified, so
+	 * this queue is implicit.
+	 */
+	void recoverForQueuedAudioparts() {
+		AudioParts apbul=(AudioParts)Vwms.mmb.getMMObject("audioparts");
+		RawAudios rabul=(RawAudios)Vwms.mmb.getMMObject("rawaudios");
+		MMObjectNode apnode=null;
+		MMObjectNode ranode=null;
+		int id=0;
+
+		// Searching all audioparts that were created from a CD source and still 
+		// need to be encoded.
+		Enumeration e=rabul.search("WHERE status="+RawAudioDef.STATUS_VERZOEK+" and "
+		        +"format="+RawAudioDef.FORMAT_G2);
+		while (e.hasMoreElements()) {
+			ranode = (MMObjectNode)e.nextElement();
+			id = ranode.getIntValue("id");
+			apnode = apbul.getNode(id);
+			if (apnode.getIntValue("source")==(AudioParts.AUDIOSOURCE_CD)) {
+				log.info("Audiopart "+id+" still needs to be encoded, adding new EncodeHandler, task 'g2encode'.");
+				EncoderHandlers.addElement(new EncodeHandler(this,"g2encode",ranode));
+			}
 		}
 	}
 
