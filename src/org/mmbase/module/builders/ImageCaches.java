@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.37.2.2 2004-08-26 12:18:26 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.3 2005-03-24 09:40:12 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -102,7 +102,9 @@ public class ImageCaches extends AbstractImages {
             NodeSearchQuery query = new NodeSearchQuery(this);
             query.setMaxNumber(2); // to make sure this is a cheap query.
             StepField ckeyField = query.getField(getField("ckey"));
-            query.setConstraint(new BasicFieldValueConstraint(ckeyField, ckey));
+            BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey);
+            bfvc.setCaseSensitive(true);
+            query.setConstraint(bfvc);
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
             log.error(e.toString());
