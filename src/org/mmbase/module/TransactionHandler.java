@@ -39,7 +39,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
-	private static String version="2.3.3";
+	private static String version="2.3.4";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -101,12 +101,14 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		String user = session.getCookie();
 		// get all transactions of the user.
 		UserTransactionInfo uti = userInfo(user); 
+		// reset parsetrace....
+		uti.trace = new ParseTrace();
 
 		try {  
 			parse(null, is, uti);
 		} catch (TransactionHandlerException t) {
 			// Register the exception
-			sessions.setValue (session, "TRANSACTIONCODE",uti.trace.getTrace()); 
+			sessions.setValue (session, "TRANSACTIONTRACE",uti.trace.getTrace()); 
 			sessions.setValue (session, "TRANSACTIONOPERATOR",t.transactionOperator); 
 			sessions.setValue (session, "TRANSACTIONID",t.transactionId); 
 			sessions.setValue (session, "OBJECTOPERATOR",t.objectOperator); 
@@ -260,7 +262,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					if (!anonymousTransaction) {
 						userTransactionInfo.knownTransactionContexts.put(id, transactionInfo);
 					}
-				} 
+				} else {
 
 				if (tName.equals("openTransaction") || tName.equals("open")) { 
 					// TIMEOUT ADJUSTMENT IS NOT ACCORDING TO THE MANUAL
@@ -271,14 +273,16 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					// actually open transaction
 					transactionInfo = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
 					currentTransactionContext = transactionInfo.transactionContext;
-				}
+				} else {
+
 				if (tName.equals("commitTransaction") || tName.equals("commit")) { 
 					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 					// destroy transaction information
 					transactionInfo.stop();	
 					// continue with next transaction command.
 					continue;
-				}
+				} else {
+
 				if (tName.equals("deleteTransaction") || tName.equals("delete")) {
 					// cancel real transaction
 					transactionManager.cancel(userTransactionInfo.user, id);
@@ -288,7 +292,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					ti.stop();
 					// continue with next transaction command.
 					continue;
-				} 
+ 				} else {
+                    throw new TransactionHandlerException("tag "+ tName + " doesn't exist");
+                } } } }
+
 	
 	
 				// DO OBJECTS
@@ -311,6 +318,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 				// End execution of XML
 			} catch (Exception e) {
+				e.printStackTrace();
 				TransactionHandlerException t=null;
 				if (e instanceof TransactionHandlerException) {
 					t=(TransactionHandlerException)e;
@@ -417,11 +425,14 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					if (oMmbaseId == null) {
 						throw new TransactionHandlerException(oName + " no MMbase id: ");
 					}
-					// actually get and administrate if not anonymous
+					// actually get presistent object
+					debug("#### "+userTransactionInfo.user.getName(),0);
+					debug("#### "+id,0);
+					debug("#### "+oMmbaseId,0);
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
-					//get Node succeed?
+					// if object has a user define handle administrate object in transaction 
 					if (!anonymousObject)
 						transactionInfo.knownObjectContexts.put(id, currentObjectContext);
 				} else {
@@ -444,12 +455,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					continue;
 				} else {
 				if (oName.equals("markObjectDelete")) {
-					debug("markObjectDelete is not tested !!!!!!!",0);
+					debug("markObjectDelete , an object may not have any relations",0);
 					if (oMmbaseId==null) { 
 						throw new TransactionHandlerException(oName + " no mmbaseId specified");
 					}
 					// Mark persistent object deleted.
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
+					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					transactionManager.deleteObject(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					// destroy
 					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
@@ -616,7 +628,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		// The user
 		public User user = null;
 		// the parse trace
-		public ParseTrace trace = new ParseTrace();
+		public ParseTrace trace = null;
 	}
 
 	/**
@@ -691,7 +703,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		private String trace = "";
 		
 		void addTrace(String s, int indent, boolean new_line) {
-			if (new_line) trace = trace + "\n";
+			if (new_line) trace = trace + "\n<BR>";
 			for (int i = 0; i < indent; i++) trace = trace + "\t";
 			trace = trace + s;
 		}
