@@ -19,7 +19,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.11 2003-08-27 08:24:47 pierre Exp $
+ * @version $Id: Module.java,v 1.12 2003-08-27 10:21:42 pierre Exp $
  */
 public interface Module {
 
@@ -42,12 +42,14 @@ public interface Module {
      * Retrieve a property of the module.
      * @param name the name of the property
      * @return the property value (null if not given)
+     * @since  MMBase-1.7
      */
     public String getProperty(String name);
 
     /**
      * Retrieve a copy of the module's properties
      * @return a map of module properties
+     * @since  MMBase-1.7
      */
     public Map getProperties();
 
