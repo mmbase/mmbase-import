@@ -51,6 +51,8 @@ public class WriterTEI extends TagExtraInfo {
                 type = "org.mmbase.bridge.Cloud"; break;
             case WriterHelper.TYPE_TRANSACTION:
                 type = "org.mmbase.bridge.Transaction"; break;
+            case WriterHelper.TYPE_DECIMAL:
+                type = "java.math.BigDecimal"; break;
             case WriterHelper.TYPE_INTEGER:
                 type = "java.lang.Integer"; break;
             case WriterHelper.TYPE_DOUBLE:
