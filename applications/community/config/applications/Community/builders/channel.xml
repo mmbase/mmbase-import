@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="channel" maintainer="mmbase.org" version="0" extends="object">
   <status>active</status>
-  <classfile>Channel</classfile>
+  <classfile>org.mmbase.applications.community.builders.Channel</classfile>
 
   <searchage>14</searchage>
   <names>
@@ -42,7 +42,7 @@
       </db>
 		</field>
 
-    <field>
+   <field>
       <descriptions>
         <description xml:lang="en">Subtitle of the channel</description>
         <description xml:lang="nl">Subtitel van het kanaal</description>
@@ -121,7 +121,7 @@
       <gui>
         <guiname xml:lang="en">Logon State</guiname>
         <guiname xml:lang="nl">Login status</guiname>
-        <guitype>channellogin</guitype>
+        <guitype>org.mmbase.applications.community.resources.channellogin</guitype>
       </gui>
       <editor>
         <positions>
@@ -142,7 +142,7 @@
       <gui>
         <guiname xml:lang="en">Open</guiname>
         <guiname xml:lang="nl">Open</guiname>
-        <guitype>channelopen</guitype>
+        <guitype>org.mmbase.applications.community.resources.channelopen</guitype>
       </gui>
       <editor>
         <positions>          

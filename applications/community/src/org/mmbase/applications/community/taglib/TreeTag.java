@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib.community;
+package org.mmbase.applications.community.taglib;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.12 2003-06-18 13:40:09 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.13 2003-06-18 20:03:57 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {

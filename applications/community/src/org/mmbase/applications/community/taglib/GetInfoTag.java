@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib.community;
+package org.mmbase.applications.community.taglib;
 
 import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 
@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: GetInfoTag.java,v 1.12 2003-06-18 13:41:30 michiel Exp $
+ * @version $Id: GetInfoTag.java,v 1.13 2003-06-18 20:03:57 michiel Exp $
  */
  
 public class GetInfoTag extends NodeReferrerTag implements Writer {

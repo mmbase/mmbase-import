@@ -5,7 +5,7 @@
 
 <project name="community" default="dependent.jar" basedir=".">
   <property name="project.name"   value="community" />
-  <property name="source-community.xml" value="org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
+  <property name="source-community.xml" value="org/mmbase/applications/community/taglib/mmcommunity-taglib.xml" />
   &base;
 
 

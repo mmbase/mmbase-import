@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib.community;
+package org.mmbase.applications.community.taglib;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * closed at the start of the body, depending on the action given.
  *
  * @author Pierre van Rooden
- * @version $Id: ChannelTag.java,v 1.3 2003-06-06 10:03:12 pierre Exp $
+ * @version $Id: ChannelTag.java,v 1.4 2003-06-18 20:03:56 michiel Exp $
  */
  
 public class ChannelTag extends NodeTag {

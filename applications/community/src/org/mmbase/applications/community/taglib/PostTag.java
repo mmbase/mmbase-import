@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib.community;
+package org.mmbase.applications.community.taglib;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * This tag posts a message. The body of the tag is the message text.
  *
  * @author Pierre van Rooden
- * @version $Id: PostTag.java,v 1.8 2003-06-06 10:03:14 pierre Exp $
+ * @version $Id: PostTag.java,v 1.9 2003-06-18 20:03:57 michiel Exp $
  */
  
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {

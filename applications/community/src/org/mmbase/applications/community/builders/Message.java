@@ -8,14 +8,14 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.module.builders;
+package org.mmbase.applications.community.builders;
 
+import org.mmbase.applications.community.modules.*;
 import java.util.*;
 import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.community.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.17 2003-06-18 19:32:28 michiel Exp $
+ * @version $Id: Message.java,v 1.18 2003-06-18 20:03:54 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {

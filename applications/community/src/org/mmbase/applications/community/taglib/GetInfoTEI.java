@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib.community;
+package org.mmbase.applications.community.taglib;
 
 import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * The GetInfo tag can optionally export one jsp variable.
  *
  * @author Pierre van Rooden
- * @version $Id: GetInfoTEI.java,v 1.3 2003-06-06 10:03:13 pierre Exp $
+ * @version $Id: GetInfoTEI.java,v 1.4 2003-06-18 20:03:57 michiel Exp $
  */
  
 public class GetInfoTEI extends TagExtraInfo {
