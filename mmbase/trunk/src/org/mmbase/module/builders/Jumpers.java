@@ -74,7 +74,8 @@ public class Jumpers extends MMObjectBuilder {
 			if (url==null) {
 				// Search jumpers with name;
 				if (debug) debug("Search jumpers with name="+key);
-				Enumeration res=search("WHERE name='"+key+"'");
+				//Enumeration res=search("WHERE name='"+key+"'");
+				Enumeration res=search("name=='"+key+"'");
 				if (res.hasMoreElements()) {
 					node=(MMObjectNode)res.nextElement();	
 					url=node.getStringValue("url");
