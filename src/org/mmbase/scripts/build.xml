@@ -728,8 +728,8 @@ Change directory to ${build.dir}/orion and run:
   <target name="web" description="Make the things which must appear in the web-servers html directory"
          depends="init.compile">
     <mkdir dir="${web.dir}"/>
-    <mkdir dir="${web.dir}/taglibdoc"/>
-    <mkdir dir="${web.dir}/communitytaglibdoc"/>
+    <mkdir dir="${web.dir}/taglib"/>
+    <mkdir dir="${web.dir}/community-taglib"/>
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -754,6 +754,9 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-PARAM"/>
       <arg value="basedir"/>
       <arg value="${web.dir}"/>
+      <arg value="-PARAM"/>
+      <arg value="files"/>
+      <arg value="taglib/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
       <arg value="-IN"/>
@@ -788,7 +791,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="${web.dir}"/>
       <arg value="-PARAM"/>
       <arg value="files"/>
-      <arg value="communitytaglibdoc"/>
+      <arg value="community-taglib/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
