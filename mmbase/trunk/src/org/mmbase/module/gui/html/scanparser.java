@@ -1,5 +1,5 @@
 /*
-$Id: scanparser.java,v 1.6 2000-03-10 12:09:58 wwwtech Exp $
+$Id: scanparser.java,v 1.7 2000-03-10 14:15:19 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/10 12:09:58  wwwtech
+Rico: added circular part detection to scanparser, it is also now possilbe to subclass ParseException and throw that in scanparser for those unholdable situations.
+
 Revision 1.5  2000/03/09 16:39:22  wwwtech
 Davzev added $MOD $PARAM etc... support to method:do_counter().
 
@@ -35,7 +38,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.6 $ $Date: 2000-03-10 12:09:58 $
+ * @$Revision: 1.7 $ $Date: 2000-03-10 14:15:19 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -414,6 +417,7 @@ public class scanparser extends ProcessorModule {
 		StringBuffer newbody=new StringBuffer();
 		int pos,pos2;
 		boolean removeToken=false;
+
 	
 		while ((precmd=body.indexOf(cmd,postcmd))!=-1) {
 			if (removeToken) {
@@ -770,7 +774,18 @@ public class scanparser extends ProcessorModule {
 		// rico
 		int i;
 		String rtn=null;
-
+		
+		if ((part2!=null) && part2.equals("L")) {
+			// Eval $PARAML: the number of params
+			if (sp.params==null) {
+				sp.getParam(0); // Force build of params
+				if (sp.params==null) // No params
+					return "0";
+			}
+			return ""+sp.params.size();
+		}
+		
+		// Handle $PARAMn
 		i=Integer.parseInt(part2);
 		rtn=sp.getParam(i-1);
 		if (rtn==null) rtn="";
