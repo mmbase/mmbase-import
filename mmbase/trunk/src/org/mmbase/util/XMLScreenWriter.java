@@ -50,51 +50,51 @@ public class XMLScreenWriter  {
 	}
     }
 
-    public void write(PrintStream out) {
+    public void write(Writer out) throws IOException {
 	write(out,document,-1);
     }
 
-    public void write(PrintStream out, Node node, int level) {
+    public void write(Writer out, Node node, int level) throws IOException {
 	if (node != null) {
 	    if (node.getNodeType() == node.COMMENT_NODE) {
-		out.print(indent(level));
-		out.println("<font color=\""+comment_color+"\">&lt;!--"+node.getNodeValue()+"--&gt;</font><br>");
+		out.write(indent(level));
+		out.write("<font color=\""+comment_color+"\">&lt;!--"+node.getNodeValue()+"--&gt;</font><br>\n");
 	    } else if (node.getNodeType() == node.DOCUMENT_NODE) {
 		NodeList nl = node.getChildNodes();
 		for (int i=0; i < nl.getLength(); i++ ) {
 		    write(out,nl.item(i),level+1);
 		}
 	    } else if (node.getNodeType() == node.TEXT_NODE) {
-		out.println(node.getNodeValue());
+		out.write(node.getNodeValue()+"\n");
 	    } else {
 		boolean is_end_node = isEndNode(node);
 		NamedNodeMap nnm = node.getAttributes();
 		if (nnm == null || nnm.getLength()==0) {
-		    out.print(indent(level));
-		    out.println("<font color=\""+tag_color+"\">&lt;"+node.getNodeName()+"&gt;</font>");
+		    out.write(indent(level));
+		    out.write("<font color=\""+tag_color+"\">&lt;"+node.getNodeName()+"&gt;</font>\n");
 		} else {
-		    out.print(indent(level));
-		    out.print("<font color=\""+tag_color+"\">&lt;"+node.getNodeName()+"</font>");
+		    out.write(indent(level));
+		    out.write("<font color=\""+tag_color+"\">&lt;"+node.getNodeName()+"</font>");
 		    for (int i=0; i < nnm.getLength(); i++) {
 			Node attribute = nnm.item(i);
-			out.print(" <font color=\""+attribute_color+"\">"+attribute.getNodeName()+"=\""+attribute.getNodeValue()+"\"</font>");			
+			out.write(" <font color=\""+attribute_color+"\">"+attribute.getNodeName()+"=\""+attribute.getNodeValue()+"\"</font>");			
 			if (i < nnm.getLength()-1) {
-			    out.print(" ");
+			    out.write(" ");
 			}
 		    }
-		    out.print("<font color=\""+tag_color+"\">&gt;</font>");
+		    out.write("<font color=\""+tag_color+"\">&gt;</font>");
 		}
 		NodeList nl = node.getChildNodes();
 		if (!is_end_node) {
-		    out.println("<br>");
+		    out.write("<br>\n");
 		}
 		for (int i=0; i < nl.getLength(); i++ ) {
 		    write(out,nl.item(i),level+1);
 		}
 		if (!is_end_node) {
-		    out.print(indent(level));
+		    out.write(indent(level));
 		}
-		out.println("<font color=\""+tag_color+"\">&lt;/"+node.getNodeName()+"&gt;</font><br>");
+		out.write("<font color=\""+tag_color+"\">&lt;/"+node.getNodeName()+"&gt;</font><br>\n");
 	    }
 	}	
     }
