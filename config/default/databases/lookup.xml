@@ -62,12 +62,22 @@
      <driver-minor-version condition="equals">0</driver-minor-version>
   </filter>  
 
+  <!-- mysql with jdbc version 2.0 works with relational -->
+  <filter database-config="relational">
+     <database-product-name>MySQL</database-product-name>
+     <driver-class>com.mysql.</driver-class>
+     <driver-major-version condition="equals">2</driver-major-version>
+     <driver-minor-version condition="equals">0</driver-minor-version>
+  </filter>  
+
   <!-- left over jdbc-drivers for mysql -->      
   <filter database-config="mysql">
     <driver-class>org.gjt.mm.mysql.</driver-class>
   </filter>
+  
+  <!-- newer version of mysql uses relational? -->
   <filter database-config="mysql">
-    <driver-class>org.mysql.</driver-class>
+    <driver-class>com.mysql.</driver-class>
   </filter>
   
   <!-- hsql -->
