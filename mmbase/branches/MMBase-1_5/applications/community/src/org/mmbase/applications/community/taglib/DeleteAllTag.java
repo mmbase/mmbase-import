@@ -29,7 +29,7 @@ public class DeleteAllTag extends NodeTag {
         setNumber(c);
     }
 
-    public int doEndtag() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         Module community=getCloudContext().getModule("communityprc");
         Node node=getNodeVar();
         community.getInfo("CHANNEL-"+node.getNumber()+"-DELALLMESSAGES",pageContext.getRequest(),pageContext.getResponse());
