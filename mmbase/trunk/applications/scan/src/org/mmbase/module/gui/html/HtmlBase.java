@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.45 2003-01-13 17:10:41 robmaris Exp $
+ * @version $Id: HtmlBase.java,v 1.46 2003-02-21 09:32:25 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -43,7 +43,7 @@ public class HtmlBase extends ProcessorModule {
     // should use org.mmbase.cache!
     private int multilevel_cachesize=300;
     private MultilevelCacheHandler multilevel_cache;
-    private boolean cachedebug=false;
+    private boolean cachedebug=true;
 
     public void init() {
         scancache tmp=(scancache)getModule("SCANCACHE");
@@ -672,21 +672,21 @@ public class HtmlBase extends ProcessorModule {
         if ((snodes==null) || (snodes.size()==0)) throw new MultiLevelParseException("No NODE specified. Use NODE=\"-1\" to specify no node");
         String distinct=tagger.Value("DISTINCT");
         String searchdirs=tagger.Value("SEARCH");
-        int searchdir = ClusterBuilder.SEARCH_EITHER;
+        int searchdir = MultiRelations.SEARCH_EITHER;
         if (searchdirs!=null) {
             searchdirs = searchdirs.toUpperCase();
             if ("DESTINATION".equals(searchdirs)) {
                 log.debug("DESTINATION");
-                searchdir = ClusterBuilder.SEARCH_DESTINATION;
+                searchdir = MultiRelations.SEARCH_DESTINATION;
             } else if ("SOURCE".equals(searchdirs)) {
                 log.debug("SOURCE");
-                searchdir = ClusterBuilder.SEARCH_SOURCE;
+                searchdir = MultiRelations.SEARCH_SOURCE;
             } else if ("BOTH".equals(searchdirs)) {
                 log.debug("BOTH");
-                searchdir = ClusterBuilder.SEARCH_BOTH;
+                searchdir = MultiRelations.SEARCH_BOTH;
             } else if ("ALL".equals(searchdirs)) {
                 log.debug("ALL");
-                searchdir = ClusterBuilder.SEARCH_ALL;
+                searchdir = MultiRelations.SEARCH_ALL;
             }
         }
 
@@ -717,14 +717,21 @@ public class HtmlBase extends ProcessorModule {
                 dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
             }
             nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir,searchdir);
+			if(nodes==null) nodes = new Vector();
             results=new Vector();
             for (e=nodes.elements();e.hasMoreElements();) {
                 node=(MMObjectNode)e.nextElement();
                 for (f=fields.elements();f.hasMoreElements();) {
                     // hack hack this is way silly, StringTagger needs to be fixed
                     fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
-                    if (fieldname.indexOf('(')>=0) {
-                        result=""+node.getValue(fieldname);
+                    int posarc = fieldname.indexOf('('); 
+                    if (posarc>=0) {
+                    	int pos=fieldname.indexOf(')');
+
+                    	String fieldname2 = fieldname.substring(posarc+1,pos);
+                    	if (fieldname2 != null && fieldname2.length() > 0) {
+                        	result=""+node.getValue(fieldname);
+                    	}
                     } else {
                         result=node.getStringValue(fieldname);
                     }
@@ -942,7 +949,10 @@ public class HtmlBase extends ProcessorModule {
             posarc=fieldname.indexOf('(');
             if (posarc!=-1) {
                 pos=fieldname.indexOf(')');
-                results.addElement(fieldname.substring(posarc+1,pos));
+                String fieldname2 = fieldname.substring(posarc+1,pos);
+                if (fieldname2 != null && fieldname2.length() > 0) {
+                	results.addElement(fieldname2);
+                }
             } else {
                 posdot=fieldname.indexOf('.');
                 if (posdot!=-1) {
