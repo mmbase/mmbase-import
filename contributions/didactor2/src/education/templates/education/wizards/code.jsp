@@ -253,7 +253,7 @@ menu.makeLastSubmenu(metatree, true);
 
 <mm:listnodes type="educations">
 <%@include file="whichimage.jsp"%>
-menu.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
+menu.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' alt='(PDF)' border='0'></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
              "<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />",
              null,
              "<fmt:message key="editEducation"/>",
@@ -290,7 +290,7 @@ var edutree<%= treeCount %> = new MTMenu();
             </mm:field>
         </mm:compare>
   edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"
-                      ><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl" />&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
+                      ><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl" />&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' alt='(PDF)' border='0'></mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' alt='(PDF)' border='0'></mm:compare></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
                   "<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />",
                   null,
                   "<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />",
