@@ -9,21 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
 import java.io.*;
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.14.2.4 2003-04-04 14:22:45 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.14.2.5 2003-04-11 11:21:50 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -34,10 +30,10 @@ public class HttpPost {
     // logger
     private static Logger log = Logging.getLoggerInstance(HttpPost.class.getName());
 
-    // properties
-    private static Map properties = null;
+    public static final String CONFIG_FILE = "httppost.xml";
+    public static final String MAX_PROPERTY = "maxfilesize";
 
-    private int maxLoop=2048;
+    private static final int maxLoop=2048;
 
     /**
      * are the postparameters decoded yet?
@@ -52,7 +48,7 @@ public class HttpPost {
     /**
      * Maximum postparametersize to decode the the parameters into memory
      */
-    private int MaximumPostbufferSize=1*1024*1024; // 1024 switch to disk needs to be param
+    private static final int maximumPostbufferSize = 1*1024*1024; // 1024 switch to disk needs to be param
 
     /**
     * post buffer, holds the values ones decoded
@@ -62,7 +58,7 @@ public class HttpPost {
     /**
      * maxFileSize for a property
      */
-    private int maxFileSize = 4*1024*1024; // 1 Mb
+    private int maxFileSize = 4*1024*1024; // 4 Mb
 
     /**
      * Some postparameters are decoded to disk
@@ -73,19 +69,19 @@ public class HttpPost {
      */
     private HttpServletRequest req=null;
 
+    private static Map properties = null;
+
     /**
      * Initialise WorkerPostHandler
      */
     public HttpPost(HttpServletRequest req) {
-        try {
-            UtilReader reader = new UtilReader("httppost.xml");
+        if (properties == null) {
+            org.mmbase.util.xml.UtilReader reader = new org.mmbase.util.xml.UtilReader(CONFIG_FILE);
             properties = reader.getProperties();
-            if(properties.containsKey("maxfilesize")) {
-                maxFileSize = Integer.parseInt(""+properties.get("maxfilesize"));
-                log.debug("Setting maxfilesize to "+maxFileSize);
-            }
-        } catch(Exception e) {
-            // no config file... ignore
+        }
+        if(properties.containsKey(MAX_PROPERTY)) {
+            maxFileSize = Integer.parseInt(""+properties.get(MAX_PROPERTY));
+            log.debug("Setting maxfilesize to " + maxFileSize);
         }
         postid = System.currentTimeMillis();
         this.req = req;
@@ -133,9 +129,9 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #getPostParameter
     */
-    public boolean checkPostMultiParameter(String name) {
+    public boolean checkPostMultiParameter(String name) {        
         if (!postDecoded) decodePost(req);
-
+        
         Object obj = postValues.get(name);
         if (obj == null) {
             return false;
@@ -170,15 +166,15 @@ public class HttpPost {
     public byte[] getPostParameterBytes(String name) throws PostValueToLargeException {
         // decode when not done yet..
         if (!postDecoded) decodePost(req);
-
+        
         // when the parameter was not found, return null
-        Object obj = postValues.get(name);
+        Object obj = postValues.get(name);        
         if (obj==null) {
-            return null;
+            return null;            
         }
 
         // when it is an instance of String throw the exeption
-        if (obj instanceof String)  {
+        if (obj instanceof String)  {            
             String msg = "Use getPostParameterFile";
             log.warn(msg);
             throw new PostValueToLargeException("Use getPostParameterFile");
@@ -202,7 +198,7 @@ public class HttpPost {
     public Vector getPostMultiParameter(String name) {
         return getPostMultiParameter(name, null);
     }
-
+    
     /**
     * This method returns the value of the postparameter as a Vector.
     * In case of a parameter with one value, it returns it as a Vector
@@ -213,13 +209,13 @@ public class HttpPost {
     public Vector getPostMultiParameter(String name, String encoding) {
         // decode when not done yet..
         if (!postDecoded) decodePost(req);
-
+        
         // when the parameter was not found, return null
-        Object obj = postValues.get(name);
+        Object obj = postValues.get(name);        
         if (obj==null) {
-            return null;
+            return null;            
         }
-
+        
         Vector results= new Vector();
         if (obj instanceof Vector) {
             Vector v = (Vector)obj;
@@ -228,7 +224,7 @@ public class HttpPost {
                 byte[] data = (byte[])e.nextElement();
                 results.addElement(getString(data, encoding));
             }
-        }
+        } 
         else {
             // we assume that obj will be byte[]
             byte[] data = (byte[]) obj;
@@ -236,11 +232,10 @@ public class HttpPost {
         }
         return results;
     }
-
+    
     private static String getString(byte[] data, String encoding) {
         if(encoding == null) {
-            // depricated.. dont know how to replace..
-            return new String(data,0);
+            return new String(data);
         }
         try {
             return new String(data, encoding);
@@ -381,7 +376,7 @@ public class HttpPost {
 
         len=req.getContentLength();
         // Maximum postsize
-        if (len<MaximumPostbufferSize) {
+        if (len<maximumPostbufferSize) {
             log.debug("readContentLength(): writing to memory.");
             try {
                 buffer=new byte[len];
@@ -401,10 +396,10 @@ public class HttpPost {
                     log.info("readContentLength(): (memory) broken out of loop after "+i+" times");
                 }
             } catch (Exception e) {
-                log.error("readContentLength(): Can't read post msg from client");
-                log.error(Logging.stackTrace(e));
+                log.error("readContentLength(): Can't read post msg from client");               
+                log.error(Logging.stackTrace(e));                
                 buffer[len-1] = -1;
-                // just to return _something_...
+                // just to return _something_... 
                 // Mozilla 0.9.7 (and 0.9.6?) had a bug here. Now they are only slow, but work, if you don't supply a file...
 
             }
@@ -542,9 +537,8 @@ public class HttpPost {
     * @param post_header hashtable to put the postbuffer information in
     */
     public boolean readPostFormData(byte[] postbuffer,Hashtable post_header, String line) {
-        int nentrys=0,i,i2,i3,i4,idx,start,end,start2,end2;
-        String templine4=null;
-        String r,r2;
+        int i2,i3,i4,start2,end2;
+        String r;
         String templine="--"+line.substring(line.indexOf("boundary=")+9);
         byte[] marker = new byte[templine.length()];
         byte[] marker2 = new byte[4];
@@ -598,7 +592,7 @@ public class HttpPost {
                     String[] dispositionInfo = extractDispositionInfo(disposition.substring(0,separator-(start2+2)));
                     String mimetype = extractContentType(disposition.substring(separator-(start2+2)+2));
                     String fieldname = dispositionInfo[1];
-                    String filename = dispositionInfo[2];
+                    String filename = dispositionInfo[2];                    
                     Vector v1 = new Vector();
                     v1.addElement(mimetype.getBytes());
                     addpostinfo(post_header,fieldname+"_type",v1);
@@ -658,9 +652,8 @@ public class HttpPost {
         } catch (Exception e) {
             System.out.println("WorkerPostHandler -> File "+formFile +" not exist");
         }
-        int nentrys=0,i,i2,i3,i4,idx,start,end,start2,end2;
-        String templine4=null;
-        String r,r2;
+        int i,i2,i3,i4,start2,end2;
+        String r;
         String templine="--"+line.substring(line.indexOf("boundary=")+9);
         byte[] marker = new byte[templine.length()];
         byte[] marker2 = new byte[4];
@@ -677,7 +670,7 @@ public class HttpPost {
         log.info("readPostFormData(): begin");
 
         int offset=0;
-        int temp=0;
+//        int temp=0;
         int len=64000;
         byte postbuffer[] = new byte[len];
         try {
@@ -710,7 +703,9 @@ public class HttpPost {
                     offset=len-i2+4;
                     int j=0;
                     do {
-                        temp = fis.read(postbuffer);
+                        // should we do something with temp? it is never read again
+                        //temp = 
+                        fis.read(postbuffer);
 
                         end2=indexOf(postbuffer,marker,0);
                         if(end2==-1) {
@@ -801,7 +796,7 @@ public class HttpPost {
     */
     private boolean readPostUrlEncoded(byte[] postbuffer,Hashtable post_header) {
         String mimestr="";
-        int nentrys=0,i=0,idx;
+        int i=0,idx;
         char letter;
 
         String buffer = new String(postbuffer,0);
