@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.17 2002-07-18 10:57:36 eduard Exp $
+ * @version $Id: Utils.java,v 1.18 2002-07-18 11:44:49 eduard Exp $
  */
 public class Utils {
 
@@ -118,6 +118,7 @@ public class Utils {
             serializer.transform(new DOMSource(node),  new StreamResult(writer));
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
+            throw new RuntimeException(Logging.stackTrace(e));
         }
     }
 
@@ -560,15 +561,15 @@ public class Utils {
      * This method selects a single node using the given contextnode and xpath.
      * @param contextnode
      * @param xpath
-     * @return    The found node. Null if nothing is found.
+     * @return    The found node.
      */
     public static Node selectSingleNode(Node contextnode, String xpath) {
-        if (contextnode==null) return null;
+        if (contextnode==null) throw new RuntimeException("context node was null");
         try {
             return XPathAPI.selectSingleNode(contextnode, xpath);
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
-            return null;
+            throw new RuntimeException(Logging.stackTrace(e));
         }
     }
 
@@ -576,17 +577,15 @@ public class Utils {
      * This method selects a multiple nodes using the given contextnode and xpath.
      * @param contextnode
      * @param xpath
-     * @return    The found nodes in a NodeList. <code>null</code> if nothing is found.
+     * @return    The found nodes in a NodeList.
      */
     public static NodeList selectNodeList(Node contextnode, String xpath) {
-        if (contextnode==null) {
-            return null;
-        }
+        if (contextnode==null) throw new RuntimeException("context node was null");
         try {
             return XPathAPI.selectNodeList(contextnode, xpath);
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
-            return null;
+            throw new RuntimeException(Logging.stackTrace(e));
         }
     }
 
