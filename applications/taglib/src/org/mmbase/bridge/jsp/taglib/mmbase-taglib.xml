@@ -46,7 +46,15 @@ one or more examplevalue tags is you want to give some example values.
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
-    <info>The list tag provides a syntax to list clusters of nodes managed by MMBase.</info>
+    <info>
+      Returns a list of nodes. Starting at one or more specified nodes
+      traversals are made according to a specified path. One traversal makes up
+      one record returned by the list. All possible traversals that can be made
+      starting at one or more nodes of the same type and following a specified
+      path are returned. Because the returned records can contain more than one
+      node you will have to prefix the field name with the nodemanager name and
+      a dot if you want to refer to them.
+    </info>
     <attribute>
       <name>nodes</name>
       <required>false</required>
@@ -57,7 +65,14 @@ one or more examplevalue tags is you want to give some example values.
       <name>path</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;</info>
+      <info>
+        A comma seperated list of nodemanagers which specifies the path
+        that should be followed. It is possible to explicitly specify a
+        relationmanager that should be used to go from one node to an other. If
+        no relationmanager is specified between two nodemanagers, all possible
+        relationmanagers that can be used to go to the next specified node in
+        the path are followed.
+      </info>
       <examplevalue>
         <value>mags</value>
       </examplevalue>
@@ -98,7 +113,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The fields on which the result set must be sorted. These must have a prefix.
+        A comma separated list of field names on which the returned list should
+        be sorted.
       </info>
     </attribute>
     <attribute>
@@ -106,13 +122,25 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The direction of sorting.
+        A comma separated list of values indicating wether to sort up
+        (ascending) or down (descending) on the corresponding field in the
+        orderby  parameter or null if sorting on all fields should be up. The
+        value DOWN (case insensitive) indicates that sorting on the
+        corresponding field should be down, all other values (including the
+        empty value) indicate that sorting on the corresponding field should be
+        up. If the number of values found in this parameter are less than the
+        number of fields in the orderby parameter, all fields that don't have a
+        corresponding direction value are sorted according to the last specified
+        direction value.
       </info>
       <possiblevalue>
         <value>UP</value>
       </possiblevalue>
       <possiblevalue>
         <value>DOWN</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>UP,DOWN,UP</value>
       </possiblevalue>
     </attribute>
     <attribute>
@@ -154,9 +182,15 @@ one or more examplevalue tags is you want to give some example values.
         See the 'jspvar' attribute of the Node tag.
       </info>
     </attribute>
+
 <example>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= mags_title %&gt;
+&lt;/mm:list&gt;</example>
+
+<example>&lt;mm:list nodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
+  &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
+  &lt;%= news_title %&gt;
 &lt;/mm:list&gt;</example>
 
   </tag>
@@ -166,26 +200,12 @@ one or more examplevalue tags is you want to give some example values.
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-        The related tag provides a syntax to list objects managed by MMBase.
-        It is similar to the list tag but uses a parent node as its starting point.
+      The related tag is the same as the list tag except that is doesn't
+      provide a node attribute. Instead it will take the surrounding node tag
+      as his startnode.
     </info>
     <attribute>
-      <name>node</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>Node number, or node alias. This attribute defines the starting point of the list.</info>
-    </attribute>
-    <attribute>
       <name>path</name>
-      <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;
-            The nodemanager of the starting node is implied and should not be included.
-      </info>
-      <examplevalue>
-        <value>news</value>
-      </examplevalue>
-      <examplevalue>
-        <value>related,news</value>
-      </examplevalue>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -239,11 +259,12 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
-<example>&lt;mm:node number="Magazine" &gt;
-&lt;mm:related type="posrel,news" sorted="posrel.pos" fields="news.title" &gt;
-  &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
-  &lt;%= news_title %&gt;
-&lt;/mm:related&gt;</example>
+<example>&lt;mm:node number="123"&gt;
+  &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
+    &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+    &lt;%= mags_title %&gt;
+  &lt;/mm:related&gt;
+&lt;/mm:node&gt;</example>
   </tag>
   <tag>
     <name>listnodes</name>
