@@ -14,7 +14,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Utitilies.
+ * Utitilies related to the tranformers of this package.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
@@ -26,6 +26,15 @@ public class Transformers {
 
     /**
      * This method instatiates a CharTransformer by use of reflection.
+     * @param name   The class name for the CharTransformer to be returned
+     * @param config A configuration string for this transformer. At the moment this can be parsed
+     *               as an integer, or the name of a integer constant of the transformer's class.
+     *               Likely, other ways to configure a transformer will be available.
+     * @param errorId  If something goes wrong, an error message is logged, in which this String is
+     *                 used, to clear things up.
+     * @param back   If true, the Transformer will be wrapped in a InverseCharTransformer, so the
+     *               transformation will do the inverse thing.
+     * @return A CharTransformer instance or null in case of an error.
      */
 
     public static CharTransformer getCharTransformer(String name, String config, String errorId, boolean back) {
@@ -33,7 +42,7 @@ public class Transformers {
         try {
             clazz = Class.forName(name);
         } catch (ClassNotFoundException ex) {
-            log.error("Class " + name + " speficifed for " + errorId + " could not be found");
+            log.error("Class " + name + " specified for " + errorId + " could not be found");
             return null;
         }
         if (! CharTransformer.class.isAssignableFrom(clazz)) {
