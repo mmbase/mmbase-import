@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.2 2004-11-29 14:21:10 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -477,27 +477,28 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         builder=null;  // invalidate (builder does not exist any more)
     }
 
-    public Parameters createParameters(String functionName) {
-        Parameters parameters = builder.createParameters(functionName);
-        if (parameters == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+    public Set getFunctions() {
+        Set functions = builder.getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(this,fun));
         }
-        return parameters;
+        return functionSet;
     }
 
     public Function getFunction(String functionName) {
-        Function function = builder.getFunction(functionName);
+        // first try to get the 'node' function.
+        Function function = getNode().getFunction(functionName);
+        // then try to get the 'builder' function.
+        if (function == null) {
+            function = builder.getFunction(functionName);
+        }
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + "does not exist.");
         }
-        return new BasicFunction(cloud, function);
+        return new BasicFunction(this, function);
     }
 
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-        Function function = builder.getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
-        }
-        return new BasicFunctionValue(cloud, function.getFunctionValueWithList(parameters));
-    }
 }

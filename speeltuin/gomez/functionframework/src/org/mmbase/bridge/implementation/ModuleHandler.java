@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.2 2004-11-29 14:21:10 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -212,12 +212,15 @@ public class ModuleHandler implements Module, Comparable {
                cloudContext.equals(((Module)o).getCloudContext());
     };
 
-    public Parameters createParameters(String functionName) {
-        Parameters parameters = mmbase_module.createParameters(functionName);
-        if (parameters == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+    public Set getFunctions() {
+        Set functions = mmbase_module.getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(fun));
         }
-        return parameters;
+        return functionSet;
     }
 
     public Function getFunction(String functionName) {
@@ -225,19 +228,15 @@ public class ModuleHandler implements Module, Comparable {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist.");
         }
-        return new BasicFunction(cloudContext.getCloud("mmbase"), function);
+        return new BasicFunction(function);
+    }
+
+    public Parameters createParameters(String functionName) {
+        return getFunction(functionName).createParameters();
     }
 
     public FieldValue getFunctionValue(String functionName, List parameters) {
-        return getFunctionValue(functionName, parameters, cloudContext.getCloud("mmbase"));
-    }
-
-    public FieldValue getFunctionValue(String functionName, List parameters, Cloud cloud) {
-        Function function = mmbase_module.getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist.");
-        }
-        return new BasicFunctionValue(cloud, function.getFunctionValueWithList(parameters));
+        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
     }
 
 }

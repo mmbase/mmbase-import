@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.Parameters;
 import javax.servlet.*;
@@ -22,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: Module.java,v 1.2 2004-11-29 14:21:10 pierre Exp $
  */
 public interface Module {
 
@@ -128,18 +127,12 @@ public interface Module {
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
     /**
-     * Creates a parameter list for a function.
-     * The list can be filled with parameter values by either using the List set(int, Object) method, to
-     * set values for parameters by psoition, or by using the set(String, Object) method to
-     * set parameters by name.<br />
-     * This object can then be passed to the getFunctionValue method.
-     * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.
+     * Returns all the Function objects of this Module.
+     *
      * @since MMBase-1.8
-     * @param functionName name of the function
-     * @return a {@link org.mmbase.util.functions.Parameters} object.
-     * @throws NotFoundException if the function does not exist
+     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Parameters createParameters(String functionName);
+    public Set getFunctions();
 
     /**
      * Returns a Fuction object.
@@ -155,6 +148,20 @@ public interface Module {
     public Function getFunction(String functionName);
 
     /**
+     * Creates a parameter list for a function.
+     * The list can be filled with parameter values by either using the List set(int, Object) method, to
+     * set values for parameters by psoition, or by using the set(String, Object) method to
+     * set parameters by name.<br />
+     * This object can then be passed to the getFunctionValue method.
+     * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.
+     * @since MMBase-1.8
+     * @param functionName name of the function
+     * @return a {@link org.mmbase.util.functions.Parameters} object.
+     * @throws NotFoundException if the function does not exist
+     */
+    public Parameters createParameters(String functionName);
+
+    /**
      * Executes a function on this module with the given parameters, and returns the result.
      *
      * @since MMBase-1.8
@@ -164,18 +171,5 @@ public interface Module {
      * @throws NotFoundException if the function does not exist
      */
     public FieldValue getFunctionValue(String functionName, List parameters);
-
-    /**
-     * Executes a function on this module with the given parameters, and returns the result.
-     * This method also takes into account the context (cloud) of the user.
-     *
-     * @since MMBase-1.8
-     * @param functionName name of the function
-     * @param parameters list with parameters for the fucntion
-     * @param cloud the suer'as cloud. Used to instantiate Node objects in the user's cloud
-     * @return the result value of executing the function
-     * @throws NotFoundException if the function does not exist
-     */
-    public FieldValue getFunctionValue(String functionName, List parameters, Cloud cloud);
 
 }
