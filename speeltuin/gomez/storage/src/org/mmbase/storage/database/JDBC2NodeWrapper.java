@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
+import java.util.*;
 import java.sql.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.SearchQueryHandler;
@@ -19,21 +20,20 @@ import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.util.XMLDatabaseReader;
 
 /**
- * MMJdbc2NodeInterface interface needs to be implemented to support a new database
- * It is used to abstract the query's needed for mmbase for each database.
- * @author Vpro
+ * Wrapper of MMJdbc2NodeInterface for the storage classes
+ *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.2 2003-08-04 10:57:35 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.3 2003-08-04 11:38:23 pierre Exp $
  */
 public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     
-    StorageManagerFactory factory;
+    private StorageManagerFactory factory;
     
-    /**
-     * @javadoc
-     */
-    public JDBC2NodeWrapper(StorageManagerFactory factory) {
-        this.factory = factory;
+    private Map allowedFields;
+    
+    private Map disallowedFields;
+    
+    public JDBC2NodeWrapper() {
     }
 
     public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
@@ -49,6 +49,8 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * @javadoc please
      */
     abstract public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
+    
+    
     /**
      * @javadoc please
      */
@@ -64,18 +66,22 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * @see org.mmbase.module.core.MMObjectBuilder#convertMMNode2SQL(String)
      */
     abstract public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
+    
     /**
      * @javadoc
      */
     abstract public String getShortedText(String tableName,String fieldname,int number);
+    
     /**
      * @javadoc
      */
     abstract public byte[] getShortedByte(String tableName,String fieldname,int number);
+    
     /**
      * @javadoc
      */
     abstract public byte[] getDBByte(ResultSet rs,int idx);
+    
     /**
      * @javadoc
      */
@@ -111,12 +117,31 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * the same storage.
      * @return unique number
      */
-    abstract public int getDBKey();
+    public int getDBKey() {
+        try {
+            return factory.getStorageManager().createKey();
+        } catch (StorageException se) {
+            return -1;
+        }
+    }
     
-    /**
-     * @javadoc
-     */
-    abstract public void init(MMBase mmb,XMLDatabaseReader parser);
+    public void init(MMBase mmb,XMLDatabaseReader parser) {
+        try {
+            this.factory = StorageManagerFactory.newInstance(mmb);
+        } catch (StorageException se) {
+            throw new StorageError();
+        }
+        disallowedFields = factory.getDisallowedFields();
+        allowedFields = new HashMap();
+        for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
+            Map.Entry e = (Map.Entry)i.next();
+            String val = (String) e.getValue();
+            String key = (String) e.getKey();
+            if (val != null) {
+                allowedFields.put(val, key);
+            }
+        }
+    }
     
     /**
      * @javadoc
@@ -128,39 +153,59 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * @return true if table exists, false if table doesn't exists
      */
     abstract public boolean created(String tableName);
-    /**
-     * @javadoc
-     */
-    abstract public boolean create(MMObjectBuilder bul);
-    /**
-     * @javadoc
-     */
-    abstract public boolean createObjectTable(String baseName);
+
+    public boolean create(MMObjectBuilder bul) {
+        try {
+            factory.getStorageManager().create(bul);
+            return true;
+        } catch (StorageException se) {
+            return false;
+        }
+    }
+    
+    public boolean createObjectTable(String baseName) {
+        try {
+            factory.getStorageManager().create();
+            return true;
+        } catch (StorageException se) {
+            return false;
+        }
+    }
+
      /**
      * @javadoc
      */
     abstract public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
-     /**
-     * @javadoc
-     */
-    abstract public String getDisallowedField(String allowedfield);
-     /**
-     * @javadoc
-     */
-    abstract public String getAllowedField(String disallowedfield);
-     /**
-     * @javadoc
-     */
-    abstract public String getNumberString();
 
-    /**
-     * @javadoc
-     */
-    abstract public String getOwnerString();
-    /**
-     * @javadoc
-     */
-    abstract public String getOTypeString();
+    public String getDisallowedField(String allowedfield) {
+        String disallowedfield = (String)allowedFields.get(allowedfield);
+        if (disallowedfield != null) {
+            return disallowedfield;
+        } else {
+            return allowedfield;
+        }
+    }
+
+    public String getAllowedField(String disallowedfield) {
+        String allowedfield = (String)disallowedFields.get(disallowedfield);
+        if (allowedfield != null) {
+            return allowedfield;
+        } else {
+            return disallowedfield;
+        }
+    }
+
+    public String getNumberString() {
+        return getAllowedField("number");
+    }
+
+    public String getOwnerString() {
+        return getAllowedField("owner");
+    }
+    
+    public String getOTypeString() {
+        return getAllowedField("otype");
+    }
 
     public boolean drop(MMObjectBuilder bul) {
         try {
