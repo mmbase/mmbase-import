@@ -9,7 +9,8 @@
  Note that while this is more generic, it is also more cumbersome to update (may require the webapp to restart, for instance), 
  which is why I left this option open.
 
---%><%@include file="../header.jsp" %>
+--%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@include file="../header.jsp" %><html xmlns="http://www.w3.org/1999/xhtml">
   <mm:cloud name="mmbase" method="http" jspvar="cloud">
   <%  Stack states = (Stack)session.getValue("mmeditors_states");
       Properties state = (Properties)states.peek();
@@ -68,6 +69,11 @@
       <mm:import externid="fieldvalue" required="true" />  
       <mm:node number="<%=nodeID%>">
         <mm:setfield name="$field"><mm:write referid="fieldvalue" /></mm:setfield>
+        <% if (!"new".equals(currentState)) { 
+              currentState="edit";
+              state.put("state",currentState);
+           } 
+        %>
       </mm:node>
     </mm:transaction>
   </mm:compare>
