@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.10 2002-05-22 13:44:34 pierre Exp $
+ * @version $Id: Config.java,v 1.11 2002-06-24 12:33:19 pierre Exp $
  */
 
 public class Config {
@@ -171,6 +171,7 @@ public class Config {
             wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, config.wizard, wizard.objectNumber, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
+            wizard.wiz.setReferrer(config.backPage);
             return wizard;
         }
         public abstract void config(Config.ListConfig c);
