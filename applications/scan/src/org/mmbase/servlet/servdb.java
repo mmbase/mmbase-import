@@ -161,7 +161,7 @@ public class servdb extends JamesServlet {
 				// counted in the future
 				ref=ref.substring(0,pos);
 			}
-			debug("service(): Referer="+ref);
+			//debug("service(): Referer="+ref);
 			if (ref.length()>70) ref=ref.substring(0,70);
 			// org.mmbase if (stats!=null) stats.countSimpleEvent("Linked="+ref);	
 		}
