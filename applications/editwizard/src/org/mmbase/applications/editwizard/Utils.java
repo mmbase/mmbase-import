@@ -12,18 +12,27 @@ import org.xml.sax.*;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
+
 import org.mmbase.util.logging.*;
 
 /**
  * This class contains static utility methods used by the editwizard.
  * Most methods handle xml functions for you and are just to support ease and lazyness.
+ *
+ * @author  Kars Veling
+ * @author  Pierre van Rooden
+ * @author  Michiel Meeuwissen
+ *
+ * @since   MMBase-1.6
+ * @version $Id:
  */
 public class Utils {
+
+    private static Logger log = Logging.getLoggerInstance(Utils.class.getName());
     /**
      * XML Utils
      */
-    private static Logger log = Logging.getLoggerInstance(Utils.class.getName());
-
+    
     /**
      * This method returns a new instance of a DocumentBuilder.
      *
@@ -31,8 +40,8 @@ public class Utils {
      */
     public static DocumentBuilder getDocumentBuilder() throws Exception {
         javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            // Use the DocumentBuilderFactory to provide access to a DocumentBuilder.
-            javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
+        // Use the DocumentBuilderFactory to provide access to a DocumentBuilder.
+        javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
         return dBuilder;
     }
 
@@ -44,9 +53,9 @@ public class Utils {
     public static Document EmptyDocument() {
         try {
             DocumentBuilder dBuilder = getDocumentBuilder();
-                return dBuilder.newDocument();
+            return dBuilder.newDocument();
         } catch (Throwable t) {
-                t.printStackTrace ();
+            log.error(Logging.stackTrace(t));
         }
         return null;
     }
@@ -63,7 +72,7 @@ public class Utils {
             DocumentBuilder b = getDocumentBuilder();
             return b.parse(new FileInputStream(filename));
         } catch (Exception e) {
-            //e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
         return null;
     }
@@ -80,49 +89,49 @@ public class Utils {
             StringReader reader = new StringReader(xml);
             return b.parse(new InputSource(reader));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
         return null;
     }
 
     /**
-    * Serialize a node to the given writer.
-    *
-    * @param        node    The node to serialize
-    * @param        writer  The writer where the stream should be written to.
-    */
+     * Serialize a node to the given writer.
+     *
+     * @param        node    The node to serialize
+     * @param        writer  The writer where the stream should be written to.
+     */
     public static void printXML(Node node, Writer writer) {
         try {
             TransformerFactory tfactory = TransformerFactory.newInstance();
-
-                // This creates a transformer that does a simple identity transform,
-                // and thus can be used for all intents and purposes as a serializer.
+            tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
+            // This creates a transformer that does a simple identity transform,
+            // and thus can be used for all intents and purposes as a serializer.
             Transformer serializer = tfactory.newTransformer();
-
-                serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-                serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                       
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             serializer.transform(new DOMSource(node),  new StreamResult(writer));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
     }
 
 
     /**
-    * Serialize a node to the System.out
-    *
-    * @param        node    The node to serialize
-    */
+     * Serialize a node to the System.out
+     *
+     * @param        node    The node to serialize
+     */
     public static void printXML(Node node)  {
         printXML(node, new PrintWriter(System.out));
     }
 
     /**
-    * Serialize a node and returns the resulting String.
-    *
-    * @param        node    The node to serialize
-    * @return      The resulting string.
-    */
+     * Serialize a node and returns the resulting String.
+     *
+     * @param        node    The node to serialize
+     * @return      The resulting string.
+     */
     public static String getXML(Node node)  {
         StringWriter writer = new StringWriter();
         printXML(node, writer);
@@ -162,10 +171,11 @@ public class Utils {
      */
     public static String getAttribute(Node node, String name, String defaultvalue) {
         try {
-                Node n = node.getAttributes().getNamedItem(name);
-                return n.getNodeValue();
+            Node n = node.getAttributes().getNamedItem(name);
+            return n.getNodeValue();
         } catch (Exception e) {
-                return defaultvalue;
+            log.warn(Logging.stackTrace(e));
+            return defaultvalue;
         }
     }
 
@@ -176,7 +186,7 @@ public class Utils {
      * @return     The value of the containing textnode. If no textnode present, "" is returned.
      */
     public static String getText(Node node) {
-            return getText(node, "");
+        return getText(node, "");
     }
 
     /**
@@ -188,7 +198,7 @@ public class Utils {
      * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
     public static String getText(Node node, String defaultvalue, Hashtable params) {
-            return fillInParams(getText(node, defaultvalue), params);
+        return fillInParams(getText(node, defaultvalue), params);
     }
 
     /**
@@ -196,10 +206,12 @@ public class Utils {
      */
     public static String getText(Node node, String defaultvalue) {
         try {
-                if (node.getNodeType()==Node.TEXT_NODE) return node.getNodeValue();
-                if (node.getFirstChild().getNodeType()==Node.TEXT_NODE) return node.getFirstChild().getNodeValue();
+            if (node.getNodeType()==Node.TEXT_NODE) return node.getNodeValue();
+            if (node.getFirstChild().getNodeType()==Node.TEXT_NODE) return node.getFirstChild().getNodeValue();
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            log.warn(Logging.stackTrace(e));
+        }
         return defaultvalue;
     }
 
@@ -212,23 +224,25 @@ public class Utils {
      * @return     The text string.
      */
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
-            try {
-                XObject x=XPathAPI.eval(node, xpath);
-                if (x==null) return defaultvalue;
-                if (x instanceof XNodeSet) {
-                    if (x.nodelist().getLength()<1) return defaultvalue;
-                    try {
-                        return getText(x.nodelist().item(0));
-                    } catch (Throwable ignore) {
-                        //Error will occur if older Xalan/Xerces is used. If so, we'll just return the string value. Will work in most cases.
-                        return x.toString();
-                    }
-                } else {
+        try {
+            XObject x=XPathAPI.eval(node, xpath);
+            if (x==null) return defaultvalue;
+            if (x instanceof XNodeSet) {
+                if (x.nodelist().getLength()<1) return defaultvalue;
+                try {
+                    return getText(x.nodelist().item(0));
+                } catch (Throwable ignore) {
+                    //Error will occur if older Xalan/Xerces is used. If so, we'll just return the string value. Will work in most cases.
                     return x.toString();
                 }
-            } catch (Exception e) {e.printStackTrace();}
-            return defaultvalue;
+            } else {
+                return x.toString();
+            }		
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
         }
+        return defaultvalue;
+    }
 
     /**
      * This method stores text in a node. If needed, a new text node is created.
@@ -247,11 +261,11 @@ public class Utils {
     public static void storeText(Node node, String text) {
         Node t = node.getFirstChild();
         if (t!=null) {
-                if (t.getNodeType()==Node.TEXT_NODE) {
-                        t.setNodeValue(text);
-                        return;
-                }
+            if (t.getNodeType()==Node.TEXT_NODE) {
+                t.setNodeValue(text);
+                return;
             }
+        }
         t = node.getOwnerDocument().createTextNode(text);
         node.appendChild(t);
     }
@@ -262,8 +276,8 @@ public class Utils {
     public static void appendNodeList(NodeList list, Node dest) {
         Document ownerdoc = dest.getOwnerDocument();
         for (int i=0; i<list.getLength(); i++) {
-                Node n = list.item(i).cloneNode(true);
-                dest.appendChild(ownerdoc.importNode(n, true));
+            Node n = list.item(i).cloneNode(true);
+            dest.appendChild(ownerdoc.importNode(n, true));
         }
     }
 
@@ -305,8 +319,8 @@ public class Utils {
      */
     public static int tagNodeList(NodeList list, String name, String pre, int start) {
         for (int i=0; i<list.getLength(); i++) {
-                Node n = list.item(i);
-                Utils.setAttribute(n, name, pre + "_" + (start++) );
+            Node n = list.item(i);
+            Utils.setAttribute(n, name, pre + "_" + (start++) );
         }
         return start;
     }
@@ -328,10 +342,12 @@ public class Utils {
     public static void copyAllAttributes(Node source, Node dest, Vector except) {
         NamedNodeMap attrs = source.getAttributes();
         for (int i=0; i<attrs.getLength(); i++) {
-                String attrname = attrs.item(i).getNodeName();
-                if (except==null || (!except.contains(attrname))) setAttribute(dest, attrname, attrs.item(i).getNodeValue());
+            String attrname = attrs.item(i).getNodeName();
+            if (except==null || (!except.contains(attrname))) setAttribute(dest, attrname, attrs.item(i).getNodeValue());
         }
     }
+
+
 
     /**
      * Below are handy XSL(T) Utils
@@ -356,6 +372,7 @@ public class Utils {
                 // value, we have to put extra quotes around it.
                 transformer.setParameter(name,params.get(name));
             }catch (Exception paramE){
+                log.error(Logging.stackTrace(paramE));
             }
         }
     }
@@ -372,19 +389,53 @@ public class Utils {
      */
     public static void transformNode(Node node, String xslfilename, Result result, Hashtable params) {
         try {
-                TransformerFactory tfactory = TransformerFactory.newInstance();
+            TransformerFactory tfactory = TransformerFactory.newInstance();
+            tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
+            // Generate a Transformer.
+            Transformer transformer = tfactory.newTransformer(new StreamSource(new File(xslfilename)));
 
-                // Generate a Transformer.
-                Transformer transformer = tfactory.newTransformer(new StreamSource(new File(xslfilename)));
-
-                // Set any stylesheet parameters.
-            setStylesheetParams(transformer,params);
-
-            transformer.transform(new DOMSource(node), result);
+            // Set any stylesheet parameters.
+            setStylesheetParams(transformer, params);
+            if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
+            transformer.transform(new DOMSource(node), result);                       
         } catch (Exception e) {
-                e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
     }
+
+
+    /**
+     * For debugging purposes. Return the constructed document as a String.
+     */
+
+    private static String stringFormatted(Node node) {
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("node " + node);
+                log.debug("doc " + node.getOwnerDocument());
+            }
+            Document doc;
+            if (node instanceof Document) {
+                doc = (Document) node;
+            } else {
+                doc = node.getOwnerDocument();
+            }
+            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
+            
+            format.setIndenting(true);
+            format.setPreserveSpace(false);
+            //  format.setOmitXMLDeclaration(true);
+            //  format.setOmitDocumentType(true);
+            java.io.StringWriter result = new java.io.StringWriter();
+            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
+            prettyXML.serialize(doc);
+            return result.toString();    
+        } catch (Exception e) {
+            return e.toString();
+        }
+    }
+
+
 
     /**
      * same as above, but now the result is returned in a new Node and some less params.
@@ -414,13 +465,24 @@ public class Utils {
      * same as above, but now the result is written to the writer.
      */
     public static void transformNode(Node node, String xslfilename, Writer out) {
-        transformNode(node,xslfilename,new StreamResult(out),null);
+        transformNode(node, xslfilename, out, null);
     }
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
     public static void transformNode(Node node, String xslfilename, Writer out, Hashtable params) {
-        transformNode(node,xslfilename,new StreamResult(out),params);
+        if (log.isDebugEnabled()) log.debug("transforming: " + node.toString());
+
+        // UNICODE works like this...
+        java.io.StringWriter res = new java.io.StringWriter();           
+        transformNode(node,xslfilename, new javax.xml.transform.stream.StreamResult(res),  params);
+        if (log.isDebugEnabled()) log.debug("transformation result " + res.toString());
+        try {
+            out.write(res.toString());
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+        //new StreamResult(out), null);
     }
 
     /**
@@ -442,17 +504,17 @@ public class Utils {
     }
 
     /**
-        Executes an attribute template.
-        example node:
-        <person state='bad'><name>Johnny</name></person>
-        example template:
-        "hi there {person/name}, you're looking {person/@state}"
+       Executes an attribute template.
+       example node:
+       <person state='bad'><name>Johnny</name></person>
+       example template:
+       "hi there {person/name}, you're looking {person/@state}"
 
-        @param context the Node on which any xpaths are fired.
-        @param attributeTemplate the String containting an attribute template.
-        @param plainTextIsXpath true means that if the template doesn't contain
-                any curly braces, the template is assumed to be a valid xpath (instead
-                of plain data). Else the template is assumed to be a valid attribute template.
+       @param context the Node on which any xpaths are fired.
+       @param attributeTemplate the String containting an attribute template.
+       @param plainTextIsXpath true means that if the template doesn't contain
+       any curly braces, the template is assumed to be a valid xpath (instead
+       of plain data). Else the template is assumed to be a valid attribute template.
     */
     public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Hashtable params) {
         if (attributeTemplate==null) return null;
@@ -480,38 +542,40 @@ public class Utils {
      * below some handy xpath utils
      */
 
-     /**
-      * This method selects a single node using the given contextnode and xpath.
-      * @param contextnode
-      * @param xpath
-      * @return    The found node. Null if nothing is found.
-      */
+    /**
+     * This method selects a single node using the given contextnode and xpath.
+     * @param contextnode
+     * @param xpath
+     * @return    The found node. Null if nothing is found.
+     */
 
 
     public static Node selectSingleNode(Node contextnode, String xpath) {
-            if (contextnode==null) return null;
-            try {
-                return XPathAPI.selectSingleNode(contextnode, xpath);
+        if (contextnode==null) return null;
+        try {
+            return XPathAPI.selectSingleNode(contextnode, xpath);
         } catch (Exception e) {
-                        return null;
+            log.error(Logging.stackTrace(e));
+            return null;
         }
     }
 
-     /**
-      * This method selects a multiple nodes using the given contextnode and xpath.
-      * @param contextnode
-      * @param xpath
-      * @return    The found nodes in a NodeList. The nodelist is empty if nothing is found.
-      */
+    /**
+     * This method selects a multiple nodes using the given contextnode and xpath.
+     * @param contextnode
+     * @param xpath
+     * @return    The found nodes in a NodeList. The nodelist is empty if nothing is found.
+     */
     public static NodeList selectNodeList(Node contextnode, String xpath) {
         if (contextnode==null) {
-                return null;
+            return null;
         }
 
         try {
-                return XPathAPI.selectNodeList(contextnode, xpath);
+            return XPathAPI.selectNodeList(contextnode, xpath);
         } catch (Exception e) {
-                return null;
+            log.error(Logging.stackTrace(e));
+            return null;
         }
     }
 
@@ -580,7 +644,7 @@ public class Utils {
         out.close();
 
         BufferedReader in2 = new BufferedReader(new
-        InputStreamReader(c.getInputStream()));
+                                                InputStreamReader(c.getInputStream()));
 
         String outputstr = "";
         String inputLine;
