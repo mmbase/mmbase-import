@@ -70,6 +70,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="project.target.templates.dir" value="${project.name}" />
+  <property name="project.target.examples.dir" value="${project.name}" />
   <property name="mmbase.classes" value="no_extra_classes" />
   <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but that would result in copying everything in stead (ant suck!)... -->
 
@@ -315,7 +316,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.examples" depends="init" if="examples.available">
-    <copy todir="${examples.dir}/${project.target.templates.dir}">
+    <copy todir="${examples.dir}/${project.target.examples.dir}">
       <fileset dir="${project.examples.dir}">
       </fileset>      
     </copy>
