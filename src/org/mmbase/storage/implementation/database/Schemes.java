@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.3 2003-08-22 12:34:48 pierre Exp $
+ * @version $Id: Schemes.java,v 1.4 2003-08-25 12:27:29 pierre Exp $
  */
 public final class Schemes {
 
@@ -44,9 +44,12 @@ public final class Schemes {
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to create the table for</li>
      *    <li>{2} the field definitions (excluding simple index definitions)</li>
-     *    <li>{3} the simple index definitions</li>
+     *    <li>{3} the simple index definitions. 
+     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined</li>
      *    <li>{4} the field definitions, including simple index definitions</li>
-     *    <li>{5} the composite index definitions</li>
+     *    <li>{5} the composite index definitions 
+     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined, 
+     *            and no other field definitions.</li>
      *    <li>{6} the builder that this table extends from</li>
      *  </ul>
      *
@@ -73,7 +76,7 @@ public final class Schemes {
      * This attribute is optional, and there is no default for this scheme.
      * An example (for Informix):
      * <p>
-     *  <code> CREATE ROW TYPE {1}_t ({2}) EXTENDS {3}_t </code>
+     *  <code> CREATE ROW TYPE {1}_t ({2}) </code>
      * </p>
      */
     public static final String CREATE_OBJECT_ROW_TYPE = "create-object-rowtype-scheme";
@@ -84,9 +87,12 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder to create the table for</li>
-     *    <li>{2} the field definitions (excluding simple index definitions)</li>
+     *    <li>{2} the field definitions (excluding simple index definitions) 
+     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined</li>
      *    <li>{3} the simple index definitions</li>
-     *    <li>{4} the field definitions, including simple index definitions</li>
+     *    <li>{4} the field definitions, including simple index definitions 
+     *            A comma-seperated list, which is preceded by a comma UNLESS there is a rowtype scheme defined, 
+     *            and no other field definitions.</li>
      *    <li>{5} the composite index definitions</li>
      *  </ul>
      *
