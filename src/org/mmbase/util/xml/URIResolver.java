@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.18 2004-11-11 17:51:23 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.19 2004-11-17 19:38:22 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
@@ -216,6 +216,10 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         }
     }
 
+
+
+
+
     public URL resolveToURL(final String href,  final String base) throws TransformerException {
         if (log.isDebugEnabled()) {
             log.debug("Using resolver  " + this + " to resolve href: " + href + "   base: " + base);
@@ -226,7 +230,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
                 baseURL = cwd;
             } else {
-                baseURL = new URL(base);
+                baseURL = resolveToURL(base, null); // resolve URIRsolver's prefixes like mm:, ew: in base.
             }
             
             URL path = null;
@@ -246,9 +250,10 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                             break;
                         }
                     } catch (MalformedURLException mfe) {
-                        log.error(mfe);
+                        log.debug(mfe);
+                        // ignore, this might be because of a prefix, which is not yet tried.
                     } catch (java.io.IOException io) {
-                        //log.info("" + u + " cannot be opened");
+                        log.debug(io);
                         // ignore, try next one.
                     }
                 }            
