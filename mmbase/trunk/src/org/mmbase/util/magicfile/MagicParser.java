@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.  OSI Certified is
 a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.util.magicfile;
@@ -27,14 +27,14 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version: $Id: MagicParser.java,v 1.3 2003-02-10 23:44:47 nico Exp $
- * NOT TESTED YET
+ * @version $Id: MagicParser.java,v 1.4 2003-03-07 09:31:18 pierre Exp $
+ * @todo NOT TESTED YET
  */
 
 public class MagicParser implements DetectorProvider {
     private static Logger log = Logging.getLoggerInstance(MagicParser.class.getName());
     private List detectors;
-    
+
     // what a mess:
     // I think all of these members must be removed:
     private boolean parsingFailure = false;
@@ -44,15 +44,15 @@ public class MagicParser implements DetectorProvider {
     private String test;
     private String message;
     private char testComparator;
-    
-    
+
+
     public MagicParser(){
         try {
             // BufferedReader br = new BufferedReader(new FileReader(new File("/etc/mime-magic")));
             BufferedReader br = new BufferedReader(new FileReader(new File("/usr/share/magic/magic.mime")));
             String line;
             detectors = new Vector();
-            
+
             while((line = br.readLine()) != null){
                 Detector d= createDetector(line);
                 if (d != null){
@@ -64,17 +64,17 @@ public class MagicParser implements DetectorProvider {
             System.out.println(""+ e.getMessage() +"}");
         };
     }
-    
+
     public List getDetectors() {
         return detectors;
     }
     // --------------------------------------------------------------------------------
     // some utitily functions
-    
+
     protected int nextWhiteSpace(String s) {
         return nextWhiteSpace(s, 0);
     }
-    
+
     protected int nextWhiteSpace(String s, int startIndex) {
         for (int j=startIndex; j < s.length(); j++) {
             if (s.charAt(j) == ' ' || s.charAt(j) == '\t' || s.charAt(j) == '\n') {
@@ -83,7 +83,7 @@ public class MagicParser implements DetectorProvider {
         }
         return s.length();
     }
-    
+
     protected int nextNonWhiteSpace(String s, int startIndex) {
         for (int j=startIndex; j < s.length(); j++) {
             if (s.charAt(j) != ' ' && s.charAt(j) != '\t') {
@@ -92,8 +92,8 @@ public class MagicParser implements DetectorProvider {
         }
         return -1;
     }
-    
-    
+
+
     /**
      * Separate command from offset
      * @exception Throws an exception when parsing failed
@@ -101,7 +101,7 @@ public class MagicParser implements DetectorProvider {
     private int parseOffsetString(String s,int startIndex) throws Exception {
         try {
             int m = nextWhiteSpace(s,startIndex);
-            
+
             // Bail out when encountering an indirect offset
             char c = s.charAt(startIndex);
             // '&': In sublevel we can start relatively to where the previous match ended
@@ -120,7 +120,7 @@ public class MagicParser implements DetectorProvider {
             throw new Exception("parseOffetString: string->integer conversion failure for '"+s+"'");
         }
     }
-    
+
     /**
      * Parse the type string from the magic file
      *
@@ -141,7 +141,7 @@ public class MagicParser implements DetectorProvider {
         }
         return nextNonWhiteSpace(s,m+1);
     }
-    
+
     /**
      * Parse the test string from the magic file
      *   -- determine: a.) the test comparator, and b.) the test value
@@ -156,9 +156,9 @@ public class MagicParser implements DetectorProvider {
         //int l = s.length();
         char c;
         StringBuffer numbuf = new StringBuffer();
-        
+
         test = "";
-        
+
         c = s.charAt(startIndex);
         switch (c) {
             case '>':
@@ -173,7 +173,7 @@ public class MagicParser implements DetectorProvider {
             start++;
         }
         int i = startIndex+start;
-        
+
         if (!type.equals("string")) {
             int m = nextWhiteSpace(s,i);
             String t = s.substring(i,m);
@@ -211,7 +211,7 @@ public class MagicParser implements DetectorProvider {
             i = m;
         } else {
             StringBuffer buf = new StringBuffer();
-            
+
             int m = s.length();
             while (i<m) {
                 c = s.charAt(i);
@@ -373,9 +373,9 @@ public class MagicParser implements DetectorProvider {
         //log.debug("test = "+vectorToString(test));
         return nextNonWhiteSpace(s, i+1);
     }
-    
-    
-    
+
+
+
     /**
      * Parse the message string from the magic file
      *
@@ -385,20 +385,20 @@ public class MagicParser implements DetectorProvider {
         if (false) throw new Exception("dummy exception to stop jikes from complaining");
         message = s.substring(startIndex);
         return s.length()-1;
-        
+
     }
-    
-    
-    
+
+
+
     private Detector createDetector(String line) {
         Detector detector = new Detector();
         // rawinput = line;
-        
+
         // hasX = false;
         //xInt = -99;
         //xString = "default";
         //xChar = 'x';
-        
+
         // parse line
         log.debug("parse: "+line);
         int n;
@@ -432,19 +432,19 @@ public class MagicParser implements DetectorProvider {
         detector.setDesignation(message);
         return detector;
     }
-    
+
     public boolean toXML(String path) throws IOException {
         File f = new File(path);
         return toXML(f);
     }
-    
+
     /**
      * Write the current datastructure to an XML file
      * XXX Ugly and hardcoded paths
      */
     public boolean toXML(File f) throws IOException {
         FileWriter writer = new FileWriter(f);
-        
+
         writer.write("<!DOCTYPE magic PUBLIC \"-//MMBase/Magic XML config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
         Iterator i = getDetectors().iterator();
         while (i.hasNext()) {
@@ -454,5 +454,5 @@ public class MagicParser implements DetectorProvider {
         writer.close();
         return true;
     }
-    
+
 }

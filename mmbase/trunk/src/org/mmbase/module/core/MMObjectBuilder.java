@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.216 2003-03-07 08:50:13 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.217 2003-03-07 09:31:08 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -157,7 +157,7 @@ public class MMObjectBuilder extends MMTable {
     public String searchAge="31";
 
     /**
-     * Detemines whether the cache need be refreshed?
+     * Determines whether the cache need be refreshed.
      * Seems useless, as this value is never changed (always true)
      * @see #processSearchResults
      */
@@ -642,7 +642,7 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Is this byuilder virtual?
+     * Determinw ehether this builder is virtual.
      * A virtual builder represents nodes that are not stored or retrieved directly
      * from the database, but are created as needed.
      * @return <code>true</code> if the builder is virtual.
@@ -3508,7 +3508,8 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Get text from a blob field. the text is cut if it is to long.
+     * Get text from a blob field.
+     * The text is cut if it is to long.
      * @param fieldname name of the field
      * @param number number of the object in the table
      * @return a <code>String</code> containing the contents of a field as text
@@ -3518,7 +3519,8 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Get binary data of a database blob field. the data is cut if it is to long.
+     * Get binary data of a database blob field.
+     * The data is cut if it is to long.
      * @param fieldname name of the field
      * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text

@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.util;
 /**
@@ -13,19 +13,19 @@ package org.mmbase.util;
  */
 public class HttpAuth {
     private static org.mmbase.util.logging.Logger log = org.mmbase.util.logging.Logging.getLoggerInstance(HttpAuth.class.getName());
-    
+
     private static org.mmbase.module.core.MMBase mmbase = (org.mmbase.module.core.MMBase) org.mmbase.module.core.MMBase.getModule("mmbaseroot");
-    
+
     private static String remoteAuthenticationHost = null;
     private static String remoteAuthenticationPage = null;
     private static int remoteAuthenticationPort = 80;
-    
+
     /**
      * With a given mimeline, the username and password will be retrieved, and with it
      * there will be looked if it is an valid login. If it is a valid login, with a rank higher
      * or equals as Rank::BASICUSER, it will return a userid, otherwise null.
      * @param mimeline The mimeline of the request
-     * @returns a userid for the given user, of <code>null</code> when something goes wrong
+     * @return a userid for the given user, of <code>null</code> when something goes wrong
      */
     public static String checkUser(String mimeline) {
         String user_password = org.mmbase.util.Encode.decode("BASE64", mimeline.substring(6));
@@ -50,12 +50,12 @@ public class HttpAuth {
         }
         return user.getIdentifier();
     }
-    
+
     /**
      * Authenticates a user, If the user cannot be authenticated a login-popup will appear
      * @param server server-account. (for exameple 'film' or 'www')
      * @param level loginlevel. (for example 'Basic' or 'MD5')
-     * @returns username foan exception will be thrown.
+     * @return username foan exception will be thrown.
      * @exception AuthorizationException if the authorization fails.
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
@@ -89,11 +89,11 @@ public class HttpAuth {
                 java.util.StringTokenizer t = new java.util.StringTokenizer(org.mmbase.util.Encode.decode("BASE64", mimeline.substring(6)), ":");
                 String username = t.nextToken();
                 String password = t.nextToken();
-                
+
                 java.net.Socket socket = new java.net.Socket(remoteAuthenticationHost, remoteAuthenticationPort);
                 java.io.BufferedInputStream instream = new java.io.BufferedInputStream(socket.getInputStream());
                 java.io.BufferedOutputStream outstream = new java.io.BufferedOutputStream(socket.getOutputStream());
-                
+
                 // vpro???
                 write(outstream,"GET "+remoteAuthenticationPage+" HTTP/1.0\nContent-Type: vpro/ballyhoo\nUser-Agent: VPRO/James remote password check\nAuthorization: "+password+"\n\n");
                 String result = read(instream);
@@ -119,26 +119,26 @@ public class HttpAuth {
             }
         }
     }
-    
+
     /**
      * getRemoteUser
      * @param req
-     * @returns the remote user
+     * @return the remote user
      */
     public static String getRemoteUser(javax.servlet.http.HttpServletRequest req) {
         return checkUser(getMimeline(req));
     }
-    
+
     /**
      * getRemoteUser
      * @param sp
-     * @returns the remote user
+     * @return the remote user
      */
     public static String getRemoteUser(scanpage sp) {
         return getRemoteUser(sp.req);
     }
-    
-    
+
+
     /**
      * Sets the url on which an authentication has to be checked.
      * @param url
@@ -168,11 +168,11 @@ public class HttpAuth {
             remoteAuthenticationHost = remoteAuthenticationHost.substring(0,pos);
         }
     }
-    
+
     private static String getMimeline(javax.servlet.http.HttpServletRequest req) {
         return ((String)req.getHeader("Authorization"));
     }
-    
+
     private static int write(java.io.BufferedOutputStream out,String line) {
         try {
             out.write(line.getBytes());
@@ -182,7 +182,7 @@ public class HttpAuth {
         }
         return line.length();
     }
-    
+
     private static String read(java.io.BufferedInputStream in) {
         StringBuffer str=new StringBuffer();
         int rtn=0;

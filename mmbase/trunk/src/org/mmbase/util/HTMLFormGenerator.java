@@ -16,68 +16,62 @@ import org.mmbase.module.ProcessorInterface;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-//import java.util.*;
-//import javax.servlet.*;
-//import javax.servlet.http.*;
-//
-//import org.mmbase.module.*;
-//import org.mmbase.util.logging.*;
-
 /**
-* <strong>input</strong> Macro Vector of Strings, Proc Processor.<br>
-* <strong>output</strong> HTML FORM Element(String).<br>
-* Generates from the MACRO Strings a HTML FORM. <br>
-* <p>
-* How should a macro look like in your HTML file?<br>
-* &lt;MACRO ELEMENT NAME VALUE [TAG(S)]&gt;<br>
-* The "MACRO" word will be stripped in de servscan Servlet and does not enters this object.<br>
-* ELEMENT: (if you are fimiliar with HTML FORMs this should be known stuff   <br>
-* TEXTAREA, SELECT, PASSWORD, RADIO, CHECKBOX  <br>
-* NAME:<br>
-* The name of this HTML Element <br>
-* VALUE:<br>
-* This can do 2 things: <br>
-* 1. if the PROC TAG is present, this value will be sent to the processor <br>
-* 2. else ( no PROC TAG) this will be the VALUE of the HTML Element <br>
-* TAG(S) <br>
-* there can be more TAGS (some TYPES does support them and some don't ...)<br>
-* some need an argument some don't (some can handle both :-)<br>
-* <pre>
-* TAG                     WHAT DOES IT?                                                 SUPPORTED BY WHICH ELEMENT?
-* <hr />
-* ROWS=                   The number of ROWS                                            TEXTAREA
-* COLS=                   The number of COLS                                            TEXTAREA
-* SIZE=                   The SIZE of this ELEMENT                                      SELECT TEXT PASSWORD
-* MULTIPLE                We want MULTIPLE selection                                    SELECT
-* CHECKED(=)/SELECTED(=)  The SELECTED element (if there is no PROC tag
-*                         you don't need an argument)                                   SELECT RADIO CHECKBOX
-* EXCLUDE=                The EXCLUDED element (only use with PROC)                     SELECT RADIO CHECKBOX
-* VERTICAL                Add a &lt;BR&gt; after a item                                 SELECT RADIO CHECKBOX
-* HORIZONTAL              Don't add a &lt;BR&gt; after a item                           SELECT RADIO CHECKBOX
-* EMPTY                   Add an EMPTY element                                          SELECT
-* PROC                    Use the processor to get a list (Vector) of values (Strings)  TEXTAREA TEXT and PASSWORD (only the first of the Vector will be used) SELECT RADIO CHECKBOX
-* DOUBLE                  Tell the processor to get a paired list of values             SELECT RADIO CHECKBOX
-* </pre>
-*
-* <strong>example</strong>: SELECT name ProcessorTag SELECTED="selected_item" MULTIPLE SIZE=10 PROC VERTICAL.<br>
-* This generates a SELECT HTML FORM with NAME=name the OPTIONs are filled with<br>
-* the list which is received from the Processor.getList("ProcessorTag") call<br>
-* If the "selected_item" is presend in the list it is "&lt;OPTION SELECTED&gt;" item" <br>
-* The SIZE is the number of displayed items and MULTIPLE tells that multiple <br>
-* selections are posible. <br>
-* VERTICAL tells that you want a &lt;BR&gt; after every &lt;OPTION&gt;<br>
-* <br> <strong> Generated</strong>  from <strong>example</strong>:<br>
-* &lt;SELECT NAME=name SIZE=10 MULTIPLE&gt; <br>
-* &lt;OPTION&gt; item1 &lt;BR&gt;<br>
-* &lt;OPTION SELECTED&gt; sleceted_item &lt;BR&gt;<br>
-* &lt;OPTION&gt; item3 &lt;BR&gt;<br>
-* &lt;/SELECT&gt; <br>
-*<P>
-*
-*
-* @author Jan van Oosterom
-* @version 23-Sep-1996
-*/
+ * Generates from the MACRO Strings a HTML FORM.
+ *<br>
+ * <strong>input</strong> Macro Vector of Strings, Proc Processor.<br>
+ * <strong>output</strong> HTML FORM Element(String).<br>
+ * <p>
+ * How should a macro look like in your HTML file?<br>
+ * &lt;MACRO ELEMENT NAME VALUE [TAG(S)]&gt;<br>
+ * The "MACRO" word will be stripped in de servscan Servlet and does not enters this object.<br>
+ * ELEMENT: (if you are fimiliar with HTML FORMs this should be known stuff   <br>
+ * TEXTAREA, SELECT, PASSWORD, RADIO, CHECKBOX  <br>
+ * NAME:<br>
+ * The name of this HTML Element <br>
+ * VALUE:<br>
+ * This can do 2 things: <br>
+ * 1. if the PROC TAG is present, this value will be sent to the processor <br>
+ * 2. else ( no PROC TAG) this will be the VALUE of the HTML Element <br>
+ * TAG(S) <br>
+ * there can be more TAGS (some TYPES does support them and some don't ...)<br>
+ * some need an argument some don't (some can handle both :-)<br>
+ * <pre>
+ * TAG                     WHAT DOES IT?                                                 SUPPORTED BY WHICH ELEMENT?
+ * <hr />
+ * ROWS=                   The number of ROWS                                            TEXTAREA
+ * COLS=                   The number of COLS                                            TEXTAREA
+ * SIZE=                   The SIZE of this ELEMENT                                      SELECT TEXT PASSWORD
+ * MULTIPLE                We want MULTIPLE selection                                    SELECT
+ * CHECKED(=)/SELECTED(=)  The SELECTED element (if there is no PROC tag
+ *                         you don't need an argument)                                   SELECT RADIO CHECKBOX
+ * EXCLUDE=                The EXCLUDED element (only use with PROC)                     SELECT RADIO CHECKBOX
+ * VERTICAL                Add a &lt;BR&gt; after a item                                 SELECT RADIO CHECKBOX
+ * HORIZONTAL              Don't add a &lt;BR&gt; after a item                           SELECT RADIO CHECKBOX
+ * EMPTY                   Add an EMPTY element                                          SELECT
+ * PROC                    Use the processor to get a list (Vector) of values (Strings)  TEXTAREA TEXT and PASSWORD (only the first of the Vector will be used) SELECT RADIO CHECKBOX
+ * DOUBLE                  Tell the processor to get a paired list of values             SELECT RADIO CHECKBOX
+ * </pre>
+ *
+ * <strong>example</strong>: SELECT name ProcessorTag SELECTED="selected_item" MULTIPLE SIZE=10 PROC VERTICAL.<br>
+ * This generates a SELECT HTML FORM with NAME=name the OPTIONs are filled with<br>
+ * the list which is received from the Processor.getList("ProcessorTag") call<br>
+ * If the "selected_item" is presend in the list it is "&lt;OPTION SELECTED&gt;" item" <br>
+ * The SIZE is the number of displayed items and MULTIPLE tells that multiple <br>
+ * selections are posible. <br>
+ *  VERTICAL tells that you want a &lt;BR&gt; after every &lt;OPTION&gt;<br>
+ * <br> <strong> Generated</strong>  from <strong>example</strong>:<br>
+ * &lt;SELECT NAME=name SIZE=10 MULTIPLE&gt; <br>
+ * &lt;OPTION&gt; item1 &lt;BR&gt;<br>
+ * &lt;OPTION SELECTED&gt; sleceted_item &lt;BR&gt;<br>
+ * &lt;OPTION&gt; item3 &lt;BR&gt;<br>
+ * &lt;/SELECT&gt; <br>
+ *<P>
+ *
+ *
+ * @author Jan van Oosterom
+ * @version $Id: HTMLFormGenerator.java,v 1.7 2003-03-07 09:31:13 pierre Exp $
+ */
 public class HTMLFormGenerator {
     // logger
     private static Logger log = Logging.getLoggerInstance(HTMLFormGenerator.class.getName());
@@ -121,9 +115,10 @@ public class HTMLFormGenerator {
     }
 
     /**
-    * Gets the first element of the Vector and selects the corespondending HTMLElement,<br>
-    * to handle this elements and passes the tail elements to that Element.<br>
-    * output String: HTML FORM Element (TEXTAREA, RADIO, SELECT, CHECKBOX, TEXT or PASSWORD).<br>
+    * Gets the first element of the Vector and selects the correspondending HTMLElement
+    * to handle this element, and passes the tail elements to that Element.
+    * <br />
+    * Output String: HTML FORM Element (TEXTAREA, RADIO, SELECT, CHECKBOX, TEXT or PASSWORD).
     * @param proc The Processor to handle the getList (2nd Element from the Vector marco)
     * @param macro The Vector with Strings
     */
@@ -176,7 +171,7 @@ public class HTMLFormGenerator {
         Enumeration e = vector.elements();
         if (e.hasMoreElements()) {
             //We don't want the first one ....
-            // Object dummy = 
+            // Object dummy =
             e.nextElement();
 
             Vector tailToReturn = new Vector();

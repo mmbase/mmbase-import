@@ -22,11 +22,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * MMBase Taglib attributes can contain $-variables. Parsing of these $-variable is
- * cached. Evaluation of these vars must be postponed until doStartTag because servlet containers can 
+ * cached. Evaluation of these vars must be postponed until doStartTag because servlet containers can
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.3 2002-12-24 18:59:50 michiel Exp $
+ * @version $Id: Attribute.java,v 1.4 2003-03-07 09:31:02 pierre Exp $
  * @since   MMBase-1.6.1
  */
 
@@ -54,7 +54,7 @@ class AttributeCache extends Cache {
         super.put(att, res);
         return res;
     }
-        
+
 }
 
 public class Attribute {
@@ -68,7 +68,6 @@ public class Attribute {
         cache.putCache();
     }
 
-
     /**
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
@@ -81,29 +80,31 @@ public class Attribute {
     /**
      * Whether the attribute contains any $-vars.
      */
-    private boolean containsVars;   
+    private boolean containsVars;
+
     /**
      * The unparsed attribute.
      */
-    private Object attribute;     
+    private Object attribute;
+
     /**
      * List of AttributeParts (the parsed attribute). This can be null if containsVars is false.
      */
-    private List    attributeParts; 
+    private List    attributeParts;
 
-    /** 
+    /**
      * The constructor is protected, construction is done by the cache.
      */
     protected Attribute(Object at) throws AttributeException {
         attribute    = at;
         parse();
     }
-    
+
     protected Attribute() {}
 
     /**
      * Appends the evaluated Attribute to StringBuffer
-     * 
+     *
      * @param ContextReferrerTag The tag relative to which the variable evalutations must be done
      *                           (normally 'this')
      */
@@ -120,10 +121,9 @@ public class Attribute {
         }
     }
 
-    /** 
+    /**
      * Returns the evaluated Attribute as an Object.
      */
-
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("Evaluating " + this);
@@ -138,10 +138,9 @@ public class Attribute {
         return result.toString();
     }
 
-    /** 
+    /**
      * Returns the evaluated Attribute as a String
      */
-
     public String getString(ContextReferrerTag tag) throws JspTagException {
         return getValue(tag).toString();
     }
@@ -150,11 +149,12 @@ public class Attribute {
      * String representation of this Attribute object (for debugging)
      */
     public String toString() {
-        return "att: " + attribute.toString() + " parts: " + attributeParts;         
+        return "att: " + attribute.toString() + " parts: " + attributeParts;
     }
 
     /**
-     * Parses this attribute into list of 'attributeparts'. getValue will concatate them together again (after evaluation).
+     * Parses this attribute into list of 'attributeparts'.
+     * The method {@link getValue} will concatenate them together again (after evaluation).
      */
 
     protected void parse() throws AttributeException {
@@ -164,7 +164,7 @@ public class Attribute {
         }
         // search all occurences of $
         int foundpos     = attr.indexOf('$');
-        if (foundpos == -1) { 
+        if (foundpos == -1) {
             containsVars = false;
             return; // if none, return imediately.
         } else {
@@ -176,7 +176,7 @@ public class Attribute {
         while (foundpos >= 0) { // we found a variable!
             String npart = attr.substring(pos,foundpos);
             if (npart.length() > 0) {
-                attributeParts.add(new AttributePart(npart)); 
+                attributeParts.add(new AttributePart(npart));
             }
             // piece of string until now is ready.
             foundpos ++;
@@ -190,7 +190,7 @@ public class Attribute {
                 pos = ++foundpos;
                 int opened = 1;
                 while (opened > 0) {
-                    int posclose = attr.indexOf('}', pos); 
+                    int posclose = attr.indexOf('}', pos);
                     int posopen  = attr.indexOf('{', pos);
                     if (posclose == -1) {
                         throw new AttributeException("Unbalanced parentheses in '" + this + "'");
@@ -216,7 +216,7 @@ public class Attribute {
                     attributeParts.add(new AttributePart("$"));
                     pos++;
                 } else {        // search until non-identifier
-                    StringBuffer varName = new StringBuffer(); 
+                    StringBuffer varName = new StringBuffer();
                     while (ContextTag.isContextIdentifierChar(c)) {
                         varName.append(c);
                         pos++;
@@ -260,7 +260,7 @@ public class Attribute {
         }
 
         AttributePart(int t, Object p) throws AttributeException {
-            type = t; 
+            type = t;
             part = p;
             check();
        }
@@ -303,7 +303,7 @@ public class Attribute {
                         log.debug("Expression does not contain vars, casting to double");
                         ExprCalc cl = new ExprCalc(att.attribute.toString());
                         part = new Double(cl.getResult());
-                        type = DOUBLE; 
+                        type = DOUBLE;
                     }
                 }
             }
@@ -324,9 +324,9 @@ public class Attribute {
                     return tag.getObject((String) part);
                 }
             }
-            case ATTRIBUTE:   
+            case ATTRIBUTE:
                 return ((Attribute) part).getValue(tag);
-            case EXPRESSION: { 
+            case EXPRESSION: {
                 ExprCalc cl = new ExprCalc( ((Attribute) part).getString(tag));
                 return new Double(cl.getResult());
             }
@@ -335,7 +335,7 @@ public class Attribute {
         }
 
 
-        void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {            
+        void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
             if (log.isDebugEnabled()) {
                 log.trace("Appending part '" + part + "' of  type " + getType(type));
             }
@@ -345,7 +345,7 @@ public class Attribute {
             case VAR:
             case EXPRESSION:
             case ATTRIBUTE:
-                buffer.append(getValue(tag).toString()); 
+                buffer.append(getValue(tag).toString());
                 return;
                 // case ATTRIBUTE:   ((Attribute) part).appendValue(tag, buffer); return;
             default: throw new AttributeException("Found an unknown Attribute Part type");

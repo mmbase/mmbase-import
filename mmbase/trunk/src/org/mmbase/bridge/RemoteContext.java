@@ -18,7 +18,7 @@ import java.lang.reflect.*;
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.4 2003-03-04 13:44:42 nico Exp $
+ * @version $Id: RemoteContext.java,v 1.5 2003-03-07 09:31:00 pierre Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {
@@ -30,7 +30,7 @@ public class RemoteContext {
      * @todo should throw a Bridge Exception (?)
      * @param uri rmi uri like rmi://www.mmbase.org:1111/remotecontext
      * @return the remote cloud context named remotecontext
-     * @throw RuntimeException if anything goes wrong
+     * @throws RuntimeException if anything goes wrong
      */
     public static CloudContext getCloudContext(String uri) {
         try {
