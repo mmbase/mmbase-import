@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Hashtable;
+import java.util.Map;
 import javax.servlet.*;
 
 /**
@@ -19,7 +19,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.9 2002-04-13 11:07:53 michiel Exp $
+ * @version $Id: Module.java,v 1.10 2002-08-14 19:08:07 michiel Exp $
  */
 public interface Module {
 
@@ -53,7 +53,7 @@ public interface Module {
          *      commands make use of this parameter.
          * @param auxparameters additional parameters for this command.
      */
-    public void process(String command, Object parameter, Hashtable auxparameters);
+    public void process(String command, Object parameter, Map auxparameters);
 
     /**
      * Runs the command with the given parameter(s).
@@ -64,7 +64,7 @@ public interface Module {
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */
-    public void process(String command, Object parameter, Hashtable auxparameters, ServletRequest req,  ServletResponse resp);
+    public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp);
 
     /**
      * Retrieve info from a module based on a command string.
@@ -93,7 +93,7 @@ public interface Module {
      *      given names such as "item1".
      * @param parameters a hashtable containing the named parameters of the list.
      */
-    public NodeList getList(String command, Hashtable parameters);
+    public NodeList getList(String command, Map parameters);
 
     /**
      * Retrieve info from a module based on a command string
@@ -108,7 +108,7 @@ public interface Module {
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */
-    public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp);
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
 
 }
