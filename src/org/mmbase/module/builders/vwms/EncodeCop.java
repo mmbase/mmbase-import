@@ -1,5 +1,5 @@
 /*
-$Id: EncodeCop.java,v 1.3 2000-03-24 14:34:04 wwwtech Exp $
+$Id: EncodeCop.java,v 1.4 2000-03-27 15:10:17 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/24 14:34:04  wwwtech
+Rico: total recompile
+
 Revision 1.2  2000/03/21 15:36:57  wwwtech
 - (marcel) Removed debug (globally declared in MMOBjectNode)
 
@@ -24,7 +27,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.3 $ $Date: 2000-03-24 14:34:04 $
+ * @version $Revision: 1.4 $ $Date: 2000-03-27 15:10:17 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -33,7 +36,8 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	private boolean	debug		= true;
 	// private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
-	Vector EncoderHandlers=new Vector();
+	Vector EncoderHandlers		= new Vector();
+	Vector waitingEncodeHandlers= new Vector();
 
 	public EncodeCop() {
 		debug("EncodeCop(): EncodeCop started...");
@@ -81,6 +85,8 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 				debug("encoderChanged("+number+","+ctype+"): ERROR: No handler found, machine crashed/rebooted !?!");
 			} else
 				debug("encoderChanged("+number+","+ctype+"): handler found, everything ok!");
+				parent.signalEncoderFree( number );
+				
 		} catch (NumberFormatException e ) {
 			debug("encoderChanged("+number+","+ctype+"): ERROR: while converting to int:"+e);
 		}	
@@ -133,7 +139,28 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		return result;
 	}
 
+	// signal to encodecop that we are waiting for a free encoder..
+	public void addWaitingEncodeHandler( EncodeHandler h ) {
+		waitingEncodeHandlers.add( h );
+	}
+
+	// remove ourselfs from waitinglist, we are not waiting, but activly searching for encoder
+	public void removeWaitingEncodeHandler( EncodeHandler h ) {
+		waitingEncodeHandlers.remove( h );	
+	}
+
 	public boolean removeEncodeHandler( EncodeHandler eh ) {
 		return EncoderHandlers.remove( eh );
+	}
+
+	// encodecop saw a free encoder, signal first waiting handler that a free encoder has arrived
+	public void signalEncoderFree( int num ) {
+		Enumeration e = waitingEncodeHandlers.elements();
+		EncodeHandler h = null;
+		if( e.hasMoreElements() ) {
+			h = (EncodeHandler)e.nextElement();
+			if( h.node.getIntValue("number") != num )	// just to be sure..
+				h.
+		}		
 	}
 }

@@ -1,5 +1,5 @@
 /*
-$Id: EncodeHandler.java,v 1.5 2000-03-24 14:34:04 wwwtech Exp $
+$Id: EncodeHandler.java,v 1.6 2000-03-27 15:10:18 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/24 14:34:04  wwwtech
+Rico: total recompile
+
 Revision 1.4  2000/03/21 15:36:57  wwwtech
 - (marcel) Removed debug (globally declared in MMOBjectNode)
 
@@ -30,13 +33,15 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.5 $ $Date: 2000-03-24 14:34:04 $
+ * @version $Revision: 1.6 $ $Date: 2000-03-27 15:10:18 $
  */
 public class EncodeHandler implements Runnable {
 
 	private String 	classname = getClass().getName();
-	private boolean debug = false;
+	private boolean debug = true;
 	private void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
+	public boolean waitingForFreeG2Node = false;
 
 	Thread kicker = null;
 	EncodeCop parent;
@@ -109,7 +114,7 @@ public class EncodeHandler implements Runnable {
 			MMObjectNode wavnode=addRawAudio(id,RawAudioDef.STATUS_ONDERWEG,RawAudioDef.FORMAT_WAV,RawAudioDef.WAV_MAXSPEED,2); 
 
 			// setup the player & start the player  
-			debug("encodeHandler -> "+playernode);
+			debug("doNewCdtrack(): found playernode("+playernode+")");
 			playernode.setValue("state","record");
 			playernode.setValue("info","tracknr="+node.getIntValue("tracknr")+" id="+id);
 			playernode.commit();
@@ -120,7 +125,7 @@ public class EncodeHandler implements Runnable {
 			while (!changed) {	
 				parent.Vwms.mmb.mmc.waitUntilNodeChanged(playernode);
 				newnode=bul.getNode(playernode.getIntValue("number"));
-				debug("NEWNODE="+newnode);
+				debug("doNewCdtrack(): newnode("+newnode+")");
 				String state=newnode.getStringValue("state");
 				if (state.equals("waiting")||state.equals("error")) changed=true;
 			}
@@ -136,22 +141,38 @@ public class EncodeHandler implements Runnable {
 			parent.removeEncodeHandler( this );
 
 		} else {
-			debug("EncodeCop -> problem : can't find cdplayer claimed by : "+owner);
+			debug("doNewCdtrack(): ERROR: Can't find cdplayer claimed by  owner("+owner+")");
 		}
 	}
 
 
 	public void doG2Encode() {
-		debug("EncodeHandler g2encoder started");
+		debug("doG2Encode(): started");
 
 		g2encoders bul=(g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");	
+		MMObjectNode g2node	= null;
 
+		// the very old way (this is *not* good :)
+		// ---------------------------------------
 		// MMObjectNode g2node=bul.getNode(2483396);
 		// MMObjectNode g2node=bul.getNode(2496582);
 
+		// -------------------------------------------
+
+		// wait while no node found .. try x times y secs before giving up...
+
+		g2node = getFreeG2Node(bul);
+		if( debug ) {
+			if( g2node != null )
+				debug("doG2Enode(): GOOD!: found testnode("+g2node+")");
+			else
+				debug("doG2Enode(): WARNING: No node found in getFreeG2Node("+bul+")!");
+		}
+
+		// -------------------------------------------
+
 		int 	number	= -1;
 		String snumber = bul.getNumberFromName("noise1");
-		MMObjectNode g2node	= null;
 
 		if( snumber != null && !snumber.equals(""))
 		{	
@@ -250,5 +271,37 @@ public class EncodeHandler implements Runnable {
 		node.setValue("channels",channels);
 		bul.insert("system",node);
 		return(node);
+	}
+
+
+	/**
+	*	Get a free g2encoder
+	*
+	* 	This method should wait till a free node is found.
+	* 
+	*/
+	private synchronized MMObjectNode getFreeG2Node( g2encoders builder ) {
+		MMObjectNode result = null;
+		int i = 1;
+		try {
+			while( result == null ) {
+				Enumeration e = builder.search( "WHERE state='waiting'" );
+				if( e.hasMoreElements() ) {
+					result = (MMObjectNode)e.nextElement();
+				} else {
+					parent.addWaitingEncodeHandler( this );
+					wait( (60*1000) ); 
+					parent.removeWaitingEncodeHandler( this );
+					i++;
+				}	
+			}
+		} catch( InterruptedException e ) {
+			debug("getFreeG2Node(): ERROR: " + e);		
+		}
+		return result;
+	}
+
+	public synchronized void notifyG2Free() {
+		notify();
 	}
 }
