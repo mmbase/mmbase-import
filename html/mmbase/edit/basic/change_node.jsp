@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp"
-%><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html">
+%><mm:content language="$config.lang" country="$config.country" expires="0" type="text/html" postprocessor="none">
 <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <title><%= m.getString("change_node.change")%></title>
