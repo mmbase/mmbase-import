@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <project>
   <pomVersion>3</pomVersion>
-  <id>mmbase</id>
-  <name>mmbase</name>
-  <groupId>mmapps</groupId>
-  <currentVersion>1.7</currentVersion>
+  <id>mmbase-core</id>
+  <name>mmbase-core</name>
+  <groupId>mmbase</groupId>
+  <currentVersion>1.7-rc3</currentVersion>
   <organization>
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
