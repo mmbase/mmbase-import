@@ -483,5 +483,26 @@ public class BasicCloud implements Cloud, Cloneable {
         } else {
             throw new BasicBridgeException("getList failed, parameters are invalid :" +pars+" - "+constraints);
         }
+    }    
+
+    /**
+     * set the Context of the current Node
+     */    
+    void setContext(int nodeNumber, String context) {
+    	authorization.setContext(userContext, nodeNumber, context);
     }
+
+    /**
+     * get the Context of the current Node
+     */    
+    String getContext(int nodeNumber) {
+    	return authorization.getContext(userContext, nodeNumber);
+    }
+    
+    /**
+     * get the Contextes which can be set to this specific node
+     */            
+    StringList getPossibleContexts(int nodeNumber) {
+    	return new BasicStringList(authorization.getPossibleContexts(userContext, nodeNumber));
+    }        
 }
