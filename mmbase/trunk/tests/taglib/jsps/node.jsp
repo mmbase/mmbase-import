@@ -14,7 +14,7 @@
   No testnode in session. Do first <a href="transaction.jsp">transaction.jsp</a>
 </mm:notpresent>
 <mm:present referid="node">
-<mm:cloud method="anonymous" jspvar="cloud">
+<mm:cloud username="admin" password="admin2k" jspvar="cloud">
 <h3>listing all fields, getting node by number (referid attribute): </h3>
 <em>see <a href="<mm:url page="${taglibdoc}/fieldlist.jsp" />">fieldlist</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/fieldinfo.jsp" />">fieldinfo</a></em><br />
@@ -58,7 +58,7 @@
 <mm:node referid="node">
   <mm:setfield name="subtitle"><mm:field name="subtitle" />edited</mm:setfield>
    <!-- mm:createalias default.mags mm:createalias CANNOT catch  bridgeexception in jsp in orion!!! --> 
-  subtitle: <mm:field name="subtitle" /><br />
+  subtitle: <mm:field id="subtitle" name="subtitle" /><br />
   <mm:createalias><mm:field name="subtitle" /></mm:createalias>
 </mm:node>
 <mm:node referid="node">
@@ -158,17 +158,17 @@ using list tag: <br />
      <em>node element="news"</em>:<br />
     <mm:log>2</mm:log>
      title: <mm:field name="title" /><br />
-     <em>should follow 6 times (numbered from 1 to 6) the related URL:</em><br />
+     <em>should follow 9 times (numbered from 1 to 9) the related URL:</em><br />
     <mm:log>3</mm:log>
      <mm:relatednodes type="urls">
-       1  related url (used relatednodes): <mm:field name="url" /><br />
+       1  related url (used relatednodes): <mm:field id="url" name="url" /><br />
      </mm:relatednodes>
      <mm:relatednodes type="urls" orderby="description">
        2  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
-     <mm:relatednodes type="urls" role="posrel" searchdir="destination">
+     <mm:relatednodes type="urls" role="posrel" searchdir="destination" orderby="posrel.pos">
        3  related url (used relatednodes): <mm:field name="url" /><br />
-     </mm:relatednodes>  
+     </mm:relatednodes>
      <mm:relatednodes type="urls" searchdir="destination">
        4  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>  
@@ -186,10 +186,97 @@ using list tag: <br />
      </mm:relatednodes>
      <mm:related path="urls" fields="urls.url">
        6  related url (used related): <mm:field name="urls.url" /><br />
-     </mm:related>  
-
+     </mm:related>
+     <mm:related path="related,urls" fields="urls.url">
+         SHOULD NOT SEE THIS (role is not 'related' but 'posrel') <br />
+     </mm:related>
+     <mm:related path="posrel,urls" fields="urls.url">
+       7  related url (used related, with role): <mm:field name="urls.url" /><br />
+     </mm:related>
+     <mm:relatedcontainer path="posrel,urls">
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:related>
+          8  related url (used related): <mm:field name="urls.url" /><br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <% try  { %>
+     <mm:relatedcontainer path="related,urls">
+       relatedcontainer: size  <mm:size /> (should be 0) <br />
+       <mm:related>
+         SHOULD NOT SEE THIS (role is not 'related' but 'posrel') <br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <% } catch (Exception e) { %>
+        OK, threw an exception with role is 'related' (news->urls does not exist)<br />
+     <% } %>
+     <mm:relatedcontainer path="urls">
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:related>
+          9  related url (used related): <mm:field name="urls.url" /><br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <mm:relatedcontainer path="urls" searchdirs="source">
+       relatedcontainer: size  <mm:size /> (should be 0) <br />
+       <mm:related>
+         SHOULD NOT SEE THIS (excplitiy asked for other direction)<br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <mm:relatedcontainer path="urls" searchdirs="destination">
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:related>
+          10  related url (used related): <mm:field name="urls.url" /><br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <mm:relatedcontainer path="posrel,urls" searchdirs="destination">
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:related>
+          11  related url (used related): <mm:field name="urls.url" /><br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <mm:relatedcontainer path="posrel232,urls3" searchdirs="destination">
+       <mm:sortorder field="posrel232.pos" />
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:related>
+          12  related url (testing postfixed digits): <mm:field name="urls3.url" /><br />
+       </mm:related>
+     </mm:relatedcontainer>
+     <mm:relatednodescontainer path="posrel232,urls3" searchdirs="destination">
+       <mm:sortorder field="posrel232.pos" />
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:relatednodes>
+          13  related url (relatednodescontainer): <mm:field name="url" /><br />
+       </mm:relatednodes>
+     </mm:relatednodescontainer>
+     <mm:relatednodescontainer path="posrel232,urls3" searchdirs="destination" element="posrel232">
+       <mm:sortorder field="posrel232.pos" />
+       relatedcontainer: size  <mm:size /> (should be 1) <br />
+       <mm:relatednodes>
+          14  position (relatednodescontainer): <mm:field name="pos" /> (should be 10)<br /> 
+       </mm:relatednodes>
+     </mm:relatednodescontainer>
    </mm:node>
 </mm:list>
+
+
+<em>Using constraint tags to refind the url</em><br />
+<mm:listnodescontainer type="urls">
+   <mm:constraint field="url" value="$url" />
+   listnodescontainer: size <mm:size /> (should be 1) <br />
+   <mm:listnodes>
+    1 url: <mm:field name="url" /><br />
+   </mm:listnodes>
+</mm:listnodescontainer>
+
+
+<mm:listnodescontainer path="urls,news" element="news">
+   <mm:constraint field="urls.url" value="$url" />
+   listnodescontainer: size <mm:size /> (should be 1) <br />
+   <mm:listnodes>
+    1 news: <mm:field name="title" /><br />
+   </mm:listnodes>
+</mm:listnodescontainer>
+
+
 
 
 <h3>List-tag with only one element</h3>

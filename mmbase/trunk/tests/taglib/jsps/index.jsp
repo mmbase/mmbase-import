@@ -1,5 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><html>
 <title>Testing MMBase/taglib</title>
 <body>
 <h1>Testing MMBase/taglib</h1>
@@ -18,9 +19,11 @@
   occuring. It could be that these pages don't work well in the orion
   application server. 
 </p>
-<mm:log>0</mm:log>
 <p>
-  Start <a href="<mm:url page="transaction.jsp" />">here for transaction-tests</a>.
+  <img src="mag.jpg" alt="tadaam" title="gvd" />
+</p>
+<p>
+  Start <a title="hoi" href="<mm:url page="transaction.jsp" />">here for transaction-tests</a>.
 </p>
 <p>
   The cloud-tag is a rather complex thing, it has some attributes
