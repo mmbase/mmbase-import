@@ -1042,7 +1042,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <name>name</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-    <info>
+      <info>
 	In stead of giving it in the body, you can also indicate it with this parameter.
       </info>
     </attribute>
@@ -2042,8 +2042,17 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.SetContextTag</tagclass>
     <info>
-      Change the context of a node. New context is in body.
+      Change the context of a node.
     </info>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        In stead of giving the name of the context in the body, you can also
+        indicate it with this parameter.
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>countrelations</name>

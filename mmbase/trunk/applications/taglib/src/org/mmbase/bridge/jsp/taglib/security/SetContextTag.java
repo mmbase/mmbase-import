@@ -18,9 +18,17 @@ import javax.servlet.jsp.JspTagException;
 * @author Michiel Meeuwissen
 */
 public class SetContextTag extends NodeReferrerTag {
+    private String name = null;
+
+    public void setName(String n) throws JspTagException {
+        name = getAttributeValue(n);
+    }
 
     public int doAfterBody() throws JspTagException {        
-        getNode().setContext(bodyContent.getString());
+        if (name == null) {
+            name = bodyContent.getString();
+        }
+        getNode().setContext(name);
         return EVAL_PAGE;
     }   
 
