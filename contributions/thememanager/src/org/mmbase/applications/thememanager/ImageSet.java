@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 public class ImageSet {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(ImageSet.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ImageSet.class); 
     private HashMap images=new HashMap();
     private String id;
     private String role;

@@ -29,7 +29,7 @@ import org.mmbase.applications.thememanager.*;
  */
 public class ThemeManagerController extends ThemeManager {
 
-	private static Logger log = Logging.getLoggerInstance(ThemeManagerController.class.getName());
+	private static Logger log = Logging.getLoggerInstance(ThemeManagerController.class);
 
 	public static List getAssignedList() {
                 List list = new ArrayList();

@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
 
 public class ThemeManager {
 
-    private static Logger log = Logging.getLoggerInstance(ThemeManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ThemeManager.class);
 
 
     /** DTD resource filename of the themes DTD version 1.0 */
