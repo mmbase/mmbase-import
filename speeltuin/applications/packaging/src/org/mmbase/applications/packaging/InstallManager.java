@@ -51,7 +51,7 @@ public class InstallManager {
 
     private static boolean running = false;
 
-
+    private static ArrayList autoresetfiles = null;
 
     public static synchronized void init() {
         if (!PackageManager.isRunning()) PackageManager.init();
@@ -72,6 +72,9 @@ public class InstallManager {
         
             // signal we are a package only install
             bundle = false;
+
+            // reset the autoresetfiles
+            autoresetfiles = null;
 
             // set the package
             pkg = p;
@@ -102,6 +105,9 @@ public class InstallManager {
             // signal we are a bundle install
             bundle = true;
 
+            // reset the autoresetfiles
+            autoresetfiles = null;
+
             // set the bundle
             bnd = b;
             state = "installing";
@@ -126,11 +132,14 @@ public class InstallManager {
                 bnd.install();
                 state = "waiting";
                 active = false;
+
             } else if (pkg != null) {
                 pkg.install();
                 state = "waiting";
                 active = false;
             }
+           // rename all the files that result in a server reset in a loop
+           renameAutoResetFiles();
         } catch(Exception e) {
             log.error("performInstall problem");
 	    e.printStackTrace();
@@ -164,5 +173,25 @@ public class InstallManager {
     public static Iterator getInstallSteps() {
         return pkg.getInstallSteps();
     }
+
   
+    public static void addAutoResetFile(String path) {
+        if (autoresetfiles == null) autoresetfiles = new ArrayList();
+        autoresetfiles.add(path);
+    }
+
+    private static void renameAutoResetFiles() {
+        if (autoresetfiles != null) {
+	    Iterator e=autoresetfiles.iterator();
+            while (e.hasNext()) {
+                String name=(String)e.next();
+                File oldfile = new File(name);
+                File newfile = new File(name.substring(0,name.length()-4));
+                if (oldfile.exists()) {
+                    oldfile.renameTo(newfile);
+		}
+            }
+        }
+    }
+
 }
