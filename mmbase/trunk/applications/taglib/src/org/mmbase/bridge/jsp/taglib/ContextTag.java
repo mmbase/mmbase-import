@@ -247,9 +247,6 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     void createContainer(ContextContainer c) {
-        if (container != null) {
-            throw new RuntimeException("This context already had Container");
-        }
         container = new ContextContainer(getId(), c);
     }
 
