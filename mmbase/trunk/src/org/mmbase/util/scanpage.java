@@ -25,7 +25,7 @@ import org.mmbase.module.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.10 2000-06-16 16:05:52 rob Exp $
+ * @version $Id: scanpage.java,v 1.11 2000-10-04 13:40:05 vpro Exp $
  */
 public class scanpage {
 	public ProcessorInterface processor;
@@ -43,6 +43,7 @@ public class scanpage {
 	public String sname=null;
 	public int partlevel=0;
 	public String loadmode="cache";
+	public boolean reload=false;
 
 	public void setReq(HttpServletRequest req) {
 		this.req=req;
@@ -291,5 +292,17 @@ public class scanpage {
         return hn;
     }
 
-//  ------------------------------------------------------------------------------------------------------------
+	/**
+	 * Gets the referrer from the request header.
+	 * @return a String with the referer, is null when reqheader is null.
+	 */
+	public String getReferer() {
+		if (req==null) {
+			System.out.println("scanpage:getReferer: ERROR req="+req+", can't get referer.");
+			return null;
+		} else {
+			return req.getHeader("Referer");
+		}
+	}
+
 }
