@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.23 $ $Date: 2001-05-07 15:33:55 $
+ * @version $Revision: 1.24 $ $Date: 2001-05-09 10:08:00 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -243,6 +243,9 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	/**
 	 * Called when an operation is done on a service node eg insert, commit, it calls method
 	 * to send the node change to the remote side.
+	 * However, if change was done by the remote side (change to busy, or change to waiting 
+	 * with exitvalue), we don't send this change to the remote side. 
+	 * Also node change of type new 'n' or delete 'd' aren't sent to remote side.
 	 * @param machine Name of the machine that changed the node.
 	 * @param number a String with the object number of the node that was operated on.
 	 * @param builder a String with the buildername of the node that was operated on.
@@ -253,25 +256,39 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		super.nodeLocalChanged(machine,number,builder,ctype);
 		try {
 			int num = 0;
+			MMObjectNode node = null;
+			String state=null, info=null;
 			// Print state and info contents.
 			if (!ctype.equals("d")) {
 					num = Integer.parseInt(number);
-					MMObjectNode node = getHardNode(num);
+					node = getHardNode(num);
+					state= node.getStringValue("state");
+					info = node.getStringValue("info");
 					if (log.isDebugEnabled()) {
-						log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
-								+ node.getStringValue("state") + " and info="
-								+ node.getStringValue("info") + " , returning.");
+						log.debug("("+machine+","+number+","+builder+","+ctype+"): "
+						        +"Printing state="+state+" and info="+info+", returning.");
 					}
 			}
 
 			// You can't signal new or delete changes because there's no 
 			// mmserver related when these changes occur.
 			if (!(ctype.equals("n") || ctype.equals("d")) ) {
-				log.debug("Calling sendToRemoteBuilder to send node change to remote side.");
-				sendToRemoteBuilder(num,builder,ctype);
-			}
+				// If the node change was performed by the remote side then we don't 
+				// send te node change signal back to the remote side.
+				// Changes done by remote are when service tells us he's busy or when he tells us
+				// he just finished encoding.
+				if (state.equals("busy") || (state.equals("waiting") && (!info.equals(""))) ) {
+					log.debug("Not sending to remote side because this change was done "
+					        +"by remote side, state:"+state+", info:"+info);
+				} else {
+					log.debug("Calling sendToRemoteBuilder to send node change to remote side.");
+					sendToRemoteBuilder(num,builder,ctype);
+				}
+			} else {
+				log.debug("Not sending to remote side since because ctype="+ctype);
+			} 
 		} catch (NumberFormatException nfe) {
-			log.error("number:"+number+" is not an integer!, wont signal to remote builder! " + Logging.stackTrace(nfe));
+			log.error("number:"+number+" is not an integer!, wont signal to remote builder! "+Logging.stackTrace(nfe));
 		}
 		return true;
 	}
