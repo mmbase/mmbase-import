@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.40 2003-12-15 18:21:00 michiel Exp $
+ * @version $Id: InsRel.java,v 1.41 2004-05-28 09:48:09 pierre Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -82,6 +82,8 @@ public class InsRel extends MMObjectBuilder {
      * @see #usesdir
      */
     public boolean init() {
+        FieldDefs dirField = getField("dir");
+        boolean hasDirField = dirField!=null && dirField.getDBState() == FieldDefs.DBSTATE_PERSISTENT;
         if (!created()) {
             // check whether directionality is in use, and whether a dir field is present.
             // if a non-dir supporting builder is attempted to be used, a fatal error is logged.
@@ -90,7 +92,7 @@ public class InsRel extends MMObjectBuilder {
             // If the builder to be created is insrel (the basic builder), the system ignores the error
             // and continues without directionality (backward compatibility).
             //
-            if (usesdir && (getField("dir")==null) && (!getTableName().equals("insrel"))) {
+            if (usesdir && !hasDirField && (!getTableName().equals("insrel"))) {
                 log.fatal("FATAL ERROR: Builder "+getTableName()+" has no dir field but directionality support was turned on.");
                 log.fatal("Table for "+getTableName()+" was NOT created.");
                 log.fatal("MMBase continues, but use of the "+getTableName()+" builder will fail.");
@@ -100,7 +102,7 @@ public class InsRel extends MMObjectBuilder {
         boolean res=super.init();
         checkAddTmpField("_dnumber");
         checkAddTmpField("_snumber");
-        if (res && usesdir && (getField("dir")==null)) {
+        if (res && usesdir && !hasDirField) {
             log.warn("No dir field. Directionality support turned off.");
             usesdir = false;
         }
@@ -122,7 +124,7 @@ public class InsRel extends MMObjectBuilder {
         int rnumber = node.getIntValue("rnumber");
         TypeRel typeRel = mmb.getTypeRel();
         if (  (!typeRel.reldefCorrect(snumber, dnumber, rnumber))
-            && typeRel.reldefCorrect(dnumber, snumber, rnumber) 
+            && typeRel.reldefCorrect(dnumber, snumber, rnumber)
               ) {
             dnumber= node.getIntValue("snumber");
             node.setValue("snumber", node.getIntValue("dnumber"));
@@ -305,12 +307,12 @@ public class InsRel extends MMObjectBuilder {
             Integer s = new Integer(src);
             BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), s);
             BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), s);
-            
+
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
             constraint.addChild(constraint1).addChild(constraint2);
-            
+
             q.setConstraint(constraint);
-            
+
             return (count(q) != 0);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage()); // should not happen
@@ -334,12 +336,12 @@ public class InsRel extends MMObjectBuilder {
             Integer s = new Integer(src);
             BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(q.getField(getField("snumber")), s);
             BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(q.getField(getField("dnumber")), s);
-        
+
             BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
             constraint.addChild(constraint1).addChild(constraint2);
 
             q.setConstraint(constraint);
-            
+
             return new Vector(getNodes(q));
         } catch (SearchQueryException  sqe) {
             log.error(sqe.getMessage()); // should not happen
