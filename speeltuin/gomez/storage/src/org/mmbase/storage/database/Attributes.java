@@ -15,16 +15,16 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.1 2003-07-31 09:53:36 pierre Exp $
+ * @version $Id: Attributes.java,v 1.2 2003-07-31 16:26:02 pierre Exp $
  */
 public final class Attributes {
 
     /**
      * Option: <code>database.supportsInheritance</code>.
-     * When true, the database supports inheritance (you can extend tables). This option influences what fields 
+     * When true, the database supports inheritance (you can extend tables). This option influences what fields
      * MMBase will add to a newly created table.
-     * Note that you should specify this attribute if you have set up the schemes 
-     * {@link Schemes.CREATE_ROW_TYPE_SCHEME} and/or 
+     * Note that you should specify this attribute if you have set up the schemes
+     * {@link Schemes.CREATE_ROW_TYPE_SCHEME} and/or
      * {@link Schemes.CREATE_TABLE_SCHEME} to create tables that support inheritance.
      * The default is <code>false</code>
      */
@@ -44,5 +44,15 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String SUPPORTS_BLOB = "database.supportsBlob";
+
+    /**
+     * Option: <code>database.supportsCompositeIndex</code>.
+     * When true, the database uses composite indices for 'key' fields.
+     * When false, it uses single indices (a separate index for each field)
+     * The default is <code>false</code>
+     */
+    public static final String SUPPORTS_COMPOSITE_INDEX = "database.supportsCompositeIndex";
+
+
 
 }

@@ -22,7 +22,7 @@ import org.mmbase.storage.util.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.12 2003-07-31 09:53:36 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.13 2003-07-31 16:26:02 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -40,20 +40,20 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * The map with configuration data
      */
     protected Map attributes;
-    
+
     /**
      * The list with type mappings
      */
     protected List typeMappings;
-    
+
     /**
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
      */
-    protected ChangeManager changeManager;    
+    protected ChangeManager changeManager;
 
     // The map with disallowed fieldnames and (if given) alternates
     private Map disallowedFields;
-    
+
     /**
      * Stores the MMBase reference, and initializes the attribute map.
      * Opens and reads the StorageReader for this factory.
@@ -117,7 +117,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * Locates and opens the storage configuration document.
      * The configuration document to open can be set in mmbasereoot (using the storage property).
      * The property should point to a resource which is to be present in the MMBase classpath.
-     * If not given or the resource cannot be found, this method throws an exception. 
+     * If not given or the resource cannot be found, this method throws an exception.
      * Overriding factories may provide ways to auto-detect the location of a configuration file, or
      * dismiss with its use.
      * @throws StorageException if something went wrong while obtaining the document reader, or if no reader can be found
@@ -139,7 +139,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
             return new StorageReader(this,in);
         }
     }
-    
+
     public Map getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
@@ -172,7 +172,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     public void setScheme(Object key, String pattern) {
         setAttribute(key,new Scheme(this,pattern));
     }
-    
+
     public boolean hasOption(Object key) {
         Object o = getAttribute(key);
         return (o instanceof Boolean) && ((Boolean)o).booleanValue();
@@ -182,11 +182,11 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         setAttribute(key,new Boolean(value));
     }
 
-	public List getTypeMappings() {
+        public List getTypeMappings() {
         return Collections.unmodifiableList(typeMappings);
     }
 
-	public Map getDisallowedFields() {
+        public Map getDisallowedFields() {
         return Collections.unmodifiableMap(disallowedFields);
     }
 
@@ -194,7 +194,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * Sets the map of disallowed Fields.
      * Unlike setAttributes(), this actually replaces the existing disallowed fields map.
      */
-	protected void setDisallowedFields(Map disallowedFields) {
+        protected void setDisallowedFields(Map disallowedFields) {
         this.disallowedFields = new HashMap(disallowedFields);
     }
 
@@ -206,12 +206,13 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     public Object getStorageIdentifier() throws StorageException {
         return getStorageIdentifier(mmbase);
     }
-    
+
     /**
      * Obtains a identifier for an MMBase object.
      * The default implementation returns the following type of identifiers:
      * <ul>
-     *  <li>For MMBase: the String '[basename]_object'</li>
+     *  <li>For StorageManager: the basename</li>
+     *  <li>For MMBase: the String '[basename]_object</li>
      *  <li>For MMObjectBuilder: the String '[basename]_[builder name]'</li>
      *  <li>For MMObjectNode: the object number as a Integer</li>
      *  <li>For FieldDefs: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
@@ -225,7 +226,9 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * @throws StorageException if the object cannot be given a valid identifier
      */
     public Object getStorageIdentifier(Object mmobject) throws StorageException {
-        if (mmobject == mmbase) {
+        if (mmobject instanceof StorageManager) {
+            return mmbase.getBaseName();
+        } else if (mmobject == mmbase) {
             return mmbase.getBaseName()+"_object";
         } else if (mmobject instanceof MMObjectBuilder) {
             return mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
@@ -244,13 +247,13 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
         }
     }
- 
+
     public ChangeManager getChangeManager() {
         return changeManager;
     }
-  
+
     abstract public double getVersion();
-    
-	abstract public boolean supportsTransactions();
-    
+
+        abstract public boolean supportsTransactions();
+
 }
