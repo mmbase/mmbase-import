@@ -1,10 +1,11 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="java.util.*, java.io.*, java.text.* " session="true"%>
-<mm:cloud>
-<%@include file="/includes/getids.jsp" %>
-<%@include file="/includes/header.jsp" %>
+<%@ page import="java.util.*, java.io.*, java.text.*" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ page language="java" contentType="text/html; charset=utf-8"
+%><mm:cloud
+><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp" %>
 
-<td>
+<div id="pagecontent">
 <mm:import externid="dir" jspvar="dir" />
 
 <h2><mm:write referid="dir" /></h2>
@@ -31,11 +32,14 @@ void showDir(File baseDir, String dirName, javax.servlet.jsp.JspWriter out) thro
 }
 
 %>
+<p>
 <%
    showDir(baseDir, dir, out); 
 %>
+</p>
 <mm:url id="back" referids="portal,page" page="index.jsp" write="false" />
-<%@include file="/includes/backbutton.jsp" %>
-</td>
-<%@include file="/includes/footer.jsp" %>
+<%@ include file="/includes/backbutton.jsp" %>
+
+</div>
+<%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
