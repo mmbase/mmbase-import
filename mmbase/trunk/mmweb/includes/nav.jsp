@@ -100,7 +100,7 @@
 		}
 		for (int x =0 ; x < count; x++){
 			//sb.append("\n  <div class='fill'><a>&nbsp;</a></div>");
-			sb.append("\n  <div class='fill'>&nbsp;</div>");
+			sb.append("\n  <div class=\"fill\">&nbsp;</div>");
 		}
 		for (int y =0 ; y < childs.size() ; y++){
 			Nav nav = (Nav)childs.get(y);

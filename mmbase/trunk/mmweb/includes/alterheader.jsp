@@ -4,7 +4,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase.css" />" />
+  <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmmbase.css" />" />
   <link rel="stylesheet" type="text/css" href="<mm:url page="/css/navi.css" />" />
   <mm:node number="$portal"><mm:related path="posrel,templates">
 	   <mm:field id="url" name="templates.url" write="false"/> 
@@ -14,6 +14,30 @@
   <title>MMBase: <mm:node number="$portal" notfound="skipbody"><mm:field name="name" /></mm:node> - <mm:node number="$page" notfound="skipbody"><mm:field name="title" /></mm:node></title>
   <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/mmbase.js" />"></script>
   <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/navi.js" />"></script>
+<style type="text/css" title="text/css" media="screen">
+/* <![CDATA[ */
+.balkdark
+{
+	color: #E6E9DD;
+	font-family: "Lucida Grande", Arial, sans-serif;
+	background: #033;
+	padding: 4pt;
+}
+.balklite {
+	color: #033;
+	font-family: "Lucida Grande", Arial, sans-serif;
+	background: #CCEB6F;
+	padding: 4pt;
+}
+.line
+{
+	border-color: #CCEB6F;
+	border-width: 0 0 1px 0;
+	border-style: solid;
+	padding: 4pt 4pt 1pt 4pt;
+}
+/* ]]> */
+</style>
 </head>
 <body>
 <%@ include file="nav.jsp" %>
