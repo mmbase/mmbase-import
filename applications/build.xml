@@ -13,6 +13,7 @@ Applications build file
   <!-- Default values for properties that can be customized -->
 
   <property name="source.dir"   location=".." />
+  <property name="share.dir"    location="./share" />
 
   <property file="${source.dir}/build.properties" />
 
@@ -30,7 +31,7 @@ Applications build file
     <mkdir dir="${applications.build.dir}" />
   </target>
 
-  <target name="all" depends="init,editwizard,media,rmmci,cloudcontext,bugtracker" />
+  <target name="all" depends="init,editwizard,media,rmmci,cloudcontext,bugtracker,community" />
 
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
@@ -58,12 +59,17 @@ Applications build file
      <ant dir="cloudcontext"  target="package" />
   </target>
 
+  <target name="community" depends="mmbase">
+     <ant dir="community"  target="dependent.package" />
+  </target>
+
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
      <ant dir="rmmci"      target="clean" />
      <ant dir="cloudcontext"    target="clean" />
      <ant dir="bugtracker"      target="clean" />
+     <ant dir="community"      target="clean" />
     <delete dir="${applications.build.dir}" />
   </target>
 
