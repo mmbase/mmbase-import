@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.0 - Release Notes
+                     MMBase 1.7.0 - Release Notes
 ===================================================================  
   
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
   
 This document describes the changes that have been made in the final
-release of MMBase 1.6.0, relative to the previous release of MMBase (1.5).
+release of MMBase 1.7.0, relative to the previous release of MMBase (1.6).
   
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -23,32 +23,17 @@ NEW FEATURES:
 General New Features:
 --------------------
 
-
-- Introduction of `MMBaseServlet' with specialisations like ImageServlet and
-  AttachmentServlet.
-   - No need for servdb anymore. Note that ImageServlet does not accept a
-     'transformation'-template like the 'servdb' servlet of previous MMBase
-     versions did. This functionality can be accessed by
-     the imagetag or the 'cache' function of an image node.
-
-- Editwizards
+- Query-object
 
 
 ---------------------
 MMCI New Features:
 ---------------------
-[1.6.0]
+[1.7.0]
   
 -------------------
 Taglib New Features:
 -------------------
-
- - 'Richtext' features, mm:formatter, mm:xslt (experimental)
- - attachment-tag (= image tag)
- - Time-tag
- - Locale tag
- - ?
-
     
 ==========================
 BUG FIXES AND IMPROVEMENTS:
@@ -57,45 +42,33 @@ BUG FIXES AND IMPROVEMENTS:
 -----------------
 Taglib Bug Fixes:
 -----------------
-[1.6.0] 
+[1.7.0] 
 
 ------------------
 Generic Bug Fixes:
 ------------------
-[1.6.0] 
+[1.7.0] 
 
 ------------------
 Security Bug Fixes:
 ------------------ 
-[1.6.0] 
+[1.7.0] 
 
 ----------------
 Taglib Bug Fixes:
 ----------------
-[1.6.0] 
+[1.7.0] 
 
 ----------------- 
 Example Bug Fixes:
 -----------------
-[1.6.0] 
+[1.7.0] 
 
 
 ========================
 Know Issues and Problems:
 ========================
-- Building your own MMBase doesn't work when MMBase is unpacked in
-  something like /tmp. It requires at least 3 dirs above the
-  mmbase-dir. It's probably an Ant-bug (build.properties are being
-  used, but the default one is also initialized).
-- Filewatcher dies on error in xml-file.
-- When initialising the database using mysql, the following error
-  occurs in the log:
 
-  07-03 21:44:28 ERROR   MMBase: java.sql.SQLException: General error:
-  Table 'test.mm15_object' doesn't exist
-
-  It only occurs the first run and it doesn't do any harm. You can
-  safely ignore the message.
 - Orion doesn't support the final servlet api 2.3, because of this the
   jumpersFilter will not work. You will need to remove the following
   lines from <WEB-INF/web.xml>:
@@ -130,6 +103,8 @@ Know Issues and Problems:
   the <org/mmbase/modules/database>-dir). Uncomment the methods for
   J2SE 1.4, more information is provided in the javadocs in these files.
 
+  When using 1.4 the ant build will inform you about this.
+
 - Length of email field inside Users and People builder isn't
   rfc-complient, but with 255 it stays beyond a limit some databases
   use before switching to a bigger string-type (eg clob).
@@ -138,8 +113,7 @@ Know Issues and Problems:
 
 - Sometimes it is needed to copy xml-apis.jar to
   <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
-  or if you're using the editwizards (not included in this
-  release). 
+  or if you're using the editwizards.
 
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
@@ -165,16 +139,26 @@ Know Issues and Problems:
   can change this to a dir you want, by changing the database-property
   in jdbc.xml.
 
+- In Resin the mmbase-taglib is not fully working, because extensive tag-instance reuse causes the
+  $-variable evalution in attributes to work always. This will be fixed in 1.6.1.
+  Because Resis provides its own XSL-transformation implementation, also on this area are some known
+  problems. 
+
 
 ============
 Requirements:
 ============
+
 MMBase needs an servlet engine which supports the servlet api 2.3 and
 jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
+
+The 'bin' distro does include a hsql database and driver.
+
 
 =========
 Tested on:
 =========
+
 The applications listed here are known to be tested with MMBase, but
 the list is probably a lot bigger :-)
 
@@ -190,8 +174,8 @@ Applicationservers
 - Tomcat 4.0.4 
 - Orion 1.5.2, 1.5.4
 - Jetty 4.0.0
-- Resin 2.1.0
-- Tomcat 4.1.x 
+- Resin 2.1.0 (Taglib attribute problems, filed as bug in www.mmbase.org/bug)
+- Tomcat 4.1.12 
 
 ---------
 Databases
@@ -201,3 +185,6 @@ Databases
         Ver 11.16 Distrib 3.23.49, 
         Ver 11.15 Distrib 3.23.41 
   for pc-linux-gnu (i686)
+- Postgresql
+
+
