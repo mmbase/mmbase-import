@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.106 2003-09-16 18:55:33 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.107 2003-09-19 12:41:08 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -737,25 +737,26 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         BasicNodeList resultNodeList; // this will be the result NodeList
 
-        { // create resultNodeList
+        // create resultNodeList
 
-            if (query instanceof NodeQuery) {
-                resultNodeList = new BasicNodeList(resultList, query.getCloud());
+        if (query instanceof NodeQuery) {
+            resultNodeList = new BasicNodeList(resultList, query.getCloud());
+        } else {
+            NodeManager tempNodeManager = null;
+            if (resultList.size() > 0) {
+                tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
             } else {
-                NodeManager tempNodeManager = null;
-                if (resultList.size() > 0) {
-                    tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
-                } else {
-                    tempNodeManager = new VirtualNodeManager(this);
-                }
-                resultNodeList = new BasicNodeList(resultList, tempNodeManager);
+                tempNodeManager = new VirtualNodeManager(this);
             }
-
-            resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
+            resultNodeList = new BasicNodeList(resultList, tempNodeManager);
         }
+        
+        resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);       
+
+        resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
 
         if (log.isDebugEnabled()) {
-            log.debug(resultNodeList);
+            log.trace(resultNodeList);
         }
 
         if (! checked) {
@@ -770,7 +771,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             
             log.debug("Creating iterator");
             ListIterator li = resultNodeList.listIterator();
-            resultNodeList.autoConvert = false; // make sure no conversion to Node happen
             while (li.hasNext()) {
                 log.debug("next");
                 Object o = li.next();
@@ -788,8 +788,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 if (!mayRead)
                     li.remove();
             }
-            resultNodeList.autoConvert = true;
         }
+        resultNodeList.autoConvert = true;
         
         return resultNodeList;
     }
