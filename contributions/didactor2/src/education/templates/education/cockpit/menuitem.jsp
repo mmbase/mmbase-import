@@ -33,34 +33,34 @@
 	</di:hasrole>
 
 	<mm:present referid="roleId">
-		<mm:compare referid="type" value="div">
+<%--	<mm:compare referid="type" value="div">  --%>
 			<div class="menuSeperator"></div>
 			<div class="menuItem" id="<%=roleId%>">
 				<a href="<mm:treefile page="/education/wizards/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
 					<di:translate id="<%=roleId%>"><mm:write referid="roleText" /></di:translate>
 				</a>
 			</div>
-		</mm:compare>
-		<mm:compare referid="type" value="option">
+<%--		</mm:compare> --%>
+<%--		<mm:compare referid="type" value="option">
 			<option value="<mm:treefile page="/education/wizards/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
 				<di:translate id="<%=roleId%>"><mm:write referid="roleText" /></di:translate>
 			</option>
-		</mm:compare>
+		</mm:compare> --%>
 	</mm:present>
 
 	<di:hasrole role="administrator">
-      <mm:compare referid="type" value="div">
+<%--      <mm:compare referid="type" value="div"> --%>
         <div class="menuSeperator"> </div>
         <div class="menuItem" id="menuComponent">
           <a href="<mm:treefile page="/components/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate id="menuitemcomponenteditor">componenteditor</di:translate></a>
         </div>
-      </mm:compare>
+<%--      </mm:compare> --%>
 
-      <mm:compare referid="type" value="option">
+<%--      <mm:compare referid="type" value="option">
         <option value="<mm:treefile page="/components/index.jsp" objectlist="$includePath" referids="$referids" />">
           <di:translate id="menuitemcomponenteditor">componenteditor</di:translate>
         </option>
-      </mm:compare>
+      </mm:compare> --%>
     </di:hasrole>
 
 

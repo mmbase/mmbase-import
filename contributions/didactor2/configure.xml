@@ -2,6 +2,7 @@
   <property file="build.properties"/>
   <property file="configure.properties"/>
   <property name="build.config.dir" value="${build.dir}/webapp/WEB-INF/config" />
+  <property name="build.wizards.dir" value="${build.dir}/webapp/editwizards" />
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
   
@@ -84,6 +85,11 @@
     <replace file="${build.config.dir}/chat/chat.properties"
              token="$${chat.engine.logfile}"
              value="${chat.engine.logfile}"/>
+ 
+ 
+    <replace file="${build.wizards.dir}/data/pages.xml"
+             token="$${wizards.pages.text.type}"
+             value="${wizards.pages.text.type}"/>
 
   </target>
 </project>
