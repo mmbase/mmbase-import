@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.5 2003-07-25 12:42:07 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.6 2003-07-28 10:19:21 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -184,8 +184,8 @@ public class StorageReader extends DocumentReader  {
             for (int i=0; i<schemeTagList.getLength(); i++) {
                 Element schemeTag = (Element)schemeTagList.item(i);
                 String schemeName = schemeTag.getAttribute("name");
-                // require a scheme name. 
-                // if not given, skip the option. 
+                // require a scheme name
+                // if not given, skip the option
                 if (schemeName != null) {
                     attributes.put(schemeName, new Scheme(factory,getNodeTextValue(schemeTag)));
                 }

@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.6 2003-07-25 12:42:06 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.7 2003-07-28 10:19:20 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -175,7 +175,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             return new StorageReader(this,databaseConfig.getPath());
         }
     }
-    
+        
 }
 
 

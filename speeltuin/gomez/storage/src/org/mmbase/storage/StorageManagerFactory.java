@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.9 2003-07-25 14:47:25 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.10 2003-07-28 10:19:20 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -34,6 +34,12 @@ public interface StorageManagerFactory {
      */
     public void init(MMBase mmbase) throws StorageError;
 
+    /**
+     * Return the MMBase module for which the factory was instantiated
+     * @return the MMBase instance
+     */
+    public MMBase getMMBase();
+    
     /**
      * Obtains a StorageManager from the factory.
      * The instance represents a temporary connection to the datasource -
@@ -93,23 +99,24 @@ public interface StorageManagerFactory {
      * @return the scheme value, or null if it is unknown
      */
     public Scheme getScheme(Object key);
-
+    
     /**
-     * Set a scheme of this factory.
+     * Obtain a scheme from this factory.
      * Schemes are special attributes, consisting of patterned strings that can be 
      * expanded with arguments.
-     * To invalidate a scheme, use setAttribute(), and pass the <code>null</code> value.
-     * @param key the key of the scheme
-     * @param value the value of the scheme
+     * If no scheme is present, the default pattern is used to create a scheme and add it to the factory.
+     * @param key the key of the attribute
+     * @param defaltPattern the pattern to use for the default scheme 
+     * @return the scheme value
      */
-    public void setScheme(Object key, Scheme value);
+    public Scheme getScheme(Object key, String defaultPattern);
 
     /**
      * Set a scheme of this factory, using a string pattern to base the Scheme on.
      * Schemes are special attributes, consisting of patterned strings that can be 
      * expanded with arguments.
      * @param key the key of the scheme
-     * @param value the pattern to use for the scheme
+     * @param pattern the pattern to use for the scheme
      */
     public void setScheme(Object key, String pattern);
 
@@ -149,19 +156,14 @@ public interface StorageManagerFactory {
 	public Map getDisallowedFields();
 
     /**
-     * Maps a field from a fieldname as used by MMBase to a storage-specific field name
-     * @param name the MMBase fieldname
-     * @return the storage-specific field name
+     * Obtains a identifier for an MMBase object.
+     * @see Storable
+     * @param mmobject the MMBase objecty
+     * @return the storage-specific identifier
+     * @throws StorageException if the object cannot be given a valid identifier
      */
-	public String mapField(String name) throws StorageException;
+    public Object getStorageIdentifier(Object mmobject) throws StorageException;
     
-    /**
-     * 'Unmaps' a field from a storage-specific field name to a fieldname as used by MMBase
-     * @param name the storage-specific field name
-     * @return the MMBase fieldname
-     */
-	public String unmapField(String name) throws StorageException;
-        
     /**
      * Returns whether transactions, and specifically rollback, is supported in the storage layer.
      * @return  <code>true</code> if trasnactions are supported

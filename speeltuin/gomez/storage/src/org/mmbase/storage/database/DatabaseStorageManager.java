@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.database;
 
 import java.util.Map;
+import java.util.Iterator;
 import java.sql.*;
 import javax.sql.DataSource;
 
@@ -26,12 +27,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.3 2003-07-25 14:47:25 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.4 2003-07-28 10:19:20 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
-
-    protected static final String SELECT_NODE_SCHEME = "select.node.scheme";
-    protected static final String SELECT_NODE_SCHEME_DFP = "SELECT * from {0} WHERE {1} = {2}";
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
@@ -254,7 +252,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during the get
      */
     public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
-        Scheme scheme = factory.getScheme(SELECT_NODE_SCHEME);
+        Scheme scheme = factory.getScheme(DatabaseSchemes.SELECT_NODE_SCHEME, DatabaseSchemes.SELECT_NODE_SCHEME_DFP);
         try {
             getActiveConnection();
             String query = scheme.format(new Object[] { builder, builder.getField("number"), new Integer(number)});
@@ -270,25 +268,30 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * Attempts to return a single Node from the resultset of a query.
      * You can use this method to iterate through a query, creating multiple nodes, provided the resultset still contains
-     * members (that is, <code>res.isAfterLast</code> returns <code>false</code>)
+     * members (that is, <code>result.isAfterLast</code> returns <code>false</code>)
      * @param res the resultset
      * @param builder the builder to use for creating the node
      * @return the node
      * @throws StorageException if the resultset is exhausted or a database error occurred
      */
-    protected MMObjectNode createNodeFromQuery(ResultSet res, MMObjectBuilder builder) throws StorageException {
+    protected MMObjectNode createNodeFromQuery(ResultSet result, MMObjectBuilder builder) throws StorageException {
         try {
-            if ((res != null) && res.next()) {
+            if ((result != null) && result.next()) {
                 // create a new node
-                MMObjectNode result = builder.getNewNode("system");
-                ResultSetMetaData rd = res.getMetaData();
-                for (int i = 1; i <= rd.getColumnCount(); i++) {
-                    String fieldName = factory.unmapField(rd.getColumnName(i));
-                    result.setValue(fieldName, createFieldValueFromQuery(result.getDBType(fieldName), res, i));
+                MMObjectNode node = builder.getNewNode("system");
+                // iterate through all a buidler's fields, and retrieve the value for that field
+                // Note that if we would do it the other way around (iterate through the recordset's fields)
+                // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
+                for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext(); ) {
+                    FieldDefs fd = (FieldDefs)i.next();
+                    if (fd.getDBState() == FieldDefs.DBSTATE_PERSISTENT || fd.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
+                        String id = (String) factory.getStorageIdentifier(fd);
+                        node.setValue(fd.getDBName(), createFieldValueFromQuery(fd.getDBType(), result, id));
+                    }
                 }
                 // clear the changed signal on the node
-                result.clearChanged();
-                return result;
+                node.clearChanged();
+                return node;
             } else {
                 throw new StorageException("Node not found");
             }
@@ -305,21 +308,21 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return the value
      * @throws StorageException if the value cannot be retrieved from the resultset
      */
-    protected Object createFieldValueFromQuery(int fieldType, ResultSet rs, int i) throws StorageException {
+    protected Object createFieldValueFromQuery(int fieldType, ResultSet result, String name) throws StorageException {
         try {
             switch (fieldType) {
                 // string-type fields
                 // should test for MMBase encoding
                 case FieldDefs.TYPE_XML:
                 case FieldDefs.TYPE_STRING: {
-                    return rs.getString(i);
+                    return result.getString(name);
                 }
                 // binary fields: mark as $shorted, retrieve later
                 case FieldDefs.TYPE_BYTE: {
                     return "$SHORTED";
                 }
                 default : {
-                    return rs.getObject(i);
+                    return result.getObject(name);
                 }
             }
         } catch(SQLException se) {
@@ -333,7 +336,28 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return int the object type or -1 if not found
      * @throws StorageException if an error occurred during selection
      */
-    abstract public int getNodeType(int number) throws StorageException;
+    public int getNodeType(int number) throws StorageException {
+        Scheme scheme = factory.getScheme(DatabaseSchemes.SELECT_NODE_TYPE_SCHEME, DatabaseSchemes.SELECT_NODE_TYPE_SCHEME_DFP);
+        try {
+            getActiveConnection();
+            MMBase mmbase = factory.getMMBase();
+            String query = scheme.format(new Object[] { mmbase, 
+                                                        mmbase.getTypeDef().getField("number"), 
+                                                        new Integer(number)});
+            Statement s = activeConnection.createStatement();
+            ResultSet result = s.executeQuery(query);
+            if ((result != null) && result.next()) {
+                return result.getInt(1);
+            } else {
+                return -1;
+            }
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
+    
 
     /**
      * Create a storage element to store the specified builder's objects.
