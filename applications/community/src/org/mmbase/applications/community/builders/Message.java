@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.18 2003-06-18 20:03:54 michiel Exp $
+ * @version $Id: Message.java,v 1.19 2003-08-11 17:06:24 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -215,8 +215,9 @@ public class Message extends MMObjectBuilder {
         // if write-login is true, and no 'chatter' node is specified,
         // the user has not logged on - so the post should fail
         if ((channelNode.getIntValue(Channel.F_STATE) & Channel.STATE_WRITE_LOGIN) > 0) {
-            if (chatter == -1)
+            if (chatter == -1) {
                 return POST_ERROR_NEED_LOGIN;
+            }
         }
 
         MMObjectNode node = getNewNode(messageUser);
