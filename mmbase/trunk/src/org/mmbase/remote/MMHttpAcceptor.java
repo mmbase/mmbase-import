@@ -224,7 +224,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
  
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
-			out.print("GET /remoteXML.db?"+tableName+"+"+nodename+"+"+host+"+"+sport+" HTTP/1.1\r\n");
+			out.print("GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
 			out.print("\r\n");
