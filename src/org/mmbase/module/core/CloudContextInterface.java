@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.module.core;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * The collection of clouds, and modules within a Java Virtual Machine.
@@ -23,7 +23,7 @@ public interface CloudContextInterface {
 	 * Retrieves all the modules available in this context
 	 * @return all available modules
 	 */
-	public static Iterator getModules();
+	public Iterator getModules();
 
 	
 	/**
@@ -31,25 +31,25 @@ public interface CloudContextInterface {
 	 * @param modulename name of the module
 	 * @return the requested module
 	 */
-	public static ModuleInterface getModule(String modulename);
+	public ModuleInterface getModule(String modulename);
 
 	/**
 	 * Retrieves all clouds within this context
 	 * @return all Clouds within this context
 	 */
-	public static Iterator getClouds();
+	public Iterator getClouds();
 
 	/**
 	 * Retrieves a Cloud
 	 * @param cloudname name of the Cloud
 	 * @return all Clouds
 	 */
-	public static CloudInterface getCloud(String cloudname);
+	public CloudInterface getCloud(String cloudname);
 
 	/** 
 	 * Retrieve a remote CloudContext
 	 * @param cloudcontextUrl place of the remote CloudContext
 	 * @return remote CloudContext
-	 * public static CloudContext getCloudContext(String cloudcontextUrl);
+	 * public CloudContext getCloudContext(String cloudcontextUrl);
 	 */
 }
