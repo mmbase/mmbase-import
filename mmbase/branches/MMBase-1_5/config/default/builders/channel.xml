@@ -228,7 +228,7 @@
 			<!-- name of the field in the database -->
 			<name>body</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">STRING</type>
+			<type state="persistent" size="64000" notnull="false">STRING</type>
 		</db>
 	</field>
 
