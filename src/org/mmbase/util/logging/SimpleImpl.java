@@ -62,10 +62,12 @@ public class SimpleImpl implements Logger {
 	}
 
 	public void trace (Object m) {
-		log("TRACE " + m.toString());
+		return;
+		//log("TRACE " + m.toString());
 	}
 	public void debug (Object m) {
-		log("DEBUG " + m.toString());
+		return;
+		//log("DEBUG " + m.toString());
 	}
 
 	public void service (Object m) {
