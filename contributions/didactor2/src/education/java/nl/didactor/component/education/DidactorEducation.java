@@ -77,8 +77,11 @@ public class DidactorEducation extends Component {
                 //System.out.println( subjectno);
                 //System.out.println( usernode.getNumber());
                 
-                boolean isTeacherOf= ClassRoom.isWorkgroupMember(
-                    usernode, subjectno, classno, educationno, "teacher", cloud);
+                boolean isTeacherOf= ClassRoom.isClassMember(
+                        usernode, subjectno, classno, educationno, "teacher", cloud
+                ) || ClassRoom.isWorkgroupMember( 
+                        usernode, subjectno, classno, educationno, "teacher", cloud
+                );
                  
                 if (operation.equals( "isTeacherOf")) {
                     mayvalue[0]= isTeacherOf;
