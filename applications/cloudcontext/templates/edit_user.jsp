@@ -7,18 +7,15 @@
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:node referid="user">
   <head>
-    <title>View user <mm:field name="gui()" /></title>
+   <title>View user <mm:field name="gui()" /></title>
    <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
   </head>
   <body>
  <h1><mm:field name="gui()" /></h1>
 
- <div id="you">
-   <p>you: <%=cloud.getUser().getIdentifier()%></p>
-   <p>your rank: <%=cloud.getUser().getRank()%></p>
- </div>
- 
- <div class="body">
+ <%@include file="you.div.jsp" %>
+ <%@include file="navigate.div.jsp" %>
+  
   <form action="commit_user.jsp" method="post">
    <table>
     <mm:fieldlist type="edit">
@@ -28,13 +25,18 @@
      <td>Groups</td>
      <td>
       <select name="_groups" size="4" multiple="multiple">
-        <mm:relatednodes type="mmbasegroups">
-         <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
+        <mm:relatednodes id="ingroups" type="mmbasegroups">
+         <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>       
         </mm:relatednodes>
         <mm:unrelatednodes type="mmbasegroups">
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
+      <a href="<mm:url page="index_groups.jsp">
+      <mm:relatednodes referid="ingroups">
+        <mm:param name="group"><mm:field name="number" /></mm:param>
+       </mm:relatednodes>
+      </mm:url>">View groups</a>
      </td>
     </tr>
     <tr>
@@ -54,10 +56,9 @@
     <input type="hidden" name="user" value="<mm:field name="number" />" />
    </table>
    </form>
-  </body>
-
 
    </mm:node>
   </mm:cloud>
   <a href=".">Terug</a>
+</body>
 </html>
