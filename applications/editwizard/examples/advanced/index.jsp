@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.7 2002-05-17 14:17:42 michiel Exp $
+    @version  $Id: index.jsp,v 1.8 2002-05-17 17:27:43 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -124,7 +124,7 @@
            <mm:param name="directions">down</mm:param>
            </mm:url>">Magazines</a>
      </td><td>       
-       Demonstrated is how to use 'posrel'.
+       Demonstrated is how to use 'posrel', and how to create 'optionlists'.
      </td></tr>
      </table>
      
