@@ -14,7 +14,6 @@ import java.io.*;
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 
-import org.apache.xalan.*;
 import org.apache.xalan.xslt.*;
 import org.apache.xalan.xpath.xml.*;
 import org.apache.xalan.xpath.xdom.*;
@@ -23,9 +22,14 @@ import org.apache.xalan.xpath.xdom.*;
  * Make XSL Transformations
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.4 2000-10-19 11:54:12 case Exp $
+ * @version $Id: XSLTransformer.java,v 1.5 2000-10-31 14:52:28 vpro Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2000/10/19 11:54:12  case
+ * cjr: Set entityresolver for XSL transformations so local DTD's of
+ * XML documents are found. (Formerly, DTD's were looked for at mmbase.org,
+ * which resulted in failure if an mmbase machine didn't have access to the net.)
+ *
  * Revision 1.3  2000/10/18 12:48:53  case
  * cjr: added a method to cut off the <?xml version blabla ?> part that prevents
  * XSL from being used to create merely part of a new xml document.
