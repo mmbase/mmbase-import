@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.39 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.40 2004-12-13 13:55:44 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -594,6 +594,7 @@ public class BasicSqlHandler implements SqlHandler {
         String datePartFunction = null;
         switch (datePart) {
             case -1:
+                break;
             case FieldValueDateConstraint.YEAR:
                 datePartFunction = "YEAR";
                 break;
@@ -616,8 +617,9 @@ public class BasicSqlHandler implements SqlHandler {
                 throw new UnsupportedOperationException("This date partition function (" + datePart + ") is not supported.");
         }
         if (datePartFunction != null) {
+            sb.append("EXTRACT(");
             sb.append(datePartFunction);
-            sb.append("(");
+            sb.append(" FROM ");
         }
         appendField(sb, step, fieldName, multipleSteps);
         if (datePartFunction != null) {
