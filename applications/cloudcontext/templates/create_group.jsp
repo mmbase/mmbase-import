@@ -10,11 +10,12 @@
  <%@include file="you.div.jsp" %>
 
 
-  <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>" method="post">
+  <form name="form" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>" method="post">
    <table>
     <mm:createnode id="newnode" type="mmbasegroups">
       <mm:fieldlist type="edit">
-        <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+        <mm:import id="extra">onkeyup="document.forms['form'].elements['contextname'].value = this.value;"</mm:import>
+        <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo options="extra:$extra" type="input" /></td></tr>
       </mm:fieldlist>
     </mm:createnode>
     <tr>
