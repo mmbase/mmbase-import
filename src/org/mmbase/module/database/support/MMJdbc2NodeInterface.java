@@ -45,4 +45,6 @@ public interface MMJdbc2NodeInterface {
 	public boolean create(MMObjectBuilder bul);
 	public boolean createObjectTable(String baseName);
  	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
+	public String getDisallowedField(String allowedfield);
+	public String getAllowedField(String disallowedfield);
 }

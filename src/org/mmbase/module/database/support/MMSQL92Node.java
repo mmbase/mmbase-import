@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.18 2000-06-25 13:11:44 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.19 2000-06-26 11:50:35 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2000/06/25 13:11:44  wwwtech
+Daniel.. changed/added method for getConnection
+
 Revision 1.17  2000/06/25 00:39:14  wwwtech
 Daniel... removed some debug
 
@@ -104,7 +107,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.18 $ $Date: 2000-06-25 13:11:44 $
+* @$Revision: 1.19 $ $Date: 2000-06-26 11:50:35 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -1049,6 +1052,21 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(out);	
 	}
 
+
+	public String getDisallowedField(String allowedfield) {
+		if (allowed2disallowed.containsKey(allowedfield)) {
+			allowedfield=(String)allowed2disallowed.get(allowedfield);
+		}
+		return(allowedfield);
+	}
+
+
+	public String getAllowedField(String disallowedfield) {
+		if (allowed2disallowed.containsKey(disallowedfield)) {
+			disallowedfield=(String)disallowed2allowed.get(disallowedfield);
+		}
+		return(disallowedfield);
+	}
 
 	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
 		MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
