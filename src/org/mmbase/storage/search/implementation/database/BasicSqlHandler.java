@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.16 2003-03-13 17:07:40 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.17 2003-10-02 08:54:18 pierre Exp $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -222,7 +222,22 @@ public class BasicSqlHandler implements SqlHandler {
         boolean multipleSteps = query.getSteps().size() > 1;
 
         // Fields expression
-        Iterator iFields = query.getFields().iterator();
+        List lFields = new ArrayList();
+        lFields.addAll(query.getFields());
+
+        // if distinct,
+        if (query.isDistinct()) {
+            Iterator iSortOrder = query.getSortOrders().iterator();
+            while (iSortOrder.hasNext()) {
+                SortOrder sortOrder = (SortOrder) iSortOrder.next();
+                StepField field = sortOrder.getField();
+                if (lFields.indexOf(field) == -1) {
+                    lFields.add(field);
+                }
+            }
+        }
+
+        Iterator iFields = lFields.iterator();
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
 
