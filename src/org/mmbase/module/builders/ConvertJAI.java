@@ -12,6 +12,8 @@ package org.mmbase.module.builders;
 import java.awt.image.renderable.ParameterBlock;
 import javax.media.jai.*;
 import javax.media.jai.operator.*;
+import java.awt.image.IndexColorModel;
+import java.awt.Transparency;
 import java.util.*;
 import java.io.*;
 import com.sun.media.jai.codec.*;
@@ -22,7 +24,8 @@ import org.mmbase.util.logging.*;
  * Converts Images using image Java Advanced Imaging
  *
  * @author Daniel Ockeloen
- * @version $Id: ConvertJAI.java,v 1.9 2003-03-04 14:12:19 nico Exp $
+ * @author Martijn Houtman (JAI fix)
+ * @version $Id: ConvertJAI.java,v 1.10 2004-03-05 12:16:34 pierre Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
 
@@ -60,6 +63,21 @@ public class ConvertJAI implements ImageConvertInterface {
 
             // determine outputformat
             format=getConvertFormat(commands);
+
+            // correct for gif transparency
+            if (! (format.equals("gif") || format.equals("png")) &&
+                img.getColorModel()instanceof IndexColorModel) {
+              IndexColorModel icm = (IndexColorModel) img.getColorModel();
+              if (icm.getTransparency() == Transparency.BITMASK) {
+                byte[][] data = new byte[3][icm.getMapSize()];
+                icm.getReds(data[0]);
+                icm.getGreens(data[1]);
+                icm.getBlues(data[2]);
+                LookupTableJAI lut = new LookupTableJAI(data);
+                img = JAI.create("lookup", img, lut);
+                log.debug("palette-color image converted to RGB");
+              }
+            }
 
             img = doConvertCommands(img,commands);
 
@@ -300,7 +318,7 @@ public class ConvertJAI implements ImageConvertInterface {
         params.add(xpadding);         // rightPad
         params.add(ypadding);         // topPad
         params.add(ypadding);         // bottomPad
-        params.add(BorderDescriptor.BORDER_ZERO_FILL); // type
+        params.add(BorderExtender.BORDER_ZERO); // type
         params.add(null);         // constants (ignored)
 
         PlanarImage outImg = JAI.create("border", params);
