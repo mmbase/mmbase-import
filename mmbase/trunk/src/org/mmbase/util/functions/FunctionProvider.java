@@ -12,11 +12,11 @@ package org.mmbase.util.functions;
 import java.util.*;
 
 /**
- * @javadoc
+ * A function provider maintains a set of {@link Function} objects.
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.2 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: FunctionProvider.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
  */
 public class FunctionProvider {
 

@@ -9,13 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
+import org.mmbase.bridge.DataType;
 import java.util.List;
 
 /**
  * @javadoc
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.2 2004-12-20 10:37:50 michiel Exp $
+ * @version $Id: WrappedFunction.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
  */
 public class WrappedFunction implements Function {
 

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
+import org.mmbase.bridge.DataType;
 
 /**
  * If there is not Parameter definition array available you could try it with this specialization, which does not need one.
@@ -17,7 +18,7 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.5 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.6 2005-03-16 15:59:51 michiel Exp $
  * @see Parameter
  */
 

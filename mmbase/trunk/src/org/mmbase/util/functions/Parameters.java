@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
+import org.mmbase.bridge.DataType;
 import java.util.Map;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: Parameters.java,v 1.14 2005-03-01 17:14:31 michiel Exp $
+ * @version $Id: Parameters.java,v 1.15 2005-03-16 15:59:51 michiel Exp $
  */
 
 public interface Parameters extends List {

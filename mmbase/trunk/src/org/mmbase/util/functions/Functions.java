@@ -13,6 +13,8 @@ import java.lang.reflect.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.mmbase.bridge.DataType;
+
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -27,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.2 2004-12-13 12:15:19 pierre Exp $
+ * @version $Id: Functions.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
  */
 public class Functions {
 
@@ -55,7 +57,7 @@ public class Functions {
 
 
     /**
-     * Adds the definitions to a List. Resolves the Attribute.Wrapper's (recursively).
+     * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
     public static List define(DataType[] def, List list) {
@@ -144,6 +146,7 @@ public class Functions {
                         // This is a but ugly, but needed for backward compatibility:
                         // Add the node parameter if it is not yet exists and the class is an ObjectBuilder.
                         // This code will be removed in the future
+                        /*
                         if (MMObjectBuilder.class.isAssignableFrom(clazz)) {
                             Parameter nodeParameter = new Parameter("node", Object.class);
                             boolean hasNodeParameter = false;
@@ -151,12 +154,13 @@ public class Functions {
                                 hasNodeParameter = params[j].equals(nodeParameter);
                             }
                             if (!hasNodeParameter) {
-                                Parameter[] params2 = new Parameter[params.length+1];
+                                Parameter[] params2 = new Parameter[params.length + 1];
                                 System.arraycopy(params, 0, params2, 0, params.length);
                                 params2[params.length] = nodeParameter;
                                 params = params2;
                             }
                         }
+                        */
                         map.put(name, params);
                     } catch (IllegalAccessException iae) {
                         // should not be thrown!
