@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.61 2004-09-14 17:56:44 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.62 2004-11-08 14:07:05 michiel Exp $
  * @see ContextTag
  */
 
@@ -88,9 +88,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             log.debug("No pageContextTag found in pagecontext, creating..");
             if (pageLog.isServiceEnabled()) {
                 HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
-                thisPage = request.getRequestURI();
+                //thisPage = request.getRequestURI();
                 String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
-                pageLog.service("Parsing JSP page: " + thisPage + (queryString != null ? "?" + queryString : ""));
+                String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
+                thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
+                pageLog.service("Parsing JSP page: " + thisPage + 
+                                (queryString != null ? "?" + queryString : ""));
             }
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
