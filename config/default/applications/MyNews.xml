@@ -47,13 +47,11 @@
      <contextsource path="MyNews/backup.xml" type="depth" goal="backup"/>
    </contextsourcelist>
 
-   <description>
-   The MyNews magazine is an example of a magazine with news
-   articles. It depends on the resources application, so please
-   install that one before installing this one.
-   </description>
+  <description>
+	 <![CDATA[MyNews is an example of a magazine with news articles.<br />
+It depends on the <strong>resources</strong> application, please install that one before installing this one.]]></description>
 
    <install-notice>
-   The MyNews application is installed. Look at the mmexamples page for the magazine. 
+	 <![CDATA[The MyNews application is installed. Look at the <a href="/mmexamples">MMBase demo page</a> for the magazine.]]>
    </install-notice>
 </application>
