@@ -74,11 +74,11 @@ NetComponents can be found at:
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="distro"      value="MMBase 1.6.0"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="source-config.dir"    location="${source.dir}/config"/>
-  <property name="source-html.dir"      location="${source.dir}/html"/>
-  <property name="source-documentation.dir" 
-                                        location="${source.dir}/documentation" />
+  <property name="source-config.dir"         location="${source.dir}/config"/>
+  <property name="source-html.dir"           location="${source.dir}/html"/>
+  <property name="source-documentation.dir"  location="${source.dir}/documentation" />
   <property name="source-src.dir"       location="${source.dir}/src"/>
+  <property name="generated-source-src.dir"       location="${build.dir}/src"/>
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
   <property name="source-community.xml" value="org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
   <property name="xml2tld"              value="org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
@@ -589,6 +589,8 @@ URL: http://www.mmbase.org
 Comment: The MMBase Content Managment System
 Version: ${distro}.${version}
 Distribution: ${distro}
+Compiled-by: ${ant.version} 
+Java-version: ${ant.java.version}
 </echo>
     
     <mkdir dir="${release.lib.dir}" />
@@ -1280,7 +1282,7 @@ Version: MMBase build ${version}
   <!-- check if MMCI.xml is present                                        -->
   <!-- =================================================================== -->
   <target name="check.mmci.xml.present" description="check if MMCI.xml is present" depends="init">
-    <available property="mmci.xml.present" file="${source-src.dir}/MMCI.xml"/>
+    <available property="mmci.xml.present" file="${generated-source-src.dir}/MMCI.xml"/>
   </target>
 
   <!-- =================================================================== -->
@@ -1290,21 +1292,25 @@ Version: MMBase build ${version}
           description="Generate the source for the remote classes"
 	depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
           unless="mmci.xml.present">
+
+
+    <mkdir dir="${generated-source-src.dir}/org/mmbase/bridge/remote"/>
     <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
-       using the sun jaxp implementation. By forking we do not use the ant classloader -->
+       using the sun jaxp implementation. By forking we do not use theant classloader -->
+
     <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="compile.classpath" >
-	<arg value="${source-src.dir}/MMCI.xml" />
+      <arg value="${generated-source-src.dir}/MMCI.xml" />
 	<classpath>
 		<pathelement location="${build.dir}/classes" />
 	</classpath>
     </java>
 	<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
     <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile.classpath" fork="true" >
-       <arg value="${source-src.dir}"/>
-      <arg value="${source-src.dir}/MMCI.xml"/>
-	<classpath>
-		<pathelement location="${build.dir}/classes"/>
-	</classpath>
+      <arg value="${generated-source-src.dir}"/>
+      <arg value="${generated-source-src.dir}/MMCI.xml"/>
+      <classpath>
+        <pathelement location="${build.dir}/classes"/>
+      </classpath>
     </java>
   </target>
 
@@ -1313,31 +1319,35 @@ Version: MMBase build ${version}
   <!-- (Step 3 for remote) Compile the remote classes                      -->
   <!-- =================================================================== -->
   <target name="compile.remote" description="Compile the remote classes" depends="init,init.compile,generate.remote">
-    <javac srcdir="${source-src.dir}"
+    <javac
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
-           <include name="org/mmbase/bridge/remote/*.java"/>
-           <include name="org/mmbase/bridge/remote/rmi/*.java"/>
-           <include name="org/mmbase/bridge/remote/implementation/*.java"/>
+      <src path="${generated-source-src.dir}" />
+      <src path="${source-src.dir}" />
+      <include name="org/mmbase/bridge/remote/*.java"/>
+      <include name="org/mmbase/bridge/remote/rmi/*.java"/>
+      <include name="org/mmbase/bridge/remote/implementation/*.java"/>
     </javac>
     <rmic base="${build.dir}/classes" classpathref="compile.classpath">
     	<include name="org/mmbase/bridge/remote/rmi/*.class"/>
         <classpath>
-                <pathelement location="${build.dir}/classes"/>
+           <pathelement location="${build.dir}/classes"/>
         </classpath>
     </rmic>
-    <javac srcdir="${source-src.dir}"
+    <javac
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
-           <include name="org/mmbase/bridge/RemoteContext.java"/>
-           <include name="org/mmbase/bridge/ContextProvider.java"/>
-           <include name="org/mmbase/module/RemoteMMCI.java"/>
+      <src path="${generated-source-src.dir}" />
+      <src path="${source-src.dir}" />
+      <include name="org/mmbase/bridge/RemoteContext.java"/>
+      <include name="org/mmbase/bridge/ContextProvider.java"/>
+      <include name="org/mmbase/module/RemoteMMCI.java"/>
     </javac>
   </target>
 
@@ -1347,13 +1357,13 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target name="clean.remote" depends="init">
     <delete>
-      <fileset dir="${source-src.dir}">
+      <fileset dir="${generated-source-src.dir}">
         <include name="org/mmbase/bridge/remote/*.java"/>
       </fileset>
     </delete>
-    <delete dir="${source-src.dir}/org/mmbase/bridge/remote/rmi"/>
-    <delete dir="${source-src.dir}/org/mmbase/bridge/remote/implementation"/>
-    <delete file="${source-src.dir}/MMCI.xml"/>
+    <delete dir="${generated-source-src.dir}/org/mmbase/bridge/remote/rmi"/>
+    <delete dir="${generated-source-src.dir}/org/mmbase/bridge/remote/implementation"/>
+    <delete file="${generated-source-src.dir}/MMCI.xml"/>
   </target>
 
  <!-- ================================================================================ -->
