@@ -30,7 +30,7 @@ import org.mmbase.util.FileWatcher;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.93 2003-07-07 09:33:09 michiel Exp $
+ * @version $Id: Wizard.java,v 1.94 2003-07-07 09:45:34 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -51,7 +51,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         nodeCache.putCache();
         fieldDataCache    = new FieldDataCache();
         fieldDataCache.putCache();
-        fieldDataCache.setActive(false);
     }
     // Some of these variables are placed public, for debugging reasons.
     private Document preform;
@@ -659,6 +658,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
             // check all fields and do the thingies
             createPreHtmlForm(prehtmlform, form, data);
+            fieldDataCache.clear();
         }
 
         // now, resolve optionlist values:
