@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.56 2002-07-19 18:06:44 michiel Exp $
+  @version $Id: wizard.xsl,v 1.57 2002-07-19 18:52:37 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -686,7 +686,12 @@
                     <!-- always search on owner too -->
                     <option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
                   </select>
-                  <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/default}" class="search" />
+                  <input 
+                    type="text" name="searchterm_{../command[@name='add-item']/@cmd}" 
+                    value="{search-filter[1]/default}" class="search" 
+                    onChange="var s = form['searchfields_{../command[@name='add-item']/@cmd}']; s[s.selectedIndex].setAttribute('default',  this.value); " />
+                    <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
+
                   <span title="{$tooltip_search}" class="imagebutton" 
                     onClick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');">
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
