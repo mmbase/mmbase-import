@@ -46,7 +46,7 @@
         <xsl:value-of select="excerpt" disable-output-escaping="yes" />
         <div class="resultcomment"><xsl:value-of select="percent" /> % - 
         <xsl:value-of select="modified" /> -
-        <xsl:value-of select="url" /></div>
+        <xsl:value-of select="url" /> - <xsl:value-of select="sizek" />k</div>
     </li>
   </xsl:template>
 
