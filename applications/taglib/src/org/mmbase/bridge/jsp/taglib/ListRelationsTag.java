@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.11 2004-02-26 22:11:49 michiel Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.12 2004-05-18 14:54:36 michiel Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -99,9 +99,9 @@ public class ListRelationsTag extends AbstractNodeListTag {
     public int doStartTag() throws JspTagException{
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
-            relatedFromNode = (Node) listHelper.getReturnList().getProperty("relatedFromNode");
+            relatedFromNode = (Node)      listHelper.getReturnList().getProperty("relatedFromNode");
             relatedQuery    = (NodeQuery) listHelper.getReturnList().getProperty("relatedQuery");
-            relatedNodes    = (NodeList) listHelper.getReturnList().getProperty("relatedNodes");
+            relatedNodes    = (NodeList)  listHelper.getReturnList().getProperty("relatedNodes");
             return superresult;
         }
 
@@ -130,6 +130,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
             relatedQuery.setOffset(query.getOffset());
             relatedQuery.setMaxNumber(query.getMaxNumber());            
             relatedFromNode = c.getRelatedFromNode();
+            Queries.sortUniquely(relatedQuery);
         }
 
         Queries.sortUniquely(query);
