@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Class for creating builder configuration files.
  *
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.13 2002-02-19 19:12:52 michiel Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.14 2002-02-22 15:31:57 michiel Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -224,27 +224,15 @@ public class XMLBuilderWriter  {
                     body+="\t\t\t<!-- name of the field in the database -->\n";
                     body+="\t\t\t<name>"+def.getDBName()+"</name>\n";
                     body+="\t\t\t<!-- MMBase datatype and demands on it -->\n";
-                    int tmpti=def.getDBType();
-                    String tmps="persistent";
-                    int tmpsi=def.getDBState();
-                    String tmpt=null;
-                    if (tmpsi==FieldDefs.DBSTATE_PERSISTENT) tmps="persistent";
-                    if (tmpsi==FieldDefs.DBSTATE_VIRTUAL) tmps="virtual";
-                    if (tmpsi==FieldDefs.DBSTATE_SYSTEM) tmps="system";
 
-                    if (tmpti==FieldDefs.TYPE_STRING) tmpt="STRING";
-                    if (tmpti==FieldDefs.TYPE_INTEGER) tmpt="INTEGER";
-                    if (tmpti==FieldDefs.TYPE_LONG) tmpt="LONG";
-                    if (tmpti==FieldDefs.TYPE_DOUBLE) tmpt="DOUBLE";
-                    if (tmpti==FieldDefs.TYPE_FLOAT) tmpt="FLOAT";
-                    if (tmpti==FieldDefs.TYPE_BYTE) tmpt="BYTE";
-
+                    String tmps = FieldDefs.getDBStateDescription(def.getDBState());
+                    String tmpt = FieldDefs.getDBTypeDescription(def.getDBType());
                     int size=def.getDBSize();
 
                     if (size==-1) {
-                        body+="\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n";
-                    } else {
-                        body+="\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n";
+                        body += "\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n";
+                    } else { 
+                        body += "\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n";
                     }
 
                     body+="\t\t</db>\n";
