@@ -301,6 +301,8 @@ Core Bug Fixes:
 -------------------------
 Database Layer Bug Fixes:
 -------------------------
+[1.7.4]
+- #6653  If field null in resultset, NPE can occur, which fails the complete list.
 [1.7.2]
 - #6599 UNION queries in informix contains invailid relational constraints
 - #6609 Verify does not show the field it is actually looking for 
