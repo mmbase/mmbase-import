@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Utility class for writing xml files for data- and relation sources, suppied by an application export class.
@@ -24,7 +25,7 @@ import org.mmbase.module.corebuilders.*;
  * @version 9-11-2000
  */
 public class NodeWriter{
-    private static final boolean DEBUG = true;
+	private static Logger log = Logging.getLoggerInstance(NodeWriter.class.getName());
     private MMBase mmb;
     private Vector resultsmsgs;
     private String directory;
@@ -57,7 +58,7 @@ public class NodeWriter{
         // define and open the file to write
         file = new File(directory + builderName + ".xml");
         try {
-            if (DEBUG) System.out.println("Opening " + file + " for writing.");
+            log.debug("Opening " + file + " for writing.");
             fw = new FileWriter(file);
         } catch (Exception e) {
             resultsmsgs.addElement("Failed opening file " + file);
@@ -94,7 +95,15 @@ public class NodeWriter{
 	        	rtype = reldefnode.getStringValue("sname");
 	        }
 	
-            write("\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+ node.getIntValue("snumber") +"\" dnumber=\""+ node.getIntValue("dnumber") +"\" rtype=\""+ rtype +"\">\n");
+            write("\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+ node.getIntValue("snumber") +"\" dnumber=\""+ node.getIntValue("dnumber") +"\" rtype=\""+ rtype +"\"");
+		    // add directionality if used					
+			if (InsRel.usesdir) {
+			    int dir=node.getIntValue("dir");
+				write(" dir=\""+dir+"\"");
+			}
+
+			write(">\n");
+
         } else {
         	// For a data node, store the alias if at all possible.
             	String tm=mmb.OAlias.getAlias(number);
@@ -116,7 +125,7 @@ public class NodeWriter{
                 if (!key.equals("number") && !key.equals("owner")
                         && !key.equals("otype") && !key.equals("CacheCount")
                         && !key.equals("snumber") && !key.equals("dnumber")
-                        && !key.equals("rnumber")) {
+                        && !key.equals("rnumber") && !key.equals("dir")) {
                     write("\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n");
                 }
             } else {
@@ -137,7 +146,7 @@ public class NodeWriter{
         resultsmsgs.addElement("Saving " + nrOfNodes + " " + builderName
                                + " to : " + file);
         try {
-            if (DEBUG) System.out.println("Closing file " + file);
+            log.debug("Closing file " + file);
             fw.close();
         } catch (Exception e) {
             resultsmsgs.addElement("Failed closing file " + file);
@@ -179,7 +188,7 @@ public class NodeWriter{
 			try {
 				file.mkdirs();
 			} catch(Exception e) {
-				System.out.println("Can't create dir : "+targetpath+stype);
+				log.error("Can't create dir : "+targetpath+stype);
 			}
 			byte[] value=node.getByteValue(key);
 			saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);

@@ -12,6 +12,7 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 import org.mmbase.module.corebuilders.*;
 
@@ -42,6 +43,11 @@ import org.mmbase.module.corebuilders.*;
 *  @version 08-11-2000
 */
 public class XMLContextDepthWriterII  {
+
+    /**
+    * Logging instance
+    */
+	private static Logger log = Logging.getLoggerInstance(XMLContextDepthWriterII.class.getName());
 
     /**
     * Writes an application's nodes, according to that application's contexts, to a path.
@@ -91,7 +97,7 @@ public class XMLContextDepthWriterII  {
 	try {
 		file.mkdirs();
 	} catch(Exception e) {
-		System.out.println("Can't create dir : "+targetpath+"/"+app.getApplicationName());
+		log.error("Can't create dir : "+targetpath+"/"+app.getApplicationName());
 	}
 
 	// write DataSources
@@ -315,7 +321,7 @@ public class XMLContextDepthWriterII  {
 		if (value!=-1) {
 			resultset.add(new Integer(value));
 		} else {
-			System.out.println("XMLContextDepthWriter -> can't get intvalue for : "+name);
+			log.error("XMLContextDepthWriter -> can't get intvalue for : "+name);
 		}
 	}
 	return(resultset);
@@ -336,7 +342,7 @@ public class XMLContextDepthWriterII  {
 		// if so, get the node associated with that alias
 		OAlias bul=(OAlias)mmb.getMMObject("oalias");
 		int number=bul.getNumber(alias);
-		if (number==-1) System.out.println("Invalid Start Node Alias please make sure its valid");
+		if (number==-1) log.error("Invalid Start Node Alias please make sure its valid");
 		return(number);
 	} else {
 		// otherwise, get a builder and the where clause to run on that builder
@@ -357,10 +363,10 @@ public class XMLContextDepthWriterII  {
 				return(node.getIntValue("number"));
 			}
 		} else {
-			System.out.println("ContextDepthWriter-> can't find builder ("+builder+")");
+			log.error("ContextDepthWriter-> can't find builder ("+builder+")");
 		}
 	}
-	System.out.println("Invalid Start Node please fix your where settings or use a alias");
+	log.error("Invalid Start Node please fix your 'where' settings or use a alias");
 	return(-1);
     }
 
