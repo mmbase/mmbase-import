@@ -1,7 +1,7 @@
 
 <mm:import externid="action" />
 <mm:present referid="action">
-<mm:cloud logon="admin" pwd="dontusesvp">
+<mm:cloud logon="admin" pwd="xxxxx">
 
 <mm:remove referid="portal" />
 <mm:remove referid="page" />
