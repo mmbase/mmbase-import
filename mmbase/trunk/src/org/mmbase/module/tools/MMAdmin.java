@@ -37,7 +37,7 @@ import javax.servlet.http.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.83 2004-03-08 18:21:45 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.84 2004-04-19 10:38:20 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -186,14 +186,14 @@ public class MMAdmin extends ProcessorModule {
     private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
 
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
-        // there is some user with rank Administrator in the session...        
+        // there is some user with rank Administrator in the session...
 
         HttpSession session = sp.req.getSession(false);
         Enumeration e = session.getAttributeNames();
-        while (e.hasMoreElements()) {            
-            String attribute = (String) e.nextElement(); 
+        while (e.hasMoreElements()) {
+            String attribute = (String) e.nextElement();
             Object o = session.getAttribute(attribute);
-            
+
             if (o instanceof Cloud) {
                 Cloud cloud = (Cloud) o;
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
@@ -210,9 +210,9 @@ public class MMAdmin extends ProcessorModule {
         try {
             user = HttpAuth.getAuthorization(sp.req, sp.res, "www", "Basic");
         } catch (javax.servlet.ServletException ex) {}
-       
 
-        
+
+
 
         boolean authorized = (user != null) && (!adminonly || "admin".equals(user));
         if (!authorized) {
@@ -246,7 +246,7 @@ public class MMAdmin extends ProcessorModule {
                     if (installApplication(appname, -1, null, result, new HashSet(), false)) {
                         lastmsg = result.getMessage();
                     } else {
-                        lastmsg = "Problem installing application : " + appname + "\n" + result.getMessage();
+                        lastmsg = "Problem installing application : " + appname + ", cause: " + result.getMessage();
                     }
                 } catch (SearchQueryException e) {
                     log.warn(Logging.stackTrace(e));
@@ -1389,7 +1389,7 @@ public class MMAdmin extends ProcessorModule {
                         result,
                         new HashSet(),
                         true)) {
-                        log.error("Problem installing application : " + aname);
+                        log.error("Problem installing application : " + aname + ", cause: "+result.getMessage());
                     }
                 }
             }
@@ -1608,7 +1608,7 @@ public class MMAdmin extends ProcessorModule {
                         continue;
                     }
                     results.addElement(sname);
-                    
+
                     results.addElement("" + app.getModuleVersion());
                     String status = app.getStatus();
                     if (status.equals("active")) {
