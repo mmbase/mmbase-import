@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.17.2.1 2002-02-20 10:43:37 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.17.2.2 2002-11-05 21:57:58 robmaris Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -128,7 +128,7 @@ public class BasicRelation extends BasicNode implements Relation {
     }
 
     /**
-     * 
+     *
      * @javadoc
      */
     void checkValid() {
@@ -169,14 +169,14 @@ public class BasicRelation extends BasicNode implements Relation {
         if (! (BasicCloud.isTemporaryId(snum) || BasicCloud.isTemporaryId(dnum))) {
             if (isnew) {
                 cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
-                relationChanged = false;            
+                relationChanged = false;
             } else {
                 if (relationChanged) {
-                    cloud.assert(Operation.CHANGE_RELATION, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
+                    cloud.assert(Operation.CHANGE_RELATION, noderef.getNumber(), snum, dnum);
                     relationChanged = false;
-                }        
+                }
             }
-        } 
+        }
         super.commit();
         if (!(cloud instanceof Transaction)) {
             snum = getNode().getIntValue("snumber");
