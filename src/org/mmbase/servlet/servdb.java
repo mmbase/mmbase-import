@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.54.2.1 2004-08-06 08:39:33 marcel Exp $
+ * @version $Id: servdb.java,v 1.54.2.2 2004-11-08 12:40:40 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -43,7 +43,6 @@ public class servdb extends JamesServlet {
     private		cacheInterface 		cache;
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
-    private		MMBase 	mmbase;
     private 	sessionsInterface 	sessions;
 
     /**
@@ -62,23 +61,25 @@ public class servdb extends JamesServlet {
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servdb.class);
 
-        cache = (cacheInterface) getModule("cache");
-        if (cache == null) {
-            log.debug("Could not find cache module, proceeding without cache");
-        }
-        mmbase = (MMBase) getModule("MMBASEROOT");
-        if (mmbase == null) {
-            log.error("Could not find module with name 'MMBASEROOT'!");
-        }
-        sessions = (sessionsInterface) getModule("SESSION");
-        if (sessions == null) {
-            log.debug("Could not find session module, proceeding without sessions");
-        }
-
         // associate explicit mapping
         // Needed because servdb explicitly tests on these maps
         associateMapping("images","/img.db",new Integer(10));
         associateMapping("attachments","/attachment.db",new Integer(10));
+    }
+    
+
+    public void setMMBase(MMBase mmb) {
+        super.setMMBase(mmb);        
+
+        cache = (cacheInterface) getModule("cache");
+        if (cache == null) {
+            log.debug("Could not find cache module, proceeding without cache");
+        }
+
+        sessions = (sessionsInterface) getModule("SESSION");
+        if (sessions == null) {
+            log.debug("Could not find session module, proceeding without sessions");
+        }
     }
 
     // utility method for converting strings to bytes
@@ -96,6 +97,10 @@ public class servdb extends JamesServlet {
 
     // perhaps this method can simply be doGet
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
+        if (!checkInited(res)) {
+            return;            
+        }
+
         Date lastmod;
         String templine,templine2;
         int filesize;

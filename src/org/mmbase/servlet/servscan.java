@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.36 2003-05-08 06:09:22 kees Exp $
+ * @version $Id: servscan.java,v 1.36.2.1 2004-11-08 12:40:40 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -55,12 +55,22 @@ public class servscan extends JamesServlet {
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servscan.class.getName());
         log.info("Init of servlet " + getServletConfig().getServletName() + ".");
-        MMBaseContext.initHtmlRoot();
+    }
+    
+
+    public void setMMBase(MMBase mmb) {
+        super.setMMBase(mmb);        
+        try {            
+            MMBaseContext.initHtmlRoot();
+        } catch (Exception e){
+            log.error(e);            
+        }
+        
         parser = (scanparser)getModule("SCANPARSER");
         if(parser == null) {
             String msg = "module with name 'scanparser' should be active";
             log.error(msg);
-            throw new ServletException(msg);
+            throw new RuntimeException(msg);
         }
         sessions = (sessionsInterface)getModule("SESSION");
         if(sessions == null) {
@@ -94,6 +104,10 @@ public class servscan extends JamesServlet {
      * This processes the the page and sends it back
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        if (!checkInited(res)) {
+            return;            
+        }
+
         incRefCount(req);
         try {
 
