@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.80 2003-05-13 12:34:53 michiel Exp $
+ * @version $Id: Wizard.java,v 1.81 2003-05-13 13:25:31 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -898,22 +898,24 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param   node    The node to resolve
      */
-    private void resolveShortcut(Node singlenode) throws WizardException {
+    private void resolveShortcut(Node singleNode) throws WizardException {
         // transforms <field name="firstname"/> into <field fdatapath="field[@name='firstname']" />
-        String nodeName = singlenode.getNodeName();
+        String nodeName = singleNode.getNodeName();
         if (nodeName.equals("field")) {
             // field nodes
-            String name      = Utils.getAttribute(singlenode, "name", null);
-            String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
-            if (fdatapath==null) {
-                if (name == null || name.equals("number")) {
+            String name      = Utils.getAttribute(singleNode, "name", null);
+            String fdatapath = Utils.getAttribute(singleNode, "fdatapath", null);
+            if (fdatapath == null) {
+                if (name == null) {
+                    fdatapath = "object/field[@name='number']";
+                } else if ("number".equals(name)) {                    
+                    Utils.setAttribute(singleNode, "ftype", "data"); // the number field may of course never be edited
                     fdatapath = "@number";
-                    Utils.setAttribute(singlenode, "ftype", "data");
                 } else {
-                    fdatapath="field[@name='"+name+"']";
+                    fdatapath="field[@name='" + name + "']";
                 }
                 // normal field or a field inside a list node?
-                Node parentNode=singlenode.getParentNode();
+                Node parentNode   = singleNode.getParentNode();
                 String parentname = parentNode.getNodeName();
                 // skip fieldset
                 if (parentname.equals("fieldset")) {
@@ -922,15 +924,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (parentname.equals("item")) {
                     fdatapath = "object/"+fdatapath;
                 }
-                Utils.setAttribute(singlenode, "fdatapath", fdatapath);
+                Utils.setAttribute(singleNode, "fdatapath", fdatapath);
             }
         } else if (nodeName.equals("list")) {
             // List nodes
-            String role        = Utils.getAttribute(singlenode, "role", null); //"insrel");
-            String destination = Utils.getAttribute(singlenode, "destination", null);
+            String role        = Utils.getAttribute(singleNode, "role", null); //"insrel");
+            String destination = Utils.getAttribute(singleNode, "destination", null);
 
-            String searchString   = Utils.getAttribute(singlenode, "searchdir", null);
-            String fdatapath   = Utils.getAttribute(singlenode, "fdatapath", null);
+            String searchString   = Utils.getAttribute(singleNode, "searchdir", null);
+            String fdatapath   = Utils.getAttribute(singleNode, "fdatapath", null);
 
             if (fdatapath != null) {
                 if (searchString  != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'searchdir' attributes");
@@ -950,37 +952,37 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 switch(searchDir) {
                 case ClusterBuilder.SEARCH_SOURCE:
                     if (destination != null) {
-                        fdatapath = "relation[@role='"+role+"' and @source=object/@number and object/@type='" + destination + "']";
+                        fdatapath = "relation[@role='" + role + "' and @source=object/@number and object/@type='" + destination + "']";
                     } else {
-                        fdatapath = "relation[@role='"+role+"' and @source=object/@number]";
+                        fdatapath = "relation[@role='" + role + "' and @source=object/@number]";
                     }
                     break;
                 case ClusterBuilder.SEARCH_DESTINATION:
                     if (destination != null) {
-                        fdatapath = "relation[@role='"+role+"' and @destination=object/@number and object/@type='" + destination + "']";
+                        fdatapath = "relation[@role='" + role + "' and @destination=object/@number and object/@type='" + destination + "']";
                     } else {
-                        fdatapath = "relation[@role='"+role+"' and @destination=object/@number]";
+                        fdatapath = "relation[@role='" + role + "' and @destination=object/@number]";
                     }
                     break;
                 case ClusterBuilder.SEARCH_BOTH:
                 case ClusterBuilder.SEARCH_ALL:
                 case ClusterBuilder.SEARCH_EITHER:
                     if (destination != null) {
-                        fdatapath = "relation[@role='"+role+"' and object/@type='"+destination+"']";
+                        fdatapath = "relation[@role='" + role + "' and object/@type='" + destination + "']";
                     } else {
-                        fdatapath = "relation[@role='"+role+"']"; // no idea if this makes sense, but it is better then 'null' for destination
+                        fdatapath = "relation[@role='" + role + "']"; // no idea if this makes sense, but it is better then 'null' for destination
                     }
                     break;
                 default: 
                     throw new WizardException("Unknown searchDir?"); // should not happend (because of dtd), but well..
                 }
                 // normal list or a list inside a list?
-                String parentname = singlenode.getParentNode().getNodeName();
+                String parentname = singleNode.getParentNode().getNodeName();
                 if (parentname.equals("item")) {
-                    fdatapath="object/"+fdatapath;
+                    fdatapath = "object/" + fdatapath;
                 }
 
-                Utils.setAttribute(singlenode, "fdatapath", fdatapath);
+                Utils.setAttribute(singleNode, "fdatapath", fdatapath);
             }
         }
     }
