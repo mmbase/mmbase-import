@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.10 2004-07-29 14:04:33 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.11 2004-11-11 16:56:12 michiel Exp $
  */
 public class UtilReader {
 
@@ -67,33 +67,33 @@ public class UtilReader {
         return utilReader;
     }
 
-    private class UtilFileWatcher extends FileWatcher {
-        private WrappedFileWatcher wrappedFileWatcher;
-        public UtilFileWatcher(WrappedFileWatcher f) {
-            super(true); // true: keep reading.
-            wrappedFileWatcher = f;
+    private class UtilFileWatcher extends ResourceWatcher {
+        private ResourceWatcher wrappedWatcher;
+        public UtilFileWatcher(ResourceWatcher f) {
+            super(); // true: keep reading.
+            wrappedWatcher = f;
         }
 
-        public void onChange(File file) {
-            readProperties(file);
-            if (wrappedFileWatcher != null) {
-                wrappedFileWatcher.onChange(file);
+        public void onChange(String f) {
+            readProperties(f);
+            if (wrappedWatcher != null) {
+                wrappedWatcher.onChange(f);
             }
         }
     }
 
     private Map properties;
-    private FileWatcher watcher;
+    private ResourceWatcher watcher;
 
 
     /**
      * Instantiates a UtilReader for a given configuration file in <config>/utils. If the configuration file is used on more spots, then you may consider
      * using the static method {@link #get(String)} in stead.
      *
-     * @param filename The name of the property file (e.g. httppost.xml).
+     * @param fileName The name of the property file (e.g. httppost.xml).
      */
-    public UtilReader(String filename) {
-        File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
+    public UtilReader(String fileName) {
+        String file = CONFIG_UTILS + "/" + fileName;
         readProperties(file);
         watcher = new UtilFileWatcher(null);
         watcher.add(file);
@@ -103,8 +103,8 @@ public class UtilReader {
      * @since MMBase-1.8
      * @param w A unstarted WrappedFileWatcher without files. (It will be only be called from the filewatcher in this reader).
      */
-    public UtilReader(String filename, WrappedFileWatcher w) {
-        File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
+    public UtilReader(String fileName, ResourceWatcher w) {
+        String file =  CONFIG_UTILS + "/" + fileName;
         readProperties(file);
         watcher = new UtilFileWatcher(w);
         watcher.add(file);
@@ -120,14 +120,21 @@ public class UtilReader {
         return new PropertiesMap(properties);
     }
 
-    protected void readProperties(File f) {
+    protected void readProperties(String s) {
         if (properties == null) {
             properties = new HashMap();
         } else {
             properties.clear();
         }
-        if (f.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(f.toString(), UtilReader.class);
+        org.xml.sax.InputSource is;
+        try {
+            is = ResourceLoader.getConfigurationRoot().getInputSource(s);
+        } catch (Exception e) {
+            log.error(e);
+            return;
+        }
+        if (is != null) {
+            XMLBasicReader reader = new XMLBasicReader(is, UtilReader.class);
             Element e = reader.getElementByPath("util.properties");
             if (e != null) {
                 Enumeration enumeration = reader.getChildElements(e, "property");
@@ -163,7 +170,7 @@ public class UtilReader {
                 }
             }
         } else {
-            log.debug("File " + f + " does not exist");
+            log.debug("Resource " + s + " does not exist");
         }
     }
 
