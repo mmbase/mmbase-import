@@ -21,10 +21,10 @@ maximum age in days of the items that will be found.</p>
 <%
 if (session.getAttribute("conf_max") != null && session.getAttribute("conf_days") != null) {
 %>
-<p class="message">You have saved the following settings<br>
+<p class="message">You have saved the following settings<br />
 <%
-	out.println("<br>Maximum age in days: " + session.getAttribute("conf_days").toString());
-	out.println("<br>Maximum number of items shown: " + session.getAttribute("conf_max").toString());
+	out.println("<br />Maximum age in days: " + session.getAttribute("conf_days").toString());
+	out.println("<br />Maximum number of items shown: " + session.getAttribute("conf_max").toString());
 %>
 </p>
 <%

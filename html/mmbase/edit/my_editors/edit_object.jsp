@@ -21,8 +21,11 @@ String node_gui = "";		// GUI variable set in builder
 <form enctype="multipart/form-data" method="post" action="<mm:url referids="nr" />">
 <table border="0" cellspacing="0" cellpadding="3" class="table-form">
 <tr bgcolor="#CCCCCC">
-  <td align="right"><mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete> </td>
-  <td class="title-m"><mm:nodeinfo type="guinodemanager" /> (<mm:nodeinfo type="type" />)</td>
+  <td class="title-m" align="right" valign="bottom">
+    <mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
+    <%-- <mm:maycreate type="<%= ntype %>"> --%><a href="new_object.jsp?ntype=<%= ntype %>" title="new node"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a><%-- </mm:maycreate> --%>
+    </td>
+  <td class="title-m" valign="bottom"><b><mm:nodeinfo type="guinodemanager" /></b> (<mm:nodeinfo type="type" />): <b><mm:field name="gui()" /></b></td>
 </tr>
 <mm:present referid="change">
 <tr>
