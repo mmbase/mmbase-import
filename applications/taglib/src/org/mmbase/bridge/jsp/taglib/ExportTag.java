@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import java.io.IOException;
+
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
@@ -42,19 +44,24 @@ public class ExportTag extends CloudReferrerTag {
         key = k;
     }
 
-    public void setDeclare(boolean b) {
-        declare = b;
-    }
     
     public int doStartTag() throws JspTagException {
-        log.debug("getting object " + key + "-> " + getObject(key));
-
-        if (declare) {
-            pageContext.setAttribute(jspvar, getObject(key));
-        } else {
-            // no idea how to do this...
+        if (log.isDebugEnabled()) {
+            log.debug("getting object " + key + "-> " + getContextTag().getObject(key));
+        }    
+        Object value = getContextTag().getObject(key);
+        if (value != null) {
+            pageContext.setAttribute(jspvar, value);
         }
-        return SKIP_BODY;
+        return EVAL_BODY_TAG;
+    }
+    public int doAfterBody() throws JspTagException {
+        try {
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());            
+            return SKIP_BODY;
+        } catch (IOException ioe){
+            throw new JspTagException(ioe.toString());
+        }
     }
 
 }
