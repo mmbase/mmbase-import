@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.12 2004-03-23 14:06:21 rob Exp $
+ * @version $Id: Attributes.java,v 1.13 2004-11-30 08:30:57 pierre Exp $
  */
 public final class Attributes {
 
@@ -79,7 +79,7 @@ public final class Attributes {
      * This determines the level of transaction support.
      * The default is determined from the database metadata.
      */
-    public static final String TRANSACTION_ISOLATION_LEVEL = "database.transaction-isolation-level";
+    public static final String TRANSACTION_ISOLATION_LEVEL = "database-transaction-isolation-level";
 
     /**
      * Option: <code>database-supports-data-definition</code>.
