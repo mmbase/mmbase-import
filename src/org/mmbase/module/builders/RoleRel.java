@@ -26,23 +26,5 @@ public class RoleRel extends InsRel {
 	public RoleRel() {
 	}
 	
-	/**
-	* setDefaults for a node
-	*/
-	int relnumber=-1;
-
-	public void setDefaults(MMObjectNode node) {
-		if (relnumber==-1) {
-			RelDef bul=(RelDef)mmb.getMMObject("reldef");
-			if (bul!=null) {
-				relnumber=bul.getGuessedByName(tableName);
-				if (relnumber==-1) System.out.println("RoleRel-> Can not guess name");
-			} else {
-				System.out.println("RoleRel-> Can not reach RelDef");
-			}
-		}
-		node.setValue("rnumber",relnumber);
-	}
-
 
 }
