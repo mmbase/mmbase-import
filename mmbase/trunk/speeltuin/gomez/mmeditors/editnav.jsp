@@ -1,4 +1,4 @@
-<%@include file="header.jsp" %="">
+<%@include file="header.jsp" %>
 <mm:cloud name="mmbase" method="http" jspvar="cloud">
   <head>
     <title>Editors</title>
