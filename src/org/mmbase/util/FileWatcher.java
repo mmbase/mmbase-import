@@ -220,7 +220,7 @@ public abstract class FileWatcher extends Thread {
     public void run() {
     	do {
     	    try {
-    	    	log.debug("gonna sleep this filewatcher for : " + delay / 1000 + " seconds");	    
+    	    	if(log.isDebugEnabled()) log.trace("gonna sleep this filewatcher for : " + delay / 1000 + " seconds");	    
 	    	Thread.currentThread().sleep(delay);
       	    }    
 	    catch(InterruptedException e) {
