@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.263 2004-03-08 14:40:32 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.264 2004-03-10 10:08:35 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1108,15 +1108,17 @@ public class MMObjectBuilder extends MMTable {
         // test otype.
         // XXX todo: getNodeType() should throw a NotFound exception.
         if (nodeType < 0) {
-            String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + nodeType + ")" + Logging.stackTrace();
+            String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + nodeType + ")";
             throw new RuntimeException(msg);
         }
         // if the type is not for the current buidler, determine the real builder
         if (nodeType != oType) {
             String builderName = mmb.getTypeDef().getValue(nodeType);
             if (builderName == null) {
-                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + ")");
-                return null;
+                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking 'object'");
+                builderName = "object";
+                
+                //return null; Used to return null in MMBase < 1.7.0, but that gives troubles, e.g. that the result not gets cached.
             }
             builder = mmb.getBuilder(builderName);
             if (builder == null) {
@@ -1158,12 +1160,12 @@ public class MMObjectBuilder extends MMTable {
                 ResultSet rs = stmt.executeQuery(query);
                 try {
                     if (rs.next()) {
-                        node=new MMObjectNode(builder);
-                        ResultSetMetaData rd=rs.getMetaData();
+                        node = new MMObjectNode(builder);
+                        ResultSetMetaData rd = rs.getMetaData();
                         String fieldname;
-                        for (int i=1;i<=rd.getColumnCount();i++) {
-                            fieldname= mmb.getDatabase().getDisallowedField( rd.getColumnName(i));
-                            node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
+                        for (int i = 1; i<= rd.getColumnCount(); i++) {
+                            fieldname = mmb.getDatabase().getDisallowedField(rd.getColumnName(i));
+                            node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
                         }
                         // store in cache if indicated to do so
                         if (useCache) {
@@ -1203,7 +1205,7 @@ public class MMObjectBuilder extends MMTable {
      *       <code>MMObjectNode</code> containign the contents of the requested node.
      */
     public MMObjectNode getNode(int number) {
-        return getNode(number,true);
+        return getNode(number, true);
     }
 
     /**
@@ -2199,12 +2201,19 @@ public class MMObjectBuilder extends MMTable {
                 Map.Entry typeEntry = (Map.Entry) types.next();
                 int otype = ((Integer)typeEntry.getKey()).intValue();
                 Set nodes = (Set) typeEntry.getValue();
-                MMObjectNode typedefNode = getNode(otype);
+                MMObjectNode typedefNode;
+                try {
+                    typedefNode = getNode(otype);
+                } catch (Exception e) {
+                    log.error("Exception during conversion of nodelist to right types.  Nodes (" + nodes + ") of current type " + otype + " will be skipped. Probably the database is inconsistent. Message: " + e.getMessage());
+                    
+                    continue;
+                }
                 if(typedefNode == null) {
                     // builder not known in typedef?
                     // skip this builder and process to next one..
                     // TODO: research: add incorrect node to node's cache?
-                    log.error("Could not find typedef node #"+otype);
+                    log.error("Could not find typedef node #" + otype);
                     continue;
                 }
                 MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
@@ -2216,7 +2225,7 @@ public class MMObjectBuilder extends MMTable {
                     continue;
                 }
                 Iterator converted = builder.getNodes(nodes).iterator();
-
+                
                 while(converted.hasNext()) {
                     MMObjectNode current = (MMObjectNode) converted.next();
                     convertedNodes.put(new Integer(current.getNumber()), current);
@@ -2224,7 +2233,7 @@ public class MMObjectBuilder extends MMTable {
             }
 
             // insert all the corrected nodes that were found into the list..
-            for(int i=0; i<results.size(); i++) {
+            for(int i = 0; i < results.size(); i++) {
                 MMObjectNode current = (MMObjectNode) results.get(i);
                 Integer number = new Integer(current.getNumber());
                 if(convertedNodes.containsKey(number)) {
