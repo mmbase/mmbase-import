@@ -66,6 +66,7 @@ public class OwnerAuthorization extends Authorization {
 
         switch(operation.getInt()) {
         case Operation.CREATE_INT:
+            log.debug("hopi");
             // say we may always create, if we are authenticated.
             permitted = !(user.getRank() == Rank.ANONYMOUS);
             break;
@@ -85,12 +86,15 @@ public class OwnerAuthorization extends Authorization {
             if(user.getRank() != Rank.ANONYMOUS) {
                 MMObjectNode node = getMMNode(nodeNumber);
                 String ownerName = node.getStringValue("owner");
+                /*
                 if(ownerName.equals("bridge")) {
                     // was created by the bridge, we can take this one....
                     log.debug("record was from bridge... hihi we take it...");
                     permitted = true;
                 }
-                else {
+                else 
+                */
+                {
                     log.debug("Owner of checking field is:'" + ownerName +
                               "' and user is '" + user.getIdentifier() + "'");
                     permitted = ownerName.equals(user.getIdentifier());
@@ -118,7 +122,8 @@ public class OwnerAuthorization extends Authorization {
         // hmm, we can use check :)
         if(manager.getActive()){
             if (!check(user, node, operation)) {               
-                throw new org.mmbase.security.SecurityException("Operation was NOT permitted...");
+                throw new org.mmbase.security.SecurityException(
+                    "Operation '" + operation + "' on " + node + " was NOT permitted to " + user.getIdentifier());
             }
         }
     }
