@@ -7,7 +7,7 @@
 
     <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.3 2003-06-30 12:05:31 pierre Exp $</edition>
+    <edition>$Id: storage.xml,v 1.4 2003-06-30 12:39:44 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -80,8 +80,8 @@ public interface Transaction {
 	
 		<section id="Storage">
 			<title>Storage Interface</title>
-			<para>The Storage interface defines a storage device - a location where MMBase objects are kept. This is generally a persistent layer, and most often a database. However, the way Storage is defined, when combined iwth teh Query interface (not yet integrated in the interface) it is possible to create alternate storages, such as a memory-only storage for test purposes, or a xml-based storage.</para>
-			<para>The interface defiens methods for qyerying the storage, and for teh creation, deletion, and updates of objects in the storage. It also defines method for creating or altering teh storage itself (adding fields to a builder, for instance).</para>
+			<para>The Storage interface defines a storage device - a location where MMBase objects are kept. This is generally a persistent layer, and most often a database. However, the way Storage is defined, when combined with th Query interface (not yet integrated in the interface) it is possible to create alternate storages, such as a memory-only storage for test purposes, or a xml-based storage.</para>
+			<para>The interface defines methods for querying the storage, and for the creation, deletion, and updates of objects in the storage. It also defines method for creating or altering the storage itself (adding fields to a builder, for instance).</para>
 			<para>The aim is to keep the storage free from database- or system-specific elements.</para>
 			<para>Storage uses Transaction objects to track changes. With the exception of storage-altering methods, all methods in Storage accept a Transaction object as a parameter.</para>
 			<programlisting format="linespecific"><![CDATA[
@@ -487,7 +487,7 @@ public class DatabaseTransaction {
 							<term><methodname>public DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException;</methodname></term>
 							<listitem>
 								<para>The constructor for the DatabaseTransaction object.</para>
-								<para>The transaction attempts to obtain a connection with the database, using the DatabaseStorage to obtain the needed data (such as a refernce to the JDBC module).
+								<para>The transaction attempts to obtain a connection with the database, using the DatabaseStorage to obtain the needed data (such as a reference to the JDBC module).
 								The parameter supplied indicates whether rollback should be enabled (if available). You can explicitly turn off rollback facilities (which might slow down database access) for internal routines by specifying useRollback as false.</para>
 								<note><para>If <parameter class="option">userollback</parameter> is true, this method calls the DatabaseStorage <methodname>supportsRollback()</methodname> method to check if rollback is possible. The DatabaseStorage will generally have pre-determined whether rollback is possible or not (when initializing the storage layer) by calling the <methodname>databaseSupportsRollback()</methodname> method.</para></note>
 							</listitem>
@@ -517,23 +517,23 @@ public class DatabaseTransaction {
 							<term><methodname>public void registerChanged(MMObjectNode node, String change);</methodname></term>
 							<listitem>
 								<para>Register changes for broadcasting after commit.</para>
-								<para>The Transaction maintains a cache of changes to nodes. If the Transaction is successfully committed, it will broadcast these changes using MultiCast, by calling the <methodname>registerChanged</methodname> in the DatabaseStorage. This ensures that changes are only broadcasted if the commit was succesfull.</para>
+								<para>The Transaction maintains a cache of changes to nodes. If the Transaction is successfully committed, it will broadcast these changes using MultiCast, by calling the <methodname>registerChanged</methodname> in the DatabaseStorage. This ensures that changes are only broadcasted if the commit was successful.</para>
 								<note><para>Current code does not take into account Transactions that do not rollback. If no rollback support is present, the changes should immediately be broadcasted, instead of cached.</para></note>
-								<note><para>The <methodname>commit()</methodname> method calls the <methodname>registerChanged()</methodname> in DatabaseStorage to actually broadcast the events. It is moe appropriate to move that code from databseStorage to DatbaseTransaction. (In fact, it would make sense to add the method to the Transaction interface, as it is not specifically database related and generally required to maintain a correct state between servers)</para></note>
+								<note><para>The <methodname>commit()</methodname> method calls the <methodname>registerChanged()</methodname> in DatabaseStorage to actually broadcast the events. It is more appropriate to move that code from DatabaseStorage to DatabaseTransaction. (In fact, it would make sense to add the method to the Transaction interface, as it is not specifically database related and generally required to maintain a correct state between servers)</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>public ResultSet executeQuery(String sql) throws StorageException;</methodname></term>
 							<listitem>
-								<para>Execute a SQL statement on the database, and return the Resultset.</para>
-								<note><para>I generally feel that the Query interface should be used by DatbaseStorage. DatabaseTransaction merely passes commands (sql statements) to the database. I think it is appropriate to pass sql strings, rather than query objects, especially as it allows for the DatabaseStorage to pass it's own statements.</para></note>
+								<para>Execute a SQL statement on the database, and return the ResultSet.</para>
+								<note><para>I generally feel that the Query interface should be used by DatabaseStorage. DatabaseTransaction merely passes commands (sql statements) to the database. I think it is appropriate to pass sql strings, rather than query objects, especially as it allows for the DatabaseStorage to pass it's own statements.</para></note>
 								<note><para>The reason we do not pass a Statement object is that this allows ONE entry point where connections and statements are created. This allows for the Transaction to use connection pools and logging separate from the Database storage.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>public boolean executeUpdate(String sql) throws StorageException;</methodname></term>
 							<listitem>
-								<para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). If the execution was succesfull (but did not generate an error) the method returns true.</para>
+								<para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). If the execution was successful (but did not generate an error) the method returns true.</para>
 								<note><para>see <methodname>executeQuery()</methodname></para></note>
 							</listitem>
 						</varlistentry>
@@ -541,7 +541,7 @@ public class DatabaseTransaction {
 							<term><methodname>public boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException;</methodname></term>
 							<listitem>
 							  <para>Execute a SQL statement on the database. The statement should be an 'update' sql query (one that does not return a resultset). The sql query will be run using a prepared statement, which is then filled with content from the passed node. The fields parameter contains the fields to add to the statement. The SQL statement should be appropriate to be used as a prepared statement, and have the appropriate type and number of parameters (as in fields).</para>
-								<para>If the execution was succesfull (but did not generate an error) the method returns true.</para>
+								<para>If the execution was successful (but did not generate an error) the method returns true.</para>
 								<note><para>see <methodname>executeQuery()</methodname></para></note>
 							</listitem>
 						</varlistentry>
