@@ -8,6 +8,7 @@
 	<!ENTITY rf-action-delete  SYSTEM "reference/action-delete.sgm">
 	<!ENTITY rf-action-load  SYSTEM "reference/action-load.sgm">
 	<!ENTITY rf-form-schema  SYSTEM "reference/form-schema.sgm">
+	<!ENTITY rf-item  SYSTEM "reference/item.sgm">
 	<!ENTITY rf-list  SYSTEM "reference/list.sgm">
 	<!ENTITY rf-object  SYSTEM "reference/object.sgm">
 	<!ENTITY rf-step  SYSTEM "reference/step.sgm">
@@ -18,7 +19,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.15 2003-12-10 13:08:33 vpro Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.16 2004-01-09 13:02:23 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -473,6 +474,7 @@
 &rf-action-delete;
 &rf-action-load;
 &rf-form-schema;
+&rf-item;
 &rf-list;
 &rf-object;
 &rf-step;
@@ -1082,62 +1084,6 @@
 				</varlistentry>
 			</variablelist>
 			<variablelist>
-				<title>list</title>
-				<varlistentry>
-					<term>Syntax</term>
-					<listitem>
-						<para>&lt;list destination="[buildername]" role="[rolename]" /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Usage</term>
-					<listitem>
-						<para>Use this to show and edit relations and the related objects.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Needed attributes</term>
-					<listitem>
-						<para>destination="[buildername]"</para>
-						<para>role="[rolename]"</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible attributes</term>
-					<listitem>
-						<para>minoccurs="[minimal required number of items in the list]"</para>
-						<para>maxoccurs="[maximum number of items in the list]"</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Needed childnodes</term>
-					<listitem>
-						<para>&lt;item /&gt; (see also: item)</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible childnodes</term>
-					<listitem>
-						<para>&lt;action type="create" /&gt; (see also: action)</para>
-						<para>&lt;action type="insert" /&gt; (see also: action)</para>
-						<para>&lt;command name="search" /&gt; (see also: command)</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible parents</term>
-					<listitem>
-						<para>&lt;form-schema /&gt;</para>
-						<para>&lt;list /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Example</term>
-					<listitem>
-						<programlisting format="linespecific">&lt;list role="related" destination="images"> &lt;command name="search" nodepath="images" fields="title" age="-1"> &lt;/command> &lt;item> &lt;field name="title" ftype="image" /> &lt;/item> &lt;action type="create"> &lt;relation destinationtype="images" /> &lt;/action> &lt;/list></programlisting>
-					</listitem>
-				</varlistentry>
-			</variablelist>
-			<variablelist>
 				<title>lists</title>
 				<varlistentry>
 					<term>Syntax</term>
@@ -1329,59 +1275,6 @@
 	</action>
 </list>
 						]]></programlisting>
-					</listitem>
-				</varlistentry>
-			</variablelist>
-			<variablelist>
-				<title>item</title>
-				<varlistentry>
-					<term>Syntax</term>
-					<listitem>
-						<para>&lt;item /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Usage</term>
-					<listitem>
-						<para>Every list needs a way to present each occurrence in the list. These occurrences are named: "item". In an item you can place the same fields as inside a form-schema. So, usually one or more fields are placed in an item.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Needed attributes</term>
-					<listitem>
-						<para>None</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible attributes</term>
-					<listitem>
-						<para>None</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Needed childnodes</term>
-					<listitem>
-						<para>&lt;field /&gt;</para>
-						<para>or &lt;list /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible childnodes</term>
-					<listitem>
-						<para>&lt;field /&gt;</para>
-						<para>or &lt;list /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible parents</term>
-					<listitem>
-						<para>&lt;list /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Example</term>
-					<listitem>
-						<programlisting format="linespecific">See the example for list</programlisting>
 					</listitem>
 				</varlistentry>
 			</variablelist>
