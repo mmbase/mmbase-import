@@ -20,6 +20,8 @@ import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.jsp.taglib.Writer;
 import org.mmbase.bridge.jsp.taglib.WriterHelper;
 
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
 import javax.servlet.jsp.JspTagException;
 
 
@@ -52,7 +54,7 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
     protected String  page;
 
     public void setReferids(String r) throws JspTagException {
-        referids = stringSplitter(getAttributeValue(r));
+        referids = StringSplitter.split(getAttributeValue(r));
     }
 
     public void setPage(String p) throws JspTagException {

@@ -18,6 +18,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -264,7 +266,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (orderby != null && ! "".equals(orderby)) { 
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
-                String f = (String)stringSplitter(orderby).get(0);
+                String f = (String)StringSplitter.split(orderby).get(0);
                 String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue !=null) {
                     if (value.equals(previousValue)) {

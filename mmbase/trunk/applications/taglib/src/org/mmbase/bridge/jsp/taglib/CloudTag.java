@@ -28,18 +28,21 @@ import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.BridgeException;
 import org.mmbase.security.Rank; // hmm, not from bridge, but we do need it anyway
 
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* Creates a cloud object (pulling it from if session necessary). While
-* creating a cloud object one also has to authenticate itself, so this
-* functionality is also in this tag.
-*
-* @author Pierre van Rooden
-* @author Michiel Meeuwissen
-*
-**/
+ * Creates a cloud object (pulling it from if session necessary). While
+ * creating a cloud object one also has to authenticate itself, so this
+ * functionality is also in this tag.
+ *
+ * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
+ *
+ **/
+
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
     /*
         keesj: This class is full of ugly authentication code
@@ -98,8 +101,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private HttpServletResponse response;
         
     /**
-    * @return the default cloud context 
-    **/
+     * @return the default cloud context 
+     **/
     public CloudContext getDefaultCloudContext(){
         if (cloudContext == null){
             cloudContext = LocalContext.getCloudContext();
@@ -113,7 +116,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
     
     public void setLogon(String l) throws JspTagException {
-        logon = stringSplitter(getAttributeValue(l));
+        logon = StringSplitter.split(getAttributeValue(l));
         if ("".equals(l)) {
             logon = null;   // that also means to ignore the logon name
         }
@@ -163,10 +166,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         cloud = c;
     }
     
-    public String getId() {
-        if (id == null) return "cloud";
-        return id;
-    }
     public void setSessionname(String s) throws JspTagException {
         sessionName = getAttributeValue(s);
     }
@@ -239,11 +238,33 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
     }
 
+
+    private int evalBody() throws JspTagException {
+
+        if (jspvar != null) {
+            pageContext.setAttribute(jspvar, cloud);
+        }
+        if (getId() != null) { // write to context.
+            getContextTag().register(getId(), cloud);
+        }
+
+
+        return EVAL_BODY_TAG;
+    }
     
     /**
-    *  Check name and retrieve cloud
-    */
+     *  Check name and retrieve cloud
+     */
     public int doStartTag() throws JspTagException{
+
+        // check if this is a reuse:
+        if (getReferid() != null) {
+            if (method != METHOD_UNSET || logon != null) { // probably add some more
+                throw new JspTagException ("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");                
+            }
+            cloud = (Cloud) getContextTag().getObject(getReferid());
+            return evalBody();
+        }
 
         // first check if we need an anonymous cloud,
         // in which case we don't want to use the session. Pages get
@@ -252,10 +273,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
             setAnonymousCloud(cloudName);            
-            if (jspvar != null) {
-                pageContext.setAttribute(jspvar, cloud); 
-            }
-            return EVAL_BODY_TAG;
+            return evalBody();
         }
         
         session  = (HttpSession)pageContext.getSession();
@@ -423,10 +441,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 session.setAttribute(getSessionName(), cloud);
             }
         }        
-        if (jspvar != null) {
-            pageContext.setAttribute(jspvar, cloud);
-        }
-        return EVAL_BODY_TAG;
+        return evalBody();
     }
     
     public int doAfterBody() throws JspTagException {
