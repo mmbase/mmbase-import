@@ -169,6 +169,7 @@
         <include name="**/LICENSE"/>
         <include name="**/*.dtd"/>
         <include name="**/*.xml"/>
+        <include name="**/*.jpg"/>
         <exclude name="build/**"/>
         <exclude name="build*"/>
         <exclude name="core"/>
@@ -260,7 +261,7 @@ Build-compiler: ${build.compiler}
       fork="true"
       classpathref="run.classpath"      
       >
-      <arg value="org.mmbase.module.builders.ConvertTest" />
+      <arg value="org.mmbase.bridge.tests.ConvertImageTest" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
     </java>
