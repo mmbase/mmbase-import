@@ -12,7 +12,6 @@ package org.mmbase.applications.editwizard;
 import java.util.*;
 import java.io.File;
 import org.mmbase.util.xml.URIResolver;
-import org.mmbase.applications.editwizard.SecurityException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.38 2003-06-13 13:24:30 pierre Exp $
+ * @version $Id: Config.java,v 1.39 2003-08-29 09:34:38 pierre Exp $
  */
 
 public class Config {
@@ -672,7 +671,7 @@ public class Config {
             return createList(null);
         }
         
-        public Config.WizardConfig createWizard(Cloud cloud) throws SecurityException, WizardException {
+        public Config.WizardConfig createWizard(Cloud cloud) throws WizardException {
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             config(wizard); // determine the objectnumber and assign the wizard name.
