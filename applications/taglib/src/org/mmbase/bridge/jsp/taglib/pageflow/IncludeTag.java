@@ -96,7 +96,12 @@ public class IncludeTag extends UrlTag {
             if (coding == null) { // stil null?
                 in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
             } else {
-                in = new BufferedReader(new InputStreamReader (connection.getInputStream(), coding));
+                try {
+                    in = new BufferedReader(new InputStreamReader (connection.getInputStream(), coding));
+                }  catch (java.io.UnsupportedEncodingException e) { // sometimes there are strange things there...
+                    log.debug("Found a strange encoding in connection: " + coding);
+                    in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+                }
             }
 
             int buffersize = 10240;
