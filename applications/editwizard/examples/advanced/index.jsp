@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.27 2004-03-16 17:35:36 michiel Exp $
+    @version  $Id: index.jsp,v 1.28 2005-03-16 22:16:43 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -199,6 +199,18 @@ view XML</a></td>
            </mm:url>">Authors</a>
      </td><td>
        Demo of multilevel search
+     </td>
+  <td>
+   </td>
+      </tr>
+    <tr><td>
+    <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
+             <mm:param name="wizard">tasks/jumpers</mm:param>
+           <mm:param name="nodepath">jumpers</mm:param>
+           <mm:param name="searchfields">name,url</mm:param>
+           </mm:url>">Jumpers</a>
+     </td><td>
+       Demo of Jumpers
      </td>
   <td>
    </td>
