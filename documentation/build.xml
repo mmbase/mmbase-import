@@ -103,10 +103,6 @@
     </copy>
   </target>
 
-  <target name="mmbase.jar">
-     <ant target="jar" dir="${source.dir}" />
-  </target>
-      
 
   <!-- copy all documentation from the mmdocs dir                  -->
   <!-- this is documentation that hasn't been converted to docbook -->
@@ -118,11 +114,44 @@
   </target>
 
 
+  <target name="lib.compile">
+    <ant inheritAll="false" dir="${source.dir}" target="lib.compile" />
+  </target>
+
+  <!-- compile the XSLTransformer -->
+
+  <target name="xsltransformer" depends="lib.compile">
+    <mkdir dir="${build.dir}/classes" />
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           depend="true"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <include name="org/mmbase/util/XSLTransformer.java" />
+      <classpath>        
+        <fileset dir="${compile.lib.dir}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/caches*.dtd"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+
   <!-- ================================================================================ -->
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,mmbase.jar,download"
+          depends="documentation.resources,xsltransformer,download"
           description="Create HTML documentation from the DocBook sources">
 
     <echo message="${documentation.dest.dir}" />
@@ -133,7 +162,7 @@
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-mx150m" />
       <classpath>        
-        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${build.dir}/classes" />
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
           <include name="*.zip"/>
@@ -153,7 +182,7 @@
   <!-- ================================================================================ -->
   <!-- Perform docbook2pdf conversion                                                   -->
   <!-- ================================================================================ -->
-  <target name="documentation.pdf"  depends="mmbase.jar,download"
+  <target name="documentation.pdf"  depends="xsltransformer,download"
           description="Create PDF documentation from the DocBook sources">
 
     <mkdir dir="${documentation.temp.dir}" />
@@ -181,7 +210,7 @@
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-mx150m" />
       <classpath>
-        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${build.dir}/classes" />
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
           <include name="*.zip"/>
