@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.5 2003-03-01 17:37:15 kees Exp $
+ * @version $Id: ContextProvider.java,v 1.6 2003-06-05 08:55:34 michiel Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider{
@@ -43,7 +43,7 @@ public class ContextProvider{
         if (uri == null || (uri != null && uri.trim().length() == 0)){
 		uri = getDefaultCloudContextName();
 	}
-
+        
         if (uri.startsWith("rmi")){
             return RemoteContext.getCloudContext(uri);
         } else if (uri.startsWith("local")){
@@ -57,21 +57,21 @@ public class ContextProvider{
      * @return the name of the cloud context to be used as default
      **/
      public static String getDefaultCloudContextName(){
-	    //first choice.. set the cloud context using system properties
-	    if (defaultCloudContextName == null){
-		    defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
-	    }
-	    if (defaultCloudContextName == null){
-		    defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
-	    }
-	    return defaultCloudContextName;
-    }
-
+         //first choice.. set the cloud context using system properties
+         if (defaultCloudContextName == null){
+             defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
+         }
+         if (defaultCloudContextName == null){
+             defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
+         }
+         return defaultCloudContextName;
+     }
+    
     /**
      * @since MMBase-1.7
      * @return the default cloud context
      **/
     public static CloudContext getDefaultCloudContext(){
-	    return getCloudContext(getDefaultCloudContextName());
+        return getCloudContext(getDefaultCloudContextName());
     }
 }
