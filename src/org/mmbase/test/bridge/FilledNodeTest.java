@@ -10,20 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.test.bridge;
 
+import java.util.Iterator;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
-public class FilledNodeTest extends TestCase {
-    Node node;
-    String[] fieldTypes = {"byte", "double", "float", "int", "long", "string"};
+public class FilledNodeTest extends NodeTest {
 
     public FilledNodeTest(String name) {
         super(name);
     }
 
+    protected Cloud getCloud() {
+        return  LocalContext.getCloudContext().getCloud("mmbase");
+    }
+
     public void setUp() {
         // Create a test node.
-        Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
+        Cloud cloud = getCloud();
         node = cloud.getNodeManager("aa").createNode();
         byte[] bytes = {72,101,108,108,111,32,119,111,114,108,100,33};
         node.setValue("bytefield", bytes);
@@ -65,17 +68,6 @@ public class FilledNodeTest extends TestCase {
             }
         }
     }
-    
-    public void testGetValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
-    }
 
     public void testGetByteValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
@@ -101,17 +93,6 @@ public class FilledNodeTest extends TestCase {
         }
     }
 
-    public void testGetByteValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetByteValue();
-        testGetValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
-    }
-
     public void testGetDoubleValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             double d = node.getDoubleValue(fieldTypes[i] + "field");
@@ -132,18 +113,7 @@ public class FilledNodeTest extends TestCase {
             }
         }
     }
-
-    public void testGetDoubleValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetDoubleValue();
-        testGetValue();
-        testGetByteValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
-    }
-
+ 
     public void testGetFloatValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             float f = node.getFloatValue(fieldTypes[i] + "field");
@@ -163,17 +133,6 @@ public class FilledNodeTest extends TestCase {
                 fail();
             }
         }
-    }
-
-    public void testGetFloatValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetFloatValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetIntValue();
-        testGetLongValue();
-        testGetStringValue();
     }
 
     public void testGetIntValue() {
@@ -197,17 +156,6 @@ public class FilledNodeTest extends TestCase {
         }
     }
 
-    public void testGetIntValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetIntValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetLongValue();
-        testGetStringValue();
-    }
-
     public void testGetLongValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             long l = node.getLongValue(fieldTypes[i] + "field");
@@ -229,17 +177,6 @@ public class FilledNodeTest extends TestCase {
         }
     }
 
-    public void testGetLongValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetLongValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetStringValue();
-    }
-
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             String string = node.getStringValue(fieldTypes[i] + "field");
@@ -258,62 +195,6 @@ public class FilledNodeTest extends TestCase {
             } else {
                 fail();
             }
-        }
-    }
-
-    public void testGetStringValueCache() {
-        // Test if the first call doesn't make MMBase cache an incorrect value.
-        testGetStringValue();
-        testGetValue();
-        testGetByteValue();
-        testGetDoubleValue();
-        testGetFloatValue();
-        testGetIntValue();
-        testGetLongValue();
-    }
-
-    public void testSetSNumber() {
-        try {
-            node.setIntValue("snumber", 100);
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-    }
-
-    public void testSetDNumber() {
-        try {
-            node.setIntValue("dnumber", 100);
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-    }
-
-    public void testSetRNumber() {
-        try {
-            node.setIntValue("rnumber", 100);
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-    }
-
-    public void testSetOwner() {
-        try {
-            node.setStringValue("owner", "admin");
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-        try {
-            node.setValue("owner", "admin");
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
-        }
-    }
-
-    public void testSetOType() {
-        try {
-            node.setIntValue("otype", 100);
-            fail("Should raise a BridgeException");
-        } catch (BridgeException e) {
         }
     }
 
