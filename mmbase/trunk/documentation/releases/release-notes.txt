@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.0 - Release Notes
+                     MMBase 1.8.0 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.7.0, relative to the previous release of MMBase (1.6).
+release of MMBase 1.8.0, relative to the previous release of MMBase (1.7.2).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -22,107 +22,37 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
-[1.7.0]
-- Storing blobs (e.g. images) on disk has changed. 
-  Blobs are now stored as follows:
-  The number of the object containing the blob is broken up in
-  parts. The 3 least significant digits are ignored.
-  The remaining digits are divided by powers of hundred (pairs of
-  digits of 2). 
-  These are then broken up in nested directories.
-  For instance, the field 'handle' of node with number 5447637 is
-  stored as: 
-    data/databasename/basename_buildername/54/47/5447637.handle
-  while the same field of node number 1205 is stopped as:
-    data/databasename/basename_buildername/01/1205.handle
+[1.8.0]
+- Vwms (virtual web masters) have been removed from the core and placed in a
+  separate 'vwms' application.
 
-  where 'databasename', 'basename' and 'buildername' are depending on
-  configuration and type of the node. 
+- SCAN is now a separate application. The application depends on the vwms
+  application.
 
-  This improves performance on systems when you get a large number of
-  binary fields. 
+- Crontab is a new application that provides scheduling.
 
-  Note: if you are upgrading from 1.7.0 RC1 you need to convert,
-  because this 'breaking up' into directories did not yet exist then.
+--------------------
+Obsolete Features:
+--------------------
+[1.8.0]
+- The 'ObjectTypes' class is merged into the 'TypeDef' class. Old code
+  referencing ObjectTypes should reference TypeDef instead. This includes the
+  typedef.xml builder configuration file.
 
-  Note: if you are upgrading from 1.6 or early 1.7 builds and used to
-  store blobs on disk using the 'old' storage implementation or the
-  'support' implementation (from < 1.6), then too you need to convert
-  if you want to use the 'new' storage now (which you want). Note that
-  the 'databasename' and 'basename' parts are new in the path (these
-  make it easier to toggle between configurations). 
-
-  Make sure the old 'blobdatadir' dir is now WEB-INF/data (use e.g. a
-  symlink) 
-
-  You can convert the blobs via the admin pages /mmbase/admin
-  admin->BLOBS (which can also be used to migrate from
-  blobs-in-database to blobs-on-disk). 
-
-- Query-object, which allows for several new taglib and MMCI
-  features. 
-
-- New storage layer, which allows for real transactions! 
-
-- Some 'applications' (like editwizards) have been split up to
-  separate jars. This will allow for easier partial upgrades of
-  installations. 
-
-- Added functionality to the jsp editors: better paging mechanism. 
-
-- Added functionality to the jsp admin pages: add/change field
-  descriptions 
+- The 'Config' module and the 'AppTool' utility have been dropped from the
+  code. Both tools provided visual input regarding configuration or
+  application makeup, but were concidered outdated.
+  References to these modules have been removed from the MMBase admin pages.
 
 --------------------------
 MMCI (bridge) New Features:
 -------------------------
-[1.7.0]
-- All interfaces of the new org.mmbase.storage.search package are part
-  of the 'bridge' now.  There is also a new 'Query' object in
-  org.mmbase.bridge, which allows for query creation and modification
-  in a generic way. 
-
-- The new Query frame work allows for easy execution of 'aggregating
-  queries' (e.g. counts) through the bridge.
-
-- The bridge implementation now also lets security modify its queries
-  to exclude read-protected nodes. Depending on the security
-  implementation and configuration this should speed up things. 
-
-- Several small additions (like Cloud.getRelationManager(NodeManager,
-  NodeManager, String)); 
+[1.8.0]
 
 -------------------
 Taglib New Features:
 -------------------
-[1.7.0]
-- Content-Tag, which provides default escaping behaviour,
-  postprocessing functionality, and content-type information. 
-
-- Container tags.
-
-  - Function Container tag. Allows for more complicated arguments to
-    functions on e.g. Nodes. 
-  - List Container Tags. Allow for easier generic queries (using new
-    Query frame work). The Query object can be changed with a
-    'constraint' tag, an 'ageconstraint' tag, a maxnumber tag and an
-    'offset' tag. The query can be executed by the already existing
-    nodelist tags. Also the size tag, can optionally be used outside a
-    list tag now (but inside a list container tag), and will then be
-    calculated by the database (and not progamaticly). 
-
-- 'previousbatches' and 'nextbatches' tags. A way to easily make a
-  paging mechanism for big search results.
-
-- unrelatednodes tag. A tag to list all nodes (of a certain type)
-  which are _not_ related to a node. 
-
-- compare tag: valueSet attribute
-
-- List-tags now provide a kind of 'temporary' context for taglib
-  variables. In practice this means that inner context tags (or
-  'remove' tags) will not be needed any more. 
-
+[1.8.0]
 
 ==========================
 BUG FIXES AND IMPROVEMENTS:
@@ -131,64 +61,22 @@ BUG FIXES AND IMPROVEMENTS:
 -------------------
 Generic Improvement:
 -------------------
-[1.7.0]
-- Several tags in builder xmls are no longer mandatory, and sensible
-  defaults will be used instead  (for example in the editor section)
-- jspsmartupload has been replaced with jakarta's commons FileUpload
-  component. 
+[1.8.0]
 
 ------------------
 Generic Bug Fixes:
 ------------------
-[1.7.0]
-- jaxp compliance. MMBase does not longer depend on an old version of
-  xerces/xalan/xml-apis when running under java 1.4 you can remove
-  those files 
-
-- The HandleServlet now removes additional information left in jpeg
-  files by PhotoShop 7. This extra information crashes the image Thread
-  of Internet Exploder. While this was not a bug, this fix is very 
-  convenient.
-
-- Caching of Query results is done better. It is possible to cache
-  everything. In 1.6 some queries accidentally where not cached. This
-  fix is based on the new Query framework. 
-
-- When exporting builder xmls, the state property of a field is now in
-  lowercase (as defined by the dtd).
-
-- More robust in case Database not up yet if MMBase starts, or if
-  database restart when MMBase remains up.
+[1.8.0]
 
 ------------------
 Security Bug Fixes:
 ------------------
-[1.7.0]
-- It is for a security implementation possible to define new ranks
-  now. 
-- Queries are checked by all 'official' security implementations. If
-  there are read-restrictions on defined on your installation, you
-  need to create an index on the owner fields.
-
+[1.8.0]
 
 -----------------
 Taglib Bug Fixes:
 -----------------
-[1.7.0]
- - Working with resin now.
-
- - The fields parameter of the list tags (related, list, etc) now no
-   longer accepts fields that do not exist. Note that this means that
-   some pages may give errors now if they specified wrong fieldnames. 
-
- - Lots of small attributes-related things, like emulating complete
-   absence of the the attribute when its value is empty. Some
-   attributes (like the 'id' attribute) did not yet accept taglib
-   variables ($-variables), which also has been fixed on several
-   places. 
-
- - URL-tag not a Writer any more.
-
+[1.8.0]
 
 ========================
 Know Issues and Problems:
