@@ -14,6 +14,7 @@ import java.util.*;
 import javax.servlet.http.*;
 
 import org.mmbase.util.*;
+import org.mmbase.module.ParseException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
@@ -40,7 +41,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 	/**
 	 * General List pages coming from MMEdit.
 	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) {
+	public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
 		String token;
 		String userName=HttpAuth.getRemoteUser(sp);
 

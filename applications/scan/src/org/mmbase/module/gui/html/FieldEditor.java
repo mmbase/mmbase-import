@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.module.ParseException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.gui.html.EditState;
@@ -42,7 +43,7 @@ public class FieldEditor implements CommandHandlerInterface {
 	/**
 	 * List commands
 	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) {
+	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws ParseException {
 		String token;
 		String userName=HttpAuth.getRemoteUser(sp);
 

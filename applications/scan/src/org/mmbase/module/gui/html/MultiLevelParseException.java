@@ -12,7 +12,7 @@ package org.mmbase.module.gui.html;
 /**
  * This exception gets thrown when a Syntax Error occures in a Multi Level Listing.
  */
-public class MultiLevelParseException extends ParseException {
+public class MultiLevelParseException extends org.mmbase.module.ParseException {
 	
 	public MultiLevelParseException(String msg) {
 		super("MULTILEVEL Syntax error: "+msg);

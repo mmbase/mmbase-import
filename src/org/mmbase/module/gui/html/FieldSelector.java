@@ -12,6 +12,7 @@ package org.mmbase.module.gui.html;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.module.ParseException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -36,7 +37,7 @@ public class FieldSelector implements CommandHandlerInterface {
 	/**
 	 * General List pages coming from MMEdit.
 	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) {
+	public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
 		String token;
 		String userName=HttpAuth.getRemoteUser(sp);
 		EditState state = stateMngr.getEditState(userName);
