@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.61 2002-08-13 15:41:21 michiel Exp $
+ * @version $Id: Wizard.java,v 1.62 2002-08-13 17:31:19 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -158,6 +158,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
     public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
         wizardConfig.objectNumber = dataid;
+        wizardConfig.wizard = wizardname;
         initialize(context, uri, wizardConfig, cloud);
     }
 
