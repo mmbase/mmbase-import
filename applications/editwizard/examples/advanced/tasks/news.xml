@@ -94,7 +94,7 @@
 			</command>
 			
       <!-- a not-inline startwizard will pop-up a window to create the new object -->
-      <command name="startwizard" inline="false" wizardname="samples/myurls" objectnumber="new" />
+      <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" />
 
       <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
       <command name="startwizard" inline="true" wizardname="samples/urls" objectnumber="new" />
@@ -108,7 +108,11 @@
 			
       <command name="insert" />
 			<action type="create">
-				<relation destinationtype="urls" role="related" />
+				<relation destinationtype="urls" role="related">
+          <object type="urls">
+            <field name="url">http://</field>
+          </object>
+          </relation>
 			</action>
 		</list>
 
