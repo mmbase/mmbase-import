@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard list.xsl 
 
-  @version   $Id: list.xsl,v 1.7 2004-01-21 16:51:02 nico Exp $
+  @version   $Id: list.xsl,v 1.8 2004-02-27 14:03:22 gerard Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -26,7 +26,7 @@
     <td class="mysteps_top">
       <span class="title">
         <nobr>
-          <a href="{$referrer}" class="tools">Redactietools:</a>
+          <a href="{$listpage}&amp;remove=true" class="tools">Redactietools:</a>
         </nobr>
       </span>
       <span class="titleprompt" ><xsl:value-of select="$title" /></span>
