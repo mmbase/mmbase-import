@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.17 2003-04-29 20:34:24 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.18 2003-12-02 21:12:16 keesj Exp $
    @since    MMBase-1.6
    
 -->
@@ -126,7 +126,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <property name="applicationsscript"    value="${applicationsscript.dir}/build.xml"/>   
   <property name="testsscript.dir" value="${buildscript.dir}/tests"/>   
   <property name="testsscript"     value="${testsscript.dir}/build.xml"/>   
-  <property name="build.compiler"  value="classic" />	
+  <property name="build.compiler"  value="modern" />	
   <property name="optimize"        value="off" /><!-- line numbers ?-->
   <property name="debug"           value="on" /> <!-- for nightly builds it is more or less logical to compile with debug = on -->	
   
