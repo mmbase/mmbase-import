@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.4 2002-04-17 11:13:53 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.5 2002-04-17 13:17:45 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -561,6 +561,8 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
             keyType=KEY_PRIMARY;
         } else if (field.isKey()) {
             keyType=KEY_SECONDARY;
+        } else if (type==FieldDefs.TYPE_NODE) {
+            keyType=KEY_FOREIGN;
         } else if (field.getDBNotNull()) {
             keyType=KEY_NOTNULL;
         }

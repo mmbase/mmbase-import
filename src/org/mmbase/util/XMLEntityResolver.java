@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.util;
 
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Take the systemId and converts it into a local file, using the MMBase config path
  *
  * @author Gerard van Enk
- * @version $Revision: 1.11 $ $Date: 2001-10-18 11:05:08 $
+ * @version $Revision: 1.12 $ $Date: 2002-04-17 13:17:51 $
  */
 public class XMLEntityResolver implements EntityResolver {
 

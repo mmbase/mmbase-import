@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.9 2002-03-26 13:05:49 pierre Exp $
+ * @version $Id: Dove.java,v 1.10 2002-04-17 13:17:35 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -515,7 +515,9 @@ public class Dove extends AbstractDove {
                             } else {
                                 String dttype="string";
                                 int itype=fielddef.getType();
-                                if (itype==Field.TYPE_INTEGER)
+                                if (itype==Field.TYPE_NODE)
+                                    dttype="int";
+                                else if (itype==Field.TYPE_INTEGER)
                                     dttype="int";
                                 else if (itype==Field.TYPE_LONG)
                                     dttype="long";
