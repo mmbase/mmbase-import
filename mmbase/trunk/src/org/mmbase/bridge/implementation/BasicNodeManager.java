@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.56 2003-04-08 14:35:42 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.57 2003-04-11 17:49:51 kees Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -166,18 +166,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public String getGUIName(int plurality) {
         if (builder!=null) {
-            Hashtable names;
             if (plurality==1) {
-                names=builder.getSingularNames();
+                return builder.getSingularName(cloud.getLocale().getLanguage());
             } else {
-                names=builder.getPluralNames();
-            }
-            if (names!=null) {
-                String lang=cloud.getLocale().getLanguage();
-                String tmp=(String)names.get(lang);
-                if (tmp!=null) {
-                    return tmp;
-                }
+                 return builder.getPluralName(cloud.getLocale().getLanguage());
             }
         }
         return getName();
@@ -185,18 +177,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public String getDescription() {
         if (builder!=null) {
-            Hashtable descriptions=builder.getDescriptions();
-            if (descriptions!=null) {
-                String lang=cloud.getLocale().getLanguage();
-                String tmp=(String)descriptions.get(lang);
-                if (tmp!=null) {
-                    return tmp;
-                }
-            }
-            return builder.getDescription();
-        } else {
-            return "";
-        }
+            return builder.getDescription(cloud.getLocale().getLanguage());
+        } 
+        return "";
     }
 
     public FieldList getFields() {
