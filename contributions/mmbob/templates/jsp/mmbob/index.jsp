@@ -102,11 +102,9 @@
         </th>
         <td align="left" valign="top">
           <mm:compare referid="image_logo" value="" inverse="true">
-            <br />
             <center>
               <img src="<mm:write referid="image_logo" />" width="98%">
             </center>
-            <br />
           </mm:compare>
           <mm:compare referid="image_logo" value="">
             <h4><mm:write referid="mlg_Welcome" /> <mm:field name="active_firstname" /> <mm:field name="active_lastname" /> (<mm:field name="active_account" />) <br /> <mm:write referid="mlg_on_the" /> <mm:field name="name" /> <mm:write referid="mlg_forum" /> !</h4>
@@ -136,6 +134,7 @@
           <p>
             <br />
             <mm:import id="mailboxid">Inbox</mm:import>
+            <mm:field name="privatemessagesenabled"><mm:compare value="true">
             <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid,mailboxid">
                 <b><mm:write referid="mlg_you_have"/> 
                 <mm:field name="messagecount">
@@ -146,7 +145,7 @@
                   </mm:compare>
                 </mm:field>
             </mm:nodefunction>
-
+	    </mm:compare></mm:field>
             <h4><mm:write referid="mlg_At_the_moment" /> : <mm:field id="postersonline" name="postersonline" /> <mm:compare referid="postersonline" value="1"> <mm:write referid="mlg_member" /> </mm:compare> <mm:compare referid="postersonline" value="1" inverse="true"><mm:write referid="mlg_members" /> </mm:compare> <mm:write referid="mlg_online" />.</h4>
           </p>
         </mm:compare>

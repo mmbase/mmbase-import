@@ -46,6 +46,8 @@
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
   <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
   <mm:import id="guestwritemodetype"><mm:field name="guestwritemodetype" /></mm:import>
+  <mm:import id="smileysenabled"><mm:field name="smileysenabled" /></mm:import>
+  <mm:import id="privatemessagesenabled"><mm:field name="privatemessagesenabled" /></mm:import>
   <mm:compare referid="posterid" value="-1" inverse="true">
 	<mm:import id="guestwritemodetype" reset="true">open</mm:import>
   </mm:compare>
@@ -68,7 +70,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
                         <tr><th colspan="2" align="left">
                                         <mm:compare referid="image_logo" value="" inverse="true">
-                                        <center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
+                                        <center><img src="<mm:write referid="image_logo" />" width="60%" ></center>
                                         </mm:compare>
 			</th>
 			</tr>
@@ -100,8 +102,9 @@
 			<mm:import id="postingid"><mm:field name="id" /></mm:import>
                                 
                            <mm:compare referid="guestwritemodetype" value="open"> 
+                                <mm:compare referid="privatemessagesenabled" value="true">
                                <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
-
+			 	</mm:compare>
                                <mm:compare referid="threadstate" value="closed" inverse="true">
                                     <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
                                </mm:compare>
@@ -228,7 +231,7 @@
 		</mm:compare>
 
 		</td></tr>
-	<tr><th><mm:write referid="mlg_Reply"/> <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
+	<tr><th><mm:write referid="mlg_Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
 	<tr><td colspan="3"><input type="hidden" name="action" value="postreply">
 	<center><input type="submit" value="<mm:write referid="mlg_Post_reply"/>"/></center>
 	</td></tr>
@@ -237,6 +240,8 @@
 </mm:compare>
 </mm:compare>
 </mm:compare>
+<br />
+<br />
 </div>
 
 <div class="footer">

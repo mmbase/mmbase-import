@@ -413,16 +413,32 @@ public class ForumManager {
        return config.getLoginModeType();
    }
 
+   public static void setLoginModeType(String mode) {
+       config.setLoginModeType(mode);
+   }
+
    public static String getLogoutModeType() {
        return config.getLogoutModeType();
+   }
+
+   public static void setLogoutModeType(String mode) {
+       config.setLogoutModeType(mode);
    }
 
    public static String getGuestReadModeType() {
        return config.getGuestReadModeType();
    }
 
+   public static void setGuestReadModeType(String mode) {
+       config.setGuestReadModeType(mode);
+   }
+
    public static String getGuestWriteModeType() {
        return config.getGuestWriteModeType();
+   }
+
+   public static void setGuestWriteModeType(String mode) {
+       config.setGuestWriteModeType(mode);
    }
 
     public static String getXSLTPostingsOdd() {
@@ -437,9 +453,33 @@ public class ForumManager {
         return config.getAvatarsUploadEnabled();
     }
 
+   public static void setAvatarsUploadEnabled(String mode) {
+       config.setAvatarsUploadEnabled(mode);
+   }
+
     public static String getAvatarsGalleryEnabled() {
         return config.getAvatarsGalleryEnabled();
     }
+
+   public static void setAvatarsGalleryEnabled(String mode) {
+       config.setAvatarsGalleryEnabled(mode);
+   }
+
+   public static void setContactInfoEnabled(String mode) {
+       config.setContactInfoEnabled(mode);
+   }
+
+   public static void setSmileysEnabled(String mode) {
+       config.setSmileysEnabled(mode);
+   }
+
+   public static void setPrivateMessagesEnabled(String mode) {
+       config.setPrivateMessagesEnabled(mode);
+   }
+
+   public static void setPostingsPerPage(String number) {
+       config.setPostingsPerPage(number);
+   }
 
     public static String getContactInfoEnabled() {
         return config.getContactInfoEnabled();
@@ -468,11 +508,4 @@ public class ForumManager {
     public static String getFooterPath() {
         return config.getFooterPath();
     }
-
-
-
-
-
-
-
 }

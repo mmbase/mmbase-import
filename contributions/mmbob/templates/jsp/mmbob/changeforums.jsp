@@ -5,19 +5,15 @@
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
 
-<mm:import externid="forumid" />
-
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
  <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
-
-<!-- login part -->
-  <%@ include file="getposterid.jsp" %>
-<!-- end login part -->                                                                                                                      
+<mm:import externid="lang">en</mm:import>
 <mm:locale language="$lang">
+<mm:import id="forumid"></mm:import>
 <%@ include file="loadtranslations.jsp" %>
 
 <html>
@@ -32,67 +28,19 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
-  <tr><th colspan="3"><mm:write referid="mlg_Change_existing_forum" /></th></tr>
-
-  <mm:node number="$forumid">
-  <form action="<mm:url page="index.jsp">
-        <mm:param name="forumid" value="$forumid" />
-				</mm:url>" method="post">
-	<tr><th><mm:write referid="mlg_Name"/></th><td colspan="2">
-	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
-	</td></tr>
-	<tr><th><mm:write referid="mlg_Language"/></th><td colspan="2">
-	<input name="newlang" size="2" value="<mm:field name="language" />" >
-	</td></tr>
-	<tr><th><mm:write referid="mlg_Description"/></th><td colspan="2">
-	<textarea name="description" rows="5" style="width: 100%"><mm:field name="description" /></textarea>
-	</td></tr>
-        <input type="hidden" name="admincheck" value="true">
-	<input type="hidden" name="action" value="changeforum">
-	<tr><th>&nbsp;</th>
-<td align="middle" >
-	<input type="submit" value="<mm:write referid="mlg_Save"/>">
-  	</form>
-	</td>
-	</mm:node>
-	<td>
-  	<form action="<mm:url page="index.jsp">
-        <mm:param name="forumid" value="$forumid" />
-	</mm:url>"
- 	method="post">
-	<p />
-	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
-  	</form>
-	</td>
-	</tr>
-</table>
-</div>
-
-<mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+<mm:nodefunction set="mmbob" name="getForumsConfig">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%" align="center">
   <tr><th colspan="3">Login instellingen</th></tr>
-  <form action="<mm:url page="index.jsp">
-        <mm:param name="forumid" value="$forumid" />
-				</mm:url>" method="post">
-        <input type="hidden" name="admincheck" value="true">
-	<input type="hidden" name="action" value="changeconfig">
+  <form action="<mm:url page="forums.jsp" />" method="post">
+	<input type="hidden" name="action" value="changeconfigs">
 	<tr><th>Login Mode</th>
 		<td colspan="2"><select name="loginmodetype">
 		<mm:field name="loginmodetype">
 		<mm:compare value="open">
 		<option>open 
 		<option>closed
-		<option>default
 		</mm:compare>
 		<mm:compare value="closed">
-		<option>closed
-		<option>open 
-		<option>default
-		</mm:compare>
-		<mm:compare value="default">
-		<option>default
 		<option>closed
 		<option>open 
 		</mm:compare>
@@ -105,15 +53,8 @@
 		<mm:compare value="open">
 		<option>open 
 		<option>closed
-		<option>default
 		</mm:compare>
 		<mm:compare value="closed">
-		<option>closed
-		<option>open 
-		<option>default
-		</mm:compare>
-		<mm:compare value="default">
-		<option>default
 		<option>closed
 		<option>open 
 		</mm:compare>
@@ -126,15 +67,8 @@
 		<mm:compare value="open">
 		<option>open 
 		<option>closed
-		<option>default
 		</mm:compare>
 		<mm:compare value="closed">
-		<option>closed
-		<option>open 
-		<option>default
-		</mm:compare>
-		<mm:compare value="default">
-		<option>default
 		<option>closed
 		<option>open 
 		</mm:compare>
@@ -147,15 +81,8 @@
 		<mm:compare value="open">
 		<option>open 
 		<option>closed
-		<option>default
 		</mm:compare>
 		<mm:compare value="closed">
-		<option>closed
-		<option>open 
-		<option>default
-		</mm:compare>
-		<mm:compare value="default">
-		<option>default
 		<option>closed
 		<option>open 
 		</mm:compare>
@@ -168,15 +95,8 @@
 		<mm:compare value="true">
 		<option value="true">on
 		<option value="false">off
-		<option value="default">default
 		</mm:compare>
 		<mm:compare value="false">
-		<option value="false">off
-		<option value="true">on
-		<option value="default">default
-		</mm:compare>
-		<mm:compare value="default">
-		<option value="default">default
 		<option value="false">off
 		<option value="true">on
 		</mm:compare>
@@ -189,19 +109,59 @@
 		<mm:compare value="true">
 		<option value="true">on
 		<option value="false">off
-		<option value="default">default
 		</mm:compare>
 		<mm:compare value="false">
 		<option value="false">off
 		<option value="true">on
-		<option value="default">default
 		</mm:compare>
-		<mm:compare value="default">
-		<option value="default">default
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>ContactInfo</th>
+		<td colspan="2"><select name="contactinfoenabled">
+		<mm:field name="contactinfoenabled">
+		<mm:compare value="true">
+		<option value="true">on
+		<option value="false">off
+		</mm:compare>
+		<mm:compare value="false">
 		<option value="false">off
 		<option value="true">on
 		</mm:compare>
 		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>Smileys</th>
+		<td colspan="2"><select name="smileysenabled">
+		<mm:field name="smileysenabled">
+		<mm:compare value="true">
+		<option value="true">on
+		<option value="false">off
+		</mm:compare>
+		<mm:compare value="false">
+		<option value="false">off
+		<option value="true">on
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>PrivateMessages</th>
+		<td colspan="2"><select name="privatemessagesenabled">
+		<mm:field name="privatemessagesenabled">
+		<mm:compare value="true">
+		<option value="true">on
+		<option value="false">off
+		</mm:compare>
+		<mm:compare value="false">
+		<option value="false">off
+		<option value="true">on
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>Postings Per Page</th>
+		<td colspan="2">
+		<input size="5" name="postingsperpage" value="<mm:field name="postingsperpage" />" />
 		</td>
  	</tr>
   <th>&nbsp;</th>
@@ -210,10 +170,7 @@
   	</form>
 	</td>
   <td>
-  	<form action="<mm:url page="index.jsp">
-        <mm:param name="forumid" value="$forumid" />
-	</mm:url>"
- 	method="post">
+  	<form action="<mm:url page="forums.jsp" />" method="post">
 	<p />
 	<center>
 	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
@@ -222,6 +179,7 @@
   </tr>
 </table>
 </mm:nodefunction>
+</div>
 
 <div class="footer">
 </div>
