@@ -33,26 +33,26 @@ import org.mmbase.util.logging.Logging;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.2 2004-12-10 20:27:23 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.3 2004-12-13 18:24:40 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class UrlWriterTag extends UrlTag  implements org.mmbase.bridge.jsp.taglib.Writer {
 
     public int doStartTag() throws JspTagException {
-        getContextProvider().getContextContainer().register("_", 
-                                                            new Object() {
-                                                                final UrlWriterTag t = UrlWriterTag.this;
-                                                                public String toString() {
-                                                                    try {
-                                                                        return t.getUrl();  
-                                                                    } catch (JspTagException e){
-                                                                        throw new RuntimeException(e);
-                                                                    }
-
-                                                                }
-                                                            });
-        return super.doStartTag();
+        super.doStartTag();
+        helper.setValue(new Object() {
+                            final UrlWriterTag t = UrlWriterTag.this;
+                            public String toString() {
+                                try {
+                                    return t.getUrl();  
+                                } catch (JspTagException e){
+                                    throw new RuntimeException(e);
+                                }
+                                
+                            }
+                        });
+        return EVAL_BODY;
     }
 
 
