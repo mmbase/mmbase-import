@@ -1,5 +1,6 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
+%><mm:import externid="username" from="parameters" />
+<mm:cloud method="http" logon="$username" sessionname="${SESSION}" jspvar="cloud">
 <mm:write referid="style" />
 <title>Search a node</title>
 </head>
