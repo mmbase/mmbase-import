@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ import java.util.List;
  * @deprecated better use String.split()
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.3 2004-09-30 17:19:50 pierre Exp $
+ * @version $Id: StringSplitter.java,v 1.4 2005-01-03 21:58:45 michiel Exp $
  */
 public class StringSplitter {
 
@@ -28,15 +27,16 @@ public class StringSplitter {
      * Similar to <code>String.split()</code>, but returns a List instead of an array, and trims the values.
      * @param string the string to split
      * @param delimiter
-     * @return a List containing the elements
+     * @return a (modifiable) List containing the elements
      */
     static public List split(String attribute, String delimiter) {
-        if (attribute == null) return new ArrayList();
+        List result = new ArrayList();
+        if (attribute == null) return result;
         String[] values = attribute.split(delimiter);
         for (int i = 0; i < values.length; i++) {
-            values[i] = values[i].trim();
+            result.add(values[i].trim());
         }
-        return Arrays.asList(values);
+        return result;
     }
 
     /**
