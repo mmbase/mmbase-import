@@ -28,6 +28,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.Codec;
 
 
 import org.w3c.dom.Document;
@@ -43,32 +44,22 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.15 2003-06-24 09:04:48 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.16 2003-07-04 17:23:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaSources.class);
     
     
     // typo check
-    public static final String FUNCTION_URLS        = "urls";
-    public static final String FUNCTION_FILTEREDURLS        = "filteredurls";
-    public static final String FUNCTION_URL         = "url";
-    public static final String FUNCTION_AVAILABLE   = "available";
-    public static final String FUNCTION_FORMAT      = "format";
-    public static final String FUNCTION_CODEC       = "codec";
-    public static final String FUNCTION_MIMETYPE    = "mimetype";
+    public static final String FUNCTION_URLS           = "urls";
+    public static final String FUNCTION_FILTEREDURLS   = "filteredurls";
+    public static final String FUNCTION_URL            = "url";
+    public static final String FUNCTION_AVAILABLE      = "available";
+    public static final String FUNCTION_FORMAT         = "format";
+    public static final String FUNCTION_CODEC          = "codec";
+    public static final String FUNCTION_MIMETYPE       = "mimetype";
 
-    // Codecs
-    public final static int VORBIS_CODEC = 1;
-    public final static int G2_CODEC     = 2;
-    public final static int DIV3_CODEC   = 3;
-    public final static int DIV4_CODEC   = 4;
-    public final static int DIVX_CODEC   = 5;
-    public final static int MP1_CODEC   = 6;
-    public final static int MP2_CODEC   = 7;
-    public final static int MP3_CODEC   = 8;
-    public final static int MP4_CODEC   = 9;
     
     // Status
     public final static int    STATE_DONE   = 3; // jikes
@@ -126,9 +117,10 @@ public class MediaSources extends MMObjectBuilder {
     public MMObjectNode createSource(MMObjectNode mediafragment, int status, int format, int speed, int channels, String url, String owner) {
         // creating media source
         MMObjectNode source = getNewNode(owner);
-        source.setValue("status",status);
-        source.setValue("format",format);
-        source.setValue("speed",speed);
+        source.setValue("status", status);
+        source.setValue("format", format);
+        source.setValue("codec", Codec.UNKNOWN.toInt());
+        source.setValue("speed", speed);
         source.setValue("channels",channels);
         source.setValue("url",url);
         source.insert(owner);
@@ -172,12 +164,12 @@ public class MediaSources extends MMObjectBuilder {
      */
     String getMimeType(MMObjectNode source) { // package because it is used in URLResolver
         String format = getFormat(source).toString();
-        if(format==null || format.equals("")) {
-            format="*";
+        if(format == null || format.equals("")) {
+            format = "*";
         }
-        String codec = getCodec(source);
-        if(codec==null || codec.equals("")) {
-            codec="*";
+        String codec = getCodec(source).toString();
+        if(codec == null || codec.equals("")) {
+            codec = "*";
         }
         
         String mimetype;
@@ -247,8 +239,8 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * The codec field is an integer, this function returns a string-presentation
      */
-    protected String getCodec(MMObjectNode source) {
-        return convertNumberToCodec(source.getIntValue("codec"));
+    protected Codec getCodec(MMObjectNode source) {
+        return Codec.get(source.getIntValue("codec"));
     }
     
     /**
@@ -508,29 +500,5 @@ public class MediaSources extends MMObjectBuilder {
         checkFields(node);
         return super.insert(owner, node);
     }
-    
-    /*
-     * @scope private (and use it in checkFields)
-     */
-    protected static int convertCodecToNumber(String codec) {
-        codec = codec.toLowerCase();
-        if(codec.equals("vorbis")) return VORBIS_CODEC;
-        if(codec.equals("g2"))     return G2_CODEC;
-        if(codec.equals("div3"))   return DIV3_CODEC;
-        if(codec.equals("div4"))   return DIV4_CODEC;
-        if(codec.equals("divx"))   return DIVX_CODEC;
-        log.error("Cannot convert codec ("+codec+") to number");
-        return -1;
-    }
-    
-    protected static String convertNumberToCodec(int codec) {
-        switch(codec) {
-            case VORBIS_CODEC: return "vorbis";
-            case G2_CODEC: return "g2";
-            case DIV3_CODEC: return "div3";
-            case DIV4_CODEC: return "div4";
-            case DIVX_CODEC: return "divx";
-            default: return "Undefined";
-        }
-    }
+
 }
