@@ -15,6 +15,6 @@ package org.mmbase.module.gui.html;
 public class MultiLevelParseException extends ParseException {
 	
 	public MultiLevelParseException(String msg) {
-		super(msg);
+		super("MULTILEVEL Syntax error: "+msg);
 	}
 }
