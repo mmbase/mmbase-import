@@ -9,6 +9,7 @@
 		<builder maintainer="mmbase.org" version="null">chatter</builder>
 		<builder maintainer="mmbase.org" version="null">people</builder>
 		<builder maintainer="mmbase.org" version="null">pools</builder>
+		<builder maintainer="mmbase.org" version="1">jumpers</builder>
 	</neededbuilderlist>
 
 	<neededreldeflist>
@@ -35,6 +36,7 @@
 		<datasource builder="chatter" path="Community/chatter.xml" />
 		<datasource builder="people" path="Community/people.xml" />
 		<datasource builder="pools" path="Community/pools.xml" />
+		<datasource builder="jumpers" path="Bugtracker/jumpers.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<jumpers exportsource="mmbase://www.mmbase.org/mmexamples/community" timestamp="20000602143030">
+
+	<node number="1085124" owner="admin">
+		<url>/mmexamples/scan/community/community.shtml</url>
+		<id>null</id>
+		<name>community</name>
+	</node>
+
+	<node number="1085125" owner="admin">
+		<url>/mmexamples/jsp/community/community.jsp</url>
+		<id>null</id>
+		<name>jspcommunity</name>
+	</node>
+
+</jumpers>
