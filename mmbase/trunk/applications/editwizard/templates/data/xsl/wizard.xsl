@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.25 2002-06-24 12:36:23 pierre Exp $
+  @version $Id: wizard.xsl,v 1.26 2002-06-28 12:30:18 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -45,6 +45,7 @@
         <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
         <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
         <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
+        <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
 
         <xsl:call-template name="beforeform" />
 
@@ -158,7 +159,7 @@
           </input>
         </xsl:when>
         <xsl:when test="@ftype='text'">
-          <xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);"</xsl:text>
+          <xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>" dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);"</xsl:text>
           <xsl:choose>
             <xsl:when test="@rows">
               <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
