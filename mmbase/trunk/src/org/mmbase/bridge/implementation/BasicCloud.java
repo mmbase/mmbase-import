@@ -86,7 +86,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
     /**
      */
-    BasicCloud(String name, String application, User user, CloudContext cloudContext) {
+    BasicCloud(String name, String application, HashMap loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext=(BasicCloudContext)cloudContext;
         MMBase mmb = this.cloudContext.mmb;
@@ -94,7 +94,7 @@ public class BasicCloud implements Cloud, Cloneable {
         // do authentication.....
         MMBaseCop mmbaseCop = mmb.getMMBaseCop();
         if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");
-        userContext = mmbaseCop.getAuthentication().login(application, (UserContext)user, null);
+        userContext = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if ( userContext == null ) throw new BasicBridgeException("login invalid");
         // end authentication...
 
