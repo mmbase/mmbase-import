@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html;charset=utf-8"
+<%@page language="java" contentType="text/html;charset=UTF-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.31 2003-05-02 09:11:29 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.32 2003-05-07 12:18:01 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -51,30 +51,41 @@
             if (c.searchFields==null) {
                 c.constraints = c.baseConstraints;
             } else {
+                // search type: default
+                String sType=c.searchType;
+                // get the actual field to serach on.
+                // this can be 'owner' or 'number' instead of the original list of searchfields,
+                // in which case serachtype may change 
+                String sFields=getParam("realsearchfield", c.searchFields);
+                if (sFields.equals("owner") || sFields.endsWith(".owner")) {
+                    sType="string";
+                } else if (sFields.equals("number") || sFields.endsWith(".number")) {
+                    sType="equals";
+                }
                 String search=c.searchValue;
                 c.constraints=null;
-                if (c.searchType.equals("like")) {
+                if (sType.equals("like")) {
                     // actually we should unquote search...
                     search=" LIKE '%"+search.toLowerCase()+"%'";
-                } else if (c.searchType.equals("string")) {
+                } else if (sType.equals("string")) {
                     search=" = '"+search+"'";
                 } else {
                     if (search.equals("")) {
                         search="0";
                     }
-                    if (c.searchType.equals("greaterthan")) {
+                    if (sType.equals("greaterthan")) {
                         search=" > "+search;
-                    } else if (c.searchType.equals("lessthan")) {
+                    } else if (sType.equals("lessthan")) {
                         search=" < "+search;
-                    } else if (c.searchType.equals("notgreaterthan")) {
+                    } else if (sType.equals("notgreaterthan")) {
                         search=" <= "+search;
-                    } else if (c.searchType.equals("notlessthan")) {
+                    } else if (sType.equals("notlessthan")) {
                         search=" >= "+search;
                     } else {
                         search=" = "+search;
                     }
                 }
-                StringTokenizer searchtokens= new StringTokenizer(c.searchFields,",");
+                StringTokenizer searchtokens= new StringTokenizer(sFields,",");
                 while (searchtokens.hasMoreTokens()) {
                     String tok=searchtokens.nextToken();
                     if (c.constraints!=null) {
@@ -82,10 +93,10 @@
                     } else {
                         c.constraints="";
                     }
-                    if (c.searchType.equals("like")) {
-                        c.constraints+="lower("+tok+")"+search;
+                    if (sType.equals("like")) {
+                        c.constraints+="lower(["+tok+"])"+search;
                     } else {
-                        c.constraints+=tok+search;
+                        c.constraints+="["+tok+"]"+search;
                     }
                 }
                 if (c.baseConstraints!=null) {

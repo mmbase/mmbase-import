@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.5 2002-11-12 16:28:11 michiel Exp $
+  @version $Id: prompts.xsl,v 1.6 2003-05-07 12:18:00 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -84,6 +84,7 @@
 <xsl:template name="prompt_video" ><img src="{$mediadir}video.gif" border="0" alt="Video" /></xsl:template>
 <xsl:variable name="tooltip_video" >Bekijk de video clip</xsl:variable>
 <!-- search : prompts for age filter -->
+<xsl:template name="prompt_age" >Leeftijd</xsl:template>
 <xsl:template name="age_now" >vandaag</xsl:template>
 <xsl:template name="age_day" >1 dag</xsl:template>
 <xsl:template name="age_week" >7 dagen</xsl:template>
@@ -91,10 +92,13 @@
 <xsl:template name="age_year" >1 jaar</xsl:template>
 <xsl:template name="age_any" >alles</xsl:template>
 <!-- search : other filters -->
+<xsl:template name="prompt_search_list" >Zoek</xsl:template>
+<xsl:template name="prompt_search_term" >Termen</xsl:template>
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Zoek" /></xsl:template>
 <xsl:variable name="tooltip_search" >Zoek een toe te voegen item</xsl:variable>
 <xsl:template name="prompt_search_title" >Titel bevat</xsl:template>
 <xsl:template name="prompt_search_owner" >Eigenaar is</xsl:template>
+<xsl:template name="prompt_search_number" >Nummer is</xsl:template>
 <xsl:variable name="filter_required" >Het is verplicht een zoekterm in te vullen.</xsl:variable>
 <!-- navigation -->
 <xsl:template name="prompt_index">Start</xsl:template>
