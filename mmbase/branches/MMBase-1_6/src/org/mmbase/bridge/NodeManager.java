@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.22 2002-11-04 12:26:01 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.22.2.1 2003-08-15 11:30:06 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -222,6 +222,7 @@ public interface NodeManager extends Node {
     /**
      * Retrieve all relation managers that can be used to create relations for objects of this nodemanager.
      * @return the relation manager list
+     * @since MMBase-1.6
      */
     public RelationManagerList getAllowedRelations();
 
@@ -232,6 +233,7 @@ public interface NodeManager extends Node {
      * @param role the role with which to make a relation, can be null
      * @param direction the search direction ("source", "destination", "both"), can be null
      * @return the relation manager list
+     * @since MMBase-1.6
      */
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction);
 
@@ -242,6 +244,7 @@ public interface NodeManager extends Node {
      * @param role the role with which to make a relation, can be null
      * @param direction the search direction ("source", "destination", "both"), can be null
      * @return the relation manager list
+     * @since MMBase-1.6
      */
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction);
 
