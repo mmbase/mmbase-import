@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.12 2000-04-11 14:20:30 wwwtech Exp $
+$Id: Teasers.java,v 1.13 2000-04-18 13:06:42 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/04/11 14:20:30  wwwtech
+Wilbert: Fixed remove from jumpercache in method nodeLocalChanged
+
 Revision 1.11  2000/04/07 11:49:33  wwwtech
 Wilbert: Added remove teaser from jumpercache regardless of type of change
 
@@ -57,7 +60,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.12 $ $Date: 2000-04-11 14:20:30 $ 
+ * @version $Revision: 1.13 $ $Date: 2000-04-18 13:06:42 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -182,7 +185,7 @@ public class Teasers extends MMObjectBuilder {
 	* teaserbody	char(512)		body from teaser
 	* body			char(29000)		eetx index composed of lowercase title and body
 	*/
-	public boolean fillTeaserSearchTable(int where) {
+	private synchronized boolean fillTeaserSearchTable(int where) {
 		MMObjectNode node2,other;
 		int image;
 		int i=0;
@@ -208,6 +211,7 @@ public class Teasers extends MMObjectBuilder {
 			while (list.hasMoreElements()) {
 				number=((Integer)list.nextElement()).intValue();
 				delTeaserSearchElement(number);
+				debug("Adding teaser "+number+" to teaser search cache");
 				ttarget=-1;
 				sort=-1;
 				MMObjectNode node=getNode(number);
@@ -331,7 +335,8 @@ public class Teasers extends MMObjectBuilder {
 	/** Remove teaser number from tsearchcache
 	* 
 	*/
-	public boolean delTeaserSearchElement(int number) {
+	private boolean delTeaserSearchElement(int number) {
+		debug("Removing teaser "+number+" from teaser search cache");
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -351,15 +356,9 @@ public class Teasers extends MMObjectBuilder {
 			int nr = Integer.parseInt(number);
 			if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
 				MMObjectNode node=getNode(number);
-				if (node!=null) {
-					fillTeaserSearchTable(nr);
-					// fillTeaserUrl(nr);
-				}
+				if (node!=null) fillTeaserSearchTable(nr);
 			}
-			else if (ctype.equals("d")) {
-				delTeaserSearchElement(nr);
-				//delUrlSearchElement(nr);
-			}
+			else if (ctype.equals("d")) delTeaserSearchElement(nr);
 			debug("Removing "+number+" from jumper cache");
 			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
 			if (jumpers==null) debug("ERROR: Could not get Jumper builder");
