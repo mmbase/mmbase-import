@@ -27,11 +27,13 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.41 2002-11-21 13:48:21 pierre Exp $
+ * @version $Id: Module.java,v 1.42 2002-11-22 13:40:13 pierre Exp $
  */
 public abstract class Module {
 
+    // logging
     static private Logger log = Logging.getLoggerInstance(Module.class.getName());
+
     static Map modules;
     static String mmbaseconfig;
     static ModuleProbe mprobe;
@@ -44,7 +46,6 @@ public abstract class Module {
     String maintainer;
     int    version;
 
-    private String className;
     // startup call.
     private boolean started = false;
 
@@ -72,7 +73,7 @@ public abstract class Module {
      * This module calls the {@link #init()} of a module exactly once.
      * In other words, once the init() is called, it does not call it again.
      * This method is final and cannot be overridden.
-     * It is used to safely intilaize modules during startup, amd allows other modules
+     * It is used to safely initialize modules during startup, and allows other modules
      * to force the 'startup' of another module without risk.
      */
     public final synchronized void startModule() {
@@ -91,13 +92,20 @@ public abstract class Module {
 
     /**
      * Initializes the module.
-     * Init can be overridden to read the environment variables it needs.
+     * Init must be overridden to read the environment variables it needs.
      * <br />
      * This method is called by {@link #startModule()}, which makes sure it is not called
      * more than once. You should not call init() directly, call startModule() instead.
      */
     public abstract void init();
 
+    /**
+     * prepares the module when loaded.
+     * Onload must be overridden to execute methods that need to be performed when the module
+     * is loaded but before any other modules are initailized.
+     * <br />
+     * This method is called by {@link #startModules()}. You should not call onload() directly.
+     */
     public abstract void onload();
 
     /**
@@ -108,6 +116,9 @@ public abstract class Module {
         return state;
     }
 
+    /**
+     * Sets an init-parameter key-value pair
+     */
     public void setInitParameter(String key,String value) {
         if (properties!=null) {
             properties.put(key,value);
@@ -115,7 +126,7 @@ public abstract class Module {
     }
 
     /**
-     * Gets his init-parameters
+     * Gets an init-parameter  key-value pair
      */
     public String getInitParameter(String key) {
         if (properties!=null) {
@@ -130,7 +141,6 @@ public abstract class Module {
         }
         return null;
     }
-
 
     /**
      * Returns the properties to the subclass.
@@ -319,21 +329,6 @@ public abstract class Module {
         return version;
     }
 
-    /**
-     * set classname of the builder
-     */
-    public void setClassName(String d) {
-        this.className=d;
-    }
-
-    /**
-     * return classname of this builder
-     */
-    public String getClassName() {
-        return className;
-    }
-
-
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results=new Hashtable();
         mmbaseconfig = MMBaseContext.getConfigPath();
@@ -365,8 +360,6 @@ public abstract class Module {
                                     ((Module)mod).setName(bname);
                                     ((Module)mod).setMaintainer(parser.getModuleMaintainer());
                                     ((Module)mod).setVersion(parser.getModuleVersion());
-                                    ((Module)mod).setClassName(parser.getClassFile());
-
                                 }
                             } catch (java.lang.ClassNotFoundException cnfe) {
                                 log.error("Could not load class with name '" + cname + "', " +
