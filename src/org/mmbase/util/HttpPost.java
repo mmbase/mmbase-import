@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.16 2003-02-10 23:44:39 nico Exp $
+ * @version $Id: HttpPost.java,v 1.17 2003-04-02 14:32:49 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -37,6 +37,9 @@ public class HttpPost {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(HttpPost.class.getName());
+
+    // properties
+    private static Hashtable properties = null;
 
     private int maxLoop=2048;
 
@@ -78,6 +81,12 @@ public class HttpPost {
      * Initialise WorkerPostHandler
      */
     public HttpPost(HttpServletRequest req) {
+        XMLUtilReader reader = new XMLUtilReader("httppost.xml");
+        properties = reader.getProperties();
+        if(properties.containsKey("maxfilesize")) {
+            maxFileSize = Integer.parseInt(""+properties.get("maxfilesize"));
+            log.debug("Setting maxfilesize to "+maxFileSize);
+        }
         postid = System.currentTimeMillis();
         this.req = req;
     }
