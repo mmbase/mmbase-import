@@ -123,8 +123,8 @@ General Bug Fixes:
 ------------------
 
 [1.6.2]
-
- - a lot
+ - Bytearray fields are not queried by default any more this was reuslting in
+   OutOfMemory errors
 
 [1.6.1]
 - Fixed bug causing connections to be closed prematurely: #5097
