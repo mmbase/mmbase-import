@@ -14,8 +14,10 @@ package org.mmbase.module.builders.vwms;
  * This interface is emnt for classes that want to get notified when things change in a vwm.
  * The only method in this interface is a notification method used when a vwm 'unloads'.
  *
+ * @application VWMs
+ * @author vpro
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmCallBackInterface.java,v 1.5 2003-03-10 11:50:25 pierre Exp $
+ * @version $Id: VwmCallBackInterface.java,v 1.6 2004-10-08 10:57:57 pierre Exp $
  */
 
 public interface VwmCallBackInterface {

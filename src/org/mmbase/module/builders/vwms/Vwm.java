@@ -26,9 +26,10 @@ import org.mmbase.module.builders.*;
  * VWMs perform periodic maintenance by overrideing the probeCall method (the default doesn't do anything).
  * A VWM is also called a 'Bot'.
  *
+ * @application VWMs
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwm.java,v 1.15 2003-11-10 13:33:05 keesj Exp $
+ * @version $Id: Vwm.java,v 1.16 2004-10-08 10:57:57 pierre Exp $
  */
 
 public class Vwm implements VwmInterface, VwmProbeInterface, Runnable {
@@ -141,7 +142,7 @@ public class Vwm implements VwmInterface, VwmProbeInterface, Runnable {
             try {
                 Thread.sleep(sleeptime * 1000);
             } catch (InterruptedException e) {
-                //interrupted so exit 
+                //interrupted so exit
                 return;
             }
         }

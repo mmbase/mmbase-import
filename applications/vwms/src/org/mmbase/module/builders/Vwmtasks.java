@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * Virtual Web Master task builder.
  * This builder holds the tasks that need to be performed by the various VWMs (which are registered in
- * the VWMS builder). It also rusna  taskscheduler that periodically cehcks whether any new tasks need to be handled<br />
+ * the VWMS builder). It also runs a taskscheduler that periodically cehcks whether any new tasks need to be handled<br />
  * Task nodes have a number of fields that define if, when, and how a task is to be performed.
  * These fields are : <br/>
  * Requested Machine: the machine on which the task is to be performed (wantedcpu)<br />
@@ -32,9 +32,11 @@ import org.mmbase.util.logging.*;
  * Id : unknown<br />
  * Data : field for including properties/parameters<br />
  *
+ * @application VWMs
+ * @rename VwmTasks
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.15 2004-05-26 09:28:59 rico Exp $
+ * @version $Id: Vwmtasks.java,v 1.16 2004-10-08 10:59:39 pierre Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -118,8 +120,8 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         log.info("Thread started, entering while loop");
 
         while (kicker!=null) {
-			log.service("Periodically sleep "+SLEEP_TIME
-			    +" seconds and add all new vwmtasks that were created since last check ("
+            log.service("Periodically sleep "+SLEEP_TIME
+                +" seconds and add all new vwmtasks that were created since last check ("
                 +DateSupport.date2string(lastchecked)+").");
             try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){return;}
             getVwmTasks();
@@ -200,7 +202,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         String vwm,task;
         // get out alter ego Vwms Builder to pass the new tasks
         if (vwms==null)
-        	vwms = (Vwms)mmb.getMMObject("vwms");
+            vwms = (Vwms)mmb.getMMObject("vwms");
         int checktime = lastchecked;
         lastchecked= (int)(System.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
@@ -211,12 +213,12 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
                 +" AND wantedcpu='"+getMachineName()+"'"
                 +" AND "+mmb.getDatabase().getAllowedField("status")+"="+STATUS_REQUEST);
 
-		for (MMObjectNode node=null; e.hasMoreElements();) {
-			node = (MMObjectNode)e.nextElement();
-           	vwm  = node.getStringValue("vwm");
-	       	task = node.getStringValue("task");
-			log.debug("Adding "+vwm+" tasknode "+node);
-           	vwms.putTask(vwm,node);
+        for (MMObjectNode node=null; e.hasMoreElements();) {
+            node = (MMObjectNode)e.nextElement();
+            vwm  = node.getStringValue("vwm");
+            task = node.getStringValue("task");
+            log.debug("Adding "+vwm+" tasknode "+node);
+            vwms.putTask(vwm,node);
         }
     }
 }
