@@ -1,181 +1,373 @@
 <!-- ===========================================================================
 
-MMBase Build File. See <http://jakarta.apache.org/> for more information
-about the Ant build tool.
+
+MMBase Build File
+=================
+
+This build file can be used to build the following from CVS or from the source
+distribution:
+
+- A MMBase source distribution.
+- A MMBase binary distribution.
+- A ready to run MMBase build on top of Tomcat and Hypersonic. 
+- A test environment.
+
+The main properties are source.dir and build.dir. The source.dir is expected
+to have the following sub directory's:
+
+  config          (the MMBase CVS config module)
+  html            (the MMBase CVS html module)
+  src/org/mmbase  (the MMBase CVS mmbase module)
+
+But is is also possible to specify different places for these directory's by
+using the following properties in the build.properties file:
+
+  source-config.dir
+  source-html.dir
+  source-src.dir
+
+The build.dir will have the following sub directory's:
+
+  classes             (compiled MMBase classes)
+  download            (default place for the downloaded packages)
+  download/extracted  (default place to extract the downloaded packages)
+  junit               (test environment)
+  mmbase              (the MMBase binary distribution)
+  mmbase-src          (the MMBase source distribution)
+  tomcat              (the Tomcat distribution adjusted to run MMBase)
+
+
+Ant
+===
+
+This build file is tested with Ant 1.3. See <http://jakarta.apache.org/> for
+more information about the Ant build tool.
+
+
+Automated downloads
+===================
+
+To use the targets for automated downloads you first have to download
+NetComponents and put the NetComponents.jar in your Ant lib directory.
+NetComponents can be found at:
+
+  http://www.savarese.org/oro/downloads/index.html#NetComponents
+
+By default all packages containing needed jar files are downloaded and extracted
+if not available yet.
+
+If you don't like the download feature or if you don't want some of the optional
+jar files you can set the use-customized-lib property. When using this property
+you have to put the needed jar files for your target into:
+
+  ${build.dir}/mmbase/lib
+  
+It is also possible to specify another lib directory to be used by the compile
+and javadocs targets by setting property lib.dir.  
+
+
+Starting Tomcat
+===============
+
+You can start the ajusted Tomcat just like you would start a "normal" Tomcat
+from the tomcat/bin directory. E.g.:
+
+  tomat.sh start
+
+
+Starting Orion
+==============
+
+Change directory to ${build.dir}/orion and run:
+
+  java -Dmmbase.config=conf.mmbase -Dmmbase.htmlroot=default-web-app -jar orion.jar
+
 
 ============================================================================ -->
 
 <project name="MMBase" default="usage" basedir=".">
 
   <!-- =================================================================== -->
-  <!-- Initialization target                                               -->
+  <!-- Init                                                                -->
   <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties"/>
+  <!-- Default values -->
+  <property name="source.dir" location="../../../.."/>
+  <property name="source-config.dir" location="${source.dir}/config"/>
+  <property name="source-html.dir" location="${source.dir}/html"/>
+  <property name="source-src.dir" location="${source.dir}/src"/>
+  <property name="build.dir" value="${source.dir}/build"/>
+  <property name="lib.dir" value="${build.dir}/mmbase/lib"/>
+  <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
+  <property name="build.compiler" value="classic"/>
+  <property name="optimize" value="on"/>
+  <property name="deprecation" value="off"/>
+  <property name="javadoc.packages" value="org.mmbase.*"/>
+  <property name="database.name" value="install"/>
+  <property name="database.user" value="mmuser"/>
+  <property name="database.password" value="mmpassword"/>
+  <property name="mmbase.jar" value="${build.dir}/mmbase/lib/mmbase.jar"/>
   <target name="init">
     <tstamp/>
-    <property name="name"    value="mmbase"/>
+    <mkdir dir="${build.dir}"/>
+    <property name="name" value="mmbase"/>
     <property name="version" value="${DSTAMP}"/>
-   
-    <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
-    <property name="build.compiler" value="classic"/>
-    <property name="optimize"       value="on"/>
-    <property name="deprecation"    value="off"/>
-
-    <!-- Toplevel-dir -->
-    <property name="top.dir" value="../../../../"/>
-
-    <!-- Location of MMBase's config, needed for config-test -->
-    <property name="mmbase.config" value="${top.dir}/config/default"/>
-    <!-- Location of MMBase's html-files, needed for config-test -->
-    <property name="mmbase.htmlroot" value="${top.dir}/html"/>
-    <!-- Location of MMBase's log, needed for config-test -->
-    <property name="mmbase.outputfile" value="${top.dir}/log"/>
-    <!-- Location of MMBase's mode, needed for config-test -->
-    <property name="mmbase.mode" value="mmbase"/>
-
-    <!-- Classpath settings  -->
-    <!-- jdbc-driver, only needed for config-test -->
-    <property name="jdbc.classpath" value="/usr/local/lib/java/mysql.jar"/>   
-    <property name="classpath" value="
-        ${top.dir}/lib/mmbase.jar:
-        ${top.dir}/lib/xerces.jar:
-        ${top.dir}/lib/xalan.jar:
-        ${top.dir}/lib/ant.jar:
-        ${top.dir}/lib/servlet.jar:
-        ${top.dir}/lib/jai_core.jar:
-        ${top.dir}/lib/jai_codec.jar:
-        ${top.dir}/lib/log4j.jar:
-        ${jdbc.classpath}"/>
-
-    <!-- Source directory -->
-    <property name="src.dir"     value="${top.dir}/src"/>
-    <!-- Packages, needed for javadocs -->
-    <property name="packages"    value="org.mmbase.*"/>
-
-    <!-- build dirs -->
-    <property name="build.dir"     value="${top.dir}/build"/>
-    <property name="build.dest"     value="${build.dir}/classes"/>
-    <property name="build.javadocs" value="${build.dir}/javadocs"/>
-
-    <!-- distribution dirs -->
-    <property name="dist.root" value="${top.dir}/dist"/>
-    <property name="dist.version" value="${dist.root}/${name}-${version}"/>
-    <property name="dist.dir" value="${dist.version}/mmbase"/>
-    <property name="dist.lib" value="${dist.dir}/lib"/>
-    <property name="dist.src" value="${dist.dir}/src"/>
-    <property name="dist.log" value="${dist.dir}/log"/>
-    <property name="dist.config" value="${dist.dir}/config"/>
-    <property name="dist.docs" value="${dist.dir}/docs"/>
-    <property name="dist.scripts" value="${dist.dir}/scripts"/>
-    <property name="dist.html" value="${dist.dir}/html"/>
-
-    <!-- needed packages -->
-    <available property="xerces.present"
-               classname="org.apache.xerces.parsers.DOMParser"/>
-    <available property="servlet.present"
-               classname="javax.servlet.http.HttpServlet"/>
-
-    <!-- optional packages -->
-    <available property="xalan.present"
-               classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
-    <available property="jai.present"
-               classname="javax.media.jai.JAI"/>
-    <available property="log4j.present"
-               classname="org.apache.log4j.Category"/>
-
-    <!-- only needed for runnning MMBase with Apache Tomcat -->
-    <available property="tomcat.present" 
-               classname="org.apache.tomcat.startup.Tomcat" />
-   
-    <!-- check directory structure -->
-    <available property="dir.src.present"
-               file="${top.dir}/src" />
-    <available property="dir.org.present"
-               file="${top.dir}/src/org" />
-    <available property="dir.mmbase.present"
-               file="${top.dir}/src/org/mmbase" />
   </target>
+
 
   <!-- =================================================================== -->
   <!-- Help on usage                                                       -->
   <!-- =================================================================== -->
-  <target name="usage">
+  <target name="usage" description="Help on usage">
     <echo message=""/>
     <echo message="MMBase Build file"/>
     <echo message="*************************************************************"/>
     <echo message=""/>
-    <echo message=" available targets are:"/>
-    <echo message=""/>
-    <echo message="   compile-check --> checks the config needed for building MMBase"/>
-    <echo message="   jar          --> generates the mmbase.jar file"/>
-    <echo message="   compile      --> compiles the source code"/>
-    <echo message="   javadocs     --> generates the API documentation"/>
-    <echo message="   dist         --> generates the MMBase-distribution"/>
-    <echo message="   config-test  --> tests the MMBase configuration"/>
-    <echo message="   clean        --> cleans up the build-directory"/>
-    <echo message="   clean-dist   --> cleans up the dist-directory"/>
+    <echo message="Use the -projecthelp option to see a short description for"/>
+    <echo message="the main targets"/>
     <echo message=""/>
     <echo message="*************************************************************"/>
     <echo message=""/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the source distribution                                     -->
+  <!-- =================================================================== -->
+  <target name="srcdist" description="Create the source distribution"
+          depends="init">
+    <!-- copy the java-sources -->
+    <mkdir dir="${build.dir}/mmbase-src/src"/>
+    <copy todir="${build.dir}/mmbase-src/src">
+      <fileset dir="${source-src.dir}">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <!-- copy the config files -->
+    <mkdir dir="${build.dir}/mmbase-src/config"/>
+    <copy todir="${build.dir}/mmbase-src/config">
+      <fileset dir="${source-config.dir}">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <!-- copy the html files -->
+    <mkdir dir="${build.dir}/mmbase-src/html"/>
+    <copy todir="${build.dir}/mmbase-src/html">
+      <fileset dir="${source-html.dir}">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <!-- copy the build file -->
+    <copy file="${source-src.dir}/org/mmbase/scripts/build.xml"
+          todir="${build.dir}/mmbase-src"/>
+    <copy file="${source-src.dir}/org/mmbase/scripts/build-from-srcdist.properties"
+          tofile="${build.dir}/mmbase-src/build.properties"/>
+    <!-- copy the readme -->
+    <!-- not in cvs yet -->
+    <!-- zip -->
+    <zip zipfile="${build.dir}/${name}-src-${version}.zip"
+         basedir="${build.dir}/mmbase-src"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the source distribution                                       -->
+  <!-- =================================================================== -->
+  <target name="clean.srcdist" description="Clean the source distribution">
+    <delete dir="${build.dir}/mmbase-src"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the binary distribution                                      -->
+  <!-- =================================================================== -->
+  <target name="bindist"  description="Create the binary distribution"
+          depends="lib,jar,javadocs">
+    <!-- copy the scripts -->
+    <copy todir="${build.dir}/mmbase/scripts">
+      <fileset dir="${source-src.dir}/org/mmbase/scripts">
+        <exclude name="build.xml"/>
+        <exclude name="build-in-distro.xml"/>
+        <exclude name="compile"/>
+        <exclude name="compile2"/>
+        <exclude name="createjar"/>
+        <exclude name="oriondoc"/>
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <!-- make scripts executable -->
+    <chmod perm="ugo+x">
+      <fileset dir="${build.dir}/mmbase/scripts">
+        <exclude name="**/*.xml"/>
+      </fileset>
+    </chmod>
+    <!-- copy a readme from somewhere -->
+    <!-- not in cvs yet -->
+    <!-- copy the config -->
+    <copy todir="${build.dir}/mmbase/config">
+      <fileset dir="${source-config.dir}">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <!-- copy the html -->
+    <copy todir="${build.dir}/mmbase/html">
+      <fileset dir="${source-html.dir}">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <!-- zip -->
+    <zip zipfile="${build.dir}/${name}-${version}.zip"
+         basedir="${build.dir}/mmbase"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the binary distribution                                       -->
+  <!-- =================================================================== -->
+  <target name="clean.bindist" description="Clean the binary distribution"
+          depends="clean.compile">
+    <delete dir="${build.dir}/mmbase"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the lib directory                                            -->
+  <!-- =================================================================== -->
+  <target name="lib" description="Create the lib directory"
+          depends="init,expand.tomcat,expand.xalan,expand.jai,expand.log4j,expand.junit"
+          unless="use-customized-lib">
+    <mkdir dir="${build.dir}/mmbase/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${webserver.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${xalan.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Prepare for compilation                                             -->
+  <!-- =================================================================== -->
+  <target name="init.compile" depends="lib">
+    <available property="dummy" classname="dummy">
+      <classpath id="compile">
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
+      </classpath>
+    </available>
+    <!-- needed packages -->
+    <available property="xerces.in.classpath"
+               classpathref="compile"
+               classname="org.apache.xerces.parsers.DOMParser"/>
+    <available property="servlet.in.classpath"
+               classpathref="compile"
+               classname="javax.servlet.http.HttpServlet"/>
+    <!-- optional packages -->
+    <available property="xalan.in.classpath"
+               classpathref="compile"
+               classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
+    <available property="jai.in.classpath"
+               classpathref="compile"
+               classname="javax.media.jai.JAI"/>
+    <available property="log4j.in.classpath"
+               classpathref="compile"
+               classname="org.apache.log4j.Category"/>
+    <available property="junit.in.classpath"
+               classpathref="compile"
+               classname="junit.runner.BaseTestRunner"/>
+    <!-- only needed for runnning MMBase with Apache Tomcat -->
+    <available property="tomcat.in.classpath" 
+               classpathref="compile"
+               classname="org.apache.tomcat.startup.Tomcat"/>
+    <!-- check directory structure -->
+    <available property="dir.src.present"
+               file="${source-src.dir}"/>
+    <available property="dir.org.present"
+               file="${source-src.dir}/org"/>
+    <available property="dir.mmbase.present"
+               file="${source-src.dir}/org/mmbase"/>
   </target>
 
 
   <!-- =================================================================== -->
   <!-- Check the needed packages                                           -->
   <!-- =================================================================== -->
-  <target name="check.needed.xerces" unless="xerces.present">
+  <target name="check.needed.xerces" depends="init.compile" unless="xerces.in.classpath">
     <echo message=""/>
     <echo message="Error: Missing needed package Xerces."/>
     <echo message="You first need to install Xerces (http://xml.apache.org/xerces-j/)"/>
     <echo message="and add it to your classpath, before you can compile and use MMBase."/>
     <echo message=""/>
+    <fail message="Missing needed package Xerces."/>
   </target>
 
-  <target name="check.needed.servlet" unless="servlet.present">
+  <target name="check.needed.servlet" depends="init.compile" unless="servlet.in.classpath">
     <echo message=""/>
     <echo message="Error: Missing needed package javax.servlet."/>
     <echo message="You first need to add servlet.jar to your classpath,"/>
     <echo message="before you can compile and use MMBase."/>
     <echo message="You'll probably find it somewhere in your servlet-engine dir."/>
     <echo message=""/>
+    <fail message="Missing needed package javax.servlet."/>
   </target>
+
 
   <!-- =================================================================== -->
   <!-- Check the optional packages                                         -->
   <!-- =================================================================== -->
-  <target name="check.optional.xalan" unless="xalan.present">
+  <target name="check.optional.xalan" depends="init.compile"
+          unless="xalan.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package Xalan."/>
     <echo message="You first need to install Xalan (http://xml.apache.org/xalan/)"/>
     <echo message="and add it to your classpath, before you can use all the features of MMBase."/>
-	<echo message="MMBase will compile and run without this package,"/> 
+    <echo message="MMBase will compile and run without this package,"/> 
     <echo message="if you remove the xslconvert module from your modules.xml."/>
     <echo message=""/>
   </target>
-
-  <target name="check.optional.jai" unless="jai.present">
+  <target name="check.optional.jai" depends="init.compile"
+          unless="jai.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package javax.jai."/>
     <echo message="You can't use the java based Image-Converter without this package,"/> 
     <echo message="you've got to use ImageMagick."/>
     <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
-	<echo message="MMBase will compile and run without this package."/>
+    <echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
   </target>
-
-  <target name="check.optional.log4j" unless="log4j.present">
+  <target name="check.optional.log4j" depends="init.compile"
+          unless="log4j.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package Log4j."/>
     <echo message="Logging capabalities will be very limited."/> 
     <echo message="Log4j can be downloaded from http://jakarta.apache.org/log4j/"/>
-	<echo message="The Log4j Implementation of MMBase will not compile," /> 
+    <echo message="The Log4j Implementation of MMBase will not compile,"/> 
+    <echo message="but MMBase will run without this package though."/>
+    <echo message=""/>
+  </target>
+  <target name="check.optional.junit" depends="init.compile"
+          unless="junit.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package JUnit."/>
+    <echo message="You will not be able to run tests."/> 
+    <echo message="JUnit can be downloaded from http://www.unit.org/"/>
+    <echo message="The JUnit tests for MMBase will not compile,"/> 
     <echo message="but MMBase will run without this package though."/>
     <echo message=""/>
   </target>
 
+
   <!-- =================================================================== -->
   <!-- Check packages needed by a specific servlet-engine                  -->
   <!-- =================================================================== -->
-  <target name="check.needed.for.tomcat" unless="tomcat.present">
+  <target name="check.needed.for.tomcat" depends="init.compile"
+          unless="tomcat.in.classpath">
     <echo message=""/>
     <echo message="Message: Missing package Tomcat."/>
     <echo message="If you're running MMBase with Apache Tomcat, "/>
@@ -185,218 +377,617 @@ about the Ant build tool.
     <echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
   </target>
+  <target name="check.package.all"
+          depends="check.needed.xerces,check.needed.servlet,
+                   check.optional.xalan,check.optional.jai,check.optional.log4j,
+                   check.optional.junit,check.needed.for.tomcat"/>
 
-  <target name="check.package.all" depends="check.needed.xerces,check.needed.servlet,
-                                    check.optional.xalan,check.optional.jai, check.optional.log4j,
-                                    check.needed.for.tomcat">
-    <!-- Dummy target, only  to make sure all the packages are checked -->
-  </target> 
 
   <!-- =================================================================== -->
   <!-- Check the directory structure                                       -->
   <!-- =================================================================== -->
-  <target name="check.dir.src" unless="dir.src.present">
+  <target name="check.dir.src" depends="init.compile" unless="dir.src.present">
     <echo message=""/>
-    <echo message="Warning: Ant expects the following directory structure:"/>
-    <echo message="mmbase --> src --> org --> mmbase"/>
-    <echo message="Without this structure MMBase may or may not compile"/> 
+    <echo message="Ant expects a src directory in ${source.dir}"/>
     <echo message=""/>
+    <fail message="Invalid directory structure"/>
   </target>
+  <target name="check.dir.org" depends="init.compile" unless="dir.org.present">
+    <echo message=""/>
+    <echo message="Ant expects a org directory in ${source-src.dir}"/>
+    <echo message=""/>
+    <fail message="Invalid directory structure"/>
+  </target>
+  <target name="check.dir.mmbase" depends="init.compile"
+          unless="dir.mmbase.present">
+    <echo message=""/>
+    <echo message="Ant expects a mmbase directory in ${source-src.dir}/org"/>
+    <echo message=""/>
+    <fail message="Invalid directory structure"/>
+  </target>
+  <target name="check.dir.all"
+          depends="check.dir.src,check.dir.org,check.dir.mmbase"/>
 
-  <target name="check.dir.org" unless="dir.org.present">
-    <echo message=""/>
-    <echo message="Warning: Ant expects the following directory structure:"/>
-    <echo message="mmbase --> src --> org --> mmbase"/>
-    <echo message="Without this structure MMBase may or may not compile"/> 
-    <echo message=""/>
-  </target>
-
-  <target name="check.dir.mmbase" unless="dir.mmbase.present">
-    <echo message=""/>
-    <echo message="Warning: Ant expects the following directory structure:"/>
-    <echo message="mmbase --> src --> org --> mmbase"/>
-    <echo message="Without this structure MMBase may or may not compile"/> 
-    <echo message=""/>
-  </target>
-
-  <target name="check.dir.all" depends="check.dir.src,check.dir.org,check.dir.mmbase">
-    <!-- Dummy target, only  to make sure the whole directory structure is checked -->
-  </target>
 
   <!-- =================================================================== -->
-  <!-- Checks needed before compiling                                      -->
+  <!-- Compile the source directory                                       -->
   <!-- =================================================================== -->
-  <target name="compile-check" depends="init,check.dir.all,check.package.all">
-    <echo message=""/>
-    <echo message="Config-check finished."/>
-    <echo message="If there are any problems displayed above, please correct"/>
-    <echo message="them and try again."/>
-    <echo message=""/> 
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Prepares the build directory                                        -->
-  <!-- =================================================================== -->
-  <target name="prepare" depends="init,compile-check">
-    <mkdir dir="${build.dir}"/>
-    <mkdir dir="${build.dest}"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Compiles the source directory                                       -->
-  <!-- =================================================================== -->
-  <target name="compile" depends="prepare"> 
-
-    <copy todir="${build.dest}">
-      <fileset dir="${src.dir}" >
-        <include name="**/scripts/**" />
-        <include name="**/platform/**" />
-        <include name="**/*.properties" />
-        <include name="**/*.sh" />
-        <include name="**/LICENSE" />
-        <exclude name="**/*.java" />
+  <target name="compile" description="Compile the source directory"
+          depends="init.compile,check.package.all,check.dir.all">
+    <mkdir dir="${build.dir}/classes"/>
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
       </fileset>
     </copy>
-
-    <javac srcdir="${src.dir}"
-           destdir="${build.dest}"
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
-      <exclude name="**/jumpersInterceptor.java"  unless="tomcat.present" />
-      <exclude name="**/ConvertJAI.java"          unless="jai.present"    />
-      <exclude name="**/logging/log4j/**"         unless="log4j.present"  />
-      <exclude name="**/logging/Performance.java"  unless="log4j.present"  />
+      <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
+      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
+      <exclude name="**/XSLTransformer.java" unless="tomcat.in.classpath"/>
+      <exclude name="**/jumpersInterceptor.java" unless="tomcat.in.classpath"/>
+      <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
+      <exclude name="**/logging/log4j/**" unless="log4j.in.classpath"/>
+      <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
+      <exclude name="**/bridgetest/**" unless="junit.in.classpath"/>
     </javac>
   </target>
 
   <!-- =================================================================== -->
-  <!-- Creates the jar file                                                -->
+  <!-- Clean the compiled classes                                          -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile">
-    <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"/>
-    <copy file="${build.dir}/${name}.jar" tofile="${dist.lib}/${name}.jar"/>
+  <target name="clean.compile" description="Clean the compiled classes">
+    <delete dir="${build.dir}/classes"/>
   </target>
 
+
   <!-- =================================================================== -->
-  <!-- Creates the API documentation                                       -->
+  <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="prepare">
-    <mkdir dir="${build.javadocs}"/>
-    <javadoc packagenames="${packages}"
-             sourcepath="${src.dir}"
-             destdir="${build.javadocs}"
+  <target name="jar" description="Create the MMBase jar file"
+          depends="compile">
+    <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
+         basedir="${build.dir}/classes"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="javadocs"
+          description="Create the API documentation"
+          depends="init">
+    <mkdir dir="${build.dir}/mmbase/docs/api"/>
+    <javadoc packagenames="${javadoc.packages}"
+             sourcepath="${source-src.dir}"
+             destdir="${build.dir}/mmbase/docs/api"
              author="true"
              version="true"
              use="false"
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             bottom="MMBase 2001"
-    />
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the distribution                                            -->
-  <!-- =================================================================== -->
-  <target name="dist" depends="clean-dist,jar,javadocs">
-    <mkdir dir="${dist.root}"/>
-    <mkdir dir="${dist.version}"/>
-    <mkdir dir="${dist.dir}"/>
-    <mkdir dir="${dist.lib}"/>
-    <mkdir dir="${dist.src}"/>
-    <mkdir dir="${dist.log}"/>
-    <mkdir dir="${dist.config}"/>
-    <mkdir dir="${dist.docs}"/>
-    <mkdir dir="${dist.scripts}"/>
-    <mkdir dir="${dist.html}"/>
-
-    <!-- copy the java-sources -->
-    <copy todir="${dist.src}">
-      <fileset dir="${src.dir}">
-        <exclude name="**/scripts/**" />
-      </fileset>
-    </copy>
-
-    <!-- copy the scripts -->
-    <copy todir="${dist.scripts}">
-      <fileset dir="${src.dir}/org/mmbase/scripts">
-        <exclude name="build.xml"/>
-        <exclude name="build-in-distro.xml"/>
-        <exclude name="compile"/>
-        <exclude name="compile2"/>
-        <exclude name="createjar"/>
-        <exclude name="oriondoc"/>
-      </fileset>
-    </copy>
-
-    <copy file="${src.dir}/org/mmbase/scripts/build-in-distro.xml" 
-          tofile="${dist.scripts}/build.xml"/>
-
-    <!-- make scripts executable -->
-    <chmod perm="ugo+x" >
-      <fileset dir="${dist.scripts}">
-        <exclude name="**/*.xml"/>
-      </fileset>
-    </chmod>
-
-    <!-- copy the javadocs -->
-    <copy todir="${dist.docs}/api" >
-      <fileset dir="${build.javadocs}" />
-    </copy>
-    
-    <!-- copy a readme from somewhere -->
-    <copy file="${top.dir}/docs/readme.txt" tofile="${dist.docs}/readme.txt" />
-
-    <!-- copy the config -->
-    <copy todir="${dist.config}" >
-      <fileset dir="${top.dir}/config" />
-    </copy>
-    
-    <!-- copy the html -->
-    <copy todir="${dist.html}" >
-      <fileset dir="${top.dir}/html" />
-    </copy>
-    
-    <!-- copy the libs from somewhere -->
-
-    <copy todir="${dist.lib}" >
-      <fileset dir="${top.dir}/lib" >
-        <exclude name="mmbase.jar"/>
-      </fileset>
-    </copy>
-
-    <copy file="${build.dir}/${name}.jar" tofile="${dist.lib}/${name}.jar" />
-    
-    <!-- zip -->
-    <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.version}"/>
-
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Test Configuration target                                           -->
-  <!-- =================================================================== -->
-  <target name="config-test" depends="init">
-    <java classname="org.mmbase.config.Test" 
-          fork="yes" 
-          jvmargs="-Dmmbase.config=${mmbase.config} -Dmmbase.htmlroot=${mmbase.htmlroot} -Dmmbase.outputlog=${mmbase.outputfile} -Dmmbase.mode=${mmbase.mode}">
+             bottom="MMBase 2001">
       <classpath>
-        <pathelement path="${classpath}" />
+        <fileset dir="${build.dir}/mmbase/lib">
+          <include name="*.jar"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
       </classpath>
+    </javadoc>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Install MMBase on top of Tomcat without database                    -->
+  <!-- =================================================================== -->
+  <target name="tomcat"
+          depends="init,jar,expand.tomcat,expand.xalan,expand.jai,expand.log4j">
+    <mkdir dir="${build.dir}/tomcat"/>
+    <mkdir dir="${build.dir}/tomcat/webapps/ROOT"/>
+    <copy todir="${build.dir}/tomcat">
+      <fileset dir="${expand.dir}/${tomcat.version}">
+        <exclude name="webapps/ROOT"/>
+      </fileset>
+    </copy>
+    <copy todir="${build.dir}/tomcat/conf.mmbase">
+      <fileset dir="${source-config.dir}/default">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
+             token="DOCTYPE configuration"
+             value="DOCTYPE log4j SYSTEM &quot;log4j.dtd&quot;"/>
+    <!-- Prevent multiple replaces by multiple builds by allways copying the
+         file. -->
+    <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
+          todir="${build.dir}/tomcat/bin"
+          overwrite="yes"/>
+    <replace file="${build.dir}/tomcat/bin/tomcat.bat"
+             token="-Dtomcat.home=&quot;%TOMCAT_HOME%&quot;"
+             value="-Dtomcat.home=&quot;%TOMCAT_HOME%&quot; -Dmmbase.config=&quot;%TOMCAT_HOME%\\conf.mmbase&quot; -Dmmbase.htmlroot=&quot;%TOMCAT_HOME%\\webapps\\ROOT&quot;"/>
+    <replace file="${build.dir}/tomcat/bin/tomcat.sh"
+             token="-Dtomcat.home=${TOMCAT_HOME}"
+             value="-Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${TOMCAT_HOME}/conf.mmbase -Dmmbase.htmlroot=${TOMCAT_HOME}/webapps/ROOT"/>
+    <chmod file="${build.dir}/tomcat/bin/tomcat.sh"
+           perm="ugo+rx"/>
+    <copy file="${mmbase.jar}" todir="${build.dir}/tomcat/lib"/>
+    <copy file="${xalan.jar}" todir="${build.dir}/tomcat/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/tomcat/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/tomcat/lib"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/tomcat/lib"/>
+    <copy file="${log4j.jar}" todir="${build.dir}/tomcat/lib"/>
+    <move file="${build.dir}/tomcat/webapps/ROOT.war"
+          tofile="${build.dir}/tomcat/webapps/ROOT-ORIGINAL.war"/>
+    <copy todir="${build.dir}/tomcat/webapps/ROOT">
+      <fileset dir="${source-html.dir}">
+        <exclude name="**/CVS/*"/>
+        <exclude name="LICENSE"/>
+        <exclude name="**/~*"/>
+      </fileset>
+    </copy>
+    <copy file="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml.tomcat"
+          tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"/>
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile"
+          fork="yes">
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${build.dir}/tomcat/webapps/ROOT/WEB-INF/mmbase-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile"
+          fork="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${build.dir}/tomcat/webapps/ROOT/mmdocs/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
   </target>
- 
-  <!-- =================================================================== -->
-  <!-- Clean target                                                        -->
-  <!-- =================================================================== -->
-  <target name="clean" depends="init">
-    <delete dir="${build.dir}"/>
-  </target>
+
 
   <!-- =================================================================== -->
-  <!-- Clean dist target                                                   -->
+  <!-- Clean the Tomcat installation                                      -->
   <!-- =================================================================== -->
-  <target name="clean-dist" depends="init">
-    <delete dir="${dist.root}"/>
+  <target name="clean.tomcat" description="Clean the Tomcat installation"
+          depends="clean.compile">
+    <delete dir="${build.dir}/tomcat"/>
   </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Install MMBase on top of Tomcat and Hypersonic                      -->
+  <!-- =================================================================== -->
+  <target name="tomcat.hsql"
+          description="Install MMBase on top of Tomcat and Hypersonic"
+          depends="tomcat,expand.hsql">
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/mmbaseroot.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
+    </replace>
+    <copy file="${hsql.jar}" todir="${build.dir}/tomcat/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Install MMBase on top of Tomcat and MySQL                           -->
+  <!-- =================================================================== -->
+  <target name="tomcat.mysql"
+          description="Install MMBase on top of Tomcat and MySQL"
+          depends="tomcat,get.mysql">
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;"
+             value="&lt;property name=&quot;database&quot;&gt;${database.name}&lt;/property&gt;"/>
+    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
+             value="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=${database.user}&amp;amp;password=${database.password}&lt;/property&gt;"/>
+    <copy file="${mysql.jar}" todir="${build.dir}/tomcat/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Install MMBase on top of Orion without database                     -->
+  <!-- =================================================================== -->
+  <target name="orion"
+          depends="init,jar,expand.orion,expand.xalan,expand.jai,expand.log4j">
+    <mkdir dir="${build.dir}/orion"/>
+    <mkdir dir="${build.dir}/orion/default-web-app"/>
+    <copy todir="${build.dir}/orion">
+      <fileset dir="${expand.dir}/${orion.version}">
+        <exclude name="default-web-app"/>
+      </fileset>
+    </copy>
+    <copy todir="${build.dir}/orion/conf.mmbase">
+      <fileset dir="${source-config.dir}/default">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
+             token="DOCTYPE configuration"
+             value="DOCTYPE log4j SYSTEM &quot;jar:file:lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd&quot;"/>
+    <copy file="${mmbase.jar}" todir="${build.dir}/orion/lib"/>
+    <copy file="${xalan.jar}" todir="${build.dir}/orion/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/orion/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/orion/lib"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/orion/lib"/>
+    <copy file="${log4j.jar}" todir="${build.dir}/orion/lib"/>
+    <copy todir="${build.dir}/orion/default-web-app">
+      <fileset dir="${source-html.dir}">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>
+    <copy file="${build.dir}/orion/default-web-app/WEB-INF/web.xml.orion"
+          tofile="${build.dir}/orion/default-web-app/WEB-INF/web.xml"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the Orion installation                                        -->
+  <!-- =================================================================== -->
+  <target name="clean.orion" description="Clean the Orion installation"
+          depends="clean.compile">
+    <delete dir="${build.dir}/orion"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Install MMBase on top of Orion and Hypersonic                      -->
+  <!-- =================================================================== -->
+  <target name="orion.hsql"
+          description="Install MMBase on top of Orion and Hypersonic"
+          depends="orion,expand.hsql">
+    <replace file="${build.dir}/orion/conf.mmbase/modules/mmbaseroot.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
+    </replace>
+    <copy file="${hsql.jar}" todir="${build.dir}/orion/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Install MMBase on top of Orion and MySQL                           -->
+  <!-- =================================================================== -->
+  <target name="orion.mysql"
+          description="Install MMBase on top of Orion and MySQL"
+          depends="orion,get.mysql">
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;"
+             value="&lt;property name=&quot;database&quot;&gt;${database.name}&lt;/property&gt;"/>
+    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
+             value="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=${database.user}&amp;amp;password=${database.password}&lt;/property&gt;"/>
+    <copy file="${mysql.jar}" todir="${build.dir}/orion/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Build the JUnit test environment                                    -->
+  <!-- =================================================================== -->
+  <target name="junit"
+          description="Build the JUnit test environment"
+          depends="init,jar,expand.junit,expand.tomcat,expand.hsql,
+                   expand.xalan,expand.jai,expand.log4j">
+    <mkdir dir="${build.dir}/junit"/>
+    <mkdir dir="${build.dir}/junit/config"/>
+    <mkdir dir="${build.dir}/junit/lib"/>
+    <copy todir="${build.dir}/junit/config">
+      <fileset dir="${source-config.dir}/default"/>
+    </copy>
+    <copy todir="${build.dir}/junit/config/builders">
+      <fileset dir="${source-config.dir}/default/applications/BridgeTest/builders">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <replace file="${build.dir}/junit/config/applications/BridgeTest.xml">
+      <replacetoken>auto-deploy=&quot;false&quot;</replacetoken>
+      <replacevalue>auto-deploy=&quot;true&quot;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/mmbaseroot.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
+    </replace>
+    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
+      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
+      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
+    </replace>
+    <copy file="${junit.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${mmbase.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${hsql.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${xalan.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/junit/lib"/>
+    <copy file="${log4j.jar}" todir="${build.dir}/junit/lib"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the JUnit test environment                                   -->
+  <!-- =================================================================== -->
+  <target name="clean.junit" description="Clean the JUnit test environment"
+          depends="clean.compile">
+    <delete dir="${build.dir}/junit"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Run the bridgetest classes.                                         -->
+  <!-- =================================================================== -->
+  <target name="junit.run" depends="junit">
+    <!-- java classname="org.mmbase.bridgetest.AllTests" -->
+    <java classname="junit.swingui.TestRunner" fork="true">
+      <classpath>
+        <fileset dir="${build.dir}/junit/lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+      <arg value="org.mmbase.bridgetest.AllTests"/>
+      <sysproperty key="mmbase.config" file="${build.dir}/junit/config"/>
+    </java>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Various targets for automated downloads and cvs checkouts           -->
+  <!-- =================================================================== -->
+  <property name="download.dir" value="${build.dir}/download"/>
+  <property name="expand.dir" value="${download.dir}/expanded"/>
+
+  <target name="init.get">
+    <!-- Tomcat -->
+    <property name="tomcat.version" value="jakarta-tomcat-3.2.1"/>
+    <property name="tomcat.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.1/bin/${tomcat.version}.tar.gz"/>
+    <property name="webserver.jar" value="${expand.dir}/${tomcat.version}/lib/webserver.jar"/>
+    <property name="servlet.jar" value="${expand.dir}/${tomcat.version}/lib/servlet.jar"/>
+    <available property="tomcat.present"
+               file="${download.dir}/${tomcat.version}.tar.gz"/>
+    <available property="tomcat.expanded"
+               file="${expand.dir}/${tomcat.version}"/>
+    <!-- Orion -->
+    <property name="orion.version" value="orion1.4.5"/>
+    <property name="orion.url" value="http://www.orionserver.com/mirrordownload.jsp?file=${orion.version}.zip"/>
+    <available property="orion.present"
+               file="${download.dir}/${orion.version}.zip"/>
+    <available property="orion.expanded"
+               file="${expand.dir}/${orion.version}"/>
+    <!-- MySQL -->
+    <property name="mysql.version" value="mm.mysql-2.0.4-bin"/>
+    <property name="mysql.url" value="http://mmmysql.sourceforge.net/dist/${mysql.version}.jar"/>
+    <property name="mysql.jar" value="${download.dir}/${mysql.version}.jar"/>
+    <available property="mysql.present"
+               file="${download.dir}/${mysql.version}.jar"/>
+    <!-- HypersonicSQL -->
+    <property name="hsql.version" value="hsql_142"/>
+    <property name="hsql.url" value="http://download.sourceforge.net/hsql/${hsql.version}.zip"/>
+    <property name="hsql.jar" value="${expand.dir}/${hsql.version}/hypersonicsql/demo/hsql.jar"/>
+    <available property="hsql.present"
+               file="${download.dir}/${hsql.version}.zip"/>
+    <available property="hsql.expanded"
+               file="${expand.dir}/${hsql.version}"/>
+    <!-- Xalan and Xerces -->
+    <property name="xalan.version" value="xalan-j_1_2_2"/>
+    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/old/${xalan.version}.tar.gz"/>
+    <property name="xalan.jar" value="${expand.dir}/${xalan.version}/xalan.jar"/>
+    <property name="xerces.jar" value="${expand.dir}/${xalan.version}/xerces.jar"/>
+    <available property="xalan.present"
+               file="${download.dir}/${xalan.version}.tar.gz"/>
+    <available property="xalan.expanded"
+               file="${expand.dir}/${xalan.version}"/>
+    <!-- JAI -->
+    <property name="jai.version" value="jai1_0_2-lib-solaris"/>
+    <property name="jai.url" value="http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html"/>
+    <property name="jai_codec.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_codec.jar"/>
+    <property name="jai_core.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_core.jar"/>
+    <available property="jai.present"
+               file="${download.dir}/${jai.version}.tar.gz"/>
+    <available property="jai.expanded"
+               file="${expand.dir}/${jai.version}"/>
+    <!-- Log4j -->
+    <property name="log4j.version" value="jakarta-log4j-1.0.4"/>
+    <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.version}.tgz"/>
+    <property name="log4j.jar" value="${expand.dir}/${log4j.version}/log4j.jar"/>
+    <available property="log4j.present"
+               file="${download.dir}/${log4j.version}.tgz"/>
+    <available property="log4j.expanded"
+               file="${expand.dir}/${log4j.version}"/>
+    <!-- JUnit -->
+    <property name="junit.version" value="junit3.5"/>
+    <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
+    <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
+    <available property="junit.present"
+               file="${download.dir}/${junit.version}.zip"/>
+    <available property="junit.expanded"
+               file="${expand.dir}/${junit.version}"/>
+    <!-- Init actions -->
+    <mkdir dir="${download.dir}"/>
+    <mkdir dir="${expand.dir}"/>
+  </target>
+
+  <target name="get.tomcat" depends="init.get" unless="tomcat.present">
+    <get src="${tomcat.url}"
+         dest="${download.dir}/${tomcat.version}.tar.gz"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.tomcat" depends="get.tomcat" unless="tomcat.expanded">
+    <gunzip src="${download.dir}/${tomcat.version}.tar.gz" dest="${expand.dir}"/>
+    <untar src="${expand.dir}/${tomcat.version}.tar" dest="${expand.dir}"/>
+    <delete file="${expand.dir}/${tomcat.version}.tar"/>
+  </target>
+
+  <target name="get.orion" depends="init.get" unless="orion.present">
+    <get src="${orion.url}"
+         dest="${download.dir}/${orion.version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.orion" depends="get.orion" unless="orion.expanded">
+    <mkdir dir="${expand.dir}/${orion.version}"/>
+    <unzip src="${download.dir}/${orion.version}.zip" dest="${expand.dir}/${orion.version}"/>
+    <move todir="${expand.dir}/${orion.version}">
+      <fileset dir="${expand.dir}/${orion.version}/orion"/>
+    </move>
+  </target>
+
+  <target name="get.hsql" depends="init.get" unless="hsql.present">
+    <get src="${hsql.url}"
+         dest="${download.dir}/${hsql.version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="get.mysql" depends="init.get" unless="mysql.present">
+    <get src="${mysql.url}"
+         dest="${download.dir}/${mysql.version}.jar"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.hsql" depends="get.hsql" unless="hsql.expanded">
+    <mkdir dir="${expand.dir}/${hsql.version}"/>
+    <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
+  </target>
+
+  <target name="get.xalan" depends="init.get" unless="xalan.present">
+    <get src="${xalan.url}"
+         dest="${download.dir}/${xalan.version}.tar.gz"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.xalan" depends="get.xalan" unless="xalan.expanded">
+    <gunzip src="${download.dir}/${xalan.version}.tar.gz" dest="${expand.dir}"/>
+    <untar src="${expand.dir}/${xalan.version}.tar" dest="${expand.dir}"/>
+    <delete file="${expand.dir}/${xalan.version}.tar"/>
+  </target>
+
+  <target name="get.jai" depends="init.get" unless="jai.present">
+    <echo message=""/>
+    <echo message="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
+    <echo message="We can't download JAI for you, you will have to do this manually."/>
+    <echo message="Go to:"/>
+    <echo message=""/>
+    <echo message="${jai.url}"/>
+    <echo message=""/>
+    <echo message="and download &quot;JAI Implementation GZIP Format&quot; into:"/>
+    <echo message=""/>
+    <echo message="${download.dir}"/>
+    <echo message=""/>
+    <echo message="After you've downloaded JAI you can start Ant again."/>
+    <echo message="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
+    <fail message="JAI needs to be downloaded manually."/>
+  </target>
+
+  <target name="expand.jai" depends="get.jai" unless="jai.expanded">
+    <mkdir dir="${expand.dir}/${jai.version}"/>
+    <gunzip src="${download.dir}/${jai.version}.tar.gz" dest="${expand.dir}/${jai.version}"/>
+    <untar src="${expand.dir}/${jai.version}/${jai.version}.tar" dest="${expand.dir}/${jai.version}"/>
+    <delete file="${expand.dir}/${jai.version}/${jai.version}.tar"/>
+  </target>
+
+  <target name="get.log4j" depends="init.get" unless="log4j.present">
+    <get src="${log4j.url}"
+         dest="${download.dir}/${log4j.version}.tgz"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.log4j" depends="get.log4j" unless="log4j.expanded">
+    <gunzip src="${download.dir}/${log4j.version}.tgz" dest="${expand.dir}/${log4j.version}.tar"/>
+    <untar src="${expand.dir}/${log4j.version}.tar" dest="${expand.dir}"/>
+    <delete file="${expand.dir}/${log4j.version}.tar"/>
+  </target>
+
+  <target name="get.junit" depends="init.get" unless="junit.present">
+    <get src="${junit.url}"
+         dest="${download.dir}/${junit.version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.junit" depends="get.junit" unless="junit.expanded">
+    <unzip src="${download.dir}/${junit.version}.zip" dest="${expand.dir}"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the download directory                                       -->
+  <!-- =================================================================== -->
+  <target name="clean.download" description="Clean the download directory">
+    <delete dir="${download.dir}"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Clean the expand directory                                         -->
+  <!-- =================================================================== -->
+  <target name="clean.expand" description="Clean the expand directory">
+    <delete dir="${expand.dir}"/>
+  </target>
+
 </project>
