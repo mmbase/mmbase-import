@@ -3,8 +3,8 @@
 	<article>
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
-		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.7 2003-05-24 13:50:29 michiel Exp $</edition>
+		<date>5 December 2002</date>
+		<edition>$Id: builders.xml,v 1.8 2003-06-30 13:16:07 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -25,7 +25,7 @@
 		<para>By installing applications or adding your own builder files you can expand the object types that can be used in MMBase.
 		</para>
 		<para>Active builders are stored in the <filename>builders</filename> directory of the MMbase configuration directory. New MMBase installations only contain the core builders.  In order to add an object type, you need to add a builder xml, with the name <filename>objecttype.xml</filename> somewhere in the builders directory.</para>
-		<para>You can make use of subdirectories to divide your buidlers in groups for easier maintenance. Note that the MMBase core builders are located under <filename>core</filename>, and that the applications by default install new builders under <filename>applications</filename>.</para>
+		<para>You can make use of subdirectories to divide your builders in groups for easier maintenance. Note that the MMBase core builders are located under <filename>core</filename>, and that the applications by default install new builders under <filename>applications</filename>.</para>
 	</section>
 	<section>
 		<title>Builder XML Format</title>
@@ -80,7 +80,7 @@
 		]]></programlisting>
 		<para>Most builders include less information than given here - since they can extend from each other, you only need to supply information that overrides the default, or when you add information such as fields.
 		</para>
-		<para>The following sections explains the use and intention of each tag ind etail.
+		<para>The following sections explains the use and intention of each tag in detail.
 		</para>
 		<section>
 			<title>&lt;builder&gt;</title>
@@ -93,7 +93,7 @@
 				</varlistentry>
 				<varlistentry>
 					<term>maintainer</term>
-					<listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organsiation maintaining the builder. This is generally a domain name. For the core builders this value is <emphasis>mmbase.org</emphasis></para></listitem>
+					<listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organisation maintaining the builder. This is generally a domain name. For the core builders this value is <emphasis>mmbase.org</emphasis></para></listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>version</term>
@@ -125,10 +125,10 @@
 			<section>
 				<anchor id="classfile" />
 				<title>&lt;classfile&gt;</title>
-				<para>The java class used by this buidler to administarte nodes of that builder type.</para>
-				<para>Specify this tag if you have custom behavuior defined for an object type.</para>
+				<para>The java class used by this builder to administrate nodes of that builder type.</para>
+				<para>Specify this tag if you have custom behavior defined for an object type.</para>
 				<para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <classname>org.mmbase.module.builders.Dummy</classname>.</para>
-				<para>The default value for a builder that extends the core relation buidler <emphasis>insrel</emphasis> is <classname>org.mmbase.module.corebuilders.InsRel</classname>.</para>
+				<para>The default value for a builder that extends the core relation builder <emphasis>insrel</emphasis> is <classname>org.mmbase.module.corebuilders.InsRel</classname>.</para>
 				<example>
 				 <programlisting ><![CDATA[
 <classfile>com.mycompany.mmbase.builders.MyPeople</classfile>
@@ -208,7 +208,7 @@
 						<programlisting ><![CDATA[
 <descriptions>
 	<description xml:lang="en">Name and address information regarding contacts of our company.</description>
-	<description xml:lang="nl">Naam and adres gegevns van contactpersonen van ons bedrijf.</description>
+	<description xml:lang="nl">Naam and adres gegevens van contactpersonen van ons bedrijf.</description>
 </descriptions>
 						]]></programlisting>
 					</example>
@@ -217,7 +217,7 @@
 			<section>
 				<anchor id="properties" />
 				<title>&lt;properties&gt;</title>
-				<para>A list of nam-value pairs, used by the java class specified in the <emphasis>classfile</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
+				<para>A list of name-value pairs, used by the java class specified in the <emphasis>classfile</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
 				<section>
 					<anchor id="property" />
 					<title>&lt;property&gt;</title>
@@ -277,8 +277,8 @@
 					<section>
 						<anchor id="field_gui" />
 						<title>&lt;gui&gt;</title>
-						<para>This section containsgui (graphical user interface) information for the field. The information is generally used in generic editors, as well as the default value for use in the editwizards.</para>
-						<para>This tag inlcudes gui names for different languages to represent a label for the field. The system picks the correct name depending on its currently specified locale.</para>
+						<para>This section contains gui (graphical user interface) information for the field. The information is generally used in generic editors, as well as the default value for use in the editwizards.</para>
+						<para>This tag includes gui names for different languages to represent a label for the field. The system picks the correct name depending on its currently specified locale.</para>
 						<para>It can also contain one guitype, which explains how the field should be rendered or edited.</para>
 						<section>
 							<anchor id="field_guiname" />
@@ -311,7 +311,7 @@
 								</varlistentry>
 								<varlistentry>
 									<term>eventtime</term>
-									<listitem><simpara>A date or time value. This value is represented internally by an integer number, representing the number of seconds since 1 january 1970.</simpara></listitem>
+									<listitem><simpara>A date or time value. This value is represented internally by an integer number, representing the number of seconds since 1 January 1970.</simpara></listitem>
 								</varlistentry>
 								<varlistentry>
 									<term>newimage</term>
@@ -319,7 +319,7 @@
 								</varlistentry>
 								<varlistentry>
 									<term>newfile</term>
-									<listitem><simpara>A binary object, genmerally obtained from a file (i.e.e a Word document or PDF).</simpara></listitem>
+									<listitem><simpara>A binary object, generally obtained from a file (i.e.e a Word document or PDF).</simpara></listitem>
 								</varlistentry>
 								<varlistentry>
 									<term>[buildername]</term>
@@ -327,7 +327,7 @@
 								</varlistentry>
 								<varlistentry>
 									<term>mmxf or [doctype]</term>
-									<listitem><simpara>Specify this value if the field is a XML field (see the <emphasis>db/type</emphasis> tag). If given, the system may use this data to determine the XML dcoument type. The value mmxf can be used a macro and specifies a default 'richttext' xml doctype.</simpara></listitem>
+									<listitem><simpara>Specify this value if the field is a XML field (see the <emphasis>db/type</emphasis> tag). If given, the system may use this data to determine the XML document type. The value mmxf can be used a macro and specifies a default 'richttext' xml doctype.</simpara></listitem>
 								</varlistentry>
 							</variablelist>
 						</section>

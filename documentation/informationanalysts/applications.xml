@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>MMBase Applications</title>
-    <date>27 february 2003</date>
-    <edition>$Id: applications.xml,v 1.6 2003-04-03 11:45:11 pierre Exp $</edition>
+    <date>27 February 2003</date>
+    <edition>$Id: applications.xml,v 1.7 2003-06-30 13:16:07 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -84,7 +84,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<application name="MyNews" maintainer="mmbase.org"  version="1" auto-deploy="false"> ... </application>]]></sgmltag></para>
-          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The prefered way of writing names of applications is to use capitalized words. The maintainer is the domain name of the organisation or person who takes the responsiblity for updating this application. The version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automaticaly be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administartor pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
+          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The preferred way of writing names of applications is to use capitalized words. The maintainer is the domain name of the organisation or person who takes the responsibility for updating this application. The version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automatically be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administrator pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<neededbuilderlist><builder maintainer="mmbase.org" version="1">mags</builder> .... </neededbuilderlist>]]></sgmltag></para>
@@ -96,7 +96,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<allowedrelationlist><relation from="mags"  to="news"  type="posrel" /> ... </allowedrelationlist>]]></sgmltag></para>
-          <para>The <sgmltag>allowedrelationlist</sgmltag> list what type of relation (role) should be used to relate two object of specfied type. When you use the MMBase editors to have a look at the RelationType objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;relation... /&#62;</sgmltag> descriptions follow these objects.</para>
+          <para>The <sgmltag>allowedrelationlist</sgmltag> list what type of relation (role) should be used to relate two object of specified type. When you use the MMBase editors to have a look at the RelationType objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;relation... /&#62;</sgmltag> descriptions follow these objects.</para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<datasourcelist><datasource builder="mags" path="MyNews/mags.xml" /> ... </datasourcelist>]]></sgmltag></para>
@@ -108,7 +108,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<contextsourcelist><contextsource path="MyNews/backup.xml" type="depth" goal="backup"/></contextsourcelist>]]></sgmltag></para>
-          <para>The <sgmltag class="attribute">contextsource</sgmltag> tag specifies where MMBase has to find the backup (export) scenario for this application. The <sgmltag class="attribute">path</sgmltag> specifies where to find the file. the <sgmltag class="attribute">type</sgmltag> attribute specifies the export algorithm to use (currently, only 'depth' is posisble). The <sgmltag class="attribute">goal</sgmltag> is a freeform field used to identify the contextsource to the user.
+          <para>The <sgmltag class="attribute">contextsource</sgmltag> tag specifies where MMBase has to find the backup (export) scenario for this application. The <sgmltag class="attribute">path</sgmltag> specifies where to find the file. the <sgmltag class="attribute">type</sgmltag> attribute specifies the export algorithm to use (currently, only 'depth' is possible). The <sgmltag class="attribute">goal</sgmltag> is a freeform field used to identify the contextsource to the user.
           </para>
         </listitem>
         <listitem>
@@ -117,25 +117,25 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<install-notice><![CDATA[The MyNews application is installed ...] ]></install-notice>]]></sgmltag></para>
-          <para>The <sgmltag class="attribute">install-notice</sgmltag> is shown in the MMBase install pages and the MMBase admin interface after succesfull installation of the application. It is not possible to add messages to the application configuration file, which are shown in case the application fails to install.</para>
+          <para>The <sgmltag class="attribute">install-notice</sgmltag> is shown in the MMBase install pages and the MMBase admin interface after successful installation of the application. It is not possible to add messages to the application configuration file, which are shown in case the application fails to install.</para>
         </listitem>
       </itemizedlist>
     </section>
     <section>
       <title>Builders Used by the Application</title>
-      <para>The builders specified in the <sgmltag>neededbuilderlist</sgmltag> can be found in the application folder under <filename>[applicationname]/builders</filename>. I.e., for the MyNews application, teh builders can be found in the directory  <filename>MyNews/builders/</filename>.</para>
+      <para>The builders specified in the <sgmltag>neededbuilderlist</sgmltag> can be found in the application folder under <filename>[applicationname]/builders</filename>. I.e., for the MyNews application, the builders can be found in the directory  <filename>MyNews/builders/</filename>.</para>
     </section>
     <section>
       <title>The Backup Scenario: backup.xml</title>
       <para>The <sgmltag>contextsource</sgmltag> specifies where the file with the backup scenario for this application is located - specified in its <sgmltag class="attribute">path</sgmltag> attribute. For MyNews we saw that this is "MyNews/backup.xml".</para>
-      <para>Most applications come with a 'backup.xml' file that describes the startpoint for exporting data (as described below). It is not necessary to specify a file - i.e. if an application is only ment to be installed and not exported. You can also use other filenames (though 'backup.xml' is the convention) or specify multiple contextsources. In the latter case, the administration pages require the user to choose the contextsource with which to make the export, using the freeform <sgmltag class="attribute">goal</sgmltag> attribute to give user-feedback on the intention of the contextsource.</para>
+      <para>Most applications come with a 'backup.xml' file that describes the startpoint for exporting data (as described below). It is not necessary to specify a file - i.e. if an application is only meant to be installed and not exported. You can also use other filenames (though 'backup.xml' is the convention) or specify multiple contextsources. In the latter case, the administration pages require the user to choose the contextsource with which to make the export, using the freeform <sgmltag class="attribute">goal</sgmltag> attribute to give user-feedback on the intention of the contextsource.</para>
       <note>
         <para>While we speak about "backup" here, the system can also be used to simply export certain parts of your cloud, for instance for sharing with others, or porting data from a test environment to a production environment.</para>
       </note>
-      <para>The way MMBase makes a backup of the content in an application in the form of XML-files needs special attention. To  be able to determine which objects are necessary for an application and have to be incorporated in the backup and which objects are not, MMBase uses a backup algorithm. The backup algorithm to use is specified in teh <sgmltag class="attribute">type</sgmltag> attribute. Currently, the only algorithm available for export is 'depth' (Future implementations may involve more algorithms).</para>
-      <para>The 'depth' backup algorithm starts at the startnode specified in the context source (i.e. "backup.xml") file. The startnode is written to the appropriate XML backup file and MMBase searches for nodes related to this startnode, which are not already included in the backup. These new nodes are now taken as the startnodes and the whole proces repeats as long as their are nodes found that have not already been included in the backup or until the maximum depth as specified in backup.xml is reached.</para>
+      <para>The way MMBase makes a backup of the content in an application in the form of XML-files needs special attention. To  be able to determine which objects are necessary for an application and have to be incorporated in the backup and which objects are not, MMBase uses a backup algorithm. The backup algorithm to use is specified in the <sgmltag class="attribute">type</sgmltag> attribute. Currently, the only algorithm available for export is 'depth' (Future implementations may involve more algorithms).</para>
+      <para>The 'depth' backup algorithm starts at the startnode specified in the context source (i.e. "backup.xml") file. The startnode is written to the appropriate XML backup file and MMBase searches for nodes related to this startnode, which are not already included in the backup. These new nodes are now taken as the startnodes and the whole process repeats as long as their are nodes found that have not already been included in the backup or until the maximum depth as specified in backup.xml is reached.</para>
       <note>
-        <para>The backup scenario that MMBase uses is a very elegant way to clean up the content in your application from objects that are not used anymore or that have been the result from mistakes in the development proces. However a drawback of this scenario is that objects that can not be reached from the startnodes specified in the context source file will not be incorporated in the backup.</para>
+        <para>The backup scenario that MMBase uses is a very elegant way to clean up the content in your application from objects that are not used anymore or that have been the result from mistakes in the development process. However a drawback of this scenario is that objects that can not be reached from the startnodes specified in the context source file will not be incorporated in the backup.</para>
       </note>
       <para>If you have a look at this file you see that it consists of the following tags:</para>
       <itemizedlist>
@@ -150,7 +150,7 @@
             <listitem>
               <para><sgmltag><![CDATA[<builder>mags</builder><where>title=='MyNews magazine'</where>]]></sgmltag></para>
               <para>The backup algorithm starts at the mags object with the title "MyNews magazine".
-              If there are multiple objects that fit the algorithm, teh first one found is chosen. It is not possible to determine which object that will be.
+              If there are multiple objects that fit the algorithm, the first one found is chosen. It is not possible to determine which object that will be.
               </para>
             </listitem>
             <listitem>
@@ -161,7 +161,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<depth>5</depth>]]></sgmltag></para>
-          <para>Specifies the depth of the serach (the maximum number of nested searches) used in the backup algorithm (in the example this is 5 levels deep).</para>
+          <para>Specifies the depth of the search (the maximum number of nested searches) used in the backup algorithm (in the example this is 5 levels deep).</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -237,7 +237,7 @@
           <simpara>find the  "Save [application]" action in the middle of the page</simpara>
         </listitem>
         <listitem>
-          <simpara>specifiy the location where you want the backup to be stored</simpara>
+          <simpara>specify the location where you want the backup to be stored</simpara>
         </listitem>
         <listitem>
           <simpara>select the goal of the backup in the combobox. This goals selects the contextsource to use for the backup - most of the time you will have only one choice, which will be preselected.</simpara>
@@ -263,7 +263,7 @@
           <simpara>put the XML content files in the <filename>/WEB-INF/config/applications/[applicationname]</filename> directory</simpara>
         </listitem>
         <listitem>
-          <simpara>place the builders of the application in <filename>/WEB-INF/config/builders/</filename> or one of its subdirectories. You can also place the buidlers in the <filename>/WEB-INF/config/applications/[applicationname]/builders</filename> directory, and let the application install your builders. Note that this requires that MMBase has the right to write in the configuration directory</simpara>
+          <simpara>place the builders of the application in <filename>/WEB-INF/config/builders/</filename> or one of its subdirectories. You can also place the builders in the <filename>/WEB-INF/config/applications/[applicationname]/builders</filename> directory, and let the application install your builders. Note that this requires that MMBase has the right to write in the configuration directory</simpara>
         </listitem>
         <listitem>
           <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
