@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.39 2004-01-14 11:03:03 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.40 2004-01-14 12:34:58 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -608,6 +608,7 @@ public class DatabaseStorageManager implements StorageManager {
                 break;
                 // Store nodes
             case FieldDefs.TYPE_NODE :
+                // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
                 setNodeValue(statement, index, node.getIntValue(fieldName), field);
                 break;
                 // Store strings
@@ -824,6 +825,9 @@ public class DatabaseStorageManager implements StorageManager {
     public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
+            // create a new node (must be done before acquiring the connection, because this code might need a connection)
+            MMObjectNode node = builder.getNewNode("system");
+
             getActiveConnection();
             // get a builders fields
             List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
@@ -843,7 +847,8 @@ public class DatabaseStorageManager implements StorageManager {
             }
             String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
-            return getNode(s.executeQuery(query), builder);
+            fillNode(node, s.executeQuery(query), builder);
+            return node;
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
@@ -852,19 +857,19 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Attempts to return a single Node from the resultset of a query.
+     * Fills a single Node from the resultset of a query.
      * You can use this method to iterate through a query, creating multiple nodes, provided the resultset still contains
      * members (that is, <code>result.isAfterLast</code> returns <code>false</code>)
+     * @param node The MMObjectNode to be filled
      * @param res the resultset
      * @param builder the builder to use for creating the node
-     * @return the node
+     * @return void
      * @throws StorageException if the resultset is exhausted or a database error occurred
      */
-    protected MMObjectNode getNode(ResultSet result, MMObjectBuilder builder) throws StorageException {
+    protected void fillNode(MMObjectNode node, ResultSet result, MMObjectBuilder builder) throws StorageException {
         try {
             if ((result != null) && result.next()) {
-                // create a new node
-                MMObjectNode node = builder.getNewNode("system");
+
                 // iterate through all a builder's fields, and retrieve the value for that field
                 // Note that if we would do it the other way around (iterate through the recordset's fields)
                 // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
@@ -885,7 +890,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
                 // clear the changed signal on the node
                 node.clearChanged();
-                return node;
+                return;
             } else {
                 throw new StorageException("Node not found");
             }
