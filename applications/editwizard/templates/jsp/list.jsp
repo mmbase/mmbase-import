@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.8 2002-05-17 07:43:50 pierre Exp $
+     * @version  $Id: list.jsp,v 1.9 2002-05-17 11:10:54 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -242,7 +242,8 @@ if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
 //if (settings_ewconfig.get("type") != null) params.put("type", settings_ewconfig.get("type"));
 //XXX: new param1
 if (title != null) params.put("wizardtitle", title);
-
+if (listConfig.title != null) params.put("title", listConfig.title);
+params.put("username", cloud.getUser().getIdentifier());
 params.put("ew_context", request.getContextPath());
 params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(request.getContextPath()));
 
