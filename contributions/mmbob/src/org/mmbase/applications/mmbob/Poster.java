@@ -421,7 +421,7 @@ public class Poster {
     public boolean disable() {
         this.state = STATE_DISABLED;
         node.setIntValue("state",this.state);
-        ForumManager.syncNode(node, ForumManager.SLOWSYNC);
+        ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
     }
 
@@ -433,7 +433,7 @@ public class Poster {
     public boolean enable() {
         this.state = STATE_ACTIVE;
         node.setIntValue("state",this.state);
-        ForumManager.syncNode(node, ForumManager.SLOWSYNC);
+        ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
     }
 
