@@ -25,13 +25,15 @@ public class MMRemoteProbe implements Runnable {
 	private boolean 	debug 	  = false;
 	private void		debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
+	private final static int SLEEPTIME = 60 * 1000;
+
 	Thread kicker = null;
 	MMProtocolDriver con=null;
 	String servicenr;
 	Vector runningServices;
 
 	public MMRemoteProbe(Vector runningServices,MMProtocolDriver con,String servicenr) {
-		if( debug ) debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+")"); 
+		if (debug) debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+") Initializing"); 
 
 		this.con=con;
 		this.servicenr=servicenr;
@@ -83,9 +85,9 @@ public class MMRemoteProbe implements Runnable {
 	 */
 	public void doWork() {
 		try {
-			if (debug) debug("doWork()");
+			if (debug) debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep again.");
 			con.commitNode(servicenr,"mmservers",toXML());
-			Thread.sleep(60*1000);
+			Thread.sleep(SLEEPTIME);
 		} catch(Exception e) {
 			debug("doWork(): ERROR: while commitNode("+servicenr+",mmservers,toXML()) : ");
 			e.printStackTrace();
