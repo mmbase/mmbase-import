@@ -14,7 +14,7 @@
 		<!-- <attribute name="default-storage-identifier-prefix">m</attribute> -->
 
 		<!-- Supports inheritance -->
-		<option name="database-supports-inheritance" />
+		<option name="database-supports-inheritance" value="true" />
 
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />

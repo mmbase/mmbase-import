@@ -16,7 +16,7 @@
 		<option name="database-supports-composite-index" value="true" />
 
 		<!-- Supports inheritance -->
-		<option name="database-supports-inheritance" />
+		<option name="database-supports-inheritance" value="true" />
 
 		<!-- Unique index declaration -->
 		<scheme name="create-unique-key-scheme">UNIQUE ({2})</scheme>
