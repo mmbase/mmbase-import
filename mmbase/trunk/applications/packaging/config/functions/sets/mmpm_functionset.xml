@@ -253,6 +253,36 @@
 			</return>
 		</function>
 
+
+		<function name="getBundleScreenshots">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
+			<method>getBundleScreenshots</method>
+			<param name="id" type="String" description="" />
+			<param name="version" type="String" description="" />
+			<param name="provider" type="String" description="" />
+			<return type="Node">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getBundleStarturls">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.gui.Controller</class>
+			<method>getBundleStarturls</method>
+			<param name="id" type="String" description="" />
+			<param name="version" type="String" description="" />
+			<param name="provider" type="String" description="" />
+			<return type="Node">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
 		<function name="getBundleInfo">
 			<description>
 			</description>
