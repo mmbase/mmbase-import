@@ -118,6 +118,25 @@ public class XMLApplicationReader  {
     }
 
 
+    /**
+    * get the version of this application
+    */
+    public String getApplicationMaintainer() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n2=nm.getNamedItem("maintainer");
+			if (n2!=null) {
+				String tmp=n2.getNodeValue();
+				return(tmp);
+			}
+		}
+	}
+	return(null);
+    }
+
+
 
 
     /**
