@@ -14,9 +14,9 @@ package org.mmbase.security;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Rank.java,v 1.5 2002-06-07 12:56:55 pierre Exp $
+ * @version $Id: Rank.java,v 1.6 2003-01-31 15:02:13 pierre Exp $
  */
-public final class Rank {
+public class Rank {
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
 
@@ -36,11 +36,11 @@ public final class Rank {
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
 
     /**
-     *	Private constructor, to prevent creation of new Ranks
+     *	constructor
      */
-    private Rank(int rank, String description) {
+    public Rank(int rank, String description) {
         this.rank = rank;
-    this.description = description;
+        this.description = description;
     }
 
     /**
@@ -69,6 +69,6 @@ public final class Rank {
         if(ANONYMOUS.toString().equals(rankDesc)) return ANONYMOUS;
         if(BASICUSER.toString().equals(rankDesc)) return BASICUSER;
         if(ADMIN.toString().equals(rankDesc)) return ADMIN;
-    return null;
+        return null;
     }
 }
