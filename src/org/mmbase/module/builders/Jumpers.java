@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.28 2004-10-08 12:17:05 pierre Exp $
+ * @version $Id: Jumpers.java,v 1.29 2004-12-06 15:25:19 pierre Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -273,7 +273,7 @@ public class Jumpers extends MMObjectBuilder {
              if (arguments == null || arguments.size() == 0) {
                  rtn = getGUIIndicator(node);
              } else {
-                 rtn =  getGUIIndicator(node, Parameters.get(GUI_PARAMETERS, arguments));
+                 rtn =  getGUIIndicator(node, Functions.buildParameters(GUI_PARAMETERS, arguments));
              }
              if (rtn != null) return rtn;
          }

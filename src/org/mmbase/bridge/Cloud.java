@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Locale;
+import java.util.Set;
+import org.mmbase.util.functions.Function;
 
 /**
  * A Cloud is a collection of Nodes (and relations that are also nodes).
@@ -18,7 +20,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.48 2004-11-01 16:00:00 michiel Exp $
+ * @version $Id: Cloud.java,v 1.49 2004-12-06 15:25:19 pierre Exp $
  */
 public interface Cloud {
 
@@ -509,7 +511,7 @@ public interface Cloud {
      * Executes a query and returns the result as a Cluster Node List (also if the query is a {@link NodeQuery}).
      * @param query Query to execute
      * @return Cluster Node List
-     * 
+     *
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
      */
@@ -532,8 +534,8 @@ public interface Cloud {
 
 
     /**
-     * Create an empty NodeQuery, which can be filled, and used in {@link NodeManager#getList(NodeQuery)} or 
-     * {@link #getList(Query)} (but then no 'real' node are returned). The query can be used on NodeManager only when at 
+     * Create an empty NodeQuery, which can be filled, and used in {@link NodeManager#getList(NodeQuery)} or
+     * {@link #getList(Query)} (but then no 'real' node are returned). The query can be used on NodeManager only when at
      * least one step is added, and {@link NodeQuery#setNodeStep} is called.
      * @return empty NodeQuery
      * @since MMBase-1.7
@@ -575,7 +577,29 @@ public interface Cloud {
      */
     public void setProperty(Object key, Object value);
 
+    /**
+     * Returns all Function objects from a function set.
+     * Function sets group functions by name, and are configured in the functionset.xml configuration file.
+     * In each entry in the returned map, the key is the function name, and the value is a
+     * {@link org.mmbase.util.functions.Function} object.
+     *
+     * @since MMBase-1.8
+     * @param setName name of the function set
+     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
+     * @throws NotFoundException if the function set does not exist
+     */
+    public Set getFunctions(String setName);
 
-
+    /**
+     * Returns a Function object from a function set.
+     * Function sets group functions by name, and are configured in the functionset.xml configuration file.
+     * The object returned is a {@link org.mmbase.util.functions.Function} object.
+     *
+     * @since MMBase-1.8
+     * @param setName name of the function set
+     * @return a {@link org.mmbase.util.functions.Function} object.
+     * @throws NotFoundException if the function set or the function do not exist
+     */
+    public Function getFunction(String setName, String functionName);
 
 }

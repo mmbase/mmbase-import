@@ -35,7 +35,7 @@ public class FunctionSet {
 
     private String name, status, version, description;
 
-    /** 
+    /**
      * String -> Function
      */
     private Map functions = new HashMap();
@@ -50,24 +50,24 @@ public class FunctionSet {
         this.version     = version;
         this.status      = status;
         this.description = description;
-    }  
-    
-    /** 
+    }
+
+    /**
      * Adds a Function to this set.
      * @param fun The to-be-added Function object
      */
-    void addFunction(Function fun) {
-        functions.put(fun.getName(), fun);    
+    public void addFunction(Function fun) {
+        functions.put(fun.getName(), fun);
     }
 
-    /** 
+    /**
      * Gets a Function from this set. Used by {@link FunctionSets} which manages all set-functions.
      */
-    Function getFunction(String name) {
+    public Function getFunction(String name) {
         Object o = functions.get(name);
         if (o != null) {
             return (Function)o;
-        }    
+        }
         return null;
     }
 
@@ -100,7 +100,7 @@ public class FunctionSet {
         this.description = description;
     }
 
-    /** 
+    /**
      * @javadoc
      */
     public boolean save() {

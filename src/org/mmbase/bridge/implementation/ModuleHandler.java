@@ -19,6 +19,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.ProcessorInterface;
 import org.mmbase.util.PageInfo;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.24 2004-10-25 08:08:35 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.25 2004-12-06 15:25:19 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -40,9 +41,9 @@ public class ModuleHandler implements Module, Comparable {
     private CloudContext cloudContext = null;
     private org.mmbase.module.Module mmbase_module;
 
-    private ModuleHandler(org.mmbase.module.Module mod, CloudContext cloudcontext) {
+    private ModuleHandler(org.mmbase.module.Module mod, CloudContext cloudContext) {
         mmbase_module=mod;
-        cloudContext=cloudcontext;
+        this.cloudContext=cloudContext;
     }
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
@@ -210,5 +211,32 @@ public class ModuleHandler implements Module, Comparable {
                getName().equals(((Module)o).getName()) &&
                cloudContext.equals(((Module)o).getCloudContext());
     };
+
+    public Set getFunctions() {
+        Set functions = mmbase_module.getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(fun));
+        }
+        return functionSet;
+    }
+
+    public Function getFunction(String functionName) {
+        Function function = mmbase_module.getFunction(functionName);
+        if (function == null) {
+            throw new NotFoundException("Function with name " + functionName + " does not exist.");
+        }
+        return new BasicFunction(function);
+    }
+
+    public Parameters createParameters(String functionName) {
+        return getFunction(functionName).createParameters();
+    }
+
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
+    }
 
 }

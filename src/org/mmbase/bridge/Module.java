@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Map;
+import java.util.*;
+import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
 import javax.servlet.*;
 
 /**
@@ -19,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.14 2004-10-09 09:40:09 nico Exp $
+ * @version $Id: Module.java,v 1.15 2004-12-06 15:25:19 pierre Exp $
  */
 public interface Module {
 
@@ -124,5 +126,50 @@ public interface Module {
      */
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
+    /**
+     * Returns all the Function objects of this Module.
+     *
+     * @since MMBase-1.8
+     * @return a Set of {@link org.mmbase.util.functions.Function} objects.
+     */
+    public Set getFunctions();
+
+    /**
+     * Returns a Fuction object.
+     * The object returned is a {@link org.mmbase.util.functions.Function} object.
+     * You need to explixitly cast the result to this object, since not all bridge
+     * implementations (i.e. the RMMCI) support this class.
+     *
+     * @since MMBase-1.8
+     * @param functionName name of the function
+     * @return a {@link org.mmbase.util.functions.Function} object.
+     * @throws NotFoundException if the function does not exist
+     */
+    public Function getFunction(String functionName);
+
+    /**
+     * Creates a parameter list for a function.
+     * The list can be filled with parameter values by either using the List set(int, Object) method, to
+     * set values for parameters by psoition, or by using the set(String, Object) method to
+     * set parameters by name.<br />
+     * This object can then be passed to the getFunctionValue method.
+     * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.
+     * @since MMBase-1.8
+     * @param functionName name of the function
+     * @return a {@link org.mmbase.util.functions.Parameters} object.
+     * @throws NotFoundException if the function does not exist
+     */
+    public Parameters createParameters(String functionName);
+
+    /**
+     * Executes a function on this module with the given parameters, and returns the result.
+     *
+     * @since MMBase-1.8
+     * @param functionName name of the function
+     * @param parameters list with parameters for the fucntion
+     * @return the result value of executing the function
+     * @throws NotFoundException if the function does not exist
+     */
+    public FieldValue getFunctionValue(String functionName, List parameters);
 
 }

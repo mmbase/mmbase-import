@@ -23,9 +23,10 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.Operation;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
+import org.mmbase.util.functions.Function;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
-
 
 /**
  * This class represents a node's type information object - what used to be the 'builder'.
@@ -38,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.83 2004-10-29 11:58:18 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.84 2004-12-06 15:25:19 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -474,6 +475,30 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public void delete(boolean deleteRelations) {
         super.delete(deleteRelations);
         builder=null;  // invalidate (builder does not exist any more)
+    }
+
+    public Set getFunctions() {
+        Set functions = builder.getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(this,fun));
+        }
+        return functionSet;
+    }
+
+    public Function getFunction(String functionName) {
+        // first try to get the 'node' function.
+        Function function = getNode().getFunction(functionName);
+        // then try to get the 'builder' function.
+        if (function == null) {
+            function = builder.getFunction(functionName);
+        }
+        if (function == null) {
+            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+        }
+        return new BasicFunction(this, function);
     }
 
 }

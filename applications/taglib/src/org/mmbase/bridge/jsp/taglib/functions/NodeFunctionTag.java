@@ -16,6 +16,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.6 2004-11-04 11:03:19 jaco Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.7 2004-12-06 15:25:19 pierre Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -35,21 +36,21 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         nodeHelper.setJspvar(jv);
     }
 
-    
+
     public Node getNodeVar() {
         return nodeHelper.getNodeVar();
     }
-    
 
-    protected void setNodeVar(Node node) {        
+
+    protected void setNodeVar(Node node) {
         nodeHelper.setNodeVar(node);
     }
-    
 
-    protected void fillVars() throws JspTagException {    
+
+    protected void fillVars() throws JspTagException {
         nodeHelper.fillVars();
     }
-               
+
     public void setModified() {
         nodeHelper.setModified();
     }
@@ -62,23 +63,14 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         return nodeHelper.getGeneratingQuery();
     }
 
-    
+
     public int doEndTag() throws JspTagException {
         return nodeHelper.doEndTag();
     }
 
     public int doStartTag() throws JspTagException {
-        Object value =  getFunctionValue();
-        Node node;
-        if (value instanceof Node) {
-            node = (Node) value;
-        } else {
-            // depend on 'convert' of BasicNodeList, ugly ugly
-            NodeList list = getCloudVar().getCloudContext().createNodeList();
-            list.add(value);
-            node = list.getNode(0);
-            
-        }
+        Object value = getFunctionValue();
+        Node node = Casting.toNode(value, getCloudVar());
         setNodeVar(node);
         fillVars();
         return  EVAL_BODY_BUFFERED;
@@ -97,7 +89,5 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         }
         return nodeHelper.doAfterBody();
     }
-
-
 
 }

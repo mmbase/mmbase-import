@@ -1,4 +1,4 @@
-/* 
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -25,31 +25,33 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
 
 /**
- * The implementation of 'set' functions. Such function do belong to a certain namespace of
- * functions ('sets'), and therefore are identified by 2 Strings: The name of the 'set' and the name
- * of the function.
- * 
- * It maintains a bunch of {@link FunctionSet}'s which it fills with {@link SetFunction}
- * objects. It also implements {@link SetFunction#getFunction(String, String)} (which is called by the {@link FunctionFactory}.
- * 
+ * A utility class for maintaining and querying functionsets.
+ * A set function belongs to a certain namespace of functions ('sets'), and therefore is identified by
+ * two strings: The name of the 'set' and the name of the function.
+ * <br />
+ * Function sets can be defined in the functions/functionsets.xml configuration file.
+ * <br />
+ * This class implements a number of static methods for maintaining {@link FunctionSet} objects,
+ * and filling these with {@link SetFunction} objects that match the namespace.
+ * It also implements a {@link #getFunction} method for obtaining a function from such a set.
+ *
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
- * @since  MMBase-1.8 
- * @version $Id: FunctionSets.java,v 1.5 2004-11-26 14:15:41 michiel Exp $ 
+ * @since  MMBase-1.8
+ * @version $Id: FunctionSets.java,v 1.6 2004-12-06 15:25:19 pierre Exp $ 
  */
 public class FunctionSets {
 
-    private static final Logger log = Logging.getLoggerInstance(FunctionSets.class); 
-
-    private static Map functionSets = new HashMap();
-    private static boolean init = false;
-   
- 
     public static final String DTD_FUNCTIONSET_1_0  = "functionset_1_0.dtd";
     public static final String DTD_FUNCTIONSETS_1_0 = "functionsets_1_0.dtd";
 
     public static final String PUBLIC_ID_FUNCTIONSET_1_0  = "-//MMBase//DTD functionset config 1.0//EN";
     public static final String PUBLIC_ID_FUNCTIONSETS_1_0 = "-//MMBase//DTD functionsets config 1.0//EN";
+
+    private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
+
+    private static Map functionSets = new HashMap();
+    private static boolean init = false;
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
@@ -57,7 +59,51 @@ public class FunctionSets {
     }
 
     /**
-     * Reads the current function-set in from functionsets xml.
+     * Returns the {@link #Function} with the given function name, and which exists in the set with the given set name.
+     * If this is the first call, or if the set does not exist in the cache, the cache
+     * is refreshed by reading the functionset.xml configuration file.
+     * @param setName the name of the function set
+     * @param functionName the name of the function
+     * @return the {@link #Function}, or <code>nulll</code> if either the fucntion or set is not defined
+     */
+    public static Function getFunction(String setName, String functionName) {
+        FunctionSet set = getFunctionSet(setName);
+        if (set != null) {
+            Function fun = set.getFunction(functionName);
+            if (fun != null) {
+                return fun;
+            } else {
+                log.warn("No function with name : " + functionName + " in set : " + setName + ", functions available: " + set);
+            }
+        } else {
+            log.warn("No functionset with name : " + setName);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the {@link #FunctionSet} with the given set name.
+     * If this is the first call, or if the set does not exist in the cache, the cache
+     * is refreshed by reading the functionset.xml configuration file.
+     * configuration file.
+     * @param setName the name of the function set
+     * @return the {@link #FunctionSet}, or <code>nulll</code> if the set is not defined
+     */
+    public static FunctionSet getFunctionSet(String setName) {
+        if (!init) {
+            readSets();
+        }
+        FunctionSet set = (FunctionSet)functionSets.get(setName);
+        if (set == null) { // retry hack for mmpm
+            readSets();
+            set = (FunctionSet)functionSets.get(setName);
+        }
+        return set;
+    }
+
+    /**
+     * Reads the current function set from the functionsets.xml configuration file.
+     * The read sets are added to the functionset cache.
      * @todo It makes FunctionSet's now using a sub-XML. It would be possible to create a complete function-set by reflection.
      */
     private static void readSets() {
@@ -78,18 +124,18 @@ public class FunctionSets {
         functionSets.clear();
         for(Enumeration ns = reader.getChildElements("functionsets", "functionset"); ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();
-            
+
             NamedNodeMap nm = n.getAttributes();
             if (nm != null) {
                 String name   = null;
                 String setfile = null;
-                
+
                 // decode name
                 org.w3c.dom.Node n3 = nm.getNamedItem("name");
                 if (n3 != null) {
                     name = n3.getNodeValue();
-                } 
-                
+                }
+
                 // decode filename
                 n3 = nm.getNamedItem("file");
                 if (n3 != null) {
@@ -98,152 +144,124 @@ public class FunctionSets {
                 }
             }
         }
-
     }
-    
 
     /**
-     * Reads a 'sub' xml which referred by functionsets.xml (a functionset XML)
+     * Reads a 'sub' xml (a functionset XML) referred to by functionsets.xml.
+     * The read set is added to the functionset cache.
+     * @param
+     * @param
      */
-    private static void decodeFunctionSet(String fileName, String setname) {
+    private static void decodeFunctionSet(String fileName, String setName) {
         XMLBasicReader reader = new XMLBasicReader(fileName, FunctionSets.class);
-        
+
         String status      = reader.getElementValue("functionset.status");
         String version     = reader.getElementValue("functionset.version");
-        String description = reader.getElementValue("functionset.description");
-        
-        FunctionSet functionset = new FunctionSet(setname, version, status, description);
-        functionSets.put(setname, functionset);
-	
-        functionset.setFileName(fileName);
-        
-        for (Enumeration n = reader.getChildElements("functionset","function");n.hasMoreElements();) {
-            Element element = (Element)n.nextElement();
-            String name = reader.getElementAttributeValue(element,"name");
-            if (name != null) {
-                
+        String setDescription = reader.getElementValue("functionset.description");
+
+        FunctionSet functionSet = new FunctionSet(setName, version, status, setDescription);
+        functionSets.put(setName, functionSet);
+
+        functionSet.setFileName(fileName);
+
+        for (Enumeration functionElements = reader.getChildElements("functionset","function"); functionElements.hasMoreElements();) {
+            Element element = (Element)functionElements.nextElement();
+            String functionName = reader.getElementAttributeValue(element,"name");
+            if (functionName != null) {
+
                 Element a = reader.getElementByPath(element, "function.type");
                 String type = reader.getElementValue(a);
-                
+
                 a = reader.getElementByPath(element, "function.description");
-                description = reader.getElementValue(a);
-                
+                String description = reader.getElementValue(a);
+
                 a = reader.getElementByPath(element, "function.class");
                 String classname = reader.getElementValue(a);
-                
+
                 a = reader.getElementByPath(element, "function.method");
                 String methodname = reader.getElementValue(a);
-                
-                // log.info("name="+name+" class="+classname+" method="+methodname);
-                
+
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
-                String returntype = reader.getElementAttributeValue(a, "type");
-                // if (returntype!=null && !returntype.equals("")) fun.setReturnType(returntype);
+
+                ReturnType returnType = ReturnType.UNKNOWN;
+                String returnTypeClassName = reader.getElementAttributeValue(a, "type");
+                if (returnTypeClassName != null) {
+                    try {
+                        Class returnTypeClass = getClassFromName(returnTypeClassName);
+                        returnType = new ReturnType(returnTypeClass, "");
+                    } catch (Exception e) {
+                        log.warn("Cannot determine return type : " + returnTypeClassName + ", using UNKNOWN");
+                    }
+                }
+
+                /* obtaining field definitions for a result Node... useful ??
+
                 for (Enumeration n2 = reader.getChildElements(a, "field"); n2.hasMoreElements();) {
                     Element return_element = (Element)n2.nextElement();
-                    String returnname = reader.getElementAttributeValue(return_element, "name");
-                    String returnvaluetype = reader.getElementAttributeValue(return_element, "type");
-                    description = reader.getElementAttributeValue(return_element, "description");
+                    String returnFieldName = reader.getElementAttributeValue(return_element, "name");
+                    String returnFieldValueType = reader.getElementAttributeValue(return_element, "type");
+                    String returnFieldDescription = reader.getElementAttributeValue(return_element, "description");
+                    // not implemented (yet) :
                     // FunctionReturnValue r=new FunctionReturnValue(returnname,returnvaluetype);
                     // fun.addReturnValue(returnname,r);
                     // r.setDescription(description);
                 }
-                
-                
-                // read the parameters
-                List tmpparams = new ArrayList();
-                Parameter par;
-                for (Enumeration n2 = reader.getChildElements(element,"param"); n2.hasMoreElements();) {
-                    Element param_element = (Element)n2.nextElement();
-                    String paramname = reader.getElementAttributeValue(param_element, "name");
-                    String paramtype = reader.getElementAttributeValue(param_element, "type");
-                    description = reader.getElementAttributeValue(param_element, "description");
-                    
-                    // log.info("param="+paramname+" "+paramtype);
-                    
-                    // FunctionParam p=new FunctionParam(paramname,paramtype);
-                    // fun.addParam(paramname,p);
-                    // p.setDescription(description);
-                    
-                    // check for a default value
-                    org.w3c.dom.Node n3 = param_element.getFirstChild();
-                    if (n3 != null) {
-                        String defaultvalue = n3.getNodeValue();
-                        if (paramtype.equals("String")) {
-                            par = new Parameter(paramname, String.class, defaultvalue);
-                            tmpparams.add(par);
-                        } else if (paramtype.equals("Integer")) {
-                            try {
-                                par = new Parameter(paramname,Integer.class, new Integer(Integer.parseInt(defaultvalue)));
-                            } catch(Exception e) {
-                                par = new Parameter(paramname,Integer.class, new Integer(-1));
-                            }
-                            tmpparams.add(par);
-                            
-                        } else if (paramtype.equals("int")) {
-                            try {
-                                par = new Parameter(paramname, int.class, new Integer(Integer.parseInt(defaultvalue)));
-                            } catch(Exception e) {
-                                par = new Parameter(paramname, int.class, new Integer(-1));
-                            }
-                            tmpparams.add(par);
-                        } 
-                    } else {
-                        if (paramtype.equals("String")) {
-                            par = new Parameter(paramname, String.class, "");
-                            tmpparams.add(par);
-                        } else if (paramtype.equals("Integer")) {
-                            par = new Parameter(paramname, Integer.class, new Integer(-1));
-                            tmpparams.add(par);
-                        } else if (paramtype.equals("int")) {
-                            par = new Parameter(paramname, int.class, new Integer(-1));
-                            tmpparams.add(par);
-                        } 
-                    }
-                    
-                }
-                
-                
-                // setParameterDefinition(paramdefs);                
-                Parameter[] params = (Parameter[]) tmpparams.toArray(new Parameter[0]);
+                */
 
-                SetFunction fun = new SetFunction(name, params, new ReturnType(Object.class, null));
-                if (type != null && !type.equals("")) fun.setType(type);
-                if (description != null && !description.equals("")) fun.setDescription(description);
-                if (classname != null && !classname.equals("")) fun.setClassName(classname);
-                if (methodname != null && !methodname.equals("")) fun.setMethodName(methodname);
-                functionset.addFunction(fun);
+                // read the parameters
+                List parameterList = new ArrayList();
+                for (Enumeration parameterElements = reader.getChildElements(element,"param"); parameterElements.hasMoreElements();) {
+                    Element parameterElement = (Element)parameterElements.nextElement();
+                    String parameterName = reader.getElementAttributeValue(parameterElement, "name");
+                    String parameterType = reader.getElementAttributeValue(parameterElement, "type");
+                    description = reader.getElementAttributeValue(parameterElement, "description");
+
+                    Parameter parameter = null;
+
+                    Class parameterClass = getClassFromName(parameterType);
+                    parameter = new Parameter(parameterName, parameterClass);
+
+                    // check for a default value
+                    org.w3c.dom.Node n3 = parameterElement.getFirstChild();
+                    if (n3 != null) {
+                        parameter.setDefaultValue(parameter.autoCast(n3.getNodeValue()));
+                    }
+                    parameterList.add(parameter);
+
+                }
+
+                Parameter[] parameters = (Parameter[]) parameterList.toArray(new Parameter[0]);
+
+                SetFunction fun = new SetFunction(functionName, parameters, returnType);
+                fun.setDescription(description);
+                fun.setClassName(classname);
+                fun.setMethodName(methodname);
+                fun.initialize();
+                functionSet.addFunction(fun);
             }
         }
     }
 
     /**
-     * Implemention for {@link SetFunction#getFunction(String, String)}
+     * Tries to determine the correct class from a given classname.
+     * Classnames that are not fully expanded are expanded to the java.lang package.
      */
-    static Function getFunction(String setName, String functionName) {
-	if (!init) {
-            readSets();
-        }
-
-	FunctionSet set = (FunctionSet)functionSets.get(setName);
-	if (set == null) { // retry hack for mmpm
-            readSets();
-            set = (FunctionSet)functionSets.get(setName);
-	}
-
-	if (set != null) {
-            Function fun = set.getFunction(functionName);
-            if (fun != null) {
-                return fun;
-            } else {
-                log.error("No function with name : " + functionName + " in set : " + setName);
-                log.error("functions : " + set);
+    private static Class getClassFromName(String className) {
+        String fullClassName = className;
+        boolean fullyQualified = className.indexOf('.') > -1;
+        if (!fullyQualified) {
+            if (className.equals("int")) { // needed?
+                return int.class;
             }
-	} else {
-            log.error("No functionset with name : " + setName);
-	}
-	return null;
+            fullClassName = "java.lang." + fullClassName;
+        }
+        try {
+            return Class.forName(fullClassName);
+        } catch (ClassNotFoundException cne) {
+            log.warn("Cannot determine parameter type : " + className + ", using Object as type instead.");
+            return Object.class;
+        }
     }
 
 }

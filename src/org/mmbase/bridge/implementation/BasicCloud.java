@@ -21,6 +21,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.121 2004-10-29 15:00:41 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.122 2004-12-06 15:25:19 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -646,7 +647,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      * @param query add security constaint to this query
-     * @return is query secure 
+     * @return is query secure
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {
@@ -716,10 +717,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                     if (pref == null) {
                         pref = step.getTableName();
                     }
-                    nodenr = node.getIntValue(pref + ".number");                 
-                } 
+                    nodenr = node.getIntValue(pref + ".number");
+                }
                 if (nodenr != -1) {
-                    mayRead = auth.check(user, nodenr, Operation.READ);            
+                    mayRead = auth.check(user, nodenr, Operation.READ);
                 }
             }
 
@@ -904,5 +905,33 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         properties.put(key,value);
     }
 
+    public Set getFunctions(String setName) {
+        FunctionSet set = FunctionSets.getFunctionSet(setName);
+        if (set == null) {
+            throw new NotFoundException("Functionset with name " + setName + "does not exist.");
+        }
+        // get functions
+        Map functionMap = set.getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functionMap.values().iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(this,fun));
+        }
+        return functionSet;
+    }
+
+    public Function getFunction(String setName, String functionName) {
+        FunctionSet set = FunctionSets.getFunctionSet(setName);
+        if (set == null) {
+            throw new NotFoundException("Functionset with name " + setName + "does not exist.");
+        }
+        Function fun = set.getFunction(functionName);
+        if (fun == null) {
+            throw new NotFoundException("Function with name " + functionName + "does not exist in function set with name "+ setName + ".");
+        }
+        // wrap function
+        return new BasicFunction(this, fun);
+    }
 
 }

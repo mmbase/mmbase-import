@@ -13,8 +13,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.Queue;
-import org.mmbase.util.functions.Parameter;
-import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.100 2004-11-11 17:14:26 michiel Exp $
+ * @version $Id: Images.java,v 1.101 2004-12-06 15:25:19 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -134,14 +133,6 @@ public class Images extends AbstractImages {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(Images.class, function);
-    }
-
-
-    /**
      * The executeFunction of this builder adds the 'cache' function.
      * The cache function accepts a conversion template as argument and returns the cached image
      * node number. Using this you order to pre-cache an image.
@@ -217,7 +208,7 @@ public class Images extends AbstractImages {
         servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         String template = (String) args.get("template");
         if (template == null) template = ImageCaches.GUI_IMAGETEMPLATE;
-        List cacheArgs =  new Parameters(CACHE_PARAMETERS).set("template", template);
+        List cacheArgs =  new ParametersImpl(CACHE_PARAMETERS).set("template", template);
         MMObjectNode icache = (MMObjectNode) executeFunction(node, "cachednode", cacheArgs);
 
         String imageThumb = servlet.toString() + (icache != null ? "" + icache.getNumber() : "");

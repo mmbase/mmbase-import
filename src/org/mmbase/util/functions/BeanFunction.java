@@ -29,12 +29,12 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.3 2004-11-11 17:06:58 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
-public class BeanFunction extends Function {
+public class BeanFunction extends AbstractFunction {
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
 
     /**
@@ -44,7 +44,6 @@ public class BeanFunction extends Function {
      * @param name The name of the inner class
      * @throws IllegalArgumentException if claz has no inner class with that name
      */
-
     public static Class getClass(Class claz, String name) {
         Class[] classes = claz.getDeclaredClasses();
         for (int j=0; j < classes.length; j++) {
@@ -54,31 +53,29 @@ public class BeanFunction extends Function {
             }
         }
         throw new IllegalArgumentException("There is no inner class with name '" + name + "' in " + claz);
-
     }
-
 
     /**
      * A cache for bean classes. Used to avoid some reflection.
      */
     private static Cache beanFunctionCache = new Cache(50) {
-            public String getName() {
-                return "BeanFunctionCache";
-            }
-            public String getDescription() {
-                return "ClassName.FunctionName -> BeanFunction object";
-            }
-        };
+        public String getName() {
+            return "BeanFunctionCache";
+        }
+        public String getDescription() {
+            return "ClassName.FunctionName -> BeanFunction object";
+        }
+    };
 
     /**
-     * Gives back a Function object based on the 'bean' concept. 
+     * Gives back a Function object based on the 'bean' concept.
      * Called from {@link FunctionFactory}
      */
     public static Function getFunction(Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         String key = claz.getName() + '.' + name;
         BeanFunction result = (BeanFunction) beanFunctionCache.get(key);
         if (result == null) {
-            result = new  BeanFunction(claz, name); 
+            result = new BeanFunction(claz, name);
             beanFunctionCache.put(key, result);
         }
         return result;
@@ -93,7 +90,7 @@ public class BeanFunction extends Function {
      * This class of the bean
      */
     private Class  claz   = null;
-    
+
     /**
      * The method corresponding to the function called in getFunctionValue.
      */
@@ -140,8 +137,8 @@ public class BeanFunction extends Function {
             String methodName = method.getName();
             Class[] parameterTypes = method.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
-                String parameterName = methodName.substring(3); 
-                // find a corresponding getter method, which can be used for a default value; 
+                String parameterName = methodName.substring(3);
+                // find a corresponding getter method, which can be used for a default value;
                 Object defaultValue;
                 try {
                     Method getter = claz.getMethod("get" + parameterName, new Class[] {});
@@ -156,7 +153,7 @@ public class BeanFunction extends Function {
         setParameterDefinition((Parameter[]) parameters.toArray(new Parameter[0]));
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
         setReturnType(returnType);
-        
+
     }
 
 
@@ -172,7 +169,7 @@ public class BeanFunction extends Function {
             while(i.hasNext()) {
                 Object value = i.next();
                 Method method = (Method) j.next();
-                method.invoke(bean, new Object[] {value});                
+                method.invoke(bean, new Object[] {value});
             }
             return method.invoke(bean, new Object[] {});
         } catch (Exception e) {

@@ -18,6 +18,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
 import org.w3c.dom.Document;
 
 /**
@@ -31,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.132 2004-10-25 11:50:04 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.133 2004-12-06 15:25:19 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -791,10 +792,35 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
+     * @javadoc
      * @since MMBase-1.6
      */
-    public Object getFunctionValue(String function, List args) {
-        return  parent.getFunctionValue(this, function, args);
+    public Object getFunctionValue(String functionName, List parameters) {
+        return parent.getFunctionValue(this, functionName, parameters);
+    }
+
+    /**
+     * @javadoc
+     * @since MMBase-1.8
+     */
+    public Parameters createParameters(String functionName) {
+        return parent.createParameters(functionName);
+    }
+
+    /**
+     * @javadoc
+     * @since MMBase-1.8
+     */
+    public Function getFunction(String functionName) {
+        return parent.getFunction(this, functionName);
+    }
+
+    /**
+     * @javadoc
+     * @since MMBase-1.8
+     */
+    public Set getFunctions() {
+        return parent.getFunctions(this);
     }
 
     /**
@@ -1648,4 +1674,5 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         */
         return super.equals(n); // compare as objects.
     }
+
 }
