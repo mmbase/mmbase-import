@@ -8,9 +8,15 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.8 2001-03-26 15:31:04 vpro Exp $
+$Id: MMHttpHandler.java,v 1.9 2001-03-29 13:17:55 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/03/26 15:31:04  vpro
+Davzev: Fixed request handling by reading the remaining lines of request data
+sent with a request. If you don't read out remaining lines the client could get
+a Socket Exception: Connection Reset By Peer.
+Also added http status codes during handling of GET and POST requests.
+
 Revision 1.7  2000/11/27 16:33:53  vpro
 davzev: Added debug in method doGet
 
@@ -30,7 +36,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.8 $ $Date: 2001-03-26 15:31:04 $
+ * @version $Revision: 1.9 $ $Date: 2001-03-29 13:17:55 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable {
@@ -83,6 +89,11 @@ public class MMHttpHandler implements Runnable {
 			String line=in.readLine();
 			if (line!=null) {
 				StringTokenizer tok=new StringTokenizer(line," \n\r\t");
+
+				/**
+	 			 * checking here if the shared secret is correct .
+				 */
+				
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
 					if (debug) debug("run(): Got method: "+method);

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.13 2001-03-26 13:00:12 vpro Exp $
+$Id: MMHttpAcceptor.java,v 1.14 2001-03-29 13:17:55 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2001/03/26 13:00:12  vpro
+Davzev: Changed exception error debug in getNode.
+
 Revision 1.12  2000/12/20 16:31:45  vpro
 Davzev: added changed some debug stuff
 
@@ -36,7 +39,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.13 $ $Date: 2001-03-26 13:00:12 $
+ * @version $Revision: 1.14 $ $Date: 2001-03-29 13:17:55 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
@@ -192,6 +195,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			out.print("Content-Length: "+body.length()+"\r\n");
 			out.print("Content-Type: application/x-www-form-urlencoded\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
+			out.print("sharedSecret: "+startRemoteBuilders.getSharedSecret()+"\r\n");
 			out.print("\r\n");
 			out.print(body);
 			out.flush();
