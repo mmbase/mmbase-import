@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServersProbe.java,v 1.8 2001-04-10 12:20:38 michiel Exp $
+$Id: MMServersProbe.java,v 1.9 2002-06-19 19:17:30 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/04/10 12:20:38  michiel
+michiel: new logging system.
+
 Revision 1.7  2000/07/22 21:38:35  daniel
 needed a or not a and :)
 
@@ -47,7 +50,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.8 $ $Date: 2001-04-10 12:20:38 $ 
+ * @version0 $Revision: 1.9 $ $Date: 2002-06-19 19:17:30 $ 
  */
 public class MMServersProbe implements Runnable {
 
@@ -107,21 +110,31 @@ public class MMServersProbe implements Runnable {
 	 */
 	public void doWork() {
 		kicker.setPriority(Thread.MIN_PRIORITY+1);  
-		MMObjectNode node,node2;
-		boolean needbreak=false;
-		int id;
+
+        int probeInterval = 60 * 1000;
 
 		// ugly pre up polling
 		while (parent.mmb==null || parent.mmb.getState()==false) {
 			try {
 				Thread.sleep(2*1000);
 			} catch (InterruptedException e){
+                log.debug(e.toString());
 			}
 		}
 
-		while (kicker!=null) {
+        String tmp = parent.getInitParameter("ProbeInterval"); 
+        if (tmp != null) {
+            if (log.isDebugEnabled()) log.debug("ProbeInterval was configured to be " + tmp + " seconds");
+            probeInterval = Integer.parseInt(tmp) * 1000;
+        }
+
+		while (kicker != null) {
 			parent.probeCall();
-			try {Thread.sleep(60*1000);} catch (InterruptedException e){}
+			try {
+                Thread.sleep(probeInterval);
+            } catch (InterruptedException e) {
+                log.debug(e.toString());
+            }
 		}
 	}
 
