@@ -137,9 +137,9 @@ public class ImportTag extends WriteTag {
                     
             boolean found;
             if (from == ContextTag.TYPE_NOTSET) {
-                found = getContextTag().findAndRegister(externid, id);
+                found = (getContextTag().findAndRegister(externid, id) != null);
             } else {
-                found = getContextTag().findAndRegister(from, externid, id);
+                found = (getContextTag().findAndRegister(from, externid, id) != null);
             }
 
             if (! found) {
@@ -157,7 +157,7 @@ public class ImportTag extends WriteTag {
                 throw new JspTagException("Required parameter '" + externid + "' not found");
             } 
             if (found) {
-                value = getContextTag().getObject(id);
+                value = getObject(id);
                 log.debug("found value for " + id + " " + value);
             }
         } else { // get value from the body of the tag.
