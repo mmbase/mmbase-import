@@ -32,7 +32,7 @@
 	</object>
 </action>
 ]]></programlisting>
-	This will initalize the 'title' field of the news object, and relate it to an object (i.e. a pool object) with the alias 'my_news_archive'. There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="relation">relation</link> and <link linkend="field">field</link> tag references.
+	This will initialize the 'title' field of the news object, and relate it to an object (i.e. a pool object) with the alias 'my_news_archive'. There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="relation">relation</link> and <link linkend="field">field</link> tag references.
 	</para>
 	<para>As a list-level tag, the action is similar to <link linkend="action-add">action type="add"</link>, but it is used for the <link linkend="command-insert">command type="insert"</link> tag.</para>
 	<para>You specify a <link linkend="relation">relation</link> tag, with the role and destinationtype attributes set to the type and role of the relation to create. You can also specifying relation fields that you want to initialize. You also need to add an 'object' tag (with initialized fields or even additional relations to create), which prompts the wizard to create the object:

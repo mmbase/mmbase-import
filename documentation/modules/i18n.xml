@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
 	<article>
 	<articleinfo>
-		<title>MMBase Internationalisation and Localisation</title>
+		<title>MMBase Internationalization and Localization</title>
 		<date>19 October 2002</date>
-		<edition>$Id: i18n.xml,v 1.6 2003-06-30 13:29:13 johannes Exp $</edition>
+		<edition>$Id: i18n.xml,v 1.7 2003-07-01 14:45:30 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -29,13 +29,13 @@
 			country and language, then you can hopefully find what you need in this document.
 		</para>
 		<para>
-			Happily MMBase is relatively well `internationalised', which means that effort has been taken
+			Happily MMBase is relatively well `internationalized', which means that effort has been taken
 			to make it possible to `localize' (i.e. basically: add translations) it easily. MMBase was
 			developed in a Dutch environment, rather then an English-only one, which ensured that this
 			issue was always kept in mind relatively well.
 		</para>
 		<para>
-			Part of the process of `internationalisation' (also referred to as `i18n') of course is the
+			Part of the process of `internationalization' (also referred to as `i18n') of course is the
 			possibility to represent all kind of characters, and on this subject the first section will
 			elaborate.
 		</para>
@@ -45,7 +45,7 @@
 		</para>
 	</section>
 	<section id="encodings">
-	 <title>Internationalisation - Encodings</title>
+	 <title>Internationalization - Encodings</title>
 		<para>
 			In MMBase 1.5 and before the default character encoding of the strings in the database was
 			ISO-8859-1, which is a superset of ASCII. In `iso-1' every letter is presented by exactly one
@@ -84,24 +84,24 @@
 		</para>
 		<para>
 			This also is valid for Java `property files'. Property files are not seldom used as resources
-			for translations, so it is important to realise that they must be encoded in ISO-8859-1, but
+			for translations, so it is important to realize that they must be encoded in ISO-8859-1, but
 			that it <emphasis>is</emphasis> possible to use characters from the complete unicode set. You
 			might want to use a tool to do the escaping for you though if you try to type a language of
 			which most characters are not in ISO-8859-1 (e.g. Greek, Russian and most Asian languages).
 		</para>
 	</section>
 	<section id="translations">
-		<title>Localisation - Translations</title>
+		<title>Localization - Translations</title>
 		<para>
 			On a few parts in MMBase there can be found texts in different languages. A language is
 			always indicated by a two letter code from ISO 639 (note that this is for languages, not
 			countries).
 		</para>
 		<para>
-			The internationalisation of MMBase currently only extends to the real user interface
+			The internationalization of MMBase currently only extends to the real user interface
 			parts, by which is meant in practice `content editors'. There does not yet exist an
-			internationalised administration user interface. Another thing which one might
-			imagine subject to internationalisation are error messages, specifically those which
+			internationalized administration user interface. Another thing which one might
+			imagine subject to internationalization are error messages, specifically those which
 			can appear to users and templaters; all error messages from the MMCI and the MMBase
 			Taglib can now only appear in English (or broken English). Some of these messages,
 			like Security exceptions (`permission denied'), can occasionally appear to editor
@@ -121,7 +121,7 @@
 		<section id="jspeditors">
 			<title>Generic JSP-editors</title>
 			<para>
-				The generic JSP-editor does use some text of itself. These messages are internationalised
+				The generic JSP-editor does use some text of itself. These messages are internationalized
 				and can be translated by adding a
 				org.mmbase.applications.jsp.editors.editors_&lt;language&gt;.properties resource file
 				containing the new translations.
@@ -136,7 +136,7 @@
 		<section id="editwizards">
 			<title>Editwizards</title>
 			<para>
-				Also the editwizards are relatively well internationalised. They output HTML-pages in
+				Also the editwizards are relatively well internationalized. They output HTML-pages in
 				UTF-8, so all characters can be present. Translations for the `current' language are
 				present in a `prompts'.xsl. The default (English) one is next to the other editwizard
 				XSL's, but it can be overridden by placing a translation in
@@ -145,16 +145,16 @@
 			</para>
 			<para>
 				In the editwizard `schema' XML's the prompt for a field can be explicitly stated. If you
-				omit this prompt though the internationalised version of the builder is used in stead.
+				omit this prompt though the internationalized version of the builder is used in stead.
 			</para>
 			<para>
-				The schema XML itself is also internationalised, and titles, prompts and other
+				The schema XML itself is also internationalized, and titles, prompts and other
 				messages in these files can be present in more than one
 				language. This is done by the 'xml:lang' attribute. There are
 				bunch of `example' and `library' wizard xmls available in
 				&lt;editwizard-dir&gt;data/samples and
 				&lt;editwizard-dir&gt;data/lib, so for a nice and complete
-				localisation to your language, it would be nice to translate
+				localization to your language, it would be nice to translate
 				those too (search for the already present elements with an
 				xml:lang attribute).
 			</para>

@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Applications</title>
     <date>27 February 2003</date>
-    <edition>$Id: applications.xml,v 1.7 2003-06-30 13:16:07 johannes Exp $</edition>
+    <edition>$Id: applications.xml,v 1.8 2003-07-01 14:45:30 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -84,7 +84,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<application name="MyNews" maintainer="mmbase.org"  version="1" auto-deploy="false"> ... </application>]]></sgmltag></para>
-          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The preferred way of writing names of applications is to use capitalized words. The maintainer is the domain name of the organisation or person who takes the responsibility for updating this application. The version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automatically be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administrator pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
+          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The preferred way of writing names of applications is to use capitalized words. The maintainer is the domain name of the organization or person who takes the responsibility for updating this application. The version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automatically be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administrator pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<neededbuilderlist><builder maintainer="mmbase.org" version="1">mags</builder> .... </neededbuilderlist>]]></sgmltag></para>

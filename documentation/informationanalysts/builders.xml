@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 December 2002</date>
-		<edition>$Id: builders.xml,v 1.8 2003-06-30 13:16:07 johannes Exp $</edition>
+		<edition>$Id: builders.xml,v 1.9 2003-07-01 14:45:30 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -93,7 +93,7 @@
 				</varlistentry>
 				<varlistentry>
 					<term>maintainer</term>
-					<listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organisation maintaining the builder. This is generally a domain name. For the core builders this value is <emphasis>mmbase.org</emphasis></para></listitem>
+					<listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organization maintaining the builder. This is generally a domain name. For the core builders this value is <emphasis>mmbase.org</emphasis></para></listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>version</term>
