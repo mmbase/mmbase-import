@@ -138,7 +138,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
     public Writer findWriter(boolean th) throws JspTagException {
         Writer w = (Writer) findParentTag(Writer.class, writerid, th);
-        w.haveBody();
+        if (w != null) {
+            w.haveBody();
+        }
         return w;
     }
 
