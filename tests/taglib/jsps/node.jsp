@@ -362,7 +362,7 @@ using list tag: <br />
 <mm:log>mm:list with one element</mm:log>
 
 <h3>List-tag with only one element</h3>
-<mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" >
+<mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" constraints="news.number > 10/10">
 cd 
    <em>all the following should have values</em>:<br />
    news.title:    <mm:field name="news.title" />   <br />
