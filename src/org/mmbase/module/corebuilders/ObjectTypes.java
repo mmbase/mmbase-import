@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.4 2002-05-06 14:11:12 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.5 2002-05-06 14:52:22 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -53,12 +53,14 @@ public class ObjectTypes extends TypeDef {
         if(!defaultDeploy.exists()) {
             // try to create the directory for deployment....
             if(!defaultDeploy.mkdirs()) {
-                log.error("Could not create directory: " + defaultDeploy);
+                log.error("Could not create directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
+                defaultDeploy = null;
             }
             // check if we may write in the specified dir
             else if(!defaultDeploy.canWrite()) {
-                log.error("Could not write in directory: " + defaultDeploy);
-            }            
+                log.error("Could not write in directory: " + defaultDeploy + ", new nodes cannot be created, since we cant write the configs to file");
+                defaultDeploy = null;
+            }
         }
         defaultDeploy = defaultDeploy.getAbsoluteFile();
         log.info("Using '"+defaultDeploy+"' as default deploy dir for our builders.");
@@ -123,6 +125,9 @@ public class ObjectTypes extends TypeDef {
      */     
     public int insert(String owner, MMObjectNode node) {
         log.info("[insert of builder-node with name '" + node.getStringValue("name") + "' ]");
+        
+        // look if we can store to file...
+        if(defaultDeploy == null) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
         
         // first store our config....
         storeBuilderFile(node);
@@ -192,7 +197,7 @@ public class ObjectTypes extends TypeDef {
         if(!deleteBuilderFile(node)) {
             // delete-ing failed, reload the builder again...
             loadBuilder(node);
-            throw new RuntimeException("Could not delete builder config");        
+            throw new RuntimeException("Could not delete builder config");
         }
                                 
         // now that the builder cannot be started again (since config is now really missing)
