@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.5 2004-01-13 17:18:20 michiel Exp $
+  @version  $Id: wizard.css,v 1.6 2004-01-13 17:27:25 michiel Exp $
 
 body
 table.head
@@ -189,12 +189,11 @@ table.listhead  {
 }
 
 td.listprompt  {         
-        font-weight: 600;
-        font-size: 12px;
-        padding: 0px;
-        vertical-align:	top;
-        text-align: left;
-        width: 100px;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 0px;
+  vertical-align:	top;
+  text-align: left;
 }
 
 td.listnewbuttons  {         
