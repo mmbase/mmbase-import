@@ -15,7 +15,7 @@ import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyTag;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.50 2003-11-20 13:58:22 pierre Exp $
+ * @version $Id: NodeTag.java,v 1.51 2003-12-18 11:56:22 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -144,7 +144,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
             if (number != Attribute.NULL) { // if (! n.equals("")) {   // if empty string should mean 'not present'. Not sure what is most conventient
                 // explicity indicated which node (by number or alias)
-                if (! getCloud().hasNode(n)) {
+                Cloud c = getCloud();
+                if (! c.hasNode(n) || ! c.mayRead(n)) {
                     switch(getNotfound()) {
                     case NOT_FOUND_SKIP:
                         return SKIP_BODY;
@@ -152,10 +153,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                         node = null;
                         break;
                     default:
-                        node = getCloud().getNode(n); // throws Exception
+                        node = c.getNode(n); // throws Exception
                     }
                 } else {
-                    node = getCloud().getNode(n); // does not throw Exception
+                    node = c.getNode(n); // does not throw Exception
                 }
             } else {
                 // get the node from a parent element.
