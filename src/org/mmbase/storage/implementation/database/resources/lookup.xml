@@ -31,4 +31,9 @@
 		<driver-class>org.postgresql.</driver-class>
 	</filter>
 
+	<!-- postgresql with the jxdbcon driver -->
+	<filter resource="/org/mmbase/storage/implementation/database/resources/postgresql.xml">
+		<driver-class>org.sourceforge.jxdbcon</driver-class>
+	</filter>
+
 </database-filters>
