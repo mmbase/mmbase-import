@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.44 2004-06-28 21:37:56 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.45 2004-07-12 07:31:03 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -455,7 +455,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         long seconds = 0;
         if (diff == 0) {
             // No offset given, return next week.
-            if (offset == Attribute.NULL) {
+            if (offset.getString(this).equals("")) {
                 diff = 7;
             } else {
                 // Calculate how many seconds are already past this day
@@ -493,7 +493,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         long seconds = 0;
         if (diff == 0) {
             // No offset is given, return next month
-            if (offset == null) {
+            if (offset.getString(this).equals("")) {
                 diff = 12;
             } else {
                 // Calculate how many seconds are already past this day
