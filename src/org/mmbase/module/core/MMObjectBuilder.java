@@ -21,6 +21,7 @@ import java.util.*;
 
 import org.mmbase.cache.Cache;
 import org.mmbase.cache.NodeListCache;
+import org.mmbase.cache.AggregatedResultCache;
 
 import org.mmbase.module.ParseException;
 import org.mmbase.module.builders.DayMarkers;
@@ -37,6 +38,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -61,26 +63,26 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.252 2003-11-13 15:43:55 keesj Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.253 2003-12-17 20:43:12 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
     /** Max size of the object type cache */
-    public final static int OBJ2TYPE_MAX_SIZE=20000;
+    public final static int OBJ2TYPE_MAX_SIZE = 20000;
 
     /** Default size of the temporary node cache */
-    public final static int TEMPNODE_DEFAULT_SIZE=1024;
+    public final static int TEMPNODE_DEFAULT_SIZE = 1024;
 
     /** Default replacements for method getHTML() */
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
 
-    public final static Argument[] GUI_ARGUMENTS = {
-        new Argument("field",    String.class),
-        new Argument("language", String.class), // should add Locale
-        new Argument("session",  String.class),
-        new Argument("response", javax.servlet.http.HttpServletResponse.class),
-        new Argument("request",  javax.servlet.http.HttpServletRequest.class)
+    public final static Parameter[] GUI_PARAMETERS = {
+        new Parameter("field",    String.class),
+        Parameter.LANGUAGE, // should add Locale
+        new Parameter("session",  String.class),
+        Parameter.RESPONSE,
+        Parameter.REQUEST
     //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
     };
@@ -134,7 +136,7 @@ public class MMObjectBuilder extends MMTable {
      */
     private static int cacheLocked=0;
 
-    private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
+    private static final Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
 
     /**
      * The current builder's object type
@@ -427,7 +429,7 @@ public class MMObjectBuilder extends MMTable {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      *        The basic routine does not create any nodes this way and always fails.
      */
-    public int insert(int oType,String owner) {
+    public int insert(int oType, String owner) {
         return -1;
     }
 
@@ -801,19 +803,20 @@ public class MMObjectBuilder extends MMTable {
      * means that the next time the node is read it is 'refreshed'
      * from the database
      */
-    public int safeInsert(MMObjectNode node, String username) {
+    public int safeInsert(MMObjectNode node, String userName) {
         int res=-1;
         try {
             synchronized(nodeCache) {
                 cacheLocked++;
             }
             // determine valid username
-            if ((username==null) || (username.length()<=1)) {
-                username=node.getStringValue("owner");
+            if ((userName == null) || (userName.length() <= 1 )) { // may not have owner of 1 char??
+                userName = node.getStringValue("owner");
+                log.info("Found username " + (userName == null ? "NULL" : userName));
             }
-            res=node.insert(username);
+            res = node.insert(userName);
             if (res > -1) {
-                nodeCache.put(new Integer(res),node);
+                nodeCache.put(new Integer(res), node);
             }
         } finally {
             synchronized(nodeCache) {
@@ -1265,9 +1268,15 @@ public class MMObjectBuilder extends MMTable {
         newFields.add(field);
         modifiedQuery.setFields(newFields);
 
-        // Execute query, return result.
-        List results = mmb.getDatabase().getNodes(modifiedQuery,
-            new ResultBuilder(mmb, modifiedQuery));
+
+        AggregatedResultCache cache = AggregatedResultCache.getCache();
+
+        List results = (List) cache.get(query);
+        if (results == null) { 
+            // Execute query, return result.
+            results = mmb.getDatabase().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
+            cache.put(query, results);
+        }
         ResultNode result = (ResultNode) results.get(0);
         return result.getIntValue("number");
     }
@@ -1293,7 +1302,7 @@ public class MMObjectBuilder extends MMTable {
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort) {
-        return searchVector(where,sort).elements();
+        return searchVector(where, sort).elements();
     }
 
     /**
@@ -2024,7 +2033,7 @@ public class MMObjectBuilder extends MMTable {
      * @param results The nodes. After returning, partially retrieved nodes
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
-    protected void processSearchResults(List results) {
+    public void processSearchResults(List results) {
         Map convert = new HashMap();
         int convertCount = 0;
         int convertedCount = 0;
@@ -2649,7 +2658,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.7
      */
     /*
-    public Arguments getFunctionArguments(String function) {
+    public Parameters getFunctionParameters(String function) {
 
     }
     */
@@ -2674,7 +2683,7 @@ public class MMObjectBuilder extends MMTable {
         if (function.equals("info")) {
             Map info = new HashMap();
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
-            info.put("gui",  "" + Arrays.asList(GUI_ARGUMENTS) + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+            info.put("gui",  "" + Arrays.asList(GUI_PARAMETERS) + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
             // language is only implemented in TypeDef now, session in AbstractServletBuilder
             // if needed on more place, then it can be generalized to here.
 
