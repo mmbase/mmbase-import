@@ -18,9 +18,9 @@
 
 <mm:present referid="nodemanager">
   <mm:present referid="create">
-    <mm:createnode nodemanager='${nodemanager}'>
-      <mm:fieldlist nodemanager='${nodemanager}' type="edit">
-        <mm:setfield><mm:write referid="fieldname"/></mm:setfield>
+    <mm:createnode type='${nodemanager}'>
+      <mm:fieldlist type='${nodemanager}' type="edit">
+		<mm:fieldinfo type="useinput"/>
       </mm:fieldlist>
     </mm:createnode>
   </mm:present>
@@ -39,7 +39,7 @@
           <input type="hidden" name="nodemanager" value='<mm:write referid="nodemanager"/>'>
           <input type="hidden" name="create" value="true">
           <table>
-            <mm:fieldlist nodemanager='${nodemanager}' type="edit">
+            <mm:fieldlist nodetype='${nodemanager}' type="edit">
               <tr>
                 <td valign="top">
                   <mm:fieldinfo type="name"/>
