@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.13 2002-09-13 09:18:08 vpro Exp $
+ * @version $Id: MMBaseServlet.java,v 1.14 2002-09-18 19:21:02 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -107,7 +107,7 @@ public class MMBaseServlet extends  HttpServlet {
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
 
-    public void init() throws ServletException {
+    synchronized public void init() throws ServletException {
         if (! MMBaseContext.isInitialized()) {
             ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
@@ -237,7 +237,7 @@ public class MMBaseServlet extends  HttpServlet {
         if (priority == null) priority = new Integer(0);
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e == null || (priority.intValue() >= e.priority)) {
-            log.service("Association " + function + " with servlet " + servletName + (e == null ? ""  : " (removing " + e.name +")"));
+            log.service("Associating function '" + function + "' with servlet " + servletName + (e == null ? ""  : " (removing " + e.name +")"));
             associatedServlets.put(function, new ServletEntry(servletName, priority));
         }
     }
