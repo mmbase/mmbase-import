@@ -70,8 +70,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Object</guiname>
         <guiname xml:lang="en">Object</guiname>
+        <guiname xml:lang="nl">Object</guiname>
         <guiname xml:lang="eo">Objekto</guiname>
         <guiname xml:lang="fr">Objet</guiname>
         <guiname xml:lang="fy">Objekt Nummer</guiname>
@@ -101,8 +101,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Eigenaar</guiname>
         <guiname xml:lang="en">Owner</guiname>
+        <guiname xml:lang="nl">Eigenaar</guiname>
         <guiname xml:lang="eo">Posedanto</guiname>
         <guiname xml:lang="fr">Propriétaire</guiname>
         <guiname xml:lang="fy">Context</guiname>

@@ -13,12 +13,12 @@
     >-->
     <names>
         <!-- singles per language as defined by ISO 639 -->
-        <singular xml:lang="nl">Relatie_Definitie</singular>
-        <singular xml:lang="en">RelDef</singular>
+        <singular xml:lang="en">Relation Definition</singular>
+        <singular xml:lang="nl">Relatie Definitie</singular>
         <singular xml:lang="eo">Rilatodifino</singular>
         <!-- multiple per language as defined by ISO 639 -->
-        <plural xml:lang="nl">Relatie_Definities</plural>
-        <plural xml:lang="en">RelDef</plural>
+        <plural xml:lang="en">Relation Definitions</plural>
+        <plural xml:lang="nl">Relatie Definities</plural>
         <plural xml:lang="eo">Rilatodifinoj</plural>
     </names>
 
@@ -27,8 +27,8 @@
     -->
     <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Defineerd relaties</description>
         <description xml:lang="en">Defines relations</description>
+        <description xml:lang="nl">Defineerd relaties</description>
         <description xml:lang="eo">Difinas rilatojn</description>
     </descriptions>
 
@@ -42,8 +42,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Bron</guiname>
                 <guiname xml:lang="en">Source</guiname>
+                <guiname xml:lang="nl">Bron</guiname>
                 <guiname xml:lang="eo">Fonto</guiname>
                 <guitype>string</guitype>
             </gui>
@@ -71,8 +71,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Bestemming</guiname>
                 <guiname xml:lang="en">Target</guiname>
+                <guiname xml:lang="nl">Bestemming</guiname>
                 <guiname xml:lang="eo">Celo</guiname>
                 <guitype>string</guitype>
             </gui>
@@ -100,8 +100,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Richting</guiname>
                 <guiname xml:lang="en">Direction</guiname>
+                <guiname xml:lang="nl">Richting</guiname>
                 <guiname xml:lang="eo">Direkto</guiname>
                 <guitype>dirs</guitype>
             </gui>
@@ -129,8 +129,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">BronGUINaam</guiname>
                 <guiname xml:lang="en">SourceGUIName</guiname>
+                <guiname xml:lang="nl">BronGUINaam</guiname>
                 <guiname xml:lang="eo">Fontnomo</guiname>
                 <guitype>string</guitype>
             </gui>
@@ -158,8 +158,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">DoelGUINaam</guiname>
                 <guiname xml:lang="en">TargetGUIName</guiname>
+                <guiname xml:lang="nl">DoelGUINaam</guiname>
                 <guiname xml:lang="eo">Celnomo</guiname>
                 <guitype>string</guitype>
             </gui>
@@ -187,8 +187,8 @@
     <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Builder</guiname>
                 <guiname xml:lang="en">Builder</guiname>
+                <guiname xml:lang="nl">Builder</guiname>
                 <guiname xml:lang="eo">Konstruanto</guiname>
                 <guitype>reltypes</guitype>
             </gui>
