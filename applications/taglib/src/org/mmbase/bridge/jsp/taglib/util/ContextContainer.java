@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.31 2005-03-15 20:33:25 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.32 2005-03-16 16:50:33 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -661,14 +661,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             log.debug("searching to register object " + externid + " in context " + getId() + " check: " + check);
         }
         if (check && isRegistered(newId)) {
-	    String mes;
-	    if(getId() == null) {
-		mes = "Object with id " + newId + " was already registered in the root context.";
-	    } else {
-		mes = "Object with id " + newId + " was already registered in Context '" + getId()  + "'.";
-	    }
-            log.debug(mes);
-            throw new JspTagException(mes);
+            throw new JspTagException("Object with id " + newId + " was already registered in " + toString());
         }
         // if (findAndRegister(LOCATION_PAGE, referId, id)) return true;
         Object result = find(pageContext, externid);
