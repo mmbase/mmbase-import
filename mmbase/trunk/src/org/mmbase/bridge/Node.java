@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.28 2002-03-20 13:16:46 eduard Exp $
+ * @version $Id: Node.java,v 1.29 2002-04-03 11:19:26 eduard Exp $
  */
 public interface Node {
 
@@ -248,10 +248,10 @@ public interface Node {
     public String toString();
 
     /**
-     * Get the xml for this node.
+     * Returns the value of the specified field as a <code>dom.Document</code>
      *
-     * @param fieldName fieldName
-     *
+     * @param fieldName  the name of the field to be returned
+     * @return           the value of the specified field as a DOM Element or <code>null</code>
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName);
@@ -261,7 +261,7 @@ public interface Node {
      *
      * @param fieldName  the name of the field to be returned
      * @param tree       the DOM Document to which it must be added
-     * @return           the value of the specified field as a DOM Element.
+     * @return           the value of the specified field as a DOM Element or <code>null</code>
      * @since MMBase-1.6
      */
 

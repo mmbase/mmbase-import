@@ -396,8 +396,4 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             return msg + "\n";
         }
     }
-
-
 }
-
-

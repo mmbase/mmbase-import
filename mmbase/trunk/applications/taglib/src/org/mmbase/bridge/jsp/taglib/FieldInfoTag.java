@@ -235,20 +235,22 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
                     javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
                     org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
+                    
+                    if(xml!=null) {
+                        // make a string from the XML
+                        javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
+                        //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
+                        javax.xml.transform.Transformer serializer = tfactory.newTransformer();
+                        serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+                        serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
+                        java.io.StringWriter str = new java.io.StringWriter();
+                        // there is a <field> tag placed around it,... we hate it :)
+                        // change this in the bridge?                    
+                        serializer.transform(new javax.xml.transform.dom.DOMSource(xml.getElementsByTagName("*").item(0)),  new javax.xml.transform.stream.StreamResult(str));
 
-                    // make a string from the XML
-                    javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
-                    //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-                    javax.xml.transform.Transformer serializer = tfactory.newTransformer();
-                    serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-                    serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
-                    java.io.StringWriter str = new java.io.StringWriter();
-                    // there is a <field> tag placed around it,... we hate it :)
-                    // change this in the bridge?
-                    serializer.transform(new javax.xml.transform.dom.DOMSource(xml.getElementsByTagName("*").item(0)),  new javax.xml.transform.stream.StreamResult(str));
-
-                    // fill the field with it....
-                    show += Encode.encode("ESCAPE_XML", str.toString());
+                        // fill the field with it....
+                        show += Encode.encode("ESCAPE_XML", str.toString());
+                    }
                 }
                 catch(javax.xml.parsers.ParserConfigurationException pce) {
                     throw new JspTagException(pce.toString() + " " + Logging.stackTrace(pce));
