@@ -76,7 +76,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
 			try {
-				if (fieldtype.equals("VARSTRING") || fieldtype.equals("STRING")) {
+				if (fieldtype.equals("VARSTRING") || fieldtype.equals("STRING") || fieldtype.equals("VARCHAR")) {
 					String tmp=rs.getString(i);
 					if (tmp==null) {
 						node.setValue(prefix+fieldname,"");
@@ -106,10 +106,10 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 					//node.setValue(prefix+fieldname,getDBByte(rs,i));
 					node.setValue(prefix+fieldname,"$SHORTED");
 				} else {
-					System.out.println("Informix42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+					System.out.println("MMysql42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
 				}
 			} catch(SQLException e) {
-				System.out.println("Informix42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+				System.out.println("MMysql42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
 				e.printStackTrace();	
 			}
 			return(node);
@@ -283,7 +283,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			input.close();
 			inp.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> MMInformix byte  exception "+e);
+			System.out.println("MMObjectBuilder -> MMMysql byte  exception "+e);
 			e.printStackTrace();
 		}
 		return(bytes);
@@ -303,11 +303,11 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 		try {
 			inp=rs.getAsciiStream(idx);
 			if (inp==null) {
-				//System.out.println("MMObjectBuilder -> Informix42Node DBtext no ascii "+inp);
+				//System.out.println("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
 				 return("");
 			}
 			if (rs.wasNull()) {
-				System.out.println("MMObjectBuilder -> Informix42Node DBtext wasNull "+inp);
+				System.out.println("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
 				return("");
 			}
 			siz=inp.available(); // DIRTY
@@ -319,7 +319,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			input.close();
 			inp.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> MMInformix text  exception "+e);
+			System.out.println("MMObjectBuilder -> MMMysql text  exception "+e);
 			e.printStackTrace();
 			return("");
 		}
