@@ -30,12 +30,18 @@
     	    	<table summary="node managers" width="100%" cellspacing="1" cellpadding="3" border="0">
 		    <% // functionality for listing nodemanagers is not (yet?) in taglib, using MMCI.
                      NodeManagerList l = cloud.getNodeManagers();
-                    java.util.Collections.sort(l); // MMCI doesn't sort, do it ourselves.
+                    java.util.Collections.sort(l, new java.util.Comparator() {
+                       public int  compare(Object o1, Object o2) {
+                         NodeManager n1 = (NodeManager)o1;
+                         NodeManager n2 = (NodeManager)o2;
+                         return n1.getGUIName().toUpperCase().compareTo(n2.getGUIName().toUpperCase());
+                       }
+                    } ); // MMCI doesn't sort, do it ourselves.
                     for (int i=0; i<l.size(); i++) {
                     NodeManager nt = l.getNodeManager(i);
 		    %>
       	    	    <tr valign="top">
-      	    	    	<td class="data" width="100%" colspan="2"><%=nt.getGUIName()%></td>
+      	    	    	<td class="data" width="100%" colspan="2"><%=nt.getGUIName()%> </td>
       	    	    	<td class="navigate">
                         <% if (nt.mayCreateNode()) { %>
 			    <a href="<mm:url page="create_node.jsp"><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>" >
@@ -73,7 +79,7 @@
                <mm:maycreate type="$node_type">
               	    	<table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
 	      	    	    <tr>
-	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
+	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />)</td>
 	      	    	    	<td class="navigate">
 	      	    	    	    <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
                              <span class="create"></span><span class="alt">[create]</span>
