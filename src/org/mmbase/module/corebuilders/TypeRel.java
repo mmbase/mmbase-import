@@ -19,19 +19,30 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * TypeRel defines the allowed relations between two object types.
+ * TypeRel defines the allowed relations between two object
+ * types. Every relations also specifies a 'role', which is a
+ * reference to the RelDef table.
+ *
+ * Relations do principally have a 'source' and a 'destination' object
+ * type, but most functions of this class do ignore this distinction.
+ *
+ * TypeRel is a 'core' MMBase builder. You can get a reference to it
+ * via the MMBase instance.
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.6 2003-02-24 15:10:51 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.7 2003-02-25 11:54:14 michiel Exp $
+ * @see    RelDef
+ * @see    InsRel
+ * @see    org.mmbase.module.core.MMBase
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName());
 
     /**
-     * A TypeRelSet is a Set of typerel nodes. The TypeRel builders
+     * A TypeRelSet is a Set of typerel nodes. The TypeRel builder
      * maintains such a Set of all typerel nodes for quick
      * reference. TypeRelSets are also instantiated when doing queries
      * on TypeRel like getAllowedRelations(MMObjectBuilder) etc.
@@ -43,6 +54,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
         TypeRelSet() {
             super(new Comparator() {
+                    // sorted by source, destination, role
                     public int compare(Object o1, Object o2) {
                         MMObjectNode n1 = (MMObjectNode) o1;
                         MMObjectNode n2 = (MMObjectNode) o2;
@@ -207,6 +219,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     /**
      * Addes one typerel cache entries, plus inherited relations (if builder are initialized)
      * @returns A Set with the added entries, which can be used for logging or so, or can be disregarded
+     * @since  MMBase-1.6.2
      */
     protected TypeRelSet addCacheEntry(MMObjectNode typerel, boolean buildersInitialized) {
         TypeDef typeDef = mmb.getTypeDef();
