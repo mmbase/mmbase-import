@@ -11,6 +11,9 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
+
+import java.util.Vector;
+import java.util.StringTokenizer;
 import org.mmbase.bridge.Node;
 
 /**
@@ -40,7 +43,6 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
         return helper.getValue();
     }
     public void haveBody() { helper.haveBody(); }
-
     /**
      * The transformation template
      */
@@ -48,16 +50,24 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     public void setTemplate(String t) throws JspTagException {
         template = getAttributeValue(t);
     }
-    
+
     public int doStartTag() throws JspTagException {  
         Node node = getNode();
         if (node.getNodeManager().getField("handle") == null) {
             throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be an image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
-        HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
-        String page = req.getContextPath() + "/img.db?" + node.getNumber() + (template != null ? "+" + template.replace('#', 'X') : "");
-        // servdb ignores everything after #, but # is used for colors in convert.
-        // so, we replace all # by X here, and replace them again in ConvertImageMagick. Sigh...
+        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+
+        int number;
+        if (template == null) {
+            // the image itself
+            number = node.getNumber();
+        } else {
+            // the cached image
+            number = node.getIntValue("cache("+ template + ")");
+        }
+        String page = req.getContextPath() + "/img.db?" + number;
+
         helper.setValue(page);
         helper.setJspvar(pageContext);  
         if (getId() != null) {
