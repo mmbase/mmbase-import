@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.21 2000-06-26 19:25:40 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.22 2000-06-28 10:24:18 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.21  2000/06/26 19:25:40  wwwtech
+Daniel.. removed create debug
+
 Revision 1.20  2000/06/26 14:10:10  wwwtech
 Daniel.. small fix in convertor
 
@@ -113,7 +116,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.21 $ $Date: 2000-06-26 19:25:40 $
+* @$Revision: 1.22 $ $Date: 2000-06-28 10:24:18 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -244,7 +247,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			value=value.substring(pos+1,value.length()-1);
 			like=true;
 		}
-		System.out.println("fieldname="+fieldname+" type="+dbtype);
 		if (dbtype.equals("var") || dbtype.equals("varchar")) {
 		//if (dbtype.equals("var") || dbtype.equals("VARCHAR")) {
 			switch (operatorChar) {
@@ -423,7 +425,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		// did it fail ? ifso exit 
 		if (number == -1) return(-1);
 
-		if (number == 0) return(insertRootNode(bul));
 
 		// Create a String that represents the amount of DB fields to be used in the insert.
 		// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
@@ -556,44 +557,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(number);	
 	}
 
-
-	public int insertRootNode(MMObjectBuilder bul) {
-		try {
-			System.out.println("P4");
-			MultiConnection con=bul.mmb.getConnection();
-			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_typedef values(?,?,?,?,?)");
-			stmt.setEscapeProcessing(false);
-			stmt.setInt(1,0);
-			stmt.setInt(2,0);
-			stmt.setString(3,"system");
-			stmt.setString(4,"typedef");
-			stmt.setString(5,"Type definition builder");
-			stmt.executeUpdate();
-			stmt.close();
-			con.close();
-			System.out.println("P5");
-		} catch (SQLException e) {
-			System.out.println("Error on root node");
-			e.printStackTrace();
-			return(-1);
-		}
-
-		try {
-			MultiConnection con=mmb.getConnection();
-			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
-			stmt.setInt(1,0);
-			stmt.setInt(2,0);
-			stmt.setString(3,"system");
-			stmt.executeUpdate();
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on root node");
-			return(-1);
-		}
-		return(0);	
-	}
 
 
 	/**
@@ -936,7 +899,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
-		// System.out.println("XMLCREATE="+result);
 
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -946,6 +908,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("can't create table "+bul.getTableName());
+			 System.out.println("XMLCREATE="+result);
 			e.printStackTrace();
 			return(false);
 		}
