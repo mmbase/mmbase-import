@@ -544,6 +544,28 @@ public class PostArea {
     }
 
     /**
+     * signal the postarea that a reply was removed so it cat update the postcount etc ..
+     * @param child postthread
+     */
+    public void signalRemovedReply(PostThread child) {
+        // todo: Make this configurable.
+        //       uncomment this if you want to decrease the stats if a thread was removed
+        //postcount--;
+
+        if (lastposttime==child.getLastPostTime() && lastposter.equals(child.getLastPoster())) {
+            lastpostsubject="removed";
+        }
+
+        lastposttime = child.getLastPostTime();
+        lastposter = child.getLastPoster();
+
+        syncNode(ForumManager.FASTSYNC);
+
+        // signal the parent Forum that it's postcount needs to be updated
+        parent.signalRemovedReply(this);
+    }
+
+    /**
      * re-add the given PostThread to the postthreads-Vector
      * @param child postthread
      */
@@ -667,11 +689,19 @@ public class PostArea {
     }
 
     /**
-     * remove a postthread from the postthreads
+     * remove a postthread from the postthreads and signal the
+     * parent forum that Thread was removed
+     *
      * @param t postthread
      */
     public void childRemoved(PostThread t) {
+        // todo: Make this configurable.
+        //       uncomment this if you want to decrease the stats if a thread was removed
+        //postthreadcount--;
+
         postthreads.remove(t);
+        syncNode(ForumManager.FASTSYNC);
+        parent.signalRemovedPost(this);
     }
 
     /**

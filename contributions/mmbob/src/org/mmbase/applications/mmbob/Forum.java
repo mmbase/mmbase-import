@@ -538,6 +538,27 @@ public class Forum {
     }
 
     /**
+     * signal the forum that a reply was removed
+     * updates the postcount, lastposttime, lastposter, lastpostsubject of ths forum, and places it in the syncQueue
+     *
+     * @param child PostArea
+     */
+    public void signalRemovedReply(PostArea child) {
+        // todo: Make this configurable.
+        //       uncomment this if you want to decrease the stats if a message was removed
+        //postcount--;
+
+        if (lastposttime==child.getLastPostTime() && lastposter.equals(child.getLastPoster())) {
+            lastpostsubject="removed";
+        }
+
+        lastposttime = child.getLastPostTime();
+        lastposter = child.getLastPoster();
+
+        syncNode(ForumManager.FASTSYNC);
+    }
+
+    /**
      * signal the forum that there is a new postthread
      * updates the postthreadcount , and places it in the syncQueue
      *
@@ -545,6 +566,19 @@ public class Forum {
      */
     public void signalNewPost(PostArea child) {
         postthreadcount++;
+        syncNode(ForumManager.FASTSYNC);
+    }
+
+    /**
+     * signal the forum that there was a postthread removed
+     * updates the postthreadcount , and places it in the syncQueue
+     *
+     * @param child PostArea
+     */
+    public void signalRemovedPost(PostArea child) {
+        // todo: Make this configurable.
+        //       uncomment this if you want to decrease the stats if a thread was removed
+        //postthreadcount--;
         syncNode(ForumManager.FASTSYNC);
     }
 
