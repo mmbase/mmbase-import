@@ -28,8 +28,8 @@ import sun.misc.BASE64Encoder;
  */
 
 public class Base64 implements ByteToCharTransformer {
-    private final static String ENCODING     = "BASE64";    
-    private final static int BASE_64         = 1;     
+    private final static String ENCODING = "BASE64";
+    private final static int BASE_64 = 1;
 
     int to = BASE_64;
 
@@ -50,22 +50,25 @@ public class Base64 implements ByteToCharTransformer {
     public Writer transform(InputStream e) {
         throw new UnsupportedOperationException("transform(InputStream) is not yet supported");
     }
+
     public OutputStream transformBack(Reader e) {
         throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
-    } 
+    }
+
     public String transform(byte[] bytes) {
         return new BASE64Encoder().encode(bytes);
-    } 
+    }
+    
     public byte[] transformBack(String r) {
         try {
             BASE64Decoder dec = new BASE64Decoder();
-            return dec.decodeBuffer(r); 
-        } catch(Exception e) {
+            return dec.decodeBuffer(r);
+        } catch (Exception e) {
             e.printStackTrace();
-	    throw new IllegalArgumentException("the entered string to decode properly was wrong: " + e);
-	}
-    }        
-        
+            throw new IllegalArgumentException("the entered string to decode properly was wrong: " + e);
+        }
+    }
+
     public String getEncoding() {
         return ENCODING;
     }
