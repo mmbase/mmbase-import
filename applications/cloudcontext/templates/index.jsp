@@ -10,17 +10,18 @@
 
 <html>
   <head>
-	<title>Cloud Context Users Administration</title>
-	<link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
+    <title>Cloud Context Users Administration</title>
+    <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
   </head>
   <body>
-	<mm:notpresent referid="location">
-	  <mm:include referids="parameters,$parameters" page="${location}${url}" />
-	</mm:notpresent>
-	<mm:present referid="location">
-	  <mm:include page="${location}${url}" />
-	</mm:present>
+    <mm:notpresent referid="location">
+      <mm:include referids="parameters,$parameters" page="${location}${url}" />
+    </mm:notpresent>
+    <mm:present referid="location">
+      <mm:include page="${location}${url}" />
+    </mm:present>
   </body>
 </html>
-
 </mm:content>

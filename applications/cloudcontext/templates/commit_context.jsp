@@ -6,6 +6,12 @@
 <mm:import externid="context" required="true" />
 
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+  
+<mm:compare referid="context" value="new">
+  <mm:remove referid="context" />
+  <mm:createnode id="context" type="mmbasecontexts" makeuniques="true" />
+</mm:compare>
+
 <mm:node id="currentcontext" referid="context">
   <mm:context>
    <mm:maywrite>
