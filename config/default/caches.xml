@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE caches SYSTEM "dtd/caches_1_0.dtd">
-<!-- 
-  Not all caches are configurable already, but those which are, can be 
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD cache config 1.0//EN" "http://www.mmbase.org/dtd/caches_1_0.dtd">
+<!--
+  Not all caches are configurable already, but those which are, can be
   configured here. It can also be done by the admin pages, but
   changing it here works just as well (better for the moment, because
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.4 2002-05-16 08:13:51 michiel Exp $
+  @version $Id: caches.xml,v 1.5 2002-06-07 13:40:10 pierre Exp $
   @author  Michiel Meeuwissen
 -->
 <caches>
@@ -25,7 +25,7 @@
     <status>active</status>
     <size>300</size>
   </cache>
-  
+
 
   <!-- ================================================================================
   Caches for XSL Transformations
@@ -36,7 +36,7 @@
     <status>active</status>
     <size>50</size>
   </cache>
-  
+
   <!-- A factory for every URIResolver -->
   <cache name="XSLFactories">
     <status>active</status>
