@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.134 2005-01-26 10:23:13 pierre Exp $
+ * @version $Id: Wizard.java,v 1.135 2005-03-01 20:05:30 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -534,7 +534,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         Map params = new HashMap(variables);
         params.put("ew_context", context);
 
-        // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));      params.put("sessionid", sessionId);
+        // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
+        params.put("sessionid", sessionId);
         params.put("sessionkey", sessionKey);
         params.put("referrer", referrer);
         params.put("referrer_encoded", java.net.URLEncoder.encode(referrer));
@@ -1005,7 +1006,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                         if (fieldDataNode != null) {
                             // create normal formfield.
-                            Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(dataContext, "object/@maywrite", "true"));
+                            int endFieldContextXpath = xpath.lastIndexOf("/") > -1 ? xpath.lastIndexOf('/') : 0;
+                            String fieldContextXPath = xpath.substring(0, endFieldContextXpath);
+                            String mayWriteXPath = "".equals(fieldContextXPath) ? "@maywrite" : fieldContextXPath + "/@maywrite";
+                            Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(dataContext, mayWriteXPath, "true"));
                             mergeConstraints(field, fieldDataNode);
                             createFormField(form, field, fieldDataNode);
                         } else {
