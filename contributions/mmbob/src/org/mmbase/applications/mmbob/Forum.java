@@ -222,7 +222,7 @@ public class Forum {
     }
 
     /**
-     * add the poster-node to the given syncQueue
+     * add the forum-node to the given syncQueue
      *
      * @param queue syncQueue that must be used
      */
@@ -699,7 +699,7 @@ public class Forum {
     }
 
     /**
-     * remove all posters and postareas from hash
+     * remove the forum
      *
      * @return <code>true</code> if it succeeds, <code>false</code> if it doesn't
      */
