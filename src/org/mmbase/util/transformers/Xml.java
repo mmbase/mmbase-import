@@ -18,7 +18,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.6 2003-03-07 08:50:35 pierre Exp $
+ * @version $Id: Xml.java,v 1.7 2003-05-06 20:45:37 michiel Exp $
  */
 
 public class Xml extends AbstractTransformer implements CharTransformer {
@@ -217,5 +217,9 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         case ESCAPE_ATTRIBUTE_HTML:     return "ESCAPE_HTML_ATTRIBUTE";
         default: throw new UnsupportedOperationException("unknown encoding");
         }
+    }
+
+    public String toString() {
+        return getEncoding();
     }
 }
