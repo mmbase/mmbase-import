@@ -292,12 +292,14 @@ public class InsRel extends MMObjectBuilder {
     public Vector getRelationsVector(int src, int rnumber) {
         if (rnumber==-1) {
             return getRelationsVector(src);
-        } else if (usesdir) {
+        } else {
             // assures that retrieved nodes are correct
             MMObjectBuilder builder=mmb.getRelDef().getBuilder(rnumber);
-            return builder.searchVector("WHERE (snumber="+src+" OR (dnumber="+src+" and dir<>1)) AND rnumber="+rnumber);
-        } else {
-            return searchVector("WHERE (snumber="+src+" OR dnumber="+src+") AND rnumber="+rnumber);
+            if (usesdir) {
+                return builder.searchVector("WHERE (snumber="+src+" OR (dnumber="+src+" and dir<>1)) AND rnumber="+rnumber);
+            } else {
+                return builder.searchVector("WHERE (snumber="+src+" OR dnumber="+src+") AND rnumber="+rnumber);
+            }
         }
     }
 
