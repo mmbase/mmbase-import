@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.9 2002-11-22 23:32:20 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.10 2002-11-23 00:28:00 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -193,6 +193,9 @@
    (<%=cloud.getUser().getIdentifier()%>)</mm:context></p>
   <p align="right">
     <a href="images/Media.jpg" target="new">Object model</a>
+  </p>
+  <p align="right">
+    <img src="images/mmbase.png" />
   </p>
 </body>
 </html>
