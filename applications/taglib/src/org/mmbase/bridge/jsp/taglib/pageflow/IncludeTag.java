@@ -76,7 +76,6 @@ public class IncludeTag extends UrlTag {
      **/
     private void external(BodyContent bodyContent, String absoluteUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("External: found url: >" + absoluteUrl + "<");
-        debugStart(absoluteUrl);     
         try {
             URL includeURL = new URL(absoluteUrl); 
 
@@ -127,10 +126,10 @@ public class IncludeTag extends UrlTag {
             while ((len = in.read(buffer, 0, buffersize)) != -1) {
                 string.append(buffer, 0, len);
             }            
-            helper.setValue(string.toString());
+            helper.setValue(debugStart(absoluteUrl) + string.toString() + debugEnd(absoluteUrl));
             
             if (log.isDebugEnabled()) log.debug("found string: " + bodyContent.getString());
-            debugEnd(absoluteUrl);
+
 
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
@@ -157,7 +156,6 @@ public class IncludeTag extends UrlTag {
             String targetEncoding   = resp.getCharacterEncoding();
             log.debug("encoding: " + targetEncoding);
         }
-        debugStart(relativeUrl);
         ResponseWrapper response = new ResponseWrapper(resp);
   
         if (log.isDebugEnabled()) {
@@ -180,7 +178,7 @@ public class IncludeTag extends UrlTag {
             if (rd == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
             rd.include(request, response);    
             // bodyContent.write(response.toString());
-            helper.setValue(response.toString());
+            helper.setValue(debugStart(relativeUrl) + response.toString() + debugEnd(relativeUrl));
         } catch (Exception e) {
             log.debug(Logging.stackTrace(e));
             throw new JspTagException(e.toString());
@@ -195,8 +193,6 @@ public class IncludeTag extends UrlTag {
                 log.debug("key '" + e.getKey() + "' value '" + e.getKey() + "'");
             }
         }
-
-        debugEnd(relativeUrl);
     }
 
 
@@ -210,19 +206,19 @@ public class IncludeTag extends UrlTag {
         try {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
             if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl); 
-            String urlfile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
+            String urlFile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
           
             // take of the sessionid if it is present
             //HttpSession session = request.getSession(false);
             //if (session != null && session.isNew()) 
                 { // means there is a ;jsession argument
-                int j = urlfile.lastIndexOf(';');
+                int j = urlFile.lastIndexOf(';');
                 if (j != -1) {
-                    urlfile=urlfile.substring(0, j);
+                    urlFile = urlFile.substring(0, j);
                 }
 
             }
-            java.io.File file = new java.io.File(urlfile);
+            java.io.File file = new java.io.File(urlFile);
                                                  
             if (file.isDirectory()) {
                 throw new JspTagException("Cannot cite a directory");
@@ -235,7 +231,7 @@ public class IncludeTag extends UrlTag {
                 string.write(c);
                 c = reader.read();
             }
-            helper.setValue(string.toString());
+            helper.setValue(debugStart(urlFile) + string.toString() + debugEnd(urlFile));
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString()); 
         }
@@ -342,34 +338,24 @@ public class IncludeTag extends UrlTag {
     /**
      * Write the comment that is just above the include page.
      */
-    private void debugStart(String url) {
-        try {
-            switch(debugtype) {
-            case DEBUG_NONE: return; // do this one first, to avoid losing time.
-            case DEBUG_HTML: 
-                bodyContent.write("\n<!-- " + getThisName() + " page = '" + url + "' -->\n"); break;
-            case DEBUG_CSS:
-                bodyContent.write("\n/* " + getThisName() +  " page  = '" + url + "' */\n"); break;
-            }
-        }  catch (java.io.IOException e) {
-            log.error(e.toString());
+    private String debugStart(String url) {
+        switch(debugtype) {
+        case DEBUG_NONE: return ""; 
+        case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
+        default: return "";
         }
     }
      
     /**
      * Write the comment that is just below the include page.
      */
-    private void debugEnd(String url) {
-        try {
-            switch(debugtype) {
-            case DEBUG_NONE: return;
-            case DEBUG_HTML: 
-                bodyContent.write("\n<!-- END " + getThisName() + " page = '" + url + "' -->\n"); break;
-            case DEBUG_CSS:
-                bodyContent.write("\n/* END " + getThisName() + " page = '" + url + "' */\n"); break;
-            }
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
+    private String debugEnd(String url) {
+        switch(debugtype) {
+        case DEBUG_NONE: return "";
+        case DEBUG_HTML: return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
+        default: return "";
         }
     }
 }
