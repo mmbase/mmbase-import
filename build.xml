@@ -1550,16 +1550,16 @@ Version: MMBase build ${version}
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
-           <include name="org/mmbase/util/BuilderLister.java" />
+           <include name="org/mmbase/util/BuilderList.java" />
     </javac>
 
 
     <!-- call class, this will give an xml file with a listing of all the builders -->
-    <java classname="org.mmbase.util.BuilderLister"
+    <java classname="org.mmbase.util.BuilderList"
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no"
-          output="${mmdocs.dir}/templaters/builders/allbuilders.xml">
+          output="${mmdocs.dir}/templaters/builders/allbuilders-total.xml">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
       <classpath>
@@ -1567,16 +1567,6 @@ Version: MMBase build ${version}
       </classpath>
       <arg value="${source.dir}/config/default/builders" />
     </java>
-
-    <!-- put all builders in one big file -->
-    <!-- <style
-      style="${source-config.dir}/default/xslt/allbuilders.xsl"
-      extension=".xml"
-      in="${mmdocs.dir}/templaters/builders/allbuilders.xml"
-      out="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
-      >
-        <param name="language" expression="${documentation.builders.language}"/>
-    </style> -->
 
     <!-- convert this file into docbook -->
     <!-- <style
@@ -1598,21 +1588,6 @@ Version: MMBase build ${version}
       >
         <param name="root" expression="../../"/>
     </style> -->
-    
-    <java classname="org.mmbase.util.XSLTransformer"
-          classpathref="compile.classpath"
-					fork="yes"
-          failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
-      <jvmarg value="-mx100m" />
-      <classpath>
-        <pathelement location="${build.dir}/classes" />
-      </classpath>
-      <arg value="${source-config.dir}/default/xslt/allbuilders.xsl" />
-      <arg value="${mmdocs.dir}/templaters/builders/allbuilders.xml" />
-      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-total.xml" />
-      <arg value="language=${documentation.builders.language}" />
-    </java>
 
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
