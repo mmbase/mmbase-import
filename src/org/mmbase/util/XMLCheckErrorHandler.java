@@ -9,20 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.List;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 /**
  * Provides ErrorHandler methods for checking xml files by Config module
  *
  * @author cjr@dds.nl
- * @version $Id: XMLCheckErrorHandler.java,v 1.4 2003-02-10 23:44:37 nico Exp $
+ * @version $id$
+
+ * $log$
  */
 
 public class XMLCheckErrorHandler implements ErrorHandler {

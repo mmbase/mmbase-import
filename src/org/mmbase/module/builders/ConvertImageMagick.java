@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.46 2003-03-13 13:51:37 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.42.2.3 2003-03-14 08:28:29 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -116,7 +116,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             byte[] inputbuffer = new byte[1024];
             int size = 0;
             // well it should be mentioned on first line, that means no need to look much further...
-            while ((size = in.read(inputbuffer)) !=  -1) {
+            while ((size = in.read(inputbuffer)) > 0) {
                 outputstream.write(inputbuffer, 0, size);
             }
 
@@ -339,9 +339,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
         String cmd;
         int pos, pos2;
         Iterator t = params.iterator();
-        if (t.hasNext()) {
+        if (t.hasNext())
             t.next(); // first element is the number, ignore it.
-        }
         while (t.hasNext()) {
             key = (String) t.next();
             pos = key.indexOf('(');
@@ -528,17 +527,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     result.format = cmd;
                     continue; // ignore this one, don't add to cmds.
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug("adding " + type + " " + cmd);
-                }
+                if (log.isDebugEnabled())
+                    log.debug("adding -" + type + " " + cmd);
                 // all other things are recognized as well..
-                if (! isCommandPrefix(type.charAt(0))) { // if no prefix given, suppose '-'
-                    cmds.add("-" + type);
-                } else {
-                    cmds.add(type);
-                }
+                cmds.add("-" + type);
                 cmds.add(cmd);
-
             } else {
                 key = getAlias(key);
                 if (key.equals("lowcontrast")) {
@@ -546,22 +539,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 } else if (key.equals("neg")) {
                     cmds.add("+negate");
                 } else {
-                    if (! isCommandPrefix(key.charAt(0))) { // if no prefix given, suppose '-'
-                        cmds.add("-" + key);
-                    } else {
-                        cmds.add(key);
-                    }
+                    cmds.add("-" + key);
                 }
             }
         }
         return result;
-    }
-
-    /**
-     * @since MMBase-1.7
-     */
-    private boolean isCommandPrefix(char c) {
-        return c == '-' || c == '+';
     }
 
     /**
@@ -643,29 +625,24 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     Runtime.getRuntime().exec(
                         (String[]) cmd.toArray(new String[0]));
             }
-            
-            
-            ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict), process.getOutputStream());
+
+            ProcessWriter pw =
+                new ProcessWriter(
+                    new ByteArrayInputStream(pict),
+                    process.getOutputStream());
             log.debug("starting process writer");
             pw.start();
             log.debug("done with process writer");
 
             // in grabs the stuff coming from stdout from program...
-            in = new BufferedInputStream(process.getInputStream(), 1);
+            in = process.getInputStream();
             imagestream = new ByteArrayOutputStream();
-
-            {
-                int size = 0;
-                byte[] inputbuffer = new byte[2048];            
-                while ((size = in.read(inputbuffer)) != -1) {
-                    log.debug("read a chunk");
-                    imagestream.write(inputbuffer, 0, size);
-                }
+            int size = 0;
+            byte[] inputbuffer = new byte[2048];
+            while ((size = in.read(inputbuffer)) > 0) {
+                imagestream.write(inputbuffer, 0, size);
             }
 
-            log.debug("waiting");
-            process.waitFor(); // error code is only certainly available after the process finished
-            
 
             log.debug("retrieved all information");
             byte[] image = imagestream.toByteArray();
@@ -674,33 +651,36 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 // No bytes in the image -
                 // ImageMagick failed to create a proper image.
                 // return null so this image is not by accident stored in the database
-
-                // What if the _original_ image was not a proper image?
-                // in that case it is perhaps better to store an invalid icache too, otherwise
-                // the failure will be repeated
-
-                log.error("Imagemagick conversion did not succeed. Returning null.");
+                log.error(
+                    "Imagemagick conversion did not succeed. Returning null.");
                 return null;
             } else {
                 // print some info and return....
                 if (log.isServiceEnabled()) {
-                    log.service("converted image(#" + pict.length + " bytes)  to '" + format +
-                                "'-image(#" + image.length + " bytes)('" + command + "')");
+                    log.service(
+                        "converted image(#"
+                            + pict.length
+                            + " bytes)  to '"
+                            + format
+                            + "'-image(#"
+                            + image.length
+                            + " bytes)('"
+                            + command
+                            + "')");
                 }
                 return image;
             }
-        } catch (InterruptedIOException e) {
-            log.error("converting image with command: '" + command + 
-                      "' failed  with reason: '" + e.getMessage() + "'");            
         } catch (IOException e) {
-            log.error("converting image with command: '" + command + 
-                      "' failed  with reason: '" + e.getMessage() + "'");
+            log.error(
+                "converting image with command: '"
+                    + command
+                    + "' failed  with reason: '"
+                    + e.getMessage()
+                    + "'");
             log.error(Logging.stackTrace(e));
-        } catch (Exception exception) {
-            log.error("converting image with command: '" + command + "' failed  with reason: '" + exception + "'");
         } finally {
             try {
-                if (in != null) {              
+                if (in != null) {
                     in.close();
                 }
             } catch (IOException ioe) {
@@ -715,9 +695,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
             if (process != null) {
                 int errorCode = 0;
                 try {
+                    log.debug("waiting");
+                    process.waitFor(); // error code is only certainly available after the process finished
+
                     errorCode = process.exitValue();
                     if (errorCode != 0) {
-                        log.error("sub process failed and exited with error code " + errorCode);
+                        log.error(
+                            "sub process failed and exited with error code "
+                                + errorCode);
 
                         InputStream err = null;
                         ByteArrayOutputStream errorStream = null;
@@ -727,7 +712,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                             errorStream = new ByteArrayOutputStream();
                             int size = 0;
                             byte[] inputbuffer = new byte[2048];
-                            while ((size = err.read(inputbuffer)) != -1) {
+                            while ((size = err.read(inputbuffer)) > 0) {
                                 log.debug(
                                     "copying "
                                         + size
@@ -769,11 +754,10 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         }
                     }
                 } catch (IllegalThreadStateException ie) {
-                    log.warn("Process didn't exit yet, but should have exited already." + ie);
-                    //             } catch (InterruptedException ine) {
-                    // log.warn("convert process was interrupted " + ine);                    
+                    log.warn("Process didn't exit yet, but should have exited already.");
+                } catch (InterruptedException ie) {
+                    log.warn("Process was interruped." + ie);
                 }
-
                 process.destroy();
             }
         }

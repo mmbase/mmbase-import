@@ -11,16 +11,20 @@ package org.mmbase.cache;
 
 import java.util.*;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.util.LRUHashtable;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 
 /**
- * This object handles cache multilevel tag cache requests.
+ * This object handles cache multilevel tag cache requests. it removed
+ * invalid lines adding listeners to builders used in the multilevel
+ * query's
+
  *
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.13 2003-03-07 09:31:03 pierre Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.9.2.1 2002-11-26 22:39:39 kees Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 
@@ -65,12 +69,12 @@ public class MultilevelCacheHandler extends Cache {
      */
     public Object put(Object hash, Object o, Vector types,StringTagger tagger) {
         if (! isActive()) return null;
-
+	
         MultilevelCacheEntry n =  (MultilevelCacheEntry)super.get(hash);
-        if (n == null) {
-                n = new MultilevelCacheEntry(this, hash, o, tagger);
-                addListeners(types, n);
-        }
+	if (n == null) {
+	    n = new MultilevelCacheEntry(this, hash, o, tagger);
+	    addListeners(types, n);
+	}
         return put(hash,n);
     }
 
@@ -84,7 +88,7 @@ public class MultilevelCacheHandler extends Cache {
 
     /**
      * @javadoc
-     * @bad-literal default size of cache should be configurable
+     * @badliteral default size of cache should be configurable
      * @todo needs MMbase parameter for initialization
      * @deprecated use getCache
      */

@@ -11,7 +11,8 @@ package org.mmbase.module.builders.vwms;
 
 import java.util.*;
 import java.io.*;
-
+import java.lang.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
@@ -27,7 +28,7 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwm.java,v 1.13 2003-03-10 11:50:25 pierre Exp $
+ * @version 5-Apr-2001
  */
 
 public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {

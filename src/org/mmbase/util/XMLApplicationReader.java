@@ -20,7 +20,6 @@ import org.mmbase.util.logging.Logging;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.18 2003-03-18 16:21:47 pierre Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 
@@ -47,14 +46,14 @@ public class XMLApplicationReader extends XMLBasicReader {
      */
     public int getApplicationVersion() {
         String ver=getElementAttributeValue(root,"version");
-        if (!ver.equals(""))
+	if (!ver.equals(""))
             try {
                 return Integer.parseInt(ver);
             } catch (Exception e) {
                 return -1;
             }
-        else
-            return -1;
+	else
+	    return -1;
     }
 
     /**
@@ -71,25 +70,7 @@ public class XMLApplicationReader extends XMLBasicReader {
         return getElementAttributeValue(root,"maintainer");
     }
 
-    /**
-     * Get the applicationlist required by this application
-     */
-    public List getRequirements() {
-        List results=new Vector();
-        for(Enumeration ns=getChildElements("application.requirements","requires");
-            ns.hasMoreElements(); ) {
-            Element n3=(Element)ns.nextElement();
-            Map bset=new HashMap();
-            bset.put("name",getElementAttributeValue(n3,"name"));
-            addAttribute(bset,n3,"maintainer");
-            addAttribute(bset,n3,"version");
-            addAttribute(bset,n3,"type");
-            results.add(bset);
-        }
-        return results;
-    }
-
-    private void addAttribute(Map bset, Element n, String attribute) {
+    private void addAttribute(Hashtable bset, Element n, String attribute) {
         String val=n.getAttribute(attribute);
         if (!val.equals("")) {
             bset.put(attribute,val);
@@ -100,7 +81,7 @@ public class XMLApplicationReader extends XMLBasicReader {
      * Get the Builders needed for this application
      */
     public Vector getNeededBuilders() {
-        Vector results=new Vector();
+	Vector results=new Vector();
         for(Enumeration ns=getChildElements("application.neededbuilderlist","builder");
             ns.hasMoreElements(); ) {
             Element n3=(Element)ns.nextElement();
@@ -109,8 +90,8 @@ public class XMLApplicationReader extends XMLBasicReader {
             addAttribute(bset,n3,"maintainer");
             addAttribute(bset,n3,"version");
             results.addElement(bset);
-        }
-        return results;
+	}
+	return results;
     }
 
 
@@ -118,7 +99,7 @@ public class XMLApplicationReader extends XMLBasicReader {
      * Get the RelDefs needed for this application
      */
     public Vector getNeededRelDefs() {
-        Vector results=new Vector();
+	Vector results=new Vector();
         for(Enumeration ns=getChildElements("application.neededreldeflist","reldef");
             ns.hasMoreElements(); ) {
             Element n3=(Element)ns.nextElement();
@@ -130,8 +111,8 @@ public class XMLApplicationReader extends XMLBasicReader {
             addAttribute(bset,n3,"guitargetname");
             addAttribute(bset,n3,"builder");
             results.addElement(bset);
-        }
-        return results;
+	}
+	return results;
     }
 
 
@@ -139,7 +120,7 @@ public class XMLApplicationReader extends XMLBasicReader {
      * Get allowed relations for this application
      */
     public Vector getAllowedRelations() {
-        Vector results=new Vector();
+	Vector results=new Vector();
         for(Enumeration ns=getChildElements("application.allowedrelationlist","relation");
             ns.hasMoreElements(); ) {
             Element n3=(Element)ns.nextElement();
@@ -148,15 +129,15 @@ public class XMLApplicationReader extends XMLBasicReader {
             addAttribute(bset,n3,"to");
             addAttribute(bset,n3,"type");
             results.addElement(bset);
-        }
-        return results;
+    	}
+	return results;
     }
 
     /**
      * Get datasources attached to this application
      */
     public Vector getDataSources() {
-        Vector results=new Vector();
+	Vector results=new Vector();
         for(Enumeration ns=getChildElements("application.datasourcelist","datasource");
             ns.hasMoreElements(); ) {
             Element n3=(Element)ns.nextElement();
@@ -164,8 +145,8 @@ public class XMLApplicationReader extends XMLBasicReader {
             addAttribute(bset,n3,"path");
             addAttribute(bset,n3,"builder");
             results.addElement(bset);
-        }
-        return results;
+	}
+	return results;
     }
 
 
@@ -173,7 +154,7 @@ public class XMLApplicationReader extends XMLBasicReader {
      * Get relationsources attached to this application
      */
     public Vector getRelationSources() {
-        Vector results=new Vector();
+	Vector results=new Vector();
         for(Enumeration ns=getChildElements("application.relationsourcelist","relationsource");
             ns.hasMoreElements(); ) {
             Element n3=(Element)ns.nextElement();
@@ -182,14 +163,14 @@ public class XMLApplicationReader extends XMLBasicReader {
             addAttribute(bset,n3,"builder");
             results.addElement(bset);
         }
-        return results;
+	return results;
     }
 
     /**
      * contextsources attached to this application
      */
     public Vector getContextSources() {
-        Vector results=new Vector();
+	Vector results=new Vector();
         for(Enumeration ns=getChildElements("application.contextsourcelist","contextsource"); ns.hasMoreElements(); ) {
             Element n3=(Element)ns.nextElement();
             Hashtable bset=new Hashtable();
@@ -197,8 +178,8 @@ public class XMLApplicationReader extends XMLBasicReader {
             addAttribute(bset,n3,"type");
             addAttribute(bset,n3,"goal");
             results.addElement(bset);
-        }
-        return results;
+	}
+	return results;
     }
 
     /**

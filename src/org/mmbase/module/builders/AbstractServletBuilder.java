@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.servlet.MMBaseServlet;
+import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.13 2003-03-18 13:24:34 pierre Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.11.2.1 2003-03-18 13:22:58 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {

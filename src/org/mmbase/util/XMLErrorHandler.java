@@ -9,17 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import java.io.*;
+import java.util.*;
+
+import org.xml.sax.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
+
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.11 2003-03-11 14:58:15 michiel Exp $
+ * @version $Revision: 1.7.2.1 $ $Date: 2002-12-03 21:22:34 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
@@ -121,10 +125,9 @@ public class XMLErrorHandler implements ErrorHandler {
         String systemId = ex.getSystemId();
         if (systemId != null) {
             int index = systemId.lastIndexOf('/');
-            if (index != -1) {
+            if (index != -1)
                 systemId = systemId.substring(index + 1);
-            }
-            str.append(systemId);
+                str.append(systemId);
         }
         str.append(" line:");
         str.append(ex.getLineNumber());

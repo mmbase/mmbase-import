@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.5 2003-03-10 11:50:34 pierre Exp $
+ * @version 26 Apr 2001
  */
 public class VirtualNode extends MMObjectNode {
     /**
@@ -52,7 +52,7 @@ public class VirtualNode extends MMObjectNode {
     /**
      *  Insert is not implemented on a virtual node.
      *  @return nothing, throws an exception
-     *  @throws UnsupportedOperationException
+     *  @throw UnsupportedOperationException
      */
     public int insert(String userName) {
         throw new UnsupportedOperationException("Method insert is not implemented on a virtual node.");
@@ -72,7 +72,7 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node never has relations.
      * @return empty <code>Enumeration</code>
      */
-    public Enumeration getRelations() {
+    public Enumeration getRelations() {    
         return new java.util.Vector(0).elements();
     }
 

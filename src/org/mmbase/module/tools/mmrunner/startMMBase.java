@@ -8,7 +8,10 @@ See http://www.MMBase.org/license
 
 */
 
+import java.lang.*;
 import java.io.*;
+import java.awt.*;
+import java.util.*;
 
 public class startMMBase extends Object {
 

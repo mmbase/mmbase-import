@@ -10,7 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
+import java.sql.*;
+import javax.servlet.http.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -30,7 +33,7 @@ import org.mmbase.module.gui.html.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PageMaster.java,v 1.14 2003-03-10 11:50:24 pierre Exp $
+ * @version 9 Apr 2001
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {

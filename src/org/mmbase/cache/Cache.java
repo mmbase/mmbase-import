@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.17 2003-02-03 18:18:31 pierre Exp $
+ * @version $Id: Cache.java,v 1.16.2.1 2003-02-03 18:18:05 pierre Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 

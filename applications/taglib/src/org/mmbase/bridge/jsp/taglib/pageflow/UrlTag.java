@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.IOException;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 
 import org.mmbase.bridge.jsp.taglib.Writer;
 import org.mmbase.bridge.jsp.taglib.WriterHelper;
@@ -100,9 +102,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         if (show.charAt(0) == '/') { // absolute on servercontex
             log.debug("'absolute' url");
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            //String thisDir = new java.io.File(req.getServletPath()).getParent().toString();
-            //show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
-            show.insert(0,  req.getContextPath());            
+            show.insert(0,  req.getContextPath());
         }
 
         String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);

@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -124,10 +126,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         if (field == null) { // some function, or 'referid' was used.
             if (getReferid() != null) { // referid
                 value = getObject(getReferid());
-            } else {                    // function
+            } else {     // function
                 value = getNodeVar().getValue(fieldName);
             }
-        } else {                        // a field was found!
+        } else {  // a field was found!
             // if direct parent is a Formatter Tag, then communicate
             FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
             if (f != null && f.wantXML()) {

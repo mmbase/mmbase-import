@@ -11,11 +11,11 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="application actions">
+<table summary="application actions" width="93%" cellspacing="1" cellpadding="3">
 <%
-    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
-<tr>
+<tr align="left">
  <th class="header" colspan="4">Description of <%=app%></th>
 </tr>
 <tr>
@@ -26,10 +26,10 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
 <th class="header" colspan="2">Action</th>
   <th class="header" >&nbsp;</th>
-  <th class="navigate">Confirm</th>
+  <th class="header">Confirm</th>
 </tr>
 <tr>
  <td class="data" colspan="2">Install <%=app%></td>
@@ -38,7 +38,7 @@
   <form action="<mm:url page="result.jsp" />" method="POST">
    <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="LOAD" />
-   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+   <input type="submit" value="YES" />
   </form>
  </td>
 </tr>
@@ -46,11 +46,11 @@
 <tr><td>&nbsp;</td></tr>
 
 <form action="<mm:url page="result.jsp" />" method="POST">
-<tr>
+<tr align="left">
 <th class="header">Action</th>
   <th class="header">Path</th>
   <th class="header">Goal</th>
-  <th class="navigate">Confirm</th>
+  <th class="header">Confirm</th>
 </tr>
 <tr>
  <td class="data" >Save <%=app%></td>
@@ -62,20 +62,20 @@
  <td class="linkdata" >
    <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="SAVE" />
-   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+   <input type="submit" value="YES" />
  </td>
 </tr>
 </form>
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
 <th class="header">Action</th>
   <th class="header" colspan="2">Status</th>
-  <th class="navigate">View</th>
+  <th class="header">View</th>
 </tr>
 <%
-    Module mmconfig=ContextProvider.getDefaultCloudContext().getModule("config");
+    Module mmconfig=LocalContext.getCloudContext().getModule("config");
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-applications-"+app);
 %>
@@ -91,7 +91,7 @@
 <%  } %>
     <input type="hidden" name="config" value="applications" />
     <input type="hidden" name="target" value="<%=app%>" />
-    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
+    <input type="submit" value="YES" />
   </form>
  </td>
 </tr>
@@ -100,7 +100,8 @@
 <tr>
  <td class="data">Application Tool</td>
  <td class="data" colspan="2">
-     Warning: This will only work if you run MMBase on the same machine as your display unit or have redirected it.<br />
+     Warning: This will only work if you run MMBase on the same
+     machine as your display unit or have redirected it.<br />
      If this is not the case, use the AppTool as an application.
  </td>
  <td class="linkdata">
@@ -108,13 +109,13 @@
     <input type="hidden" name="cmd" value="APPTOOL" />
     <input type="hidden" name="application" value="<%=app%>" />
     <input type="hidden" name="APPTOOL" value="<%=app%>" />
-    <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+    <input type="submit" value="YES" />
   </form>
  </td>
 </tr>
 
-<tr class="footer">
-<td class="navigate"><a href="<mm:url page="../applications.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<tr>
+<td class="navigate"><a href="<mm:url page="../applications.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Application Overview</td>
 </tr>
 </table>

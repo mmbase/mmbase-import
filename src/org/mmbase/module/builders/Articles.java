@@ -9,11 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.sql.*;
+
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Articles.java,v 1.7 2003-03-10 11:50:15 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class Articles extends MMObjectBuilder {
 

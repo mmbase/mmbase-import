@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.12 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.10 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
@@ -60,7 +60,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
     *
     */
     public RelationManagerIterator relationManagerIterator() {
-        return new BasicRelationManagerIterator();
+        return new BasicRelationManagerIterator(this);
     };
 
     /**
@@ -70,15 +70,16 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         return new BasicRelationManagerList(subList(fromIndex, toIndex),cloud);
     }
 
-    protected class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
+    public class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
+
+        BasicRelationManagerIterator(BasicList list) {
+            super(list);
+        }
 
         public RelationManager nextRelationManager() {
             return (RelationManager)next();
         }
 
-        public RelationManager previousRelationManager() {
-            return (RelationManager)previous();
-        }
     }
 
 }

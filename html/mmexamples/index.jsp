@@ -5,7 +5,34 @@
 <html>
 <head>
 <title>MMBase Demos</title>
-<link rel="stylesheet" href="../css/mmbase.css" type="text/css">
+<style>
+<!--
+ body {  background-color: white;
+         color:42BDAD;
+ 	   font-size:medium;}
+ a:link { color: black; }
+ a:visited { color: #555555; }
+ a:active { color: #555555; }
+
+ th {  background-color: #44BDAD;
+       color:#00425A;
+	 font-size:medium;
+	 font-weight:bold; }
+ th.main {  background-color: #44BDAD;
+       color:#00425A;
+	 font-size:large;
+	 font-weight:bold; }
+ td    {  background-color: #00425A;
+         color:#44BDAD;
+	 font-size:medium;
+	 font-weight:normal; }
+ td.link {  background-color: #44BDAD;
+       color:#00425A;
+	 font-size:medium;
+	 font-weight:normal;
+	 width:14; }
+-->
+</style>
 </head>
 
 <body >

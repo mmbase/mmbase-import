@@ -8,9 +8,8 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
-
-import javax.servlet.ServletException;
-
+import java.lang.Exception;
+import javax.servlet.*;
 
 /**
  * This Exception will occur if the upload file exceeds a certain size,

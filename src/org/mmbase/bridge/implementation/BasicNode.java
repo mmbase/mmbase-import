@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.84 2003-03-21 17:41:57 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.77.2.6 2003-03-21 17:50:20 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 

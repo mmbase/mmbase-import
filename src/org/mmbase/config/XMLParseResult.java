@@ -9,11 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.config;
 
+import java.lang.*;
 import java.util.*;
 
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
 

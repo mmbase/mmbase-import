@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.community;
 
 import java.util.*;
+import java.awt.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use NodeBreaker instead
  *
  * @author Dirk-Jan Hoekstra
- * @version $Id: RelationBreaker.java,v 1.6 2003-03-10 11:50:29 pierre Exp $
+ * @version 5 Jan 2001
  */
 
 public class RelationBreaker extends Thread {

@@ -9,12 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import java.util.ListIterator;
 
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerIterator.java,v 1.6 2003-03-04 13:44:41 nico Exp $
+ * @version $Id: NodeManagerIterator.java,v 1.4 2002-10-18 08:30:09 pierre Exp $
  */
 public interface NodeManagerIterator extends NodeIterator {
 
@@ -22,10 +23,5 @@ public interface NodeManagerIterator extends NodeIterator {
      * Returns the next element in the iterator as a NodeManager
      */
     public NodeManager nextNodeManager();
-
-    /**
-     * Returns the previous element in the iterator as a NodeManager
-     */
-    public NodeManager previousNodeManager();
 
 }

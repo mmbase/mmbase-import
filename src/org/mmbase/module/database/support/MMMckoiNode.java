@@ -24,9 +24,9 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.11 2003-03-07 08:50:19 pierre Exp $
+ * @version $Id: MMMckoiNode.java,v 1.9 2002-11-14 16:22:11 robmaris Exp $
  */
-public class MMMckoiNode extends BaseJdbc2Node implements MMJdbc2NodeInterface {
+public class MMMckoiNode implements MMJdbc2NodeInterface {
 
     /**
     * Logging instance
@@ -65,10 +65,6 @@ public class MMMckoiNode extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         allowed2disallowed=getReverseHash(disallowed2allowed);
         // map the default types
         mapDefaultFields(disallowed2allowed);
-
-        // Instantiate and initialize sql handler.
-        super.init(disallowed2allowed, parser);
-
         // Check if the numbertable exists, if not one will be created.
         checkNumberTable();
     }
@@ -902,7 +898,7 @@ public class MMMckoiNode extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     /**
      * return number of entries consisting in given table
      * @param tableName the table that has to be counted
-     * @return the number of items the table has
+     * @retuns the number of items the table has
      */
     public int size(String tableName) {
         MultiConnection con=null;

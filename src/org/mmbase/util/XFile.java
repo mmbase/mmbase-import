@@ -9,14 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
+import java.util.*;
+import java.io.*;
 
 /**
  * Retrieves the file properties from a File object and stores them as fields.
  * Eg: the files' modification time will be stored as a moddate long variabele.
  *
  * @author David V van Zeventer
- * @version $Id: XFile.java,v 1.6 2003-03-07 09:31:16 pierre Exp $
+ * @version: 13 nov 1998
  */
 public class XFile {
 

@@ -20,7 +20,6 @@
 
 <head>
   <title>Taglib examples</title>
-  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
@@ -31,7 +30,7 @@
 
 <table cellpadding="5">
   <tr>
-    <td valign="top">
+    <td valign="top" bgcolor="EEEEEE">
 
 <form method="POST">
 

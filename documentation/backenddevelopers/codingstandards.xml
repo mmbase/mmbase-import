@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>14 February 2003</date>
-    <edition>$Id: codingstandards.xml,v 1.2 2003-03-05 12:12:43 pierre Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.1.2.1 2003-02-14 14:51:05 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -64,7 +64,7 @@
             <listitem>
               <simpara>For a class/interface:</simpara>
               <simpara><token>@author</token> (by alphabetical order)</simpara>
-              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.2 2003-03-05 12:12:43 pierre Exp $ , so that CVS can insert the correct version number.)</simpara>
+              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.1.2.1 2003-02-14 14:51:05 pierre Exp $ , so that CVS can insert the correct version number.)</simpara>
             </listitem>
             <listitem>
               <simpara>For a member function:</simpara>

@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.util.*;
+import java.awt.*;
 
 public interface StatisticsInterface {
 	//public boolean JamesEvent(JamesEvent evt);

@@ -17,6 +17,7 @@ import java.util.Hashtable;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Module;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

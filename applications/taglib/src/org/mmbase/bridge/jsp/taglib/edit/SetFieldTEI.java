@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
+import java.util.Vector; 
 import javax.servlet.jsp.tagext.*;
 import org.mmbase.util.logging.*;
 

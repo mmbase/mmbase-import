@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>20 july 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.7 2003-02-28 12:19:58 pierre Exp $</edition>
+    <edition>$Id: dovexmlapi.xml,v 1.1.2.6 2003-02-28 12:18:27 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>

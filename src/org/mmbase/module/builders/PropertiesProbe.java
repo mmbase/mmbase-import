@@ -9,9 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
 import java.sql.*;
 
 import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -20,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: PropertiesProbe.java,v 1.7 2003-03-10 11:50:20 pierre Exp $
+ * @version 28 Nov 1998
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {

@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.39 2002-12-05 09:50:32 kees Exp $
+ * @version $Id: Node.java,v 1.38.2.1 2002-12-05 09:41:29 kees Exp $
  */
 public interface Node {
 

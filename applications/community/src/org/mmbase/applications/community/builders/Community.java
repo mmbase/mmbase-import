@@ -12,7 +12,9 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
+import org.mmbase.module.community.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.8 2003-03-10 11:50:17 pierre Exp $
+ * @version 28 May 2001
  */
 
 public class Community extends MMObjectBuilder {

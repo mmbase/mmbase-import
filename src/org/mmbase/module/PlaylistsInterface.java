@@ -10,6 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.*;
+import java.awt.*;
+
+import org.mmbase.util.*;
 
 public interface PlaylistsInterface {
 	public void init();

@@ -9,8 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.util.*;
+import java.util.Date;
+import java.sql.*;
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
+
 /**
- * @version $Id: MMEventsProbe.java,v 1.5 2003-03-10 11:50:20 pierre Exp $
+ * @version 23 Dec 1998
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {

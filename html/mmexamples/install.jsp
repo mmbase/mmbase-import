@@ -5,7 +5,34 @@
 <html>
 <head>
 <title>MMBase Demo installation</title>
-<link rel="stylesheet" href="../css/mmbase.css" type="text/css">
+<style>
+<!--
+ body {  background-color: white;
+         color:42BDAD;
+ 	   font-size:medium;}
+ a:link { color: black; }
+ a:visited { color: #555555; }
+ a:active { color: #555555; }
+
+ th {  background-color: #44BDAD;
+       color:#00425A;
+	 font-size:medium;
+	 font-weight:bold; }
+ th.main {  background-color: #44BDAD;
+       color:#00425A;
+	 font-size:large;
+	 font-weight:bold; }
+ td    {  background-color: #00425A;
+         color:#44BDAD;
+	 font-size:medium;
+	 font-weight:normal; }
+ td.link {  background-color: #44BDAD;
+       color:#00425A;
+	 font-size:medium;
+	 font-weight:normal;
+	 width:14; }
+-->
+</style>
 </head>
 
 <body >
@@ -32,18 +59,21 @@ You can return to this installation script any time.<br />
 </tr>
 <mm:import externid="installstep" jspvar="installstep" vartype="Integer">-1</mm:import>
         <%
-           String[] steps= new String[7];
-           steps[0]="Resources";
-           steps[1]="MyNews";
-           steps[2]="MyCompany";
-           steps[3]="MyUsers";
-           steps[4]="MyYahoo";
-           steps[5]="Community";
-           steps[6]="BugTracker";
+           String[] steps= { 
+            "Resources", 
+            "MyNews", 
+            "MyCompany",
+            "MyUsers", 
+            "MyYahoo",
+            "Community",
+            "BugTracker", 
+            "Codings", 
+            "RichText"
+          };
            boolean first=true;
            boolean installed=false;
            NodeManager versions=cloud.getNodeManager("versions");
-           Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+           Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 
            for (int step=0; step<steps.length; step++) {
              String app=steps[step];
@@ -73,12 +103,12 @@ You can return to this installation script any time.<br />
 	<td class="link" >
                 <% if (installed) {%>
                      Installed,
-                     <a href="<mm:url page="<%="install.jsp?installstep="+step+"#step"+step%>" />">[review&nbsp;installation&nbsp;notes]</a>
+                     <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[review&nbsp;installation&nbsp;notes]</a>
 
                 <% } else { %>
                     <% if (first) {
                         first=false;%>
-        		<a href="<mm:url page="<%="install.jsp?installstep="+step+"#step"+step%>" />">[INSTALL&nbsp;NOW]</a>
+        		<a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[INSTALL&nbsp;NOW]</a>
                     <% } else { %>
                        Not&nbsp;yet&nbsp;installed
                     <% } %>

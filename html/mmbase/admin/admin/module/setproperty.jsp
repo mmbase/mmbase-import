@@ -12,16 +12,16 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<% Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+<% Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
    String value=mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
 %>
-<table summary="module property data">
+<table summary="module property data" width="93%" cellspacing="1" cellpadding="3">
 
-<form action="<mm:url page="actions.jsp"/>" method="POST">
-<tr>
+<form action="<mm:url page='actions.jsp'/>" method="POST">
+<tr align="left">
   <th class="header">Property</th>
   <th class="header">Value</th>
-  <th class="navigate">Change</th>
+  <th class="header">Change</th>
 </tr>
 <tr>
   <td class="data"><%=property%></td>
@@ -32,15 +32,15 @@
     <input type="hidden" name="module" value="<%=module%>" />
     <input type="hidden" name="property" value="<%=property%>" />
     <input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
-    <input type="image" src="../../images/change.gif" alt="Change" border="0"  />
+    <input type="submit" value="Change" />
 </td>
 </tr>
 </form>
 
 <tr><td>&nbsp;</td></tr>
 
-<tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<tr>
+<td class="navigate"><a href="<mm:url page='<%="actions.jsp?module="+module%>' />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">&nbsp;</td>
 </tr>
 </table>

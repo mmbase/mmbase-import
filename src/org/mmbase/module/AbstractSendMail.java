@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import org.mmbase.util.*;

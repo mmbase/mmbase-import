@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 
 import org.mmbase.bridge.jsp.taglib.Condition;
 

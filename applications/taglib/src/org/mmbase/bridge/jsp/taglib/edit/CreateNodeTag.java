@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
+import java.io.IOException;
+
 import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyTag;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.BodyContent;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
@@ -20,7 +24,6 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 /**
 * A NodeProvider which creates a new node, which will be commited after the body. So, you
 * can use `setField's in the body.

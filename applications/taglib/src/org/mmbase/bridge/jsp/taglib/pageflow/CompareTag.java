@@ -9,10 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
+import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,14 +29,14 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
 
     private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
 
-    private Attribute value = Attribute.NULL;
+    private String value;
     public void setValue(String v) throws JspTagException {
-        value =  getAttribute(v);
+        value =  getAttributeValue(v);
     }
 
-    private Attribute referid2 = Attribute.NULL;
+    private String referid2 = null;
     public void setReferid2(String r) throws JspTagException {
-        referid2 = getAttribute(r);
+        referid2 = getAttributeValue(r);
     }
 
     protected boolean doCompare(Comparable v1, Comparable v2) {
@@ -46,10 +47,10 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
     }
 
     protected Object getCompare2() throws JspTagException {
-        if (referid2 == Attribute.NULL) {
+        if (referid2 == null) {
             throw new JspTagException("Attribute 'value' or 'referid2' must be indicated");
         }
-        return getObject(referid2.getString(this));
+        return getObject(referid2);
 
     }
 
@@ -68,9 +69,9 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
 
         Object compare2;
-        if (value != Attribute.NULL) {
-            compare2 = value.getValue(this);
-            if (referid2 != Attribute.NULL) {
+        if (value != null) {
+            compare2 = value;
+            if (referid2 != null) {
                 throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
             }
         } else {

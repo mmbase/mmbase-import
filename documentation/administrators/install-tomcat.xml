@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase installation on Apache Tomcat</title>
     <date>5 december 2002</date>
-    <edition>$Id: install-tomcat.xml,v 1.4 2003-02-26 18:34:09 michiel Exp $</edition>
+    <edition>$Id: install-tomcat.xml,v 1.1.2.3 2003-02-26 18:33:29 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>

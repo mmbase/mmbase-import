@@ -10,13 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.database;
 
 import java.util.*;
+import java.io.*;
 import java.sql.*;
 
 import org.mmbase.module.database.JDBCInterface;
 
 import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.XMLDatabaseReader;
+import org.mmbase.util.logging.*;
 
 /**
  * Storage interface for use with a database.
@@ -28,7 +31,7 @@ import org.mmbase.util.XMLDatabaseReader;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.3 2003-03-04 15:38:42 nico Exp $
+ * @version $Id: DatabaseStorage.java,v 1.2 2002-11-12 16:57:52 pierre Exp $
  */
 public interface DatabaseStorage extends Storage  {
 

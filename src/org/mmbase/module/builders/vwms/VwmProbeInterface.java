@@ -9,6 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
+import java.util.*;
+import java.net.*;
+import java.sql.*;
+
 import org.mmbase.module.core.*;
 
 /**
@@ -18,7 +22,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmProbeInterface.java,v 1.6 2003-03-10 11:50:26 pierre Exp $
+ * @version 5-Apr-2001
  */
 public interface VwmProbeInterface {
 

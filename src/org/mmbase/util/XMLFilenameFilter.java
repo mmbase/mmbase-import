@@ -9,15 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
+import java.lang.*;
+import java.io.*;
 
 /**
- * Implement a FilenameFilter for xml files
- *
  * @author cjr@dds.nl
- * @version $Id: XMLFilenameFilter.java,v 1.3 2003-03-10 11:51:14 pierre Exp $
+ * @version $Id: XMLFilenameFilter.java,v 1.1 2000-08-20 10:38:27 case Exp $
+ *
+ * Implement a FilenameFilter for xml files
+ * 
+ * $Log: not supported by cvs2svn $
+ *
  */
 public class XMLFilenameFilter implements FilenameFilter {
     public boolean accept(File directory, String name) {

@@ -13,6 +13,7 @@ package org.mmbase.servlet;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.servlet.http.*;
 import java.util.*;
 
 import org.mmbase.util.*;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  *  and the form will be mailed.
  *
  * @author  marmaa@vpro.nl (Marcel Maatkamp) 
- * @version $Id: SimpleFormToMailServlet.java,v 1.9 2003-03-10 11:50:40 pierre Exp $ 
+ * @version 2.0.1  
  */
 public abstract class SimpleFormToMailServlet extends JamesServlet {
     static Logger log = Logging.getLoggerInstance(performance.class.getName());

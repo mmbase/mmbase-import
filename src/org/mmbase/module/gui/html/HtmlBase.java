@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.47 2003-02-21 09:43:23 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.44.2.1 2003-02-21 09:33:35 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**

@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>12 February 2003</date>
-    <edition>$Id: security-framework.xml,v 1.6 2003-02-14 15:13:56 pierre Exp $</edition>
+    <edition>$Id: security-framework.xml,v 1.1.2.5 2003-02-14 14:51:04 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>

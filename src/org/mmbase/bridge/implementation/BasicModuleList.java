@@ -11,14 +11,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
  * A list of Modules
  *
  * @author Pierre van Rooden
- * @version $Id: BasicModuleList.java,v 1.10 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicModuleList.java,v 1.7 2002-09-25 14:57:47 pierre Exp $
  */
 public class BasicModuleList extends BasicList implements ModuleList {
     private static Logger log = Logging.getLoggerInstance(BasicModuleList.class.getName());
@@ -49,17 +51,17 @@ public class BasicModuleList extends BasicList implements ModuleList {
      *
      */
     public ModuleIterator moduleIterator() {
-        return new BasicModuleIterator();
+        return new BasicModuleIterator(this);
     };
 
-    protected class BasicModuleIterator extends BasicIterator implements ModuleIterator {
+    public class BasicModuleIterator extends BasicIterator implements ModuleIterator {
+
+        BasicModuleIterator(BasicList list) {
+            super(list);
+        }
 
         public Module nextModule() {
             return (Module)next();
-        }
-
-        public Module previousModule() {
-            return (Module)previous();
         }
 
     }

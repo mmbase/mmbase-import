@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * object types (builders)
  *
  * @author Daniel Ockeloen
- * @version $Id: TypeDef.java,v 1.33 2003-03-12 20:12:50 michiel Exp $
+ * @version 12 Mar 1997
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -43,7 +43,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * List of known builders.
      */
-    private Vector typedefsLoaded = new Vector();	// Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();    // Contains the names of all active builders
 
     /**
      * Constructor
@@ -106,7 +106,7 @@ public class TypeDef extends MMObjectBuilder {
      * Remove a node from the cloud, when the represented builder was active
      * it will also be unloaded
      * @param node The node to remove.
-     * @throws RuntimeException When the operation could not be performed
+     * @throw RuntimeException When the operation could not be performed
      */
     public void removeNode(MMObjectNode node) {
         Integer number=node.getIntegerValue("number");
@@ -171,7 +171,6 @@ public class TypeDef extends MMObjectBuilder {
         }
         return result;
     }
-
 
     /**
      * Obtain the buildername of the requested type
@@ -342,7 +341,6 @@ public class TypeDef extends MMObjectBuilder {
         return rtn;
     }
 
-
     /**
      * @javadoc
      */
@@ -407,6 +405,4 @@ public class TypeDef extends MMObjectBuilder {
             return super.executeFunction(node, function, args);
         }
     }
-
-
 }

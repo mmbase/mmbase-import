@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.12 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicNodeManagerList.java,v 1.9 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicNodeManagerList extends BasicNodeList implements NodeManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
@@ -63,7 +64,7 @@ public class BasicNodeManagerList extends BasicNodeList implements NodeManagerLi
      *
      */
     public NodeManagerIterator nodeManagerIterator() {
-        return new BasicNodeManagerIterator();
+        return new BasicNodeManagerIterator(this);
     };
 
     /**
@@ -73,14 +74,14 @@ public class BasicNodeManagerList extends BasicNodeList implements NodeManagerLi
         return new BasicNodeManagerList(subList(fromIndex, toIndex),cloud);
     }
 
-    protected class BasicNodeManagerIterator extends BasicNodeIterator implements NodeManagerIterator {
+    public class BasicNodeManagerIterator extends BasicNodeIterator implements NodeManagerIterator {
+
+        BasicNodeManagerIterator(BasicList list) {
+            super(list);
+        }
 
         public NodeManager nextNodeManager() {
             return (NodeManager)next();
-        }
-
-        public NodeManager previousNodeManager() {
-            return (NodeManager)previous();
         }
     }
 

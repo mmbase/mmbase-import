@@ -9,7 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
+
+import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -19,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: ModuleProbe.java,v 1.7 2003-03-10 11:50:12 pierre Exp $
+ * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class ModuleProbe implements Runnable {

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.28 2003-03-07 09:45:31 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.27 2002-10-25 20:56:24 michiel Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -107,7 +107,7 @@ public class XMLBuilderReader extends XMLBasicReader {
     }
 
     /**
-     * Detremines if inheritance is resolved.
+     * Is inheritance resolved?
      * This method returns true if a call to resolveInheritance succeeded.
      * it returns false if resolveInheritance failed (returned false or threw an exception)
      *

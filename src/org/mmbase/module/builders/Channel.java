@@ -10,10 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.builders;
 
+import java.net.*;
 import java.util.*;
 import java.io.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.builders.Message;
 import org.mmbase.module.community.*;
 import org.mmbase.util.*;
@@ -38,7 +40,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.15 2003-03-10 11:50:16 pierre Exp $
+ * @version 21 May 2001
  */
 
 public class Channel extends MMObjectBuilder {
@@ -187,7 +189,7 @@ public class Channel extends MMObjectBuilder {
      * Opens the channel.
      *
      * @param channel The channel to open.
-     * @return <code>true</code> if opening the channel was successfull.
+     * @result <code>true</code> if opening the channel was successfull.
      */
     public boolean open(MMObjectNode channel) {
         MMObjectNode community = communityParent(channel);
@@ -203,7 +205,7 @@ public class Channel extends MMObjectBuilder {
      *
      * @param channel The channel to open.
      * @param community The community with this channel's settings
-     * @return <code>true</code> if opening the channel was successfull.
+     * @result <code>true</code> if opening the channel was successfull.
      */
     public boolean open(MMObjectNode channel, MMObjectNode community) {
         // Try to open the channel, when the channel is part of a chatbox put
@@ -236,7 +238,7 @@ public class Channel extends MMObjectBuilder {
      * Closes the channel.
      *
      * @param channel The channel to close.
-     * @return <code>true</code> if closing the channel was successfull.
+     * @result <code>true</code> if closing the channel was successfull.
      */
     public boolean close(MMObjectNode channel) {
         Integer channelnr=new Integer(channel.getNumber());
@@ -258,7 +260,7 @@ public class Channel extends MMObjectBuilder {
     /**
      * Makes a channel read only.
      * @param channel The channel to affect.
-     * @return <code>true</code> if changing the channel open status was successfull.
+     * @result <code>true</code> if changing the channel open status was successfull.
      */
     public boolean readonly(MMObjectNode channel) {
         Integer channelnr=new Integer(channel.getNumber());
@@ -490,7 +492,7 @@ public class Channel extends MMObjectBuilder {
      * @param channel The channel to disconnect from.
      * @return <code>DISCONNECTED</code> if the user was successfully disconnected,
      *    <code>FAILED</code> if an error occurred.
-     * @deprecated use {@link #leave} instead
+     * @deprecated: use {@link #leave} instead
      */
     public synchronized int logout(MMObjectNode user, MMObjectNode channel) {
         return leave(user,channel);

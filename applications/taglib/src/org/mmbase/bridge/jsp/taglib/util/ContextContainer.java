@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.4 2003-02-18 10:58:15 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.3.2.1 2003-02-18 10:57:22 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {

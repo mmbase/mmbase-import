@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: SCPcopy.java,v 1.6 2003-03-10 11:50:24 pierre Exp $
+ * @version 5 Apr 2001
  */
 public class SCPcopy {
 

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.35 2003-02-11 16:08:14 vpro Exp $
+ * @version $Id: servscan.java,v 1.33.2.2 2003-02-11 16:06:58 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom

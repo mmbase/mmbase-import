@@ -9,25 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.16 2003-02-10 23:44:39 nico Exp $
+ * @version $Id: HttpPost.java,v 1.14 2002-07-31 13:22:47 eduard Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -230,7 +225,8 @@ public class HttpPost {
     
     private static String getString(byte[] data, String encoding) {
         if(encoding == null) {
-            return new String(data);
+            // depricated.. dont know how to replace..
+            return new String(data,0);
         }
         try {
             return new String(data, encoding);
@@ -532,8 +528,9 @@ public class HttpPost {
     * @param post_header hashtable to put the postbuffer information in
     */
     public boolean readPostFormData(byte[] postbuffer,Hashtable post_header, String line) {
-        int i2,i3,i4,start2,end2;
-        String r;
+        int nentrys=0,i,i2,i3,i4,idx,start,end,start2,end2;
+        String templine4=null;
+        String r,r2;
         String templine="--"+line.substring(line.indexOf("boundary=")+9);
         byte[] marker = new byte[templine.length()];
         byte[] marker2 = new byte[4];
@@ -647,8 +644,9 @@ public class HttpPost {
         } catch (Exception e) {
             System.out.println("WorkerPostHandler -> File "+formFile +" not exist");
         }
-        int i,i2,i3,i4,start2,end2;
-        String r;
+        int nentrys=0,i,i2,i3,i4,idx,start,end,start2,end2;
+        String templine4=null;
+        String r,r2;
         String templine="--"+line.substring(line.indexOf("boundary=")+9);
         byte[] marker = new byte[templine.length()];
         byte[] marker2 = new byte[4];
@@ -665,7 +663,7 @@ public class HttpPost {
         log.info("readPostFormData(): begin");
 
         int offset=0;
-//        int temp=0;
+        int temp=0;
         int len=64000;
         byte postbuffer[] = new byte[len];
         try {
@@ -698,9 +696,7 @@ public class HttpPost {
                     offset=len-i2+4;
                     int j=0;
                     do {
-                        // should we do something with temp? it is never read again
-                        //temp = 
-                        fis.read(postbuffer);
+                        temp = fis.read(postbuffer);
 
                         end2=indexOf(postbuffer,marker,0);
                         if(end2==-1) {
@@ -791,7 +787,7 @@ public class HttpPost {
     */
     private boolean readPostUrlEncoded(byte[] postbuffer,Hashtable post_header) {
         String mimestr="";
-        int i=0,idx;
+        int nentrys=0,i=0,idx;
         char letter;
 
         String buffer = new String(postbuffer,0);

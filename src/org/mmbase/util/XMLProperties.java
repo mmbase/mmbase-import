@@ -9,21 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
+import org.xml.sax.*;
 
 
 /**
 * This is a flexible Properties version, it can handle saving of Properties with
 * the comments that will stay in your file.   
 * @author Jan van Oosterom
-* @version $Id: XMLProperties.java,v 1.3 2003-03-10 11:51:15 pierre Exp $
+* @version 28-Oct-1996
 */
 public class XMLProperties extends Properties implements ContentHandler {
 

@@ -10,15 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.sql.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  * @sql
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.8 2003-03-10 11:50:21 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 

@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 
 /**
@@ -29,7 +30,6 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     private static final int TYPE_GUINODEMANAGER = 1;
     private static final int TYPE_NODENUMBER     = 2;
     private static final int TYPE_GUI            = 3;
-    private static final int TYPE_DESCRIPTION = 4;
 
 
     protected WriterHelper helper = new WriterHelper();
@@ -47,62 +47,52 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
 
-    private Attribute type = Attribute.NULL;
+    private int type;
 
     public void setType(String tu) throws JspTagException {
-        type = getAttribute(tu);
-    }
-
-    private int getType() throws JspTagException {
-        String t = type.getString(this).toLowerCase();
+        String t = getAttributeValue(tu).toLowerCase();
         // note: 'nodemanager' and 'guinodemanager' values are deprecated
         // use 'type' and 'guitype' instead
         if ("nodemanager".equals(t) || "type".equals(t)) {
-            return TYPE_NODEMANAGER;
+            type = TYPE_NODEMANAGER;
         } else if ("guinodemanager".equals(t) || "guitype".equals(t)) {
-            return TYPE_GUINODEMANAGER;
-        } else if ("description".equals(t)) {
-            return  TYPE_DESCRIPTION;
+            type = TYPE_GUINODEMANAGER;
         } else if ("number".equals(t)) {
-            return  TYPE_NODENUMBER;
+            type = TYPE_NODENUMBER;
         } else if ("gui".equals(t)) {
-            return TYPE_GUI;
+            type = TYPE_GUI;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
     }
 
-    private Attribute nodeManagerAtt = Attribute.NULL;
+    private String nodeManagerString;
     public void setNodetype(String t) throws JspTagException {
-        nodeManagerAtt = getAttribute(t);
+        nodeManagerString = getAttributeValue(t);
     }
 
     public int doStartTag() throws JspTagException{
 
         NodeManager nodeManager = null;
-        int t = getType();
-        switch(t) {
+
+        switch(type) {
         case TYPE_NODEMANAGER:
-        case TYPE_DESCRIPTION:
         case TYPE_GUINODEMANAGER:
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+            if (nodeManagerString == null) { // living as NodeReferrer
                 nodeManager = getNode().getNodeManager();
             } else {
-                nodeManager = getCloud().getNodeManager(nodeManagerAtt.getString(this));
+                nodeManager = getCloud().getNodeManager(nodeManagerString);
             }
         }
         String show = "";
 
         // set node if necessary:
-        switch(t) {
+        switch(type) {
         case TYPE_NODENUMBER:
             show = ""+getNode().getNumber();
             break;
         case TYPE_NODEMANAGER:
             show = nodeManager.getName();
-            break;
-        case TYPE_DESCRIPTION:
-            show = nodeManager.getDescription();
             break;
         case TYPE_GUINODEMANAGER:
             show = nodeManager.getGUIName();

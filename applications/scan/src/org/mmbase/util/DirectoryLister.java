@@ -9,13 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import java.util.*;
+import java.io.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author David V van Zeventer
@@ -50,6 +46,7 @@ public class DirectoryLister {
      * complete pathnames.
      */
     private Vector _directory (String dir, String ext) {
+        String methodname = "_directory";
         Vector v = new Vector ();
         File d = new File (dir);    //Create a new fileobj for this directory
         String [] files = d.list ();    //List files and store in files array.
@@ -72,7 +69,7 @@ public class DirectoryLister {
 
     /**
      * Returns all filepaths that follow a certain pattern.
-     * @param args The requeststring to be used. This string consists of a directory,
+     * @params args The requeststring to be used. This string consists of a directory,
      * followed by an extension.
      * @return a <code>vector</code> containing all filepaths requested.
      */
@@ -259,7 +256,6 @@ public class DirectoryLister {
                         }
                     }else{    //sorted entry is other ->skip date
                         String skipdate=(String)sort_enum.nextElement(); //Skipping date
-                        log.debug("skipping date " + skipdate);
                     }
                 }//while loop
             } else if ((typefmt==null)&&(previewfmt==null)&&(indexsymbol==null)) { //All params empty.
@@ -311,9 +307,9 @@ public class DirectoryLister {
     /**
      * Creates preview entry from original entry by cutting out the file
      * number and replacing the index symbol in previewfmt with this number.
-     * <br />
-     * Eg:entry = fullsize.36.jpg -> <br />
-     * previewentry = fullsize-s.36.jpg <br />
+     * <br>
+     * Eg:entry = fullsize.36.jpg -> <br>
+     * previewentry = fullsize-s.36.jpg <br>
      * previewfmt= fullsize-s.#.jpg
      */
     private String createPreviewEntry(String indexsymbol,String typefmt,String previewfmt,String entry) {

@@ -12,7 +12,7 @@
         </p>
       </mm:compare>
     <table>
-      <form method="post" action="<mm:write referid="referrer" />" >
+      <form method="post" action="<mm:write referid="referrer" jspvar="r" vartype="string"><%=response.encodeURL(r)%></mm:write>" >
         <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
         <tr><td>Password</td><td><input type="password" name="password"></td></tr>
         <tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr>

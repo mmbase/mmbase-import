@@ -14,6 +14,7 @@ import java.util.Vector;
 import java.util.Enumeration;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
@@ -47,7 +48,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.29 2003-03-11 14:55:26 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.26.2.2 2003-03-11 14:52:58 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());

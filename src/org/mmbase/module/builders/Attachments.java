@@ -10,12 +10,17 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.sql.*;
 
+import org.mmbase.servlet.MMBaseServlet;
+import org.mmbase.module.builders.*;
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -24,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.23 2003-03-04 14:12:19 nico Exp $
+ * @version $Id: Attachments.java,v 1.21.2.1 2003-01-06 17:03:20 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -173,7 +178,6 @@ public class Attachments extends AbstractServletBuilder {
         checkHandle(node);
         return super.commit(node);
     }
-
     /**
      * Implements 'mimetype' function (Very simply for attachments, because they have the field).
      *

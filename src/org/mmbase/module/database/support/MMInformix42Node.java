@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.44 2003-03-07 08:50:18 pierre Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.1 2003-01-21 14:34:49 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -101,8 +101,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     }
 
     /**
-     * Creates the database-table for the specified builder
-     *
+     * <p>Creates the database-table for the specified builder
+     * </p>
      * @param bul  Builder which will be used to create the object-table
      * @return     true if the creation succeeded
      */

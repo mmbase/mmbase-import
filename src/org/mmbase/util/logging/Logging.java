@@ -8,10 +8,10 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.logging;
-
-import java.io.File;
 import java.lang.reflect.Method;
-
+import java.io.*;
+import java.util.Set;
+import java.util.HashSet;
 import java.net.URL;
 import org.mmbase.util.XMLBasicReader;
 import org.xml.sax.InputSource;
@@ -92,7 +92,7 @@ public class Logging {
         // where to search for these kinds of problems..
         
         System.out.println("Configuring logging with " + configfile);
-        ///System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
+        System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
 
 
 
@@ -138,9 +138,9 @@ public class Logging {
 
        
         System.out.println("Class to use for logging " + classToUse);
-        // System.out.println("(Depending on your selected logging system no more logging");
-        // System.out.println("might be written to this file. See the configuration of the");
-        // System.out.println("selected logging system for more hints where logging will appear)");
+        System.out.println("(Depending on your selected logging system no more logging");
+        System.out.println("might be written to this file. See the configuration of the");
+        System.out.println("selected logging system for more hints where logging will appear)");
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             logClass = Class.forName(classToUse);
@@ -241,16 +241,6 @@ public class Logging {
         }
 
     }
-
-    /**
-     * Returns the stacktrace of the current call. This can be used to get a stacktrace
-     * when no exception was thrown and my help determine the root cause of an error message
-     * (what class called the method that gave the error message.
-     *
-     **/
-    public static String stackTrace() {
-        return stackTrace(new Exception("logging.stacktrace"));
-    } 
 
     /**
      * Returns the stacktrace of an exception as a string, which can

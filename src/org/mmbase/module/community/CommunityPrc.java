@@ -10,7 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.community;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
@@ -45,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.8 2003-03-10 11:50:28 pierre Exp $
+ * @version 31 Jan 2001
  */
 
 public class CommunityPrc extends ProcessorModule {

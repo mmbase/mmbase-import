@@ -14,6 +14,10 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
+import org.mmbase.module.builders.*;
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.*;

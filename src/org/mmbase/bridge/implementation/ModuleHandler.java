@@ -16,6 +16,7 @@ import javax.servlet.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.ProcessorInterface;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.21 2003-03-06 13:53:58 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.18.2.2 2003-03-06 13:52:44 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());

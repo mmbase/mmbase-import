@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.sql.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -21,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @code-conventions
  * @author Daniel Ockeloen
- * @version $Id: People.java,v 1.5 2003-03-10 11:50:20 pierre Exp $
+ * @version 10 Dec 2000
  */
 public class People extends MMObjectBuilder {
 

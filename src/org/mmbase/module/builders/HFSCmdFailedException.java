@@ -11,7 +11,7 @@ package org.mmbase.module.builders;
 
 /**
  * @author David V van Zeventer
- * @version $Id: HFSCmdFailedException.java,v 1.4 2003-03-10 11:50:19 pierre Exp $
+ * @version 6 Jan 1999
  */
 public class HFSCmdFailedException extends Exception {
         public String errval;

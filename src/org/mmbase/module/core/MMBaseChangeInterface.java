@@ -9,11 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.util.*;
+
 /**
  * Builds a MultiCast Thread to receive  and send 
  * changes from other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.3 2003-03-10 11:50:30 pierre Exp $
+ * @version 10 Aug 2000
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {

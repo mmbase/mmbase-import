@@ -59,7 +59,6 @@ several MMBase-checkouts.
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
-
   <property name="source.dir"   location="." />
   <property name="build.dir"    value="${source.dir}/build" />
   <property name="download.dir" value="${build.dir}/download" />
@@ -70,17 +69,16 @@ several MMBase-checkouts.
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
   <property name="deprecation" value="on"/>
-  <property name="javadoc.cleaning" value="true"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
-  <property name="distro"      value="MMBase 1.7.0"/>
+  <property name="distro"      value="MMBase 1.6.2"/>
 
   <!-- documentation related settings -->
   <property name="documentation.builders.language" value="en" />
   <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
 
-  <property name="source-config.dir"         location="${source.dir}/config"/>
-  <property name="source-config-builders.dir" location="${source.dir}/config/builders;${source.dir}/config/applications"/>
+  <property name="source-config.dir"         location="${source.dir}/config/default"/>
+  <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="source-html.dir"           location="${source.dir}/html"/>
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
@@ -165,8 +163,8 @@ build.compiler=modern
 optimize=on
 debug=off
 deprecation=on
-distro=MMBase 1.7.0
-version=1.7.0-dev
+distro=MMBase 1.6.2
+version=1.6.2
     </echo>
 
     <!-- copy a readme and other basic docs from documentation dir -->
@@ -190,7 +188,7 @@ version=1.7.0-dev
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-src-${version}.zip">
-     <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${version}"
+     <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${version}" 
        includes="**" />
     </zip>
   </target>
@@ -222,9 +220,10 @@ version=1.7.0-dev
     <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
           tofile="${build.dir}/mmbase/LICENSE"/>
 
+
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip">
-     <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}"
+     <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}" 
        includes="**" />
     </zip>
 
@@ -271,7 +270,10 @@ version=1.7.0-dev
 
   </target>
 
-  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation"
+
+
+
+  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation" 
           depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">
 
     <mkdir dir="${compile.lib.dir}"/>
@@ -346,7 +348,7 @@ version=1.7.0-dev
   <target name="check.dir.mmbase" depends="init.check.dir"
           unless="dir.mmbase.present">
     <property name="source.dir.invalid" value="mmbase"/>
-   </target>
+  </target>
 
   <target name="check.dir.all"
           depends="check.dir.config,check.dir.html,check.dir.src,check.dir.org,
@@ -383,9 +385,9 @@ version=1.7.0-dev
           <include name="*.zip"/>
           <exclude name="mmbase.jar"/>
         </fileset>
-         <fileset dir="${optional.lib.dir}">
-           <include name="*.jar"/>
-           <include name="*.zip"/>
+        <fileset dir="${optional.lib.dir}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
         </fileset>
       </classpath>
     </available>
@@ -402,20 +404,6 @@ version=1.7.0-dev
   <target name="build"   description="Compile and generate tld's"
      depends="taglib.tld,community.tld,compile" >
   </target>
-
-
-  <target name="resources">
-    <copy todir="${build.dir}/classes"  preservelastmodified="true">
-      <fileset dir="${source-src.dir}">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-      </fileset>
-    </copy>
-  </target>
-
-
   <!-- =================================================================== -->
   <!-- Compile the source directory (exclude remote)                       -->
   <!-- =================================================================== -->
@@ -423,9 +411,9 @@ version=1.7.0-dev
     <echo>
   WARNING
   MMBase doesn't compile when using J2SE 1.4, you have to change the following files by hand:
-  MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
-  BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods
-  More information is provided in the javadocs in these files.
+	MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
+	BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods
+	More information is provided in the javadocs in these files.
 </echo>
   </target>
 
@@ -434,12 +422,21 @@ version=1.7.0-dev
  it look like compiling is part of 'info14' target.... -->
 
   <target name="compile.local" description="Compile the source directory(exclude remote)"
-          depends="init.compile">
+          depends="init,init.compile">
 
     <echo message="java version: ${ant.java.version}" />
     <condition property="java14"><equals arg1="${ant.java.version}" arg2="1.4" /></condition>
     <antcall target="info14" />
     <antcall target="startcompile" />
+
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${source-src.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
 
     <available property="informix.in.classpath"
                classpathref="compile.classpath"
@@ -468,6 +465,7 @@ version=1.7.0-dev
            optimize="${optimize}"
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
+      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
       <exclude name="org/mmbase/module/RemoteMMCI.java"/>
       <exclude name="org/mmbase/bridge/ContextProvider.java"/>
       <exclude name="org/mmbase/bridge/RemoteContext.java"/>
@@ -549,25 +547,8 @@ version=1.7.0-dev
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
-
-
-  <target name="jar.uptodatecheck">
-    <uptodate property="jar.uptodate" targetfile="${mmbase.jar}" >
-      <srcfiles dir="${source-src.dir}" includes="**/*"/>
-    </uptodate>   
-  </target>
-
-  <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
-    <echo message="${mmbase.jar} is up-to-date" />
-  </target>
-    
-
   <target name="jar" description="Create the MMBase jar file"
-          depends="jar.check" unless="jar.uptodate">
-    <antcall target="compile" />
-    <antcall target="taglib.tld" />
-    <antcall target="community.tld" />
-    <antcall target="resources" />
+          depends="compile,taglib.tld,community.tld">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
 
@@ -587,9 +568,8 @@ Main-Class: org.mmbase.Version
     <mkdir dir="${release.lib.dir}" />
     <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
-       includes="org/mmbase/**"
-       update="false"
-       manifest="${build.dir}/manifest.mf" >
+	     includes="org/mmbase/**"
+	     manifest="${build.dir}/manifest.mf" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
@@ -674,8 +654,8 @@ Build-compiler: ${build.compiler}
     </copy>
     <jar jarfile="${build.dir}/mmbase-dtds.jar"
          basedir="${build.dir}/dtd"
-       includes="**"
-       manifest="${build.dir}/manifest.mf"
+	     includes="**"
+	     manifest="${build.dir}/manifest.mf"
       />
   </target>
 
@@ -697,8 +677,8 @@ Build-compiler: ${build.compiler}
     <!-- =================================================================== -->
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
-  <target name="wars" description="Create full-fledged and minimalistic mmbase.war"
-          depends="war,minimalistic.war"
+  <target name="wars" description="Create full-fledged and minimalistic mmbase.war" 
+          depends="war,minimalistic.war" 
   />
 
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar">
@@ -710,7 +690,7 @@ Build-compiler: ${build.compiler}
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file"
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" 
           depends="lib.release,jar,minimalistic.war.config">
     <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
@@ -748,30 +728,6 @@ Build-compiler: ${build.compiler}
           <include name="*.zip"/>
         </fileset>
       </classpath>
-      <!-- mmbase custom tags -->
-      <!--
-      <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
-      <tag name="rename" description="Warning: Will be renamed to:" />
-      <tag name="move" description="Warning: Will be moved to:" />
-      <tag name="scope" description="Warning: Scope will be changed to:" />
-      <tag name="core" description="Core Class" scope="types" />
-      <tag name="application"  description="Class for Application :" scope="types" />
-      <tag name="todo" description="To Do:" />
-      -->
-      <!-- mmbase tags to ignore (development cleaning warnings only) -->
-      <!--
-      <tag name="javadoc" description="Warning: No Java Documentation Available." enabled="${javadoc.cleaning}" />
-      <tag name="bad-constant" description="Warning: Bad Constant" enabled="${javadoc.cleaning}" />
-      <tag name="bad-literal" description="Warning: Uses Bad Literal" enabled="${javadoc.cleaning}" />
-      <tag name="code-conventions" description="Warning: Code Conventions Breach" scope="types" enabled="${javadoc.cleaning}"/>
-      <tag name="language" description="Warning: Contains Language-dependent Text Values" enabled="${javadoc.cleaning}"/>
-      <tag name="vpro" description="Warning: Contains VPRO Legacy Code" enabled="${javadoc.cleaning}"/>
-      <tag name="performance" description="Warning: Performance Issues" enabled="${javadoc.cleaning}"/>
-      <tag name="dependency" description="Warning: Contains Dependency Found" enabled="${javadoc.cleaning}"/>
-      <tag name="sql" description="Warning: Contains Database Legacy Code" enabled="${javadoc.cleaning}"/>
-      <tag name="duplicate" description="Warning: Contains Duplicate Code (present in other classes)" enabled="${javadoc.cleaning}"/>
-      <tag name="deprecation-used" description="Warning: Calls Deprecated Code" enabled="${javadoc.cleaning}"/>
-      -->
     </javadoc>
     <property name="did.javadocs" value="true" />
   </target>
@@ -896,7 +852,7 @@ Build-compiler: ${build.compiler}
 
     <!-- sucks, but at least repairs a broken link for now: -->
     <!-- taglib-groups.html must be generated from the xml -->
-    <copy todir="${reference.dir}/taglib">
+    <copy todir="${reference.dir}/taglib">      
       <fileset dir="${source-src.dir}/org/mmbase/bridge/jsp/taglib">
         <include name="*.html"/>
       </fileset>
@@ -1109,7 +1065,7 @@ Build-compiler: ${build.compiler}
     <available property="javaactivation.expanded" file="${expand.dir}/${javaactivation.version}"/>
 
     <!-- Log4j -->
-    <property name="log4j.version" value="1.2.8" />
+    <property name="log4j.version" value="1.2.7" />
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url"         value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
     <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" />
@@ -1270,8 +1226,8 @@ Version: MMBase build ${version}
 </echo>
     <jar jarfile="${expand.dir}/jspsmartupload/jspsmartupload.jar"
          basedir="${expand.dir}/jspsmartupload/jspsmartupload/Web-inf/classes"
-       includes="com/**"
-       manifest="${expand.dir}/jspsmartupload/manifest.mf" >
+	     includes="com/**"
+	     manifest="${expand.dir}/jspsmartupload/manifest.mf" >
     </jar>
   </target>
 
@@ -1319,6 +1275,7 @@ Version: MMBase build ${version}
            optimize="${optimize}"
            deprecation="${deprecation}">
            <include name="org/mmbase/bridge/remote/generator/*.java"/>
+           <include name="org/mmbase/bridge/remote/*.java"/>
     </javac>
   </target>
 
@@ -1335,7 +1292,7 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target name="generate.remote"
           description="Generate the source for the remote classes"
-  depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
+	depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
           unless="mmci.xml.present">
 
 
@@ -1345,11 +1302,11 @@ Version: MMBase build ${version}
 
     <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="compile.classpath" >
       <arg value="${generated-source-src.dir}/MMCI.xml" />
-  <classpath>
-    <pathelement location="${build.dir}/classes" />
-  </classpath>
+	<classpath>
+		<pathelement location="${build.dir}/classes" />
+	</classpath>
     </java>
-  <!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
+	<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
     <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile.classpath" fork="true" >
       <arg value="${generated-source-src.dir}"/>
       <arg value="${generated-source-src.dir}/MMCI.xml"/>
@@ -1374,10 +1331,11 @@ Version: MMBase build ${version}
       <src path="${source-src.dir}" />
       <include name="org/mmbase/bridge/remote/*.java"/>
       <include name="org/mmbase/bridge/remote/rmi/*.java"/>
+      <include name="org/mmbase/bridge/remote/util/*.java"/>
       <include name="org/mmbase/bridge/remote/implementation/*.java"/>
     </javac>
     <rmic base="${build.dir}/classes" classpathref="compile.classpath">
-      <include name="org/mmbase/bridge/remote/rmi/*.class"/>
+    	<include name="org/mmbase/bridge/remote/rmi/*.class"/>
         <classpath>
            <pathelement location="${build.dir}/classes"/>
         </classpath>
@@ -1395,6 +1353,7 @@ Version: MMBase build ${version}
       <include name="org/mmbase/module/RemoteMMCI.java"/>
     </javac>
   </target>
+
 
   <!-- =================================================================== -->
   <!-- Create rmmci.jar                                                    -->
@@ -1416,7 +1375,7 @@ Build-compiler: ${build.compiler}
 </echo>
 
     <jar jarfile="${build.dir}/mmbase/rmmci.jar"
-         manifest="${build.dir}/rmmcitmp/manifest.mf"
+   	     manifest="${build.dir}/rmmcitmp/manifest.mf"
     >
        <fileset dir="${build.dir}/classes">
         <include name="org/mmbase/bridge/*.class"/>
@@ -1434,7 +1393,6 @@ Build-compiler: ${build.compiler}
     </jar>
     <delete dir="${build.dir}/rmmcitmp" />
   </target>
-
   <!-- =================================================================== -->
   <!-- Clean the remote-classes                                            -->
   <!-- =================================================================== -->
@@ -1466,7 +1424,7 @@ Build-compiler: ${build.compiler}
     <delete file="${build.dir}/docbook2xhtml.xslt" />
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt"
-              token="[BASESTYLESHEET]"
+              token="[BASESTYLESHEET]" 
               value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
 
     <!-- copy also the images and resources -->
@@ -1505,14 +1463,16 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx150m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
       <arg value="${build.dir}/docbook2xhtml.xslt" />
       <arg value="${source-documentation.dir}" />
       <arg value="${mmdocs.dir}" />
+      <arg value="usecache=true" />
     </java>
 
   </target>
@@ -1539,15 +1499,15 @@ Build-compiler: ${build.compiler}
           file="${source-documentation.dir}/style/docbook2xhtml.xslt"
           />
 
+    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+             token="[BASESTYLESHEET]"
+             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
+
     <!-- not used at the moment
     <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
              token="[BASESTYLESHEET]"
              value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
     -->
-    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
-             token="[BASESTYLESHEET]"
-             value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
-
 
     <!-- compile class for listing of builders -->
     <javac srcdir="${source-src.dir}"
@@ -1566,7 +1526,7 @@ Build-compiler: ${build.compiler}
           fork="yes"
           failonerror="no"
           output="${mmdocs.dir}/templaters/builders/allbuilders-total.xml">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
@@ -1599,8 +1559,9 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
@@ -1614,8 +1575,9 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
@@ -1660,4 +1622,9 @@ Build-compiler: ${build.compiler}
     depends="clean.build,clean.documentation,clean.expand,clean.srcdist,clean.bindist,clean.war"
     description="Clean everything (except for downloading)" />
 
+
 </project>
+
+
+
+

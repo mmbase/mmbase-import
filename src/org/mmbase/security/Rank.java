@@ -17,7 +17,7 @@ import java.util.HashMap;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Rank.java,v 1.7 2003-01-31 16:06:28 pierre Exp $
+ * @version $Id: Rank.java,v 1.5.2.2 2003-01-31 16:06:06 pierre Exp $
  */
 public class Rank {
     /** int value for the anonymous Rank*/

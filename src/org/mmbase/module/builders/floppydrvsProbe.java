@@ -9,6 +9,12 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
@@ -22,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * there load and info from the config module).
  *
  * @rename FloppydrvsProbe
- * @version $Id: floppydrvsProbe.java,v 1.9 2003-03-10 11:50:21 pierre Exp $
+ * @version 22 Jan 1999
  * @author Daniel Ockeloen
  * @author David V van Zeventer
  */

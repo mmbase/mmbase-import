@@ -9,11 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders; 
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Id: StatisticsProbe.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
+ * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {

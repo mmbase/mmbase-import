@@ -11,8 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
+import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.bridge.*;
 
 
@@ -47,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.32 2003-03-05 10:49:10 pierre Exp $
+ * @version $Id: Dove.java,v 1.26.2.4 2003-03-05 09:02:18 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1308,7 +1310,7 @@ public class Dove extends AbstractDove {
                     user.put("username", username);
                     user.put("password", password);
                 }
-                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudname,methodname,user);
+                Cloud cloud = LocalContext.getCloudContext().getCloud(cloudname,methodname,user);
                 return cloud;
             } catch (RuntimeException e) {
                 // most likely security failed...

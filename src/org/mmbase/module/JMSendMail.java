@@ -9,11 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.net.*;
 import java.util.*;
 import javax.naming.*;
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.activation.*;
 
+
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 

@@ -10,8 +10,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="databases">
-<tr>
+<table summary="databases" width="93%" cellspacing="1" cellpadding="3" border="0">
+<tr align="left">
 <th class="header" colspan="5">Database Overview
 </th>
 </tr>
@@ -23,15 +23,15 @@
   </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr>
+<tr align="left">
   <th class="header">Name</th>
   <th class="header">Version</th>
   <th class="header">Installed</th>
   <th class="header">Maintainer</th>
-  <th class="navigate">View</th>
+  <th class="header">&nbsp;</th>
 </tr>
 <%
-   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
 
@@ -45,21 +45,21 @@
   <td class="data"><%=database.getStringValue("item3")%></td>
   <td class="data"><%=database.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />"><img src="../images/search.gif" border="0" alt="view" /></a>
+    <a href="<mm:url page='<%="database/actions.jsp?database="+database.getStringValue("item1")%>' />"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
   <th class="header" colspan="2">Pool Name</th>
   <th class="header">Size</th>
   <th class="header">Connections Created</th>
-  <th class="navigate">View</th>
+  <th class="header">&nbsp;</th>
 </tr>
 <%
-   Module jdbc=ContextProvider.getDefaultCloudContext().getModule("jdbc");
+   Module jdbc=LocalContext.getCloudContext().getModule("jdbc");
    NodeList pools=jdbc.getList("POOLS",params,request,response);
    for (int i=0; i<pools.size(); i++) {
     Node pool=pools.getNode(i);
@@ -69,15 +69,15 @@
   <td class="data"><%=pool.getStringValue("item2")%></td>
   <td class="data"><%=pool.getStringValue("item3")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="database/connections.jsp?pool="+pool.getStringValue("item1")%>"/>"><img src="../images/search.gif" border="0" alt="next" /></a>
+    <a href="<mm:url page='<%="database/connections.jsp?pool="+pool.getStringValue("item1")%>'/>"><img src="../images/next.gif" border="0" alt="next" align="right"></a>
   </td>
 </tr>
 <% } %>
 
 <tr><td>&nbsp;</td></tr>
 
-<tr class="footer">
-    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
+  <tr>
+    <td class="navigate"><a href="<mm:url page='../default.jsp' />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
     <td class="data" colspan="4">Return to home page</td>
   </tr>
 </table>

@@ -16,6 +16,7 @@ import java.sql.*;  // sql
 import org.mmbase.module.database.*;  // sql
 
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.27 2003-03-04 20:10:55 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.25.2.1 2003-03-04 20:05:32 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 

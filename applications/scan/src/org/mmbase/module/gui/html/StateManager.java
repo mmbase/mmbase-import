@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
+import java.lang.*;
 import java.util.*;
+
+import javax.servlet.http.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -25,7 +28,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.13 2003-03-10 11:50:39 pierre Exp $
+ * @version 26-2-2001
  */
 
 public class StateManager implements CommandHandlerInterface {

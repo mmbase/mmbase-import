@@ -8,6 +8,17 @@ See http://www.MMBase.org/license
 
 */
 
+/*
+    $Id: MMContainerCompare.java,v 1.3 2001-07-02 15:09:45 pierre Exp $
+
+    $Log: not supported by cvs2svn $
+    Revision 1.2  2001/04/10 17:32:05  michiel
+    michiel: new logging system
+
+    Revision 1.1  2000/05/23 11:47:00  wwwtech
+    Rico: added a compare container to support multifield sorting
+
+*/
 package org.mmbase.module.core;
 
 import java.util.*;
@@ -22,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.4 2003-03-10 11:50:31 pierre Exp $
+ * @version $Id: MMContainerCompare.java,v 1.3 2001-07-02 15:09:45 pierre Exp $
  */
 public class MMContainerCompare implements CompareInterface {
 

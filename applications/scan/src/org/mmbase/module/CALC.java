@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -19,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Calc.java
  * @author Daniel Ockeloen
- * @version $Id: CALC.java,v 1.9 2003-03-04 15:26:34 nico Exp $
+ * @version $Id: CALC.java,v 1.8 2002-01-23 15:05:42 pierre Exp $
  */
 public class CALC extends ProcessorModule {
     // logging

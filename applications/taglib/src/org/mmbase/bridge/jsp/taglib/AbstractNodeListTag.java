@@ -199,8 +199,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         return NOT_HANDLED;
     }
     /**
-     * Creates the node iterator and sets appropriate variables (such as listsize)
-     * from a passed node list.
+     * Creates the node iterator and sets appropriate variables (i.e. listsize)
+     * froma  passed node list.
      * The list is assumed to be already sorted and trimmed.
      * @param nodes the nodelist to create the iterator from
      * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
@@ -212,7 +212,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     /**
-     * Creates the node iterator and sets appropriate variables (such as listsize).
+     * Creates the node iterator and sets appropriate variables (i.e. listsize).
      * Takes a node list, and trims it using the offset and
      * max attributes if so indicated.
      * The list is assumed to be already sorted.

@@ -13,6 +13,7 @@ package org.mmbase.module.community;
 import java.util.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.5 2003-03-10 11:50:29 pierre Exp $
+ * @version 28 May 2001
  */
 public class NodeBreaker implements Runnable {
 

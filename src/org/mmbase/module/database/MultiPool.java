@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.27 2003-03-18 16:41:07 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.20.2.5 2003-03-17 15:25:48 vpro Exp $
  */
 public class MultiPool {
    
@@ -154,7 +154,7 @@ public class MultiPool {
             
             if (diff < 30) {
 
-            } else if (diff < 300) {
+            } else if (diff < 120) {
                // between 30 and 120 we putback 'zero' connections
                if (con.lastSql==null || con.lastSql.length()==0) {
                   log.warn("null connection putBack");

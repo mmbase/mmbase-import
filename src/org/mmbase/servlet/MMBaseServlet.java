@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.19 2003-03-18 16:44:25 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.16.2.2 2003-03-18 13:22:58 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -124,7 +124,7 @@ public class MMBaseServlet extends  HttpServlet {
         // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
             initialize = (servletInstanceCount == 0);
-            servletInstanceCount++;
+            servletInstanceCount+=1;
         }
         if (initialize) {
             // used to determine the accurate way to access a servlet
@@ -301,6 +301,7 @@ public class MMBaseServlet extends  HttpServlet {
     /**
      * Decrease the reference count of the servlet
      * @param req The HttpServletRequest.
+     * @scopy private
      */
 
     protected void decRefCount(HttpServletRequest req) {

@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.22 2003-03-16 21:23:02 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.16.2.4 2003-03-16 21:12:54 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -93,7 +93,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         if (localeTag != null) {
             locale = localeTag.getLocale();
         } else {
-            locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
+            locale = org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale();
         }              
 
         // symbolic formats. Perhaps will be moved to another attribute or so.

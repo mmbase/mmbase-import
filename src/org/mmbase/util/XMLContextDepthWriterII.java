@@ -22,7 +22,7 @@ import org.mmbase.module.corebuilders.*;
  * startnode and depth to which to parse.
  * The current version of this class combines a number of methods which we want to split - or at least share -
  * with a seperate class for handling contexts.
- * Note that because of it's static nature, no object instance need be made (in fact, none CAN be made) of this class.<br />
+ * Note that because of it's static nature, no object instance need be made (in fact, none CAN be made) of this class.<br>
  * To use this class in stead of the old XMLContextDepthWriter, replace the following lines in
  * util/XMLApplicationWriter.java:
  * <blockquote>
@@ -41,7 +41,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: XMLContextDepthWriterII.java,v 1.8 2003-03-10 11:51:14 pierre Exp $
+ * @version 08-11-2000
  */
 public class XMLContextDepthWriterII  {
 

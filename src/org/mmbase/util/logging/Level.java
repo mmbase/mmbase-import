@@ -16,7 +16,7 @@ package org.mmbase.util.logging;
  * @author Michiel Meeuwissen
  **/
 
-public final class Level implements java.io.Serializable {
+public final class Level {
 
     /** 
      * A possible result of {@link #toInt}
@@ -29,8 +29,7 @@ public final class Level implements java.io.Serializable {
         INFO_INT    = 20000,
         WARN_INT    = 30000,
         ERROR_INT   = 40000,
-        FATAL_INT   = 50000,
-        OFF_INT     = Integer.MAX_VALUE;
+        FATAL_INT   = 50000;
 
 
     /** 
@@ -43,8 +42,7 @@ public final class Level implements java.io.Serializable {
         INFO    = new Level(INFO_INT),
         WARN    = new Level(WARN_INT),
         ERROR   = new Level(ERROR_INT),
-        FATAL   = new Level(FATAL_INT),
-        OFF     = new Level(OFF_INT);   
+        FATAL   = new Level(FATAL_INT);   
 
     private int level;
     
@@ -62,7 +60,6 @@ public final class Level implements java.io.Serializable {
         if (s.equals("WARN") )    return WARN;
         if (s.equals("ERROR") )   return ERROR;
         if (s.equals("FATAL") )   return FATAL;
-        if (s.equals("OFF") )     return OFF;
 
         return DEBUG;
         

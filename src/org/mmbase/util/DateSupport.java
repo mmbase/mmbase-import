@@ -6,27 +6,17 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
- */
+*/
 package org.mmbase.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-
+import java.util.*;
+import java.text.*;
+import org.mmbase.util.logging.*;
 
 /**
- * Some routines to support dates better<br /><br />
+ * Some routines to support dates better<br><br>
  *
- * The problem that generally occurs is with timezones. Therefore, we have made the following structure:<br />
+ * The problem that generally occurs is with timezones. Therefore, we have made the following structure:<br>
  * <ul>
  * <li> If a date is stored in a database, it is in GMT
  * <li> If a date is displayed, it happens in the timezone of the machine that is calling.
@@ -36,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.13 2003-03-07 11:49:23 pierre Exp $
+ * @version $Id: DateSupport.java,v 1.9 2002-07-24 19:44:52 michiel Exp $
  * @deprecated java.util is powerful enough. Most used functions from Date are deprecated.
  */
 public class DateSupport {
@@ -82,7 +72,7 @@ public class DateSupport {
 
         // Make an exception for the intercalary day.
         if (month==1) {
-            if(year%4==0 && year%100!=0 || year%400==0) days=29;
+                if(year%4==0 && year%100!=0 || year%400==0) days=29;
         }
         return days;
     }
@@ -97,10 +87,7 @@ public class DateSupport {
      * @see DateSupport#weekInYear
      */
     static public int secondInYear(Date d) {
-        Calendar c = Calendar.getInstance();
-        c.set(d.getYear(),0,0);
-
-        Date b = c.getTime();
+        Date b = new Date ((d.getYear()),0,0);
         return (int)((d.getTime()-b.getTime())/1000);
     }
 
@@ -138,14 +125,13 @@ public class DateSupport {
      * @return The number of milliseconds between 1-Jan-1970 and the begin of the given week.
      */
     static public long milliDate(int year,int week) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year,0,0);
-        Date d = calendar.getTime();
+        Date d;
+        d=new Date(year,0,0);
         return d.getTime()+(((long)(week-1))*7*24*3600*1000);
     }
 
     /**
-     * Return a date, based on a year, a week and the day of that week  <br />
+     * Return a date, based on a year, a week and the day of that week  <br>
      * For instance: 1999, 40, 4 = The 4th day of the 40th week of 1999
      *
      * @param year The year
@@ -154,16 +140,21 @@ public class DateSupport {
      * @return A date-object for the given date
      */
     static public Date Date(int year,int week,int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR,year);
-        cal.set(Calendar.WEEK_OF_YEAR,week);
-        cal.set(Calendar.DAY_OF_WEEK,day);
-        return cal.getTime();
+        Date d;
+        int dag;
+        d=new Date(milliDate(year,week));
+        day%=7;
+        dag=d.getDay();
+        while (day!=dag) {
+                d=new Date(milliDate(year,week)+((day-dag)*24*3600*1000));
+                dag=d.getDay();
+        }
+        return d;
     }
 
     /**
      * Create date strings in the form yyyy-mm-dd for a given Date object
-     * <br />This format is used in several database (dbm's)
+     * <br>This format is used in several database (dbm's)
      * @param da The date input
      * @return A string in the form yyyy-mm-dd
      * @see DateSupport#parsedbmdate
@@ -178,7 +169,7 @@ public class DateSupport {
 
     /**
      * Parse date strings in the form yyyy-mm-dd
-     *  <br />This format is used in several database (dbm's)
+     *  <br>This format is used in several database (dbm's)
      * @param wh The string representing the date in 'yyyy-mm-dd' format
      * @return A Date object for the given date
      * @see DateSupport#makedbmdate
@@ -229,10 +220,12 @@ public class DateSupport {
         df.setTimeZone(tz);
 
         Date date = null;
-        try {
+        try
+        {
             date = df.parse(sDate);
         }
-        catch( java.text.ParseException e ) {
+        catch( java.text.ParseException e )
+        {
             log.error(e.toString());
         }
 
@@ -328,7 +321,7 @@ public class DateSupport {
         Date v;
         if (val == -1) {
             // WHY? This behaviour leads to incorrect displaying of MMEvents!!
-            v = new Date();
+            v = new Date ();
         }
         else {
             if (dooffset) {
@@ -447,19 +440,19 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static String getMonth(int val) {
-        if (dooffset) {
-            val+=offset;
-        }
-        Date v=new Date((long)val*1000);
-        String result;
-        int m=v.getMonth();
-        m++;
-        if (m<10) {
-            result="0"+m;
-        } else {
-            result=""+m;
-        }
-        return result;
+            if (dooffset) {
+                    val+=offset;
+            }
+            Date v=new Date((long)val*1000);
+            String result;
+            int m=v.getMonth();
+            m++;
+            if (m<10) {
+                    result="0"+m;
+            } else {
+                    result=""+m;
+            }
+            return result;
     }
 
     /**
@@ -477,13 +470,13 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static String getYear(int val) {
-        //log.debug(val);
-        if (dooffset) {
-            val+=offset;
-        }
-        Date v=new Date(((long)val)*1000);
-        int m=v.getYear();
-        return ""+(m+1900);
+            //log.debug(val);
+            if (dooffset) {
+                    val+=offset;
+            }
+            Date v=new Date(((long)val)*1000);
+            int m=v.getYear();
+            return ""+(m+1900);
     }
 
 
@@ -502,12 +495,13 @@ public class DateSupport {
      * @see DateSupport#getDayInt
      */
     public static int getMonthInt(int val) {
-        if (dooffset) {
-            val+=offset;
-        }
-        Date v=new Date((long)val*1000);
-        int m=v.getMonth();
-        return m;
+            if (dooffset) {
+                    val+=offset;
+            }
+            Date v=new Date((long)val*1000);
+            String result;
+            int m=v.getMonth();
+            return m;
     }
 
 
@@ -604,11 +598,11 @@ public class DateSupport {
     }
 
     /**
-     * Convert a string (like "12:42:15 1/2/97") to milliseconds from 1970
-     * The timezone used is 'GMT'
-     * @param date String which contains the date and time in the format "hour:minutes:sec day/month/year"
-     * @return the elapsed milliseconds since 1970 from this date
-     */
+    * Convert a string (like "12:42:15 1/2/97") to milliseconds from 1970
+    * The timezone used is 'GMT'
+    * @param date String which contains the date and time in the format "hour:minutes:sec day/month/year"
+    * @return the elapsed milliseconds since 1970 from this date
+    */
     public static long convertDateToLong(String date) {
         // Next line was the old code:
         // return (convertStringToLong(date));
@@ -619,21 +613,21 @@ public class DateSupport {
         cal.setTimeZone(tz);
         cal = parseDate( cal, date );
 
-        Date d = cal.getTime();
-        long l = d.getTime();
+        Date d = cal.getTime ();
+        long l = d.getTime ();
 
         return l;
-    }
+     }
 
     /**
-     * Convert date to long with timezone-offset <br />
-     * example : <br />convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br />
-     *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
-     * @param date Date to be converted in format:  hour:minute:second day/month/year
-     * @param hour Hour-part of the timezone-offset (int)
-     * @param minutes Minutes-part of the timezone-offset (int)
-     * @deprecated-now Do not use this code ever!
-     */
+    * Convert date to long with timezone-offset <br>
+    * example : <br>convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br>
+    *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
+    * @param date Date to be converted in format:  hour:minute:second day/month/year
+    * @param hour Hour-part of the timezone-offset (int)
+    * @param minutes Minutes-part of the timezone-offset (int)
+    * @obsolete Do not use this code ever!
+    */
     public static long convertDateToLongWithTimeZone( String date, int hour, int minutes ) {
         return convertStringToLongWithTimeZone( date, hour, minutes );
     }
@@ -641,8 +635,8 @@ public class DateSupport {
 
 
     /*
-     * ----- private functions used by convertDateToLong --------
-     */
+    * ----- private functions used by convertDateToLong --------
+    */
 
 
     /**
@@ -765,7 +759,7 @@ public class DateSupport {
      * @see DateSupport#date2day
      * @see DateSupport#date2date
      */
-    public static String date2string(int time) {
+    public static String date2string (int time) {
         return getTimeSec(time)+" "+getMonthDay(time)+"/"+getMonth(time)+"/"+getYear(time);
     }
 
@@ -817,9 +811,9 @@ public class DateSupport {
      */
     public static void main(String args[]) {
         log.info("Date (without corr)"+date2string((int)(System.currentTimeMillis()/1000))+
-        " "+System.currentTimeMillis()/1000);
+                           " "+System.currentTimeMillis()/1000);
         log.info("Date (with corr)"+date2string((int)(DateSupport.currentTimeMillis()/1000))+
-        " : "+DateSupport.currentTimeMillis()/1000);
+                           " : "+DateSupport.currentTimeMillis()/1000);
         log.info("Date "+args[0]+" "+date2string(Integer.parseInt(args[0])));
         log.info("Date "+args[0]+" "+dumpdate(Integer.parseInt(args[0])));
         String ID = System.getProperty("user.timezone", "GMT");

@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -20,7 +23,7 @@ import org.mmbase.util.logging.*;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: VwmProbe.java,v 1.8 2003-03-10 11:50:26 pierre Exp $ current version $Id: VwmProbe.java,v 1.8 2003-03-10 11:50:26 pierre Exp $
+ * @version 27 Mar 1997 current version $Id: VwmProbe.java,v 1.6 2002-07-29 10:07:51 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class VwmProbe implements Runnable {

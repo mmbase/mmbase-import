@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -21,7 +24,7 @@ import org.mmbase.util.logging.*;
  * a way to block until the next event or notify of
  * a possible queue change.
  *
- * @version $Id: EmailSendProbe.java,v 1.7 2003-03-10 11:50:18 pierre Exp $
+ * @version 15 May 2001
  * @author Daniel Ockeloen
  */
 public class EmailSendProbe implements Runnable {
@@ -145,7 +148,7 @@ public class EmailSendProbe implements Runnable {
 								log.error("emailsendprobe : performTask failed"+anode);
 								tasks.removeElement(anode);
 								// oke set node on error
-								anode.setValue("mailstatus",parent.STATE_FAILED);
+								anode.setValue("mailstate",parent.STATE_FAILED);
 								anode.commit();
 							}
 				

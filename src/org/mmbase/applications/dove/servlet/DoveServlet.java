@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove.servlet;
 
 import java.io.*;
+import java.util.*;
 
 import javax.servlet.http.*;
 import javax.servlet.*;
@@ -36,7 +37,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.7 2003-03-04 13:27:11 nico Exp $
+ * @version $Id: DoveServlet.java,v 1.6 2002-11-09 09:22:39 michiel Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
 

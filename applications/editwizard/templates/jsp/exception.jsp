@@ -27,7 +27,7 @@ if (ewConfig!=null) {
      * exception.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: exception.jsp,v 1.6 2003-03-05 09:45:21 pierre Exp $
+     * @version  $Id: exception.jsp,v 1.5.2.1 2003-03-05 09:44:20 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */

@@ -32,8 +32,8 @@
                      NodeManagerList l = cloud.getNodeManagers();
                     java.util.Collections.sort(l, new java.util.Comparator() {
                        public int  compare(Object o1, Object o2) {
-                         NodeManager n1 = (NodeManager)o1;
-                         NodeManager n2 = (NodeManager)o2;
+                         NodeManager n1 = ((Node)o1).toNodeManager();
+                         NodeManager n2 = ((Node)o2).toNodeManager();
                          return n1.getGUIName().toUpperCase().compareTo(n2.getGUIName().toUpperCase());
                        }
                     } ); // MMCI doesn't sort, do it ourselves.

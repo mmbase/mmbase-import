@@ -9,14 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.PrintStream;
+import java.io.*;
+import java.util.*;
 
-import org.apache.xerces.parsers.DOMParser;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
+import org.apache.xerces.parsers.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 import org.xml.sax.helpers.DefaultHandler;
+
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Check XML documents against their DTD's and be as pretty as possible about errors
@@ -96,7 +99,7 @@ public class XMLChecker  {
          */
     public void error(SAXParseException e) {
         errorCount++;
-        out.println("<font color=\""+error_color+"\">error:</font> "+e.getMessage()+"<br />\n");
+        out.println("<font color=\""+error_color+"\">error:</font> "+e.getMessage()+"<br>\n");
     }
 
         /**
@@ -106,7 +109,7 @@ public class XMLChecker  {
          */
     public void fatalError(SAXParseException e) {
         fatalErrorCount++;
-        out.println("<font color=\""+fatalerror_color+"\">fatal error:</font> "+e.getMessage()+"<br />\n");
+        out.println("<font color=\""+fatalerror_color+"\">fatal error:</font> "+e.getMessage()+"<br>\n");
     }
 
         /**
@@ -116,7 +119,7 @@ public class XMLChecker  {
          */
     public void warning(SAXParseException e) {
         warningCount++;
-        out.println("<font color=\""+warning_color+"\">warning:</font> "+e.getMessage()+"<br />\n");
+        out.println("<font color=\""+warning_color+"\">warning:</font> "+e.getMessage()+"<br>\n");
     }
 
         /**
@@ -164,6 +167,6 @@ public class XMLChecker  {
      * @return always <code>true</code>
      */
     public boolean validate(String filename) {
-      return true;
+    return true;
     }
 }

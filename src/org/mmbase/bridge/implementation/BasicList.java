@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -18,7 +19,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.14 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicList.java,v 1.9.2.3 2003-03-21 17:52:03 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
@@ -47,12 +48,6 @@ public class BasicList extends ArrayList implements BridgeList  {
      */
     protected Object convert(Object o, int index) {
         return o;
-    }
-
-    public boolean contains(Object o ) {
-        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
-        convertAll();
-        return super.contains(o);
     }
 
     /*
@@ -86,6 +81,14 @@ public class BasicList extends ArrayList implements BridgeList  {
         return super.add(validate(o));
     }
 
+
+    public boolean contains(Object o ) {
+        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
+        convertAll();
+        return super.contains(o);
+    }
+
+
     /**
      * @since MMBase-1.6.2
      */
@@ -102,11 +105,11 @@ public class BasicList extends ArrayList implements BridgeList  {
         return super.toArray();
     }
 
-    protected abstract class BasicIterator implements ListIterator {
+    public abstract class BasicIterator implements ListIterator {
         protected ListIterator iterator;
 
-        BasicIterator() {
-            this.iterator = listIterator();
+        BasicIterator(List list) {
+            this.iterator = list.listIterator();
         }
 
         public boolean hasNext() {
@@ -141,7 +144,7 @@ public class BasicList extends ArrayList implements BridgeList  {
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
-        public Object next() {
+        public Object next() {       
             return iterator.next();
         }
 

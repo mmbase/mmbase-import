@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.14 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.11 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
@@ -75,17 +76,16 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
      *
      */
     public RelationIterator relationIterator() {
-        return new BasicRelationIterator();
+        return new BasicRelationIterator(this);
     }
 
-    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
+    public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
+        BasicRelationIterator(BasicList list) {
+            super(list);
+        }
 
         public Relation nextRelation() {
             return (Relation)next();
-        }
-
-        public Relation previousRelation() {
-            return (Relation)previous();
         }
     }
 }

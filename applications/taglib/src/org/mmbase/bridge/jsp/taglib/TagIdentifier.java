@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.Node;
 /**
 * Interface designed to make it possible for child tags
 * to access a parent tag using a String id

@@ -11,11 +11,20 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
-
+import org.mmbase.module.core.*;
+import org.mmbase.bridge.LocalContext;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.CloudContext;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.implementation.BasicCloud;
+import org.mmbase.bridge.implementation.BasicCloudContext;
+import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.module.corebuilders.*;
 
+import org.mmbase.security.UserContext;
+import org.mmbase.security.MMBaseCop;
 
 
 /**
@@ -49,7 +58,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.11 2003-03-04 13:27:07 nico Exp $
+ * @version $Id: AbstractDove.java,v 1.9 2002-10-31 08:23:19 pierre Exp $
  */
 
 public abstract class AbstractDove {

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.17 2003-03-04 20:10:55 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.15.2.2 2003-03-06 16:46:18 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
@@ -41,18 +41,18 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
         void   remove(int originalNodeNumber) {
             String prefix = "" + originalNodeNumber;
-            log.info("removing " + prefix);
+            log.debug("removing " + prefix);
             java.util.Iterator keys  = keySet().iterator();
             List removed = new ArrayList();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                log.info("checking " + key);
+                log.debug("checking " + key);
                 if (key.startsWith(prefix)) { 
                     // check is obviously to crude, e.g. if node number happens to be 4, 
                     // about one in 10 cache entries will be removed which need not be removed, 
                     // but well, it's only a cache, it's only bad luck...
                     // 4 would be a _very_ odd number for an Image, btw..
-                    log.info("removing " + key + " " + get(key));
+                    log.debug("removing " + key + " " + get(key));
                     removed.add(key);
                     // cannot use keys.remove(), becaus then cache.remove is not called.
                 }

@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -24,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * </PRE>
  *
  * @author Rico Jansen
- * @version $Id: Strip.java,v 1.6 2003-03-10 11:51:14 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class Strip {
 

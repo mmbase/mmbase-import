@@ -35,13 +35,13 @@ public class ListTag extends AbstractNodeListTag {
 
     protected String fields = null;
 
-    /**
+    /** 
      * @param fields a comma separated list of fields of the nodes.
      **/
     public void setFields(String fields) throws JspTagException {
         this.fields = getAttributeValue(fields);
     }
-
+    
 
 
     /**
@@ -71,7 +71,7 @@ public class ListTag extends AbstractNodeListTag {
 
     /**
      * @param type a comma separated list of nodeManagers
-     * @deprecated use setPath instead
+     * @depercated use setPath instead
      */
     public void setType(String type) throws JspTagException {
         this.pathString = getAttributeValue(type);
@@ -105,19 +105,22 @@ public class ListTag extends AbstractNodeListTag {
     }
 
 
-    protected String searchNodes = null;
+    protected String getSearchNodes() throws JspTagException {
+        return (nodesString == null) ? "-1" : nodesString;
+    }
+    protected String getPath() throws JspTagException {
+        return pathString;
+    }
+
     /**
      * Performs the search
      */
     public int doStartTag() throws JspTagException{
-        int superresult =  doStartTagHelper();
+        int superresult =  doStartTagHelper(); 
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
 
-        if (searchNodes == null) {
-            searchNodes = (nodesString == null)? "-1" : nodesString;
-        }
         boolean searchDistinct = false;
         if ("true".equals(distinctString) || "yes".equals(distinctString)) {
             searchDistinct = true;
@@ -127,15 +130,14 @@ public class ListTag extends AbstractNodeListTag {
             log.debug("directions " + directions);
             log.debug("searchString " + searchString);
         }
-        NodeList nodes = getCloud().getList(searchNodes,
-                                            pathString,
+        NodeList nodes = getCloud().getList(getSearchNodes(),
+                                            getPath(),
                                             fields,
                                             constraints,
                                             orderby,
                                             directions,
                                             searchString,
                                             searchDistinct);
-        searchNodes = null;
         return setReturnValues(nodes,true);
     }
 

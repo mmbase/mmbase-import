@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.database.support;
 
 import java.util.*;
+import java.net.*;
 import java.sql.*;
 
 import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
@@ -23,9 +24,9 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.24 2003-03-19 15:19:34 kees Exp $
+ * @version $Id: PostgreSQL71.java,v 1.21 2002-10-11 13:03:13 eduard Exp $
  */
-public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface  {
+public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
     protected MMBase mmb;
 
@@ -53,9 +54,6 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
             Object item = iter.next();
             allowed2disallowed.put(disallowed2allowed.get(item), item);
         }
-        
-        // Instantiate and initialize sql handler.
-        super.init(disallowed2allowed, parser);
     }
 
     public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
@@ -314,7 +312,7 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
                 if(!isInheritedField(bul, name) || name.equals(getNumberString())) {
                     log.trace("trying to retrieve the part for field : " + name);
                     String part = getDbFieldDef(def, bul);
-                    log.trace("adding field " + name + " with SQL-subpart: " + part);
+                    log.trace("gonna add field " + name + " with SQL-subpart: " + part);
                     if (fieldList==null) {
                         fieldList = part;
                     } else {
@@ -344,7 +342,7 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
             if(!createSequence()) return false;
             sql += ";";
         }
-        log.debug("creating a new table with statement: " + sql);
+        log.debug("gonna create a new table with statement: " + sql);
 
         MultiConnection con=null;
         Statement stmt=null;
@@ -782,6 +780,7 @@ public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface 
     }
 
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
+        fieldname = getDisallowedField(fieldname);
         int type=node.getDBType(prefix+fieldname);
 
         try {

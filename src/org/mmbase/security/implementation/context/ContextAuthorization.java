@@ -11,11 +11,13 @@ package org.mmbase.security.implementation.context;
 
 import java.util.*;
 import java.io.FileInputStream;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
 import org.apache.xpath.XPathAPI;
+import org.apache.xerces.parsers.DOMParser;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.*;
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.28 2003-03-04 15:29:36 nico Exp $
+ * @version $Id: ContextAuthorization.java,v 1.24.2.4 2003-02-18 10:40:38 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
