@@ -9,12 +9,12 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.9 2003-04-07 11:40:55 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.10 2003-04-09 17:25:11 michiel Exp $
    @since    MMBase-1.6
    
 -->
 <project name="project naam" default="full" basedir=".">
-  <property file="build.properties"/>
+  <property file="build.properties" />
   <property name="version" value="0.0.1" /> <!-- use an argument -Dversion -->
 
 
@@ -28,6 +28,8 @@
   <property name="download.dir"           location="${basedir}/build/download" />
   <property name="build.dir"              value="${nbuild.dir}/build" />
   <property name="source.dir"             value="${nbuild.dir}/cvs/mmbase" />
+
+  <property name="applications.build.dir" value="${nbuild.dir}/cvs/mmbase/applications/build" />
   
   <!-- files that are to be created -->
   <property name="sourcepackage.path" value="${destination.dir}/mmbase-src.zip"/>
@@ -60,7 +62,7 @@
     <cvs cvsRoot="${cvsroot}"
       command="${updatecommand}"
       dest="${source.dir}"
-      />              
+      />
   </target>
   
 
@@ -105,6 +107,8 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   -->
   <property name="buildscript.dir" value="${nbuild.dir}/cvs/mmbase"/>
   <property name="buildscript"     value="${buildscript.dir}/build.xml"/>   
+  <property name="applicationsscript.dir" value="${buildscript.dir}/applications"/>   
+  <property name="applicationsscript"     value="${applicationsscript.dir}/build.xml"/>   
   <property name="build.compiler"  value="classic" />	
   <property name="optimize"        value="off" /><!-- line numbers ?-->
   <property name="debug"           value="on" /> <!-- for nightly builds it is more or less logical to compile with debug = on -->	
@@ -113,6 +117,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <target name="build.jar" depends="cvs">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="jar" />
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="rmmci" />
+    <ant antfile="${applicationsscript}" dir="${applicationsscript.dir}" target="all" />
 	</target>
 
   <target name="build.distro" depends="cvs">
@@ -145,6 +150,9 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
 
     <copy file="${mmbase.release.lib.dir}/mmbase.jar" tofile="${jarpackage.path}"/>
     <copy file="${build.dir}/mmbase/rmmci.jar"  tofile="${rmmcipackage.path}"/>
+    <copy todir="${destinination.dir}">
+			<fileset dir="${applications.build.dir}"/>
+    </copy>
 
     <!-- the libs we used -->
     <zip zipfile="${libpackage.path}" basedir="${mmbase.compile.lib.dir}">
@@ -174,7 +182,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   
   <!-- clean for a new compile -->
   <target name="clean">
-      <delete dir="${build.dir}" /> 
+    <ant antfile="${buildscript}" dir="${buildscript.dir}" target="clean" />
   </target>
   
   <!-- ================================================================================
