@@ -21,21 +21,18 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.9 2002-03-20 13:16:47 eduard Exp $
+ * @version $Id: BasicNodeList.java,v 1.10 2002-06-13 12:08:35 eduard Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
 
     protected Cloud cloud;
-    protected NodeManager nodemanager=null;
-
     /**
     * ...
     */
     BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c);
         this.cloud=cloud;
-        this.nodemanager=nodemanager;
     }
 
     BasicNodeList(Collection c, Cloud cloud) {
@@ -50,10 +47,7 @@ public class BasicNodeList extends BasicList implements NodeList {
             return o;
         }
         MMObjectNode mmn= (MMObjectNode)o;
-        NodeManager nm = nodemanager;
-        if (nm==null) {
-            nm=cloud.getNodeManager(mmn.parent.getTableName());
-        }
+        NodeManager nm = cloud.getNodeManager(mmn.parent.getTableName());
         Node n;
         if (mmn.parent instanceof InsRel) {
             n = new BasicRelation(mmn,nm);
@@ -136,7 +130,5 @@ public class BasicNodeList extends BasicList implements NodeList {
         public Node nextNode() {
             return (Node)next();
         }
-
     }
-
 }

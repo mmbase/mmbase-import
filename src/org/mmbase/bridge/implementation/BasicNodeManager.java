@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.30 2002-05-03 15:09:27 eduard Exp $
+ * @version $Id: BasicNodeManager.java,v 1.31 2002-06-13 12:08:35 eduard Exp $
  */
 public class BasicNodeManager implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -138,8 +138,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
         return f;
     }
 
-    public NodeList getList(String constraints, String orderby,
-            String directions) {
+    public NodeList getList(String constraints, String orderby, String directions) {
         String where = null;
         if ((constraints != null) && (!constraints.trim().equals(""))) {
             where=cloud.convertClauseToDBS(constraints);
@@ -190,7 +189,12 @@ public class BasicNodeManager implements NodeManager, Comparable {
             Vector v=builder.getList(BasicCloudContext.getScanPage(req, resp),params,tokens);
             if (v==null) { v=new Vector(); }
             int items=1;
-            try { items=Integer.parseInt(params.Value("ITEMS")); } catch (Exception e) {}
+            try { 
+                items=Integer.parseInt(params.Value("ITEMS")); 
+            } 
+            catch (Exception e) {
+                log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
+            }
             Vector fieldlist=params.Values("FIELDS");
             Vector res=new Vector(v.size() / items);
             for(int i= 0; i<v.size(); i+=items) {
