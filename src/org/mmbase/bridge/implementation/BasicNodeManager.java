@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.78 2004-06-18 11:56:44 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.79 2004-09-17 09:25:08 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -317,56 +317,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return list;
     }
 
-
-    /**
-     * Based on NodeSearchQuery (but it is wrapped in a BasicNodeQuery, because of security contraints).
-     *
-     * @since MMBase-1.7
-     */
-    /*
-    protected NodeList getSecureList(BasicNodeQuery query) {
-
-        Authorization auth = cloud.mmbaseCop.getAuthorization();
-        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
-
-        BasicQuery bquery = (BasicQuery) query;
-        if (bquery.isSecure()) {
-            checked = true;
-        } else {
-            Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
-            bquery.setSecurityConstraint(check);
-            checked = bquery.isSecure();
-        }
-
-        List resultList;
-        try {
-            resultList = builder.getNodes((NodeSearchQuery)query.getQuery()); // result with all MMObjectNodes (without security)
-            // cached in MMObjectBuilder.
-
-        } catch (SearchQueryException sqe) {
-            throw new BridgeException(sqe);
-        }
-        query.markUsed();
-
-        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
-        if (! checked) {
-            log.debug("checking read rights");
-            list.autoConvert = false;
-
-            ListIterator i = list.listIterator();
-            while (i.hasNext()) {
-                if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
-                    i.remove();
-                }
-            }
-            list.autoConvert = true;
-        }
-        list.setProperty(NodeList.QUERY_PROPERTY, query);
-        return list;
-
-    }
-
-    */
 
     public RelationManagerList getAllowedRelations() {
        return getAllowedRelations((NodeManager) null, null, null);
