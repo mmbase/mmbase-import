@@ -50,7 +50,7 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 
-<di:hasrole role="filemanager">
+<di:hasrole role="contenteditor">
 <% request.getSession().setAttribute("mayupload","true"); %>
 <%
     String msg = "";

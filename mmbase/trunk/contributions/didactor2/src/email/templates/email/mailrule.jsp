@@ -33,6 +33,15 @@
   </mm:relatednodes>
 </mm:node>
 
+<mm:import externid="action_back" from="parameters" id="action_back"/>
+    <mm:present referid="action_back">
+	<mm:redirect page="/email/index.jsp" referids="$referids,mailbox">
+	    <mm:param name="callerpage">/email/mailrule.jsp</mm:param>
+	</mm:redirect>
+</mm:present>
+
+
+
 <mm:import externid="ids" vartype="List"/>
 <mm:present referid="ids">
     <mm:import externid="action_delete.x" from="parameters" id="action_delete"/>
@@ -88,7 +97,11 @@
   </div>
   <div class="contentBody">
     <mm:treeinclude page="/email/mailbox/mailrules.jsp" objectlist="$includePath" referids="$referids" />
+
+<br/>
+  <input type="submit" class="formbutton" name="action_back" value="<fmt:message key="BACK"/>"/>
   </div>
+
 </div>
 </div>
 </form>
