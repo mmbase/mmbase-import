@@ -32,7 +32,7 @@ mport org.mmbase.util.XMLBasicReader;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.2 2003-07-18 12:09:05 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.3 2003-07-18 15:00:17 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -47,6 +47,10 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
      * The classname is retrieved from the database configuration file
      */
     Class storageManagerClass;
+
+	public double getVersion() {
+        return 0.1;
+    }
 
     /**
      * Initialize the Factory for this instance of MMBase.
@@ -94,7 +98,9 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
      * @throws StorageConfigurationException if necessary configuration data is missing or invalid 
      */
     protected void load() throws StorageConfigurationException, StorageInaccessibleException {
-        XMLDatabaseReader reader = getDocumentReader();
+        StorageReader reader = getDocumentReader();
+        storageManagerClass = reader.getStorageManagerClass(this);
+        
         // determine the storagemanager classname and load the class
         String storageManagerClassName = Class.forName(reader.getMMBaseDatabaseDriver());
         if (storageManagerClassName==null) {
@@ -106,6 +112,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             throw new StorageConfigurationException(cnfe);
         }
         // ... more configuration
+        
         
     }
 
@@ -122,7 +129,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
      * @throws StorageInaccessibleException if the storage could not be accessed while determining the database type
      * @return a XMLDatabaseReader instance
      */
-    public XMLDatabaseReader getDocumentReader() throws StorageInaccessibleException {
+    public StorageReader getDocumentReader() throws StorageInaccessibleException {
         File databaseConfig = null;
         // configuration path. 
         String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
@@ -144,7 +151,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
         }
         // get our config...
         // mostly static so maybe make this a resource?
-        return new XMLDatabaseReader(databaseConfig.getPath());
+        return new StorageReader(databaseConfig.getPath());
     }
 
     /**
@@ -167,7 +174,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
     public DataSource getDataSource() {
         return datasource;
     }
-    
+
 }
 
 
