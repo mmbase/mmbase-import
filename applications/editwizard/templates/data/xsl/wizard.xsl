@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:output method="xml" 
-    omit-xml-declaration="no" 
-    doctype-public="-//W3C/DTD HTML 4.0 Transitional//EN"
-    version="1.0" encoding="utf-8" indent="no" />
+<xsl:output method="xml"
+                version="1.0"
+                encoding="utf-8"
+                omit-xml-declaration="yes"
+                standalone="no"
+                doctype-public="-//W3C//DTD HTML 4.0 Transitional//"
+                indent="yes"
+        />
 
 <xsl:param name="imageaffix">+s(128x128)</xsl:param>
 <xsl:param name="mmbaseurl"></xsl:param>
@@ -25,76 +29,28 @@
 <xsl:template match="wizard">
 <html>
 <head>
-     <title>NOS Intranet <xsl:value-of select="title" /></title>
+     <title><xsl:value-of select="title" /></title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
-    <script language="javascript" src="tools.js" >&lt;!-- --&gt;</script>
-	<script language="javascript" src="validator.js" >&lt;!-- --&gt;</script>
-	<script language="javascript" src="wysiwyg.js" >&lt;!-- --&gt;</script>
-	<script language="javascript" src="editwizard.js" >&lt;!-- --&gt;</script>
 </head>
- <body link="#008374" vlink="#33CC66" text="#000000" topmargin="0" leftmargin="0" marginwidth="0" marginheight="0"
-       onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();" >
-<form name="form" method="post" action="#" id="{/wizard/curform}">
+<body leftmargin="0" 
+      topmargin="0" 
+      marginwidth="0" 
+      marginheight="0" 
+      onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();">
+
+    <script language="javascript" src="tools.js"><xsl:comment>help IE</xsl:comment></script>
+	<script language="javascript" src="validator.js"><xsl:comment>help IE</xsl:comment></script>
+	<script language="javascript" src="editwizard.js"><xsl:comment>help IE</xsl:comment></script>
+
+	
+	<form name="form" method="post" action="#" id="{/wizard/curform}">
 		<input type="hidden" name="curform" value="{/wizard/curform}" />
 		<input type="hidden" name="cmd" value="" id="hiddencmdfield" />
-<table align="left"><tr><td>	
-      <xsl:apply-templates select="/*/steps-validator" />
-	</td></tr></table>
-<table width="590" bgcolor="#F4E6DA" cellspacing="0" cellpadding="5" border="0" >
-<tr bgcolor="#F4E6DA">
-<td align="center"><a href="index.html"><span class="step">Terug</span></a></td> 
-<td align="center"><xsl:choose>
-	<xsl:when test="/wizard/form[@id=/wizard/nextform]">
-                         <span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/nextform}')" title="Verder naar '{/wizard/form[@id=/wizard/nextform]/title}'">Verder</span>
-				</xsl:when>
-				<xsl:otherwise>
-				<span class="step-disabled" align="left" width="100%" title="Geen volgende stap.">Verder</span>
-				</xsl:otherwise>
-				</xsl:choose>
-</td> 
-<td align="center">
-<span id="bottombutton-save" onclick="doSave();" unselectable="on">
-				<xsl:if test="/*/steps-validator/@allowsave='true'">
-					<xsl:attribute name="class">step</xsl:attribute>
-					<xsl:attribute name="title">Bewaar alle wijzigingen.</xsl:attribute>
-				</xsl:if>
-			    <xsl:if test="/*/steps-validator/@allowsave='false'">
-					<xsl:attribute name="class">step-disabled</xsl:attribute>
-					<xsl:attribute name="title">U kunt niet bewaren omdat er nog velden ongeldig zijn. U dient eerst te corrigeren.</xsl:attribute>
-				</xsl:if>
-				<xsl:choose>
-					<xsl:when test="/*/steps-validator/step[@valid='false'][not(@form-schema=/wizard/curform)]">
-						<xsl:attribute name="otherforms">invalid</xsl:attribute>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="otherforms">valid</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
-			<span class="step">Bewaar</span>
-</span>
-</td> 
-<td align="center">
-			<span onclick="doCancel(this);" id="bottombutton-cancel">
-				<xsl:if test="/*/steps-validator/@allowcancel='true'">
-					<xsl:attribute name="class">step</xsl:attribute>
-					<xsl:attribute name="title">Annuleer deze taak, wijzigingen worden NIET bewaard.</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="/*/steps-validator/@allowcancel='false'">
-					<xsl:attribute name="class">step-disabled</xsl:attribute>
-				    <xsl:attribute name="title">U kunt deze taak niet annuleren.</xsl:attribute>
-				</xsl:if>
-				Annuleer
-			</span>
-</td>
-<td align="center"><a href="logout.jsp"><span class="step">Uitloggen</span></a> </td>
-</tr>
-</table>
-
-
-<table cellspacing="0" cellpadding="5" border="0" width="590" bgcolor="#F4E6DA">
+	
+	<table cellspacing="0" cellpadding="3" border="0" width="100%">
 	<tr>
 			<td colspan="2" align="center" valign="bottom">
-				<table border="0" cellspacing="0" cellpadding="0" width="547">
+				<table border="0" cellspacing="0" cellpadding="0" width="100%">
 				<tr>
 					<td class="head"><nobr><xsl:value-of select="title" /></nobr></td>
 					<td class="superhead" align="right">
@@ -105,12 +61,15 @@
 			</td>
 		</tr>
 
-		<tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text></nobr></span></td></tr>
+		<tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>
 
 		<xsl:apply-templates select="form[@id=/wizard/curform]" />
 		
-		<tr><td colspan="2"><hr color="#005A4A" size="1" noshade="true" /></td></tr>		
-		</table>
+                <xsl:apply-templates select="/*/steps-validator" />                
+	</table>
+                
+	
+                        
 	</form>
 
 </body>
@@ -131,11 +90,11 @@
 
 <xsl:template match="field">
 
-	<td align="left" valign="top" width="125">
+	<td align="left" valign="top" width="150">
 	<xsl:if test="../../item[count(field) &gt; 1]">
 		<xsl:attribute name="style">border-width:0 0 0 1; border-style:solid; border-color:#000000; padding-left:3;</xsl:attribute>
 	</xsl:if>
-		<img src="media/nix.gif" width="100" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
+		<img src="media/nix.gif" width="150" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
 		<span id="prompt_{@fieldname}" class="valid" prompt="{prompt}">
 			<xsl:choose>
 			<xsl:when test="description">
@@ -156,7 +115,7 @@
 		
 		<xsl:choose>
 		<xsl:when test="@ftype='data'">
-			<span style="width:300;"><xsl:value-of select="value" /></span>
+			<span style="width:400;"><xsl:value-of select="value" /></span>
 		</xsl:when>
 		<xsl:when test="@ftype='line'">
 			<input type="text" size="80" name="{@fieldname}" value="{value}" class="width400" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
@@ -164,18 +123,18 @@
 			</input>
 		</xsl:when>
 		<xsl:when test="@ftype='text'">
- 			<xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);"</xsl:text>			
- 			<xsl:choose>
-             <xsl:when test="@rows">
-                 <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
- 			</xsl:when>
-             <xsl:otherwise>
-                 <xsl:text>rows="10"</xsl:text>
-             </xsl:otherwise></xsl:choose>
-             <xsl:apply-templates select="@*" />
-             <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of select="value" />
- 			<xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
-	    </xsl:when>
+			<xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);"</xsl:text>			
+			<xsl:choose>
+            <xsl:when test="@rows">              
+                <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
+			</xsl:when>
+            <xsl:otherwise>
+                <xsl:text>rows="10"</xsl:text>
+            </xsl:otherwise></xsl:choose>
+            <xsl:apply-templates select="@*" />
+            <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of select="value" />
+			<xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
+		</xsl:when>
 		<xsl:when test="@ftype='relation' or @ftype='enum'">
 			<select name="{@fieldname}" class="width400" onchange="validate_validator(event);" onblur="validate_validator(event);">
 			<xsl:apply-templates select="@*" />
@@ -204,20 +163,20 @@
 				<xsl:if test="(@dttype='datetime') or (@dttype='date')">
 					<select name="internal_{@fieldname}_day" dttype="day" onchange="validate_validator(event);" onblur="validate_validator(event);">
 						<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
-					</select><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>
+					</select><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
 					<select name="internal_{@fieldname}_month" dttype="month" onchange="validate_validator(event);" onblur="validate_validator(event);">
 						<option value="1">january</option><option value="2">february</option><option value="3">march</option><option value="4">april</option><option value="5">may</option><option value="6">june</option><option value="7">july</option><option value="8">august</option><option value="9">september</option><option value="10">october</option><option value="11">november</option><option value="12">december</option>
-					</select><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>
-					<input name="internal_{@fieldname}_year" dttype="year" type="text" value="" size="4" maxlength="4" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
+					</select><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+					<input name="internal_{@fieldname}_year" dttype="year" type="text" value="" size="5" maxlength="4" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
 				</xsl:if>
 
 				<xsl:if test="@dttype='datetime'">
-					<xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>at<xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>
+					<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>at<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
 				</xsl:if>
 
 				<xsl:if test="(@dttype='datetime') or (@dttype='time')">
 					<input name="internal_{@fieldname}_hours" dttype="hour" type="text" value="" size="2" maxlength="2" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
-					<xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>:<xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>
+					<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
 					<input name="internal_{@fieldname}_minutes" dttype="minutes" type="text" value="" size="2" maxlength="2" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
 				</xsl:if>
 			</div>
@@ -255,7 +214,12 @@
 				</xsl:when>
 				<xsl:when test="@dttype='image' and upload">
 					<div class="imageupload"><input type="hidden" name="{@fieldname}" value="YES" />
-						<img src="{upload/path}" hspace="0" vspace="0" border="0" /> <span><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)</span><br />
+						<img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128" />
+                                                <br />
+                                                <span>
+                                                    <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text> (<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
+                                                </span>
+                                                <br />
 						<a href="upload.jsp?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload other Image</a>
 					</div>
 				</xsl:when>
@@ -308,20 +272,6 @@
 						<img src="media/remove.gif" width="20" height="20" />
 					</span>
 				</xsl:if>
-				
-				<xsl:if test="command[@name='move-up']">
-					<span class="imagebutton" xstyle="position:absolute; top:-10; left:88;"
-					    onclick="doSendCommand('{command[@name='move-up']/@cmd}','parent::*/@orderby');">
-				        <img src="media/up.gif" width="20" height="20" />
-				    </span>
-				</xsl:if>
-				<xsl:if test="command[@name='move-down']">
-					<span class="imagebutton" xstyle="position:absolute; top:-10; left:88;"
-					    onclick="doSendCommand('{command[@name='move-down']/@cmd}','parent::*/@orderby');">
-				        <img src="media/down.gif" width="20" height="20" />
-				    </span>
-				</xsl:if>
-				
 					</td>
 					</tr>
 					<tr>
@@ -351,6 +301,15 @@
 				<span style="width:128; height:26; overflow:hidden; font-size:10px;"><xsl:value-of select="field[@ftype='data']/value" /></span>
 						</td>
 					</tr>
+					
+
+				<xsl:if test="command[@name='move-up']">
+					<span  onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="media/up.gif" width="20" height="20" /></span>
+				</xsl:if>
+				<xsl:if test="command[@name='move-down']">
+					<span  onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="media/down.gif" width="20" height="20" /></span>
+				</xsl:if>
+                                
 				</table>
 			</span>
 		</xsl:when>
@@ -397,12 +356,14 @@
 							<img src="media/remove.gif" width="20" height="20" hspace="0" vspace="0" border="0"/>
 						</span>
 					</xsl:if>
+
 					<xsl:if test="command[@name='move-up']">
-						<span style="position:absolute; top:-10; left:88;" onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="media/up.gif" width="20" height="20" /></span>
+						<span onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="media/up.gif" width="20" height="20" /></span>
 					</xsl:if>
 					<xsl:if test="command[@name='move-down']">
-						<span style="position:absolute; top:-10; left:88;" onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="media/down.gif" width="20" height="20" /></span>
+						<span  onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="media/down.gif" width="20" height="20" /></span>
 					</xsl:if>
+
 				</td>
 			</tr>
 
@@ -450,7 +411,7 @@
 					<tr>
 						<td align="right" valign="top" class="search" width="100%">
 							<nobr>
-								<xsl:value-of select="prompt" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>
+								<xsl:value-of select="prompt" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
 								
 								<select name="searchage_{../command[@name='add-item']/@cmd}" style="width:80">
 									<option value="0"><xsl:call-template name="searchage"><xsl:with-param name="real" select="'0'" /><xsl:with-param name="pref" select="@age" /></xsl:call-template>0 days</option>
@@ -478,7 +439,7 @@
 								<img src="media/nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
 								<span class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}');"	>
 									<xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
-									<img src="media/search.gif" width="16" height="16"/>
+									<img src="media/search.gif" width="20" height="20"/>
 								</span>
 								<img src="media/nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
 							</nobr>
@@ -524,74 +485,72 @@
 </xsl:template>
 
 
-
 <xsl:template match="steps-validator">
-
-<xsl:for-each select="step">
-				
-	<xsl:variable name="schemaid" select="@form-schema" />
-<p><span onclick="doGotoStep('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon">
-<xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
-<xsl:attribute name="title"><xsl:if test="@valid='true'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /></xsl:if><xsl:if test="@valid='false'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /> is NOT valid. Click here to correct the errors.</xsl:if></xsl:attribute>
-<img width="116" height="16" ><xsl:attribute name="src">media/stap<xsl:value-of select="position()" />a.gif</xsl:attribute></img><br />
-<span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
-</span>
-</p>
-</xsl:for-each>
-
-     
-</xsl:template>
-
-<xsl:template match="xsteps-validator">
-    	<table cellspacing="0" cellpadding="3" border="0" align="left" >
-	    <tr><td width="121" align="center"><img src="/rnw/gfx/clearpixel.gif" width="121" height="1" border="0" /><br />
-			<xsl:if test="count(step) &gt; 1">
-				<p><xsl:choose>
-				<xsl:when test="/wizard/form[@id=/wizard/prevform]">
-					<span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/prevform}')" title="Terug naar '{/wizard/form[@id=/wizard/prevform]/title}'">[ Terug ]</span>
-				</xsl:when>
-				<xsl:otherwise>
-					<span class="step-disabled" align="left" width="100%" title="Geen vorige stap.">[ Terug ]</span>
-				</xsl:otherwise>
-				</xsl:choose></p>
+                        <!-- when multiple steps -->
+                        <xsl:if test="count(step) &gt; 1">
+                            <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" /><p>
+                            
+                                <!-- all steps -->
 				<xsl:for-each select="step">
-					<xsl:variable name="schemaid" select="@form-schema" />
-				    <p><span onclick="doGotoStep('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon">
+				    <xsl:variable name="schemaid" select="@form-schema" />
+				    <span onclick="doGotoStep('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon">
 						<xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
 						<xsl:attribute name="title"><xsl:if test="@valid='true'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /></xsl:if><xsl:if test="@valid='false'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /> is NOT valid. Click here to correct the errors.</xsl:if></xsl:attribute>
-						[ Stap <xsl:value-of select="position()" /> ]<br />
-					</span>
-					<span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
-					</p>
-				</xsl:for-each>
-				<p><xsl:choose>
-				<xsl:when test="/wizard/form[@id=/wizard/nextform]">
-					<span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/nextform}')" title="Verder naar '{/wizard/form[@id=/wizard/nextform]/title}'">[ Verder ]</span>
+						( stap <xsl:value-of select="position()" /> )
+				    </span>
+				    <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
+				</xsl:for-each>                                                            
+                               
+                            </p><p>
+                            
+                                <!-- previous -->
+				<xsl:choose>
+				<xsl:when test="/wizard/form[@id=/wizard/prevform]">
+					<span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/prevform}')" title="Terug naar '{/wizard/form[@id=/wizard/prevform]/title}'"> &lt;&lt; </span>
 				</xsl:when>
 				<xsl:otherwise>
-					<span class="step-disabled" align="left" width="100%" title="Geen volgende stap.">[ Verder] </span>
+					<span class="step-disabled" align="left" width="100%" title="Geen vorige stap.">&lt;&lt;</span>
 				</xsl:otherwise>
-				</xsl:choose></p>
-			</xsl:if>
-			<p><span onclick="doCancel(this);" id="bottombutton-cancel">
-				<xsl:if test="@allowcancel='true'">
+				</xsl:choose>
+                                
+                                - -
+                                
+                                <!-- next -->
+				<xsl:choose>
+				<xsl:when test="/wizard/form[@id=/wizard/nextform]">
+					<span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/nextform}')" title="Verder naar '{/wizard/form[@id=/wizard/nextform]/title}'"> &gt;&gt; </span>
+				</xsl:when>
+				<xsl:otherwise>
+					<span class="step-disabled" align="left" width="100%" title="Geen volgende stap.">&gt;&gt;</span>
+				</xsl:otherwise>
+				</xsl:choose>                            
+                                                                                                
+                            </p></td></tr>
+			</xsl:if>            
+                                    
+                <!-- our buttons -->
+                    <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" /><p>
+                        <!-- cancel -->
+			<span onclick="doCancel(this);" id="bottombutton-cancel">
+				<xsl:if test="@allowcancel='true'">                                        
 					<xsl:attribute name="class">bottombutton</xsl:attribute>
-					<xsl:attribute name="title">Annuleer deze taak, wijzigingen worden NIET bewaard.</xsl:attribute>
+					<xsl:attribute name="title">Cancel this task, changes will NOT be saved.</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="@allowcancel='false'">
 					<xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
-				    <xsl:attribute name="title">U kunt deze taak niet annuleren.</xsl:attribute>
+				    <xsl:attribute name="title">This task can not be canceled.</xsl:attribute>
 				</xsl:if>
-				[ Annuleer ]
-			</span></p>
-			<p><span id="bottombutton-save" onclick="doSave();" unselectable="on">
+				<xsl:text>( cancel )</xsl:text>
+			</span>
+                        <!-- commit  -->                        
+			<span id="bottombutton-save" onclick="doSave();" unselectable="on">
 				<xsl:if test="@allowsave='true'">
 					<xsl:attribute name="class">bottombutton</xsl:attribute>
-					<xsl:attribute name="title">Bewaar alle wijzigingen.</xsl:attribute>
+					<xsl:attribute name="title">Save changes.</xsl:attribute>
 				</xsl:if>
 			    <xsl:if test="@allowsave='false'">
 					<xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
-					<xsl:attribute name="title">U kunt niet bewaren omdat er nog velden ongeldig zijn. U dient eerst te corrigeren.</xsl:attribute>
+					<xsl:attribute name="title">The changes cannot be saved, since some data is not filled in correctly. Please change this fields.</xsl:attribute>
 				</xsl:if>
 				<xsl:choose>
 					<xsl:when test="step[@valid='false'][not(@form-schema=/wizard/curform)]">
@@ -601,11 +560,9 @@
 						<xsl:attribute name="otherforms">valid</xsl:attribute>
 					</xsl:otherwise>
 				</xsl:choose>
-				[ Bewaar ]
-			</span></p>
-        </td></tr>
-        </table>
-
+				<xsl:text>( save )</xsl:text>
+			</span>
+                    </p><hr color="#005A4A" size="1" noshade="true" /></td></tr>
 </xsl:template>
 
 <xsl:template name="searchage">
