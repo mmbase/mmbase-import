@@ -26,6 +26,7 @@ import java.io.*;
 public class DirectoryLister{
 
 	public final static String buildername = "DirectoryLister";
+	private final static boolean debug = false;
 
 	/**
 	 * Adds all elements from Vector v2 to Vector v1.
@@ -75,7 +76,7 @@ public class DirectoryLister{
         	Vector v = new Vector ();
         	String fileSpec=null;
 
-		System.out.println(buildername+": "+methodname+": Getting dirs using args: "+args);
+		if(debug) System.out.println(buildername+": "+methodname+": Getting dirs using args: "+args);
 		
 	        StringTokenizer st = new StringTokenizer (args, ";");
         	while (st.hasMoreTokens ()) {
@@ -144,21 +145,21 @@ public class DirectoryLister{
 		File file=null;
 
 		Vector filesvec = createFilesVector(directories); //Create filesvector.
-		System.out.println(buildername+": "+methodname+": filesvec= "+filesvec);
+		if(debug) System.out.println(buildername+": "+methodname+": filesvec= "+filesvec);
 
 		//Sort the filesvec on modification time.
 		Enumeration filesvec_enum = filesvec.elements(); //Enumerate all filesvec elements.
 		while (filesvec_enum.hasMoreElements()){
 			sortedfilesvec.addSorted(filesvec_enum.nextElement());	//Add fileobj to sortedvec.
 		}
-		System.out.println(buildername+": "+methodname+": sortedfilesvec= "+sortedfilesvec);
+		if(debug) System.out.println(buildername+": "+methodname+": sortedfilesvec= "+sortedfilesvec);
 
 		Enumeration sortedfilesvec_enum = sortedfilesvec.elements();
 		while (sortedfilesvec_enum.hasMoreElements()){
 			file = (File)sortedfilesvec_enum.nextElement();
 			dirs_sorted.addElement(file.getPath());	//Add filepathname to new sortedvec.
 		}
-		System.out.println(buildername+": "+methodname+": dirs_sorted = "+dirs_sorted);
+		if(debug) System.out.println(buildername+": "+methodname+": dirs_sorted = "+dirs_sorted);
 		return dirs_sorted;
 	}
 
@@ -178,7 +179,7 @@ public class DirectoryLister{
 		int modtime=0;
 		String filepath =null;
 
-		System.out.println(buildername+": "+methodname+": Sorting dirs using comparefield:"+comparefield);
+		if(debug) System.out.println(buildername+": "+methodname+": Sorting dirs using comparefield:"+comparefield);
 		//System.out.println(buildername+": "+methodname+": directories (unsorted) = "+directories);
 
 		Enumeration dirs_enum = directories.elements();
@@ -214,7 +215,7 @@ public class DirectoryLister{
 		String typefmt=null,previewfmt=null,path=null,indexsymbol=null;
 		Enumeration sort_enum=null;
 
-		System.out.println(buildername+": "+methodname+": Creating 3 items vector.");
+		if(debug) System.out.println(buildername+": "+methodname+": Creating 3 items vector.");
 		typefmt    = tagger.Value("TYPEFORMAT");	//eg. fullsize.#.jpg
 		previewfmt = tagger.Value("PREVIEWFORMAT");	//eg. fullsize-s.#.jpg
 		indexsymbol= tagger.Value("INDEXSYMBOL");	//eg. #
@@ -228,7 +229,7 @@ public class DirectoryLister{
 
 			//Check parameters and create a 3 items vector.
 			if ((typefmt!=null)&&(previewfmt!=null)&&(indexsymbol!=null)){ //All params provided.
-				System.out.println(buildername+": "+methodname+": TYPEFMT="+typefmt+" PREVIEWFMT="+previewfmt+" INDEXSYMBOL="+indexsymbol+" PROVIDED ->Creating vector");
+				if(debug) System.out.println(buildername+": "+methodname+": TYPEFMT="+typefmt+" PREVIEWFMT="+previewfmt+" INDEXSYMBOL="+indexsymbol+" PROVIDED ->Creating vector");
 				
 				typefmt   =path+typefmt;  //Add path to typefmt & previewfmt
 				previewfmt=path+previewfmt;
@@ -263,7 +264,7 @@ public class DirectoryLister{
 					}
 				}//while loop
 			}else if ((typefmt==null)&&(previewfmt==null)&&(indexsymbol==null)){ //All params empty.
-				System.out.println(buildername+": "+methodname+": TYPEFMT & PREVIEWFMT & INDEXSYMBOL EMPTY -> Creating std vector where ITEM3=ITEM1");
+				if(debug) System.out.println(buildername+": "+methodname+": TYPEFMT & PREVIEWFMT & INDEXSYMBOL EMPTY -> Creating std vector where ITEM3=ITEM1");
 
 				sort_enum = sorted.elements();
 				while (sort_enum.hasMoreElements()){	//Create std vector.
@@ -275,7 +276,7 @@ public class DirectoryLister{
 					//System.out.println(buildername+": "+methodname+": ADDED "+sentry+","+date+","+sentry);
 				}
 			}else{ //1 OR 2 params are empty.
-				System.out.println(buildername+": "+methodname+": Error typefmt="+typefmt+" previewfmt="+previewfmt+" indexsymbol="+indexsymbol+" ->Returning empty vector.");
+				if(debug) System.out.println(buildername+": "+methodname+": Error typefmt="+typefmt+" previewfmt="+previewfmt+" indexsymbol="+indexsymbol+" ->Returning empty vector.");
 			}
 		}
 		//System.out.println(buildername+": "+methodname+": NEW VECTOR:"+merged);
@@ -374,8 +375,8 @@ public class DirectoryLister{
 		//System.out.println("Reverse -> size: "+size);
 
 		if ((size%items!=0) || (items>size)){	
-			System.out.println("DirectoryLister:Reverse: Incompatible pair: Vectorsize: "+size+" Itemsnumber: "+items);
-			System.out.println("DirectoryLister:Reverse: Returning old vector instead");
+			if(debug) System.out.println("DirectoryLister:Reverse: Incompatible pair: Vectorsize: "+size+" Itemsnumber: "+items);
+			if(debug) System.out.println("DirectoryLister:Reverse: Returning old vector instead");
 			return v;
 		}
 		
