@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.6 2000-11-27 14:49:48 vpro Exp $
+$Id: MMHttpHandler.java,v 1.7 2000-11-27 16:33:53 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/11/27 14:49:48  vpro
+davzev: Changed debug var from RemoteBuilder.debug to true
+
 Revision 1.5  2000/11/27 13:12:19  vpro
 davzev: Added some method comments and changed argument names of method doGet and doXMLSignal, also removed some hardcoded numbers.
 
@@ -24,7 +27,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.6 $ $Date: 2000-11-27 14:49:48 $
+ * @version $Revision: 1.7 $ $Date: 2000-11-27 16:33:53 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable {
@@ -112,6 +115,7 @@ public class MMHttpHandler implements Runnable {
 			}else
 				debug("doGet: WARNING: unknown requesturl:"+requestUrl);
 		}
+		if (debug) debug("doGet: Returning 200 OK");
 		out.println("200 OK");
 		out.flush();
 	}
