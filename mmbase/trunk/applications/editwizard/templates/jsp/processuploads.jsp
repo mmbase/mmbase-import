@@ -1,6 +1,6 @@
 <%@ include file="settings.jsp"
 %><%@ page import="org.apache.commons.fileupload.*"
-%><%@ page import="org.mmbase.applications.editwizard.*" %>
+%><%@ page import="org.mmbase.applications.editwizard.*"
 %><%@ page import="org.mmbase.applications.editwizard.Config" %>
 <html>
 <body bgcolor="white">
@@ -12,7 +12,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.15 2004-03-10 18:24:39 michiel Exp $
+     * @version  $Id: processuploads.jsp,v 1.16 2004-03-10 20:08:45 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
