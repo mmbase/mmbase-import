@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
 public class NotPresentTag extends PresentTag {
               
     public int doStartTag() throws JspTagException {
-        if (getParameter() == null) {
+        if (getKey() == null) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;

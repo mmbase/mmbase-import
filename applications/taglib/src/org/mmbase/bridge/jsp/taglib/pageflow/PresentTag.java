@@ -23,23 +23,23 @@ import javax.servlet.jsp.JspTagException;
 */
 public class PresentTag extends CloudReferrerTag {
            
-    private String parameter;
+    private String key;
 
-    public void setParameter(String p) {
-        parameter = p;
+    public void setKey(String k) {
+        key = k;
     }
 
-    protected String getParameter() throws JspTagException {
+    protected String getKey() throws JspTagException {
         CloudProvider cp = findCloudProvider();        
-        String param = (String) cp.getObject(parameter);
+        String param = (String) cp.getObject(key);
         if (param == null) {
-            param = pageContext.getRequest().getParameter(parameter); 
+            param = pageContext.getRequest().getParameter(key); 
         }
         return param;        
     }
     
     public int doStartTag() throws JspTagException {
-        if (getParameter() != null) {
+        if (getKey() != null) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
