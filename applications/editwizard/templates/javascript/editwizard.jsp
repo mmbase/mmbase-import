@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.19 2002-09-02 20:20:27 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.20 2002-09-03 18:49:47 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -310,13 +310,25 @@ function showAllProperties(el, values) {
     alert(s);
 }
 
+function setButtonsInactive() {
+   var cancelbut = document.getElementById("bottombutton-cancel");
+   // cancelbut.className = "invalid";
+   cancelbut.style.visibility = "hidden";
+   var savebut = document.getElementById("bottombutton-save");
+   // savebut.className = "invalid";
+   savebut.style.visibility = "hidden";
+}
+
+
 function doCancel() {
+    setButtonsInactive();
     doSendCommand("cmd/cancel////");
 }
 
 function doSave() {
     var allvalid = doValidateAndUpdateButtons();
     if (allvalid) {
+        setButtonsInactive();
         doSendCommand("cmd/commit////");
     }
 }
