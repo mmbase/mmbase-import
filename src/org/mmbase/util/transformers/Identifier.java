@@ -20,11 +20,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Identifier.java,v 1.2 2004-04-15 14:10:07 michiel Exp $
+ * @version $Id: Identifier.java,v 1.3 2004-07-09 20:38:42 michiel Exp $
  */
 
 public class Identifier extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(LowerCaser.class);
+    private static Logger log = Logging.getLoggerInstance(Identifier.class);
 
     public Writer transform(Reader r, Writer w) {
         try {
