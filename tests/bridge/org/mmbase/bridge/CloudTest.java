@@ -163,6 +163,29 @@ public class CloudTest extends BridgeTest {
         } catch (BridgeException e) {}
     }
 
+    public void testGetListWithConstraint() {
+        cloud.getList(null, //java.lang.String startNodes,
+        "aa,bb,aa", //java.lang.String nodePath,
+        "bb.number,bb.owner", //java.lang.String fields,
+        "bb.owner ='test'", //java.lang.String constraints,
+        "bb.number", //java.lang.String orderby,
+        "UP", //java.lang.String directions,
+        "destination", //java.lang.String searchDir,
+        false //boolean distinct
+        );
+    };
+
+    public void testGetListWithConstraint2() {
+        cloud.getList(null, //java.lang.String startNodes,
+        "aa,bb,aa", //java.lang.String nodePath,
+        "bb.number,bb.owner", //java.lang.String fields,
+        "bb.number <>1234", //java.lang.String constraints,
+        "bb.number", //java.lang.String orderby,
+        "UP", //java.lang.String directions,
+        "destination", //java.lang.String searchDir,
+        false //boolean distinct
+        );
+    }
     /*
     public void testGetListWithQuery() {
     
