@@ -56,34 +56,54 @@ public class WriteTag extends ContextReferrerTag {
     public int doStartTag() throws JspTagException {
 
         if (log.isDebugEnabled()) {
-            log.debug("getting object " + getReferid() + "-> " + getContextTag().getObject(getReferid()));
+            log.debug("getting object " + getReferid());
         }
-        Object value = getContextTag().getObject(getReferid());
-
-        extraBodyContent = null;
-        if (jspvar != null) {
-            if ("Vector".equalsIgnoreCase(type)) {
-                if (value == null) {
-                    // if a vector is requested, but the value is not present,
-                    // make a vector of size 0.
-                    value = new java.util.Vector();
-                }
-                if (! (value instanceof java.util.Vector)) {
-                    // if a vector is requested, but the value is not a vector,
-                    // make a vector of size 1.
-                    java.util.Vector v = new java.util.Vector();
-                    v.add(value);
-                    value = v;
-                }             
-            
-            } 
-            pageContext.setAttribute(jspvar, value);
-            
-        } else {
-            if (type != null) {
-                throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute");
+        if ("bytes".equalsIgnoreCase(type)) { 
+            log.debug("Indicated that this are bytes");
+            // writing bytes to the page?? We write uuencoded...
+            if (jspvar != null) {
+                throw new JspTagException("Jspvar of type 'bytes' is not supported");                
+            }            
+            byte [] bytes = getContextTag().getBytes(getReferid());
+            if (bytes != null) {
+                extraBodyContent = org.mmbase.util.Encode.encode("BASE64", bytes); 
             }
-            extraBodyContent = value.toString();
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("-> " + getContextTag().getObject(getReferid()));
+            }
+            
+            Object value = getContextTag().getObject(getReferid());
+            
+            extraBodyContent = null;
+            if (jspvar != null) { // a jspvar was defined, don't write to page.
+                if ("Vector".equalsIgnoreCase(type)) {
+                    if (value == null) {
+                        // if a vector is requested, but the value is not present,
+                        // make a vector of size 0.
+                        value = new java.util.Vector();
+                    }
+                    if (! (value instanceof java.util.Vector)) {
+                        // if a vector is requested, but the value is not a vector,
+                        // make a vector of size 1.
+                        java.util.Vector v = new java.util.Vector();
+                        v.add(value);
+                        value = v;
+                    }             
+                    
+                } 
+                pageContext.setAttribute(jspvar, value);
+                
+            } else { // write to page, (set extraBodyContent)
+                if (type != null) {
+                    throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute (unless the type is 'bytes'");
+                }
+                if (value != null) {
+                    extraBodyContent = value.toString();
+                }
+            }            
+           
+
         }
     
         return EVAL_BODY_TAG;

@@ -56,6 +56,8 @@ public class WriteTEI extends TagExtraInfo {
                 type = "java.lang.Integer";
             } else if ("Vector".equalsIgnoreCase(typeAttribute)) {
                 type = "java.util.Vector";
+            } else if ("bytes".equalsIgnoreCase(typeAttribute)) {
+                type = "bytes"; // not supported
             } else {
                 //type = "java.lang.Object"; 
                 throw new RuntimeException("Unknown type '" + typeAttribute + "'");
