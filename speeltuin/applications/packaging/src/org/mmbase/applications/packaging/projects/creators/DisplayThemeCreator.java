@@ -38,7 +38,7 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
     private static Logger log = Logging.getLoggerInstance(DisplayThemeCreator.class.getName());
 
 
-    public static final String DTD_PACKAGING_DISPLAY_HTML_1_0 = "packaging_display_theme_1_0.dtd";
+    public static final String DTD_PACKAGING_DISPLAY_THEME_1_0 = "packaging_display_theme_1_0.dtd";
     public static final String PUBLIC_ID_PACKAGING_DISPLAY_THEME_1_0 = "-//MMBase//DTD packaging_display_theme config 1.0//EN";
 
  
