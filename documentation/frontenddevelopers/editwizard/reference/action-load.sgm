@@ -1,3 +1,6 @@
+<!-- Include file for the editwizard refernce docbook: 
+     'action type="load"' tag
+-->
 <section id="action-load">
 	<title>action type="load"</title>
 	<formalpara>

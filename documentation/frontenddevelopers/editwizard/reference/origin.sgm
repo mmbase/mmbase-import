@@ -1,5 +1,8 @@
+<!-- Include file for the editwizard refernce docbook: 
+     '$origin' variable
+-->
 <section id="origin">
-	<title>$origin</title>
+	<title>{$origin}</title>
 	<formalpara>
 		<title>Usage</title>
 		<para>The $origin variable contains the value of the 'origin' parameter passed to the wizard.jsp or list.jsp pages.</para>
@@ -14,7 +17,7 @@
 	<action type="create" >
 	  <object type="news">
   		<field name="title">My Title</field>
-  		<relation role="related" destination="$owner" />
+  		<relation role="related" destination="{$origin}" />
 		</object>
 	</action>
 
