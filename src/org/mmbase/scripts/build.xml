@@ -63,7 +63,7 @@ NetComponents can be found at:
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
-  <property name="source.dir" location="../../../.."/>
+  <property name="source.dir" location="../../../.." />
   <property name="build.dir" value="${source.dir}/build"/>
   <property name="download.dir" value="${build.dir}/download"/>
   <property name="expand.dir" value="${download.dir}/expanded"/>
@@ -1153,7 +1153,7 @@ Build-compiler: ${build.compiler}
     <available property="javaactivation.expanded" file="${expand.dir}/${javaactivation.version}"/>
 
     <!-- Log4j -->
-    <property name="log4j.version" value="1.2.6" /> 
+    <property name="log4j.version" value="1.2.7" /> 
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url"         value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
     <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" /> 
@@ -1496,8 +1496,8 @@ Version: MMBase build ${version}
 
     <!-- 
     <style 
-      basedir="${source-documentation.dir}" 
-      destdir="${mmdocs.dir}"      
+    basedir="${source-documentation.dir}" 
+    destdir="${mmdocs.dir}"      
       style="${build.dir}/docbook2xhtml.xslt"
       processor="xalan"
       >
