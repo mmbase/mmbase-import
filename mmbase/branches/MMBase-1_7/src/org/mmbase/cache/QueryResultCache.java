@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.5.2.3 2004-12-13 14:05:00 marcel Exp $
+ * @version $Id: QueryResultCache.java,v 1.5.2.4 2004-12-14 13:58:43 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -48,7 +48,7 @@ abstract public class QueryResultCache extends Cache {
      * 
      * @return number of entries invalidated
      */
-    public static  int invalidateAll(MMObjectBuilder builder) {
+    public static int invalidateAll(MMObjectBuilder builder) {
         int result = 0;
         while (builder != null) {
             String tn = builder.getTableName();
@@ -56,6 +56,8 @@ abstract public class QueryResultCache extends Cache {
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
                 QueryResultCache cache = (QueryResultCache) entry.getValue();
+                
+                // get the Observers for the builder:
                 Observer observer = (Observer) cache.observers.get(tn);
                 if (observer != null) {
                     result += observer.nodeChanged("-1", builder.getTableName());
@@ -201,7 +203,8 @@ abstract public class QueryResultCache extends Cache {
             Set removeKeys = new HashSet();
             synchronized(this) { 
                 Iterator i = cacheKeys.iterator();
-                QUERY_LOOP: while (i.hasNext()) {
+                QUERY_LOOP: 
+                while (i.hasNext()) {
                     SearchQuery key = (SearchQuery) i.next();
                     Iterator j = key.getSteps().iterator();
                     while(j.hasNext()) { 
@@ -210,7 +213,8 @@ abstract public class QueryResultCache extends Cache {
                             Set nodes = step.getNodes();
                             if(nodes == null || nodes.size() == 0 || nodes.contains(new Integer(number))) { 
                                 // QueryResultCache.this.remove(key);
-                                removeKeys.add(key); // i.remove();
+                                removeKeys.add(key);
+                                i.remove();
                                 result++;
                                 // next query
                                 continue QUERY_LOOP;
@@ -218,14 +222,15 @@ abstract public class QueryResultCache extends Cache {
                         }
                     }
                 }
-                cacheKeys.removeAll(removeKeys);
             }
+
             Iterator k = removeKeys.iterator();
             while(k.hasNext()) { 
                 QueryResultCache.this.remove(k.next());
             }
-
+            
             return result;
+            
         }
         
 
