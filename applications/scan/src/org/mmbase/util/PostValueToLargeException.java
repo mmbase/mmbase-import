@@ -18,10 +18,10 @@ import java.lang.Exception;
  */
 public class PostValueToLargeException extends ServletException {
 
-	/**
-	 * Create the exception
- 	 */
-	public PostValueToLargeException (String s) {
-		super(s);
-	}
+    /**
+     * Create the exception
+      */
+    public PostValueToLargeException (String s) {
+        super(s);
+    }
 }

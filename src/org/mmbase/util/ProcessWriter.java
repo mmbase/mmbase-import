@@ -9,78 +9,97 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 import java.io.*;
-
-/*
-	$Log: not supported by cvs2svn $
-	Revision 1.1  2001/02/08 10:20:38  vpro
-	Rico: changed the processing by using a Threaded writer to fix the "half" image bug using code provided by Kees Jongenburg
-	
-
-	$Id: ProcessWriter.java,v 1.2 2001-02-28 15:08:27 kees Exp $
-
-*/
+import org.mmbase.util.logging.*;
 
 /**
- * A class to pipe data from one stream to the other as a thread
- * useful for building execution pipes
+ * A class to pipe data from one stream to the other as a thread.
+ * Useful for building execution pipes.
+ *
  * @author Kees Jongenburger
- * @version $Id: ProcessWriter.java,v 1.2 2001-02-28 15:08:27 kees Exp $
+ * @version $Id: ProcessWriter.java,v 1.3 2001-04-13 09:25:31 pierre Exp $
  */
 public class ProcessWriter implements Runnable{
-    public boolean debug = false;
 
-    private String classname = getClass().getName();
+    // logger
+    private static Logger log = Logging.getLoggerInstance(ProcessWriter.class.getName());
 
-    private void debug( String msg ) {
-        System.out.println( classname +":"+msg );
-    }
-
+    /**
+     * The stream from which to pipe the data.
+     */
     InputStream in ;
+    /**
+     * The stream to pipe the data to.
+     */
     OutputStream out;
-	int blocksize=1024;
-	Thread runner=null;
+    /**
+     * Size of the blocks in which data is piped
+     */
+    int blocksize=1024;
 
+    /**
+     * The background thread in which the piping process runs.
+     */
+    Thread runner=null;
+
+    /**
+     * Creates a writer to pipe data.
+     * Uses a default blocksize of 1024.
+     * @param in The stream from which to pipe the data.
+     * @param out The stream to pipe the data to.
+     */
     public ProcessWriter(InputStream in, OutputStream out) {
-		this(in,out,1024);
-	}
-
-    public ProcessWriter(InputStream in, OutputStream out,int blocksize) {
-		this.in = in;
-		this.out = out;
-		this.blocksize = blocksize;
+        this(in,out,1024);
     }
 
-	public void start() {
-		if (runner==null) {
-			runner=new Thread(this);
-			runner.start();
-		}
-	}
+    /**
+     * Creates a writer to pipe data.
+     * @param in The stream from which to pipe the data.
+     * @param out The stream to pipe the data to.
+     * @param blocksize Size of the blocks in which data is piped
+     */
+    public ProcessWriter(InputStream in, OutputStream out,int blocksize) {
+        this.in = in;
+        this.out = out;
+        this.blocksize = blocksize;
+    }
 
+    /**
+     * Starts the piping process by creating the thread and running it.
+     */
+    public void start() {
+        if (runner==null) {
+            runner=new Thread(this);
+            runner.start();
+        }
+    }
+
+    /**
+     * Performs the piping process.
+     */
     public void run() {
-		if (out != null && in != null) {
-		    try {
-				PrintStream printStream = new PrintStream(out);
-				byte[] data = new byte[blocksize];
-				int size;
-				int total = 0;
-				while((size = in.read(data)) >0 ) {
-				    total += size;
-				    if (debug) debug("Total write"+ total);
-				    printStream.write(data,0,size);
-				    printStream.flush();
-				}
-				printStream.close();
-		    } catch (Exception e) {
-				debug("Write exception "+e.getMessage());
-		    }
-		} else {
-			if (in == null ) {
-				debug("Inputstream is null");
-			}
-	  		if (out == null ) {
-				debug("Inputstream is null");
-			}
-		}
+        if (out != null && in != null) {
+            try {
+                PrintStream printStream = new PrintStream(out);
+                byte[] data = new byte[blocksize];
+                int size;
+                int total = 0;
+                while((size = in.read(data)) >0 ) {
+                    total += size;
+                    log.debug("Total write"+ total);
+                    printStream.write(data,0,size);
+                    printStream.flush();
+                }
+                printStream.close();
+            } catch (Exception e) {
+                log.error("Write exception "+e.getMessage());
+            }
+        } else {
+            if (in == null ) {
+                log.warn("Inputstream is null");
+            }
+              if (out == null ) {
+                log.warn("Inputstream is null");
+            }
+        }
     }
 }

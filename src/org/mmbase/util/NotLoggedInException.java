@@ -17,10 +17,10 @@ import java.lang.Exception;
  */
 public class NotLoggedInException extends ServletException {
 
-	/**
-	 * Create the exception
- 	 */
-	public NotLoggedInException (String s) {
-		super(s);
-	}
+    /**
+     * Create the exception
+      */
+    public NotLoggedInException (String s) {
+        super(s);
+    }
 }
