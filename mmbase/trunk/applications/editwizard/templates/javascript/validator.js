@@ -3,11 +3,12 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.34 2004-08-23 09:52:47 pierre Exp $
+ * @version  $Id: validator.js,v 1.35 2004-08-26 17:29:00 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
  * @author   Nico Klasens
+ * @author   Robin van Meteren
  */
 
 var validator = new Validator();
@@ -212,6 +213,9 @@ Validator.prototype.validateElement = function (el, silent) {
             break;
         case "datetime":
             err += validateDatetime(el, form, v);
+            break;
+        case "boolean":
+            err += validateBoolean(el, form, v);
             break;
     }
     err += validateUnknown(el, form, v);
@@ -471,6 +475,12 @@ function validateDatetime(el, form, v) {
             }
         }
     return errormsg;
+}
+
+function validateBoolean(el, form, v) {
+    if (el.value != "1" && el.getAttribute("dtrequired") == "true") {
+        return "verplicht veld";
+    }
 }
 
 function validateUnknown(el, form, v) {
