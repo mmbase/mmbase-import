@@ -197,10 +197,10 @@ public class MMObjectBuilder extends MMTable {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			
+			//ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate  FROM "+mmb.baseName+"_fielddef WHERE dbtable="+oType+" AND dbstate=2;");
 			ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate  FROM "+mmb.baseName+"_fielddef WHERE dbtable="+oType+";");
 			while(rs.next()) {
 				def=new FieldDefs(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5).toLowerCase(),rs.getString(6),rs.getInt(7),rs.getInt(8));
-				// System.out.println("DEF="+def);
 				results.put(rs.getString(5).toLowerCase(),def);	
 			}	
 			stmt.close();
@@ -229,6 +229,7 @@ public class MMObjectBuilder extends MMTable {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
+			//ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate,dbtable  FROM "+mmb.baseName+"_fielddef WHERE dbstate=2;");
 			ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate,dbtable  FROM "+mmb.baseName+"_fielddef;");
 			while(rs.next()) {
 				Integer dbtable=new Integer(rs.getInt(9));
@@ -248,7 +249,10 @@ public class MMObjectBuilder extends MMTable {
 					results.put(rs.getString(5),def);	
 				} else {
 					def=new FieldDefs(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getInt(8));
-					results.put(rs.getString(5),def);	
+					String tmp=rs.getString(5);
+					if (tmp!=null) {
+						results.put(tmp,def);	
+					}
 				}	
 			}	
 			stmt.close();
@@ -1418,6 +1422,7 @@ public class MMObjectBuilder extends MMTable {
 
 		// still a large hack need to figure out remote changes
 		if (state==0) {
+		}
 			// convert the field to a string
 			String type=getDBType(fieldname);
 			String value="";
@@ -1429,7 +1434,6 @@ public class MMObjectBuilder extends MMTable {
 				// should be mapped to the builder
 			}
 			fieldLocalChanged(""+node.getIntValue("number"),tableName,fieldname,value); 
-		}
 		//mmb.mmc.changedNode(node.getIntValue("number"),tableName,"f");
 		return(true);
 	}
@@ -1549,5 +1553,13 @@ public class MMObjectBuilder extends MMTable {
 	
 		}
 		return(number);
+	}
+
+
+	public boolean setValue(MMObjectNode node,String fieldname) {
+		// can be overriden to do precommit changes
+		// return true means the call will continue
+		// return false means that we have handled all
+		return(true);
 	}
 }
