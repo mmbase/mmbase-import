@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.39 2005-03-07 08:43:25 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.40 2005-03-07 10:01:33 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -147,7 +147,6 @@ public class DayMarkers extends MMObjectBuilder {
         int newday;
         newday=currentDay();
         //debug("Days "+newday+" current "+day);
-        log.info("PROBE "+newday+ "/"+day);
         if (newday>day) {
             day = newday;
             createMarker();
