@@ -527,6 +527,12 @@
                            <%
                         }
                      %>
+                     <% // We have to update metadate.value field (it is handled by metadata builder) %>
+                     <mm:node number="<%= sNode %>">
+                        <mm:relatednodes type="metadata">
+                           <mm:setfield name="value">-</mm:setfield>
+                        </mm:relatednodes>
+                     </mm:node>
                   </mm:cloud>
                </mm:content>
             <%
