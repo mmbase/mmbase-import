@@ -69,12 +69,12 @@
     </tr>
     
     <tr>
-      <td>My editors</td>
+      <td>Editors</td>
       <td>
-        Alternative generic editors
+        All generic editors are of course very complex examples of jsp-pages.
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/my_editors/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="/mmbase/admin/editors/basic.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
