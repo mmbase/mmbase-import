@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.21 2000-06-20 14:20:02 install Exp $
+	$Id: HtmlBase.java,v 1.22 2000-06-20 14:24:52 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.21  2000/06/20 14:20:02  install
+	Rob: turned debug off
+	
 	Revision 1.20  2000/06/06 20:54:08  wwwtech
 	small updates
 	
@@ -92,7 +95,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.21 2000-06-20 14:20:02 install Exp $
+ * @version $Id: HtmlBase.java,v 1.22 2000-06-20 14:24:52 install Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -1098,7 +1101,9 @@ public class HtmlBase extends ProcessorModule {
 
 	public String getSearchAge(StringTokenizer tok) {
 		String builder=tok.nextToken();
-		debug("getSeachAge(): BUILDER="+builder);
+		if (debug) {
+			debug("getSeachAge(): BUILDER="+builder);
+		}
 		MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(builder);
 		if (bul!=null) {
 			return(bul.getSearchAge());
