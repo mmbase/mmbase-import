@@ -16,10 +16,10 @@
   <pre>
   &lt;context-param&gt;
     &lt;param-name&gt;mmbase.taglib.isELIgnored&lt;/param-name&gt;
-    &lt;param-value&gt;false&lt;/param-value&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
   &lt;/context-param&gt;
   </pre>
-  This page assumes jstl to be installed, and this parameter to be <code>true</code>.
+  This page assumes jstl to be installed, and this parameter to be <code>false</code>, or missing altogether.
 </p>
 
 <mm:cloud>
