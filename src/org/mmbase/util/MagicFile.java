@@ -1039,11 +1039,7 @@ public class MagicFile  {
      */
     public MagicFile() {
         String configpath = MMBaseContext.getConfigPath();
-        if (configpath.endsWith(File.separator)) {
-            magicxml = configpath+MAGICXMLFILE;
-        } else {
-            magicxml = configpath+File.separator+MAGICXMLFILE;
-        }
+        magicxml = configpath+File.separator+MAGICXMLFILE;
         log.info("Magic XML file is: "+magicxml);
         try {
             readDetectionData();

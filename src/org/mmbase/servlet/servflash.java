@@ -15,8 +15,8 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.gui.flash.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,12 +26,16 @@ import org.mmbase.util.logging.Logging;
  * we are running on (very basic test).
  */
 public class servflash extends JamesServlet {
-
-    private static Logger log = Logging.getLoggerInstance(servflash.class.getName());
+    private static Logger log;
 
     private MMFlash gen;
     
-    public void init() {
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // Initializing log here because log4j has to be initialized first.
+        log = Logging.getLoggerInstance(servflash.class.getName());
+        log.info("Init of servlet " + config.getServletName() + ".");
+        MMBaseContext.initHtmlRoot();
         gen=(MMFlash)getModule("mmflash");
     }
 
