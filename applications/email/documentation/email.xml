@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.4 2004-04-14 20:49:31 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.5 2004-04-14 21:14:28 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -80,7 +80,10 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
    <!-- mail the email node -->
    <mm:node referid="mail1">
-         <mm:function name="mail"><mm:param name="type">oneshot</mm:param></mm:function>
+        <mm:functioncontainer>
+          <mm:param name="type" value="oneshot" />
+          <mm:function name="mail" />
+        </mm:functioncontainer>
    </mm:node>
  
  <!--check if mmbase could mail the message -->
