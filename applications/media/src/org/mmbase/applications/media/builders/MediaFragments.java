@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.26 2003-08-20 08:46:33 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.27 2003-08-20 10:09:29 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -259,7 +259,7 @@ public class MediaFragments extends MMObjectBuilder {
             result = ((URLComposer) urls.get(0)).getURL();
         } 
 	// put result in cache
-	log.service("Add to cache, key="+key);
+	log.service("Add to cache, key = "+key);
 	cache.put(key,result,cacheExpireObjects);
 	log.service("Resolved url = "+result);
 	return result;
