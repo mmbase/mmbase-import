@@ -19,7 +19,8 @@ public final class SecurityManager {
     /** if the securitymanager is configured to functionate */
     private boolean active = false;
 
-    private String sharedSecret;
+	/** the shared secret used by this system */
+    private static String sharedSecret;
 
     /**
      *	The constructor, will load the classes for authorization and authentication
@@ -115,7 +116,10 @@ public final class SecurityManager {
      * @return true if received shared secret equals your own shared secret
      * @return false if received shared secret not equals your own shared secret
      */
-    public boolean checkSharedSecret(String key) {
+    public static boolean checkSharedSecret(String key) {
+		log.error("sh="+sharedSecret);
+		log.error("key="+key);
+
         if(sharedSecret.equals(key)) {
             return true;
         } else {
@@ -128,7 +132,7 @@ public final class SecurityManager {
      * get the shared Secret
      * @return the shared Secret
      */
-    public String getSharedSecret() {
+    public static String getSharedSecret() {
         return sharedSecret;
     }
 
