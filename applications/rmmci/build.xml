@@ -175,5 +175,6 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="clean">
     <delete failonerror="false" dir="build/src"/>
+    <delete failonerror="false" dir="build/classes"/>
   </target>
 </project>
