@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
@@ -28,7 +29,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.29 2004-07-30 16:59:32 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.30 2004-09-28 20:58:51 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -250,6 +251,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
             }
             node.finish();
+
+            // set byte fields to shorted
+            for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext();) {
+                FieldDefs field = (FieldDefs)i.next();
+                if (field.inStorage()) {
+                    if (field.getDBType() == FieldDefs.TYPE_BYTE) {
+                        node.setValue(field.getDBName(), "$SHORTED");
+                    }
+                }
+            }
             results.add(node);
         }
         return results;
