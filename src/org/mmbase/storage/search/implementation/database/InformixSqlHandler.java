@@ -34,7 +34,7 @@ import org.mmbase.module.core.MMBase;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.9 2004-04-14 11:15:43 johannes Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.10 2004-04-27 10:07:54 rob Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -270,6 +270,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
         }
 
+        log.trace("Base field part of query : "+sb);
+
         // vector needed to save OR-Elements for migration to UNION-query
         Vector orElements = new Vector();
         boolean relationalConstraintInBothDirections = false;
@@ -323,6 +325,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
                 sbNodes.append(")");
             }
+            log.trace("Node constraint string : "+sbNodes);
 
             // Relation steps.
             if (step instanceof RelationStep) {
@@ -473,6 +476,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 sbRelations.append(")");
             }
         }
+        log.trace("Relation string : "+sbRelations);
 
         // Constraints
         StringBuffer sbConstraints = new StringBuffer();
@@ -524,6 +528,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 }
             }
 
+            log.trace("Union constraint : "+unionConstraints);
+
             /*
                2) Combine the OR-Elements
                Nested Looping through the OR-Elements to make unique combinations
@@ -548,7 +554,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
                 }
             }
-
+       
             /*
                3) Okay, here we're goin to create a new BaseQuery,
                we need that in  order to re-use that for every union
@@ -567,6 +573,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         append(sbConstraints.toString());
             }
 
+            log.trace("Base query including fields and tables : "+sb);
             // now add the combined relation-constraints as UNIONS
             while (e.hasMoreElements()) {
                 combinedElement = (String) e.nextElement();
@@ -574,11 +581,16 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     unionRelationConstraints.append(" UNION ").append(baseQuery);
                 }
                 unionRelationConstraints.append(" " + combinedElement + " ");
+                log.trace("Union relation constraint "+teller+" : "+unionRelationConstraints);
                 teller++;
             }
 
             // add the stuff to sb
-            sb.append(" WHERE ").append(unionRelationConstraints);
+            if (sbConstraints.length()>0) {
+                sb.append(" WHERE ").append(sbConstraints.toString()).append(unionRelationConstraints);
+            } else {
+                sb.append(" WHERE ").append(unionRelationConstraints);
+            }
 
             /*
                4) add GROUP BY Clause
@@ -724,6 +736,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
                 }
             }
+            log.debug("Completed generation of normal query:" + sb.toString());
         }
     }
 }
