@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.25 2002-02-22 14:40:56 michiel Exp $
+ * @version $Id: Node.java,v 1.26 2002-02-27 09:33:31 eduard Exp $
  */
 public interface Node {
 
@@ -255,6 +255,17 @@ public interface Node {
      */
     public String toString();
     
+    /**
+     * Get the xml for this node.
+     *
+     * @param fieldName fieldName
+     *
+     * @since MMBase-1.6
+     */
+    public Document getXMLValue(String fieldName);
+
+
+
     /**
      * Get the xml for this node.
      *

@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.47 2002-02-22 14:40:56 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.48 2002-02-27 09:33:31 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -338,14 +338,45 @@ public class BasicNode implements Node {
         return noderef.getStringValue(attribute);
     }
 
+    public Document getXMLValue(String fieldName) {
+        return getXMLValue(nodeManager.getField(fieldName));
+    }
+
+
     public Element getXMLValue(String fieldName, Document tree) {
         return getXMLValue(nodeManager.getField(fieldName), tree);
     }
+    
+    Element getXMLValue(Field field, Document tree) {    
+        // create the field
+        Element fieldElem = tree.createElement("field");
 
-    Element getXMLValue(Field field, Document tree) {
-        Element result = noderef.getXMLValue(field.getName(), tree);
-        result = sophisticateField(field, result);
-        return result;
+        org.w3c.dom.Attr attr;
+        // the name...
+        attr = tree.createAttribute("name");
+        attr.setValue(field.getName());
+        fieldElem.setAttributeNode(attr);
+
+        // guilist, necessary to make generic presenter of the node:
+        attr = tree.createAttribute("guilist");
+        attr.setValue("" + ((BasicField)field).field.getGUIList());
+        fieldElem.setAttributeNode(attr);
+        
+        // the format
+        attr = tree.createAttribute("format");
+        attr.setValue(((BasicField)field).field.getDBTypeDescription());
+        fieldElem.setAttributeNode(attr);            
+
+        org.w3c.dom.Node subField = tree.importNode(getXMLValue(field.getName()).getDocumentElement(), true);
+
+        fieldElem.appendChild(subField);
+        
+        // do some additional thingies...        
+        return sophisticateField(field, fieldElem);
+    }
+
+    Document getXMLValue(Field field) {
+        return noderef.getXMLValue(field.getName());
     }
 
 
