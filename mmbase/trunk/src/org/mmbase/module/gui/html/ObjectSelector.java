@@ -222,9 +222,12 @@ public class ObjectSelector implements CommandHandlerInterface {
 
 					// startnewfix
 					int reltype=stateMngr.mmBase.getTypeRel().getAllowedRelationType(stateMngr.mmBase.getTypeDef().getIntValue(name),node.getIntValue("otype"));
-					MMObjectNode rdn=stateMngr.mmBase.getRelDef().getNode(reltype);
-
-					results.addElement(rdn.getStringValue("sname"));
+					if (reltype!=-1) {
+						MMObjectNode rdn=stateMngr.mmBase.getRelDef().getNode(reltype);
+						results.addElement(rdn.getStringValue("sname"));
+					} else {
+						results.addElement("multiple");
+					}
 					// end new fix
 
 
