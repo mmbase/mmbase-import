@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.70 2002-10-03 12:28:10 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.71 2002-10-10 10:34:15 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -75,10 +75,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // User context
     protected BasicUser userContext = null;
 
-
-    private int multilevel_cachesize=300;
-
-    private MultilevelCacheHandler multilevel_cache;
+    private MultilevelCacheHandler multilevelCache;
 
     private Locale locale;
 
@@ -87,7 +84,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return getByteSize(new SizeOf());
     }
     public int getByteSize(SizeOf sizeof) {
-        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(relationManagerCache) + sizeof.sizeof(multilevel_cache);
+        return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(relationManagerCache) + sizeof.sizeof(multilevelCache);
     }
 
 
@@ -112,7 +109,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         // start multilevel cache
         MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
-        multilevel_cache = MultilevelCacheHandler.getCache();
+        multilevelCache = MultilevelCacheHandler.getCache();
     }
 
     /**
@@ -156,7 +153,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         // start multilevel cache
         MultilevelCacheHandler.setMMBase(mmb);
-        multilevel_cache = MultilevelCacheHandler.getCache();
+        multilevelCache = MultilevelCacheHandler.getCache();
     }
 
     // Makes a node or Relation object based on an MMObjectNode
@@ -435,8 +432,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @return the temporary id as an integer
      */
     static synchronized int uniqueId() {
-        if (lastRequestId>Integer.MIN_VALUE) {
-            lastRequestId = lastRequestId-1;
+        if (lastRequestId > Integer.MIN_VALUE) {
+            lastRequestId--;
         } else {
             lastRequestId = -2;
         }
@@ -718,12 +715,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
         }
 
-        Integer hash=null; // result hash for cache
+        Integer hash = null; // result hash for cache
         Vector resultlist=null; // result vector
         // check multilevel cache if needed
-        if (multilevel_cache.isActive()) {
-            hash=multilevel_cache.calcHashMultiLevel(tagger);
-            resultlist=(Vector)multilevel_cache.get(hash);
+        if (multilevelCache.isActive()) {
+            hash = multilevelCache.calcHashMultiLevel(tagger);
+            resultlist = (Vector) multilevelCache.get(hash);
         }
         // if unavailable, obtain from database
         if (resultlist==null) {
@@ -731,11 +728,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
         }
         // store result in cache if needed
-        if (multilevel_cache.isActive() && resultlist!=null) {
-            multilevel_cache.put(hash,resultlist,tables,tagger);
-            resultlist=(Vector)resultlist.clone();
+        if (hash != null && resultlist != null) {
+            multilevelCache.put(hash, resultlist, tables, tagger);
+            // why is it cloned?
+            resultlist = (Vector) resultlist.clone();
         }
-        if (resultlist!=null) {
+        if (resultlist != null) {
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
             for (int i=resultlist.size()-1; i>=0; i--) {
