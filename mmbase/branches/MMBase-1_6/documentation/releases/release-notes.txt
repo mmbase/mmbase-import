@@ -131,8 +131,7 @@ Know Issues and Problems:
 - Builder inheritance has been added in MMInformix42Node, this is an
   experimental feature.
 - When using Tomcat 4.1.12 mmbase-logs are written into cataline.out
-  and localhost_log. This has been fixed in Tomcat 4.1.16 (which is a
-  beta release).
+  and localhost_log. This has been fixed in Tomcat 4.1.17.
 - Some versions of Orion doesn't support the final servlet api 2.3, because of this the
   jumpersFilter will not work. This is true for Orion 1.5.2 and older
   versions. You will need to remove the following lines from <WEB-INF/web.xml>:
@@ -179,7 +178,17 @@ Know Issues and Problems:
 - Sometimes it is needed to copy xml-apis.jar to
   <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
   or if you're using the editwizards.
-  TODO: add info about Tomcat 4.1.x and xerces
+
+- When using Tomcat 4.1.x you have to replace xercesImpl.jar from
+  <$CATALINA_HOME/common/endorsed/> with xerces.jar from
+  <mmbase-webapp/WEB-INF/lib>, otherwise you'll get
+  java.lang.VerifyErrors or MMbase won't start at all.
+
+- Sometimes a servlet-engine won't stop when running MMBase, if you're
+  using the shutdown script provided by the servlet-engine. This is
+  caused by the fact that the jvm won't quit if there are non-daemon
+  threads running. The only way to stop the servlet-engine is to kill
+  it.    
 
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
@@ -210,6 +219,9 @@ Know Issues and Problems:
   Because Resis provides its own XSL-transformation implementation, also on this area are some known
   problems.
 
+- Some details can't autodetect the context in which MMBase is running
+   (like gui-functions of images), so it adviced to explicitely inform
+   MMBase with the mmbase.htmlrooturlpath context parameter from web.xml.
 
 ============
 Requirements:
@@ -238,10 +250,12 @@ Servlet engines /
 Applicationservers
 ------------------
 - Tomcat 4.0.4
-- Orion 1.5.2, 1.5.4
+- Orion 1.5.2, 1.5.4, 1.6.0 (experimental)
 - Jetty 4.0.0
-- Resin 2.1.0 (Taglib attribute problems, filed as bug in www.mmbase.org/bug)
-- Tomcat 4.1.12
+- Resin 2.1.0, Resin 2.1.4 (Taglib attribute problems, filed as bug #3823 in
+www.mmbase.org/bug)
+- Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
+logfiles in this version, catalina.out and localhost_log), 4.1.17
 
 ---------
 Databases
@@ -252,5 +266,7 @@ Databases
         Ver 11.15 Distrib 3.23.41
   for pc-linux-gnu (i686)
 - Postgresql
+- Informix
+
 
 
