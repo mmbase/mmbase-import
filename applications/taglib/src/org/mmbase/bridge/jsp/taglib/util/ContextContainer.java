@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.15 2003-09-10 11:16:10 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.16 2003-09-26 18:45:42 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -244,6 +244,8 @@ public class ContextContainer extends HashMap {
         return get(key, true);
     }
 
+
+
     public Set keySet() {
         HashSet result = new HashSet(super.keySet());
         if (parent != null) {
@@ -282,55 +284,72 @@ public class ContextContainer extends HashMap {
      * @since MMBase-1.7 (here)
      */
     public void register(String newid, Object n, boolean check) throws JspTagException {
+        register(newid, n, check, true);
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + id);
         }
-        // Check if the id is a valid identifier
-        // A valid id must begin with a letter or underscore, followed
-        // by letters, underscores and digits.
-        boolean valid = true;
-        char chars[] = newid.toCharArray();
-        if (chars.length < 1) {
-            log.debug("Id must be longer then 0");
-            valid = false;
-        } else {
-            if (Character.isLetter(chars[0]) || chars[0] == '_') {
-                if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + newid);
-                for (int i = 1; i < chars.length; ++i) {
-                    if (! isContextVarNameChar(chars[i])) {
-                        valid = false;
-                        break;
-                    }
-                }
-            } else {
-                if (log.isDebugEnabled()) log.debug("First character is not valid: " + chars[0]);
-                valid = false;
-            }
-        }
-        if (! valid) {
-            JspTagException exception = new TaglibException ("'" + newid + "' is not a valid Context identifier", new Throwable());
-            log.info(Logging.stackTrace(exception));
-            throw exception;
-        }
+        // first check if current context is specified
+        Pair pair = getPair(newid, checkParent);
 
-        log.debug("Valid");
-        //pageContext.setAttribute(id, n);
-        if (check && isRegistered(newid)) {
-            JspTagException e;
-	    if(id == null) {
-		e = new JspTagException("Object with id " + newid + " was already registered in the context without id (root?).");
-	    } else {
-		e = new JspTagException("Object with id " + newid + " was already registered in Context '" + id  + "'.");
-	    }
-            if (log.isDebugEnabled()) {
-                log.debug(Logging.stackTrace(e));
+        if (pair != null) {
+
+            pair.context.register(pair.restKey, n, check, ! pair.wentDown);
+
+        } else {
+
+            // Check if the id is a valid identifier
+            // A valid id must begin with a letter or underscore, followed
+            // by letters, underscores and digits.
+            boolean valid = true;
+            char chars[] = newid.toCharArray();
+            if (chars.length < 1) {
+                log.debug("Id must be longer then 0");
+                valid = false;
+            } else {
+                if (Character.isLetter(chars[0]) || chars[0] == '_') {
+                    if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + newid);
+                    for (int i = 1; i < chars.length; ++i) {
+                        if (! isContextVarNameChar(chars[i])) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                } else {
+                    if (log.isDebugEnabled()) log.debug("First character is not valid: " + chars[0]);
+                    valid = false;
+                }
             }
-            throw e;
+            if (! valid) {
+                JspTagException exception = new TaglibException ("'" + newid + "' is not a valid Context identifier", new Throwable());
+                log.info(Logging.stackTrace(exception));
+                throw exception;
+            }
+            
+            log.debug("Valid");
+            //pageContext.setAttribute(id, n);
+            if (check && isRegistered(newid)) {
+                JspTagException e;
+                if(id == null) {
+                    e = new JspTagException("Object with id " + newid + " was already registered in the context without id (root?).");
+                } else {
+                    e = new JspTagException("Object with id " + newid + " was already registered in Context '" + id  + "'.");
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug(Logging.stackTrace(e));
+                }
+                throw e;
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("putting '" + newid + "'/'" + n + "' in " + this);
+            }
+            put(newid, n);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("putting '" + newid + "'/'" + n + "' in " + this);
-        }
-        put(newid, n);
     }
 
     /**
@@ -377,12 +396,27 @@ public class ContextContainer extends HashMap {
     public boolean isRegistered(String key) throws JspTagException {
         return containsKey(key, false); // don't check parent.
     }
+
     /**
      * @since MMBase-1.7 (here)
      */
     public void unRegister(String key) throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("removing object '" + key + "' from Context '" + id + "'");
-        remove(key);
+        unRegister(key, true);
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected void unRegister(String key, boolean checkParent) throws JspTagException {
+        if (log.isDebugEnabled()) { 
+            log.debug("removing object '" + key + "' from Context '" + id + "'");
+        }
+        Pair pair = getPair(key, checkParent);
+        if (pair != null) {
+            pair.context.unRegister(pair.restKey, ! pair.wentDown);
+        } else {
+            remove(key);
+        }
     }
     /**
      * @since MMBase-1.7 (here)
