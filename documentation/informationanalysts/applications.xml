@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Applications</title>
     <date>27 february 2003</date>
-    <edition>$Id: applications.xml,v 1.4 2003-02-28 11:54:43 pierre Exp $</edition>
+    <edition>$Id: applications.xml,v 1.5 2003-02-28 12:19:58 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -78,56 +78,56 @@
       <para>The XML-file with the name of the application contains the description of the cloud-structure used by that application. We will have a closer look at MyNews.xml to see the different parts: </para>
       <itemizedlist>
         <listitem>
-          <para><sgmltag class="xmlpi"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>]]></sgmltag>
-          <sgmltag class="pi" role="doctype"><![CDATA[<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd"]]></sgmltag></para>
+          <para><sgmltag class="xmlpi"><![CDATA[xml version="1.0" encoding="UTF-8"]]></sgmltag>
+          <sgmltag role="doctype"><![CDATA[<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">]]></sgmltag></para>
           <para>Every xml-document must have a reference to its document type definition or dtd. For the applications version as implemented in MMBase 1.6, the <filename>application_1_0.dtd</filename> is used.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<application name="MyNews" maintainer="mmbase.org"  version="1" auto-deploy="false"> ... </application>]]></sgmltag></para>
-          <para>The whole description of the cloud-structure is enclosed by the <sgmltag class="element">application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The names of applications should made up out of capitalized words, the maintainer is the domain name of the organisation or person who takes the responsiblity for updating this application, and the version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automaticaly be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administartor pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
+          <para><sgmltag><![CDATA[<application name="MyNews" maintainer="mmbase.org"  version="1" auto-deploy="false"> ... </application>]]></sgmltag></para>
+          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The names of applications should made up out of capitalized words, the maintainer is the domain name of the organisation or person who takes the responsiblity for updating this application, and the version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automaticaly be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administartor pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<neededbuilderlist><builder maintainer="mmbase.org" version="1">mags</builder> .... </neededbuilderlist>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<neededbuilderlist><builder maintainer="mmbase.org" version="1">mags</builder> .... </neededbuilderlist>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">neededbuilderlist</sgmltag> tag contains a list of all the builders that are necessary to run this application. Both the builders of regular objects and the builders used to create relations have to be listed here.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<neededreldeflist><reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" /> ... </neededreldeflist>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<neededreldeflist><reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" /> ... </neededreldeflist>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">neededreldeflist</sgmltag> tag contains a list of all relation roles that have to be defined for this application. When you use the MMBase editors to have a look at the RelationDefinition objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;reldef ... /&#62;</sgmltag> descriptions follow these objects.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<allowedrelationlist><relation from="mags"  to="news"  type="posrel" /> ... </allowedrelationlist>]]></sgmltag></para>
-          <para>The <sgmltag class="element">allowedrelationlist</sgmltag> list what type of relation (role) should be used to relate two object of specfied type. When you use the MMBase editors to have a look at the RelationType objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;relation... /&#62;</sgmltag> descriptions follow these objects.</para>
+          <para><sgmltag><![CDATA[<allowedrelationlist><relation from="mags"  to="news"  type="posrel" /> ... </allowedrelationlist>]]></sgmltag></para>
+          <para>The <sgmltag>allowedrelationlist</sgmltag> list what type of relation (role) should be used to relate two object of specfied type. When you use the MMBase editors to have a look at the RelationType objects in your MMBase installation, you will see how closely the <sgmltag class="attribute">&#60;relation... /&#62;</sgmltag> descriptions follow these objects.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<datasourcelist><datasource builder="mags" path="MyNews/mags.xml" /> ... </datasourcelist>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<datasourcelist><datasource builder="mags" path="MyNews/mags.xml" /> ... </datasourcelist>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">datasourcelist</sgmltag> tag specifies where MMBase has to look for the content to fill each object when case the application is installed. The <sgmltag class="attribute">datasourcelist</sgmltag> only contains the datasources of regular objects and does not contain relations.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<relationsourcelist><relationsource builder="insrel" path="MyNews/insrel.xml" /> ... </relationsourcelist>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<relationsourcelist><relationsource builder="insrel" path="MyNews/insrel.xml" /> ... </relationsourcelist>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">relationsourcelist</sgmltag> tag specifies where MMBase has to look for the content to fill each relation in case the application is installed.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<contextsourcelist><contextsource path="MyNews/backup.xml" type="depth" goal="backup"/></contextsourcelist>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<contextsourcelist><contextsource path="MyNews/backup.xml" type="depth" goal="backup"/></contextsourcelist>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">contextsource</sgmltag> tag specifies where MMBase has to find the backup (export) scenario for this application. The <sgmltag class="attribute">path</sgmltag> specifies where to find the file. the <sgmltag class="attribute">type</sgmltag> attribute specifies the export algorithm to use (currently, only 'depth' is posisble). The <sgmltag class="attribute">goal</sgmltag> is a freeform field used to identify the contextsource to the user.
           </para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<description><![CDATA[MyNews is ...] ]></description>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<description><![CDATA[MyNews is ...] ]></description>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">description</sgmltag> is used as an introduction to the application in the MMBase install pages and the MMBase admin interface.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<install-notice><![CDATA[The MyNews application is installed ...] ]></install-notice>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<install-notice><![CDATA[The MyNews application is installed ...] ]></install-notice>]]></sgmltag></para>
           <para>The <sgmltag class="attribute">install-notice</sgmltag> is shown in the MMBase install pages and the MMBase admin interface after succesfull installation of the application. (TO DO what happens if the application does not install succesfull?)</para>
         </listitem>
       </itemizedlist>
     </section>
     <section>
       <title>Builders Used by the Application</title>
-      <para>The builders specified in the <sgmltag class="element">neededbuilderlist</sgmltag> can be found in the application folder under <filename>[applicationname]/builders</filename>. I.e., for the MyNews application, teh builders can be found in the directory  <filename>MyNews/builders/</filename>.</para>
+      <para>The builders specified in the <sgmltag>neededbuilderlist</sgmltag> can be found in the application folder under <filename>[applicationname]/builders</filename>. I.e., for the MyNews application, teh builders can be found in the directory  <filename>MyNews/builders/</filename>.</para>
     </section>
     <section>
       <title>The Backup Scenario: backup.xml</title>
-      <para>The <sgmltag class="element">contextsource</sgmltag> specifies where the file with the backup scenario for this application is located - specified in its <sgmltag class="attribute">path</sgmltag> attribute. For MyNews we saw that this is "MyNews/backup.xml".</para>
+      <para>The <sgmltag>contextsource</sgmltag> specifies where the file with the backup scenario for this application is located - specified in its <sgmltag class="attribute">path</sgmltag> attribute. For MyNews we saw that this is "MyNews/backup.xml".</para>
       <para>Most applications come with a 'backup.xml' file that decsribes the startpoint for exporting data (as described below). It is not necessary to specify a file - i.e. if an application is only ment to be installed and not exported. You can also use other filenames (though 'backup.xml' is the convention) or specify multiple contextsources. In the latter case, the administration pages require the user to choose the contextsource with which to make the export, using the freeform <sgmltag class="attribute">goal</sgmltag> attribute to give user-feedback on the intention of the contextsource.</para>
       <note>
         <para>While we speak about "backup" here, the system can also be used to simply export certain parts of your cloud, for instance for sharing with others, or porting data from a test environment to a production environment.</para>
@@ -140,27 +140,27 @@
       <para>If you have a look at this file you see that it consists of the following tags:</para>
       <itemizedlist>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<contextdepth>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<contextdepth>]]></sgmltag></para>
           <para>The tag &#60;contextdepth&#62; encloses the specification of the backup scenario.</para>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<startnode>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<startnode>]]></sgmltag></para>
           <para>The startnode specifies which node should be used by MMBase as the start of the backup algorithm. The startnode can be specified in one of two ways:</para>
           <itemizedlist>
             <listitem>
-              <para><sgmltag class="element"><![CDATA[<builder>mags</builder><where>title=='MyNews magazine'</where>]]></sgmltag></para>
+              <para><sgmltag><![CDATA[<builder>mags</builder><where>title=='MyNews magazine'</where>]]></sgmltag></para>
               <para>The backup algorithm starts at the mags object with the title "MyNews magazine".
               If there are multiple objects that fit the algorithm, teh first one found is chosen. It is not possible to determine which object that will be.
               </para>
             </listitem>
             <listitem>
-              <para><sgmltag class="element"><![CDATA[<startnode alias="mynewsmagazine" />]]></sgmltag></para>
+              <para><sgmltag><![CDATA[<startnode alias="mynewsmagazine" />]]></sgmltag></para>
               <para>The backup algorithm starts at the object with the objectalias  "mynewsmagazine".</para>
             </listitem>
           </itemizedlist>
         </listitem>
         <listitem>
-          <para><sgmltag class="element"><![CDATA[<depth>5</depth>]]></sgmltag></para>
+          <para><sgmltag><![CDATA[<depth>5</depth>]]></sgmltag></para>
           <para>Specifies the depth of the serach (the maximum number of nested searches) used in the backup algorithm (in the example this is 5 levels deep).</para>
         </listitem>
       </itemizedlist>
