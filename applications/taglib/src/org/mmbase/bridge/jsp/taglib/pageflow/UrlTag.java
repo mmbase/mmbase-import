@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.49 2003-09-05 16:32:38 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.50 2003-09-08 15:11:46 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -80,6 +80,29 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     /**
+     * If it would be nice that an URL starting with '/' would be generated relatively to the current request URL, then this method can do it.
+     * If the URL is not used to write to (this) page, then you probably don't want that.
+     * 
+     * The behaviour can be overruled by starting the URL with two '/'s.
+     *
+     * @since MMBase-1.7
+     */
+    protected StringBuffer makeRelative(StringBuffer show) {
+        if (show.charAt(0) == '/') { // absolute on servletcontex
+            if (show.charAt(1) == '/') {
+                log.debug("'absolute' url, not making relative");
+                show.deleteCharAt(0);
+            } else {
+                log.debug("'absolute' url");
+                javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+                String thisDir = new java.io.File(req.getServletPath()).getParent();
+                show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
+            }
+        } 
+        return show;
+    }
+
+    /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
@@ -91,14 +114,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             show.append(new java.io.File(req.getRequestURI()).getName());
         }
 
+        makeRelative(show);
+
         String amp = (writeamp ? "&amp;" : "&");
 
-        if (show.charAt(0) == '/') { // absolute on servletcontex
-            log.debug("'absolute' url");
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            String thisDir = new java.io.File(req.getServletPath()).getParent();
-            show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
-        } 
 
         String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
 
