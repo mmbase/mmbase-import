@@ -10,7 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.irc.communication;
 
-public interface CommunicationUserInterface
-{
-	public void receive( String msg );
+/**
+ * javadoc
+ * @author vpro
+ * @version $Id: CommunicationUserInterface.java,v 1.3 2002-03-04 14:07:46 pierre Exp $
+ */
+public interface CommunicationUserInterface {
+    /**
+     * @javadoc
+     */
+    public void receive(String msg);
 }

@@ -179,7 +179,7 @@ public class StateManager implements CommandHandlerInterface {
             // and the name of the builder to use is determined (if explicitly given)).
 
             MMObjectBuilder bul = null;
-            rtype = mmBase.getRelDef().getGuessedNumber(builder);
+            rtype = mmBase.getRelDef().getNumberByName(builder);
 
             if ((rtype!=-1) && (RelDef.usesbuilder))  { // relation found
                 MMObjectNode node=mmBase.getRelDef().getNode(rtype);  // retrieve the reldef node
