@@ -230,24 +230,25 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if(wantXML() && xmlGenerator.getDocument().getDocumentElement() != null && body.length() > 0) {
-            throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body.");
+        if(wantXML() && body.length() > 0) {
+            if (xmlGenerator.getDocument().getDocumentElement() != null) {
+                throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body.");
+            } else {
+                if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");
+                Document bodyContentDocument;
+                try {
+                    bodyContentDocument = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8"))); 
+                } catch (Exception e) {
+                    throw new JspTagException(body + ":" +  e.toString());
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("created an element: " + bodyContentDocument.getDocumentElement().getTagName());            
+                }
+                Document doc = xmlGenerator.getDocument();
+                org.w3c.dom.Node field = doc.importNode(bodyContentDocument.getDocumentElement(), true);
+                doc.appendChild(field);
+            } 
         }
-/*        if (wantXML()) {
-            if (log.isDebugEnabled()) log.debug("bodycontent:>" + body + "<");
-            Document bodyContentDocument;
-            try {
-                bodyContentDocument = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8"))); 
-            } catch (Exception e) {
-                throw new JspTagException(body + ":" +  e.toString());
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("created an element: " + bodyContentDocument.getDocumentElement().getTagName());            
-            }
-            org.w3c.dom.Node field = doc.importNode(bodyContentDocument.getDocumentElement(), true);
-            doc.appendChild(field);
-        } */
-
 
         if (log.isDebugEnabled()) {
             if (wantXML()) {
