@@ -96,7 +96,7 @@ public class Project {
     public boolean addBundleTarget(String name,String type,String path) {
 	// several name tricks to make allow for faster creation by people
 	if (name.equals("") || name.equals("[auto]")) {
-		name=type.substring(0,type.indexOf("/"));
+		name=type.substring(type.indexOf("/")+1);
 	}
 	if (path.equals("") || path.equals("[auto]")) {
 		path="packaging"+File.separator+getName()+"_"+name+".xml";
@@ -127,7 +127,7 @@ public class Project {
 
     public boolean addPackageTarget(String name,String type,String path) {
 	if (name.equals("") || name.equals("[auto]")) {
-		name=type.substring(0,type.indexOf("/"));
+		name=type.substring(type.indexOf("/")+1);
 	}
 	if (path.equals("") || path.equals("[auto]")) {
 		path="packaging"+File.separator+getName()+"_"+name+".xml";
