@@ -11,6 +11,8 @@ response.setDateHeader("Date",  now);
 %><%@ page language="java" contentType="text/html; charset=utf-8"
 %><html>
 <head>
+<link rel="icon" href="images/favicon.ico"" type="image/x-icon" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 <%@ page import="org.mmbase.bridge.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
