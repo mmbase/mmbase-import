@@ -26,14 +26,14 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.29 2003-08-05 18:42:55 michiel Exp $ 
+ * @version $Id: FieldListTag.java,v 1.30 2003-08-07 17:53:17 michiel Exp $ 
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
     private static Logger log = Logging.getLoggerInstance(FieldListTag.class);
 
     private FieldList     returnList;
-    private FieldIterator returnValues;
+    private FieldIterator fieldIterator;
     private Field         currentField;
     private int           currentItemIndex= -1;
 
@@ -59,6 +59,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public boolean isChanged() {
         return true;
+    }
+    public void remove() {
+        fieldIterator.remove();
     }
 
     public Field getFieldVar() {
@@ -179,14 +182,14 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 }
             }
         }
-        returnValues = returnList.fieldIterator();
+        fieldIterator = returnList.fieldIterator();
 
         //this is where we do the search
         currentItemIndex= -1;  // reset index
 
         // if we get a result from the query
         // evaluate the body , else skip the body
-        if (returnValues.hasNext())
+        if (fieldIterator.hasNext())
             return EVAL_BODY_BUFFERED;
         return SKIP_BODY;
     }
@@ -198,7 +201,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         collector.putAll(container);
         container.clear();
 
-        if (returnValues.hasNext()){
+        if (fieldIterator.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
@@ -223,9 +226,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
     public void doInitBody() throws JspTagException {
-        if (returnValues.hasNext()){
+        if (fieldIterator.hasNext()){
             currentItemIndex ++;
-            currentField = returnValues.nextField();
+            currentField = fieldIterator.nextField();
             if (getId() != null) {
                 getContextProvider().getContainer().register(getId(), currentField);
             }
