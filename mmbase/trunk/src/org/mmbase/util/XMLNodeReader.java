@@ -114,11 +114,11 @@ public class XMLNodeReader  {
 							if (!key.equals("#text")) {
 								Node n6=n5.getFirstChild();
 								String value=n6.getNodeValue();
-								String type=bul.getDBType(key);
-								if (type!=null) {
-									if (type.equals("varchar")) {
+								int type=bul.getDBType(key);
+								if (type!=-1) {
+									if (type==FieldDefs.TYPE_STRING) {
 										newnode.setValue(key,value);
-									} else if (type.equals("integer")) {
+									} else if (type==FieldDefs.TYPE_INTEGER) {
 										try { 
 											newnode.setValue(key,Integer.parseInt(value));
 										} catch(Exception e) {
