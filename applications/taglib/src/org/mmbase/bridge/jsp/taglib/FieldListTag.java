@@ -134,8 +134,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else {
             NodeManager nodeManager;
 
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
-                nodeManager = getNodeVar().getNodeManager();
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer                
+                Node n = getNodeVar();
+                if (n == null) throw new JspTagException("Fieldlist tag must be used either as node-referrer, or use the objecttype attribute");
+                nodeManager = n.getNodeManager();
             } else {
                 nodeManager = getCloud().getNodeManager(nodeManagerAtt.getString(this));
             }
