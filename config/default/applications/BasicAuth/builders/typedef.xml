@@ -1,4 +1,6 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -26,25 +28,32 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language  as defined by RFC xxx -->
-	<singular xml:lang="us">Editor</singular>
-	<singular xml:lang="en">Editor</singular>
+	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">Editor</singular>
-	<!-- multiple per language  as defined by RFC xxx -->
-	<plural xml:lang="us">Editors</plural>
-	<plural xml:lang="en">Editors</plural>
+	<singular xml:lang="en">Editor</singular>
+	<singular xml:lang="us">Editor</singular>
+	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="nl">Editors</plural>
+	<plural xml:lang="en">Editors</plural>
+	<plural xml:lang="us">Editors</plural>
 </names>
 
 <!-- <descriptions>
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
-	<description xml:lang="us">Defines object types</description>
-	<description xml:lang="en">Defines object types</description>
+<!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="nl">Definitie van object types</description>
+	<description xml:lang="en">Defines object types</description>
+	<description xml:lang="us">Defines object types</description>
 </descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -56,10 +65,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="nl">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -77,7 +86,7 @@
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true" key="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -85,10 +94,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="nl">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="nl">Eigenaar</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Owner</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -106,7 +115,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="false">VARCHAR</type>
+			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -114,10 +123,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Name</name>
-			<name xml:lang="en">Name</name>
-			<name xml:lang="nl">Naam</name>
-			<type>string</type>
+			<guiname xml:lang="nl">Naam</guiname>
+			<guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="us">Name</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -135,7 +144,7 @@
 			<!-- name of the field in the database -->
 			<name>name</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" key="true" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false" key="true">STRING</type>
 		</db>
 	</field>
 
@@ -143,10 +152,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Description</name>
-			<name xml:lang="en">Description</name>
-			<name xml:lang="nl">Omschrijving</name>
-			<type>field</type>
+			<guiname xml:lang="nl">Omschrijving</guiname>
+			<guiname xml:lang="en">Description</guiname>
+			<guiname xml:lang="us">Description</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -164,7 +173,7 @@
 			<!-- name of the field in the database -->
 			<name>description</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false">VARCHAR</type>
+			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
