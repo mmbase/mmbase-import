@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.6 2003-05-26 11:32:20 vpro Exp $
+ * @version $Id: Wizard.java,v 1.74.2.7 2003-05-27 11:04:12 vpro Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -279,12 +279,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      */
     protected void storeConfigurationAttributes(Config.WizardConfig wizardConfig) {
         variables.put("wizardname", wizardName);
-        if (dataId != null) variables.put("objectnumber", dataId);
         // set attributes from config
-        for (Iterator i = wizardConfig.attributes.entrySet().iterator(); i.hasNext();) {
-            Map.Entry en = (Map.Entry)i.next();
-            variables.put(en.getKey().toString(),en.getValue().toString());
-        }
+        // this sets: origin, debug, objectnumber, and wizard
+        variables.putAll(wizardConfig.getAttributes());
     }
 
     /**
@@ -399,9 +396,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("sessionkey", sessionKey);
         params.put("referrer",   referrer);
         params.put("language",   cloud.getLocale().getLanguage());
-        params.put("popupid",    popupId);
         params.put("cloud",      cloud);
-        params.put("debug",      "" + debug);
         if (templatesDir != null) params.put("templatedir",  templatesDir);
 
         Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
