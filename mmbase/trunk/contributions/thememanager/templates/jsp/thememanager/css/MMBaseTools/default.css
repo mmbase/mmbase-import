@@ -380,7 +380,7 @@ body #profileb {
 div.row {
   clear: both;
   padding-top: 5px;
-  paddin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 div.row span.label {
@@ -390,14 +390,36 @@ div.row span.label {
   color: black;
   font-weight:bold;
   display: block;
-  }
+}
 
 div.row span.formw {
   float: right;
   width: 335px;
   text-align: left;
   display: block;
-  } 
+} 
+
+div.avatarimage {
+  float: left;
+  width:84px;
+  height:100px;
+  border:1px solid #000000; 
+  padding-top: 5px;
+  padding-bottom:5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+div.deleteavatar {
+  text-align: right; 
+  width: 80px;
+}
+
+img {
+  border:0px solid #000000;
+}
 
 div.spacer {
   clear: both;
