@@ -77,6 +77,10 @@
 		<translation language="nl" value="Voornaam" />
 		<translation language="df" value="Firstname" />
 	</keyword>
+	<keyword name="Disabled">
+		<translation language="nl" value="Geblokkeerd" />
+		<translation language="df" value="Disabled" />
+	</keyword>
 	<keyword name="moderator">
 		<translation language="nl" value="moderator" />
 		<translation language="df" value="moderator" />
@@ -92,6 +96,10 @@
 	<keyword name="member_since">
 		<translation language="nl" value="Lid geworden op" />
 		<translation language="df" value="Member since" />
+	</keyword>
+	<keyword name="Disable">
+		<translation language="nl" value="Blokkeren" />
+		<translation language="df" value="Disable" />
 	</keyword>
 	<keyword name="Messages">
 		<translation language="nl" value="Berichten" />
@@ -686,6 +694,10 @@
 	<keyword name="Move_message_to_different_folder">
 		<translation language="nl" value="Verplaats dit bericht naar een andere map" />
 		<translation language="df" value="Move this message to a different folder" />
+	</keyword>
+	<keyword name="Enable">
+		<translation language="nl" value="De-blokkeren" />
+		<translation language="df" value="Enable" />
 	</keyword>
 	<keyword name="Cancel">
 		<translation language="nl" value="Annuleren" />
