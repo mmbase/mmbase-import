@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.8 2003-03-10 11:50:17 pierre Exp $
+ * @version $Id: Community.java,v 1.9 2003-06-18 19:32:28 michiel Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -62,7 +62,6 @@ public class Community extends MMObjectBuilder {
     /**
      * Opens all the channels that are connected to this community
      *
-     * @param community The community node of which to open all the channels.
      */
     public void openAllCommunities() {
         //ensure the communitybuilder is initialized.
