@@ -123,6 +123,9 @@ public class URLCache extends Cache {
          * @param key The key of the cache entry to invalidate if an object changes.
          */
         private void put(MMObjectNode node, String key) {
+            if(node==null) {
+                return;
+            }
             Vector keyList = null;
             String objectNumber = ""+node.getNumber();
             if(objectNumber2Keys.containsKey(objectNumber)) {
