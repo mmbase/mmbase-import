@@ -23,6 +23,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerFactory;
 
+import org.mmbase.bridge.util.xml.Generator;
 
 
 import java.io.File;
@@ -121,10 +122,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     }
 
     /**
-     * Must store the XML somewhere. This is the central DOM Document.
+     * Must store the XML somewhere. This will contain the central DOM Document.
      *
      */
-    private   Document doc    = null;  
+    private   Generator xmlGenerator  = null;  
 
     /**
      * A handle necessary when using the Time Tag;
@@ -180,8 +181,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * Subtags can write themselves as XML to the DOM document of this
      * tag. This functions returns this document.
      */
-    public Document getDocument() {
-        return doc;
+    public Generator getGenerator() {
+        return xmlGenerator;
     }
 
     /**
@@ -192,7 +193,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public final boolean wantXML() {
         // what would evaluate quicker?
         // return format < 1000;
-        return doc != null;
+        return xmlGenerator != null;
     }
    
 
@@ -220,9 +221,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
     
         if (format < 1000) {  // also if format is unset.
-            doc = documentBuilder.newDocument();
+            xmlGenerator = new Generator(documentBuilder.newDocument());
         } else {
-            doc = null; // my childen will know, that this formatter doesn't want them.
+            xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }
 
         return EVAL_BODY_TAG;
@@ -239,7 +240,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if(wantXML() && doc.getDocumentElement() != null && body.length() > 0) {
+        if(wantXML() && xmlGenerator.getDocument().getDocumentElement() != null && body.length() > 0) {
             throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body.");
         }
 /*        if (wantXML()) {
@@ -260,7 +261,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
         if (log.isDebugEnabled()) {
             if (wantXML()) {
-                log.debug("XSL converting document: " + documentStringFormatted());
+                log.debug("XSL converting document: " + xmlGenerator.toStringFormatted());
             } else {
                 log.debug("Converting: " + body);
             }
@@ -297,7 +298,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 helper.setValue(XSLTransform("xslt/mmxf2rich.xslt"));
                 break;
             case FORMAT_ESCAPEXMLPRETTY:
-                helper.setValue(Encode.encode("ESCAPE_XML", documentStringFormatted()));
+                helper.setValue(Encode.encode("ESCAPE_XML", xmlGenerator.toStringFormatted()));
                 break;
             case FORMAT_ESCAPEXML:
                 helper.setValue(Encode.encode("ESCAPE_XML", body));
@@ -407,7 +408,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                                      java.util.Locale.getDefault().getLanguage());
             
             java.io.StringWriter res = new java.io.StringWriter();
-            transformer.transform(new javax.xml.transform.dom.DOMSource(doc),
+            transformer.transform(new javax.xml.transform.dom.DOMSource(xmlGenerator.getDocument()),
                                   new javax.xml.transform.stream.StreamResult(res));
             return res.toString();
         } catch (Exception e) {
@@ -415,42 +416,6 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             log.service(msg); // don't log this as warning or error, because web site builders can generate their own XSLT, which can contain errors.
             log.error(Logging.stackTrace(e));
             return msg + "\n";
-        }
-    }
-    
-    /**
-     * Returns the document as a String.
-     */
-
-    private String documentString() {
-        try {
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
-            java.io.StringWriter result = new java.io.StringWriter();
-            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(doc);
-            return result.toString();    
-        } catch (Exception e) {
-            return e.toString();
-        }
-    }
-
-    /**
-     * For debugging purposes. Return the constructed document as a String.
-     */
-
-    private String documentStringFormatted() {
-        try {
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
-            format.setIndenting(true);
-            format.setPreserveSpace(false);
-            //  format.setOmitXMLDeclaration(true);
-            //  format.setOmitDocumentType(true);
-            java.io.StringWriter result = new java.io.StringWriter();
-            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(doc);
-            return result.toString();    
-        } catch (Exception e) {
-            return e.toString();
         }
     }
 
