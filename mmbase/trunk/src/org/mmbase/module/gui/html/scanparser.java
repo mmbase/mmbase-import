@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.35 2000-12-06 12:25:36 vpro Exp $
+$Id: scanparser.java,v 1.36 2000-12-08 13:34:56 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.35  2000/12/06 12:25:36  vpro
+Dirk-Jan: added caching of parts after it mystiriously had disapeared
+
 Revision 1.33  2000/11/23 14:50:43  install
 Rob changed <transaction> tag in <transactions>
 
@@ -125,7 +128,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.35 $ $Date: 2000-12-06 12:25:36 $
+ * @$Revision: 1.36 $ $Date: 2000-12-08 13:34:56 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -588,6 +591,7 @@ public class scanparser extends ProcessorModule {
 
 				//debug("newpart "+newpart);
 
+				String partbody;
 				switch(docmd) {
 					case 1: // '<MACRO '
 						newbody.append(do_macro(body.substring(prepostcmd,postcmd),session,sp));
@@ -649,16 +653,22 @@ public class scanparser extends ProcessorModule {
 							newbody.append(do_save(session,body.substring(prepostcmd,postcmd)));
 						break;
 					case 19: // '<PART '
-						newbody.append(do_part(body.substring(prepostcmd,postcmd),session,sp,0));
+						partbody=do_part(body.substring(prepostcmd,postcmd),session,sp,0);
+						if ((sp.rstatus==1) || (sp.rstatus==2)) {
+							newbody=new StringBuffer();
+						};
+						newbody.append(partbody);
 						break;
 					case 20: // '<COUNTER'
 						newbody.append(do_counter(body.substring(prepostcmd,postcmd),session,sp));
 						break;
-					case 21: // '<TREEPART, TREEFILE' 
-						newbody.append(do_smart(body.substring(prepostcmd,postcmd),session,sp, false));
-						break;
-					case 22: // '<LEAFPART, LEAFFILE' 
-						newbody.append(do_smart(body.substring(prepostcmd,postcmd),session,sp, true));
+					case 21: // '<TREEPART, TREEFILE'
+					case 22: // '<LEAFPART, LEAFFILE'
+						partbody=do_smart(body.substring(prepostcmd,postcmd),session,sp, docmd==22);
+						if ((sp.rstatus==1) || (sp.rstatus==2)) {
+							newbody=new StringBuffer();
+						};
+						newbody.append(partbody);
 						break;
 					default: 
 						debug("Woops broken case in method finddocmd");
@@ -853,11 +863,18 @@ public class scanparser extends ProcessorModule {
 									 String bestFile, // Last found file which is ok
 									 Enumeration nodes, // The passed object nodes
 									 sessionInfo session, // The session for version control
-									 boolean leaf // TREE or LEAF version
+									 boolean leaf, // TREE or LEAF version
+									 boolean byALias // NAME version
+									
 									) throws ParseException {
 		// Get node from args
 		MMObjectNode node = (MMObjectNode)nodes.nextElement();
-		String nodeNumber = ""+node.getValue("number");
+		String nodeNumber;
+		if (byALias) {
+		    nodeNumber = ""+mmbase.OAlias.getAlias(node.getIntValue("number"));
+		} else {
+		    nodeNumber = ""+node.getValue("number");
+		}
 				
 		// Ask the builder of the node to create the path to search for the part
 		// If null returned we're done and return bestFile
@@ -890,7 +907,7 @@ public class scanparser extends ProcessorModule {
 		if (!nodes.hasMoreElements())
 			return bestFile;
 		
-		return getSmartFileName( path, builderPath, fileName, bestFile, nodes, session, leaf);
+		return getSmartFileName( path, builderPath, fileName, bestFile, nodes, session, leaf, byALias);
 	}
 	
 	/**
@@ -914,6 +931,12 @@ public class scanparser extends ProcessorModule {
 		args = args.substring(pos+1);
 		args = dodollar(args, session, sp);
 		if (debug) debug(cmdName+action+" "+args);
+		
+		boolean byALias=false;
+		if ((args.length()>=6) && args.substring(0,6).equals("ALIAS ")) {
+			byALias=true;
+			args = args.substring(6); // Returns empty if length 6, no exception
+		}	
 		
 		int addMarkers = 0;
 		if ((args.length()>=6) && args.substring(0,6).equals("DEBUG ")) {
@@ -979,7 +1002,7 @@ public class scanparser extends ProcessorModule {
 		// Travel the smart object tree to find an override of the default part
 		Enumeration e = nodes.elements();
 		if (e.hasMoreElements())
-			bestFile = getSmartFileName( path, builderPath, filename, bestFile, e, session, leaf);
+			bestFile = getSmartFileName( path, builderPath, filename, bestFile, e, session, leaf, byALias);
 		
 		if (!args.equals("")) bestFile += "?"+args;
 		if (debug) debug(cmdName+action+" using "+bestFile);
