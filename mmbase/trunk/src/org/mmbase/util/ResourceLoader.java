@@ -28,6 +28,7 @@ import org.mmbase.storage.search.*;
 
 // XML stuff
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.xml.sax.InputSource;
 import javax.xml.transform.*;
 import javax.xml.transform.Transformer;
@@ -93,7 +94,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.5 2004-11-19 20:01:46 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.6 2004-11-25 13:53:12 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -573,7 +574,9 @@ public class ResourceLoader extends ClassLoader {
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, null/* no error handler */, resolver);
         if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
         if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
-        return  dbuilder.parse(source);
+        Document doc = dbuilder.parse(source);
+        DocumentType docType = doc.getDoctype();
+        return  doc;
     }
 
     /**
@@ -590,13 +593,18 @@ public class ResourceLoader extends ClassLoader {
      * Creates a resource with given name for given Source.
      *
      * @see #createResourceAsStream(String)
+     * @param docType Document which must be used, or <code>null</code> if none.
      */
-    public void storeSource(String name, Source source) throws IOException {
+    public void storeSource(String name, Source source, DocumentType docType) throws IOException {
         try {
             StreamResult streamResult = getStreamResult(name);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer serializer = tf.newTransformer();
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            if (docType != null) {
+                serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, docType.getPublicId());
+                serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, docType.getSystemId());
+            }
             // Indenting not very nice int all xslt-engines, but well, its better then depending
             // on a real xslt or lots of code.
             serializer.transform(source, streamResult);
@@ -616,7 +624,8 @@ public class ResourceLoader extends ClassLoader {
      * @see #createResourceAsStream(String)
      */
     public void  storeDocument(String name, Document doc) throws IOException {
-        storeSource(name, new DOMSource(doc));
+        log.info("Storing " + doc.getDoctype());
+        storeSource(name, new DOMSource(doc), doc.getDoctype());
     }
 
     /**
