@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.41 2003-11-19 13:05:35 pierre Exp $
+ * @version $Id: Dove.java,v 1.42 2003-11-20 16:21:59 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -533,31 +533,23 @@ public class Dove extends AbstractDove {
                 out.setAttribute(ELM_TYPE,nodeManagerName);
                 NodeManager nm =cloud.getNodeManager(nodeManagerName);
 
-                // XXX: language is currently ignored
-                // (not supported by the MMCI)
                 String lang= in.getAttribute(ELM_LANG);
                 if ("".equals(lang)) {
-                    lang=null;
-                    // should be:
-                    // lang = cloud.getLanguage();
+                    lang=cloud.getLocale().getLanguage();
                 } else {
                     out.setAttribute(ELM_LANG,lang);
                 }
 
-                // singular name (XXX:language is ignored)
-                // should be something akin to :
-                // xxx=nm.getGUIName(SINGULAR_NAME,lang);
-                //
-                Element elm=addContentElement(SINGULARNAME,nm.getGUIName(),out);
+                // singular name
+                Element elm=addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR,lang),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
-                // plural name  (XXX:language is ignored)
-                // XXX: returns same as singular as MMCI does not support this yet
-                elm=addContentElement(PLURALNAME,nm.getGUIName(),out);
+                // plural name
+                elm=addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL,lang),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
-                // description  (XXX:language is ignored)
-                elm=addContentElement(DESCRIPTION,nm.getDescription(),out);
+                // description
+                elm=addContentElement(DESCRIPTION,nm.getDescription(lang),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
                 // parent
@@ -594,8 +586,8 @@ public class Dove extends AbstractDove {
                         field.setAttribute(ELM_NAME,fname);
                         fields.appendChild(field);
                         // guiname (XXX:language is ignored)
-                        elm=addContentElement(GUINAME,fielddef.getGUIName(),field);
-                        elm=addContentElement(DESCRIPTION,fielddef.getDescription(),field);
+                        elm=addContentElement(GUINAME,fielddef.getGUIName(lang),field);
+                        elm=addContentElement(DESCRIPTION,fielddef.getDescription(lang),field);
                         if (lang!=null) elm.setAttribute(ELM_LANG,lang);
                         // guitype
                         String guiType = fielddef.getGUIType();

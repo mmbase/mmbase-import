@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Map;
+import java.util.Locale;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletRequest;
 
@@ -24,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.29 2003-10-09 14:32:28 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.30 2003-11-20 16:22:00 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -33,6 +34,8 @@ public interface NodeManager extends Node {
     public final static int ORDER_EDIT = 1;
     public final static int ORDER_LIST = 2;
     public final static int ORDER_SEARCH = 3;
+    public final static int GUI_SINGULAR = 1;
+    public final static int GUI_PLURAL = 2;
 
     /**
     * Creates a new node. The returned node will not be visible in the cloud
@@ -99,10 +102,21 @@ public interface NodeManager extends Node {
      *
      * @since MMBase-1.6
      * @param plurality the plurality (number of objects) for which to return a description
-     *                  (1 = singular, 0,2 or greater = plural)
+     *                  ({@link #GUI_SINGULAR} or {@link #GUI_PLURAL})
      * @return the descriptive name of this node manager
      */
     public String getGUIName(int plurality);
+
+    /**
+     * Returns the descriptive name of this node manager ina a specified language.
+     *
+     * @since MMBase-1.6
+     * @param plurality the plurality (number of objects) for which to return a description
+     *                  ({@link #GUI_SINGULAR} or {@link #GUI_PLURAL})
+     * @param locale the locale that determines the language for the GUI name
+     * @return the descriptive name of this node manager
+     */
+    public String getGUIName(int plurality, Locale locale);
 
     /**
      * Returns the description of this node manager.
@@ -110,6 +124,14 @@ public interface NodeManager extends Node {
      * @return the description of this node manager
      */
     public String getDescription();
+
+    /**
+     * Returns the description of this node manager in a specified language.
+     *
+     * @param locale the locale that determines the language for the description
+     * @return the description of this node manager
+     */
+    public String getDescription(Locale locale);
 
     /**
      * Returns a list of all fields defined for this node manager.

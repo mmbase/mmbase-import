@@ -10,12 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import java.util.Locale;
+
 /**
  * This interface represents a node's field type information object.
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.13 2003-08-27 10:21:42 pierre Exp $
+ * @version $Id: Field.java,v 1.14 2003-11-20 16:22:00 pierre Exp $
  */
 public interface Field {
 
@@ -65,11 +67,27 @@ public interface Field {
     public String getGUIName();
 
     /**
+     * Returns the GUI name for this field in a specified preferred language.
+     *
+     * @param locale the locale that determines the language for the GUI name
+     * @return  the GUI name for this field
+     */
+    public String getGUIName(Locale locale);
+
+    /**
      * Returns the description for this field.
      *
      * @return  the description for this field
      */
     public String getDescription();
+
+    /**
+     * Returns the description for this field in a specified preferred language.
+     *
+     * @param locale the locale that determines the language for the description
+     * @return  the description for this field
+     */
+    public String getDescription(Locale locale);
 
     /**
      * Returns the identifier for the data type this field contains.
@@ -99,7 +117,7 @@ public interface Field {
     public boolean isRequired();
 
     /**
-     * Returns whether this field is part of a unique key (a set of fields whose combined content should 
+     * Returns whether this field is part of a unique key (a set of fields whose combined content should
      * occur only once).
      * Note that MMBase lets the storage layer handle this. If your storage implementation or configuration does
      * not support this the uniqueness may not be enforced.

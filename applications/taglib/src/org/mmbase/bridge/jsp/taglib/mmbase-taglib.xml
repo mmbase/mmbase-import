@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.218 2003-11-20 11:11:05 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.219 2003-11-20 16:22:00 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1982,9 +1982,9 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        Pick up existing context.
+				Pick up existing context.
 			</info>
-      <since>MMBase-1.7</since>
+			<since>MMBase-1.7</since>
 		</attribute>
 		<info>
 			<p>
@@ -2477,6 +2477,10 @@ transaction was commited, following should result anything:
 				<info>The GUI name of the field (can be in other language)</info>
 			</possiblevalue>
 			<possiblevalue>
+				<value>description</value>
+				<info>The description of the field (can be in other language)</info>
+			</possiblevalue>
+			<possiblevalue>
 				<value>input</value>
 				<info>
 					A form entry for the field.  If the surrounding FieldList has an id, the names of the form
@@ -2530,7 +2534,7 @@ transaction was commited, following should result anything:
 				<value>guivalue</value>
 				<info>
 					The guivalue of this field. Can only be used if the parent FieldProvider also provides a
-					Node.
+					Node (can be in other language).
 				</info>
 			</possiblevalue>
 		</attribute>
@@ -2866,24 +2870,24 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 			<possiblevalue>
 				<value>attributes</value>
 				<info>
-          There can be attributes set on a request object. These are principally importable into taglib as well. 
-          See  <a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getAttribute(java.lang.String)">JavaDoc</a>.
+					There can be attributes set on a request object. These are principally importable into taglib as well.
+					See  <a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getAttribute(java.lang.String)">JavaDoc</a>.
 				</info>
 			</possiblevalue>
 			<possiblevalue>
 				<value>this</value>
 				<info>
-          Especially when you use a list of 'from' locations, then the 'this' location can be usefull. It represent the current value, if there is one. 
-          Using this implies reset="true" (because of course you want to reset if current value is an option).
+					Especially when you use a list of 'from' locations, then the 'this' location can be usefull. It represent the current value, if there is one.
+					Using this implies reset="true" (because of course you want to reset if current value is an option).
 				</info>
 			</possiblevalue>
 			<examplevalue>
 				<value>parameters,session</value>
 				<info>
-          You can also specify a list of locations. This one means: If an attribute cannot be found
-          in the parameters, try it in the session.
+					You can also specify a list of locations. This one means: If an attribute cannot be found
+					in the parameters, try it in the session.
 				</info>
-        <since>MMBase-1.7</since>
+				<since>MMBase-1.7</since>
 			</examplevalue>
 		</attribute>
 		<attribute>
@@ -2892,7 +2896,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 			<rtexprvalue>false</rtexprvalue>
 			<see tag="writer" attribute="jspvar" />
 			<info>
-        If you specify `jspvar' a JSP-variable with this name will be
+				If you specify `jspvar' a JSP-variable with this name will be
 				created too. It is available after the closing of the
 				tag. JSP-variables can also be created with the `write' tag. A
 				write tag has more precise scoping possibilities.
@@ -4436,14 +4440,14 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<info>
-        <p>
-          When this page expires (in seconds after now). If you set this, this has influence on some
-          http header being set ('Cache-Control' and 'Expires'). This default to one minute if there
-          is no session used on the page, and to no caching otherwise.
-        </p>
-        <p>
-          Setting this to 0 has the effect of disabling all proxy-caching.
-        </p>
+				<p>
+					When this page expires (in seconds after now). If you set this, this has influence on some
+					http header being set ('Cache-Control' and 'Expires'). This default to one minute if there
+					is no session used on the page, and to no caching otherwise.
+				</p>
+				<p>
+					Setting this to 0 has the effect of disabling all proxy-caching.
+				</p>
 			</info>
 			<examplevalue>
 				<value>UTF-8</value>
@@ -4455,18 +4459,18 @@ The 0 is just counter, which starts at 0 on every page.
 			<rtexprvalue>true</rtexprvalue>
 			<info>
 				If this attribute is set the complete body-result is piped through this. If you specified
-        'type', then a default postprocessor might be defined.
+				'type', then a default postprocessor might be defined.
 			</info>
 			<possiblevalue>
 				<value>reducespace</value>
 				<info>
-          <p>
-            Replaces groups of one and more newlines by one new line, and one or more space by one
-            space. This spares bandwidth and makes the result better readable.
-          </p>
-          <p>
-            This is default for most XML-like content types.
-          </p>
+					<p>
+						Replaces groups of one and more newlines by one new line, and one or more space by one
+						space. This spares bandwidth and makes the result better readable.
+					</p>
+					<p>
+						This is default for most XML-like content types.
+					</p>
 				</info>
 			</possiblevalue>
 			<possiblevalue>
@@ -4485,10 +4489,10 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        <p>
-          The default value of the escape attribute of all writer tags in the body. The values are
-          defined in taglibcontent.xml. Reasonable defaults apply if you explicitely speficy a type.
-        </p>
+				<p>
+					The default value of the escape attribute of all writer tags in the body. The values are
+					defined in taglibcontent.xml. Reasonable defaults apply if you explicitely speficy a type.
+				</p>
 			</info>
 			<possiblevalue>
 				<value>text/html</value>
@@ -4540,25 +4544,25 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>type</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-      <see tag="listnodes" attribute="type" />
+			<see tag="listnodes" attribute="type" />
 		</attribute>
 		<attribute>
 			<name>path</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        Though a relatednodescontainer is to query real nodes (so not clusternodes), this does not
-        mean that there can only one node type in the query. Only one element of this path is
-        actually queried, but constraints and sortorderds can be applied to the other ones. 
+				Though a relatednodescontainer is to query real nodes (so not clusternodes), this does not
+				mean that there can only one node type in the query. Only one element of this path is
+				actually queried, but constraints and sortorderds can be applied to the other ones.
 			</info>
-      <see tag="list" attribute="path" />
+			<see tag="list" attribute="path" />
 		</attribute>
 		<attribute>
 			<name>searchdirs</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        Per element in the path you can indicate an alternative 'searchdir' (source, destination or both)
+				Per element in the path you can indicate an alternative 'searchdir' (source, destination or both)
 			</info>
 		</attribute>
 		<attribute>
@@ -4566,10 +4570,10 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        The 'element' of the path to be queried. This defaults to the first element, but the other
-        ones can be pointed to as well.
+				The 'element' of the path to be queried. This defaults to the first element, but the other
+				ones can be pointed to as well.
 			</info>
-      <see tag="node" attribute="element" />
+			<see tag="node" attribute="element" />
 		</attribute>
 		<attribute>
 			<name>id</name>
@@ -4608,20 +4612,20 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>path</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-      <see tag="listnodes" attribute="path" />
+			<see tag="listnodes" attribute="path" />
 		</attribute>
 		<attribute>
 			<name>searchdirs</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-      <see tag="listnodes" attribute="searchdirs" />
+			<see tag="listnodes" attribute="searchdirs" />
 		</attribute>
 		<attribute>
 			<name>element</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-      <see tag="listnodes" attribute="element" />
-      <see tag="node" attribute="element" />
+			<see tag="listnodes" attribute="element" />
+			<see tag="node" attribute="element" />
 		</attribute>
 		<attribute>
 			<name>id</name>

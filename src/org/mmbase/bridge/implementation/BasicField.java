@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.util.Locale;
 import org.mmbase.bridge.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
@@ -17,7 +18,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.13 2003-08-27 10:21:42 pierre Exp $
+ * @version $Id: BasicField.java,v 1.14 2003-11-20 16:22:00 pierre Exp $
  */
 public class BasicField implements Field, Comparable {
 
@@ -42,11 +43,21 @@ public class BasicField implements Field, Comparable {
     }
 
     public String getGUIName() {
-        return field.getGUIName(((BasicCloud)nodeManager.getCloud()).getLocale().getLanguage());
+        return getGUIName(null);
+    }
+
+    public String getGUIName(Locale locale) {
+        if (locale==null) locale = ((BasicCloud)nodeManager.getCloud()).getLocale();
+        return field.getGUIName(locale.getLanguage());
     }
 
     public String getDescription() {
-        return field.getDescription(((BasicCloud)nodeManager.getCloud()).getLocale().getLanguage());
+        return getDescription(null);
+    }
+
+    public String getDescription(Locale locale) {
+        if (locale==null) locale = ((BasicCloud)nodeManager.getCloud()).getLocale();
+        return field.getDescription(locale.getLanguage());
     }
 
     public int getType() {
@@ -72,7 +83,7 @@ public class BasicField implements Field, Comparable {
     public boolean hasIndex() {
         return (field.getDBType() == FieldDefs.TYPE_NODE) || field.getDBName().equals("number");
     }
-    
+
     /**
      * Compares this field to the passed object.
      * Returns 0 if they are equal, -1 if the object passed is a Field and larger than this field,
