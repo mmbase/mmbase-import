@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.21 2004-02-11 20:03:08 michiel Exp $
+ * @version $Id: XmlField.java,v 1.22 2004-05-12 19:12:52 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -130,6 +130,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * If you want to add a _ in your text, that should be possible too...
      * Should be done last, because no tags can appear in <em>
      */
+    // test cases:
+    // I cite _m_pos_! -> <mmxf><p>I cite <em>m_pos</em>!</p></mmxf>
+
     private static void handleEmph(StringObject obj) {
 
         obj.replace("__", "&#95;"); // makes it possible to escape underscores
@@ -137,29 +140,61 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         // Emphasizing. This is perhaps also asking for trouble, because
         // people will try to use it like <font> or other evil
         // things. But basicly emphasizion is content, isn't it?
-        boolean emph = false;
-        int pos = obj.indexOf("_", 0);
-        while (pos != -1) {
-            obj.delete(pos, 1);
-            if (!emph) {
-                obj.insert(pos, "<em>");
-                pos += 3;
-                emph = true;
-                int pos1 = obj.indexOf("_", pos);
-                int pos2 = obj.indexOf("<", pos); // must be closed before next tag opens.
-                pos = ((pos1 < pos2) || (pos2 == -1)) ? pos1 : pos2;
-            } else {
-                obj.insert(pos, "</em>");
-                pos += 4;
-                emph = false;
-                pos = obj.indexOf("_", pos); // search next opening.
+
+        int posEmphOpen = obj.indexOf("_", 0);
+        int posTagOpen = obj.indexOf("<", 0); // must be closed before next tag opens. 
+
+
+        OUTER:
+        while (posEmphOpen != -1) {
+
+            if (posTagOpen > 0 && 
+                posTagOpen < posEmphOpen) { // ensure that we are not inside existing tags
+                int posTagClose = obj.indexOf(">", posTagOpen);
+                if (posTagClose == -1) break;                
+                posEmphOpen = obj.indexOf("_", posTagClose);
+                posTagOpen  = obj.indexOf("<", posTagClose);
+                continue;
             }
 
-        }
+            if (posEmphOpen + 1 >= obj.length()) break; // no use, nothing can follow
 
-        if (emph) { // make sure it is closed on the end.
-            // should never happen when you e.g. used paragraphs.
-            obj.insert(obj.length(), "</em>\r");
+            if ((posEmphOpen > 0 && Character.isLetterOrDigit(obj.charAt(posEmphOpen - 1))) ||
+                (! Character.isLetterOrDigit(obj.charAt(posEmphOpen + 1)))) {
+                // _ is inside a word, ignore that.
+                // or not starting a word
+                posEmphOpen = obj.indexOf("_", posEmphOpen + 1);
+                continue;
+            }  
+
+            // now find closing _.
+            int posEmphClose = obj.indexOf("_", posEmphOpen + 1);
+            if (posEmphClose == -1) break;
+            char previousChar = obj.charAt(posEmphClose -1);
+            while(posEmphClose < obj.length() &&
+                  (Character.isLetterOrDigit(obj.charAt(posEmphClose + 1)) ||
+                   (!(Character.isLetterOrDigit(previousChar) || previousChar == '!' || previousChar == '?')))) { // ! and ? you might want to emphasize too
+                posEmphClose = obj.indexOf("_", posEmphClose + 1);   
+                previousChar = obj.charAt(posEmphClose - 1);
+                if (posEmphClose == -1) break OUTER;
+            }
+
+            if (posTagOpen > 0 
+                && posEmphClose > posTagOpen) {
+                posEmphOpen = obj.indexOf("_", posTagOpen); // a tag opened before emphasis close, ignore then too, and re-search
+                continue;
+            }
+
+            // realy do replacing now
+            obj.delete(posEmphClose, 1);
+            obj.insert(posEmphClose,"</em>");
+            obj.delete(posEmphOpen, 1);
+            obj.insert(posEmphOpen, "<em>");
+            posEmphClose += 7;
+
+            posEmphOpen = obj.indexOf("_", posEmphClose);
+            posTagOpen  = obj.indexOf("<", posEmphClose);
+
         }
 
         obj.replace("&#95;", "_");

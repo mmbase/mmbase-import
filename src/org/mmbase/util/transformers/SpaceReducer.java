@@ -17,9 +17,10 @@ import org.mmbase.util.logging.*;
 /**
  * Replace 1 or more spaces by 1 space, and 1 or more newlines by 1
  * newline. Any other combination of newlines and spaces is replaced
- * by one newline. Except if they are in between "<pre>" and
- * "</pre>". (Note: perhaps this last behaviour should be made
- * configurable.
+ * by one newline.
+ *
+ * Except if they are in between "&lt;pre&gt;" and "&lt;/pre&gt;". (Note: perhaps this last behaviour should be made
+ * configurable).
  *
  * @todo 'pre' stuff not yet implemented.
  *

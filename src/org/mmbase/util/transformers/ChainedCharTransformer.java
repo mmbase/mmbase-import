@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.15 2004-01-05 17:39:07 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.16 2004-05-12 19:12:52 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -105,7 +105,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                     r = new PipedReader();
 
                     Thread thread =  new TransformerLink(ct, r, w, closeWriterAfterUse);
-                    thread.setDaemon(true);
+                    thread.setDaemon(false);
                     if (log.isDebugEnabled()) log.debug("instantiated new tread " + thread);
                     threads.add(thread);
 
