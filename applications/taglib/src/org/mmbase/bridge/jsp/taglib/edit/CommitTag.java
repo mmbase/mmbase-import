@@ -10,12 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.edit;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.CloudProvider;
 import org.mmbase.bridge.Transaction;
 
 /**
-* This tag can be used inside a transaction tag, to commit it.
+* This tag can be used inside a transaction tag, to commit it. It also
+* serves as a baseclass for e.g. CancelTag
 *
 * @author Michiel Meeuwissen 
 **/
@@ -27,10 +30,24 @@ public class CommitTag extends CloudReferrerTag {
         setCloud(t);
     }
 
+    protected void doAction(Transaction t) {
+        t.commit();
+    }
+
     public int doStartTag() throws JspTagException{
-        // find the parent transaction:
-        Transaction trans = (Transaction) getCloudProviderVar();
-        trans.commit();
+        // find the parent transaction:        
+        Class transactionClass;
+        try {
+            transactionClass = Class.forName("org.mmbase.bridge.jsp.taglib.edit.TransactionTag");
+        } catch (java.lang.ClassNotFoundException e) {
+            throw new JspTagException ("Could not find TransactionTag class");  
+        }
+        TransactionTag tt = (TransactionTag) findAncestorWithClass((Tag)this, transactionClass); 
+        Transaction trans = (Transaction) tt.getCloudVar();
+        doAction(trans);
+        if (tt.getId() != null) {
+            tt.unRegister(tt.getId());
+        }
         return SKIP_BODY;    
     }    
 }
