@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * This class is used when no authorization is configured. Everything is allowed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.9 2003-11-26 20:23:55 michiel Exp $
+ * @version $Id: NoAuthorization.java,v 1.10 2003-11-26 20:50:49 michiel Exp $
  */
 final public class NoAuthorization extends Authorization {
 
@@ -26,7 +26,7 @@ final public class NoAuthorization extends Authorization {
 
     // This defined the 'context' used everywhere where one is needed.
     private static final String EVERYBODY = "everybody";
-    private static final Set    possibleContexts = Collections.unmodifiableSet(new HashSet(Arrays.asList( new String[]{EVERYBODY})));
+    private static final Set    possibleContexts = Collections.unmodifiableSet(new HashSet(Arrays.asList( new String[]{EVERYBODY, NoAuthentication.userContext.getOwnerField()})));
 
     /**
      *	This method does nothing
