@@ -12,7 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
@@ -47,25 +47,25 @@ public class ListConditionTag extends BodyTagSupport {
         inverse = b.booleanValue();
     }
     
-    public int doStartTag() throws JspException{
+    public int doStartTag() throws JspTagException{
         // find the parent list:
         ListItemInfo nodeListItemInfo;
         Class nodeListItemInfoClass;
         try {
             nodeListItemInfoClass = Class.forName("org.mmbase.bridge.jsp.taglib.ListItemInfo");
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspException ("Could not find ListItemInfo class");  
+            throw new JspTagException ("Could not find ListItemInfo class");  
         }
         
         nodeListItemInfo = (ListItemInfo) findAncestorWithClass((Tag)this, nodeListItemInfoClass); 
         if (nodeListItemInfo == null) {
-            throw new JspException ("Could not find parentlist");  
+            throw new JspTagException ("Could not find parentlist");  
         }
         if (parentListId != null) { // search further, if necessary
             while (nodeListItemInfo.getId() != parentListId) {
                 nodeListItemInfo = (ListItemInfo) findAncestorWithClass((Tag)nodeListItemInfo, nodeListItemInfoClass);            
                 if (nodeListItemInfo == null) {
-                    throw new JspException ("Could not find parent with id " + parentListId);  
+                    throw new JspTagException ("Could not find parent with id " + parentListId);  
                 }
             }
         }
@@ -82,7 +82,7 @@ public class ListConditionTag extends BodyTagSupport {
         } else if ("changed".equalsIgnoreCase(value)) {
             result = nodeListItemInfo.isChanged() != inverse;
         } else {
-            throw new JspException ("Don't know what do (" + value +")");  
+            throw new JspTagException ("Don't know what do (" + value +")");  
         }
         
         return result ? EVAL_BODY_TAG : SKIP_BODY;
@@ -92,12 +92,12 @@ public class ListConditionTag extends BodyTagSupport {
     /**
     * 
     **/
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         try{
             if(bodyContent != null)
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch(java.io.IOException e){
-            throw new JspException("IO Error: " + e.getMessage());
+            throw new JspTagException("IO Error: " + e.getMessage());
         }
         return EVAL_PAGE;
     }

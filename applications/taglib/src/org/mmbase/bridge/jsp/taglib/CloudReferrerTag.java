@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.Cloud;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -41,19 +41,19 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     *
     */
 	
-    public CloudTag findCloudTag(String id) throws JspException {
+    public CloudTag findCloudTag(String id) throws JspTagException {
 
         Class cloudClass;
         try {
             cloudClass = Class.forName("org.mmbase.bridge.jsp.taglib.CloudTag");
 
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspException ("Could not find CloudTag class");  
+            throw new JspTagException ("Could not find CloudTag class");  
         }
 
         CloudTag cloud = (CloudTag) findAncestorWithClass((Tag)this, cloudClass); 
         if (cloud == null) {
-            throw new JspException ("Could not find parent cloud");  
+            throw new JspTagException ("Could not find parent cloud");  
         }
 
         if ("".equals(id)) id = null;
@@ -62,7 +62,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
             while (cloud.getId() != id) {
                 cloud = (CloudTag) findAncestorWithClass((Tag)cloud, cloudClass);            
                 if (cloud == null) {
-                    throw new JspException ("Could not find parent with id " + id);  
+                    throw new JspTagException ("Could not find parent with id " + id);  
                 }
             }
             
@@ -75,7 +75,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
      *
      */
 
-    public CloudTag findCloudTag() throws JspException {
+    public CloudTag findCloudTag() throws JspTagException {
         return findCloudTag(null);
     }
     
@@ -84,7 +84,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     * defined in this class. 
     **/
 
-    public Cloud getDefaultCloud() throws JspException {
+    public Cloud getDefaultCloud() throws JspTagException {
         return findCloudTag().getCloud();
     }
 
@@ -96,7 +96,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     * one such a function would be sufficient.
     **/
 
-    public Cloud getPageCloud() throws JspException {
+    public Cloud getPageCloud() throws JspTagException {
         return findCloudTag().getCloud();
     }
 

@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.Tag;
@@ -83,20 +83,20 @@ public class NodeFieldTag extends CloudReferrerTag {
         this.field = field;
     }
     
-    public int doStartTag() throws JspException{            
+    public int doStartTag() throws JspTagException{            
         return EVAL_BODY_TAG;
     }
     
     
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         try {
             Node node = getDefaultCloud().getNode(number);
             //bodyOut.clearBody();
-                        BodyContent bodyOut = getBodyContent();
-            bodyOut.print(node.getStringValue(field));
-            bodyOut.writeOut(bodyOut.getEnclosingWriter());
+            //BodyContent bodyOut = getBodyContent();
+            bodyContent.print(node.getStringValue(field));
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe){
-            throw new JspException(ioe.toString());
+            throw new JspTagException(ioe.toString());
         }
         return SKIP_BODY;
     }

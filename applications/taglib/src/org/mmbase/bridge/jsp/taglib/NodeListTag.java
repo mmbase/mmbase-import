@@ -11,16 +11,13 @@ package org.mmbase.bridge.jsp.taglib;
 
 import java.io.IOException;
 
-import java.util.Collection;
 import java.util.Vector;
-import java.util.List;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import java.util.Iterator;
 
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.BodyTag;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
@@ -195,7 +192,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     /**
     *
     **/
-    public int doStartTag() throws JspException{
+    public int doStartTag() throws JspTagException{
         //this is where we do the seach
         
         currentItemIndex= -1;  // reset index
@@ -219,16 +216,16 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
             
             if (commandString != null) {
                 if (stringSplitter(typeString,",").size() != 1) { // cannot be done on multilevel: keesj what ?
-                    throw new JspException ("Cannot do a multilevel with a command");
+                    throw new JspTagException ("Cannot do a multilevel with a command");
                 }
                 action = "command " + commandString + " on NodeManager " + typeString;
                 log.debug(action);
                 nodes = getDefaultCloud().getNodeManager(typeString).getList(commandString, null);
                 if (searchSorted != null) {
-                    throw new JspException ("Cannot do a sort on a command");
+                    throw new JspTagException ("Cannot do a sort on a command");
                 }
                 if (searchWhere != null) {
-                    throw new JspException ("Cannot do a where on a command");
+                    throw new JspTagException ("Cannot do a where on a command");
                 }
             
             }
@@ -261,7 +258,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                     nodes= nodeManager.getList(searchWhere, searchSorted, searchDirection);
                 } else if (hasNode){
                     if (stringSplitter(searchNodes,",").size() > 1){ 
-                        throw new JspException ("Cannot have multiple starting points on a getRelatedNodes");
+                        throw new JspTagException ("Cannot have multiple starting points on a getRelatedNodes");
                     }
                     action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
                     log.debug(action);
@@ -274,7 +271,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                         // look which types are wanted:
                         Vector nodeManagersVector = stringSplitter(nodeManagers);
                         if (nodeManagersVector.size() == 0) {
-                            throw new JspException ("Must specify at least one NodeManager");
+                            throw new JspTagException ("Must specify at least one NodeManager");
                         }
                         // for a getList the first type must be the type of the node.
                         // So if it is not there, we can easily add it:
@@ -284,7 +281,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                         
                         // now there must be only two nodemanagers:
                         if (nodeManagersVector.size() != 2) {
-                            throw new JspException("Must be 2 nodemanagers");
+                            throw new JspTagException("Must be 2 nodemanagers");
                         } 
                         nodeManagers = nodeManagersVector.get(0) + "," + nodeManagersVector.get(1);
                         
@@ -301,7 +298,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                         } else {
                             String nm = (String) st.nextToken();
                             if (! nm.equalsIgnoreCase((String)nodeManagersVector.get(1))) {
-                                throw new JspException("Indicated wrong nodemanager in search " + searchSorted + ", must be " + nodeManagersVector.get(1)); 
+                                throw new JspTagException("Indicated wrong nodemanager in search " + searchSorted + ", must be " + nodeManagersVector.get(1)); 
                             }
                         }
                         nodes = getDefaultCloud().getList("" + baseNode.getNumber(), nodeManagers, numbers, null, searchSorted, searchDirection, null, false); 
@@ -349,7 +346,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                 
                 returnValues = nodes.nodeIterator();
             } catch (NumberFormatException e){
-                throw new JspException ("MAX Field in tag is not a number");
+                throw new JspTagException ("MAX Field in tag is not a number");
                 // isn't this a little ugly?
             }
         } else {
@@ -364,14 +361,13 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     }
     
     
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
         } else {
             try {
-                BodyContent bodyOut = getBodyContent();
-                bodyOut.writeOut(bodyOut.getEnclosingWriter());
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch (IOException ioe){
                 throw new JspTagException(ioe.toString());
             }
@@ -382,7 +378,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     
     
     private String previousValue = null; // static voor doInitBody
-    public void doInitBody() throws JspException {
+    public void doInitBody() throws JspTagException {
         if (returnValues.hasNext()){
             currentItemIndex ++;
             Node next = returnValues.nextNode();
@@ -438,7 +434,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
         String searchFields, String searchWhere,
         String searchSorted, String searchDirection,
         String searchSearch, boolean searchDistinct,
-        String maxString,    String action             ) throws JspException {
+        String maxString,    String action             ) throws JspTagException {
         StringBuffer sb = new StringBuffer();
         sb.append("nodes=" + nodesSearchString);
         sb.append("\n");
@@ -499,7 +495,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                 sb.append("ERROR: NodeManager with name("+ managerName +") does not exist , nullpointer exception while debuging ARGGGG\n");
             }
         }
-        throw new JspException("NodeList error\n" + sb.toString());
+        throw new JspTagException("NodeList error\n" + sb.toString());
     }
 }
 

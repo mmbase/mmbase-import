@@ -9,10 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
+//import javax.servlet.*;
+//import javax.servlet.http.*;
+import javax.servlet.jsp.JspTagException;
+//import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.*;
 
@@ -34,7 +34,7 @@ public class InfoTag extends  CloudReferrerTag {
         module = nm;
     }
     
-    public int doStartTag() throws JspException{
+    public int doStartTag() throws JspTagException{
         return EVAL_BODY_TAG;
     }
     
@@ -42,7 +42,7 @@ public class InfoTag extends  CloudReferrerTag {
     * implementation of TagExtraInfo return values declared here
     * should be filled at one point, currently fillVars is responsible for
     * that ant gets called before every
-    **/
+    *
     public VariableInfo[] getVariableInfo(TagData data){
         VariableInfo[] variableInfo = new VariableInfo[1];;
         
@@ -57,15 +57,17 @@ public class InfoTag extends  CloudReferrerTag {
             VariableInfo.AT_END);
         return variableInfo;
     }
+    // tag does not define TEI, now, I think it is need though...
+
+    */
     
     /**
     *
     **/
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         
         //command is in the body of the tag
-        BodyContent bodyOut = getBodyContent();
-        String command = bodyOut.getString();
+        String command = bodyContent.getString();
         String result;
         
         if (nodeManager != null) {

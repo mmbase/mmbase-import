@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -54,19 +54,19 @@ public abstract class NodeReferrerTag extends BodyTagSupport {
     *
     */
 	
-    public NodeProvider findNodeProvider(String id) throws JspException {
+    public NodeProvider findNodeProvider(String id) throws JspTagException {
 
         Class nodeProviderClass;
         try {
             nodeProviderClass = Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider");
 
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspException ("Could not find NodeProvider class");  
+            throw new JspTagException ("Could not find NodeProvider class");  
         }
 
         NodeProvider nodeProvider = (NodeProvider) findAncestorWithClass((Tag)this, nodeProviderClass); 
         if (nodeProvider == null) {
-            throw new JspException ("Could not find parent nodeProvider");  
+            throw new JspTagException ("Could not find parent nodeProvider");  
         }
 
         if ("".equals(id)) id = null;
@@ -75,7 +75,7 @@ public abstract class NodeReferrerTag extends BodyTagSupport {
             while (nodeProvider.getId() != id) {
                 nodeProvider = (NodeProvider) findAncestorWithClass((Tag)nodeProvider, nodeProviderClass);            
                 if (nodeProvider == null) {
-                    throw new JspException ("Could not find parent with id " + id);  
+                    throw new JspTagException ("Could not find parent with id " + id);  
                 }
             }
             
@@ -88,7 +88,7 @@ public abstract class NodeReferrerTag extends BodyTagSupport {
      *
      */
 
-    public NodeProvider findNodeProvider() throws JspException {
+    public NodeProvider findNodeProvider() throws JspTagException {
         return findNodeProvider(null);
     }
 

@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import sun.misc.BASE64Decoder;
 
@@ -24,14 +26,15 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.BridgeException;
-import org.mmbase.security.Rank; // hmm.
+import org.mmbase.security.Rank; // hmm, not from bridge, but we do need it anyway
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* CloudTag
-* Creates a cloud object (pulling it from if session necessary)
+* Creates a cloud object (pulling it from if session necessary). While
+* creating a cloud object one also has to authenticate itself, so this
+* functionality is also in this tag.
 *
 * @author Pierre van Rooden
 * @author Michiel Meeuwissen
@@ -49,11 +52,21 @@ public class CloudTag extends BodyTagSupport {
         
         One other question we should have answer to is if the tags are created once and reused
         or are created for every page etc...
+
+        michiel: I don't really know if this is so very ugly. It does
+        make some sense to me. After all, the Cloud takes care for the
+        authentication, and TagLibs are for http. So i don't think it
+        strange that CloudTag takes care for both.
+
+        The authentication is in the cloud, which is in the
+        session. Are you sure that this will not work with 2 users?
+        Would that be a problem of this tag?
+
     */
 
-    public  static String DEFAULT_CLOUD_NAME = "mmbase";
-    
     private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
+
+    public  static String DEFAULT_CLOUD_NAME = "mmbase";   
 
     private static CloudContext cloudContext;
     
@@ -62,14 +75,11 @@ public class CloudTag extends BodyTagSupport {
     
     private String authenticate = "name/password"; 
     
-    private String method = null; // how to log on, method can only be 'http'.
+    private String method = null; // how to log on, method can eg be 'http'.
     private String logon = null;  
     private String pwd = null;
 
-    private BodyContent bodyContent; 
-
-    private boolean success = true;
-    private String  failMessage = "<h1>CloudTag</h1>";
+    private static String FAILMESSAGE = "<h1>CloudTag Error</h1>";
     
     private HttpSession session;
     private HttpServletRequest  request;
@@ -118,24 +128,37 @@ public class CloudTag extends BodyTagSupport {
     }
     
     /**
-    *  Deny access to this page
+    * Deny access to this page.
     *
-    * @return false
+    * @param A message to provide to the user if she does not accepts authorization (enters 'cancel')
+    *
+    * REMARK: Perhaps we should do some i18n on this message
+    *
+    * @return SKIP_BDDY;
     */    
-    private boolean deny(HttpServletResponse res) {
-        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        log.debug("Not logged on.");
-        res.setHeader("WWW-Authenticate", "Basic realm=\"www\"");
-        //res.setHeader("Authorization", blabla);   would ne nice...
+    private int deny(String message) throws JspTagException {
+        log.debug("sending deny");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setHeader("WWW-Authenticate", "Basic realm=\"www\"");
+        //res.setHeader("Authorization", logon);   would ne nice...
         //keesj:look at the php3 tutorial for an example
-        return false; 
+
+        // if cancel
+        // this cannot be done with an exception (which can be a redirect), because the page must 
+        // flow ahead, to give the popup opportunity to pop up.
+        try {
+            pageContext.getOut().print(FAILMESSAGE + message); 
+        } catch (IOException ioe) {
+            throw new JspTagException(ioe.toString());
+        }
+        return SKIP_BODY; 
     }
     
     
     /**
     *  Check name and retrieve cloud
     */
-    public int doStartTag() throws JspException{
+    public int doStartTag() throws JspTagException{
         session  = (HttpSession)pageContext.getSession();
         request  = (HttpServletRequest)pageContext.getRequest();
         response = (HttpServletResponse)pageContext.getResponse();
@@ -218,23 +241,13 @@ public class CloudTag extends BodyTagSupport {
                     log.debug("http with username");
                     if (! logon.equals(username)) {
                         log.debug("username not correct");
-                        deny(response);
-                        // if cancel
-
-                        // this cannot be done with an exception, because the page must 
-                        // flow ahead, to give the popup opportunity to pop up.
-                        success = false;
-                        failMessage += "<h2>Wrong username</h2> must be " + logon + "";
-                        logon = null;                       
-                        
+                        return deny("<h2>Wrong username</h2> must be " + logon + "");
                     }
                 } else { // logon == null
                     log.debug("http without username");
                     if (username == null) { // there must be at least known a username...
                         log.debug("no username known");
-                        deny(response);
-                        success = false;
-                        failMessage += "<h2>No username given</h2>";
+                        return deny("<h2>No username given</h2>");
                     }
                     logon = username;
                 }
@@ -252,10 +265,7 @@ public class CloudTag extends BodyTagSupport {
                 } catch (BridgeException e) { 
                     // did not succeed, so problably the password was wrong.
                     if ( "http".equals(method)) { // give a deny, people can retry the password then.
-                        deny(response);                    
-                        // if people cancel:
-                        success = false;
-                        failMessage = "<h2>This page requires authentication</h2>"; 
+                        return deny("<h2>This page requires authentication</h2>");                    
                      } else { // strange, no method given, password wrong (or missing), that's really wrong.
                         throw new JspTagException("Logon of user " + logon + " failed." + 
                             (pwd == null ? " (no password given)" : " (wrong password)"));
@@ -278,28 +288,15 @@ public class CloudTag extends BodyTagSupport {
         return EVAL_BODY_TAG;
     }
     
-    public void doInitBody() throws JspException {
-        pageContext.setAttribute("cloud", cloud);
-    }
-    
-    public int doAfterBody() throws JspException {
+    public int doAfterBody() throws JspTagException {
         try {
-            bodyContent = getBodyContent();
-            if (success) {                
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } else {
-                bodyContent.getEnclosingWriter().write(failMessage);
-            }
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());            
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
     }
 
-    public int doEndTag() throws JspException {
-        log.debug("end tag");
-        return EVAL_PAGE;
-    }
 
 }
 

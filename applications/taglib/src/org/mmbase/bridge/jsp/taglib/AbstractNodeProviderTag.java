@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 import java.util.Vector; 
 import java.util.Enumeration;
@@ -55,7 +55,7 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     }
     
     
-    abstract public void doInitBody() throws JspException;
+    abstract public void doInitBody() throws JspTagException;
     
     protected void fillVars(){    
         Enumeration returnFieldEnum = stringSplitter(fields,",").elements();
