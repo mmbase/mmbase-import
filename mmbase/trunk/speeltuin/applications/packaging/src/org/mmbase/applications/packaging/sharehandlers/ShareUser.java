@@ -19,7 +19,6 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author     Daniel Ockeloen
- *
  * @created    July 20, 2004
  */
 public class ShareUser {
