@@ -98,6 +98,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
                 if (f2.exists()) {
                    f2.delete();
                 }
+    		f2 = new File(newfilename+".mmb");
     		if (f1.renameTo(f2)) {
 			updatePackageTime(target,new Date(),newversion);	
 			target.save();
