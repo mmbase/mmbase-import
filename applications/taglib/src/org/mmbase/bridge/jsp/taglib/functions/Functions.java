@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.functions;
 
+
+import org.mmbase.bridge.jsp.taglib.ContentTag;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -17,7 +19,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.util.Casting;
 
 /**
- * Functions for EL variables.
+ * Functions for EL variables, and XSL.
  * Like this:
 
 <mm:import id="nodelist" vartype="list">1,2,123</mm:import>
@@ -34,7 +36,7 @@ import org.mmbase.util.Casting;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.4 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: Functions.java,v 1.5 2005-03-29 13:12:22 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -72,4 +74,19 @@ public class Functions {
             col.remove(obj);
         }
     }
+
+
+    /**
+     * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
+     * 
+     * @since MMBase-1.8
+     */
+    public static String escape(String escaper, String string) {
+        try {
+            return ContentTag.getCharTransformer(escaper).transform(string);
+        } catch (Exception e) {
+            return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
+        }
+    }
+
 }
