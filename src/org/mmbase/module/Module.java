@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.22 $ $Date: 2001-01-02 11:11:02 $
+ * @version $Revision: 1.23 $ $Date: 2001-01-02 20:07:25 $
  */
 public abstract class Module {
 
@@ -90,10 +90,15 @@ public abstract class Module {
 		return(state);
 	 }
 
+    	public void setInitParameter(String key,String value) {
+		if (properties!=null) {
+			properties.put(key,value);
+		}
+	}
 	/**
 	 * Gets his init-parameters
  	 */
-    public String getInitParameter(String key) {
+    	public String getInitParameter(String key) {
 		if (properties!=null) {
 			String value=(String)properties.get(key);
 			if (value==null) {
@@ -106,12 +111,6 @@ public abstract class Module {
 		}
 		return(null);
 	}
-
-	/**
-	 * Sets his init-parameters
- 	 */
-	//temp hack by GvE, Daniel will fix this asap
-    public void setInitParameter(String key, String value) {}
 
 
 	/**
