@@ -183,7 +183,6 @@
          } // MMCI doesn't sort, do it ourselves.
          java.util.Collections.sort(allowedRelations, new ARComparator(manager)); 
          
-         
          for(Iterator allrel=allowedRelations.iterator(); allrel.hasNext();) {
            RelationManager relman=(RelationManager)allrel.next();
            NodeManager mn = null;
@@ -193,17 +192,20 @@
               try {
                 mn = relman.getDestinationManager();
                 relrole = relman.getForwardGUIName();
-                if (mn.equals(manager)) {
+                if (mn.getName().equals(manager.getName())) {
                   mn = relman.getSourceManager();
-                  relrole = relman.getReciprocalGUIName();
+                  if (!mn.getName().equals(manager.getName())) relrole = relman.getReciprocalGUIName();
                 }
-              } catch (Exception e) {}
-              
-              // check for older code
-              if ("basic".equals(authtype)) {
-                allowed = mn.mayCreateNode();
-              } else {
-                allowed = true;
+                
+                // check for older code
+                if ("basic".equals(authtype)) {
+                  allowed = mn.mayCreateNode();
+                } else {
+                  allowed = true;
+                }
+                
+              } catch (Exception e) {
+                allowed=false;
               }
            }                
            if (allowed) {
