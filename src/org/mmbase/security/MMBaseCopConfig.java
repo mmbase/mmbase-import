@@ -41,19 +41,19 @@ public class MMBaseCopConfig {
 
     /** the class that watches if we have to reload...*/
     private class SecurityFileWatcher extends org.mmbase.util.FileWatcher {
-    	private final static Logger log=Logging.getLoggerInstance(SecurityFileWatcher.class.getName());    
+//    	private final static Logger log=Logging.getLoggerInstance(SecurityFileWatcher.class.getName());    
     	private MMBaseCop cop;
 	
     	public SecurityFileWatcher(MMBaseCop cop) {
 	    super();
 	    if(cop == null) throw new RuntimeException("MMBase cop was null");
-    	    log.debug("Starting the file watcher");
+//    	    log.debug("Starting the file watcher");
 	    this.cop = cop;
 	}
     	
     	public void onChange(File file) {    
 	    try {
-	    	log.info("gonna reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");	    
+//	    	log.info("gonna reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");	    
 	    	cop.reload();
 	    }
 	    catch(Exception e) {
