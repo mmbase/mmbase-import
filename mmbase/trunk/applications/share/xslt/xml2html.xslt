@@ -5,10 +5,10 @@
   xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
   extension-element-prefixes="xalan"
   xmlns:mm="mmbase-taglib"
- >
+  >
 
   <!-- 
-       xalan extension used for xalan:write.
+     xalan extension used for xalan:write.
 
        According to xslt 1.1 you could simply use xsl:document, but xalan does not
        support this. Therefore in this stylesheet xalan:write is used inside each other. This seems
@@ -59,10 +59,10 @@
           bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
           <h1>MMBase taglib <xsl:value-of select="/taglib/tlibversion" /> documentation</h1>
           <xsl:apply-templates select="info" />
-          <xsl:for-each select="/taglib/tagtypes/type">
-            <a href="mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
-          </xsl:for-each>
-          <hr />
+            <xsl:for-each select="/taglib/tagtypes/type">
+              <a href="mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
+            </xsl:for-each>
+            <hr />
           All 'tags' in seperate files (these are small jsp's, probably will be possible to add working examples): <br />
           groups: <br />
           <xsl:apply-templates select="taginterface" mode="toc" >
@@ -88,6 +88,7 @@
     <xsl:apply-templates select="/taglib" mode="main">
       <xsl:with-param name="info" select="/taglib/info|info" />
       <xsl:with-param name="type" select="@name" />
+      <xsl:with-param name="linkexamples" select="false()" />
     </xsl:apply-templates>
   </xsl:if>
   <!-- and overview files are generated for every type -->
@@ -104,7 +105,8 @@
 <!-- Generate a list of tag documentation, with toc and info on top -->
 <xsl:template match="taglib" mode="main">
   <xsl:param name="info" />
-  <xsl:param name="type" />
+  <xsl:param name="type" select="'all'" />
+  <xsl:param name="linkexamples" select="true()" />
   <html>
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -174,6 +176,7 @@
             </xsl:apply-templates>
             <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="full">
                 <xsl:with-param name="type" select="$type" />
+                <xsl:with-param name="linkexamples" select="$linkexamples" />
                 <xsl:sort select="name" />
             </xsl:apply-templates>
           </td>
@@ -218,15 +221,17 @@
 <!-- To generate the right URL to a certain tag documentation it must be determined if this is not in the same document.
      If not, than the link must be to the seperate file. If so, then simply can be linked with #
      This template only generates the URL.
--->
+     -->
 <xsl:template name="tagref">
   <xsl:param name="file" select="false()" />
   <xsl:param name="type" select="'all'" />
   <xsl:param name="tag"/>
   <xsl:param name="attribute" select="''" /> 
+  <xsl:param name="anchor"    select="''" /> 
   <xsl:variable name="usefile" select="$file or (not($type='all') and not(/taglib/*[name = $tag]/type and contains(/taglib/*[name = $tag]/type, $type)))" />
-  <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
+    <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
   <xsl:if test="not($attribute='') or not($usefile)">#<xsl:value-of select="$tag" /></xsl:if>
+  <xsl:if test="not($anchor='')">#<xsl:value-of select="$anchor" /></xsl:if>
   <xsl:if test="$attribute">.<xsl:value-of select="$attribute" /></xsl:if>
 </xsl:template>
 
@@ -249,9 +254,10 @@
 <xsl:template match="tag|taginterface" mode="tocext">
   <xsl:param name="testlast" select="false()" />
   <xsl:param name="file" select="false()" />
-  <xsl:param name="type" select="''" />
+  <xsl:param name="type" select="'all'" />
   <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" mode="tocext">
     <xsl:with-param name="file" select="$file" />
+    <xsl:with-param name="type" select="$type" />
   </xsl:apply-templates>
    <xsl:if test="name()='tag'">
      <a>
@@ -311,6 +317,7 @@
 <xsl:template match="tag|taginterface" mode="full">
   <xsl:param name="file" select="false()" /><!-- if true, reference to files -->
   <xsl:param name="type" select="'all'" /><!-- if refering to tag of other type, must also reference to file -->
+  <xsl:param name="linkexamples" select="true()" />
   <table bgcolor="#eeeeee" width="100%" cellpadding="5">
     <tr>
       <td colspan="2" bgcolor="white" align="right">
@@ -373,20 +380,45 @@
     <xsl:if test="name()='taginterface'">
     <tr>
     <td>tags of this type</td><td>
-           <xsl:apply-templates
-              select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" 
-              mode="tocext" >
-             <xsl:with-param name="file" select="$file" />
-             <xsl:with-param name="type" select="$type" />
-             <xsl:with-param name="testlast" select="true()" />
-              <xsl:sort select="name" />
-            </xsl:apply-templates>
-     </td>
+      <xsl:apply-templates
+        select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" 
+        mode="tocext" >
+        <xsl:with-param name="file" select="$file" />
+        <xsl:with-param name="type" select="$type" />
+        <xsl:with-param name="testlast" select="true()" />
+        <xsl:sort select="name" />
+      </xsl:apply-templates>
+    </td>
     </tr>  
     </xsl:if>
-    <xsl:apply-templates select="example">
+    <xsl:apply-templates select="example[$file or not(include)]">
       <xsl:with-param name="file" select="$file" />
     </xsl:apply-templates>
+    <xsl:if test="not($file) and example/include">
+      <tr>
+        <td>more examples</td><td>
+        <xsl:if test="$linkexamples">
+      <xsl:for-each select="example/include">      
+        <a >
+          <xsl:attribute name="href">
+            <xsl:call-template name="tagref">
+            <xsl:with-param name="file" select="true()" />
+            <xsl:with-param name="tag"  select="ancestor::tag/name" />
+            <xsl:with-param name="anchor">
+              <xsl:value-of select="ancestor::tag/name" />.example.<xsl:number level="single" count="example"  />
+            </xsl:with-param>
+        </xsl:call-template>          
+      </xsl:attribute>
+      example <xsl:number level="single" count="example"  />
+        </a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+      </xsl:for-each>          
+        </xsl:if>
+        <xsl:if test="not($linkexamples)">
+          There are more examples, but not in this document.<!-- cannot determin the URL in a robust way -->
+        </xsl:if>
+    </td>
+    </tr>
+    </xsl:if>
   </table>
 </xsl:template>
 
@@ -395,7 +427,14 @@
   <xsl:param name="file" select="false()" />
    <tr>
      <xsl:if test="not(include)">      
-     <td width="100" valign="top">example</td>
+     <td width="100" valign="top">
+       <a>
+         <xsl:attribute name="name">
+           <xsl:value-of select="parent::tag/name" />.example.<xsl:value-of select="position()" />           
+         </xsl:attribute>
+       </a>
+       example <xsl:value-of select="position()" />
+     </td>
      <td>
         <pre>
           <xsl:value-of select="."/>    
@@ -404,24 +443,30 @@
     </xsl:if>
     <xsl:if test="include">
       <xsl:if test="$file">
-        <xsl:apply-templates select="include" />
-      </xsl:if>
-      <xsl:if test="not($file)">
-        <td>more examples</td><td><a href="{@basedirfiles}/{../../tag/name}">here</a></td>
-      </xsl:if>
+        <xsl:apply-templates select="include" /><!-- should be only one.. -->
+      </xsl:if>     
     </xsl:if>
    </tr>
 </xsl:template>
 
 <xsl:template match="include">
-  <td>example</td>
+  <td width="100" valign="top">
+     <a>
+       <xsl:attribute name="name">
+         <xsl:value-of select="ancestor::tag/name" />.example.<xsl:number level="single" count="example"  />
+       </xsl:attribute>
+     </a>
+    example <xsl:number level="single" count="example" />
+  </td>
   <td>
   <table width="100%">
     <tr valign="top">
       <td width="50%"><pre><xsl:text disable-output-escaping="yes">&lt;mm:formatter format="escapexml"&gt;&lt;mm:include cite="true" page="/mmexamples/taglib/</xsl:text>
       <xsl:value-of select="@href" />
         <xsl:text disable-output-escaping="yes">" /&gt;&lt;/mm:formatter&gt;</xsl:text></pre></td>
-        <td width="50%"><xsl:text disable-output-escaping="yes">&lt;%@include file="/mmexamples/taglib/</xsl:text><xsl:value-of select="@href" /><xsl:text disable-output-escaping="yes">" %&gt;</xsl:text></td>
+        <td width="50%">
+          <xsl:text disable-output-escaping="yes">&lt;% try { %&gt; &lt;%@include file="/mmexamples/taglib/</xsl:text><xsl:value-of select="@href" /><xsl:text disable-output-escaping="yes">" %&gt; &lt;% } catch(Exception e) { out.println(e.toString()); } %&gt;</xsl:text>
+        </td>
     </tr>
   </table>
   </td>
@@ -474,7 +519,7 @@
 
 <xsl:template match="attribute" mode="full">
   <xsl:param name="file" select="false()" />
-  <xsl:param name="type" select="''" />   
+  <xsl:param name="type" select="'all'" />   
   <li>
     <a name="{parent::*/name}.{name}" />
     <xsl:choose>
