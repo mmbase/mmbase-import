@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -28,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.66 2003-03-04 14:12:21 nico Exp $
+ * @version $Id: Images.java,v 1.67 2003-03-04 20:10:55 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -38,7 +37,7 @@ public class Images extends AbstractImages {
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private org.mmbase.cache.Cache templateCacheNumberCache = new org.mmbase.cache.Cache(500) {
+    private CKeyCache templateCacheNumberCache = new CKeyCache(500) {
         public String getName()        { return "CkeyNumberCache"; }
         public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
@@ -597,6 +596,7 @@ public class Images extends AbstractImages {
             // when cache is invalide, invalidate
             if(imageCacheInvalid) {
                 invalidateImageCache(node);
+                templateCacheNumberCache.remove(node.getNumber());                
             }
             return true;
         }
@@ -612,6 +612,7 @@ public class Images extends AbstractImages {
     public void removeNode(MMObjectNode node) {
         super.removeNode(node);
         invalidateImageCache(node);
+        templateCacheNumberCache.remove(node.getNumber());
     }
 
     /**
@@ -629,8 +630,8 @@ public class Images extends AbstractImages {
     /**
      * @javadoc
      */
-    void invalidateTemplateCacheNumberCache() {
-        templateCacheNumberCache.clear();
+    void invalidateTemplateCacheNumberCache(int number) {
+        templateCacheNumberCache.remove(number);
     }
 }
 
