@@ -16,6 +16,7 @@ import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Relation;
 
 import org.mmbase.bridge.jsp.taglib.CloudProvider;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.jsp.taglib.NodeTag;
 
 import org.mmbase.util.logging.Logger;
@@ -48,8 +49,16 @@ public class CreateRelationTag extends NodeTag {
     public int doStartTag() throws JspTagException{            
         CloudProvider c = findCloudProvider();
         RelationManager rm = getCloudProviderVar().getRelationManager(role);
-        Node sourceNode      = c.getNode(source);
-        Node destinationNode = c.getNode(destination);        
+        ContextTag    con = findContext();
+        Node sourceNode      = con.getNode(source);
+        Node destinationNode = con.getNode(destination);        
+
+        if (log.isDebugEnabled()) {
+            log.debug("cloud from relationmanager " + rm.getCloud().getName());
+            log.debug("cloud from source node " + sourceNode.getCloud().getName());
+            log.debug("cloud from dest node " + destinationNode.getCloud().getName());
+        }
+
         Relation r = rm.createRelation(sourceNode, destinationNode);
         r.commit();
 
