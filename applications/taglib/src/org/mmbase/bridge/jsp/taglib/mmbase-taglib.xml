@@ -1900,8 +1900,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
 	  <p>
-		Returns an URL to the image servlet. This is a NodeReferrer
-		and consequently has to live as a child of a (image) node.
+        Returns an URL to the image servlet. This is a NodeReferrer
+        and consequently has to live as a child of a (image) node.
 	  </p>
 	  <p>
         Using this tag makes your pages more portable to other system,
@@ -2656,4 +2656,13 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     -->
   </tag>
+  <tag>   
+    <name>log</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.debug.LogTag</tagclass>
+    <info>
+      You can log to the MMBase log with this. It logs its body on 'service'
+      with within the category 'MMBASE-PAGE', followed by the request
+      URI.
+    </info>	
+   </tag>
 </taglib>
