@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.7 2004-10-18 19:12:34 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.8 2004-10-28 19:52:44 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -56,7 +56,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             Iterator j = rw.resources.iterator();
             while (j.hasNext()) {
                 String resource = (String) j.next();
-                if (rw.mapNodeNumber(rw.resourceLoader.getResolver(resource), resource)) {
+                if (rw.mapNodeNumber(resource)) {
                     log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
                     rw.onChange(resource);
 
@@ -69,7 +69,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     /**
      * Delay setting used for the filewatchers.
      */
-    private long delay = -1;
+   private long delay = -1;
 
     /**
      * All resources watched by this ResourceWatcher. A Set of Strings. Often, a ResourceWatcher would watch only one resource.
@@ -192,8 +192,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         log.service("Started watching '" + resourceName + "' for resource loader " + resourceLoader);
         if (running) {
             createFileWatcher(resourceName);
-            ResourceLoader.Resolver resolver = resourceLoader.getResolver(resourceName);
-            mapNodeNumber(resolver, resourceName);
+            mapNodeNumber(resourceName);
         }
     }
 
@@ -230,8 +229,8 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      * node-deletion.
      * @return Whether a Node as found to map.
      */
-    protected synchronized boolean mapNodeNumber(ResourceLoader.Resolver resolver, String resource) {
-        MMObjectNode node = resolver.getResourceNode();
+    protected synchronized boolean mapNodeNumber(String resource) {
+        MMObjectNode node = resourceLoader.getResourceNode(resource);
         if (node != null) {
             nodeNumberToResourceName.put("" + node.getNumber(), resource);
             return true;
@@ -259,15 +258,12 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             String resource = (String) i.next();
-            ResourceLoader.Resolver resolver = resourceLoader.getResolver(resource);
-            resolver.checkShadowedNewerResources();
-            mapNodeNumber(resolver, resource);
+            resourceLoader.checkShadowedNewerResources(resource);
+            mapNodeNumber(resource);
             createFileWatcher(resource);     
 
         }
-
         observe();
-
         running = true;
     }
 
@@ -354,7 +350,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
             this.resource = resource;
         }
         protected void onChange(File f) {
-            URL shadower = ResourceWatcher.this.resourceLoader.getResolver(resource).shadowed(f);
+            URL shadower = resourceLoader.shadowed(f, resource);
             if (shadower == null) {
                 ResourceWatcher.this.onChange(resource);
             } else {

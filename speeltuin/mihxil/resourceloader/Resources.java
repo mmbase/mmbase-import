@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * (configuration files, classes, resourcebundles).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Resources.java,v 1.3 2004-10-18 19:12:34 michiel Exp $
+ * @version $Id: Resources.java,v 1.4 2004-10-28 19:52:44 michiel Exp $
  * @since   MMBase-1.8
  */
 public class Resources extends Attachments {
@@ -31,8 +31,8 @@ public class Resources extends Attachments {
     public static final String    DEFAULT_CONTEXT     = "admin";
 
 
-    public static final Integer   TYPE_CONFIG  = new Integer(0);
-    public static final Integer   TYPE_WEB     = new Integer(1);
+    public static final int   TYPE_CONFIG  = 0;
+    public static final int   TYPE_WEB     = 1;
 
     /**
      * Registers this builder in the ResourceLoader.
