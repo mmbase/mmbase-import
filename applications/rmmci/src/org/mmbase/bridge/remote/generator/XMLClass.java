@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.remote.generator;
 import org.w3c.dom.*;
+
 import java.util.*;
 
 /**
@@ -99,7 +100,7 @@ public class XMLClass {
                         NodeList nl2 = element.getChildNodes();
                         for (int j=0;i<nl2.getLength();j++) {
                             Node n = nl2.item(j);
-                            if (n.getNodeType() == n.TEXT_NODE) {
+                            if (n.getNodeType() == Node.TEXT_NODE) {
                                 content+=n.getNodeValue();
                             }
                         }
@@ -125,7 +126,7 @@ public class XMLClass {
     
     public Object clone(boolean deep){
         //return new XMLClass().fromXML(xml.clone(true));
-        return new XMLClass(document).fromXML(xml);
+        return XMLClass.fromXML(xml);
     }
     
     public Vector getInput(){
