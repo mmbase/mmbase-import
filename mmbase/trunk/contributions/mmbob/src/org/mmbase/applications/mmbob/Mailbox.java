@@ -24,41 +24,61 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * 
  */
 public class Mailbox {
- 
+
     // logger
-    static private Logger log = Logging.getLoggerInstance(Mailbox.class); 
+    static private Logger log = Logging.getLoggerInstance(Mailbox.class);
 
-   private Node node;
-   private Poster parent;
-   private int id;
+    private Node node;
+    private Poster parent;
+    private int id;
 
-   public Mailbox(Node node,Poster parent) {
-	this.parent=parent;
-	this.node=node;
-	this.id=node.getNumber();
-   }
+    /**
+     * Constructor
+     * @param node mailbox
+     * @param parent poster
+     */
+    public Mailbox(Node node, Poster parent) {
+        this.parent = parent;
+        this.node = node;
+        this.id = node.getNumber();
+    }
 
-   public String getName() {
-	return node.getStringValue("name");
-   }
+    /**
+     * get the name of the mailbox
+     * @return name of the mailbox
+     */
+    public String getName() {
+        return node.getStringValue("name");
+    }
 
-   public int getId() {
-	return node.getNumber();
-   }
+    /**
+     * get the MMBase objectnumber of the mailbox
+     * @return MMBase objectnumber of the mailbox
+     */
+    public int getId() {
+        return node.getNumber();
+    }
 
-   public boolean remove() {
-	try {
-		node.delete();
-		return true;
-	} catch (Exception e) {
-		return false;
-	}
-   }
+    /**
+     * remove the mailbox
+     * @return <code>true</code> if the remove succeeded, <code>false</false> if it threw an exception.
+     */
+    public boolean remove() {
+        try {
+            node.delete();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-   public Node getNode() {
-	return node;
-   }
+    /**
+     * get the mailbox-node
+     * @return mailbox
+     */
+    public Node getNode() {
+        return node;
+    }
 }
