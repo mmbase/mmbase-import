@@ -17,9 +17,9 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.17 2004-09-17 10:15:45 michiel Exp $
+ * @version $Id: Field.java,v 1.18 2005-03-16 16:01:23 michiel Exp $
  */
-public interface Field {
+public interface Field extends DataType {
 
     public final static int STATE_VIRTUAL    = 0;
     public final static int STATE_PERSISTENT = 2;
@@ -81,7 +81,7 @@ public interface Field {
      */
     public String getGUIName();
 
-    /**
+   /**
      * Returns the GUI name for this field in a specified preferred language.
      *
      * @param locale the locale that determines the language for the GUI name
