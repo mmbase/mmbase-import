@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.5 2003-09-01 13:29:45 pierre Exp $
+ * @version $Id: Configurable.java,v 1.6 2003-11-16 14:05:15 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -51,7 +51,7 @@ public abstract class Configurable {
      * calls the method load();
      * @param manager The class that created this instance.
      * @param fileWatcher checks the files
-     * @param configPath The url which contains the config information for the authorization (e.g. context/config.xml)
+     * @param configPath The url which contains the config information for the authorization (e.g. context/config.xml). Or null (if configured to be "")
      * @see #load
      */
     public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
