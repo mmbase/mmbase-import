@@ -19,7 +19,7 @@ import org.mmbase.util.*;
  * This module gives mail functionality 
  *
  * @author Rob Vermeulen
- * @version $Revision: 1.5 $ $Date: 2000-11-03 16:24:55 $
+ * @version $Revision: 1.6 $ $Date: 2001-02-05 15:02:44 $
  */
 public class SendMail extends Module implements SendMailInterface {
 	private String 		 classname 	= getClass().getName();
@@ -95,32 +95,36 @@ public class SendMail extends Module implements SendMailInterface {
 		}
 
 	 	try {
-			out.writeBytes("MAIL FROM:<"+from+">\n");
+			out.writeBytes("MAIL FROM:<"+from+">\r\n");
 			out.flush();
             anwser = in.readLine();
 			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
-	
-			out.writeBytes("RCPT TO:<"+to+">\n");
+
+			StringTokenizer tok = new StringTokenizer(to,",\n\r");
+			while (tok.hasMoreTokens()) {
+				String tmp=tok.nextToken();
+				out.writeBytes("RCPT TO:<"+tmp+">\r\n");
+			}
 			out.flush();
-            anwser = in.readLine();
+            		anwser = in.readLine();
 			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 			
-			out.writeBytes("DATA\n");
+			out.writeBytes("DATA\r\n");
 			out.flush();
             anwser = in.readLine();
 			//debug(anwser);
         	if(anwser.indexOf("354")!=0)  return false;
 				
-			out.writeBytes(data+"\n");
-			out.writeBytes("\n.\n");
+			out.writeBytes(data+"\r\n");
+			out.writeBytes("\r\n.\r\n");
 			out.flush();
             anwser = in.readLine();
 			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 			
-			out.writeBytes("QUIT\n");
+			out.writeBytes("QUIT\r\n");
 			out.flush();
 			in.close();
         }   catch (Exception e) {
@@ -140,9 +144,9 @@ public class SendMail extends Module implements SendMailInterface {
 		for (Enumeration t=headers.keys();t.hasMoreElements();) {
         	header=(String)t.nextElement();
 			temp+=header+": ";
-			temp+=headers.get(header)+"\n";
+			temp+=headers.get(header)+"\r\n";
       	}	
-		temp+="\n\n";
+		temp+="\r\n\r\n";
 		data=temp+data;
 		return sendMail(from,to,data);
 	}
@@ -164,7 +168,7 @@ public class SendMail extends Module implements SendMailInterface {
         if (!connect(mailhost,25)) return "Error";
  
         try {
-            out.writeBytes("VRFY "+name+"\n");
+            out.writeBytes("VRFY "+name+"\r\n");
             out.flush();
             anwser = in.readLine();
             if(anwser.indexOf("250")!=0)  return "Error";
@@ -188,7 +192,7 @@ public class SendMail extends Module implements SendMailInterface {
         if (!connect(mailhost,25)) return ret;
  
         try {
-            out.writeBytes("EXPN "+name+"\n");
+            out.writeBytes("EXPN "+name+"\r\n");
             out.flush();
 			while (true) {	
             	anwser = in.readLine();
