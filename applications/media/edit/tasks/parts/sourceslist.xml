@@ -2,7 +2,7 @@
 <list role="related" destination="&sources;" minoccurs="1" >
   <title>Sources</title>       
   <title xml:lang="nl">Bronnen</title>       
-  <item>
+  <item displaytype="&guitype;">
     <field name="url">
       <prompt>Url (relative)</prompt>
       <prompt xml:lang="nl">Url (relatief)</prompt>

@@ -1,3 +1,8 @@
+<!-- 
+    Itemize part 
+     Base for audio and video itemizition
+-->
+
   <action type="delete" />
 
   <action type="create">
@@ -50,5 +55,5 @@
     <field ftype="data" name="title" />
     <title xml:lang="en">Itemization</title>
     <title xml:lang="nl">Opknippen</title>
-    &itemize;
+    &itemizelist;
   </form-schema>

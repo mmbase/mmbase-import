@@ -1,3 +1,6 @@
+<!-- List with posrelated fragments 
+-->
+
 <list role="posrel" destination="&fragments;" orderby="field[@name='pos']">
   <title>Items</title>       
   <item>          
