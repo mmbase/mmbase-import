@@ -35,17 +35,6 @@ public class TypeRel extends MMObjectBuilder {
 	public TypeRel() {
 	}
 
-	/*
-	public TypeRel(MMBase m) {
-		this.mmb=m;
-		this.tableName="typerel";
-		init();
-		m.mmobjs.put(tableName,this);
-	}
-	*/
-
-	
-
 	/**
 	* Get a TypeRel
 	*/
