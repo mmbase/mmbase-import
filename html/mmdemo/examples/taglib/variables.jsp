@@ -108,16 +108,27 @@ page="${a}" />
 <p>
   What happens if you supply the 'id' attribute to a 'List' tag? Of
   course, if the List tag is a 'NodeProvider' still this id can be
-  used in the 'node' attribute of Field tags in the body. But the
-  variable written to the context now of course is not of the type
-  'Node', but of the type Vector (of Nodes). This also means that also
-  list tags can have the 'referid' attribute, so that you can reuse
-  the list. Lets show this.
+  used in the 'node' attribute of Field tags in the body. But such
+  reference does not use the Context.
+</p>
+<p>
+  Before every iteration the value of the current item is written to
+  the context, which is removed after every iteration. So inside the
+  body of a listnodes tag, with the id of the list you can get a
+  'Node' from the context.
+</p>
+<p>
+  When the list is done, then a variable with the type 'List' is
+  written to the Context, containing the whole list.  This means that
+  also list tags can have the 'referid' attribute, so that you can
+  reuse the list. Lets show this.
 </p>
 <p>A list:
 <ul>
 <mm:listnodes id="alist" type="typedef" max="5">
-  <li><mm:field name="description" /></li>
+  <li><mm:field name="description" /> 
+  (<mm:first>showing use of referid in list: </mm:first><mm:node referid="alist"><mm:field name="number" /></mm:node>)
+ </li>
 </mm:listnodes>
 </ul>						  
 </p>
@@ -129,7 +140,7 @@ page="${a}" />
 </ul>
 </p>
 <p>Making a jspvar of the list. Size of list is: 
-<mm:write referid="alist" jspvar="list" type="Vector">
+<mm:write referid="alist" jspvar="list" type="List">
   <%= list.size() %>
 </mm:write>
 </p>
