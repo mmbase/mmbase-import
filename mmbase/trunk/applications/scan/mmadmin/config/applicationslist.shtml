@@ -4,18 +4,18 @@ Display list of xml files in configuration category
 <PROCESSOR Config>
 <SECURE>
 <html>
-<head><title>MMConfig: modules</title></head>
+<head><title>MMConfig: applications</title></head>
 
 <BODY BACKGROUND="../beeld/bgmmbaselogo.jpg" TEXT="#000000" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
 <IMG SRC="../beeld/mmbaselogosmall.gif" ALIGN="right"> 
 
 <table border=1>
-<PART /mmadmin/config/menu.shtml?modules>
+<PART /mmadmin/config/menu.shtml?applications>
   <tr>
     <td colspan=4 align=left>
 <table>
 <tr>
-  <td><b>Module</b></td>
+  <td><b>Application</b></td>
   <td><b>Check</b></td>
 </tr>
 <LIST SHOW category=$PARAM1>
@@ -29,7 +29,7 @@ Display list of xml files in configuration category
   <td>no dtd defined</td>
 </IF>
 <LIF $ITEM2=Efalse>
-  <td><a href="configdetail.shtml?show+$PARAM1+$ITEM1">$ITEM1</a></td>
+  <td><a href="configdetail.shtml?annotate+$PARAM1+$ITEM1">$ITEM1</a></td>
   <td>xml error!</td>
 </IF>
   <td></td>

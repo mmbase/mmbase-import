@@ -10,13 +10,9 @@ Display main configuration categories
 <IMG SRC="../beeld/mmbaselogosmall.gif" ALIGN="right"> 
 
 <table border=1>
-<tr>
-    <td align=center><a href="builderlist.shtml">builders</a></td>
-    <td align=center><a href="databaseslist.shtml?databases">databases</a></td>
-    <td align=center><a href="moduleslist.shtml?modules">modules</a></td>
-  </tr>
+<PART /mmadmin/config/menu.shtml?index>
   <tr>
-    <td colspan=3 align=left>
+    <td colspan=4 align=left>
     The <i>Config</i> module gives information on MMBase's configuration files.
     These can be:
     <ul>
