@@ -61,7 +61,12 @@
 <mm:notpresent referid="showfeedback">
  
 
-  
+<di:hasrole role="teacher">
+<div style="float: right">
+<a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>">Terug naar overzicht</a>
+</div>
+</di:hasrole>
+ 
 <table class="Font">
 <tr>
     <td>Percentage doorlopen:</td><td>
@@ -103,11 +108,23 @@
 </p>
 <table class="Font">
 <mm:node number="$education">
+
+  <% boolean first = true; %>
   <mm:relatednodescontainer type="learnblocks" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
     <mm:tree type="learnblocks" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
         <mm:import jspvar="depth" vartype="Integer"><mm:depth/></mm:import>
-        <tr><% if (depth.intValue() > 2) { %><td colspan="<%= depth.intValue() - 2 %>"></td><% } %><td><mm:field name="name"/></td></tr>
+        <% if (depth.intValue() == 2) { %><mm:first inverse="true"></td></tr></mm:first><tr><td><mm:field name="name"/></td><td><% 
+            first = true;
+        } else if (depth.intValue() > 2 ) { 
+            if (!first) { 
+                %>, <%
+            } else { 
+                first = false; 
+            }
+            %><mm:field name="name"/><%
+        } %>
+    <mm:last></td></tr></mm:last>
    </mm:tree>
   </mm:relatednodescontainer>
 </mm:node>
