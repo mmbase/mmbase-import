@@ -14,7 +14,11 @@ import java.net.*;
 import java.sql.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
+//XercesParser
+import org.apache.xerces.parsers.*;
+import org.xml.sax.*;
 
 /**
 * MMJdbc2NodeInterface interface needs to be implemented to support a new database
@@ -33,7 +37,7 @@ public interface MMJdbc2NodeInterface {
 	public boolean commit(MMObjectBuilder bul,MMObjectNode node);
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node);
 	public int getDBKey();
-	public void init(MMBase mmb);
+	public void init(MMBase mmb,XMLDatabaseReader parser);
 	public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
 	public boolean created(String tableName);
 	public boolean create(MMObjectBuilder bul);
