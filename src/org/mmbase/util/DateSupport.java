@@ -26,8 +26,8 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.8 2002-03-29 22:55:43 michiel Exp $
- * @deprecated java.util is powerfull enough. Must used functions from Date are deprecated.
+ * @version $Id: DateSupport.java,v 1.9 2002-07-24 19:44:52 michiel Exp $
+ * @deprecated java.util is powerful enough. Most used functions from Date are deprecated.
  */
 public class DateSupport {
 
