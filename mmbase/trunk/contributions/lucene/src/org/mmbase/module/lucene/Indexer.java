@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
+import java.text.*;
 import java.util.*;
 import java.io.*;
 
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.1 2004-12-17 12:13:40 pierre Exp $
+ * @version $Id: Indexer.java,v 1.2 2004-12-21 12:07:25 pierre Exp $
  **/
 public class Indexer {
 
@@ -46,6 +47,7 @@ public class Indexer {
     private MMBase mmbase;
     private boolean storeText = false;
     private boolean mergeText = false;
+    static private final DateFormat simpleFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     Indexer(String index, Map buildersToIndex, boolean storeText, boolean mergeText, MMBase mmbase) {
         this.index = index;
@@ -189,7 +191,22 @@ public class Indexer {
         int type = field.getDBType();
         switch (type) {
             case FieldDefs.TYPE_DATETIME : {
-                document.add(Field.Keyword(fieldName, node.getDateValue(fieldName)));
+                try {
+                    document.add(Field.Keyword(fieldName, simpleFormat.format(node.getDateValue(fieldName))));
+                } catch (Exception e) {
+                    // can't index dates prior to 1970, pretty dumb if you ask me
+                }
+                return null;
+            }
+            case FieldDefs.TYPE_BOOLEAN : {
+                document.add(Field.Keyword(fieldName, ""+node.getIntValue(fieldName)));
+                return null;
+            }
+            case FieldDefs.TYPE_INTEGER :
+            case FieldDefs.TYPE_LONG :
+            case FieldDefs.TYPE_DOUBLE :
+            case FieldDefs.TYPE_FLOAT : {
+                document.add(Field.Keyword(fieldName, node.getStringValue(fieldName)));
                 return null;
             }
             case FieldDefs.TYPE_BYTE : {
