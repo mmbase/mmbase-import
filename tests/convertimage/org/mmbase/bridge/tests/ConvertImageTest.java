@@ -6,7 +6,7 @@ import java.io.*;
  * JUnit tests for convertimage-interface implementation.
  
  * @author  Michiel Meeuwissen 
- * @version $Id: ConvertImageTest.java,v 1.1 2003-06-17 14:32:09 kees Exp $
+ * @version $Id: ConvertImageTest.java,v 1.2 2003-06-18 13:50:54 kees Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
     private final static String JPG_IMAGE_NAME = "testimage.jpg";
@@ -26,7 +26,7 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
         byte[] bytes = node.getByteValue("handle");
-        assertTrue("imported MagicFile did not work properly", node.getStringValue("itype").equals("jpeg"));
+        assertTrue("MMBase failed to determine mime-type properly (magicfile problem?)", node.getStringValue("itype").equals("jpeg"));
         node.delete();
     }
 
@@ -35,7 +35,7 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
      */
     public void setUp() throws Exception {
         startMMBase();
-        startLogging("writeinfo.xml");
+        startLogging();
     }
 
     /**
