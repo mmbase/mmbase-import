@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.24 2004-02-17 18:07:03 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.25 2004-02-18 09:55:53 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -46,10 +46,12 @@ public class StringHandler extends AbstractTypeHandler {
     public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
 
         String guiType = field.getGUIType();
-        EnumHandler eh = new EnumHandler(tag, guiType);
-        if (eh.isAvailable()) {
-            return eh.htmlInput(node, field, search);
-        }                
+        if (guiType.indexOf('.') > 0) {
+            EnumHandler eh = new EnumHandler(tag, guiType);
+            if (eh.isAvailable()) {
+                return eh.htmlInput(node, field, search);
+            }                
+        }
         StringBuffer buffer = new StringBuffer();
         if(! search) {
             if (field.getName().equals("owner")) {
@@ -141,9 +143,11 @@ public class StringHandler extends AbstractTypeHandler {
             }
         } else {
             String guiType = field.getGUIType();
-            EnumHandler eh = new EnumHandler(tag, guiType);
-            if (eh.isAvailable()) {
-                return eh.useHtmlInput(node, field);
+            if (guiType.indexOf('.') > 0) {
+                EnumHandler eh = new EnumHandler(tag, guiType);
+                if (eh.isAvailable()) {
+                    return eh.useHtmlInput(node, field);
+                }
             }
         }
 
@@ -164,9 +168,11 @@ public class StringHandler extends AbstractTypeHandler {
         if (search == null) return null;
 
         String guiType = field.getGUIType();
-        EnumHandler eh = new EnumHandler(tag, guiType);
-        if (eh.isAvailable()) {
-            return eh.whereHtmlInput(field);
+        if (guiType.indexOf('.') > 0) {
+            EnumHandler eh = new EnumHandler(tag, guiType);
+            if (eh.isAvailable()) {
+                return eh.whereHtmlInput(field);
+            }
         }
 
         Sql sql = new Sql(Sql.ESCAPE_QUOTES);
@@ -182,9 +188,11 @@ public class StringHandler extends AbstractTypeHandler {
     }
    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
        String guiType = field.getGUIType();
-       EnumHandler eh = new EnumHandler(tag, guiType);
-       if (eh.isAvailable()) {
-           return eh.whereHtmlInput(field, query);
+       if (guiType.indexOf('.') > 0) {
+           EnumHandler eh = new EnumHandler(tag, guiType);
+           if (eh.isAvailable()) {
+               return eh.whereHtmlInput(field, query);
+           }
        }
 
        FieldConstraint cons = (FieldConstraint) super.whereHtmlInput(field, query);
