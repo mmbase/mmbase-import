@@ -225,6 +225,7 @@ public class startMMBase extends Object {
 			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","localhost",hostname);
 			updateConfigFile(curdir+"/config/accounts.properties","admin2k",password);
 			updateConfigFile(curdir+"/config/modules/sendmail.xml","smtp.mmbase.org",mailhost);
+    			saveFile(curdir+"/config/.timestamp","mmbase time stamp");
 	}
 
 	static String getConsoleQuestion(BufferedReader reader,String help, String question) {
