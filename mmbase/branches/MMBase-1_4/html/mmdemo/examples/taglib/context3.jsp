@@ -21,7 +21,7 @@ Reusing it in the same page.
    <mm:field name="title" />
 </mm:node>
 <hr />
-<a href='<mm:url page="context4\.jsp" referids="alias,news_node" />'>next page</a>
+<a href='<mm:url page="context4.jsp" referids="alias,news_node" />'>next page</a>
 </mm:cloud>
 </body>
 </html>
