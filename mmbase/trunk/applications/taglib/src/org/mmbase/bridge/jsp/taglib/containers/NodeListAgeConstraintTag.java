@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.2 2003-08-01 10:43:25 michiel Exp $
+ * @version $Id: NodeListAgeConstraintTag.java,v 1.3 2003-08-01 14:11:11 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
@@ -91,7 +91,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
 
         String fieldName;
         if (field == Attribute.NULL) {
-            fieldName = "number";
+            fieldName = "number"; 
         } else {
             fieldName = field.getString(this);
         }
@@ -104,9 +104,17 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
         int maxAgeInt = maxAge.getInt(this, -1);
 
         if (maxAgeInt != -1 && minAgeInt > 0) {
-            newConstraint = query.createConstraint(stepField, getDayMark(maxAgeInt), getDayMark(minAgeInt));
+            Integer maxMarker = getDayMark(maxAgeInt);
+            if (maxMarker.intValue() > 0) {
+                newConstraint = query.createConstraint(stepField, maxMarker, getDayMark(minAgeInt));
+            } else{
+                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, getDayMark(minAgeInt));
+            }
         } else if (maxAgeInt != -1) { // only on max
-            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, getDayMark(maxAgeInt));
+            Integer maxMarker = getDayMark(maxAgeInt);
+            if (maxMarker.intValue() > 0) {
+                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, maxMarker);
+            }
         } else if (minAgeInt > 0) {
             newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, getDayMark(minAgeInt));
         } else {
