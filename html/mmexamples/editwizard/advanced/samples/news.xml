@@ -37,7 +37,8 @@
 			<prompt>Body</prompt>
 		</field>
 
-		<list role="related" destination="people" minoccurs="0" maxoccurs="*">
+		<list role="related" destination="people" minoccurs="0"  maxoccurs="*">
+      <title>Authors</title>       
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
 				<prompt>People</prompt>
 				<search-filter>
