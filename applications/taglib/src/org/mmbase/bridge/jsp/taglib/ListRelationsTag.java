@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.11.2.2 2004-07-05 17:19:59 michiel Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.11.2.3 2004-07-10 12:12:58 nico Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -114,7 +114,7 @@ public class ListRelationsTag extends AbstractNodeListTag {
         if (c == null || type != Attribute.NULL || role != Attribute.NULL || searchDir != Attribute.NULL) { // containerless version
             nm = null;
             if (type != Attribute.NULL) {
-                nm = getCloud().getNodeManager(type.getString(this));
+                nm = getProviderCloudVar().getNodeManager(type.getString(this));
             }
 
             // obtain a reference to the node through a parent tag

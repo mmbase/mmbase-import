@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.21.2.1 2004-05-26 21:58:54 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.21.2.2 2004-07-10 12:12:56 nico Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -79,7 +79,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all node managers.
-            org.mmbase.bridge.Cloud cloud = tag.getCloud();
+            org.mmbase.bridge.Cloud cloud = tag.getProviderCloudVar();
             org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
             org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
             //java.util.Collections.sort(l);
@@ -122,7 +122,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all roles
-            org.mmbase.bridge.Cloud cloud = tag.getCloud();
+            org.mmbase.bridge.Cloud cloud = tag.getProviderCloudVar();
             org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
             org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
 

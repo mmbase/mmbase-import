@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.5 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.5.2.1 2004-07-10 12:13:03 nico Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -41,7 +41,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
     public int doStartTag() throws JspTagException {        
         Node node = getNode();
-        Cloud cloud = getCloud();
+        Cloud cloud = getProviderCloudVar();
         query = cloud.createNodeQuery();
 
         Step step = query.addStep(node.getNodeManager());

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.53.2.1 2004-07-05 17:19:59 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.53.2.2 2004-07-10 12:13:00 nico Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -143,7 +143,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             }
             if (number != Attribute.NULL) { // if (! n.equals("")) {   // if empty string should mean 'not present'. Not sure what is most conventient
                 // explicity indicated which node (by number or alias)
-                Cloud c = getCloud();
+                Cloud c = getProviderCloudVar();
                 if (! c.hasNode(n) || ! c.mayRead(n)) {
                     switch(getNotfound()) {
                     case NOT_FOUND_SKIP:

@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.Condition;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.5 2003-06-06 10:03:31 pierre Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.5.2.1 2004-07-10 12:13:05 nico Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
@@ -41,7 +41,7 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
     }
 
     public int doStartTag() throws JspTagException {
-        RelationManager rm   = getCloud().getRelationManager(role);
+        RelationManager rm   = getProviderCloudVar().getRelationManager(role);
         Node sourceNode      = getNode(source);
         Node destinationNode = getNode(destination);
 
