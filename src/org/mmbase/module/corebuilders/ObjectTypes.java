@@ -9,11 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.io.File;
+import java.io.*;
 import java.util.Enumeration;
+
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMSource;
+import org.xml.sax.InputSource;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.BuilderReader;
 
 /**
  * This builder is the same as TypeDef, only it has an adittion field, which is the config field. This field
@@ -23,7 +29,8 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.28 2003-12-17 21:09:03 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: ObjectTypes.java,v 1.29 2004-01-06 12:26:28 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -173,20 +180,31 @@ public class ObjectTypes extends TypeDef {
         // TODO: merging code!
         MMObjectBuilder builder = getBuilder(node);
 
-        // first save our config,...
-        storeBuilderFile(node);
 
-        // store otherthings, when there...
+        BuilderReader originalBuilderXml = new BuilderReader(getBuilderFilePath(node), getMMBase());
+        BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(node.getStringValue("config"))), getMMBase());
+
+
+        boolean equal = originalBuilderXml.equals(newBuilderXml);
+
+
         boolean result = super.commit(node);
 
-        // unload the builder...
-        builder = unloadBuilder(node);
+        if (! equal) {
+            // first save our config,...
+            storeBuilderFile(node);        
 
-        // apply changes on the database..
-        deleteBuilderTable(builder);
-
-        // load the builder again.. (will create a new table also)
-        loadBuilder(node);
+            // unload the builder...
+            builder = unloadBuilder(node);
+            
+            if (! originalBuilderXml.storageEquals(newBuilderXml)) {
+                // apply changes on the database..
+                deleteBuilderTable(builder);
+            }
+            
+            // load the builder again.. (will create a new table also)
+            loadBuilder(node);
+        } 
 
         return result;
     }
@@ -255,19 +273,23 @@ public class ObjectTypes extends TypeDef {
      *  @return <code>true</code> When an update is required(when changed),
      *	<code>false</code> if original value was set back into the field.
      */
-    public boolean setValue(MMObjectNode node, String fieldname, Object originalValue) {
-        Object newValue = node.values.get(fieldname);
+    public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
+        Object newValue = node.values.get(fieldName);
         // the field with the name 'name' may not be changed.....
         if (originalValue != null && !originalValue.equals(newValue)) {
-            if (fieldname.equals("name")) {
+            if (fieldName.equals("name")) {
                 // restore the original value...
-                node.values.put(fieldname, originalValue);
+                node.values.put(fieldName, originalValue);
                 return false;
-            } else if (fieldname.equals("config")) {
+            } else if (fieldName.equals("config")) {
                 MMObjectBuilder builder = getBuilder(node);
                 // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
-                if (builder != null && builder.size() > 0) {
+                if (builder == null) {
+                    log.warn("No builder found for typedef node " + node);
+                } else if (builder.size() > 0) {
                     throw new RuntimeException("Cannot change builder config it has nodes (otherwise information could get lost..)");
+                } else {
+                    log.info("Changing config for typedef " + node + " associated with builder '" + builder.getTableName() + "'");
                 }
             }
         }
@@ -386,8 +408,9 @@ public class ObjectTypes extends TypeDef {
             throw new RuntimeException("file was null, could not continue");
         }
         if (file.exists()) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("found file: " + file + ", only store when changed.");
+            }
             // we already had a file, look if we have to save it (only needed when was modified)
             try {
                 org.w3c.dom.Document original = org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.xml.BuilderReader.class).parse(file);
@@ -408,14 +431,14 @@ public class ObjectTypes extends TypeDef {
         }
         String message = "";
         try {
-            javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(javax.xml.transform.OutputKeys.ENCODING, mmb.getEncoding());
-            transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
-            transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
-            transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, mmb.getEncoding());
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
             log.service("Saving builderconfig to file:" + file);
-            transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
-        } catch (javax.xml.transform.TransformerException te) {
+            transformer.transform(new DOMSource(doc), new StreamResult(file));
+        } catch (TransformerException te) {
             message = "Failure saving configuration to disk : " + te.getMessage() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement();
             // throw new RuntimeException("
             // storing the builder failed!
@@ -429,31 +452,31 @@ public class ObjectTypes extends TypeDef {
     }
 
     /**
-        documents may not be null!
-    */
+     *  documents may not be null!
+     */
     private boolean equals(org.w3c.dom.Document a, org.w3c.dom.Document b) {
         try {
             //make a string from the XML
-            javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
-            javax.xml.transform.Transformer serializer = tfactory.newTransformer();
-            // serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-            // serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
+            TransformerFactory tfactory = TransformerFactory.newInstance();
+            Transformer serializer = tfactory.newTransformer();
+            // serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            // serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
             // maybe some better code?
-            java.io.StringWriter asw = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(a), new javax.xml.transform.stream.StreamResult(asw));
+            StringWriter asw = new StringWriter();
+            serializer.transform(new DOMSource(a), new StreamResult(asw));
 
-            java.io.StringWriter bsw = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(b), new javax.xml.transform.stream.StreamResult(bsw));
+            StringWriter bsw = new StringWriter();
+            serializer.transform(new DOMSource(b), new StreamResult(bsw));
 
             // compare the 2 document-strings
             return asw.toString().equals(bsw.toString());
 
-        } catch (javax.xml.transform.TransformerConfigurationException tce) {
+        } catch (TransformerConfigurationException tce) {
             String message = tce.toString() + " " + Logging.stackTrace(tce);
             log.error(message);
             throw new RuntimeException(message);
-        } catch (javax.xml.transform.TransformerException te) {
+        } catch (TransformerException te) {
             String message = te.toString() + " " + Logging.stackTrace(te);
             log.error(message);
             throw new RuntimeException(message);
