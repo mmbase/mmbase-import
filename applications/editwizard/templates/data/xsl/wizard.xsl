@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.78 2002-10-29 10:57:37 michiel Exp $
+  @version $Id: wizard.xsl,v 1.79 2002-10-29 11:26:07 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -62,7 +62,7 @@
   <xsl:template name="subtitle">
     <tr class="subtitle">
       <th colspan="2">        
-        <xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+      <xsl:call-template name="i18n"><xsl:with-param name="nodes"  select="form[@id=/wizard/curform]/subtitle" /></xsl:call-template><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
       </th>
     </tr>   
   </xsl:template>
