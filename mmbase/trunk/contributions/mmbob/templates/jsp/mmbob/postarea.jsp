@@ -29,6 +29,7 @@
 <!-- end action check -->
 
 <mm:locale language="$lang"> 
+<%@ include file="loadtranslations.jsp" %>
 
 <div class="header">
   <%@ include file="header.jsp" %>
@@ -46,13 +47,13 @@
 					<center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
 					<br />
 					</mm:compare>
-			<b>Area name</b> : <mm:field name="name" /> <b>Topics</b> : <mm:field name="postthreadcount" /> <b>Messages</b> : <mm:field name="postcount" /> <b>Views</b> : <mm:field name="viewcount" /><br />
-			<b>Laatste bijdrage</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b>door</b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1">nog geen berichten</mm:compare></mm:field><br />
+			<b><mm:write referid="mlg_Area_name"/></b> : <mm:field name="name" /> <b><mm:write referid="mlg_Topics"/></b> : <mm:field name="postthreadcount" /> <b><mm:write referid="mlg_Messages"/></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg_Views"/></b> : <mm:field name="viewcount" /><br />
+			<b><mm:write referid="mlg_Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b><mm:write referid="mlg_by"/></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages"/></mm:compare></mm:field><br />
 			<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
                         <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
 		  </mm:nodefunction>
 	<br />
-	<b>Moderators</b> :
+	<b><mm:write referid="mlg_Moderators"/></b> :
   		  <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
 		  </mm:nodelistfunction>
@@ -60,9 +61,9 @@
 	</tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-   <tr><th width="15">&nbsp;</th><th width="15">&nbsp;</th><th>Onderwerp</th><th>Gestart door</th><th>Reacties</th><th>Views</th><th>Laatste bijdrage</th><mm:compare referid="ismoderator" value="true"><th>Moderator</th></mm:compare></tr>
+   <tr><th width="15">&nbsp;</th><th width="15">&nbsp;</th><th><mm:write referid="mlg_topic"/></th><th><mm:write referid="mlg_author"/></th><th><mm:write referid="mlg_replies"/></th><th><mm:write referid="mlg_views"/></th><th><mm:write referid="mlg_last_posting"/></th><mm:compare referid="ismoderator" value="true"><th><mm:write referid="mlg_moderator"/></th></mm:compare></tr>
   	  <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
-			<tr><td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td><td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> door <mm:field name="lastposter" /></td><mm:compare referid="ismoderator" value="true"><td>
+			<tr><td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td><td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg_by"/> <mm:field name="lastposter" /></td><mm:compare referid="ismoderator" value="true"><td>
 <a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">X</a> / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a></td></mm:compare></tr>
 		  
 		  </mm:nodelistfunction>
@@ -71,7 +72,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;" align="right">
 	<tr>
 	<td>
-	Pagina's : <mm:write referid="navline" />
+	<mm:write referid="mlg_Pages"/> : <mm:write referid="navline" />
 	</td></tr>
 </table>
 </mm:compare>
@@ -85,13 +86,13 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-left : 30px" align="left">
 	<tr><td align="left">
 	<br />
-	<mm:write referid="image_state_normal" /> Open onderwerp<p />
-	<mm:write referid="image_state_normalnew" /> Open onderwerp met ongelezen reacties<p />
-	<mm:write referid="image_state_hot" /> Open populair onderwerp<p />
-	<mm:write referid="image_state_hotnew" /> Open populair onderwerp met ongelezen reacties&nbsp;<p />
-	<mm:write referid="image_state_pinned" /> Vastgezet onderwerp<p />
-	<mm:write referid="image_state_closed" /> Gesloten onderwerp<p />
-	<mm:write referid="image_state_normalme" />Onderwerp waaraan u hebt bijgedragen<p />
+	<mm:write referid="image_state_normal" /> <mm:write referid="mlg_open_topic"/><p />
+	<mm:write referid="image_state_normalnew" /> <mm:write referid="mlg_open_topic_unread"/><p />
+	<mm:write referid="image_state_hot" /> <mm:write referid="mlg_open_topic_popular"/><p />
+	<mm:write referid="image_state_hotnew" /> <mm:write referid="mlg_open_topic_popular_unread"/><p />
+	<mm:write referid="image_state_pinned" /> <mm:write referid="mlg_pinned_topic"/><p />
+	<mm:write referid="image_state_closed" /> <mm:write referid="mlg_closed_topic"/><p />
+	<mm:write referid="image_state_normalme" /> <mm:write referid="mlg_topic_to_which_you_have_contributed"/><p />
 	</td></tr>
 </table>
 <br /><br />
@@ -103,21 +104,21 @@
 <br /><br /><br />
 <mm:compare referid="isadministrator" value="true">
         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-left : 20px;" width="95%" align="left">
-        <tr><th align="lef">Administratie Functies</th></tr>
+        <tr><th align="left"><mm:write referid="mlg_Admin_tasks"/></th></tr>
         <td>
         <p />
-  				<a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />">gebied aanpassen</a><br />
+  				<a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg_change_area"/></a><br />
 
-  				<a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />">gebied verwijder</a><br />
+  				<a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg_remove_area"/></a><br />
 
   				<a href="<mm:url page="newmoderator.jsp">
 				<mm:param name="forumid" value="$forumid" />
 				<mm:param name="postareaid" value="$postareaid" />
-				</mm:url>">moderator toevoegen</a><br />
+				</mm:url>"><mm:write referid="mlg_add_moderator"/></a><br />
   				<a href="<mm:url page="removemoderator.jsp">
 				<mm:param name="forumid" value="$forumid" />
 				<mm:param name="postareaid" value="$postareaid" />
-				</mm:url>">moderator verwijderen</a><br />
+				</mm:url>"><mm:write referid="mlg_remove_moderator"/></a><br />
 	</td></tr>
 </table>
 </mm:compare>

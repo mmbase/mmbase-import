@@ -43,6 +43,9 @@
   <mm:import reset="true" id="threadstate">normal</mm:import>
 </mm:compare>
 
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
 <div class="header">
   <%@ include file="header.jsp" %>
 </div>
@@ -59,7 +62,7 @@
 			</tr>
 </table>
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
-	<tr><td align="left"><b>Pagina's
+	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
 			(<mm:field name="pagecount" />) 
 			<mm:field name="navline" />
@@ -72,7 +75,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
   		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page">
 		  <mm:first>
-			<tr><th width="25%" align="left">Poster</th><th align="left">Onderwerp : <mm:field name="subject" /></th></tr>
+			<tr><th width="25%" align="left"><mm:write referid="mlg_Member"/></th><th align="left"><mm:write referid="mlg_Topic"/>: <mm:field name="subject" /></th></tr>
 		  </mm:first>
 		  <mm:remove referid="tdvar" />
 		  <mm:even><mm:import id="tdvar"></mm:import></mm:even>
@@ -149,19 +152,19 @@
                         </a>
                         <p />
 
-			Level : <mm:field name="level" /><br />
-			Posts : <mm:field name="accountpostcount" /><br />
-			Geslacht : <mm:field name="gender" /><br />
-			Lokatie : <mm:field name="location" /><br />
-			Lid sinds : <mm:field name="firstlogin"><mm:time format="d MMMM  yyyy" /></mm:field><br />
-			Laatste bezoek : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
+			<mm:write referid="mlg_Level"/> : <mm:field name="level" /><br />
+			<mm:write referid="mlg_Posts"/> : <mm:field name="accountpostcount" /><br />
+			<mm:write referid="mlg_Gender"/> : <mm:field name="gender" /><br />
+			<mm:write referid="mlg_Location"/> : <mm:field name="location" /><br />
+			<mm:write referid="mlg_Member_since"/> : <mm:field name="firstlogin"><mm:time format="d MMMM  yyyy" /></mm:field><br />
+			<mm:write referid="mlg_Last_visit"/> : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
 			</mm:compare>
 			</mm:field>
 			<br /><br /><br /><br /><br />
                         </p>
 			</td>
 			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
-			<mm:field name="edittime"><mm:compare value="-1" inverse="true">** Laatste keer aangepast op : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
+			<mm:field name="edittime"><mm:compare value="-1" inverse="true"><mm:write referid="mlg_last_time_edited"/> : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
            
             <mm:node referid="postingid">
 
@@ -190,7 +193,7 @@
 
 
 <table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%">
-	<tr><td align="left"><b>Pagina's
+	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
 			<mm:field name="navline" />
 		  </mm:nodefunction>
@@ -204,9 +207,9 @@
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
-  <tr><th colspan="3">snelle reactie</th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg_Fast_reply"/></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
-	<tr><th width="25%">Naam</th><td>
+	<tr><th width="25%"><mm:write referid="mlg_Name"/></th><td>
 
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
@@ -219,9 +222,9 @@
 		</mm:compare>
 
 		</td></tr>
-	<tr><th>Reactie <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
+	<tr><th><mm:write referid="mlg_Reply"/> <center><table width="100"><tr><th><%@ include file="includes/smilies.jsp" %></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"></textarea></td></tr>
 	<tr><td colspan="3"><input type="hidden" name="action" value="postreply">
-	<center><input type="submit" value="       plaats reactie"></center>
+	<center><input type="submit" value="<mm:write referid="mlg_Post_reply"/>"/></center>
 	</td></tr>
   </form>
 </table>
@@ -232,6 +235,8 @@
 <div class="footer">
   <%@ include file="footer.jsp" %>
 </div>
+
+</mm:locale>
 
 </body>
 </html>
