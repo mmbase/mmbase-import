@@ -1,5 +1,5 @@
 /*
-$Id: AudioParts.java,v 1.2 2000-02-24 13:40:03 wwwtech Exp $
+$Id: AudioParts.java,v 1.3 2000-02-28 17:13:48 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 13:40:03  wwwtech
+Davzev activated replace() method and GETURL and fixed GETURL related methods.
+
 */
 package org.mmbase.module.builders;
 
@@ -21,6 +24,8 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
+
+import nl.vpro.mmbase.util.media.audio.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer
@@ -792,6 +797,11 @@ public class AudioParts extends MMObjectBuilder {
 		debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
 		return startstoptimes;
 	}
+	public String getAudiopartUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
+	{
+        	return AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
+	}
+
 
 	public static void debug( String msg ) {
 		System.out.println( classname +":"+ msg );
