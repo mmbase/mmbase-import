@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMBaseObserver;
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.5 2002-03-29 21:26:01 michiel Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.6 2002-06-16 23:51:15 daniel Exp $
  */
 class MultilevelSubscribeNode implements MMBaseObserver {
 
@@ -60,7 +60,8 @@ class MultilevelSubscribeNode implements MMBaseObserver {
      */
     public synchronized void clearEntrys() {
         // bit unsafe (?): gets an enumeration, then removes nodes form the enum's list
-        for (Enumeration e=queue.elements(); e.hasMoreElements(); ) {
+	Vector myqueue=(Vector)queue.clone();
+        for (Enumeration e=myqueue.elements(); e.hasMoreElements(); ) {
             MultilevelCacheEntry n=(MultilevelCacheEntry)e.nextElement();
             // call the entry's clear that will remove all observers
             // too including myself !
