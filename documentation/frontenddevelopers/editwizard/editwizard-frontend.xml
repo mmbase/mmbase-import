@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Front end</title>
 		<date>2004-01-05</date>
-		<edition>$Id: editwizard-frontend.xml,v 1.2 2004-01-18 12:18:23 nico Exp $</edition>
+		<edition>$Id: editwizard-frontend.xml,v 1.3 2004-01-19 12:31:20 vpro Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Nico</firstname>
@@ -83,7 +83,7 @@
 	</section>
 	<section id="example1">
 		<title>Example 1: logo in the header</title>
-		<para>This example shows how you can add a logo to the header of the wizards. The first thing you have to do is create a file base.xl in your referrer directory. The new base.xsl will import the one from the editwizard home directory. The ew: prefix in the import points to the editwizard home directory. The new xsl overrides the headcontent template from the editwizard base.xsl to add an extra column for the logo.</para>
+		<para>This example shows how you can add a logo to the header of the wizards. The first thing you have to do is create a file base.xsl in your referrer directory. The new base.xsl will import the one from the editwizard home directory. The ew: prefix in the import points to the editwizard home directory. The new xsl overrides the headcontent template from the editwizard base.xsl to add an extra column for the logo.</para>
 		
 		<programlisting format="linespecific">
 		<![CDATA[
