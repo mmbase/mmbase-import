@@ -41,6 +41,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.templates.include" value="**" />
   <property name="project.examples.dir"  value="${project.source.dir}/examples" />
   <property name="project.config.dir"  value="${project.source.dir}/config" />
+  <property name="project.config.dir.includes"  value="**" />
+  <property name="project.config.jar.includes"  value="" />
   <property name="project.build.postfix" value="" />
   <property name="project.build.dir"  location="./build${project.build.postfix}" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
@@ -173,6 +175,12 @@ Create a build.xml with a DOCTYPE like this:
     <copy todir="${project.build.dir}/classes">
       <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
     </copy>
+    <echo>Including ${project.config.jar.includes} from ${project.config.dir}</echo>
+    <copy todir="${project.build.dir}/classes">
+      <mapper type="glob" from="*" to="org/mmbase/config/*" />
+      <fileset dir="${project.config.dir}" includes="${project.config.jar.includes}">
+      </fileset>
+    </copy>
     <mkdir dir="${project.metainf.dir}" />
 
 
@@ -191,11 +199,13 @@ Create a build.xml with a DOCTYPE like this:
     </manifest>
 
     <echo message="creating jar" />
+    
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
          includes="**"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}" includes="**" />
+
     </jar>
 
   </target>
@@ -415,7 +425,9 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
   <target name="install.config" depends="init" if="config.available">
     <copy todir="${mmbase.config}">
-      <fileset dir="${project.config.dir}">
+      <fileset dir="${project.config.dir}"
+               includes="${project.config.dir.includes}"
+               >
       </fileset>
     </copy>
   </target>
