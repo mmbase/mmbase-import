@@ -4,13 +4,29 @@ web-app = the web-app you installed mmbase-webapp in for example tomcat/webapps/
 
 How to install:
 
-build the applications with : ant email (from the applications dir)
+- build the applications with : ant email (from the applications dir)
 
-copy config/modules/* to your web-app/WEB-INF/config/modules/
+- copy config/modules/* to your web-app/WEB-INF/config/modules/
+(since former MMBase releases the <classfile> part is changed, it should read 'org.mmbase.applications.email.SendMail' now)
 
-copy config/builders/* to your web-app/WEB-INF/config/builders/
+- copy config/builders/* to your web-app/WEB-INF/config/builders/
+(since former MMBase releases the <classfile> part is changed, it should read 'org.mmbase.applications.email.EmailBuilder' now)
 
-copy build/mmbase-email.jar to your web-app/WEB-INF/lib/
+- copy build/mmbase-email.jar to your web-app/WEB-INF/lib/
+
+- uncomment in your web-app/WEB-INF/web.xml the part about mail resources:
+  
+  <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)-->
+  <resource-ref>
+    <description>
+      Mail resource for MMBase
+    </description>
+    <res-ref-name>mail/Session</res-ref-name>
+    <res-type>javax.mail.Session</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+And please make sure that the <res-ref-name> part 'mail/Session' matches the resource name in your application server (in Tomcat: 'server.xml', see below).
 
 Install the examples in a place you like :
 
