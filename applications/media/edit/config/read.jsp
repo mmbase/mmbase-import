@@ -4,17 +4,18 @@ String thisServer(javax.servlet.http.HttpServletRequest request, String url) {
     return "http://" + getHost() + request.getContextPath() + url;
 } %><mm:context id="config">
  <mm:import id="configsubmitted" externid="config" from="parameters" />
+
  <mm:present referid="configsubmitted">
     <%-- for config-page --%>
-    <mm:import id="lang"    externid="lang"   from="parameters"/>
-    <mm:import id="quality" externid="quality" from="parameters"/>
-    <mm:import id="player"  externid="player" from="parameters"/>
+    <mm:import id="lang"    externid="lang"   from="parameters">en</mm:import>
+    <mm:import id="quality" externid="quality" from="parameters">any</mm:import>
+    <mm:import id="player"  externid="player" from="parameters">any</mm:import>
  </mm:present>
  <mm:notpresent referid="configsubmitted">
     <%-- get config from cookies --%>
-    <mm:import id="lang"   externid="mmjspeditors_language" from="cookie">nl</mm:import>
-    <mm:import id="quality" externid="mmmediaeditors_quality" from="cookie"></mm:import>
-    <mm:import id="player" externid="mmmediaeditors_player"   from="cookie"></mm:import>
+    <mm:import id="lang"    externid="mmjspeditors_language"   from="cookie">nl</mm:import>
+    <mm:import id="quality" externid="mmmediaeditors_quality"  from="cookie">any</mm:import>
+    <mm:import id="player"  externid="mmmediaeditors_player"   from="cookie">any</mm:import>
   </mm:notpresent>
 
   <%-- always write cookies --%>
