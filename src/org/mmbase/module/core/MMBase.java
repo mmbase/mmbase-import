@@ -14,6 +14,7 @@ import java.io.File;
 import java.sql.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.platform.setUser;
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;  // Vwms, VwmTasks, DayMarkers, Versions
@@ -38,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.54 2002-03-21 18:40:25 kees Exp $
+ * @version $Id: MMBase.java,v 1.55 2002-03-26 12:57:42 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -211,7 +212,7 @@ public class MMBase extends ProcessorModule  {
 
     /**
      * Base url for the location of the DTDs. obtained using getDTDBase()
-     * @deprecated 
+     * @deprecated
      */
     private String dtdbase="http://www.mmbase.org";
 
@@ -396,7 +397,14 @@ public class MMBase extends ProcessorModule  {
                 if (!fbul.isVirtual()) {
                     String name=fbul.getTableName();
                     log.debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
-                    XMLBuilderWriter.writeXMLFile(writerpath+File.separator+fbul.getTableName()+".xml",fbul);
+                    try {
+                        BuilderWriter builderOut=new BuilderWriter(fbul);
+                        builderOut.setIncludeComments(false);
+                        builderOut.setExpandBuilder(false);
+                        builderOut.writeToFile(writerpath+File.separator+fbul.getTableName()+".xml");
+                    } catch (Exception ex) {
+                        log.error(Logging.stackTrace(ex));
+                    }
                 }
             }
         }
@@ -620,12 +628,12 @@ public class MMBase extends ProcessorModule  {
      * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
      */
     public void closeConnection(MultiConnection con, Statement stmt) {
-	try {
-	    if (stmt!=null) stmt.close();
-	} catch(Exception g) {}
-	try {
-	    if (con!=null) con.close();
-	} catch(Exception g) {}
+    try {
+        if (stmt!=null) stmt.close();
+    } catch(Exception g) {}
+    try {
+        if (con!=null) con.close();
+    } catch(Exception g) {}
     }
 
     /**
@@ -911,14 +919,14 @@ public class MMBase extends ProcessorModule  {
         log.debug("mmobjects, inits");
         Enumeration t = mmobjs.elements();
         while (t.hasMoreElements()) {
-	    MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-	    log.debug("init " + fbul);
-	    fbul.init();
+        MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+        log.debug("init " + fbul);
+        fbul.init();
         }
 
         Enumeration t2 = mmobjs.keys();
         while (t2.hasMoreElements()) {
-	    TypeDef.loadTypeDef(""+t2.nextElement());
+        TypeDef.loadTypeDef(""+t2.nextElement());
         }
 
         log.debug("Versions:");
@@ -949,10 +957,10 @@ public class MMBase extends ProcessorModule  {
                 for (int i=0;i<files.length;i++) {
                     String bname=files[i];
                     if (bname.endsWith(".xml")) {
-			bname=bname.substring(0,bname.length()-4);
-			loadBuilderFromXML(bname,ipath);
+            bname=bname.substring(0,bname.length()-4);
+            loadBuilderFromXML(bname,ipath);
                     } else {
-			loadBuilders(ipath +  bname + File.separator);
+            loadBuilders(ipath +  bname + File.separator);
                     }
                 }
             } else {
@@ -1147,15 +1155,15 @@ public class MMBase extends ProcessorModule  {
      *   However, in the later case using this method is probably too costly.
      */
     public MMObjectNode castNode(MMObjectNode node) {
-	/* fake because solved
-	 */
-	int otype=node.getOType();
-	String ename=TypeDef.getValue(otype);
-	if (ename==null) return null;
-	MMObjectBuilder res=getMMObject(ename);
-	MMObjectNode node2=res.getNode(node.getNumber());
-	return node2;
-	//return node;
+    /* fake because solved
+     */
+    int otype=node.getOType();
+    String ename=TypeDef.getValue(otype);
+    if (ename==null) return null;
+    MMObjectBuilder res=getMMObject(ename);
+    MMObjectNode node2=res.getNode(node.getNumber());
+    return node2;
+    //return node;
     }
 
     /**
@@ -1187,7 +1195,7 @@ public class MMBase extends ProcessorModule  {
      * @since  MMBase-1.6
      */
     public String getEncoding() {
-	return encoding;
+    return encoding;
     }
 
     /**
