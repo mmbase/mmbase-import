@@ -22,7 +22,16 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
-[1.6.0] 
+
+
+- Introduction of `MMBaseServlet' with specialisations like ImageServlet and
+  AttachmentServlet.
+   - No need for servdb anymore. Note that ImageServlet does not accept a
+     'transformation'-template like the 'servdb' servlet of previous MMBase
+     versions did. This functionality can be accessed by
+     the imagetag or the 'cache' function of an image node.
+
+- Editwizards
 
 
 ---------------------
@@ -33,9 +42,14 @@ MMCI New Features:
 -------------------
 Taglib New Features:
 -------------------
-[1.6.0]
-  
-  
+
+ - 'Richtext' features, mm:formatter, mm:xslt (experimental)
+ - attachment-tag (= image tag)
+ - Time-tag
+ - Locale tag
+ - ?
+
+    
 ==========================
 BUG FIXES AND IMPROVEMENTS:
 ==========================
