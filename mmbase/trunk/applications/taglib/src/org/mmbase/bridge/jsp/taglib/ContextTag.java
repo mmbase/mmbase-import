@@ -64,6 +64,15 @@ class ContextContainer extends HashMap {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
     }
 
+    /**
+     * This function takes a key, which can contain dots. It returns
+     * a structure with a new ContextContainer and the rest of the
+     * key. It also returns if it had to 'go done' to find this,
+     * because if it has done this, the next time you may not go up
+     * again (check the parent).
+     *
+     */
+
     private Pair getPair(String key, boolean checkParent) throws JspTagException {
         // checking if key contains a 'dot'.
         int dotpos = key.indexOf('.');
@@ -72,8 +81,8 @@ class ContextContainer extends HashMap {
             // find the Context:
             boolean wentDown = true;
             Object c = simpleGet(contextKey, checkParent);
-            if(c == null && checkParent) {
-                c = parentGet(contextKey);
+            if(c == null && checkParent && parent != null) {
+                c =  parent.get(key, true); 
                 wentDown = false;
             } 
             
@@ -92,10 +101,18 @@ class ContextContainer extends HashMap {
 
     }
 
+    private boolean simpleContainsKey(String key, boolean checkParent) {
+        boolean result = super.containsKey(key);
+        if (result == false && checkParent && parent != null) {
+            result = parent.simpleContainsKey(key, true);
+        }
+        return result;
+    }
+
     public boolean containsKey(String key, boolean checkParent) throws JspTagException {
         Pair p = getPair(key, checkParent);
         if (p == null) {
-            return super.containsKey(key);
+            return simpleContainsKey(key, checkParent);
         } else {
             return p.context.containsKey(p.restKey, ! p.wentDown);
         }                
@@ -104,28 +121,21 @@ class ContextContainer extends HashMap {
         return containsKey(key, true);
     }
 
-    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.        
+
+    /**
+     * Like get, but does not try to search dots, because you know already that there aren't.
+     */
+    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot. 
         Object result =  super.get(key);
-        if (result == null && checkParent) {
-            return parentSimpleGet(key);
+        if (result == null && checkParent && parent != null) {
+            return parent.simpleGet(key, true);
         } 
         return result;
     }
-    private Object parentSimpleGet(String key) {
-        if (parent != null) {
-            return parent.simpleGet(key, true);
-        } else {
-            return null;
-        }
-    }
 
-    private Object parentGet(String key) throws JspTagException {
-        if (parent != null) {         // try it with the parent
-            return parent.get(key, true);
-        } else {
-            return null;
-        }
-    }
+    /**
+     * Like get, but you can explicity indacte if to search 'parent' Contextes as well
+     */
 
     public Object get(String key, boolean checkParent) throws JspTagException {
         Pair p = getPair(key, checkParent);
