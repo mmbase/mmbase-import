@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.117 2004-02-23 18:59:35 pierre Exp $
+ * @version $Id: Wizard.java,v 1.118 2004-02-27 10:21:12 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1226,19 +1226,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          if (tmp != null) fdatapath = new StringBuffer(tmp);
 
          if (fdatapath != null) {
-            if (searchString != null) {
-               throw new WizardException(
-                  "It does not make sense to specify 'fdatapath' _and_ 'searchdir' attributes");
-            }
-
-            if (role != null) {
-               throw new WizardException(
-                  "It does not make sense to specify 'fdatapath' _and_ 'role' attributes");
-            }
-
-            if (destination != null) {
-               throw new WizardException(
-                  "It does not make sense to specify 'fdatapath' _and_ 'destinationtype' attributes");
+            if (searchString != null || role != null || destination != null) {
+                log.warn("When 'datapath' is geven, it does not make sense to specify the 'searchdir', role' or 'destinationtype'  attributes. These attributes are ignored.");
             }
          } else {
             // determine role
