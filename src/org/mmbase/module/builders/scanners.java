@@ -30,7 +30,8 @@ import org.mmbase.util.logging.Logging;
  * can access the scanners. The scanner will use a implementation that will
  * also be defined by a builder.
  * 
- * @author Rob Vermeulen
+ * @rename Scanners
+  * @author Rob Vermeulen
  * @date 12 juli 2000
  */
 

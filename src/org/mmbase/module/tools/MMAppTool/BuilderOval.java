@@ -14,6 +14,12 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Class BuilderOval
+ * 
+ * @javadoc
+ */
+
 public class BuilderOval extends Object {
 
 	private AppCanvas parent;

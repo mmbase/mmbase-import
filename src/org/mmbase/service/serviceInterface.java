@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.service;
 
 /**
- * @author Daniel Ockeloen
+ * @rename ServiceInterface
+  * @author Daniel Ockeloen
  */
 public interface serviceInterface {
 	public void startUp();

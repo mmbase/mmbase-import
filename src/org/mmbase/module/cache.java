@@ -22,8 +22,9 @@ import org.mmbase.util.logging.Logger;
 /**
  * Simple file cache system that can be used by any servlet
  *
- * @author  $Author: michiel $ 
- * @version $Revision: 1.8 $ $Date: 2001-04-10 20:23:50 $
+ * @rename Cache
+  * @author  $Author: pierre $ 
+ * @version $Revision: 1.9 $ $Date: 2001-12-14 09:33:16 $
  */
 public class cache extends Module implements cacheInterface {
 

@@ -35,7 +35,8 @@ import org.mmbase.util.logging.*;
  * realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db) with servscan
  * it provides the communication between the clients browser and the mmbase space.
  *
- * @version 23 Oct 1997
+ * @rename Servdb
+  * @version 23 Oct 1997
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {

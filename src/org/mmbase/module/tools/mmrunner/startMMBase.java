@@ -206,7 +206,8 @@ public class startMMBase extends Object {
 					}
 				}
 			}
-			*/
+			 * @rename StartMMBase
+ */
 
 
 			// first get new admin password

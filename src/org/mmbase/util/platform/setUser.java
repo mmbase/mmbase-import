@@ -30,7 +30,8 @@ public class setUser {
 
     private boolean needSetUser() {
         boolean rtn=true;
-        /* Figure out if need setuid/setgid */
+        /* Figure out if need setuid/setgid  * @rename SetUser
+ */
         osname=System.getProperty("os.name");
         log.debug("OS "+osname);
         if (osname.equals("Windows 95") || osname.equals("Windows NT")) {

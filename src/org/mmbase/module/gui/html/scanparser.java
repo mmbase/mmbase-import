@@ -33,8 +33,9 @@ import org.mmbase.util.logging.*;
  * hold all page related info instead of HttpServletR equest and HttpServletResponse
  * because we want extend the model of offline page generation.
  *
- * @author Daniel Ockeloen
- * @$Revision: 1.51 $ $Date: 2001-11-26 12:55:29 $
+ * @rename Scanparser
+  * @author Daniel Ockeloen
+ * @$Revision: 1.52 $ $Date: 2001-12-14 09:33:23 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -2107,9 +2108,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.51 2001-11-26 12:55:29 vpro Exp $
+$Id: scanparser.java,v 1.52 2001-12-14 09:33:23 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.51  2001/11/26 12:55:29  vpro
+Rico: added some documentation for caclulating timed out pages in the background
+
 Revision 1.50  2001/11/25 18:32:23  vpro
 Rico: req queueing
 

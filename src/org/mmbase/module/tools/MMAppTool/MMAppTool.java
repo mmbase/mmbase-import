@@ -13,6 +13,12 @@ import java.lang.*;
 import java.io.*;
 import java.awt.*;
 
+/**
+ * Class MMAppTool
+ * 
+ * @javadoc
+ */
+
 public class MMAppTool extends Object {
 
 	Display dis;

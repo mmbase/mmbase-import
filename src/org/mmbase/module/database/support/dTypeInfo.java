@@ -10,6 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.database.support;
 
+/**
+ * Class dTypeInfo
+ * 
+ * @javadoc
+ * @rename DTypeInfo
+  */
+
 public class dTypeInfo {
 public int mmbaseType;
 public String dbType;

@@ -11,6 +11,12 @@ package org.mmbase.module;
 
 import org.mmbase.util.CompareInterface;
 
+/**
+ * Class VotesComparePercentage
+ * 
+ * @javadoc
+ */
+
 public 	class		VotesComparePercentage
 		implements	CompareInterface
 {

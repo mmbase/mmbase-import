@@ -17,6 +17,12 @@ import java.awt.event.*;
 
 import org.mmbase.util.*;
 
+/**
+ * Class Display
+ * 
+ * @javadoc
+ */
+
 public class Display extends Frame implements WindowListener,ActionListener {
 
 	private MenuBar bar;

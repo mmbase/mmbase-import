@@ -34,7 +34,8 @@ import org.mmbase.util.logging.*;
  * 
  * All incoming requests are checked for the shared secret key before handling them.
  * 
- * @version $Revision: 1.24 $ $Date: 2001-07-02 16:43:08 $
+ * @version $Revision: 1.25 $ $Date: 2001-12-14 09:33:54 $
+  * @rename RemoteXML
  */
 public class remoteXML extends JamesServlet {
 	private static Logger log = Logging.getLoggerInstance(remoteXML.class.getName());

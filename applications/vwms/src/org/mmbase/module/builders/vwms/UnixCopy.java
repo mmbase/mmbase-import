@@ -14,6 +14,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Class UnixCopy
+ * 
+ * @javadoc
+ */
+
 public class UnixCopy {
 
     private static Logger log = Logging.getLoggerInstance(UnixCopy.class.getName()); 

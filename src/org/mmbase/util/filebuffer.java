@@ -11,6 +11,13 @@ package org.mmbase.util;
 
 import java.util.Date;
 
+/**
+ * Class filebuffer
+ * 
+ * @javadoc
+ * @rename Filebuffer
+  */
+
 public class filebuffer {
 
 	public Date lastmod;

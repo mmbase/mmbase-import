@@ -12,6 +12,13 @@ import java.lang.*;
 import java.io.*;
 import java.awt.*;
 
+/**
+ * Class startAppTool
+ * 
+ * @javadoc
+ * @rename StartAppTool
+  */
+
 public class startAppTool extends Object {
 
 	public static void main(String[] args) {

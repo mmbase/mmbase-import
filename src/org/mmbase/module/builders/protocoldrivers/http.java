@@ -23,7 +23,8 @@ import org.mmbase.module.core.MMBase;
  * This is the http implementation of the ProtocolDriver interface. 
  * It can signal a specific remote builder node using HTTP GET.
  * 
- * @version $Revision: 1.11 $ $Date: 2001-07-02 16:46:54 $ 
+ * @rename Http
+  * @version $Revision: 1.12 $ $Date: 2001-12-14 09:33:20 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {

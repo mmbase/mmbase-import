@@ -12,7 +12,8 @@ package org.mmbase.service.interfaces;
 import org.mmbase.service.*;
 
 /**
- * @author Daniel Ockeloen
+ * @rename DropboxInterface
+  * @author Daniel Ockeloen
  */
 public interface dropboxInterface extends serviceInterface {
 	public String getVersion();
