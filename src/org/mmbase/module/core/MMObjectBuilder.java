@@ -13,6 +13,7 @@ package org.mmbase.module.core;
 import java.util.*;
 import java.sql.*;
 import java.io.*;
+import java.text.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -1448,7 +1449,10 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("shorted")) {
             String val=node.getStringValue(field);
             rtn=getShort(val,32);
-
+        } else if (function.equals("currency_euro")) {
+             double val=node.getDoubleValue(field);
+	     NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
+	     rtn=""+nf.format(val);
         } else {
             System.out.println("Builder ("+tableName+") unknown function '"+function+"'");
         }
