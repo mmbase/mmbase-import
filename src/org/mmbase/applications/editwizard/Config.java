@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.6 2002-05-15 12:10:36 michiel Exp $
+ * @version $Id: Config.java,v 1.7 2002-05-15 12:32:48 michiel Exp $
  */
 
 public class Config {
@@ -84,7 +84,8 @@ public class Config {
             // 'Referer' http header is tried.
             if (config.backPage == null) {
                 log.debug("No backpage. Getting from parameters");
-                config.backPage = getParam("referrer", "");
+                config.backPage = org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", getParam("referrer", "")).replace('\\', '/'); // this translations seems to be needed by some windows setups
+                                                                                       
                 if (config.backPage.equals("")) {
                     log.debug("No backpage getting from header");
                     config.backPage = request.getHeader("Referer");
@@ -108,7 +109,7 @@ public class Config {
                 if (protocolPos >=0 ) { // given absolutely
                     String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
                     // Using URL.getPath() would be nicer, but is not availeble in java 1.2
-                    // suppose it is from the same server, we can find back the directory then:
+                    // suppose it is from the same server, web can find back the directory then:
                     refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
 
                     // TODO: What if it happened to be not from the same server?
@@ -127,7 +128,7 @@ public class Config {
         }
         protected String getParam(String paramName) { 
             if (request.getParameter(paramName) == null) return null;
-            return org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", request.getParameter(paramName)).replace('\\', '/'); 
+            return request.getParameter(paramName); 
         }
         
         protected String getParam(String paramName, String def) {
