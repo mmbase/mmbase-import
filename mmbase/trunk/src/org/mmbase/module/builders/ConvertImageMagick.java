@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.36 2002-05-07 15:23:38 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.37 2002-06-05 16:26:36 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -141,6 +141,13 @@ public class ConvertImageMagick implements ImageConvertInterface {
         }
     }
 
+    private static class ParseResult {
+        List   args;
+        String format;
+        File   cwd;
+    }
+
+
     /**
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
@@ -149,15 +156,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return an array of <code>byte</code>s containing the new converted image.
      *
      */
-    public byte[] convertImage(byte[] input,List commands) {
-        List cmd;
-        String format;
+    public byte[] convertImage(byte[] input, List commands) {
         byte[] pict=null;
-
         if (commands!=null && input!=null) {
-            cmd =getConvertCommands(commands);
-            format=getConvertFormat(commands);
-            pict = convertImage(input,cmd,format);
+            ParseResult parsedCommands = getConvertCommands(commands);
+            pict =  convertImage(input, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
         }
         return pict;
     }
@@ -167,31 +170,6 @@ public class ConvertImageMagick implements ImageConvertInterface {
      */
     public byte[] ConvertImage(byte[] input,List commands) {
         return convertImage(input, commands);
-    }
-
-    /**
-     * Obtains the image format from the parameters list.
-     * @param params the list of conversion paarmeters
-     * @return the specified format, or the default image format is unspecified
-     */
-    private String getConvertFormat(List params) {
-        String format=defaultImageFormat,key,cmd,type;
-        int pos,pos2;
-
-        for (Iterator t=params.iterator();t.hasNext();) {
-            key=(String)t.next();
-            pos=key.indexOf('(');
-            pos2=key.lastIndexOf(')');
-            if (pos!=-1 && pos2!=-1) {
-                type=key.substring(0,pos);
-                cmd=key.substring(pos+1,pos2);
-                if (type.equals("f")) {
-                    format=cmd;
-                    break;
-                }
-            }
-        }
-        return format;
     }
 
     /**
@@ -235,11 +213,17 @@ public class ConvertImageMagick implements ImageConvertInterface {
     /**
      * Translates the arguments for img.db to arguments for convert of ImageMagick.
      * @param params  List with arguments. First one is the image's number, which will be ignored.
-     * @return        List with convert arguments.
+     * @return        Map with three keys: 'args', 'cwd', 'format'. 
      */
-    private List getConvertCommands(List params) {
+    private ParseResult getConvertCommands(List params) {
         StringBuffer cmdstr = new StringBuffer();
+
+        ParseResult result = new ParseResult();
         List cmds = new Vector();
+        result.args = cmds;
+        result.cwd  = null;
+        result.format = defaultImageFormat;
+      
         String key, type;
         String cmd;
         int pos, pos2;
@@ -318,6 +302,20 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         // recognize MMBase config dir, so that it is easy to put the fonts there.
                         cmd = org.mmbase.module.core.MMBaseContext.getConfigPath() +  File.separator + cmd.substring(3);
                     }
+                    File fontFile = new File(cmd);
+                    if (! fontFile.isFile()) {
+                        // if not pointed to a normal file, then set the cwd to <config>/fonts where you can put a type.mgk
+                        File fontDir =  new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "fonts");
+                        if (fontDir.isDirectory()) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Using " + fontDir + " as working dir for conversion. A 'type.mgk' (see ImageMagick documentation) can be in this dir to define fonts");
+                            }
+                            result.cwd = fontDir;
+                        } else {
+                            log.debug("Using named font without MMBase 'fonts' directory, using ImageMagick defaults only");
+                        }
+                    }
+                    
                 } else if (type.equals("circle")) {
                     type = "draw";
                     cmd  = "circle " + cmd;
@@ -343,8 +341,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     if (y>=0) str+="+"+y;
                     else str+=""+y;
                     cmd = str;
-                } else if (type.equals("f")) { // format was already dealt with
-                    continue; // ignore this one.
+                } else if (type.equals("f")) { 
+                    result.format = cmd;
+                    continue; // ignore this one, don't add to cmds.
                 }
                 if (log.isDebugEnabled()) log.debug("adding -" + type + " " + cmd);
                 // all other things are recognized as well..
@@ -361,7 +360,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 }
             }
         }
-        return cmds;
+        return result;
     }
 
     /**
@@ -399,7 +398,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return      The result of the conversion (a picture).
      *
      */
-    private byte[] convertImage(byte[] pict, List cmd, String format) {
+    private byte[] convertImage(byte[] pict, List cmd, String format, File cwd) {
         cmd.add(0, "-");
         cmd.add(0, converterPath);
         cmd.add(format + ":-");
@@ -411,7 +410,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
         }
         try {
             log.debug("starting program");
-            Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]));
+            Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]), 
+                                                  null, cwd);
             // in grabs the stuff coming from stdout from program...
             InputStream in = p.getInputStream();
             // err grabs the stuff coming from stderr from program...
