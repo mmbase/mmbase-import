@@ -16,10 +16,10 @@ import org.mmbase.module.core.*;
 /**
  * EditState, controls the users edit session, keeps EditStateNodes
  *
- *
+ * @application SCAN - Removing this from Core requires changes in Module/MMObjectBuilder
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
+ * @version $Id: EditState.java,v 1.17 2004-10-01 08:43:45 pierre Exp $
  */
 public class EditState {
 

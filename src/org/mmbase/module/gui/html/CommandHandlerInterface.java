@@ -19,23 +19,25 @@ import org.mmbase.util.*;
  * Used in the editors, the CommandHandlerInterface allows multiple
  * command handlers to be defined (hitlisted).
  *
+ * @application SCAN
  * @author Hans Speijer
+ * @version $Id: CommandHandlerInterface.java,v 1.6 2004-10-01 08:43:44 pierre Exp $
  */
 public interface CommandHandlerInterface {
 
-	/**
-	 * List commands
-	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws ParseException;	
+    /**
+     * List commands
+     */
+    public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws ParseException;
 
-	/**
-	 * Replace/Trigger commands
-	 */
-	public String replace(scanpage sp, StringTokenizer command);
-	
-	/**
-	 * The hook that passes all form related pages to the correct handler
-	 */
-	public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars);		
+    /**
+     * Replace/Trigger commands
+     */
+    public String replace(scanpage sp, StringTokenizer command);
+
+    /**
+     * The hook that passes all form related pages to the correct handler
+     */
+    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars);
 
 }

@@ -18,9 +18,10 @@ import org.mmbase.util.magicfile.*;
 /**
  * Tries to determine the mime-type of a byte array (or a file).
  *
+ * @move org.mmbase.util.magicfile
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.14 2004-09-30 08:52:15 pierre Exp $
+ * @version $Id: MagicFile.java,v 1.15 2004-10-01 08:41:09 pierre Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);

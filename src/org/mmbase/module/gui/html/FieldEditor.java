@@ -23,10 +23,11 @@ import org.mmbase.util.logging.*;
  * The FieldEditor class is a frontend for the different TypeEditors (hitlisted).
  * @javadoc
  *
+ * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Arjan Houtman
- * @version $Id: FieldEditor.java,v 1.13 2003-12-03 11:27:35 keesj Exp $
+ * @version $Id: FieldEditor.java,v 1.14 2004-10-01 08:43:45 pierre Exp $
  */
 public class FieldEditor implements CommandHandlerInterface {
     // Logger

@@ -14,8 +14,9 @@ import javax.servlet.*;
 /**
  * This exception gets thrown when the user hasn't logged in yet.
  *
+ * @application SCAN - Removing this from Core requires changes in Module/MMObjectBuilder
  * @author Wilbert Hengst
- * @version $Id: ParseException.java,v 1.3 2003-08-29 09:36:50 pierre Exp $
+ * @version $Id: ParseException.java,v 1.4 2004-10-01 08:42:47 pierre Exp $
  */
 public class ParseException extends ServletException {
 

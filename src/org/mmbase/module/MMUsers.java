@@ -21,9 +21,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
+ * @application SCAN
  * @author Arjan Houtman
  * @author Daniel Ockeloen
- * @version $Id: MMUsers.java,v 1.12 2002-07-06 13:16:21 pierre Exp $
+ * @version $Id: MMUsers.java,v 1.13 2004-10-01 08:42:46 pierre Exp $
  */
 public class MMUsers extends ProcessorModule {
 

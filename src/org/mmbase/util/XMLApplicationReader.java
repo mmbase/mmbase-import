@@ -17,10 +17,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @javadoc
+ * @application Applications
+ * @move org.mmbase.util.xml
+ * @rename ApplicationReader
+ * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.20 2004-05-06 12:34:32 keesj Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.21 2004-10-01 08:41:10 pierre Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 

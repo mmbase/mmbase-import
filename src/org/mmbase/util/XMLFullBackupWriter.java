@@ -21,7 +21,10 @@ import org.mmbase.util.logging.*;
  * This is used to export a full backup, by writing all nodes to XML.
  * Based on {@link org.mmbase.util.XMLContextDepthWriterII}.
  *
- * @author Rob van Maris
+ * @application Applications
+ * @move org.mmbase.util.xml
+ * @rename FullBackupWriter
+ * @duplicate extend from org.mmbase.util.xml.DocumentWriter * @author Rob van Maris
  * @see org.mmbase.util.XMLContextDepthWriterII
  * @since MMBase-1.7
  */

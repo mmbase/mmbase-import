@@ -28,8 +28,9 @@ import org.mmbase.util.logging.*;
  * multimedia objects. It does not give you direct methods for
  * inserting and reading them thats done by other objects
  *
+ * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.49 2004-02-23 19:01:01 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.50 2004-10-01 08:43:45 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**

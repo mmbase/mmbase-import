@@ -22,8 +22,9 @@ import org.mmbase.util.logging.*;
  * configuration file.
  * It can then return the localized terms when needed.
  *
+ * @application SCAN - Removing this from Core requires changes in Casting
  * @author Daniel Ockeloen
- * @version $Id: MMLanguage.java,v 1.10 2003-07-03 13:15:11 pierre Exp $
+ * @version $Id: MMLanguage.java,v 1.11 2004-10-01 08:43:45 pierre Exp $
  */
 public class MMLanguage extends ProcessorModule {
 

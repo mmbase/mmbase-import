@@ -22,8 +22,12 @@ import org.w3c.dom.NodeList;
 /**
  * Writes XML as pretty printed HTML
  *
+ * @application Config
+ * @move org.mmbase.util.xml
+ * @rename ScreenWriter
+ * @duplicate extend from org.mmbase.util.xml.DocumentWriter
  * @author Cees Roele
- * @version $Id: XMLScreenWriter.java,v 1.10 2003-05-08 06:09:25 kees Exp $
+ * @version $Id: XMLScreenWriter.java,v 1.11 2004-10-01 08:41:12 pierre Exp $
  */
 public class XMLScreenWriter extends XMLBasicReader {
 

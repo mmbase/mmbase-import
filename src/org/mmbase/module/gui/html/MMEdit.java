@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.module.gui.html;
 
@@ -24,13 +24,14 @@ import org.mmbase.util.logging.Logging;
  * multimedia objects. It does not give you direct methods for
  * inserting and reading them thats done by other objects
  *
+ * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.10 2003-07-03 13:15:10 pierre Exp $
+ * @version $Id: MMEdit.java,v 1.11 2004-10-01 08:43:45 pierre Exp $
  */
 public class MMEdit extends ProcessorModule {
 
-    private static Logger log = Logging.getLoggerInstance(MMEdit.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(MMEdit.class.getName());
 
     Hashtable commandHandlers; // The objects that handle process, replace and
     // list commands
@@ -209,7 +210,7 @@ public class MMEdit extends ProcessorModule {
     }
 
     /**
-     * The hook that passes all replace and trigger related pages to the 
+     * The hook that passes all replace and trigger related pages to the
      * correct handler
      */
     public String replace(scanpage sp, String command) {

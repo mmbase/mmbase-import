@@ -17,6 +17,12 @@ import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
+/**
+ * @javadoc
+ * @application Flash
+ * @author Daniel Ockeloen
+ * @version $Id: XMLDynamicFlashReader.java,v 1.7 2004-10-01 08:43:44 pierre Exp $
+ */
 public class XMLDynamicFlashReader {
 
     private static Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class.getName());

@@ -33,10 +33,10 @@ import org.mmbase.util.logging.Logging;
  * hold all request related information, because we want to extend the model
  * of offline page generation.
  *
- * @application SCAN, this class will be troubelsoem to move as it is used in MMObjectBuilder and ProcessorModule
+ * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.25 2004-09-30 16:08:39 pierre Exp $
+ * @version $Id: scanpage.java,v 1.26 2004-10-01 08:41:12 pierre Exp $
  */
 public class scanpage {
     // logger

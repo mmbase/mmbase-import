@@ -37,11 +37,14 @@ import org.mmbase.module.corebuilders.*;
  *     XMLContextDepthWriterII.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
  * </blockquote>
  *
+ * @application Applications
+ * @move org.mmbase.util.xml
  * @rename ContextDepthWriter
+ * @duplicate extend from org.mmbase.util.xml.DocumentWriter
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: XMLContextDepthWriterII.java,v 1.8 2003-03-10 11:51:14 pierre Exp $
+ * @version $Id: XMLContextDepthWriterII.java,v 1.9 2004-10-01 08:41:11 pierre Exp $
  */
 public class XMLContextDepthWriterII  {
 
