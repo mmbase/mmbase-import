@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.33 2002-02-07 13:29:34 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.33.2.1 2002-04-26 21:15:55 gerard Exp $
  */
 
 public class JamesServlet extends HttpServlet {
@@ -451,6 +451,8 @@ public class JamesServlet extends HttpServlet {
         String  result      = null;
         boolean fromProxy   = false;
         String  addr        = req.getRemoteHost();
+        // fix for bug in Apache mod_jk
+        if(addr==null) addr = "";
 
         if( addr != null && !addr.equals("") ) {
             // from proxy ?
