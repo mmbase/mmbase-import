@@ -16,9 +16,9 @@ import java.util.List;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerList.java,v 1.4 2002-09-23 14:31:02 pierre Exp $
+ * @version $Id: NodeManagerList.java,v 1.5 2002-10-18 08:30:09 pierre Exp $
  */
-public interface NodeManagerList extends BridgeList {
+public interface NodeManagerList extends NodeList {
 
     /**
      * Returns the NodeManager at the indicated postion in the list
