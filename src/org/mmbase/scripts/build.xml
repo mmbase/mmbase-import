@@ -785,7 +785,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-PARAM"/>
       <arg value="basedir"/>
-      <arg value="'${web.dir}/'"/>
+      <arg value="${web.dir}"/>
       <arg value="-PARAM"/>
       <arg value="files"/>
       <arg value="communitytaglibdoc"/>
