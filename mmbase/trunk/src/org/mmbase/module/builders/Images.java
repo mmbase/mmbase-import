@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: Images.java,v 1.4 2000-03-09 10:02:01 wwwtech Exp $
+	$Id: Images.java,v 1.5 2000-03-14 12:50:16 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/03/09 10:02:01  wwwtech
+	Rico: added extra debug in case of failure
+	
 	Revision 1.3  2000/03/08 11:04:47  wwwtech
 	Rico: added synchroniztion to images calculation
 	
@@ -35,7 +38,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.4 2000-03-09 10:02:01 wwwtech Exp $
+ * @version $Id: Images.java,v 1.5 2000-03-14 12:50:16 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -143,7 +146,12 @@ public class Images extends MMObjectBuilder {
 					cmds.addElement("-implode "+cmd);
 					ckey+=key;
 				} else if (type.equals("gamma")) {
-					cmds.addElement("-gamma "+cmd);
+					// cmds.addElement("-gamma "+cmd);
+					StringTokenizer tok = new StringTokenizer(cmd,",");
+					String r=tok.nextToken();
+					String g=tok.nextToken();
+					String b=tok.nextToken();
+					cmds.addElement("-gamma "+r+"/"+g+"/"+b);
 					ckey+=key;
 				} else if (type.equals("border")) {
 					cmds.addElement("-border "+cmd);
