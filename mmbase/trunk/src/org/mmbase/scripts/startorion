@@ -1,10 +1,17 @@
 #!/usr/local/bin/bash
-yourpath=/usr/local/install
-cd $yourpath/orion
-LD_LIBRARY_PATH=/usr/local/algemeen/orion/lib/org/mmbase/util/platform
+
+MMBASEpath=/usr/local/install
+ORIONpath=/usr/local/install/orion
+
+cd $ORIONpath
+LD_LIBRARY_PATH=$MMBASEpath/org/mmbase/util/platform
 export LD_LIBRARY_PATH
+export CLASSPATH
 
 while [ 1==1 ]; do
-echo 'Start at ' `date`
-java -Dmmbase.config=$yourpath/orion/org/mmbase/config/default -Dmmbase.htmlroot=$yourpath/orion/default-web-app/ -Dmmbase.outputfile=$yourpath/mmbase.log -jar orion.jar 
+echo 'Starting MMBase at ' `date`
+java -Dmmbase.config=$MMBASEpath/org/mmbase/config/default \
+     -Dmmbase.htmlroot=$ORIONpath/default-web-app/ \
+     -Dmmbase.outputfile=$MMBASEpath/mmbase.log \
+	 -jar orion.jar 
 done
