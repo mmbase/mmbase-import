@@ -227,6 +227,41 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
         case Field.TYPE_XML:
+            // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
+            show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
+            if (node != null) {
+                try {
+                    // get the XML from this thing....
+                    javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+                    javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
+                    org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
+
+                    // make a string from the XML
+                    javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
+                    //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
+                    javax.xml.transform.Transformer serializer = tfactory.newTransformer();
+                    serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+                    serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
+                    java.io.StringWriter str = new java.io.StringWriter();
+                    // there is a <field> tag placed around it,... we hate it :)
+                    // change this in the bridge?
+                    serializer.transform(new javax.xml.transform.dom.DOMSource(xml.getElementsByTagName("*").item(0)),  new javax.xml.transform.stream.StreamResult(str));
+
+                    // fill the field with it....
+                    show += Encode.encode("ESCAPE_XML", str.toString());
+                }
+                catch(javax.xml.parsers.ParserConfigurationException pce) {
+                    throw new JspTagException(pce.toString() + " " + Logging.stackTrace(pce));
+                }
+                catch(javax.xml.transform.TransformerConfigurationException tce) {
+                    throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
+                }
+                catch(javax.xml.transform.TransformerException te) {
+                    throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
+                }
+            }                    
+            show += "</textarea>";     
+            break;
         case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
