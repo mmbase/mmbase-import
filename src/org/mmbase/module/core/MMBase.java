@@ -37,16 +37,23 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.103 2004-01-22 14:38:41 michiel Exp $
+ * @version $Id: MMBase.java,v 1.104 2004-02-02 18:25:39 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
+
+    /**
+     * State of MMBase after shutdown
+     * @since MMBase-1.7
+     */
+    private static final int STATE_SHUT_DOWN = -2;
+
 
     /**
      * State of MMBase at the beginning of startup
      * @since MMBase-1.6
      */
     private static final int STATE_START_UP = -1;
-   /**
+    /**
      * State of MMBase before builders are loaded
      * @since MMBase-1.6
      */
@@ -264,7 +271,7 @@ public class MMBase extends ProcessorModule {
      *
      * @since MMBase-1.6
      */
-    private int mmbasestate = STATE_START_UP;
+    private int mmbaseState = STATE_START_UP;
 
     /**
      * The table that indexes builders being loaded.
@@ -276,160 +283,38 @@ public class MMBase extends ProcessorModule {
      */
     private Map loading = new HashMap();
 
+
     /**
      * Constructor to create the MMBase root module.
      */
     public MMBase() {
+        if (mmbaseroot != null) log.error("Tried to instantiate a second MMBase");
         log.debug("MMBase constructed");
     }
 
+
     /**
-     * Initializes the MMBase module. Evaluates the parameters loaded from the configuration file.
+     * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
      */
     public void init() {
-        log.service("Init of " + org.mmbase.Version.get());
-
-        // Set the mmbaseroot singleton var
-        // This prevents recursion if MMBase.getMMBase() is called while
-        // this method is run
-        mmbaseroot = this;
-
-        // is there a basename defined in MMBASE.properties ?
-        String tmp = getInitParameter("BASENAME");
-        if (tmp != null) {
-            // yes then replace the default name (def1)
-            baseName = tmp;
-        } else {
-            log.info("init(): No name defined for mmbase using default (def1)");
-        }
-
-        tmp = getInitParameter("AUTHTYPE");
-        if (tmp != null && !tmp.equals("")) {
-            authtype = tmp;
-        }
-
-        tmp = getInitParameter("LANGUAGE");
-        if (tmp != null && !tmp.equals("")) {
-            locale = new Locale(tmp, "");
-            log.info("mmbase default locale  : " + locale);
-        }
-
-        tmp = getInitParameter("ENCODING");
-        if (tmp != null && !tmp.equals("")) {
-            encoding = tmp;
-        }
-
-        tmp = getInitParameter("AUTH401URL");
-        if (tmp != null && !tmp.equals("")) {
-            HttpAuth.setLocalCheckUrl(tmp);
-        }
-        tmp = getInitParameter("DTDBASE");
-        if (tmp != null && !tmp.equals("")) {
-            dtdbase = tmp;
-        }
-
-        tmp = getInitParameter("HOST");
-        if (tmp != null && !tmp.equals("")) {
-            host = tmp;
-        }
-
-        tmp = getInitParameter("MULTICASTPORT");
-        if (tmp != null && !tmp.equals("")) {
-            try {
-                multicastport = Integer.parseInt(tmp);
-            } catch (Exception e) {}
-        }
-
-        tmp = getInitParameter("MULTICASTHOST");
-        if (tmp != null && !tmp.equals("")) {
-            multicasthost = tmp;
-        }
-
-        tmp = getInitParameter("COOKIEDOMAIN");
-        if (tmp != null && !tmp.equals("")) {
-            cookieDomain = tmp;
-        }
-
-        machineName = getInitParameter("MACHINENAME");
-
-        // retrieve JDBC module and start it
-        jdbc = (JDBCInterface)getModule("JDBC", true);
-
-        if (multicasthost != null) {
-            mmc = new MMBaseMultiCast(this);
-        } else {
-            mmc = new MMBaseChangeDummy(this);
-        }
-
-        builderpath = getInitParameter("BUILDERFILE");
-        if (builderpath == null || builderpath.equals("")) {
-            builderpath = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        }
-
-        mmbasestate = STATE_LOAD;
-
-        if (!checkMMBase()) {
-            // there is no base defined yet, create the core objects
-            createMMBase();
-        }
-
-        log.debug("Init builders:");
-        initBuilders();
-
-        mmbasestate = STATE_INITIALIZE;
-
-        log.debug("Objects started");
-
-        // weird place needs to rethink (daniel).
-        Vwms bul = (Vwms)getMMObject("vwms");
-        if (bul != null) {
-            bul.startVwms();
-        }
-        Vwmtasks bul2 = (Vwmtasks)getMMObject("vwmtasks");
-        if (bul2 != null) {
-            bul2.start();
-        }
-
-        String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
-        if (writerpath != null && !writerpath.equals("")) {
-            Enumeration t = mmobjs.elements();
-            while (t.hasMoreElements()) {
-                MMObjectBuilder fbul = (MMObjectBuilder)t.nextElement();
-                if (!fbul.isVirtual()) {
-                    String name = fbul.getTableName();
-                    log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
-                    try {
-                        BuilderWriter builderOut = new BuilderWriter(fbul);
-                        builderOut.setIncludeComments(false);
-                        builderOut.setExpandBuilder(false);
-                        builderOut.writeToFile(writerpath + File.separator + fbul.getTableName() + ".xml");
-                    } catch (Exception ex) {
-                        log.error(Logging.stackTrace(ex));
-                    }
-                }
-            }
-        }
-
-        // try to load security...
-        try {
-            mmbaseCop =
-                new MMBaseCop(
-                    MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
-        } catch (Exception e) {
-            log.fatal("error loading the mmbase cop: " + e.toString());
-            log.error(Logging.stackTrace(e));
-            log.error("MMBase will continue without security.");
-            log.error("All future security invocations will fail.");
-        }
-
-        TypeRel.readCache();
-
-        // signal that MMBase is up and running
-        mmbasestate = STATE_UP;
-        log.info("MMBase is up and running");
-        checkUserLevel();
+        Thread initThread = new Init();
+        initThread.start();
     }
+
+
+    // javadoc inherited
+    protected void shutdown() {
+        mmbaseState = STATE_SHUT_DOWN;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public boolean isShutdown() {
+        return  mmbaseState == STATE_SHUT_DOWN;
+    }
+
 
     /**
      * Started when the module is loaded.
@@ -466,7 +351,6 @@ public class MMBase extends ProcessorModule {
      */
     boolean createMMBase() {
         log.debug(" creating new multimedia base : " + baseName);
-        Vector v;
 
         getDatabase();
 
@@ -512,7 +396,7 @@ public class MMBase extends ProcessorModule {
      */
     public MMObjectBuilder getBuilder(String name) throws CircularReferenceException {
         MMObjectBuilder builder = getMMObject(name);
-        if (builder == null && (mmbasestate == STATE_LOAD)) {
+        if (builder == null && (mmbaseState == STATE_LOAD)) {
             if (builderLoading(name)) {
                 throw new CircularReferenceException("Circular reference to builder with name " + name);
             }
@@ -541,7 +425,7 @@ public class MMBase extends ProcessorModule {
      */
     static public MMBase getMMBase() {
         if (mmbaseroot == null) {
-            mmbaseroot = (MMBase) getModule("mmbaseroot",true);
+            mmbaseroot = (MMBase) getModule("mmbaseroot", true);
         }
         return mmbaseroot;
     }
@@ -1301,6 +1185,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Loads either the storage manager factory or the appropriate support class using the configuration parameters.
+     * @since MMBase-1.7
      */
     public void initializeStorage() {
         // check if there is a storagemanagerfactory specified
@@ -1445,7 +1330,7 @@ public class MMBase extends ProcessorModule {
      * @return <code>true</code> if the module has been initialized and all builders loaded, <code>false</code> otherwise.
      */
     public boolean getState() {
-        return mmbasestate == STATE_UP;
+        return mmbaseState == STATE_UP;
     }
 
     /**
@@ -1495,5 +1380,163 @@ public class MMBase extends ProcessorModule {
         }
         return true;
     }
+
+    /**
+     * Seperate thread to init MMBase. This is because init() of this module must end quickly and init of 
+     * MMBase may take indefinitely if e.g. the database is down.
+     *
+     * If init of module does not end quickly, init of MMBaseServlet does not end quickly and the
+     * complete app-server ends up waiting.
+     *
+     * @since MMBase-1.7
+     */
+    private class Init extends Thread {
+        Init() {
+            super();
+            setDaemon(false);
+        }
+        public void run() {
+            log.service("Init of " + org.mmbase.Version.get() + " (" + MMBase.this + ")");
+
+            // Set the mmbaseroot singleton var
+            // This prevents recursion if MMBase.getMMBase() is called while
+            // this method is run
+            mmbaseroot = MMBase.this;
+
+            // is there a basename defined in MMBASE.properties ?
+            String tmp = getInitParameter("BASENAME");
+            if (tmp != null) {
+                // yes then replace the default name (def1)
+                baseName = tmp;
+            } else {
+                log.info("init(): No name defined for mmbase using default (def1)");
+            }
+
+            tmp = getInitParameter("AUTHTYPE");
+            if (tmp != null && !tmp.equals("")) {
+                authtype = tmp;
+            }
+
+            tmp = getInitParameter("LANGUAGE");
+            if (tmp != null && !tmp.equals("")) {
+                locale = new Locale(tmp, "");
+                log.info("mmbase default locale  : " + locale);
+            }
+
+            tmp = getInitParameter("ENCODING");
+            if (tmp != null && !tmp.equals("")) {
+                encoding = tmp;
+            }
+
+            tmp = getInitParameter("AUTH401URL");
+            if (tmp != null && !tmp.equals("")) {
+                HttpAuth.setLocalCheckUrl(tmp);
+            }
+            tmp = getInitParameter("DTDBASE");
+            if (tmp != null && !tmp.equals("")) {
+                dtdbase = tmp;
+            }
+
+            tmp = getInitParameter("HOST");
+            if (tmp != null && !tmp.equals("")) {
+                host = tmp;
+            }
+
+            tmp = getInitParameter("MULTICASTPORT");
+            if (tmp != null && !tmp.equals("")) {
+                try {
+                    multicastport = Integer.parseInt(tmp);
+                } catch (Exception e) {}
+            }
+
+            tmp = getInitParameter("MULTICASTHOST");
+            if (tmp != null && !tmp.equals("")) {
+                multicasthost = tmp;
+            }
+
+            tmp = getInitParameter("COOKIEDOMAIN");
+            if (tmp != null && !tmp.equals("")) {
+                cookieDomain = tmp;
+            }
+
+            machineName = getInitParameter("MACHINENAME");
+
+            // retrieve JDBC module and start it
+            jdbc = (JDBCInterface) getModule("JDBC", true);
+
+            if (multicasthost != null) {
+                mmc = new MMBaseMultiCast(MMBase.this);
+            } else {
+                mmc = new MMBaseChangeDummy(MMBase.this);
+            }
+
+            builderpath = getInitParameter("BUILDERFILE");
+            if (builderpath == null || builderpath.equals("")) {
+                builderpath = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+            }
+
+            mmbaseState = STATE_LOAD;
+
+            if (!checkMMBase()) {
+                // there is no base defined yet, create the core objects
+                createMMBase();
+            }
+
+            log.debug("Init builders:");
+            initBuilders();
+
+            mmbaseState = STATE_INITIALIZE;
+
+            log.debug("Objects started");
+
+            // weird place needs to rethink (daniel).
+            Vwms bul = (Vwms)getMMObject("vwms");
+            if (bul != null) {
+                bul.startVwms();
+            }
+            Vwmtasks bul2 = (Vwmtasks)getMMObject("vwmtasks");
+            if (bul2 != null) {
+                bul2.start();
+            }
+
+            String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
+            if (writerpath != null && !writerpath.equals("")) {
+                Enumeration t = mmobjs.elements();
+                while (t.hasMoreElements()) {
+                    MMObjectBuilder fbul = (MMObjectBuilder)t.nextElement();
+                    if (!fbul.isVirtual()) {
+                        String name = fbul.getTableName();
+                        log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
+                        try {
+                            BuilderWriter builderOut = new BuilderWriter(fbul);
+                            builderOut.setIncludeComments(false);
+                            builderOut.setExpandBuilder(false);
+                            builderOut.writeToFile(writerpath + File.separator + fbul.getTableName() + ".xml");
+                        } catch (Exception ex) {
+                            log.error(Logging.stackTrace(ex));
+                        }
+                    }
+                }
+            }
+
+            // try to load security...
+            try {
+                mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
+            } catch (Exception e) {
+                log.fatal("error loading the mmbase cop: " + e.toString());
+                log.error(Logging.stackTrace(e));
+                log.error("MMBase will continue without security.");
+                log.error("All future security invocations will fail.");
+            }
+
+            TypeRel.readCache();
+
+            // signal that MMBase is up and running
+            mmbaseState = STATE_UP;
+            log.info("MMBase is up and running");
+            checkUserLevel();
+        }
+    }
+
 
 }
