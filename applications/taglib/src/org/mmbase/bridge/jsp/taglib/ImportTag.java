@@ -32,7 +32,7 @@ public class ImportTag extends CloudReferrerTag {
 
     public int doAfterBody() throws JspTagException{        
         log.debug("Setting " + key + " to " + bodyContent.getString());
-        findCloudProvider().register(key, bodyContent.getString());
+        findContext().register(key, bodyContent.getString());
         return SKIP_BODY;
     }
 
