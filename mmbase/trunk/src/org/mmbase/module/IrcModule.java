@@ -45,12 +45,14 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 			number2answer.put(number,answer);
 
 			//create relations
+			debug(""+(answer.getValue("number")));
 			int rnumber = mmbase.InsRel.getGuessedNumber("related");
-			debug(""+new Integer(rnumber));
+			debug("rnumber"+new Integer(rnumber));
+			debug(""+answer);
 			MMObjectNode question = (MMObjectNode)number2question.get(number);
-			mmbase.InsRel.insert("irc",answer.getIntValue(number),question.getIntValue(number),rnumber);
-			debug(""+new Integer(answer.getIntValue(number)));
-			debug(""+new Integer(question.getIntValue(number)));
+			debug(""+new Integer(question.getIntValue("number")));
+
+			mmbase.InsRel.insert("irc",answer.getIntValue("number"),question.getIntValue("number"),rnumber);
 			
 		}
 		} catch (Exception e) {
@@ -105,7 +107,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 	}
 
 	public String replace(scanpage sp, String cmds) {
-		System.out.println("replace "+cmds);
+		//System.out.println("replace "+cmds);
 		if(cmds.equals("ANSWER")) {
 			try {
 				String number = (String)user2number.get(sp.session.getCookie());
@@ -114,7 +116,6 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 				body = (String)mmon.getValue("body");
 				return body;
 			} catch (Exception e) {
-				System.out.println(e);
 			}
 		}
 		if(cmds.equals("QUESTION")) {
@@ -125,7 +126,6 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 				body = (String)mmon.getValue("body");
 				return body;
 			} catch (Exception e) {
-				System.out.println(e);
 			}
 		}
 		if(cmds.equals("REFRESH")) {
@@ -135,11 +135,10 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 					if(number2answer.containsKey(number)) {
 						return "";
 					}
-					return "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"3; URL=http://www.mmbase.org:8080/from.shtml\">";
+					return "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"4; URL=http://www.mmbase.org:8080/from.shtml\">";
 				}
 				return "";
 			} catch (Exception e) {
-				System.out.println(e);
 			}
 		}
 		return "";
@@ -164,8 +163,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
     public void run () {
 		com = (CommunicationInterface) new IrcUser( this );
 
-		if( com.connect( "irc.xs4all.nl", "mmbase", "#mmbase2", "#mmbase2") )
-		//if( com.connect( "toronto.on.ca.undernet.org", "[java]ron", "#codehozers", "#codehozers") )
+		if( com.connect( "irc.xs4all.nl", "mmbase", "#mmbase", "#mmbase") )
 		{
 			String l = "test";
 			DataInputStream dis = new DataInputStream( System.in );
