@@ -1,14 +1,14 @@
 <%@ include file="page_base.jsp" 
 %><mm:content type="text/html" language="$config.lang" expires="0">
 <mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
-  <mm:import id="username"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
+  <mm:import id="userlogon"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
 </mm:cloud>
-<mm:notpresent referid="username">
-  <mm:import id="username">--</mm:import>
+<mm:notpresent referid="userlogon">
+  <mm:import id="userlogon">--</mm:import>
 </mm:notpresent>
-<mm:compare referid="username" value="anonymous">
-  <mm:remove referid="username" />
-  <mm:import id="username" />
+<mm:compare referid="userlogon" value="anonymous">
+  <mm:remove referid="userlogon" />
+  <mm:import id="userlogon" />
 </mm:compare>
 
 <mm:cloud method="logout" sessionname="$config.session" jspvar="cloud" />
@@ -22,7 +22,7 @@ request.getSession().invalidate(); // start all over again %>
 <hr />
 <form action="<mm:url page="search_node.jsp" />">
   <input type="submit" name="back" value="back to editors" />
-  As: <input type="text" name="username" value="<mm:write referid="username" />" />
+  As: <input type="text" name="userlogon" value="<mm:write referid="userlogon" />" />
 </form>
 <%@ include file="footfoot.jsp"  %>
 </mm:content>
