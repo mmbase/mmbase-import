@@ -28,37 +28,21 @@
   <mm:node id="base" element="$type">
   <tr><td><mm:field name="title" /> </td>
       <td>
-      <mm:nodeinfo id="realtype" type="type" write="false" />
-      <img src="<mm:url page="media/${realtype}.gif" />" alt="" />
-       <mm:relatednodes id="fragment" type="$realtype">
-          <mm:relatednodes type="publishtimes" max="1">
-             <mm:field id="begin" name="begin" write="false" />
-             <mm:field id="end"   name="end"   write="false" />
-             <mm:time  id="now"   time="now"   write="false" />
-          </mm:relatednodes>
-          <mm:present referid="now">
-            <mm:write referid="begin" jspvar="begin" vartype="integer">
-            <mm:write referid="end"   jspvar="end"   vartype="integer">
-            <mm:write referid="now"   jspvar="now"   vartype="integer">
-            <% if (now.intValue() < begin.intValue() || now.intValue() > end.intValue()) { %>
-               <mm:import id="notvalid" />
-            <% } %>
-            </mm:write>
-            </mm:write>  
-            </mm:write>
-          </mm:present>
-          <mm:notpresent referid="notvalid">
-          <a href="<mm:url referids="fragment,language" page="demo/index.jsp" />" target="new"> 
-          </mm:notpresent>
-             <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field>
-           <mm:notpresent referid="notvalid">
-          </a>
-          </mm:notpresent>
+      <mm:nodeinfo id="actualtype" type="type" write="false" />
+      <img src="<mm:url page="media/${actualtype}.gif" />" alt="" />
+      <mm:relatednodes id="fragment" type="$actualtype">
+          <mm:field name="available()">
+            <mm:compare value="true">
+             <a href="<mm:url referids="fragment,language" page="demo/index.jsp" />" target="new">
+            </mm:compare>
+            <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field>
+            <mm:compare value="true">
+              </a>
+            </mm:compare>
+          </mm:field>
           <br />
-         <%--
           showurl <mm:field name="showurl()" /><br />
           longurl <mm:field name="longurl()" /><br />
-          --%>
        </mm:relatednodes>
       </td>
       <td>
