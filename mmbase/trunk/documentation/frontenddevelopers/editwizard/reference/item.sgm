@@ -13,21 +13,18 @@
   </formalpara>
   <para>An item  is similar to a form-schema, but it's content is displayed in a list body, and possibly provided with buttons for removing the item from a list or moving it up and down if an order was specified.</para>
   <para>The fields within the &lt;item&gt; tag assume that the object that is to be displayed or edited is the related object from a list (not the relation). So in a list of 'news' objects accessed through the 'posrel' role, the field with name "title" displays the title of the related news object.</para>
-  <para>If you want to display a field from the relation you need to specify a fdatapath instead. i.e. to display the "pos" field of a posrel relation:
+  <para>If you want to display a field from the relation you need to specify a fdatapath instead. i.e. to display the "pos" field of a posrel relation:</para>
   <para><programlisting format="linespecific"><![CDATA[
   <field fdatapath="field[@name='pos']" ftype="data" />
   ]]></programlisting></para>
-  </para>
-  <para>You can also specify a field from the related object with a fdatapath, like this:
+  <para>You can also specify a field from the related object with a fdatapath, like this:</para>
   <para><programlisting format="linespecific"><![CDATA[
   <field fdatapath="object/field[@name='title']" />
-  ]]></programlisting>
-  </para>
-  <para>Which is the same as:
+  ]]></programlisting></para>
+  <para>Which is the same as:</para>
   <para><programlisting format="linespecific"><![CDATA[
   <field name="title" />
-  ]]></programlisting>
-  </para>
+  ]]></programlisting></para>
   <formalpara>
     <title>Required Attributes</title>
     <para>None</para>
