@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Map;
+import org.mmbase.security.AuthenticationData;
 
 /**
  * The collection of clouds and modules within a Java Virtual Machine.
@@ -17,9 +18,10 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.21 2004-10-09 09:40:11 nico Exp $
+ * @version $Id: CloudContext.java,v 1.22 2005-03-01 14:18:59 michiel Exp $
  */
 public interface CloudContext {
+
 
     /**
      * Returns all modules available in this context.
@@ -46,6 +48,7 @@ public interface CloudContext {
     public boolean hasModule(String name);
 
     /**
+
      * Returns the cloud with the specified name.
      *
      * @param name                     the name of the cloud to be returned
@@ -66,6 +69,11 @@ public interface CloudContext {
      * @throws NotFoundException  if the specified cloud could not be found
      */
     public Cloud getCloud(String name, String authenticationType, Map loginInfo) throws NotFoundException;
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
 
     /**
      * Returns the names of all the clouds known to the system
@@ -148,4 +156,12 @@ public interface CloudContext {
      */
     public StringList createStringList();
     
+
+    /**
+     * Acquired information about the currently configuration Authentication implementation.
+     * @since MMBase-1.8
+     */
+    public AuthenticationData getAuthentication();
+
+
  }
