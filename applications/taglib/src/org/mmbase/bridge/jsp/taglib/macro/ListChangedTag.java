@@ -13,11 +13,11 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  *  Macro tag for listCondition changed
- *  @version $Id: ListChangedTag.java,v 1.5 2003-06-06 10:03:23 pierre Exp $
+ *  @version $Id: ListChangedTag.java,v 1.6 2004-03-23 19:09:54 michiel Exp $
  */
 
 public class ListChangedTag extends ListConditionTag{
-    protected int getValue() throws JspTagException {
+    protected final int getValue() throws JspTagException {
         return CONDITION_CHANGED;
     }
 }
