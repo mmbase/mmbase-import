@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.49 2004-09-20 16:38:14 pierre Exp $
+ * @version $Id: Node.java,v 1.50 2004-09-22 14:50:37 pierre Exp $
  */
 public interface Node {
 
@@ -435,11 +435,13 @@ public interface Node {
      * Returns the value of the specified field as a <code>dom.Document</code>
      * If the node value is not itself a Document, the method attempts to
      * attempts to convert the String value into an XML.
-     * If the value cannot be converted, this method returns <code>null</code>
+     * For strings that do not form an xml, the string value is converted to an mmxf document.
+     * This included the empty string, but not the 'null' value.
+     * If the value is null, this method returns <code>null</code>
      *
      * @param fieldName  the name of the field to be returned
-     * @return the value of the specified field as a DOM Element or <code>null</code>cd t
-     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
+     * @return the value of the specified field as a DOM Element or <code>null</code>
+     * @throws  IllegalArgumentException if the value cannot be converted to xml.
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) throws IllegalArgumentException;
@@ -454,8 +456,8 @@ public interface Node {
      * @param fieldName  the name of the field to be returned
      * @param tree the DOM Document to which the Element is added
      *             (as the document root element)
-     * @return           the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
+     * @return  the value of the specified field as a DOM Element or <code>null</code>
+     * @throws  IllegalArgumentException  if the value cannot be converted to xml.
      * @since MMBase-1.6
      */
 
