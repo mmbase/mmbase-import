@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.4 2002-02-27 16:54:21 pierre Exp $
+ * @version $Id: Dove.java,v 1.5 2002-03-05 12:18:07 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -902,13 +902,13 @@ public class Dove extends AbstractDove {
                 return true;
             } catch (RuntimeException e) {
                 // give error
-                Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias,out);
+                Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")", out);
                 err.setAttribute(ELM_TYPE,IS_SERVER);
             }
         } catch (RuntimeException e) {
             // give error this cloud doesn't support this type
-            Element err=addContentElement(ERROR,"Cloud does not support type : "+type,out);
-            err.setAttribute(ELM_TYPE,IS_SERVER);
+            Element err=addContentElement(ERROR, "Cloud does not support type : " + type +"(" + e.toString() + ")", out);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
         }
         return false;
     }
@@ -950,12 +950,12 @@ public class Dove extends AbstractDove {
                 return true;
             } catch (RuntimeException e) {
                 // give error
-                Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias,out);
+                Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE,IS_SERVER);
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support role : "+role+":"+e.getMessage(),out);
+            Element err=addContentElement(ERROR,"Cloud does not support role : " + role + ":" + e.getMessage(),out);
             err.setAttribute(ELM_TYPE,IS_CLIENT);
         }
         return false;
@@ -991,12 +991,12 @@ public class Dove extends AbstractDove {
                 }
             } catch(RuntimeException e) {
                 // give error node not found
-                Element err=addContentElement(ERROR,"Node not in the cloud (anymore?), node number : "+alias,out);
+                Element err=addContentElement(ERROR,"Node not in the cloud (anymore?), node number : "+alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE,IS_SERVER);
             }
         } catch(RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support type : "+type,out);
+            Element err=addContentElement(ERROR,"Cloud does not support type : " + type + "(" + e.toString() + ")", out);
             err.setAttribute(ELM_TYPE,IS_CLIENT);
         }
         return false;
