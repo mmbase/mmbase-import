@@ -5,7 +5,7 @@
 */
 
 
-class speed {
+class A {
 
     private int hits = 0;
     private Object rtn;
