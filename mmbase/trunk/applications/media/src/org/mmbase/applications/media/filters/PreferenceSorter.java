@@ -13,8 +13,9 @@ package org.mmbase.applications.media.filters;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 
 /**
- * Facilitates implementing Sorter by defining the 'preference' of
- * one object. A preference is just an int. The higher, the better.
+ * Facilitates implementing Sorter by defining the 'preference' of one
+ * object. A preference is just an int. The higher, the better. Only
+ * for ease of implementation of descendants. 
  *
  * @author  Michiel Meeuwissen
  */

@@ -19,30 +19,48 @@ import java.net.*;
 
 
 /**
- * Produces links to mediahtml servlet. mediahtml must be used with
- * the html object tag.
+ * Produces links to (jsp) templates which can present a media
+ * fragment. These templates can e.g. produce pieces of HTML (for use
+ * with object tag), or perhaps a better example are
+ * SMIL-jsp-templates ( with response.setHeader("Content-Type",
+ * "application/smil");)
  *
- * Depends on a 'template' to be linked to the fragment.
+ * Depends on a 'template' to be linked to the fragment, or to one of
+ * its parent fragments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MarkupURLComposer.java,v 1.2 2003-02-18 14:07:46 michiel Exp $
+ * @version $Id: MarkupURLComposer.java,v 1.3 2003-02-18 17:08:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class MarkupURLComposer extends FragmentURLComposer { 
     private static Logger log = Logging.getLoggerInstance(MarkupURLComposer.class.getName());
     
-    private List templates = null;
-
-
     public MarkupURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
      
     }
 
+
+    /**
+     * Typical for a 'MarkupURLComposer' is that it should have a
+     * 'template'. It could have been called a 'TemplateURLComposer',
+     * but that sounds to general..
+     */
+
     protected MMObjectNode getTemplate() {
         return (MMObjectNode) getInfo().get("template");
     }
-    
+
+    /**
+     * This composer can only do something if it has a template. The
+     * URLComposerFactory arranges this, but if somewhy it doesn't, it still works.
+     *
+     * More importantly, it could also do checks to link 'markup
+     * language type' to source format type.  Currently is checked
+     * that the source-format must be Real, if the templates language
+     * is SMIL (this is perhaps too limited).
+     */
+
     public boolean canCompose() {
         MMObjectNode template = getTemplate();
         if (template == null) return false;
@@ -87,11 +105,14 @@ public class MarkupURLComposer extends FragmentURLComposer {
     }
 
 
+    /**
+     * Depends on mimetype of the template to return the format of this urlcomposer.
+     */
+
     public Format  getFormat()   { 
         MMObjectNode template = getTemplate();
         if (template == null) return Format.HTML;
         String mimetype = template.getStringValue("mimetype");
-        log.service("found mimetype '" + mimetype +"'");
         if (mimetype.equals("application/smil")) {
             return Format.SMIL;
         } else {
