@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.24 2004-03-09 13:43:40 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.25 2004-03-09 13:56:00 rob Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -102,7 +102,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 if (mustTruncateResults) {
                     log.debug("max used in query but not supported in database.");
                     // Weak support for offset, weak support for maxnumber:
-                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // appy no maximum, but truncate result
+                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // apply no maximum, but truncate result
                 } else if (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) {
                     log.debug("max used in query and supported by database.");
                     // Because offset is not supported add max with the offset.
@@ -118,11 +118,11 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     // Sql handler supports offset, or not offset is specified.
                     // weak support for maxnumber:
                     ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // appy no maximum, but truncate result
+                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // apply no maximum, but truncate result
                     sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
                 } else {
                     // Offset not used, maxnumber not used.
-                    log.debug("no need for modifying Query");
+                    log.debug("No need to modify the Query.");
                     sqlString = sqlHandler.toSql(query, sqlHandler);
                 }
             }
