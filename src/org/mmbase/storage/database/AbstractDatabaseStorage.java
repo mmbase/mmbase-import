@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.12 2003-06-05 09:23:44 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.13 2003-06-23 14:50:44 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -985,7 +985,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
             trans.commit();
         } catch (StorageException e) {
             if (trans != null) trans.rollback();
-            log.error(e.getMessage());
+            log.error("Trouble inserting node: " + node + "\n" + e.getMessage());
             log.error(Logging.stackTrace(e));
         }
         return result;
