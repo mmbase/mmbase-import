@@ -34,9 +34,8 @@ public class MultilevelCacheHandler extends LRUHashtable {
 		
 	}
 
-
-	public Object put(Object hash,Object o,Vector types) {
-		MultilevelCacheEntry n=new MultilevelCacheEntry(this,hash,o);
+	public Object put(Object hash,Object o,Vector types,StringTagger tagger) {
+		MultilevelCacheEntry n=new MultilevelCacheEntry(this,hash,o,tagger);
 		addListeners(types,n);
 		return(put(hash,n));
 	}
@@ -46,8 +45,11 @@ public class MultilevelCacheHandler extends LRUHashtable {
 		// get the wrapper but return the
 		// object 
 		MultilevelCacheEntry n=(MultilevelCacheEntry)super.get(key);
-		if (n==null) return(null);
-		return(n.getObject());
+		if (n==null) {
+			return(null);
+		} else {
+			return(n.getObject());
+		}
 	}
 
 	private void addListeners(Vector types,MultilevelCacheEntry n) {
