@@ -299,18 +299,14 @@ public class ListTag extends NodeLikeTag implements BodyTag {
                                 throw new JspException("Indicated wrong nodemanager in search " + searchSorted + ", must be " + nodeManagersVector.get(1)); 
                             }
                         }
-                        NodeList virtualNodes = getDefaultCloud().getList("" + baseNode.getNumber(), nodeManagers, numbers, null, searchSorted, searchDirection, null, false); 
-
-                        // now make normal nodes of it.                       
-                        Vector nodesVector = new Vector();
-                        NodeIterator i = virtualNodes.nodeIterator();
+                        nodes = getDefaultCloud().getList("" + baseNode.getNumber(), nodeManagers, numbers, null, searchSorted, searchDirection, null, false);                         
+                        // make normal nodes of it:
+                        NodeIterator i = nodes.nodeIterator();
                         while(i.hasNext()){
-                            nodesVector.add(getDefaultCloud().getNode(i.nextNode().getStringValue(numbers)));
+                            i.set(getDefaultCloud().getNode(i.nextNode().getStringValue(numbers)));                            
                         }
-                        nodes = new BasicNodeList((Collection)nodesVector, getDefaultCloud());
                     } else {
-                        nodes = getDefaultCloud().getNode(searchNodes).getRelatedNodes(typeString);
-                        
+                        nodes = getDefaultCloud().getNode(searchNodes).getRelatedNodes(typeString);                        
                     }
 
 		} else {
