@@ -77,7 +77,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } else {
             try {
     		// BasicCloudContext.transactionManager.commit(account, transactionContext);
-                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
+                BasicCloudContext.transactionManager.commit(userContext.getUserContext(), transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
@@ -108,7 +108,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } else {
             try {
 	    	//   BasicCloudContext.transactionManager.cancel(account, transactionContext);
-                BasicCloudContext.transactionManager.cancel(userContext, transactionContext);
+                BasicCloudContext.transactionManager.cancel(userContext.getUserContext(), transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 String message;
