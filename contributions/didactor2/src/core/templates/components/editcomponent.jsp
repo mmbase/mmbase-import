@@ -21,13 +21,9 @@
 <mm:import externid="action2"/>
 
 <mm:import externid="componentname"/>
-<!-- TODO check whether a value is given for level -->
-<mm:import externid="level"/>
 
 
-<%-- Check if the create button is pressed --%>
-<mm:import id="action1text"><fmt:message key="CREATE" /></mm:import>
-<mm:compare referid="action1" referid2="action1text">
+<mm:present referid="action1">
   <mm:compare referid="component" value="-1">
     <mm:listnodescontainer type="components">
   	  <mm:constraint field="name" referid="componentname"/>
@@ -38,14 +34,52 @@
 	  </mm:listnodes>
 
     </mm:listnodescontainer>
-
-    <%-- related component to provider or education --%>
-    <mm:createrelation role="settingrel" source="level" destination="component"/>
-
   </mm:compare>
 
+  <mm:listnodes type="providers" id="p">
+    <mm:remove referid="isrelated"/>
+    <mm:list nodes="$p" path="providers,settingrel,components" constraints="components.number=$component" max="1">
+        <mm:import id="isrelated"><mm:field name="settingrel.number"/></mm:import>
+    </mm:list>
+    <mm:remove referid="levelnum"/>
+    <mm:field name="number" id="levelnum"/>
+    <mm:remove referid="level"/>
+    <mm:import externid="level$levelnum"/>
+    <mm:present referid="level$levelnum">
+        <mm:notpresent referid="isrelated">
+            <mm:createrelation role="settingrel" source="component" destination="p"/>
+        </mm:notpresent>
+    </mm:present>
+    <mm:notpresent referid="level$levelnum">
+        <mm:present referid="isrelated">
+            <mm:deletenode number="$isrelated"/>
+        </mm:present>
+    </mm:notpresent>
+    
+      <mm:relatednodes type="educations" id="e">
+        <mm:remove referid="isrelated"/>
+        <mm:list nodes="$e" path="educations,settingrel,components" constraints="components.number=$component" max="1">
+            <mm:import id="isrelated"><mm:field name="settingrel.number"/></mm:import>
+        </mm:list>
+        <mm:remove referid="levelnum"/>
+        <mm:field name="number" id="levelnum"/>
+        <mm:remove referid="level"/>
+        <mm:import externid="level$levelnum"/>
+        <mm:present referid="level$levelnum">
+            <mm:notpresent referid="isrelated">
+                <mm:createrelation role="settingrel" source="component" destination="e"/>
+            </mm:notpresent>
+        </mm:present>
+        <mm:notpresent referid="level$levelnum">
+            <mm:present referid="isrelated">
+                <mm:deletenode number="$isrelated"/>
+            </mm:present>
+        </mm:notpresent>
+      </mm:relatednodes>
+  </mm:listnodes>
+
   <mm:redirect referids="$referids,component" page="$callerpage"/>
-</mm:compare>
+</mm:present>
 
 
 <%-- Check if the back button is pressed --%>
@@ -117,8 +151,16 @@
         </mm:compare>
 
         <!-- TODO check if the right level is given for a specific component -->
-        <tr><td><input type="radio" name="level" value="<mm:write referid="provider"/>">provider</input></td><td/></tr>
-        <tr><td><input type="radio" name="level" value="<mm:write referid="education"/>">education</input></td><td/></tr>
+        </table>
+        <table class="Font">
+        <mm:listnodes type="providers" orderby="name" id="p">
+            <tr><td>
+            <input type="checkbox" name="level<mm:field name="number"/>" value="on" <mm:list nodes="$p" path="providers,settingrel,components" constraints="components.number=${component}" max="1">checked="checked"</mm:list>/>
+            </td><td colspan="2"><mm:field name="name"/></td><td/></tr>
+            <mm:relatednodes type="educations" orderby="name" id="e">
+            <tr><td></td><td><input type="checkbox" name="level<mm:field name="number"/>" value="on" <mm:list nodes="$e" path="educations,settingrel,components" constraints="components.number=${component}" max="1">checked="checked"</mm:list>/></td><td><mm:field name="name"/></td><td/></tr>
+            </mm:relatednodes>
+        </mm:listnodes>
 
       </table>
       <p/>
