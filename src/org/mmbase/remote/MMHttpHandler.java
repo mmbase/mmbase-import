@@ -8,33 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.12 2001-05-08 13:50:07 vpro Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.11  2001/04/20 14:15:48  michiel
-michiel: replaced Logging system in remote directory with old style system (with a script)
-
-Revision 1.10  2001/04/11 15:31:23  michiel
-michiel: new logging system
-
-Revision 1.9  2001/03/29 13:17:55  install
-Rob added shared secret checks
-
-Revision 1.8  2001/03/26 15:31:04  vpro
-Davzev: Fixed request handling by reading the remaining lines of request data
-sent with a request. If you don't read out remaining lines the client could get
-a Socket Exception: Connection Reset By Peer.
-Also added http status codes during handling of GET and POST requests.
-
-Revision 1.7  2000/11/27 16:33:53  vpro
-davzev: Added debug in method doGet
-
-Revision 1.6  2000/11/27 14:49:48  vpro
-davzev: Changed debug var from RemoteBuilder.debug to true
-
-Revision 1.5  2000/11/27 13:12:19  vpro
-davzev: Added some method comments and changed argument names of method doGet and doXMLSignal, also removed some hardcoded numbers.
-
+$Id: MMHttpHandler.java,v 1.13 2001-07-02 16:57:56 vpro Exp $
 */
 package org.mmbase.remote;
 
@@ -48,7 +22,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.12 $ $Date: 2001-05-08 13:50:07 $
+ * @version $Revision: 1.13 $ $Date: 2001-07-02 16:57:56 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable { 
@@ -97,40 +71,49 @@ public class MMHttpHandler implements Runnable {
 	
 	/**
 	 * Connects and retrieves HTTP method and checks for GET and POST to react to.
+	 * Before handling request first a shared secret check is done.
 	 */
 	public void run() {
 		try {
 			DataInputStream in = new DataInputStream(clientsocket.getInputStream());
 			PrintStream out = new PrintStream(clientsocket.getOutputStream());
 
+			String key = null; // incoming shared secret key.
 			String line=in.readLine();
 			if (line!=null) {
-				StringTokenizer tok=new StringTokenizer(line," \n\r\t");
+
+				// Read all remaining data that was sent with request.
+				String data = in.readLine();
+				if (__debug) {
+					/*log.debug*/__debug("run: First line of date that was sent with request: "+data);
+				}
+				while (!data.equals("")) {
+					// 'sharedSecret: ' length of this string is 14 chars.
+					if (data.startsWith("sharedSecret"))
+						key = data.substring(14);
+					if (__debug) {
+						/*log.debug*/__debug("run: Remaining line of data that was sent with request: "+data);
+					}
+					data = in.readLine();
+				}
 
 				/**
 				 * checking here if the shared secret is correct .
 				 */
-				
-				if (tok.hasMoreTokens()) {
-					String method=tok.nextToken();
-					if (__debug) {
-						/*log.debug*/__debug("run(): Got method: "+method);
+			    	if(!startRemoteBuilders.checkSharedSecret(key)) {
+					__debug("MMHttpHandler.run: sharedsecret is NOT correct, system is NOT authenticated");
+		    		} else {
+					StringTokenizer tok=new StringTokenizer(line," \n\r\t");
+					if (tok.hasMoreTokens()) {
+						String method=tok.nextToken();
+						if (__debug) {
+							/*log.debug*/__debug("MMHttpHandler.run: Incoming request: "+method);
+						}
+						if (method.equals("GET"))
+							doGet(tok,out);
+						if (method.equals("POST")) 
+							doPost(tok,in,out);
 					}
-					if (method.equals("GET"))
-						doGet(tok,in,out);
-					if (method.equals("POST")) 
-						doPost(tok,in,out);
-				}
-			}
-			// Read all remaining data that was sent with request.
-			line = in.readLine();
-			if (__debug) {
-				/*log.debug*/__debug("run: First line of date that was sent with request, line: "+line);
-			}
-			while (!line.equals("")) {
-				line = in.readLine();
-				if (__debug) {
-					/*log.debug*/__debug("run: Remaining line of data that was sent with request, line: "+line);
 				}
 			}
 
@@ -148,10 +131,9 @@ public class MMHttpHandler implements Runnable {
 	/**
 	 * Gets the querystring from the GET cmd and passes it on to doXMLSignal.
 	 * @param tok the StringTokenizer with the remaining GET info.
-	 * @param in the DataInputStream
-	 * @param out the PrintStream
+	 * @param out the PrintStream to send statuscode over and for flushing.
 	 */
-	void doGet(StringTokenizer tok, DataInputStream in, PrintStream out) {
+	void doGet(StringTokenizer tok, PrintStream out) {
 		String statusCode= null;
 		if (tok.hasMoreTokens()) {
 			String requestUrl=tok.nextToken();
