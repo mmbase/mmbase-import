@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeRel.java,v 1.23 2002-01-23 11:49:41 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.24 2002-01-24 15:22:45 vpro Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -69,8 +69,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Enable memory based TypeRel querying or not.
+	 * default on, can be switched to off in typerel.xml
      */
-    private boolean memTableActive=false;
+    private boolean memTableActive=true;
 
     /**
      * Tracks if the memorytable has been initialized
