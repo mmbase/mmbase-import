@@ -18,6 +18,7 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.PageContext;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -56,7 +57,7 @@ public class ContextTag extends ContextReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
-    private HashMap myHashMap=new HashMap();
+    private HashMap myHashMap = null; 
 
     private ContextTag parent = null;
     private boolean    searchedParent = false;
@@ -65,9 +66,31 @@ public class ContextTag extends ContextReferrerTag {
     private HttpServletRequest httpRequest = null;
     private HttpSession        httpSession = null;
 
-    public void release() {
+    public void release() {  
+        // release is not called in Orion 1.5.2!!
         log.debug("releasing");
+        myHashMap = null;
+        poster = null;
+        parent = null;
+        searchedParent = false;
         super.release();
+    }
+
+    public int doStartTag() throws JspTagException {
+        log.debug("Start tag of ContextTag");
+        // release() is not called in Orion 1.5.2 (a bug!)  therefore we
+        // must set some thing to null here.  I'm not sure by the way
+        // if one can assume to have a new instance for every
+        // page. This is however the case in e.g. orion 1.4.5 and
+        // other servers.  In that case setting private members to
+        // null here or in release is not necessary at all.
+
+        myHashMap = new HashMap();
+        poster = null;
+        parent = null;
+        searchedParent = false;
+        
+        return EVAL_BODY_TAG;
     }
 
     // avoid casting
@@ -88,6 +111,7 @@ public class ContextTag extends ContextReferrerTag {
 
     public void setId(String i) {
         log.debug("setting id to " + i);
+        myHashMap = new HashMap();
         id = i;
     }
 
@@ -145,15 +169,36 @@ public class ContextTag extends ContextReferrerTag {
             throw new JspTagException("Cannot refer with id is null");
         }
         Object result = null;
+        // if it cannot be found, then 'null' will be put in the hashmap ('not present')
+
         switch (from) {
         case TYPE_SESSION:
             result = getSession().getAttribute(referid);
             break;
         case TYPE_POSTPARAMETERS:
-            result = getPoster().getPostParameter(referid);
+            log.debug("searching " + referid + " in multipart post");
+            if (getPoster().checkPostMultiParameter(referid)) {
+                log.info("This is a multiparameter!");
+                result = getPoster().getPostMultiParameter(referid);
+            } else {                
+                result = (String) getPoster().getPostParameter(referid);
+                log.debug("found " + result);
+            }
             break;
-        case TYPE_PARAMETERS:
-            result = pageContext.getRequest().getParameter(referid);
+        case TYPE_PARAMETERS:            
+            log.debug("searching parameter " + referid);
+            Object[] resultvec = getHttpRequest().getParameterValues(referid);
+            if (resultvec != null) {
+                if (resultvec.length > 1) {
+                    Vector rresult = new Vector(resultvec.length);
+                    for (int i=0; i < resultvec.length; i++) {
+                        rresult.add(resultvec[i]);         
+                    }
+                    result  = rresult;
+                } else {
+                    result = (String) resultvec[0];
+                }
+            }
             break;
         case TYPE_PARENT:
             if (getParentContext() != null) {
@@ -225,10 +270,15 @@ public class ContextTag extends ContextReferrerTag {
     }
     */
 
+    /**
+     * 'present' means ='not null'. 'null' means 'registered, but not present'.
+     */
+
     public boolean isPresent(String key) throws JspTagException {
         // return (pageContext.getAttribute(id) != null);
         return (getObject(key) != null);
     }
+
 
     final private HashMap getHashMap() {
         return myHashMap;
@@ -299,6 +349,9 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     public int doAfterBody() throws JspTagException {
+        log.debug("after body of context " + getId());
+        myHashMap = null;
+        
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
             return SKIP_BODY;
