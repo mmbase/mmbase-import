@@ -24,7 +24,7 @@ import org.xml.sax.*;
 /**
  * TransactionHandler Module
  *
- * @author  John Balder: 3MPS $ 
+ * @author  John Balder: 3MPS 
  * @author 	Rob Vermeulen: VPRO
  * @version 1.2, 22/10/2000
  *
@@ -238,21 +238,40 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
 						throw new TransactionHandlerException(tName + " transaction already exists id = " + id);
 					}
-					// actually create and administrate if not anonymous
+					// actually create transaction
 					currentTransactionContext = transactionManager.create(userTransactionInfo.user, id);
 					transactionInfo = new TransactionInfo(currentTransactionContext,time,id,userTransactionInfo);
+					// If not anonymous transaction register it in the list of all transaction of the user
 					if (!anonymousTransaction) {
 						userTransactionInfo.knownTransactionContexts.put(id, transactionInfo);
 					}
 				} 
+
 				if (tName.equals("openTransaction")) { // no-op we only need currentTransactionContext
+					// Check if the transaction exists.
+					if (userTransactionInfo.knownTransactionContexts.get(id) == null) {
+						throw new TransactionHandlerException(tName + " transaction doesn't exists id = " + id);
+					}
+					// actually open transaction
+					transactionInfo = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
+					currentTransactionContext = transactionInfo.transactionContext;
 				}
-				//if (tName.equals("commitTransaction")) { //no-op, we do on exit
-				//} 
+				if (tName.equals("commitTransaction")) { 
+					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
+					// destroy transaction information
+					transactionInfo.stop();	
+					// continue with next transaction command.
+					continue;
+				}
 				if (tName.equals("deleteTransaction")) {
+					// cancel real transaction
 					transactionManager.cancel(userTransactionInfo.user, id);
-					currentTransactionContext = null;
-					userTransactionInfo.knownTransactionContexts.remove(id);
+					// get transaction information object
+					TransactionInfo ti = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
+					// destroy transaction information
+					ti.stop();
+					// continue with next transaction command.
+					continue;
 				} 
 	
 	
@@ -264,16 +283,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	
 	
 				// ENDING TRANSACTION		
-				if (tName.equals("deleteTransaction")) {
-				} 
+				//if (tName.equals("deleteTransaction")) // this is done above
+				//if (tName.equals("commitTransaction")) // this is done above
 				if (tName.equals("createTransaction") || tName.equals("openTransaction")) {
 					if(commit.equals("true")) {
 						transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 						transactionInfo.stop();	
 					}
-				} 
-				if (tName.equals("commitTransaction")) {
-					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 				} 
 				if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 				// End execution of XML
