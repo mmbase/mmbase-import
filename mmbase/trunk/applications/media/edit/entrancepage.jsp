@@ -2,14 +2,14 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" %><mm:content language="$config.lang" postprocessor="reducespace">
-<mm:cloud jspvar="cloud" loginpage="login.jsp">
+<mm:cloud jspvar="cloud">
 <html>
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
    <!--
 
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.18 2003-09-24 20:47:19 michiel Exp $ 
+    @version  $Id: entrancepage.jsp,v 1.19 2003-09-28 14:21:04 michiel Exp $ 
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <head>

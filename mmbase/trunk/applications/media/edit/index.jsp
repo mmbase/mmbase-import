@@ -23,20 +23,17 @@
   </script>
 
   </head>
-  <mm:import externid="search" />
+  <mm:import externid="logout" />
 
-  <mm:present referid="search">
-    <mm:import id="page">search.jsp</mm:import>
+  <mm:present referid="logout">
+    <mm:cloud method="logout" />
   </mm:present>
-  <mm:notpresent referid="search">
-    <mm:import id="page">entrancepage.jsp</mm:import>
-  </mm:notpresent>
 
 
   <frameset  rows="75,*" border="0">
       <frame name="header" src ="<mm:url page="header.jsp" />" scrolling="no" frameborder="0" border="0"  framespacing="0">
         <frameset  cols="331,*"><!-- 2 x 2 margin + 32 + 35 td's + 1 * 260 td -->
-          <frame   name="left"    src="<mm:url page="$page" />" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" border="0" noresize framespacing="0">
+          <frame   name="left"    src="<mm:url page="search.jsp" />" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" border="0" noresize framespacing="0">
           <frame   name="content" src="<mm:url page="placeholder.jsp" />" marginwidth="0" marginheight="0" scrolling="auto" frameborder="0" border="0" noresize framespacing="0">
        </frameset>
   </frameset>
