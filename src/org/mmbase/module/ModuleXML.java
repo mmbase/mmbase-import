@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.2 $ $Date: 2000-05-02 10:27:29 $
+ * @version $Revision: 1.3 $ $Date: 2000-05-02 11:48:42 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -168,8 +168,8 @@ debug("mods =" + mods.toString());
 		if (obj!=null) {
 			return(obj);
 		} else {
-			// Ugly and should be removed ROB
- 			if(!name.equals("PLAYLISTS")) {
+			// Ugly and should be removed ROB, I Agree DANIEL :)
+ 			if(!name.equals("playlists")) {
 				debug("getModule("+name+"): ERROR: No module loaded with this name!");
 			}
 			return(null);

@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.11 $ $Date: 2000-05-02 10:25:56 $
+ * @version $Revision: 1.12 $ $Date: 2000-05-02 11:48:41 $
  */
 public abstract class Module {
 
@@ -349,27 +349,28 @@ public abstract class Module {
 	}
 
 	public static Object getModule(String name) {
-		if (xmlinstalled) name=name.toLowerCase();
 		// are the modules loaded yet ? if not load them
+
+
 		if (modules==null) {
+			// temp check for xerces
+			try {
+				Class newclass=Class.forName("org.xml.sax.ContentHandler");
+				Module.xmlinstalled=true;
+				System.out.println("xerces.jar installed moving to XML mode");	
+				modules=ModuleXML.loadModulesFromDisk();
+			} catch(Exception e) {
+				System.out.println("xerces.jar ERROR not found turning to properties mode");
+				modules=loadModulesFromDisk();
+			}
+
 			debug("getModule("+name+"): Modules not loaded, loading them..");
-
-
-
-		// temp check for xerces
-		try {
-			Class newclass=Class.forName("org.xml.sax.ContentHandler");
-			Module.xmlinstalled=true;
-			System.out.println("xerces.jar installed moving to XML mode");	
-			modules=ModuleXML.loadModulesFromDisk();
-		} catch(Exception e) {
-			System.out.println("xerces.jar ERROR not found turning to properties mode");
-			modules=loadModulesFromDisk();
-		}
 			startModules();
 			// also start the maintaince thread that calls all modules every x seconds
 			mprobe = new ModuleProbe(modules);
 		}
+		if (xmlinstalled) name=name.toLowerCase();
+
 
 		// try to obtain the ref to the wanted module
 		Object obj=modules.get(name);	
@@ -377,7 +378,7 @@ public abstract class Module {
 			return(obj);
 		} else {
 			// Ugly and should be removed ROB
- 			if(!name.equals("PLAYLISTS")) {
+ 			if(!name.equals("PLAYLISTS") && !name.equals("playlists")) {
 				debug("getModule("+name+"): ERROR: No module loaded with this name!");
 			}
 			return(null);
