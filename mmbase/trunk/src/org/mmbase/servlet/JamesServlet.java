@@ -23,11 +23,28 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-*/class DebugServlet {	JamesServlet servlet;	Vector URIs = new Vector();
-	int refCount;		DebugServlet( JamesServlet servlet, String URI, int refCount) {		this.servlet = servlet;		URIs.addElement(URI);
-		this.refCount = refCount;	}		public String toString() {
-		return "Servlet: "+servlet+" Ref: "+refCount+" URIs: "+URIs;	}
-}	
+*/
+
+class DebugServlet {
+	public String classname = getClass().getName();
+	public boolean debug = true;
+	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
+	JamesServlet servlet;
+	Vector URIs = new Vector();
+	int refCount;
+	
+	DebugServlet( JamesServlet servlet, String URI, int refCount) {
+		this.servlet = servlet;
+		URIs.addElement(URI);
+		this.refCount = refCount;
+	}
+	
+	public String toString() {
+		return classname +" servlet("+servlet+"), refcount("+refCount+"), uri's("+URIs+")"; 
+	}
+}
+	
 public class JamesServlet extends HttpServlet {
 
 	// org.mmbase
@@ -182,25 +199,44 @@ public class JamesServlet extends HttpServlet {
 
 
 	private static int servletCount;
-	private static Object servletCountLock = new Object();	private static Hashtable runningServlets = new Hashtable();
+	private static Object servletCountLock = new Object();
+	private static Hashtable runningServlets = new Hashtable();
 	private static int printCount;
 	
-	public void decRefCount(HttpServletRequest req) {		String URL=req.getRequestURI()+"?"+req.getQueryString();
-		synchronized (servletCountLock) {			servletCount--;			DebugServlet s = (DebugServlet) runningServlets.get(this);
-			if (s!=null) {				if (s.refCount==0) runningServlets.remove(this);				else {
-					s.refCount--;					int i = s.URIs.indexOf(URL);
+	public void decRefCount(HttpServletRequest req) {
+		String URL=req.getRequestURI();
+		if( req.getQueryString()!=null) 
+			URL +="?"+req.getQueryString();
+		synchronized (servletCountLock) {
+			servletCount--;
+			DebugServlet s = (DebugServlet) runningServlets.get(this);
+			if (s!=null) {
+				if (s.refCount==0) runningServlets.remove(this);
+				else {
+					s.refCount--;
+					int i = s.URIs.indexOf(URL);
 					if (i>=0) s.URIs.removeElementAt(i);
-				}			}
+				}
+			}
 		}//sync
 	}
 	
-	public void incRefCount(HttpServletRequest req) {		String URL=req.getRequestURI()+"?"+req.getQueryString();
+	public void incRefCount(HttpServletRequest req) {
+		String URL=req.getRequestURI();
+		if(req.getQueryString()!=null)
+			URL+="?"+req.getQueryString();
 		int curCount;
-		synchronized (servletCountLock)	{			servletCount++; curCount=servletCount; printCount++;			DebugServlet s = (DebugServlet) runningServlets.get(this);			if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));			else { s.refCount++; s.URIs.addElement(URL); }
+		synchronized (servletCountLock)	{
+			servletCount++; curCount=servletCount; printCount++;
+			DebugServlet s = (DebugServlet) runningServlets.get(this);
+			if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
+			else { s.refCount++; s.URIs.addElement(URL); }
 		}// sync
-		if ((printCount & 15)==0) {			System.out.println("Running servlets: "+curCount);
+		if ((printCount & 15)==0) {
+			System.out.println("Running servlets: "+curCount);
 			for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
-				System.out.println(e.nextElement());		}
+				System.out.println(e.nextElement());
+		}
 	}
 	
     public void init(ServletConfig config) throws ServletException {
