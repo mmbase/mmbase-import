@@ -13,16 +13,24 @@ import java.util.*;
 import java.sql.*;
 import java.io.*;
 
+/*
 import org.mmbase.module.database.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+*/
+
+import org.mmbase.module.gui.html.*;
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+import org.mmbase.module.sessionsInterface;
+import org.mmbase.module.sessionInfo;
 
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
-
 public class VideoParts extends MMObjectBuilder {
 
 	private static String classname = "VideoParts"; // getClass().getName();
@@ -33,6 +41,128 @@ public class VideoParts extends MMObjectBuilder {
 	public VideoParts() {
 	}
 
+	public int insertDone(EditState ed,MMObjectNode node) {
+		String sourcepath=ed.getHtmlValue("sourcepath");
+        	int devtype=node.getIntValue("source");
+		int id=node.getIntValue("number");
+		String devname = null;
+
+		if (devtype==7){		//Check if source is from a jazzdrive -> 7
+			
+                	//sourcepath contains  eg. /Drivename/Dir/File
+                	String delim = "/";
+                	StringTokenizer tok = new StringTokenizer(sourcepath,delim);     //Retrieve devname
+                	if (tok.hasMoreTokens()) {
+                	        devname = tok.nextToken();
+                	}else{
+                	      System.out.println("VideoParts: insertDone: srcfile cannot be tokenized using symbol "+delim);
+                	      System.out.println("VideoParts: insertDone: insertDone will fail");
+			}
+           	jazzdrives bul=(jazzdrives)mmb.getMMObject("jazzdrives");
+			Enumeration e=bul.search("WHERE name='"+devname+"'");
+                        if (e.hasMoreElements()) {
+                              	MMObjectNode jnode=(MMObjectNode)e.nextElement();
+                                jnode.setValue("state","copy");
+                                jnode.setValue("info","srcfile="+sourcepath+" id="+id);
+                                jnode.commit();
+                        }
+		} else if (devtype==4 || devtype==5) {		//Check if source is from a import/
+		if (sourcepath!=null) {
+		System.out.println ("VideoParts.insertDone -> sourcepath = " + sourcepath);
+		System.out.println ("VideoParts.insertDone -> number = " + id);
+		File newfile=new File("/data/video/mov/"+id+".wav");
+		// With the new editor-interface (pulldowns), the full pathname
+		// will be provided (so including the leading '/data/import/')
+		//File curfile=new File("/data/import/"+t);
+		File curfile = new File (sourcepath);
+		if (curfile.exists()) {
+			if (curfile.renameTo(newfile)==false) {
+				System.out.println("VideoParts -> Can't rename wav file : " + sourcepath);
+			} else {
+				int st=node.getIntValue("storage"); 
+				RawVideos bul=(RawVideos)mmb.getMMObject("rawvideos");
+				if (st==1 || st==2) {
+					addRawVideo(bul,id,3,3,441000,2);   
+				} else if (st==3 || st==4) {
+					addRawVideo(bul,id,3,3,441000,1);   
+				}
+				movAvailable(""+id);
+			}
+		}
+		}
+		}
+		// devtype 8 is Armin
+		return(id);
+	}
+
+
+
+	/**
+	* pre commit from the editor
+	*/
+	public int preEdit(EditState ed, MMObjectNode node) 
+	{
+		//debug("preEdit(): start");
+		if ( node != null )
+		{
+			String starttime = ed.getHtmlValue("starttime");
+			String stoptime  = ed.getHtmlValue("stoptime");
+	
+			debug("preEdit("+node.getName()+"):starttime("+starttime+")");
+			debug("preEdit("+node.getName()+"): stoptime("+stoptime+")");
+
+			// check if (stop - start) == lengthOfPart, if lengthOfPart != -1
+
+			// startstop
+			if( starttime != null )
+			{
+				// is it valid ?
+				// -------------
+
+				if (checktime(starttime))
+					putProperty( node, "starttime", starttime);
+				else
+				{
+					// no, maybe we have to remove it (when its empty or '-1')
+					// -------------------------------------------------------
+
+					if (starttime.equals("") || starttime.equals("-1"))
+						removeProperty( node, "starttime" );
+					else
+						debug("preEdit("+node+","+starttime+"): ERROR: Dont know what to do with this starttime for this node!");
+				}
+			}
+			else {
+				// error ? daniel	putProperty( node, "starttime", "-1");
+			}
+
+			if ( stoptime != null )
+			{
+				// check if its a valid time
+				// -------------------------
+
+				if(checktime(stoptime))
+					putProperty( node, "stoptime" , stoptime);
+				else
+				{
+					// not a valid time, maybe we have tot remove this property
+					// --------------------------------------------------------
+
+					if(stoptime.equals("") || stoptime.equals("-1"))
+						removeProperty(node, "stoptime");	
+					else
+						debug("preEdit("+node+","+stoptime+"): ERROR: Dont know what to do this this stoptime for this node!");
+				}
+			}
+			else {
+				// error ? daniel	putProperty( node, "stoptime" , "-1");
+			}
+		}
+		else
+			debug("preEdit(): ERROR: node is null!");
+
+		return(-1);	
+	}
 
 	public static long calcTime( String time )
 	{
@@ -299,7 +429,14 @@ public class VideoParts extends MMObjectBuilder {
 		}
 	}
 
-
+	public String getGUIIndicator(MMObjectNode node) {
+		String str=node.getStringValue("title");
+		if (str.length()>15) {
+			return(str.substring(0,12)+"...");
+		} else {
+			return(str);
+		}
+	}
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("storage")) {
@@ -313,6 +450,106 @@ public class VideoParts extends MMObjectBuilder {
 			}
 		}
 		return(null);
+	}
+
+	/**
+	* get new node
+	*/
+	public MMObjectNode getNewNode(String owner) {
+		MMObjectNode node=super.getNewNode(owner);
+		return(node);
+	}
+
+	public void movAvailable(String id) {
+		MMObjectNode node=getNode(id);
+		int st=node.getIntValue("storage"); 
+		if (st!=0) {
+			System.out.println("VideoParts -> Store command on "+id+" = "+st);
+			RawVideos bul=(RawVideos)mmb.getMMObject("rawvideos");
+			if (bul!=null) {
+				if (st==1 || st==2) { 
+					try {
+						int idi=Integer.parseInt(id);
+						addRawVideo(bul,idi,1,2,20000,1);   
+						addRawVideo(bul,idi,1,2,32000,1);   
+						addRawVideo(bul,idi,1,2,45000,1);   
+						addRawVideo(bul,idi,1,2,45000,2);   
+						addRawVideo(bul,idi,1,2,80000,2);   
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("VideoParts -> Wrong id in ParseInt");
+					}
+				}
+				if (st==3 || st==4) { 
+					try {
+						int idi=Integer.parseInt(id);
+						addRawVideo(bul,idi,1,2,20000,1);   
+						addRawVideo(bul,idi,1,2,32000,1);   
+						addRawVideo(bul,idi,1,2,45000,1);   
+						addRawVideo(bul,idi,1,2,80000,1);   
+					} catch (Exception e) {
+						System.out.println("VideoParts -> Wrong id in ParseInt");
+					}
+				}
+			}
+		}
+	}
+
+	public void addRawVideo(RawVideos bul,int id, int status, int format, int speed, int channels) {
+		MMObjectNode node=bul.getNewNode("system");		
+		node.setValue("id",id);
+		node.setValue("status",status);
+		node.setValue("format",format);
+		node.setValue("speed",speed);
+		node.setValue("channels",channels);
+		bul.insert("system",node);
+	}
+
+	public void pcmAvailable(String id) {
+		MMObjectNode node=getNode(id);
+		int st=node.getIntValue("storage"); 
+		if (st!=0) {
+			System.out.println("VideoParts -> Store command on "+id+" = "+st);
+			RawVideos bul=(RawVideos)mmb.getMMObject("rawvideos");
+			if (bul!=null) {
+				if (st==1) {
+					try {
+						int idi=Integer.parseInt(id);
+						addRawVideo(bul,idi,1,5,192000,2);   
+					} catch (Exception e) {
+						System.out.println("VideoParts -> Wrong id in ParseInt");
+					}
+				}
+
+				if (st==2) {
+					try {
+						int idi=Integer.parseInt(id);
+						addRawVideo(bul,idi,1,2,20000,1);   
+						addRawVideo(bul,idi,1,2,20000,2);   
+						addRawVideo(bul,idi,1,2,32000,1);   
+						addRawVideo(bul,idi,1,2,32000,2);   
+						addRawVideo(bul,idi,1,2,45000,1);   
+						addRawVideo(bul,idi,1,2,45000,2);   
+						addRawVideo(bul,idi,1,2,80000,1);   
+						addRawVideo(bul,idi,1,2,80000,2);   
+					} catch (Exception e) {
+						System.out.println("VideoParts -> Wrong id in ParseInt");
+					}
+				}
+
+				if (st==3) {
+					try {
+						int idi=Integer.parseInt(id);
+						addRawVideo(bul,idi,1,2,20000,1);   
+						addRawVideo(bul,idi,1,2,32000,1);   
+						addRawVideo(bul,idi,1,2,45000,1);   
+						addRawVideo(bul,idi,1,2,80000,1);   
+					} catch (Exception e) {
+						System.out.println("VideoParts -> Wrong id in ParseInt");
+					}
+				}
+			}
+		}
 	}
 
 	/**
