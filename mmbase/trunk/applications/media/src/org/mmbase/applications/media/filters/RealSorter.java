@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.7 2003-07-28 08:36:41 vpro Exp $
+ * @version $Id: RealSorter.java,v 1.8 2004-01-19 17:07:41 michiel Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);
@@ -76,9 +76,7 @@ public class RealSorter extends  ChainSorter {
            }
         }
         /**
-         * select the best realaudio mediasource if available
-         * @param mediaSources the list of appropriate mediasources
-         * @return the best realaudio mediasource
+         * @todo
          */
         protected int getPreference(URLComposer ri) {
             Map info           = ri.getInfo();
@@ -140,9 +138,7 @@ public class RealSorter extends  ChainSorter {
         }
 
         /**
-         * select the best realaudio mediasource if available
-         * @param mediaSources the list of appropriate mediasources
-         * @return the best realaudio mediasource
+         * @javadoc
          */
         protected int getPreference(URLComposer ri) {
             Map info           = ri.getInfo();
