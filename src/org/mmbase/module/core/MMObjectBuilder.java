@@ -92,17 +92,17 @@ public class MMObjectBuilder extends MMTable {
     private static Hashtable fieldDefCache=new Hashtable(40);
     // unused
 
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
+
     /**
     * If true, debug messages are send to the MMBase log
     * @deprecated : use Logger routines instead
     */
     public boolean debug=false;
 	
-	/**
-	* Logger routine
-	*/
-	private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
-
     /**
     * Sets debugging on or off
     * @deprecated : use Logger routines instead
@@ -262,17 +262,17 @@ public class MMObjectBuilder extends MMTable {
             log.info("init(): Create "+tableName);
             create();
         }
-        if (!tableName.equals("object") && mmb.TypeDef!=null) {
-            oType=mmb.TypeDef.getIntValue(tableName);
+        if (!tableName.equals("object") && mmb.getTypeDef()!=null) {
+            oType=mmb.getTypeDef().getIntValue(tableName);
             if (oType==-1) {
-                //mmb.TypeDef.insert("system",tableName,description);
-                MMObjectNode node=mmb.TypeDef.getNewNode("system");
+                //mmb.getTypeDef().insert("system",tableName,description);
+                MMObjectNode node=mmb.getTypeDef().getNewNode("system");
                 node.setValue("otype",1);
                 node.setValue("name",tableName);
                 if (description==null) description="not defined in this langauge";
                 node.setValue("description",description);
                 node.insert("system");
-                oType=mmb.TypeDef.getIntValue(tableName);
+                oType=mmb.getTypeDef().getIntValue(tableName);
             }
         } else {
             if(!tableName.equals("typedef")) {
@@ -398,8 +398,8 @@ public class MMObjectBuilder extends MMTable {
     *  @param alias the aliasname to associate with the object
     */
     public void createAlias(int number,String alias) {
-	if (mmb.OAlias!=null) {
-		MMObjectNode node=mmb.OAlias.getNewNode("system");
+	if (mmb.getOAlias()!=null) {
+		MMObjectNode node=mmb.getOAlias().getNewNode("system");
 		node.setValue("name",alias);
 		node.setValue("destination",number);
 		node.insert("system");
@@ -474,7 +474,7 @@ public class MMObjectBuilder extends MMTable {
         					nameCache.remove( name );	
         				} 
         			} catch( NumberFormatException e ) {
-        				debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
+        				log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
         			}
         		}
         */
@@ -602,8 +602,8 @@ public class MMObjectBuilder extends MMTable {
             node=mmb.getTypeDef().getNode(nr);
         } else {
             //otherwise try to see if it can be retrieved by alias name
-            if (mmb.OAlias!=null) {
-            	node=mmb.OAlias.getAliasedNode(key);
+            if (mmb.getOAlias()!=null) {
+            	node=mmb.getOAlias().getAliasedNode(key);
             }
         }
         return node;
@@ -747,6 +747,52 @@ public class MMObjectBuilder extends MMTable {
 		node=(MMObjectNode)TemporaryNodes.remove(key);
 		if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
 	}
+
+    /**
+    * Count all the objects that match the searchkeys
+    * @param where scan expression that the objects need to fulfill
+    * @return the number of an <code>Enumeration</code> containing all the objects that apply.
+    */
+    public int count(String where) {
+        if (where==null) where="";
+        if (where.indexOf("MMNODE")!=-1) {
+            where=convertMMNode2SQL(where);
+        } else {
+            where=QueryConvertor.altaVista2SQL(where,database);
+        }
+        String query="SELECT Count(*) FROM "+getFullTableName()+" "+where;
+        return basicCount(query);
+    }
+
+    /**
+    * Executes a search (sql query) on the current database
+    * and returns the nodes that result from the search as a Vector.
+    * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
+    * @param query The SQL query
+    * @return A Vector which contains all nodes that were found
+    */
+    private int basicCount(String query) {
+        statCount("count");
+        int nodecount=-1;
+        MultiConnection con=null;
+        Statement stmt=null;
+        try {
+            con=mmb.getConnection();
+            stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery(query);
+            if (rs.next()) {
+                nodecount= rs.getInt(1);
+            }
+            stmt.close();
+            con.close();
+            // return the results
+        } catch (Exception e) {
+            // something went wrong print it to the logs
+            log.error("basicSearch(): ERROR in search "+query);
+            mmb.closeConnection(con,stmt);
+        }
+        return nodecount;
+    }
 
     /**
     * Enumerate all the objects that match the searchkeys
@@ -1112,7 +1158,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Build a set command string from a set nodes ( should be moved )
-    * @parame nodes Vector containg teh nodes to put in the set
+    * @parame nodes Vector containg the nodes to put in the set
     * @param fieldName fieldname whsoe values should be put in the set
     * @return a comma-seperated list of values, as a <code>String</code>
     */
@@ -1474,8 +1520,7 @@ public class MMObjectBuilder extends MMTable {
             int curtime=node.getIntValue(field);
     	    // gives us the next full day based on time (00:00)
     	    int days=curtime/(3600*24);
-	    rtn=""+((days*(3600*24))-3600);
-
+	        rtn=""+((days*(3600*24))-3600);
             // text convertion  functions
         }
         else if (function.equals("wap")) {
@@ -1507,6 +1552,17 @@ public class MMObjectBuilder extends MMTable {
              double val=node.getDoubleValue(field);
 	     NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
 	     rtn=""+nf.format(val);
+        } else if (function.equals("gui")) {
+            String val=null;
+            if (field.equals("")) {
+                val=getGUIIndicator(node);
+            } else {
+                val=getGUIIndicator(field,node);
+            }
+            if (val==null) {
+                val=node.getStringValue(field);
+            }
+            rtn=val;
         } else {
             log.warn("Builder ("+tableName+") unknown function '"+function+"'");
         }
@@ -1575,7 +1631,7 @@ public class MMObjectBuilder extends MMTable {
     * @return the number of nodes of that type in the cache
     */
     public int getCacheSize(String type) {
-        int i=mmb.TypeDef.getIntValue(type);
+        int i=mmb.getTypeDef().getIntValue(type);
         int j=0;
         for (Enumeration e=nodeCache.elements();e.hasMoreElements();) {
             MMObjectNode n=(MMObjectNode)e.nextElement();
@@ -1629,7 +1685,7 @@ public class MMObjectBuilder extends MMTable {
     	try {
     		isochars=body.getBytes("ISO-8859-1");
     	} catch (Exception e) {
-    		debug("setDBText(): String contains odd chars");
+    		log.debug("setDBText(): String contains odd chars");
     		e.printStackTrace();
     	}
     	try {
@@ -1637,7 +1693,7 @@ public class MMObjectBuilder extends MMTable {
     		stmt.setAsciiStream(i,stream,isochars.length);
     		stream.close();
     	} catch (Exception e) {
-    		debug("setDBText(): Can't set ascii stream");
+    		log.error("setDBText(): Can't set ascii stream");
     		e.printStackTrace();
     	}
 }
@@ -1654,7 +1710,7 @@ public class MMObjectBuilder extends MMTable {
     		stmt.setBinaryStream(i,stream,bytes.length);
     		stream.close();
     	} catch (Exception e) {
-    		debug("setDBByte(): Can't set byte stream");
+    		log.error("setDBByte(): Can't set byte stream");
     		e.printStackTrace();
     	}
 }
@@ -2011,7 +2067,7 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Gets Dutch Short name.
     * Actually returns the builders short name in wither the 'current langauge', or default langauge 'us', whichever is available.
-    * If this fails, teh value set with {@link #SetDutchSName} is used instead.
+    * If this fails, the value set with {@link #SetDutchSName} is used instead.
     * @returns the 'dutch' short name
     * @deprecated Will be removed soon
     */
@@ -2043,7 +2099,7 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Send a signal to other servers that a field was changed.
     * @param node the node the field was changed in
-    * @param fieldname the anme of teh field that was changed
+    * @param fieldname the name of the field that was changed
     * @return always <code>true</code>
     */
     public boolean	sendFieldChangeSignal(MMObjectNode node,String fieldname) {
@@ -2074,7 +2130,7 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Send a signal to other servers that a new node was created.
     * @param tableName the table in which a node was edited (?)
-    * @param number teh number of the new node
+    * @param number the number of the new node
     * @return always <code>true</code>
     */
     public boolean signalNewObject(String tableName,int number) {
@@ -2088,7 +2144,7 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Converts a node to XML.
     * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
-    * @param node teh node to convert
+    * @param node the node to convert
     * @return the XML <code>String</code>
     */
     public String toXML(MMObjectNode node) {
