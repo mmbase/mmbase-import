@@ -172,6 +172,7 @@ public class Utils {
     public static String getAttribute(Node node, String name, String defaultvalue) {
         try {
             Node n = node.getAttributes().getNamedItem(name);
+            if (n == null) return defaultvalue;
             return n.getNodeValue();
         } catch (Exception e) {
             log.warn(Logging.stackTrace(e));
@@ -472,7 +473,7 @@ public class Utils {
      */
     public static void transformNode(Node node, String xslfilename, Writer out, Hashtable params) {
         if (log.isDebugEnabled()) log.debug("transforming: " + node.toString());
-
+        
         // UNICODE works like this...
         java.io.StringWriter res = new java.io.StringWriter();           
         transformNode(node,xslfilename, new javax.xml.transform.stream.StreamResult(res),  params);
