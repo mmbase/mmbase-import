@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 public class Cookies extends MMObjectBuilder {
 
 	// debug level, make sure its false in cvs
-	public boolean debug = true;
+	public boolean debug = false;
 
 	// remember the 250 most used cookies
 	LRUHashtable cache = new LRUHashtable(250);
