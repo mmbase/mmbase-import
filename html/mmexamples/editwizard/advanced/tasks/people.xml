@@ -2,7 +2,6 @@
 <wizard-schema id="empty">
 	<title>Example 1 people editor!!</title>
 	<action type="load">
-    <object type="people" />
 		<relation destination="images"   role="related"  />
 		<relation destination="news"     role="related"  />
 	</action>
