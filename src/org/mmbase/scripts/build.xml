@@ -293,7 +293,7 @@ about the Ant build tool.
     </copydir>     
 
     <!-- copy the scripts -->
-    <copydir src="${src.dir}/org/mmbase/scripts" dest="${dist.scripts}">
+    <copydir src="${src.dir}/org/mmbase/scripts/**" dest="${dist.scripts}">
       <exclude name="build.xml"/>
       <exclude name="build-in-distro.xml"/>
       <exclude name="compile"/>

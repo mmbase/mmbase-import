@@ -292,7 +292,7 @@ about the Ant build tool.
     </copydir> 
 
     <!-- copy the scripts -->
-    <copydir src="${top.dir}/scripts" dest="${dist.scripts}">
+    <copydir src="${top.dir}/scripts/**" dest="${dist.scripts}">
       <exclude name="compile"/>
       <exclude name="compile2"/>
       <exclude name="createjar"/>
