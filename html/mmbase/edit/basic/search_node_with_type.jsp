@@ -15,7 +15,7 @@
 <!-- import search age and store in session -->
 
 <mm:import externid="_search_form_minage" ></mm:import>
-<mm:import externid="_search_form_maxage" ></mm:import>
+<mm:import externid="_search_form_maxage" ><mm:listnodes type="typedef" constraints="[name]='${node_type}'" max="1"><mm:field name="defaultsearchage()" /></mm:listnodes></mm:import>
 
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
@@ -25,7 +25,7 @@
         <%-- search table --%>
         <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
             <tr align="left">
-             <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
+              <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
              <td width="100%"><mm:fieldinfo type="searchinput" /></td>
            </tr>
         </mm:fieldlist>
