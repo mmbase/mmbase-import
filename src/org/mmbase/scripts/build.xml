@@ -118,7 +118,6 @@ Change directory to ${build.dir}/orion and run:
     <mkdir dir="${build.dir}"/>
     <property name="name" value="mmbase"/>
     <property name="version" value="${DSTAMP}"/>
-    <replace file="${source-src.dir}/org/mmbase/Version.java" token="/*BUILDDATE*/" value="/*BUILDDATE*/ +&quot;.${DSTAMP}&quot; //" />
   </target>
 
 
@@ -563,6 +562,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="jar" description="Create the MMBase jar file"
           depends="compile,web">
+    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
     <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
@@ -664,6 +664,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="jar.cust" description="Create a customized MMBase jar file"
           depends="compile.cust">
+    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
     <jar jarfile="${build.dir}/mmbase.jar"
          basedir="${build.dir}/classes"
 	 includes="org/mmbase/**" />
