@@ -29,31 +29,25 @@ import org.mmbase.util.logging.*;
 /**
  * Something like this
 <pre>
-  <mm:tree type="news" repeat="related,object">
-    <mm:grows to="0">
-       Related to the news article: <mm:field name="title" />
-    </mm:grows>
-    <mm:shrinks to="0">
-       END
-    </mm:shrinks>
-    <mm:level>
-     <mm:isgreaterthan value="0">
-       <mm:grows>
-         <ul class="<mm:write />">
-       </mm:grows>
-       <mm:shrinks>
-         </ul>
-       </mm:shrinks>
-       <mm:node elementdepth="$_">
-         <li><mm:field name="gui()" /></li>
-       </mm:node>                
-     </mm:isgreaterthan>
-    </mm:level>
+ <mm:relatednodescontainer type="object" searchdirs="destination">
+  <mm:tree type="object" searchdir="destination" maxdepth="8">
+    <mm:grow>
+      <ul class="<mm:depth" />"><mm:onshrink></ul></mm:onshrink>
+    </mm:grow>
+    <li><mm:depth />: <mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
+
+    <mm:onshrink></li></mm:onshrink>
+
+    <mm:shrink />
+
+    <mm:last>SIZE : <mm:size /></mm:last>
+
   </mm:tree>
+</mm:relatednodescontainer>
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.3 2003-12-24 00:31:39 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.4 2003-12-24 16:36:26 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -66,6 +60,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     private int previousDepth = -1;
     private int depth = 0;
     private int nextDepth = 1;
+    private int initialDepth;
+    private int index;
+
     private Node nextNode;
 
     /**
@@ -115,11 +112,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         return tree.size();
     }
     public int getIndex() {
-        if (nextNode == null) {
-            return iterator.previousIndex(); 
-        } else {
-            return iterator.previousIndex() - 1;
-        }
+        return index;
     }
 
     public int getIndexOffset() {
@@ -151,7 +144,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
      * Performs the search
      */
     public int doStartTag() throws JspTagException {
-
+        log.debug("starttag");
         shrinkStack = new Stack();
         collector = new ContextCollector(getContextProvider().getContextContainer());
 
@@ -197,10 +190,24 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
 
         if (iterator.hasNext()) {
+            index = 0;
+            previousDepth = iterator.currentDepth();            
+            initialDepth  = previousDepth;
+            Node node     = iterator.nextNode();            
+            setNodeVar(node);
+            fillVars();
             depth         = iterator.currentDepth();
-            previousDepth = depth - 1;
-            nextNode      = iterator.nextNode();
-            nextDepth     = iterator.currentDepth();
+
+            if (iterator.hasNext()) {
+                nextNode  = iterator.nextNode();
+                nextDepth = iterator.currentDepth();
+                log.debug("hasnext " + nextDepth);
+            } else {
+                nextNode  = null;
+                nextDepth = initialDepth;
+                log.debug("no next " + nextDepth);
+                    
+            }
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
@@ -208,25 +215,13 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
 
     }
-
     public void doInitBody() throws JspTagException {
-        if (nextNode != null) {
-            setNodeVar(nextNode);
-            fillVars();
-            previousDepth = depth;
-            depth         = nextDepth;
-        }
-        if (iterator.hasNext()){
-            nextNode      = iterator.nextNode();
-            nextDepth     = iterator.currentDepth();
-        } else {
-            nextNode      = null;
-            nextDepth     = 0;
-        }
+        log.debug("initbody");
     }
 
 
     public int doAfterBody() throws JspTagException {
+        log.debug("afterbody");
         super.doAfterBody();
         if (getId() != null) {
             getContextProvider().getContextContainer().unRegister(getId());
@@ -234,8 +229,23 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         
         collector.doAfterBody();
 
-        if (nextNode != null){
-            doInitBody();
+        if (nextNode != null) {
+            log.debug("using next-node");
+            setNodeVar(nextNode);
+            fillVars();
+            previousDepth = depth;
+            depth         = nextDepth;
+            
+            if (iterator.hasNext()) {
+                nextNode  = iterator.nextNode();
+                nextDepth = iterator.currentDepth();
+                log.debug("has next " + nextDepth);
+            } else {
+                nextNode  = null;
+                nextDepth = initialDepth;
+                log.debug("no next " + nextDepth);
+            }
+            index ++;
             return EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
@@ -252,6 +262,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
     public int doEndTag() throws JspTagException {
+        log.debug("endtag");
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), tree);
         }
