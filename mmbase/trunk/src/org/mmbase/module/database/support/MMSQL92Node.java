@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.50 2001-04-20 08:33:25 pierre Exp $
+$Id: MMSQL92Node.java,v 1.51 2001-06-01 11:55:09 eduard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.50  2001/04/20 08:33:25  pierre
+pierre: better support for blobs when changing builders
+
 Revision 1.49  2001/03/09 09:12:04  pierre
 pierre: added directionality support to databse support classes. also added logging.
 Someone please test the Informix database!
@@ -51,7 +54,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.50 $ $Date: 2001-04-20 08:33:25 $
+* @$Revision: 1.51 $ $Date: 2001-06-01 11:55:09 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -561,85 +564,170 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 	}
 
-	/**
-	* commit this node to the database
-	*/
-	public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
-		//  precommit call, needed to convert or add things before a save
-		bul.preCommit(node);
-		// commit the object
-		String values="";
-		String key;
-		// create the prepared statement
-		for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
-				key=(String)e.nextElement();
-				// a extra check should be added to filter temp values
-				// like properties
-				
-				// is this key disallowed ? ifso map it back
-				if (disallowed2allowed.containsKey(key)) {
-					key=(String)disallowed2allowed.get(key);
-				}
+    /**
+     * commit this node to the database
+     */
+    public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
+    	//  precommit call, needed to convert or add things before a save
+	bul.preCommit(node);
+	
+	// commit the object
+	String builderFieldSql = null;
+	boolean changeObjectFields = false;
+	boolean changeInsrelFields = false;
+	boolean isInsrelSubTable = node.parent!=null && node.parent instanceof InsRel && !bul.tableName.equals("insrel");
+	
+	// create the prepared statement
+    	for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
+	    String key=(String)e.nextElement();
+	    // a extra check should be added to filter temp values
+    	    // like properties
 
-				// check if its the first time for the ',';
-				if (values.equals("")) {
-					values+=" "+key+"=?";
-				} else {
-					values+=", "+key+"=?";
-				}
-		}
+    	    // is this key disallowed ? ifso map it back
+    	    if (disallowed2allowed.containsKey(key)) key=(String)disallowed2allowed.get(key);
 
-		if (values.length()>0) {
-			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE "+getNumberString()+"="+node.getValue("number");
-			try {
-				MultiConnection con=mmb.getConnection();
-				PreparedStatement stmt=con.prepareStatement(values);
-				int type;int i=1;
-				for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
-						key=(String)e.nextElement();
-						type=node.getDBType(key);
-						if (type==FieldDefs.TYPE_INTEGER) {
-							stmt.setInt(i,node.getIntValue(key));
-						} else if (type==FieldDefs.TYPE_FLOAT) {
-							stmt.setFloat(i,node.getFloatValue(key));
-						} else if (type==FieldDefs.TYPE_DOUBLE) {
-							stmt.setDouble(i,node.getDoubleValue(key));
-						} else if (type==FieldDefs.TYPE_LONG) {
-							stmt.setLong(i,node.getLongValue(key));
-						} else if (type==FieldDefs.TYPE_STRING) {
-							setDBText(i,stmt,node.getStringValue(key));
-						} else if (type==FieldDefs.TYPE_BYTE) {
-							setDBByte(i,stmt,node.getByteValue(key));
-						} else {
-							stmt.setString(i,node.getStringValue(key));
-						}
-						i++;
-				}
-				stmt.executeUpdate();
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-		        log.error(Logging.stackTrace(e));
-				return(false);
-			}
-		}
+    	    // add the fieldname,.. and do smart ',' mapping
+    	    if (builderFieldSql == null) builderFieldSql = key + "=?";
+    	    else builderFieldSql += ", " + key+ "=?";
 
-		node.clearChanged();
-		if (bul.broadcastChanges) {
-			if (bul instanceof InsRel) {
-				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
-				// figure out tables to send the changed relations
-				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
-				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
-			} else {
-				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
-			}
+    	    // check if the fields are also in the object table...
+	    if(key.equals("number") || key.equals("otype") || key.equals("owner")) {
+    	    	
+		// not allowed as far as im concerned... 
+		if(key.equals("number")) {
+		    log.fatal("trying to change the 'number' field");
+    		    throw new RuntimeException("trying to change the 'number' field");
 		}
-		return(true);
+		
+		// hmm i dont like the idea of changing the otype..
+    	    	if(key.equals("otype")) log.error("changing the otype field, is this really needed? i dont think so, but hey i dont care..");
+    	    	
+    	    	
+		// change the status, that object should be updated..
+		changeObjectFields = true;
+		
+		// if it is a relation, then also adjust the insrel table if it is a sub table of that one..
+    	    	if(isInsrelSubTable) {
+
+		    // change the status, that insrel should be updated..
+		    changeInsrelFields = true;
+	    	    
+		    // give a warning that we are changing more then 1 table..
+    		    log.warn("changing the '"+key+"' field, could give probems due to update on 3 tables without locking(builder, insrel, object)");				
+		} 
+		else log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, object)");		
+    	    } // object fields
+	    
+	    // if it is a relation, then also adjust the insrel table if it is a sub table of that one.. then adjust also fields from insrel
+ 	    if(isInsrelSubTable && ( key.equals("snumber") || key.equals("dnumber") || key.equals("rnumber") || key.equals("dir")) ) {
+    	    	// change the status, that insrel should be updated..
+		changeInsrelFields = true;
+		    
+		log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, insrel)");
+	    } // insrel fields
+	} // add all changed fields...
+
+    	// when we had a update...
+    	if(builderFieldSql != null) {
+	    String sql = "UPDATE "+mmb.baseName+"_"+bul.tableName+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number");
+	    log.debug("Temporary SQL statement, which will be filled with parameters : " + sql);
+	    
+	    try {
+    	    	// to do it chronological.. process till te reach the object builder...maybe the most smart thing todo...
+	    	// start with the update of builder itselve first..
+		MultiConnection con=mmb.getConnection();
+    	    	PreparedStatement stmt=con.prepareStatement(sql);
+	    
+	    	// fill the '?' thingies with the values from the nodes..
+    	    	Enumeration changedFields = node.getChanged().elements();
+		int currentParameter = 1; 
+		while(changedFields.hasMoreElements()) {
+    	    	    String key = (String) changedFields.nextElement();
+    	    	    int type = node.getDBType(key);
+		    
+		    // for the right type call the right method..
+    	    	    if (type==FieldDefs.TYPE_INTEGER) stmt.setInt(currentParameter,node.getIntValue(key));
+    	    	    else if (type==FieldDefs.TYPE_FLOAT) stmt.setFloat(currentParameter,node.getFloatValue(key));
+    	    	    else if (type==FieldDefs.TYPE_DOUBLE) stmt.setDouble(currentParameter,node.getDoubleValue(key));
+    	    	    else if (type==FieldDefs.TYPE_LONG) stmt.setLong(currentParameter,node.getLongValue(key));
+    	    	    else if (type==FieldDefs.TYPE_STRING) setDBText(currentParameter,stmt,node.getStringValue(key));
+    	    	    else if (type==FieldDefs.TYPE_BYTE) setDBByte(currentParameter,stmt,node.getByteValue(key));
+		    else stmt.setString(currentParameter,node.getStringValue(key));
+    	    	    currentParameter++;		    
+		}				
+	     	stmt.executeUpdate();
+	    	stmt.close();    	    	
+		
+		// also change the insrel table, when it was a field from there..
+		if (changeInsrelFields) {
+		    // the fields from object...
+    	    	    String insrelSql = "UPDATE  "+mmb.baseName+"_insrel SET otype="+node.getIntValue("otype")+", owner='"+node.getStringValue("owner")+"'";
+		    // the actual insrel fields..
+    	    	    insrelSql += ", snumber=" + node.getIntValue("snumber")+", dnumber="+node.getStringValue("dnumber")+", rnumber=" + node.getIntValue("rnumber");
+		    if(InsRel.usesdir) {
+		    	// when we have directionality....
+			insrelSql += ", dir=" + node.getIntValue("dir");
+		    }		    
+		    // condition..
+    	    	    insrelSql += " WHERE " + getNumberString() + "=" + node.getValue("number");
+    	    	    log.debug(insrelSql);
+    		    stmt=con.prepareStatement(insrelSql);
+    	    	    stmt.executeUpdate();
+    	    	    stmt.close();				    
+		}
+		
+		// also change the object table, when it was a field from there..
+		if (changeObjectFields) {
+    	    	    String objectSql = "UPDATE  "+mmb.baseName+"_object SET otype="+node.getIntValue("otype")+", owner='"+node.getStringValue("owner")+"'";
+    	    	    objectSql += " WHERE " + getNumberString() + "=" + node.getValue("number");
+    	    	    log.debug(objectSql);
+    		    stmt=con.prepareStatement(objectSql);
+    	    	    stmt.executeUpdate();
+    	    	    stmt.close();				    
+		}
+    	    	con.close();		
+	    }
+	    catch (SQLException e) {
+	    	// give big warning bout data inconsitent thingie..
+	    	if(changeObjectFields || changeInsrelFields) {
+		    log.fatal("update on multiple tables failed, database can be inconsisted !!");
+		    if(changeObjectFields) {
+		    	log.error("we had to update the object table");
+		    }
+		    if(changeInsrelFields) {
+		    	log.error("we had to update the insrel table");
+		    }		    
+		}
+    	    	log.error(Logging.stackTrace(e));
+		return false;
+	    }
+	} 
+	else {
+	    log.warn("tried to update a node without any changes,..");
+	    return false;
 	}
-
+	
+	// done database update, so clear changed flags..
+    	node.clearChanged();
+	
+	// broadcast the changes, if nessecary...
+	if (bul.broadcastChanges) {
+	    if (bul instanceof InsRel) {
+    	    	bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+		// figure out tables to send the changed relations
+		MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
+		MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
+		mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
+		mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+	    } 
+	    else {
+    	    	mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+	    }
+	}
+	
+	// done !
+    	return true;
+    }
 
 	/**
 	* removeNode
