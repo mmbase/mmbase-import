@@ -9,9 +9,13 @@ See http://www.MMBase.org/license
 */
 /*
  
-  $Id: Attachments.java,v 1.3 2000-08-16 21:50:02 case Exp $
+  $Id: Attachments.java,v 1.4 2000-08-18 21:37:17 case Exp $
  
   $Log: not supported by cvs2svn $
+  Revision 1.3  2000/08/16 21:50:02  case
+  cjr: Now sets filename (new attribute) and mimetype according to values
+       made available through HttpPost: parameters file_name and file_type
+ 
   Revision 1.2  2000/08/06 00:31:05  case
   cjr: Now calls org.mmbase.util.MagicFile to automatically set mimetype on upload
  
@@ -33,7 +37,7 @@ import org.mmbase.util.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: Attachments.java,v 1.3 2000-08-16 21:50:02 case Exp $
+ * @version $Id: Attachments.java,v 1.4 2000-08-18 21:37:17 case Exp $
  *
  */
 public class Attachments extends MMObjectBuilder {
@@ -67,15 +71,15 @@ public class Attachments extends MMObjectBuilder {
             int num=node.getIntValue("number");
             int size = node.getIntValue("size");
             String mimeType = node.getStringValue("mimetype");
-            if (size == -1) {
-                return "";
-            } else {
-                String s;
-                if (mimeType != null) {
-                    return mimeType+", "+size+" bytes";
+            String filename = node.getStringValue("filename");
+            if (filename != null && !filename.equals("")) {
+                if (size == -1 || num == -1) {
+                    return "["+filename+"]";
                 } else {
-                    return size+" bytes";
+                    return "<a href=\"attachment.db/"+filename+"?"+num+"\" target=\"extern\">["+filename+"]</a>";
                 }
+            } else {
+                return "";
             }
         }
         return (null);
