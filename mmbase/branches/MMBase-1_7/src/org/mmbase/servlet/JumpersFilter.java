@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.9.2.2 2005-01-07 11:29:38 gerard Exp $
+ * @version $Id: JumpersFilter.java,v 1.9.2.3 2005-01-24 11:36:59 marcel Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
     private static MMBase mmbase;
-    private static Jumpers bul;
+    private static Jumpers jumpers;
     private static String name;
 
     private Thread initThread;
@@ -82,11 +82,11 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * @param filterChain The FilterChain.
      */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
-        if (bul == null) {
+        if (jumpers == null) {
             if (mmbase != null) {
-                bul = (Jumpers)mmbase.getBuilder("jumpers");
+                jumpers = (Jumpers)mmbase.getBuilder("jumpers");
             } 
-            if (bul == null) {
+            if (jumpers == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return; // nothing to be done
             }
@@ -127,7 +127,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
                 }
             }
             //get jumper from Jumpers builder
-            String url = bul.getJump(key);
+            String url = jumpers.getJump(key);
             if (url != null) {
                 /*
                  * Sends a temporary redirect response to the client using the specified redirect location URL.
