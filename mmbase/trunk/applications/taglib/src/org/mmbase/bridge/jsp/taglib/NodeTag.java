@@ -144,7 +144,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         // if direct parent is a Formatter Tag, then communicate
         FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
         if (f!= null && f.wantXML()) {
-            f.getGenerator().addNode(node);
+            f.getGenerator().add(node);
         }
         
         fillVars();

@@ -128,7 +128,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
             if (f != null && f.wantXML()) {
                 if (log.isDebugEnabled()) log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
-                f.getGenerator().addField(node, field); // add the field
+                f.getGenerator().add(node, field); // add the field
                 value = "";
             } else { // do the rest as well.
                 if (helper.getVartype() == WriterHelper.TYPE_NODE) {

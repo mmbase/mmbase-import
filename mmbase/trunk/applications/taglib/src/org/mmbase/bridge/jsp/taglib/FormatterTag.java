@@ -105,8 +105,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     static {
         log.service("static init of FormatterTag.");
 
-        try {
+        try {            
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dfactory.setNamespaceAware(true);
             documentBuilder = dfactory.newDocumentBuilder();
             org.xml.sax.ErrorHandler handler = new org.mmbase.util.XMLErrorHandler();
             documentBuilder.setErrorHandler(handler);
