@@ -1,12 +1,12 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
-*/
+ 
+ */
 
 package org.mmbase.bridge.remote.generator;
 import java.lang.reflect.*;
@@ -19,20 +19,20 @@ import java.util.*;
  * @author Kees Jongenburger <keesj@framfab.nl>
  **/
 public class ClassToXML {
-
+    
     public static Element classToXML(String className,String original, Document document) throws Exception{
         Element e = ClassToXML.classToXML(className, document);
         e.setAttribute("originalname",original);
         return e;
     }
-
+    
     public static Element classToXML(String className, Document document) throws Exception{
         Hashtable methodHash = new Hashtable();
         Element xmle = document.createElement("class");
         xmle.setAttribute("name", className);
         int shortIndex = className.lastIndexOf(".");
         xmle.setAttribute("shortname",  className.substring(shortIndex +1 ));
-
+        
         Class clazz = Class.forName(className);
         Class[] interfaceClasses = clazz.getInterfaces();
         String implementsString = "";
@@ -51,7 +51,7 @@ public class ClassToXML {
             if (! methods[i].getDeclaringClass().getName().equals(className)){
                 createMethod = false;
                 String name = methods[i].getDeclaringClass().getName();
-
+                
                 if (methods[i].getDeclaringClass().isInterface()){
                     createMethod = true;
                 }
@@ -65,7 +65,7 @@ public class ClassToXML {
                 key += "method";
                 method.setAttribute("name", methods[i].getName());
                 key +=  methods[i].getName();
-
+                
                 Element parameters = document.createElement("input");
                 Class[] parameterClasses = methods[i].getParameterTypes();
                 key +=  "(" ;
@@ -76,7 +76,7 @@ public class ClassToXML {
                 }
                 key += ")";
                 method.appendChild(parameters);
-
+                
                 Element returValue = document.createElement("output");
                 Class returnType = methods[i].getReturnType();
                 returValue.appendChild(ClassToXML.classToXML(returnType,document));
@@ -89,11 +89,11 @@ public class ClassToXML {
         }
         return xmle;
     }
-
+    
     public static Element classToXML(Class c, Document document){
         return classToXML(c,document,false);
     }
-
+    
     public static Element classToXML(Class c, Document document, boolean isinarray){
         Element retval=null;
         if(c.isArray()){
@@ -103,8 +103,8 @@ public class ClassToXML {
                 arr = arr.getComponentType();
             }
             Element e =ClassToXML.classToXML(arr,document,true);
-	    String className = arr.getName();
-       	    int shortIndex = className.lastIndexOf(".");
+            String className = arr.getName();
+            int shortIndex = className.lastIndexOf(".");
             e.setAttribute("shortname",  className.substring(shortIndex +1 ));
             return e;
         } else if (c.isPrimitive()){
@@ -141,5 +141,4 @@ public class ClassToXML {
         }
         return retval;
     }
-
 }
