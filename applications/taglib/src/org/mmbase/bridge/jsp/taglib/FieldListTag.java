@@ -37,10 +37,10 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
 
     private static Logger log = Logging.getLoggerInstance(FieldListTag.class.getName());
 
+    private FieldList     returnList;
     private FieldIterator returnValues;
     private Field currentField;
     private int currentItemIndex= -1;
-    private int listSize = 0;
 
     private String nodeManagerString = null;
     private NodeProvider nodeProvider = null;
@@ -48,11 +48,16 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
     private int type = NO_TYPE;
 
     public int size(){
-        return listSize;
+        return returnList.size();
     }
     public int getIndex() {
         return currentItemIndex;
     }
+
+    public Object getCurrent() {
+        return currentField;
+    }
+    
     public boolean isChanged() {
         return true;
     }
@@ -74,6 +79,8 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
             type = NodeManager.ORDER_LIST;
         } else if ("search".equals(t)) {
             type = NodeManager.ORDER_SEARCH;
+        } else if ("all".equals(t)) {
+            type = NO_TYPE;
         } else {
             throw new JspTagException("Unknown field order type " + type);
         }
@@ -111,14 +118,12 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
             nodeManager = getCloudProviderVar().getNodeManager(nodeManagerString);
         }
 
-        FieldList fieldList;
         if (type != NO_TYPE) {
-            fieldList = nodeManager.getFields(type);
+            returnList = nodeManager.getFields(type);
         } else {
-            fieldList = nodeManager.getFields();
+            returnList = nodeManager.getFields();
         }
-        listSize = fieldList.size();
-        returnValues = fieldList.fieldIterator();
+        returnValues = returnList.fieldIterator();
 
         //this is where we do the search
         currentItemIndex= -1;  // reset index
@@ -131,6 +136,9 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
     }
 
     public int doAfterBody() throws JspTagException {
+        if (getId() != null) {
+            getContextTag().unRegister(getId());
+        }  
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
@@ -145,11 +153,20 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
     }
 
 
+    public int doEndTag() throws JspTagException {
+        if (getId() != null) {
+            getContextTag().register(getId(), returnList);
+        }        
+        return  EVAL_PAGE;
+    }
 
     public void doInitBody() throws JspTagException {
         if (returnValues.hasNext()){
             currentItemIndex ++;
             currentField = returnValues.nextField();
+            if (getId() != null) {
+                getContextTag().register(getId(), currentField);
+            }      
         }
     }
 }

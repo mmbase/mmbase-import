@@ -78,11 +78,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * fill the return variables for every iteration.
      */
     protected NodeIterator returnValues;
-
-    /**
-     * The actual size of the list.
-     */
-    protected int listSize = 0;
+    protected NodeList     returnList;
 
     /**
      * The current item
@@ -93,6 +89,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     public int getIndex() {
         return currentItemIndex;
+    }
+    public Object getCurrent() {
+        return getNodeVar();
     }
 
     /**
@@ -233,15 +232,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             nodes = nodes.subNodeList(offset, to);
        
         } 
-        NodeList returnList   = nodes;
-        {
-            String id = getId();
-            if (id != null && ! "".equals(id)) {
-                getContextTag().register(getId(), returnList);
-            }
-        }
+        returnList   = nodes;
         returnValues = returnList.nodeIterator();        
-        listSize = returnList.size();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
@@ -253,6 +245,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
+        if (getId() != null) {
+            getContextTag().unRegister(getId());
+        }        
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
@@ -265,6 +260,12 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             return SKIP_BODY;
         }
 
+    }
+    public int doEndTag() throws JspTagException {
+        if (getId() != null) {
+            getContextTag().register(getId(), returnList);
+        }        
+        return  super.doEndTag();
     }
 
     public void doInitBody() throws JspTagException {
@@ -286,6 +287,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 previousValue = value;
             }
             setNodeVar(next);
+            if (getId() != null) {
+                getContextTag().register(getId(), next);
+            }        
             fillVars();
         }
     }
@@ -304,7 +308,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     public int size(){
-        return listSize;
+        return returnList.size();
     }
     /*
     public boolean isLast(){
