@@ -36,7 +36,7 @@ public interface Node {
      * have one or more aliases.
      *
      * @return the unique number for this node
-     * @see    #addAlias(String alias)
+     * @see    #createAlias(String alias)
      */
     public int getNumber();
 
@@ -373,4 +373,36 @@ public interface Node {
      * @throws SecurityException    When not the approperate rights (read rights)
      */
     public StringList getPossibleContexts();
+
+    /**
+     * Check write rights on this node.
+     *
+     * @return                      whether the node may be changed by the current user
+     */
+
+    public boolean mayWrite();
+
+    /**
+     * Check delete rights on this node.
+     *
+     * @return                      whether the node may be deleted by the current user
+     */
+
+    public boolean mayDelete();
+    
+    /**
+     * Check link rights on this node.
+     *
+     * @return                      whether the current user may link to this node
+     */
+
+    public boolean mayLink();
+
+    /**
+     * Check context-change rights on this node.
+     *
+     * @return                      whether the current user may change the context of this node
+     */
+    public boolean mayChangeContext();
+
 }
