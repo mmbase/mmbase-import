@@ -67,7 +67,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>number</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="true">INTEGER</type>
+        <type state="persistent" notnull="true" key="true">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 3 : owner -->
@@ -95,7 +95,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>owner</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="12" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="12" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 4 : cookiekey -->
@@ -123,7 +123,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>cookiekey</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="32" notnull="false" key="false">STRING</type>
+        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 5 : firstlogin -->
@@ -151,7 +151,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>firstlogin</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 6 : lastlogin -->
@@ -179,7 +179,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>lastlogin</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
   </fieldlist>

@@ -67,7 +67,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>number</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="true">INTEGER</type>
+        <type state="persistent" notnull="true" key="true">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 3 : owner -->
@@ -95,7 +95,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>owner</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="12" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="12" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 4 : issue -->
@@ -123,7 +123,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>issue</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="255" notnull="true" key="true">STRING</type>
+        <type state="persistent" size="255" notnull="true" key="true">STRING</type>
       </db>
     </field>
     <!-- field definition for field 5 : version -->
@@ -151,7 +151,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>version</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="16" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="16" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 6 : btype -->
@@ -179,7 +179,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>btype</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="false">INTEGER</type>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 7 : bpriority -->
@@ -207,7 +207,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>bpriority</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="false">INTEGER</type>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 8 : bstatus -->
@@ -235,7 +235,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>bstatus</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="false">INTEGER</type>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 9 : rationale -->
@@ -263,7 +263,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>rationale</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="8192" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="8192" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 10 : description -->
@@ -291,7 +291,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>description</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="64000" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="64000" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 11 : time -->
@@ -317,7 +317,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>time</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="false">INTEGER</type>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 12 : efixedin -->
@@ -343,7 +343,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>efixedin</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="16" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="16" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 13 : fixedin -->
@@ -369,7 +369,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>fixedin</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="16" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="16" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 14 : bugid -->
@@ -395,7 +395,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>bugid</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="false">INTEGER</type>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
   </fieldlist>
