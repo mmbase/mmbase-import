@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.46 2004-09-17 09:26:21 michiel Exp $
+ * @version $Id: Cloud.java,v 1.47 2004-10-09 09:46:35 nico Exp $
  */
 public interface Cloud {
 
@@ -507,6 +507,8 @@ public interface Cloud {
 
     /**
      * Executes a query and returns the result as a Cluster Node List (also if the query is a {@link NodeQuery}).
+     * @param query, Query to execute
+     * @return Cluster Node List
      * 
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
@@ -516,6 +518,7 @@ public interface Cloud {
 
     /**
      * Create an empty Query, which can be filled, and used in {@link #getList(Query)}.
+     * @return empty Query
      * @since MMBase-1.7
      */
     public Query createQuery();
@@ -532,6 +535,7 @@ public interface Cloud {
      * Create an empty NodeQuery, which can be filled, and used in {@link NodeManager#getList(NodeQuery)} or 
      * {@link #getList(Query)} (but then no 'real' node are returned). The query can be used on NodeManager only when at 
      * least one step is added, and {@link NodeQuery#setNodeStep} is called.
+     * @return empty NodeQuery
      * @since MMBase-1.7
      */
     public NodeQuery createNodeQuery();
@@ -547,10 +551,11 @@ public interface Cloud {
 
    /**
      * Gets the locale assocatied with this <code>Cloud</code> instance.
+     * @return Locale of this Cloud instance
      *
      * @since MMBase-1.6
      */
-    public Locale  getLocale();
+    public Locale getLocale();
 
     /**
      * Retrieves a property previously set for this cloud.
