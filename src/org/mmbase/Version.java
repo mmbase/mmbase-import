@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.11 2002-05-02 13:03:39 michiel Exp $
+ * @version $Id: Version.java,v 1.12 2002-05-02 16:25:10 pierre Exp $
  */
 public class Version {
    
@@ -55,8 +55,19 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String  getBuildDate() {
-        return ""/*BUILDDATE*/
-        ;
+        String resource="";
+        InputStream builddate=Version.class.getResourceAsStream("builddate.properties");
+        if (builddate!=null) {
+            try {
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(builddate));
+                resource="."+buffer.readLine();
+                buffer.close();
+            } catch(IOException e) {
+               // error
+               resource=""+e;
+            }
+        }
+        return resource;
     }
 
     /**
@@ -379,8 +390,8 @@ public class Version {
      * @javadoc
      */
     public static void main(String args[]) {
-        System.out.println("\n\n Version report tool 0.2 ");
-        System.out.println("=========================\n");
+        System.out.println("\n\n Version report tool 0.2 - MMBase version "+getNumber());
+        System.out.println("=======================================================\n");
         if (args.length>0) {
             String cmd=args[0];
             if (cmd.equals("list")) {
