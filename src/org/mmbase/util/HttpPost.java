@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.11 2001-09-17 14:48:19 eduard Exp $
+ * @version $Id: HttpPost.java,v 1.12 2002-01-09 10:03:46 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -353,7 +353,12 @@ public class HttpPost {
                     log.info("readContentLength(): (memory) broken out of loop after "+i+" times");
                 }
             } catch (Exception e) {
-                log.error("readContentLength(): Can't read post msg from client");
+                log.error("readContentLength(): Can't read post msg from client");               
+                log.error(Logging.stackTrace(e));                
+                buffer[len-1] = -1;
+                // just to return _something_... 
+                // Mozilla 0.9.7 (and 0.9.6?) had a bug here. Now they are only slow, but work, if you don't supply a file...
+
             }
         } else if (len<maxFileSize) {
             log.debug("readContentLength(): writing to disk" );
@@ -533,6 +538,8 @@ public class HttpPost {
             String disposition = new String(postbuffer,start2+2,i2-(start2+2));
             int separator = indexOf(postbuffer,new byte[]{(byte)'\r',(byte)'\n'},start2+2);
 
+            int filesize = (end2-i2-6);
+            if (filesize < 0) filesize = 0; // some browser bugs
             /**
              * No separator in Content-disposition: .. implies that there is only a name,
              * no filename, and hence that it is no file upload. The code under "if" above
@@ -543,8 +550,7 @@ public class HttpPost {
                     String[] dispositionInfo = extractDispositionInfo(disposition.substring(0,separator-(start2+2)));
                     String mimetype = extractContentType(disposition.substring(separator-(start2+2)+2));
                     String fieldname = dispositionInfo[1];
-                    String filename = dispositionInfo[2];
-                    String filesize = ""+(end2-i2-6);
+                    String filename = dispositionInfo[2];                    
                     Vector v1 = new Vector();
                     v1.addElement(mimetype.getBytes());
                     addpostinfo(post_header,fieldname+"_type",v1);
@@ -553,13 +559,13 @@ public class HttpPost {
                     addpostinfo(post_header,fieldname+"_name",v2);
 
                     Vector v3 = new Vector();
-                    v3.addElement(""+(end2-i2-6));
+                    v3.addElement(""+filesize);
                     addpostinfo(post_header,fieldname+"_size",v3);
 
                     if (log.isDebugEnabled()) {
                         log.debug("mimetype = "+ mimetype);
                         log.debug("filename = " + dispositionInfo[2]);
-                        log.debug("filesize = "+(end2-i2-6));
+                        log.debug("filesize = "+ filesize);
                     }
                 } catch (IOException e) {
                     log.error(e.getMessage());
@@ -572,8 +578,8 @@ public class HttpPost {
             r=new String(postbuffer,0,i3,(i4-i3)); // extraction of fieldname
             // log.debug("readPostFormData(): r="+r);
             // copy it to a buffer
-            dest = new byte[(end2-i2)-6];
-            System.arraycopy(postbuffer, i2+4, dest, 0, (end2-i2)-6);
+            dest = new byte[filesize];
+            System.arraycopy(postbuffer, i2+4, dest, 0,  filesize);
             // r2=new String(postbuffer,0,i2+4,((end2-i2))-6);
 
             addpostinfo(post_header,r,dest);
