@@ -968,9 +968,23 @@ public class MMObjectNode {
      * @return <code>true</code> if any relations exist, <code>false</code> otherwise.
      */
     public boolean hasRelations() {
-        return getRelationCount()>0;
-        // to be replaced in future releases with:
-        // return parent.mmb.getInsRel().hasRelations(getNumber());
+        // return getRelationCount()>0;
+        return parent.mmb.getInsRel().hasRelations(getNumber());
+    }
+
+    /**
+     * Return all the relations of this node.
+     * Use only to delete the relations of a node.
+     * Note that this returns the nodes describing the relation - not the nodes 'related to'.
+     * @return An <code>Enumeration</code> containing the nodes
+     */
+    public Enumeration getAllRelations() {
+        Vector allrelations=parent.mmb.getInsRel().getAllRelationsVector(getNumber());
+        if (allrelations!=null) {
+            return allrelations.elements();
+        } else {
+            return null;
+        }
     }
 
     /**
