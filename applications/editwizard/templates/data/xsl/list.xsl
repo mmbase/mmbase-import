@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.35 2004-01-05 11:12:35 nico Exp $
+    @version $Id: list.xsl,v 1.36 2004-01-20 18:25:28 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -45,7 +45,9 @@
     </script>
   </xsl:template>
 
-  <xsl:template name="htmltitle"><xsl:value-of select="$wizardtitle" /></xsl:template>
+  <xsl:template name="htmltitle">
+    <xsl:value-of select="$wizardtitle" /> - <xsl:value-of disable-output-escaping="yes" select="$title" />
+  </xsl:template>
 
   <xsl:template name="style">
     <link rel="stylesheet" type="text/css" href="{$cssdir}layout/list.css" />
@@ -58,14 +60,14 @@
 
   <xsl:template name="title">
     <td>
-        <xsl:value-of select="$title" />
+      <xsl:value-of select="$wizardtitle" />
     </td>
   </xsl:template>
 
   <xsl:template name="subtitle">
     <td>
       <div title="{$tooltip_edit_list}">
-          <xsl:call-template name="prompt_edit_list" />
+        <xsl:call-template name="prompt_edit_list" />
       </div>
     </td>
   </xsl:template>
@@ -81,7 +83,7 @@
         <xsl:call-template name="dolist" />
       </td>
     </tr>
-    <xsl:if test="count(/*/pages/page)>1">
+    <xsl:if test="count(/*/pages/page) &gt; 1">
       <tr class="pagescanvas">
         <td>
           <div>
@@ -131,10 +133,6 @@
             <tr>
               <xsl:if test="$creatable=&apos;true&apos;">
                 <td>
-                  <span class="header">
-                    <xsl:value-of select="$wizardtitle" /> :
-                  </span>
-                  <br />
                   <a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
 			              <xsl:call-template name="prompt_new" />
                   </a>
@@ -145,7 +143,7 @@
                   <span class="header">
                     <xsl:call-template name="prompt_search_list" />
                     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                    <xsl:value-of select="$wizardtitle" /> :
+                    <xsl:value-of disable-output-escaping="yes" select="$title"/>: 
                   </span>
                   <br />
 
@@ -161,11 +159,7 @@
                   <input type="hidden" name="proceed" value="true" />
                   <input type="hidden" name="sessionkey" value="{$sessionkey}" />
                   <input type="hidden" name="language" value="${language}" />
-                  <input
-                    type="text"
-                    name="searchvalue"
-                    value="{$searchvalue}"
-                    class="search" />
+                  <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
 										<a href="javascript:document.forms[0].submit();">
 											<xsl:call-template name="prompt_search" />
@@ -315,7 +309,7 @@
 
   <xsl:template match="field">
     <td class="field">
-	    <xsl:if test="position()>1">
+	    <xsl:if test="position() &gt; 1">
         <nobr>
           <xsl:call-template name="writeCurrentField" />
         </nobr>
