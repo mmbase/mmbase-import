@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.148 2002-07-19 12:07:32 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.149 2002-08-14 12:04:38 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -211,6 +211,35 @@ public class MMObjectBuilder extends MMTable {
     // Specified in the xml builder file with the <properties> tag.
     // The use of properties is determined by builder
     private Hashtable properties = null;
+
+    /**
+     * Whenever a list should always return the correct types of nodes
+     * old behaviour is not...
+     * This is needed, when you want for example use the following code:
+     * <pre>
+     * MMObjectNode node = MMObjectBuilder.getNode(123);
+     * Enumeration relations = node.getRelations("posrel");
+     * while(enumeration.hasNext()) {
+     *   MMObjectNode posrel = (MMObjectNode) enumeration.getElement();
+     *   int pos = posrel.getIntValue("pos");
+     * }
+     * </pre>
+     * When the return of correct node types is the following code has to be used..
+     * <pre>
+     * MMObjectNode node = MMObjectBuilder.getNode(123);
+     * Enumeration relations = node.getRelations("posrel");
+     * while(enumeration.hasNext()) {
+     *   MMObjectNode posrel = (MMObjectNode) enumeration.getElement();
+     *   // next lines is needed when the return of correct nodes is not true
+     *   posrel = posrel.parent.getNode(posrel.getNumber());
+     *   // when the line above is skipped, the value of pos will always be -1
+     *   int pos = posrel.getIntValue("pos");
+     * }
+     * </pre>
+     * Maybe this should be fixed in some otherway,.. but when we want to use the inheritance  you
+     * _really_ need this thing turned into true.
+     */
+    private static boolean CORRECT_NODE_TYPES = true;
 
     /**
      * Constructor.
@@ -1294,6 +1323,7 @@ public class MMObjectBuilder extends MMTable {
         Vector results=new Vector();
         Integer number;
         String tmp;
+	
         try {
             while(rs.next()) {
                 // create a new object and add it to the result vector
@@ -1306,17 +1336,21 @@ public class MMObjectBuilder extends MMTable {
                     //fieldtype=rd.getColumnTypeName(i);
                     node=database.decodeDBnodeField(node,fieldname,rs,i);
                 }
-
-                // maybe we retrieved the wrong type of node, if so,.. retrieve the correct one!
-                // TODO: research for performance
-                boolean returnCorrectObjectBuilderTypes = false;
-                if(returnCorrectObjectBuilderTypes && oType != node.getOType()) {
+		// maybe we retrieved the wrong type of node, if so,.. retrieve the correct one!
+		// TODO: research for performance
+		// we could order all incorrect nodes by type
+		// then do the query on the correct builder for all the invalid nodes found of
+		// that builder... 
+		// when we would find 100 nodes from other builders (say 2 other builders)
+		// the speedup will be from 100 to 2
+                if(CORRECT_NODE_TYPES && oType != node.getOType()) {
                     if(oType != -1) {
                         // this node had the wrong node type, and the builder was started...(TypeDef has to be started some day)
-                        log.debug("object #" + node.getNumber() + " was of type: " + node.getOType() + " while we searched for type: " + oType + " class was: " + getClass().getName());
+                        if(log.isDebugEnabled()){
+			    log.debug("object #" + node.getNumber() + " was of type: " + node.getOType() + " while we searched for type: " + oType + " class was: " + getClass().getName());
+			}
                         MMObjectBuilder builder = mmb.getBuilder(getNode(node.getOType()).getStringValue("name"));
                         MMObjectNode found = builder.getNode(node.getNumber());
-                        log.info("[CONVERTED(bad for performance) ]We retrieved the new code from the builder: " + builder.getClass().getName() + ", buildertype of the node is now: " + node.getBuilder().getTableName());
                         if(found != null) {
                             node = found;
                         }
@@ -1326,7 +1360,9 @@ public class MMObjectBuilder extends MMTable {
                             throw new RuntimeException(msg);
                         }
                     }
-                    else log.info("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
+                    else if(log.isDebugEnabled()) {
+			log.info("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
+		    }
                 }
 
                 // clear the changed signal
