@@ -22,3 +22,14 @@
 	vertical-align: middle;
 	padding: 3px 0px 3px 5px;
 }
+
+/* new head */
+#top { background-color: #EBC; }
+
+.tdheader
+{
+	background-image: url(../media/repeat_dev.jpg);
+	background-repeat: repeat-x;
+	background-color: #CCC;
+	height: 55px;
+}
