@@ -20,7 +20,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealURLComposer.java,v 1.3 2003-02-10 10:39:10 rob Exp $
+ * @version $Id: RealURLComposer.java,v 1.4 2003-02-11 23:16:11 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -41,8 +41,8 @@ public class RealURLComposer extends FragmentURLComposer  {
 
     protected static StringBuffer getRMArgs(StringBuffer args, MMObjectNode fragment) {
         if (fragment != null) { // can add this for RM-sources
-            int start = fragment.getIntValue("start");
-            int end   = fragment.getIntValue("stop");
+            long start = fragment.getLongValue("start");
+            long end   = fragment.getLongValue("stop");
             char sep = '?';
             if (start > -1) {            
                 appendTime(start, args.append(sep).append("start="));
@@ -66,14 +66,14 @@ public class RealURLComposer extends FragmentURLComposer  {
      * @param time the time in milliseconds
      * @return the time in real format
      */
-    public static StringBuffer appendTime(int time, StringBuffer buf) {
+    public static StringBuffer appendTime(long time, StringBuffer buf) {
         time /= 10; // in centis
 
-        int centis = -1;
-        int s     = 0;
-        int min   = 0;
-        int h     = 0;
-        int d     = 0;
+        long centis = -1;
+        long s     = 0;
+        long min   = 0;
+        long h     = 0;
+        long d     = 0;
 
         if (time != 0) {
             centis = time % 100;
@@ -113,6 +113,8 @@ public class RealURLComposer extends FragmentURLComposer  {
      * Removes RealPlayer incompatible characters from the string.
      * '#' characters are replaced by space characters.
      * Characters that are allowed are every letter or digit and ' ', '.', '-' and '_' chars.
+
+     *
      * @param s the String that needs to be fixed.
      * @return a realPlayer compatible String.
      */

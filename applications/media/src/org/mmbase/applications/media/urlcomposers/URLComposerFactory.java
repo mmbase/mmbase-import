@@ -29,7 +29,7 @@ import java.lang.reflect.*;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.7 2003-02-05 15:05:27 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.8 2003-02-11 23:16:12 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -60,8 +60,8 @@ public class URLComposerFactory  {
             if (protocol == null) protocol = "";
             
         }
-        boolean checkFormat(Format f) { return format.equals(f); }
-        boolean checkProtocol(String p) {      return "".equals(protocol) || protocol.equals(p); }
+        boolean checkFormat(Format f) {     return format.equals(f); }
+        boolean checkProtocol(String p) {   return "".equals(protocol) || protocol.equals(p); }
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) { 
             try {
                 Constructor c = klass.getConstructor(constructorArgs);
@@ -159,15 +159,23 @@ public class URLComposerFactory  {
         boolean found = false;
         while (i.hasNext()) {
             ComposerConfig cc = (ComposerConfig) i.next();
-            log.debug("Trying " + cc + " for " + format);
+            log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
             if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {
                 URLComposer uc = cc.getInstance(provider, source, fragment, info);
                 log.debug("Trying to add " + uc + " to " + urls);
-                if (uc != null && ! urls.contains(uc) && uc.canCompose()) { // avoid duplicates, and composer which would work
+                if (uc == null) {
+                    log.debug("Could not make urlcomposer");
+                } else if (urls.contains(uc)) {  // avoid duplicates
+                    log.debug("This URLComposer already in the list");
+                } else if (!uc.canCompose()) {
+                    log.debug("This URLComposer cannot compose");
+                } else {
                     log.debug("Adding a " + uc.getClass().getName());
                     urls.add(uc);
                 } 
                 found = true;
+            } else {
+                log.debug(cc.checkFormat(format) + "/" + cc.checkProtocol(protocol));
             }
         }
         if (! found) { // use default
@@ -178,6 +186,6 @@ public class URLComposerFactory  {
             }
         }
         return urls;
-    }
-
+    
+}
 }
