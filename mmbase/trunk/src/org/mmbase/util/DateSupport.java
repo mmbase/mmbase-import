@@ -31,7 +31,6 @@ public class DateSupport {
 			int pos=tmp.indexOf("/");
 			if (pos!=-1) {
 				host=tmp.substring(0,pos);
-				System.out.println("HOST="+host);
 			}
 		} catch(Exception e) {
 		}

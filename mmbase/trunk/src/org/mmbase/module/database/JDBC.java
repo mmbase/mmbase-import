@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: JDBC.java,v 1.12 2000-06-25 13:09:15 wwwtech Exp $
+	$Id: JDBC.java,v 1.13 2000-07-22 10:52:59 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2000/06/25 13:09:15  wwwtech
+	Daniel.. changed/added method for getConnection per database driver
+	
 	Revision 1.11  2000/04/30 15:31:48  wwwtech
 	Rico: robustified the JDBC.makeUrl code
 	
@@ -52,12 +55,12 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.12 2000-06-25 13:09:15 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.13 2000-07-22 10:52:59 daniel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
  	private String classname = getClass().getName();
- 	private boolean debug = true;
+ 	private boolean debug = false;
  	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
 
 Class  classdriver;
@@ -123,7 +126,7 @@ private String defaultpassword;
 		driver=null;
 		try {
 			classdriver=Class.forName(JDBCdriver);
-			debug("getDriver(): Loaded load class : "+JDBCdriver);
+			if (debug) debug("getDriver(): Loaded load class : "+JDBCdriver);
 		} catch (ClassNotFoundException e) {
 			debug("getDriver(): Can't load class : "+JDBCdriver);
 		}
@@ -151,7 +154,7 @@ private String defaultpassword;
 			cl=Class.forName(databasesupportclass);
 			databasesupport=(DatabaseSupport)cl.newInstance();
 			databasesupport.init();
-			debug("loadsupport(): Loaded load class : "+databasesupportclass);
+			if (debug) debug("loadsupport(): Loaded load class : "+databasesupportclass);
 		} catch (Exception e) {
 			debug("loadsupport(): Can't load class : "+databasesupportclass+" : "+e);
 		}
