@@ -11,8 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.Iterator;
-import junit.framework.*;
-import org.mmbase.bridge.*;
 
 /**
  * Basic test class to test <code>Node</code> from the bridge package.
@@ -20,16 +18,12 @@ import org.mmbase.bridge.*;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  */
-public abstract class NodeTest extends TestCase {
+public abstract class NodeTest extends BridgeTest {
     Node node;
     String[] fieldTypes = {"byte", "double", "float", "int", "long", "string"};
 
     public NodeTest(String name) {
         super(name);
-    }
-
-    protected Cloud getCloud() {
-        return  ContextProvider.getDefaultCloudContext().getCloud("mmbase");
     }
 
     abstract public void testGetValue();

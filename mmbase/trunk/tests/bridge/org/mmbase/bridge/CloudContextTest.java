@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import junit.framework.*;
-import org.mmbase.bridge.*;
+
 
 /**
  * Test class <code>CloudContext</code> from the bridge package.
