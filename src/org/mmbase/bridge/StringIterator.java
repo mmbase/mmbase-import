@@ -15,7 +15,7 @@ import java.util.ListIterator;
  * An iterator for a list of strings
  *
  * @author Pierre van Rooden
- * @version $Id: StringIterator.java,v 1.3 2002-01-31 10:05:09 pierre Exp $
+ * @version $Id: StringIterator.java,v 1.4 2003-03-04 09:19:05 pierre Exp $
  */
 public interface StringIterator extends ListIterator {
 
@@ -23,5 +23,10 @@ public interface StringIterator extends ListIterator {
      * Returns the next element in the iterator as a String
      */
     public String nextString();
+
+    /**
+     * Returns the previous element in the iterator as a String
+     */
+    public String previousString();
 
 }
