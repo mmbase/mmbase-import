@@ -9,19 +9,15 @@
     <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasecontexts</builder>
     <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseranks</builder>
     <builder maintainer="mmbase://security.mmbase.org/" version="1">rightsrel</builder>
+    <builder maintainer="mmbase.org" version="0">typedef</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
-    <reldef source="related" target="related" direction="bidirectional" 
-      guisourcename="Related" guitargetname="Related" builder="insrel"/>
-    <reldef source="contains" target="containedBy" direction="bidirectional" 
-      guisourcename="contains" guitargetname="contained by" builder="insrel" />
-    <reldef source="grants" target="grantedBy" direction="bidirectional" 
-      guisourcename="grants" guitargetname="granted by" builder="rightsrel" />
-    <reldef source="rank" target="rank" direction="bidirectional" 
-      guisourcename="Rank" guitargetname="User" builder="insrel" />
-    <reldef source="allowed" target="allowed" direction="bidirectional" 
-      guisourcename="Allowed to change to" guitargetname="Allowed to change from" builder="insrel" />
+    <reldef source="related"  target="related"      direction="bidirectional" guisourcename="Related"  guitargetname="Related"      builder="insrel"/>
+    <reldef source="contains" target="containedBy"  direction="bidirectional" guisourcename="contains" guitargetname="contained by" builder="insrel" />
+    <reldef source="grants"   target="grantedBy"    direction="bidirectional" guisourcename="grants"   guitargetname="granted by"   builder="rightsrel" />
+    <reldef source="rank"     target="rank"         direction="bidirectional" guisourcename="Rank"     guitargetname="User"         builder="insrel" />
+    <reldef source="allowed"  target="allowed"      direction="bidirectional" guisourcename="Allowed to change to" guitargetname="Allowed to change from" builder="insrel" />
   </neededreldeflist>
 
   <allowedrelationlist>
@@ -37,6 +33,7 @@
     <datasource builder="mmbasegroups"   path="Security/mmbasegroups.xml" />
     <datasource builder="mmbasecontexts" path="Security/mmbasecontexts.xml" />
     <datasource builder="mmbasecontexts" path="Security/mmbaseranks.xml" />
+		<datasource builder="typedef"        path="Security/typedef.xml" />
   </datasourcelist>
 
   <relationsourcelist>
