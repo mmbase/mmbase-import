@@ -87,8 +87,10 @@
   <% } %>
         
 </table>
-<hr />
-<a href="<mm:url page="." />"> back </a>
+
+  <div class="link">
+    <a href="<mm:url page="." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
+  </div>
 </body>
 </html>
 </mm:cloud>
