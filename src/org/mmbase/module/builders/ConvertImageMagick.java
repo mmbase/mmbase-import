@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.13 2001-04-26 12:45:46 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.14 2001-06-18 15:06:01 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2001/04/26 12:45:46  vpro
+	Rico: major bug fix in Images, minor stuff in the rest
+	
 	Revision 1.12  2001/04/26 12:23:19  vpro
 	Rico: major bug fix in Images, minor stuff in the rest
 	
@@ -61,7 +64,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.13 2001-04-26 12:45:46 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.14 2001-06-18 15:06:01 vpro Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -167,6 +170,21 @@ public class ConvertImageMagick implements ImageConvertInterface {
 				} else if (type.equals("colorize")) {
 					// not supported ?
 					cmds.addElement("-colorize "+cmd);
+				} else if (type.equals("colorizehex")) {
+					// Incoming hex number rrggbb is converted to 
+					// decimal values rr,gg,bb which are inverted on a scale from 0 to 100.
+					log.debug("colorizehex, cmd: "+cmd);
+					String hex = cmd;
+					// Check if hex length is 123456 6 chars.
+					if (hex.length()==6) {
+						log.debug("Hex is :"+hex);
+						// Byte.decode doesn't work correctly.
+						int r = 100 - Math.round(100*Integer.parseInt(hex.substring(0,2),16)/255.0f);
+						int g = 100 - Math.round(100*Integer.parseInt(hex.substring(2,4),16)/255.0f);
+						int b = 100 - Math.round(100*Integer.parseInt(hex.substring(4,6),16)/255.0f);
+						log.debug("Calling colorize with r:"+r+" g:"+g+" b:"+b);
+						cmds.addElement("-colorize "+r+"/"+g+"/"+b);
+					}
 				} else if (type.equals("bordercolor")) {
 					// not supported ?
 					cmds.addElement("-bordercolor #"+cmd);
