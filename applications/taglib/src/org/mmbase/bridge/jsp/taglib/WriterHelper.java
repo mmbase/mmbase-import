@@ -147,7 +147,7 @@ public class WriterHelper  {
             // these accept a value == null (meaning that they are empty)
         case TYPE_LIST:
             if (v instanceof String || v == null) {
-                if (! "".equals(v)) {
+                if (v != null && !"".equals(v)) {
                     value = StringSplitter.split((String) v);
                 } else {
                     value = new ArrayList();
