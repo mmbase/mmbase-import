@@ -401,7 +401,8 @@ public class FieldInfoTag extends NodeReferrerTag {
                 break;
             }
             if ("types".equals(guitype) || "reldefs".equals(guitype)) {
-                if (getContextTag().getStringFindAndRegister(prefix(fieldName + "_search")) == null) {
+                String id = prefix(fieldName + "_search");
+                if (! getContextTag().findAndRegister(id, id)) {
                     show = null;
                     break;
                 }
