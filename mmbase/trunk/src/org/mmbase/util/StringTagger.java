@@ -9,13 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,12 +23,13 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version $Id: StringTagger.java,v 1.12 2003-03-10 11:51:13 pierre Exp $
+* @version $Id: StringTagger.java,v 1.13 2003-06-18 13:13:57 michiel Exp $
+* @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
 */
 public class StringTagger implements Map {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(StringTagger.class.getName());
+    private static Logger log = Logging.getLoggerInstance(StringTagger.class);
 
     /**
      * The name-value pairs where the value is a single string
@@ -43,59 +38,59 @@ public class StringTagger implements Map {
     /**
      * The name-value pairs where the value is a list of strings
      */
-    private Hashtable multitokens;
+    private Map multitokens;
     /**
      * Token used to separate tags (default a space).
      */
-    private char TagStart;
+    private char tagStart;
     /**
      * Token used to separate the tag name from its value (default '=').
      */
-    private char TagSeperator;
+    private char tagSeparator;
     /**
      * Token used to separate multiple values within a tag (default ',').
      */
-    private char FieldSeperator;
+    private char fieldSeparator;
     /**
      * Token used to indicate quoted values (default '\"').
      */
-    private char QuoteChar;
+    private char quote;
     /**
      * Token used to indicate the start of a function parameter list (default '(').
      */
-    private char FunctionOpen;
+    private char functionOpen;
     /**
      * Token used to indicate the end of a function parameter list (default ')').
      */
-    private char FunctionClose;
+    private char functionClose;
 
     /**
      * The line that was parsed.
      */
-    private String startline="";
+    private String startline = "";
 
     /**
      * Creates a StringTag for the given line.
      * Example : StringTagger("cmd=lookup names='Daniel Ockeloen, Rico Jansen'",' ','=',','\'','('.')')
      * @param line : to be tagged line
-     * @param TagStart : Seperator for the Tags
-     * @param TagSeperator : Seperator inside the Tag (between name and value)
-     * @param FieldSeperator : Seperator inside the value
-     * @param QuoteChar : Char used if a quoted value
-     * @param FunctionOpen char used to open a function parameter list
-     * @param FunctionClose char used to close a function parameter list
+     * @param tagStart : Seperator for the Tags
+     * @param tagSeparator : Seperator inside the Tag (between name and value)
+     * @param fieldSeparator : Seperator inside the value
+     * @param quote : Char used if a quoted value
+     * @param functionOpen char used to open a function parameter list
+     * @param functionClose char used to close a function parameter list
      */
-    public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar,
-                                     char FunctionOpen, char FunctionClose) {
-        this.TagStart=TagStart;
-        this.startline=line;
-        this.TagSeperator=TagSeperator;
-        this.FieldSeperator=FieldSeperator;
-        this.QuoteChar=QuoteChar;
-        this.FunctionOpen=FunctionOpen;
-        this.FunctionClose=FunctionClose;
-        tokens = new Hashtable();
-        multitokens = new Hashtable();
+    public StringTagger(String line, char tagStart, char tagSeparator,char fieldSeparator, char quote,
+                                     char functionOpen, char functionClose) {
+        this.tagStart     = tagStart;
+        this.startline    = line;
+        this.tagSeparator = tagSeparator;
+        this.fieldSeparator = fieldSeparator;
+        this.quote = quote;
+        this.functionOpen = functionOpen;
+        this.functionClose = functionClose;
+        tokens      = new Hashtable(); //needing elements(), keys()
+        multitokens = new HashMap();
         createTagger(line);
     }
 
@@ -104,13 +99,13 @@ public class StringTagger implements Map {
      * Uses default characters for the function parameter list tokens.
      * Example : StringTagger("cmd=lookup names='Daniel Ockeloen, Rico Jansen'",' ','=',','\'')
      * @param line : to be tagged line
-     * @param TagStart : Seperator for the Tags
-     * @param TagSeperator : Seperator inside the Tag (between name and value)
-     * @param FieldSeperator : Seperator inside the value
-     * @param QuoteChar : Char used if a quoted value
+     * @param tagStart : Seperator for the Tags
+     * @param tagSeparator : Seperator inside the Tag (between name and value)
+     * @param fieldSeparator : Seperator inside the value
+     * @param quote : Char used if a quoted value
      */
-    public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar) {
-        this(line, TagStart, TagSeperator,FieldSeperator, QuoteChar,'(',')');
+    public StringTagger(String line, char tagStart, char tagSeparator,char fieldSeparator, char quote) {
+        this(line, tagStart, tagSeparator,fieldSeparator, quote,'(',')');
     }
 
     /**
@@ -127,67 +122,67 @@ public class StringTagger implements Map {
      * {@link #tokens} and {@link #multitokens} fields.
      * @param line : to be tagged line (why is this a parameter when it can eb retrieved from startline?)
      */
-    void createTagger(String line) {
-        StringTokenizer tok2=new StringTokenizer(line+TagStart,""+TagSeperator+TagStart,true);
+    protected void createTagger(String line) {
+        StringTokenizer tok2 = new StringTokenizer(line+tagStart,""+tagSeparator+tagStart,true);
         String part,tag,prevtok,tok;
         boolean isTag,isPart,isQuoted;
 
-        isTag=true;
-        isPart=false;
-        isQuoted=false;
-        prevtok="";
-        tag=part="";
-//        log.debug("Tagger -> |"+TagStart+"|"+TagSeperator+"|"+QuoteChar+"|");
+        isTag = true;
+        isPart = false;
+        isQuoted = false;
+        prevtok = "";
+        tag = part = ""; // should be StringBuffer
+//        log.debug("Tagger -> |"+tagStart+"|"+tagSeparator+"|"+quote+"|");
         while(tok2.hasMoreTokens()) {
-            tok=tok2.nextToken();
+            tok = tok2.nextToken();
 //            log.debug("tagger tok ("+isTag+","+isPart+","+isQuoted+") |"+tok+"|"+prevtok+"|");
-            if (tok.equals(""+TagSeperator)) {
+            if (tok.equals(""+tagSeparator)) {
                 if (isTag) {
-                    tag=prevtok;
-                    isTag=false;
+                    tag = prevtok;
+                    isTag = false;
                 } else {
                     if (!isQuoted) {
-                        splitTag(tag+TagSeperator+part);
-                        isTag=true;
-                        isPart=false;
-                        part="";
+                        splitTag(tag+tagSeparator+part);
+                        isTag = true;
+                        isPart = false;
+                        part = "";
                     } else {
-                        part+=tok;
+                        part += tok;
                     }
                 }
-            } else if (tok.equals(""+TagStart)) {
+            } else if (tok.equals(""+tagStart)) {
                 if (isPart) {
                     if (isQuoted) {
-                        part+=tok;
+                        part += tok;
                     } else {
-                        if (!prevtok.equals(""+TagStart)) {
-                            splitTag(tag+TagSeperator+part);
-                            isTag=true;
-                            isPart=false;
-                            part="";
+                        if (!prevtok.equals("" + tagStart)) {
+                            splitTag(tag + tagSeparator + part);
+                            isTag = true;
+                            isPart = false;
+                            part = "";
                         }
                     }
-                    prevtok=tok;
+                    prevtok = tok;
                 }
             } else {
-                if (!isTag) isPart=true;
+                if (!isTag) isPart = true;
 //                log.debug("isTag "+isTag+" "+isPart);
                 if (isPart) {
                     if (isQuoted) {
                         // Check end quote
-                        if (tok.charAt(tok.length()-1)==QuoteChar) {
-                            isQuoted=false;
+                        if (tok.charAt(tok.length() - 1) == quote) {
+                            isQuoted = false;
                         }
-                        part+=tok;
+                        part += tok;
                     } else {
-                        if (tok.charAt(0)==QuoteChar && !(tok.charAt(tok.length()-1)==QuoteChar)) {
-                            isQuoted=true;
+                        if (tok.charAt(0) == quote && !(tok.charAt(tok.length() - 1) == quote)) {
+                            isQuoted = true;
                         }
-                        part+=tok;
+                        part += tok;
                     }
                 }
 //                log.debug("isTag "+isTag+" "+isPart+" "+isQuoted);
-                prevtok=tok;
+                prevtok = tok;
             }
         }
     }
@@ -197,46 +192,45 @@ public class StringTagger implements Map {
      * the {@link #tokens} and {@link #multitokens} fields.
      * @param tag the string containing the tag
      */
-    void splitTag(String tag) {
-        int    tagPos=tag.indexOf(TagSeperator);
-        String name=tag.substring(0,tagPos);
-        String result=tag.substring(tagPos+1);
+    protected void splitTag(String tag) {
+        int    tagPos = tag.indexOf(tagSeparator);
+        String name   = tag.substring(0,tagPos);
+        String result = tag.substring(tagPos+1);
 //        log.debug("SplitTag |"+name+"|"+result+"|");
 
-        if (result.length()>1 && result.charAt(0)==QuoteChar && result.charAt(result.length()-1)==QuoteChar) {
-            result=result.substring(1,result.length()-1);
+        if (result.length()>1 && result.charAt(0) == quote && result.charAt(result.length() - 1) == quote) {
+            result = result.substring(1, result.length() - 1);
         }
-        tokens.put(name,result);
+        tokens.put(name, result);
 
-        StringTokenizer toks = new StringTokenizer(result,""+FieldSeperator+FunctionOpen+FunctionClose, true);
+        StringTokenizer toks = new StringTokenizer(result, "" + fieldSeparator + functionOpen + functionClose, true);
         // If quoted, strip the " " from beginning and end ?
-        Vector Multi = new Vector();
+        Vector multi = new Vector();
         if(toks.hasMoreTokens()) {
             String tokvalue="";
             int nesting = 0;
             while (toks.hasMoreTokens()) {
-                String tok=toks.nextToken();
-                if (tok.equals(""+FieldSeperator)) {
-                    if (nesting==0) {
-                        Multi.addElement(tokvalue);
-                        tokvalue="";
+                String tok = toks.nextToken();
+                if (tok.equals("" + fieldSeparator)) {
+                    if (nesting == 0) {
+                        multi.add(tokvalue);
+                        tokvalue = "";
                     } else {
-                        tokvalue+=tok;
+                        tokvalue += tok;
                     }
-                } else if (tok.equals(""+FunctionOpen)) {
+                } else if (tok.equals("" + functionOpen)) {
                     nesting++;
-                    tokvalue+=tok;
-                } else if (tok.equals(""+FunctionClose)) {
+                    tokvalue += tok;
+                } else if (tok.equals("" + functionClose)) {
                     nesting--;
-                    tokvalue+=tok;
-                }
-                else {
-                    tokvalue+=tok;
+                    tokvalue += tok;
+                } else {
+                    tokvalue += tok;
                 }
             }
-            Multi.addElement(tokvalue);
+            multi.add(tokvalue);
         }
-        multitokens.put(name,Multi);
+        multitokens.put(name, multi);
     }
 
 
@@ -277,7 +271,7 @@ public class StringTagger implements Map {
      * @param ob the key of the value to retrieve
      */
     public boolean equals(Object ob) {
-        return (ob instanceof Map) && (ob.hashCode()==this.hashCode());
+        return (ob instanceof Map) && (ob.hashCode() == this.hashCode());
     }
 
     /**
@@ -316,8 +310,8 @@ public class StringTagger implements Map {
      *  sets a value (for the Map interface).
      */
     public Object put(Object key, Object value) {
-        Object res=tokens.get(key);
-        setValue((String)key,(String)value);
+        Object res = tokens.get(key);
+        setValue((String)key, (String)value);
         return res;
     }
 
@@ -332,7 +326,7 @@ public class StringTagger implements Map {
      *  remove a value (for the Map interface).
      */
     public Object remove(Object key) {
-        Object res=tokens.get(key);
+        Object res = tokens.get(key);
         tokens.remove(key);
         multitokens.remove(key);
         return res;
@@ -365,16 +359,15 @@ public class StringTagger implements Map {
      * toString
      */
     public String toString() {
-        String content="[";
-        String key="";
-        for (Enumeration e = keys();e.hasMoreElements();) {
-            key=(String)e.nextElement();
-            content+="<"+key;
-            content+="="+Values(key);
-            content+=">";
+        StringBuffer content = new StringBuffer("[");
+        for (Enumeration e = keys(); e.hasMoreElements();) {
+            String key = (String) e.nextElement();
+            content.append('<').append(key);
+            content.append('=').append(Values(key));
+            content.append('>');
         }
-        content+="]";
-        return content;
+        content.append(']');
+        return content.toString();
     }
 
     /**
@@ -392,8 +385,8 @@ public class StringTagger implements Map {
      * Use {@link #elements} to get a list of single, unseparated, values.
      */
     public Enumeration multiElements(String token) {
-        Vector tmp=(Vector)multitokens.get(token);
-        if (tmp!=null) {
+        Vector tmp = (Vector) multitokens.get(token);
+        if (tmp != null) {
             return tmp.elements();
         } else {
             return null;
@@ -406,9 +399,10 @@ public class StringTagger implements Map {
      * Use {@link #get} to get the list of values as a <code>String</code><br />
      * Use {@link #Value} to get the first value as a String
      * @param token the key of the value to retrieve
+     * @name
      */
     public Vector Values(String token) {
-        Vector tmp=(Vector)multitokens.get(token);
+        Vector tmp = (Vector) multitokens.get(token);
         return tmp;
     }
 
@@ -430,10 +424,10 @@ public class StringTagger implements Map {
      */
     public String Value(String token) {
         String val;
-        Vector tmp=(Vector)multitokens.get(token);
+        Vector tmp=(Vector) multitokens.get(token);
         if (tmp!=null && tmp.size()>0) {
-            val=(String)tmp.elementAt(0);
-            if (val!=null) {
+            val=(String) tmp.elementAt(0);
+            if (val != null) {
                 val = Strip.DoubleQuote(val,Strip.BOTH); // added stripping daniel
                 return val;
             } else {
@@ -448,7 +442,7 @@ public class StringTagger implements Map {
      *  Manually sets a single value.
      */
     public void setValue(String token,String val) {
-        Vector newval=new Vector();
+        Vector newval = new Vector();
         newval.addElement(val);
         tokens.put(token,newval);
         multitokens.put(token,newval);
@@ -466,7 +460,7 @@ public class StringTagger implements Map {
      *  For testing
      */
     public static void main(String args[]) {
-        StringTagger tag=new StringTagger(args[0]);
+        StringTagger tag = new StringTagger(args[0]);
     }
 
 }
