@@ -37,14 +37,14 @@ public interface RelationType extends NodeType {
     public final static int BIDIRECTIONAL = 2;
 
 	/**
-	 * gets the role of the source to the destination
-	 * @return the role
+	 * Retrieves the role of the source to the destination
+	 * @return the role as a <code>String</code>
 	 */
 	public String getForwardRole();
 
 	/**
-	 * gets the role of the destination to the source
-	 * @return the role
+	 * Retrieves the role of the destination to the source
+	 * @return the role as a <code>String</code>
 	 */
 	public String getReciprocalRole();
 

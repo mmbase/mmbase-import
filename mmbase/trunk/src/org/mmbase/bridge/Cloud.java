@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * A Cloud is a collection of Nodes (and relations that are also nodes).
@@ -38,7 +38,7 @@ public interface Cloud {
      * Retrieves all node types (aka builders) available in this cloud
      * @return an <code>Iterator</code> containing all node types
      */
-    public Iterator getNodeTypes();
+    public List getNodeTypes();
 
 	/**
      * Retrieves a node type (aka builder)

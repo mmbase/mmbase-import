@@ -54,10 +54,11 @@ public class BasicCloudContext implements CloudContext {
 
 	/**
 	 * Retrieves all the modules available in this context
-	 * @return all available modules
+	 * @return a <code>List</code> of all available modules
 	 */
-	public Iterator getModules() {
-	    return localModules.values().iterator();
+	public List getModules() {
+        Vector v=new Vector(localModules.values());
+	    return v;
 	}
 
 	
@@ -72,10 +73,11 @@ public class BasicCloudContext implements CloudContext {
 
 	/**
 	 * Retrieves all clouds within this context
-	 * @return all Clouds within this context
+	 * @return a <code>List</code> of all Clouds within this context
 	 */
-	public Iterator getClouds() {
-	    return localClouds.values().iterator();
+	public List getClouds() {
+        Vector v=new Vector(localClouds.values());
+	    return v;
 	}
 
 	/**
