@@ -95,7 +95,7 @@ public class ListTag extends AbstractNodeListTag {
      * Performs the search
      */
     public int doStartTag() throws JspTagException{
-        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        int superresult =  doStartTagHelper(); 
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
@@ -105,6 +105,7 @@ public class ListTag extends AbstractNodeListTag {
         if ("true".equals(distinctString) || "yes".equals(distinctString)) {
             searchDistinct = true;
         }
+        log.debug("pathstring " + pathString);
         NodeList nodes = getCloudProviderVar().getList(searchNodes,
                                               pathString,
                                               fields,
