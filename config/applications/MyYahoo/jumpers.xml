@@ -2,6 +2,6 @@
 	<node number="150" owner="system">
 		<name>yahoo</name>
 		<id>-1</id>
-		<url>/mmadmin/examples/MyYahoo/index.shtml?MyYahoo.start</url>
+		<url>/mmexamples/myyahoo/</url>
 	</node>
 </jumpers>
