@@ -13,6 +13,7 @@ import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.security.SecurityException;
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.cache.Cache;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.2 2003-05-23 12:05:13 michiel Exp $
+ * @version $Id: Contexts.java,v 1.3 2003-06-16 17:16:17 michiel Exp $
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class.getName());
@@ -60,25 +61,82 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * Staticly receives the MMObjectBuilder instance (casted to Contexts). A utility function.
      */
     public static Contexts getBuilder() {
         return (Contexts) MMBase.getMMBase().getBuilder("mmbasecontexts");
     }
 
+
     /**
-     * @javadoc
+     * Implements check function with same arguments of Authorisation security implementation
+     * @see Verify#check(user, nodeId, sourceNodeI, destinationNodeI, operation);
      */
-    public boolean mayDo(User user, Operation operation, int nodeId) throws SecurityException {
+
+    public boolean mayDo(User user, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) throws SecurityException {
+        // admin bypasses security system
+        if (user.getRank().getInt() >= Rank.ADMIN_INT) {
+            log.debug("admin may do everything");
+            return true;
+        }        
+        
+
+        // retrieve the nodes
+        MMObjectNode source      = getNode(sourceNodeId);
+        MMObjectNode destination = getNode(destinationNodeId);
+
+        if  ( (source.parent instanceof Users) && (destination.parent instanceof Ranks)) {
+            if (user.getNode().equals(source)) {
+                log.debug("Cannot change own rank");
+                return false;
+            }
+
+            if (Ranks.getBuilder().getRank(destination).getInt() > user.getRank().getInt()) {
+                log.debug("May not increase rank of other user to rank higher than own rank");
+                return false;
+            }
+            if (operation == Operation.CREATE) { // may only create such a relation if there are none now.
+                List ranks =  source.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
+                if (ranks.size() > 0) {
+                    return false;
+                }
+            }
+        }
+
+        return mayDo(user, nodeId, operation);
+
+    }
+
+
+    /**
+     * Implements check function with same arguments of Authorisation security implementation
+     * @see Verify#check(user, nodeId, operation);
+     */
+    public boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
+
+        // retrieve the node
+        MMObjectNode node       = getNode(nodeId);
+        MMObjectBuilder builder = node.getBuilder();
+
+        // may never unlink relation with own rank
+        if (operation == Operation.DELETE && builder instanceof InsRel) {
+            MMObjectNode source      = getNode(node.getIntValue("snumber"));
+            MMObjectNode destination = getNode(node.getIntValue("dnumber"));
+            if (source.parent instanceof Users && destination.parent instanceof Ranks) {
+                if (user.getNode().equals(source)) {
+                    log.debug("May not unlink rank with own user object");
+                    return false;
+                }
+                
+            }                                          
+        }
+
         // admin bypasses security system
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
             log.debug("admin may do everything");
             return true;
         }
 
-
-        // retrieve the node
-        MMObjectNode node = getNode(nodeId);
 
         if (node == null) {
             throw new SecurityException("node #" + nodeId + " not found");
@@ -89,7 +147,6 @@ public class Contexts extends MMObjectBuilder {
             return true;
         }
 
-        MMObjectBuilder builder = node.getBuilder();
         // if this is a group node, then you may do anything on it, if you are member of the group.
         // should that be?
         if (builder instanceof Groups) {
@@ -203,7 +260,7 @@ public class Contexts extends MMObjectBuilder {
         Set hashSet = new HashSet();
         while (enumeration.hasMoreElements()) {
             MMObjectNode node1 = (MMObjectNode) enumeration.nextElement();
-            if (mayDo(user, Operation.READ, node1.getNumber())) {
+            if (mayDo(user, node1.getNumber(), Operation.READ )) {
                 hashSet.add(node1.getStringValue("name"));
             } else {
                 if (log.isDebugEnabled()) {
