@@ -12,7 +12,9 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.cache.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.cache.MultilevelCache;
+import org.mmbase.cache.AggregatedResultCache;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
@@ -27,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.101 2003-08-29 12:12:28 keesj Exp $
+ * @version $Id: BasicCloud.java,v 1.102 2003-09-02 20:11:51 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -113,7 +115,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         mmbaseCop = mmb.getMMBaseCop();
 
         if (mmbaseCop == null) {
-            String message = "Couldn't find the MMBaseCop.";
+            String message = "Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs";
             log.error(message);
             throw new BridgeException(message);
         }
@@ -625,7 +627,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
             return getResultNodeList(query);
         } else {
-            return getSecureNodes(query);
+            return getSecureList(query);
         }
     }
 
@@ -769,7 +771,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * Result with Cluster Nodes (checked security)
      * @since MMBase-1.7
      */
-    protected NodeList getSecureNodes(Query query) {
+    protected NodeList getSecureList(Query query) {
         Authorization auth = mmbaseCop.getAuthorization();
         boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
 
@@ -861,53 +863,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         String searchDir,
         boolean distinct) {
 
-        {
-            // the bridge test case say that you may also specifiy empty string (why?)
-            if ("".equals(startNodes))
-                startNodes = null;
-            if ("".equals(fields))
-                fields = null;
-            if ("".equals(constraints))
-                constraints = null;
-            if ("".equals(searchDir))
-                searchDir = null;
-            // check invalid search command
-            org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
-            // if(startNodes != null) startNodes = encoder.encode(startNodes);
-            // if(nodePath != null) nodePath = encoder.encode(nodePath);
-            // if(fields != null) fields = encoder.encode(fields);
-            if (orderby != null)
-                orderby = encoder.encode(orderby);
-            if (directions != null)
-                directions = encoder.encode(directions);
-            if (searchDir != null)
-                searchDir = encoder.encode(searchDir);
-            if (constraints != null && !validConstraints(constraints)) {
-                throw new BridgeException("invalid constraints:" + constraints);
-            }
-        }
-
-        // create query object
-        Query query;
-        {
-            ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
-            int search = -1;
-            if (searchDir != null) {
-                search = ClusterBuilder.getSearchDir(searchDir);
-            }
-
-            List snodes = StringSplitter.split(startNodes);
-            List tables = StringSplitter.split(nodePath);
-            List f = StringSplitter.split(fields);
-            List orderVec = StringSplitter.split(orderby);
-            List d = StringSplitter.split(directions);
-            try {
-                query = new BasicQuery(this, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
-            } catch (IllegalArgumentException iae) {
-                throw new BridgeException(iae);
-            }
-        }
-
+        Query query = Queries.createQuery(this, startNodes, nodePath, fields, constraints, orderby, directions, searchDir, distinct);
         return getList(query);
     }
 
@@ -941,76 +897,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
     public Locale getLocale() {
         return locale;
-    }
-
-    /** returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) */
-    boolean validConstraints(String constraints) {
-        // first remove all the escaped "'" ('' occurences) chars...
-        String remaining = constraints;
-        while (remaining.indexOf("''") != -1) {
-            int start = remaining.indexOf("''");
-            int stop = start + 2;
-            if (stop < remaining.length()) {
-                String begin = remaining.substring(0, start);
-                String end = remaining.substring(stop);
-                remaining = begin + end;
-            } else {
-                remaining = remaining.substring(0, start);
-            }
-        }
-        // assume we are not escaping... and search the string..
-        // Keep in mind that at this point, the remaining string could contain different information
-        // than the original string. This doesnt matter for the next sequence...
-        // but it is important to realize!
-        while (remaining.length() > 0) {
-            if (remaining.indexOf('\'') != -1) {
-                // we still contain a "'"
-                int start = remaining.indexOf('\'');
-
-                // escaping started, but no stop
-                if (start == remaining.length()) {
-                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints);
-                    return false;
-                }
-
-                String notEscaped = remaining.substring(0, start);
-                if (notEscaped.indexOf(';') != -1) {
-                    log.warn(
-                        "found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:"
-                            + constraints
-                            + "\nnot excaped:"
-                            + notEscaped);
-                    return false;
-                }
-
-                int stop = remaining.substring(start + 1).indexOf('\'');
-                if (stop < 0) {
-                    log.warn(
-                        "reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:"
-                            + constraints
-                            + "\nlast escaping:"
-                            + remaining.substring(start + 1));
-                    return false;
-                }
-                // we added one to to start, thus also add this one to stop...
-                stop = start + stop + 1;
-
-                // when the last character was the stop of our escaping
-                if (stop == remaining.length()) {
-                    return true;
-                }
-
-                // cut the escaped part from the string, and continue with resting sting...
-                remaining = remaining.substring(stop + 1);
-            } else {
-                if (remaining.indexOf(';') != -1) {
-                    log.warn("found a ';' inside our constrain:" + constraints);
-                    return false;
-                }
-                return true;
-            }
-        }
-        return true;
     }
 
     public boolean mayRead(int nodenumber) {
