@@ -12,6 +12,7 @@
 <!ELEMENT action ( field | object | relation  | prompt | description )* >
 <!ATTLIST action type NMTOKEN #IMPLIED >
 <!ATTLIST action include CDATA #IMPLIED >
+<!ATTLIST list extends CDATA #IMPLIED >
 
 <!ELEMENT lists ( optionlist+ ) >
 
