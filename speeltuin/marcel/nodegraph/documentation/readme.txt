@@ -8,7 +8,7 @@ Requirements:
 
  cewolf - the render engine
 
-  - http://www.cewolf.org
+  - http://cewolf.sourceforge.net/
 
  oscache - caching of those rendered images
 
