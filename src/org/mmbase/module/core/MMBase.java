@@ -168,13 +168,8 @@ public class MMBase extends ProcessorModule  {
 	*/
 	private String dtdbase="http://www.mmbase.org";
 	
-	// Classname and debug routines
-	private String	_classname = getClass().getName();
+	// debug routines
 	private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
-
-/*	private boolean debug=false;
-	private void 	debug( String msg ) { log.warn("deprecated call to debug method :"+ msg ); }
-*/
 
 	/**
 	* Reference to the sendmail module. Accessible using getSendMail();
@@ -309,7 +304,7 @@ public class MMBase extends ProcessorModule  {
 		}
 		// signal that MMBase is up and running
 		mmbasestate=true;
-		System.out.println("MMBase is up and running");
+		log.info("MMBase is up and running");
 		checkUserLevel();
 	}
 
@@ -513,7 +508,7 @@ public class MMBase extends ProcessorModule  {
 		//LStreams.checkBroadcastState(LStreams.getNode(573949));
 		if (2==1 && mmc!=null) {
 			// debug for in/out multicast check
-			// if( debug) debug("maintenance(): in="+mmc.incount+" out="+mmc.outcount+" spawn="+mmc.spawncount);
+			// log.debug("maintenance(): in="+mmc.incount+" out="+mmc.outcount+" spawn="+mmc.spawncount);
 		}
 	}
 
@@ -904,10 +899,10 @@ public class MMBase extends ProcessorModule  {
 				} else {
 					newclass=Class.forName(classname);
 				}
-				//debug("Vwms -> Loaded load class : "+newclass);
+				//log.debug("Vwms -> Loaded load class : "+newclass);
 
 				bul = (MMObjectBuilder)newclass.newInstance();
-				// debug("MMBase -> started : "+newclass);
+				//log.debug("MMBase -> started : "+newclass);
 				
  				bul.setXMLPath(ipath);
 				bul.setXmlConfig(true);
@@ -1025,7 +1020,7 @@ public class MMBase extends ProcessorModule  {
 	public void checkUserLevel() {
 		String level=System.getProperty("mmbase.userlevel");
 		if (level!=null) {
-			System.out.println("CheckUserLevel ->  mmmbase.userlevel="+System.getProperty("mmbase.userlevel"));
+			log.info("CheckUserLevel ->  mmmbase.userlevel="+System.getProperty("mmbase.userlevel"));
 			int pos=level.indexOf(':');
 			if (pos!=-1) {
 				String user=level.substring(0,pos);
@@ -1033,7 +1028,7 @@ public class MMBase extends ProcessorModule  {
     			setUser setuser=new setUser();
 				setuser.setUserGroup(user,group);
 			} else {
-				System.out.println("CheckUserLevel ->  mmmbase.userlevel= not defined as user:group");
+				log.info("CheckUserLevel ->  mmmbase.userlevel= not defined as user:group");
 			}
 		}
 	}
