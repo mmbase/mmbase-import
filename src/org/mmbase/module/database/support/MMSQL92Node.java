@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.71 2002-10-09 15:51:03 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.72 2002-10-11 13:03:13 eduard Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -160,8 +160,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING: {
                 // original:
-                //String tmp=rs.getString(i);
-
+                // String tmp=rs.getString(i);
+		// TODO: move this to mysql layer?
+		// Hypersonic isnt able to handle this -trick-
+		// so i added this method to hypersonic
+		// should be removed from hypersonic and placed inside
+		// mysql
                 String tmp = null;
                 try {
                     byte[] bytes = rs.getBytes(i);
