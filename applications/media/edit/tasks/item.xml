@@ -29,11 +29,11 @@
 			<prompt>Body</prompt>
 		</field>
 
-		<field name="start" ftype="datetime" >
+		<field name="start" ftype="custom" >
 			<prompt>start position</prompt>
 		</field>
 
-		<field name="stop" ftype="datetime" >
+		<field name="stop" ftype="custom" >
 			<prompt>stop position</prompt>
 		</field>
 
