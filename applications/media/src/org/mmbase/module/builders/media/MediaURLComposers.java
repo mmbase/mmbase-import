@@ -21,7 +21,7 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaURLComposers.java,v 1.8 2003-01-22 22:17:14 michiel Exp $
+ * @version $Id: MediaURLComposers.java,v 1.9 2003-01-30 09:18:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaURLComposers extends MMObjectBuilder {    
@@ -113,7 +113,7 @@ public class MediaURLComposers extends MMObjectBuilder {
          result.add(createResponseInfo(composer, provider, source, fragment, info));
          Format format = ((MediaSources) source.parent).getFormat(source);
          if (format == Format.RM || format == Format.ASF) { // the mediafragments servlet (jsp) can do something with this.
-             ResponseInfo r = new RamResponseInfo("/mediafragment", source, fragment, format, info);
+             ResponseInfo r = new RamResponseInfo(MMBaseContext.getHtmlRootUrlPath() + "mediafragment", source, fragment, format, info);
              if (! result.contains(r)) result.add(r);
          }
          return result;
