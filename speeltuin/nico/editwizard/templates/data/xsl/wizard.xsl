@@ -13,7 +13,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.2 2003-12-14 16:20:55 nico Exp $
+    @version $Id: wizard.xsl,v 1.3 2003-12-17 09:26:24 nico Exp $
     
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -105,10 +105,16 @@
 
   <xsl:template name="style">
     <link rel="stylesheet" type="text/css" href="{$cssdir}layout/wizard.css" />
+
+    <xsl:call-template name="stylehtml"/>
   </xsl:template>
 
   <xsl:template name="colorstyle">
     <link rel="stylesheet" type="text/css" href="{$cssdir}color/wizard.css" />
+  </xsl:template>
+
+  <xsl:template name="stylehtml">
+    <link rel="stylesheet" type="text/css" href="{$cssdir}layout/wysiwyg.css" />
   </xsl:template>
 
   <xsl:template name="title">
@@ -594,6 +600,8 @@
 		<span>
 			<xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text>
 			<xsl:value-of select="@fieldname" />
+      <xsl:text>" id="</xsl:text>
+      <xsl:value-of select="@fieldname"/>
 			<xsl:text>" dttype="</xsl:text>
 			<xsl:value-of select="@dttype" />
 			<xsl:text>" ftype="</xsl:text>
