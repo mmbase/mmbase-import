@@ -38,11 +38,14 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 -->
-<taglib>
+<taglib author="MMBase community">
   <tlibversion>1.0.1</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
+  <tagtypes>
+  <type name="all">
+  <description>All MMBase tags</description>
   <info>
     <p>MMBase consists of a cloud of nodes (also known as objects) wich can be related to each
       other. Relations can be seen as nodes with two arms which they use to connect two other
@@ -151,6 +154,14 @@ The examples given in this document are basic examples providing the user with a
 See mmexamples/taglib for more elaborated examples.
    </p>
   </info>
+  </type>
+  <type name="mmbase.basic">
+  <description>All basic MMBase tags</description>
+  </type>
+  <type name="mmbase.security">
+  <description>All MMBase security tags</description>
+  </type>
+  </tagtypes>
   <taginterface>
     <name>contextreferrer</name>
     <info>
@@ -186,6 +197,7 @@ See mmexamples/taglib for more elaborated examples.
   <taginterface>
     <name>contextreader</name>
     <extends>contextwriter</extends>
+    <type>mmbase</type>
     <info>
       A contextreader is a contextwriter, but besides writing itself to the context, it can also
       read itself back from the context.
@@ -446,6 +458,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -691,6 +704,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.RelatedTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -791,6 +805,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>nodeprovider</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -856,6 +871,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -950,6 +966,7 @@ See mmexamples/taglib for more elaborated examples.
     <name>first</name>
     <extends>condition</extends>
     <extends>listreferrer</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListFirstTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
@@ -972,6 +989,7 @@ See mmexamples/taglib for more elaborated examples.
     <name>last</name>
     <extends>condition</extends>
     <extends>listreferrer</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
@@ -982,6 +1000,7 @@ See mmexamples/taglib for more elaborated examples.
     <name>cloud</name>
     <extends>contextreader</extends>
     <extends>cloudprovider</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.CloudTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -1194,6 +1213,7 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
     <extends>nodereferrer</extends>
     <extends>cloudreferrer</extends>
     <extends>contextreader</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
@@ -1251,6 +1271,7 @@ access the value of title:
     <extends>fieldprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
@@ -1724,11 +1745,11 @@ transaction was commited, following should result anything:
     </attribute>
     <example>
 &lt;mm:listnodes type="list" max="1"&gt;
-    &lt;mm:maydelete&gt;
-        &lt;mm:deletenode deleterelations="true"/&gt;
-    &lt;/mm:maydelete&gt;
-&lt;/mm:listnodes&gt;
-    </example>
+	&lt;mm:maydelete&gt;
+		&lt;mm:deletenode deleterelations="true"/&gt;
+	&lt;/mm:maydelete&gt;
+&lt;/mm:listnodes>&gt;
+	</example>
   </tag>
   <tag>
     <name>fieldlist</name>
@@ -2268,6 +2289,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>nodereferrer</extends>
     <extends>writer</extends>
     <extends>contextwriter</extends>
+    <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
@@ -2368,6 +2390,18 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <value>css</value>
         <info>Use css comments</info>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>cite</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+         Whether to 'cite' the page. This only works for 'relative'
+         urls on the same server. Only also if you have sufficiently
+         rights to do that. Citing means that the page is acquired
+         directly, so with interpreting/compiling by the web-server.
+      </info>
     </attribute>
     <see>param</see>
     <see>url</see>
@@ -2526,6 +2560,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>maywrite</name>
     <extends>nodereferrer</extends>
     <extends>condition</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayWriteTag</tagclass>
     <info>
     Check if node may be changed.
@@ -2542,6 +2577,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>maydelete</name>
     <extends>nodereferrer</extends>
     <extends>condition</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayDeleteTag</tagclass>
     <info>
     Check if node may be deleted.
@@ -2553,6 +2589,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>maycreate</name>
     <extends>cloudreferrer</extends>
     <extends>condition</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
     <info>
     Check if node may be created.
@@ -2573,6 +2610,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>maycreaterelation</name>
     <extends>cloudreferrer</extends>
     <extends>condition</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
     <info>
     Check if a relation may be created.
@@ -2612,6 +2650,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>maylink</name>
     <extends>nodereferrer</extends>
     <extends>condition</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
     <info>
     This tag will be removed!
@@ -2621,6 +2660,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>maychangecontext</name>
     <extends>nodereferrer</extends>
     <extends>condition</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayChangeContextTag</tagclass>
     <info>
     Check if the context of a node may be changed.
@@ -2629,6 +2669,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   <tag>
     <name>setcontext</name>
     <extends>nodereferrer</extends>
+    <type>mmbase.security</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.SetContextTag</tagclass>
     <info>
       <p>
