@@ -7,14 +7,17 @@
 <!ATTLIST content defaultpostprocessor CDATA  #REQUIRED > 
 <!ATTLIST content defaultencoding      CDATA  "NOTSPECIFIED" > 
 
-<!ELEMENT escaper  (class*) >
+<!ELEMENT escaper  (class*, info?) >
 <!ATTLIST escaper  id    CDATA  #REQUIRED > 
 <!ATTLIST escaper  type  CDATA  #IMPLIED > <!-- type equals id if not speficied -->
 
-<!ELEMENT postprocessor  (class*) >
+<!ELEMENT postprocessor  (class*, info?) >
 <!ATTLIST postprocessor  id    CDATA  #REQUIRED > 
 
 <!ELEMENT class      (#PCDATA) >      <!-- class of type CharTransformer -->
 <!ATTLIST class  config CDATA  #IMPLIED > 
 <!ATTLIST class  back   NMTOKEN  #IMPLIED >   <!-- if 'transformBack' must be used of CharTransformer -->
 
+
+<!ELEMENT info  (#PCDATA | p )* > 
+<!ELEMENT p  ( #PCDATA)* >
