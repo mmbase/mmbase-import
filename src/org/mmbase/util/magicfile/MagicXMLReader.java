@@ -94,10 +94,10 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
                 return detectors;
             }
 
-            Enumeration enum = getChildElements(e);
+            Enumeration enumeration = getChildElements(e);
             Detector d;
-            while (enum.hasMoreElements()) {
-                d = getOneDetector((Element)enum.nextElement());
+            while (enumeration.hasMoreElements()) {
+                d = getOneDetector((Element)enumeration.nextElement());
                 detectors.add(d);
             }
         }
@@ -146,7 +146,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
     private Detector getOneDetector(Element e) {
         Detector d = new Detector();
         Element e1;
-        //detectorElement = (Element)enum.nextElement();
+
         e1 = getElementByPath(e, "detector.mimetype");
         d.setMimeType(getElementValue(e1));
 
@@ -176,10 +176,10 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
 
         e1 = getElementByPath(e, "detector.childlist");
         if (e1 != null) {
-            Enumeration enum = getChildElements(e1);
+            Enumeration enumeration = getChildElements(e1);
             Detector child;
-            while (enum.hasMoreElements()) {
-                e1 = (Element)enum.nextElement();
+            while (enumeration.hasMoreElements()) {
+                e1 = (Element)enumeration.nextElement();
                 child = getOneDetector(e1);
                 d.addChild(child, 1); // Not sure if this is the right thing
             }

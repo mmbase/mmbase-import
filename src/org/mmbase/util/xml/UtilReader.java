@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.6 2003-12-03 11:28:35 keesj Exp $
+ * @version $Id: UtilReader.java,v 1.7 2004-02-09 13:50:36 pierre Exp $
  */
 public class UtilReader {
 
@@ -94,11 +94,11 @@ public class UtilReader {
             XMLBasicReader reader = new XMLBasicReader(f.toString(), UtilReader.class);
             Element e = reader.getElementByPath("util.properties");
             if (e != null) {
-                Enumeration enum = reader.getChildElements(e, "property");
+                Enumeration enumeration = reader.getChildElements(e, "property");
                 Element p;
                 String name, value;
-                while (enum.hasMoreElements()) {
-                    p = (Element)enum.nextElement();
+                while (enumeration.hasMoreElements()) {
+                    p = (Element)enumeration.nextElement();
                     name = reader.getElementAttributeValue(p, "name");
                     value = reader.getElementValue(p);
                     properties.put(name, value);

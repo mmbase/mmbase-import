@@ -235,7 +235,7 @@ public class EditStateNode {
      * type.
      */
     public Hashtable getRelationTable() {
-        Enumeration enum = mmBase.getTypeRel().getAllowedRelations(node);
+        Enumeration enumeration = mmBase.getTypeRel().getAllowedRelations(node);
         MMObjectNode typeRel;
         String typeName;
 
@@ -243,8 +243,8 @@ public class EditStateNode {
         // Key = TypeName for objects that may be linked
 
         Hashtable relationTable = new Hashtable();
-        while (enum.hasMoreElements()) {
-            typeRel = (MMObjectNode)enum.nextElement();
+        while (enumeration.hasMoreElements()) {
+            typeRel = (MMObjectNode)enumeration.nextElement();
             int j=typeRel.getIntValue("snumber");
             if (j== node.getIntValue("otype")) {
                 j=typeRel.getIntValue("dnumber");
@@ -265,16 +265,16 @@ public class EditStateNode {
         if (getEditNodeNumber()!=-1) {
 
             // is this the correct way to get Relations ???? my vote is no !
-            // enum = mmBase.getInsRel().getRelations(getEditNodeNumber());
+            // enumeration = mmBase.getInsRel().getRelations(getEditNodeNumber());
 
-            enum = node.getRelations();
+            enumeration = node.getRelations();
 
             MMObjectNode rel;
             MMObjectNode target;
 
-            while (enum.hasMoreElements()) {
+            while (enumeration.hasMoreElements()) {
                 try {
-                    rel = (MMObjectNode)enum.nextElement();
+                    rel = (MMObjectNode)enumeration.nextElement();
                     if (rel.getIntValue("snumber") == node.getIntValue("number"))
                         target = mmObjectBuilder.getNode(rel.getIntValue("dnumber"));
                     else

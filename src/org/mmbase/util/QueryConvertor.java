@@ -42,7 +42,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.23 2003-12-17 18:14:12 michiel Exp $
+ * @version $Id: QueryConvertor.java,v 1.24 2004-02-09 13:50:35 pierre Exp $
  */
 public class QueryConvertor {
 
@@ -105,9 +105,9 @@ public class QueryConvertor {
      * <p>See {@link org.mmbase.storage.search.legacy.ConstraintParser} for
      * more on how SQL search conditions are supported.
      * <p><b>Note:</b>
-     * This method is provided to support different constraint formats for 
+     * This method is provided to support different constraint formats for
      * backward compatibility (1, 3 and 4 above).
-     * Do not call this method directly from new code, but rather use 
+     * Do not call this method directly from new code, but rather use
      * {@link org.mmbase.storage.search.legacy.ConstraintParser} to parse
      * search constraints.
      *
@@ -199,12 +199,12 @@ class DBQuery  extends ParseItem {
      * @param result the stringbuffer to which to add the query
      */
     public void sqlConversion(StringBuffer result) {
-        Enumeration enum = items.elements();
+        Enumeration enumeration = items.elements();
 
         result.append("WHERE ");
 
-        while (enum.hasMoreElements()) {
-            ((ParseItem)enum.nextElement()).sqlConversion(result);
+        while (enumeration.hasMoreElements()) {
+            ((ParseItem)enumeration.nextElement()).sqlConversion(result);
         }
     }
 
