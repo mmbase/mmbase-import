@@ -1906,9 +1906,6 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <required>false</required>
     </attribute>
   </tag>
-
-
-
   <tag>
     <name>countrelations</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
@@ -1920,12 +1917,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <name>type</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>If specified only the number of relations to the type of nodes
-      specified by this attribute are returned.</info>
+      <info>
+        If specified only the number of relations to the type of nodes
+        specified by this attribute are returned.
+      </info>
     </attribute>
   </tag>
-
-
-
-
 </taglib>
