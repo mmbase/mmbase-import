@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.12 2004-06-01 14:06:04 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.13 2004-08-23 12:44:49 mark Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -641,6 +641,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
 
             log.trace("Base query including fields and tables : "+sb);
+
             // now add the combined relation-constraints as UNIONS
             while (e.hasMoreElements()) {
                 combinedElement = (String) e.nextElement();
@@ -648,9 +649,9 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     unionRelationConstraints.append(" UNION ").append(baseQuery);
                 }
 
-                // Make sure the unionRelationConstraint ends with " AND "
+                // Make sure the unionRelationConstraint ends with " AND " or a " WHERE"
                 if (unionRelationConstraints.length()>=4) {
-                    if (!unionRelationConstraints.substring(unionRelationConstraints.length()-4,unionRelationConstraints.length()).equals("AND ")) {
+                    if (!unionRelationConstraints.substring(unionRelationConstraints.length()-4,unionRelationConstraints.length()).equals("AND ") && !unionRelationConstraints.substring(unionRelationConstraints.length()-6,unionRelationConstraints.length()).equals("WHERE ")) {
                         unionRelationConstraints.append(" AND ");
                     }
                 }
