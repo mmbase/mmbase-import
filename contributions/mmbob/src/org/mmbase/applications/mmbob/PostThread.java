@@ -65,8 +65,6 @@ public class PostThread {
 	this.lastposttime=node.getIntValue("c_lastposttime");
 	this.lastposternumber=node.getIntValue("lastposternumber");
 	this.lastpostnumber=node.getIntValue("lastpostnumber");
-	log.info("WHAAAA="+lastpostnumber);
-	log.info("WHAAAA="+lastposternumber);
 
 	// read postings
 	// readPostings();
