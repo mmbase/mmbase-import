@@ -31,6 +31,9 @@
   cookies disabled, and url not encoded, cloud-tag will detect that
   from 1.6 on).
 </p>
+<p>
+  <a href="<mm:url page="attributes.jsp" />">Tag attribute tests</a>
+</p>
 
 <hr />
 <p>
