@@ -23,9 +23,14 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.6
- * @version $Id: OODatabaseStorage.java,v 1.4 2003-05-02 14:23:05 michiel Exp $
+ * @version $Id: OODatabaseStorage.java,v 1.5 2003-05-02 20:20:06 michiel Exp $
  */
 public abstract class OODatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage {
+
+    // javadoc inherited
+    public boolean supportsExtendedTables() {
+        return true;
+    }
 
 }
  
