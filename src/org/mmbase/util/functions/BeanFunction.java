@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.1 2004-11-03 17:43:38 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.2 2004-11-03 19:12:01 michiel Exp $
  * @see org.mmbase.util.function.MethodFunction
  * @see org.mmbase.util.function.FunctionFactory
  * @since MMBase-1.8
@@ -74,7 +74,7 @@ public class BeanFunction extends Function {
      * Gives back a Function object based on the 'bean' concept. 
      * Called from {@link FunctionFactory}
      */
-    static Function getFunction(Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static Function getFunction(Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         String key = claz.getName() + '.' + name;
         BeanFunction result = (BeanFunction) beanFunctionCache.get(key);
         if (result == null) {
