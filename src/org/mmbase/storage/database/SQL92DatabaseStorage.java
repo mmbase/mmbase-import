@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.2 2002-09-18 14:52:34 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.3 2002-11-07 12:30:38 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -412,7 +412,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         // did the user supply a number allready?
         // if not, try to obtain one and assign it
         if (number==-1) {
-            number=createKey();
+            number=createKey(trans);
             // did it fail ? if so return -1
             if (number == -1) return -1;
             node.setValue("number",number);
