@@ -10,11 +10,13 @@
      <singular xml:lang="nl">Gebufferd Plaatje</singular>
      <singular xml:lang="fr">Image Antémémoire</singular>
      <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
+     <singular xml:lang="it">Immagine nella memoria nascosta</singular>
 
      <plural xml:lang="en">Cached Images</plural>
      <plural xml:lang="nl">Gebufferde Plaatjes</plural>
      <plural xml:lang="fr">Images antémémoire</plural>
      <plural xml:lang="eo">Kaŝmemoritaj Bildoj</plural>
+     <plural xml:lang="it">Immagini nella memoria nascosta</plural>
   </names>
 
   <!-- <descriptions>
@@ -26,6 +28,7 @@
      <description xml:lang="nl">Buffer  voor bewerkte plaatjes</description>
      <description xml:lang="fr">Cachant la table pour rendues des images</description>
      <description xml:lang="eo">Kaŝmemoranta tabelo por konvertitaj bildoj</description>
+     <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
   </descriptions>
 
   <!-- <fieldlist>
@@ -42,6 +45,7 @@
           <guiname xml:lang="nl">Ckey</guiname>
           <guiname xml:lang="fr">Ckey</guiname>
           <guiname xml:lang="eo">Ckey</guiname>
+          <guiname xml:lang="it">Ckey</guiname>
           <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -72,6 +76,7 @@
           <guiname xml:lang="nl">ID</guiname>
           <guiname xml:lang="fr">ID</guiname>
           <guiname xml:lang="eo">ID</guiname>
+          <guiname xml:lang="it">ID</guiname>
           <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -102,6 +107,7 @@
           <guiname xml:lang="nl">Plaatje</guiname>
           <guiname xml:lang="fr">Image</guiname>
           <guiname xml:lang="eo">Bildo</guiname>
+          <guiname xml:lang="it">Immagine</guiname>
           <guitype>newimage</guitype>
         </gui>
         <!-- editor related  -->
@@ -132,6 +138,7 @@
           <guiname xml:lang="nl">Grootte</guiname>
           <guiname xml:lang="fr">Taille</guiname>
           <guiname xml:lang="eo">Grando</guiname>
+          <guiname xml:lang="it">Dimensione</guiname>
           <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->

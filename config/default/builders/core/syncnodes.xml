@@ -9,10 +9,12 @@
      <singular xml:lang="en">Synchronisation Node</singular>
      <singular xml:lang="nl">Synchronisatienode</singular>
      <singular xml:lang="eo">Samignodo</singular>
+     <singular xml:lang="it">Sincronizzazione Nodo</singular>
      <!-- multiple per language  as defined by RFC xxx -->
      <plural xml:lang="en">Synchronisation Nodes</plural>
      <plural xml:lang="nl">Synchronisatienodes</plural>
      <plural xml:lang="eo">Samignodoj</plural>
+     <plural xml:lang="it">Sincronizzazione Nodi</plural>
   </names>
 
   <!-- <descriptions>
@@ -22,6 +24,7 @@
      <description xml:lang="en">Synchronisation Nodes are used to map remote MMBase nodes to this node</description>
      <description xml:lang="nl">Synchronisatienodes worden gebruikt om remote MMBase nodes te mappen naar lokale nodes</description>
      <description xml:lang="eo">Samignodoj estas uzataj por mapi forajn MMBase-nodoj al lokaj</description>
+     <description xml:lang="it">Sincronizzazione Nodi usati per mappare i nodi-MMBase remoti a questo nodo</description>
   </descriptions>
 
   <!-- <fieldlist>
@@ -37,6 +40,7 @@
           <guiname xml:lang="en">Export Source</guiname>
           <guiname xml:lang="nl">Exportbron</guiname>
           <guiname xml:lang="eo">Eksportfonto</guiname>
+          <guiname xml:lang="it">Esporta fonte</guiname>
           <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -66,6 +70,7 @@
           <guiname xml:lang="en">Time Stamp</guiname>
           <guiname xml:lang="nl">Tijdstempel</guiname>
           <guiname xml:lang="eo">Tempstampo</guiname>
+          <guiname xml:lang="it">Time stamp</guiname>
           <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -95,6 +100,7 @@
           <guiname xml:lang="en">Export Number</guiname>
           <guiname xml:lang="nl">Exportnummer</guiname>
           <guiname xml:lang="eo">Eksportnumero</guiname>
+          <guiname xml:lang="it">Esport Numero</guiname>
           <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -125,6 +131,7 @@
           <guiname xml:lang="en">Local Number</guiname>
           <guiname xml:lang="nl">Lokaal Nummer</guiname>
           <guiname xml:lang="eo">Ĉi-numero</guiname>
+          <guiname xml:lang="it">Numero Locale</guiname>
           <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->

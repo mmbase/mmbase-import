@@ -17,11 +17,13 @@
     <singular xml:lang="nl">Object Alias</singular>
     <singular xml:lang="eo">Objektkromnomo</singular>
     <singular xml:lang="fr">Alias de objet</singular>
+    <singular xml:lang="it">Oggetto Alias</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Object Aliases</plural>
     <plural xml:lang="nl">Object Aliassen</plural>
     <plural xml:lang="eo">Objektkromnomoj</plural>
     <plural xml:lang="fr">Alias de objet</plural>
+    <plural xml:lang="it">Oggetto Aliases</plural>
   </names>
 
   <!-- <descriptions>
@@ -32,6 +34,7 @@
     <description xml:lang="en">Object Aliases name substitution for objects</description>
     <description xml:lang="nl">Object Aliassen naam substitutie voor objecten</description>
     <description xml:lang="eo">Per objektkromnomoj eble doni nomojn al objektoj</description>
+    <description xml:lang="it">Oggetto Aliases per sostituzione del nome per oggetti</description>
   </descriptions>
 
   <!-- <fieldlist>
@@ -47,6 +50,7 @@
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
+        <guiname xml:lang="it">Nome</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -76,6 +80,7 @@
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
+        <guiname xml:lang="it">Descrizione</guiname>
         <guitype>field</guitype>
       </gui>
       <!-- editor related  -->
@@ -105,6 +110,7 @@
         <guiname xml:lang="en">Target</guiname>
         <guiname xml:lang="nl">Bestemming</guiname>
         <guiname xml:lang="eo">Celo</guiname>
+        <guiname xml:lang="it">Obbiettivo</guiname>
         <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
