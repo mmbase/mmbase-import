@@ -20,7 +20,7 @@
 -->
 <classfile>Images</classfile>
 
-<searchage>7</searchage>
+<searchage>31</searchage>
 
 <!-- <names>
 	names defines the different names used in user visible parts, singular for
@@ -29,13 +29,13 @@
 >-->
 <names>
 	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="nl">Afbeelding</singular>
 	<singular xml:lang="fr">Image</singular>
+	<singular xml:lang="nl">Afbeelding</singular>
 	<singular xml:lang="en">Image</singular>
 	<singular xml:lang="us">Image</singular>
 	<!-- multiple per language as defined by ISO 639 -->
-	<plural xml:lang="nl">Afbeeldingen</plural>
 	<plural xml:lang="fr">Images</plural>
+	<plural xml:lang="nl">Afbeeldingen</plural>
 	<plural xml:lang="en">Images</plural>
 	<plural xml:lang="us">Images</plural>
 </names>
@@ -45,8 +45,8 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-	<description xml:lang="nl">Afbeeldingen</description>
 	<description xml:lang="fr">Images</description>
+	<description xml:lang="nl">Afbeeldingen</description>
 	<description xml:lang="en">Images</description>
 	<description xml:lang="us">Images</description>
 </descriptions>
@@ -56,10 +56,17 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
-	<property name="MaxConcurrentRequests">3</property>
-	<property name="ImageConvert.ConverterCommand">bin/convert</property>
-	<property name="ImageConvert.ConverterRoot">/usr/local/</property>
-	<property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+   <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html 
+        NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
+   <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> -->
+
+   <!-- convert using ImageMagick -->
+   <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+   <property name="ImageConvert.ConverterCommand">bin/convert</property>
+   <property name="ImageConvert.ConverterRoot">/usr/local/</property>
+
+   <!-- generic property for all converters -->
+   <property name="MaxConcurrentRequests">3</property>
 </properties>
 
 <!-- <fieldlist>
@@ -72,8 +79,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Object</guiname>
 			<guiname xml:lang="fr">Objet</guiname>
+			<guiname xml:lang="nl">Object</guiname>
 			<guiname xml:lang="en">Object</guiname>
 			<guiname xml:lang="us">Object</guiname>
 			<guitype>integer</guitype>
@@ -102,8 +109,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Eigenaar</guiname>
 			<guiname xml:lang="fr">propri!ire</guiname>
+			<guiname xml:lang="nl">Eigenaar</guiname>
 			<guiname xml:lang="en">Owner</guiname>
 			<guiname xml:lang="us">Owner</guiname>
 			<guitype>string</guitype>
@@ -119,10 +126,6 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -136,8 +139,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Titel</guiname>
 			<guiname xml:lang="fr">Titre</guiname>
+			<guiname xml:lang="nl">Titel</guiname>
 			<guiname xml:lang="en">Title</guiname>
 			<guiname xml:lang="us">Title</guiname>
 			<guitype>string</guitype>
@@ -153,10 +156,6 @@ a key/value system. Its a optional tag.
 				<search>1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -170,8 +169,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Omschrijving</guiname>
 			<guiname xml:lang="fr">Description</guiname>
+			<guiname xml:lang="nl">Omschrijving</guiname>
 			<guiname xml:lang="en">Description</guiname>
 			<guiname xml:lang="us">Description</guiname>
 			<guitype>field</guitype>
@@ -187,10 +186,6 @@ a key/value system. Its a optional tag.
 				<search>2</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">1024</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -204,8 +199,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Plaatje</guiname>
 			<guiname xml:lang="fr">Image</guiname>
+			<guiname xml:lang="nl">Plaatje</guiname>
 			<guiname xml:lang="en">Image</guiname>
 			<guiname xml:lang="us">Image</guiname>
 			<guitype>newimage</guitype>
@@ -234,8 +229,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">PlaatjesType</guiname>
 			<guiname xml:lang="fr">ImageTapent</guiname>
+			<guiname xml:lang="nl">PlaatjesType</guiname>
 			<guiname xml:lang="en">ImageType</guiname>
 			<guiname xml:lang="us">ImageType</guiname>
 			<guitype>string</guitype>
@@ -251,10 +246,6 @@ a key/value system. Its a optional tag.
 				<search>-1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">32</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->

@@ -51,7 +51,7 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
-	<property name="JumperNotFoundURL">/index.html</property>
+<property name="JumperNotFoundURL">/index.html</property>
 </properties>
 
 <!-- <fieldlist>
@@ -109,10 +109,6 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -142,10 +138,6 @@ a key/value system. Its a optional tag.
 				<search>1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">64</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -204,10 +196,6 @@ a key/value system. Its a optional tag.
 				<search>3</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
