@@ -386,7 +386,7 @@
 				<type state="persistent" notnull="false" key="false">INTEGER</type>
 			</db>
 		</field>
-		<!-- POS 17 : <field> 'cbody'  -->
+		<!-- POS 17 : <field> 'c_body'  -->
 		<field>
 			<descriptions>
 			</descriptions>
@@ -407,7 +407,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name>cbody</name>
+				<name>c_body</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="128000" notnull="false" key="false">STRING</type>
 			</db>
