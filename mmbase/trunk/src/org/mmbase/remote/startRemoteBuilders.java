@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: startRemoteBuilders.java,v 1.7 2000-12-19 17:16:56 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote;
 
 import java.net.*;
@@ -22,7 +27,7 @@ import java.util.*;
  * example : java org.mmbase.startRemoteBuilders /tmp/cdrom1.cfg
  * </PRE>
  *
- * @version  3 Okt 1999
+ * @version $Revision: 1.7 $ $Date: 2000-12-19 17:16:56 $
  * @author Daniel Ockeloen
  */
 public class startRemoteBuilders {
