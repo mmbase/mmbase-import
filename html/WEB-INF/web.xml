@@ -2,8 +2,8 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
- <!-- uncomment this and fill in the right value, if your app-server
-       does not succeed to determin this automaticly.
+  <!-- uncomment this and fill in the right value, if your app-server
+  does not succeed to determin this automaticly.
   <context-param>
     <param-name>mmbase.htmlrooturlpath</param-name>
     <param-value>/</param-value>
@@ -11,8 +11,8 @@
   -->  
 
   <!-- Filter for jumpers
-  Uncomment this code if you want to activate the jumpers filter.
-  You need to install the jumpers builder first
+   Uncomment this code if you want to activate the jumpers filter.
+   You need to install the jumpers builder first
   -->
   <!--
   <filter>
@@ -30,20 +30,19 @@
 
 	<!-- Overrides config/module/mmbaseroot.xml#encoding -->
   <!-- Filter Character Encoding
-					<filter>
-						<filter-name>Set Character Encoding</filter-name>
-						<filter-class>org.mmbase.servlet.CharacterEncodingFilter</filter-class>
+  <filter>
+    <filter-name>Set Character Encoding</filter-name>
+    <filter-class>org.mmbase.servlet.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
 
-						<init-param>
-							<param-name>encoding</param-name>
-							<param-value>UTF-8</param-value>
-						</init-param>
-					</filter>
-
-					<filter-mapping>
-						<filter-name>Set Character Encoding</filter-name>
-						<url-pattern>/*</url-pattern>
-					</filter-mapping>
+  <filter-mapping>
+    <filter-name>Set Character Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
   -->
 
   <!-- The base MMBase servlet informs about the current MMBase version -->
@@ -142,13 +141,13 @@
   <!-- mapping for image-requests -->
   <servlet-mapping>
     <servlet-name>images</servlet-name>
-    <url-pattern>/img.db</url-pattern>
+    <url-pattern>/mmbase/images/*</url-pattern><!-- if done by servdb, it must be /img.db -->
   </servlet-mapping>
 
   <!-- mapping for attachment-requests -->
   <servlet-mapping>
     <servlet-name>attachments</servlet-name>
-    <url-pattern>/attachment.db</url-pattern>
+    <url-pattern>/mmbase/attachments/*</url-pattern><!-- if done by servdb, it must be /attachment.db -->
   </servlet-mapping>
 
   <!-- mappings for to servdb
