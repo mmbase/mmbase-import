@@ -39,6 +39,8 @@ public class ForumConfig {
     private String loginmodetype,logoutmodetype;
     private String guestreadmodetype,guestwritemodetype;
     private String id="unkown";
+    private String xsltpostingsodd = "xslt/posting2xhtmlDark.xslt";
+    private String xsltpostingseven = "xslt/posting2xhtmlLight.xslt";
 
     private String avatarsUploadEnabled = "true";
     private String avatarsGalleryEnabled = "true";
@@ -334,6 +336,14 @@ public class ForumConfig {
    public String getGuestWriteModeType() {
         return guestwritemodetype;
    }
+
+    public String getXSLTPostingsOdd() {
+        return xsltpostingsodd;
+    }
+
+    public String getXSLTPostingsEven() {
+        return xsltpostingseven;
+    }
 
     public String getAvatarsUploadEnabled() {
         return avatarsUploadEnabled;

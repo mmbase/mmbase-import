@@ -237,6 +237,13 @@ public class Controller {
                         }
                         virtual.setValue("posttime", p.getPostTime());
                         virtual.setValue("id", p.getId());
+                        virtual.setValue("threadpos", p.getThreadPos());
+			// very weird way need to figure this out
+			if (p.getThreadPos()%2==0) {
+                        	virtual.setValue("tdvar", "listpaging");
+			} else {
+                        	virtual.setValue("tdvar", "");
+			}
                         // should be moved out of the loop
                         if (activeid != -1) {
                             Poster ap = f.getPoster(activeid);
@@ -871,12 +878,10 @@ public class Controller {
      */
     public boolean postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
         Forum f = ForumManager.getForum(forumid);
-	log.info("POSTER1="+poster);
 	int pos = poster.indexOf("(");
 	if (pos!=-1) {
 		poster=poster.substring(0,pos-1);
 	}
-	log.info("POSTER2="+poster);
 
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -916,7 +921,6 @@ public class Controller {
             PostArea a = f.getPostArea(postareaid);
 	    Poster p=f.getPoster(poster);
             if (a != null && (p==null || !p.isBlocked())) {
-		log.info("NEW POST");
                 int postthreadid = a.newPost(subject, poster, body);
                 virtual.setValue("postthreadid", postthreadid);
             }
