@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE database PUBLIC "-//MMBase/DTD database config 1.1//EN" "http://www.mmbase.org/dtd/database_1_1.dtd">
+<!DOCTYPE database PUBLIC "-//MMBase/DTD database config 1.2//EN" "http://www.mmbase.org/dtd/database_1_2.dtd">
 <database>
   <!-- <name>
         The Name of the Database we are running, only used for display
@@ -10,6 +10,15 @@
         mmbase and the given jdbs/database we are using.
     -->
   <mmbasedriver>org.mmbase.storage.database.RelationalDatabaseStorage</mmbasedriver>
+  <!-- <sqlhandler>
+        Defines the SqlHandler that converts SearchQuery objects to sql statements.
+    -->
+  <sqlhandler>org.mmbase.storage.search.implementation.database.BasicSqlHandler</sqlhandler>
+  <!-- <chainedsqlhandler>
+        Defines the chained SqlHandler that extend the sqlhandler's functionality.
+        This enables database extensions to be used.
+    -->
+  <chainedsqlhandler></chainedsqlhandler>
   <!-- <scheme>
         Defines the strings for the different scheme database
         statements.
