@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.14 2003-03-18 14:04:54 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.15 2003-03-21 12:43:14 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -280,8 +280,11 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         added.add(typerel);
 
         boolean bidirectional;
-        if (InsRel.usesdir) {            bidirectional = mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1;        } else {
-            bidirectional = true;        }
+        if (InsRel.usesdir) {
+            bidirectional = mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1;
+        } else {
+            bidirectional = true;
+        }
 
         inheritance:
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
@@ -617,9 +620,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     public String toString(MMObjectNode n) {
         try {
-            String source      = mmb.getTypeDef().getValue(n.getIntValue("snumber"));
-            String destination = mmb.getTypeDef().getValue(n.getIntValue("dnumber"));
-            MMObjectNode role  = mmb.getRelDef().getNode(n.getIntValue("rnumber"));
+            int snumber = n.getIntValue("snumber");
+            int dnumber = n.getIntValue("dnumber");
+            int rnumber = n.getIntValue("rnumber");
+            
+            String source      = snumber > -1 ? mmb.getTypeDef().getValue(snumber) : "[unfilled]";
+            String destination = dnumber > -1 ? mmb.getTypeDef().getValue(dnumber) : "[unfilled]";
+            MMObjectNode role  = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
             return source + "->"+ destination + " (" + (role != null ? role.getStringValue("sname")  : "???" ) +")";
         } catch (Exception e) {
             log.warn(e);
