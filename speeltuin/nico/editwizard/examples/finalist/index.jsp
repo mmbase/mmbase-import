@@ -21,7 +21,7 @@ want to depend on the 'Referer' header (which is not mandatory) -->
 <table>
 <mm:listnodes type="editwizards">
   <tr><td>
-    <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
+    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
        <mm:param name="wizard"><mm:field name="wizard"/></mm:param>
 <%-- mm:param name="objectnumber"><mm:field name="objectnumber"/></mm:param --%>
        <mm:param name="nodepath"><mm:field name="nodepath"/></mm:param>
