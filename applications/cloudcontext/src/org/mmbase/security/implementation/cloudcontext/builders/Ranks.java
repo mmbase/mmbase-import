@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.11 2004-07-30 17:12:24 michiel Exp $
+ * @version $Id: Ranks.java,v 1.12 2005-03-04 14:34:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -126,6 +126,35 @@ public class Ranks extends MMObjectBuilder {
             return r;
         }
     }
+
+    /**
+     * Gets the rank node with given rank, or if no such node, the node with the highest rank
+     * smaller than given rank.
+     * @since MMBase-1.8
+     */
+    public MMObjectNode getRankNode(Rank rank) {
+        NodeSearchQuery q = new NodeSearchQuery(this);
+        org.mmbase.module.corebuilders.FieldDefs rankFieldDefs = getField("rank");
+        StepField rankField = q.getField(rankFieldDefs);
+        BasicFieldValueConstraint cons = new BasicFieldValueConstraint(rankField, new Integer(rank.getInt()));
+        cons.setOperator(FieldValueConstraint.LESS_EQUAL);   
+        BasicSortOrder s = q.addSortOrder(rankField);
+        s.setDirection(SortOrder.ORDER_DESCENDING);
+        q.setConstraint(cons);
+        q.setMaxNumber(1);
+        try {
+            Iterator i = getNodes(q).iterator();
+            if (i.hasNext()) {
+                return  (MMObjectNode) i.next();
+            } else {
+                return null;
+            }
+        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+            log.error(sqe);
+            return null;
+        }
+    }
+
 
     /**
      * Only the description of a rarnk may be changed.
