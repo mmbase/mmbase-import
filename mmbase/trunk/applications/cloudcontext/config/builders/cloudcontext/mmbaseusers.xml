@@ -93,6 +93,7 @@
 			<gui>
 				<guiname xml:lang="nl">Geldig vanaf</guiname>
 				<guiname xml:lang="en">Valid from</guiname>
+				<guiname xml:lang="eo">Valida ekde</guiname>
 				<guitype>eventtime</guitype>
 			</gui>
 			<editor>
@@ -110,6 +111,7 @@
 			<gui>
 				<guiname xml:lang="nl">Geldig tot</guiname>
 				<guiname xml:lang="en">Valid to</guiname>
+				<guiname xml:lang="eo">Valida ĝis</guiname>
 				<guitype>eventtime</guitype>
 			</gui>
 			<editor>
@@ -127,6 +129,7 @@
 			<gui>
 				<guiname xml:lang="nl">Laatste login</guiname>
 				<guiname xml:lang="en">Last logon</guiname>
+				<guiname xml:lang="eo">Lastfoja saluto</guiname>
 				<guitype>eventtime</guitype>
 			</gui>
 			<editor>
