@@ -24,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.20 2003-08-11 17:57:07 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.21 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -33,8 +33,8 @@ public class NodeHandler extends AbstractTypeHandler {
      * Constructor for NodeHandler.
      * @param context
      */
-    public NodeHandler(FieldInfoTag context) {
-        super(context);
+    public NodeHandler(FieldInfoTag tag) {
+        super(tag);
     }
 
     protected class IgnoreCaseComparator implements Comparator {
@@ -49,7 +49,7 @@ public class NodeHandler extends AbstractTypeHandler {
     // (a nodemanager used for creating relations)
     private boolean isRelationBuilder(Node n) throws JspTagException {
         try {
-            NodeManager nm=context.getCloud().getNodeManager(n.getStringValue("name"));
+            NodeManager nm=tag.getCloud().getNodeManager(n.getStringValue("name"));
             // not a really good way to check, but it wil work for now
             // better is to use some property like
             //    NodeManager.getNodeClass()
@@ -66,7 +66,7 @@ public class NodeHandler extends AbstractTypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
-        if(context.getCloud().hasNodeManager(field.getGUIType())) {
+        if(tag.getCloud().hasNodeManager(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\">\n");
@@ -77,12 +77,12 @@ public class NodeHandler extends AbstractTypeHandler {
             // args for gui function
             List args = new ArrayList();
             args.add("");
-            args.add(context.getCloud().getLocale().getLanguage());
+            args.add(tag.getCloud().getLocale().getLanguage());
             // should actually be added
             //args.add(sessionName);
-            //args.add(context.pageContext.getResponse());
+            //args.add(tag.pageContext.getResponse());
 
-            NodeIterator nodes = context.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
+            NodeIterator nodes = tag.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
             SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
 
             // If this is the 'builder' field of the reldef builder, we need to filter
@@ -109,7 +109,7 @@ public class NodeHandler extends AbstractTypeHandler {
                     // this is the selected one!
                     buffer.append("selected=\"selected\"");
                 } else if (search) {
-                    String searchi =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(field.getName()));
+                    String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
                     if (gui.getValue().equals(searchi)) {
                         buffer.append(" selected=\"selected\"");
                     }
@@ -123,7 +123,7 @@ public class NodeHandler extends AbstractTypeHandler {
                 buffer.append("<input type=\"checkbox\" name=\"");
                 String name = prefix(field.getName() + "_search");
                 buffer.append(name);
-                String searchi =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), name);
+                String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
                 buffer.append("\" ");
                 if (searchi != null) {
                     buffer.append(" checked=\"checked\"");
@@ -140,9 +140,9 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        if (context.getCloud().hasNodeManager(field.getGUIType())) {
+        if (tag.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
+            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             } 
         }
@@ -151,9 +151,9 @@ public class NodeHandler extends AbstractTypeHandler {
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
-        if (context.getCloud().hasNodeManager(field.getGUIType())) {
+        if (tag.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), id) == null) {
+            if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
             } 
         }                

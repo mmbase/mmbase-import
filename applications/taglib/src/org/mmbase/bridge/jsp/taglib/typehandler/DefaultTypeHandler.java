@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: DefaultTypeHandler.java,v 1.3 2003-06-06 10:03:35 pierre Exp $
+ * @version $Id: DefaultTypeHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class DefaultTypeHandler extends AbstractTypeHandler {
@@ -26,8 +26,8 @@ public class DefaultTypeHandler extends AbstractTypeHandler {
     /**
      * Constructor for DefaultTypeHandler.
      */
-    public DefaultTypeHandler(FieldInfoTag context) {
-        super(context);
+    public DefaultTypeHandler(FieldInfoTag tag) {
+        super(tag);
     }
         
 }
