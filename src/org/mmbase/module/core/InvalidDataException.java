@@ -14,17 +14,17 @@ import java.lang.Exception;
 /**
  * This exception gets thrown when a node contains invalid data
  */
-public class InValidDataException extends Exception {
+public class InvalidDataException extends Exception {
 
     public String invalidField="";
 	/**
 	 * Create the exception
  	 */
-	public InValidDataException (String s) {
+	public InvalidDataException (String s) {
 		super(s);
 	}
 	
-	public InValidDataException (String s, String fieldName) {
+	public InvalidDataException (String s, String fieldName) {
 		super(s);
 		invalidField=fieldName;
 	}

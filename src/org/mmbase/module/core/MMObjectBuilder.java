@@ -277,8 +277,10 @@ public class MMObjectBuilder extends MMTable {
     /*
     * Tests whether the data in a node is valid (throws an exception if this is not the case).
     * @param node The node whose data to check
+    * @throws org.mmbase.module.core.InvalidDataException
+    *   If the data was unrecoverably invalid (the references did not point to existing objects)
     */
-	public void testValidData(MMObjectNode node) throws InValidDataException {
+	public void testValidData(MMObjectNode node) throws InvalidDataException {
 	  return;
 	};
 
