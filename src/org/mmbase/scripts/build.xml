@@ -1279,7 +1279,7 @@ Change directory to ${build.dir}/orion and run:
                file="${download.dir}/${mysql.version}.jar"/>
     <!-- PostgresSQL -->
     <property name="postgresql.version" value="jdbc7.1-1.2"/>
-    <property name="postgresql.url" value="http://jdbc.fastcrypt.com/${postgresql.version}.jar"/>
+    <property name="postgresql.url" value="http://jdbc.postgresql.org/download/${postgresql.version}.jar"/>
     <property name="postgresql.jar" value="${download.dir}/${postgresql.version}.jar"/>
     <available property="postgresql.present"
                file="${download.dir}/${postgresql.version}.jar"/>
