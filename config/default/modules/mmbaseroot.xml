@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<!--
+    The MMBaseRoot module is used to configure the basic properties of mmbase.
+-->
 <module maintainer="mmbase.org" version="0">
 
 	<!-- <status>
-	what is the status of this module options : active or inactive
+	What is the status of this module options : active or inactive
+	
+	This module is always active.
+	MMBase will not run without it.
 	-->
 	<status>active</status>
 
 	<!-- <classfile>
-	main classfile that this module is defined in
+	Classfile used for initalization of this module
 	-->
 	<classfile>org.mmbase.module.core.MMBase</classfile>
 
 	<!-- <properties>
-	you can define properties to be used by the classfile (if used) it uses
-	a key/value system. Its a optional tag.
+	You can define properties to be used by the classfile.
+	The properties described here are mandatory.
 	-->
 	<properties>
 	
