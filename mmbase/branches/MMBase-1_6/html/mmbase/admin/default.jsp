@@ -18,10 +18,10 @@
 <% } else { %>
 	<frameset rows="60,*" border="0" frameborder="0" framespacing="0">
    		<frame src="<mm:url page="<%="nav.jsp?category="+category+"&subcategory="+subcategory%>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
-   		<% if (subcategory==null) { %>
-	  	  <frame src="<mm:url page="<%=category+"/main.jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
-        <% } else if (category.equals("demos")) { %>
+        <% if (category.equals("examples")) { %>
 		  <frame src="<mm:url page="/mmexamples/index.jsp" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+   	<% } else if (subcategory==null) { %>
+	  	  <frame src="<mm:url page="<%=category+"/main.jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
 		  <frame src="<mm:url page="<%=category+"/"+subcategory+".jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } %>
