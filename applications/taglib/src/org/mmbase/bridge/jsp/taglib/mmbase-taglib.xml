@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.195 2003-09-02 17:26:22 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.196 2003-09-03 19:40:03 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4346,7 +4346,83 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.7</since>
     <attribute>
       <name>type</name>
-      <required>true</required>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>path</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>searchdirs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+         Id for reference by subtags and reuse.
+      </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>relatednodescontainer</name>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag</tagclass>
+    <info>
+       Surrounds a relatednodes tag and provides a query object.
+    </info>
+    <see tag="listnodes" />
+    <see tag="nodelistcontainerreferrer" />
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>path</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>searchdirs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
 
@@ -4377,7 +4453,15 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-
+         A path.
+      </info>
+    </attribute>
+    <attribute>
+      <name>searchdirs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+         For every path element the 'searchdir' can be specified. Defaults to the previous searchdir.
       </info>
     </attribute>
     <attribute>
@@ -4409,6 +4493,12 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
 
       </info>
+    </attribute>
+    <attribute>
+      <name>searchdirs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="listcontainer" attribute="searchdirs" />
     </attribute>
     <attribute>
       <name>id</name>
@@ -4456,9 +4546,9 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
     <attribute>
       <name>operator</name>
-      <required>true</required>
+      <required>false</required>
       <info>
-        The operator to be used in the comparison.
+        The operator to be used in the comparison. Defaults to '='
       </info>
       <possiblevalue>
         <value>LESS</value>
@@ -4574,6 +4664,26 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <info>
         An integer.
+      </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>distinct</name>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainerreferrer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListDistinctTag</tagclass>
+    <info>
+       Makes the surrounding query 'distinct'.
+    </info>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>value</name>
+      <required>false</required>
+      <info>
+        'true' (default) or 'false'.
       </info>
     </attribute>
   </tag>

@@ -12,6 +12,8 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import java.util.*;
 
@@ -25,14 +27,22 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.24 2003-08-27 21:32:41 michiel Exp $ 
+ * @version $Id: RelatedNodesTag.java,v 1.25 2003-09-03 19:40:03 michiel Exp $ 
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
     protected Attribute type      = Attribute.NULL;
+    protected Attribute path      = Attribute.NULL;
     protected Attribute role      = Attribute.NULL;
     protected Attribute searchDir = Attribute.NULL;
+
+    protected Attribute container = Attribute.NULL; 
+
+
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c);
+    }
 
     /**
      * @param type a nodeManager
@@ -66,62 +76,43 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        // obtain a reference to the node through a parent tag
-        Node parentNode = getNode();
-        if (parentNode == null) {
-            throw new JspTagException("Could not find parent node!!");
-        }
-        
+        RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
+
+
+        NodeQuery query;
         Cloud cloud = getCloud();
-        NodeQuery query = cloud.createNodeQuery();
-        Step step1 = query.addStep(parentNode.getNodeManager());
-        query.addNode(step1, parentNode);
-        
-        NodeManager otherManager;
-        if (type == Attribute.NULL) {
-            otherManager = cloud.getNodeManager("object");
-        } else {
-            otherManager = cloud.getNodeManager(type.getString(this));
-        }
+        if (c == null) {
 
-        RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
-        Step step3 = step2.getNext();
-
-        query.setNodeStep(step3);  // define it as NodeQuery
-
-        List orderbys    = orderby.getList(this);
-        List directionss = directions.getList(this);
-        for (int i = 0; i < orderbys.size(); i ++) {
-            String fieldName = (String) orderbys.get(i);
-            int dot = fieldName.indexOf('.');
+            // obtain a reference to the node through a parent tag
+            Node parentNode = getNode();
+            if (parentNode == null) {
+                throw new JspTagException("Could not find parent node!!");
+            }
             
-            StepField sf;
-            if (dot == -1) {
-                sf = query.getStepField(otherManager.getField(fieldName));
+            query = cloud.createNodeQuery();
+            Step step1 = query.addStep(parentNode.getNodeManager());
+            query.addNode(step1, parentNode);
+            
+            NodeManager otherManager;
+            if (type == Attribute.NULL) {
+                otherManager = cloud.getNodeManager("object");
             } else {
-                String alias = fieldName.substring(0, dot);
-                String field2Name = fieldName.substring(dot + 1);
-                if (! alias.equals(step2.getAlias())) throw new  JspTagException("'" + alias + "' not equal '" + step2.getAlias());
-                sf = query.createStepField(step2, field2Name);
+                otherManager = cloud.getNodeManager(type.getString(this));
             }
+            
+            RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
+            Step step3 = step2.getNext();
+            
+            query.setNodeStep(step3);  // makes it ready for use as NodeQuery
+            
+            Queries.addConstraints(query, (String) constraints.getValue(this));
+            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+        } else {
+            query = (NodeQuery) c.getQuery();
+            Queries.addConstraints(query, (String) constraints.getValue(this));
+            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
 
-            int order = SortOrder.ORDER_ASCENDING;
-            if (directionss.size() > i) {
-                String dir = ((String) directionss.get(i)).toUpperCase();
-                if (dir.equals("DOWN")) {
-                    order = SortOrder.ORDER_DESCENDING;
-                }
-            }
-            query.addSortOrder(sf, order);
         }
-
-        if (constraints != Attribute.NULL) {
-            String s = constraints.getString(this);
-            if (! s.equals("")) {
-                LegacyConstraint con = query.createConstraint(constraints.getString(this));
-                query.setConstraint(con);
-            }
-        }       
                                            
         NodeList nodes = cloud.getList(query);
 
