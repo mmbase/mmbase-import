@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.8.0, relative to the previous release of MMBase (1.7.2).
+release of MMBase 1.8.0, relative to the previous release of MMBase (1.7.x).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -203,13 +203,11 @@ the list is probably a lot bigger :-)
 -------------
 Java versions
 -------------
-- J2SE 1.4.1_02
+- J2SE 1.4.2_02
 
-- J2SE 1.4.2
+- J2SE Blackdown-1.4.2
 
-- J2SE Blackdown-1.4.2-rc1
-
-- J2SE 1.5.0-beta  (could not get editwizards working because of xalan/xerces troubles)
+- J2SE 1.5.0_01
 
 
 -------------
@@ -218,7 +216,7 @@ Java compilers
 
 - sun jdk 1.4.2 (javac)
 
-- sun jdk 1.5.0-beta (javac, jikes does not work then?)
+- sun jdk 1.5.0-beta (jikes does not work then)
 
 - jikes version 1.18
 
@@ -233,21 +231,15 @@ Application servers
 
 These are the applications servers on which MMBase was tested.
 
-- Tomcat 4.1.29
-- Tomcat 5.0.19
-- Orion 1.5.2, 1.5.4, 1.6.0, 2.0.3
-- Jetty 4.0.0
-- Resin 2.1.0, 2.1.8, 3.0.6
+- Tomcat 5.5.7
+- Orion 2.0.3
 
 ---------
 Databases
 ---------
-- IBM Informix Dynamic Server 9.40.FC1
+
+- Mysql 4.1.8
 - Hsqldb 1.7.0RC2
-- Mysql Ver 11.12 Distrib 3.23.32,
-        Ver 11.16 Distrib 3.23.49,
-        Ver 11.15 Distrib 3.23.41
-  for pc-linux-gnu (i686)
 - Postgresql
 - Informix
 
