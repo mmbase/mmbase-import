@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.14  2001/04/03 15:09:54  install
+Rob
+
 Revision 1.13  2001/03/30 09:50:40  install
 Rob
 
@@ -21,7 +24,7 @@ they will be ignored and request will be cancelled.
 All other node requests that can be find in mmbase will be handled correctly.
 Finally, I removed some weird vpro specific code.
 
-$Id: remoteXML.java,v 1.14 2001-04-03 15:09:54 install Exp $
+$Id: remoteXML.java,v 1.15 2001-04-03 15:45:48 install Exp $
 */
 package org.mmbase.servlet;
  
@@ -33,6 +36,7 @@ import javax.servlet.http.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
+import org.mmbase.security.*;
 
 /**
  * The remoteXML Servlet serves GET requests coming from remotebuilders 
@@ -46,11 +50,12 @@ import org.mmbase.module.core.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.14 $ $Date: 2001-04-03 15:09:54 $
+ * @version $Revision: 1.15 $ $Date: 2001-04-03 15:45:48 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
 	MMBase mmbase;
+	private org.mmbase.security.SecurityManager MMBaseCop = null;
 
 	/**
 	 * Initializing mmbase root variable.
@@ -58,6 +63,7 @@ public class remoteXML extends JamesServlet {
 	public void init() {
 		if (debug) debug("init: Initializing mmbase root variable.");
 		mmbase=(MMBase)getModule("MMBASEROOT");
+		MMBaseCop = mmbase.getMMBaseCop();
 	}
 
 	/**
@@ -73,7 +79,7 @@ public class remoteXML extends JamesServlet {
 			//debug("Sharedsecret = "+sharedsecret);
 
 			// Check if the remote machine knows the same shared secret. 
-			if(org.mmbase.security.SecurityManager.checkSharedSecret(sharedsecret)==true) {
+			if(MMBaseCop.checkSharedSecret(sharedsecret)) {
 				debug("warning - sharedsecret is correct, system is authenticated"); 
 			} else {
 				debug("warning - sharedsecret is NOT correct, system is NOT authenticated"); 
