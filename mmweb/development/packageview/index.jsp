@@ -6,34 +6,25 @@
 <div id="pagecontent">
 <mm:import externid="main">bundles</mm:import>
 <!-- first the selection part -->
-<center>
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" 
+	style="margin-top: 30px; margin-bottom: 30px;" width="95%">
 <tr>
-
-		<th COLSPAN="8">
-		 MMBase Packages
-		</th>
-</tr>
-<tr>
-		<td COLSPAN="8">
-		<br />
-		<center>This is a temporary package overview for the MMBase. In time it will be replaced with the package manager from the apps2 project (not done yet).<br /><br /> As a result this page is maintained by hand.
-		So if your package is not on this list and you feel it should be or you have extra<br /> information on your package mail me at daniel@mmbase.org and I will update this list.
-		<br />
-		<br />
-		</td>
-</tr>
-</table>
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="95%">
-<tr>
-
-		<th>
-		<b>******* <a href="http://packages.mmbase.org/mmbase/packagemanager/public"><font color="black">click here for the preview / new packaging system (1.8) with extra applications</font></a> *******</b>
-		</th>
+ <th>MMBase Packages</th>
+</tr><tr>
+  <td>
+  <h5>Temporary package overview</h5>
+  This is a temporary package overview for the MMBase. In time it will be replaced 
+  with the package manager from the apps2 project (not done yet).<br />
+  As a result this list is maintained by hand. So if your package is not on this page 
+  and you feel it should be or you have extra information on your package mail me 
+  at <a href="mailto:daniel@mmbase.org">daniel@mmbase.org</a> and I will update this list.
+  <h5>Preview</h5>
+  At <a href="http://packages.mmbase.org/mmbase/packagemanager/public">packages.mmbase.org</a> 
+  you can find a <a href="http://packages.mmbase.org/mmbase/packagemanager/public">preview of the 
+  new packaging system (1.8)</a> with extra applications.
+  </td>
 </tr>
 </table>
-<br />
-<br />
 <mm:compare referid="main" value="bundles"><%@ include file="bundles.jsp" %></mm:compare>
 <mm:compare referid="main" value="bundle"><%@ include file="bundle.jsp" %></mm:compare>
 </div>
