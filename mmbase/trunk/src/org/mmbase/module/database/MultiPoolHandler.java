@@ -21,14 +21,17 @@ public class MultiPoolHandler {
 private int maxConnections;
 private int maxQuerys;
 Hashtable Pools=new Hashtable();
+DatabaseSupport databasesupport;
 
-	public MultiPoolHandler(int maxConnections) {
+	public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections) {
 		this.maxConnections=maxConnections;
 		this.maxQuerys=500;
+		this.databasesupport=databasesupport;
 	}
-	public MultiPoolHandler(int maxConnections,int maxQuerys) {
+	public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections,int maxQuerys) {
 		this.maxConnections=maxConnections;
 		this.maxQuerys=maxQuerys;
+		this.databasesupport=databasesupport;
 	}
 
 	public MultiConnection getConnection(String url, String name, String password) throws SQLException {
@@ -36,7 +39,7 @@ Hashtable Pools=new Hashtable();
 		if (pool!=null) {
 			return(pool.getFree());
 		} else {
-			pool=new MultiPool(url,name,password,maxConnections,maxQuerys);
+			pool=new MultiPool(databasesupport,url,name,password,maxConnections,maxQuerys);
 			Pools.put(url+","+name+","+password,pool);
 			return(pool.getFree());
 		}

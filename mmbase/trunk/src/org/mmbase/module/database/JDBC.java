@@ -7,6 +7,11 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+/*
+	$Id: JDBC.java,v 1.4 2000-02-25 14:06:37 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module.database;
 
 import java.util.*;
@@ -23,6 +28,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
+ * @version $Id: JDBC.java,v 1.4 2000-02-25 14:06:37 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -39,6 +45,8 @@ int JDBCport;
 int maxConnections;
 int maxQuerys;
 String JDBCdatabase;
+String databasesupportclass;
+DatabaseSupport databasesupport;
 MultiPoolHandler poolHandler;
 JDBCProbe probe=null;
 private String defaultname;
@@ -47,7 +55,8 @@ private String defaultpassword;
 	public void onload() {
 		getprops();
 		getdriver();
-		poolHandler=new MultiPoolHandler(maxConnections,maxQuerys);
+		loadsupport();
+		poolHandler=new MultiPoolHandler(databasesupport,maxConnections,maxQuerys);
 		//System.out.println("JDBC -> Created pool "+poolHandler);
 	}
 
@@ -73,6 +82,7 @@ private String defaultpassword;
 			debug("reload(): JDBC Module: Can't deregister driver");
 		}
 		*/
+		loadsupport();
 		getdriver();
 	}
 
@@ -109,6 +119,22 @@ private String defaultpassword;
 	}
 
 	/**
+	 * Get the driver as specified in our properties
+	 */
+	private void loadsupport() {
+		Class cl;
+
+		try {
+			cl=Class.forName(databasesupportclass);
+			databasesupport=(DatabaseSupport)cl.newInstance();
+			databasesupport.init();
+			debug("getDriver(): Loaded load class : "+databasesupportclass);
+		} catch (Exception e) {
+			debug("getDriver(): Can't load class : "+databasesupportclass+" : "+e);
+		}
+	}
+
+	/**
 	 * Get the properties
 	 */
 	private void getprops() {
@@ -118,6 +144,7 @@ private String defaultpassword;
 		JDBChost=getInitParameter("host");
 		defaultname=getInitParameter("user");
 		defaultpassword=getInitParameter("password");
+		databasesupportclass=getInitParameter("supportclass");
 		if (defaultname==null) {
 			defaultname="wwwtech";
 		}
@@ -140,6 +167,9 @@ private String defaultpassword;
 			maxQuerys=500;
 		}
 		JDBCdatabase=getInitParameter("database");
+		if (databasesupportclass==null || databasesupportclass.length()==0) {
+			databasesupportclass="mm.org.mmbase.module.database.DatabaseSupportShim";
+		}
 	}
 
 	/**
