@@ -16,7 +16,7 @@ import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 
 /**
- * A bit like {@link java.util.ResourceBundle} (on which it is bade), but it creates
+ * A bit like {@link java.util.ResourceBundle} (on which it is based), but it creates
  * SortedMap's. The order of the entries of the Map can be influenced in tree ways. You can
  * associate the keys with JAVA constants (and there natural ordering can be used), you can wrap the
  * keys in a 'wrapper' (which can be of any type, the sole restriction being that there is a
@@ -27,6 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
+ * @todo   THIS CLASS IS EXPERIMENTAL
  */
 
 public class SortedBundle {
@@ -58,6 +59,32 @@ public class SortedBundle {
     static {
         knownResources.putCache();
     }
+
+
+
+    /**
+     * You can specify ValueWrapper.class as a value for the wrapper argument. The keys will be objects with natural order of the values.
+     * @todo EXPERIMENTAL
+     */
+
+    public static class ValueWrapper implements Comparable {
+        private String key;
+        private Comparable value;
+        protected ValueWrapper(String k, Comparable v) {
+            key = k;
+            value = v;
+        }
+        public  int compareTo(Object o) {
+            ValueWrapper other = (ValueWrapper) o;
+            int result = value.compareTo(other.value);
+            return result == 0 ? key.compareTo(other.key) : result;
+        }
+        public boolean equals(Object o) {
+            ValueWrapper other = (ValueWrapper) o;
+            return key.equals(other.key) && (value == null ? other.value == null : value.equals(other.value));            
+        }
+    }
+    
 
 
     /**
@@ -112,20 +139,6 @@ public class SortedBundle {
                     try {
                         Field constant = providerClass.getDeclaredField(bundleKey);
                         key = constant.get(null); 
-                        if (wrapper != null) {
-                            try {
-                                Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
-                                key = c.newInstance(new Object[] { key });
-                            } catch (NoSuchMethodException nsme) {
-                                log.warn("No such method. Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + nsme.getMessage());
-                            } catch (SecurityException se) {
-                                log.error("Security Excpetion. Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + se.getMessage());
-                            } catch (InstantiationException se) {
-                                log.error("InstantationException. Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + se.getMessage());
-                            } catch (InvocationTargetException se) {
-                                log.error("InvocationTargetException. Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + se.getMessage());
-                            }
-                        }
                     } catch (NoSuchFieldException nsfe) {
                         log.info("No java constant with name " + bundleKey);
                         key = bundleKey;
@@ -137,6 +150,29 @@ public class SortedBundle {
                 } else {
                     key = bundleKey;
                 }
+
+                if (wrapper != null) {
+                    try {
+                        if (wrapper.isAssignableFrom(ValueWrapper.class)) {
+                            Constructor c = wrapper.getConstructor(new Class[] {String.class, Comparable.class});
+                            key = c.newInstance(new Object[] { key, (Comparable) bundle.getObject(bundleKey)});                            
+                        } else {
+                            Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
+                            key = c.newInstance(new Object[] { key });
+                        }
+                    } catch (NoSuchMethodException nsme) {
+                        log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + nsme.getMessage());
+                    } catch (SecurityException se) {
+                        log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + se.getMessage());
+                    } catch (InstantiationException ie) {
+                        log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + ie.getMessage());
+                    } catch (InvocationTargetException ite) {
+                        log.error(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + ite.getMessage());
+                    } catch (IllegalAccessException iae) {
+                        log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getClass().getName() + " : " + iae.getMessage());
+                    }
+                }
+
                 m.put(key, bundle.getObject(bundleKey));                
             }
             m = Collections.unmodifiableSortedMap(m);
@@ -144,6 +180,7 @@ public class SortedBundle {
         }
         return m;
     }
+
         
 
 }
