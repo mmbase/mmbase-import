@@ -23,6 +23,7 @@
     <delete file="${build.dir}/webapp/WEB-INF/taglib.tld" />
     <delete file="${build.dir}/webapp/WEB-INF/web.xml" />
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
+    <foreach list="${providers}" target="build.provider" inheritall="true" param="provider" />
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
              token="$${filemanagement.data.directory}"
              value="${filemanagement.data.directory}"/>
@@ -39,7 +40,7 @@
     <delete dir="${build.dir}" />
   </target>
 
-  <target name="war" depends="clean,create.dirs,build,config">
+  <target name="webapp" depends="clean,create.dirs,build,config,copy_builders">
 
   </target>
 
@@ -47,21 +48,68 @@
     <ant antfile="configure.xml" target="config"/>
   </target>
 
+  <target name="build.provider">
+    <echo message="Building provider ${provider}" />
+
+    <!-- copy templates -->
+    <if>
+     <available file="src/core/templates/${provider}" type="dir" />
+     <then>
+        <echo message="Copying templates for ${provider}" />
+        <copy todir="${build.dir}/webapp/${provider}">
+            <fileset dir="src/core/templates/${provider}">
+             <include name="**"/>
+             <exclude name="**/CVS"/>
+             <exclude name="templates/**"/>
+            </fileset>
+        </copy>
+      </then>
+    </if>
+  </target>
+
+
   <target name="build.component">
     <echo message="Building component ${component}" />
 
     <!-- copy templates -->
     <if>
-      <available file="src/${component}/templates" type="dir" />
-      <then>
-        <copy todir="${build.dir}/webapp">
-          <fileset dir="src/${component}/templates">
-            <include name="**"/>
-            <exclude name="**/CVS"/>
-            <exclude name="templates/**"/>
-          </fileset>
-        </copy>
-      </then>
+     <available file="src/${component}/templates" type="dir" />
+     <then>
+        <if>
+         <equals arg1="${component}" arg2="core"/>
+         <then>
+           <copy todir="${build.dir}/webapp">
+            <fileset dir="src/${component}/templates">
+             <include name="*.jsp"/>
+             <include name="admin/**"/>
+             <include name="cockpit/**"/>
+             <include name="components/**"/>
+             <include name="css/**"/>
+             <include name="editwizards/**"/>
+             <include name="gfx/**"/>    
+             <include name="help/**"/>
+             <include name="mmeditors/**"/>
+             <include name="shared/**"/>
+             <include name="users/**"/>
+             <include name="metadata/**"/>            
+             <include name="${component}/**"/>
+             <exclude name="**/CVS"/>
+             <exclude name="templates/**"/>
+            </fileset>
+           </copy>
+        </then>
+         <else>
+            <copy todir="${build.dir}/webapp">
+            <fileset dir="src/${component}/templates">
+             <include name="${component}/**"/>
+             <include name="editwizards/**"/>
+             <exclude name="**/CVS"/>
+             <exclude name="templates/**"/>
+            </fileset>
+           </copy>       
+         </else>
+        </if>
+       </then>
     </if>
 
     <!-- copy webinf -->
@@ -200,14 +248,14 @@
     <importer name="webapp-0.1" href="${importer.repository}"/>
     
     <property name="tomcat5-antlet.deploy.archive" value= "${build.dir}/didactor.war"/>
-	<target name="build.war"> 
-	  <jar destfile="${build.dir}/didactor.war" 
+	<target name="war" depends="webapp"> 
+	  <jar destfile="${build.dir}/${war.name}.war" 
 	       basedir="${build.dir}/webapp"
 	  />
 	</target>
 	
-	<target name="_deploy" depends="copy_builders, build.war, tomcat5.deploy"/>
-	<target name="_redeploy" depends="copy_builders, build.war, tomcat5.redeploy"/>	
+	<target name="_deploy" depends="war, tomcat5.deploy"/>
+	<target name="_redeploy" depends="war, tomcat5.redeploy"/>	
   
    <!-- copy all (MMBase) builders
 	from: "./WEB-INF/config/applications/**/builders/*.xml"

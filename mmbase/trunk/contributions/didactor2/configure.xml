@@ -1,4 +1,5 @@
 <project name="didactor-config" default="config" basedir=".">
+  <echo message="configuring..."/>
   <property file="build.properties"/>
   <property file="configure.properties"/>
   <property name="build.config.dir" value="${build.dir}/webapp/WEB-INF/config" />

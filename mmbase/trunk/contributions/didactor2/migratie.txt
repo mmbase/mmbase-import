@@ -1,5 +1,47 @@
-
 Migratie issues
+
+2004-02-10
+ ** Interne opmerking **
+ De build targets zijn iets aangepast, en een aantal config opties toegevoegd:
+
+ aangepaste targets:
+
+   webapp (was: "war") - maakt een cleane build/webapp en doet ook copy_builders
+   war (was: "build.war") bouwt nu ook de war - depends: webapp
+
+   dit betekend dat normaal gesproken je
+
+    ant -propertyfile .... webapp
+    kan doen voor een cleane build
+
+    ant -propertyfile .... [build]
+    voor tussentijdse build (let op! deze doet geen copy_builders, dus de 1e keer
+    kun je het webste "webapp" gebruiken!)
+
+    en voor een cleane war:
+    ant -propertyfile .... war
+    (was eerst "ant -propertyfile .... war copy_builders build.war")
+
+ extra configure properties:
+
+   war.name - naam van de war zonder .war extentie (default: didactor)
+   providers - comma seperated list van alle provider template directories
+               de meegenomen moeten worden in de webapp (default: leeg;
+               dwz geen extra templates)
+
+ extra propertyfiles: 
+ 
+    er zijn een aantal extra propertyfiles toegevoegd zodat het
+    makkelijker is om wars voor asp4all te maken:
+
+    configure.properties.asp4all    - demo server (leeg)
+    configure.properties.telecoach  - telecoach
+    configure.properties.baronie    - baronie college
+    configure.properties.bouwradius - bouwradius & bam
+    configure.properties.zeeland    - roc's excl. baronie
+    
+    zie script makeallwars.sh voor extra shortcut
+
 
 2004-01-26
 
