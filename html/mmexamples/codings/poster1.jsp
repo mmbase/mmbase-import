@@ -1,22 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page contentType="text/html;charset=utf-8" pageEncoding="UTF-8"
+<%@page contentType="text/html;charset=ISO-8859-1" pageEncoding="ISO-8859-1"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><html><!-- a lie, this page is actually cp1252 -->
 <head>
   <title>Codings examples</title>	 
   <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
 </head>
 <body>
-<mm:content language="en" type="text/html" postprocessor="reducespace" expires="0">
+<mm:content language="en" type="text/html" postprocessor="reducespace" encoding="ISO-8859-1" expires="0">
   <h1>Codings examples</h1>
   <p>
     This page serves as test-case for &lt;mm:import and encoding.
   </p>
-    <mm:import id="default1">â‚¬â€šÆ’â€â€¦â€ â€¡Ë†â€°Å â€¹Å’Å½â€˜â€™â€œâ€â€¢â€“â€”Ëœâ„¢Å¡â€ºÅ“Å¾Å¸, EÄ¥oÅanÄo Ä‰iuÄµaÅ­de, CafÃ© tweeÃ«ntwintig</mm:import>
+    <mm:import id="default1">€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ, Café tweeëntwintig</mm:import>
     <mm:import id="default2" escape="trimmer">
-cp1252: â‚¬â€šÆ’â€â€¦â€ â€¡Ë†â€°Å â€¹Å’Å½â€˜â€™â€œâ€â€¢â€“â€”Ëœâ„¢Å¡â€ºÅ“Å¾Å¸
-latin-1: CafÃ© tweeÃ«ntwintig
-latin-3: EÄ¥oÅanÄo Ä‰iuÄµaÅ­de
+cp1252: €‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ
+latin-1: Café tweeëntwintig
     </mm:import>
     <mm:import externid="from">this</mm:import>
     <mm:import externid="field1" from="parameters"><mm:write referid="default1" /></mm:import>
@@ -32,8 +31,8 @@ latin-3: EÄ¥oÅanÄo Ä‰iuÄµaÅ­de
     <form method="get" action="<mm:url />">
       <p>
         <input type="text" name="field1" value="<mm:write referid="field1" />" style="width: 100%;" />
-        <input type="hidden" name="field1" value="<mm:write referid="field1" />" style="width: 100%;" /> <!-- submit as list..=-->
         <textarea name="area1"  style="width: 100%;" rows="3" cols="50"><mm:write referid="area1" /></textarea>
+        <input type="hidden" name="field1" value="<mm:write referid="field1" />" style="width: 100%;" /> <!-- submit as list..-->
         <input type="submit" />
       </p>
     </form>
@@ -50,6 +49,7 @@ latin-3: EÄ¥oÅanÄo Ä‰iuÄµaÅ­de
       <p>
         <input type="text" name="field3" value="<mm:write referid="field3" />" style="width: 100%;" />
         <textarea name="area3"  style="width: 100%;" rows="3" cols="50"><mm:write referid="area3" /></textarea>
+        <input type="hidden" name="from" value="parameters" />
         <input type="submit" />
       </p>
     </form>
@@ -67,7 +67,7 @@ latin-3: EÄ¥oÅanÄo Ä‰iuÄµaÅ­de
     </p>
   <hr />
 </mm:content>
-<address><a href="mailto:Michiel.Meeuwissen@omroep.nl">miÄ¥il'</a></address>
+<address><a href="mailto:Michiel.Meeuwissen@omroep.nl">mihxil'</a></address>
 </body>
 </html>
 
