@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.140 2004-12-03 14:50:23 pierre Exp $
+    @version $Id: wizard.xsl,v 1.141 2004-12-03 15:48:33 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -645,7 +645,7 @@
             </xsl:if>
             <xsl:apply-templates select="@*"/>
 
-            <xsl:value-of select="value"/>
+            <xsl:value-of select="translate(value,'&#13;','')" />
           </textarea>
         </span>
       </xsl:when>
