@@ -59,7 +59,7 @@ public class TypeDef extends MMObjectBuilder {
      * @return true if init was completed, false if uncompleted.
      */
     public boolean init() {
-        boolean result=super.init();
+        boolean result = super.init();
         readCache(); // read type info into the caches
         return result;
     }
@@ -111,7 +111,17 @@ public class TypeDef extends MMObjectBuilder {
      * @return the name of the builder as a string, null if not found
      */
     public String getValue(int type) {
-        return (String)nameCache.get(new Integer(type));
+        String result = (String) nameCache.get(new Integer(type));
+        if (result == null) {
+            // XXX: it is ugly here too (see getIntValue()).
+            // but sometimes necessary (when starting Versions)
+            readCache();
+            result = (String) nameCache.get(new Integer(type));
+            if (result == null) {
+                log.error("Could not find builder name for typdef number " + type);
+            }
+        }
+        return result;
     }
 
 
