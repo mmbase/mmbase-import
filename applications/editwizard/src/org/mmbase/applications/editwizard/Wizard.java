@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.106 2003-10-24 12:17:26 pierre Exp $
+ * @version $Id: Wizard.java,v 1.107 2003-10-24 14:34:02 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1078,7 +1078,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                   NodeList overriders = Utils.selectNodeList(referer, "node()");
 
                   for (int k = 0; k < overriders.getLength(); k++) {
-                     externalPart.appendChild(overriders.item(k).cloneNode(true));
+                      // 'inherit' old nodes. Do not clone, as we are essentially 'moving' these
+                     externalPart.appendChild(overriders.item(k));
                   }
                }
 

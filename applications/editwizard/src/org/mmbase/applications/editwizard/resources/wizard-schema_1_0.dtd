@@ -15,6 +15,7 @@
 <!ATTLIST action extends CDATA #IMPLIED >
 
 <!ELEMENT lists ( optionlist* ) >
+<!ATTLIST lists include CDATA #IMPLIED >
 <!ATTLIST lists extends CDATA #IMPLIED >
 
 <!ELEMENT steps ( step+ ) >
@@ -87,6 +88,7 @@
 <!ATTLIST command constraints CDATA #IMPLIED >
 <!ATTLIST command origin CDATA #IMPLIED >
 <!ATTLIST command searchdir CDATA #IMPLIED >
+<!ATTLIST command include CDATA #IMPLIED >
 
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
 
