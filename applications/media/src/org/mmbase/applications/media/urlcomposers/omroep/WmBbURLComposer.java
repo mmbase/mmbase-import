@@ -10,13 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers.omroep;
 
-import org.mmbase.module.core.MMObjectNode;
-import java.util.*;
-
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmBbURLComposer.java,v 1.5 2003-07-15 12:26:37 vpro Exp $
+ * @version $Id: WmBbURLComposer.java,v 1.6 2003-07-15 12:43:45 vpro Exp $
  * @since MMBase-1.7
  */
 public class WmBbURLComposer extends WmSbURLComposer {
@@ -29,5 +26,3 @@ public class WmBbURLComposer extends WmSbURLComposer {
         return "breedband";
     }
 }
-
-
