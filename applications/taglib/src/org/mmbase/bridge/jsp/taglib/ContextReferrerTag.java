@@ -351,7 +351,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      */
 
-    protected ContextTag getContextTag() throws JspTagException {
+    public ContextTag getContextTag() throws JspTagException {
         return getContextTag(contextId);
     }
     /**
