@@ -243,11 +243,13 @@ public class PostThread {
 		}
 
 		// snap er niets van hoe moet dit nu Gerard ?
+		/*
 		if (body.indexOf("<")!=-1) {
 	    		pnode.setStringValue("body","<body>"+body+"</body>");
 		} else {
-	    		pnode.setStringValue("body",body);
 		}
+		*/
+	    	pnode.setStringValue("body",body);
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();

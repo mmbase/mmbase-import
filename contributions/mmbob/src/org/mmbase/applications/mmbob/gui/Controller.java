@@ -784,6 +784,12 @@ public class Controller {
      */
     public boolean postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
         Forum f = ForumManager.getForum(forumid);
+	log.info("POSTER1="+poster);
+	int pos = poster.indexOf("(");
+	if (pos!=-1) {
+		poster=poster.substring(0,pos-1);
+	}
+	log.info("POSTER2="+poster);
 
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -791,7 +797,8 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     // nobody may post in closed thread, unless you're a moderator
-                    if ((!t.getState().equals("closed") || a.isModerator(poster)) && !f.getPoster(poster).isBlocked()) {
+		    Poster p=f.getPoster(poster);
+                    if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
                         t.postReply(subject, poster, body);
                     } else {
                         return false;
@@ -820,7 +827,9 @@ public class Controller {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
-            if (a != null && !f.getPoster(poster).isBlocked()) {
+	    Poster p=f.getPoster(poster);
+            if (a != null && (p==null || !p.isBlocked())) {
+		log.info("NEW POST");
                 int postthreadid = a.newPost(subject, poster, body);
                 virtual.setValue("postthreadid", postthreadid);
             }
