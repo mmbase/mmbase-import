@@ -220,7 +220,7 @@ NetComponents can be found at:
 
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
-      <fileset dir="${source-documentation.dir}/documentation/releases/legal"/>
+      <fileset dir="${source-documentation.dir}/releases/legal"/>
     </copy>
 
   </target>
