@@ -14,22 +14,65 @@ import java.sql.*;
 /**
  * JDBCInterface is _only_ the module JDBC interface who setup the connections
  * it has nothing tofo with the JDBC interface.
+ * @version $Id: JDBCInterface.java,v 1.6 2003-05-01 14:51:40 michiel Exp $
  */
 public interface JDBCInterface {
+    
+    /**
+     * @javadoc
+     */
+    public String makeUrl();
+    /**
+     * @javadoc
+     */
+    public String makeUrl(String dbm);
+    /**
+     * @javadoc
+     */
+    public String makeUrl(String host, String dbm);
+    /**
+     * @javadoc
+     */
+    public String makeUrl(String host, int port, String dbm);
+    
+    // JDBC Pools    
+    /**
+     * @javadoc
+     */
+    public MultiConnection getConnection(String url, String name, String password) throws SQLException;
 
-	public String makeUrl();
-	public String makeUrl(String dbm);
-	public String makeUrl(String host,String dbm);
-	public String makeUrl(String host,int port,String dbm);
+    /**
+     * @javadoc
+     */
+    public MultiConnection getConnection(String url) throws SQLException;
 
-	// JDBC Pools
-	public MultiConnection getConnection(String url, String name, String password) throws SQLException;
-	public MultiConnection getConnection(String url) throws SQLException;
+    /**
+     * @javadoc
+     */    
+    public Connection getDirectConnection(String url) throws SQLException;
 
-	public Connection getDirectConnection(String url) throws SQLException;
-	public Connection getDirectConnection(String url,String name,String password) throws SQLException;
-	public String getUser();
-	public String getPassword();
-	public String getDatabaseName();
-	public void checkTime();
+    /**
+     * @javadoc
+     */
+    public Connection getDirectConnection(String url, String name, String password) throws SQLException;
+
+    /**
+     * @javadoc
+     */
+    public String getUser();
+
+    /**
+     * @javadoc
+     */
+    public String getPassword();
+
+    /**
+     * @javadoc
+     */
+    public String getDatabaseName();
+
+    /**
+     * @javadoc
+     */
+    public void checkTime();
 }
