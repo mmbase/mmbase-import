@@ -1,0 +1,1 @@
+<div id="top"><a href="index.jsp">home</a> |<a href="example1.jsp">1ste voorbeeld</a> |<a href="example2.jsp">2de voorbeeld</a> |<a href="example3.jsp">3de voorbeeld</a> |<a href="listnodes.jsp">Met de listnodes tag</a></div>
