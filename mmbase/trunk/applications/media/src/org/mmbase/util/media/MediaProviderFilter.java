@@ -181,22 +181,21 @@ public class MediaProviderFilter {
     
     
     /**
-     * sort the mediaproviders with the most prefered providers first.
+     * Sort the mediaproviders with the most preferred providers first.
      */
     protected List sortMediaProviders(List mediaproviders) {
         
-        List sortedProviders = new Vector();
-        
+        List sortedProviders = new Vector();       
         Iterator pp = preferFilter.iterator();
+
         while (pp.hasNext()) {
             
             String prefname = (String)pp.next();
-           
             MMObjectNode node = null;
             Iterator e = mediaproviders.iterator();
             while(e.hasNext()) {
                 node = (MMObjectNode) e.next();
-                if(prefname.equals(node.getStringValue("rooturl"))) {
+                if(prefname.equals(node.getStringValue("name"))) {
                     sortedProviders.add(node);
                 }
             }
@@ -242,7 +241,7 @@ public class MediaProviderFilter {
             Iterator e = mediaproviders.iterator();
             while(e.hasNext()) {
                 node = (MMObjectNode) e.next();
-                if(hostname.equals(node.getStringValue("rooturl"))) {
+                if(hostname.equals(node.getStringValue("name"))) {
                     providers.add(node);
                 }
                 

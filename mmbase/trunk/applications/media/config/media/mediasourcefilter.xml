@@ -16,7 +16,6 @@
 	-->
 	<preferredSource>
     <source format="RM" />
-		<source format="G2" />
 		<source format="RA" />
 	</preferredSource>
 

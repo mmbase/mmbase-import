@@ -52,7 +52,7 @@ Build-compiler: ${build.compiler}
 
     <jar jarfile="${mmmedia.jar}"
          basedir="${media.build.dir}/classes"
-	     includes="org/mmbase/**"
+	     includes="org/**,nl/**"
 	     manifest="${media.build.dir}/manifest.mf" >
     </jar>
 
