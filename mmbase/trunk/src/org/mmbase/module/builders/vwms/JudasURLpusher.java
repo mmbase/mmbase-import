@@ -117,6 +117,7 @@ public class JudasURLpusher implements Runnable {
 		synchronized(priurls) {
 			priurl=(PriorityURL)priurls.get(url);
 			if (priurl!=null) {
+				debug("URL already in queue "+priurl);
 				if (priurl.getPriority()<priority) {
 					priurl.setPriority(priority);
 					prilist.Sort();
