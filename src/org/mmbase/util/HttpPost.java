@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.10 2001-07-02 15:09:49 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.11 2001-09-17 14:48:19 eduard Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -103,13 +103,13 @@ public class HttpPost {
         postToDisk=false;     // default, write postValues to memory
     }
 
-    /**
-     * @return the maximumsize of the postparametervalues to decode into memory
-     */
-    /*
-    public int getMaximumPostbufferSize() {
-        return MaximumPostbufferSize;
-}
+//    /**
+//     * @return the maximumsize of the postparametervalues to decode into memory
+//     */
+//
+//    public int getMaximumPostbufferSize() {
+//        return MaximumPostbufferSize;
+//    }
 
     /**
     * This method checks if the parameter is a multivalued one
