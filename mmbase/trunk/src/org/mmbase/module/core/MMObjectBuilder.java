@@ -1484,7 +1484,7 @@ public class MMObjectBuilder extends MMTable {
         for(int i = 0; i<fields.length(); i++) {
             if (fields.charAt(i)==',') {
                 if(nested==0) {
-                    v.add(fields.substring(commapos,i));
+                    v.add(fields.substring(commapos,i).trim());
                     commapos=i+1;
                 }
             }
@@ -1495,10 +1495,11 @@ public class MMObjectBuilder extends MMTable {
                 nested--;
             }
         }
-        v.add(fields.substring(commapos));
+        if (i>0) {
+            v.add(fields.substring(commapos).trim());
+        }
         return v;
     }
-
 
     /**
     * Executes a function on the field of a node, and returns the result.
