@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.80 2004-01-08 16:59:19 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.81 2004-01-14 11:44:08 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -324,8 +324,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public String replace(scanpage sp, String cmds) {
-        if (!checkUserLoggedOn(sp, cmds, false))
-            return "";
+        if (!checkUserLoggedOn(sp, cmds, false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();
@@ -426,9 +425,9 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    int getBuilderVersion(String appname) {
+    int getBuilderVersion(String bulname) {
         String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        BuilderReader app = new BuilderReader(path + appname + ".xml", mmb);
+        BuilderReader app = new BuilderReader(path + bulname + ".xml", mmb);
         if (app != null) {
             return app.getBuilderVersion();
         }
@@ -518,11 +517,11 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    String getBuilderDescription(String appname) {
+    String getBuilderDescription(String bulname) {
         String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        BuilderReader app = new BuilderReader(path + appname + ".xml", mmb);
-        if (app != null) {
-            Hashtable desc = app.getDescriptions();
+        BuilderReader bul = new BuilderReader(path + bulname + ".xml", mmb);
+        if (bul != null) {
+            Hashtable desc = bul.getDescriptions();
             String english = (String)desc.get("en");
             if (english != null) {
                 return english;
