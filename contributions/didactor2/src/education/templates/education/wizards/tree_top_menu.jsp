@@ -45,7 +45,7 @@
       <mm:node number="$user">
          <mm:related path="classrel,classes">
             <mm:node element="classes">
-               <mm:related path="related,educations">
+               <mm:related path="related,educations" distinct="true" fields="educations.number">
                   <mm:node element="educations">
                        <mm:field name="number" jspvar="sID" vartype="String" write="false">
                           <%
@@ -84,7 +84,7 @@
                            %>
                               <nobr>
                                  <fmt:message key="educationMenuEducations"/>
-                                 <select name="course" class="titlefield2" onChange="this.form.submit()">
+                                 <select name="course" class="titlefield2" >
                                     <%
                                        for(Iterator it = arliEducations.iterator(); it.hasNext();)
                                        {
@@ -95,6 +95,7 @@
                                        }
                                     %>
                                  </select>
+                                 <input type="image" src="<mm:treefile page="/gfx/refresh.gif" objectlist="$includePath" referids="$referids" />" border="0"/>
                               </nobr>
                            <%
                         }
