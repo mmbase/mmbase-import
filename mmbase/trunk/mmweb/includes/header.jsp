@@ -3,7 +3,7 @@
 <% String componentTitle = "header";%>
 <%@include file="cachesettings.jsp" %>
 <% String userFullName = (String) session.getAttribute("user_node_name"); %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%-- cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" --%>
 <!-- <mm:time time="now" format=":LONG.LONG" /> user(<%= userFullName %>) -->
 <html>
   <head>
@@ -137,6 +137,6 @@ String myUrl = request.getContextPath() + "/login/mmlogin.jsp?orgLocation="+orgL
 		<tr>
 			<td class="navbar"><img src="/media/spacer.gif" alt="" width="152" height="456" /></td>
 <mm:log>nehead</mm:log>
-</cache:cache>
+<%-- /cache:cache --%>
 
 <!-- END FILE: /includes/header.jsp -->
