@@ -354,6 +354,8 @@ public class Controller {
                         virtual.setValue("licensetype",b.getLicenseType());
                         virtual.setValue("licenseversion",b.getLicenseVersion());
                         virtual.setValue("licensebody",b.getLicenseBody());
+                        virtual.setValue("bundleprogressbarvalue",b.getProgressBarValue());
+                        virtual.setValue("packageprogressbarvalue",b.getPackageProgressBarValue());
 		}
 		list.add(virtual);
 		return list;

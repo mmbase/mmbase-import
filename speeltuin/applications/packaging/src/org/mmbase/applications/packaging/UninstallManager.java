@@ -146,8 +146,14 @@ public class UninstallManager {
 	return pkg;
     }
 
+    public static BundleInterface getUnInstallingBundle() {
+        return bnd;
+    }
+
     public static Enumeration getUninstallSteps() {
 	return pkg.getInstallSteps();
     }
+
+
   
 }
