@@ -57,8 +57,8 @@ If you want to make permanent changes you will have to edit the file 'inc_head.j
   <td align="right" class="name">Show me</td>
   <td>
     <select name="conf_list">
-    <option label="all the node types" value="all"<mm:compare referid="conf_list" value="all"> selected="selected"</mm:compare>></option>
-    <option label="only the editable node types" value="editable"<mm:compare referid="conf_list" value="editable"> selected="selected"</mm:compare>></option>
+    <option label="all the node types" value="all"<mm:compare referid="conf_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
+    <option label="only the editable node types" value="editable"<mm:compare referid="conf_list" value="editable"> selected="selected"</mm:compare>>only the editable node types</option>
     </select> in the list
   </td>
 </tr><tr>
