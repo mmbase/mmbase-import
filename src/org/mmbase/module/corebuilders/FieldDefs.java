@@ -15,7 +15,6 @@ import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
-
 /**
  * One of the core objects, Defines one field of a object type / builder, has its
  * own builder called FieldDef (hitlisted)
@@ -23,9 +22,9 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @$Revision: 1.21 $ $Date: 2002-03-19 20:47:39 $
+ * @version $Id: FieldDefs.java,v 1.22 2002-03-21 09:36:34 pierre Exp $
  */
-public class FieldDefs  {
+public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
     public final static int DBSTATE_VIRTUAL = 0;
     public final static int DBSTATE_PERSISTENT = 2;
@@ -43,6 +42,11 @@ public class FieldDefs  {
     public final static int TYPE_XML = 8;
     public final static int TYPE_MAXVALUE = 8;   
     public final static int TYPE_UNKNOWN = -1;
+
+    public final static int ORDER_CREATE = 0;
+    public final static int ORDER_EDIT = 1;
+    public final static int ORDER_LIST = 2;
+    public final static int ORDER_SEARCH = 3;
 
     // logger
     private static Logger log = Logging.getLoggerInstance(FieldDefs.class.getName());
@@ -472,4 +476,101 @@ public class FieldDefs  {
                " DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+
                " isKey="+isKey+" DBDocType="+DBDocType);
     }
+
+    /**
+     * Compare this object to the supplied one (should be a FieldDefs)
+     * @param the object to compare to
+     * @return -1,1, or 0 accordingto whetehr this object is smaller, greater, or equals
+     *         to the supplied one.
+     */
+    public int compareTo(Object o) {
+        int pos1 = getDBPos();
+        int pos2 = ((FieldDefs)o).getDBPos();
+        if (pos1<pos2) {
+            return -1;
+        } else if (pos1>pos2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Sorts a list with FieldDefs objects, using the default order (ORDER_CREATE)
+     * @param fielddefs the list to sort
+     */
+    public static void sort(List fielddefs) {
+        Collections.sort(fielddefs);
+    }
+
+    /**
+     * Sorts a list with FieldDefs objects, using the specified order
+     * @param fielddefs the list to sort
+     * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
+     */
+    public static void sort(List fielddefs, int order) {
+        Collections.sort(fielddefs,new FieldDefsComparator(order));
+    }
+
+    /**
+     * Comparator to sort Fielddefs bij creation order, or bij position
+     * specified in one of the GUIPos fields.
+     */
+    private static class FieldDefsComparator implements Comparator {
+
+        private int order = ORDER_CREATE;
+
+        /**
+         * Constrcuts a comparator to sort fields on teh specifie dorder
+         * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
+         */
+        FieldDefsComparator (int order) {
+            this.order=order;
+        }
+
+        /**
+         * retrieve the postion fo a FieldDefs object
+         * according to the order to sort on
+         */
+        private int getPos(FieldDefs o) {
+            switch (order) {
+                case ORDER_EDIT: {
+                    return o.getGUIPos();
+                }
+                case ORDER_LIST: {
+                    return o.getGUIList();
+                }
+                case ORDER_SEARCH: {
+                    return o.getGUISearch();
+                }
+                default : {
+                    return o.getDBPos();
+                }
+            }
+        }
+
+        /**
+         * Compare two objects (should be FieldDefs)
+         */
+        public int compare(Object o1, Object o2) {
+            int pos1=getPos((FieldDefs)o1);
+            int pos2=getPos((FieldDefs)o2);
+
+            if (pos1<pos2) {
+                return -1;
+            } else if (pos1>pos2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        /**
+         * Tests whether two Comparators are the same
+         */
+        public boolean equals(Object o) {
+            return (o==this);
+        }
+    }
+
 }
