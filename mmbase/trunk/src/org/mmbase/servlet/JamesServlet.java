@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.16 2000-06-20 14:44:06 install Exp $
+$Id: JamesServlet.java,v 1.17 2000-06-21 14:41:51 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2000/06/20 14:44:06  install
+Rob
+
 Revision 1.15  2000/05/25 12:55:05  wwwtech
 Wilbert: Add and use of static support method getRequestURL
 
@@ -57,7 +60,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.16 2000-06-20 14:44:06 install Exp $
+* @version $Id: JamesServlet.java,v 1.17 2000-06-21 14:41:51 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -247,7 +250,7 @@ public class JamesServlet extends HttpServlet {
 			// with no reference in them with 'MMBASE_COOKIENAME'
 			// ------------------------------------------------------------------------------------------
 
-			debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
+			// debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
 			MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
 			if (mmbase == null) {
 				debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
