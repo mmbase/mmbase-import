@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module maintainer="framfab.nl" version="1">
+  <status>inactive</status>
+  <classfile>org.mmbase.module.RemoteMMCI</classfile>
+  <properties>
+    <!-- port the port the rmi server should run. DEFAULT port is 1111 -->
+    <property name="port">1111</property>
+    <!-- sleeptime the amount of time to way before the module shouw be 
+         started at MMBase boot time in seconds. DEFAULT  = 30 seconds -->
+    <property name="sleeptime">30</property>
+    <!-- rmi name to be used to bind to the registry. DEFLAUT= RMMCI -->
+    <property name="bindname">remotecontext</property>
+  </properties>
+</module>
