@@ -1,5 +1,5 @@
  <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:cloud logon="foo" pwd="bar">
+%><mm:cloud logon="admin" pwd="admin2k">
 
   <mm:import externid="newaccount" />
   <mm:import externid="newfirstname" />
@@ -18,6 +18,7 @@
 	<!-- check if email allready has a account and warn the user -->	
 	<mm:listnodes type="users" constraints="email='$newemail'" max="1">
 		<%response.sendRedirect("../newUser.jsp?error=email");%>
+		<mm:remove referid="noerror" />
 	</mm:listnodes>
 	<!-- end of email allready has a account check -->
 
@@ -62,6 +63,4 @@
 
 	</mm:present>
 </mm:cloud>
-<% 
-   response.sendRedirect("../showMessage.jsp?message=newuser"); 
-%>
+<%response.sendRedirect("../showMessage.jsp?message=newuser");%>

@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud logon="wwwuser" pwd="buggie90">
+<mm:cloud logon="admin" pwd="admin2k">
 <mm:import externid="bugreport" jspvar="bugreport" />
 <mm:import externid="submitter" />
 
@@ -11,5 +11,5 @@
     </mm:createrelation>
 
 
-	<%response.sendRedirect("/bugtracker/jsp/fullview.jsp?bugreport="+bugreport);%>
+	<%response.sendRedirect("../fullview.jsp?bugreport="+bugreport);%>
 </mm:cloud>

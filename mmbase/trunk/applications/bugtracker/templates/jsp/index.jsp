@@ -29,16 +29,15 @@
 </mm:present>
 
 
-<body class="basic"> 
 <%-- first the selection part --%>
+<BODY BACKGROUND="images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
 
-<table><%-- a table only for a header? --%>
-<form action="index.jsp" method="POST">
+<table cellspacing=1 cellpadding=3 border=0 width="100%" border="5">
 <tr>
 
 		<td width="50"><img src="images/trans.gif" width="50" height="1"></td> 
-		<td>
-		 <center>BugTracker 1.2imnotfinishedyet - Daniel Ockeloen
+		<td BGCOLOR="#00425A" COLSPAN="8">
+		 <center>BugTracker 1.3 - Daniel Ockeloen / MMBased
 		</td>
 </tr>
 </table>

@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud logon="wwwuser" pwd="buggie90">
+<mm:cloud logon="admin" pwd="admin2k">
 <mm:import externid="submitter" />
 <mm:import externid="newissue" />
 <mm:import externid="newbtype" />
@@ -12,12 +12,13 @@
 	<mm:node id="poolnode" number="Bugtracker.Start" />
 	
 	<mm:listnodes type="bugreports" orderby="bugid" directions="down"  max="1">
-		<mm:import id="oldid" jspvar="oldid"><mm:field name="bugid" /></mm:import>
+		<mm:import id="oldid"><mm:field name="bugid" /></mm:import>
 	</mm:listnodes>
 	<% int newid=1; %>
 	<mm:present referid="oldid">
+		<mm:import id="tmpid" jspvar="tmpid"><mm:write referid="oldid" /></mm:import>
 		<% try {
-			newid=Integer.parseInt(oldid)+1;
+			newid=Integer.parseInt(tmpid)+1;
 		   } catch(Exception e) {}
 		%>
 	</mm:present>
@@ -47,4 +48,4 @@
     	<mm:createrelation role="related" source="bugreportnode" destination="areanode" />
 
 </mm:cloud>
-<%response.sendRedirect("/bugtracker/jsp/showMessage.jsp?message=newbug");%>
+<%response.sendRedirect("../showMessage.jsp?message=newbug");%>
