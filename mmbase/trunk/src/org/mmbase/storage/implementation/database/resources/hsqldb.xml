@@ -44,6 +44,17 @@
 		<type-mapping name="STRING" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
 		<type-mapping name="XML" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
 		<type-mapping name="BYTE" min-size="1" max-size="16777216" type="BINARY" />
+		<type-mapping name="DATETIME" type="DATETIME" />
+		<type-mapping name="BOOLEAN"  type="BIT" />
+    <type-mapping name="LIST[FLOAT]"   type="OTHER" />
+    <type-mapping name="LIST[DOUBLE]"  type="OTHER" />
+    <type-mapping name="LIST[LONG]"    type="OTHER" />
+    <type-mapping name="LIST[INTEGER]" type="OTHER" />
+    <type-mapping name="LIST[NODE]"    type="OTHER" />
+    <type-mapping name="LIST[STRING]"  type="OTHER" />
+    <type-mapping name="LIST[XML]"     type="OTHER" />
+    <type-mapping name="LIST[DATETIME]" type="OTHER" />
+    <type-mapping name="LIST[BOOLEAN]"  type="OTHER" />
 	</type-mappings>
 
 	<!-- HSQLdb disallowed fields are retrieved from the database -->
