@@ -8,9 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 
 /**
@@ -18,11 +15,11 @@ import javax.servlet.jsp.JspTagException;
 * 
 * @author Michiel Meeuwissen
 */
-public class RemoveTag extends ImportTag {
-
-    public int doAfterBody() throws JspTagException{
-        getContextTag().unRegister(key);
-        return SKIP_BODY;
-    }
-
+public class RemoveTag extends ContextReferrerTag {
+    
+       public int doAfterBody() throws JspTagException {
+           getContextTag().unRegister(getReferid());
+           return SKIP_BODY;
+       }
+    
 }
