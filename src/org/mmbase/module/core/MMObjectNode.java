@@ -29,7 +29,8 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version 11 May 2001
+ * @author Eduard Witteveen 
+ * @version $Revision: 1.52 $ $Date: 2001-11-27 10:27:00 $
  */
 
 public class MMObjectNode {
@@ -250,18 +251,26 @@ public class MMObjectNode {
      *  The fieldname is added to the (public) 'changed' vector to track changes.
      *  @param fieldname the name of the field to change
      *  @param fieldValue the value to assign
-     *  @return always <code>true</code>
+     *  @return <code>true</code> When the field was changed, false otherwise.
      */
     public boolean setValue(String fieldname,Object fieldvalue) {
+		// retrieve the original value
+		Object originalValue = values.get(fieldname);                
         // put the key/value in the value hashtable
         storeValue(fieldname,fieldvalue);
-
         // process the changed value (?)
-        if (parent!=null) parent.setValue(this,fieldname);
-
+        if (parent!=null) {
+			if(!parent.setValue(this,fieldname, originalValue)) {
+				// setValue of parent returned false, no update needed...
+				return false;
+            }
+		}
         setUpdate(fieldname);
         return true;
     }
+
+
+
 
     /**
      * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
