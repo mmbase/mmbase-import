@@ -113,6 +113,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
   			sessions.setValue (session, "FIELDNAME",t.fieldId); 
   			sessions.setValue (session, "TRANSACTIONERROR",t.toString()); 
 			if(_debug) { 
+				t.printStackTrace();
 				debug(t.transactionException,0);
 				debug(t.transactionId,0);
 				debug(t.objectException,0);
@@ -371,6 +372,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
 				}
 			}
+			
 
 			try {
 				if (oName.equals("createObject")) {
@@ -385,7 +387,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					}
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
-				} 
+				} else { 
 				if (oName.equals("createRelation")) {
 					// check for existence
 					if (transactionInfo.knownObjectContexts.get(id) != null) {
@@ -398,7 +400,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					}
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
-				} 
+				} else {
 				if (oName.equals("accessObject")) {
 					// check for existence
 					if (transactionInfo.knownObjectContexts.get(id) != null) {
@@ -414,13 +416,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					//get Node succeed?
 					if (!anonymousObject)
 						transactionInfo.knownObjectContexts.put(id, currentObjectContext);
-				}
+				} else {
 				if (oName.equals("openObject")) {
 					if (transactionInfo.knownObjectContexts.get(id) == null) {
 						throw new TransactionHandlerException(oName + " Object id doesn't exists: " + id);
 					}
 					currentObjectContext = (String)transactionInfo.knownObjectContexts.get(id);
-				}
+				} else {
 				if (oName.equals("deleteObject")) {
 					if (id==null) { 
 						throw new TransactionHandlerException(oName + " no id specified");
@@ -432,7 +434,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
 					transactionInfo.knownObjectContexts.remove(id);
 					continue;
-				}
+				} else {
 				if (oName.equals("markObjectDelete")) {
 					debug("markObjectDelete is not tested !!!!!!!",0);
 					if (oMmbaseId==null) { 
@@ -447,8 +449,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						transactionInfo.knownObjectContexts.remove(id);
 					}
 					continue;
-				}
-			
+				} else {
+					throw new TransactionHandlerException("tag "+ oName + " doesn't exist");
+				} } } } } } 
+					
 
 				// DO FIELDS
 				//do for all field contexts (setField)
