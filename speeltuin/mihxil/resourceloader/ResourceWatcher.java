@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.6 2004-10-13 17:33:11 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.7 2004-10-18 19:12:34 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -109,10 +109,10 @@ public abstract class ResourceWatcher implements MMBaseObserver {
         }
     }
     /** 
-     * Constructor, defaulting to the Root ResourceLoader (see {@link ResourceLoader#getRoot}).
+     * Constructor, defaulting to the Root ResourceLoader (see {@link ResourceLoader#getConfigurationRoot}).
      */
     protected ResourceWatcher() {
-        this(ResourceLoader.getRoot());
+        this(ResourceLoader.getConfigurationRoot());
     }
 
 
@@ -187,12 +187,25 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      *
      * @param resourceName The resource to be monitored.
      */
-    public synchronized void add(String resourceName) { 
+    public synchronized void add(String resourceName) {         
         resources.add(resourceName);
+        log.service("Started watching '" + resourceName + "' for resource loader " + resourceLoader);
         if (running) {
             createFileWatcher(resourceName);
             ResourceLoader.Resolver resolver = resourceLoader.getResolver(resourceName);
             mapNodeNumber(resolver, resourceName);
+        }
+    }
+
+    /**
+     * If you resolved a resource already to an URL, you can still add it for watching.
+     */
+    public synchronized void add(URL url) {
+        if (url.getProtocol().equals(ResourceLoader.PROTOCOL)) {
+            String path = url.getPath();
+            add(path.substring(resourceLoader.getContext().getPath().length()));
+        } else {
+            throw new UnsupportedOperationException("Don't know how to watch " + url + " (Only URLs produced by ResourceLoader are supported)");
         }
     }
 
@@ -264,6 +277,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      * @param resourceName The resource that was changed.
      */
     abstract public void onChange(String resourceName);
+
 
     /**
      * Set the delay to observe between each check of the file changes.

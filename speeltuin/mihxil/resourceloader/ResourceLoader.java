@@ -21,8 +21,8 @@ import javax.servlet.ServletContext;
 
 // used for resolving in MMBase database
 import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.builders.Resources;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.builders.Resources;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 
@@ -49,11 +49,11 @@ import org.mmbase.util.logging.Logging;
  * 
  * Programmers should do something like this if they need a configuration file:
 <pre>
-InputStream configStream = ResourceLoader.getRoot().getResourceAsStream("modules/myconfiguration.xml");
+InputStream configStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("modules/myconfiguration.xml");
 </pre>
 or
 <pre>
-InputSource config = ResourceLoader.getRoot().getInputSource("modules/myconfiguration.xml");
+InputSource config = ResourceLoader.getConfiguationRoot().getInputSource("modules/myconfiguration.xml");
 </pre>
 of if you need a list of all resources:
 <pre>
@@ -96,7 +96,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.11 2004-10-13 21:20:56 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.12 2004-10-18 19:12:34 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -120,7 +120,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Protocol prefix used by URL objects in this class.
      */
-    public static final URL NODE_URL_CONTEXT;
+    public static final URL NODE_URL_CONTEXT = createNodeURL();
 
     private static URL createNodeURL() {
         // sigh I don't see another compiling way to fill NODE_URL_CONTEXT
@@ -131,11 +131,6 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
     }
-    static {
-        NODE_URL_CONTEXT = createNodeURL();
-    }
-
-
 
     
     /**
@@ -143,9 +138,16 @@ public class ResourceLoader extends ClassLoader {
      */
     protected static final String INDEX            = "INDEX";
 
-    private static final MMURLStreamHandler mmStreamHandler = new MMURLStreamHandler();
+    private static  ResourceLoader configRoot = null;
+    private static  ResourceLoader webRoot = null;
+    private static ServletContext servletContext = null;
 
-    private static final ResourceLoader root = new ResourceLoader();
+
+    static MMObjectBuilder resourceBuilder = null;
+
+
+
+    private final MMURLStreamHandler mmStreamHandler = new MMURLStreamHandler();
 
     /**
      * Creates a new URL object, which is used to load resources. First a normal java.net.URL is
@@ -156,7 +158,7 @@ public class ResourceLoader extends ClassLoader {
      * supposing it is some existing file and return a file: URL. If no such file, only then a
      * MalformedURLException is thrown.
      */
-    protected static URL newURL(String url) throws MalformedURLException {
+    protected  URL newURL(String url) throws MalformedURLException {
         // Try already installed protocols first:
         try {
             return new URL (url);
@@ -180,15 +182,13 @@ public class ResourceLoader extends ClassLoader {
         }
     }
 
-    private static ServletContext servletContext = null;
-
-    static MMObjectBuilder resourceBuilder = null;
 
     // these could perhaps be made non-static to make more generic ResourceLoaders possible
 
-    private static List /* <File> */   fileRoots         = new ArrayList();
-    private static List /* <String> */ resourceRoots     = new ArrayList();
-    private static List /* <String> */ classLoaderRoots  = new ArrayList();
+    private List /* <File> */   fileRoots;   
+    private List /* <String> */ resourceRoots; 
+    private List /* <String> */ classLoaderRoots;
+    private Set /*  <Integer> */ typeValues;
 
 
     static {
@@ -204,49 +204,8 @@ public class ResourceLoader extends ClassLoader {
      */
     public static void init(ServletContext sc) {
         servletContext = sc;
-        fileRoots.clear();
-        resourceRoots.clear();
-        classLoaderRoots.clear();
-
-        // mmbase.config settings
-        String configPath = null;
-        if (servletContext != null) {
-            configPath = servletContext.getInitParameter("mmbase.config");
-        }
-        if (configPath == null) {
-            configPath = System.getProperty("mmbase.config");
-        }
-        if (configPath != null) {
-            if (servletContext != null) {
-                // take into account configpath can start at webrootdir
-                if (configPath.startsWith("$WEBROOT")) {
-                    configPath = servletContext.getRealPath(configPath.substring(8));
-                }
-            }
-            fileRoots.add(new File(configPath));
-        }
-
-        if (servletContext != null) {
-            String s = servletContext.getRealPath(RESOURCE_ROOT);
-            if (s != null) {
-                fileRoots.add(new File(s));
-            }
-            s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
-            if (s != null) {
-                fileRoots.add(new File(s));
-            }
-            resourceRoots.add(RESOURCE_ROOT);
-        }
-
-        /**
-        if (fileRoots.size() == 0) {
-            File [] roots = File.listRoots();
-            fileRoots.addAll(Arrays.asList(roots));
-        }
-        */
-
-        classLoaderRoots.add(CLASSLOADER_ROOT);
-
+        configRoot = null;
+        webRoot    = null;
     }
 
     /**
@@ -300,7 +259,7 @@ public class ResourceLoader extends ClassLoader {
      * @param path A path relative to the fileRoots
      * @return A List.
      */
-    protected static List getRootFiles(final String path) {
+    protected  List getRootFiles(final String path) {
         return new AbstractList() {
                 public int size()            { return fileRoots.size(); }
                 public Object  get(int i)    { return new File((File) fileRoots.get(i), path); }
@@ -312,7 +271,7 @@ public class ResourceLoader extends ClassLoader {
      * path must not start with /.
      */
 
-    protected static List getRootResources(final String path) {
+    protected  List getRootResources(final String path) {
         return new AbstractList() {
                 public int size()            { return resourceRoots.size(); }
                 public Object  get(int i)    { return resourceRoots.get(i) + "/" + path; }
@@ -324,10 +283,74 @@ public class ResourceLoader extends ClassLoader {
     /**
      * The one ResourceLoader which loads from the mmbase config root is static, and can be obtained with this method
      */
-    public static ResourceLoader getRoot() {
-        return root;
-        
+    public static ResourceLoader getConfigurationRoot() {
+        if (configRoot == null) {
+            configRoot = new ResourceLoader();
+            
+            // mmbase.config settings
+            String configPath = null;
+            if (servletContext != null) {
+                configPath = servletContext.getInitParameter("mmbase.config");
+            }
+            if (configPath == null) {
+                configPath = System.getProperty("mmbase.config");
+            }
+            if (configPath != null) {
+                if (servletContext != null) {
+                    // take into account configpath can start at webrootdir
+                    if (configPath.startsWith("$WEBROOT")) {
+                        configPath = servletContext.getRealPath(configPath.substring(8));
+                    }
+                }
+                configRoot.fileRoots.add(new File(configPath));
+            }
+            
+            if (servletContext != null) {
+                String s = servletContext.getRealPath(RESOURCE_ROOT);
+                if (s != null) {
+                    configRoot.fileRoots.add(new File(s));
+                }
+                s = servletContext.getRealPath("/WEB-INF/classes" + CLASSLOADER_ROOT); // prefer opening as a files.
+                if (s != null) {
+                    configRoot.fileRoots.add(new File(s));
+                }
+                configRoot.resourceRoots.add(RESOURCE_ROOT);
+            }
+            
+            /**
+               if (fileRoots.size() == 0) {
+               File [] roots = File.listRoots();
+               fileRoots.addAll(Arrays.asList(roots));
+               }
+            */
+            
+            configRoot.classLoaderRoots.add(CLASSLOADER_ROOT);            
+
+            configRoot.typeValues.add(Resources.TYPE_CONFIG);
+        }
+        return configRoot;
     }
+
+
+    /**
+     * The one ResourceLoader which loads from the mmbase web root is static, and can be obtained with this method
+     */
+    public static ResourceLoader getWebRoot() {
+        if (webRoot == null) {
+            webRoot = new ResourceLoader();
+            if (servletContext != null) {
+                String s = servletContext.getRealPath("/");
+                if (s != null) {
+                    webRoot.fileRoots.add(new File(s));
+                }
+                webRoot.resourceRoots.add("/");
+            }
+            webRoot.typeValues.add(Resources.TYPE_WEB);
+        }
+
+        return webRoot;
+    }
+
 
     /**
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
@@ -337,10 +360,14 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * This constructor instantiates the root resource-loader. There is only one such ResourceLoader
-     * (acquirable with {@link #getRoot}) so this constructor is private.
+     * (acquirable with {@link #getConfigurationRoot}) so this constructor is private.
      */
     private ResourceLoader() {
         super();
+        fileRoots        = new ArrayList();
+        resourceRoots    = new ArrayList();
+        classLoaderRoots = new ArrayList();
+        typeValues       = new HashSet();
         try {
             context = newURL(PROTOCOL + ":/");
         } catch (MalformedURLException mue) {
@@ -349,10 +376,10 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Instantiates a new ResourceLoader relative to the root ResourceLoader.
+     * Instantiates a new ResourceLoader relative to the root ResourceLoader. See {@link #getConfigurationRoot()}
      */
     public ResourceLoader(final String context)  {
-        this(getRoot(), context);
+        this(getConfigurationRoot(), context);
     }
 
 
@@ -362,6 +389,10 @@ public class ResourceLoader extends ClassLoader {
     public ResourceLoader(final ResourceLoader cl, final String context)  {
         super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
+        this.fileRoots        = cl.fileRoots;
+        this.resourceRoots    = cl.resourceRoots;
+        this.classLoaderRoots = cl.classLoaderRoots;
+        this.typeValues       = cl.typeValues;
     }
 
     /**
@@ -390,6 +421,13 @@ public class ResourceLoader extends ClassLoader {
      * with xml configuration files, so this comes in handy.
      */
     public static final Pattern XML_PATTERN = Pattern.compile(".*\\.xml$");
+
+    /**
+     * Returns the 'context' for the ResourceLoader (an URL).
+     */
+    public URL getContext() {
+        return context;
+    }
 
     /**
      * Returns a set of 'sub resources' (read: 'files in the same directory'), which can succesfully be be loaded by the ResourceLoader.
@@ -499,12 +537,24 @@ public class ResourceLoader extends ClassLoader {
      * Used by {@link #getResourcePaths(Pattern, boolean)}. This performs the database part of the job.
      */
     protected Set getNodeResourcePaths(final Pattern pattern, final boolean recursive, final Set results, final boolean directories) {
-        if (resourceBuilder != null) {
+        if (resourceBuilder != null && typeValues.size() > 0) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
-                BasicFieldValueConstraint constraint = 
+                BasicFieldValueInConstraint typeConstraint  =
+                    new BasicFieldValueInConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)));
+                Iterator j = typeValues.iterator();
+                while (j.hasNext()) {
+                    typeConstraint.addValue(j.next());
+                }
+                BasicFieldValueConstraint nameConstraint = 
                     new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)), context.getPath().substring(1) + "%");
-                constraint.setOperator(FieldCompareConstraint.LIKE);
+                nameConstraint.setOperator(FieldCompareConstraint.LIKE);
+
+                BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+
+                constraint.addChild(typeConstraint).addChild(nameConstraint);
+
+
                 query.setConstraint(constraint);
                 Iterator i = resourceBuilder.getNodes(query).iterator();
                 while (i.hasNext()) {
@@ -579,7 +629,7 @@ public class ResourceLoader extends ClassLoader {
                 
                 // old app-server (orion 1.5.4: java.lang.NoSuchMethodError: javax.servlet.ServletContext.getResourcePaths(Ljava/lang/String;)Ljava/util/Set;)
                 // simply ignore, running on war will not work in such app-servers
-            } catch (Throwable t) { //hopefully this catches errors from app-server which dont' or badly support servlet api 2.3's getResourcePaths
+            } catch (Throwable t) { 
                 log.error(Logging.stackTrace(t));
                 // ignore
             }
@@ -612,7 +662,7 @@ public class ResourceLoader extends ClassLoader {
      * @param name The name of the resource to be loaded
      * @return The InputSource if succesfull, <code>null</code> otherwise.
      */
-    public InputSource getInputSource(String name)  {
+    public InputSource getInputSource(String name)  throws IOException {
         try {
             URL url = findResource(name);
             InputStream stream = url.openStream();
@@ -624,9 +674,6 @@ public class ResourceLoader extends ClassLoader {
         } catch (MalformedURLException mfue) {
             log.info(mfue);
             return null;
-        } catch (IOException ieo) {
-            log.error(Logging.stackTrace(ieo));
-            return null;
         }
     }
 
@@ -637,22 +684,16 @@ public class ResourceLoader extends ClassLoader {
      * configuration in in XML.
      *
      * @param name The name of the resource to be loaded
-     * @return The Document if succesfull, <code>null</code> otherwise.
+     * @return The Document if succesfull, <code>null</code> if there is not such resource.
      */
-    public Document getDocument(String name) {
+    public Document getDocument(String name) throws org.xml.sax.SAXException, IOException  {
         InputSource source = getInputSource(name);
         if (source == null) return null;
-        try {
-            XMLEntityResolver resolver = new XMLEntityResolver(true, null);
-            DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, null/* no error handler */, resolver);
-            if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
-            if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
-            return  dbuilder.parse(source);
-        } catch(org.xml.sax.SAXException se) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
-        } catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe, ioe);
-        }
+        XMLEntityResolver resolver = new XMLEntityResolver(true, null);
+        DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, null/* no error handler */, resolver);
+        if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
+        if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
+        return  dbuilder.parse(source);
     }
 
     /**
@@ -772,7 +813,11 @@ public class ResourceLoader extends ClassLoader {
      * Returns an abstract URL for a resource with given name. findResource(name).toString() would give an 'external' form.
      */
     public String toInternalForm(String name) {
-        URL u = findResource(name);
+       return toInternalForm(findResource(name));
+     
+    }
+
+    public static String toInternalForm(URL u) {
         return u.getProtocol() + ":" + u.getPath();
     }
 
@@ -813,7 +858,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Resolves these abstract mm:-urls to actual things, like Files, MMObjectNodes and 'external' URL's.
      */
-    protected  static class Resolver {
+    protected  class Resolver {
         private URL url;
 
         // try to cache the results a bit.
@@ -864,7 +909,7 @@ public class ResourceLoader extends ClassLoader {
         protected File getResourceFile(boolean exists, boolean writeable) {
             int index = (exists ? 0 : 1) + (writeable ? 0 : 2);
             if (files[index] != null) return files[index];
-            Iterator i = ResourceLoader.getRootFiles(url.getPath()).iterator();
+            Iterator i = ResourceLoader.this.getRootFiles(url.getPath()).iterator();
             while (i.hasNext()) {
                 File file = (File) i.next();
                 if (exists && file.exists()) {
@@ -893,7 +938,7 @@ public class ResourceLoader extends ClassLoader {
         protected URL getServletContextResource() {
             if (servletContextResource != null) return servletContextResource;
             if (ResourceLoader.servletContext != null) {
-                Iterator resources = ResourceLoader.resourceRoots.iterator();
+                Iterator resources = ResourceLoader.this.resourceRoots.iterator();
                 while (resources.hasNext()) {
                     String root = (String) resources.next();
                     try {
@@ -910,13 +955,14 @@ public class ResourceLoader extends ClassLoader {
             return null;
             
         }
+
         /**
          * Gets a URL from ClassLoaders.
          * @return URL or <code>null</code> if there is no such resource according to ClassLoader.
          */
         protected URL getClassLoaderResource() {
             if (classLoaderResource != null) return classLoaderResource;
-            Iterator resources  = ResourceLoader.classLoaderRoots.iterator();
+            Iterator resources  = ResourceLoader.this.classLoaderRoots.iterator();
             while (resources.hasNext()) {
                 String root = (String) resources.next();
                 URL u = ResourceLoader.class.getResource(root + url.getPath());
@@ -953,7 +999,7 @@ public class ResourceLoader extends ClassLoader {
             if (node != null) {
                 return getNodeURL(node);
             }
-            Iterator i = ResourceLoader.getRootFiles(url.getPath()).iterator();
+            Iterator i = ResourceLoader.this.getRootFiles(url.getPath()).iterator();
             while (i.hasNext()) {
                 File file = (File) i.next();
                 if (file.equals(f)) {
@@ -986,7 +1032,7 @@ public class ResourceLoader extends ClassLoader {
                     lastModified = lm.getTime();
                 }
             }
-            Iterator i = ResourceLoader.getRootFiles(url.getPath()).iterator();
+            Iterator i = ResourceLoader.this.getRootFiles(url.getPath()).iterator();
             while (i.hasNext()) {
                 File file = (File) i.next();
                 if (file.exists()) {
@@ -1052,7 +1098,7 @@ public class ResourceLoader extends ClassLoader {
      * The MMURLStreamHandler is a StreamHandler for the protocol PROTOCOL. 
      */
     
-    protected static class MMURLStreamHandler extends URLStreamHandler {
+    protected class MMURLStreamHandler extends URLStreamHandler {
 
         private URLConnection connection = null;
         MMURLStreamHandler() {
@@ -1077,9 +1123,10 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Implements the logic for our MM protocol.
      */
-    protected static class MMURLConnection extends URLConnection {           
+    protected class MMURLConnection extends URLConnection {           
 
         private boolean determinedDoOutput = false;
+        private boolean determinedDoInput  = false;
         private Resolver resolver;
 
         MMURLConnection(URL u) {
@@ -1099,6 +1146,41 @@ public class ResourceLoader extends ClassLoader {
             connected = true;
         }
 
+        /**
+         * Returns <code>true</true> if you can successfully use getInputStream();
+         */
+        public boolean getDoInput() {
+            if (! determinedDoInput) {
+                determinedDoInput = true;
+                if (resolver.getResourceFile(true, false) != null) {
+                    setDoInput(true);
+                    return true;
+                } 
+                if (ResourceLoader.resourceBuilder != null) {
+                    if(resolver.getResourceNode() != null) {
+                        setDoInput(true);
+                        return true;
+                    }
+                }
+
+
+                URL u = resolver.getServletContextResource();                    
+                if (u != null) {
+                    setDoInput(true);
+                    return true;
+                }
+                u = resolver.getClassLoaderResource();
+                if (u != null) {
+                    setDoInput(true);
+                    return true;
+                }
+
+                //defaulting to false.
+                setDoInput(false);
+            }
+            return super.getDoInput();
+                            
+        }
         /**
          * {@inheritDoc}
          */
@@ -1148,6 +1230,9 @@ public class ResourceLoader extends ClassLoader {
                         String type = guessContentTypeFromStream(new ByteArrayInputStream(b));
                         if (type == null) {
                             guessContentTypeFromName(url.getFile());
+                        }
+                        if (ResourceLoader.this.typeValues.size() > 0) {
+                            node.setValue(Resources.TYPE_FIELD, ResourceLoader.this.typeValues.iterator().next());
                         }
                         node.setValue("mimetype", type);
                         node.commit();
@@ -1256,7 +1341,7 @@ public class ResourceLoader extends ClassLoader {
      * For testing purposes only
      */
     public static void main(String[] argv) {
-        ResourceLoader resourceLoader = getRoot();
+        ResourceLoader resourceLoader = getConfigurationRoot();
         try {
             if (argv.length == 0) {
                 System.err.println("useage: java [-Dmmbase.config=<config dir>] " + ResourceLoader.class.getName() + " [<sub directory>] <resource-name>");
