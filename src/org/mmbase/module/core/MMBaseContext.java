@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.25 2002-03-13 10:07:52 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.26 2002-04-08 14:08:31 eduard Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.25 $ $Date: 2002-03-13 10:07:52 $
+ * @$Revision: 1.26 $ $Date: 2002-04-08 14:08:31 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -410,7 +410,7 @@ public class MMBaseContext {
         return null;
     }
 
-    
+    private static String CONTEXT_URL_IDENTIFIER = "jndi:/";    
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under 
      * the webserver, what is the root for this instance.
@@ -451,7 +451,21 @@ public class MMBaseContext {
                     else {
                         log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
                     }
-                } else {
+                } 
+                // This works on my tomcat (4.03),.. this is supposed to be the reference implementation?
+                // so what should be the code?
+                else if (rootContextUrl == null && contextUrl != null && contextUrl.startsWith(CONTEXT_URL_IDENTIFIER)) {
+                    // the String will be typically something like "jndi:/hostname/contextname/", so we are looking for the first '/' after the hostname..                    
+                    int contextStart = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length()).indexOf('/');
+                    if(contextStart != -1) {
+                        htmlRootUrlPath = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length() + contextStart);
+                    }
+                    else {
+                        log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
+                                 + "\nbut  contextUrl     : '" + contextUrl + "' did start with: '"+CONTEXT_URL_IDENTIFIER + "'");
+                    }
+                }
+                else {
                     log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
                              + "\n  contextUrl     :" + contextUrl
                              + "\n  rootContextUrl :" + rootContextUrl );
