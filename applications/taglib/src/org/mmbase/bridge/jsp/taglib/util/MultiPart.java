@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.10 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MultiPart.java,v 1.11 2005-02-03 18:03:17 michiel Exp $
  **/
 
 public class MultiPart {
@@ -68,6 +68,7 @@ public class MultiPart {
         MMultipartRequest(HttpServletRequest req, String c) {
             try {
                 DiskFileUpload fu =  new DiskFileUpload();
+                fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
                 List fileItems = fu.parseRequest(req);
                 for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
                     FileItem fi = (FileItem)i.next();
@@ -95,7 +96,7 @@ public class MultiPart {
                 throw new RuntimeException(e);
             }
             coding = c;
-            log.debug("Created with encoding: "+coding);
+            log.debug("Created with encoding: " + coding);
         }
 
         /**
