@@ -36,7 +36,7 @@ public class BundleVersionContainer  {
 
     private ShareInfo shareinfo;
 
-    private Hashtable bundles=new Hashtable();
+    private HashMap bundles=new HashMap();
 
     public BundleVersionContainer(BundleInterface b) {
         bundles.put(b.getProvider(),b);
@@ -68,8 +68,8 @@ public class BundleVersionContainer  {
         return null;
     } 
 
-   public Enumeration getBundles() {
-       return bundles.elements();
+   public Iterator getBundles() {
+       return bundles.values().iterator();
    }
 
 
@@ -94,9 +94,9 @@ public class BundleVersionContainer  {
 
     public BundleInterface getBundleByScore() {
         BundleInterface winner = null;
-        Enumeration e = bundles.elements();
-        while (e.hasMoreElements()) {
-            BundleInterface b = (BundleInterface)e.nextElement();
+        Iterator e = bundles.values().iterator();
+        while (e.hasNext()) {
+            BundleInterface b = (BundleInterface)e.next();
             if (winner == null) {
                 winner = b;
             } else if (b.getProvider().getBaseScore() > winner.getProvider().getBaseScore()) {

@@ -133,6 +133,7 @@ public class InstallManager {
             }
         } catch(Exception e) {
             log.error("performInstall problem");
+	    e.printStackTrace();
         }
     }
 
