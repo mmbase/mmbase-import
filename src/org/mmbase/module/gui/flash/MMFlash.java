@@ -35,6 +35,7 @@ public class MMFlash extends Module {
 
 	private int count=0;	
 	scanparser scanp;
+	String subdir;
 	String generatortemppath;
 	String generatorpath;
 	String generatorprogram;
@@ -57,6 +58,8 @@ public class MMFlash extends Module {
 		log.debug("generatorpath:'"+generatorpath+"'");		
 		generatorprogram=getInitParameter("generatorprogram");
 		log.debug("generatorprogram:'"+generatorprogram+"'");		
+		subdir=getInitParameter("subdir");
+		log.debug("subdir:'"+subdir+"'");		
 
 		// check if we may create a file on location of generatorTempPath
 		File tempPath = new File(generatortemppath);
@@ -341,12 +344,18 @@ public class MMFlash extends Module {
     }
 
 
-	static byte[] loadDiskCache(String filename,String query) {
+	private byte[] loadDiskCache(String filename,String query) {
 		if (query!=null) {
 			filename=filename.substring(0,filename.length()-3)+"swf?"+query;
 		} else {
 			filename=filename.substring(0,filename.length()-3)+"swf";
 		}
+
+		if (subdir!=null && !subdir.equals("")) {
+			int pos=filename.lastIndexOf('/');
+			filename=filename.substring(0,pos)+"/"+subdir+filename.substring(pos);
+		}
+
 		File bfile = new File(filename);
 		int filesize = (int)bfile.length();
 		byte[] buffer=new byte[filesize];
@@ -428,12 +437,18 @@ public class MMFlash extends Module {
 	}
 
 
-	static boolean saveDiskCache(String filename,String query,byte[] value) {
+	private boolean saveDiskCache(String filename,String query,byte[] value) {
 		if (query!=null) {
 			filename=filename.substring(0,filename.length()-3)+"swf?"+query;
 		} else {
 			filename=filename.substring(0,filename.length()-3)+"swf";
 		}
+
+		if (subdir!=null && !subdir.equals("")) {
+			int pos=filename.lastIndexOf('/');
+			filename=filename.substring(0,pos)+"/"+subdir+filename.substring(pos);
+		}
+
 		log.debug("filename="+filename);		
 		//System.out.println("filename="+filename);	
 		
