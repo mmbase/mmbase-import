@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.20 2002-08-21 16:41:31 michiel Exp $
+ * @version $Id: Utils.java,v 1.21 2002-10-02 17:17:50 michiel Exp $
  */
 public class Utils {
 
@@ -47,11 +47,12 @@ public class Utils {
      *
      * @return     a DocumentBuilder.
      */
-    public static DocumentBuilder getDocumentBuilder() throws Exception {
-        javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+    public static DocumentBuilder getDocumentBuilder(boolean validate) throws Exception {
+	//        javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
         // Use the DocumentBuilderFactory to provide access to a DocumentBuilder.
-        javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
-        return dBuilder;
+	//        javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
+	//        return dBuilder;
+	return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate);
     }
 
     /**
@@ -61,7 +62,7 @@ public class Utils {
      */
     public static Document emptyDocument() {
         try {
-            DocumentBuilder dBuilder = getDocumentBuilder();
+            DocumentBuilder dBuilder = getDocumentBuilder(false);
             return dBuilder.newDocument();
         } catch (Throwable t) {
             log.error(Logging.stackTrace(t));
@@ -73,13 +74,13 @@ public class Utils {
     /**
      * This method can load a xml file and returns the resulting document. If something went wrong, null is returned.
      *
-     * @param       file        the file to be loaded.
+     * @param      file the file to be loaded.
      * @return     The loaded xml Document
-     * @throws      WizardException if someting wend wrong...
+     * @throws     WizardException if someting wend wrong...
      */
     public static Document loadXMLFile(File file) throws WizardException {
-        try {
-            DocumentBuilder b = getDocumentBuilder();
+        try {	  
+            DocumentBuilder b = getDocumentBuilder(true);
             return b.parse(new FileInputStream(file));
         } catch (Exception e) {
             throw new WizardException("Could not load schema xml file '"+file + "'\n" + Logging.stackTrace(e));
@@ -95,7 +96,7 @@ public class Utils {
      */
     public static Document parseXML(String xml) throws WizardException {
         try {
-            DocumentBuilder b = getDocumentBuilder();
+            DocumentBuilder b = getDocumentBuilder(false);
             StringReader reader = new StringReader(xml);
             return b.parse(new InputSource(reader));
         } catch (Exception e) {
