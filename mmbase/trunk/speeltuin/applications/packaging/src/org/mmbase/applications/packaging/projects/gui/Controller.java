@@ -309,6 +309,7 @@ public class Controller {
         if (p != null) {
             virtual.setValue("name", p.getName());
             virtual.setValue("path", "" + p.getPath());
+            virtual.setValue("dir", "" + p.getDir());
         }
         return virtual;
     }

@@ -101,6 +101,13 @@ public class Project {
         return path;
     }
 
+    public String getDir() {
+	if (path!=null) {
+		int pos=path.lastIndexOf("/");
+		if (pos!=-1) return path.substring(0,pos+1);
+	} 
+       	return null;
+    }
 
     /**
      *  Gets the name attribute of the Project object
