@@ -7,7 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.containers;
+
+import org.mmbase.bridge.jsp.taglib.*;
 
 import java.util.*;
 import org.mmbase.util.Argument;
@@ -21,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.1 2003-06-30 10:55:41 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.1 2003-07-23 17:46:58 michiel Exp $
  */
 public class FunctionContainerTag extends ContextReferrerTag implements FunctionContainer {
 
