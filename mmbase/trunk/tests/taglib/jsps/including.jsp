@@ -65,7 +65,8 @@
   <tr><th colspan="3">Standard attributes in an jsp:include (recursive)</th></tr>
   <tr><td>javax.servlet.include.servlet_path</td><td><%=dir%>includeshowattribute.jsp | <%=dir%>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><jsp:include page="includeshowattribute.jsp" /></td></tr>
   <tr><td>org.mmbase.taglib.includeLevel</td><td>null | 1</td><td><td><mm:write request="attribute" value="org.mmbase.taglib.includeLevel" /><jsp:include page="includeshowattribute.jsp" /></td></tr>
-
+  <tr><th colspan="3">from root</th></tr>
+  <tr><td>Simple include</td><td>A | A,X</td><td><mm:include page="<%=dir + "writea.jsp"%>" referids="a" /></td></tr>
 </table>  
 </body>
 </html>
