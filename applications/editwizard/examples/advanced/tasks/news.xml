@@ -85,11 +85,11 @@
     <list fdatapath="relation[object/@type='urls']" minoccurs="0" maxoccurs="*" type="urls">
 		<!-- list role="related" destination="urls" minoccurs="0"  maxoccurs="*"-->
       <title>Links</title>       
-			<command name="search" nodepath="urls" fields="name,description,url" orderby="name" age="-1">
+			<command name="search" nodepath="urls" fields="description,url" orderby="name" age="-1">
 				<prompt>Url (demonstration searching in multipable fields, and of two types of startwizards)</prompt>
 				<search-filter>
 					<name>URL</name>
-					<search-fields>url|name|description</search-fields>
+					<search-fields>url|description</search-fields>
 				</search-filter>
 			</command>
 			
@@ -97,7 +97,7 @@
       <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" />
 
       <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
-      <command name="startwizard" inline="true" wizardname="samples/urls" objectnumber="new" />
+      <command name="startwizard" inline="true" wizardname="tasks/urls" objectnumber="new" />
 
       <!-- samples/urls: you'll not find a samples/urls.xml in this directory. Search in /mmapps/editwizard/data -->
 
