@@ -14,7 +14,7 @@ import java.net.*;
 import java.util.*;
 
 import org.mmbase.util.*;
-import org.mmbase.Module.*;
+import org.mmbase.module.*;
 import org.mmbase.util.logging.*;
 
 /**
