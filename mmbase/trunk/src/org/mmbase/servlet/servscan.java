@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.23 2001-11-25 16:21:36 vpro Exp $
+ * @version $Id: servscan.java,v 1.24 2001-11-25 18:32:22 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -370,6 +370,17 @@ public class servscan extends JamesServlet {
 			}
 
 			if (sp.body!=null && sp.body.indexOf("<CACHE PAGE>")!=-1) {
+
+				// Start VPRO specific hack, not committed to CVS!!!
+				// Redirect if browsing on WWW
+				String host = sp.req.getServerName();
+				if (host.equals("www.vpro.nl") || host.equals("3voor12.vpro.nl")) {
+					res.setStatus(302,"OK");
+					res.setHeader("Location","http://pages.vpro.nl" + req_line);
+					return true;
+				}
+				// End VPRO specific hack, not committed to CVS!!!
+
 				sp.wantCache="PAGE";
 				String rst=parser.scancache.get(sp.wantCache,req_line,sp);
 				if (log.isDebugEnabled()) log.debug("handleCache: sp.reload: "+sp.reload);

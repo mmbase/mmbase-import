@@ -346,6 +346,7 @@ public class scancache extends Module implements scancacheInterface {
         // insert the new item and save to disk
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
+            timepool.put(poolName+key,new Integer((int)(DateSupport.currentTimeMillis()/1000))); // store expiration time
             return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
@@ -400,6 +401,7 @@ public class scancache extends Module implements scancacheInterface {
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
             // also add time to timepool??
+            timepool.put(poolName+key,new Integer((int)(DateSupport.currentTimeMillis()/1000))); // store expiration time
             return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
@@ -619,7 +621,7 @@ public class scancache extends Module implements scancacheInterface {
     }
 
 	private void signalProcessor(scanpage sp, String uri) {
-		scanpage fakesp=new scanpage();
+		scanpage fakesp=sp.duplicate();
 		scanparser.processPage(fakesp,uri);
 	}
 }

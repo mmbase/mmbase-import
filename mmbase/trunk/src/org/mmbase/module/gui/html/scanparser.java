@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.49 $ $Date: 2001-11-25 16:41:55 $
+ * @$Revision: 1.50 $ $Date: 2001-11-25 18:32:23 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1990,12 +1990,15 @@ public class scanparser extends ProcessorModule {
 				if (sp.body.indexOf("<CACHE PAGE")!=-1) {
 					wantCache="PAGE";
 				}
+				if (sp.body.indexOf("<CACHE HENK")!=-1) {
+					wantCache="HENK";
+				}
 				sp.wantCache=wantCache;
 				// end cache
 				// unlike include we need to map this ourselfs before including it
 				// in this page !!
 				//part=handle_line(part,req);
-				sp.body=handle_line(sp.body,null,sp);
+				sp.body=handle_line(sp.body,sp.session,sp);
 				if (wantCache!=null) {
 					scancache.newput2(wantCache,part2,sp.body,cachetype, sp.mimetype);
 				}
@@ -2094,9 +2097,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.49 2001-11-25 16:41:55 vpro Exp $
+$Id: scanparser.java,v 1.50 2001-11-25 18:32:23 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.49  2001/11/25 16:41:55  vpro
+Rico: scanparser sequencer
+
 Revision 1.48  2001/11/25 16:20:30  vpro
 Rico: scanparser sequencer
 
