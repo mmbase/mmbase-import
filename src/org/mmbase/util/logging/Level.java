@@ -29,7 +29,8 @@ public final class Level {
         INFO_INT    = 20000,
         WARN_INT    = 30000,
         ERROR_INT   = 40000,
-        FATAL_INT   = 50000;
+        FATAL_INT   = 50000,
+        OFF_INT     = Integer.MAX_VALUE;
 
 
     /** 
@@ -42,7 +43,8 @@ public final class Level {
         INFO    = new Level(INFO_INT),
         WARN    = new Level(WARN_INT),
         ERROR   = new Level(ERROR_INT),
-        FATAL   = new Level(FATAL_INT);   
+        FATAL   = new Level(FATAL_INT),
+        OFF     = new Level(OFF_INT);   
 
     private int level;
     
@@ -60,6 +62,7 @@ public final class Level {
         if (s.equals("WARN") )    return WARN;
         if (s.equals("ERROR") )   return ERROR;
         if (s.equals("FATAL") )   return FATAL;
+        if (s.equals("OFF") )     return OFF;
 
         return DEBUG;
         
