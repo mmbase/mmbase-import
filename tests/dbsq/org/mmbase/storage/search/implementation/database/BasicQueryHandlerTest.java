@@ -18,47 +18,47 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.5 2004-09-07 12:58:29 pierre Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
-    
+
     /**
      * JUnit test user.
      * Nodes created by this user must be removed in the tearDown.
      */
     private final static String JUNIT_USER = "JUnitTester";
-    
+
     /** Test instance. */
     private BasicQueryHandler instance;
-    
+
     /** Disallowed values map. */
     private Map disallowedValues = null;
-    
+
     /** MMBase query. */
     private MMBase mmbase = null;
-    
+
     /** News builder, used as builder example. */
     private MMObjectBuilder news = null;
-    
-    /** 
+
+    /**
      * Typedef builder, used as builder example where we need a number
-     * of nodes (there are > 5 typedef nodes for the core nodetypes). 
+     * of nodes (there are > 5 typedef nodes for the core nodetypes).
      */
     private MMObjectBuilder typedef = null;
-    
+
     /** Insrel builder, used as relation builder example. */
     /** Test nodes, created in setUp, deleted in tearDown. */
     private List testNodes = new ArrayList();
-    
+
     public BasicQueryHandlerTest(java.lang.String testName) {
         super(testName);
     }
-    
+
     public static void main(java.lang.String[] args) {
         TestRunner.run(suite());
         System.exit(0);
     }
-    
+
     /**
      * Sets up before each test.
      */
@@ -67,7 +67,7 @@ public class BasicQueryHandlerTest extends TestCase {
         mmbase = MMBase.getMMBase();
         news = mmbase.getBuilder("news");
         typedef = mmbase.getBuilder("typedef");
-        
+
         // Disallowed fields map.
         disallowedValues = new HashMap();
 //        disallowedValues.put("number", "m_number");
@@ -75,24 +75,24 @@ public class BasicQueryHandlerTest extends TestCase {
 //        disallowedValues.put("dnumber", "m_dnumber");
 //        disallowedValues.put("title", "m_title");
 //        disallowedValues.put("i", "m_i");
-        
+
         SqlHandler sqlHandler = new BasicSqlHandler(disallowedValues);
         instance = new BasicQueryHandler(sqlHandler);
-        
+
         // Add testnodes.
         MMObjectNode news1 = news.getNewNode(JUNIT_USER);
         news1.setValue("title", "_TE$T_1");
         news1.setValue("body", "News created for testing only.");
         news.insert(JUNIT_USER, news1);
         testNodes.add(news1);
-        
+
         MMObjectNode news2 = news.getNewNode(JUNIT_USER);
         news2.setValue("title", "_TE$T_2");
         news2.setValue("body", "News created for testing only.");
         news.insert(JUNIT_USER, news2);
         testNodes.add(news2);
     }
-    
+
     /**
      * Tears down after each test.
      */
@@ -106,7 +106,7 @@ public class BasicQueryHandlerTest extends TestCase {
             builder.removeNode(testNode);
         }
     }
-    
+
     /** Test of getNodes method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetNodes() throws Exception {
         BasicSearchQuery query = null;
@@ -153,7 +153,7 @@ public class BasicQueryHandlerTest extends TestCase {
             }
             assertTrue(!iResultNodes.hasNext());
         }
-        
+
         // Test for clusternodes.
         {
             query = new BasicSearchQuery();
@@ -193,7 +193,7 @@ public class BasicQueryHandlerTest extends TestCase {
             }
             assertTrue(!iResultNodes.hasNext());
         }
-        
+
         // Test for clusternodes using NodeSearchQuery, should still return clusternodes
         {
             NodeSearchQuery nodeQuery = new NodeSearchQuery(news);
@@ -228,7 +228,7 @@ public class BasicQueryHandlerTest extends TestCase {
             }
             assertTrue(!iResultNodes.hasNext());
         }
-        
+
         // Test for result nodes.
         {
             query = new BasicSearchQuery();
@@ -267,7 +267,7 @@ public class BasicQueryHandlerTest extends TestCase {
             }
             assertTrue(!iResultNodes.hasNext());
         }
-        
+
         // Test for result nodes with aggregated fields.
         {
             query = new BasicSearchQuery(true);
@@ -288,12 +288,12 @@ public class BasicQueryHandlerTest extends TestCase {
             query.setConstraint(constraint);
             List resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
             assertTrue(resultNodes.size() == 1);
-            
+
             // Determine min/max title from testnodes.
             Iterator iTestNodes = testNodes.iterator();
-            String minName = 
+            String minName =
                 ((MMObjectNode)testNodes.get(0)).getStringValue("title");
-            String maxName = 
+            String maxName =
                 ((MMObjectNode)testNodes.get(0)).getStringValue("title");
             while (iTestNodes.hasNext()) {
                 MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
@@ -304,50 +304,30 @@ public class BasicQueryHandlerTest extends TestCase {
                     maxName = title;
                 }
             }
-            
+
             // Compare with resultnodes.
             ResultNode result = (ResultNode) resultNodes.get(0);
-            assertTrue("KNOWN - bug #6254: " + result.toString(), 
-                result.getStringValue("minName").equals(minName));
+            assertTrue(result.getStringValue("minName").equals(minName));
             assertTrue(result.getStringValue("maxName").equals(maxName));
         }
-        
-        query.setMaxNumber(100);
-        // Query with maxNumber not supported, should throw SearchQueryException.
-        try {
-            instance.getNodes(query, mmbase.getClusterBuilder());
-            fail("Query with maxNumber not supported, should throw SearchQueryException.");
-        } catch (SearchQueryException e) {}
-        
-        query.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER) // reset to default
-            .setOffset(10);
-        // Query with offset not supported, should throw SearchQueryException.
-        try {
-            instance.getNodes(query, mmbase.getClusterBuilder());
-            fail("Query with offset not supported, should throw SearchQueryException.");
-        } catch (SearchQueryException e) {}
-        
-//        // Test weak offset support.
-//        query = new NodeSearchQuery(typedef);
-//        List typedefNodes = instance.getNodes(query, typedef);
-//        assertTrue(
-//            "In order to run this test, more than 5 typedef nodes are required.", 
-//            typedefNodes.size() > 5);
-//        
-//        query.setOffset(2);
-//        List resultNodes = instance.getNodes(query, typedef);
-//        assertTrue(resultNodes.size() == typedefNodes.size() - 2);
-//        /*******************************
-//         * hier was ik - RvM 27-11-2003
-//         *******************************/
-//        // TODO: (later) test whith partial/full support for offset/maxNumber
-        
+
+        // Test weak offset support.
+        query = new NodeSearchQuery(typedef);
+        List typedefNodes = instance.getNodes(query, typedef);
+        assertTrue(
+            "In order to run this test, more than 3 typedef nodes are required.",
+            typedefNodes.size() > 3);
+
+        query.setOffset(2);
+        List resultNodes = instance.getNodes(query, typedef);
+        assertTrue(resultNodes.size() == typedefNodes.size() - 2);
+
     }
-    
+
     /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetSupportLevel() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
-        
+
         // Support for max number optimal only when set to default (= -1),
         // weak otherwise.
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
@@ -358,7 +338,7 @@ public class BasicQueryHandlerTest extends TestCase {
         query.setMaxNumber(-1);
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
-        
+
         // Support for offset optimal only when set to default (= 0),
         // weak otherwise.
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
@@ -372,7 +352,7 @@ public class BasicQueryHandlerTest extends TestCase {
 
         // TODO: (later) test whith partial/full support for offset/maxNumber
     }
-    
+
     /** Test of second getSupportLevel(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetSupportLevel2() throws Exception {
         // Should return basic support level of constraint.
@@ -386,11 +366,11 @@ public class BasicQueryHandlerTest extends TestCase {
         constraint = new TestConstraint(SearchQueryHandler.SUPPORT_OPTIMAL);
         assertTrue(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
-    
+
     public static Test suite() {
         TestSuite suite = new TestSuite(BasicQueryHandlerTest.class);
-        
+
         return suite;
     }
-    
+
 }
