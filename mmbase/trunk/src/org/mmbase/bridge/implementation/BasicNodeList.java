@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.17 2002-10-15 15:28:29 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.18 2003-03-04 09:19:06 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
@@ -119,6 +119,10 @@ public class BasicNodeList extends BasicList implements NodeList {
 
         public Node nextNode() {
             return (Node)next();
+        }
+
+        public Node previousNode() {
+            return (Node)previous();
         }
     }
 }

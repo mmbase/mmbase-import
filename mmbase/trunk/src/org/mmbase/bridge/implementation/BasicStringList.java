@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A list of Clouds
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.5 2002-09-23 14:31:04 pierre Exp $
+ * @version $Id: BasicStringList.java,v 1.6 2003-03-04 09:19:07 pierre Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
     private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());
@@ -53,6 +53,10 @@ public class BasicStringList extends BasicList implements StringList {
 
         public String nextString() {
             return (String)next();
+        }
+
+        public String previousString() {
+            return (String)previous();
         }
     }
 }
