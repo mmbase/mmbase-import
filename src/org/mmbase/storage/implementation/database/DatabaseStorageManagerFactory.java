@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.13 2004-03-16 10:32:50 rob Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.14 2004-04-29 10:01:24 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -158,21 +158,24 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
             // set transaction options
             supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
-            setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-            setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
-            setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 
             // determine transactionlevels
             if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                 transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;
+            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_REPEATABLE_READ)) {
+                transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
                 transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
             } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_UNCOMMITTED)) {
                 transactionIsolation = Connection.TRANSACTION_READ_UNCOMMITTED;
-            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
-                transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
+            } else {
+              supportsTransactions = false;
             }
+
+            setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
             setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
+            setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
+            setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 
             // create a default disallowedfields list:
             // get the standard sql keywords
@@ -207,7 +210,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     /**
      * Locates and opens the storage configuration document.
      * The configuration document to open is dependent on the storage type and version.
-     * You can explicitly set this type in mmbasreoot (using the storage property), or let
+     * You can explicitly set this type in mmbaseroot (using the storage property), or let
      * MMBase determine it using information gained from the datasource, and the lookup.xml file
      * in the database configuration directory
      * @todo configuration path should be retrieved from the MMBase instance, rather than directly from the (static)
