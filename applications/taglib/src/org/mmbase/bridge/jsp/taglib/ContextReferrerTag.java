@@ -40,6 +40,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
 
+    public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
+    private static Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
+
     protected ContextTag pageContextTag = null;
 
     protected String     contextId = null; // context to which this tag is referring to.
@@ -62,7 +65,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContexTag found in pagecontext, creating..");
             thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
-            log.service("Parsing JSP page: " + thisPage);
+            pageLog.service("Parsing JSP page: " + thisPage);
 
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
@@ -103,8 +106,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return referid;
     }
 
-
-
     /*
      * The writerreferrer functionality is here, though not every conterreferrer is a writerreferrer.
      * So contextreferrer does not implement Writerreferrer. It is enough tough to 'implement WriterReferrer' 
@@ -143,7 +144,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             log.debug("releasing context-referrer " + this.getClass().getName());
         }
         if (thisPage != null) {
-            log.service("END Parsing JSP page: " + thisPage);
+            pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
         id = null;

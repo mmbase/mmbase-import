@@ -27,11 +27,12 @@ public class LogTag extends ContextReferrerTag {
     private boolean doLog;
     private int counter = 0; // A counter for every page. Because of this even <mm:log /> gets usefull.
 
+    public final static String LOGTAG_CATEGORY = PAGE_CATEGORY + ".LOGTAG";  // pages themselfs log to subcategories of this.
 
     public void setPageContext(PageContext pc) {
         /* Determin only once per page if it can log */
         super.setPageContext(pc);        
-        log = Logging.getLoggerInstance("MMBASE-PAGE" + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
+        log = Logging.getLoggerInstance(LOGTAG_CATEGORY + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
         doLog = log.isServiceEnabled();        
     }
 
