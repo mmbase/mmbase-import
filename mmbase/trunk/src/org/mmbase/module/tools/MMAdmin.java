@@ -236,6 +236,8 @@ public class MMAdmin extends ProcessorModule {
                 return(""+(htmlbase.getMultilevelCacheHandler().getHits()+htmlbase.getMultilevelCacheHandler().getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
                 return(""+(htmlbase.getMultilevelCacheHandler().getRatio()*100));
+            } else if (cmd.equals("MULTILEVELCACHESIZE")) {
+                return(""+(htmlbase.getMultilevelCacheHandler().getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -244,6 +246,8 @@ public class MMAdmin extends ProcessorModule {
                 return(""+(MMObjectBuilder.nodeCache.getHits()+MMObjectBuilder.nodeCache.getMisses()));
             } else if (cmd.equals("NODECACHEPERFORMANCE")) {
                 return(""+(MMObjectBuilder.nodeCache.getRatio()*100));
+            } else if (cmd.equals("NODECACHESIZE")) {
+                return(""+(MMObjectBuilder.nodeCache.getSize()));
             }
         }
         return "No command defined";
