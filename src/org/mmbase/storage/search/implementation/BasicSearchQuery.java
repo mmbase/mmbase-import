@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.8 2003-07-28 09:37:51 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.9 2003-07-29 17:33:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -186,7 +186,20 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 
 
     }
+
+    /**
+     * Creates a new StepField like f for query q.
+     */
+    protected StepField createNewStepField(SearchQuery q, StepField f) {
+        Step fstep = f.getStep();
+        // find existing step.
+        List steps = q.getSteps();
+        Step step = (Step) steps.get(steps.indexOf(fstep));
+        MMObjectBuilder bul = MMBase.getMMBase().getBuilder(step.getTableName());
+        return new BasicStepField(step, bul.getField(f.getFieldName()));        
+    }
     
+
     /**
      * Used by copy-constructor. Constraints have to be done recursively.
      */
@@ -202,37 +215,31 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;
         } else if (c instanceof CompareFieldsConstraint) {
-            CompareFieldsConstraint constraint = (CompareFieldsConstraint) c;
-            int j = q.getFields().indexOf(constraint.getField());
-            int k = q.getFields().indexOf(constraint.getField2());
-            BasicCompareFieldsConstraint newConstraint = new BasicCompareFieldsConstraint((StepField) fields.get(j), (StepField) fields.get(k));
+            CompareFieldsConstraint constraint = (CompareFieldsConstraint) c;       
+            BasicCompareFieldsConstraint newConstraint = new BasicCompareFieldsConstraint(createNewStepField(q, constraint.getField()), createNewStepField(q, constraint.getField2()));
             newConstraint.setOperator(constraint.getOperator());
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;
         } else if (c instanceof FieldValueConstraint) {
             FieldValueConstraint constraint = (FieldValueConstraint) c;
-            int j = q.getFields().indexOf(constraint.getField());
             Object value = constraint.getValue();
-            BasicFieldValueConstraint newConstraint = new BasicFieldValueConstraint((StepField) fields.get(j), value);
+            BasicFieldValueConstraint newConstraint = new BasicFieldValueConstraint(createNewStepField(q, constraint.getField()), value);
             newConstraint.setOperator(constraint.getOperator());
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;            
         } else if (c instanceof FieldNullConstraint) {
             FieldNullConstraint constraint = (FieldNullConstraint) c;
-            int j = q.getFields().indexOf(constraint.getField());
-            BasicFieldNullConstraint newConstraint = new BasicFieldNullConstraint((StepField) fields.get(j));
+            BasicFieldNullConstraint newConstraint = new BasicFieldNullConstraint(createNewStepField(q, constraint.getField()));
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;            
         } else if (c instanceof FieldValueBetweenConstraint) {
             FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
-            int j = q.getFields().indexOf(constraint.getField());
-            BasicFieldValueBetweenConstraint newConstraint = new BasicFieldValueBetweenConstraint((StepField) fields.get(j), constraint.getLowerLimit(), constraint.getUpperLimit());
+            BasicFieldValueBetweenConstraint newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), constraint.getLowerLimit(), constraint.getUpperLimit());
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;            
         } else if (c instanceof FieldValueInConstraint) {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
-            int j = q.getFields().indexOf(constraint.getField());
-            BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint((StepField) fields.get(j));
+            BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
             Iterator k = constraint.getValues().iterator();
             while (k.hasNext()) {
                 newConstraint.addValue(k.next());
