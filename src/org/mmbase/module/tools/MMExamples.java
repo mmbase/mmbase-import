@@ -31,9 +31,11 @@ import org.mmbase.module.database.support.*;
 public class MMExamples extends ProcessorModule {
 
 	MMBase mmb=null;
+	MMExamplesProbe probe=null;
 
 	public void init() {
 		mmb=(MMBase)getModule("MMBASEROOT");		
+		probe = new MMExamplesProbe(this);
 	}
 
 
@@ -50,8 +52,6 @@ public class MMExamples extends ProcessorModule {
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
-			//if (cmd.equals("OBJECTS")) return(doObjects(req,tagger));
-
 		}
 		return(null);
 	}
@@ -91,22 +91,15 @@ public class MMExamples extends ProcessorModule {
 
 	public void doInstall(Hashtable cmds, Hashtable vars) {
 
-		//if ((String)vars.get("NAME-Basics")!=null) installBasics();
-		//if ((String)vars.get("NAME-MyYahoo")!=null) installMyYahoo();
 		if ((String)vars.get("NAME-MyYahoo")!=null) installApplication("MyYahoo");
 		if ((String)vars.get("NAME-Basics")!=null) installApplication("Basics");
 		if ((String)vars.get("NAME-BasicAuth")!=null) installApplication("BasicAuth");
-		if ((String)vars.get("NAME-MyNews")!=null) installMyNews();
-		//if ((String)vars.get("NAME-BasicAuth")!=null) installBasicAuth();
 	}
 
 	private void installApplication(String applicationname) {
-		System.out.println("INSTALL APP ="+applicationname);
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
 		if (app!=null) {
-			//System.out.println(app.getApplicationName());
-			//System.out.println(app.getApplicationVersion());
 			if (areBuildersLoaded(app.getNeededBuilders())) {
 				if (checkRelDefs(app.getNeededRelDefs())) {
 					if (checkAllowedRelations(app.getAllowedRelations())) {
@@ -313,141 +306,13 @@ public class MMExamples extends ProcessorModule {
 		return(true);
 	}
 
-	private void installMyNews() {
-		// check if the needed relation types are installed
-		checkRelDef("related","related",2,"Gerelateerd","Gerelateerd");
-
-		// allow relation between pools and pools
-		checkTypeRel("pools","news","related",-1);
-		checkTypeRel("news","people","related",-1);
-		checkTypeRel("news","urls","related",-1);
-		checkTypeRel("news","mmevents","related",-1);
-
-		// add a few news items with some things attached
-		String intro="As of 20 Dec, VPRO with help of several dutch Internet and Content company's";
-		intro+=" announced that they will release a publish/content system as a opensource project in Q1 - 2000.";
-		intro+=" The last 6 months work was underway to make it opensource ready, setup partners and this website/communitie.";
-		int n1=checkNews("www.mmbase.org online at last","We took a while but www.mmbase.org is online as of 20 Dec 1999",intro,"");
-		int u1=checkUrl("http://www.mmbase.org","mmbase homebase on the Internet, download, faq's etc etc ");
-
-		checkRelation(n1,u1,"related");
-		
-	}
-
-	private void installBasicAuth() {
-		// check if the needed relation types are installed
-		checkRelDef("authrel","authrel",2,"AuthRel","AuthRel");
-
-		// allow relation between pools and pools
-		checkTypeRel("people","typedef","authrel",-1);
-
-		int p1=checkPeople("admin","admin","root@localhost","admin");
-		
-		TypeDef bul=(TypeDef)mmb.getMMObject("typedef");
-		if (bul!=null) {
-			int e1=bul.getIntValue("people");
-			System.out.println("E="+e1+" P="+p1);
-			checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("daymarks");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("fielddef");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("groups");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("insrel");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("jumpers");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("location");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("mmevents");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("mmservers");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("news");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("oalias");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("pools");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("reldef");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			e1=bul.getIntValue("typedef");
-			checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("typerel");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("urls");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			//e1=bul.getIntValue("users");
-			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-		} else {
-			System.out.println("MMExamples -> can't get typedef builder");
-		}
-	}
-
-
-	private void installBasics() {
-		// check if the needed relation types are installed
-		checkRelDef("related","related",2,"Gerelateerd","Gerelateerd");
-
-		// these should be moved to basic install
-		checkJumper("edit","/mmeditors/index.shtml");
-		checkJumper("admin","/mmadmin/index.shtml");
-	}
-
-	private void installMyYahoo() {
-		// check if the needed relation types are installed
-		checkRelDef("related","related",2,"Gerelateerd","Gerelateerd");
-
-		// allow relation between pools and pools
-		checkTypeRel("pools","pools","related",-1);
-		checkTypeRel("pools","urls","related",-1);
-
-		int p1=checkPool("MyYahoo","Our own MyYahoo");
-		int p2=checkPool("Music","All the best music links");
-		int p3=checkPool("Movies","Some nice movie links");
-		int p4=checkPool("Partners","Founding mmbase opensource partners");
-
-		checkRelation(p1,p2,"related");
-		checkRelation(p1,p3,"related");
-		checkRelation(p1,p4,"related");
-
-		checkJumper("yahoo","/mmadmin/examples/MyYahoo/index.shtml?"+p1);
-
-		// attached a few urls to music pool
-		int u1=checkUrl("http://www.3voor12.nl","The best music site on the net");
-		int u2=checkUrl("http://www.music.com","Big music portal");
-		checkRelation(p2,u1,"related");
-		checkRelation(p2,u2,"related");
-
-		// attached a few urls to movie pool
-		int u3=checkUrl("http://www.cinemaservice.nl","Dutch movie servers, sends email when your movies are on");
-		int u4=checkUrl("http://www.iffrotterdam.nl","Film Festival Rotterdam");
-		checkRelation(p3,u3,"related");
-		checkRelation(p3,u4,"related");
-
-		// attached a few urls to movie pool
-		int u5=checkUrl("http://www.vpro.nl","VPRO - A Dutch Public Broadcaster");
-		int u6=checkUrl("http://www.xs4all.nl","XS4ALL - Oldest dutch public ISP");
-		int u7=checkUrl("http://www.dds.nl","DDS - Dutch Digital City Amsterdam");
-		int u8=checkUrl("http://www.sun.nl","SUN - Sun Microsystems");
-		int u9=checkUrl("http://www.nos.nl","NOS - Org. For Dutch Public Brodcasters");
-		checkRelation(p4,u5,"related");
-		checkRelation(p4,u6,"related");
-		checkRelation(p4,u7,"related");
-		checkRelation(p4,u8,"related");
-		checkRelation(p4,u9,"related");
-
-
-	}
-
 
 	private void checkRelDef(String sname, String dname, int dir,String sguiname, String dguiname) {
 		MMObjectBuilder bul=mmb.getMMObject("reldef");
 		if (bul!=null) {
-			Vector res=bul.searchVector("WHERE sname='"+sname+"' AND dname='"+dname+"'");
+			Vector res=bul.searchVector("sname=='"+sname+"'+dname=='"+dname+"'");
 			if (res!=null && res.size()>0) {
-				System.out.println("RefDef ("+sname+","+dname+") allready installed");
+				//System.out.println("RefDef ("+sname+","+dname+") allready installed");
 			} else {
 				MMObjectNode node=bul.getNewNode("system");
 				node.setValue("sname",sname);
@@ -457,7 +322,7 @@ public class MMExamples extends ProcessorModule {
 				node.setValue("dguiname",dguiname);
 				int id=bul.insert("system",node);	
 				if (id!=-1) {
-					System.out.println("RefDef ("+sname+","+dname+") installed");
+					// System.out.println("RefDef ("+sname+","+dname+") installed");
 				} 
 			}
 		} else {
@@ -504,9 +369,9 @@ public class MMExamples extends ProcessorModule {
 
 
 			
-			Vector res=bul.searchVector("WHERE snumber="+snumber+" AND dnumber="+dnumber+" AND rnumber="+rnumber);
+			Vector res=bul.searchVector("snumber=="+snumber+"+dnumber=="+dnumber+"+rnumber=="+rnumber);
 			if (res!=null && res.size()>0) {
-				System.out.println("TypeRel ("+sname+","+dname+","+rname+") allready installed");
+				//System.out.println("TypeRel ("+sname+","+dname+","+rname+") allready installed");
 			} else {
 				MMObjectNode node=bul.getNewNode("system");
 				node.setValue("snumber",snumber);
@@ -515,142 +380,13 @@ public class MMExamples extends ProcessorModule {
 				node.setValue("max",count);
 				int id=bul.insert("system",node);	
 				if (id!=-1) {
-					System.out.println("TypeRel ("+sname+","+dname+","+rname+") installed");
+					//System.out.println("TypeRel ("+sname+","+dname+","+rname+") installed");
 				} 
 			}
 		} else {
 			System.out.println("MMExamples -> can't get typerel builder");
 		}
 	}
-
-
-	private int checkPool(String name, String description) {
-		MMObjectBuilder bul=mmb.getMMObject("pools");
-		if (bul!=null) {
-			Vector res=bul.searchVector("WHERE name='"+name+"'");
-			if (res!=null && res.size()>0) {
-				System.out.println("Pool ("+name+") allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-				return(node.getIntValue("number"));
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
-				node.setValue("name",name);
-				node.setValue("description",description);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					System.out.println("Pool ("+name+") installed");
-					return(id);
-				} 
-			}
-		} else {
-			System.out.println("MMExamples -> can't get pools builder");
-		}
-		return(-1);
-	}
-
-
-	private int checkPeople(String firstname,String lastname,String email,String account) {
-		MMObjectBuilder bul=mmb.getMMObject("people");
-		if (bul!=null) {
-			Vector res=bul.searchVector("WHERE firstname='"+firstname+"' AND lastname='"+lastname+"'");
-			if (res!=null && res.size()>0) {
-				System.out.println("Person ("+firstname+" , "+lastname+") allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-				return(node.getIntValue("number"));
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
-				node.setValue("firstname",firstname);
-				node.setValue("lastname",lastname);
-				node.setValue("email",email);
-				node.setValue("account",account);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					System.out.println("People ("+firstname+" , "+lastname+") installed");
-					return(id);
-				} 
-			}
-		} else {
-			System.out.println("MMExamples -> can't get people builder");
-		}
-		return(-1);
-	}
-
-
-
-	private int checkUrl(String url, String description) {
-		MMObjectBuilder bul=mmb.getMMObject("urls");
-		if (bul!=null) {
-			Vector res=bul.searchVector("WHERE url='"+url+"'");
-			if (res!=null && res.size()>0) {
-				System.out.println("Url ("+url+") allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-				return(node.getIntValue("number"));
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
-				node.setValue("url",url);
-				node.setValue("description",description);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					System.out.println("Url ("+url+") installed");
-					return(id);
-				} 
-			}
-		} else {
-			System.out.println("MMExamples -> can't get urls builder");
-		}
-		return(-1);
-	}
-
-
-	private void checkJumper(String name, String url) {
-		MMObjectBuilder bul=mmb.getMMObject("jumpers");
-		if (bul!=null) {
-			Vector res=bul.searchVector("WHERE name='"+name+"'");
-			if (res!=null && res.size()>0) {
-				System.out.println("Jumper ("+name+") allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
-				node.setValue("name",name);
-				node.setValue("id",-1);
-				node.setValue("url",url);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					System.out.println("Jumper ("+name+") installed");
-				} 
-			}
-		} else {
-			System.out.println("MMExamples -> can't get jumpers builder");
-		}
-	}
-
-
-	private int checkNews(String title, String subtitle, String intro, String body) {
-		MMObjectBuilder bul=mmb.getMMObject("news");
-		if (bul!=null) {
-			Vector res=bul.searchVector("WHERE title='"+title+"'");
-			if (res!=null && res.size()>0) {
-				System.out.println("News ("+title+") allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-				return(node.getIntValue("number"));
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
-				node.setValue("title",title);
-				node.setValue("subtitle",subtitle);
-				node.setValue("intro",intro);
-				node.setValue("body",body);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					System.out.println("News ("+title+") installed");
-					return(id);
-				} 
-			}
-		} else {
-			System.out.println("MMExamples -> can't get news builder");
-		}
-		return(-1);
-	}
-
 
 	private void checkRelation(int snumber, int dnumber, String rname) {
 		MMObjectBuilder bul=mmb.getMMObject("insrel");
@@ -665,12 +401,12 @@ public class MMExamples extends ProcessorModule {
 				System.out.println("MMExamples -> no reldef : "+rname+" defined");
 				return;
 			} 
-			Vector res=bul.searchVector("WHERE snumber="+snumber+" AND dnumber="+dnumber);
+			Vector res=bul.searchVector("snumber=="+snumber+"+dnumber=="+dnumber);
 			if (res==null) {
-				res=bul.searchVector("WHERE dnumber="+dnumber+" AND snumber="+snumber);
+				res=bul.searchVector("dnumber=="+dnumber+"+snumber=="+snumber);
 			}
 			if (res!=null && res.size()>0) {
-				System.out.println("Relation allready installed");
+				//System.out.println("Relation allready installed");
 				MMObjectNode node=(MMObjectNode)res.elementAt(0);
 			} else {
 				MMObjectNode node=bul.getNewNode("system");
@@ -679,7 +415,7 @@ public class MMExamples extends ProcessorModule {
 				node.setValue("rnumber",rnumber);
 				int id=bul.insert("system",node);	
 				if (id!=-1) {
-					System.out.println("Relation installed");
+					//System.out.println("Relation installed");
 				} 
 			}
 		} else {
@@ -688,41 +424,23 @@ public class MMExamples extends ProcessorModule {
 	}
 
 
-	private void checkAuthRelation(int snumber, int dnumber, String rname,int creat, int look, int us) {
-		MMObjectBuilder bul=mmb.getMMObject("authrel");
-		if (bul!=null) {
-			RelDef reldef=(RelDef)mmb.getMMObject("reldef");
-			if (reldef==null) {
-				System.out.println("MMExamples -> can't get reldef builder");
+	public void probeCall() {
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		// new code checks all the *.xml files in builder dir
+        	File bdir = new File(path);
+		if (bdir.isDirectory()) {
+			String files[] = bdir.list();		
+			for (int i=0;i<files.length;i++) {
+				String aname=files[i];
+				if (aname.endsWith(".xml")) {
+					XMLApplicationReader app=new XMLApplicationReader(path+aname);
+					if (app!=null && app.getApplicationAutoDeploy()) {
+						System.out.println("Auto deploy application : "+aname);
+						installApplication(aname.substring(0,aname.length()-4));
+
+					}
+				}
 			}
-			// figure out rnumber
-			int rnumber=reldef.getGuessedNumber(rname);
-			if (rnumber==-1) {
-				System.out.println("MMExamples -> no reldef : "+rname+" defined");
-				return;
-			} 
-			Vector res=bul.searchVector("WHERE snumber="+snumber+" AND dnumber="+dnumber);
-			if (res==null) {
-				res=bul.searchVector("WHERE dnumber="+dnumber+" AND snumber="+snumber);
-			}
-			if (res!=null && res.size()>0) {
-				System.out.println("Auth Relation allready installed");
-				MMObjectNode node=(MMObjectNode)res.elementAt(0);
-			} else {
-				MMObjectNode node=bul.getNewNode("system");
-				node.setValue("snumber",snumber);
-				node.setValue("dnumber",dnumber);
-				node.setValue("rnumber",rnumber);
-				node.setValue("creat",creat);
-				node.setValue("look",look);
-				node.setValue("us",us);
-				int id=bul.insert("system",node);	
-				if (id!=-1) {
-					System.out.println("Auth Relation installed");
-				} 
-			}
-		} else {
-			System.out.println("MMExamples -> can't get authrel builder");
 		}
 	}
 }
