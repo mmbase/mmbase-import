@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.112 2003-12-19 11:09:32 nico Exp $
+ * @version $Id: Wizard.java,v 1.113 2004-01-07 21:53:58 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -882,13 +882,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
    public void createPreHtmlForm(Node form, Node formdef, Node data)
       throws WizardException {
       if (log.isDebugEnabled()) {
-         log.trace("Creating preHTMLForm for form:" + form + " / formdef:" +
-            formdef + " / data:" + data);
+         log.trace("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
       }
 
       // select all fields on first level
-      NodeList fields = Utils.selectNodeList(formdef,
-            "fieldset|field|list|command");
+      NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
 
       // process all possible fields
       // - Parse the fdatapath attribute to obtain the corresponding data fields.
@@ -955,7 +953,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         String fname = Utils.getAttribute(field, "name", null);
 
                         if (fname != null) {
-                           throw new WizardException("The field with name '" + fname + "' does not exist.");
+                           throw new WizardException("Perhaps the field with name '" + fname + "' does not exist?");
                         }
                      }
                   }
@@ -1802,9 +1800,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       if (dttypeNode == null) {
          String msg = "No node with fid=" + fid + " could be found";
 
-         if (log.isDebugEnabled() && (schema != null)) {
-            msg += ("\nxpath was:" + xpath + "on:\n" +
-            schema.getDocumentElement());
+         if (schema != null) {
+             msg += "\nxpath was:" + xpath + "on:\n" + schema.getDocumentElement();
          }
 
          throw new WizardException(msg);
@@ -1820,9 +1817,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             ". fid=" + fid + ", did=" + did + ", value=" + value + ", wizard:" +
             wizardName;
 
-         if (log.isDebugEnabled() && (data != null)) {
-            msg += ("\nxpath was:" + xpath + "on:\n" +
-            data.getDocumentElement());
+         if (data != null) {
+             msg += "\nxpath was:" + xpath + "on:\n" + data.getDocumentElement();
          }
 
          log.warn(msg);
