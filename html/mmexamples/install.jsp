@@ -5,7 +5,7 @@
 <html>
 <head>
   <title>MMBase Demo installation</title>
-  <link rel="stylesheet" href="../style/default/css/mmbase.css" type="text/css" />
+  <link rel="stylesheet" href="../mmbase/style/default/css/mmbase.css" type="text/css" />
 </head>
 
 <body >
