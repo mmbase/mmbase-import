@@ -23,7 +23,9 @@ import org.mmbase.util.logging.Logging;
  * Who tag, provides functionality for listing users of a channel.
  *
  * @author Pierre van Rooden
- **/
+ * @version $Id: WhoTag.java,v 1.7 2003-06-06 10:03:15 pierre Exp $
+ */
+ 
 public class WhoTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(WhoTag.class.getName());
 

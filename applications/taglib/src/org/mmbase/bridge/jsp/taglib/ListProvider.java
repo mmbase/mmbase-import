@@ -13,6 +13,8 @@ package org.mmbase.bridge.jsp.taglib;
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
+ * @author Michiel Meeuwissen 
+ * @version $Id: ListProvider.java,v 1.4 2003-06-06 10:03:08 pierre Exp $ 
  */
 public interface ListProvider extends ContextProvider {
     /**

@@ -30,7 +30,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- **/
+ * @version $Id: AbstractNodeProviderTag.java,v 1.23 2003-06-06 10:03:05 pierre Exp $ 
+ */
+
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
 
     // a node provider is a nodereferrer as well...

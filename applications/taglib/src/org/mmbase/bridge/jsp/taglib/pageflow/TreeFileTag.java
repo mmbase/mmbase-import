@@ -23,7 +23,9 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
+ * @version $Id: TreeFileTag.java,v 1.6 2003-06-06 10:03:27 pierre Exp $
  */
+
 public class TreeFileTag extends UrlTag {
     
     private static Logger log = Logging.getLoggerInstance(TreeFileTag.class.getName());

@@ -22,7 +22,9 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * the indicated channel at the start of the body.
  *
  * @author Pierre van Rooden
+ * @version $Id: ConnectionTag.java,v 1.3 2003-06-06 10:03:13 pierre Exp $
  */
+ 
 public class ConnectionTag extends NodeTag {
 
     public final static String JOIN =  "JOIN";

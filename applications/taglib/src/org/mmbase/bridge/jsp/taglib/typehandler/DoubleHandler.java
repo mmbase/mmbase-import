@@ -13,10 +13,14 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
+ * @javadoc
+ *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: DoubleHandler.java,v 1.3 2003-06-06 10:03:36 pierre Exp $
  */
+
 public class DoubleHandler extends AbstractTypeHandler {
 
 	/**

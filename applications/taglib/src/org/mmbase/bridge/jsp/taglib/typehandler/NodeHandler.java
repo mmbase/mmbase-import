@@ -17,10 +17,14 @@ import org.mmbase.util.Encode;
 import java.util.*;
 
 /**
+ * @javadoc
+ *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: NodeHandler.java,v 1.10 2003-06-06 10:03:38 pierre Exp $
  */
+
 public class NodeHandler extends IntegerHandler {
 
     /**

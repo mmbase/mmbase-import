@@ -38,9 +38,9 @@ import org.mmbase.cache.xslt.*;
 /**
  * The formatter can reformat its body. It usually uses XSL for this.
  *
- *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
+ * @version $Id: FormatterTag.java,v 1.32 2003-06-06 10:03:07 pierre Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 

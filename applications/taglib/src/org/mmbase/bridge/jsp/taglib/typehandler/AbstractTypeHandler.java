@@ -15,10 +15,14 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
+ * @javadoc
+ *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: AbstractTypeHandler.java,v 1.5 2003-06-06 10:03:34 pierre Exp $
  */
+
 public abstract class AbstractTypeHandler implements TypeHandler {
 
     protected FieldInfoTag context;

@@ -19,7 +19,9 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  * As NodeTag, but the node will be removed after the body.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: DeleteNodeTag.java,v 1.6 2003-06-06 10:03:21 pierre Exp $ 
  */
+
 public class DeleteNodeTag extends NodeTag {
     
     private Attribute deleteRelations = Attribute.NULL;

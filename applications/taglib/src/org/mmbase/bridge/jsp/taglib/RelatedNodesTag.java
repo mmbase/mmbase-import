@@ -26,7 +26,9 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
+ * @version $Id: RelatedNodesTag.java,v 1.21 2003-06-06 10:03:09 pierre Exp $ 
  */
+
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
     protected Attribute type      = Attribute.NULL;

@@ -16,11 +16,13 @@ import org.mmbase.bridge.jsp.taglib.Condition;
 
 
 /**
-* A very simple tag to check if a relation may be created. It needs two nodes.
-*
-* @author Jaco de Groot
-* @author Michiel Meeuwissen
-*/
+ * A very simple tag to check if a relation may be created. It needs two nodes.
+ *
+ * @author Jaco de Groot
+ * @author Michiel Meeuwissen
+ * @version $Id: MayCreateRelationTag.java,v 1.5 2003-06-06 10:03:31 pierre Exp $
+ */
+
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
     private String role;
     private String source;

@@ -15,12 +15,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* The importtag puts things in the context. It can find them from the
-* environment or from its body.
-*
-* @author Michiel Meeuwissen
-* @see    ContextTag
-*/
+ * The importtag puts things in the context. It can find them from the
+ * environment or from its body.
+ *
+ * @author Michiel Meeuwissen
+ * @see    ContextTag
+ * @version $Id: ImportTag.java,v 1.31 2003-06-06 10:03:08 pierre Exp $
+ */
 
 public class ImportTag extends WriteTag {
     private static Logger log = Logging.getLoggerInstance(ImportTag.class);

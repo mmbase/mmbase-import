@@ -16,8 +16,10 @@ import javax.servlet.jsp.JspException;
  * Calls 'doInfo' from NodeManager or from Module.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: InfoTag.java,v 1.20 2003-06-06 10:03:08 pierre Exp $ 
  * @deprecated
  */
+
 public class InfoTag extends  CloudReferrerTag implements Writer {
 
     private Attribute nodeManager = Attribute.NULL;

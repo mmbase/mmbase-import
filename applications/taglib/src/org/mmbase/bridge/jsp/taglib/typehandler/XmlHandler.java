@@ -18,9 +18,12 @@ import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @javadoc
+ *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: XmlHandler.java,v 1.2 2003-06-06 10:03:39 pierre Exp $
  */
 
 public class XmlHandler extends StringHandler {

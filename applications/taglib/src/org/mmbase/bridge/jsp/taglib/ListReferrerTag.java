@@ -21,6 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen 
  *
+ * @version $Id: ListReferrerTag.java,v 1.5 2003-06-06 10:03:08 pierre Exp $ 
  */
 
 public abstract class ListReferrerTag extends ContextReferrerTag  {

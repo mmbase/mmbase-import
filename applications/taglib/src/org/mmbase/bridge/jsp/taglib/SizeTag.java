@@ -19,9 +19,8 @@ import org.mmbase.util.logging.Logging;
 /**
  * The size of a list.
  *
- *
  * @author Michiel Meeuwissen
- *
+ * @version $Id: SizeTag.java,v 1.10 2003-06-06 10:03:09 pierre Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer {

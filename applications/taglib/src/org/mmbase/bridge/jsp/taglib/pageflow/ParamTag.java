@@ -19,7 +19,9 @@ import javax.servlet.jsp.JspException;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
+ * @version $Id: ParamTag.java,v 1.8 2003-06-06 10:03:26 pierre Exp $
  */
+
 public class ParamTag extends ContextReferrerTag {
     
     private Attribute name  = Attribute.NULL;

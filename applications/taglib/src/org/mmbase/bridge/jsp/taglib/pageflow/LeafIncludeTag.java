@@ -22,7 +22,9 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
+ * @version $Id: LeafIncludeTag.java,v 1.7 2003-06-06 10:03:25 pierre Exp $
  */
+
 public class LeafIncludeTag extends IncludeTag {
     
     private static Logger log = Logging.getLoggerInstance(LeafIncludeTag.class.getName());

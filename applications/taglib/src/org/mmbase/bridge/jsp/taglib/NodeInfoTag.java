@@ -23,6 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: NodeInfoTag.java,v 1.23 2003-06-06 10:03:09 pierre Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {

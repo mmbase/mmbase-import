@@ -37,7 +37,9 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
+ * @version $Id: AbstractNodeListTag.java,v 1.42 2003-06-06 10:03:05 pierre Exp $ 
  */
+
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
     private static Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
 

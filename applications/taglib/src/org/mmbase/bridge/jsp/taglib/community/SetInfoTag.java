@@ -20,10 +20,12 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
-* SetInfo tag stores information in the multipurpose INFO field.
-*
-* @author Pierre van Rooden
-*/
+ * SetInfo tag stores information in the multipurpose INFO field.
+ *
+ * @author Pierre van Rooden
+ * @version $Id: SetInfoTag.java,v 1.8 2003-06-06 10:03:15 pierre Exp $
+ */
+ 
 public class SetInfoTag extends NodeReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(SetInfoTag.class.getName());
