@@ -31,7 +31,7 @@
                   <input type="checkbox" name="refresh_chechbox_state" <% if(session.getAttribute("refresh_chechbox_state") != null) {out.println(" checked=\"checked\" ");}%> onClick="this.form.submit()"/>Automatisch herladen
                </td>
                <td>
-                  &nbsp;<a href="#" onClick='top.frames["menu"].location.reload();  top.frames["code"].location.href = top.frames["code"].location.href'><img src="../../gfx/refresh.gif" border="0"/></a>
+                  &nbsp;<a href="#" onClick='top.frames["menu"].location.reload();  top.frames["code"].location.href = top.frames["code"].location.href'><img src="../gfx/refresh.gif" border="0"/></a>
                </td>
             </tr>
          </form>
