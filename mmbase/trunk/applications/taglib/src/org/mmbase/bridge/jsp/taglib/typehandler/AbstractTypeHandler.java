@@ -11,8 +11,8 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 import org.mmbase.storage.search.*;
 
 /**
@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.21 2003-11-25 21:05:27 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.22 2003-12-09 21:18:19 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -131,8 +131,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String value = findString(field);
         if (value != null) {
-            Constraint con = NodeListConstraintTag.buildConstraint(query, field.getName(), null, getOperator(), getSearchValue(findString(field)), null);
-            return NodeListConstraintTag.addConstraintToQuery(query,con);
+            Constraint con = Queries.createConstraint(query, field.getName(), getOperator(), getSearchValue(findString(field)));
+            return Queries.addConstraint(query, con);
         } else {
             return null;
         }

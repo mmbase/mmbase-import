@@ -12,11 +12,11 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 
 import org.mmbase.storage.search.*;
 
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.10 2003-11-07 14:11:25 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.11 2003-12-09 21:18:19 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -283,20 +283,20 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        String time = "" + getSpecifiedValue(field);
+        Long time = new Long(getSpecifiedValue(field));
 
         Constraint con;
         if (operator.equals("greater")) {
-            con = NodeListConstraintTag.buildConstraint(query, fieldName, null, FieldCompareConstraint.GREATER, time, null);
+            con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.GREATER, time);
         } else if (operator.equals("less")) {
-            con = NodeListConstraintTag.buildConstraint(query, fieldName, null, FieldCompareConstraint.LESS, time, null);
+            con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.LESS, time);
         } else if (operator.equals("equal")) {
-            con = NodeListConstraintTag.buildConstraint(query, fieldName, null, FieldCompareConstraint.EQUAL, time, null);
+            con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.EQUAL, time);
         } else {
             log.warn("Found unknown operator value '" + operator + "'");
             return null;
         }
-        return NodeListConstraintTag.addConstraintToQuery(query, con);
+        return Queries.addConstraint(query, con);
 
     }
 
