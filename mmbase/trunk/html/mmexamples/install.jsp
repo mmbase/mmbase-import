@@ -11,10 +11,10 @@
 <body >
 <table align="center" width="97%" cellspacing="1" cellpadding="3" border="0">
 <tr>
-	<th class="main" colspan="3">MMBase Demo Installation</th>
+    <th class="main" colspan="3">MMBase Demo Installation</th>
 </tr>
 <tr>
-	<td colspan="3">
+    <td colspan="3">
 <br />
 This section will help you install the various example applications that are shipped with MMBase.
 The applications are listed in the order in which they should be installed (some applications depend on each other).
@@ -23,7 +23,7 @@ The Yahoo, Community, and BugTracker applications require some additional action
 These are explained as you install them. You are advised to follow the notes.<br />
 You can return to this installation script any time.<br />
 <br />
-	</td>
+    </td>
 </tr>
 <tr>
 <th>Step</th>
@@ -32,15 +32,15 @@ You can return to this installation script any time.<br />
 </tr>
 <mm:import externid="installstep" jspvar="installstep" vartype="Integer">-1</mm:import>
         <%
-           String[] steps= { 
-            "Resources", 
-            "MyNews", 
+           String[] steps= {
+            "Resources",
+            "MyNews",
             "MyCompany",
-            "MyUsers", 
+            "MyUsers",
             "MyYahoo",
             "Community",
-            "BugTracker", 
-            "Codings", 
+            "BugTracker",
+            "Codings",
             "RichText"
           };
            boolean first=true;
@@ -60,20 +60,20 @@ You can return to this installation script any time.<br />
                 Hashtable params=new Hashtable();
                 params.put("APPLICATION",app);
                 mmAdmin.process("LOAD",app,params,request,response);
-                msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
+                msg="<p style=\"white-space:pre;\">"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
               } catch (Exception e ) {
-                msg="<p> Error: "+e+"</p>";
+                msg="<p style=\"white-space:pre;\"> Error: "+e+"</p>";
               }
               installed=true;
              }
         %>
 <tr valign="top">
-	<td><a name="step<%=step%>"></a><%=step+1%>:<%=app%></td>
+    <td><a name="step<%=step%>"></a><%=step+1%>:<%=app%></td>
         <td>
         <p><%=mmAdmin.getInfo("DESCRIPTION-"+app,request,response)%></p>
         <%=msg%>
-	</td>
-	<td class="link" >
+    </td>
+    <td class="link" >
                 <% if (installed) {%>
                      Installed,
                      <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[review&nbsp;installation&nbsp;notes]</a>
@@ -81,12 +81,12 @@ You can return to this installation script any time.<br />
                 <% } else { %>
                     <% if (first) {
                         first=false;%>
-        		<a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[INSTALL&nbsp;NOW]</a>
+                <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[INSTALL&nbsp;NOW]</a>
                     <% } else { %>
                        Not&nbsp;yet&nbsp;installed
                     <% } %>
                 <% } %>
-	</td>
+    </td>
 </tr>
         <% } %>
 
