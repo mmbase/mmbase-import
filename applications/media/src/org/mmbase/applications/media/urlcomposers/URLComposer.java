@@ -14,6 +14,7 @@ import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.Format;
 import java.util.Map;
+import java.util.Locale;
 
 /**
  * URLComposer is a wrapper/container class  around an URL.  It contains besides the
@@ -27,7 +28,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.8 2003-02-11 23:16:12 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.9 2003-02-17 09:11:28 michiel Exp $
  */
 
 public class URLComposer  {
@@ -60,6 +61,11 @@ public class URLComposer  {
     public Format       getFormat()   { 
         return Format.get(source.getIntValue("format")); 
     } 
+
+
+    public String getGUIIndicator(Locale locale) {
+        return getFormat().getGUIIndicator(locale);
+    }
 
     /**
      * Returns true. This can be overridden if the URLComposer not
