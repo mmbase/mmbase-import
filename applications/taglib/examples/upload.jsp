@@ -28,12 +28,13 @@
 
   <%-- the process form part --%>
   <mm:compare referid="processupload" value="true">
-    <%-- a bit of a hack --%>
+	  <%-- a bit of a hack --%>
     <mm:import externid="_handle_name" from="multipart"/>
     <mm:import externid="_hande_type" from="multipart"/>
     <%-- create a node of type attachments --%>
     <mm:createnode type="attachments" id="attachment">
       <mm:setfield name="title"><mm:write referid="_handle_name"/></mm:setfield>
+      <mm:setfield name="filename"><mm:write referid="_handle_name"/></mm:setfield>
       <mm:setfield name="mimetype"><mm:write referid="_hande_type"/></mm:setfield>
       <mm:fieldlist type="all" fields="handle">
          <mm:fieldinfo type="useinput" />
