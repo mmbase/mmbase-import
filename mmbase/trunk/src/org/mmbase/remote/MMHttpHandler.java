@@ -16,12 +16,8 @@ import java.io.*;
 public class MMHttpHandler implements Runnable {
 
     private String  classname   = getClass().getName();
-    private boolean debug       = false;
-
-    private void debug( String msg ) {
-        if( debug )
-            System.out.println( classname +":"+ msg );
-    }
+    private boolean debug       = RemoteBuilder.debug;
+    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Thread kicker = null;
 
@@ -29,6 +25,7 @@ public class MMHttpHandler implements Runnable {
 	Hashtable listeners;
 
 	public MMHttpHandler(Socket clientsocket,Hashtable listeners) {
+		if( debug ) debug("MMHttpHandler("+clientsocket+","+listeners+")");
 		this.clientsocket=clientsocket;
 		this.listeners=listeners;
 		init();
@@ -60,7 +57,7 @@ public class MMHttpHandler implements Runnable {
 				StringTokenizer tok=new StringTokenizer(line," \n\r\t");
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
-					// System.out.println("METHOD : "+method);
+					//if( debug ) debug("run(): got method(+method+")");
 					if (method.equals("GET")) doGet(tok,in,out);
 					if (method.equals("POST")) doPost(tok,in,out);
 				}
@@ -68,6 +65,7 @@ public class MMHttpHandler implements Runnable {
 
 			clientsocket.close();	
 		} catch(Exception e) {
+			debug("run(): ERROR: exception: ");
 			e.printStackTrace();
 		}
 	}
@@ -78,6 +76,8 @@ public class MMHttpHandler implements Runnable {
 			if (query.indexOf("/remoteXML.db?")==0) {
 				doXMLSignal(query.substring(14));
 			}
+			else
+				debug("doGet("+query+"): WARNING: unknown query!");
 		}
 		out.println("200 OK");
 		out.flush();
@@ -85,6 +85,8 @@ public class MMHttpHandler implements Runnable {
 
 	
 	void doXMLSignal(String line) {
+		if( debug ) debug("doXMLSignal("+line+")");
+
 		StringTokenizer tok=new StringTokenizer(line,"+ \n\r\t");
 		if (tok.hasMoreTokens()) {
 			String number=tok.nextToken();
@@ -93,11 +95,14 @@ public class MMHttpHandler implements Runnable {
 				if (tok.hasMoreTokens()) {
 					String ctype=tok.nextToken();
 					RemoteBuilder serv=(RemoteBuilder)listeners.get(number);
-					if (serv==null) return;
-					serv.nodeRemoteChanged(number,builder,ctype);
-				}
-			}	
-		}
+					if (serv==null) {
+						debug("doXMLSignal("+line+"): ERROR: no remote builder found for number("+number+")");
+					} else {
+						serv.nodeRemoteChanged(number,builder,ctype);
+					}
+				} else debug("doXMLSignal("+line+"): ERROR: no 'ctype' found!");
+			} else debug("doXMLSignal("+line+"): ERROR: no 'builder' found!");
+		} else debug("doXMLSignal("+line+"): ERROR: no 'number' found!");
 	}
 
 	void doPost(StringTokenizer tok, DataInputStream in, PrintStream out) {
@@ -111,8 +116,8 @@ public class MMHttpHandler implements Runnable {
 							int len=Integer.parseInt(header);
     						byte[] buffer=readContentLength(len,in);
     						Hashtable posted=readPostUrlEncoded(buffer);
-						} catch(Exception e) {}
-					}
+						} catch(Exception e) { debug("doPost(): ERROR: could not handle post!"); e.printStackTrace(); }
+					} else debug("doPost(): ERROR: No 'Content-length' specified in this post!");
 		}
 		out.println("200 OK");
 		out.flush();
@@ -122,7 +127,7 @@ public class MMHttpHandler implements Runnable {
     * read a block into a array of ContentLenght size from the users networksocket
     *
     * @param table the hashtable that is used as the source for the mapping process
-    * @returns byte[] buffer of length defined in the content-length mimeheader
+    * @return byte[] buffer of length defined in the content-length mimeheader
     */
     public byte[] readContentLength(int len,DataInputStream in) {
         int len2,len3;
@@ -152,7 +157,8 @@ public class MMHttpHandler implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("(readContentLength) -> can't read post msg from client");
+                debug("readContentLength("+len+"): ERROR: can't read post msg from client");
+				e.printStackTrace();
             }
         return(buffer);
     }
@@ -222,6 +228,4 @@ public class MMHttpHandler implements Runnable {
         }
         return(post_header);
     }
-
-
 }
