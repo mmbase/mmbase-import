@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.16 2002-08-28 13:10:05 eduard Exp $
+     * @version  $Id: wizard.jsp,v 1.17 2002-10-29 11:04:21 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -102,7 +102,7 @@ if (wizardConfig == null) {
 }
 
 if (wizardConfig.wiz.startWizard()) {
-    log.debug("Starting a  wizard");
+    log.debug("Starting a wizard " );
     WizardCommand cmd=wizardConfig.wiz.getStartWizardCommand();
     String parentFid = cmd.getFid();
     if (parentFid==null) parentFid="";
@@ -111,18 +111,19 @@ if (wizardConfig.wiz.startWizard()) {
     String objectnumber = cmd.getParameter(2);
     String origin = cmd.getParameter(3);
     String wizardname = cmd.getValue();
-    response.sendRedirect(
-              response.encodeRedirectURL("wizard.jsp?fid="+parentFid+
+    String redirectTo = response.encodeURL("wizard.jsp?fid="+parentFid+
                                  "&did="+parentDid+
                                  "&proceed=true&wizard="+wizardname+
                                  "&sessionkey="+ewconfig.sessionKey+
                                  "&objectnumber="+objectnumber+
-                                 "&origin="+origin + 
-                                 "&popupid=" + popupId + 
-                                 "&language=" + ewconfig.language));
+                                 "&origin="+origin +
+                                 "&popupid=" + popupId +
+                                 "&language=" + ewconfig.language);
+    log.debug("Redirecting to " + redirectTo);
+    response.sendRedirect(redirectTo);
 } else if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
-    response.sendRedirect(response.encodeRedirectURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey + 
+    response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey + 
                                              "&proceed=true" + 
                                              "&remove=true" + 
                                              "&popupid=" + popupId ));
