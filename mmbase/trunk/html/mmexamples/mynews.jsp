@@ -27,6 +27,7 @@
       <td colspan="2" ><br />
             <mm:listnodes type="versions" constraints="[name]='MyNews' AND [type]='application'">
               <mm:first>
+                <mm:import id="mynewsIsPresent" />
               </mm:first>
             </mm:listnodes>
             <mm:notpresent referid="mynewsIsPresent">
