@@ -173,9 +173,9 @@
 	<mm:import externid="name" />
 	<mm:import externid="description" />
 	<mm:import externid="language" />
-	<mm:import externid="account" />
-	<mm:import externid="password" />
-	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,account,password">
+	<mm:import id="newaccount" externid="account" />
+	<mm:import id="newpassword" externid="password" />
+	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,newaccount@account,newpassword@password">
 	</mm:nodefunction>
 </mm:compare>
 
