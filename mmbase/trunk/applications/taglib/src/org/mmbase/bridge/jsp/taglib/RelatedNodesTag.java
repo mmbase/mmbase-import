@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.27 2003-11-05 15:50:59 pierre Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.28 2003-11-06 09:07:25 pierre Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -104,23 +104,24 @@ public class RelatedNodesTag extends AbstractNodeListTag {
 
             query.setNodeStep(step3);  // makes it ready for use as NodeQuery
 
-            Queries.addConstraints(query, (String) constraints.getValue(this));
-            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            if (constraints != Attribute.NULL) {
+                Queries.addConstraints(query, (String) constraints.getValue(this));
+            }
+            if (orderby != Attribute.NULL) {
+                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            }
         } else {
-            if (c == null) throw new JspTagException("No type attribute found, and container missing");
             query = (NodeQuery) c.getQuery();
-            Queries.addConstraints(query, (String) constraints.getValue(this));
-            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            if (constraints != Attribute.NULL) {
+                Queries.addConstraints(query, (String) constraints.getValue(this));
+            }
+            if (orderby != Attribute.NULL) {
+                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            }
         }
 
         NodeList nodes = cloud.getList(query);
-
-        // get orderby value fro mm:changed tag
-        List ls = query.getSortOrders();
-        if (ls.size()>0) {
-            orderby = getAttribute(((SortOrder)ls.get(0)).getField().getFieldName());
-        }
-        return setReturnValues(nodes, true);
+        return setReturnValues(nodes, true, query);
     }
 }
 

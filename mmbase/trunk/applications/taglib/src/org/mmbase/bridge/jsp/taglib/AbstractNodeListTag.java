@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
@@ -17,6 +18,7 @@ import javax.servlet.jsp.tagext.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.*;
 
@@ -27,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.54 2003-09-10 11:16:07 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.55 2003-11-06 09:07:24 pierre Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -67,7 +69,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected Attribute offset = Attribute.NULL;
 
 
-    protected Attribute comparator = Attribute.NULL; 
+    protected Attribute comparator = Attribute.NULL;
 
 
     /**
@@ -187,12 +189,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         return collector.getContextContainer();
     }
 
-
-
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
-
         log.debug("doStartTaghelper");
+
         // make a (temporary) container
         collector = new ContextCollector(getContextProvider().getContextContainer());
 
@@ -255,7 +255,23 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  @link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+        return setReturnValues(nodes, trim, null);
+    }
 
+    /**
+     * Creates the node iterator and sets appropriate variables (such as listsize).
+     * Takes a node list, and trims it using the offset and
+     * max attributes if so indicated.
+     * The list is assumed to be already sorted.
+     * @param nodes the nodelist to create the iterator from
+     * @param trim if true, trim the list using offset and max
+     *        (if false, it is assumed the calling routine already did so)
+     * @param query the Query used to create the list. Used to determine the 'changedOn' property.
+     * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
+     *  list is empty. THis value should be passed as the result of {
+     *  @link #doStartTag}.
+     */
+    protected int setReturnValues(NodeList nodes, boolean trim, Query query) throws JspTagException {
         ListSorter.sort(nodes, (String) comparator.getValue(this), pageContext);
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
@@ -291,8 +307,17 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
-        if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
 
+        if (query!=null) {
+            // get changeOn value for mm:changed tag
+            List ls = query.getSortOrders();
+            if (ls.size()>0) {
+                StepField sf= ((SortOrder)ls.get(0)).getField();
+                returnList.setProperty("orderby",sf.getStep().getAlias()+'.'+sf.getFieldName());
+            }
+        } else {
+            if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
+        }
 
         if (nodeIterator.hasNext()) {
             //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
@@ -331,6 +356,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         }
 
     }
+
     public int doEndTag() throws JspTagException {
 
         if (getId() != null) {
