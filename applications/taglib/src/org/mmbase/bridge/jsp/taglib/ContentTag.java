@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.2 2003-05-07 21:30:52 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.3 2003-05-08 13:04:33 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -169,8 +169,9 @@ public class ContentTag extends LocaleTag  {
     }
     
 
-    private Attribute type        = Attribute.NULL;
-    private Attribute encoding    = Attribute.NULL;
+    private Attribute type           = Attribute.NULL;
+    private Attribute encoding       = Attribute.NULL;
+    private Attribute postprocessor  = Attribute.NULL;
 
     public void setType(String ct) throws JspTagException {
         type = getAttribute(ct);
@@ -178,6 +179,10 @@ public class ContentTag extends LocaleTag  {
 
     public void setEncoding(String e) throws JspTagException {
         encoding = getAttribute(e);
+    }
+
+    public void setPostprocessor(String e) throws JspTagException {
+        postprocessor = getAttribute(e);
     }
 
 
@@ -188,6 +193,17 @@ public class ContentTag extends LocaleTag  {
             return type.getString(this);
         }
     }
+
+    protected CharTransformer getPostprocessor() throws JspTagException {
+        if (postprocessor != Attribute.NULL) {
+            CharTransformer result =  (CharTransformer) postProcessors.get(postprocessor.getString(this));
+            if (result == null) throw new JspTagException("The postprocessor " + postprocessor.getString(this) + " is not defined");
+            return result;
+        } else {
+            return null;
+        }
+    }
+
 
     public String getContentType() throws JspTagException {
         String type = getType();
@@ -220,7 +236,12 @@ public class ContentTag extends LocaleTag  {
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) {
             try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                CharTransformer post = getPostprocessor();
+                if (post == null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } else {
+                    post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
+                }
             } catch (IOException ioe){
                 throw new JspTagException(ioe.toString());
             }        
