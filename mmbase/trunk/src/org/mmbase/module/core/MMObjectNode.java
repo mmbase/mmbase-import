@@ -18,44 +18,64 @@ import org.mmbase.module.gui.html.*;
 
 
 /**
- * MMObjectNode is the core of the MMBase system, this class is what its all 
- * about because the instances of this class hold the content we are using 
+ * MMObjectNode is the core of the MMBase system.
+ * This class is what its all about, because the instances of this class hold the content we are using.
  * All active Nodes with data and relations are MMObjectNodes and make up the
- * object world that is MMBase (Creating, searching, removing is done by its
- * a class extened from MMObjectBuilder)
- * 
+ * object world that is MMBase (Creating, searching, removing is done by the node's parent,
+ * which is a class extended from MMObjectBuilder)
+ *
  * @author Daniel Ockeloen
+ * @author Pierre vanm Rooden (javadoc)
+ * @version 18 jan 2001
  */
+
 public class MMObjectNode {
+	/**
+	 * Holds the name - value pairs of this node (the node's fields).
+	 * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
+	 * This collection should not be directly queried or changed -
+	 * use the SetValue and getXXXValue methods instead.
+	 * (question: so why is this public?)
+	 */
+	
+	public Hashtable values=new Hashtable();
+
+	/*
+	* Holds the 'extra' name-value pairs (the node's properties)
+	* which are retrieved from the 'properties' table.
+	*/	
+	public Hashtable properties;
+	
+	/**
+	* Vector whcih stores the key's of the fields that were changed
+	* since the last commit.
+	*/
+	public Vector changed=new Vector();
+	
+	/**
+	* Pointer to the parent builder that is responsible for this node.
+	*/
+	public MMObjectBuilder parent;
+	
+	/**
+	* Used to make fields from multiple nodes (for multilevel for example) possible
+	*/
+	public String prefix="";
+	
+	// Vector  with the related nodes to this node
+	Vector relations=null; // possibly filled with insRels
+	
 	private String classname = getClass().getName();
 	private boolean debug=false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	private String alias;
 
-	// values holds the name, value fields in this node
-	public Hashtable values=new Hashtable();
-
-	// properties holds the 'extra' name,value fields attached as properties
-	public Hashtable properties;
 	// object to sync access to properties
 	private Object properties_sync=new Object();
 
-	// changed vector stores the key's of the changed fields since last
-	// commit
-	public Vector changed=new Vector();
-
-	// pointer to the parent builder that is responsible for this node
-	public MMObjectBuilder parent;
-
-	// Vector  with the related nodes to this node
-	Vector relations=null; // possibly filled with insRels
-
-	// temp hack to make multiple nodes (for multilevel for example) possible
-	public String prefix="";
-
-
-	/** 
-	* empty constructor added for javadoc	
+	/**
+	* Epty constructor added for javadoc	
+	* @deprecated Unused. Should be removed.
 	*/
 	public MMObjectNode() {
 	}
@@ -77,8 +97,8 @@ public class MMObjectNode {
 	/** 
 	* legacy contructor, useless will be removed soon (daniel)
 	*/
-	public MMObjectNode(int id,int type, String owner) {
-	}
+//	public MMObjectNode(int id,int type, String owner) {
+//	}
 
     /*
     * Tests whether the data in a node is valid (throws an exception if this is not the case).
@@ -93,51 +113,53 @@ public class MMObjectNode {
 	* commit : commits the node to the database or other storage system
 	* this can only be done on a existing (inserted) node. it will use the
 	* changed Vector as its base of what to commit/changed
+    * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
 	*/
 	public boolean commit() {
-		return(parent.commit (this));
+		return parent.commit (this);
 	}
 
 	/** 
-	*  insert this node into the database or other storage system
-	*  returns the new key
+	*  Insert this node into the database or other storage system.
+	*  @return returns the new node key (number field), or -1 if the insert failed
 	*/
 	public int insert(String userName) {
-		return(parent.insert(userName,this));
+		return parent.insert(userName,this);
 	}
 
-	/** 
-	* insertDone added for frontend editors will be called 
-	* input/temp variables to the known/valid name/value pairs
-	*
-	* this call will be changed to a system not depending on a
-	* editor setup. Problem is that its a usefull/needed call
-	* to for example to check if all is oke or delete some
-	* caching in the editors
-	*/
+    /**
+    * Once a insert is done in the editor this method is called.
+    * @param ed Contains the current edit state (editor info). The main function of this object is to pass
+    *		'settings' and 'parameters' - value pairs that have been set during the edit process.
+    * @return An <code>int</code> value. It's meaning is undefined.
+    *		The basic routine returns -1.
+    * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
+    *	endangering the separation between content and layout, and has an undefined return value.
+    */
 	public int insertDone(EditState ed) {
-		return(parent.insertDone(ed,this));
+		return parent.insertDone(ed,this);
 	}
 
-	/** 
-	* call added for frontend editors to be able to convert
-	* input/temp variables to the known/valid name/value pairs
-	*
-	* this call will be changed to a system not depending on a
-	* editor setup. Problem is that its a usefull/needed call
-	* to for example combine 2 temp values into a real value.
-	* this happens alot with editors for example.
-	*/
+    /**
+    * Check and make last changes before calling {@link #commit} or {@link #insert}.
+    * This method is called by the editor. This differs from {@link #precommit}, which is called by the database system
+    * <em>during</em> the call to commit or insert.
+    * @param ed Contains the current edit state (editor info). The main function of this object is to pass
+    *		'settings' and 'parameters' - value pairs that have been the during the edit process.
+    * @return An <code>int</code> value. It's meaning is undefined.
+    *		The basic routine returns -1.
+    * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
+    *	endangering the separation between content and layout. It also has an undefined return value (as well as a confusing name).
+    */
 	public int preEdit(EditState ed) {
-		return(parent.preEdit(ed,this));
+		return parent.preEdit(ed,this);
 	}
 
-
-
-	/** 
-	* return the core of this node in a human readable way 
-	* only used for debugging for data exchange use toXML()
-	* and getDTD()
+	/**
+	* Returns the core of this node in a string.
+	* Used for debugging.
+	* For data exchange use toXML() and getDTD().
+	* @return the contents of the node as a string.
 	*/
 	public String toString() {
 		String result="";
@@ -155,151 +177,87 @@ public class MMObjectNode {
 				}
 			}	
 		} catch(Exception e) {}	
-		return(result);
+		return result;
 	}
 
 
 	/**
-	* return the node as a XML file
+	* Return the node as a string in XML format.
+	* Used for data exchange, though, oddly enough, not by application export. (?)
+	* @return the contents of the node as a xml-formatted string.
 	*/
 	public String toXML() {
 
 		// call is implemented by its builder so
 		// call the builder with this node
 		if (parent!=null) {
-			return(parent.toXML(this));
+			return parent.toXML(this);
 		} else {
-			return(null);
+			return null;
 		}
 	}
 
 	/** 
-	*  sets a key, value pair in the main values of this node.
-	* (remark someone has to look at this caching thing, i think its lagecy, daniel)
+	*  Sets a key/value pair in the main values of this node.
+	*  Note that if this node is a ndoe in cache, the changes are immediately visible to
+	*  everyone, even if the changes are not committed.
+	*  The fieldname is added to the (public) 'changed' vector to track changes.
+	*  @param fieldname the name of the field to change
+	*  @param fieldValue the valute to assign
+	*  @return always <code>true</code>
 	*/
 	public boolean setValue(String fieldname,Object fieldvalue) {
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		setUpdate(fieldname);
-		return(true);
-	}
-
-
-
-	/** 
-	*  sets a key, value pair in the main values of this node where value String
-	*/
-	public boolean setValue(String fieldname,String fieldvalue) {
-
-		// put the key/value in the value hashtable
-		values.put(fieldname,fieldvalue);
+		// process the changed value (?)
+        if (parent!=null) parent.setValue(this,fieldname);
 
 		setUpdate(fieldname);
-		return(true);
+		return true;
 	}
 
-	/** 
-	*  sets a key, value pair in the main values of this node where value int
+	/**
+	*  Sets a key/value pair in the main values of this node. The value to set is of type <code>int</code>.
+	*  Note that if this node is a ndoe in cache, the changes are immediately visible to
+	*  everyone, even if the changes are not committed.
+	*  The fieldname is added to the (public) 'changed' vector to track changes.
+	*  @param fieldname the name of the field to change
+	*  @param fieldValue the valute to assign
+	*  @return always <code>true</code>
 	*/
 	public boolean setValue(String fieldname,int fieldvalue) {
-		// put the key/value in the value hashtable
-		values.put(fieldname,new Integer(fieldvalue));
-
-		if (parent!=null) parent.setValue(this,fieldname);
-		setUpdate(fieldname);
-		return(true);
+	    return setValue(fieldname,new Integer(fieldvalue));
 	}	
 
-	private void setUpdate(String fieldname) {
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && !fieldname.equals("CacheCount") && state==2) { 
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
-	}
-
-
-	/** 
-	*  sets a key, value pair in the main values of this node where value int
+	/**
+	*  Sets a key/value pair in the main values of this node. The value to set is of type <code>double</code>.
+	*  Note that if this node is a ndoe in cache, the changes are immediately visible to
+	*  everyone, even if the changes are not committed.
+	*  The fieldname is added to the (public) 'changed' vector to track changes.
+	*  @param fieldname the name of the field to change
+	*  @param fieldValue the valute to assign
+	*  @return always <code>true</code>
 	*/
 	public boolean setValue(String fieldname,double fieldvalue) {
-		// put the key/value in the value hashtable
-		values.put(fieldname,new Double(fieldvalue));
-
-		if (parent!=null) parent.setValue(this,fieldname);
-
-		setUpdate(fieldname);
-		return(true);
+	    return setValue(fieldname,new Double(fieldvalue));
 	}
 
-
-
-	/** 
-	*  sets a key, value pair in the main values of this node where value Integer
+	/**
+	*  Sets a key/value pair in the main values of this node.
+	*  The value to set is converted to the indicated type.
+	*  Note that if this node is a node in cache, the changes are immediately visible to
+	*  everyone, even if the changes are not committed.
+	*  The fieldname is added to the (public) 'changed' vector to track changes.
+	*  @param fieldname the name of the field to change
+	*  @param fieldValue the valute to assign
+	*  @return <code>false</code> if the value is not of the indicate dtype, <code>true</code> otherwise
 	*/
-	public boolean setValue(String fieldname,Integer fieldvalue) {
-
-		// put the key/value in the value hashtable
-		values.put(fieldname,fieldvalue);
-
-		setUpdate(fieldname);
-		return(true);
-	}
-
-
-	/** 
-	*  sets a key, value pair in the main values of this node where value Integer
-	*/
-	public boolean setValue(String fieldname,Double fieldvalue) {
-
-		// put the key/value in the value hashtable
-		values.put(fieldname,fieldvalue);
-
-		setUpdate(fieldname);
-		return(true);
-	}
-
-
-	/** 
-	*  sets a key, value pair in the main values of this node where value Integer
-	*/
-	public boolean setValue(String fieldname,Float fieldvalue) {
-
-		// put the key/value in the value hashtable
-		values.put(fieldname,fieldvalue);
-
-		setUpdate(fieldname);
-		return(true);
-	}
-
-
-	/** 
-	*  sets a key, value pair in the main values of this node where value Integer
-	*/
-	public boolean setValue(String fieldname,Long fieldvalue) {
-
-		// put the key/value in the value hashtable
-		values.put(fieldname,fieldvalue);
-
-		setUpdate(fieldname);
-		return(true);
-	}
-
-	/** 
-	*  sets a key, value pair in the main values of this node for ints and strings
-	*/
+	
 	public boolean setValue(String fieldName, int type, String value)
 	// WH: This one will be moved/replaced soon...
 	// Testing of db types will be moved to the DB specific classes
-	// Called by
-	// both versions of FieldEditor.setEditField.
+	// Called by both versions of FieldEditor.setEditField.
 	// MMBaseMultiCast.mergeXMLNode
 	// MMImport.parseOneXML
 	{
@@ -315,38 +273,57 @@ public class MMObjectNode {
 				Integer i;
 				try { i = new Integer(value); } 
 				catch (NumberFormatException e)
-				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				{ System.out.println( e.toString() ); e.printStackTrace(); return false; }
 				setValue( fieldName, i );
 				break;
 			case FieldDefs.TYPE_FLOAT:
 				Float f;
 				try { f = new Float(value); } 
 				catch (NumberFormatException e)
-				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				{ System.out.println( e.toString() ); e.printStackTrace(); return false; }
 				setValue( fieldName, f );
 				break;
 			case FieldDefs.TYPE_LONG:
 				Long l;
 				try { l = new Long(value); } 
 				catch (NumberFormatException e)
-				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				{ System.out.println( e.toString() ); e.printStackTrace(); return false; }
 				setValue( fieldName, l );
 				break;
 			case FieldDefs.TYPE_DOUBLE:
 				Double d;
 				try { d = new Double(value); } 
 				catch (NumberFormatException e)
-				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				{ System.out.println( e.toString() ); e.printStackTrace(); return false; }
 				setValue( fieldName, d );
 				break;
 			default:
 				System.out.println("MMObjectNode.setValue(): unsupported fieldtype: "+type+" for field "+fieldName);
+				return false;
 		}
 		return true;
 	}
 
-	/** 
-	* get a value by its given key, will be returned as a Object
+    // Add the field to update to the changed Vector
+    //
+	private void setUpdate(String fieldname) {
+		// obtain the type of field this is
+		int state=getDBState(fieldname);
+
+		// add it to the changed vector so we know that we have to update it
+		// on the next commit
+		if (!changed.contains(fieldname) && !fieldname.equals("CacheCount") && state==2) {
+			changed.addElement(fieldname);
+		}
+
+		// is it a memory only field ? then send a fieldchange
+		if (state==0) sendFieldChangeSignal(fieldname);
+	}
+
+	/**
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as an <code>Object</code>
 	*/
 	public Object getValue(String fieldname) {
 
@@ -358,15 +335,17 @@ public class MMObjectNode {
 		// its implemented per builder so lets give this
 		// request to our builder
 
-		if (o==null) return(parent.getValue(this,fieldname));
+		if (o==null) return parent.getValue(this,fieldname);
 	
 		
 		// return the found object
-		return(o);
+		return o;
 	}
 
 	/** 
-	* get a value by its given key, will be returned must be String
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as a <code>String</code>
 	*/
 	public String getStringValue(String fieldname) {
 
@@ -426,19 +405,21 @@ public class MMObjectNode {
 					values.put(prefix+fieldname,tmp2);
 			
 					// return the found and now unmapped value
-					return(tmp2);
+					return tmp2;
 				} else {
-					return(null);
+					return null;
 				}
 			}
 		}
 
 		// return the found value
-		return(tmp);
+		return tmp;
 	}
 
 	/** 
-	* get a value by its given key, will be returned must be byte array
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as an <code>byte []</code> (binary/blob field)
 	*/
 	public byte[] getByteValue(String fieldname) {
 	
@@ -456,7 +437,7 @@ public class MMObjectNode {
 		if (obj instanceof byte[]) {
 
 			// was allready unmapped so return the value
-			return((byte[])values.get(prefix+fieldname));
+			return (byte[])values.get(prefix+fieldname);
 		} else {
 
 			// call our builder with the convert request this will probably
@@ -469,79 +450,88 @@ public class MMObjectNode {
 			values.put(prefix+fieldname,b);
 
 			// return the unmapped value
-			return(b);
+			return b;
 		}
 	}
 
 	/** 
-	* get a value by its given key, will be returned must be int
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as an <code>int</code>
 	*/
 	public int getIntValue(String fieldname) {
 		Integer i=(Integer)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i.intValue());
+			return i.intValue();
 		} else {
-			return(-1);
+			return -1;
 		}
 	}
 
 
 	/** 
-	* get a value by its given key, will be returned must be Integer
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as an <code>Integer</code>
 	*/
 	public Integer getIntegerValue(String fieldname) {
 		Integer i=(Integer)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i);
+			return i;
 		} else {
-			return(new Integer(-1));
+			return new Integer(-1);
 		}
 	}
 
 
 	/** 
-	* get a value by its given key, will be returned must be Long
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as a <code>long</code>
 	*/
 	public long getLongValue(String fieldname) {
 		Long i=(Long)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i.longValue());
+			return i.longValue();
 		} else {
-			return(-1);
+			return -1;
 		}
 	}
 
 
 	/** 
-	* get a value by its given key, will be returned must be Float
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as a <code>float</code>
 	*/
 	public float getFloatValue(String fieldname) {
 		Float i=(Float)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i.floatValue());
+			return i.floatValue();
 		} else {
-			return(-1);
+			return -1;
 		}
 	}
 
 
 	/** 
-	* get a value by its given key, will be returned must be Float
+	* Get a value of a certain field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as a <code>double</code>
 	*/
 	public double getDoubleValue(String fieldname) {
 		Double i=(Double)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i.doubleValue());
+			return i.doubleValue();
 		} else {
-			return(-1);
+			return -1;
 		}
 	}
 
-
-
-
-	/** 
-	* Get a value as String by its given fieldname
+	/**
+	* Get a value of a certain field and return is in string form (regardless of actual type).
+	* @param fieldname the name of the field who's data to return
+	* @return the field's value as a <code>String</code>
 	*/
 	public String getValueAsString(String fieldName)
 	// WH Will remove/replace this one soon
@@ -558,15 +548,17 @@ public class MMObjectNode {
 	{
 		Object o=getValue(fieldName);
 		if (o!=null) {
-			return(""+getValue(fieldName));
+			return ""+getValue(fieldName);
 		} else {
-			return("");
+			return "";
 		}
 	}
 
 
 	/** 
-	* returns the DBType (as defined in JDBC mostly, needs some work)
+	* Returns the DBType of a field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's DBType
 	*/
 	public int getDBType(String fieldname) {
 		if (prefix!=null && prefix.length()>0) {
@@ -574,61 +566,71 @@ public class MMObjectNode {
 			int pos=prefix.indexOf('.');
 			if (pos==-1) pos=prefix.length();
 			MMObjectBuilder bul=parent.mmb.getMMObject(prefix.substring(0,pos));
-			return(bul.getDBType(fieldname));
+			return bul.getDBType(fieldname);
 		} else {
-			return(parent.getDBType(fieldname));
+			return parent.getDBType(fieldname);
 		}
 	}
 
 
 	/** 
-	* returns the DBState
+	* returns the DBState of a field.
+	* @param fieldname the name of the field who's data to return
+	* @return the field's DBState
 	*/
 	public int getDBState(String fieldname) {
-		if (parent!=null)  {
-			return(parent.getDBState(fieldname));
+		if (parent!=null)    {
+			return parent.getDBState(fieldname);
 		} else {
-			return(-1);
+			return -1;
 		}
 	}
 
 	/** 
-	* return all the keys of the changed values in this node
+	* Return all the names of fields that were changed.
+	* Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
+	* @param a <code>Vector</code> containing all the fieldnames
 	*/
 	public Vector getChanged() {
-		return(changed);
+		return changed;
 	}
 
 	/** 
-	* is one of the values of this node since the last commit/insert ?
+	* Tests whether one of the values of this node was changed since the last commit/insert.
+	* @return <code>true</code> if changes have been made, <code>false</code> otherwise
 	*/
 	public boolean isChanged() {
 		if (changed.size()>0) {
-			return(true);
+			return true;
 		} else {
-			return(false);
+			return false;
 		}
 	}
 
 	/** 
-	* clear the 'signal' Vector with the changed keys since last commit/insert
+	* Clear the 'signal' Vector with the changed keys since last commit/insert.
+	* Marks the node as 'unchanged'.
+	* Does not affect the values of the fields, nor does it commit the node.
+	* @return always <code>true</code>
 	*/
 	public boolean clearChanged() {
 		changed=new Vector();
-		return(true);
+		return true;
 	}
 
 	/** 
-	* return the values of this node, this should not be used normally used
-	* by the system itself (thus it have to be public then?, daniel).
+	* Return the values of this node as a hashtable (name-value pair).
+	* Note that this is a direct reference. Changes will affect the node.
+	* Used by various export routines.
+	* @return the values as a <code>Hashtable</code>
 	*/
 	public Hashtable getValues() {
-		return(values);
+		return values;
 	}
 
 	/** 
-	* delete Propertie cache for this node, will force a relead of the
-	* properties on next use.
+	* Deletes the propertie cache for this node.
+	* Forces a reload of the properties on next use.
 	*/
 	public void delPropertiesCache() {
 		synchronized(properties_sync) {
@@ -637,7 +639,8 @@ public class MMObjectNode {
 	}
 
 	/** 
-	* return a Hashtable with the properties nodes for this node
+	* Return a the properties for this node.
+	* @return the properties as a <code>Hashtable</code>
 	*/
 	public Hashtable getProperties() {
 		synchronized(properties_sync) {
@@ -652,12 +655,14 @@ public class MMObjectNode {
 				}
 			}
 		}
-		return(properties);
+		return properties;
 	}
 
 
 	/** 
-	*  node the property node for this node defined by key
+	* Returns a specified property of this node.
+	* @param key the name of the property to retrieve
+	* @return the property object as a <code>MMObjectNode</code>
 	*/
 	public MMObjectNode getProperty(String key) {
 		MMObjectNode n;
@@ -668,16 +673,17 @@ public class MMObjectNode {
 			n=(MMObjectNode)properties.get(key);
 		}
 		if (n!=null) {
-			return(n);
+			return n;
 		} else {
-			return(null);
+			return null;
 		}
 	}
 
 
 	/** 
-	*  set the property node for this node (needs work why doesn't it save itself
-	*  by a commit ? or should it be commited by the one who puts it in ? (daniel).
+	* Sets a specified property for this node.
+	* This method does not commit anything - it merely updates the node's propertylist.
+	* @param node the property object as a <code>MMObjectNode</code>
 	*/
 	public void putProperty(MMObjectNode node) {
 		synchronized(properties_sync) {
@@ -689,178 +695,209 @@ public class MMObjectNode {
 	}
 
 	/**
-	* return the GUI indicator for this node, a String that represents
-	* the contents of this node.
+	* Return the GUI indicator for this node.
+	* The GUI indicator is a string that representsthe contents of this node.
+	* By default it is the string-representation of the first non-system field of the node.
+	* Individual builders can alter this behavior.
+	* @return the GUI iddicator as a <code>String</code>
 	*/	
 	public String getGUIIndicator() {
 		if (parent!=null) {
-			return(parent.getGUIIndicator(this));
+			return parent.getGUIIndicator(this);
 		} else {
 			System.out.println("MMObjectNode -> can't get parent");
-			return("problem");
+			return "problem";
 		}
 	}
 
 	/**
-	* return the Dutch Single name for this node, should be build in
-	* fielddef in the next rewrite (daniel).
+	* Return the Single name for this node in the currently selected language (accoridng to the configuration).
+	* The 'dutch' in the method name is a bit misleading.
+	* @return the <code>String</code> value
 	*/
 	public String getDutchSName() {
 		if (parent!=null) {
-			return(parent.getDutchSName());
+			return parent.getDutchSName();
 		} else {
 			System.out.println("MMObjectNode -> can't get parent");
-			return("problem");
+			return "problem";
 		}
 	}
 
 	/**
-	* return the buildername of this node
+	* Return the buildername of this node
+	* @return the builder table name
 	*/
 
 	public String getName() {
-		return(parent.tableName);
+		return  parent.getTableName();
 	}
 
 
 	/**
-	* set the parent builder for this node
+	* Set the parent builder for this node.
+	* @param bul the builder
+	* @deprecated Unused. Should be removed.
 	*/
-	public void setParent(MMObjectBuilder b) {
-		parent=b;
+	public void setParent(MMObjectBuilder bul) {
+		parent=bul;
 	}
 
 
 	/**
-	* delete the relation cache for this node so it will be
-	* reloaded from the database/storage on next use.
+	* Delete the relation cache for this node.
+	* This means it will be reloaded from the database/storage on next use.
 	*/
 	public void delRelationsCache() {
 		relations=null;
 	}
 
 	/**
-	* return a the related nodes of this node
+	* Return the relations of this node.
+	* Note that this returns the nodes describing the relation - not the nodes 'related to'.
+	* @return An <code>Enumeration</code> containing the nodes
 	*/	
 	public Enumeration getRelations() {
 		if (relations==null) {	
 			Vector re=parent.getRelations_main(this.getIntValue("number"));
 			if (re!=null) {
 				relations=re;
-				return(relations.elements());
+				return relations.elements();
 			}
-			return(null);
+			return null;
 		} else {
-			return(relations.elements());
+			return relations.elements();
 		}
 	}
 
 
 	/**
-	* return a the related nodes of this node
+	* Returns the number of relations of this node.
+	* @return An <code>int</code> indicating the number of nodes found
 	*/	
 	public int getRelationCount() {
 		if (relations==null) {	
 			Vector re=parent.getRelations_main(this.getIntValue("number"));
 			if (re!=null) {
 				relations=re;
-				return(relations.size());
+				return relations.size();
 			}
-			return(0);
+			return 0;
 		} else {
-			return(relations.size());
+			return relations.size();
 		}
 	}
 
 
 	/**
-	* return a the related nodes of this node
+	* Return the relations of this node, filtered on a specified type.
+	* Note that this returns the nodes describing the relation - not the nodes 'related to'.
+	* @param otype the 'type' of relations to return. The type identifies a relation (InsRel-derived) builder, not a reldef object.
+	* @return An <code>Enumeration</code> containing the nodes
 	*/	
 	public Enumeration getRelations(int otype) {
-		if (relations==null) {	
-			Vector re=parent.getRelations_main(this.getIntValue("number"));
-			if (re!=null) {
-				relations=re;
-			}
-		} 
-		if (relations==null) return(null);
+	    Enumeration e = getRelations();
 		Vector result=new Vector();
-		Enumeration e=relations.elements();
 		while (e.hasMoreElements()) {
 			MMObjectNode tnode=(MMObjectNode)e.nextElement();
 			if (tnode.getIntValue("otype")==otype) {
 				result.addElement(tnode);
 			}
 		}
-		return(result.elements());
+		return result.elements();
 	}
 
 
 	/**
-	* return a the related nodes of this node
+	* Return the relations of this node, filtered on a specified type.
+	* Note that this returns the nodes describing the relation - not the nodes 'related to'.
+	* @param wantedtype the 'type' of relations to return. The type identifies a relation (InsRel-derived) builder, not a reldef object.
+	* @return An <code>Enumeration</code> containing the nodes
 	*/	
-	public int getRelationCount(String wantedtype) {
-		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
-		if (otype==0) {
-			return(0);
-		}
-		if (relations==null) {	
-			Vector re=parent.getRelations_main(this.getIntValue("number"));
-			if (re!=null) {
-				relations=re;
-			}
-		} 
-		if (relations==null) return(0);
-		Vector result=new Vector();
-		Enumeration e=relations.elements();
-		while (e.hasMoreElements()) {
-			MMObjectNode tnode=(MMObjectNode)e.nextElement();
-			int snumber=tnode.getIntValue("snumber");
-			MMObjectNode nnode=null;
-			if (snumber==this.getIntValue("number")) {
-				nnode=(MMObjectNode)parent.getNode(tnode.getIntValue("dnumber"));
-			} else {
-				nnode=(MMObjectNode)parent.getNode(tnode.getIntValue("snumber"));
-			}
-			if (nnode==null) {
-				debug("getRelationCount: node "+this.getValue("number")+" has relation with non-existent node, relation node="+tnode.getIntValue("number"));
-			} else if (nnode.getIntValue("otype")==otype) {
-				result.addElement(nnode);
-			}
-		}
-		return(result.size());
-	}
-
-
-	/**
-	 * returns all relations of a certain type. e.g. wantedtype can be insrel. 
-	 */
 	public Enumeration getRelations(String wantedtype) {
 		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
 		if (otype!=-1) {
-			return(getRelations(otype));
+			return getRelations(otype);
 		}
-		return(null);
+		return null;
 	}
-	
+
+	/**
+	* Return the number of relations of this node, filtered on a specified type.
+	* @param wantedtype the 'type' of related nodes (NOT the relations!).
+	* @return An <code>int</code> indicating the number of nodes found
+	*/	
+	public int getRelationCount(String wantedtype) {
+	    int count=0;
+		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
+		if (otype!=0) {
+		    if (relations==null) {	
+			    Vector re=parent.getRelations_main(this.getIntValue("number"));
+			    if (re!=null) {
+				    relations=re;
+			    }
+		    }
+		    if (relations!=null) {
+		        for(Enumeration e=relations.elements();e.hasMoreElements();) {
+			        MMObjectNode tnode=(MMObjectNode)e.nextElement();
+			        int snumber=tnode.getIntValue("snumber");
+			        int nodetype =0;
+			        if (snumber==this.getIntValue("number")) {
+				        nodetype=parent.getNodeType(tnode.getIntValue("dnumber"));
+			        } else {
+				        nodetype=parent.getNodeType(snumber);
+			        }
+			        if (nodetype==otype) {
+				        count +=1;
+			        }
+			    }
+		    }
+		}
+		return count;
+	}
+
+    /**
+    * Returns the node's age
+    * @return the age in days
+    */	
 	public int getAge() {
-		return(parent.getAge(this));
+		return parent.getAge(this);
 	}
 
+    /**
+    * Returns the node's builder tablename.
+    * @return the tablename of the builder as a <code>String</code>
+    * @deprecated use getName instead
+    */	
 	public String getTableName() {
-		return(parent.tableName);
+		return parent.getTableName();
 	}
 
-	public boolean sendFieldChangeSignal(String fieldname) {
-		return(parent.sendFieldChangeSignal(this,fieldname));	
+    /**
+    * Sends a field-changed signal.
+    * @param fieldname the name of the changed field.
+    * @return always <code>true</code>
+    */
+    public boolean sendFieldChangeSignal(String fieldname) {
+		return parent.sendFieldChangeSignal(this,fieldname);	
 	}
 
+    /**
+    * Sets the node's alias.
+    * The code only sets a (memory) property, it does not actually add the alias to the database.
+    * Does not support multiple aliases.
+    */	
 	public void setAlias(String alias) {
 		this.alias=alias;
 	}
 
+    /**
+    * Returns the node's alias.
+    * Does not support multiple aliases.
+    * @return the alias as a <code>String</code>
+    */	
 	public String getAlias() {
-		return(alias);
+		return alias;
 	}
 
 
@@ -868,8 +905,7 @@ public class MMObjectNode {
      * Get all related nodes. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
-     *
-     * @return      a <code>Vector</code> containing <code>MMObjectNode</code>s
+     * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes() {
         Vector result = new Vector();
@@ -889,9 +925,8 @@ public class MMObjectNode {
      * Get the related nodes of a certain type. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
-     *
-     * @param type  the type of objects to be returned
-     * @return      a <code>Vector</code> containing <code>MMObjectNode</code>s
+     * @param type the type of objects to be returned
+     * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
         Vector allNodes = getRelatedNodes();
