@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.27 2002-06-03 12:20:38 pierre Exp $
+ * @version $Id: Wizard.java,v 1.28 2002-06-04 12:21:23 pierre Exp $
  *
  */
 public class Wizard {
@@ -478,6 +478,10 @@ public class Wizard {
             Utils.copyAllAttributes(form, prehtmlform);
             wizardnode.appendChild(prehtmlform);
 
+            // Add the title, description.
+            NodeList props = Utils.selectNodeList(form, "title");
+            Utils.appendNodeList(props, prehtmlform);
+
             // check all fields and do the thingies
             createPreHtmlForm(prehtmlform, form, data);
         }
@@ -584,17 +588,26 @@ public class Wizard {
      */
     public void createPreHtmlForm(Node form, Node formdef, Node data) throws WizardException {
         // select all fields on first level
-        NodeList fields = Utils.selectNodeList(formdef, "field|list|command");
-
-        // Add the title, description.
-        NodeList props = Utils.selectNodeList(formdef, "title");
-        Utils.appendNodeList(props, form);
+        NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
 
         // process all possible fields
         // - Parse the fdatapath attribute to obtain the corresponding data fields.
         // - Create a form field for each found data field.
         for (int i=0; i<fields.getLength(); i++) {
             Node field = fields.item(i);
+            // let's see what we should do here
+            String nodeName = field.getNodeName();
+            // a field set
+            if (nodeName.equals("fieldset")) {
+                Node newfieldset = form.getOwnerDocument().createElement("fieldset");
+                Utils.copyAllAttributes(field, newfieldset);
+                NodeList itemprops = Utils.selectNodeList(field, "prompt");
+                Utils.appendNodeList(itemprops, newfieldset);
+                // place newfieldset in pre-html form
+                form.appendChild(newfieldset);
+                createPreHtmlForm(newfieldset,field,data);
+            } else {
+
             String xpath = Utils.getAttribute(field, "fdatapath", null);
 
             if (xpath==null) {
@@ -608,24 +621,19 @@ public class Wizard {
             Node fielddatanode = null;
             if (fieldinstances.getLength()>0) fielddatanode = fieldinstances.item(0);
 
-            // let's see what we should do here
-            String nodeName = field.getNodeName();
-
             // A normal field.
             if (nodeName.equals("field")) {
                 if (fielddatanode!=null) {
                     // create normal formfield.
                     mergeConstraints(field, fielddatanode);
                     createFormField(form, field, fielddatanode);
-                } else {
-                    // here we could check if this maybe should be placed anyway, even now there is no
-                    // datanode. For now, nothing will do.
                 }
             }
-
             // A list "field". Needs special processing.
             if (nodeName.equals("list")) {
                 createFormList(form, field, fieldinstances, data);
+            }
+
             }
         }
     }
@@ -777,7 +785,12 @@ public class Wizard {
             String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
             if (name!=null && fdatapath==null) {
                 // normal field or a field inside a list node?
-                String parentname = singlenode.getParentNode().getNodeName();
+                Node parentNode=singlenode.getParentNode();
+                String parentname = parentNode.getNodeName();
+                // skip fieldset
+                if (parentname.equals("fieldset")) {
+                    parentname = parentNode.getParentNode().getNodeName();
+                }
                 if (parentname.equals("item")) {
                     fdatapath = "object/field[@name='"+name+"']";
                 } else {
