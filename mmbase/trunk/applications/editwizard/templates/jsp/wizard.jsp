@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.22 2004-05-24 14:02:44 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.23 2004-06-18 12:56:13 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -120,9 +120,9 @@ if (wizardConfig.wiz.startWizard()) {
                                  "&did=" + parentDid +
                                  "&proceed=true&wizard=" + wizardname +
                                  "&sessionkey=" + ewconfig.sessionKey +
+                                 "&origin=" + origin +
                                  "&objectnumber=" + objectnumber + 
                                  "&popupid=" + popupId);
-//                                  + "&origin=" + origin);
     log.debug("Redirecting to " + redirectTo);
     response.sendRedirect(redirectTo);
 } else if (wizardConfig.wiz.mayBeClosed()) {
