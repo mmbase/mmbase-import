@@ -381,6 +381,7 @@ public class scancache extends Module implements scancacheInterface {
     /**
      * Store a file in the indicated pool's cache (both in file and in the memory cache).
      * Returns the old value if available.
+     * Is used in scanpage to recalculate the cached page.
      * @param poolname name of the cache pool, either "HENK" or "PAGE"
      * @param key URL of the page to store
      * @param value the page content to store
@@ -390,7 +391,6 @@ public class scancache extends Module implements scancacheInterface {
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
-     * @deprecated Temporary hack for solving asis problems (?). Use {@link #newput} instead.
      */
     public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
         if (status==false) return null; // no caching when inactive
