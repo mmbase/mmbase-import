@@ -54,10 +54,9 @@
      <mm:isnotempty referid="_rank">      
        <mm:listrelations type="mmbaseranks" role="rank">
           <mm:deletenode />
-       </mm:listrelations>
+       </mm:listrelations> 
        <mm:node id="ranknode" number="$_rank" />
        <mm:createrelation source="user" destination="ranknode" role="rank" />
- 
      </mm:isnotempty>
 
    </table>
