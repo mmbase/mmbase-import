@@ -43,7 +43,7 @@ public class MMBaseDoclet{
                     && ! tags[tagcount +1].name().startsWith("@mmbase-relationmanager-name")){
                         tagcount ++;
                     }
-                    appconfig.addNodeManagerConfiguration(createRelationManagerConfiguration(tags,startIndex,tagcount));
+                    //appconfig.addNodeManagerConfiguration(createRelationManagerConfiguration(tags,startIndex,tagcount));
                     //System.out.println("   " + tags[tagcount].name() + ": " + tags[tagcount].text());
                 }
             }
@@ -71,6 +71,8 @@ public class MMBaseDoclet{
                 nodeManagerConfig.setVersion(text);
             } else if (name.equals("classfile")){
                 nodeManagerConfig.setClassFile(text);
+            } else if (name.equals("extends")){
+                nodeManagerConfig.setExtends(text);
             } else if (name.equals("searchage")){
                 nodeManagerConfig.setSearchAge(text);
             } else if (name.equals("field")){
