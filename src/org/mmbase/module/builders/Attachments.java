@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.30 2004-02-16 13:39:51 michiel Exp $
+ * @version $Id: Attachments.java,v 1.31 2004-05-26 09:03:13 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -114,9 +114,8 @@ public class Attachments extends AbstractServletBuilder {
      */
 
     protected boolean setEditFileField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
-        MMObjectBuilder obj=ed.getBuilder();
         try {
-            MMObjectNode node=ed.getEditNode();
+            MMObjectNode node = ed.getEditNode();
             if (node!=null) {
                 byte[] bytes=sp.poster.getPostParameterBytes("file");
 
@@ -212,6 +211,7 @@ public class Attachments extends AbstractServletBuilder {
         return super.commit(node);
     }
 
+
     /**
      * Implements 'mimetype' function (Very simply for attachments, because they have the field).
      *
@@ -221,6 +221,15 @@ public class Attachments extends AbstractServletBuilder {
         log.debug("executeFunction of attachments builder");
         if ("mimetype".equals(function)) {
             return node.getStringValue("mimetype");
+        } else if (function.equals("format")) {
+            String mimeType = node.getStringValue("mimetype");
+            if (mimeType.length() > 0) {
+                MagicFile mf = MagicFile.getInstance();
+                String ext = mf.mimeTypeToExtension(mimeType);
+                if (! "".equals(ext)) {
+                    return ext;
+                }
+            }
         }
         return super.executeFunction(node, function, args);
     }
