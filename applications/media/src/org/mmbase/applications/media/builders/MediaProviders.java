@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * be online/offline. 
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.10 2003-07-15 12:50:23 vpro Exp $
+ * @version $Id: MediaProviders.java,v 1.11 2003-07-28 08:36:42 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -57,7 +57,7 @@ public class MediaProviders extends MMObjectBuilder {
 
     /**
      * A MediaProvider can provide one or more URL's for every source
-     * @returns A List of URLComposer's
+     * @return A List of URLComposer's
      */
 
     protected List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
