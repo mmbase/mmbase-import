@@ -64,13 +64,13 @@ public class Urls extends MMObjectBuilder {
 		return true;
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
+	public boolean nodeLocalChanged(String machine, String number,String builder,String ctype) {
+        	super.nodeLocalChanged(machine, number,builder,ctype);
 		return nodeChanged( number, builder, ctype);
 	}
 
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-        super.nodeRemoteChanged(number,builder,ctype);
-		return nodeChanged( number, builder, ctype);
+	public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine, number,builder,ctype);
+		return nodeChanged(number, builder, ctype);
 	}
 }
