@@ -1,21 +1,27 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page language="java" contentType="text/html; charset=utf-8"
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
 %><mm:cloud
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/header.jsp"
 %>
 <td class="white" colspan="2" valign="top">
 <mm:node referid="page"><h2><mm:field name="title" /></h2></mm:node>
-<mm:import externid="newsnr" />
-<%@ include file="/includes/news-include.jsp" %>
 
-<div class="newsinhoud">
 <%-- news, related to category Developers --%>
 <% // First we need to know the size of the total list
-int listsize = 0; %><mm:list nodes="$portal" 
-	path="portals,category,posrel,news,mmevents"><mm:first><mm:size jspvar="listsizeStr" vartype="String" write="false"><% try { listsize = Integer.parseInt(listsizeStr); } catch(Exception e) {} %></mm:size></mm:first></mm:list> <%-- get the parameter o = offset --%>
+int listsize = 0; 
+%>
+<mm:list nodes="$portal" 
+	path="portals,category,posrel,news,mmevents"
+	fields="news.title">
+	<mm:first><mm:size jspvar="listsizeStr" vartype="String" write="false"><% try { listsize = Integer.parseInt(listsizeStr); } catch(Exception e) {} %></mm:size></mm:first>
+</mm:list>
+<div class="newsinhoud">
 <mm:import externid="o" jspvar="offStr" vartype="String">0</mm:import>
-<mm:import jspvar="maxStr" vartype="String">10</mm:import><% 
+<mm:import jspvar="maxStr" vartype="String">10</mm:import>
+<mm:import externid="newsnr" />
+<%@ include file="/includes/news-include.jsp" %>
+<% 
 int offset = 0; 
 int max = 0;
 try { offset = Integer.parseInt(offStr); } catch(Exception e) {}
@@ -28,7 +34,7 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	offset="<%= offStr %>" max="<%= maxStr %>">
 	<mm:first>
 	<mm:present referid="newsnr"><h4>More news</h4></mm:present>
-	<mm:notpresent referid="newsnr"><p>Latest news of interest for MMBase developers.</p></mm:notpresent>
+	<mm:notpresent referid="newsnr"><p>Latest news of interest.</p></mm:notpresent>
 	<!-- previous and next -->
 	<div align="center">
 	<table border="0" cellspacing="0" cellpadding="0" class="newsnextprev">
@@ -40,15 +46,15 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 			int this_one = offset - max;
 			if (this_one < 0) { this_one = 0; } 
 		%>
-	    <a href="<mm:url referids="portal,page"><mm:param name="o"><%= this_one %></mm:param></mm:url>">&lt;&lt; previous</a>
+		<a href="<mm:url referids="portal,page"><mm:param name="o"><%= this_one %></mm:param></mm:url>">&lt;&lt; previous</a>
 		<% } else { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
 	  </td>
 	  <td><a href="<mm:url referids="portal,page" />">index</a></td>
 	  <td><%
-		if (offset < listsize && offset > 0) {
-			int next_ones = offset + max;
+		int next = offset + max;
+		if (next < listsize && offset >= 0) {
 		%>
-		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next_ones %></mm:param></mm:url>">next &gt;&gt;</a>
+		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next %></mm:param></mm:url>">next &gt;&gt;</a>
 		<% } else { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
 		</td>
 	</tr>
@@ -64,7 +70,7 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	<mm:field name="intro"><mm:isnotempty><br /><mm:write /></mm:isnotempty></mm:field>
 	</mm:node>
 	</p>
-</mm:list>
+	<mm:last>
 	<!-- previous and next -->
 	<div align="center">
 	<table border="0" cellspacing="0" cellpadding="0" class="newsnextprev">
@@ -75,21 +81,25 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 			int this_one = offset - max;
 			if (this_one < 0) { this_one = 0; } 
 		%>
-	    <a href="<mm:url referids="portal,page"><mm:param name="o"><%= this_one %></mm:param></mm:url>">&lt;&lt; previous</a>
+		<a href="<mm:url referids="portal,page"><mm:param name="o"><%= this_one %></mm:param></mm:url>">&lt;&lt; previous</a>
 		<% } else { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
 	  </td>
 	  <td><a href="<mm:url referids="portal,page" />">index</a></td>
 	  <td><%
-		if (offset < listsize && offset > 0) {
+		int next = offset + max;
+		if (next < listsize && offset > 0) {
 			int next_ones = offset + max;
 		%>
-		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next_ones %></mm:param></mm:url>">next &gt;&gt;</a>
+		  &nbsp;&nbsp;<a href="<mm:url referids="portal,page">"><mm:param name="o"><%= next %></mm:param></mm:url>">next &gt;&gt;</a>
 		<% } else { %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% } %>
 		</td>
 	</tr>
 	</table>
 	</div>
 	<!-- /previous and next -->
+	</mm:last>
+</mm:list>
+
 </div>
 </td>
 <%@ include file="/includes/footer.jsp"
