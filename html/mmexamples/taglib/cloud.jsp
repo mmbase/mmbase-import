@@ -11,14 +11,14 @@
 <h1>Cloud tag</h1>
 <p>
 The cloud tag has to appear on most pages, because only inside a cloud
-tag, the mmbase data is available. It works like this:
+tag, the MMBase data is available. It works like this:
 </p>
 
 <%-- <mm:cloud method="anonymous"> --%>
 <%-- <mm:cloud method="http"> --%>
 <%-- <mm:cloud logon="foo" method="http"> --%>
 <%-- <mm:cloud logon="foo" pwd="bar"> --%>
-<%-- mm:cloud id="cloud" method="anonymous" --%>
+<%-- <mm:cloud id="cloud" method="anonymous"> --%>
 
 <table>
 <tr valign="top">

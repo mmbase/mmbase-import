@@ -16,16 +16,14 @@
     <td valign="top">
       <mm:present referid="nodemanager">
         <table>
-          <mm:listnodes type="${nodemanager}">
-            <mm:first>
-              <tr>
-                <mm:fieldlist type="list">
-                  <td>
-                    <mm:fieldinfo type="name"/>
-                  </td>
-                </mm:fieldlist>
-              </tr>
-            </mm:first>
+            <tr>
+              <mm:fieldlist nodetype="$nodemanager" type="list">
+                <td>
+                  <mm:fieldinfo type="name"/>
+                </td>
+              </mm:fieldlist>
+            </tr>
+          <mm:listnodes type="$nodemanager">
             <tr>
               <mm:fieldlist type="list">
                 <td>
