@@ -32,7 +32,7 @@ public interface Cloud {
 	 * @param aliasname the aliasname of the node
 	 * @return the requested node
 	 */
-	public Node getNode(String aliasname);
+	public Node getNodeByAlias(String aliasname);
 
  	/**
      * Retrieves all node managers (aka builders) available in this cloud
@@ -47,13 +47,6 @@ public interface Cloud {
      */
     public NodeManager getNodeManager(String nodeManagerName);
 
-	/**
-     * Retrieves a NodeManager (aka builder)
-     * @param nodeManagerID number of the NodeManager to retrieve
-     * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
-     */
-    public NodeManager getNodeManager(int nodeManagerID);
- 	
  	/**
      * Retrieves a RelationManager
      * @param sourceManagerName name of the NodeManager of the source node
@@ -69,13 +62,6 @@ public interface Cloud {
      * @return the newly created (but not yet committed) node
      */
     public Node createNode(String nodeManagerName);
-
-	/**
-     * Creates a node using a specified NodeManager
-     * @param nodeManagerID number of the NodeManager defining the node structure
-     * @return the newly created (but not yet committed) node
-     */
-    public Node createNode(int nodeManagerID);
 	
 	/**
      * Retrieves the context for this cloud
@@ -83,18 +69,46 @@ public interface Cloud {
      */
     public CloudContext getCloudContext();
 
-  	/**
-     * Logs the current user on under a given logon name.
-     * @param account the useraccount to log on to
-     * @param password the user's password
-     * @return <code>true</code> if logon was succesful, <code>false</code> otherwise.
-     * public boolean logOn(String account,String password);
+    /**
+     * Creates a transaction on this cloud with a generic ID.
+     * @return a <code>Transaction</code> on this cloud
      */
+    public Transaction createTransaction();
 
     /**
-     * Logs the current user off.
-     * public void logOff();
+     * Creates a named transaction on this cloud.
+     * @param name an unique name to use for the transaction
+     * @return a <code>Transaction</code> on this cloud
      */
+    public Transaction createTransactionByName(String name);
+
+    /**
+     * Creates a transaction on this cloud.
+     * @param name the unique name of the transaction to open
+     * @return the identified <code>Transaction</code>
+     */
+    public Transaction openTransaction(String name);
+   	
+  	/**
+     * Retrieves the current user name
+     * @return the user name
+     */
+    public String getUserName();
+
+  	/**
+     * Logs on a user.
+     * This results in an environment (a cloud) in which the user is registered.
+	 * @param authenticatorName name of the authentication method to sue
+	 * @param parameters parameters for the authentication
+	 * @return <code>true</code> if succesful (should throw exception?)
+     */
+    public boolean logon(String authenticatorName, Object[] parameters);
+  	
+  	/**
+     * Logs off a user.
+     * Resets the user's context to 'anonymous'
+     */
+    public void logoff();
 
   	/**
      * Retrieves the cloud's name (this is an unique identifier).
@@ -108,7 +122,18 @@ public interface Cloud {
      */
     public String getDescription();
 
+    /**
+     * Retrieves the current selected language
+	 * @return return the language as a <code>String</code>
+     */
+    public String getLanguage();
 
+    /**
+     * Sets the current selected language
+	 * @param language the language as a <code>String</code>
+     */
+    public void setLanguage(String language);
+	
 	/**
      * Search nodes in a cloud accoridng to a specified filter.
      * @param nodes The numbers of the nodes to start the search with. These have to be a member of the first NodeManager

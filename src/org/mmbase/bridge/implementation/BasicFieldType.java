@@ -44,10 +44,17 @@ public class BasicFieldType implements FieldType {
     }
  	
  	/**
+	 * Retrieve the field's GUI type
+	 */
+    public String getGUIType() {
+        return field.getGUIType();
+    }
+ 	
+ 	/**
 	 * Retrieve the field's GUI name
 	 */
     public String getGUIName() {
-        return field.getGUIName(((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb.getLanguage());
+        return field.getGUIName(nodeManager.getCloud().getLanguage());
     }
 
 	/**

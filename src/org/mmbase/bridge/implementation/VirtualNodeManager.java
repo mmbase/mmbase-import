@@ -15,7 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * This class represents a temporary node type information object.
+ * This class represents a virtual node type information object.
  * It has the same functionality as BasicNodeType, but it's nodes are vitrtual - that is,
  * constructed based on the results of a search over multiple node managers.
  * As such, it is not possible to search on this node type, nor to create new nodes.
@@ -23,10 +23,10 @@ import org.mmbase.module.corebuilders.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public class TemporaryNodeManager extends BasicNodeManager {
+public class VirtualNodeManager extends BasicNodeManager {
 
-    TemporaryNodeManager(MMObjectNode node, Cloud cloud) {
-        this.cloud=cloud;
+    VirtualNodeManager(MMObjectNode node, Cloud cloud) {
+        this.cloud=(BasicCloud)cloud;
         this.builder=node.parent;
         // determine fields and field types
         for (Enumeration e = node.values.keys(); e.hasMoreElements(); ) {
@@ -62,7 +62,7 @@ public class TemporaryNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and creating nodes is not allowed.
      */
     public Node createNode() {
-        throw new SecurityException("Cannot create a node from a temporary node type");
+        throw new BridgeException("Cannot create a node from a virtual node type");
     }
 
 	/**
@@ -70,6 +70,6 @@ public class TemporaryNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and searching is not allowed.
      */
     public List search(String where, String sorted, boolean direction) {
-        throw new SecurityException("Cannot perform search on a temporary node type");
+        throw new BridgeException("Cannot perform search on a virtual node type");
     }
 }
