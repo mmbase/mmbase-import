@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.11 2003-07-30 10:19:40 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.12 2003-07-31 09:53:36 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -156,6 +156,13 @@ public interface StorageManagerFactory {
      */
 	public Map getDisallowedFields();
 
+    /**
+     * Obtains the identifier for the basic storage element.
+     * @return the storage-specific identifier
+     * @throws StorageException if the object cannot be given a valid identifier
+     */
+    public Object getStorageIdentifier() throws StorageException;
+    
     /**
      * Obtains a identifier for an MMBase object.
      * @see Storable

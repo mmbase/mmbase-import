@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.7 2003-07-28 10:19:20 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.8 2003-07-31 09:53:37 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -101,7 +101,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
 
         // test the datasource and retrieves options, 
         // which are stored as options in the factory's attribute
-        // this allows for easy retrieveal of database options
+        // this allows for easy retrieval of database options
         try {
             Connection con = dataSource.getConnection();
             DatabaseMetaData metaData = con.getMetaData();

@@ -15,6 +15,7 @@ import java.sql.*;
 import javax.sql.DataSource;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.Scheme;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.7 2003-07-31 07:49:54 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.8 2003-07-31 09:53:37 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -235,7 +236,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
             MMObjectBuilder builder = node.getBuilder();
-            Scheme scheme = factory.getScheme(DatabaseSchemes.GET_TEXT_DATA_SCHEME, DatabaseSchemes.GET_TEXT_DATA_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.GET_TEXT_DATA_SCHEME, Schemes.GET_TEXT_DATA_SCHEME_DFP);
             String query = scheme.format(new Object[] { builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
@@ -292,11 +293,11 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return the retrieved byte array
      */
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException {
-        if (factory.hasOption("database.storeBinaryAsFile")) {
+        if (factory.hasOption(Attributes.STORE_BINARY_AS_FILE)) {
             return readBinaryFromFile(node, field);
         } else try {
             MMObjectBuilder builder = node.getBuilder();
-            Scheme scheme = factory.getScheme(DatabaseSchemes.GET_BINARY_DATA_SCHEME, DatabaseSchemes.GET_BINARY_DATA_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA_SCHEME, Schemes.GET_BINARY_DATA_SCHEME_DFP);
             String query = scheme.format(new Object[] { builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
@@ -326,7 +327,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected byte[] getBinaryValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
-        if (factory.hasOption("database.supportsBlob")) {
+        if (factory.hasOption(Attributes.SUPPORTS_BLOB)) {
             Blob blob = result.getBlob(index);
             return blob.getBytes(0, (int) blob.length());
         } else {
@@ -405,39 +406,115 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * This method inserts a new object, and registers the change.
      * Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored.
+     * Override this method to call {@link insert(MMObjectNode, MMObjectBuilder)} for all involved builders if you use
+     * a relational database.
+     * @todo: move precomit() call to MMObjectBuilder
      * @param node The node to insert
-     * @return The (new) number for this node, or -1 if an error occurs.
+     * @return The (new) number for this node
      * @throws StorageException if an error occurred during insert
      */
-    abstract public int insert(MMObjectNode node) throws StorageException;
+    public int insert(MMObjectNode node) throws StorageException {
+        // assign a new number if the node has not yet been assigned one 
+        if (node.getNumber() == -1) {
+            node.setValue("number", createKey());
+        }
+        MMObjectBuilder builder = node.getBuilder();
+        // precommit call, needed to convert or add things before a save
+        // Should be done in MMObjectBuilder
+        builder.preCommit(node);
+        return insert(node,builder);
+    }
+
+    /**
+     * This method inserts a new object in a specific builder, and registers the change.
+     * This method makes it easier to implement relational databases, where you may need to update the node
+     * in more than one builder.
+     * @param node The node to insert
+     * @param builder the builder to store the node
+     * @return The (new) number for this node
+     * @throws StorageException if an error occurred during commit
+     */
+    public int insert(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+        // Create a String that represents the fields and values to be used in the insert.
+        StringBuffer fieldNames = null;
+        StringBuffer fieldValues = null;
+        // get a builders fields
+        List fields = builder.getFields();
+        for (Iterator f = fields.iterator(); f.hasNext();) {
+            FieldDefs field = (FieldDefs) f.next();
+            // use field.inStorage()
+            if (((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
+                 (field.getDBState() == FieldDefs.DBSTATE_SYSTEM))) {
+                // skip bytevalues that are written to file
+                if (factory.hasOption(Attributes.STORE_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
+                    storeBinaryAsFile(node,field);
+                    // do not handle this field further
+                    f.remove();
+                } else {
+                    fields.add(field);
+                    // store the fieldname and the value parameter
+                    String fieldName = (String)factory.getStorageIdentifier(field);
+                    if (fieldNames == null) {
+                        fieldNames = new StringBuffer(fieldName);
+                        fieldValues = new StringBuffer("?");
+                    } else {
+                        fieldNames.append(',').append(fieldName);
+                        fieldValues.append(",?");
+                    }
+                }
+            } else {
+                // do not handle this field further
+                f.remove();
+            }
+        }
+        if (fields.size() > 0) {
+            Scheme scheme = factory.getScheme(Schemes.INSERT_NODE_SCHEME, Schemes.INSERT_NODE_SCHEME_DFP);
+            try {
+                String query = scheme.format(new Object[] { builder, fieldNames.toString(), fieldValues.toString(), builder.getField("number"), node });
+                getActiveConnection();
+                PreparedStatement ps = activeConnection.prepareStatement(query);
+                for (int fieldNumber = 1; fieldNumber < fields.size(); fieldNumber++) {
+                    FieldDefs field = (FieldDefs) fields.get(fieldNumber);
+                    setValue(ps, fieldNumber, node, field);
+                }
+                ps.executeUpdate();
+            } catch (SQLException se) {
+                throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
+            }
+        }
+        commitChange(node,"n");
+        return node.getNumber();
+    }
 
     /**
      * Commit this node
+     * Override this method to call {@link insert(MMObjectNode, MMObjectBuilder)} for all involved builders if you use
+     * a relational database.
+     * @todo: move precomit() call to MMObjectBuilder
      * @param node The node to commit
-     * @return <code>true</code> of succesful, false otherwise
      * @throws StorageException if an error occurred during commit
      */
     public void commit(MMObjectNode node) throws StorageException {
-        commit(node,node.getBuilder());
+        MMObjectBuilder builder = node.getBuilder();
+        // precommit call, needed to convert or add things before a save
+        // Should be done in MMObjectBuilder
+        builder.preCommit(node);
+        commit(node,builder);
     }
 
     /**
      * Commit this node to the specified builder.
      * This method makes it easier to implement relational databses, where you may need to update the node
      * in more than one builder.
-     * @todo: move precomit() call to MMObjectBuilder
      * @param node The node to commit
-     * @return <code>true</code> of succesful, false otherwise
+     * @param builder the builder to store the node
      * @throws StorageException if an error occurred during commit
      */
     public void commit(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        // precommit call, needed to convert or add things before a save
-        // Should be done in MMObjectBuilder
-        if (builder == node.getBuilder()) {
-            builder.preCommit(node);
-        }
-        // Create a String that represents the DB fields to be used in the insert.
-        StringBuffer setFields=null;
+        // Create a String that represents the fields to be used in the commit
+        StringBuffer setFields = null;
         // obtain the node's changed fields
         List fieldNames = node.getChanged();
         List fields = new ArrayList();
@@ -453,7 +530,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
                  (field.getDBState() == FieldDefs.DBSTATE_SYSTEM))) {
                 // skip bytevalues that are written to file
-                if (factory.hasOption("database.storeBinaryAsFile") && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
+                if (factory.hasOption(Attributes.STORE_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
                     storeBinaryAsFile(node,field);
                 } else {
                     // handle this field - store it in fields
@@ -469,7 +546,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             }
         }
         if (fields.size() > 0) {
-            Scheme scheme = factory.getScheme(DatabaseSchemes.UPDATE_NODE_SCHEME, DatabaseSchemes.UPDATE_NODE_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE_SCHEME, Schemes.UPDATE_NODE_SCHEME_DFP);
             try {
                 String query = scheme.format(new Object[] { builder, setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
@@ -683,7 +760,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             throw new StorageException("cannot delete node "+node.getNumber()+", it still has relations");
         }
         try {
-            Scheme scheme = factory.getScheme(DatabaseSchemes.DELETE_NODE_SCHEME, DatabaseSchemes.DELETE_NODE_SCHEME_DFP);
+            Scheme scheme = factory.getScheme(Schemes.DELETE_NODE_SCHEME, Schemes.DELETE_NODE_SCHEME_DFP);
             String query = scheme.format(new Object[] { builder, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
@@ -704,7 +781,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during the get
      */
     public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
-        Scheme scheme = factory.getScheme(DatabaseSchemes.SELECT_NODE_SCHEME, DatabaseSchemes.SELECT_NODE_SCHEME_DFP);
+        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_SCHEME, Schemes.SELECT_NODE_SCHEME_DFP);
         try {
             getActiveConnection();
             String query = scheme.format(new Object[] { builder, builder.getField("number"), new Integer(number)});
@@ -741,7 +818,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
                     if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
                         if (shorten(field)) {
                             node.setValue(field.getDBName(), "$SHORTED");
-                        } else if (field.getDBType() == FieldDefs.TYPE_BYTE && factory.hasOption("database.storeBinaryAsFile")) {
+                        } else if (field.getDBType() == FieldDefs.TYPE_BYTE && factory.hasOption(Attributes.STORE_BINARY_AS_FILE)) {
                             node.setValue(field.getDBName(), readBinaryFromFile(node, field));
                         } else {
                             String id = (String) factory.getStorageIdentifier(field);
@@ -795,7 +872,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during selection
      */
     public int getNodeType(int number) throws StorageException {
-        Scheme scheme = factory.getScheme(DatabaseSchemes.SELECT_NODE_TYPE_SCHEME, DatabaseSchemes.SELECT_NODE_TYPE_SCHEME_DFP);
+        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_TYPE_SCHEME, Schemes.SELECT_NODE_TYPE_SCHEME_DFP);
         try {
             getActiveConnection();
             MMBase mmbase = factory.getMMBase();
@@ -815,16 +892,126 @@ public abstract class DatabaseStorageManager implements StorageManager {
             releaseActiveConnection();
         }
     }
-    
+
+    /**
+     * Returns the parent builder of the specifed builder.
+     * If the value is null, the builder either has no parent, or its builder is the
+     * "object" table, but there was no builder created for this low-level table.
+     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder 
+     *       configuration files. It should be moved to MMObjectBuilder
+     * @param builder the builder to find the parent of
+     * @return the parent builder or null if it cannot be determined
+     */
+    protected MMObjectBuilder getParentBuilder(MMObjectBuilder builder) {
+        MMObjectBuilder parent = builder.getParentBuilder();
+        if ((parent == null) && (builder instanceof InsRel) && !builder.getTableName().equals("insrel")) {
+            parent = factory.getMMBase().getInsRel();
+        }
+        return parent;
+    }
+
+    /**
+     * Tests whether the specified field is a member of the given builder
+     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder 
+     *       configuration files. It should be moved to MMObjectBuilder.
+     * @param builder the builder to find the parent of
+     * @param field the field to test
+     * @return true if the field belongs to the parent table
+     */
+    protected boolean hasField(MMObjectBuilder builder, FieldDefs field) {
+        String fieldName = field.getDBName();
+        if (builder == null) {
+            return fieldName.equals("number") || fieldName.equals("otype") || fieldName.equals("owner");
+        } else {
+            return builder.getField(fieldName) != null;
+        }
+    }
 
     /**
      * Create a storage element to store the specified builder's objects.
      * @param builder the builder to create the storage for
-     * @return <code>true</code> if the storage was succesfully created
-     * @throws StorageException if an error occurred during the creation fo the table
+     * @throws StorageException if an error occurred during the creation of the table
      */
-    abstract public boolean create(MMObjectBuilder builder) throws StorageException;
+    public void create(MMObjectBuilder builder) throws StorageException {
+        if (log.isDebugEnabled()) {
+            log.debug("Creating a table for " + builder);
+        }
+        // use the builder to get the fields and create a
+        // valid create SQL string
+        // for backward compatibility, fields are to be created in the order defined
+        // TODO: check whether otype is returned in the correct position!
+        List fields = builder.getFields(FieldDefs.ORDER_CREATE);
+        StringBuffer createFields = new StringBuffer();
+        StringBuffer createIndices = new StringBuffer();
+        StringBuffer createFieldsAndIndices = new StringBuffer();
+        // obtain the parentBuilder
+        // TODO: add fall-back code so parentBuilder is NOT null!
+        // maybe do this in MMObjectBuilder???
+        MMObjectBuilder parentBuilder = getParentBuilder(builder);
+        String parentTableName;
+        if (parentBuilder != null) {
+            parentTableName = (String)factory.getStorageIdentifier(parentBuilder);
+        } else {
+            parentTableName = (String)factory.getStorageIdentifier();
+        }
+        
+        for (Iterator f = fields.iterator(); f.hasNext();) {
+            FieldDefs field = (FieldDefs) f.next();
+            // persistent field? ( use inStorage() )
+            boolean storefield = field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM;
+            // skip binary fields when values are written to file
+            storefield = storefield && field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORE_BINARY_AS_FILE);
+            // also, if the database is OO, skip fields that are in the parent builder 
+            storefield = storefield &&  !factory.hasOption(Attributes.SUPPORTS_INHERITANCE) || !hasField(parentBuilder, field);
+            // convert a fielddef to a field SQL createdefinition
+            if (storefield) {
+                String fieldDef = getFieldDefinition(builder, field);
+                String indexDef = getIndexDefinition(builder, field);
+                if (createFields.length() > 0) createFields.append(", ");
+                createFields.append(fieldDef);
+                if (createIndices.length() > 0) createIndices.append(", ");
+                createIndices.append(indexDef);
+                if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
+                createFieldsAndIndices.append(fieldDef+" "+indexDef);
+            }
+        }
 
+        try {
+            getActiveConnection();
+            // create a rowtype, if a scheme has been given
+            // Note that creating a rowtype is optional
+            Scheme scheme = factory.getScheme(Schemes.CREATE_ROW_TYPE_SCHEME);
+            if (scheme!=null) {
+                String query = scheme.format(new Object[] { builder, createFields.toString(), parentTableName });
+                Statement s = activeConnection.createStatement();
+                s.executeUpdate(query);
+            }
+            // create the table
+            scheme = factory.getScheme(Schemes.CREATE_TABLE_SCHEME);
+            String query = scheme.format(new Object[] { builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), parentTableName });
+            Statement s = activeConnection.createStatement();
+            s.executeUpdate(query);
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
+
+    /**
+     * @javadoc
+     */
+    protected String getFieldDefinition(MMObjectBuilder builder, FieldDefs field) {
+        return null;
+    }
+    
+    /**
+     * @javadoc
+     */
+    protected String getIndexDefinition(MMObjectBuilder builder, FieldDefs field) {
+        return null;
+    }
+    
     /**
      * Create the basic elements for this storage
      * @return <code>true</code> if the storage was succesfully created
