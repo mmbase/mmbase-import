@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="folders" maintainer="didactor.nl" version="3" extends="object">
+<builder name="portfoliopermissions" maintainer="didactor.nl" version="2" extends="object">
   <status>active</status>
 
   <classfile>Dummy</classfile>
@@ -8,79 +8,53 @@
 
   <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Map</singular>
-    <singular xml:lang="en">Folder</singular>
+    <singular xml:lang="nl">Portfoliopermissies</singular>
+    <singular xml:lang="en">Portfoliopermissions</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Mappen</plural>
-    <plural xml:lang="en">Folders</plural>
+    <plural xml:lang="nl">Portfoliopermissies</plural>
+    <plural xml:lang="en">Portfoliopermissions</plural>
   </names>
 
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Een map binnen een werkruimte waarin attachments kunnen worden opgeslagen</description>
-    <description xml:lang="en">A folder in a workspace, where attachments can be stored</description>
+    <description xml:lang="nl">Permissies voor items in portfolio.</description>
+    <description xml:lang="nl">Permissions for items in portfolio.</description>
   </descriptions>
 
+  <!-- <properties>
+  you can define properties to be used by the classfile (if used) it uses
+  a key/value system. Its a optional tag.
+  -->
   <properties>
     <property name="max-nodes-from-query">200</property>
   </properties>
 
   <fieldlist>
-    <!-- POS 3 : <field> 'name'  -->
+
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Naam van de map</description>
-        <description xml:lang="en">Name of the workspace</description>
-      </descriptions>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="nl">Naam</guiname>
-        <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>1</input>
-          <!-- position in list area of the editor -->
-          <list>1</list>
-          <!-- position in search area of the editor -->
-          <search>1</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>name</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
-    </field>
-    <!-- POS 3 : <field> 'type'  -->
-    <field>
-      <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Type van de map. 
+        <description xml:lang="nl">Leesrechten
           Mogelijke waarden:
-            0 = standaard (Alleen eigenaar mag posten &amp; lezen)
-            1 = publiek (Alleen eigenaar mag posten, iedereen mag lezen)
-            2 = docent (Docenten mogen posten, iedereen mag lezen)
-            3 = open (iedereen mag posten, iedereen mag lezen)
+            0 = standaard (Alleen eigenaar mag lezen)
+            1 = klas 
+            2 = docent
+            3 = gebruikers
+            4 = anoniem
         </description>
-        <description xml:lang="en">Type of the folder.
+        <description xml:lang="en">Read rights
           Possible values:
-            0 = standard (Only the owner may post &amp; read)
-            1 = public (Only the owner may post, everybody may read)
-            2 = teacher (Teachers may post, everybody may read)
-            3 = open (Everybody may post, everybody may read)
+            0 = standard (Only the owner may read)
+            1 = class
+            2 = teacher
+            3 = users
+            4 = anonymous
         </description>
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Type</guiname>
-        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Leesrechten</guiname>
+        <guiname xml:lang="en">Read rights</guiname>
         <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
@@ -97,7 +71,39 @@
       <!-- database related  -->
       <db>
         <!-- name of the field in the database -->
-        <name>type</name>
+        <name>readrights</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Reacties toestaan</description>
+        <description xml:lang="en">Allow reactions</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Reacties toestaan</guiname>
+        <guiname xml:lang="en">Allow reactions</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>2</input>
+          <!-- position in list area of the editor -->
+          <list>2</list>
+          <!-- position in search area of the editor -->
+          <search>2</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>allowreactions</name>
         <!-- MMBase datatype and demands on it -->
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
