@@ -2,65 +2,65 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article class="specification">
-  <!-- 
-		This document is a template for a fnctional reference document.
+	<!--
+		This document is a template for a functional reference document.
 		Use this document to explain :
 		- the objectcloud and the (use of) objects and relations in your project.
 		- call conditions of (web) pages crucial to the project
-		- the structure and use of tags in xml's used by the project (other than configuration) 
+		- the structure and use of tags in xml's used by the project (other than configuration)
 
 		You only need a functional reference if the project goal is to provide a class structure that other developers need to add or expand MMBase functionality
 		Note that the description of xml's needed for configuration should go in the installation reference
-		
-		In the text below, replace the bracketed text with your own. 
+
+		In the text below, replace the bracketed text with your own.
 	-->
-  <articleinfo>
-    <title>The [projectname] Functional Reference</title>
+	<articleinfo>
+		<title>The [projectname] Functional Reference</title>
 
-    <date>[date, format: YYYY-MM-DD ]</date>
+		<date>[date, format: YYYY-MM-DD ]</date>
 
-    <edition>$Id$</edition>
+		<edition>$Id$</edition>
 
-    <authorgroup>
+		<authorgroup>
 			<!-- one or more authors -->
-      <author>
-        <firstname>[firstname]</firstname>
-        <surname>[lastname]</surname>
-      </author>
-    </authorgroup>
+			<author>
+				<firstname>[firstname]</firstname>
+				<surname>[lastname]</surname>
+			</author>
+		</authorgroup>
 
-    <revhistory>
-      <revision>
-        <revnumber>[revision number, i.e.: 1.0]</revnumber>
-        <date>[revision date, format: YYYY-MM-DD ]</date>
+		<revhistory>
+			<revision>
+				<revnumber>[revision number, i.e.: 1.0]</revnumber>
+				<date>[revision date, format: YYYY-MM-DD ]</date>
 				<authorinitials>[author initials, derived from firstname/lastname of author), i.e.  HH, PvR, etc.]</authorinitials>
-        <revremark>[Change Remark]</revremark>
-      </revision>
-    </revhistory>
+				<revremark>[Change Remark]</revremark>
+			</revision>
+		</revhistory>
 
-    <abstract>
-      <para>Functional reference for [project description (optional)]</para>
-    </abstract>
+		<abstract>
+			<para>Functional reference for [project description (optional)]</para>
+		</abstract>
 
-    <legalnotice>
-      <para>This software is OSI Certified Open Source Software. OSI Certified
-      is a certification mark of the Open Source Initiative.</para>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified
+			is a certification mark of the Open Source Initiative.</para>
 
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
-      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
-    </legalnotice>
-  </articleinfo>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site.
+			See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+	</articleinfo>
 
-  <section id="introduction">
-    <title>Introduction</title>
+	<section id="introduction">
+		<title>Introduction</title>
 		<para>[Place here an introduction text. This should simply outlay the purpose and content of this document.]</para>
-  </section>
+	</section>
 
-  <section id="architecture">
-    <title>Architecture</title>
+	<section id="architecture">
+		<title>Architecture</title>
 		<para>[Place here a (functional) description of the object model. If your project does not include an objectcloud, remove this section.]</para>
 	</section>
-	
+
 	<section id="basicconcepts">
 		<title>Basic Concepts</title>
 		<para>[Place here a description of elementary techniques used in this project. This may also refer to external documents. Skip this section if there are no special techniques that need explanation.]</para>
@@ -75,7 +75,7 @@
 			<itemizedlist>
 				<title>Fields:</title>
 				<listitem>
-				  <formalpara><title>[field name], [field guitype]([field MMBase type]), [unique|key]</title><para /></formalpara>
+					<formalpara><title>[field name], [field guitype]([field MMBase type]), [unique|key]</title><para /></formalpara>
 					<para>[Description of the field. You need not list fields if they are not of import to the project.
 					Do not list standard fields number, otype, owner, snumber, dnumber, rnumber, or dir. Note that this will often replicate the description from the builder xml.]</para>
 				</listitem>
@@ -101,7 +101,7 @@
 						</listitem>
 					</varlistentry>
 				</variablelist></para>
-		  </formalpara>
+			</formalpara>
 			<formalpara>
 				<title>The following parameters MAY be specified:</title>
 				<!-- if there are no optional parameters, skip this section or list <para>None</para> instead -->
@@ -114,7 +114,7 @@
 						</listitem>
 					</varlistentry>
 				</variablelist></para>
-		  </formalpara>
+			</formalpara>
 		</section>
 	</section>
 
@@ -203,10 +203,10 @@
 		</section>
 	</section>
 
-	<!-- 
-	  You can add your own sections here, if you need to describe elements that are not covered in the previous topics.
+	<!--
+		You can add your own sections here, if you need to describe elements that are not covered in the previous topics.
 	-->
-	
+
 	<section id="references">
 		<title>References</title>
 		<para>Place here a list of references to other documents.</para>

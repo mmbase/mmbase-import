@@ -2,61 +2,61 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article class="specification">
-  <!-- 
+	<!--
 		This document is a template for a technical reference document.
 		Use this document to explain :
 		- the (use of) interfaces or vital classes in your project.
 		- the properties in resources used by the project (other than for configuration)
 
 		You only need a technical reference if the project goal is to provide a class structure that other developers need to add or expand MMBase functionality, or if it includes resources that developers are likely to change.
-		Note that the description of resources needed for configuration should go in the installation reference
-		
-		In the text below, replace the bracketed text with your own. 
+		Note that the description of resources needed for configuration should go in the configuration document.
+
+		In the text below, replace the bracketed text with your own.
 	-->
-  <articleinfo>
-    <title>The [projectname] Technical Reference</title>
+	<articleinfo>
+		<title>The [projectname] Technical Reference</title>
 
-    <date>[date, format: YYYY-MM-DD ]</date>
+		<date>[date, format: YYYY-MM-DD ]</date>
 
-    <edition>$Id$</edition>
+		<edition>$Id$</edition>
 
-    <authorgroup>
+		<authorgroup>
 			<!-- one or more authors -->
-      <author>
-        <firstname>[firstname]</firstname>
-        <surname>[lastname]</surname>
-      </author>
-    </authorgroup>
+			<author>
+				<firstname>[firstname]</firstname>
+				<surname>[lastname]</surname>
+			</author>
+		</authorgroup>
 
-    <revhistory>
-      <revision>
-        <revnumber>[revision number, i.e.: 1.0]</revnumber>
-        <date>[revision date, format: YYYY-MM-DD ]</date>
+		<revhistory>
+			<revision>
+				<revnumber>[revision number, i.e.: 1.0]</revnumber>
+				<date>[revision date, format: YYYY-MM-DD ]</date>
 				<authorinitials>[author initials, derived from firstname/lastname of author), i.e.  HH, PvR, etc.]</authorinitials>
-        <revremark>[Change Remark]</revremark>
-      </revision>
-    </revhistory>
+				<revremark>[Change Remark]</revremark>
+			</revision>
+		</revhistory>
 
-    <abstract>
-      <para>Technical reference for [project description (optional)]</para>
-    </abstract>
+		<abstract>
+			<para>Technical reference for [project description (optional)]</para>
+		</abstract>
 
-    <legalnotice>
-      <para>This software is OSI Certified Open Source Software. OSI Certified
-      is a certification mark of the Open Source Initiative.</para>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified
+			is a certification mark of the Open Source Initiative.</para>
 
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
-      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
-    </legalnotice>
-  </articleinfo>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site.
+			See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+	</articleinfo>
 
-  <section id="introduction">
-    <title>Introduction</title>
-		<para>[Place here an introduction text. Thisshuld simply outlay the purpose and content of this document.]</para>
-  </section>
+	<section id="introduction">
+		<title>Introduction</title>
+		<para>[Place here an introduction text. This sohuld simply outlay the purpose and content of this document.]</para>
+	</section>
 
-  <section id="architecture">
-    <title>Architecture</title>
+	<section id="architecture">
+		<title>Architecture</title>
 		<para>[Place here a (technical) description of the class model.]</para>
 	</section>
 
@@ -67,21 +67,21 @@
 			<title>[Interface name]</title>
 			<para>[Place here a text describing the interface or class and its purpose.]</para>
 			<programlisting format="linespecific"><![CDATA[
-public interface [Interface name] {  
-	
+public interface [Interface name] {
+
 [ methods ]
-		
+
 }]]></programlisting>
 			<itemizedlist>
 				<title>Methods:</title>
 				<listitem>
-				  <formalpara><title>[method]</title><para /></formalpara>
+					<formalpara><title>[method]</title><para /></formalpara>
 					<para>[Description of how to use this method within the scope project]</para>
 				</listitem>
 			</itemizedlist>
 		</section>
 	</section>
-	
+
 	<section id="abstract_classes">
 		<title>Abstract Classes</title>
 		<para>[Place here a text describing the abstract classes of interest to this project. Each seperate class can be described in more detail in seperate sections. In general, these sections should focus on how to use the classes in normal use, and should extend, rather than replace, javadoc.]</para>
@@ -89,15 +89,15 @@ public interface [Interface name] {
 			<title>[Class name]</title>
 			<para>[Place here a text describing the interface or class and its purpose.]</para>
 			<programlisting format="linespecific"><![CDATA[
-public abstractclass [Class name] { 
-	
+public abstractclass [Class name] {
+
 [ methods ]
-		
+
 }]]></programlisting>
 			<itemizedlist>
 				<title>Methods:</title>
 				<listitem>
-				  <formalpara><title>[method]</title><para /></formalpara>
+					<formalpara><title>[method]</title><para /></formalpara>
 					<para>[Description of how to use this method within the scope project]</para>
 				</listitem>
 			</itemizedlist>
@@ -111,15 +111,15 @@ public abstractclass [Class name] {
 			<title>[Class name]</title>
 			<para>[Place here a text describing the interface or class and its purpose.]</para>
 			<programlisting format="linespecific"><![CDATA[
-public class [Class name] { 
-	
+public class [Class name] {
+
 [ methods ]
-		
+
 }]]></programlisting>
 			<itemizedlist>
 				<title>Methods:</title>
 				<listitem>
-				  <formalpara><title>[method]</title><para /></formalpara>
+					<formalpara><title>[method]</title><para /></formalpara>
 					<para>[Description of how to use this method within the scope project]</para>
 				</listitem>
 			</itemizedlist>
@@ -128,7 +128,7 @@ public class [Class name] {
 
 	<section id="resources">
 		<title>[Resources]</title>
-		<para>[Place here a text describing the (property) resources of interest to this project. Each resource file can be described in more detail in seperate sections. In generally, only detail resources that are worth it, as resourecs intended for multilangual translation of terms are self-explanatory. If the resource is an xml file, describe it in either the installation document (if it concerns configuration), the functional reference document, or an external reference]</para>
+		<para>[Place here a text describing the (property) resources of interest to this project. Each resource file can be described in more detail in seperate sections. In generally, only detail resources that are worth it, as resourecs intended for multilangual translation of terms are self-explanatory. If the resource is an xml file, describe it in either the configuration document (if it concerns configuration), the functional reference document, or an external reference]</para>
 		<section>
 			<title>[Resource name]</title>
 			<para>[Place here a text describing the resource and its purpose.]</para>
@@ -136,17 +136,17 @@ public class [Class name] {
 			<itemizedlist>
 				<title>Resource properties:</title>
 				<listitem>
-				  <formalpara><title>[property name]</title><para /></formalpara>
+					<formalpara><title>[property name]</title><para /></formalpara>
 					<para>[Description of the property]</para>
 				</listitem>
 			</itemizedlist>
 		</section>
 	</section>
 
-	<!-- 
-	  You can add your own sections here, if you need to describe elements that are not covered in the previous topics.
+	<!--
+		You can add your own sections here, if you need to describe elements that are not covered in the previous topics.
 	-->
-	
+
 	<section id="references">
 		<title>References</title>
 		<para>Place here a list of references to other documents.</para>
