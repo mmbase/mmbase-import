@@ -10,9 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.security.implementation.basic;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public interface LoginModule {
-    public void load(HashMap properties);
-    public boolean login(NameContext user, HashMap loginInfo,  Object[] parameters);
+    public void load(Map properties);
+    public boolean login(NameContext user, Map loginInfo,  Object[] parameters);
 }

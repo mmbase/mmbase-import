@@ -12,6 +12,7 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.io.FileInputStream;
 
 import org.w3c.dom.*;
@@ -99,7 +100,7 @@ public class ContextAuthentication extends Authentication {
     }
 
 
-    public UserContext login(String moduleName, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+    public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
             String msg = "could not load module with name:" +  moduleName;

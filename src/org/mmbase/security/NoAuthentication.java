@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,7 +30,7 @@ public class NoAuthentication extends Authentication {
     /** 
      * this method does nothing..
      */        
-    public UserContext login(String application, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+    public UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
     	return new UserContext();
     }
     
