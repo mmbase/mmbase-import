@@ -83,7 +83,7 @@ compilation process.
   <property name="manifest"      value="manifest.mf"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
-  <property name="source-config.dir" location="${source.dir}/config/default"/>
+  <property name="source-config.dir" location="${source.dir}/config"/>
   <property name="source-html.dir" location="${source.dir}/html"/>
   <property name="source-src.dir" location="${source.dir}/src"/>
   <property name="lib.dir" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
@@ -111,7 +111,6 @@ compilation process.
     <echo message=""/>
   </target>
 
-
   <!-- =================================================================== -->
   <!-- Create the source distribution                                      -->
   <!-- =================================================================== -->
@@ -125,17 +124,15 @@ compilation process.
       </fileset>
     </copy>
     <!-- copy the config files -->
-    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp"/>
-    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF"/>
-    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config"/>
-    <copy todir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config">
+    <mkdir dir="${build.dir}/mmbase-src/config"/>
+    <copy todir="${build.dir}/mmbase-src/config">
       <fileset dir="${source-config.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the html files -->
-    <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp"/>
-    <copy todir="${build.dir}/mmbase-src/mmbase-webapp">
+    <mkdir dir="${build.dir}/mmbase-src/html"/>
+    <copy todir="${build.dir}/mmbase-src/html">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
@@ -171,7 +168,7 @@ compilation process.
     <!-- copy the config -->
     <mkdir dir="${build.dir}/mmbase-src/mmbase-webapp/WEB-INF/config"/>
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config">
-      <fileset dir="${source-config.dir}">
+      <fileset dir="${source-config.dir}/default">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
@@ -559,10 +556,11 @@ compilation process.
   <target name="javadocs"
           description="Create the API documentation"
           depends="init">
-    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/mmdocs/api"/>
+    <mkdir dir="${build.dir}/mmbase-src/docs"/>
+    <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
              sourcepath="${source-src.dir}"
-             destdir="${build.dir}/mmbase/docs/api"
+             destdir="${build.dir}/mmbase-src/docs/api"
              author="true"
              version="true"
              use="false"
