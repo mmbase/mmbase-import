@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.BodyContent;
 import java.io.IOException;
 
 import java.util.*;
@@ -27,12 +27,10 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.60 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.61 2005-03-15 10:35:42 michiel Exp $
  */
 
-public class WriterHelper extends BodyTagSupport {
-    // extending from it, becase we need access to protected vars.
-    // this tag is not acutally used as a tag
+public class WriterHelper {
 
     private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
     public static final boolean NOIMPLICITLIST = true;
@@ -224,7 +222,6 @@ public class WriterHelper extends BodyTagSupport {
      * @deprecated jspvar will be set by setValue then
      */
     public void setJspvar(PageContext p) throws JspTagException {
-        pageContext = p;
         setJspvar();
     }
 
@@ -247,13 +244,12 @@ public class WriterHelper extends BodyTagSupport {
     protected CharTransformer getEscaper() throws JspTagException {
         String e = getEscape();
         if (e == null) {
-            return (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY);
+            return (CharTransformer) thisTag.getPageContext().getAttribute(ContentTag.ESCAPER_KEY);
         } else {
             return ContentTag.getCharTransformer(e);
         }
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
-        pageContext = thisTag.getPageContext();
         value = null;
         if (noImplicitList && vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
             // Take last of list if vartype defined not to be a list:
@@ -346,6 +342,8 @@ public class WriterHelper extends BodyTagSupport {
             value = v;
         }
 
+        PageContext pageContext = thisTag.getPageContext();
+
         _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
             _Stack = new Stack();
@@ -385,6 +383,7 @@ public class WriterHelper extends BodyTagSupport {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
         if (value != null) {
+            PageContext pageContext = thisTag.getPageContext();
             Object was = pageContext.getAttribute(jspvar);
             if (!pushed && was != null && ! was.equals(value)) {
                 // throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was.getClass().getName() + " " + was + "), can't write " + value.getClass().getName() + " " + value + " in it. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
@@ -452,6 +451,7 @@ public class WriterHelper extends BodyTagSupport {
 
 
     public String getString() {
+        BodyContent bodyContent = thisTag.getBodyContent();
         if (bodyContent != null) {
             return bodyContent.getString();
         } else {
@@ -472,9 +472,9 @@ public class WriterHelper extends BodyTagSupport {
                 log.debug("Removed " + pop +  "( " + (pop == null ? "NULL" : pop.getClass().getName()) + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
             }
             if (_Stack.empty()) {
-                pageContext.removeAttribute("_");
+                thisTag.getPageContext().removeAttribute("_");
             } else {
-                pageContext.setAttribute("_", Casting.wrap(_Stack.peek(), getEscaper()));
+                thisTag.getPageContext().setAttribute("_", Casting.wrap(_Stack.peek(), getEscaper()));
             }
             _Stack = null;
         }
@@ -485,10 +485,9 @@ public class WriterHelper extends BodyTagSupport {
      * @since MMBase-1.7
      */
     public int doAfterBody() throws JspTagException {
-        bodyContent = thisTag.getBodyContent();
         pop_Stack();
         pushed = false;
-        return SKIP_BODY;
+        return javax.servlet.jsp.tagext.Tag.SKIP_BODY;
     }
 
     /**
@@ -500,11 +499,11 @@ public class WriterHelper extends BodyTagSupport {
         log.debug("doEndTag of WriterHelper");
         try {
             String body = getString();
+            BodyContent bodyContent = thisTag.getBodyContent();
             if (isWrite()) {
                 log.debug("Must write to page");
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
-                if (pageContext == null) throw new JspTagException("PageContext is null. No value set?");
-                getPageString(pageContext.getOut()).write(body);
+                getPageString(thisTag.getPageContext().getOut()).write(body);
             } else {
                 log.debug("not writing to page");
             }
@@ -524,8 +523,6 @@ public class WriterHelper extends BodyTagSupport {
     public void release() {
         overrideWrite = null; // for use next time
         hasBody       = false;
-        bodyContent   = null;
-        pageContext   = null;
         value         = null;
         _Stack        = null;
         pushed        = false;
