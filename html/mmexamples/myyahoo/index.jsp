@@ -41,7 +41,7 @@
     <tr>
     <td colspan="2">
       <%-- We use the 'mm:url' tag with a nested 'mm:param' to create a link --%>
-      <a href="<mm:url page="index.jsp"><mm:param name="poolid"><mm:field name="number" /></mm:param></mm:url>">
+      <a href="<mm:url><mm:param name="poolid"><mm:field name="number" /></mm:param></mm:url>">
       <mm:field name="name" />
       </a>
     </td>
