@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.13 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.14 2004-12-14 15:15:53 pierre Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -182,65 +182,66 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     }
 
     protected final Object getFunctionValue() throws JspTagException {
+        return getFunctionValue(true);
+    }
+
+    protected final Object getFunctionValue(boolean register) throws JspTagException {
         String functionName = name.getString(this);
+        Object value;
         if (getReferid()  != null) {
             if (! "".equals(functionName)) {
                 throw new TaglibException("Cannot specify both 'referid' and 'name' attributes on a function tag");
             }
-            Object value = getObject(getReferid());
-            if (getId() != null) {
-                getContextProvider().getContextContainer().register(getId(), value);
-            }
-            return value;
-        }
-
-        FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-        log.debug("Getting function value. Container " + functionContainer);
-
-        Function function;
-        if ("".equals(functionName)) {  // no name given, certainly must use container.
-            function = functionContainer.getFunction(functionContainer.getName());
+            value = getObject(getReferid());
         } else {
-            // name given, try self:
-            function = getFunction(functionName);
-        }
+            FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
+            log.debug("Getting function value. Container " + functionContainer);
 
-        if (function == null) {
-            throw new JspTagException("Could not determine the name of the function to be executed");
-        }
-        Parameters params;
-        try {
-            params = function.createParameters();
-        } catch (IllegalStateException ise) {
-            log.warn("Undefined parameters for function '" + functionName + "', trying without definition.");
-            params = new AutodefiningParameters();
-        }
-        params.setAutoCasting(true);
+            Function function;
+            if ("".equals(functionName)) {  // no name given, certainly must use container.
+                function = functionContainer.getFunction(functionContainer.getName());
+            } else {
+                // name given, try self:
+                function = getFunction(functionName);
+            }
 
-        if (functionContainer != null) {
-            Iterator i = functionContainer.getParameters().iterator();
-            while (i.hasNext()) {
-                FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
-                params.set(entry.getKey(), entry.getValue());
+            if (function == null) {
+                throw new JspTagException("Could not determine the name of the function to be executed");
+            }
+            Parameters params;
+            try {
+                params = function.createParameters();
+            } catch (IllegalStateException ise) {
+                log.warn("Undefined parameters for function '" + functionName + "', trying without definition.");
+                params = new AutodefiningParameters();
+            }
+            params.setAutoCasting(true);
+
+            if (functionContainer != null) {
+                Iterator i = functionContainer.getParameters().iterator();
+                while (i.hasNext()) {
+                    FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
+                    params.set(entry.getKey(), entry.getValue());
+                }
+            }
+            if (referids != Attribute.NULL) {
+                params.setAll(Referids.getReferids(referids, this));
+            }
+
+            fillStandardParameters(params);
+
+            if (log.isDebugEnabled()) {
+                log.debug("using parameters " + params);
+            }
+
+            params.checkRequiredParameters();
+
+            value =  function.getFunctionValue(params);
+            if (value instanceof FieldValue) {
+                value = ((FieldValue) value).get();
             }
         }
-        if (referids != Attribute.NULL) {
-            params.setAll(Referids.getReferids(referids, this));
-        }
-
-        fillStandardParameters(params);
-
-        if (log.isDebugEnabled()) {
-            log.debug("using parameters " + params);
-        }
-
-        params.checkRequiredParameters();
-
-        Object value =  function.getFunctionValue(params);
-        if (value instanceof FieldValue) {
-            value = ((FieldValue) value).get();
-        }
-        if (getId() != null) {
+        if (register && getId() != null) {
             getContextProvider().getContextContainer().register(getId(), value);
         }
         return value;
