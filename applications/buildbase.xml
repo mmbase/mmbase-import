@@ -232,12 +232,20 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="documentation" description="Documentation" depends="javadocs,documentation.html">
+  <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf">
   </target>
 
   <target name="documentation.html" depends="init" if="documentation.available">
     <ant dir="${documentation.home}" target="documentation.html">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
+      <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
+    </ant>
+  </target>
+
+  <target name="documentation.pdf" depends="init" if="documentation.available">
+    <ant dir="${documentation.home}" target="documentation.pdf">
+      <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
+      <property name="documentation.temp.dir"       value="${project.build.dir}/temp" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
     </ant>
   </target>
