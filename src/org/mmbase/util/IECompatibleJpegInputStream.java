@@ -13,15 +13,17 @@ import java.io.*;
 /**
  * IECompatibleJpegInputStream removes additional information left by PhotoShop 7 in jpegs
  * , this information may crash Internet Exploder. that's why you need to remove it.
- * 
- * With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files, 
- * using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles". 
- * In theory, these files are valid according to the JPEG specifications. 
- * However they break many applications, including Quark and, significantly, 
- * various versions of Internet Explorer on various platforms. 
+ *
+ * With PS 7, Adobe decided by default to embed XML-encoded "preview" data into JPEG files,
+ * using a feature of the JPEG format that permits embedding of arbitrarily-named "profiles".
+ * In theory, these files are valid according to the JPEG specifications.
+ * However they break many applications, including Quark and, significantly,
+ * various versions of Internet Explorer on various platforms.
  * http://www.photo.net/bboard/q-and-a-fetch-msg?msg_id=003j8d
- * 
-  * @author Kees Jongenburger <keesj@dds.nl>
+ *
+ * @since MMBase 1.7
+ * @author Kees Jongenburger <keesj@dds.nl>
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.2 2004-02-09 13:24:21 pierre Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
@@ -44,8 +46,8 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
             ioe.printStackTrace();
         };
 
-        //I don't know if it's to havy to start a thread
-        //maybe just calling the run method is enough(proivded that the buffers are big enough)..
+        // I don't know if it's to heavy to start a thread
+        // maybe just calling the run method is enough(proivded that the buffers are big enough)..
         converter = new Thread(this, "IECompatibleJpegInputStream");
         converter.start();
     }
@@ -139,7 +141,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
      * Util method that uses the IECompatibleInputStream to convert a byte array
      * if the content is not a jpeg the content is not affected
      * @param in the byte array
-     * @returnthe converted (ie compatible) jpeg 
+     * @returnthe converted (ie compatible) jpeg
      */
     public static byte[] process(byte[] in) {
         try {
@@ -155,7 +157,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
         return in;
     }
 
-	//command line method
+    //command line method
     public static void main(String[] argv) throws IOException {
         if (argv.length == 0) {
             System.err.println(IECompatibleJpegInputStream.class.getName() + " removes headers from jpeg files");

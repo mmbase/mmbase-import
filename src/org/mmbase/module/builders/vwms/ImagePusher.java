@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImagePusher.java,v 1.8 2004-02-06 16:17:29 michiel Exp $
+ * @version $Id: ImagePusher.java,v 1.9 2004-02-09 13:24:21 pierre Exp $
  */
 public class ImagePusher implements Runnable {
 
@@ -80,6 +80,7 @@ public class ImagePusher implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"Image");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }

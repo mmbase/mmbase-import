@@ -68,6 +68,7 @@ public class FileCopier implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"FileCopier");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
