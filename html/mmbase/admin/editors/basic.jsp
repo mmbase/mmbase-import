@@ -27,10 +27,10 @@
   <th class="header" colspan="2">URL</th>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="/edit" target="editors">The MMBase Editors (SCAN) : http://host:port/edit</a></td>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/edit" />" target="editors">The MMBase Editors (SCAN) : http://host:port/edit</a></td>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="/mmeditors/jsp/">The MMBase Editors (jsp) : http://host:port/mmeditors/jsp/</a></td>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmeditors/jsp/" />">The MMBase Editors (jsp) : http://host:port/mmeditors/jsp/</a></td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 

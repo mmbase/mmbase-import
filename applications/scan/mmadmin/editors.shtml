@@ -35,14 +35,18 @@
 		</FONT>
 	</TD>
 </TR>
-<TR>
-		<TD></TD>
-		<TD BGCOLOR="#00425A">
-			<BR>
-			<CENTER><A HREF="/edit" TARGET="edits">http://yourhost:port/edit</A></CENTRER>
-			<BR>
-		</TD>
-</TR>
+<tr>
+  <td></td>
+  <td bgcolor="#00425A" colspan="2" align="center"><a href="/edit" target="editors">The MMBase Editors (SCAN) : http://host:port/edit</a></td>
+</tr>
+<tr>
+  <td></td>
+  <td bgcolor="#00425A" colspan="2" align="center"><a href="/mmeditors/jsp/">The MMBase Editors (jsp) : http://host:port/mmeditors/jsp/</a></td>
+</tr>
+
 </TABLE>
 </BODY>
 </HTML>
+
+
+

@@ -11,7 +11,7 @@
 	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
 	<TD BGCOLOR="#44BDAD">
 		<FONT COLOR="#000000">
-		<B>MMBase runner version 1.4.0</B>
+		<B>MMBase 1.5</B>
 		</FONT>
 	</TD>
 </TR>
@@ -23,7 +23,7 @@
 			This is runtime version aimed at end users of mmbase to allow people to use MMBase within minutes of downloading the system and get going. This version is for people who are oke with the bundled server and database for the other setups or if you want to  develop/change MMBase we advince you to use the MMDistro developers version also available on the <A HREF="http://www.mmbase.org">www.mmbase.org</A> site. That contains full sources and build tools.
 <BR><BR>
 If you run into problems you can get help from the following sources :<BR><BR>
-readme - <A HREF="/mmdocs/readme.txt" TARGET="_ext">/mmdocs/readme.txt</A><BR>
+readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />
 website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
 mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
 irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
@@ -75,19 +75,21 @@ irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/server
 		<TD></TD>
 		<TD BGCOLOR="#00425A">
 			<BR>
-			Welcome to MMBase Content management system.<BR><BR>
-			This is the Distro version aimed at developers, it contains all that is needed not only to run MMBase but also to change it (it contains all the sources and build tools). To be able to run it correctly you need a j2ee application server to run it in (like apache/tomcat or orion) and a jdbc database (like mysql or oracle).
+			Welcome to MMBase Content management system.
+<br /><br />
+The Binary distro includes a database. Since we wanted a simple and 100% java solution we used Hsqldb, but MMBase itself supports many more both commercial and opensource products.
+<br /><br />
+The Source distro includes all the sources to build your own MMBase.
+
 			<BR><BR>
-			If this is the first time you are trying to setup MMBase or only want to use it not develop/change then we advice you to
-run the MMRunner version also available on the <A HREF="http://www.mmbase.org">www.mmbase.org</A> site.
-<BR><BR>
 If you run into problems you can get help from the following sources :<BR><BR>
-readme - <A HREF="/mmdocs/readme.txt" TARGET="_ext">/mmdocs/readme.txt</A><BR>
+readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />
 website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
 mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
 irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
+bugreporting - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a><br />
 <BR>
-			The MMbase Release Team.
+			The MMBase Release Team.
 			<BR><BR>
 		</TD>
 </TR>
