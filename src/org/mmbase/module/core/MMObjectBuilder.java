@@ -46,7 +46,8 @@ public class MMObjectBuilder extends MMTable {
 	private static Hashtable fieldDefCache;
 	public int oType=0; // type of the object in database (overloaded).
 	public String description="Base Object"; // description of this type (overloaded)
-	public Hashtable fields = new Hashtable();
+	private Hashtable fields;
+//	public Hashtable fields = new Hashtable();
 	Vector sortedEditFields = null;
 	Vector sortedListFields = null;
 	Vector sortedFields = null;
@@ -56,7 +57,9 @@ public class MMObjectBuilder extends MMTable {
 	String GUIIndicator="no info";
 	public static MMJdbc2NodeInterface database = null;
 	public String searchAge="31";
-	public String dutchSName="onbekend";
+	private String dutchSName="onbekend";
+	Hashtable singularNames;
+	Hashtable pluralNames;
 	public String className="onbekend";
  	public boolean replaceCache=true;
 	public boolean broadcastChanges=true;
@@ -78,6 +81,13 @@ public class MMObjectBuilder extends MMTable {
 	public boolean init() {
 		database=mmb.getDatabase();
 
+		// added FAKE call to simulate XML config
+		Hashtable xmlbuildersetup=getXMLSetup();
+		if (xmlbuildersetup!=null) {
+			database.createXML(this);
+		}
+		// end of temp code
+		
 		if (!created()) {
 			debug("init(): Create "+tableName);
 			create();
@@ -102,7 +112,7 @@ public class MMObjectBuilder extends MMTable {
 		// if (tmp.size()>0) fields=tmp;
 		if (fieldDefCache==null) initAllFields();
 		if (obj2type==null) init_obj2type(); // RICO switched ON
-		initFields(true);
+		if (fields==null) initFields(true);
 		return(true);
 	}
 
@@ -173,6 +183,9 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public void initFields(boolean allowmastercache) {
 
+		if (fields!=null) return; 
+
+		fields=new Hashtable();
 		sortedEditFields = null;
 		sortedListFields = null;
 		sortedFields = null;
@@ -180,12 +193,15 @@ public class MMObjectBuilder extends MMTable {
 			oType=mmb.TypeDef.getIntValue(tableName);
 		}
 
+		/*
 		Hashtable results=(Hashtable)fieldDefCache.get(new Integer(oType));
 		if (results!=null && allowmastercache) {
 			fields=results;
 			return;
 		}
-		results=new Hashtable();
+		*/
+
+		Hashtable results=new Hashtable();
 		FieldDefs def;
 
 		// default ones
@@ -1421,6 +1437,30 @@ public class MMObjectBuilder extends MMTable {
 		}
 	}
 
+
+	/**
+	* set DBLayout
+	* needs to be replaced soon if i know how
+	*/
+	public void setDBLayout_xml(Hashtable fields) {
+		sortedDBLayout=new Vector();
+		sortedDBLayout.addElement("otype");
+		sortedDBLayout.addElement("owner");
+
+		FieldDefs node;
+		for (int i=1;i<20;i++) {
+			for (Enumeration e=fields.elements();e.hasMoreElements();) {
+				node=(FieldDefs)e.nextElement();
+				if (node.DBPos==i) {
+					String name=node.getDBName();		
+					if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
+						sortedDBLayout.addElement(name);
+					}
+				}
+			}
+		}
+	}
+
 	private boolean check( String method, String name, String value )
 	{
 		boolean result = false;
@@ -1482,6 +1522,13 @@ public class MMObjectBuilder extends MMTable {
 	* get Dutch Short name (will be removed soon)
 	*/
 	public String getDutchSName() {
+		if (singularNames!=null) {
+			String tmp=(String)singularNames.get("en");
+			if (tmp!=null) {
+				return(tmp);
+			}
+			return(null);
+		}
 		return(dutchSName);
 	}
 
@@ -1556,6 +1603,14 @@ public class MMObjectBuilder extends MMTable {
 		return(body);
 	}
 
+	public void setSingularNames(Hashtable names) {
+		singularNames=names;
+	}
+
+	public void setPluralNames(Hashtable names) {
+		pluralNames=names;
+	}
+		
 	/**
 	* get text from blob
 	*/
@@ -1652,6 +1707,17 @@ public class MMObjectBuilder extends MMTable {
 		return(true);
 	}
 
+
+	/**
+	* this call will be removed once the new xml configs work
+	* it provides a way to simulate the xml files (like url.xm).
+	*/
+	public Hashtable getXMLSetup() {
+		// return null unless overridden
+		return(null);
+	}
+
+
 	//************************************************************ 
 
 	protected String getHTML(String body) {
@@ -1701,4 +1767,30 @@ public class MMObjectBuilder extends MMTable {
 	 */
 
 	//************************************************************ 
+
+
+	public void setXMLValues(Vector xmlfields) {
+		//sortedEditFields = null;
+		//sortedListFields = null;
+		//sortedFields = null;
+		//sortedDBLayout=new Vector();
+
+		fields=new Hashtable();
+
+		Enumeration enum = xmlfields.elements();
+		while (enum.hasMoreElements()){
+			FieldDefs def=(FieldDefs)enum.nextElement();
+			String name=(String)def.getDBName();
+			fields.put(name,def);
+		}
+
+		// default ones
+		//FieldDefs def=new FieldDefs("Nummer","integer",-1,-1,"number","int",-1,3);
+		//fields.put("number",def);	
+		FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype","int",-1,3);
+		fields.put("otype",def);	
+		//def=new FieldDefs("Eigenaar","string",-1,-1,"owner","varchar",-1,3);
+		//fields.put("owner",def);	
+		setDBLayout_xml(fields);
+	}
 }
