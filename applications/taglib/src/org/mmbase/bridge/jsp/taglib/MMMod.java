@@ -25,13 +25,12 @@ import org.mmbase.util.*;
  * experimental code(does no use MMCI)
  * @author Kees Jongenburger
  */
-public class MMMod 
-    extends MMTaglib 
-    implements BodyTag {
+public class MMMod extends MMTaglib implements BodyTag {
     
+    public static boolean debug = true;
     private String name=null;
-    
-    
+    private String value=null;
+
     public ProcessorInterface getProcessor(String name) throws MMTaglibException{
 	ProcessorInterface processor= null;
 	Object o =Module.getModule(name); 
@@ -46,11 +45,15 @@ public class MMMod
 	}
 	return processor;
     }
-    public static boolean debug = true;
     
     public void setName(String name){
 	this.name = name;
     }
+
+    public void setValue(String value){
+	this.value=value;
+    }
+    
     
     public int doStartTag() throws JspException{
 	return EVAL_BODY_TAG;
@@ -64,6 +67,8 @@ public class MMMod
 	try {
 	    //content is the content of the body
 	    String content = bodyOut.getString();
+
+	    if (value!=null) content=value;
 
 	    //pi is the module we whant to use
 	    ProcessorInterface pi = getProcessor(name);
