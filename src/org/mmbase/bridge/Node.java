@@ -130,6 +130,16 @@ public interface Node {
     public boolean getBooleanValue(String fieldname);
 
     /**
+     * Returns the value of the specified field as a <code>Node</code>.
+     * If the value is not a Node, or is not specified, this method returns
+     * <code>null</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+    public Node getNodeValue(String fieldname);
+
+    /**
      * Returns the value of the specified field as an <code>int</code>.
      *
      * @param fieldname  the name of the field to be returned
@@ -328,7 +338,7 @@ public interface Node {
      */
     public Relation createRelation(Node destinationNode,
                                    RelationManager relationManager);
-				   
+
     /**
      * set the Context of the current Node
      *
@@ -337,22 +347,22 @@ public interface Node {
      * @throws SecurityException    When not the approperate rights (change context)
      */
     public void setContext(String context);
-    
+
     /**
      * get the Context of the current Node
      *
      * @return the current context of the node
      * @throws BridgeException      Dunno?
      * @throws SecurityException    When not the approperate rights (read rights)
-     */    
+     */
     public String getContext();
-        
+
     /**
      * get the Contextes which can be set to this specific node
      *
      * @return the contextes from which can be chosen
      * @throws BridgeException      Dunno?
      * @throws SecurityException    When not the approperate rights (read rights)
-     */        
+     */
     public StringList getPossibleContexts();
 }
