@@ -138,6 +138,10 @@ public class MessageNode implements Node {
         }
     }
 
+    public org.w3c.dom.Element  getXMLValue(String fieldname, org.w3c.dom.Document tree) {
+        invalidOperation();  // not implemented
+    }
+
     private void invalidOperation() {
         throw new BridgeException("Operation not available: temporary message node");
     }
@@ -226,6 +230,16 @@ public class MessageNode implements Node {
         return false;
     }
 
+    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) {
+        invalidOperation();  // not implemented
+    }
+    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree, FieldList f) {
+        invalidOperation();  // not implemented
+
+    }
+    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree, Field f) {
+        invalidOperation();  // not implemented
+    }
     public boolean mayLink() {
         return false;
     }
