@@ -29,14 +29,14 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.7 2004-01-06 13:11:25 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.8 2004-01-19 17:22:10 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
 
     /**
      * Constructor for XmlHandler.
-     * @param context
+     * @param tag
      */
     public XmlHandler(FieldInfoTag tag) {
         super(tag);

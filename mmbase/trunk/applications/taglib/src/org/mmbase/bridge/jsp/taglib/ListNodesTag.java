@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.20 2003-12-04 18:25:44 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.21 2004-01-19 17:22:08 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -37,7 +37,7 @@ public class ListNodesTag extends AbstractNodeListTag {
     }
 
     /**
-     * @param type a nodeManager
+     * @param t The name of a node manager
      */
     public void setType(String t) throws JspTagException {
         type = getAttribute(t);

@@ -18,14 +18,14 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: FloatHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: FloatHandler.java,v 1.5 2004-01-19 17:22:09 michiel Exp $
  */
 
 public class FloatHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for FloatHandler.
-     * @param context
+     * @param tag
      */
     public FloatHandler(FieldInfoTag tag) {
         super(tag);

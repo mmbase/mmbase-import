@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.15 2003-11-25 21:31:55 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.16 2004-01-19 17:22:09 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -34,7 +34,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     private ResourceBundle bundle;
     private boolean available;
     /**
-     * @param context
+     * @param tag
      */
     public EnumHandler(FieldInfoTag tag,  String enumType) throws JspTagException {
         super(tag);
