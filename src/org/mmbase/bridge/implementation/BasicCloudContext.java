@@ -88,5 +88,4 @@ public class BasicCloudContext implements CloudContext {
 	public Cloud getCloud(String cloudname) {
 	    return (Cloud)localClouds.get(cloudname);
 	}
-
 }
