@@ -18,6 +18,7 @@ import javax.servlet.http.*;
 
 import org.mmbase.module.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.servlet.JamesServlet;
 
 
 /**
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.14 2001-07-02 15:09:52 pierre Exp $
+ * @version $Id: scanpage.java,v 1.15 2001-10-23 11:49:09 vpro Exp $
  */
 public class scanpage {
     // logger
@@ -83,6 +84,70 @@ public class scanpage {
      * whether results stored in cache should be used.
      */
     public boolean reload=false;
+	
+	/**
+	 *  Empty constructor for code not yet fixed, constructing its own scanpage
+	 *  Should use new constructor if possible.
+	 */
+	
+	public scanpage() {}
+	
+	/**
+	 * Construct a scanpage for a servlet
+	 */
+	public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
+		setReq(req);
+		setRes(res);
+		req_line = req.getRequestURI();
+		querystring = req.getQueryString();
+	
+		// needs to be replaced (get the context ones)		
+		ServletConfig sc = servlet.getServletConfig();
+		ServletContext sx = sc.getServletContext();
+		mimetype = sx.getMimeType(req_line);
+		if (mimetype==null) mimetype = "text/html";
+
+		sname = servlet.getCookie(req, res);
+		if (sessions!=null) session = sessions.getSession(this, sname);
+		CheckEditorReload();
+	}
+	
+	/**
+	 * Check whether the page, multilevels etc may be fetched from the caches
+	 * or they should be (re-)calculated/retrieved. The session variable RELOAD
+	 * will be checked, if it contains the value "R" and the sessionvariable
+	 * RELOADTIME contains a time less than the const EXPIRE seconds ago, then
+	 * the request for reload will be honoured.
+	 * @return the method returns void and sets the field reload to true or false
+     */
+	private final static int EXPIRE = 120;
+	
+	void CheckEditorReload() {
+		reload = false;
+		// try to obtain and set the reload mode.
+		if (session==null)
+			return;
+		String s=session.getValue("RELOAD");
+		if ((s==null) || !s.equals("R"))
+			return;
+		// check if it expired
+		s = session.getValue("RELOADTIME");
+		if (s!=null) {
+			try {
+				int then=Integer.parseInt(s);
+				int now= (int)(DateSupport.currentTimeMillis()/1000);
+				if ((now-then)<EXPIRE) {
+					reload = true;
+					if (log.isDebugEnabled()) {
+						log.debug("CheckEditorReload remote user:"+HttpAuth.getRemoteUser(req));
+					}
+				} else {
+					if (log.isDebugEnabled()) log.debug("CheckEditorReload, reload expired for remote user:"+HttpAuth.getRemoteUser(req));
+				}
+			} catch(Exception e) {}
+		}
+		if (!reload) session.setValue("RELOAD","N");
+	}
 
     /**
      * Sets the HttpServletRequest.
