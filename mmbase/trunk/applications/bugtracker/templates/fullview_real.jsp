@@ -36,6 +36,9 @@
 		<%@ include file="parts/comments.jsp" %> </mm:compare>
 		<mm:compare referid="flap" value="history"><%@ include file="parts/history.jsp" %> </mm:compare>
 		<mm:compare referid="flap" value="change"><%@ include file="parts/change.jsp" %> </mm:compare>
+	     <%--
 		<mm:compare referid="flap" value="mybug"><%@ include file="parts/mybug.jsp" %> </mm:compare>
+         --%>
+
 </mm:node>
 </mm:cloud>
