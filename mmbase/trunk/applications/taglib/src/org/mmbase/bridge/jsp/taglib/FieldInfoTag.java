@@ -101,9 +101,12 @@ public class FieldInfoTag extends NodeReferrerTag {
      * @param field and this field.
      */
 
-    private String htmlInput(Node node, Field field, boolean search) {
+    private String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         String show;
         int type = field.getType();
+        if (log.isDebugEnabled()) {
+            log.debug("field " + field.getName() + " gui type: " + field.getGUIType());
+        }
         switch(type) {
         case Field.TYPE_BYTE:
             show = "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
@@ -111,7 +114,8 @@ public class FieldInfoTag extends NodeReferrerTag {
         case Field.TYPE_STRING:
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
-                    show = "<textarea wrap=\"on\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
+                    // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
+                    show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
                     if (node != null) {
                         show += node.getStringValue(field.getName());
                     }                    
@@ -119,7 +123,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     break;                    
                 }
                 if(field.getMaxLength() > 255 )  {                
-                    show = "<textarea wrap=\"on\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
+                    show = "<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
                     if (node != null) {
                         show += node.getStringValue(field.getName());
                     }                    
@@ -128,6 +132,68 @@ public class FieldInfoTag extends NodeReferrerTag {
                 }
             }
         case Field.TYPE_INTEGER:  
+            if (field.getGUIType().equals("types")) {
+                show = "<select name=\"" + prefix(field.getName()) + "\">\n";
+                int value = 0;
+                if (node != null) {
+                    value = node.getIntValue(field.getName());
+                }
+                // list all node managers.   
+                org.mmbase.bridge.Cloud cloud = getCloudProviderVar();
+                org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
+                org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
+                //java.util.Collections.sort(l);
+                while (i.hasNext()) {
+                    Node nmNode = i.nextNode();
+                    try {
+                        org.mmbase.bridge.NodeManager nm = cloud.getNodeManager(nmNode.getStringValue("name"));
+                        int listvalue = nmNode.getNumber();
+                        show += "<option value=\"" + listvalue + "\"";
+                        if (node != null) {
+                            if (listvalue == value) {
+                                show += " selected=\"selected\"";
+                            }
+                        }
+                        show += ">" + nm.getGUIName() + "</option>\n";
+                    } catch (org.mmbase.bridge.BridgeException e) {
+                        // ignore possible errors.
+                    }
+                }
+                show += "</select>";
+                if (search) {
+                    show += "<input type=\"checkbox\" name=\""+ prefix(field.getName() + "_search") + "\" />\n";
+                }
+                break;
+            }
+            if (field.getGUIType().equals("reldefs")) {
+                show = "<select name=\"" + prefix(field.getName()) + "\">\n";
+                int value = 0;
+                if (node != null) {
+                    value = node.getIntValue(field.getName());
+                }
+                // list all roles
+                org.mmbase.bridge.Cloud cloud = getCloudProviderVar();
+                org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
+                org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
+                
+                //java.util.Collections.sort(l);
+                while (i.hasNext()) {
+                    Node reldef = i.nextNode();
+                    int listvalue = reldef.getNumber();
+                    show += "<option value=\"" + reldef.getNumber() + "\"";
+                    if (node != null) {
+                        if (listvalue == value) {
+                            show += " selected=\"selected\"";
+                        }
+                    }
+                    show += ">" + reldef.getStringValue("sguiname") + "/" + reldef.getStringValue("dguiname") + "</option>\n";
+                }
+                show += "</select>";
+                if (search) {
+                    show += "<input type=\"checkbox\" name=\""+ prefix(field.getName() + "_search") + "\" />\n";
+                }
+                break;
+            }
             if (field.getGUIType().equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
                 if (node !=null) {
@@ -212,10 +278,12 @@ public class FieldInfoTag extends NodeReferrerTag {
      * Applies a form entry.
      */
 
-    private String useHtmlInput(Node node, Field field) throws JspTagException {
+    private String useHtmlInput(Node node, Field field) throws JspTagException {       
         String fieldName  = field.getName();
         int type = field.getType(); // not to be confused with the attribute 'type' of this tag.
         
+        log.debug("using html form input for field " + fieldName);
+
         switch(type) {
         case Field.TYPE_BYTE:
             node.setByteValue(fieldName, getContextTag().getBytes(prefix(fieldName)));
@@ -271,6 +339,7 @@ public class FieldInfoTag extends NodeReferrerTag {
     private String whereHtmlInput(Field field) throws JspTagException {
         String show;
         int type = field.getType();
+        String guitype = field.getGUIType();
         String fieldName = field.getName();       
         switch(type) {
         case Field.TYPE_BYTE:
@@ -292,7 +361,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             }
             break;
         case Field.TYPE_INTEGER:  
-            if (field.getGUIType().equals("eventtime")) {
+            if (guitype.equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
                 try {
                     Integer day    = new Integer(getContextTag().getString(prefix(fieldName + "_day")));
@@ -317,6 +386,12 @@ public class FieldInfoTag extends NodeReferrerTag {
                     show = null;
                 }
                 break;
+            }
+            if ("types".equals(guitype) || "reldefs".equals(guitype)) {
+                if (getContextTag().getString(prefix(fieldName + "_search")) == null) {
+                    show = null;
+                    break;
+                }
             }
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
@@ -388,8 +463,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         case TYPE_GUIVALUE:
         case TYPE_INPUT:
             if (node == null) { // try to find nodeProvider
-                node = fieldListTag.getNodeVar();
-                log.debug("found node " + node);
+                node = fieldListTag.getNodeVar();                
             }
             break;
         case TYPE_USEINPUT:
