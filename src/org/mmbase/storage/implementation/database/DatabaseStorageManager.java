@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.6 2004-07-30 17:08:13 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.7 2004-08-25 09:47:00 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -691,9 +691,10 @@ public class DatabaseStorageManager implements StorageManager {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
             while (true) {
+                Statement s = null;                
                 try {
-                    Statement s = activeConnection.createStatement();
-                    s.executeQuery("SELECT 1"); // if this goes wrong too it can't be the query
+                    s = activeConnection.createStatement();
+                    s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName()); // if this goes wrong too it can't be the query
                 } catch (SQLException isqe) {
                     // so, connection must be broken.
                     log.service("Found broken connection, closing it");
@@ -708,7 +709,10 @@ public class DatabaseStorageManager implements StorageManager {
                         break;
                     }
                     continue; 
+                } finally {
+                    if (s != null) s.close();                    
                 }
+                
                 break;
             }
             executeUpdate(query, node, fields);
