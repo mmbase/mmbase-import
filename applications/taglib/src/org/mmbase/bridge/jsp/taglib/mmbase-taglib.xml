@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.221 2003-12-18 11:57:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.222 2003-12-18 23:05:44 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -219,6 +219,14 @@ See mmexamples/taglib for more elaborated examples.
 		<p>
 			These are the MMBase tags which do relate to lists (lists,
 			sub-tags of lists, and constainers of list).
+		</p>
+	</info>
+	</type>
+	<type name="tree">
+	<description>tree related tags</description>
+	<info>
+		<p>
+			These are the MMBase tags which do relate to trees.
 		</p>
 	</info>
 	</type>
@@ -5249,6 +5257,103 @@ The 0 is just counter, which starts at 0 on every page.
 		<tagclass>org.mmbase.bridge.jsp.taglib.RemoveItemTag</tagclass>
 		<info>
 			Remove the current item from the surrounding list. Of course this has only effect when the list is 'reused' (with referid).
+		</info>
+		<since>MMBase-1.7</since>
+	</tag>
+
+	<tag>
+    <name>tree</name>
+		<type>mmbase.tree.list</type>
+		<extends>queryreferrer</extends>
+		<extends>nodeprovider</extends>
+		<extends>contextreader</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeTag</tagclass>
+		<info>
+      The Tree Tag
+		</info>
+		<since>MMBase-1.7</since>		
+    <attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="relatednodes" attribute="type" />
+		</attribute>
+		<attribute>
+			<name>role</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="relatednodes" attribute="role" />
+		</attribute>
+		<attribute>
+			<name>searchdir</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="relatednodes" attribute="searchdir" />
+		</attribute>
+    <attribute>
+      <name>maxdepth</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<see tag="relatednodes" attribute="searchdir" />
+		</attribute>
+	</tag>
+
+
+	<tag>
+    <name>grows</name>
+		<type>mmbase.tree</type>
+		<extends>treereferrer</extends>
+		<extends>contextreader</extends>
+		<extends>condition</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.GrowsTag</tagclass>
+		<info>
+      Did the tree 'grow'?
+		</info>
+		<since>MMBase-1.7</since>		
+    <attribute>
+			<name>to</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <info>
+        Wheter it grows to this depth.
+      </info>
+		</attribute>
+	</tag>
+
+
+
+	<tag>
+    <name>shrinks</name>
+		<type>mmbase.tree.list</type>
+		<extends>treereferrer</extends>
+		<extends>contextreader</extends>
+    <extends>list</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.ShrinksTag</tagclass>
+		<info>
+      Did the tree 'grow'?
+		</info>
+		<since>MMBase-1.7</since>		
+    <attribute>
+			<name>to</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <info>
+        Wheter it grows to this depth.
+      </info>
+		</attribute>
+	</tag>
+
+
+
+	<tag>
+    <name>depth</name>
+		<type>mmbase.tree</type>
+		<extends>treereferrer</extends>
+		<extends>contextreader</extends>
+    <extends>writer</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.DepthTag</tagclass>
+		<info>
+      Did the tree 'grow'?
 		</info>
 		<since>MMBase-1.7</since>
 	</tag>
