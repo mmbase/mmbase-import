@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.52 2004-07-29 18:56:19 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.53 2004-08-02 17:20:55 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -223,7 +223,6 @@ public class IncludeTag extends UrlTag {
             }
 
             requestDispatcher.include(requestWrapper, responseWrapper);                
-            log.info("Used character encoding " + responseWrapper.getCharacterEncoding());
             String page = responseWrapper.toString();
             helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
 
