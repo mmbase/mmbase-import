@@ -3,8 +3,8 @@
 <article>
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
-		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.17 2003-05-07 09:27:03 pierre Exp $</edition>
+		<date>2 September 2002</date>
+		<edition>$Id: editwizard-doc.xml,v 1.18 2003-06-30 11:41:44 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -36,15 +36,15 @@
 	</articleinfo>
 	<section id="introduction">
 		<title>Introduction</title>
-		<para>The editwizards allow designers to easily create wizard-like web-entry forms for content entry and maintance.</para>
+		<para>The editwizards allow designers to easily create wizard-like web-entry forms for content entry and maintenance.</para>
 		<para>The wizards are not intended to edit all possible relations and fields of an object; they are more suitable for special content tasks, such as editing a news item or adding a user to the system and placing images and organisational information along with it. A wizard with more than 3 steps is generally over the top.</para>
 		<para>In this document you will learn how to install the editwizards on your MMBase release, and how to create your own wizards. First the basics are explained, and how the most simple wizards should be set up. Then, you'll see how more complex wizards can be created.</para>
 	</section>
 	<section id="installation">
 		<title>Installation</title>
 		<para>If you install and run an 1.6 or higher release of MMBase, the editwizards will be included.</para>
-		<para>To let the editwizards run properly, the /mmapps/editwizard directory must be in place (default installed). This directory contains the JSP pages, the wizards, images, XSL's and CSS stylesheets and client-side Javascript code - in shirt, all the fiels needed to run the wizards.</para>
-		<para>For all practival purposes, you only need to remember the location of tey fiels wizard.jsp (which you call to edit a specific object or create a new one), and list.jsp (which you use to list objects which you can then select for edit).</para>
+		<para>To let the editwizards run properly, the /mmapps/editwizard directory must be in place (default installed). This directory contains the JSP pages, the wizards, images, XSL's and CSS stylesheets and client-side Javascript code - in shirt, all the fields needed to run the wizards.</para>
+		<para>For all practical purposes, you only need to remember the location of the fields wizard.jsp (which you call to edit a specific object or create a new one), and list.jsp (which you use to list objects which you can then select for edit).</para>
 		<para>You are free to move the /mmapps/editwizard directory somewhere else. If you do, you need to change the calls in the examples below so they point to the right directory.</para>
 		<section id="requirements">
 			<title>Requirements and Assumptions</title>
@@ -186,7 +186,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 					<graphic fileref="media/new_person.jpg"/>
 				</screenshot>
 			</figure>
-			<para>Here you can see your first wizard in action! Two fields are visible (as defined in the simple.xml file). Fill in the two fields and press save. You are returned to the list, which shoul now contain your newly added person.</para>
+			<para>Here you can see your first wizard in action! Two fields are visible (as defined in the simple.xml file). Fill in the two fields and press save. You are returned to the list, which should now contain your newly added person.</para>
 			<para>You can image you can change the fieldnames, titles and object-types in the wizard so that you can edit different objects in the system. But wizards can do a lot more. We'll get to that in the following section.</para>
 		</section>
 	</section>
@@ -307,7 +307,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 		</field>
 
 		<!-- List all news items related with role posrel
-				 This list can have a minumum of 0 and a amximum of inifinite ("*") items.
+				 This list can have a minimum of 0 and a maximum of infinite ("*") items.
 				 This is also the default for a list
 		-->
 		<list role="posrel" destination="news" minoccurs="0" maxoccurs="*">
@@ -322,7 +322,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 
 			<!-- defines a search command.
 					 This creates a search box that allows you to search for objects
-					 using a specified ndoepath.
+					 using a specified nodepath.
 					 In this case, the searchs ercahes for news items, using the fields
 					 'title' and 'subtitle' to show the results of the search in the list.
 			-->
@@ -346,7 +346,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 					<search-fields>title|subtitle</search-fields>
 				</search-filter>
 			</command>
-			<!-- Action to create a relation, used by teh search command to create
+			<!-- Action to create a relation, used by the search command to create
 					 the relation once it is found and chosen.
 			-->
 			<action type="create">
