@@ -11,13 +11,13 @@
 <h1>MMBase Caches</h1>
 
 <table width="100%" border="1" celpadding="1">
-<tr><th>Cache</th><th>Size</th><th>Filled</th><th>Hits</th><th>Misses</th><th>Performance</th><th>Content</th></tr>
+<tr><th>Cache</th><th>Size</th><th>Size(bytes)</th><th>Filled</th><th>Hits</th><th>Misses</th><th>Performance</th><th>Content</th></tr>
 <% Iterator i = org.mmbase.cache.Cache.getCaches().iterator();
 
   java.text.NumberFormat form = java.text.NumberFormat.getInstance(); form.setMaximumFractionDigits(1);
    while (i.hasNext()) {     
       Cache cache = Cache.getCache((String) i.next());
-      out.println("<tr><td>" + cache.getDescription() + " (" + cache.getName() + ")</td><td align=\"right\">" + cache.getSize() + "</td><td align=\"right\">" + form.format(cache.size() * 100 /cache.getSize()) + "%</td><td align=\"right\">" + cache.getHits() + " </td><td align=\"right\">" + cache.getMisses() + " </td><td align=\"right\">" + (cache.isActive() ? form.format(cache.getRatio() * 100) + "%" : "not active") + "</td>");
+      out.println("<tr><td>" + cache.getDescription() + " (" + cache.getName() + ")</td><td align=\"right\">" + cache.getSize() + "</td><td align=\"right\">" + cache.getByteSize() + "</td><td align=\"right\">" + form.format(cache.size() * 100 /cache.getSize()) + "%</td><td align=\"right\">" + cache.getHits() + " </td><td align=\"right\">" + cache.getMisses() + " </td><td align=\"right\">" + (cache.isActive() ? form.format(cache.getRatio() * 100) + "%" : "not active") + "</td>");
 %>
 <td align="center"><a href="<mm:url><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>">show</a></td></tr>
 <%
