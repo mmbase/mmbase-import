@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.89 2003-05-19 07:37:56 kees Exp $
+ * @version $Id: MMBase.java,v 1.90 2003-06-27 11:31:25 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -535,7 +535,7 @@ public class MMBase extends ProcessorModule {
      * @return the active MMBase module
      */
     static public MMBase getMMBase() {
-        return (MMBase)getModule("mmbaseroot");
+        return (MMBase)getModule("mmbaseroot",true);
     }
 
     /**
