@@ -5,7 +5,7 @@
   <tr><td>
   </mm:first>
      <p>
-	<a  href="<mm:url referids="docnr,portal,project?" />">
+	<a  href="<mm:url referids="docnr,portal,project?,backtemplate?"  ><mm:param name="template">/includes/doc_index.jsp</mm:param></mm:url>">
         <mm:field name="title" />
 	</a>
   <mm:last>
