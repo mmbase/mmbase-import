@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 
 public class Keywords
 {
-	private static final int MINKEYWORDLENGTH = 3;
+	private static final int MINKEYWORDLENGTH = 2;
 	private static Vector ignoreVector;
 
 
