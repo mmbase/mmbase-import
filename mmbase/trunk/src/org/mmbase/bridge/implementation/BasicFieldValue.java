@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * This is the basic implementation of the Field Value interface.
  *
  * @author   Pierre van Rooden
- * @version $Id: BasicFieldValue.java,v 1.5 2004-02-12 18:19:25 michiel Exp $
+ * @version $Id: BasicFieldValue.java,v 1.6 2004-09-17 09:25:44 michiel Exp $
  * @since    MMBase-1.6
  */
 public class BasicFieldValue implements FieldValue {
@@ -91,6 +91,10 @@ public class BasicFieldValue implements FieldValue {
         return node.getXMLValue(field.getName(), tree);
     }
 
+    public java.util.Date toDate() {
+        return node.getDateValue(field.getName());
+    }
+
     public void set(Object value) {
         node.setValue(field.getName(),value);
     }
@@ -129,6 +133,11 @@ public class BasicFieldValue implements FieldValue {
 
     public void setXML(org.w3c.dom.Document value) {
         node.setXMLValue(field.getName(),value);
+    }
+
+
+    public void setDate(java.util.Date value) {
+        node.setDateValue(field.getName(), value);
     }
 
 }

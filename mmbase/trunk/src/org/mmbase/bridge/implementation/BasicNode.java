@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.129 2004-07-20 13:04:41 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.130 2004-09-17 09:25:45 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -377,16 +377,24 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setObjectValue(String fieldName, Object value) {
-        value = (Node) ValueIntercepter.processSet(0, this, nodeManager.getField(fieldName), value);
+        value = ValueIntercepter.processSet(0, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, value);
     }
 
 
     public void setBooleanValue(String fieldName, boolean value) {
-        Boolean booleanValue = new Boolean(value);
-        setValue(fieldName, booleanValue);
-        //booleanValue = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), booleanValue);
-        //setValueWithoutProcess(fieldName, booleanValue);
+        Boolean bool = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), Boolean.valueOf(value));
+        setValueWithoutProcess(fieldName, bool);
+    }
+
+    public void setDateValue(String fieldName, Date value) {
+        value = (Date) ValueIntercepter.processSet(Field.TYPE_DATETIME, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
+    }
+
+    public void setListValue(String fieldName, List value) {
+        value = (List) ValueIntercepter.processSet(Field.TYPE_LIST, this, nodeManager.getField(fieldName), value);
+        setValueWithoutProcess(fieldName, value);
     }
 
     public void setNodeValue(String fieldName, Node value) {
@@ -448,10 +456,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     public Object getValue(String fieldName) {
+        Object value = noderef.getValue(fieldName);
+        if (value == null || value == MMObjectNode.VALUE_NULL) return null;
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
-            Object value = noderef.getValue(fieldName);
-            if (value == null || value == MMObjectNode.VALUE_NULL) return null;
             switch(type) {
             case Field.TYPE_STRING:  return getStringValue(fieldName);
             case Field.TYPE_BYTE:    return getByteValue(fieldName);
@@ -467,7 +475,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         } else {
             //log.warn("Requesting value of unknown field '" + fieldName + "')");
-            return noderef.getValue(fieldName);
+            return value;
         }
 
     }
@@ -483,6 +491,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public boolean getBooleanValue(String fieldName) {
         return noderef.getBooleanValue(fieldName);
+    }
+
+    public Date getDateValue(String fieldName) {
+        return noderef.getDateValue(fieldName);
+    }
+    public List getListValue(String fieldName) {
+        return noderef.getListValue(fieldName);
     }
 
     public Node getNodeValue(String fieldName) {
@@ -587,6 +602,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
+        FieldIterator fi = nodeManager.getFields().fieldIterator();
+        while (fi.hasNext()) {
+            Field field = fi.nextField();
+            ValueIntercepter.commit(this, field);
+        }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();

@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.6 2004-03-02 12:42:25 pierre Exp $
+ * @version $Id: FieldValue.java,v 1.7 2004-09-17 09:23:43 michiel Exp $
  */
 public interface FieldValue {
 
@@ -165,6 +165,11 @@ public interface FieldValue {
     public org.w3c.dom.Document toXML() throws IllegalArgumentException;
 
     /**
+     * @since MMBase-1.8
+     */
+    public java.util.Date toDate();
+
+    /**
      * Returns the value as a <code>org.w3c.dom.Element</code>
      * If the node value is not itself a Document, the method attempts to
      * attempts to convert the String value into an XML.
@@ -270,5 +275,14 @@ public interface FieldValue {
      * @param value the field value as a XML Document
      */
     public void setXML(org.w3c.dom.Document value);
+
+
+    /**
+     * Sets the value, passing a java.util.Date object.
+     * @see #toDate();
+     * @param value the field value as a java.util.Date Document
+     * @since MMBase-1.8
+     */
+    public void setDate(java.util.Date value);
 
 }
