@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.19 2002-05-15 19:02:33 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.20 2002-06-28 20:55:04 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -53,8 +53,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title) {
-
-        String servlet    = getServlet();
+        String servlet    = getServletPath();
         MMObjectNode origNode = originalImage(node);
         String imageThumb = (origNode != null ? servlet + origNode.getIntValue("cache(s(100x60))") : "");
         String image      = servlet + node.getNumber();
@@ -220,15 +219,11 @@ public class ImageCaches extends AbstractImages {
     }
 
     /**
-     * Determine the MIME type of this Icache node. If the node is not
-     * an icache node, but e.g. an images node, then it will return
-     * the default mime format, which is 'jpg'. This should be done
-     * better, since there is a field itype in the images table.
+     * Returns the image format.
      *
      * @since MMBase-1.6
      */
-    public String getImageMimeType(MMObjectNode node) {
-        // determine mimetype:
+    protected String getImageFormat(MMObjectNode node) {
         String format = "jpg";
         if (node != null) {
             String ckey    = node.getStringValue("ckey");
@@ -239,19 +234,13 @@ public class ImageCaches extends AbstractImages {
                 format = ckey.substring(fi + 2, fi2);
             }
         }
-        if (log.isDebugEnabled()) log.debug("using format " + format);
-        return mmb.getMimeType(format);
-
+        return format;
     }
 
-    /**
-     * Returns the Mime type of this cached image.
-     *
-     * @since MMBase-1.6
-     */
     public String getImageMimeType(List params) {
         return getImageMimeType(getNode("" + params.get(0)));
     }
+
 
 }
  
