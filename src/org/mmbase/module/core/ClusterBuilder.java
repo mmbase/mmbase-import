@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.55 2003-12-17 20:44:25 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.56 2004-01-14 13:24:39 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -207,8 +207,9 @@ public class ClusterBuilder extends VirtualBuilder {
             bulname= field.substring(0, pos);
         }
         MMObjectNode n= ((ClusterNode)node).getRealNode(bulname);
-        if (n == null)
-            n= node;
+        if (n == null) {
+            n = node;
+        }
         bulname= getTrueTableName(bulname);
         MMObjectBuilder bul= mmb.getMMObject(bulname);
         if (bul != null) {
@@ -253,7 +254,7 @@ public class ClusterBuilder extends VirtualBuilder {
     public FieldDefs getField(String fieldName) {
         String builderName = getBuilderNameFromField(fieldName);
         if (builderName.length() > 0) {
-            MMObjectBuilder bul = mmb.getMMObject(builderName);
+            MMObjectBuilder bul = mmb.getBuilder(builderName);
             if (bul == null) {
                 throw new RuntimeException("No builder with name '" + builderName + "' found");
             }
@@ -651,10 +652,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return A <code>String</code> containing the table name
      */
     private String getTrueTableName(String table) {
-        String tab= getTableName(table);
-        int rnumber= mmb.getRelDef().getNumberByName(tab);
+        String tab = getTableName(table);
+        int rnumber = mmb.getRelDef().getNumberByName(tab);
         if (rnumber != -1) {
-            return mmb.getRelDef().getBuilderName(getNode(rnumber));
+            return mmb.getRelDef().getBuilderName(new Integer(rnumber));
         } else {
             return tab;
         }
