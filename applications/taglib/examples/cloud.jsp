@@ -3,7 +3,7 @@
 <html>
 <head>
   <title>Cloud tag</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
 </head>
 <body>
 <%@ include file="menu.jsp"%>

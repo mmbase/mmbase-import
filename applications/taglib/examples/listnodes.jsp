@@ -15,6 +15,7 @@
 
 <head>
   <title>Taglib examples</title>
+  <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
 </head>
 
 <body>

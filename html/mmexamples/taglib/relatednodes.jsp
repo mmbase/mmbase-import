@@ -15,7 +15,8 @@
 <html>
 
 <head>
-  <title>Taglib examples</title>
+  <title>Using the relatednodes tag</title>
+  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>

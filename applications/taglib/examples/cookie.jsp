@@ -1,6 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <html>
-
+<head>
+   <title>cookies</title>
+   <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
+</head>
 <body>
 <% 
  Cookie[]  cookies = request.getCookies();

@@ -2,7 +2,7 @@
 %><html>
 <head>
    <title>Contexts</title>
-   <link rel="stylesheet" type="text/css" href="style.css" />
+   <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <%@ include file="menu.jsp"%>
