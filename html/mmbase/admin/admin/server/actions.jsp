@@ -27,7 +27,7 @@
    <p>
       Uptime: 
       <%        
-      int timeDiff =  (int)((System.currentTimeMillis()/1000) - MMBase.getMMBase().startTime);
+      int timeDiff =  ((int)(System.currentTimeMillis()/1000) - MMBase.getMMBase().startTime);
         
       int days = timeDiff / (60 * 60 * 24);
       int hours =(timeDiff / (60  * 60)) % 24;

@@ -27,10 +27,8 @@
     account so you can edit/change the objects within the installed cloud.
   </p>
 </tr>
-<tr>
-  <th class="header" colspan="2">URLs</th>
-</tr>
-<% String thisServer = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath(); %>
+<tr><th class="header" colspan="2">URLs</th></tr>
+<% String thisServer = request.getScheme() + "://" + request.getServerName() + (request.getServerPort() != 80 ? ":" + request.getServerPort() : "")+ request.getContextPath(); %>
 <tr>
   <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/" />">The MMBase Editors ('basic') : <%=thisServer%>/mmbase/edit/</a></td>
 </tr>
@@ -40,6 +38,13 @@
 <tr>
   <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/mmeditors/" />">Classic style generic editors ('mmeditors') : <%=thisServer %>/mmbase/edit/mmeditors/</a></td>
 </tr>
+<% if (pageContext.getServletContext().getResource("/mmbase/security") != null) { %>
+<tr><th class="header" colspan="2">Security editors</th></tr>
+<tr>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/security/" />">Security editors (of cloud context security) : <%=thisServer %>/mmbase/security/</a></td>
+</tr>
+<% } %>
+
 <tr class="footer">
   <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" /></td>
   <td class="data">Return to home page</td>

@@ -21,8 +21,8 @@
     <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top">
       <span class="<%=("about".equals(category)) ? "current" : ""%>menuitem">ABOUT</span>
     </a>
-    <% if ((new java.io.File(request.getRealPath("/mmexamples"))).exists()) {%>
-         &nbsp;&nbsp;
+    <% if (pageContext.getServletContext().getResource("/mmexamples") != null) { %>
+     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=examples" />" target="_top">
       <span class="<%=("examples".equals(category)) ? "current" : ""%>menuitem">EXAMPLES</span>
     </a>
@@ -33,7 +33,7 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("admin".equals(category)) ? "current" : ""%>menuitem">ADMIN</span></a>
-    <% if ((new java.io.File(request.getRealPath("/mmdocs"))).exists()) {%>
+    <% if (pageContext.getServletContext().getResource("/mmdocs") != null) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top">
       <span class="<%=("documentation".equals(category)) ? "current" : ""%>menuitem">DOCUMENTATION</span>
@@ -59,6 +59,9 @@
     <a href="<mm:url page="default.jsp?category=examples" />" target="_top"
     ><span class="currentmenuitem">MMBASE DEMOS</span></a>
         <% } else if("admin".equals(category)) { %>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=resourceedit" />" target="_top"
+    ><span class="<%=("resourceedit".equals(subcategory)) ? "current" : ""%>menuitem">RESOURCES</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("servers".equals(subcategory)) ? "current" : ""%>menuitem">SERVERS</span></a>
