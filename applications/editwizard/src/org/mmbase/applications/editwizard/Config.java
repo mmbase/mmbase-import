@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.36 2003-06-10 15:25:54 michiel Exp $
+ * @version $Id: Config.java,v 1.37 2003-06-10 16:49:50 michiel Exp $
  */
 
 public class Config {
@@ -140,6 +140,16 @@ public class Config {
     }
 
     static public class ListConfig extends SubConfig {
+
+        // constants for 'search' parameter. Order of value matters (force must be bigger then yes)
+        public static final int SEARCH_NO   = 0;
+
+        public static final int SEARCH_AUTO = 5; // search if searchfields given.
+
+        public static final int SEARCH_YES  = 10;
+        public static final int SEARCH_FORCE  = 11; // like 'yes', but searching occurs only if not searching empty string.
+        
+
         public String title;
         public File   template;
         public String fields;
@@ -155,7 +165,7 @@ public class Config {
         public String searchValue="";
         public String searchType="like";
         public String baseConstraints;
-        public boolean forceSearch = false;
+        public int    search = SEARCH_AUTO;
 
         public int    age = -1;
         public int    start = 0;
@@ -255,7 +265,23 @@ public class Config {
             searchValue     = configurator.getParam("searchvalue", searchValue);
             searchDir       = configurator.getParam("searchdir",searchDir);
             baseConstraints = configurator.getParam("constraints", baseConstraints);
-            forceSearch     = configurator.getParam("forcesearch", forceSearch);
+            String searchString =  configurator.getParam("search", (String) null);
+            if (searchString != null) {                
+                searchString = searchString.toLowerCase();
+                if (searchString.equals("auto")) {
+                    search = SEARCH_AUTO;
+                } else if (searchString.equals("no")) {
+                    search = SEARCH_NO;
+                } else if (searchString.equals("yes")) {
+                    search = SEARCH_YES;
+                } else if (searchString.equals("force")) {
+                    search = SEARCH_FORCE;
+                } else {
+                    throw new WizardException("Unknown value for search parameter '" + searchString + "'");
+                }
+            }
+
+            /// what the heck is this.
             realSearchField = configurator.getParam("realsearchfield", realSearchField);
             
             if (searchFields == null) {
@@ -273,32 +299,32 @@ public class Config {
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
                     sType = "equals";
                 }
-                String search = searchValue;
+                String where = searchValue;
                 constraints = null;
                 if (sType.equals("like")) {
                     // actually we should unquote search...
-                    search = " LIKE '%" + search.toLowerCase() + "%'";
+                    where = " LIKE '%" + where.toLowerCase() + "%'";
                 } else if (sType.equals("string")) {
-                    search = " = '" + search + "'";
+                    where = " = '" + where + "'";
                 } else {
-                    if (search.equals("")) {
-                        search = "0";
+                    if (where.equals("")) {
+                        where = "0";
                     }
                     if (sType.equals("greaterthan")) {
-                        search = " > " + search;
+                        where = " > " + where;
                     } else if (sType.equals("lessthan")) {
-                        search = " < " + search;
+                        where = " < " + where;
                     } else if (sType.equals("notgreaterthan")) {
-                        search = " <= " + search;
+                        where = " <= " + where;
                     } else if (sType.equals("notlessthan")) {
-                        search = " >= " + search;
+                        where = " >= " + where;
                     } else if (sType.equals("notequals")) {
-                        search = " != " + search;
+                        where = " != " + where;
                     } else { // equals
-                        search = " = " + search;
+                        where = " = " + where;
                     }
                 }
-                StringTokenizer searchTokens= new StringTokenizer(sFields,",");
+                StringTokenizer searchTokens= new StringTokenizer(sFields, ",");
                 while (searchTokens.hasMoreTokens()) {
                     String tok = searchTokens.nextToken();
                     if (constraints != null) {
@@ -307,9 +333,9 @@ public class Config {
                         constraints = "";
                     }
                     if (sType.equals("like")) {
-                        constraints += "lower([" + tok + "])" + search;
+                        constraints += "lower([" + tok + "])" + where;
                     } else {
-                        constraints += "[" + tok + "]" + search;
+                        constraints += "[" + tok + "]" + where;
                     }
                 }
                 if (baseConstraints!=null) {
@@ -389,7 +415,30 @@ public class Config {
                         // Only to avoid reentering this 'if'. Of course the 'main' parameter actually is still not present.
                     }
                 }
-    
+
+                if (search >= SEARCH_YES && searchFields == null) {
+                    if (cloud != null) {
+                        StringBuffer searchFieldsBuffer = new StringBuffer();
+                        FieldIterator i = cloud.getNodeManager(mainObjectName).
+                            getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
+                        while (i.hasNext()) {
+                            Field f = i.nextField();
+                            if (f.getType() == f.TYPE_STRING && ! f.getName().equals("owner")) {
+                                if (searchFieldsBuffer.length() > 0) searchFieldsBuffer.append(',');
+                                searchFieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(f.getName());
+                            }
+                        }
+                        searchFields = searchFieldsBuffer.toString();
+                    } else {                       
+                        // the list.jsp _does_ provide a cloud, but well, perhaps people have old list.jsp's?
+                        throw new WizardException("Cannot auto-determin search-fields without a cloud (use a newer list.jsp");
+                    }
+                }
+
+                if (search == SEARCH_NO && searchFields != null) {
+                    log.debug("Using searchfields and explicitiy no search");
+                    searchFields = null;
+                }    
     
                 // add the main object's numberfield to fields
                 // this ensures the field is retrieved even if distinct weas specified
