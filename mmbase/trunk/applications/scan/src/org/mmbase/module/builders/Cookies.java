@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Cookies.java,v 1.10 2003-03-10 11:50:17 pierre Exp $
+ * @version $Id: Cookies.java,v 1.11 2004-09-15 14:35:19 marcel Exp $
  */
 public class Cookies extends MMObjectBuilder {
 
@@ -132,6 +132,15 @@ public class Cookies extends MMObjectBuilder {
 		super.nodeLocalChanged(machine,number,builder,ctype);
 		return(nodeChanged(machine,number,builder,ctype));
 	}
+
+    /**
+    * remote  change on a cookie object detected
+    */
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
+        return(nodeChanged(machine,number,builder,ctype));
+    }
+
 
 	/**
 	* flush the cache for this cookie, also signal
