@@ -35,12 +35,12 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.52 $ $Date: 2001-12-14 09:33:23 $
+ * @$Revision: 1.53 $ $Date: 2001-12-21 15:26:40 $
  */
 public class scanparser extends ProcessorModule {
 
-	private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName()); 
-	
+	private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName());
+
 	private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
 
     public static scancacheInterface scancache=null;
@@ -101,7 +101,7 @@ public class scanparser extends ProcessorModule {
 					try {
 						index=Integer.parseInt(template.substring(prepostcmd,postcmd+1));
 						postcmd++;
-					} catch (Exception g) {}	
+					} catch (Exception g) {}
 					index--;
 					try {
 						dst.append("DUMMY");
@@ -140,7 +140,7 @@ public class scanparser extends ProcessorModule {
 					try {
 						index=Integer.parseInt(template.substring(prepostcmd,postcmd+1));
 						postcmd++;
-					} catch (Exception g) {}	
+					} catch (Exception g) {}
 					index--;
 					try {
 						dst.append("DUMMY");
@@ -188,22 +188,22 @@ public class scanparser extends ProcessorModule {
 			String part;
 			do {
 				if (andpos!=-1) {
-					part=cmd.substring(0,andpos);	
+					part=cmd.substring(0,andpos);
 					cmd=cmd.substring(andpos+5);
 					result=do_val(part,session,sp);
 					done=!result;
 				} else if (orpos!=-1) {
-					part=cmd.substring(0,orpos);	
+					part=cmd.substring(0,orpos);
 					cmd=cmd.substring(orpos+4);
 					result=do_val(part,session,sp);
 					done=result;
 				} else if (andpos<orpos) {
-					part=cmd.substring(0,andpos);	
+					part=cmd.substring(0,andpos);
 					cmd=cmd.substring(andpos+5);
 					result=do_val(part,session,sp);
 					done=!result;
 				} else {
-					part=cmd.substring(0,orpos);	
+					part=cmd.substring(0,orpos);
 					cmd=cmd.substring(orpos+4);
 					result=do_val(part,session,sp);
 					done=result;
@@ -256,7 +256,7 @@ public class scanparser extends ProcessorModule {
 
 	/**
 	 * Process the HTML for our own extensions
-	 * 
+	 *
 	 */
 	public final String handle_line(String body,sessionInfo session,scanpage sp) throws ParseException {
 
@@ -297,7 +297,7 @@ public class scanparser extends ProcessorModule {
 						e.printStackTrace();
 					}
 					postcmd=end_pos2+7;
-				} 
+				}
 			} else {
 				postcmd=prepostcmd;
 			}
@@ -312,26 +312,26 @@ public class scanparser extends ProcessorModule {
 
 		// Unmap (special commands)
 		part=finddocmd(body,"<UNMAP ",'>',7,session,sp);
-		body=part; 
+		body=part;
 
 		// Macro's (special commands)
 		part=finddocmd(body,"<MACRO ",'>',1,session,sp);
-		body=part; 
+		body=part;
 
 
 		// Include other HTML
 		part=finddocmd(body,"<INCLUDE ",'>',5,session,sp);
-		body=part; 
+		body=part;
 
 
 		// Include other HTML in the LIST command
 		part=finddocmd(body,"<LISTINCLUDE ",'>',5,session,sp);
-		body=part; 
+		body=part;
 
 
 		// Unmap (special commands)
 		part=finddocmd(body,"<UNMAP ",'>',7,session,sp);
-		body=part; 
+		body=part;
 
 
 		// Macro's (special commands)
@@ -344,7 +344,7 @@ public class scanparser extends ProcessorModule {
 		// TESTING 1 2 3  of the ifs after the include RICO
 		if (body.indexOf("<IF")!=-1) {
 			body=do_conditions(body,session,sp);
-		}	
+		}
 
 		// TESTING 1 2 3  of the ifs after the _ONLY_ after the list Daniel
 		if (body.indexOf("<LIF")!=-1) {
@@ -354,21 +354,21 @@ public class scanparser extends ProcessorModule {
 
 		// <NORELOAD>, make it possible to jump pages
 		part=finddocmd(body,"<NORELOAD ",'>',12,session,sp);
-		body=part; 
+		body=part;
 
 
 		// DO set variables
 		part=finddocmd(body,"<DO ",'>',6,session,sp);
-		body=part; 
+		body=part;
 
 
-		// <SAVE, make it possible to save  
+		// <SAVE, make it possible to save
 		part=finddocmd(body,"<SAVE ",'>',18,session,sp);
-		body=part; 
+		body=part;
 
-		// <CRC HREF=", make it possible to save  
+		// <CRC HREF=", make it possible to save
 		part=finddocmd(body,"<CRC HREF=",'>',23,session,sp);
-		body=part; 
+		body=part;
 
 		// <TRANSACTION text1> text2 </TRANSACTION>
 		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
@@ -388,7 +388,7 @@ public class scanparser extends ProcessorModule {
 						log.error("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
 						e.printStackTrace();
 					}
-				} 
+				}
 			} else {
 				postcmd=prepostcmd;
 			}
@@ -400,21 +400,21 @@ public class scanparser extends ProcessorModule {
 
 		// <GOTO, make it possible to jump pages
 		part=finddocmd(body,"<GOTO ",'>',10,session,sp);
-		body=part; 
+		body=part;
 
 
 		// <NEWPAGE, make it possible to  'jump' by loading new pages
 		part=finddocmd(body,"<NEWPAGE ",'>',11,session,sp);
-		body=part; 
+		body=part;
 
 
-		// <GRAB, make it possible to get information of other html-pages 
+		// <GRAB, make it possible to get information of other html-pages
 		part=finddocmd(body,"<GRAB ",'>',13,session,sp);
-		body=part; 
+		body=part;
 
 		// <PART, make it possible to include other parsed ! and cached pages
 		part=finddocmd(body,"<PART ",'>',19,session,sp);
-		body=part; 
+		body=part;
 
 		// Counter tag
 		part=finddocmd(body,"<COUNTER",'>',20,session,sp);
@@ -422,11 +422,11 @@ public class scanparser extends ProcessorModule {
 
 		// <TREEPART, TREEFILE
 		part=finddocmd(body,"<TREE",'>',21,session,sp);
-		body=part; 
+		body=part;
 
 		// <LEAFPART, LEAFFILE
 		part=finddocmd(body,"<LEAF",'>',22,session,sp);
-		body=part; 
+		body=part;
 
 		// Last one always
 		part=finddocmd(body,"$LBJ-",'^',4,session,sp);
@@ -453,7 +453,7 @@ public class scanparser extends ProcessorModule {
 		int pos,pos2;
 		boolean removeToken=false;
 
-	
+
 		while ((precmd=body.indexOf(cmd,postcmd))!=-1) {
 			if (removeToken) {
 				newbody.append(body.substring(postcmd+1,precmd));
@@ -567,7 +567,7 @@ public class scanparser extends ProcessorModule {
 					case 23: // '<CRC CHECK'
 						newbody.append(do_crc(session,body.substring(prepostcmd,postcmd)));
 						break;
-					default: 
+					default:
 						log.fatal("Woops broken case in method finddocmd");
 						break;
 				}
@@ -584,8 +584,8 @@ public class scanparser extends ProcessorModule {
 	}
 
 	/**
-	 * do_counter: This method retrieves the counter value for this page. 
-	 * It also checks for any $ attribs used in the COUNTER tag. 
+	 * do_counter: This method retrieves the counter value for this page.
+	 * It also checks for any $ attribs used in the COUNTER tag.
 	 *
 	 * $param part A string containing the remaining COUNTER part.
 	 * $param session The sessionInfo object.
@@ -656,7 +656,7 @@ public class scanparser extends ProcessorModule {
 		// debug("do_part(): paramline="+paramline);
 		part=getfile(filename);
 		if (part!=null) {
-		
+
 				// unlike include we need to map this ourselfs before including it
 				// in this page !!
 			try {
@@ -670,7 +670,7 @@ public class scanparser extends ProcessorModule {
 				log.error("do_part(): "+errorMsg);
 				e.printStackTrace();
 			}
-	
+
 			if (markPart>0) {
 				// Add start and end comments to part
 				String marker = "part "+filename;
@@ -695,44 +695,46 @@ public class scanparser extends ProcessorModule {
 	/**
 	 * Returns the cached part when the part contains the tag <CACHE HENK> and the page is not exprired and reload is off
 	 * else a null wil be returned.
-	 */ 
-	private String handlePartCache(String filename, String part, sessionInfo session,scanpage sp) throws ParseException
-	{		
-		if (part == null) return null;
-		if (sp.reload) return null;
+	 */
+	private String handlePartCache(String filename, String part, sessionInfo session,
+	        scanpage sp) throws ParseException {
+		if (part == null)
+			return null;
 
 		/* Test if cache HENK is used in this page or not.
 		 */
 		int start = part.indexOf("<CACHE HENK");
 		int end;
-		if (start>=0)
-		{	start+=11;
+		if (start>=0) {
+			start+=11;
 			end = part.indexOf(">", start);
-		}
-		else
+		} else
 			return null;
 
 		/* Ok it's used. Now look for the specified filename in the cache by (poolname, key, <CACHE HENK expire_time>).
 		 */
-		// if (debug) debug("handlePartCache(): lookup " + filename);		
-		String result = scancache.get("HENK", filename, part.substring(start,end+1),sp);
-		if (result != null)
-		{	//if (debug) debug("handlePartCache(): got " + filename + "out of cache HENK.");
-			return result;
+		// if (debug) debug("handlePartCache(): lookup " + filename);
+
+		String result = null;
+		if (!sp.reload) {
+			result = scancache.get("HENK", filename, part.substring(start,end+1),sp);
+			if (result != null)	{
+				//if (debug) debug("handlePartCache(): got " + filename + "out of cache HENK.");
+				return result;
+			}
 		}
 
 		/* The page couldn't be retrieved out of the cache.
 		 * Parse it and put it in the cache.
 		 */
-		try
-		{	result = handle_line(part.substring(end + 1),session,sp);
-		}
-		catch (Exception e)
-		{		String errorMsg = "Error in part "+filename;				
-				errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
-				part = errorMsg;
-				log.error("handlePartCache(): "+errorMsg);
-				e.printStackTrace();
+		try	{
+			result = handle_line(part.substring(end + 1),session,sp);
+		} catch (Exception e) {
+			String errorMsg = "Error in part "+filename;
+			errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
+			part = errorMsg;
+			log.error("handlePartCache(): "+errorMsg);
+			e.printStackTrace();
 		}
 		scancache.put("HENK", filename, result);
 
@@ -751,7 +753,7 @@ public class scanparser extends ProcessorModule {
 		}
 		return version;
 	}
-	
+
 	/**
 	 * Support method for do_smart
 	 * Return the path for the file to part
@@ -764,7 +766,7 @@ public class scanparser extends ProcessorModule {
 									 sessionInfo session, // The session for version control
 									 boolean leaf, // TREE or LEAF version
 									 boolean byALias // NAME version
-									
+
 									) throws ParseException {
 		// Get node from args
 		MMObjectNode node = (MMObjectNode)nodes.nextElement();
@@ -774,7 +776,7 @@ public class scanparser extends ProcessorModule {
 		} else {
 		    nodeNumber = ""+node.getValue("number");
 		}
-				
+
 		// Ask the builder of the node to create the path to search for the part
 		// If null returned we're done and return bestFile
 		path = node.parent.getSmartPath(htmlroot, path, nodeNumber, getVersion(node.getName(), session));
@@ -793,7 +795,7 @@ public class scanparser extends ProcessorModule {
 				newFileName = path + builderPath + File.separator + fileName;
 			}
 		} else newFileName = path + fileName;
-					
+
 		// Check if file present if so, select it as the new bestFile to use
 		String fileToCheck = htmlroot+newFileName;
 		File f = new File(fileToCheck);
@@ -801,14 +803,14 @@ public class scanparser extends ProcessorModule {
 			bestFile = newFileName;
 			if (log.isDebugEnabled()) log.debug("Found and selecting " + newFileName + " as new best file");
 		} else if (log.isDebugEnabled()) log.debug(fileToCheck + " not found, continuing search");
-		
+
 		// If no more object numbers then return the bestFile so far else continue the travel
 		if (!nodes.hasMoreElements())
 			return bestFile;
-		
+
 		return getSmartFileName( path, builderPath, fileName, bestFile, nodes, session, leaf, byALias);
 	}
-	
+
 	/**
 	 * TREEPART, TREEFILE, LEAFPART or LEAFFILE
 	 * @param args action+objectnumbers+filepath
@@ -817,7 +819,7 @@ public class scanparser extends ProcessorModule {
 	 * filepath: (optional) file to part
 	 * @param leaf false for TREE and true for LEAF version
 	 */
-	
+
 	private String do_smart(String args, sessionInfo session, scanpage sp, boolean leaf) throws ParseException {
 		// Get action: PART or FILE
 		String cmdName;
@@ -830,26 +832,26 @@ public class scanparser extends ProcessorModule {
 		args = args.substring(pos+1);
 		args = dodollar(args, session, sp);
 		if (log.isDebugEnabled()) log.debug(cmdName+action+" "+args);
-		
+
 		boolean byALias=false;
 		if ((args.length()>=6) && args.substring(0,6).equals("ALIAS ")) {
 			byALias=true;
 			args = args.substring(6); // Returns empty if length 6, no exception
-		}	
-		
+		}
+
 		int addMarkers = 0;
 		if ((args.length()>=6) && args.substring(0,6).equals("DEBUG ")) {
 			addMarkers = 1;
 			args = args.substring(6); // Returns empty if length 6, no exception
-		}	
+		}
 		if ((args.length()>=12) && args.substring(0,12).equals("DEBUGCSTYLE ")) {
 			addMarkers = 2;
 			args = args.substring(12); // Returns empty if length 12, no exception
-		}	
-	
+		}
+
 		// Set root path
 		String path = File.separator;
-				
+
 		// Use the last argument or the builder name of last arg to compose the filename to find
 		// Add the buildernames of the passed nodes to builderPath for leafpart and leaffile
 		String filename = "";
@@ -866,7 +868,7 @@ public class scanparser extends ProcessorModule {
 				if (arg.equals(")")) skip = false;
 			}
 			else if (arg.equals("(")) skip = true;
-			else { 
+			else {
 				boolean isNumber = true;
 				try { Integer.parseInt(arg); } catch (NumberFormatException n) { isNumber = false; }
 				if (isNumber) {
@@ -887,16 +889,16 @@ public class scanparser extends ProcessorModule {
 					}
 					break; // Save one test, we're done
 				}//else
-			}//else 
+			}//else
 		}//while
-		
+
 		// If no part name passed as arg, use parts/buildername.shtml?args
 		if (filename.equals("")) {
 			MMObjectNode node = mmbase.getTypeDef().getNode(arg);
 			if (node==null) throw new ParseException(cmdName+action + " node " + arg + " not found");
 			filename = "parts"+File.separator+node.getName()+".shtml";
 		}
-		
+
 		String bestFile;
 		if (leaf) {
 			// Remove leading slash from builderPath
@@ -904,18 +906,18 @@ public class scanparser extends ProcessorModule {
 			// If nothing better found part bestFile
 			bestFile = path + builderPath + File.separator +filename;
 		} else bestFile = path + filename; // If nothing better found part bestFile
-		
+
 		// Travel the smart object tree to find an override of the default part
 		Enumeration e = nodes.elements();
 		if (e.hasMoreElements())
 			bestFile = getSmartFileName( path, builderPath, filename, bestFile, e, session, leaf, byALias);
-		
+
 		if (!args.equals("")) bestFile += "?"+args;
 		if (log.isDebugEnabled()) log.debug(cmdName+action+" using "+bestFile);
 
 		if (action.equals("FILE"))
 			return bestFile;
-		
+
 		return do_part(bestFile, session, sp, addMarkers);
 	}
 
@@ -972,14 +974,14 @@ public class scanparser extends ProcessorModule {
 		}
 
 		long oldtime = System.currentTimeMillis();
- 
+
 		String part,part2;
 		int qw_pos,qw_pos2,end_pos,end_pos2;
 
-		// Parameter fill in 
+		// Parameter fill in
 		while (newbody.indexOf("$PARAM")!=-1) {
-			qw_pos=newbody.indexOf("$PARAM");	
-			qw_pos2=qw_pos+7;	
+			qw_pos=newbody.indexOf("$PARAM");
+			qw_pos2=qw_pos+7;
 			part=newbody.substring(0,qw_pos);
 			part+=do_param(sp,newbody.substring(qw_pos+6,qw_pos2));
 			part+=newbody.substring(qw_pos2);
@@ -987,10 +989,10 @@ public class scanparser extends ProcessorModule {
 		}
 
 
-		// locals fill in 
+		// locals fill in
 		while (newbody.indexOf("$LOCAL")!=-1) {
-			qw_pos=newbody.indexOf("$LOCAL");	
-			qw_pos2=qw_pos+7;	
+			qw_pos=newbody.indexOf("$LOCAL");
+			qw_pos2=qw_pos+7;
 			part=newbody.substring(0,qw_pos);
 			part+=do_local(newbody.substring(qw_pos+6,qw_pos2));
 			part+=newbody.substring(qw_pos2);
@@ -1001,48 +1003,48 @@ public class scanparser extends ProcessorModule {
 
 		// Personal obj's
 		part=finddocmd(newbody,"$ID-","^\n\r\"=<> ,",3,session,sp);
-		newbody=part; 
+		newbody=part;
 
 		part=finddocmd(newbody,"$LASTLIST","^\n\r\"=<> ,",17,session,sp);
 		newbody=part;
-		
+
 		// OBJects new VERSION
 		part=finddocmd(newbody,"$AREA-","^\n\r\"=<> ,",15,session,sp);
-		newbody=part; 
+		newbody=part;
 
 		// find pages
 		part=finddocmd(newbody,"$PAGE-","^\n\r\"=<> ,",14,session,sp);
-		newbody=part; 
+		newbody=part;
 
 		// find sessions
 		part=finddocmd(newbody,"$SESSION-","^\n\r\"=<> ,",16,session,sp);
-		newbody=part; 
+		newbody=part;
 
 		// OBJects
 		part=finddocmd(newbody,"$OBJ-",'^',4,session,sp);
-		newbody=part; 
+		newbody=part;
 		// clone of OBJ
 		part=finddocmd(newbody,"$VAR-",'^',4,session,sp);
-		newbody=part; 
+		newbody=part;
 		// clone of OBJ
 		part=finddocmd(newbody,"$COLOR-",'^',4,session,sp);
-		newbody=part; 
+		newbody=part;
 		// clone of OBJ
-		part=finddocmd(newbody,"$TEXT-",'^',4,session,sp); 
-		newbody=part; 
+		part=finddocmd(newbody,"$TEXT-",'^',4,session,sp);
+		newbody=part;
 		// SQL queries
-		part=finddocmd(newbody,"$SQL-",'^',2,session,sp); 
+		part=finddocmd(newbody,"$SQL-",'^',2,session,sp);
 		newbody=part;
 		// CONST , not recognized in finddocmd , so must be build and added there
 		// part=finddocmd(newbody,"$CONST-",'^',7,session,sp);
-		// newbody=part; 
-		// Cineserv
-		// part=finddocmd(newbody,"$DOC-",'^',9,); 
 		// newbody=part;
-		
+		// Cineserv
+		// part=finddocmd(newbody,"$DOC-",'^',9,);
+		// newbody=part;
+
 		// Modules
 		part=finddocmd(newbody,"$MOD-","^\n\r\"=< ,",9,session,sp);
-		newbody=part; 
+		newbody=part;
 
 
 		//debug("dodollar(): 3 " + (System.currentTimeMillis() - oldtime) + " ms." + cookie);
@@ -1063,7 +1065,7 @@ public class scanparser extends ProcessorModule {
 			rtn="";
 		}
 		return(rtn);
-	}	
+	}
 
 
 	// Parameter fill in routine
@@ -1071,7 +1073,7 @@ public class scanparser extends ProcessorModule {
 		// rico
 		int i;
 		String rtn=null;
-		
+
 		if (part2!=null) {
 			if (part2.equals("L")) {
 				// Eval $PARAML: the number of params
@@ -1084,7 +1086,7 @@ public class scanparser extends ProcessorModule {
 			}
 			if (part2.equals("A")) {
 				// Eval $PARAMA
-				if (sp.querystring == null) 
+				if (sp.querystring == null)
 					return "";
 				return sp.querystring;
 			}
@@ -1098,13 +1100,13 @@ public class scanparser extends ProcessorModule {
 				return sp.getParam(sp.params.size()-1);
 			}
 		}
-		
+
 		// Handle $PARAMn
 		i=Integer.parseInt(part2);
 		rtn=sp.getParam(i-1);
 		if (rtn==null) rtn="";
 		return(rtn);
-	}	
+	}
 
     /**
      * Special commands, this will grow
@@ -1183,7 +1185,7 @@ public class scanparser extends ProcessorModule {
 
 	/**
 	* give a name an you get the  processor (Interface), if procName does not exists then null is returned.
-	*/	
+	*/
 	private final ProcessorInterface getProcessor(String procName)
 	{
 			if (processors.containsKey(procName))
@@ -1196,22 +1198,22 @@ public class scanparser extends ProcessorModule {
 				if (obj == null)
 				{
 					log.error("getProcessor(): Not authorized or not a valid class name: " + procName);
-					return null; 
+					return null;
 				} else {
 					// debug(obj);
 				}
-					
+
 				if (obj instanceof ProcessorInterface)
 				{
 					//debug("servscan.getProcessor: we have a new Processor("+procName+")");
-					ProcessorInterface pr = (ProcessorInterface) obj;		
+					ProcessorInterface pr = (ProcessorInterface) obj;
 					processors.put(procName,pr);
 					return pr;
 				}
 				else
-				{	
+				{
 					log.error("getProcessor(): not a valid Processor("+ procName+")");
-					return null;	
+					return null;
 				}
 			}
 	}
@@ -1281,7 +1283,7 @@ public class scanparser extends ProcessorModule {
 	 * It processes the tokens after the <MACRO tag and gives them in a
 	 * Vector to the processor specified in the page
 	 * Tokens supported of the form :
-	 * tokje=blah 
+	 * tokje=blah
 	 * tokje="blah"
 	 * tokje
 	 * "tokje"
@@ -1335,7 +1337,7 @@ public class scanparser extends ProcessorModule {
 	/**
 	 * Method that tokenizes a string into pieces
 	 * Tokens supported of the form :
-	 * tokje=blah 
+	 * tokje=blah
 	 * tokje="blah"
 	 * tokje
 	 * "tokje"
@@ -1348,7 +1350,7 @@ public class scanparser extends ProcessorModule {
 		Vector cmds=new Vector();
 		StringTokenizer tok;
 
-		// OK lets chop the parts 
+		// OK lets chop the parts
 		tok= new StringTokenizer(part," \"=",true);
 		while(tok.hasMoreTokens()) {
 			tokje=tok.nextToken();
@@ -1380,7 +1382,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	/** 
+	/**
 	* handle if/then/elseif/\/if
 	*/
 	String do_conditions_lif(String body,sessionInfo session,scanpage sp) throws ParseException {
@@ -1407,10 +1409,10 @@ public class scanparser extends ProcessorModule {
 		while (ifpos!=-1) {
 			// append the part before the <IF
 			buffer.append(body.substring(0,ifpos));
-			
+
 			// unmap this one IF, result will be the correct part+rest
 			buffer.append(do_if(body.substring(ifpos+4),session,sp));
-			
+
 			// convert buffer back to body and clear buffer
 			body=buffer.toString();
 			buffer=new StringBuffer();
@@ -1418,7 +1420,7 @@ public class scanparser extends ProcessorModule {
 			// try to get a new </IF pos
 			ifpos=body.indexOf("<LIF");
 		}
-		return(body);	
+		return(body);
 	}
 
 
@@ -1429,8 +1431,8 @@ public class scanparser extends ProcessorModule {
 		if (pos!=-1) {
 			String cmd=body.substring(1,pos);
 			boolean state=do_vals(cmd,session,sp);
-			body=body.substring(pos+1);	
-			
+			body=body.substring(pos+1);
+
 			boolean found=false;
 			int depth=0;
 			pos=0;
@@ -1442,7 +1444,7 @@ public class scanparser extends ProcessorModule {
 				end=body.indexOf("</IF>",pos);
 				if (beg==-1 || beg>end) {
 					if (depth==0) {
-						found=true;	
+						found=true;
 						if (els==-1) {
 							els=body.indexOf("<ELSE>",pos);
 							if (els>end) els=-1;
@@ -1480,7 +1482,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	/** 
+	/**
 	* handle if/then/elseif/\/if
 	*/
 	String do_conditions(String body,sessionInfo session,scanpage sp) throws ParseException {
@@ -1507,10 +1509,10 @@ public class scanparser extends ProcessorModule {
 		while (ifpos!=-1) {
 			// append the part before the <IF
 			buffer.append(body.substring(0,ifpos));
-			
+
 			// unmap this one IF, result will be the correct part+rest
 			buffer.append(do_if(body.substring(ifpos+3),session,sp));
-			
+
 			// convert buffer back to body and clear buffer
 			body=buffer.toString();
 			buffer=new StringBuffer();
@@ -1518,7 +1520,7 @@ public class scanparser extends ProcessorModule {
 			// try to get a new </IF pos
 			ifpos=body.indexOf("<IF");
 		}
-		return(body);	
+		return(body);
 	}
 
 
@@ -1566,7 +1568,7 @@ public class scanparser extends ProcessorModule {
 					cmd="";
 				}
 			}
-		} else { 
+		} else {
 			pos=cmd.indexOf(' ');
 			if (pos!=-1) {
 				command=cmd.substring(0,pos);
@@ -1574,11 +1576,11 @@ public class scanparser extends ProcessorModule {
 			}
 		}
 
-		
+
 		// Process commands to list if any parse them but they can be overiden
 		// by the processor
 		if (cmds.size()>1) {
-			tagger=new StringTagger(cmd,' ','=',',','"');	
+			tagger=new StringTagger(cmd,' ','=',',','"');
 
 			/*
 			str=tagger.Value("ITEMS");
@@ -1620,7 +1622,7 @@ public class scanparser extends ProcessorModule {
 					if (acmd.equals("NEXT")) {
 						//sessions.setValue(session,key,""+(offset+maxitems));
 						offset=offset+maxitems;
-					} else 
+					} else
 					if (acmd.equals("PREV")) {
 						//sessions.setValue(session,key,""+(offset-maxitems));
 						offset=offset-maxitems;
@@ -1633,7 +1635,7 @@ public class scanparser extends ProcessorModule {
 
 			sorted=tagger.Value("SORTED");
 			sortedpos=tagger.Value("SORTPOS");
-			
+
 			str=tagger.Value("PROCESSOR");
 			if (str!=null) {
 				 if (str.charAt(0)=='"') str=str.substring(1,str.length()-1);
@@ -1641,13 +1643,13 @@ public class scanparser extends ProcessorModule {
 			}
 
 		} else {
-			tagger=new StringTagger("",' ','=',',','"');	
+			tagger=new StringTagger("",' ','=',',','"');
 		}
 
 		if (sessions!=null && session!=null && key!=null) {
 			sessions.setValue(session,key,""+offset);
 		}
-	
+
 		String version=tagger.Value("VERSION");
 		if (version==null || version.equals("1.0")) {
 		// is there a proccesor defined ?
@@ -1662,7 +1664,7 @@ public class scanparser extends ProcessorModule {
 			// do we have a result ifso do the layout stuff
 			if (result!=null) {
 				// added reverse, should be changed soon
-				if (sorted!=null && sorted.equals("ALPHA")) result=SortedVector.SortVector(result);	
+				if (sorted!=null && sorted.equals("ALPHA")) result=SortedVector.SortVector(result);
 
 				// get the number of items set by the user or by the processor
 				str=tagger.Value("ITEMS");
@@ -1678,13 +1680,13 @@ public class scanparser extends ProcessorModule {
 
 				if (sorted!=null && sorted.equals("MALPHA")) {
 					if (sortedpos!=null) {
-						result=doMAlphaSort(result,sortedpos,numitems);	
+						result=doMAlphaSort(result,sortedpos,numitems);
 					} else {
-						result=doMAlphaSort(result,"1",numitems);	
+						result=doMAlphaSort(result,"1",numitems);
 					}
 				}
 
-				if (sorted!=null && sorted.equals("REVERSE")) result=reverse(result,numitems);	
+				if (sorted!=null && sorted.equals("REVERSE")) result=reverse(result,numitems);
 
 				curitem=1;
 				int jsize=result.size();
@@ -1743,7 +1745,7 @@ public class scanparser extends ProcessorModule {
 			// do we have a result ifso do the layout stuff
 			if (result!=null) {
 				// added reverse, should be changed soon
-				if (sorted!=null && sorted.equals("ALPHA")) result=SortedVector.SortVector(result);	
+				if (sorted!=null && sorted.equals("ALPHA")) result=SortedVector.SortVector(result);
 
 				// get the number of items set by the user or by the processor
 				str=tagger.Value("ITEMS");
@@ -1757,10 +1759,10 @@ public class scanparser extends ProcessorModule {
 					numitems=1;
 				}
 
-				if (sorted!=null && sorted.equals("REVERSE")) result=reverse(result,numitems);	
+				if (sorted!=null && sorted.equals("REVERSE")) result=reverse(result,numitems);
 
 				//debug("PART="+template);
-					
+
 				String listprepart=null;
 				String listendpart=null;
 				// if there is a LISTLOOP split it in 3 parts
@@ -1768,8 +1770,8 @@ public class scanparser extends ProcessorModule {
 				int listendpos=template.indexOf("</LISTLOOP>");
 				if (listprepos!=-1) {
 					// oke found a listloop
-					listprepart=template.substring(0,listprepos);	
-					listendpart=template.substring(listendpos+11);	
+					listprepart=template.substring(0,listprepos);
+					listendpart=template.substring(listendpos+11);
 					template=template.substring(listprepos+10,listendpos);
 				}
 
@@ -1795,7 +1797,7 @@ public class scanparser extends ProcessorModule {
 					}
 				}
 				offset*=numitems;
-				
+
 				// added for prelist/endlist
 				if (listprepart!=null && !listprepart.equals("")) {
 					rtn.append(doPrePart(listprepart,jsize/numitems,offset/numitems,maxitems/numitems,numitems));
@@ -1817,7 +1819,7 @@ public class scanparser extends ProcessorModule {
 					curitem++;
  				}
 				// org.mmbase lastlistitem=curitem;
-	
+
 				// added for prelist/endlist
 				if (listendpart!=null && !listendpart.equals("")) {
 					rtn.append(doEndPart(listendpart,jsize/numitems,offset/numitems,maxitems/numitems,numitems));
@@ -1865,7 +1867,7 @@ public class scanparser extends ProcessorModule {
 					try {
 						index=Integer.parseInt(template.substring(prepostcmd,postcmd+1));
 						postcmd++;
-					} catch (Exception g) {}	
+					} catch (Exception g) {}
 					index--;
 					try {
 						dst.append((v.elementAt(index)).toString());
@@ -1943,10 +1945,10 @@ public class scanparser extends ProcessorModule {
 			log.info("do_proc_input(): proc_cmd="+proc_cmd);
 			return;
 		}
-		return;	
+		return;
 	}
 
-	/** 
+	/**
 	* maintainance call, will be called by the admin to perform managment
 	* tasks. This can be used instead of its own thread.
 	*/
@@ -1959,7 +1961,7 @@ public class scanparser extends ProcessorModule {
 
 		try {
 			String filename,paramline=null;
-	
+
 			// we now may have a a param setup like part.shtml?1212+1212+1212
 			// split it so we can load the file and get the params
 			int pos=part2.indexOf('?');
@@ -1976,18 +1978,18 @@ public class scanparser extends ProcessorModule {
 			if ((sp.mimetype==null) || sp.mimetype.equals("")) {
 				sp.mimetype=getMimeTypeFile(filename);
 			}
-			
-			if (log.isDebugEnabled()) {	
+
+			if (log.isDebugEnabled()) {
 				log.debug("calcPage(): filename="+filename);
 				log.debug("calcPage(): paramline="+paramline);
 				log.debug("calcPage(): mimetype="+sp.mimetype);
 			}
 			sp.body=getfile(filename);
-	
+
 			if (sp.body!=null) {
-	
+
 				String wantCache=null;
-	
+
 				if (sp.body.indexOf("<CACHE PAGE")!=-1) {
 					wantCache="PAGE";
 				}
@@ -2003,7 +2005,7 @@ public class scanparser extends ProcessorModule {
 				if (wantCache!=null) {
 					scancache.newput2(wantCache,part2,sp.body,cachetype, sp.mimetype);
 				}
-		
+
 				return(sp.body);
 			} else {
 				return("");
@@ -2045,7 +2047,7 @@ public class scanparser extends ProcessorModule {
 	* Sort the lines in the vector, to do this we need to first group
 	* them and then sort them by item number defined
 	* @param input - the result Vector unsorted.
-	* @param sortonnumbers - a String with colpositions eg. "6:4" denoting the 
+	* @param sortonnumbers - a String with colpositions eg. "6:4" denoting the
 	* order and colpositions for the sort.
 	* @param numberofitems - integer with the amount of items.
 	* @return a Vector with sorted items.
@@ -2059,11 +2061,11 @@ public class scanparser extends ProcessorModule {
 		// first create vectors with numberofitems per vector
 		Enumeration einput=input.elements();
 		while (einput.hasMoreElements()) {
-			Vector row=new Vector();	
+			Vector row=new Vector();
 			for (int i=0;i<numberofitems;i++) {
-				row.addElement((String)einput.nextElement());	
+				row.addElement((String)einput.nextElement());
 			}
-			output.addSorted(row);	
+			output.addSorted(row);
 		}
 		Vector result=new Vector();
 		Enumeration eoutput=output.elements();
@@ -2071,7 +2073,7 @@ public class scanparser extends ProcessorModule {
 			Vector row=(Vector)eoutput.nextElement();
 			Enumeration erow=row.elements();
 			while (erow.hasMoreElements()) {
-				result.addElement(erow.nextElement());	
+				result.addElement(erow.nextElement());
 			}
 		}
 		return(result);
@@ -2093,7 +2095,7 @@ public class scanparser extends ProcessorModule {
 
 	private String do_transaction(String template, sessionInfo session,scanpage sp) throws ParseException {
 		transactionhandler.handleTransaction(template,session,sp);
-		return "";	
+		return "";
 	}
 
 
@@ -2108,9 +2110,13 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.52 2001-12-14 09:33:23 pierre Exp $
+$Id: scanparser.java,v 1.53 2001-12-21 15:26:40 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.52  2001/12/14 09:33:23  pierre
+pierre: Cleaning project:
+added @javadoc and @rename tags, and License statement where needed
+
 Revision 1.51  2001/11/26 12:55:29  vpro
 Rico: added some documentation for caclulating timed out pages in the background
 
