@@ -71,7 +71,7 @@ public class Jumpers extends MMObjectBuilder {
 			}
 			if (url==null) {
 				// Search jumpers with name;
-				debug("Search jumpers with name="+key);
+				if (debug) debug("Search jumpers with name="+key);
 				Enumeration res=search("WHERE name='"+key+"'");
 				if (res.hasMoreElements()) {
 					node=(MMObjectNode)res.nextElement();	
@@ -80,7 +80,7 @@ public class Jumpers extends MMObjectBuilder {
 			}
 			if (url==null) {
 				// Search jumpers with number (parent);
-				debug("Search jumpers with id="+ikey);
+				if (debug) debug("Search jumpers with id="+ikey);
 				if (ikey>=0) {
 					Enumeration res=search("WHERE id="+ikey);
 					if (res.hasMoreElements()) {
@@ -96,7 +96,7 @@ public class Jumpers extends MMObjectBuilder {
 					if (node!=null) {
 						String buln=mmb.getTypeDef().getValue(node.getIntValue("otype"));
 						MMObjectBuilder bul=mmb.getMMObject(buln);
-						debug("getUrl through builder with name="+buln+" and id "+ikey);
+						if (debug) debug("getUrl through builder with name="+buln+" and id "+ikey);
 						if (bul!=null) url=bul.getDefaultUrl(ikey);
 					}
 				}

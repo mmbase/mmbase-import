@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.13 2000-04-18 13:06:42 wwwtech Exp $
+$Id: Teasers.java,v 1.14 2000-06-08 18:03:21 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/04/18 13:06:42  wwwtech
+Wilbert: restricted scope of some methods and made fillTeaserSearchCache synchronized
+
 Revision 1.12  2000/04/11 14:20:30  wwwtech
 Wilbert: Fixed remove from jumpercache in method nodeLocalChanged
 
@@ -60,7 +63,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.13 $ $Date: 2000-04-18 13:06:42 $ 
+ * @version $Revision: 1.14 $ $Date: 2000-06-08 18:03:21 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -122,7 +125,7 @@ public class Teasers extends MMObjectBuilder {
 
 	public String getDefaultUrl(int src) {
 
-		debug("getDefaultUrl("+src+")");
+		if (debug) debug("getDefaultUrl("+src+")");
 	
 		MMObjectNode node=getNode(src);
 		String url=getUrl(src); // returns the url related to this teaser or null if none
@@ -140,17 +143,17 @@ public class Teasers extends MMObjectBuilder {
 				other=node2.getIntValue("snumber");
 			}
 
-			debug("getDefaultUrl("+src+"): other("+other+")");
+			if (debug) debug("getDefaultUrl("+src+"): other("+other+")");
 
 			MMObjectNode node3=getNode(other);
 			int otype=node3.getIntValue("otype");
 
-			debug("getDefaultUrl("+src+"): found otype("+otype+")");
+			if (debug) debug("getDefaultUrl("+src+"): found otype("+otype+")");
 
 			MMObjectBuilder bul=mmb.getMMObject(mmb.getTypeDef().getValue(otype));
 
 			int numbie = node3.getIntValue("number");
-			debug("getDefaultUrl("+src+"): number found("+numbie+"), getting defaultUrl");
+			if (debug) debug("getDefaultUrl("+src+"): number found("+numbie+"), getting defaultUrl");
 
 			url=bul.getDefaultUrl(numbie);
 
