@@ -14,13 +14,18 @@
   <form method="post" name="resource">
 <table>
   <mm:cloud>
-  <tr>
-    <th class="main" colspan="2"><mm:write referid="title" /></th> 
-    <th class="main" colspan="1">Root: <%= resourceLoader.findResource("") %></th>
-  </tr>
   <mm:import externid="resource" vartype="string" jspvar="resource" />
-  <mm:import externid="keepsearch"><%=ResourceLoader.XML_PATTERN%></mm:import>
+  <mm:import externid="keepsearch"><%=ResourceLoader.XML_PATTERN.pattern()%></mm:import>
   <mm:import externid="search" vartype="string" jspvar="search" ><mm:write referid="keepsearch" escape="none" /></mm:import>
+  <tr>
+    <th class="main" colspan="2">
+      <mm:present referid="resource">
+	<a href="<mm:url referids="search" />">&lt;-- Back</a> | 
+      </mm:present>
+      <mm:write referid="title" /> 
+    </th> 
+    <th class="main" colspan="1">Root: <%= resourceLoader.findResource("") %></th>
+  </tr> 
   <input type="hidden" name="keepsearch" value="<mm:write referid="search" />" />
   <mm:notpresent referid="resource">
     <tr>
@@ -28,6 +33,7 @@
       <td colspan="2">
         <input type="text" name="search" value="<mm:write referid="search" />" />
         <select name="examples" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">         
+            <option value="" <mm:isempty referid="search"> selected="selected" </mm:isempty> >ALL</option>
           <mm:write value=".*\.xml$$">
             <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xml's</option>
            </mm:write>
@@ -45,6 +51,7 @@
       </td>
     </tr>
     <tr><th>&nbsp;</th><th>Resource-name</th><th>External URL</th></tr>
+    <tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="" /></mm:url>">new</a></td><td colspan="2"></td></tr>
     <%
     Iterator i = resourceLoader.getResourcePaths(search == null || search.equals("") ? null : java.util.regex.Pattern.compile(search), true).iterator();
 
@@ -78,7 +85,6 @@
         <% } else { %>
            READONLY
         <% } %>
-	<a href="<mm:url referids="search" />">Back</a>
         <mm:compare referid="xml" value="XML">          
           <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
           <input type="submit" name="xml" value="TEXT" />

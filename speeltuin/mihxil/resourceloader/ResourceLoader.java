@@ -28,9 +28,13 @@ import org.mmbase.storage.search.*;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import javax.xml.transform.*;
+import javax.xml.transform.Transformer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
+
+
+import org.mmbase.util.transformers.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -89,7 +93,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.4 2004-09-30 22:23:59 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.5 2004-10-01 08:25:44 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -441,7 +445,9 @@ public class ResourceLoader extends ClassLoader {
                     if (recursive != null && files[j].isDirectory()) {
                         getFileResourcePaths(filter, recursive + files[j].getName() + "/", results);
                     } else {
-                        results.add(recursive + files[j].getName());
+                        if (files[j].canRead()) { 
+                            results.add(recursive + files[j].getName());
+                        }
                     }
                 }
             }
@@ -522,6 +528,9 @@ public class ResourceLoader extends ClassLoader {
      * @throws IOException If the Resource for some reason could not be created.
      */
     public OutputStream createResourceAsStream(String name) throws IOException {
+        if (name.equals("")) {
+            throw new IOException("You cannot create a resource with an empty name");
+        }
         return findResource(name).openConnection().getOutputStream();
     }
 
@@ -623,7 +632,7 @@ public class ResourceLoader extends ClassLoader {
             if (is == null) return null;
             if (name.endsWith(".properties")) {
                 // todo \ u escapes must be escaped to decent Character's.
-                return new InputStreamReader(is, "ISO-8859-1");
+                return new TransformingReader(new InputStreamReader(is, "UTF-8"), new InverseCharTransformer(new UnicodeEscaper()));
             }
             byte b[] = new byte[100];
             if (is.markSupported()) {
@@ -663,7 +672,7 @@ public class ResourceLoader extends ClassLoader {
             if (os == null) return null;
             if (name.endsWith(".properties")) {
                 // todo: perform \ u escaping.
-                return new OutputStreamWriter(os, "ISO-8859-1");
+                return new TransformingWriter(new OutputStreamWriter(os, "UTF-8"), new UnicodeEscaper());
             }
         } catch (UnsupportedEncodingException uee) {
         }
@@ -683,6 +692,7 @@ public class ResourceLoader extends ClassLoader {
                         } catch (UnsupportedEncodingException uee) {
                         }
                         wrapped.write(start.toString());
+                        start = null;
                     }
                 }
                 public void close() throws IOException {
@@ -694,13 +704,13 @@ public class ResourceLoader extends ClassLoader {
                     wrapped.flush();
                 }
                 
-                    public void write(char[] cbuf) throws IOException {
-                        if (wrapped != null) {
-                            wrapped.write(cbuf);
-                        } else {
-                            write(cbuf, 0, cbuf.length);
-                        } 
-                    }
+                public void write(char[] cbuf) throws IOException {
+                    if (wrapped != null) {
+                        wrapped.write(cbuf);
+                    } else {
+                        write(cbuf, 0, cbuf.length);
+                    } 
+                }
                 
                 public void write(int c) throws IOException {
                     if (wrapped != null) { wrapped.write(c); } else { super.write(c); }
@@ -718,12 +728,15 @@ public class ResourceLoader extends ClassLoader {
                     if (wrapped != null) {
                         wrapped.write(cbuf, off, len);
                     } else {
-                        for (int i = off; i< len; i++) {
+                        for (int i = off; i < len + off; i++) {
                             start.append(cbuf[i]);
                             wrote++;
                             if (wrote == 100) {
                                 wrap();
-                                write(cbuf, off + i, len -i);
+                                i++;
+                                if (i < len) {
+                                    wrapped.write(cbuf, i, len - (i - off));
+                                }
                                 break;
                             }
                         }
@@ -739,11 +752,13 @@ public class ResourceLoader extends ClassLoader {
      */
     public List getFiles(String name) {
         URL url = findResource(name);
+        if (url == null) return new ArrayList();
         return getRootFiles(url.getPath());
     }
 
     protected List getClassLoaderResources(String name) {
         URL url = findResource(name);
+        if (url == null) return new ArrayList();
         return getRootResources(url.getPath().substring(1));
     }
 
