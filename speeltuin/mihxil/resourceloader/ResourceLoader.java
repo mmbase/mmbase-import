@@ -83,20 +83,15 @@ When you want to place a configuration file then you have several options, wich 
   </li>
 </ol>
  *
- * You can programmaticly place or change resources by the use of {@link #createResourceAsStream}.
- * Which will probably only work for one of the first three options.
+ * <p>Resource can  programmaticly created or changed by the use of {@link #createResourceAsStream}, or something like {@link #getWriter}.</p>
  *
-<pre>
-  Impact:
-     URIResolver uses files, must depend on this too. --> FormatterTag, Editwizards!
-     MMBase.java, MMBaseContext.java, security, logging
-     IncludeTag#cite
-     MMAdmin.java
-</pre>
+ * <p>If you want to check beforehand if a resource can be changed, then something like <code>resourceLoader.getResource().openConnection().getDoOutput()</code> can be used.</p>
+ * <p>That is also valid if you want to check for existance. <code>resourceLoader.getResource().openConnection().getDoInput()</code>.</p>
+ * <p>If you want to remove a resource, you must write <code>null</code> to all URL's returned by {@link #findResources} (Do for every URL:<code>url.openConnection().getOutputStream().write(null);</code>)</p>
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.17 2004-10-29 14:59:33 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.18 2004-10-29 17:42:42 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -145,7 +140,9 @@ public class ResourceLoader extends ClassLoader {
     static MMObjectBuilder resourceBuilder = null;
 
 
-
+    /**
+     * The URLStreamHandler for 'mm' URL's.
+     */
     private final MMURLStreamHandler mmStreamHandler = new MMURLStreamHandler();
 
     /**
@@ -199,8 +196,9 @@ public class ResourceLoader extends ClassLoader {
      * Initializes the Resourceloader using a servlet-context (makes e.g. resolving relatively to WEB-INF/config possible).
      * @param sc The ServletContext used for determining the mmbase configuration directory. Or <code>null</code>.
      */
-    public static synchronized void init(ServletContext sc) {
+    public static  void init(ServletContext sc) {
         servletContext = sc;
+        // reset both roots, they will be redetermined using servletContext.
         configRoot = null;
         webRoot    = null;
     }
@@ -238,7 +236,7 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Utility method to returns the 'directory' part of a resource-name.
+     * Utility method to return the 'directory' part of a resource-name.
      * Used e.g. when loading builders in MMBase.
      */
     public static String getDirectory(String path) {
@@ -250,7 +248,6 @@ public class ResourceLoader extends ClassLoader {
         }
         return path;
     }
-
 
     /**
      * The one ResourceLoader which loads from the mmbase config root is static, and can be obtained with this method
@@ -341,12 +338,16 @@ public class ResourceLoader extends ClassLoader {
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
      */
     private URL context;
-    private ResourceLoader parent = null;
 
 
     /**
-     * This constructor instantiates the root resource-loader. There is only one such ResourceLoader
-     * (acquirable with {@link #getConfigurationRoot}) so this constructor is private.
+     * Child resourceloaders have a parent.
+     */
+    private ResourceLoader parent = null;
+
+    /**
+     * This constructor instantiates a new root resource-loader. This constructor is protected (so you may use it in an extension), but normally use:
+     * {@link #getConfigurationRoot} or {@link #getWebRoot}.
      */
     protected ResourceLoader() {
         super();
@@ -361,7 +362,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * Instantiates a ResourceLoader for a 'sub directory' of given ResourceLoader
+     * Instantiates a ResourceLoader for a 'sub directory' of given ResourceLoader. Used by {@link #getChildResourceLoader}.
      */
     protected  ResourceLoader(final ResourceLoader cl, final String context)  {
         super(ResourceLoader.class.getClassLoader());
@@ -469,7 +470,7 @@ public class ResourceLoader extends ClassLoader {
      * the {@link ResourceLoader(ResourceLoader, String)} constructor.
      */
     public ResourceLoader getChildResourceLoader(String context) {
-        if (context.equals("..")) { // should be made a bit smarter, (only recognizing "../..", "/" and those kind of things).
+        if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
             return getParentResourceLoader();
         }
         return new ResourceLoader(this, context);
@@ -697,8 +698,8 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
+     * Used by {@link ResourceWatcher}. And by some deprecated code that wants to produce File objects.
      * @return A List of all files associated with the resource.
-     *         Used by {@link ResourceWatcher}. And by some deprecated code that wants to produce File objects.
      */
     public List getFiles(String name) {
 
@@ -724,7 +725,7 @@ public class ResourceLoader extends ClassLoader {
         while (i.hasNext()) {
             Object o = i.next();
             if (o instanceof NodeURLStreamHandler) {
-                ((NodeConnection) (((PathURLStreamHandler) o).openConnection(name))).getResourceNode();
+                return ((NodeConnection) (((PathURLStreamHandler) o).openConnection(name))).getResourceNode();
             }
         }
         return null;
@@ -744,7 +745,7 @@ public class ResourceLoader extends ClassLoader {
             URLConnection con = cf.openConnection(name);
             if (con.getDoInput()) {
                 long lm = con.getLastModified();
-                if (lm  > 0 && lm > lastModified) {
+                if (lm  > 0 && lastModified > 0 && lm > lastModified) {
                     log.warn("File " + con.getURL() + " is newer then " + usedUrl + " but shadowed by it");
                 }
                 if (usedUrl == null) {
@@ -812,7 +813,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * ================================================================================
-     * INNER CLASSES
+     * INNER CLASSES, all private
      * ================================================================================
      */
 
@@ -852,7 +853,11 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public File getFile(String name) {
-            return new File(fileRoot + ResourceLoader.this.context.getPath(), name);
+            String fileName = fileRoot + ResourceLoader.this.context.getPath() + name;
+            if (! File.separator.equals("/")) { // windows compatibility
+                fileName = fileName.replace('/', File.separator.charAt(0)); // er
+            }
+            return new File(fileName);
         }
         public String getName(URL u) {
             return u.getPath().substring((fileRoot + ResourceLoader.this.context.getPath()).length());
@@ -907,7 +912,9 @@ public class ResourceLoader extends ClassLoader {
     /**
      * A URLConnection for connecting to a File.  Of course SUN ships an implementation as well
      * (File.getURL), but Sun's implementation sucks. You can't use it for writing a file, and
-     * getDoInput always gives true, even if the file does not even exist.
+     * getDoInput always gives true, even if the file does not even exist.  This version supports
+     * checking by <code>getDoInput()</code> (read rights) and <code>getDoOutput()</code> (write
+     * rights) and deleting by <code>getOutputStream().write(null)</code>
      */
     private class FileConnection extends URLConnection {
         File file;
@@ -940,7 +947,15 @@ public class ResourceLoader extends ClassLoader {
         }
         public OutputStream getOutputStream() throws IOException {
             if (! connected) connect();
-            return new FileOutputStream(file);
+            return new FileOutputStream(file) {
+                    public void write(byte[] b) throws IOException {
+                        if (b == null) {
+                            file.delete();
+                        } else {
+                            super.write(b);
+                        }
+                    }
+                };
         }
         public long getLastModified() {
             return file.lastModified();
@@ -954,7 +969,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * A URLConnection for connection to a MMBase Node
+     * URLStreamHandler for NodeConnections.
      */
     private class NodeURLStreamHandler extends PathURLStreamHandler {
         private int type;
@@ -1028,6 +1043,11 @@ public class ResourceLoader extends ClassLoader {
         }
 
     }
+
+    /** 
+     * A URLConnection base on an MMBase node.
+     * @see FileConnection
+     */
     private class NodeConnection extends URLConnection {
         MMObjectNode node;
         String name;
@@ -1041,6 +1061,7 @@ public class ResourceLoader extends ClassLoader {
             if (ResourceLoader.resourceBuilder == null) {
                 throw new IOException("No such builder");
             }
+            connected = true;
         }
         /**
          * Gets the Node associated with this URL if there is one.
@@ -1119,6 +1140,14 @@ public class ResourceLoader extends ClassLoader {
                     }
                     public void write(int b) {
                         bytes.write(b);
+                    }
+                    public void write(byte[] b) throws IOException {
+                        if (b == null) {
+                            node.parent.removeNode(node);
+                            node = null;
+                        } else {
+                            super.write(b);
+                        }
                     }
                 };
         }
@@ -1265,6 +1294,11 @@ public class ResourceLoader extends ClassLoader {
 
     private static String NOT_FOUND = "/localhost/NOTFOUND/";
 
+
+    /**
+     * URLStreamHandler for URL's which can do neither input, nor output. Such an URL can be
+     * returned by other PathURLStreamHandlers too.
+     */
     private  PathURLStreamHandler NOT_AVAILABLE_URLSTREAM_HANDLER = new PathURLStreamHandler() {
 
             protected String getName(URL u) {
@@ -1286,7 +1320,11 @@ public class ResourceLoader extends ClassLoader {
             }
         };
     
-    
+
+
+    /**
+     * A connection which can neither do input, nor output. 
+     */
     private class NotAvailableConnection extends URLConnection {
 
         private String name;
@@ -1307,10 +1345,11 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * The MMURLStreamHandler is a StreamHandler for the protocol PROTOCOL.
+     * The MMURLStreamHandler is a StreamHandler for the protocol 'mm' (which is only for internal
+     * use). It combines the Connection types implented here above.
      */
 
-    protected class MMURLStreamHandler extends URLStreamHandler {
+    private class MMURLStreamHandler extends URLStreamHandler {
 
         MMURLStreamHandler() {
             super();
@@ -1328,9 +1367,9 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Implements the logic for our MM protocol.
+     * Implements the logic for our MM protocol. This logic consists of iterating in <code>ResourceLoader.this.roots</code>.
      */
-    protected class MMURLConnection extends URLConnection {
+    private class MMURLConnection extends URLConnection {
 
         URLConnection inputConnection  = null;
         URLConnection outputConnection = null;
@@ -1353,6 +1392,9 @@ public class ResourceLoader extends ClassLoader {
             connected = true;
         }
 
+        /**
+         * Returns first possible connection which can be read.
+         */
         protected URLConnection getInputConnection() {
             if (inputConnection != null) {
                 return inputConnection;
@@ -1393,33 +1435,38 @@ public class ResourceLoader extends ClassLoader {
             return getInputConnection().getInputStream();
         }
 
+        /**
+         * Returns last URL which can be written, and which is still earlier the the first URL which can be read (or the same URL).
+         * This ensures that when used for writing, it will then be the prefered one for reading.
+         */
         protected URLConnection getOutputConnection() {
             if (outputConnection != null) {
                 return outputConnection;
             }
+
+            // search connection which will be used for reading, and check if it can be used for writing
             ListIterator i = ResourceLoader.this.roots.listIterator();
-            OUTER:
-            while(true) { // just to break out of it.
-                while (i.hasNext()) {
-                    PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
-                    URLConnection c = cf.openConnection(name);
-                    if (c.getDoInput()) {
-                        if(c.getDoOutput()) { // prefer the currently read one.
-                            outputConnection = c;
-                            break OUTER;
-                        }
-                        break;
+            while (i.hasNext()) {
+                PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
+                URLConnection c = cf.openConnection(name);
+                if (c.getDoInput()) {
+                    if(c.getDoOutput()) { // prefer the currently read one.
+                        outputConnection = c;
                     }
+                    break;
                 }
+            }
+            if (outputConnection == null) {
+                // the URL used for reading, could not be written.
+                // Now iterate backwards, and search one which can be.
                 while (i.hasPrevious()) {
                     PathURLStreamHandler cf = (PathURLStreamHandler) i.previous();
                     URLConnection c = cf.openConnection(name);
                     if (c.getDoOutput()) {
                         outputConnection = c;
-                        break OUTER;
+                        break;
                     }
                 }
-                break;
             }
 
             if (outputConnection == null) {
@@ -1460,7 +1507,11 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
+     * ================================================================================
+     * Main
+     *
      * For testing purposes only
+     * ================================================================================
      */
     public static void main(String[] argv) {
         ResourceLoader resourceLoader;
@@ -1504,6 +1555,7 @@ public class ResourceLoader extends ClassLoader {
 
 
 }
+// --------------------------------------------------------------------------------
 
 /**
  * Like {@link java.io.OutputStreamWriter} but it tries to autodetect the encoding of the
