@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.32 2003-03-18 16:41:07 michiel Exp $
+ * @version $Id: JDBC.java,v 1.33 2003-03-18 16:57:43 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -86,7 +86,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
     public void unload() {
     }
-    public void shutdown() {
+    protected void shutdown() {
         poolHandler.shutdown();
     }
 
