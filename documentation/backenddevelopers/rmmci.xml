@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.10 2003-05-12 21:20:09 kees Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.11 2003-06-06 10:19:01 kees Exp $</edition>
 
     <authorgroup>
       <author>
@@ -127,24 +127,24 @@ for (x =0 ; x &#60; list.size() ; x++){
       servlet available under the /cgi-bin/java-rmi.cgi servlet mapping</para>
 
       <programlisting><![CDATA[
-  <servlet>
-    <servlet-name>javarmi</servlet-name>
-    <description>java http rmi gateway</description>
-    <servlet-class>org.mmbase.servlet.rmi.RMIHandlerServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+<servlet>
+  <servlet-name>javarmi</servlet-name>
+  <description>java http rmi gateway</description>
+  <servlet-class>org.mmbase.servlet.rmi.RMIHandlerServlet</servlet-class>
+  <load-on-startup>1</load-on-startup>
+</servlet>
 
-  <servlet-mapping>
-    <servlet-name>javarmi</servlet-name>
-    <url-pattern>/cgi-bin/java-rmi.cgi</url-pattern>
-    </servlet-mapping> ]]></programlisting>
+<servlet-mapping>
+  <servlet-name>javarmi</servlet-name>
+  <url-pattern>/cgi-bin/java-rmi.cgi</url-pattern>
+</servlet-mapping> ]]></programlisting>
 
-      <para>In your client code to force RMI over HTTP add the following lines:</para>
+      <para>In your client code to force RMI over HTTP add the following lines</para>
 
       <programlisting>java.rmi.server.RMISocketFactory.setSocketFactory(new
       sun.rmi.transport.proxy.RMIHttpToCGISocketFactory());</programlisting>
 
-      <para>now access the cloud via a rmi url
+		<para>now if you want to access the cloud from a remote location still access the cloud via a rmi url. 
 	      <programlisting>ContextProvider.getCloudContext(&#34;rmi://myhost:1111/remotecontet&#34;);</programlisting></para>
     </section>
   <section>
