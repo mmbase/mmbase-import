@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.241 2004-02-18 20:33:27 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.242 2004-02-25 14:13:56 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2387,6 +2387,8 @@ transaction was commited, following should result anything:
 				You can specify a comma separated list of fields you want to list too. If you specify this
 				together with the type attribute, these fields will be added (to the end) of the ones
 				defined in that way.
+				If a field does not exist, it is ignored if you postfix it with '?'. This makes
+				it possible to make more genetric editors, or add optional fields to a nodemanager.
 			</info>
 		</attribute>
 		<attribute>
@@ -2511,8 +2513,8 @@ transaction was commited, following should result anything:
 				<info>
 					A form entry for the field.  If the surrounding FieldList has an id, the names of the form
 					entries will be prefixed with it, so it is possible to use it for the same fields in the
-          same form more than once. The post of the form should be treated with corresponding
-          mm:fieldinfo type='useinput's.
+					same form more than once. The post of the form should be treated with corresponding
+					mm:fieldinfo type='useinput's.
 				</info>
 			</possiblevalue>
 			<possiblevalue>
@@ -3068,18 +3070,18 @@ like the parameter list or the session (where ever it is available) --&gt;
 			<info>
 				The url to refer to. If not specified, then it becomes the
 				result of getRequestURI.
-      </info>
-    </attribute>
+			</info>
+		</attribute>
 		<attribute>
 			<name>referid</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        Reuses another mm:url (via its id). You can add extra parameters then, or simply make
-        another link (this last thing could also be done with mm:write). This attribute cannot be used
-        together with the 'page' attribute.
-      </info>
-      <since>MMBase-1.7</since>
+				Reuses another mm:url (via its id). You can add extra parameters then, or simply make
+				another link (this last thing could also be done with mm:write). This attribute cannot be used
+				together with the 'page' attribute.
+			</info>
+			<since>MMBase-1.7</since>
 		</attribute>
 		<attribute>
 			<name>escapeamps</name>
@@ -3993,12 +3995,12 @@ Of course, the default behavior of getSmartPath can still be overridden.
 		<type>util</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.ParamTag</tagclass>
 		<info>
-      Adds a parameter to the parent parameterprovider Tag.
+			Adds a parameter to the parent parameterprovider Tag.
 		</info>
 		<see tag="url" />
-    <see tag="include" />
+		<see tag="include" />
 		<see tag="functioncontainer" />
-    <see tag="url" attribute="referids" />
+		<see tag="url" attribute="referids" />
 		<see tag="functioncontainer" attribute="referids"/>
 		<attribute>
 			<name>name</name>
@@ -4006,29 +4008,29 @@ Of course, the default behavior of getSmartPath can still be overridden.
 			<rtexprvalue>true</rtexprvalue>
 			<refercontext>true</refercontext>
 			<info>
-        The name of the parameter.
-      </info>
-    </attribute>
+				The name of the parameter.
+			</info>
+		</attribute>
 		<attribute>
 			<name>value</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<refercontext>true</refercontext>
 			<info>
-        The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
-      </info>
-    </attribute>
+				The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
+			</info>
+		</attribute>
 		<attribute>
 			<name>vartype</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-        The 'vartype' of the parameter. In principle url-parameters should always be string. When
-        using this attribute, the value is first casted to this type. You could e.g. set it to
-        'integer' if you want to ensure the variable is parseable as an integer.
-      </info>
-      <since>MMBase-1.7</since>
-    </attribute>
+				The 'vartype' of the parameter. In principle url-parameters should always be string. When
+				using this attribute, the value is first casted to this type. You could e.g. set it to
+				'integer' if you want to ensure the variable is parseable as an integer.
+			</info>
+			<since>MMBase-1.7</since>
+		</attribute>
 		<example>See the example for tag 'url'.</example>
 	</tag>
 	<tag>
@@ -4767,7 +4769,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>fields</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="fields" />
+			<see tag="list" attribute="fields" />
 		</attribute>
 	</tag>
 	<tag>
@@ -4809,7 +4811,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>fields</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="fields" />
+			<see tag="list" attribute="fields" />
 		</attribute>
 	</tag>
 
@@ -5296,9 +5298,15 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				 The maximum number of batches to be produces. For really huge result, even the number of
-				 batches can be too large, so you want to limit it. You should also use it (max="1") if you
-				 only want to implement a 'next page' button.
+				<p>
+					The maximum number of batches to be produces. For really huge result, even the number of
+					batches can be too large, so you want to limit it. You should also use it (max="1") if you
+					only want to implement a 'next page' button.
+				</p>
+				<p>
+					If a field does not exist, it is ignored if you postfix it with '?'. This makes
+					it possible to make more genetric editors, or add optional fields to a nodemanager.
+				</p>
 			</info>
 		</attribute>
 		<attribute>
