@@ -69,8 +69,7 @@ public class MMExamples extends ProcessorModule {
 			token = tok.nextToken();
 			if (token.equals("INSTALL")) {
 				doInstall(cmds,vars);
-			}
-			if (token.equals("LOAD")) {
+			} else if (token.equals("LOAD")) {
 				Versions ver=(Versions)mmb.getMMObject("versions");
 				String appname=(String)cmds.get(cmdline);
 				String path=MMBaseContext.getConfigPath()+("/applications/");
@@ -98,7 +97,14 @@ public class MMExamples extends ProcessorModule {
 					}
 
 				}
+			} else if (token.equals("SAVE")) {
+				String appname=(String)cmds.get(cmdline);
+				String savepath=(String)vars.get("PATH");
+				String goal=(String)vars.get("GOAL");
+				System.out.println("APP="+appname+" P="+savepath+" G="+goal);
+				writeApplication(appname,savepath,goal);
 			}
+
 		}
 		return(false);
 	}
@@ -120,11 +126,13 @@ public class MMExamples extends ProcessorModule {
 	}
 
 	public void doInstall(Hashtable cmds, Hashtable vars) {
-
+		
 		if ((String)vars.get("NAME-MyYahoo")!=null) installApplication("MyYahoo");
 		if ((String)vars.get("NAME-Basics")!=null) installApplication("Basics");
 		if ((String)vars.get("NAME-BasicAuth")!=null) installApplication("BasicAuth");
+		/*
 		if ((String)vars.get("NAME-writetest")!=null) writeApplication("MyYahoo");
+		*/
 	}
 
 	private boolean installApplication(String applicationname) {
@@ -506,10 +514,10 @@ public class MMExamples extends ProcessorModule {
 		}
 	}
 
-	private boolean	writeApplication(String appname) {
+	private boolean	writeApplication(String appname,String targetpath,String goal) {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
-		XMLApplicationWriter.writeXMLFile(app,"/tmp",mmb);
+		XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
 		return(true);
 	}
 
