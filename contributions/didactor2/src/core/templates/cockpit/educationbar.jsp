@@ -23,9 +23,5 @@
     </mm:node>
   </mm:present>
   </div>
-	<div style="display:none;">
-<%--<div>--%>
-		<mm:treeinclude write="true" page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" />
-	</div>
-  
+ 
 </mm:cloud>

@@ -3,7 +3,6 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 	<%@include file="/shared/setImports.jsp"%>
 
-	<mm:present referid="education">
 		<mm:node number="$user">
                 <mm:field id="oldLastActivity" name="lastactivity" write="false"/>
                 <mm:islessthan referid="oldLastActivity" value="2">
@@ -13,6 +12,7 @@
         	<mm:setfield name="lastactivity"><%=System.currentTimeMillis()/1000%></mm:setfield>
 		</mm:node>
 
+	<mm:present referid="education">
 		<mm:present referid="class">
         	<mm:list fields="classrel.number,classrel.lastlogin" path="people,classrel,classes" max="1" constraints="people.number=${user} and classes.number=${class}" orderby="classrel.lastlogin" directions="down">
 			<mm:field id="classrelNumber" name="classrel.number" jspvar="lastClassRel" write="false"/>
