@@ -26,11 +26,7 @@ import org.mmbase.util.logging.*;
  * <li><code>JumperCacheSize</code> determines the size of the jumper cache (in nr of items).
  *                                 The default size is 1000.</li>
  * <li><code>JumperNotFoundURL</code> Determines the default url (such as a home page or error page)
- *              when no jumper is found. The default is <code>/index.html</code>
- *              Specifying <code>NOREDIRECT</code> means an unfound jumper is not
- *              redirected. Note that you can also specify <code>NOREDIRECT</code>
- *              as a redirecty value of a key in the jumpers builder, excluding specific
- *              urls from being redirected, rather than all of them.
+ *              when no jumper is found. If not specified nothing will be done if no jumper is found.</li>
  * </ul>
  * <br>
  * XXX:Note that this builder is called directly from a servlet, and may therefor
@@ -67,10 +63,9 @@ public class Jumpers extends MMObjectBuilder {
      * However, you may need it if other servlets rely on specific paths
      * that would otherwise be caught by the jumper servlet.
      * The value fo this field is set using the <code>JumperNotFoundURL</code>
-     * property in the builder configuration file. If this property is
-     * set to <code>NOREDIRECT</code> the field will be set to <code>null</code>.
+     * property in the builder configuration file.
      */
-    private static String jumperNotFoundURL = "/index.html";
+    private static String jumperNotFoundURL;
 
     /**
      * Initializes the builder.
@@ -92,14 +87,7 @@ public class Jumpers extends MMObjectBuilder {
         }
         jumpCache = new LRUHashtable(JUMP_CACHE_SIZE);
 */
-        tmp=getInitParameter("JumperNotFoundURL");
-        if (tmp!=null) {
-            if (tmp.equalsIgnoreCase("NOREDIRECT")) {
-                jumperNotFoundURL = null;
-            } else {
-                jumperNotFoundURL = tmp;
-            }
-        }
+        jumperNotFoundURL = getInitParameter("JumperNotFoundURL");
         return true;
     }
 
@@ -165,8 +153,7 @@ public class Jumpers extends MMObjectBuilder {
             if (url==null) {
                 // Search jumpers with name;
                 log.debug("Search jumpers with name="+key);
-                //Enumeration res=search("WHERE name='"+key+"'");
-                Enumeration res=search("name=='"+key+"'");
+                Enumeration res=search("WHERE name='"+key+"'");
                 if (res.hasMoreElements()) {
                     node=(MMObjectNode)res.nextElement();
                     url=node.getStringValue("url");
@@ -197,12 +184,12 @@ public class Jumpers extends MMObjectBuilder {
             }
             if (url!=null && url.length()>0 && !url.equals("null")) {
                 jumpCache.put(key,url);
+                if (url.equalsIgnoreCase("NOREDIRECT")) {  // return null if the url specified is NOREDIRECT
+                    url=null;
+                }
             } else {
                 log.debug("No jumper found for key '"+key+"'");
                 url=jumperNotFoundURL;
-            }
-            if (url.equalsIgnoreCase("NOREDIRECT")) {  // return null if the url specified is NOTREDIRECT
-                url=null;
             }
         }
         return url;
