@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.remote.generator;
-import nanoxml.*;
+import org.w3c.dom.*;
 import java.util.*;
 import java.lang.reflect.*;
 
@@ -17,16 +17,18 @@ import java.lang.reflect.*;
  * @author Kees Jongenburger <keesj@framfab.nl>
  **/
 public class XMLMethod extends XMLClass{
-    
-    public XMLMethod(){
-        super();
+
+    public XMLMethod(Document document){
+        super(document);
     }
-    
-    public static XMLClass fromXML(XMLElement xml){
-        XMLMethod method = new XMLMethod();
+
+    public static XMLClass fromXML(Element xml){
+        Document doc=xml.getOwnerDocument();
+        XMLMethod method = new XMLMethod(doc);
         method.setXML(xml);
         return method;
     }
+
     public Method getJavaMethod(Class clazz){
         Method[] methods = clazz.getMethods();
         for (int i =0 ; i < methods.length;i++){
