@@ -27,9 +27,10 @@ public class XMLNodeReader  {
 
     Document document;
     DOMParser parser;
+    String applicationpath;
 
 
-    public XMLNodeReader(String filename,MMBase mmbase) {
+    public XMLNodeReader(String filename,String applicationpath,MMBase mmbase) {
         try {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
@@ -38,6 +39,7 @@ public class XMLNodeReader  {
             //parser.setErrorHandler(errors);
             parser.parse(filename);
             document = parser.getDocument();
+	    this.applicationpath=applicationpath;
 
 		/*
 	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
@@ -125,6 +127,11 @@ public class XMLNodeReader  {
 										} catch(Exception e) {
 											newnode.setValue(key,-1);
 										}
+									} else if (type==FieldDefs.TYPE_BYTE) {
+										System.out.println("WOW i want to read a BIN !");
+										NamedNodeMap nm2=n5.getAttributes();
+										Node n7=nm2.getNamedItem("file");
+										newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
 									} else { 
 										System.out.println("XMLNodeReader node error : "+key+" "+value+" "+type);
 									}
@@ -146,5 +153,17 @@ public class XMLNodeReader  {
     }
 
 
-
+    byte[] readBytesFile(String filename) {
+	File bfile = new File(filename);
+	int filesize = (int)bfile.length();
+	byte[] buffer=new byte[filesize];
+	try {
+			FileInputStream scan = new FileInputStream(bfile);
+		int len=scan.read(buffer,0,filesize);
+		scan.close();
+	} catch(FileNotFoundException e) {
+		System.out.println("error getfile : "+filename);
+ 	} catch(IOException e) {}
+	return(buffer);
+    }
 }

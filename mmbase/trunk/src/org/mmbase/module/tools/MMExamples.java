@@ -225,7 +225,7 @@ public class MMExamples extends ProcessorModule {
 			if (areBuildersLoaded(app.getNeededBuilders())) {
 				if (checkRelDefs(app.getNeededRelDefs())) {
 					if (checkAllowedRelations(app.getAllowedRelations())) {
-						if (installDataSources(app.getDataSources())) {
+						if (installDataSources(app.getDataSources(),applicationname)) {
 							if (installRelationSources(app.getRelationSources())) {
 							} else {
 								System.out.println("Application installer stopped : can't install relationsources");
@@ -253,12 +253,12 @@ public class MMExamples extends ProcessorModule {
 		return(true);
 	}
 
-	boolean installDataSources(Vector ds) {
+	boolean installDataSources(Vector ds,String appname) {
 		for (Enumeration h = ds.elements();h.hasMoreElements();) {
 			Hashtable bh=(Hashtable)h.nextElement();	
 			String path=(String)bh.get("path");
-			path=MMBaseContext.getConfigPath()+("/applications/")+path;
-			XMLNodeReader nodereader=new XMLNodeReader(path,mmb);
+			String prepath=MMBaseContext.getConfigPath()+("/applications/");
+			XMLNodeReader nodereader=new XMLNodeReader(prepath+path,prepath+appname+"/",mmb);
 			
 			String exportsource=nodereader.getExportSource();
 			int timestamp=nodereader.getTimeStamp();
