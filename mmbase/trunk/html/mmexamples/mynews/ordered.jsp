@@ -13,11 +13,11 @@
   <center>
   <table width="90%">
     <tr>
-     <td widht="30" />
-     <td align="center">
+     <th widht="30" />
+     <th align="center">
       <h1><mm:field  name="title" /></h1>
       <h2><mm:field  name="subtitle"/></h2>
-    </td>
+    </th>
    </tr>
    <tr>
      <td width="30" />
