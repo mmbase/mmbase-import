@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Linux)">
+	<META NAME="AUTHOR" CONTENT="Pierre van Rooden">
+	<META NAME="CREATED" CONTENT="20001211;8560000">
+	<META NAME="CHANGEDBY" CONTENT="Pierre van Rooden">
+	<META NAME="CHANGED" CONTENT="20001212;17144000">
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>Directionality</H1>
+<P ALIGN=CENTER>Relations Transition Proposal</P>
+<P ALIGN=CENTER>12-12-2000, <A HREF="mailto:Pierre.van.Rooden@omroep.nl">Pierre
+van Rooden</A> (First Draft)</P>
+<P><BR><BR>
+</P>
+<P>When defining relations, a property is available known as
+'direction'. It is an integer value, which determines whether a
+relation is 'unidirectional' (1) or 'bidirectional' (2).</P>
+<P>A bidirectional relation is 'visible' to both the source and the
+target, while a unidirectional relation is only visible to the
+source.</P>
+<P>Currently, nothing is actually done with this field.</P>
+<P>This proposal states a possible way fof making use of this field
+(as well as adding some functionality to the editors).</P>
+<H2>Data Model</H2>
+<P>To enable fast search in for relations filtered on direcionality,
+we will opt to include the directionality information in the relation
+objects.<BR>The value of this field will depend on the value of the
+relations 'relation defintion' object.</P>
+<P>The resulting model looks like this:<BR><BR><BR>
+</P>
+<P><IMG SRC="art/insreldiagram.gif" NAME="Graphic1" ALIGN=LEFT WIDTH=527 HEIGHT=335 BORDER=0><BR CLEAR=LEFT><BR><BR>
+</P>
+<P>This model only shows InsRel, not the derived relation builders,
+who work in much the same way. 
+</P>
+<H2>User Interface Changes</H2>
+<P>The addition of directionality might give room for  a few
+additional options to the LIST RELATIONS and LIST MULTILEVEL, to
+allow for optimization of querying.<BR>Options could be:</P>
+<P>SHOW=&quot;DESTINATION | SOURCE | BOTH| ALL&quot; 
+</P>
+<P>Where:</P>
+<P>DESTINATION : Shows all related destination nodes (i.e. All nodes
+where the current Node is the source)<BR>SOURCE : Shows all related
+source nodes (i.e. All nodes where the current Node is the
+destination, keeping 'direction' into account)<BR>BOTH: : Shows all
+related nodes (keeping 'direction' into account)<BR>ALL: Shows all
+related nodes, ignored direction</P>
+<P>The default being 'BOTH'.</P>
+<P>ROLE=&quot;name&quot;</P>
+<P>Where 'name' is the name of the relationdefinition used to relate
+two nodes, or the number of the relation definiton object (the
+relation 'role', though the definiton of that term seems to be under
+discussion).<BR>Since 'RelDef' will dissapear, this option may not be
+introduced until Core 2,0, where it would indicate the role of the
+relation as defined by the TypeRel object or the Relation builder
+(depending on where the role-name will be stored).</P>
+<P>Otherwise, for users, the most impact will simply be that the LIST
+statements may return different sets of data once they introduce
+directionality (by defining unidirectional relations).</P>
+<P>The RelDef ediitor will need to be adapted to make the
+directionality ina  relation visible (i.e. providing GUI information
+when displaying the field)</P>
+<H2>Implementation Schedule</H2>
+<P>The following are the steps needed to add support for
+directionality to MMBase.</P>
+<H3>Add the 'Dir' Field to the InsRel builder.</H3>
+<P>The dir field in InsRel is (in the current implementation) a copy
+of the value of the 'dir' field in the RelDef definition that is used
+to create the relation (identified by the rnumber foirled in InsRel).
+In later implementations, it may be possible to change this field per
+relation, allowing for deviations from he 'default'.<BR>The resulting
+InsRel table would look like this::</P>
+<TABLE WIDTH=551 BORDER=1 CELLPADDING=4 CELLSPACING=3>
+	<COL WIDTH=226>
+	<COL WIDTH=85>
+	<COL WIDTH=46>
+	<COL WIDTH=65>
+	<COL WIDTH=69>
+	<THEAD>
+		<TR VALIGN=TOP>
+			<TH WIDTH=226>
+				<P>Field</P>
+			</TH>
+			<TH WIDTH=85>
+				<P>Type</P>
+			</TH>
+			<TH WIDTH=46>
+				<P>Null</P>
+			</TH>
+			<TH WIDTH=65>
+				<P>Key</P>
+			</TH>
+			<TH WIDTH=69>
+				<P>Default</P>
+			</TH>
+		</TR>
+	</THEAD>
+	<TBODY>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>number</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP>
+				<P>Unique</P>
+			</TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=LEFT>0</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>otype</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=LEFT>0</P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=226>
+				<P>owner</P>
+			</TD>
+			<TD WIDTH=85>
+				<P>string(12)</P>
+			</TD>
+			<TD WIDTH=46>
+				<P>Yes</P>
+			</TD>
+			<TD WIDTH=65>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=69>
+				<P ALIGN=LEFT>Null</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>dnumber</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=LEFT>0</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>snumber</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=LEFT>0</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=226 VALIGN=TOP>
+				<P>rnumber</P>
+			</TD>
+			<TD WIDTH=85 VALIGN=TOP>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46 VALIGN=TOP>
+				<P>No</P>
+			</TD>
+			<TD WIDTH=65 VALIGN=TOP>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=69 VALIGN=BOTTOM SDVAL="0" SDNUM="1033;">
+				<P ALIGN=LEFT>0</P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=226>
+				<P>dir</P>
+			</TD>
+			<TD WIDTH=85>
+				<P>integer</P>
+			</TD>
+			<TD WIDTH=46>
+				<P>Yes(*)</P>
+			</TD>
+			<TD WIDTH=65>
+				<P><BR>
+				</P>
+			</TD>
+			<TD WIDTH=69>
+				<P ALIGN=LEFT>Null</P>
+			</TD>
+		</TR>
+	</TBODY>
+</TABLE>
+<P><BR><BR>
+</P>
+<P>*) We want this field to be nullable, to allow new config files to
+work with older code.  The value 'null' (or 0) is interpreted as
+'bi-directional'.</P>
+<P>For existing databases, we need to manually change the table by
+adding a new (integer) column (this will be explained in an
+installation document).<BR>The field also needs to be added to the
+builder xml file.</P>
+<H3>Change InsRel and TypeRel to support the dir field</H3>
+<P>This includes GUI-support and taking the directionality field into
+account when making queries. InsRel also needs a boolean field  that
+is set to indicate whether the new field is present - so that the
+code can be written in such a way that old tables can still work with
+the new code.<BR>A few variations of the 'getrelated' methods may be
+needed - so that directionality can be used according to different
+options for the SHOW attribute in lists.</P>
+<H3>Change the database support classes to support the dir field</H3>
+<P>The dir field needs to be 'inherited' from InsRel.<BR>To enable
+this, a few changes in the database support classes are necessary
+(since field checking takes place to determine how tables are created
+in an OO-database, or how records are updated across multiple tables
+in a relational database).</P>
+<H3>Change RelDef to support the dir field</H3>
+<P>This involves adding GUI information and a default value.</P>
+<H3>Change the code for creating  relation in editors</H3>
+<P>Since we will beuild default behavior in the InsRel buidler (for
+retrieving and setting the direction field), we do not actually
+expect any changes here.<BR>However, we'll still need to trace the
+code for possible exceptions. This involves code in the MMEDit
+classes and in TCP.</P>
+<H3>Change the code for LIST RELATIONS</H3>
+<P>This involves reading the SHOW attribute and invoking the right
+method in InsRel (which should handle the actual querying).</P>
+<H3>Change the code for LIST MULTILEVEL</H3>
+<P>This may turn out to be a major job. In addition to adding support
+for the optional 'list' attributes, we need to change the way
+MultiRelations creates queries.<BR>In particular, we have to adapt
+the use of TypeRel for determining query optimization, as wel as the
+actual generation of  the 'where' clause.</P>
+<H3>Change other list and query commands</H3>
+<P>These consist of several 'hidden' list commands, most of the
+mrelated to the editors (such as tjose in the ObjectSelector class).
+Some of these lists return 'relation' data - such as rolenames and
+such. The  ObjectSelector's OBJECTRELATIONS3 list in particular need
+to be changed if we want the right GUIname to be displayed in the
+editor.</P>
+<H3>Change the editor shtml files</H3>
+<P>A few shtml files need to be changed to make directionality
+visible in the editors.<BR>These include the files that list the
+relations of an object, and an edit-part to make it easier to assign
+a value to the directionality filed. (The latter also means changing
+the xml builder file so that the new editpart is actually used).</P>
+<H3>Change the code for loading and storing applications</H3>
+<P>This is, for the most part, already implemented. Some testing may
+be in order to check whether this works correctly. We might also
+choose to treat 'dir' as an attribute, rather than a field, when
+writing or reading relation source files,which means rewriting some
+code.</P>
+<H2>Backward Compatibility</H2>
+<P>The code should be written so that it automatically detects
+whether the 'dir' field is part of the InsRel object.<BR>This will
+enable the system to use the older system when the field cannot be
+found.</P>
+<H2>Deployment</H2>
+<P>This patch will eventually result in:</P>
+<UL>
+	<LI><P>an install document, detailing the required database changes</P>
+	<LI><P>new xml builder files for RelDef and InsRel and derived
+	builders</P>
+	<LI><P>new shtml files for the editors</P>
+	<LI><P>the java code for the changed classes</P>
+</UL>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>
