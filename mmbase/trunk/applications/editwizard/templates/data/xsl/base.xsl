@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.15 2002-08-05 14:13:28 michiel Exp $
+  @version $Id: base.xsl,v 1.16 2002-08-14 18:15:02 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -26,10 +26,9 @@
   <xsl:variable name="rootew_path"><xsl:value-of select="$ew_context" /><xsl:value-of select="$ew_path" /></xsl:variable>
   
   <xsl:param name="username">(unknown)</xsl:param>
-
-  <xsl:param name="language">en</xsl:param>
-    
+  <xsl:param name="language">en</xsl:param>   
   <xsl:param name="sessionid"></xsl:param>
+  <xsl:param name="popupid"></xsl:param>
 
   <xsl:param name="referrer"></xsl:param><!-- name of the file that called list.jsp or default.jsp, can be used for back-buttons (relative to context-root) --> 
   
@@ -46,11 +45,14 @@
 
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <xsl:param name="cloudkey">cloud_mmbase</xsl:param><!-- name of variable in session in which is the cloud -->
+
   <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" /></xsl:param>
   
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
-  <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
-  <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer" />&amp;language=<xsl:value-of select="$language" /></xsl:variable>
+  <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
+  <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
+
+  <!--xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer" />&amp;language=<xsl:value-of select="$language" /></xsl:variable-->
   <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="uploadpage">upload.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   
