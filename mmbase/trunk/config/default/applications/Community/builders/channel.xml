@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="channel" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: channel.xml,v 1.6 2002-10-31 10:26:03 pierre Exp $ -->
+<!-- @version $Id: channel.xml,v 1.7 2002-11-25 09:45:10 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -59,13 +59,13 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Title of the channel (i.e. main topic)</description>
+          <description xml:lang="nl">Titel van het kanaal (bijv hoofdonderwerp)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Name</guiname>
-            <guiname xml:lang="nl">Naam</guiname>
+            <guiname xml:lang="en">Title</guiname>
+            <guiname xml:lang="nl">Titel</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -82,7 +82,7 @@
         <!-- database related  -->
         <db>
             <!-- name of the field in the database -->
-            <name>name</name>
+            <name>title</name>
             <!-- MMBase datatype and demands on it -->
             <type state="persistent" size="255" notnull="false">STRING</type>
         </db>
@@ -92,8 +92,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Subtitle of the channel</description>
+          <description xml:lang="nl">Subtitel van het kanaal</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -125,8 +125,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Introduction text for this channel, i.e. for whom it is ment</description>
+          <description xml:lang="nl">Introduktietekst voor dit kanaal, bijv voor het weergeven van de doelgroep</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -158,8 +158,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Main description of the channel</description>
+          <description xml:lang="nl">Hoofdtekst/omschrijving van het kanaal</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -191,8 +191,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Set this to 'true' (1) if the channel is connected to a 'session' object (not used)</description>
+          <description xml:lang="nl">Zet op 'true' (1) als het kanaal aan een sessie object is gekoppeld (niet in gebruik).</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -224,13 +224,14 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">State of the channel with regard on how to handle access: free access (0), login required to read (1 or 3), logon required to write (2 or 3)
+					</description>
+          <description xml:lang="nl">Status van het kanaal m.b.t. toegankelijkheid: vrije toegang (0), login nodig voor lezen (1 of 3), login nodig voor schrijven (2 of 3)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Logon</guiname>
-            <guiname xml:lang="nl">Login</guiname>
+            <guiname xml:lang="en">Logon State</guiname>
+            <guiname xml:lang="nl">Login status</guiname>
             <guitype>channellogin</guitype>
         </gui>
         <!-- editor related  -->
@@ -257,8 +258,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Whether the channel is open (2), read only (1), scheduled to open (0) or closed (-1)</description>
+          <description xml:lang="nl">Of het kanaal open is (2), alleen open voor lezen (1), in de wachtrij om te openen (0), of dicht (-1)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -290,8 +291,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Highest current message number in this channel</description>
+          <description xml:lang="nl">Hoogste volgnummer van berichten in dit kanaal</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -323,8 +324,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Maximum number of users that can simultaneously log on</description>
+          <description xml:lang="nl">Maximala aantal gebruikers dat simultaan ingelogd kan zijn</description>
         </descriptions>
         <!-- gui related -->
         <gui>

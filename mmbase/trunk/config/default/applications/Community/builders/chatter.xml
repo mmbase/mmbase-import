@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="chatter" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: chatter.xml,v 1.4 2002-10-31 10:26:03 pierre Exp $ -->
+<!-- @version $Id: chatter.xml,v 1.5 2002-11-25 09:45:11 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -42,8 +42,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">User logon name for the community</description>
+          <description xml:lang="nl">Gebruiker login naam voor de gemeenschap</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -75,8 +75,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">User password for the community</description>
+          <description xml:lang="nl">Gebruikers wachtwoord voor de gemeenschap</description>
         </descriptions>
         <!-- gui related -->
         <gui>
