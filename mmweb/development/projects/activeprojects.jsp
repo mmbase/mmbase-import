@@ -9,6 +9,7 @@
   <h1>Active Projects</h1>
   <mm:listnodescontainer type="project">
      <mm:constraint field="status" value="finished" inverse="true" />
+     <mm:sortorder field="status" direction="up" />
      <mm:sortorder field="number" direction="down" />
      <mm:listnodes id="project">
        <h2><a href="<mm:url referids="portal,page,project,template" />"><mm:field name="title" /></a> (<mm:field name="status"/>)</h2>
