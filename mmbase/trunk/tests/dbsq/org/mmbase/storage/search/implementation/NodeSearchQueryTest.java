@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -22,12 +22,12 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Exampler builders. */
     private MMObjectBuilder images = null;
-    private MMObjectBuilder pools = null;
+    private MMObjectBuilder news = null;
     private InsRel insrel = null;
     
     /** Example fields. */
     private FieldDefs imagesTitle = null;
-    private FieldDefs poolsName = null;
+    private FieldDefs newsTitle = null;
     
     public NodeSearchQueryTest(java.lang.String testName) {
         super(testName);
@@ -44,10 +44,10 @@ public class NodeSearchQueryTest extends TestCase {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         images = mmbase.getBuilder("images");
-        pools = mmbase.getBuilder("pools");
+        news = mmbase.getBuilder("news");
         insrel = mmbase.getInsRel();
         imagesTitle = images.getField("title");
-        poolsName = pools.getField("name");
+        newsTitle = news.getField("title");
         instance = new NodeSearchQuery(images);
     }
     
@@ -78,15 +78,17 @@ public class NodeSearchQueryTest extends TestCase {
             StepField stepField = (StepField) iStepFields.next();
             FieldDefs field = images.getField(stepField.getFieldName());
             assertTrue(fields.contains(field));
-            assertTrue(field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM);
+            assertTrue(field.getDBType() != FieldDefs.TYPE_BYTE &&
+                (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
+                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM));
         }
         // Test all persistent fields from images are in query.
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
+            if (field.getDBType() != FieldDefs.TYPE_BYTE &&
+                (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
+                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 assertTrue(instance.getField(field) != null);
             }
         }
@@ -99,8 +101,9 @@ public class NodeSearchQueryTest extends TestCase {
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
+            if (field.getDBType() != FieldDefs.TYPE_BYTE &&
+                (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
+                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
                 assertTrue(stepField.getFieldName().equals(field.getDBName()));
@@ -118,7 +121,7 @@ public class NodeSearchQueryTest extends TestCase {
         
         // Field not belonging to images: should throw IllegalArgumentException.
         try {
-            instance.getField(poolsName);
+            instance.getField(newsTitle);
             fail("Field not belonging to images: should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
     }
@@ -127,7 +130,7 @@ public class NodeSearchQueryTest extends TestCase {
     public void testAddStep() {
         // Adding step, should throw UnsupportedOperationException.
         try {
-            instance.addStep(pools);
+            instance.addStep(news);
             fail("Adding step, should throw UnsupportedOperationException.");
         } catch (UnsupportedOperationException e) {}
     }
@@ -136,7 +139,7 @@ public class NodeSearchQueryTest extends TestCase {
     public void testAddRelationStep() {
         // Adding relation step, should throw UnsupportedOperationException.
         try {
-            instance.addRelationStep(insrel, pools);
+            instance.addRelationStep(insrel, news);
             fail("Adding relation step, should throw UnsupportedOperationException.");
         } catch (UnsupportedOperationException e) {}
     }
@@ -167,7 +170,7 @@ public class NodeSearchQueryTest extends TestCase {
     /** Test of getBuilder method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testGetBuilder() {
         assertTrue(new NodeSearchQuery(images).getBuilder() == images);
-        assertTrue(new NodeSearchQuery(pools).getBuilder() == pools);
+        assertTrue(new NodeSearchQuery(news).getBuilder() == news);
     }
     
     public static Test suite() {

@@ -10,15 +10,14 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ModifiableQueryTest extends TestCase {
     
     private final static String IMAGES = "images";
     private final static String TITLE = "title";
     private final static String DESCRIPTION = "description";
-    private final static String NAME = "name";
-    private final static String POOLS = "pools";
+    private final static String NEWS = "news";
     
     private final static int MAX_NUMBER1 = 123;
     private final static int MAX_NUMBER2 = 456;
@@ -33,10 +32,10 @@ public class ModifiableQueryTest extends TestCase {
     
     private MMBase mmbase = null;
     private MMObjectBuilder images = null;
-    private MMObjectBuilder pools = null;
+    private MMObjectBuilder news = null;
     private FieldDefs imagesTitle = null;
     private FieldDefs imagesDescription = null;
-    private FieldDefs poolsName = null;
+    private FieldDefs newsTitle = null;
     private Step step1 = null;
     private StepField field1 = null;
     
@@ -57,8 +56,8 @@ public class ModifiableQueryTest extends TestCase {
         images = mmbase.getBuilder(IMAGES);
         imagesTitle = images.getField(TITLE);
         imagesDescription = images.getField(DESCRIPTION);
-        pools = mmbase.getBuilder(POOLS);
-        poolsName = pools.getField(NAME);
+        news = mmbase.getBuilder(NEWS);
+        newsTitle = news.getField(TITLE);
         
         // Construct query.
         query = new BasicSearchQuery();
@@ -174,7 +173,7 @@ public class ModifiableQueryTest extends TestCase {
     
     /** Test of setSteps method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
     public void testSetSteps() {
-        Step step2 = query.addStep(pools);
+        Step step2 = query.addStep(news);
         List steps1 = new ArrayList();
         steps1.add(step1);
         steps1.add(step2);
