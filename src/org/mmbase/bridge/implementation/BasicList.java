@@ -18,13 +18,17 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.14 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicList.java,v 1.15 2003-04-29 20:19:34 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
     private static Logger log = Logging.getLoggerInstance(BasicList.class.getName());
 
     private Map properties = new HashMap();
+
+    // during inititializion of the list, you sometimes want to switch off 
+    // also when everything is certainly converted
+    boolean autoConvert = true;
 
     BasicList() {
          super();
@@ -63,7 +67,11 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public Object get(int index) {
-        return convert(super.get(index), index);
+        if (autoConvert) {
+            return convert(super.get(index), index);
+        } else {
+            return super.get(index);
+        }
     }
 
     public void sort() {
@@ -79,10 +87,12 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public void add(int index, Object o) {
+        autoConvert = true;
         super.add(index,validate(o));
     }
 
     public boolean add(Object o) {
+        autoConvert = true;
         return super.add(validate(o));
     }
 
@@ -90,15 +100,17 @@ public class BasicList extends ArrayList implements BridgeList  {
      * @since MMBase-1.6.2
      */
     protected void convertAll() {
+        log.debug("convert all");
         for (int i = 0; i < size(); i++) {
             convert(super.get(i), i);
         }
+        autoConvert = false;
     }
 
 
     public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
-        convertAll();
+        if (autoConvert) convertAll();
         return super.toArray();
     }
 
@@ -135,6 +147,7 @@ public class BasicList extends ArrayList implements BridgeList  {
         }
 
         public void add(Object o) {
+            BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
