@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.18 2002-06-07 13:23:19 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.19 2002-11-09 09:01:17 michiel Exp $
  */
 public class NodeWriter{
 
@@ -214,7 +214,7 @@ public class NodeWriter{
                 saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);
                 return body;
             } else {
-                String body="\t\t<"+key+">"+Encode.encode("ESCAPE_XML", "" + node.getValue(key)) +"</"+key+">\n";
+                String body="\t\t<"+key+">"+Encode.encode("ESCAPE_XML", "" + Casting.toString(node.getValue(key))) +"</"+key+">\n";
                 return body;
            }
         }
