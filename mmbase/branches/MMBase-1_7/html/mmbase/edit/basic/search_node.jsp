@@ -80,7 +80,7 @@
                         if ( (nt.mayCreateNode() && !nt.hasField("dnumber")) || !"short".equals(liststyle)) {
                 %>
       	    	    <tr valign="top">
-      	    	    	<td class="data" width="100%" colspan="2"><%=nt.getGUIName()%> </td>
+      	    	    	<td title="<%=nt.getName()%>" class="data" width="100%" colspan="2"><%=nt.getGUIName()%> </td>
       	    	    	<td class="navigate">
                         <% if (nt.mayCreateNode()) { %>
 			    <a href="<mm:url page="create_node.jsp"><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>" >
