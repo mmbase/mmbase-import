@@ -56,6 +56,17 @@ public class OAlias extends MMObjectBuilder {
 		return(rtn);
 	}
 
+
+	public String getAlias(int number) {
+		MMObjectNode node;
+		Enumeration e=search("WHERE destination="+number);
+		if (e.hasMoreElements()) {
+			node=(MMObjectNode)e.nextElement();
+			return(node.getStringValue("name"));
+		}
+		return(null);
+	}
+
 	public MMObjectNode getAliasedNode(String nodename) {
 		int nr;
 		MMObjectNode node=null;
