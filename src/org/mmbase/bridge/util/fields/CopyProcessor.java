@@ -14,11 +14,11 @@ import org.mmbase.bridge.Node;
  * The Processor that does nothing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyProcessor.java,v 1.1 2003-12-05 09:23:24 michiel Exp $
+ * @version $Id: CopyProcessor.java,v 1.2 2003-12-09 22:26:17 michiel Exp $
  * @since MMBase-1.7
  */
 
-public class CopyProcessor {
+public class CopyProcessor implements Processor {
 
 
     public final Object process(Node node, Object value) {

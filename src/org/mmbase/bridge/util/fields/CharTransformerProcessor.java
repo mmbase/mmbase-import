@@ -17,12 +17,12 @@ import org.mmbase.util.transformers.CharTransformer;
  * string transformations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessor.java,v 1.1 2003-12-05 09:23:24 michiel Exp $
+ * @version $Id: CharTransformerProcessor.java,v 1.2 2003-12-09 22:26:17 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.util.transformers.CharTransformer
  */
 
-public class CharTransformerProcessor {
+public class CharTransformerProcessor implements Processor {
 
     private CharTransformer charTransformer;
 
