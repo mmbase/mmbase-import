@@ -944,6 +944,22 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
+    <name>deletealias</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteAliasTag</tagclass>
+    <info>
+      Lives in a NodeProvider. Deletes the bodycontent as an alias for the node.
+    </info>
+    <attribute>
+        <name>name</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  In stead of giving it in the body, you can also indicate it
+	  with this parameter.
+	</info>
+    </attribute>
+  </tag>
+  <tag>
     <name>listcondition</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
     <info>
@@ -1633,7 +1649,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <name>externid</name>
         <required>false</required>
         <requirednote>Either `id' or `externid' or both must be supplied.</requirednote>
-        <rtexprvalue>false</rtexprvalue>
+        <rtexprvalue>true</rtexprvalue>
 	<info>
         <p>
 	The `externid' is the name of an attribute in the session,
@@ -1775,6 +1791,14 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	In stead of writing to the page, you can also write the
 	resulting URL to a jsp variable.
 	</info>
+    </attribute>    
+    <attribute>
+       <name>id</name>
+       <required>false</required>
+	   <info>
+	     The produced string can also be put in the context, for later
+	     reuse with the write tag.
+	   </info>
     </attribute>
   </tag>
   <tag>
@@ -1793,6 +1817,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	</info>
     </attribute>
   </tag>
+
   <tag>
     <name>compare</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
@@ -1817,6 +1842,62 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	<info>
 	The value which the context variable must have.
 	</info>
+    </attribute>
+	<attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  If you want the condition not to apply.
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>aliaslist</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
+    <info>
+	This is a list which can only live under a NodeProvider. It has to
+	be an id, which can be used with the write tag in the body.
+    </info>
+    <attribute>
+        <name>id</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+		<refercontext>false</refercontext>
+    </attribute>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+    </attribute>
+  </tag>
+  <tag>
+    <name>maywrite</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayWriteTag</tagclass>
+    <info>
+	Check if node may be changed.
+    </info>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+    </attribute>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+    </attribute>
+  </tag>
+  <tag>
+    <name>maydelete</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayDeleteTag</tagclass>
+    <info>
+	Check if node may be deleted
+    </info>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+    </attribute>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
     </attribute>
   </tag>
 </taglib>
