@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.37 2003-12-12 12:47:24 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.38 2004-02-02 13:38:47 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -668,8 +668,11 @@ public class WizardDatabaseConnector {
             Node node = nodes.item(i);
             String nodename = node.getNodeName();
 
-            String nodenumber = Utils.getAttribute(node, "number", "");
-            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@number='"+nodenumber+"' and not(@already-exists)]");
+            String did = Utils.getAttribute(node, "did", "");
+            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"' and not(@already-exists)]");
+
+//            String nodenumber = Utils.getAttribute(node, "number", "");
+//            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@number='"+nodenumber+"' and not(@already-exists)]");
             if (orignode!=null) {
                 // we found the original relation. Check to see if destination has changed.
                 if (nodename.equals("relation")) {
