@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.17 2003-08-18 14:42:45 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.18 2003-08-19 10:32:42 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -189,15 +189,16 @@ public abstract class StorageManagerFactory {
         } else if (storageManagerClass == null) {
             throw new StorageConfigurationException("No StorageManager class specified, and no default available.");
         }
-        
+
         // get attributes
         setAttributes(reader.getAttributes());
-        // get disallowed fields
-        setDisallowedFields(reader.getDisallowedFields());
+        // get disallowed fields, and add these to the default list
+        disallowedFields.putAll(reader.getDisallowedFields());
+
         // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
         Collections.sort(typeMappings);
-        
+
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         configuredClass = reader.getSearchQueryHandlerClass();
@@ -210,7 +211,7 @@ public abstract class StorageManagerFactory {
         try {
             java.lang.reflect.Constructor constructor = queryHandlerClass.getConstructor(new Class[] {Map.class});
             SqlHandler sqlHandler = (SqlHandler)  constructor.newInstance( new Object[] { disallowedFields } );
-            log.info("Instantiated SqlHandler of type " + queryHandlerClass.getName());
+            log.service("Instantiated SqlHandler of type " + queryHandlerClass.getName());
 
             // Chained handlers, to be implemented later.
             /*
@@ -219,7 +220,7 @@ public abstract class StorageManagerFactory {
                 Class handlerClass = (Class) iHandlers.next();
                 constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
                 queryHandler = (SearchQueryHandler) constr2.newInstance(new Object[] {queryHandler});
-                log.info("Instantiated chained SearchQueryHandler of type " 
+                log.service("Instantiated chained SearchQueryHandler of type " 
                     + handlerClass.getName());
             }
             */
@@ -455,38 +456,48 @@ public abstract class StorageManagerFactory {
      * @throws StorageException if the object cannot be given a valid identifier
      */
     public Object getStorageIdentifier(Object mmobject) throws StorageException {
+        String id;
         if (mmobject instanceof StorageManager) {
-            return mmbase.getBaseName();
+            id = mmbase.getBaseName();
         } else if (mmobject == mmbase) {
-            return mmbase.getBaseName()+"_object";
+            id = mmbase.getBaseName()+"_object";
         } else if (mmobject instanceof MMObjectBuilder) {
-            return mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
+            id = mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
         } else if (mmobject instanceof MMObjectNode) {
             return ((MMObjectNode)mmobject).getIntegerValue("number");
         } else if (mmobject instanceof String || mmobject instanceof FieldDefs) {
-            String id;
             if (mmobject instanceof FieldDefs) {
                 id = ((FieldDefs)mmobject).getDBName();
             } else {
                 id = (String)mmobject;
             }
+            String key = id;
             if (!hasOption(Attributes.DISALLOWED_FIELD_CASE_SENSITIVE)) {
-                id = id.toUpperCase();
+                key = key.toUpperCase();
             }
-            if (disallowedFields.containsKey(id)) {
-                id = (String)disallowedFields.get(id);
-                if (id == null) {
-                    String prefix = (String)getAttribute("defaultStorageIdentifierPrefix");
+            if (disallowedFields.containsKey(key)) {
+                String newid = (String)disallowedFields.get(key);
+                if (newid == null) {
+                    String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
                      if (prefix!=null) {
-                        return prefix+"_"+id; 
+                        id = prefix+"_"+id; 
                     } else {
                         throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
                     }
+                } else {
+                    id = newid;
                 }
             }
-            return id;
         } else {
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
+        }
+        String toCase = (String)getAttribute(Attributes.STORAGE_IDENTIFIER_CASE);
+        if ("lower".equals(toCase)) {
+            return id.toLowerCase();
+        } else if ("upper".equals(toCase)) {
+            return id.toUpperCase();
+        } else {
+            return id;
         }
     }
 

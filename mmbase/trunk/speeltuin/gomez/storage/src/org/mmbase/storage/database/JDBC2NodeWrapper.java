@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.5 2003-08-18 14:42:46 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.6 2003-08-19 10:32:42 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -136,7 +136,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return factory.getStorageManager().create(node);
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return -1;
+            throw new StorageError(se);
         }
     }
     
@@ -146,7 +146,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return false;
+            throw new StorageError(se);
         }
     }
     
@@ -155,6 +155,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             factory.getStorageManager().delete(node);
         } catch (StorageException se) {
             log.error(se.getMessage());
+            throw new StorageError(se);
         }
     }
     
@@ -169,7 +170,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return factory.getStorageManager().createKey();
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return -1;
+            throw new StorageError(se);
         }
     }
     
@@ -191,6 +192,14 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
                 allowedFields.put(val, key);
             }
         }
+        // ensure the storage is initialized.
+        try {
+            StorageManager mn = factory.getStorageManager();
+            if (!mn.exists()) mn.create();
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            throw new StorageError(se);
+        }
     }
     
     public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
@@ -209,11 +218,11 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
             // getValue is protected, so can call it from the same package..
-            return sm.exists(tableName);
+            // also call getStorageIdentifier to take into account any case-sensitivity
+            return sm.exists((String)factory.getStorageIdentifier(tableName));
         } catch (StorageException se) {
             log.error(se.getMessage());
-            log.error(Logging.stackTrace(se));
-            return false;
+            throw new StorageError(se);
         }
     }
 
@@ -223,8 +232,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            log.error(Logging.stackTrace(se));
-            return false;
+            throw new StorageError(se);
         }
     }
     
@@ -234,13 +242,12 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            log.error(Logging.stackTrace(se));
-            return false;
+            throw new StorageError(se);
         }
     }
 
     public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
-        javax.sql.DataSource ds = (javax.sql.DataSource)factory.getAttribute("database.dataSource");
+        javax.sql.DataSource ds = (javax.sql.DataSource)factory.getAttribute(Attributes.DATA_SOURCE);
         Connection con = ds.getConnection();
         if (con instanceof MultiConnection) {
             return (MultiConnection)con; 
@@ -285,7 +292,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return false;
+            throw new StorageError(se);
         }
     }
 
@@ -296,7 +303,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return false;
+            throw new StorageError(se);
         }
     }
 
@@ -306,7 +313,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return false;
+            throw new StorageError(se);
         }
     }
 
@@ -316,7 +323,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return false;
+            throw new StorageError(se);
         }
     }
 
@@ -326,7 +333,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             return true;
         } catch (StorageException se) {
             log.error(se.getMessage());
-            return false;
+            throw new StorageError(se);
         }
     }
     

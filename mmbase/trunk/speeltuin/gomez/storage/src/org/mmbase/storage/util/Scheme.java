@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.4 2003-07-28 12:57:42 pierre Exp $
+ * @version $Id: Scheme.java,v 1.5 2003-08-19 10:32:43 pierre Exp $
  */
 public final class Scheme extends MessageFormat {
 
@@ -67,7 +67,7 @@ public final class Scheme extends MessageFormat {
      * @throws StorageException if the object cannot be resolved
      */
     protected Object resolveParameter(Object param) throws StorageException {
-        if (param instanceof String || param instanceof Number) {
+        if (param == null || param instanceof String || param instanceof Number) {
             return param;
         } else if (param instanceof Storable) {
             return ((Storable)param).getStorageIdentifier();
@@ -90,3 +90,4 @@ public final class Scheme extends MessageFormat {
     }
 
 }
+
