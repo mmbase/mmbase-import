@@ -17,6 +17,10 @@
 		<translation language="nl" value="uit map" />
 		<translation language="df" value="from folder" />
 	</keyword>
+	<keyword name="message">
+		<translation language="nl" value="bericht" />
+		<translation language="df" value="message" />
+	</keyword>
 	<keyword name="Upload">
 		<translation language="nl" value="Upload" />
 		<translation language="df" value="Upload" />
@@ -173,13 +177,13 @@
 		<translation language="nl" value="Geslacht" />
 		<translation language="df" value="Gender" />
 	</keyword>
-	<keyword name="Ok">
-		<translation language="nl" value="Akkoord" />
-		<translation language="df" value="Ok" />
-	</keyword>
 	<keyword name="Language">
 		<translation language="nl" value="Language" />
 		<translation language="df" value="Language" />
+	</keyword>
+	<keyword name="Ok">
+		<translation language="nl" value="Akkoord" />
+		<translation language="df" value="Ok" />
 	</keyword>
 	<keyword name="send">
 		<translation language="nl" value="verzend" />
@@ -251,13 +255,17 @@
 		<translation language="nl" value="boos" />
 		<translation language="df" value="mad" />
 	</keyword>
+	<keyword name="to_mailbox">
+		<translation language="nl" value="naar postvak" />
+		<translation language="df" value="to mailbox" />
+	</keyword>
 	<keyword name="login_name">
 		<translation language="nl" value="login naam" />
 		<translation language="df" value="login name" />
 	</keyword>
-	<keyword name="to_mailbox">
-		<translation language="nl" value="naar postvak" />
-		<translation language="df" value="to mailbox" />
+	<keyword name="Send">
+		<translation language="nl" value="Verzend" />
+		<translation language="df" value="Send" />
 	</keyword>
 	<keyword name="idea">
 		<translation language="nl" value="idee" />
@@ -375,13 +383,13 @@
 		<translation language="nl" value="E-Mail dit bericht naar" />
 		<translation language="df" value="Email this message to" />
 	</keyword>
-	<keyword name="delete_mailbox">
-		<translation language="nl" value="verwijder postvak" />
-		<translation language="df" value="delete mailbox" />
-	</keyword>
 	<keyword name="topic">
 		<translation language="nl" value="onderwerp" />
 		<translation language="df" value="topic" />
+	</keyword>
+	<keyword name="delete_mailbox">
+		<translation language="nl" value="verwijder postvak" />
+		<translation language="df" value="delete mailbox" />
 	</keyword>
 	<keyword name="last_time_logged_in">
 		<translation language="nl" value="Laatste keer hier geweest" />
@@ -547,25 +555,25 @@
 		<translation language="nl" value="Bewaren" />
 		<translation language="df" value="Save" />
 	</keyword>
-	<keyword name="Forward">
-		<translation language="nl" value="Doorsturen" />
-		<translation language="df" value="Forward" />
-	</keyword>
 	<keyword name="posted_by">
 		<translation language="nl" value="aangemaakt door" />
 		<translation language="df" value="created by" />
+	</keyword>
+	<keyword name="Forward">
+		<translation language="nl" value="Doorsturen" />
+		<translation language="df" value="Forward" />
 	</keyword>
 	<keyword name="announcement">
 		<translation language="nl" value="aankondiging" />
 		<translation language="df" value="announcement" />
 	</keyword>
-	<keyword name="Your_account_information_for_the_MMBob_forum">
-		<translation language="nl" value="Uw account-informatie voor MMBob" />
-		<translation language="df" value="Your account information for the MMbob forum" />
-	</keyword>
 	<keyword name="New">
 		<translation language="nl" value="Nieuw" />
 		<translation language="df" value="New" />
+	</keyword>
+	<keyword name="Your_account_information_for_the_MMBob_forum">
+		<translation language="nl" value="Uw account-informatie voor MMBob" />
+		<translation language="df" value="Your account information for the MMbob forum" />
 	</keyword>
 	<keyword name="Areas">
 		<translation language="nl" value="Gebieden" />
@@ -619,13 +627,13 @@
 		<translation language="nl" value="lid" />
 		<translation language="df" value="member" />
 	</keyword>
-	<keyword name="Admin_tasks">
-		<translation language="nl" value="Beheer taken" />
-		<translation language="df" value="Administrator tasks" />
-	</keyword>
 	<keyword name="Access_denied">
 		<translation language="nl" value="Toegang geweigerd" />
 		<translation language="df" value="Access denied" />
+	</keyword>
+	<keyword name="Admin_tasks">
+		<translation language="nl" value="Beheer taken" />
+		<translation language="df" value="Administrator tasks" />
 	</keyword>
 	<keyword name="Password">
 		<translation language="nl" value="Wachtwoord" />
@@ -647,21 +655,25 @@
 		<translation language="nl" value="gebied verwijderen" />
 		<translation language="df" value="remove area" />
 	</keyword>
-	<keyword name="Subject">
-		<translation language="nl" value="Onderwerp" />
-		<translation language="df" value="Subject" />
-	</keyword>
 	<keyword name="Your_account_is_created_you_may">
 		<translation language="nl" value="Uw loginnaam is aangemaakt. U kunt nu" />
 		<translation language="df" value="Your account is creaded. You may now" />
 	</keyword>
-	<keyword name="Level">
-		<translation language="nl" value="Niveau" />
-		<translation language="df" value="Level" />
+	<keyword name="Subject">
+		<translation language="nl" value="Onderwerp" />
+		<translation language="df" value="Subject" />
+	</keyword>
+	<keyword name="To">
+		<translation language="nl" value="Aan" />
+		<translation language="df" value="To" />
 	</keyword>
 	<keyword name="faq">
 		<translation language="nl" value="faq" />
 		<translation language="df" value="faq" />
+	</keyword>
+	<keyword name="Level">
+		<translation language="nl" value="Niveau" />
+		<translation language="df" value="Level" />
 	</keyword>
 	<keyword name="Mood">
 		<translation language="nl" value="Gemoedstoestand" />
@@ -675,29 +687,29 @@
 		<translation language="nl" value="Annuleren" />
 		<translation language="df" value="Cancel" />
 	</keyword>
-	<keyword name="Lastname">
-		<translation language="nl" value="Achternaam" />
-		<translation language="df" value="Lastname" />
+	<keyword name="language">
+		<translation language="nl" value="taal" />
+		<translation language="df" value="language" />
 	</keyword>
 	<keyword name="Add_forum">
 		<translation language="nl" value="Forum toevoegen" />
 		<translation language="df" value="Add forum" />
 	</keyword>
-	<keyword name="language">
-		<translation language="nl" value="taal" />
-		<translation language="df" value="language" />
+	<keyword name="Lastname">
+		<translation language="nl" value="Achternaam" />
+		<translation language="df" value="Lastname" />
 	</keyword>
 	<keyword name="ERROR">
 		<translation language="nl" value="FOUT" />
 		<translation language="df" value="ERROR" />
 	</keyword>
-	<keyword name="UNSEEN">
-		<translation language="nl" value="Ongelezen" />
-		<translation language="df" value="Unseen" />
-	</keyword>
 	<keyword name="Administrators">
 		<translation language="nl" value="Beheerders" />
 		<translation language="df" value="Administrators" />
+	</keyword>
+	<keyword name="UNSEEN">
+		<translation language="nl" value="Ongelezen" />
+		<translation language="df" value="Unseen" />
 	</keyword>
 	<keyword name="Location">
 		<translation language="nl" value="Lokatie" />
@@ -711,16 +723,16 @@
 		<translation language="nl" value="Map toevoegen" />
 		<translation language="df" value="Add folder" />
 	</keyword>
-	<keyword name="folder">
-		<translation language="nl" value="map" />
-		<translation language="df" value="folder" />
+	<keyword name="Email">
+		<translation language="nl" value="E-mail" />
+		<translation language="df" value="Email" />
 	</keyword>
 	<keyword name="open_topic_unread">
 		<translation language="nl" value="Open onderwerp met ongelezen reacties" />
 		<translation language="df" value="Open topic with unread replies" />
 	</keyword>
-	<keyword name="Email">
-		<translation language="nl" value="E-mail" />
-		<translation language="df" value="Email" />
+	<keyword name="folder">
+		<translation language="nl" value="map" />
+		<translation language="df" value="folder" />
 	</keyword>
 </languageguiset>
