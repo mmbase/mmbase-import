@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.19.2.6 2004-05-19 14:47:44 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.19.2.7 2004-05-26 13:28:22 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -82,7 +82,7 @@
   </target>
   <target name="cvs.date"  unless="cvs.byrevision">
     <cvs cvsRoot="${cvsroot}"
-      command="${updatecommand} -D ${date}"
+      command="${updatecommand} -D ${date} -r MMBase-1_7"
       dest="${source.dir}"
       />
   </target>
