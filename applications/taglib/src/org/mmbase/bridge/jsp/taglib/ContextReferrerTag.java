@@ -9,23 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.Node;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import org.mmbase.util.Casting;
-
-import javax.servlet.http.HttpServletRequest;
+import org.mmbase.util.logging.*;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -34,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.50 2003-09-26 18:42:07 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.51 2003-10-13 08:34:23 keesj Exp $
  * @see ContextTag
  */
 

@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.44 2003-08-13 16:33:32 michiel Exp $
+ * @version $Id: Node.java,v 1.45 2003-10-13 08:34:25 keesj Exp $
  */
 public interface Node {
 
@@ -687,15 +687,6 @@ public interface Node {
      */
 
     public boolean mayDelete();
-
-    /**
-     * Check link rights on this node.
-     *
-     * @deprecated  As of 20020123, replaced by {@link RelationManager#mayCreateRelation(Node,Node)}
-     * @return                      Whether the current user may link to this node
-     */
-
-    public boolean mayLink();
 
 
     /**
