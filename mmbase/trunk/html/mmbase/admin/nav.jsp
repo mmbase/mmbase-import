@@ -8,7 +8,7 @@
     String subcategory=request.getParameter("subcategory");
 %>
 <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
-<title>Navigation Bar</title>
+<title>Navigation Bar <%=category%>/<%=subcategory%></title>
 </head>
 <body class="navigationbar">
 <table summary="navigation">
