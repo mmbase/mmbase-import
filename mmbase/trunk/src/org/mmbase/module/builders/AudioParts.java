@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.13 2000-07-03 09:32:47 vpro Exp $
+$Id: AudioParts.java,v 1.14 2000-07-31 13:32:16 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/07/03 09:32:47  vpro
+davzev: Added url cache on top of $ MOD GETURL for performance reasons. When an url is retrieved using $ MOD-MMBASE-BUILDER-audioparts-GETURL-AudiopartNr-Speed-Channels, then first it will be looked up in a url cache (LRU). If its not in there it will be retrieved using the doGetUrl method and put in the cache. If an audiopart is not fully encoded yet, then it will not be put in the cache and null will be returned.
+
 Revision 1.12  2000/05/26 12:09:28  wwwtech
 davzev: Reduced debug from doGetUrl getSongInfo and getStartStopTimes
 
@@ -69,7 +72,7 @@ import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.13 2000-07-03 09:32:47 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.14 2000-07-31 13:32:16 vpro Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
@@ -82,7 +85,7 @@ public class AudioParts extends MMObjectBuilder {
 	public final static int AUDIOSOURCE_VWM=8;
 
 	// Define LRU Cache for audio urls.
-	LRUHashtable urlCache = new LRUHashtable(1024);
+	public static LRUHashtable urlCache = new LRUHashtable(1024);
 
 	/**
 	* pre commit from the editor
