@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.36 2003-08-13 12:43:40 michiel Exp $
+ * @version $Id: InsRel.java,v 1.37 2003-09-02 20:24:19 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -549,34 +549,35 @@ public class InsRel extends MMObjectBuilder {
     * @param node Node containing the field data.
     * @return A <code>String</code> describing the requested field's content
     **/
-    public String getGUIIndicator(String field,MMObjectNode node) {
+    public String getGUIIndicator(String field, MMObjectNode node) {
         try {
-        if (field.equals("dir")) {
-            int dir=node.getIntValue("dir");
-            if (dir==2) {
-                return "bidirectional";
-            } else if (dir==1) {
-                return "unidirectional";
-            } else {
-                return "unknown";
+            if (field.equals("dir")) {
+                int dir=node.getIntValue("dir");
+                if (dir == 2) {
+                    return "bidirectional";
+                } else if (dir==1) {
+                    return "unidirectional";
+                } else {
+                    return "unknown";
+                }
+            } else if (field.equals("snumber")) {
+                MMObjectNode node2 = getNode(node.getIntValue("snumber"));
+                String ty = "=" + mmb.getTypeDef().getValue(node2.getOType());
+                if (node2 != null) {
+                    return "" + node.getIntValue("snumber") + ty + "(" + node2.getGUIIndicator()+")";
+                }
+            } else if (field.equals("dnumber")) {
+                MMObjectNode node2 = getNode(node.getIntValue("dnumber"));
+                String ty = "=" + mmb.getTypeDef().getValue(node2.getOType());
+                if (node2 != null) {
+                    return "" + node.getIntValue("dnumber") + ty + "(" + node2.getGUIIndicator() + ")";
+                }
+            } else if (field.equals("rnumber")) {
+                MMObjectNode node2 = mmb.getRelDef().getNode(node.getIntValue("rnumber"));
+                return ""+node.getIntValue("rnumber")+"="+node2.getGUIIndicator();
             }
-        } else if (field.equals("snumber")) {
-            MMObjectNode node2=getNode(node.getIntValue("snumber"));
-            String ty="="+mmb.getTypeDef().getValue(node2.getOType());
-            if (node2!=null) {
-                    return(""+node.getIntValue("snumber")+ty+"("+node2.getGUIIndicator()+")");
-            }
-        } else if (field.equals("dnumber")) {
-            MMObjectNode node2=getNode(node.getIntValue("dnumber"));
-            String ty="="+mmb.getTypeDef().getValue(node2.getOType());
-            if (node2!=null) {
-                    return(""+node.getIntValue("dnumber")+ty+"("+node2.getGUIIndicator()+")");
-            }
-        } else if (field.equals("rnumber")) {
-            MMObjectNode node2=mmb.getRelDef().getNode(node.getIntValue("rnumber"));
-            return(""+node.getIntValue("rnumber")+"="+node2.getGUIIndicator());
+        } catch (Exception e) {
         }
-        } catch (Exception e) {}
         return null;
     }
 
