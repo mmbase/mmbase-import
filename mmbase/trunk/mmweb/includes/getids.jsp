@@ -15,4 +15,4 @@
    <mm:field id="portal" name="number" write="false" />
 </mm:node>
 
-<mm:log>portal: <mm:write referid="portal" /></mm:log>
+
