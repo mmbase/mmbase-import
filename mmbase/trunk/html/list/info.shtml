@@ -1,4 +1,5 @@
 <PROCESSOR INFO>
+<PART /BODY.shtml>
 This page shows all commands implemented by the INFO module.<BR><BR>
 
 Selecting <A HREF="setLanguage.shtml?NUMBER">NUMBER</A> will return all values numerical.<BR>

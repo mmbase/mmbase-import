@@ -1,4 +1,3 @@
-<SECURE>
 <PROCESSOR MMBASE>
 
 <LIST OBJECTS TYPE="fielddef" FIELDS="number,guiname,dbname" WHERE="dbtable==$PARAM1">
