@@ -20,12 +20,8 @@ import java.io.*;
 public class MMRemoteMultiCastProbe implements Runnable {
 
     private String  classname   = getClass().getName();
-    private boolean debug       = false;
-
-    private void debug( String msg ) {
-        if( debug )
-            System.out.println( classname +":"+ msg );
-    }
+    private boolean debug       = RemoteBuilder.debug;
+    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Thread kicker = null;
 	MMRemoteMultiCast parent=null;
