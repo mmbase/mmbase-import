@@ -128,7 +128,19 @@ Build-compiler: ${build.compiler}
 
   </target>
 
-  <target name="package" depends="jar">
+  <target name="package.uptodatecheck" depends="init">
+    <uptodate property="package.uptodate" targetfile="${project.zip}" >
+      <srcfiles dir="${project.source.dir}" excludes="build/**"  />
+    </uptodate>
+  </target>
+
+  <target name="package.check" depends="package.uptodatecheck" if="package.uptodate">
+    <echo message="${project.zip} is up-to-date" />
+  </target>
+
+
+  <target name="package" depends="package.check" unless="package.uptodate">   
+    <antcall target="jar" />
     <echo file="${project.build.dir}/README-PACKAGE.txt">
 This is the '${project.name}' package of MMBase. 
 
@@ -194,7 +206,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            optimize="${optimize}"
            deprecation="${deprecation}"
            excludes="${compile.excludes}"
-           source="1.4"
+
       >
       <classpath id="compile.classpath">
         <pathelement path="${mmbase.jar}" />
