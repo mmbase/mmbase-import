@@ -11,21 +11,22 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 import javax.servlet.jsp.JspTagException;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.2 2003-08-11 15:27:31 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.3 2003-08-12 10:34:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
-
+    private static Logger log = Logging.getLoggerInstance(ContextCollector.class);
     private ContextContainer contextContainer;
-    private Map             collector;
+    private Map              collector;
 
     public ContextCollector(ContextContainer parent) {
         contextContainer = new ContextContainer(null, parent);
@@ -38,11 +39,17 @@ public class  ContextCollector  {
 
     public void doAfterBody() throws JspTagException {        
 
-        // first remove everything this list added itself
-        contextContainer.getParent().unRegisterAll(collector);
+        ContextContainer parent = contextContainer.getParent();
 
+        Iterator keySet = contextContainer.myKeySet().iterator();
+        while(keySet.hasNext()) {
+            String key = (String) keySet.next();
+            if (collector.containsKey(key)) {
+                parent.unRegister(key);
+            }
+        }
         // now, put the new stuff in:
-        contextContainer.getParent().registerAll(contextContainer);
+        parent.registerAll(contextContainer);
 
         // remember what was ours:
         collector.putAll(contextContainer);       
