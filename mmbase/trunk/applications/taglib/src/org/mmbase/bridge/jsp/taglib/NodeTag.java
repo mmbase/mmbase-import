@@ -35,6 +35,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private String type      = null;
     private String element   = null;
 
+    private final static int NOT_FOUND_THROW = 0;
+    private final static int NOT_FOUND_SKIP  = 1;
+    
+
+    private int notfound = NOT_FOUND_THROW;
+
     /**
      * Release all allocated resources.
      */
@@ -53,6 +59,33 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
         this.number = getAttributeValue(number);
     }
+
+
+    public void setNotfound(String i) throws JspTagException {
+        String is = getAttributeValue(i);        
+        if ("skip".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_SKIP;
+        } else if ("skipbody".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_SKIP;
+        } else if ("throw".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_THROW;
+        } else if ("exception".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_THROW;
+        } else if ("throwexception".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_THROW;
+        } else {
+            throw new JspTagException("Invalid value for attribute 'ifnotfound' " + is + "(" + i + ")");
+        }
+    }
+    /**
+     * This function cannot be added because of Orion.
+     * It will call this function even if you use an attribute without <%= %>, stupidly.
+     
+     public void setNumber(int number) throws JspTagException {
+     this.number = new Integer(number).toString();
+     }
+     
+    */
 
 
     /**
@@ -84,9 +117,14 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             log.debug("node is null");
             if (number != null) {
                 // explicity indicated which node (by number or alias)
-                node = getCloud().getNode(number);
-                if(node == null) {
-                    throw new JspTagException("Cannot find Node with number " + number);
+                try {
+                    node = getCloud().getNode(number);
+                } catch (org.mmbase.bridge.NotFoundException e) {
+                    log.warn(e.toString());
+                    switch(notfound) {
+                    case NOT_FOUND_SKIP:  return SKIP_BODY;
+                    default: throw e;
+                    }                        
                 }
             } else {
                 // get the node from a parent element.
@@ -99,7 +137,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
             }
         }
-        setNodeVar(node);
+        setNodeVar(node);        
+
         //log.debug("found node " + node.getValue("gui()"));
         return EVAL_BODY_TAG;
     }
@@ -107,15 +146,15 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void doInitBody() throws JspTagException {
         log.debug("fillvars");
         fillVars();
-        if (id != null && ! "".equals(id)) {
+        if (id != null) {
             getContextTag().registerNode(id, getNodeVar());
         }
 
     }
 
     /**
-    * this method writes the content of the body back to the jsp page
-    **/
+     * this method writes the content of the body back to the jsp page
+     **/
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
         try {
