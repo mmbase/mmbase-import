@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.15 2002-11-08 20:17:08 michiel Exp $
+#  $Id: cvsmail,v 1.16 2002-11-08 20:19:22 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -34,7 +34,7 @@ if ($child = fork()) {
     
     # determin user:
     
-    my $cvsuser = `whoami`;
+    my $cvsuser = `/usr/ucb/whoami`;
     chomp $cvsuser;
     
     #{
