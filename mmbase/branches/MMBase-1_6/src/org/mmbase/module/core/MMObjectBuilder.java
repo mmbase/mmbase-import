@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.181.2.2 2002-11-27 10:01:58 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.3 2002-12-04 18:55:18 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -299,14 +299,15 @@ public class MMObjectBuilder extends MMTable {
                 MMObjectNode node = typeDef.getNewNode("system");
                 node.setValue("name", tableName);
 
+               
                 // This sucks:
                 if (description == null) description = "not defined in this language";
-
                 node.setValue("description", description);
 
                 oType = mmb.getDatabase().getDBKey();
-                log.debug("Got key " + oType);
+                if (log.isDebugEnabled()) log.debug("Got key " + oType);
                 node.setValue("number", oType);
+
                 // for typedef, set otype explictly, as it wasn't set in getNewNode()
                 if (this == typeDef) {
                     node.setValue("otype", oType);
@@ -484,6 +485,8 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 
+
+
     /**
      * Creates a cache for storing types and objects.
      * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
@@ -492,7 +495,7 @@ public class MMObjectBuilder extends MMTable {
     public synchronized void init_obj2type() {
 
         if (obj2type!=null) return;
-        obj2type=new LRUHashtable(OBJ2TYPE_MAX_SIZE);
+        obj2type = new LRUHashtable(OBJ2TYPE_MAX_SIZE);
 
         // This doesn't do anything...
         if (false) {
@@ -544,7 +547,7 @@ public class MMObjectBuilder extends MMTable {
      *
      * @since MMBase-1.6
      */
-    private boolean isInstanceOfBuilder(String builderName) {
+    public boolean isInstanceOfBuilder(String builderName) {
         String bn = builderName; // Only used for logging.
 
         while(!builderName.equals(tableName)) {
@@ -552,13 +555,13 @@ public class MMObjectBuilder extends MMTable {
             // See if builderName has a parent builderName
             MMObjectBuilder builder = mmb.getMMObject(builderName);
             if (builder.parentBuilder==null) {
-                log.debug(bn+" isInstanceOfBuilder "+tableName+" == false");
-                 return false;
+                if (log.isDebugEnabled()) log.debug(bn + " isInstanceOfBuilder " + tableName + " == false");
+                return false;
             }
-
+            
             builderName = builder.parentBuilder.tableName;
         }
-        log.debug(bn+" isInstanceOfBuilder "+tableName+" == true");
+        if (log.isDebugEnabled()) log.debug(bn + " isInstanceOfBuilder " + tableName + " == true");
         return true;
     }
 
@@ -2588,6 +2591,7 @@ public class MMObjectBuilder extends MMTable {
         return true;
     }
 
+    
     /**
      * Adds a remote observer to this builder.
      * The observer is notified whenever an object of this builder is changed, added, or removed.
