@@ -58,7 +58,7 @@ public class TypeRel extends MMObjectBuilder {
 	/**
 	*  Retrieves all relations which are 'allowed' for a specified node, that is,
 	*  where the node is either allowed to be the source, or to be the destination (but where the
-	*  corresponing relation definition is bi-directional). The allowed relations are determined by
+	*  corresponing relation definition is bidirectional). The allowed relations are determined by
 	*  the type of the node
 	*  @param mmnode The node to retrieve the allowed relations of.
 	*  @return An <code>Enumeration</code> of nodes containing the typerel relation data
@@ -100,7 +100,7 @@ public class TypeRel extends MMObjectBuilder {
 	/**
 	*  Retrieves all relations which are 'allowed' for a specified node, that is,
 	*  where the node is either allowed to be the source, or to be the destination (but where the
-	*  corresponding relation definition is bi-directional). The allowed relations are determined by
+	*  corresponding relation definition is bidirectional). The allowed relations are determined by
 	*  the type of the node
 	*  @param number The number of the node to retrieve the allowed relations of.
 	*  @return An <code>Enumeration</code> of nodes containing the typerel relation data

@@ -531,7 +531,7 @@ public class MMAdmin extends ProcessorModule {
 							    syncnode.insert("import");
 						    }
 						} else {
-						    System.out.println("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+snumber+")");
+						    System.out.println("Cannot sync relation (exportnumber=="+exportnumber+", snumber:"+snumber+", dnumber:"+dnumber+")");
 						}
 					}
 				}
@@ -568,8 +568,8 @@ public class MMAdmin extends ProcessorModule {
 			    }
 			    builder=mmb.getTypeDef().getIntValue(buildername);
 			}
-			// is not explicitly set to uni-directional, direction is assumed to be bi-directional
-			if (direction.equals("unidirectional")) {
+			// is not explicitly set to unidirectional, direction is assumed to be bidirectional
+			if ("unidirectional".equals(direction)) {
 				checkRelDef(source,target,1,guisourcename,guitargetname,builder);
 			} else {
 				checkRelDef(source,target,2,guisourcename,guitargetname,builder);

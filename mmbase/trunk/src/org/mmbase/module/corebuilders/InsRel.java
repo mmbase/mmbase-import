@@ -197,7 +197,7 @@ public class InsRel extends MMObjectBuilder {
 
 	/**
 	* Checks whether any relations exist for a MMObjectNode.
-	* This includes uni-direction relations which would otherwise not be counted.
+	* This includes unidirection relations which would otherwise not be counted.
 	* If the query fails to execute, the system will assume that relations exists.
 	* @param src Identifying number of the object to find the relations of.
 	* @return <code>true</code> if any relations exist, <code>false</code> otherwise.
@@ -209,7 +209,7 @@ public class InsRel extends MMObjectBuilder {
 	/**
 	* Get relation(s) for a MMObjectNode
 	* This function returns all relations in which the node is either a source, or where the node is
-	* the destination, but the direction is bi-directional.
+	* the destination, but the direction is bidirectional.
 	* @param src Identifying number of the object to find the relations of.
 	* @return If succesful, a <code>Vector</code> containing the relations.
 	*       Each element in the vector's enumeration is a node object retrieved from the
@@ -343,9 +343,9 @@ public class InsRel extends MMObjectBuilder {
 		if (field.equals("dir")) {
             int dir=node.getIntValue("dir");
             if (dir==2) {
-                return "bi-directional";
+                return "bidirectional";
             } else if (dir==1) {
-                return "uni-directional";
+                return "unidirectional";
             } else {
                 return "unknown";
             }
