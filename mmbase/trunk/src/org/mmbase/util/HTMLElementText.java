@@ -12,7 +12,8 @@ package org.mmbase.util;
 import java.util.*;
 
 /**
- * Generates a HTML Element: INPUT TEXT, uses this variables which are set in the<br>
+ * Generates a HTML Element: INPUT TEXT.
+ * Uses these variables which are set in the
  * super class (HTMLElement) to generate HTML:
  * <ul>
  * <li>boolean moreValues : if true it will take the first value of a list of items.</li>
@@ -20,8 +21,8 @@ import java.util.*;
  * <li>String size        : if not null the HTML tag SIZE=size is added </li>
  * </ul>
  *
- * @version 26-Sep-1996
  * @author Jan van Oosterom
+ * @version $Id: HTMLElementText.java,v 1.5 2003-03-07 08:50:34 pierre Exp $
  */
 public class HTMLElementText  extends HTMLElement {
     /**

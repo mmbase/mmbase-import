@@ -8,15 +8,16 @@ import java.util.Map;
 
 import org.mmbase.util.StringObject;
 
-import org.mmbase.module.core.MMBaseContext; 
+import org.mmbase.module.core.MMBaseContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * XMLFields in MMBase. This class can encode such a field to several other formats. 
+ * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: XmlField.java,v 1.6 2003-03-07 08:50:36 pierre Exp $
  */
 
 public class XmlField extends AbstractTransformer implements CharTransformer {
@@ -25,7 +26,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(XmlField.class.getName());
 
     // can be decoded:
-    private final static int RICH   = 1;     
+    private final static int RICH   = 1;
     private final static int POOR   = 2;
     private final static int BODY   = 3;
     private final static int XML    = 4;
@@ -39,7 +40,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 
 
     // for validation only.
-    private final static String  XML_HEADER   = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n<!DOCTYPE mmxf PUBLIC \"//NL//OMROEP//MMBASE//DTD//MMXF 1.0//\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";   
+    private final static String  XML_HEADER   = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n<!DOCTYPE mmxf PUBLIC \"//NL//OMROEP//MMBASE//DTD//MMXF 1.0//\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
     private final static String  XML_TAGSTART = "<mmxf>";
     private final static String  XML_TAGEND   = "</mmxf>";
 
@@ -50,16 +51,14 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     }
 
 
-    /** 
+    /**
      * Takes a string object, finds list structures and changes it to XLL
-     *
-     * @author Michiel Meeuwissen
      */
 
-    private static void handleList(StringObject obj) {        
+    private static void handleList(StringObject obj) {
         // handle lists
         // make <ul> possible (not yet nested), with *-'s on the first char of line.
-        int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy        
+        int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy
         int pos;
         if (obj.length() == 0) return;
         if (obj.charAt(0) == '-') { // hoo, we even _start_ with al list;
@@ -70,7 +69,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         }
 
     listwhile:
-        while (pos != -1) { 
+        while (pos != -1) {
             if (inList == 0) { // not yet in list
                 inList++;        // now we are
                 obj.delete(pos, 2); // delete \n-
@@ -78,8 +77,8 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
                 while(pos < obj.length() && obj.charAt(pos) == ' ') obj.delete(pos, 1);
                 obj.insert(pos, "\r<ul>\r<li>"); // insert 10 chars.
                 pos += 10;
-                
-            } else {             // already in list               
+
+            } else {             // already in list
                 if (obj.charAt(pos + 1) != '-') { // end of list
                     obj.delete(pos, 1); // delete \n
                     obj.insert(pos, "</li>\r</ul>\n");
@@ -96,12 +95,12 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
             if (inList > 0) { // search for new line
                 pos = obj.indexOf("\n", pos);
                 if (pos == -1) break; // no new line found? End of list, of text.
-                if (pos + 1 == obj.length()) { 
+                if (pos + 1 == obj.length()) {
                     obj.delete(pos, 1);  break; // if end of text, simply remove the newline.
                 }
                 while (obj.charAt(pos + 1) == ' ') { // if next line starts with space, this new line does not count. This makes it possible to have some formatting in a <li>
                     pos = obj.indexOf("\n", pos + 1);
-                    if (pos + 1 == obj.length()) { 
+                    if (pos + 1 == obj.length()) {
                         obj.delete(pos, 1);  break listwhile;  // nothing to do...
                     }
                 }
@@ -112,17 +111,17 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         // make sure that the list is closed:
         while (inList > 0) {
             obj.insert(obj.length(), "</li></ul>\n"); inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
-        } 
-        
+        }
+
     }
     /**
      * If you want to add a _ in your text, that should be possible too...
      * Should be done last, because no tags can appear in <em>
      */
-    private static void handleEmph(StringObject obj) { 
+    private static void handleEmph(StringObject obj) {
 
         obj.replace("__", "&#95;");
-        
+
         // Emphasizing. This is perhaps also asking for trouble, because
         // people will try to use it like <font> or other evil
         // things. But basicly emphasizion is content, isn't it?
@@ -142,18 +141,18 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
                 pos += 4;
                 emph = false;
                 pos = obj.indexOf("_", pos); // search next opening.
-            }            
+            }
 
         }
-        
+
         if (emph) { // make sure it is closed on the end.
             // should neve happen when you e.g. used paragraphs.
             obj.insert(obj.length(), "</em>\r");
         }
-       
+
         obj.replace("&#95;", "_");
     }
-    
+
     /**
      * Some paragraphs are are really \sections. So this handler can
      * be done after handleParagraphs. It will search the paragraphs
@@ -161,10 +160,10 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
      * 'rich' text format, is a paragraph starting with one or more $.
      * If there are more then one, the resulting <section> tags are
      * going to be nested.
-     *     
+     *
      */
 
-    private static void handleHeaders(StringObject obj) { 
+    private static void handleHeaders(StringObject obj) {
         // handle headers
         int     requested_level;
         char    ch;
@@ -191,28 +190,28 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
             for (;requested_level <= level; level--) {
                 // same or higher level section
                 add += "</section>";
-            }             
+            }
             level++;
             for (;requested_level > level; level++) {
                 add += "<section title=\"\">";
             }
-            add += "<section title=\""; 
+            add += "<section title=\"";
 
             obj.insert(pos, add);
             pos += add.length();
-            
+
             // search end title of  header;
 
             while (true) { // oh yes, and don't allow _ in title.
-                int pos1 = obj.indexOf("_", pos); 
-                int pos2 = obj.indexOf("</p>", pos); 
+                int pos1 = obj.indexOf("_", pos);
+                int pos2 = obj.indexOf("</p>", pos);
                 if (pos1 < pos2 && pos1 > 0 ) {
                     obj.delete(pos1, 1);
                 } else {
                     pos = pos2;
                     break;
-                }                
-            }           
+                }
+            }
             if (pos == -1) break ; // not found, could not happen.
             // replace it.
             obj.delete(pos, 4);
@@ -224,13 +223,13 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         for(;level>0; level--) {
             obj.insert(obj.length(), "</section>");
         }
-       
+
     }
 
     /**
      * Make <p> </p> tags.
      */
-    private static void handleParagraphs(StringObject obj) { 
+    private static void handleParagraphs(StringObject obj) {
         // handle paragraphs:
         boolean inParagraph = true;
         while (obj.length() > 0 && obj.charAt(0) == '\n') obj.delete(0, 1); // delete starting newlines
@@ -262,7 +261,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
      * Removes all new lines and space which are too much.
      */
     private static void cleanupText(StringObject obj) {
-        // remaining new lines have no meaning.        
+        // remaining new lines have no meaning.
         obj.replace(">\n", ">"); // don't replace by space if it is just after a tag, it could have a meaning then.
         obj.replace("\n", " "); // replace by space, because people could use it as word boundary.
         // remaing double spaces have no meaning as well:
@@ -274,7 +273,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         }
         // we used \r for non significant newlines:
         obj.replace("\r", "");
-       
+
     }
 
     /**
@@ -292,9 +291,9 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
      *  <li> A line starting with an asterix (*) will start an unnumberd
      *       list. The first new line not starting with a space or an other
      *       asterix will end the list </li>
-     *  <li> Underscores are translated to the emphasize HTML-tag</li> 
-     *  <li> You can create a header tag by by starting a line with a dollar signs</li> 
-     *  <li> A paragraph can be begun (and ended) with an empty line.</li> 
+     *  <li> Underscores are translated to the emphasize HTML-tag</li>
+     *  <li> You can create a header tag by by starting a line with a dollar signs</li>
+     *  <li> A paragraph can be begun (and ended) with an empty line.</li>
      * </ul>
      *
      * Test with commandline: java org.mmbase.util.Encode RICH_TEXT (reads from STDIN)
@@ -302,14 +301,13 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
      * @param data text to convert
      * @param format if the resulting XML must be nicely formatted (default: false)
      * @return the converted text
-     *
-     * @author Michiel Meeuwissen */
+     */
 
     public static String richToXML(String data, boolean format) {
         StringObject obj = new StringObject(Xml.XMLEscape(data));
 
         obj.replace("\r","");      // drop returns (\r), we work with newlines, \r will be used as a help.
-        
+
         handleList(obj);
         handleParagraphs(obj);
         handleHeaders(obj);
@@ -322,7 +320,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
             obj.replace("\r", "\n");
         } else {
             cleanupText(obj);
-        }               
+        }
         return obj.toString();
     }
     public static String richToXML(String data) {
@@ -336,7 +334,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         StringObject obj = new StringObject(Xml.XMLEscape(data));
 
         obj.replace("\r","");      // drop returns (\r), we work with newlines, \r will be used as a help.
-        
+
         // the order _is_ important!
         handleList(obj);
         handleParagraphs(obj);
@@ -358,7 +356,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 
     final static private String  xmlBody(String s) {
         // chop of the xml tagstart and tagend:
-        return s.substring(XML_TAGSTART.length(), 
+        return s.substring(XML_TAGSTART.length(),
                            s.length() - XML_TAGEND.length());
     }
 
@@ -369,18 +367,18 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 
     private static String XSLTransform(String xslfile, String data) {
         try {
-            String xslPath = 
-                MMBaseContext.getConfigPath() + 
+            String xslPath =
+                MMBaseContext.getConfigPath() +
                 File.separator + "xslt" +
-                File.separator + xslfile; 
+                File.separator + xslfile;
 
-            javax.xml.transform.TransformerFactory tFactory = 
+            javax.xml.transform.TransformerFactory tFactory =
                 javax.xml.transform.TransformerFactory.newInstance();
 
             //log.error("xslpath: " + xslPath);
-            javax.xml.transform.Transformer transformer =                 
+            javax.xml.transform.Transformer transformer =
                 tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(new File(xslPath).getAbsoluteFile()));
-            
+
             java.io.StringWriter res = new java.io.StringWriter();
             transformer.transform(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(data)),
                                   new javax.xml.transform.stream.StreamResult(res));
@@ -392,101 +390,101 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 
 
     static private void validate(String incoming) throws FormatException {
-	try {
+        try {
 
             log.debug("Validating " + incoming);
-    	    javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-    	    
-	    // turn validating on..
-    	    dfactory.setValidating(true);
-    	    dfactory.setNamespaceAware(true);
-	    javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+            javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-    	    // in order to find the dtd.....
+            // turn validating on..
+            dfactory.setValidating(true);
+            dfactory.setNamespaceAware(true);
+            javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+
+            // in order to find the dtd.....
             org.mmbase.util.XMLEntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
             documentBuilder.setEntityResolver(resolver);
-	    
-	    // in order to log our xml-errors
-    	    StringBuffer errorBuff = new StringBuffer();	    
-	    ErrorHandler errorHandler = new ErrorHandler(errorBuff);
+
+            // in order to log our xml-errors
+            StringBuffer errorBuff = new StringBuffer();
+            ErrorHandler errorHandler = new ErrorHandler(errorBuff);
             documentBuilder.setErrorHandler(errorHandler);
             // documentBuilder.init();
-	    java.io.InputStream input = new java.io.ByteArrayInputStream(incoming.getBytes(CODING));
-    	    documentBuilder.parse(input);
-	    
-      	    if (!resolver.hasDTD()) throw new FormatException("no doc-type specified for the xml");
-	    if (errorHandler.errorOrWarning) throw new FormatException("error in xml: \n" + errorBuff.toString());	    
-    	}
-	catch(javax.xml.parsers.ParserConfigurationException pce) {           
-	    throw new FormatException("[sax parser] not well formed xml: "+pce.toString());
-	}	
-	catch(org.xml.sax.SAXException se) {	
+            java.io.InputStream input = new java.io.ByteArrayInputStream(incoming.getBytes(CODING));
+            documentBuilder.parse(input);
+
+            if (!resolver.hasDTD()) throw new FormatException("no doc-type specified for the xml");
+            if (errorHandler.errorOrWarning) throw new FormatException("error in xml: \n" + errorBuff.toString());
+        }
+        catch(javax.xml.parsers.ParserConfigurationException pce) {
+            throw new FormatException("[sax parser] not well formed xml: "+pce.toString());
+        }
+        catch(org.xml.sax.SAXException se) {
             se.printStackTrace();
-	    //throw new FormatException("[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")");
-	}
-	catch(java.io.IOException ioe) {
-	    throw new FormatException("[io] not well formed xml: "+ioe.toString());
-	}			    
-    }    
- 
-    static class FormatException extends java.lang.Exception {
-    	FormatException(String msg) {
-	    super(msg);
-	}
+            //throw new FormatException("[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")");
+        }
+        catch(java.io.IOException ioe) {
+            throw new FormatException("[io] not well formed xml: "+ioe.toString());
+        }
     }
-       
+
+    static class FormatException extends java.lang.Exception {
+        FormatException(String msg) {
+            super(msg);
+        }
+    }
+
     // Catch any errors or warnings,....
     static class ErrorHandler implements org.xml.sax.ErrorHandler {
-    	boolean errorOrWarning;
-    	StringBuffer errorBuff;  
-  
-    	ErrorHandler(StringBuffer errorBuff) {
-    	    super();
-      	    this.errorBuff = errorBuff;
-      	    errorOrWarning = false;
-    	}
-  
- 
+        boolean errorOrWarning;
+        StringBuffer errorBuff;
+
+        ErrorHandler(StringBuffer errorBuff) {
+            super();
+            this.errorBuff = errorBuff;
+            errorOrWarning = false;
+        }
+
+
         // all methods from org.xml.sax.ErrorHandler
-    	// from org.xml.sax.ErrorHandler
-    	public void fatalError(org.xml.sax.SAXParseException exc) {
-      	    errorBuff.append("FATAL["+getLocationString(exc)+"]:" + exc.getMessage()+ "\n");   
-      	    errorOrWarning = true;
-    	}
+        // from org.xml.sax.ErrorHandler
+        public void fatalError(org.xml.sax.SAXParseException exc) {
+            errorBuff.append("FATAL["+getLocationString(exc)+"]:" + exc.getMessage()+ "\n");
+            errorOrWarning = true;
+        }
 
-    	// from org.xml.sax.ErrorHandler
-    	public void error(org.xml.sax.SAXParseException exc) {
-    	    errorBuff.append("Error["+getLocationString(exc)+"]: " + exc.getMessage()+ "\n");    
-      	    errorOrWarning = true;
-    	}
+        // from org.xml.sax.ErrorHandler
+        public void error(org.xml.sax.SAXParseException exc) {
+            errorBuff.append("Error["+getLocationString(exc)+"]: " + exc.getMessage()+ "\n");
+            errorOrWarning = true;
+        }
 
-    	// from org.xml.sax.ErrorHandler
-    	public void warning(org.xml.sax.SAXParseException exc) {
-      	    errorBuff.append("Warning["+getLocationString(exc)+"]:" + exc.getMessage()+ "\n");   
-      	    errorOrWarning = true;
-    	}
+        // from org.xml.sax.ErrorHandler
+        public void warning(org.xml.sax.SAXParseException exc) {
+            errorBuff.append("Warning["+getLocationString(exc)+"]:" + exc.getMessage()+ "\n");
+            errorOrWarning = true;
+        }
 
         // helper methods
-    	/**
-     	 * Returns a string of the location.
-     	 */
+        /**
+         * Returns a string of the location.
+         */
         private String getLocationString(org.xml.sax.SAXParseException ex) {
-    	    StringBuffer str = new StringBuffer();
-	    String systemId = ex.getSystemId();
+            StringBuffer str = new StringBuffer();
+            String systemId = ex.getSystemId();
             if (systemId != null) {
-	    	int index = systemId.lastIndexOf('/');
-	        if (index != -1) {
-	            	systemId = systemId.substring(index + 1);
-	    	}
-	    	str.append(systemId);
-    	    }
-    	    str.append(" line:");
-    	    str.append(ex.getLineNumber());
-	    str.append(" column:");
-	    str.append(ex.getColumnNumber());
-	    return str.toString();
-    	}
-    } 
+                int index = systemId.lastIndexOf('/');
+                if (index != -1) {
+                        systemId = systemId.substring(index + 1);
+                }
+                str.append(systemId);
+            }
+            str.append(" line:");
+            str.append(ex.getLineNumber());
+            str.append(" column:");
+            str.append(ex.getColumnNumber());
+            return str.toString();
+        }
+    }
 
 
     public Map transformers() {
@@ -508,11 +506,11 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     }
     public Writer transformBack(Reader r) {
         throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
-    } 
+    }
 
     public String transform(String data) {
         switch(to){
-        case RICH:      
+        case RICH:
         case POOR:        return XSLTransform("mmxf2rich.xsl", data);
         case ASCII:       return XSLTransform("mmxf2ascii.xsl", data);
         case XHTML:       return XSLTransform("mmxf2xhtml.xsl", data);
@@ -524,28 +522,28 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
     public String transformBack(String r) {
         String result;
         switch(to){
-        case RICH:    
+        case RICH:
             result = XML_TAGSTART + richToXML(r) + XML_TAGEND;
             // rich will not be validated... Cannot be used yet!!
             break;
-        case POOR:    
+        case POOR:
             result =  XML_TAGSTART + poorToXML(r) + XML_TAGEND;
             break;
-        case BODY:   
+        case BODY:
             result =  XML_TAGSTART + r + XML_TAGEND;
-            break;            
+            break;
         case XML:
             result = r;
             break;
         case ASCII:
-        default: throw new UnsupportedOperationException("Cannot transform");           
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
         try {
-    	    validate(XML_HEADER + result);
-	}
-	catch(FormatException fe) {
-	    throw new RuntimeException(fe.toString() + " source: \n" + result);
-	}
+            validate(XML_HEADER + result);
+        }
+        catch(FormatException fe) {
+            throw new RuntimeException(fe.toString() + " source: \n" + result);
+        }
         return result;
     }
     public String getEncoding() {

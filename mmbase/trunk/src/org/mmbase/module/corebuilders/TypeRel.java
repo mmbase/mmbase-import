@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.37 2003-03-04 16:19:18 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.38 2003-03-07 08:50:17 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -87,7 +87,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Addes one typerel cache entries, plus inherited relations (if builder are initialized)
-     * @returns A Set with the added entries, which can be used for logging or so, or can be disregarded
+     * @return A Set with the added entries, which can be used for logging or so, or can be disregarded
      * @since  MMBase-1.6.2
      */
     protected TypeRelSet addCacheEntry(MMObjectNode typerel, boolean buildersInitialized) {

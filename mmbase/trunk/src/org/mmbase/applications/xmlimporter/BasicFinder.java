@@ -1,15 +1,12 @@
 /*
- * ClassName: BasicFinder.java
- *
- * Date: dec. 1st. 2001
- *
- * Copyright notice:
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 
 package org.mmbase.applications.xmlimporter;
 
@@ -22,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A basic implementation of SimilarObjectFinder.
  * @since MMBase-1.5
- * @version $Id: BasicFinder.java,v 1.2 2002-02-27 16:54:24 pierre Exp $
+ * @version $Id: BasicFinder.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public abstract class BasicFinder implements SimilarObjectFinder {
 
@@ -158,8 +155,8 @@ public abstract class BasicFinder implements SimilarObjectFinder {
     }
 
     /**
-     * Calculates matching rate for two objects, e.g. the rate in
-     * which tmpObj1 matches tmpObj2, represented by a value ranging
+     * Calculates matching rate for two objects.
+     * e.g. the rate in which tmpObj1 matches tmpObj2, represented by a value ranging
      * from 0 to 1: <ul>
      * <li>1.0 for exact match,
      * <li>between 1.0 and 0.0 for not-exact but qualifying match,

@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.27 2003-03-05 08:14:11 pierre Exp $
+ * @version $Id: RelDef.java,v 1.28 2003-03-07 08:50:16 pierre Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -188,7 +188,7 @@ public class RelDef extends MMObjectBuilder {
     /**
      * Returns the first occurrence of a reldef node of a relation definition.
      * used to set the default reldef for a specific builder.
-     * @returns the default reldef node, or <code>null</code> if not found.
+     * @return the default reldef node, or <code>null</code> if not found.
      */
     public MMObjectNode getDefaultForBuilder(InsRel relBuilder) {
         Enumeration e;
@@ -334,7 +334,7 @@ public class RelDef extends MMObjectBuilder {
     /**
      * Checks to see if a given relation definition is stored in the cache.
      * @param name A <code>String</code> of the relation definitions' name
-     * @returns: a <code>boolean</code> indicating success if the relationname exists
+     * @return a <code>boolean</code> indicating success if the relationname exists
      */
 
     public boolean isRelationTable(String name) {
@@ -363,7 +363,7 @@ public class RelDef extends MMObjectBuilder {
     /**
      * Checks to see if a given builder (otype) is known to be a relation builder.
      * @param number The otype of the builder
-     * @returns: a <code>boolean</code> indicating success if the builder exists in the cache
+     * @return a <code>boolean</code> indicating success if the builder exists in the cache
      */
 
     public boolean isRelationBuilder(int number) {
@@ -374,7 +374,7 @@ public class RelDef extends MMObjectBuilder {
 
     /**
      * Returns a list of builders currently implementing a relation node.
-     * @returns: an <code>Iteration</code> containing the builders (as otype)
+     * @return an <code>Iteration</code> containing the builders (as otype)
      */
 
     public Enumeration getRelationBuilders() {

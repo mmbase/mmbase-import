@@ -52,7 +52,7 @@ public class VirtualNode extends MMObjectNode {
     /**
      *  Insert is not implemented on a virtual node.
      *  @return nothing, throws an exception
-     *  @throw UnsupportedOperationException
+     *  @throws UnsupportedOperationException
      */
     public int insert(String userName) {
         throw new UnsupportedOperationException("Method insert is not implemented on a virtual node.");
@@ -72,7 +72,7 @@ public class VirtualNode extends MMObjectNode {
      * A virtual node never has relations.
      * @return empty <code>Enumeration</code>
      */
-    public Enumeration getRelations() {    
+    public Enumeration getRelations() {
         return new java.util.Vector(0).elements();
     }
 

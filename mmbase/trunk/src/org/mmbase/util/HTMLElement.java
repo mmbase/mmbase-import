@@ -19,18 +19,17 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* Class which is the super-class for ALL the HTMLElements.<br>
-*<br>
+* Class which is the super-class for ALL the HTMLElements.
+*
 * Includes a parser wich fills all the variables
-* and calls the abstract function generate which will be <br>
+* and calls the abstract function generate which will be
 * implemented in a HTMLElement
-*<br>
+*
 * @author Jan van Oosterom
-* @version 23-Sep-1996
+* @version $Id: HTMLElement.java,v 1.7 2003-03-07 08:50:30 pierre Exp $
 *
 */
-public abstract class HTMLElement
-{
+public abstract class HTMLElement {
     // logger
     private static Logger log = Logging.getLoggerInstance(HTMLElement.class.getName());
 

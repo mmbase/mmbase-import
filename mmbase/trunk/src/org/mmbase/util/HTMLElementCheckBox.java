@@ -13,8 +13,8 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Generates a HTML Element: INPUT CHECKBOX, uses this variables which are set in the<br>
- * super class (HTMLElement) to generate HTML:
+ * Generates a HTML Element: INPUT CHECKBOX.
+ * Uses these variables which are set in the super class (HTMLElement) to generate HTML:
  * <ul>
  * <li>boolean sel        : if true it checks if the String selected equals the
  *                          current value if equal the HTML tag CHECKED is added.</li>
@@ -30,8 +30,8 @@ import org.mmbase.util.logging.*;
  * <li>boolean vertical    : if true the various checkboxes are seperated with &lt;brk /&gt; tags.</li>
  * </ul>
  *
- * @version 26-Sep-1996
  * @author Jan van Oosterom
+ * @version $Id: HTMLElementCheckBox.java,v 1.5 2003-03-07 08:50:30 pierre Exp $
  */
 public class HTMLElementCheckBox  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementSelect

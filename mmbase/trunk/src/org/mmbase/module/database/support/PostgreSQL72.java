@@ -17,29 +17,31 @@ import org.mmbase.module.database.*;
 import org.mmbase.util.logging.*;
 
 /**
- * More info for differences between the versions: http://www.postgresql.org/idocs/index.php?jdbc-binary-data.html
+ * 7.2 is the first release of the JDBC Driver that supports the byte data type.
+ * The introduction of this functionality in 7.2 has introduced a change in behavior as compared to previous
+ * releases. In 7.2 the methods getBytes(), setBytes(), getBinaryStream(), and setBinaryStream() operate
+ * on the bytea data type. In 7.1 these methods operated on the OID data type associated with Large Objects.
+ * It is possible to revert the driver back to the old 7.1 behavior by setting the compatible property on the
+ * Connection to a value of 7.1<br />
+ * To use the bytea data type you should simply use the getBytes(), setBytes(), getBinaryStream(), or
+ * setBinaryStream() methods.<br />
+ * To use the Large Object functionality you can use either the LargeObject API provided by the PostgreSQL JDBC
+ * Driver, or by using the getBLOB() and setBLOB() methods.<br />
  *
- * 7.2 is the first release of the JDBC Driver that supports the bytea data type. 
- * The introduction of this functionality in 7.2 has introduced a change in behavior as compared to previous 
- * releases. In 7.2 the methods getBytes(), setBytes(), getBinaryStream(), and setBinaryStream() operate 
- * on the bytea data type. In 7.1 these methods operated on the OID data type associated with Large Objects. 
- * It is possible to revert the driver back to the old 7.1 behavior by setting the compatible property on the 
- * Connection to a value of 7.1
- * To use the bytea data type you should simply use the getBytes(), setBytes(), getBinaryStream(), or 
- * setBinaryStream() methods.
- * To use the Large Object functionality you can use either the LargeObject API provided by the PostgreSQL JDBC 
- * Driver, or by using the getBLOB() and setBLOB() methods.
+ * Important: For PostgreSQL, you must access Large Objects within an SQL transaction. You would open a
+ * transaction by using the setAutoCommit() method with an input parameter of false.<br />
  *
- * Important: For PostgreSQL, you must access Large Objects within an SQL transaction. You would open a 
- * transaction by using the setAutoCommit() method with an input parameter of false.
- * 
- * Note: In a future release of the JDBC Driver, the getBLOB() and setBLOB() methods may no longer interact 
- * with Large Objects and will instead work on bytea data types. So it is recommended that you use the LargeObject 
- * API if you intend to use Large Objects. 
+ * Note: In a future release of the JDBC Driver, the getBLOB() and setBLOB() methods may no longer interact
+ * with Large Objects and will instead work on bytea data types. So it is recommended that you use the LargeObject
+ * API if you intend to use Large Objects.<br />
+ *
+ * More info for differences between Postgresql versions:
+ * http://www.postgresql.org/idocs/index.php?jdbc-binary-data.html
+ *
  *
  * Postgresql driver for MMBase
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL72.java,v 1.2 2003-03-04 14:39:57 nico Exp $
+ * @version $Id: PostgreSQL72.java,v 1.3 2003-03-07 08:50:22 pierre Exp $
  */
 //public class PostgreSQL72 extends PostgresSQL71 implements MMJdbc2NodeInterface  {
 public class PostgreSQL72 extends  PostgreSQL71 {
@@ -71,8 +73,8 @@ public class PostgreSQL72 extends  PostgreSQL71 {
                 log.trace("added string for field with name: " + key + " with value: " + node.getStringValue(key));
                 break;
             case FieldDefs.TYPE_BYTE:
-		stmt.setBytes(i, node.getByteValue(key));
-		log.trace("added bytes for field with name: " + key + " with with a length of #"+ node.getByteValue(key).length+"bytes");
+                stmt.setBytes(i, node.getByteValue(key));
+                log.trace("added bytes for field with name: " + key + " with with a length of #"+ node.getByteValue(key).length+"bytes");
                 break;
             default:
                 log.warn("unknown type for field with name : " + key);
@@ -91,17 +93,17 @@ public class PostgreSQL72 extends  PostgreSQL71 {
             log.debug("retrieving the field :" + fieldname +" of object("+number+") of type : " + tableName);
             con = mmb.getConnection();
 
-	    // TODO: use prepare statement, can be cached..
+            // TODO: use prepare statement, can be cached..
             stmt = con.createStatement();
-	    
+
             String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
             log.debug("gonna excute the followin query: " + sql);
             ResultSet rs = stmt.executeQuery(sql);
-	    if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
+            if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
 
            byte[] data=null;
             if(rs.next()) {
-		data = rs.getBytes(1);
+                data = rs.getBytes(1);
                 log.debug("data was read from the database(#"+data.length+" bytes)");
             }
             rs.close();

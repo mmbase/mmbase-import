@@ -187,7 +187,7 @@ public class Channel extends MMObjectBuilder {
      * Opens the channel.
      *
      * @param channel The channel to open.
-     * @result <code>true</code> if opening the channel was successfull.
+     * @return <code>true</code> if opening the channel was successfull.
      */
     public boolean open(MMObjectNode channel) {
         MMObjectNode community = communityParent(channel);
@@ -203,7 +203,7 @@ public class Channel extends MMObjectBuilder {
      *
      * @param channel The channel to open.
      * @param community The community with this channel's settings
-     * @result <code>true</code> if opening the channel was successfull.
+     * @return <code>true</code> if opening the channel was successfull.
      */
     public boolean open(MMObjectNode channel, MMObjectNode community) {
         // Try to open the channel, when the channel is part of a chatbox put
@@ -236,7 +236,7 @@ public class Channel extends MMObjectBuilder {
      * Closes the channel.
      *
      * @param channel The channel to close.
-     * @result <code>true</code> if closing the channel was successfull.
+     * @return <code>true</code> if closing the channel was successfull.
      */
     public boolean close(MMObjectNode channel) {
         Integer channelnr=new Integer(channel.getNumber());
@@ -258,7 +258,7 @@ public class Channel extends MMObjectBuilder {
     /**
      * Makes a channel read only.
      * @param channel The channel to affect.
-     * @result <code>true</code> if changing the channel open status was successfull.
+     * @return <code>true</code> if changing the channel open status was successfull.
      */
     public boolean readonly(MMObjectNode channel) {
         Integer channelnr=new Integer(channel.getNumber());
@@ -490,7 +490,7 @@ public class Channel extends MMObjectBuilder {
      * @param channel The channel to disconnect from.
      * @return <code>DISCONNECTED</code> if the user was successfully disconnected,
      *    <code>FAILED</code> if an error occurred.
-     * @deprecated: use {@link #leave} instead
+     * @deprecated use {@link #leave} instead
      */
     public synchronized int logout(MMObjectNode user, MMObjectNode channel) {
         return leave(user,channel);

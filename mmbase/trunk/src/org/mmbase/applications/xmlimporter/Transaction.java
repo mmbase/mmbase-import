@@ -1,17 +1,12 @@
 /*
- * ClassName: Transaction.java
- *
- * Date: dec. 1st. 2001
- *
- * Copyright notice:
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- *
- */
 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.xmlimporter;
 
 import java.io.*;
@@ -40,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.2 2002-02-27 16:54:27 pierre Exp $
+ * @version $Id: Transaction.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
  */
 public class Transaction implements Runnable {
 
@@ -1168,9 +1163,9 @@ public class Transaction implements Runnable {
     }
 
     /**
-     * Test if two objects in the temporary cloud represent the same
-     * relation, e.g. are of same relation type, and have same source
-     * and destination objects. This takes into account that an (access)
+     * Test if two objects in the temporary cloud represent the same relation
+     * (are of same relation type and have the same source and destination objects).
+     * This takes into account that an (access)
      * object in the temporary cloud may represent an object in the
      * persistent cloud.
      * @param tmpObj1 The first object.
