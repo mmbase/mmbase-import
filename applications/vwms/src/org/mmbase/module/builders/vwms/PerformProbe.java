@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class PerformProbe implements Runnable {
 
-    private static Logger log = Logging.getLoggerInstance(PerformProbe.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(PerformProbe.class.getName());
 
     private VwmProbeInterface vwm;
     private MMObjectNode node;
@@ -39,11 +39,11 @@ public class PerformProbe implements Runnable {
 		this.vwm=vwm;
 		this.node=node;
 		this.status=1;
-		init();	
+		init();
 	}
 
 	public void init() {
-		this.start();	
+		this.start();
 	}
 
 
@@ -52,18 +52,20 @@ public class PerformProbe implements Runnable {
 	 */
 	public void start() {
 		/* Start up the main thread */
+		log.service("Creating and starting new thread for tasknr "+node.getIntValue("number")
+		        +" task "+node.getStringValue("task"));
 		if (kicker == null) {
-			kicker = new Thread(this,"Performprobe "+node.getIntValue("number"));
+			kicker = new Thread(this,"Performprobe tasknr "+node.getIntValue("number"));
 			kicker.start();
 		}
 	}
-	
+
 	/**
 	 * Stops the admin Thread.
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
+		kicker.setPriority(Thread.MIN_PRIORITY);
 		kicker.suspend();
 		kicker.stop();
 		kicker = null;
@@ -75,10 +77,13 @@ public class PerformProbe implements Runnable {
 	public void run () {
 		try {
 			status=2;
+			log.service("Calling vwm "+vwm.getName()+" performTask for tasknr "+node.getIntValue("number")
+		            +" task "+node.getStringValue("task"));
 			vwm.performTask(node);
 			status=3;
 		} catch (Exception e) {
 			log.error("performTask failed" + e);
+			log.error(e.getMessage());
 			log.error(Logging.stackTrace(e));
 			status=5;
 		}
