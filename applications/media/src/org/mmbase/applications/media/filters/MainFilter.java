@@ -164,5 +164,64 @@ public class MainFilter {
         }
         return urls;
     }
+
+
+    // ====================================================================================
+    // Test-code
+
+    private static void addTestData(Collection c) {
+        c.add("hoi");
+        c.add("hallo");
+        c.add("heeej");
+        c.add("hello");
+        c.add("daag");
+        c.add("ajuus");
+        c.add("saluton");
+        c.add("cao");
+        c.add("arriverderci");
+        c.add("gxis");
+        c.add("hej");
+        c.add("komop");
+        c.add("1234");
+    }
+    private static class TestComparator implements Comparator {
+        private int i;
+        TestComparator(int i) {
+            this.i = i;
+        }
+        public int compare(Object o1, Object o2) {
+            return o1.hashCode() - o2.hashCode();
+        }
+        
+    }
+
+    public static void main(String[] args) {
+        // what is quicker: sorting a list, or creating a new sortedset:
+
+
+        final int ITERATIONS = 200000;
+
+
+        List list = new ArrayList();
+        addTestData(list);
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < ITERATIONS; i++) {
+            Comparator c = new TestComparator(i);
+            Collections.sort(list, c);
+        }
+        System.out.println("list duration: " + (System.currentTimeMillis() - start));
+        System.out.println(list);
+        SortedSet  sortedSet   = new TreeSet();
+        addTestData(sortedSet);
+        start = System.currentTimeMillis();
+        for (int i = 0; i < ITERATIONS; i++) {
+            SortedSet s = new TreeSet(new TestComparator(i));
+            s.addAll(sortedSet);
+            sortedSet = s;
+        }
+        System.out.println("sortedset duration: " + (System.currentTimeMillis() - start));
+        System.out.println(sortedSet);
+    }
+
     
 }

@@ -8,9 +8,9 @@
 
  
   <default>org.mmbase.applications.media.urlcomposers.URLComposer</default>
-  <urlcomposer format="ra" >org.mmbase.applications.media.urlcomposers.ObjectURLComposer</urlcomposer>
-  <urlcomposer format="rm" >org.mmbase.applications.media.urlcomposers.ObjectURLComposer</urlcomposer>
-  <urlcomposer format="asf">org.mmbase.applications.media.urlcomposers.ObjectURLComposer</urlcomposer>
+  <urlcomposer format="ra" >org.mmbase.applications.media.urlcomposers.MarkupURLComposer</urlcomposer>
+  <urlcomposer format="rm" >org.mmbase.applications.media.urlcomposers.MarkupURLComposer</urlcomposer>
+  <urlcomposer format="asf">org.mmbase.applications.media.urlcomposers.MarkupURLComposer</urlcomposer>
 
 
   <urlcomposer format="ra"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
