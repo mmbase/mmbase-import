@@ -29,7 +29,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.6 2004-01-05 17:46:42 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.7 2004-01-06 13:11:25 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -41,6 +41,17 @@ public class XmlHandler extends StringHandler {
     public XmlHandler(FieldInfoTag tag) {
         super(tag);
     }
+
+    private static ChainedCharTransformer ct;
+
+    static {
+        ct = new ChainedCharTransformer();
+        ct.add(new TabToSpacesTransformer(2));
+        Xml x = new Xml();
+        x.configure(Xml.ESCAPE);
+        ct.add(x);
+    }
+    
 
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
@@ -69,12 +80,7 @@ public class XmlHandler extends StringHandler {
                         Transformer serializer = tfactory.newTransformer();
                         serializer.setOutputProperty(OutputKeys.INDENT, "yes");
                         serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                        StringBufferWriter str = new StringBufferWriter(buffer);
-                        ChainedCharTransformer ct = new ChainedCharTransformer();
-                        ct.add(new TabToSpacesTransformer(2));
-                        Xml x = new Xml();
-                        x.configure(Xml.ESCAPE);
-                        ct.add(x);
+                        StringBufferWriter str = new StringBufferWriter(buffer);     
                         Writer w = new TransformingWriter(str, ct);
                         // there is a <field> tag placed around it,... we hate it :)
                         // change this in the bridge?

@@ -26,6 +26,7 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
     private static final Logger log = Logging.getLoggerInstance(TabToSpacesTransformer.class);
 
     private int spaceNum;
+    private String tab;
 
     public TabToSpacesTransformer() {
         this(3);
@@ -33,10 +34,6 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
 
     public TabToSpacesTransformer(int spaces) {
         spaceNum = spaces;
-    }
-
-    public Writer transform(Reader r, Writer w) {
-        String tab;
         {
             StringBuffer buf = new StringBuffer();
             for (int i = 0; i < spaceNum; i++) {
@@ -44,6 +41,9 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
             }
             tab = buf.toString();
         }
+    }
+
+    public Writer transform(Reader r, Writer w) {
         try {
             while (true) {
                 int c = r.read();
@@ -87,6 +87,6 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
 
 
     public String toString() {
-        return "tab2spacetranformer";
+        return "tab2spacestransformer";
     }
 }
