@@ -14,7 +14,7 @@
       </mm:compare>
     <table>
       <form method="post" action="<mm:write referid="referrer" />" >
-        <input type="hidden" name="authenticate" value="name/password" />
+        <tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr>
         <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
         <tr><td>Password</td><td><input type="password" name="password"></td></tr>
         <tr><td /><td><input type="submit" name="command" value="login"></td></tr>
