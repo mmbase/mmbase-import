@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.8 2000-04-12 11:34:56 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.9 2000-04-12 14:20:34 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/04/12 11:34:56  wwwtech
+Rico: built type of builder detection in create phase
+
 Revision 1.7  2000/03/31 16:01:31  wwwtech
 Davzev: Fixed insert() for when node builder is typedef
 
@@ -45,7 +48,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.8 $ $Date: 2000-04-12 11:34:56 $
+* @$Revision: 1.9 $ $Date: 2000-04-12 14:20:34 $
 */
 public class MMInformix42Node implements MMJdbc2NodeInterface {
 
@@ -396,6 +399,25 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 	}
 
 
+	public int insertRootNode(MMObjectBuilder bul) {
+		try {
+			MultiConnection con=bul.mmb.getConnection();
+			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_typedef values(?,?,?,?,?)");
+			stmt.setInt(1,0);
+			stmt.setInt(2,0);
+			stmt.setString(3,"system");
+			stmt.setString(4,"typedef");
+			stmt.setString(5,"Type definition builder");
+			stmt.executeUpdate();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error on root node");
+			e.printStackTrace();
+			return(-1);
+		}
+		return(0);	
+	}
 
 
 
@@ -409,8 +431,11 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 	* @return The DBKey number for this node, or -1 if an error occurs.
 	*/
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
-		int number=getDBKey();
+		int number=node.getIntValue("number");
+		if (number==-1) number=getDBKey();
 		if (number==-1) return(-1);
+		if (number==0) return(insertRootNode(bul));
+
 		try {
 			// Create a String that represents the amount of DB fields to be used in the insert.
 			// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
