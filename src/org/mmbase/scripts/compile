@@ -1,7 +1,7 @@
 #!/usr/local/bin/bash
 
-MMBASEpath=/usr/local/install/org/mmbase
-LOGpath=/usr/local/install/org/mmbase/log
+MMBASEpath=/usr/local/install/src/org/mmbase
+LOGpath=/usr/local/install/src/org/mmbase/log
 
 # find all java files
 find $MMBASEpath -name '*.java' -print > j
