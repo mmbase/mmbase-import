@@ -11,6 +11,7 @@ package org.mmbase.security;
 
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.ResourceWatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.19 2004-11-11 17:10:33 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.20 2005-01-20 18:20:22 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -28,7 +29,7 @@ public class MMBaseCopConfig {
     public static final ResourceLoader securityLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("security");
 
     /** looks if the files have been changed */
-    private SecurityConfigWatcher watcher;
+    protected ResourceWatcher watcher;
 
     /** our current authentication class */
     private Authentication authentication;
@@ -47,7 +48,7 @@ public class MMBaseCopConfig {
     private MMBaseCop cop;
 
     /** the class that watches if we have to reload...*/
-    private class SecurityConfigWatcher extends org.mmbase.util.ResourceWatcher  { 
+    private class SecurityConfigWatcher extends ResourceWatcher  { 
         private MMBaseCop cop;
         
         public SecurityConfigWatcher(MMBaseCop cop) {
@@ -93,10 +94,10 @@ public class MMBaseCopConfig {
         java.net.URL config = securityLoader.findResource("security.xml");
         log.info("using: '" + config + "' as configuration file for security");
 
+
+        
         watcher = new SecurityConfigWatcher(mmbaseCop);
-
         watcher.add("security.xml");
-
         watcher.start();
 
         cop = mmbaseCop;
