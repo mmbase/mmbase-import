@@ -44,7 +44,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttributeBoolean(w));
     }
-    public Object getValue() {
+    public Object getWriterValue() {
         return helper.getValue();
     }
 
@@ -63,7 +63,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         return true;
     }
     public Object getCurrent() {
-        return getValue();
+        return getWriterValue();
     }
 
     /**
