@@ -48,7 +48,7 @@ public class MediaProviderFilter {
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
     
     // A reference to the MediaSource class.
-    private MediaSource mediasourcebuilder = null;
+    private MediaSources mediasourcebuilder = null;
     
     // Contains information about which host will result in which provider
     private static Hashtable hostFilter = null;
@@ -72,7 +72,7 @@ public class MediaProviderFilter {
     /**
      * construct the MediaProviderFilter
      */
-    public MediaProviderFilter(MediaSource ms) {
+    public MediaProviderFilter(MediaSources ms) {
         mediasourcebuilder = ms;
         
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediaproviderfilter.xml");
@@ -109,10 +109,10 @@ public class MediaProviderFilter {
                     log.error("Cannot load MediaProviderFilter "+chainvalue+"\n"+exception);
                 }
                 
-                log.debug("read extern chain - "+chainvalue);
+                log.debug("Read extern chain: "+chainvalue);
                 
             } else {
-                log.debug("read standard chain - "+chainvalue);
+                log.debug("Read standard chain: "+chainvalue);
                 filterChain.addElement(chainvalue);
             }
         }
@@ -123,7 +123,7 @@ public class MediaProviderFilter {
             Element n3=(Element)e.nextElement();
             String key = reader.getElementAttributeValue(n3,"user");
             String value = reader.getElementAttributeValue(n3,"provider");
-            log.debug("read host filter element "+key+" -> "+value);
+            log.debug("Adding hostFilter element "+key+" -> "+value);
             hostFilter.put(key,value);
         }
         
@@ -132,7 +132,7 @@ public class MediaProviderFilter {
         for( Enumeration e = reader.getChildElements("mediaproviderfilter.sortProviders","provider");e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String host = reader.getElementAttributeValue(n3,"host");
-            log.error("read prefered host "+host);
+            log.error("Adding preferedHost "+host);
             preferFilter.addElement(host);
             
         }

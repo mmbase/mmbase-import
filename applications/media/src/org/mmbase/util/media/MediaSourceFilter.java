@@ -43,8 +43,8 @@ public class MediaSourceFilter {
     
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
     
-    private MediaFragment mediaFragmentBuilder = null;
-    private MediaSource mediaSourceBuilder = null;
+    private MediaFragments mediaFragmentBuilder = null;
+    private MediaSources mediaSourceBuilder = null;
     
     
     private static int MINSPEED        = 0;
@@ -70,7 +70,7 @@ public class MediaSourceFilter {
     /**
      * construct the MediaSourceFilter
      */
-    public MediaSourceFilter(MediaFragment mf, MediaSource ms) {
+    public MediaSourceFilter(MediaFragments mf, MediaSources ms) {
         mediaFragmentBuilder = mf;
         mediaSourceBuilder = ms;
         
@@ -199,9 +199,14 @@ public class MediaSourceFilter {
             String format = (String)e.nextElement();
             if(format.equals("RA")) {
                 node = getRealAudio(mediasources, wantedspeed, wantedchannels);
-            }
-            if(format.equals("G2")) {
-                node = getG2(mediasources);
+            } else if(format.equals("MP3")) {
+                node = getFormat(mediasources, MediaSource.MP3_FORMAT);
+            } else if(format.equals("WAV")) {
+                node = getFormat(mediasources, MediaSource.WAV_FORMAT);
+            } else if(format.equals("G2")) {
+                node = getFormat(mediasources, MediaSource.SURESTREAM_FORMAT);
+            } else if(format.equals("MP2")) {
+                node = getFormat(mediasources, MediaSource.MP2_FORMAT);
             }
             if (node!=null) {
                 log.debug("found mediasource format "+format);
@@ -214,19 +219,20 @@ public class MediaSourceFilter {
     }
     
     /**
-     * select the surestream mediasource if available
+     * select the mediasource that is of the approriate format
      * @param mediaSources the list of appropriate mediasources
-     * @return a surestream mediasource
+     * @param format the wanted format
+     * @return a mediasource of wanted format
      */
-    private MMObjectNode getG2(Vector mediaSources) {
+    private MMObjectNode getFormat(Vector mediaSources, int format) {
         
         for(Enumeration e=mediaSources.elements();e.hasMoreElements();) {
             MMObjectNode mediaSource = (MMObjectNode)e.nextElement();
             
             // Is the MediaSource ready for use && is it of format surestream
             if( mediaSource.getIntValue("status") == MediaSource.DONE &&
-            mediaSource.getIntValue("format") == MediaSource.SURESTREAM_FORMAT ) {
-                log.debug("G2 stream found "+mediaSource.getStringValue("number"));
+            mediaSource.getIntValue("format") == format ) {
+                log.debug("stream found "+mediaSource.getStringValue("number"));
                 return mediaSource;
             }
         }
