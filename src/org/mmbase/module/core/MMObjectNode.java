@@ -344,6 +344,7 @@ public class MMObjectNode {
 
 	/** 
 	* Get a value of a certain field.
+	* The value is returned as a String. Non-string values are automatically converted to String.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as a <code>String</code>
 	*/
@@ -352,7 +353,12 @@ public class MMObjectNode {
 		// try to get the value from the values table
 		// it might be using a prefix to allow multilevel
 		// nodes to work (if not duplicate can not be stored)
-		String tmp=(String)values.get(prefix+fieldname);
+		String tmp = "";
+		Object o=getValue(fieldname);
+		if (o!=null) {
+		    tmp=""+o;
+		}
+//		String tmp=(String)values.get(prefix+fieldname);
 
 		// check if the object is shorted, shorted means that
 		// because the value can be a large text/blob object its
@@ -362,7 +368,8 @@ public class MMObjectNode {
 		// get mapped into a real value. this saves speed and memory
 		// because every blob/text mapping is a extra request to the
 		// database
-		if (tmp!=null && tmp.indexOf("$SHORTED")==0) {
+		if (tmp.indexOf("$SHORTED")==0) {
+//		if (tmp!=null && tmp.indexOf("$SHORTED")==0) {
 
 			if (debug) debug("getStringValue(): node="+this+" -- fieldname "+fieldname);
 			// obtain the database type so we can check if what
@@ -456,82 +463,108 @@ public class MMObjectNode {
 
 	/** 
 	* Get a value of a certain field.
+	* The value is returned as an int value. Values of non-int, numeric fields are converted if possible.
+	* Non-numeric fields return -1.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as an <code>int</code>
 	*/
 	public int getIntValue(String fieldname) {
-		Integer i=(Integer)values.get(prefix+fieldname);
+	    Object i=getValue(fieldname);
+	    return (i instanceof Number) ? ((Number)i).intValue() : -1;
+
+/*		Integer i=(Integer)values.get(prefix+fieldname);
 		if (i!=null) {
 			return i.intValue();
 		} else {
 			return -1;
 		}
-	}
+*/	}
 
 
 	/** 
 	* Get a value of a certain field.
+	* The value is returned as an Integer value. Values of non-Integer, numeric fields are converted if possible.
+	* Non-numeric fields return -1.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as an <code>Integer</code>
 	*/
 	public Integer getIntegerValue(String fieldname) {
-		Integer i=(Integer)values.get(prefix+fieldname);
+	    Object i=getValue(fieldname);
+	    if (i instanceof Number) {
+	        return (i instanceof Integer) ? (Integer)i : new Integer(((Number)i).intValue());
+	    } else
+	        return new Integer(-1);
+	
+/*		Integer i=(Integer)values.get(prefix+fieldname);
 		if (i!=null) {
 			return i;
 		} else {
 			return new Integer(-1);
 		}
-	}
+*/	}
 
 
 	/** 
 	* Get a value of a certain field.
+	* The value is returned as a long value. Values of non-long, numeric fields are converted if possible.
+	* Non-numeric fields return -1.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as a <code>long</code>
 	*/
 	public long getLongValue(String fieldname) {
-		Long i=(Long)values.get(prefix+fieldname);
+	    Object i=getValue(fieldname);
+	    return (i instanceof Number) ? ((Number)i).longValue() : -1;
+/*		Long i=(Long)values.get(prefix+fieldname);
 		if (i!=null) {
 			return i.longValue();
 		} else {
 			return -1;
 		}
-	}
+*/	}
 
 
 	/** 
 	* Get a value of a certain field.
+	* The value is returned as a float value. Values of non-float, numeric fields are converted if possible.
+	* Non-numeric fields return -1.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as a <code>float</code>
 	*/
 	public float getFloatValue(String fieldname) {
-		Float i=(Float)values.get(prefix+fieldname);
+	    Object i=getValue(fieldname);
+	    return (i instanceof Number) ? ((Number)i).floatValue() : -1;
+/*		Float i=(Float)values.get(prefix+fieldname);
 		if (i!=null) {
 			return i.floatValue();
 		} else {
 			return -1;
 		}
-	}
+*/	}
 
 
 	/** 
 	* Get a value of a certain field.
+	* The value is returned as a double value. Values of non-double, numeric fields are converted if possible.
+	* Non-numeric fields return -1.
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as a <code>double</code>
 	*/
 	public double getDoubleValue(String fieldname) {
-		Double i=(Double)values.get(prefix+fieldname);
+	    Object i=getValue(fieldname);
+	    return (i instanceof Number) ? ((Number)i).doubleValue() : -1;
+/*		Double i=(Double)values.get(prefix+fieldname);
 		if (i!=null) {
 			return i.doubleValue();
 		} else {
 			return -1;
 		}
-	}
+*/	}
 
 	/**
 	* Get a value of a certain field and return is in string form (regardless of actual type).
 	* @param fieldname the name of the field who's data to return
 	* @return the field's value as a <code>String</code>
+	* @deprecated use {@link #getStringValue} instead.
 	*/
 	public String getValueAsString(String fieldName)
 	// WH Will remove/replace this one soon
