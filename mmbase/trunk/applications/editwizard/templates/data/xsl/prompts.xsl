@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.23 2004-11-18 11:57:30 pierre Exp $
+    @version $Id: prompts.xsl,v 1.24 2004-12-14 11:39:54 pierre Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -194,6 +194,15 @@
       <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
   </xsl:template>
   <xsl:variable name="tooltip_edit_list">These are the items that you can edit.</xsl:variable>
+  <xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
+  <xsl:variable name="tooltip_sort_up">up</xsl:variable>
+  <xsl:variable name="tooltip_sort_down">down</xsl:variable>
+  <xsl:template name="prompt_sort_up">
+    <img src="{$mediadir}sortup.png" alt="{$tooltip_up}" height="15" width="15" />
+  </xsl:template>
+  <xsl:template name="prompt_sort_down">
+    <img src="{$mediadir}sortdown.png" alt="{$tooltip_up}" height="15" width="15" />
+  </xsl:template>
 
   <!-- searchlist prompts/tooltips -->
   <xsl:variable name="searchpage_title">Search Results</xsl:variable>
