@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.53 2002-03-21 17:17:11 pierre Exp $
+ * @version $Id: MMBase.java,v 1.54 2002-03-21 18:40:25 kees Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -145,6 +145,7 @@ public class MMBase extends ProcessorModule  {
      * @scope private
      */
     int delay;
+
     /**
      * @deprecated-now unused
      * @scope private
@@ -210,6 +211,7 @@ public class MMBase extends ProcessorModule  {
 
     /**
      * Base url for the location of the DTDs. obtained using getDTDBase()
+     * @deprecated 
      */
     private String dtdbase="http://www.mmbase.org";
 
@@ -618,12 +620,12 @@ public class MMBase extends ProcessorModule  {
      * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
      */
     public void closeConnection(MultiConnection con, Statement stmt) {
-            try {
-                if (stmt!=null) stmt.close();
-            } catch(Exception g) {}
-            try {
-                if (con!=null) con.close();
-            } catch(Exception g) {}
+	try {
+	    if (stmt!=null) stmt.close();
+	} catch(Exception g) {}
+	try {
+	    if (con!=null) con.close();
+	} catch(Exception g) {}
     }
 
     /**
@@ -909,14 +911,14 @@ public class MMBase extends ProcessorModule  {
         log.debug("mmobjects, inits");
         Enumeration t = mmobjs.elements();
         while (t.hasMoreElements()) {
-                    MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-                    log.debug("init " + fbul);
-                    fbul.init();
+	    MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+	    log.debug("init " + fbul);
+	    fbul.init();
         }
 
         Enumeration t2 = mmobjs.keys();
         while (t2.hasMoreElements()) {
-                    TypeDef.loadTypeDef(""+t2.nextElement());
+	    TypeDef.loadTypeDef(""+t2.nextElement());
         }
 
         log.debug("Versions:");
@@ -947,10 +949,10 @@ public class MMBase extends ProcessorModule  {
                 for (int i=0;i<files.length;i++) {
                     String bname=files[i];
                     if (bname.endsWith(".xml")) {
-                         bname=bname.substring(0,bname.length()-4);
-                         loadBuilderFromXML(bname,ipath);
+			bname=bname.substring(0,bname.length()-4);
+			loadBuilderFromXML(bname,ipath);
                     } else {
-                         loadBuilders(ipath +  bname + File.separator);
+			loadBuilders(ipath +  bname + File.separator);
                     }
                 }
             } else {
@@ -1002,14 +1004,14 @@ public class MMBase extends ProcessorModule  {
         }
     }
 
-     /**
-      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
-      * If the builder already exists, the existing object is returned instead.
-      * @param builder name of the builder to initialize
-      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
-      * @return the initialized builder object, or null if no builder could be created..
-      * @throws BuilderConfigurationException if the builder config file does not exist
-      */
+    /**
+     * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
+     * If the builder already exists, the existing object is returned instead.
+     * @param builder name of the builder to initialize
+     * @param ipath the path to start searching. The path need be closed with a File.seperator character.
+     * @return the initialized builder object, or null if no builder could be created..
+     * @throws BuilderConfigurationException if the builder config file does not exist
+     */
     MMObjectBuilder loadBuilder(String builder, String ipath) {
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null) {
@@ -1140,21 +1142,21 @@ public class MMBase extends ProcessorModule  {
 
     /**
      * Loads a Node again, using its 'right' parent.
-     * Reloading may retrieve extra fields if teh originalw a snot loaded accurately.
+     * Reloading may retrieve extra fields if the original node was not loaded accurately.
      * @deprecated Not necessary in most cases, with the possible exception of lists obtained from InsRel.
      *   However, in the later case using this method is probably too costly.
      */
     public MMObjectNode castNode(MMObjectNode node) {
-                /* fake because solved
-                */
-                int otype=node.getOType();
-                String ename=TypeDef.getValue(otype);
-                if (ename==null) return null;
-                 MMObjectBuilder res=getMMObject(ename);
-                MMObjectNode node2=res.getNode(node.getNumber());
-                return node2;
-                //return node;
-        }
+	/* fake because solved
+	 */
+	int otype=node.getOType();
+	String ename=TypeDef.getValue(otype);
+	if (ename==null) return null;
+	MMObjectBuilder res=getMMObject(ename);
+	MMObjectNode node2=res.getNode(node.getNumber());
+	return node2;
+	//return node;
+    }
 
     /**
      * Retrieves the autorisation type.
@@ -1175,6 +1177,7 @@ public class MMBase extends ProcessorModule  {
     public String getLanguage() {
         return language;
     }
+
     /**
      * Retrieves the encoding.
      * This value is set using the configuration file.
@@ -1183,10 +1186,9 @@ public class MMBase extends ProcessorModule  {
      * @return the coding as a <code>String</code>
      * @since  MMBase-1.6
      */
-
-     public String getEncoding() {
-         return encoding;
-     }
+    public String getEncoding() {
+	return encoding;
+    }
 
     /**
      * Retrieves whether this mmbase module is running.
@@ -1241,5 +1243,4 @@ public class MMBase extends ProcessorModule  {
         }
         return true;
     }
-
 }
