@@ -1357,18 +1357,18 @@ Version: MMBase build ${version}
   <!-- Clean the remote-classes                                            -->
   <!-- =================================================================== -->
   <target name="clean.remote" depends="init">
-    <delete>
+    <delete failonerror="false">
       <fileset dir="${generated-source-src.dir}">
         <include name="org/mmbase/bridge/remote/*.java"/>
       </fileset>
     </delete>
-    <delete dir="${generated-source-src.dir}/org/mmbase/bridge/remote/rmi"/>
-    <delete dir="${generated-source-src.dir}/org/mmbase/bridge/remote/implementation"/>
-    <delete file="${generated-source-src.dir}/MMCI.xml"/>
+    <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote/rmi"/>
+    <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote/implementation"/>
+    <delete failonerror="false" file="${generated-source-src.dir}/MMCI.xml"/>
     <!-- Transition period. Until everybody removed the remote
     code from their source-dir, we clean it also there.
     -->
-    <delete>
+    <delete failonerror="false">
       <fileset dir="${source-src.dir}">
         <include name="org/mmbase/bridge/remote/*.java"/>
       </fileset>
