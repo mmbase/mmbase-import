@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import org.mmbase.storage.*;
 import org.mmbase.util.logging.*;
 import java.sql.*;
 import java.io.*;
@@ -22,7 +21,7 @@ import java.io.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: MySqlStorage.java,v 1.3 2003-05-04 11:30:40 kees Exp $
+ * @version $Id: MySqlStorage.java,v 1.4 2003-05-08 14:16:31 kees Exp $
  */
 public class MySqlStorage extends RelationalDatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(MySqlStorage.class.getName());

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import java.sql.*;
 
 import org.mmbase.storage.*;
 import org.mmbase.util.logging.*;
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: PostgreSqlStorage.java,v 1.2 2003-05-02 20:18:33 michiel Exp $
+ * @version $Id: PostgreSqlStorage.java,v 1.3 2003-05-08 14:16:31 kees Exp $
  */
 public class PostgreSqlStorage extends OODatabaseStorage implements DatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(PostgreSqlStorage.class.getName());
