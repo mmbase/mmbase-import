@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.8 2002-03-22 15:49:50 eduard Exp $
+ * @version $Id: PostgreSQL71.java,v 1.9 2002-03-26 13:46:22 eduard Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -339,7 +339,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         }               
         
         // fallback to the old code...
-        log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use extend attribute in %builder%.xml");
+        log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use <builder ... extends=\"object\"> in " + bul.getTableName() + ".xml");
                 
         if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) return "insrel";        
         
@@ -359,7 +359,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         }
         
         // old fallback code...
-        log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use extend attribute in %builder%.xml");
+        log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use <builder ... extends=\"object\"> in " + bul.getTableName() + ".xml");
                 
         // normally we inherited from object..
         if(fieldname.equals("number")) return true;
