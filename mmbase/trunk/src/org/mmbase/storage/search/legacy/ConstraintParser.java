@@ -17,15 +17,60 @@ import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Parser, parses SQL search conditions for a query to a
+ * Parser, tries to parse a <em>SQL-search-condition</em> for a query to a
  * {@link org.mmbase.storage.search.Constraint Constraint} object.
  * <p>
  * This class is provided for the sole purpose of alignment of old code with
  * the new {@link org.mmbase.storage.search.SearchQuery SearchQuery} framework,
  * and should not be called by new code.
+ * <p>
+ * A <em>SQL-search-condition</em> can be one of these forms:
+ * <ul>
+ * <li>[<b>NOT</b>] <b>(</b><em>SQL-search-condition</em><b>)</b>
+ * <li>[<b>NOT</b>] <em>simple-SQL-search-condition</em>
+ * <li><em>SQL-search-condition</em> <b>AND</b> <em>SQL-search-condition</em>
+ * <li><em>SQL-search-condition</em> <b>OR</b> <em>SQL-search-condition</em>
+ * </ul>
+ * A <em>simple-SQL-search-condition</em> string can be of one of these forms:
+ * <ul>
+ * <li><em>field</em> [<b>NOT</b>] <b>LIKE</b> <em>value</em>
+ * <li><b>UPPER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>LIKE</b> <em>value</em>
+ * <li><b>LOWER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>LIKE</b> <em>value</em>
+ * <li><em>field</em> <b>IS</b> [<b>NOT</b>] <b>NULL</b>
+ * <li><em>field</em> [<b>NOT</b>] <b>IN 
+ *     (</b><em>value1</em><b>,</b> <em>value2</em><b>,</b> ..<b>)</b>
+ * <li><em>field</em> <b>=</b> <em>value</em>
+ * <li><em>field</em> <b>=</b> <em>field2</em>
+ * <li><b>UPPER(</b><em>field</em><b>) =</b> <em>value</em>
+ * <li><b>LOWER(</b><em>field</em><b>) =</b> <em>value</em>
+ * <li><em>field</em> <b>==</b> <em>value</em>
+ * <li><em>field</em> <b>==</b> <em>field2</em>
+ * <li><em>field</em> <b>&lt;=</b> <em>value</em>
+ * <li><em>field</em> <b>&lt;=</b> <em>field2</em>
+ * <li><em>field</em> <b>&lt;</b> <em>value</em>
+ * <li><em>field</em> <b>&lt;</b> <em>field2</em>
+ * <li><em>field</em> <b>&gt;=</b> <em>value</em>
+ * <li><em>field</em> <b>&gt;=</b> <em>field2</em>
+ * <li><em>field</em> <b>&gt;</b> <em>value</em>
+ * <li><em>field</em> <b>&gt;</b> <em>field2</em>
+ * <li><em>field</em> <b>&lt;&gt;</b> <em>value</em>
+ * <li><em>field</em> <b>&lt;&gt;</b> <em>field2</em>
+ * <li><em>field</em> <b>!=</b> <em>value</em>
+ * <li><em>field</em> <b>!=</b> <em>field2</em>
+ * </ul>
+ * A <em>field</em> can be one of these forms:
+ * <ul>
+ * <li><em>stepalias</em><b>.</b><em>fieldname</em>
+ * <li><em>fieldname</em> (only when the query has just one step).
+ * </ul>
+ * <p>
+ * A search condition that is not of one of these forms will be converted to a
+ * {@link org.mmbase.storage.search.LegacyConstraint LegacyConstraint}, i.e. 
+ * in that case the search condition string will not be interpreted, but
+ * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -46,9 +91,11 @@ public class ConstraintParser {
      *        token representing the value.
      * @return A <code>String</code> or <code>Double</code> object representing
      *        the value
+     * @throws NumberFormatException when the first token is not (the start of)
+     *        a valid value expression (it may be a <em>field</em> instead).
      */
     // package visibility!
-    static Object parseValue(Iterator iTokens) {
+    static Object parseValue(Iterator iTokens) throws NumberFormatException {
         Object result = null;
         String token = (String) iTokens.next();
         if (token.equals("'")) {
@@ -128,17 +175,16 @@ public class ConstraintParser {
      * Creates <code>StepField</code> corresponding to field indicated by
      * token, of one of the specified steps.
      * <p>
-     * The parsed fieldname can be of one of these forms:
+     * A <em>field</em> can be one of these forms:
      * <ul>
-     * <li><em>fieldname</em>, when only one step is specified.
-     * <li><em>stepalias.fieldname</em>, when one or more steps are specified.
+     * <li><em>stepalias</em><b>.</b><em>fieldname</em>
+     * <li><em>fieldname</em> (only when just one step is specified).
      * </ul>
      *
      * @param token The token.
      * @param steps The steps.
      * @return The field.
      */
-    // TODO RvM: factor this method out to a separate utility class?
     public static StepField getField(String token, List steps) {
         BasicStep step = null;
         int idx = token.indexOf('.');
@@ -192,8 +238,11 @@ public class ConstraintParser {
     }
     
     /**
-     * Parses SQL search condition string into a 
+     * Parses <em>SQL-search-condition</em>, and produces a corresponding 
      * {@link org.mmbase.storage.search.Constraint Constraint} object.
+     * <p>
+     * See {@link ConstraintParser above} for the format of a 
+     * <em>SQL-search-condition</em>
      *
      * @param sqlConstraint The SQL constraint string.
      * @return The constraint.
@@ -224,14 +273,11 @@ public class ConstraintParser {
     }
     
     /**
-     * Creates <code>StepField</code> corresponding to field indicated by
-     * token.
+     * Parses a <em>field</em> string, and produces a corresponding 
+     * <code>StepField</code> object.
      * <p>
-     * The parsed fieldname can be of one of these forms:
-     * <ul>
-     * <li><em>fieldname</em>, when the query has only one step.
-     * <li><em>stepalias.fieldname</em>, when the query has one or more steps.
-     * </ul>
+     * See {@link ConstraintParser above} for the format of a 
+     * <em>field</em>
      *
      * @param token The token.
      * @return The field.
@@ -242,34 +288,17 @@ public class ConstraintParser {
     }
     
     /**
-     * Parses simple SQL search condition string from list of tokens, and 
-     * produces a corresponding <code>BasicConstraint</code> object.
+     * Parses a <em>simple-SQL-search-condition</em> string from list of tokens, 
+     * and produces a corresponding <code>BasicConstraint</code> object.
      * <p>
-     * The parsed condition can be of one of these forms:
-     * <ul>
-     * <li>fieldname LIKE value
-     * <li>fieldname NOT LIKE value
-     * <li>fieldname IS NULL
-     * <li>fieldname IS NOT NULL
-     * <li>fieldname IN (value1, value2, ..)
-     * <li>fieldname NOT IN (value1, value2, ..)
-     * <li>fieldname = value
-     * <li>fieldname <= value
-     * <li>fielname <> value
-     * <li>fieldname < value
-     * <li>fieldname >= value
-     * <li>fieldname > value
-     * <li>fieldname != value
-     * </ul>
-     * See {@link #getField()} for the format of fieldname, and 
-     * {@link #parseValue()} for the format of value.
+     * See {@link ConstraintParser above} for the format of a 
+     * <em>simple-SQL-search-condition</em>
      *
      * @param iTokens Tokens iterator, must be positioned before the (first)
      *        token representing the condition.
      * @return The constraint.
      */
     // package visibility!
-    // TODO handle comparison of fields
     BasicConstraint parseSimpleCondition(ListIterator iTokens) {
         BasicConstraint result = null;
         
@@ -371,57 +400,142 @@ public class ConstraintParser {
             result = fieldValueInConstraint;
 
         } else if (token.equals("=")) {
-            // = value
-            Object value = parseValue(iTokens);
-            result = new BasicFieldValueConstraint(field, value)
-                .setOperator(FieldValueConstraint.EQUAL);
-            
+            token = (String) iTokens.next();
+            if (token.equals("=")) {
+                try {
+                    // == value
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.EQUAL);
+                } catch (NumberFormatException e) {
+                    // == field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.EQUAL);
+                }
+            } else {
+                iTokens.previous();
+                try {
+                    // = value
+                    Object value = parseValue(iTokens);
+                    boolean caseSensitive = true;
+                    if (function != null && value instanceof String) {
+                        String strValue = (String) value;
+                        if ((function.equals("LOWER") 
+                            && strValue.equals(strValue.toLowerCase()))
+                        || (function.equals("UPPER")
+                            && strValue.equals(strValue.toUpperCase()))) {
+                                caseSensitive = false;
+                        }
+                    }
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.EQUAL)
+                        .setCaseSensitive(caseSensitive);
+                } catch (NumberFormatException e) {
+                    // = field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.EQUAL);
+                }
+            }
         } else if (token.equals("<")) {
             token = (String) iTokens.next();
             if (token.equals("=")) {
-                // <= value
-                Object value = parseValue(iTokens);
-                result = new BasicFieldValueConstraint(field, value)
-                    .setOperator(FieldValueConstraint.LESS_EQUAL);
-
+                try {
+                    // <= value
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.LESS_EQUAL);
+                } catch (NumberFormatException e) {
+                    // <= field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.LESS_EQUAL);
+                }
             } else if (token.equals(">")) {
-                // <> value
-                Object value = parseValue(iTokens);
-                result = new BasicFieldValueConstraint(field, value)
-                    .setOperator(FieldValueConstraint.NOT_EQUAL);
-
+                try {
+                    // <> value
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                } catch (NumberFormatException e) {
+                    // <> field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                }
             } else {
-                // < value
-                iTokens.previous();
-                Object value = parseValue(iTokens);
-                result = new BasicFieldValueConstraint(field, value)
-                    .setOperator(FieldValueConstraint.LESS);
-
+                try {
+                    // < value
+                    iTokens.previous();
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.LESS);
+                } catch (NumberFormatException e) {
+                    // < field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.LESS);
+                }
             }
         } else if (token.equals(">")) {
             token = (String) iTokens.next();
             if (token.equals("=")) {
-                // >= value
-                Object value = parseValue(iTokens);
-                result = new BasicFieldValueConstraint(field, value)
-                    .setOperator(FieldValueConstraint.GREATER_EQUAL);
-                
+                try {
+                    // >= value
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.GREATER_EQUAL);
+                } catch (NumberFormatException e) {
+                    // >= field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.GREATER_EQUAL);
+                }
             } else {
-                // > value
-                iTokens.previous();
-                Object value = parseValue(iTokens);
-                result = new BasicFieldValueConstraint(field, value)
-                    .setOperator(FieldValueConstraint.GREATER);
-                
+                try {
+                    // > value
+                    iTokens.previous();
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.GREATER);
+                } catch (NumberFormatException e) {
+                    // > field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.GREATER);
+                }
             }
         } else if (token.equals("!")) {
             token = (String) iTokens.next();
             if (token.equals("=")) {
-                // != value
-                Object value = parseValue(iTokens);
-                result = new BasicFieldValueConstraint(field, value)
-                .setOperator(FieldValueConstraint.NOT_EQUAL);
-                
+                try {
+                    // != value
+                    Object value = parseValue(iTokens);
+                    result = new BasicFieldValueConstraint(field, value)
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                } catch (NumberFormatException e) {
+                    // != field2
+                    iTokens.previous();
+                    token = (String) iTokens.next();
+                    StepField field2 = getField(token);
+                    result = new BasicCompareFieldsConstraint(field, field2)
+                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                }
             } else {
                 throw new IllegalArgumentException(
                 "Unexpected token (expected \"=\"): \""
@@ -440,18 +554,18 @@ public class ConstraintParser {
     }
     
     /**
-     * Parses SQL search condition string from list of tokens, and produces a 
-     * corresponding <code>BasicConstraint</code> object.
+     * Parses <em>SQL-search-condition</em> string from list of tokens, and 
+     * produces a corresponding <code>BasicConstraint</code> object.
      * <p>
-     * The parsed condition can be a simple or composite constraint.
-     * 
-     * See {@link #parseSimpleCondition()} for the format of a simple condition.
+     * See {@link ConstraintParser above} for the format of a 
+     * <em>SQL-search-condition</em>
      *
      * @param iTokens Tokens iterator, must be positioned before the (first)
      *        token representing the condition.
      * @return The constraint.
      */
-     public BasicConstraint parseCondition(ListIterator iTokens) {
+    // package visibility!
+    BasicConstraint parseCondition(ListIterator iTokens) {
         BasicCompositeConstraint composite = null;
         BasicConstraint constraint= null;
         while (iTokens.hasNext()) {
