@@ -47,4 +47,9 @@
       <servlet-name>servdb</servlet-name>
       <url-pattern>/dtd.db</url-pattern>
       </servlet-mapping>
+
+      <taglib>
+        <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
+        <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
+      </taglib>
 </web-app>
