@@ -1021,6 +1021,18 @@ public class MMObjectBuilder extends MMTable {
     }
 
 
+	/**
+	* return the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE
+	*/	
+	public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+		File dir = new File(documentRoot+path);
+		if (version!=null) nodeNumber+="."+version;
+		String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
+		if ((matches == null) || (matches.length <= 0))
+			return null;
+		return path + matches[0] + File.separator;
+	}	
+
 
 
 
