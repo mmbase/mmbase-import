@@ -1,14 +1,15 @@
-<SECURE><BR>
+<PART /BODY.shtml>
 <PROCESSOR MMBASE>
 $MOD-SESSION-CLEARSET-FIELDS
+<DO SESSION-WHERE=>
 <H3> This pages creates < LIST OBJECTS TAGS ><BR><BR>
 
-Current LIST: <B>&lt;LIST OBJECTS TYPE="$MOD-MMBASE-FIELD-$PARAM1-name^" FIELDS="...<BR><BR>
+Current LIST: <B>&lt;LIST OBJECTS TYPE="$MOD-MMBASE-FIELD-$SESSION-OBJECTTYPE^-name^" FIELDS="...<BR><BR>
 
 Which fields do you want to use?<BR>
-<FORM METHOD=POST ACTION="object3.shtml?$PARAM1">
-	<LIST OBJECTS TYPE="fielddef" FIELDS="number,guiname,dbname" WHERE="dbtable==$PARAM1">
+<FORM METHOD=POST ACTION="object3.shtml">
+	<LIST OBJECTS TYPE="fielddef" FIELDS="number,guiname,dbname" WHERE="dbtable==$SESSION-OBJECTTYPE">
                 <INPUT TYPE="CHECKBOX" NAME="SESSION-FIELDS" value="$ITEM3">$ITEM2 ($ITEM3)<BR>
 	</LIST>
-        <INPUT TYPE="SUBMIT" VALUE="Select fields"></td>
+        <INPUT TYPE="SUBMIT" VALUE="Select Fields"></td>
 </FORM>

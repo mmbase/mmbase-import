@@ -1,0 +1,7 @@
+Want to sort this list?
+<FORM METHOD=POST ACTION="relation4.shtml">
+    Field(s) to sort: <INPUT TYPE="TEXT" NAME="SESSION-DBSORT" value="$SESSION-DBSORT">
+    Reverse sort: <INPUT TYPE="checkbox" NAME="SESSION-REVERSE" value="DOWN">
+    <INPUT TYPE="SUBMIT" VALUE="Sort this list"></td><BR><BR>
+</FORM>
+

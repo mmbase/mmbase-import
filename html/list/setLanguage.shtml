@@ -3,4 +3,4 @@
 <ELSE>
 	<DO SESSION-LANGUAGE=$PARAM1>
 </IF>
-<NEWPAGE /list/info.shtml>
+<GOTO /list/info.shtml>

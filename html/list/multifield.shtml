@@ -1,6 +1,5 @@
-<SECURE>
 <PROCESSOR MMBASE>
 
 <LIST OBJECTS TYPE="typedef" FIELDS="number,name" WHERE="number==$PARAM1">
-	<A HREF="multilevel4.shtml?$ITEM1+$ITEM2">$ITEM2</A>
+    <OPTION VALUE="$ITEM1"> $ITEM2
 </LIST>
