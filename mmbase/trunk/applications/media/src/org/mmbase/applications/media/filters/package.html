@@ -7,16 +7,19 @@
     <p>
       URL-filters for the MMBase media project. To determin the 'best'
       URL, first a list of all URL's is created and then this list is
-      filtered by 'MediaSourceFilter'
+      filtered by 'MainFilter' which is normally a combination of some
+      other filters. Which other filters those are can be configured with the
+      filters.xml.
     </p>
     <p>
-     Some filters are 'Comparator', wich means that they are
-     implemated as a java.util.Comparator (so can only sort).
+      Filtering of those list envolves moving 'good' urls to the top
+      of the list, and removing urls which are no good.
     </p>
     <p>
-      I propose to rename this package to org.mmbase.media.filters.
+      Some filters only move good urls to the top, and are implemented
+      as java.util.Comparator's. Those filters extend ComparatorFilter.
     </p>
-    <!-- version of package description $Id: package.html,v 1.1 2003-02-03 17:50:26 michiel Exp $ -->
+    <!-- version of package description $Id: package.html,v 1.2 2003-02-05 14:28:49 michiel Exp $ -->
     @since   MMBase-1.7
   </body>
 </html>
