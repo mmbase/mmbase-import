@@ -161,6 +161,37 @@
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Minimum aantal waarden die opgegeven kunnen worden</description>
+        <description xml:lang="en">Minimum number of values that can be given </description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">MinAantal</guiname>
+        <guiname xml:lang="en">MinNumber</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>4</input>
+          <!-- position in list area of the editor -->
+          <list>4</list>
+          <!-- position in search area of the editor -->
+          <search>4</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>minvalues</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">Handler die metadata genereert</description>
         <description xml:lang="en">Handler that generates metadata</description>
       </descriptions>
@@ -189,5 +220,39 @@
         <type state="persistent" size="1023" notnull="true" key="false">STRING</type>
       </db>
     </field>
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Required</description>
+        <description xml:lang="en">Required</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Required</guiname>
+        <guiname xml:lang="en">Required</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>4</input>
+          <!-- position in list area of the editor -->
+          <list>4</list>
+          <!-- position in search area of the editor -->
+          <search>4</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>required</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+
   </fieldlist>
 </builder>
