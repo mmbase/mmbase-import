@@ -184,7 +184,7 @@ a key/value system. Its a optional tag.
 			<guiname xml:lang="nl">Richting</guiname>
 			<guiname xml:lang="en">Direction</guiname>
 			<guiname xml:lang="us">Direction</guiname>
-			<guitype>integer</guitype>
+			<guitype>dirs</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
