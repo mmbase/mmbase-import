@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.25 2004-01-19 17:05:56 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.26 2004-02-24 09:28:07 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -118,7 +118,7 @@ public class MediaSources extends MMObjectBuilder {
     public MMObjectNode createSource(MMObjectNode mediafragment, int status, int format, int speed, int channels, String url, String owner) {
         // creating media source
         MMObjectNode source = getNewNode(owner);
-        source.setValue("status", status);
+        source.setValue("state", status);
         source.setValue("format", format);
         source.setValue("codec", Codec.UNKNOWN.toInt());
         source.setValue("bitrate", speed);
