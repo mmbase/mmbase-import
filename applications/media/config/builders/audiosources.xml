@@ -6,6 +6,8 @@
 
 <classfile>org.mmbase.module.builders.media.MediaSource</classfile>
 
+<searchage>14</searchage>
+
 <names>
 	<singular xml:lang="en">AudioSource</singular>
 	<singular xml:lang="nl">Audiobron</singular>
@@ -18,6 +20,7 @@
 	<description xml:lang="nl">Beschrijving van het daadwerkelijke audio bestand</description>
 </descriptions>
 
+<fieldlist>
 	<!-- POS 1 : <field> 'format'  -->
 	<field>
 		<!-- gui related -->
@@ -75,7 +78,6 @@
 	</field>
 
 
-<fieldlist>
 	<!-- POS 3 : <field> 'status'  -->
 	<field>
 		<!-- gui related -->
@@ -193,3 +195,4 @@
 
 
 </builder>
+
