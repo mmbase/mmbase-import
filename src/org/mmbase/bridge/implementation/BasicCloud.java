@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.97 2003-08-05 19:08:27 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.98 2003-08-08 12:08:43 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -637,6 +637,23 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     protected NodeList getResultNodeList(Query query) {
         try {
+            Authorization auth = mmbaseCop.getAuthorization();
+            boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+            
+            if (query instanceof BasicQuery) {
+                BasicQuery bquery = (BasicQuery) query;
+                if (bquery.isSecure()) {
+                    checked = true;
+                } else {
+                    Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                    bquery.setSecurityConstraint(check);
+                    checked = bquery.isSecure();
+                }
+            }
+        
+            if (! checked) {
+                log.warn("Query could not be completely modified by security: Aggregated result might be wrong");
+            }
             AggregatedResultCache cache = AggregatedResultCache.getCache();
 
             List resultList = (List) cache.get(query);
@@ -645,6 +662,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
                 cache.put(query, resultList);
             }
+            query.markUsed();
             NodeManager tempNodeManager;
             if (resultList.size() > 0) {
                 tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
