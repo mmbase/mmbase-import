@@ -18,7 +18,10 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-
+/**
+ * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
+ *@author Eduard Witteveen
+ */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
     private MMBase mmb;
@@ -31,7 +34,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private HashMap typeMapping;
     private int maxDropSize=0;
     
-    public void init(MMBase mmb,XMLDatabaseReader parser) {
+    public void init(MMBase mmb, XMLDatabaseReader parser) {
     	// the mmmbase module
     	this.mmb=mmb;
 
@@ -55,7 +58,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	    String jdbcUrl = jdbc.makeUrl();
     	    String jdbcUser = jdbc.getUser();
     	    String jdbcPassword = jdbc.getPassword();		    
-    	    log.debug("trying to get a connction with request: " + jdbcUrl + " with user: '"+jdbcUser+"' and password: '"+jdbcPassword+"'");
+    	    log.trace("trying to get a connction with request: " + jdbcUrl + " with user: '"+jdbcUser+"' and password: '"+jdbcPassword+"'");
     	    MultiConnection con=jdbc.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
     	    return(con);
 	}
@@ -108,22 +111,22 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	}
     }
     
-    public boolean createObjectTable(String baseName) {
+    public boolean createObjectTable(String notUsed) {
     	// first create the auto update thingie...
 	//  CREATE SEQUENCE autoincrement INCREMENT 1
     	MultiConnection con = null;
 	Statement stmt = null;
+        String sql =  "CREATE SEQUENCE "+sequenceTableName()+" INCREMENT 1 START 1";        
     	try {
+	    log.info("gonna execute the following sql statement: " + sql);        
 	    con = mmb.getConnection();
     	    stmt=con.createStatement();
-	    String sql =  "CREATE SEQUENCE "+baseName+"_autoincrement INCREMENT 1 START 1";
-	    log.info("gonna execute the following sql statement: " + sql);	    
     	    stmt.executeUpdate(sql);
     	    stmt.close();
     	    con.close();
 	} 
 	catch (SQLException sqle) {
-	    log.error("error, could autoincrement sequence..");
+	    log.error("error, could autoincrement sequence.."+sql);
 	    for(SQLException e = sqle;e != null; e = e.getNextException()){
     		log.error("\tSQLState : " + e.getSQLState());
     		log.error("\tErrorCode : " + e.getErrorCode());
@@ -138,53 +141,25 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    return false;
 	}	
 
-	// now update create the number table,.....   
-    	try {
-	    con = mmb.getConnection();
-    	    stmt=con.createStatement();
-	    String sql =  "CREATE TABLE "+ getNumberTableString()+" (";
-	    // primary key will mean that and unique and not null...
-	    // TODO : create this one also in a generic way !
-	    sql += getNumberString()+" INTEGER PRIMARY KEY DEFAULT NEXTVAL('"+baseName+"_autoincrement')) ";
-	    log.info("gonna execute the following sql statement: " + sql);
-    	    stmt.executeUpdate(sql);
-    	    stmt.close();
-    	    con.close();
-	} 
-	catch (SQLException sqle) {
-	    log.error("error, could not create number table..");
-	    for(SQLException e = sqle;e != null; e = e.getNextException()){
-    		log.error("\tSQLState : " + e.getSQLState());
-    		log.error("\tErrorCode : " + e.getErrorCode());
-    		log.error("\tMessage : " + e.getMessage());			
-	    }
-    	    try {
-            	if(stmt!=null) stmt.close();
-	    	// con.rollback();
-                con.close();
-            }
-	    catch(Exception other) {}
-	    return false;
-	}
-	
 	// now update create the object table, with the auto update thignie    
+        sql = "CREATE TABLE "+objectTableName()+" (";
+	// primary key will mean that and unique and not null...
+	// TODO : create this one also in a generic way !
+	sql += getNumberString()+" INTEGER PRIMARY KEY, \t-- the unique identifier for objects\n";
+	sql += getOTypeString()+" INTEGER NOT NULL REFERENCES " + objectTableName() + " ON DELETE CASCADE, \t-- describes the type of object this is\n";
+	sql += getOwnerString()+" TEXT NOT NULL  \t-- field for security information\n";
+	sql += ")";
     	try {
+	    log.info("gonna execute the following sql statement: " + sql);        
 	    con = mmb.getConnection();
     	    stmt=con.createStatement();
-	    String sql =  "CREATE TABLE "+baseName+"_object (";
-	    // primary key will mean that and unique and not null...
-	    // TODO : create this one also in a generic way !
-	    sql += getNumberString()+" INTEGER PRIMARY KEY, ";
-	    sql += getOTypeString()+" INTEGER NOT NULL, ";
-	    sql += getOwnerString()+" TEXT NOT NULL);";
-	    log.info("gonna execute the following sql statement: " + sql);
     	    stmt.executeUpdate(sql);
     	    stmt.close();
     	    con.close();
 	    return true;
 	} 
 	catch (SQLException sqle) {
-	    log.error("error, could not create object table..");
+	    log.error("error, could not create object table.."+sql);
 	    for(SQLException e = sqle;e != null; e = e.getNextException()){
     		log.error("\tSQLState : " + e.getSQLState());
     		log.error("\tErrorCode : " + e.getErrorCode());
@@ -201,45 +176,44 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     }
 
     public String getDisallowedField(String allowedfield) {
-    	log.debug("getDisallowedField");
+    	log.trace(allowedfield);
     	if (allowed2disallowed.containsKey(allowedfield)) {
 	    allowedfield=(String)allowed2disallowed.get(allowedfield);
 	}
-	return(allowedfield);	
+	return allowedfield;
     }
 	
     public String getAllowedField(String disallowedfield) {
-    	log.debug("getAllowedField");
+    	log.trace(disallowedfield);
     	if (disallowed2allowed.containsKey(disallowedfield)) {
 	    disallowedfield=(String)disallowed2allowed.get(disallowedfield);
 	}
-	return(disallowedfield);
+	return disallowedfield;
     }
 
     public String getNumberString() {
-    	log.debug("getNumberString");
 	return getAllowedField("number");
     }
     
     public String getOTypeString() {
-	log.debug("getOTypeString");
 	return getAllowedField("otype");
     }
     
     public String getOwnerString() {
-    	log.debug("getOwnerString");
 	return getAllowedField("owner");
     }
     
-    private String getNumberTableString() {
-    	return mmb.baseName + "_" + getAllowedField("numbertable");
+    private String sequenceTableName() {
+        return mmb.baseName + "_autoincrement";
     }
-
+    
+    private String objectTableName() {
+        return mmb.baseName + "_object";    
+    }    
+    
     public boolean create(MMObjectBuilder bul) {
 	log.debug("create");
 
-//    	String tableName = bul.getTableName();
-	
     	String fieldList=null;
     	Vector sfields=bul.sortedDBLayout;
 	if(sfields == null) {
@@ -253,9 +227,9 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             FieldDefs def = bul.getField(name);
     	    if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 	    	if(!isInheritedField(bul, name)) {
-		    log.debug("trying to retrieve the part for field : " + def);
-    	    	    String part = getDbFieldDef(def);
-    	    	    log.debug("gonna add field " + name + " with SQL-subpart: " + part);
+		    log.trace("trying to retrieve the part for field : " + name);
+    	    	    String part = getDbFieldDef(def, bul);
+    	    	    log.trace("gonna add field " + name + " with SQL-subpart: " + part);
             	    if (fieldList==null) {
     		    	fieldList = part;
 	    	    }
@@ -323,13 +297,48 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	return false;
     }
 
-    private String getDbFieldDef(FieldDefs def) {
+     private boolean isReferenceField(FieldDefs def, MMObjectBuilder bul) {
+         // only integer references the number table???
+         if(def.getDBType() == FieldDefs.TYPE_INTEGER) {
+             String fieldname = def.getDBName();
+             if(fieldname.equals("otype")) return true;
+             if(bul instanceof InsRel) {
+                 if(fieldname.equals("snumber")) return true;
+                 if(fieldname.equals("dnumber")) return true;
+                 if(fieldname.equals("rnumber")) return true;                
+             }
+             else if(bul instanceof org.mmbase.module.builders.ImageCaches) {
+                 if(fieldname.equals("id")) return true;
+             }
+             else if(bul instanceof OAlias) {
+                 if(fieldname.equals("destination")) return true;
+             }
+             else if(bul instanceof RelDef) {
+                 if(fieldname.equals("builder")) return true;
+             }
+            else if(bul.getTableName().equals("syncnodes")) {
+                 if(fieldname.equals("localnumber")) return true;
+             }
+             else if(bul instanceof TypeRel) {
+                 if(fieldname.equals("snumber")) return true;
+                 if(fieldname.equals("dnumber")) return true;
+                 if(fieldname.equals("rnumber")) return true;
+             }
+             // this are the core-builders from the NOS, maybe people 
+             // wanna add their builders. 
+             // THIS IS ONLY ALLOWED FOR CORE-BUIILDERS !!
+         }
+         return false;
+    }
+    
+     private String getDbFieldDef(FieldDefs def, MMObjectBuilder bul) {
     	// create the creation line of one field...
     	// would be something like : fieldname FIELDTYPE NOT NULL KEY "
 	// first get our thingies...
 	String  fieldName = getAllowedField(def.getDBName());
 	boolean fieldRequired = def.getDBNotNull();
 	boolean fieldUnique = def.isKey();
+        boolean fieldIsReferer = isReferenceField(def, bul);
 	String  fieldType = getDbFieldType(def, def.getDBSize(), fieldRequired);
     	String result = fieldName + " " + fieldType;
 	if(fieldRequired) {
@@ -340,6 +349,33 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    //TODO : parser.getKeyScheme()+ "("+name+") so make a 
 	    result += " UNIQUE ";
 	}
+        if(fieldIsReferer) {
+            /**
+             TODO: research if this code is better...
+             http://www.postgresql.org/idocs/index.php?inherit.html 
+             Jon Obuchowski <jon_obuchowski@terc.edu>
+             2001-11-05 15:03:25-05 Here's a manual method for implementing a foreign key constraint across inherited tables - instead of using the "references" syntax within the dependent table's "CREATE TABLE" statement, specify a custom "CHECK" constraint - this "CHECK" constraint can use the result of a stored procedure/function to verify the existence of a given value for a specific field of a specific table. 
+             note 1: I have performed no benchmarking on this approach, so YMMV. 
+             note 2: this does not implement the "cascade" aspect of foreign keys, but this may be done using triggers (this is more complex and not covered here). 
+             Here's the example (a table "foo" needs a foreign-key reference to the field "test_id" which is inherited across the tables "test", "test_1", "test_2", etc...) 
+             first, a simple function is needed to verify that a given value exists in a specific field "test_id" in a specific table "test" (or in any of this inherited tables). this function will return a boolean indicating that the value exists/does not exist in the table, as required by the "CHECK" constraint syntax. 
+             CREATE FUNCTION check_test_id (integer)
+             RETURNS boolean AS 'SELECT CASE WHEN (( SELECT COUNT(*) FROM test WHERE test.test_id = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean END;'
+             LANGUAGE 'sql'; 
+             now the dependent table can be created. it must include a constraint (in this case, "test_id_foreign_key") which will use the just-created function to verify the integrity of the field's new value.
+             CREATE TABLE foo
+             (
+             test_id INTEGER CONSTRAINT test_id_foreign_key CHECK (check_test_id(test_a.test_id)) ,
+             foo_val VARCHAR (255) NOT NULL
+             );
+             That's it!
+             A useful (if potentially slowly-performing) expansion of this approach would be to use a function able to dynamically perform an existence check for any value on any field in any table, using the field and table names, and the given value. This would ease maintenance by allowing any foreign-key using table to use a single function, instead of creating a custom function for each foreign key referenced.
+             */        
+            // next line doesnt work due to ?bug? in postgresql with inhertitance
+            // result += " REFERENCES " + mmb.baseName + "_object" + " ON DELETE CASCADE ";
+        }
+         // add in comment the gui stuff... nicer when reviewing database..
+         result += "\t-- " + def.getGUIName("us")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.GUIType+"')\n";        
 	return result;
     }
     
@@ -393,7 +429,6 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     }
 
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {    	
-    	log.debug("insert");    
 	String tableName = bul.getTableName();
 
     	int number=node.getIntValue("number");
@@ -401,9 +436,12 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	if (number==-1) {   
 	    // if not try to obtain one
 	    number=getDBKey();
+            if(number < 1) {
+                throw new RuntimeException("invalid node number retrieved: #"+number);
+            }
 	    node.setValue("number",number);
 	}
-	
+        	
 	// do the actual insert..
     	number = insertRecord(bul, owner, node);
 	
@@ -430,19 +468,18 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     
     private int insertRecord(MMObjectBuilder bul,String owner, MMObjectNode node) {
 	String tableName = bul.getTableName();
-
-        String sql = insertPreSQL(tableName, bul.sortedDBLayout.elements(), node);    
-    
+        String sql = insertPreSQL(tableName, bul.sortedDBLayout.elements(), node);     
     	MultiConnection con=null;
         PreparedStatement preStmt=null;
+
+        // Insert statements, with fields still empty.. 
     	try {
             // Create the DB statement with DBState values in mind.
 	    log.debug("executing following insert : " + sql);
             con=bul.mmb.getConnection();
 
     	    // support for larger objects...	    
-	    con.setAutoCommit(false);
-	    
+	    con.setAutoCommit(false);	    
             preStmt=con.prepareStatement(sql);
         } 
 	catch (SQLException sqle) {
@@ -461,17 +498,17 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    catch(Exception other) {}	   
             throw new RuntimeException(sqle.toString());
     	}	
-	// fill the fields...
+        
+	// Now fill the fields
         try {
             preStmt.setEscapeProcessing(false);
 
     	    // First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
     	    int j=1;
     	    for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
-            	String key = (String)e.nextElement();
+                String key = (String)e.nextElement();
                 int DBState = node.getDBState(key);
-                if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
-                || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+                if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) )  {
                     if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
                     	setValuePreparedStatement( preStmt, node, key, j );
 		    	log.debug("we did set the value for field " + key + " with the number " + j );			
@@ -491,10 +528,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	    	    }
     	    	}
             }
-	    preStmt.executeUpdate();	    
+	    preStmt.executeUpdate();
 	    preStmt.close();
 	    con.commit();
-    	    con.setAutoCommit(true);	    
+    	    con.setAutoCommit(true);
             con.close();
     	} 
 	catch (SQLException sqle) {
@@ -507,7 +544,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    }
     	    try {
             	if(preStmt!=null) preStmt.close();
-	    	con.rollback();		
+	    	con.rollback();
+                con.setAutoCommit(true);
                 con.close();
             } 
 	    catch(Exception other) {}	   
@@ -1013,7 +1051,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    return false;		    
 	}
     	log.debug("trying to retrieve the part for field : " + def);
-    	String fieldtype = getDbFieldDef(def);
+    	String fieldtype = getDbFieldDef(def, bul);
     	return changeMetaData(bul, "ALTER TABEL " +mmb.baseName+"_"+bul.getTableName() + " ADD COLUMN "+fieldname+" "+fieldtype);
     }
     
@@ -1079,25 +1117,31 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	throw new UnsupportedOperationException("setDBByte");
     }	
     
-    /** research for a better way to resolve the unique number... */
-    public int getDBKey() {    
+    /** 
+     * Retrieves a new unique number, which can be used to inside _object table
+     * @return a new unique number for new nodes or -1 on failure
+    */
+    public int getDBKey() {        
     	MultiConnection con=null;
-        PreparedStatement stmt=null;
-	String sql = "INSERT INTO " + getNumberTableString() + " DEFAULT VALUES";
-	String oidString = "";
+        Statement stmt=null;
+	String sql = "SELECT NEXTVAL ('"+  sequenceTableName() + "')";
+        int number = -1;
     	try {
-	    log.debug("executing following insert : " + sql);
-            con = mmb.getConnection();
-	    // since the otherone is wrapped aournd the wrapper...
-            stmt = con.prepareStatement(sql);
-    	    stmt.executeUpdate();	 
-	    oidString = ((org.postgresql.Statement)stmt).getResultStatusString();
+	    log.debug("gonna execute the following sql statement: " + sql);        
+	    con = mmb.getConnection();
+    	    stmt=con.createStatement();
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    if (rs.next()) {
+                number=rs.getInt("NEXTVAL");
+            }
+	    else {
+                log.warn("could not retieve the number for new node");
+            }
     	    stmt.close();
-            con.close();
-	    
+	    con.close();            
         } 
 	catch (SQLException sqle) {
-	    log.error("error, could not create new record in number table");
+	    log.error("error, could not retrieve new object number:"+sql);
 	    for(SQLException se = sqle;se != null; se = se.getNextException()){
     		log.error("\tSQLState : " + se.getSQLState());
     		log.error("\tErrorCode : " + se.getErrorCode());
@@ -1110,56 +1154,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    catch(Exception other) {}	   
             throw new RuntimeException(sqle.toString());
     	}
-	// as in definition : http://www.postgresql.org/idocs/index.php?sql-insert.html
-	// should be something like "INSERT %oidnumber% 1"
-	// strip the front (the "INSERT " thingie...)
-    	String oid = oidString.substring(7);
-	// strip everything after the blank.. the " 1" part...
-	// NOTICE IT IS NOT A SPACE !!!!!
-    	oid = oid.substring(0, oid.indexOf(" "));
-	log.debug("oid : '"+ oid+"'");
-	
-	return getNumberFromOid(oid, getNumberTableString());
-    }
-    
-    private int getNumberFromOid(String oid, String tablename) {
-    	String sql =  "SELECT "+getNumberString()+" FROM "+tablename+" WHERE oid="+oid;
-	int number = -1;
-	
-	// do the select ...
-	Statement stmt = null;
-    	MultiConnection con=null;	
-    	try {
-	    con=mmb.getConnection();
-    	    stmt=con.createStatement();
-	    log.debug("executing following select : " + sql);
-	    ResultSet rs=stmt.executeQuery(sql);
-    	    if (rs.next()) number=rs.getInt(1);
-	    else log.warn("could not retieve the number for oid : " + oid);
-    	    stmt.close();
-	    con.close();
-    	} 
-	catch (SQLException sqle) {
-	    log.error("could not retieve the number for oid : " + oid);
-    	    log.error(Logging.stackTrace(sqle));	    
-	    for(SQLException se = sqle;se != null; se = se.getNextException()){
-    		log.error("\tSQLState : " + se.getSQLState());
-    		log.error("\tErrorCode : " + se.getErrorCode());
-    		log.error("\tMessage : " + se.getMessage());			
-	    }	    
-    	    try {
-            	if(stmt!=null) stmt.close();
-		// con.rollback();
-                con.close();
-            } 
-	    catch(Exception other) {}
-            throw new RuntimeException(sqle.toString());
-	}    
-	log.debug("number found#" + number);
+        log.debug("new object id #"+number);
 	return number;
-    }     
-    
-    
+    }
+        
     /** is next function nessecary? */
     public String getShortedText(String tableName, String fieldname, int number) {
     	log.debug("getShortedText");
