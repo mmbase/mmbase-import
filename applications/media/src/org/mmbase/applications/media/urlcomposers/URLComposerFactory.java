@@ -31,7 +31,7 @@ import java.lang.reflect.*;
  * format/protocol combination to a URLComposer class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.10 2003-02-18 17:08:58 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.11 2003-02-25 23:54:31 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -146,14 +146,25 @@ public class URLComposerFactory  {
         for(Enumeration e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasMoreElements();) {
             Element element = (Element)e.nextElement();
             String  clazz   =  reader.getElementValue(element);
-            Format  format  =  Format.get(element.getAttribute(FORMAT_ATT));
+            String  f = element.getAttribute(FORMAT_ATT);
+            List formats;
+            if ("*".equals(f)) {
+                formats = Format.getMediaFormats();
+            } else {
+                formats = new ArrayList();
+                formats.add(Format.get(f));
+            }            
             String  protocol  =  element.getAttribute(PROTOCOL_ATT);
-            try {
-                log.service("Adding for format " + format + " urlcomposer " + clazz);
-                urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
-            } catch (ClassNotFoundException ex) {
-                log.error("Cannot load urlcomposer " + clazz);
-            } 
+            Iterator i = formats.iterator();
+            while(i.hasNext()) {
+                Format format = (Format) i.next();
+                try {
+                    log.service("Adding for format " + format + " urlcomposer " + clazz);
+                    urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
+                } catch (ClassNotFoundException ex) {
+                    log.error("Cannot load urlcomposer " + clazz);
+                } 
+            }
 
         }
     }
