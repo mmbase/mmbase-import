@@ -36,7 +36,8 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: CloudTag.java,v 1.70 2003-06-17 18:07:37 michiel Exp $ 
+ * @author Vincent van der Locht
+ * @version $Id: CloudTag.java,v 1.71 2003-07-03 10:50:16 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -208,7 +209,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     public void setSessionname(String s) throws JspTagException {
+      if(!s.equals("")) {
         sessionName = getAttribute(s);
+      }
     }
 
     public void setLoginpage(String loginpage) throws JspTagException {
@@ -386,12 +389,14 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * influenced with the sessionname attribute. If tho pages have
      * different sessionnames for the cloud, they can be logged in
      * simultaniously with different clouds, but in the same session.
+     * If no sessionname is given or an empty sessionname, it returns the defaultvalue.
      */
     public String getSessionName() throws JspTagException {
-        if (sessionName == Attribute.NULL) {
+        String sn = sessionName.getString(this);
+        if (sn.equals("")) {
             return "cloud_" + getName();
         } else {
-            return sessionName.getString(this);
+            return sn;
         }
     }
 
@@ -621,7 +626,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             Rank curRank = Rank.getRank(cloud.getUser().getRank());
             if (curRank.getInt() < getRank().getInt()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("logged on, but rank of user is to low (" + getRank().toString() + ". log out first.");
+                    log.debug("logged on, but rank of user (" + curRank.toString() + ") is too low (must be " + getRank().toString() + "). log out first.");
                 }
                 cloud = null;
                 if (session != null) {
