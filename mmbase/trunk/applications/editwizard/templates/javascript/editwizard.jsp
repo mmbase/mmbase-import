@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.32 2003-11-12 13:57:52 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.33 2003-11-12 14:15:22 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -402,7 +402,9 @@ function setButtonsInactive() {
    // savebut.className = "invalid";
    savebut.style.visibility = "hidden";
    var saveonlybut = document.getElementById("bottombutton-saveonly");
-   saveonlybut.style.visibility = "hidden";
+   if (saveonlybut != null) {
+      saveonlybut.style.visibility = "hidden";
+   }
 }
 
 

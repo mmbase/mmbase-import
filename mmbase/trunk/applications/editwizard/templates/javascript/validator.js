@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.22 2003-11-12 13:57:53 michiel Exp $
+ * @version  $Id: validator.js,v 1.23 2003-11-12 14:15:22 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -337,16 +337,20 @@ function doValidateAndUpdateButtons(valid) {
         savebut.className = "bottombutton";
         var usetext = getToolTipValue(savebut, "titlesave", "Stores all changes.");
         savebut.title = usetext;
-        saveonlybut.className = "bottombutton";
-        var usetext = getToolTipValue(saveonlybut, "titlesave", "Stores all changes.");
-        saveonlybut.title = usetext;
+		if (saveonlybut != null) {
+          saveonlybut.className = "bottombutton";
+          var usetext = getToolTipValue(saveonlybut, "titlesave", "Stores all changes.");
+          saveonlybut.title = usetext;
+        }
     } else {
         savebut.className = "bottombutton-disabled";
         var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
         savebut.title = usetext;
-        saveonlybut.className = "bottombutton-disabled";
-        var usetext = getToolTipValue(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
-        saveonlybut.title = usetext;
+		if (saveonlybut != null) {
+           saveonlybut.className = "bottombutton-disabled";
+           var usetext = getToolTipValue(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
+           saveonlybut.title = usetext;
+        }
     }
 
     return allvalid;
