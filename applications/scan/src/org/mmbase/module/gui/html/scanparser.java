@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.42 2001-03-08 18:43:23 michiel Exp $
+$Id: scanparser.java,v 1.43 2001-03-12 11:53:41 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.42  2001/03/08 18:43:23  michiel
+added logging
+
 Revision 1.41  2001/02/22 16:29:39  install
 Rob: Fixes bug in parsing TRANSACTION tag, bug solved by Remco van t Veer
 
@@ -148,7 +151,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.42 $ $Date: 2001-03-08 18:43:23 $
+ * @$Revision: 1.43 $ $Date: 2001-03-12 11:53:41 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -384,7 +387,6 @@ public class scanparser extends ProcessorModule {
 	 */
 	public final String handle_line(String body,sessionInfo session,scanpage sp) throws ParseException {
 
-		if (log.isDebugEnabled()) log.debug("handle_line(): scanparser-> debug 1");
 		String part=null;
 		int qw_pos,qw_pos2,end_pos,end_pos2;
 		int precmd=0,postcmd=-1,prepostcmd=0;
@@ -395,9 +397,7 @@ public class scanparser extends ProcessorModule {
 			body=do_conditions(body,session,sp);
 		}
 
-		if (log.isDebugEnabled()) log.debug("handle_line(): scanparser-> debug 2");
-
-		// First find the processor (for the MACRO commands) 
+		// First find the processor (for the MACRO commands)
 		part=finddocmd(body,"<PROCESSOR ",'>',8,session,sp);
 		body=part;
 
@@ -407,8 +407,6 @@ public class scanparser extends ProcessorModule {
 		body=part;
 
 
-		if (log.isDebugEnabled()) log.debug("handle_line(): scanparser-> debug 3");
-		
 		// <LIST text1> text2 </LIST>
 		// The code below will hand text1 and text2 to the method do_list(text1, text2, session, sp)
 		while ((precmd=body.indexOf("<LIST ",postcmd))!=-1) {
