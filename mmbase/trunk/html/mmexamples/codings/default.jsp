@@ -29,7 +29,7 @@
 		externid="node" from="parameters">codings</mm:import>
 		<mm:node number="$node" notfound="skip">
 		  <h2><mm:field name="title" /></h2>
-		  <h3><mm:field name="subtitle" /></h3>
+		  <h3><mm:field name="uppercase(subtitle)" /></h3>
 		  <p>
 			<mm:field name="intro" />
 		  </p>
