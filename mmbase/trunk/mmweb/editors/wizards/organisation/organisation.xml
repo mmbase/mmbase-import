@@ -12,9 +12,12 @@
 
 	<steps>
 		<step form-schema="edit_organisation" />
+		<step form-schema="persons" />
+		<step form-schema="sites" />
 	</steps>
 
 	<form-schema id="edit_organisation">
+		<title>Organisation</title>
 		<field name="name"><prompt>Name</prompt></field>
 		<field name="description" rows="4"><prompt>Description</prompt></field>
 		<field name="email"><prompt>Email</prompt></field>
@@ -28,8 +31,64 @@
 		<field name="contactemail"><prompt>Contact Email</prompt></field>
 		<field name="contactphone"><prompt>Contact Phone</prompt></field>
 		<list include="wizards/images/add_images_posrel_maxone.xml" />
-		<list include="wizards/urls/add_urls_posrel_small.xml" />
+		<list include="wizards/urls/add_urls_related.xml" />
+	</form-schema>
+	<form-schema id="persons">
+		<title>Contacts</title>
+		<field name="name" ftype="data">
+			<prompt>Organisation</prompt>
+			<description>Name of organisation</description>
+		</field>
 		<list include="wizards/persons/add_persons_posrel.xml" />
-</form-schema>
+	</form-schema>
+	<form-schema id="sites">
+		<title>Websites and organisationtype</title>
+		<field name="name" ftype="data">
+			<prompt>Organisation</prompt>
+			<description>Name of organisation</description>
+		</field>
+		<list include="wizards/category/add_category_posrel.xml" />
+		<!-- urls -->
+		<list role="posrel" destination="urls" minoccurs="0" maxoccurs="*"
+			orderby="number">
+			<title>Websites by this organisation</title>
+			<description></description>
+			<item>
+				<title></title>
+				<description></description>
+				<field name="url" ftype="data" >
+					<prompt>Url</prompt>
+				</field>
+				<field name="name" ftype="data" >
+					<prompt>Linktext</prompt>
+				</field>
+				<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+					<prompt>Position</prompt>
+				</field>
+				<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="wizards/urls/urls">
+					<prompt></prompt>
+				</field>
+			</item>
+			<action type="create">
+				<relation role="posrel">
+					<object type="urls" />
+					<field name="pos">1</field>
+				</relation>
+			</action>
+			<command name="search" nodepath="urls" fields="url,description" age="-1">
+				<prompt></prompt>
+				<search-filter>
+						<name>Url bevat</name>
+						<search-fields>url</search-fields>
+				</search-filter>
+				<search-filter>
+						<name>Omschrijving bevat</name>
+						<search-fields>description</search-fields>
+				</search-filter>
+			</command>
+			<command name="startwizard" inline="true" wizardname="wizards/urls/urls" objectnumber="new"/>
+		</list>
+		<!-- /urls -->
+	</form-schema>
 
 </wizard-schema>
