@@ -24,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.14 2003-08-04 20:19:09 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.15 2003-08-05 07:24:04 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -155,22 +155,22 @@ public class NodeHandler extends IntegerHandler {
         return super.whereHtmlInput(field);
     }
 
-    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+    public void whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
-                return "";
+
             } else {
                 String search =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
                 if (search == null || "".equals(search)) {
-                    return null;
+                    return;
                 }
                 NodeListConstraintTag.addConstraint(query, fieldName, getOperator(), search);
-                return "";
+                return;
             }
         }                
-        return super.whereHtmlInput(field, query);
+        super.whereHtmlInput(field, query);
     }
 
 }
