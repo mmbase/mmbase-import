@@ -4,12 +4,6 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 
@@ -20,26 +14,39 @@
 </mm:present>
 <!-- end action check -->
 
+<!-- login part -->
+  <%@ include file="getposterid.jsp" %>
+<!-- end login part -->                                                                                                                      
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
+
 <div class="header">
     <%@ include file="header.jsp" %>
 </div>
                                                                                               
 <div class="bodypart">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3">Bestaand gebied aanpassen</th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg_Change_existing_area" /></th></tr>
 
   <mm:node number="$postareaid">
   <form action="<mm:url page="index.jsp" referids="forumid,postareaid" />" method="post">
-	<tr><th>Naam</th><td colspan="2">
+	<tr><th><mm:write referid="mlg_Name"/></th><td colspan="2">
 	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
 	</td></tr>
-	<tr><th>Omschrijving</th><td colspan="2">
+	<tr><th><mm:write referid="mlg_Description"/></th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"><mm:field name="description" /></textarea>
 	</td></tr>
         <input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="changepostarea">
 	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="Aanpassen">
+	<input type="submit" value="<mm:write referid="mlg_Save"/>">
   	</form>
 	</td>
 	</mm:node>
@@ -50,7 +57,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Laat maar">
+	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
   	</form>
 	</td>
 	</tr>
@@ -66,6 +73,7 @@
 </body>
 </html>
 
+</mm:locale>
 </mm:content>
 </mm:cloud>
 
