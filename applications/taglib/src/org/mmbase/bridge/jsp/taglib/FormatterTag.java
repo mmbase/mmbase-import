@@ -28,6 +28,8 @@ import java.io.File;
 import java.util.*;
 import javax.servlet.jsp.PageContext;
 
+
+
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -40,11 +42,12 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.37 2004-03-03 22:00:57 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.38 2004-06-15 16:27:22 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     private static final Logger log = Logging.getLoggerInstance(FormatterTag.class);
+
 
     protected Attribute xslt    = Attribute.NULL;
     protected Attribute format  = Attribute.NULL; 
@@ -278,8 +281,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             } else {
                 if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");                               
                 try {
-                    // TODO, we cannot get the default encoding from the bridge yet, so UTF-8 is assumed now.
-                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8")));
+                    String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
+                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)));
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + body, e);
                 }
@@ -486,4 +489,5 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
         return xslTransform(doc, "xslt/indentxml.xslt");
     }
+
 }
