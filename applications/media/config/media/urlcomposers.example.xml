@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE urlcomposers SYSTEM "http://www.mmbase.org/dtd/urlcomposers_1_0.dtd">
+<!-- configuration for org.mmbase.applications.media.urlcomposers.URLComposerFactory -->
+<urlcomposers>  
+  <default>org.mmbase.applications.media.urlcomposers.URLComposer</default>
+  <urlcomposer format="ra"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
+  <urlcomposer format="rm"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
+  <urlcomposer format="asf" protocol="mms">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
+
+  <urlcomposer format="ra"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
+  <urlcomposer format="rm"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
+  <urlcomposer format="asf" protocol="mms">org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
+
+  <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.OmroepcgiURLComposer</urlcomposer>
+  <urlcomposer format="rm"  protocol="http">org.mmbase.applications.media.urlcomposers.OmroepcgiURLComposer</urlcomposer>
+  <urlcomposer format="asf" protocol="http">org.mmbase.applications.media.urlcomposers.OmroepcgiURLComposer</urlcomposer>
+
+
+  <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.OmroepSbURLComposer</urlcomposer>
+  <urlcomposer format="rm"  protocol="http">org.mmbase.applications.media.urlcomposers.OmroepSbURLComposer</urlcomposer>
+  <urlcomposer format="asf" protocol="http">org.mmbase.applications.media.urlcomposers.OmroepSbURLComposer</urlcomposer>
+
+  <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.OmroepBbURLComposer</urlcomposer>
+  <urlcomposer format="rm"  protocol="http">org.mmbase.applications.media.urlcomposers.OmroepBbURLComposer</urlcomposer>
+  <urlcomposer format="asf" protocol="http">org.mmbase.applications.media.urlcomposers.OmroepBbURLComposer</urlcomposer>
+
+</urlcomposers>
