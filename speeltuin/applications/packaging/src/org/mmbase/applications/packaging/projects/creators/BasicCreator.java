@@ -38,7 +38,7 @@ public class BasicCreator implements CreatorInterface {
     private String type="unknown/unknown";
     private String description="";
 
-    private Vector packagesteps;
+    private ArrayList packagesteps;
     private packageStep projectstep;
 
 
@@ -378,9 +378,9 @@ public class BasicCreator implements CreatorInterface {
    }
 
 
-    public Enumeration getPackageSteps() {
+    public Iterator getPackageSteps() {
 	if (packagesteps!=null) {
-		return packagesteps.elements();
+		return packagesteps.iterator();
 	} else {
 		return null;
 	}
@@ -388,9 +388,9 @@ public class BasicCreator implements CreatorInterface {
 
     public int getErrorCount() {
 	int count=0;
-    	Enumeration e=getPackageSteps();
-	while (e.hasMoreElements()) {
-		packageStep step=(packageStep)e.nextElement();
+    	Iterator e=getPackageSteps();
+	while (e.hasNext()) {
+		packageStep step=(packageStep)e.next();
 		count+=step.getErrorCount();
 	}
 	return count;
@@ -399,22 +399,22 @@ public class BasicCreator implements CreatorInterface {
 
     public int getWarningCount() {
 	int count=0;
-    	Enumeration e=getPackageSteps();
-	while (e.hasMoreElements()) {
-		packageStep step=(packageStep)e.nextElement();
+    	Iterator e=getPackageSteps();
+	while (e.hasNext()) {
+		packageStep step=(packageStep)e.next();
 		count+=step.getWarningCount();
 	}
 	return count;
     }
 
-    public Enumeration getPackageSteps(int logid) {
+    public Iterator getPackageSteps(int logid) {
 	// well maybe its one of my subs ?
-    	Enumeration e=getPackageSteps();
-	while (e.hasMoreElements()) {
-		packageStep step=(packageStep)e.nextElement();
+    	Iterator e=getPackageSteps();
+	while (e.hasNext()) {
+		packageStep step=(packageStep)e.next();
 		Object o=step.getPackageSteps(logid);
 		if (o!=null) {
-			return (Enumeration)o;
+			return (Iterator)o;
 		}
 	}
 	return null;
@@ -429,11 +429,11 @@ public class BasicCreator implements CreatorInterface {
                 step=new packageStep();
         }
         if (packagesteps==null) {
-                packagesteps=new Vector();
-                packagesteps.addElement(step);
+                packagesteps=new ArrayList();
+                packagesteps.add(step);
                 return step;
         } else {
-                packagesteps.addElement(step);
+                packagesteps.add(step);
                 return step;
         }
     }
@@ -443,19 +443,19 @@ public class BasicCreator implements CreatorInterface {
     }
 
 
-   public Vector getFileNames(Vector foundfiles,String basedir,String include,String exclude) {
+   public ArrayList getFileNames(ArrayList foundfiles,String basedir,String include,String exclude) {
 	// wrapper because we only want to filter it 1 time and not recursive
-	Vector files=getFileNames_r(foundfiles,basedir,include,exclude);
-	Vector filtered=new Vector();
+	ArrayList files=getFileNames_r(foundfiles,basedir,include,exclude);
+	ArrayList filtered=new ArrayList();
 	
 	// tricky : a filter all unused dirs
-	Enumeration e=files.elements();
-	while (e.hasMoreElements()) {
-		String fn=(String)e.nextElement();
+	Iterator e=files.iterator();
+	while (e.hasNext()) {
+		String fn=(String)e.next();
 		if (fn.endsWith("/")) {
-			Enumeration f=files.elements();
-			while (f.hasMoreElements()) {
-				String fn2=(String)f.nextElement();
+			Iterator f=files.iterator();
+			while (f.hasNext()) {
+				String fn2=(String)f.next();
 				if (!fn2.endsWith("/") && fn2.indexOf(fn)!=-1) {
 					filtered.add(fn);
 					break;
@@ -468,7 +468,7 @@ public class BasicCreator implements CreatorInterface {
 	return filtered;
    }
 
-   public Vector getFileNames_r(Vector foundfiles,String basedir,String include,String exclude) {
+   public ArrayList getFileNames_r(ArrayList foundfiles,String basedir,String include,String exclude) {
         File currDir = new File(basedir);
 	if (currDir!=null && currDir.isDirectory()) {
         String files[] = currDir.list();
@@ -583,9 +583,9 @@ public class BasicCreator implements CreatorInterface {
    		int bytesRead;
 		int baselen=basedir.length();
      		try {
-			Enumeration files=getFileNames(new Vector(),basedir,include,exclude).elements();
-			while (files.hasMoreElements()) {
-				String fn=(String)files.nextElement();
+			Iterator files=getFileNames(new ArrayList(),basedir,include,exclude).iterator();
+			while (files.hasNext()) {
+				String fn=(String)files.next();
 				if (!fn.endsWith("/")) {
       				FileInputStream file = new FileInputStream(fn);
         			packageStep substep=step.getNextPackageStep();

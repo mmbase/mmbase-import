@@ -105,8 +105,8 @@ public class PackageVersionContainer {
      *
      * @return    The packages value
      */
-    public Enumeration getPackages() {
-        return packages.elements();
+    public Iterator getPackages() {
+        return packages.values().iterator();
     }
 
 

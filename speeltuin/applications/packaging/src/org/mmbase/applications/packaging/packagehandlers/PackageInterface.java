@@ -231,7 +231,7 @@ public interface PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Enumeration getInstallSteps();
+    public Iterator getInstallSteps();
 
 
     /**
@@ -240,7 +240,7 @@ public interface PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Enumeration getInstallSteps(int logid);
+    public Iterator getInstallSteps(int logid);
 
 
     /**

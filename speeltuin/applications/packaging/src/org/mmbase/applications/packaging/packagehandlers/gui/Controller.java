@@ -64,13 +64,13 @@ public class Controller {
      */
     public List getPackageHandlers() {
         // get the current package handlers we have installed
-        Hashtable packagehandlers = PackageManager.getPackageHandlers();
+        HashMap packagehandlers = PackageManager.getPackageHandlers();
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        Enumeration e = packagehandlers.keys();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
+        Iterator e = packagehandlers.keySet().iterator();
+        while (e.hasNext()) {
+            String key = (String) e.next();
             String value = (String) packagehandlers.get(key);
 
             MMObjectNode virtual = builder.getNewNode("admin");
@@ -89,13 +89,13 @@ public class Controller {
      */
     public List getPackages() {
         // get the current best packages
-        Enumeration packages = PackageManager.getPackages();
+        Iterator packages = PackageManager.getPackages();
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (packages.hasMoreElements()) {
-            PackageInterface p = (PackageInterface) packages.nextElement();
+        while (packages.hasNext()) {
+            PackageInterface p = (PackageInterface) packages.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id", p.getId());
             virtual.setValue("name", p.getName());
@@ -120,17 +120,16 @@ public class Controller {
      */
     public List getPackageVersions(String id) {
         // get the packages of one id (all versions)
-        Enumeration packageversions = PackageManager.getPackageVersions(id);
+        Iterator packageversions = PackageManager.getPackageVersions(id);
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (packageversions.hasMoreElements()) {
-            PackageVersionContainer pvc = (PackageVersionContainer) packageversions.nextElement();
-
-            Enumeration packages = pvc.getPackages();
-            while (packages.hasMoreElements()) {
-                PackageInterface p = (PackageInterface) packages.nextElement();
+        while (packageversions.hasNext()) {
+            PackageVersionContainer pvc = (PackageVersionContainer) packageversions.next();
+            Iterator packages = pvc.getPackages();
+            while (packages.hasNext()) {
+                PackageInterface p = (PackageInterface) packages.next();
                 MMObjectNode virtual = builder.getNewNode("admin");
                 virtual.setValue("id", p.getId());
                 virtual.setValue("name", p.getName());
@@ -146,7 +145,6 @@ public class Controller {
                 list.add(virtual);
             }
         }
-
         return list;
     }
 
@@ -159,12 +157,12 @@ public class Controller {
      */
     public List getPackageVersionNumbers(String id) {
         // get the packages of one id (all versions)
-        Enumeration verlist = PackageManager.getPackageVersionNumbers(id);
+        Iterator verlist = PackageManager.getPackageVersionNumbers(id);
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        while (verlist.hasMoreElements()) {
-            String version = (String) verlist.nextElement();
+        while (verlist.hasNext()) {
+            String version = (String) verlist.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("version", version);
             list.add(virtual);
