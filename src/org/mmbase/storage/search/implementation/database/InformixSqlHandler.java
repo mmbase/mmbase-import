@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.11 2004-05-14 12:37:39 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.12 2004-06-01 14:06:04 mark Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -58,12 +58,33 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         mmbase = MMBase.getMMBase();
     }
 
+    private boolean isUnionQuery(SearchQuery query) {
+        Iterator iSteps = query.getSteps().iterator();
+        while (iSteps.hasNext()) {
+            Step step = (Step) iSteps.next();
+            if (step instanceof RelationStep) {
+                RelationStep relationStep = (RelationStep) step;
+                // If the query contains RelationSteps that are bi-directional
+                // then the query will turn out to be a union query.
+                if (relationStep.getDirectionality()==RelationStep.DIRECTIONS_BOTH) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
             case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                result = SearchQueryHandler.SUPPORT_OPTIMAL;
+
+                if (isUnionQuery(query)) {
+                    result = SearchQueryHandler.SUPPORT_NONE;
+                } else {
+                    result = SearchQueryHandler.SUPPORT_OPTIMAL;
+                }
                 break;
 
             default:
