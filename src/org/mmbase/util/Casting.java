@@ -121,6 +121,7 @@ public class Casting {
      */
 
     static public Document toXML(Object o, String documentType, String conversion) {
+        if (o == null || "".equals(o)) return null;
         if (!(o instanceof Document)) {
             //do conversion from String to Document...
             // This is a laborous action, so we log it on service.
@@ -146,7 +147,7 @@ public class Casting {
         if (obj instanceof byte[]) {
             // was allready unmapped so return the value
             return (byte[])obj;
-        } else if (obj == null || obj == MMObjectNode.VALUE_NULL) {            
+        } else if (obj == null || obj == MMObjectNode.VALUE_NULL) {
             return new byte[] {};
         } else {
             return toString(obj).getBytes();
@@ -323,7 +324,7 @@ public class Casting {
             res = ((Number)i).longValue();
         } else if (i != null) {
             //keesj:
-            //TODO:add Node and MMObjectNode  
+            //TODO:add Node and MMObjectNode
             try {
                 res = Long.parseLong("" + i);
             } catch (NumberFormatException e) {
