@@ -16,12 +16,13 @@ import org.mmbase.module.corebuilders.RelDef;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.35 2004-09-17 10:06:40 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.36 2004-12-02 18:38:52 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -203,6 +204,22 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             node.setValue(field,l);
                         } catch (NumberFormatException x) {
                             log.error("Value for field "+field+" is not a number "+stringValue);
+                        }
+                        break;
+                    case FieldDefs.TYPE_DATETIME:
+                        node.setValue(field, Casting.toDate(value));
+                        break;
+                    case FieldDefs.TYPE_BOOLEAN:
+                        // test if this is numeric
+                        try {
+                            if (!stringValue.equals("")) {
+                                Long l=Long.getLong(stringValue);
+                                node.setValue(field, Casting.toBoolean(l));
+                            } else {
+                                node.setValue(field, false);
+                            }
+                        } catch (NumberFormatException x) {
+                            node.setValue(field, Casting.toBoolean(value));
                         }
                         break;
                     default:
