@@ -4,7 +4,7 @@
 
    @author Eduard Witteveen
    @author Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.10 2002-10-25 20:19:47 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.1 2002-11-08 15:00:30 michiel Exp $
    
 -->
 <project name="project naam" default="full" basedir=".">
