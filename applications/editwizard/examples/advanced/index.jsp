@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.14 2002-07-10 20:20:32 michiel Exp $
+    @version  $Id: index.jsp,v 1.15 2002-07-11 08:29:33 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -41,14 +41,16 @@
         <h1>Editwizard Examples</h1>
   <p>
    This example overrides the 'list.xsl' of the editwizard bij placing
-   a variant in xsl/list.xsl relative to this file (see for example
-   the title-bar of your browser, and it also uses the same
-   style-sheet as this page). It also uses it's private XML editwizard
-   definitions, which are also placed relativily to this file in the
-   'tasks' directory.
+   a variant in xsl/list.xsl relative to this file. It addes a
+   stylesheet by overriding base.xsl.  Furthermore it uses it's
+   private XML editwizard definitions, which are also placed
+   relativily to this file in the 'tasks' directory.
   </p>
   <p>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a></td>
+  <td>
+     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a>
+     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/base.xsl</mm:param></mm:url>">view xsl/base.xsl</a>
+  </td>
   </p>
   <!-- check if the MyNews application was installed -->
   <mm:cloud>
