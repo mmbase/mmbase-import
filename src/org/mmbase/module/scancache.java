@@ -292,7 +292,7 @@ public class scancache extends Module implements scancacheInterface {
 		String statmode=getInitParameter("statmode");	
 
 		String tmp=getInitParameter("status");
-		debug("status "+tmp);
+		if (debug) debug("status "+tmp);
 		if (tmp!=null && tmp.equals("active")) status=true;
 	
 		cachepath=getInitParameter("CacheRoot");	
