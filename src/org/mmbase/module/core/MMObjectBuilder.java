@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.193 2002-12-04 19:03:26 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.194 2002-12-05 14:48:49 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1292,13 +1292,7 @@ public class MMObjectBuilder extends MMTable {
             // MMNODE expression.
             query = convertMMNodeSearch2Query(where);
         } else {
-            // TODO RvM: convert AltaVista format.
-            where = QueryConvertor.altaVista2SQL(where, mmb.getDatabase());
-            // Strip leading "where ".
-            LegacyConstraint constraint 
-                = new BasicLegacyConstraint(where.substring(6));
-            query = new NodeSearchQuery(this);
-            query.setConstraint(constraint);
+            query = QueryConvertor.altaVista2SearchQuery(where, this);
         }
 
         return query;
