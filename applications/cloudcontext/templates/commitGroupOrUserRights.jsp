@@ -1,4 +1,4 @@
-   <mm:import id="operations" vartype="list">create,read,write,delete,change context</mm:import>
+   <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
 <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
      <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
      <mm:listnodes id="thiscontext" type="mmbasecontexts">  

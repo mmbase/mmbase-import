@@ -13,11 +13,11 @@
        <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
    </mm:maywrite>
-   <mm:import id="operations" vartype="list">create,read,write,delete</mm:import>
+   <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
    <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
      <mm:listnodes id="thisgroup"  type="mmbasegroups">  
        <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-       <mm:stringlist referid="operations">
+       <mm:stringlist referid="operations">        
          <mm:param name="operation"><mm:write /></mm:param>
          <mm:import id="right" externid="$_:$thisgroup" />
          <mm:compare referid="right" value="on">
@@ -30,7 +30,7 @@
    </mm:listnodes>
    </mm:functioncontainer>
    </mm:context>
-        <h1><mm:field name="gui()" /> (commited)</h1>
+   <h1><mm:field name="gui()" /> (commited)</h1>
    <%@include file="context.div.jsp" %>
    </mm:node>
   </mm:cloud>
