@@ -89,7 +89,7 @@ public class PropertiesProbe implements Runnable {
 		try {
 			MultiConnection con=parent.mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select parent from "+parent.mmb.baseName+"_"+parent.tableName+" where key='LASTVISIT' AND value<10536");
+			ResultSet rs=stmt.executeQuery("select "+parent.mmb.getDatabase().getAllowedField("parent")+" from "+parent.mmb.baseName+"_"+parent.tableName+" where "+parent.mmb.getDatabase().getAllowedField("key")+"='LASTVISIT' AND value<10536");
 			int max=0;
 			while (rs.next() && max<1000) {
 				int number=rs.getInt(1);

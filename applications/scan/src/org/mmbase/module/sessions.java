@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.17 2000-11-21 16:00:17 vpro Exp $
+ $Id: sessions.java,v 1.18 2000-12-13 11:18:31 install Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.17  2000/11/21 16:00:17  vpro
+ Rico: fixed bug in which getSetString return a "null" istead of ""
+
  Revision 1.16  2000/11/19 00:23:04  daniel
  turned debug off
 
@@ -82,7 +85,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.17 2000-11-21 16:00:17 vpro Exp $
+ * @version $Id: sessions.java,v 1.18 2000-12-13 11:18:31 install Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -234,7 +237,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 					props=mmbase.getMMObject("properties");
 					// MOET ANDERS
 					// Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
-					Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
+					Enumeration res=props.search("WHERE "+mmbase.getDatabase().getAllowedField("key")+"='SID' AND value='"+sid+"'");
 					if( debug ) debug("loadProperties(): got SID("+sid+")"); 
 					if (res.hasMoreElements()) {
 						MMObjectNode snode = (MMObjectNode)res.nextElement();
