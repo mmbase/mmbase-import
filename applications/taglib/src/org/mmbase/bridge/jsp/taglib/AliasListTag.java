@@ -53,8 +53,15 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
     public int doStartTag() throws JspTagException{       
         currentItemIndex= -1;  // reset index        
         Node node = getNode();
-
-        returnValues = node.getAliases().stringIterator();        
+        StringList sl = node.getAliases();
+        {
+            String id = getId();
+            if (id != null && ! "".equals(id)) {
+                getContextTag().register(id, sl);
+            }
+        }
+        listSize = sl.size();
+        returnValues = sl.stringIterator();        
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
@@ -64,9 +71,6 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
 
     public int doAfterBody() throws JspTagException {
         String id = getId();
-        if (id != null && ! "".equals(id)) {
-            getContextTag().unRegister(id);
-        }
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
@@ -85,10 +89,6 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
         if (returnValues.hasNext()){
             currentItemIndex ++;
             currentAlias = returnValues.nextString();
-            String id = getId();
-            if (id != null && ! "".equals(id)) {
-                getContextTag().register(id, currentAlias);
-            }
         }
     }
 }
