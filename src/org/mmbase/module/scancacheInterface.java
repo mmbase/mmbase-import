@@ -21,10 +21,11 @@ import org.mmbase.util.scanpage;
  * Caching is done in pools. Each pool has its own memory cache and files, and has
  * different ways to handle file caching.
  *
- * @rename ScancacheInterface
-  * @author Daniel Ockeloen
+ * @application SCAN
+ * @rename SCANCacheInterface
+ * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancacheInterface.java,v 1.12 2003-03-10 11:50:14 pierre Exp $
+ * @version $Id: scancacheInterface.java,v 1.13 2004-10-01 08:42:47 pierre Exp $
  */
 public interface scancacheInterface {
     /**

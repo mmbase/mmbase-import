@@ -18,10 +18,14 @@ import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
 
 /**
- * This class reads a node from an exported application
- * @version $Id: XMLNodeReader.java,v 1.26 2004-01-08 23:49:58 michiel Exp $
- * @author ?
+ * This class reads a node from an exported application.
+ * @application Applications
+ * @move org.mmbase.util.xml
+ * @rename ContextDepthReader
+ * @duplicate extend from org.mmbase.util.xml.DocumentReader
+ * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
+ * @version $Id: XMLNodeReader.java,v 1.27 2004-10-01 08:41:11 pierre Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
@@ -135,13 +139,13 @@ public class XMLNodeReader extends XMLBasicReader {
                                     if (type != -1) {
                                         if (type == FieldDefs.TYPE_STRING || type == FieldDefs.TYPE_XML) {
                                             if (value == null) {
-                                                value = ""; 
+                                                value = "";
                                             }
                                             newnode.setValue(key, value);
                                             if (log.isDebugEnabled()) {
                                                 log.debug("After value " + Casting.toString(newnode.getValue(key)));
                                             }
-                                        } else if (type == FieldDefs.TYPE_NODE) {                                            
+                                        } else if (type == FieldDefs.TYPE_NODE) {
                                             // do not really set it, because we need syncnodes later for this.
                                             newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
                                             newnode.setValue(key, MMObjectNode.VALUE_NULL);

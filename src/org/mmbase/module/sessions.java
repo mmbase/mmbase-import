@@ -29,9 +29,10 @@ import org.mmbase.util.logging.Logging;
  * AVGSET-NAME : This command returns the average of a set numbers.
  * CLEARSESSIONINFO : This command clears the SessionInfo.
  *
+ * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.26 2003-07-04 14:36:32 pierre Exp $
+ * @version $Id: sessions.java,v 1.27 2004-10-01 08:42:47 pierre Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 

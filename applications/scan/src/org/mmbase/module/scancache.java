@@ -31,10 +31,11 @@ import org.mmbase.util.logging.*;
  * Caching is done in pools. Each pool has its own memory cache and files, and has
  * different ways to handle file caching. The pools currently supported are "PAGE" and "HENK".
  *
- * @rename Scancache
+ * @application SCAN
+ * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.40 2003-07-02 06:20:44 keesj Exp $
+ * @version $Id: scancache.java,v 1.41 2004-10-01 08:42:47 pierre Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 

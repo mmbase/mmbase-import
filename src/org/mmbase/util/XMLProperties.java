@@ -20,11 +20,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* This is a flexible Properties version, it can handle saving of Properties with
-* the comments that will stay in your file.   
-* @author Jan van Oosterom
-* @version $Id: XMLProperties.java,v 1.6 2004-05-06 12:34:31 keesj Exp $
-*/
+ * This is a flexible Properties version, it can handle saving of Properties with
+ * the comments that will stay in your file.
+ * @application Config
+ * @move org.mmbase.config
+ * @author Jan van Oosterom
+ * @version $Id: XMLProperties.java,v 1.7 2004-10-01 08:41:12 pierre Exp $
+ */
 public class XMLProperties extends Properties implements ContentHandler {
     private static Logger log = Logging.getLoggerInstance(XMLProperties.class);
     private StringBuffer characterData = null;
@@ -39,7 +41,7 @@ public class XMLProperties extends Properties implements ContentHandler {
 
     /**
     * Read from Properties and return them.
-    * 
+    *
     */
     public Hashtable getProperties() {
         XMLProperties propsToReturn = new XMLProperties();
@@ -134,8 +136,8 @@ public class XMLProperties extends Properties implements ContentHandler {
      * Receive notification of character data.
      */
     public void characters(char ch[], int start, int len) {
-        // only get the characters if endElement doesn't matches startElement 
-        // and element isn't the rootelement  
+        // only get the characters if endElement doesn't matches startElement
+        // and element isn't the rootelement
         if (!startElementName.equals(endElementName) && !startElementName.equals(rootElementName)) {
             characterData.append(ch, start, len);
         }

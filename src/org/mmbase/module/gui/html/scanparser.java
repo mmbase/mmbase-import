@@ -18,7 +18,6 @@ import org.mmbase.module.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-
 import org.mmbase.util.logging.*;
 
 /**
@@ -28,9 +27,10 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @javadoc
- * @rename Scanparser
+ * @application SCAN
+ * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.66 2004-03-15 14:30:08 rob Exp $
+ * @version $Id: scanparser.java,v 1.67 2004-10-01 08:43:46 pierre Exp $
  */
 public class scanparser extends ProcessorModule {
 

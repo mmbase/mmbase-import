@@ -23,9 +23,10 @@ import org.mmbase.util.*;
  * and select found objects to be edited by the FieldSelector and FieldEditor
  * classes (hitlisted).
  *
+ * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.17 2004-02-09 13:50:36 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.18 2004-10-01 08:43:46 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 

@@ -18,8 +18,10 @@ import org.xml.sax.SAXParseException;
 /**
  * Provides ErrorHandler methods
  *
+ * @move org.mmbase.util.xml
+ * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.13 2003-07-18 14:57:50 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.14 2004-10-01 08:41:11 pierre Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {

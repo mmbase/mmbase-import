@@ -14,6 +14,15 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import org.mmbase.util.logging.*;
 
+/**
+ * @javadoc
+ * @move org.mmbase.util.xml
+ * @rename ModuleReader
+ * @duplicate extend from org.mmbase.util.xml.DocumentReader
+ * @author Daniel Ockeloen
+ * @author Pierre van Rooden
+ * @version $Id: XMLModuleReader.java,v 1.12 2004-10-01 08:41:11 pierre Exp $
+ */
 public class XMLModuleReader extends XMLBasicReader {
     // logger
     private static final Logger log = Logging.getLoggerInstance(XMLModuleReader.class);

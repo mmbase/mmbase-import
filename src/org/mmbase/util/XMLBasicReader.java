@@ -20,21 +20,18 @@ import org.xml.sax.*;
 
 /**
  * XMLBasicReader has two goals.
- <ul>
-   <li>
-   It provides a way for parsing XML
-   </li>
-   <li>
-   It provides a way for searching in this XML, without the need for an XPath implementation, and without the hassle of org.w3c.dom alone.
-   It uses dots to lay a path in the XML (XPath uses slashes).
-   </li>
- </ul>
+ *  <ul>
+ *    <li>It provides a way for parsing XML</li>
+ *    <li>It provides a way for searching in this XML, without the need for an XPath implementation, and without the hassle of org.w3c.dom alone.
+ *    It uses dots to lay a path in the XML (XPath uses slashes).</li>
+ *  </ul>
  *
+ * @deprecated use DocumentReader or DocumentWriter. Some code may need to be moved to DocumentReader
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.39 2004-02-24 17:47:00 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.40 2004-10-01 08:41:10 pierre Exp $
  */
 public class XMLBasicReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLBasicReader.class);

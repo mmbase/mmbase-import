@@ -14,12 +14,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * EditState, controls the users edit session, keeps EditStatesNodes
- * (hitlisted)
+ * EditStateNode (hitlisted)
  *
- *
+ * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
+ * @version $Id: EditStateNode.java,v 1.16 2004-10-01 08:43:45 pierre Exp $
  */
 public class EditStateNode {
 

@@ -36,8 +36,10 @@ import org.mmbase.util.logging.Logging;
  * @duplicate this code is aimed at the SCAN servlets, and some features (i.e. cookies) do
  *            not communicate well with jsp pages.
  *            Functionality might need to be moved or adapted so that it uses the MMCI.
+ *
+ * @application SCAN - the cookie code is specific for SCAN
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.45 2004-09-29 10:34:58 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.46 2004-10-01 08:41:47 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {

@@ -24,11 +24,14 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- *
  * @javadoc
+ * @application Applications
  * @move org.mmbase.util.xml
+ * @rename ApplicationWriter
+ * @duplicate extend from org.mmbase.util.xml.DocumentWriter
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
- * @version $Id: XMLApplicationWriter.java,v 1.25 2004-04-05 19:38:06 michiel Exp $
+ * @author DAniel Ockeloen
+ * @version $Id: XMLApplicationWriter.java,v 1.26 2004-10-01 08:41:10 pierre Exp $
  */
 public class XMLApplicationWriter  {
 

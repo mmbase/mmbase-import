@@ -9,12 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.io.Writer;
-import java.io.StringWriter;
-import java.io.OutputStreamWriter;
-import java.io.FileOutputStream;
-
+import java.io.*;
 import java.util.*;
 
 import javax.xml.transform.*;
@@ -22,7 +17,6 @@ import javax.xml.parsers.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
-
 
 import org.mmbase.cache.xslt.*;
 
@@ -33,10 +27,10 @@ import org.mmbase.util.logging.Logging;
 /**
  * Make XSL Transformations
  *
+ & @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.20 2004-05-03 12:48:59 michiel Exp $
- *
+ * @version $Id: XSLTransformer.java,v 1.21 2004-10-01 08:41:12 pierre Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -54,7 +48,7 @@ public class XSLTransformer {
      * @return String with converted XML document
      */
     public static String transform(String xmlPath, String xslPath) {
-	return transform(xmlPath,xslPath,false);
+        return transform(xmlPath,xslPath,false);
     }
 
     /**
@@ -75,15 +69,15 @@ public class XSLTransformer {
         try {
             StringWriter res = new StringWriter();
             transform(new File(xmlPath), new File(xslPath), new StreamResult(res), null, true);
-	    String s = res.toString();
-	    int n = s.indexOf("\n");
-	    if (cutXML && s.length() > n) {
-		s = s.substring(n + 1);
-	    }
-	    return s;
+            String s = res.toString();
+            int n = s.indexOf("\n");
+            if (cutXML && s.length() > n) {
+                s = s.substring(n + 1);
+            }
+            return s;
         } catch (Exception e) {
             log.error(e.getMessage());
-	    log.error(Logging.stackTrace(e));
+            log.error(Logging.stackTrace(e));
             return "Error during XSLT tranformation: "+e.getMessage();
         }
     }
@@ -92,13 +86,22 @@ public class XSLTransformer {
      * This is the base function which calls the actual XSL
      * transformations. Performs XSL transformation on MMBase specific
      * way (using MMBase cache, and URIResolver).
+     * @javadoc
      *
      * @since MMBase-1.6
-     **/
-
+     */
     public static void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         transform(xml, xslFile, result, params, true);
     }
+
+    /**
+     * This is the base function which calls the actual XSL
+     * transformations. Performs XSL transformation on MMBase specific
+     * way (using MMBase cache, and URIResolver).
+     * @javadoc
+     *
+     * @since MMBase-1.6
+     */
     public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
 
         if (log.isDebugEnabled()) {
@@ -147,6 +150,7 @@ public class XSLTransformer {
     /**
      * Perfoms XSL Transformation on XML-file which is parsed MMBase
      * specificly (useing MMBasse EntityResolver and Errorhandler).
+     * @javadoc
      *
      * @since MMBase-1.6
      */
@@ -175,10 +179,10 @@ public class XSLTransformer {
      * points back to the root directory relatively. You need this
      * when all your transformations results (probably html's) need to
      * refer to the same file which is relative to the root of the transformation.
+     * @javadoc
      *
      * @since MMBase-1.6
      */
-
     public static void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         if (! xmlDir.isDirectory()) {
             throw  new TransformerException("" + xmlDir + " is not a directory");
