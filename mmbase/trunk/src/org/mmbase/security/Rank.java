@@ -26,9 +26,9 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.13 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: Rank.java,v 1.14 2005-03-01 14:12:55 michiel Exp $
  */
-public final class Rank implements Comparable {
+public final class Rank implements Comparable, java.io.Serializable {
     private static Logger log = Logging.getLoggerInstance(Rank.class);
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
