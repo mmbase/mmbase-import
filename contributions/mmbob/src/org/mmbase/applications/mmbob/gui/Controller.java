@@ -497,6 +497,64 @@ public class Controller {
         return virtual;
     }
 
+   /**
+     * Provide the headerpath for the given forum
+     *
+     * @param id MMBase node number of the forum
+     * @return String representing the headerpath of the given forum
+     *
+     */
+    public String getForumHeaderPath(String id) {
+        try {
+            Forum f = ForumManager.getForum(id);
+            if (f != null) {
+                return f.getHeaderPath();
+            }
+        } catch (Exception e) {
+		    e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * Provide the footerpath for the given forum
+     *
+     * @param id MMBase node number of the forum
+     * @return String representing the footerpath of the given forum
+     *
+     */
+    public String getForumFooterPath(String id) {
+        try {
+            Forum f = ForumManager.getForum(id);
+            if (f != null) {
+                return f.getFooterPath();
+            }
+        } catch (Exception e) {
+		    e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * Provide the fromaddress for the given forum
+     *
+     * @param id MMBase node number of the forum
+     * @return String representing the from-emailaddress of the given forum
+     *
+     */
+    public String getForumFromEmailAddress(String id) {
+        try {
+            Forum f = ForumManager.getForum(id);
+            if (f != null) {
+                return f.getFromEmailAddress();
+            }
+        } catch (Exception e) {
+		    e.printStackTrace();
+        }
+        return "";
+    }
+
+
     /**
      * Provide configuration info on a forum
      *
@@ -546,6 +604,8 @@ public class Controller {
 
         return virtual;
     }
+
+
 
 
 
