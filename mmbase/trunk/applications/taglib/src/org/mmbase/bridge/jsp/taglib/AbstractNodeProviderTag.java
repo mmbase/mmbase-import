@@ -77,7 +77,7 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     abstract public void doInitBody() throws JspTagException;
     
     protected void fillVars() throws JspTagException {    
-        Enumeration returnFieldEnum = stringSplitter(fields,",").elements();
+        Enumeration returnFieldEnum = stringSplitter(fields, ",").elements();
         int j=1;
         while (returnFieldEnum.hasMoreElements()){
             String field = (String)returnFieldEnum.nextElement();
@@ -94,31 +94,10 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
             pageContext.setAttribute(jspvar, node);
         }
         if (id != null && ! "".equals(id)) {
-            findContext().registerNode(id, node);
+            getContextTag().registerNode(id, node);
         }
     }
-    
-    
-    /**
-    * simple util method to split comma separated values
-    * to a vector
-    * @param string the string to split
-    * @param delimiter
-    * @return a Vector containing the elements, the elements are also trimed
-    **/
-    static Vector stringSplitter(String string,String delimiter){
-        Vector retval = new Vector();
-        StringTokenizer st = new StringTokenizer(string, delimiter);
-        while(st.hasMoreTokens()){
-            retval.addElement(st.nextToken().trim());
-        }
-        return retval;
-    }
-    
-    static Vector stringSplitter(String string) {
-        return stringSplitter(string, ",");
-    }
-    
+               
     private String getSimpleReturnValueName(String fieldName){        
         return getSimpleReturnValueName(jspvar, fieldName);
     }
