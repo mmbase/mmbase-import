@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.36 2003-08-27 21:33:37 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.37 2003-09-02 17:26:22 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -57,6 +57,8 @@ public class WriterHelper extends BodyTagSupport {
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
+    static final int TYPE_FIELD   = 23;
+    static final int TYPE_FIELDVALUE   = 24;
 
 
     static final int stringToType(String tt) {
@@ -89,6 +91,10 @@ public class WriterHelper extends BodyTagSupport {
             return TYPE_OBJECT;
         } else if ("date".equals(t)) {
             return TYPE_DATE;
+        } else if ("field".equals(t)) {
+            return TYPE_FIELD;
+        } else if ("fieldvalue".equals(t)) {
+            return TYPE_FIELDVALUE;
         } else {
             return TYPE_UNKNOWN;
         }

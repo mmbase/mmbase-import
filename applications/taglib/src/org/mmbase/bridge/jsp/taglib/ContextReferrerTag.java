@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.46 2003-09-01 13:29:42 pierre Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.47 2003-09-02 17:26:21 michiel Exp $
  * @see ContextTag
  */
 
@@ -456,7 +456,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     final protected WriterHelper helper = new WriterHelper();
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    final public void setVartype(String t) throws JspTagException {
+    public void setVartype(String t) throws JspTagException {
         helper.setVartype(t);
     }
     public void setJspvar(String j) {

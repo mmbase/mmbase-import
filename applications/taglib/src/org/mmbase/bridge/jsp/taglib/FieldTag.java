@@ -13,9 +13,8 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import org.mmbase.bridge.NotFoundException;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Field;
+import org.mmbase.bridge.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.40 2003-08-27 21:33:32 michiel Exp $ 
+ * @version $Id: FieldTag.java,v 1.41 2003-09-02 17:26:22 michiel Exp $ 
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -98,6 +97,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return s;
     }
 
+
     public int doStartTag() throws JspTagException {
         node = null;
         fieldName = (String) name.getValue(this);
@@ -129,9 +129,17 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 f.getGenerator().add(node, field); // add the field
                 value = "";
             } else { // do the rest as well.
-                if (helper.getVartype() == WriterHelper.TYPE_NODE) {
+                switch(helper.getVartype()) {
+                case WriterHelper.TYPE_NODE:
                     value = node.getNodeValue(fieldName);
-                } else {
+                    break;
+                case WriterHelper.TYPE_FIELDVALUE:
+                    value = node.getFieldValue(fieldName);
+                    break;
+                case WriterHelper.TYPE_FIELD:
+                    value = node.getFieldValue(fieldName).getField();
+                    break;
+                default: 
                     switch(field.getType()) {
                     case Field.TYPE_BYTE:
                         value = node.getByteValue(fieldName);
