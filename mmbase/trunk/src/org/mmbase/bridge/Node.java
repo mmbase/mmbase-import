@@ -20,9 +20,9 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.52 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Node.java,v 1.53 2005-01-07 09:53:12 michiel Exp $
  */
-public interface Node {
+public interface Node extends Comparable {
 
     /**
      * Returns the cloud this node belongs to.
@@ -108,7 +108,8 @@ public interface Node {
     public void setValue(String fieldName, Object value);
 
     /**
-     * Sets the value of the specified field using an object.
+     * Sets the value of the specified field using an object, but without dispatching to the right
+     * type first.
      *
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
@@ -421,6 +422,11 @@ public interface Node {
      * Removes the Node. Throws an exception if still has relations. Like delete(false).
      */
     public void delete();
+
+    /**
+     * @since MMBase-1.8
+     */    
+    //public boolean isNew();
 
     /**
      * Removes the Node.
