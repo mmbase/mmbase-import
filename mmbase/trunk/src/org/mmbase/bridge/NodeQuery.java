@@ -13,20 +13,39 @@ import org.mmbase.storage.search.*;
 import java.util.SortedSet;
 
 /**
- * A Query especially fit for getQuery of NodeManager.
+ * A Node-Query is a query that queries node-lists, in contradiction to a normal Query which can
+ * query 'cluster nodes' and even more generally 'result nodes' too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.4 2003-08-06 19:42:30 michiel Exp $
+ * @version $Id: NodeQuery.java,v 1.5 2003-08-27 21:23:45 michiel Exp $
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {
 
+
     /**
-     * Returns the node-manager.
+     * Returns the step for which the fields are added (or null)
+     */
+    Step getNodeStep();
+
+    /**
+     * Removes all fields and add all fields of the given step. This also can have an effect on the
+     * result of getNodeManager().  
+     * @returns the previously associated step (if there was one, otherwise null).
+     */
+    Step setNodeStep(Step step);
+
+    /**
+     * Returns the node-manager. Or 'null' if this is not yet determined.
      */
 
     NodeManager getNodeManager();
 
+    /**
+     * Since in a NodeQuery one of the steps is 'exceptional', also this function makes sense now.
+     * @return null if field is not of 'the' nodemanager.
+     */
     StepField getStepField(Field field);
+
 
 }
