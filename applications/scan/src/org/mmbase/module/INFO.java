@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.33 2001-04-10 16:11:16 michiel Exp $
+$Id: INFO.java,v 1.34 2001-05-17 17:10:47 daniel Exp $
 
 $Log: not supported by cvs2svn $
 Revision 1.32  2001/03/19 22:28:16  daniel
@@ -42,8 +42,6 @@ import java.text.SimpleDateFormat;
 
 import org.mmbase.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * The INFO module provides access to the environment on which the mmbase system resides.
@@ -56,15 +54,17 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.33 $ $Date: 2001-04-10 16:11:16 $
+ * @$Revision: 1.34 $ $Date: 2001-05-17 17:10:47 $
  */
 public class INFO extends ProcessorModule {
 
 	public final static int Not=0;
 	public final static int Dutch=1;
 	public final static int English=2;
-
-    private static Logger log = Logging.getLoggerInstance(INFO.class.getName()); 
+	private static boolean debug=false;
+	private void debug( String msg ) { if (debug) System.out.println( classname +":"+ msg ); }
+	
+	private String classname = getClass().getName();
 
 	Random rnd;
 	String documentroot;
@@ -132,10 +132,8 @@ public class INFO extends ProcessorModule {
 	 * @return alwyas <code>false</code>
 	 */
 	public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-        if (log.isDebugEnabled()) {
-            log.debug("CMDS=" + cmds);
-            log.debug("VARS=" + vars);
-        }
+		debug("CMDS="+cmds);
+		debug("VARS="+vars);
 		return false;
 	}
 
@@ -286,7 +284,7 @@ public class INFO extends ProcessorModule {
 							int toffset = 0;
 							try { toffset = Integer.parseInt(tok.nextToken());
 							} catch (NumberFormatException nfe) {
-								log.error("" + nfe);
+								debug(""+nfe);
 								return "Error in "+cmd+" offset arg";
 							} 
 							return ""+val.startsWith(compareVal,toffset);
@@ -1105,13 +1103,11 @@ public class INFO extends ProcessorModule {
 				if (tok.hasMoreTokens() && (tok.countTokens()==4)) {
 					String value = tok.nextToken()+":"+tok.nextToken()+":"+tok.nextToken()+"."+tok.nextToken();
 					timeValue = RelativeTime.convertTimeToInt(value);
-                    if(log.isDebugEnabled()) {
-                        log.debug("doRelTime -> COUNTMILLIS result= " + timeValue);
-                    }
+					debug("doRelTime -> COUNTMILLIS result= " +timeValue);
 		            return (""+timeValue);
 				} else {
 			       	String error = "doRelTime: Error, Amount of timeValues is != 4 (h,m,s,ms)";
-            		log.error(error);
+            		debug(error);
 		            return error;
         		}
 			} else if (cmd.startsWith("GET")) {
@@ -1120,15 +1116,13 @@ public class INFO extends ProcessorModule {
 					try {
 						timeValue = Integer.parseInt(tok.nextToken());
 					} catch (NumberFormatException nfe) {
-						log.error("doRelTime: Invalid timeValue specified. " + nfe);
+						debug("doRelTime: Invalid timeValue specified. "+nfe);
 						return "INFO::doRelTime: Invalid timeValue specified timeValue="+timeValue;
 					} 
 				} else {
 					return "INFO::doRelTime: No timeValue specified";
 				}
-                if (log.isDebugEnabled()) {
-                    log.debug("doRelTime: " + cmd + "-" + timeValue + " result= " + RelativeTime.getHours(timeValue));				
-                }
+				debug("doRelTime: "+cmd+"-"+timeValue+" result= "+RelativeTime.getHours(timeValue));				
 				if (cmd.equals("GETHOURS")) {
 				    return (""+RelativeTime.getHours(timeValue));	
 				} else if (cmd.equals("GETMINUTES")) {
@@ -1170,8 +1164,8 @@ public class INFO extends ProcessorModule {
 			} else if (cmd.equals("GETSYS")) {
 				whichMem = 1;
 			} else {
-				log.error("doMemory: Undefined command requested -> " + cmd);
-				return "INFO::doMemory: Undefined command requested -> " + cmd;
+				debug("doMemory: Undefined command requested -> "+cmd);
+				return "INFO::doMemory: Undefined command requested -> "+cmd;
 			}
 			if (tok.hasMoreTokens()) {
 				cmd = tok.nextToken();
@@ -1426,12 +1420,10 @@ public class INFO extends ProcessorModule {
 			if( tok.hasMoreTokens() ) {
 				String toDir = tok.nextToken();
 					moveFile( from, toDir );
-			} else {
-				log.error("doMove(): page(" + sp.getUrl() + "): no destination specified in $MOD-INFO-MOVE-" + from + " !");
-            }
-		} else {
-			log.error("doMove(): page(" + sp.getUrl() + "): no source directory given in $MOD-INFO-MOVE-.. !");
-        }
+			} else
+				debug("doMove(): ERROR: page("+sp.getUrl()+"): no destination specified in $MOD-INFO-MOVE-"+from+" !");
+		} else 
+			debug("doMove(): ERROR: page("+sp.getUrl()+"): no source directory given in $MOD-INFO-MOVE-.. !");
 		return result;
 	}
 
@@ -1458,18 +1450,14 @@ public class INFO extends ProcessorModule {
 					f2 = new File( oparent , name );
 					if( f1.renameTo( f2 ) ) { 
 						result = true;
-					} else {
-						log.error("moveFile(" + pathslashfile + "," + otherdirectory + "): move file(" + pathslashfile+") -> file("+oparent+","+name+") did not succeed!");
-                    }
-				} else {
-					log.error("moveFile("+pathslashfile+","+otherdirectory+"): directory("+oparent+") has no write-permission set!");
-                }
-			} else {
-				log.error("moveFile("+pathslashfile+","+otherdirectory+"): directory("+oparent+") is not a valid directory!");
-            }
-		} else {
-			log.error("moveFile("+pathslashfile+","+otherdirectory+"): first parameter is not a valid file!");
-        }
+					} else
+						debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: move file("+pathslashfile+") -> file("+oparent+","+name+") did not succeed!");
+				} else 
+					debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: directory("+oparent+") has no write-permission set!");
+			} else 
+				debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: directory("+oparent+") is not a valid directory!");
+		} else 
+			debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: first parameter is not a valid file!");
 
 		return result;
 	}
@@ -1504,10 +1492,13 @@ public class INFO extends ProcessorModule {
 			int days=curtime/(3600*24);
 			days++;
 			return(""+((days*(3600*24))-3600));
+		} else if (cmd.equals("TODAY")) {
+			// gives us the next full day based on realtime (00:00)
+			int days=curtime/(3600*24);
+			return(""+((days*(3600*24))-3600));
 		} else if (cmd.equals("NEXTTIME")) {
 			// gives us the next full day at time definedd based on realtime 
 			int days=curtime/(3600*24);
-			days++;
 			if (tok.hasMoreTokens()) {
 				String timestring=tok.nextToken();
 				int pos=timestring.indexOf(":");
@@ -1518,7 +1509,7 @@ public class INFO extends ProcessorModule {
 						int hours=Integer.parseInt(hourstring)*3600;
 						int min=Integer.parseInt(minstring)*60;
 						int total=(days*3600*24)+hours+min;
-						return(""+(total-3600));
+						return(""+(total-7200));
 					} catch (Exception e) {
 						System.out.println("Error in NEXTTIME time part make sure its 00:00 format");	
 					}	
