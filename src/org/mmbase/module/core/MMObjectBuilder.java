@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.14 2003-02-19 19:03:08 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.15 2003-02-21 12:48:39 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.SizeMeasurable {{
     
@@ -393,7 +393,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param oType The type of object to create
      * @param owner The administrator creating the node
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
-     *		The basic routine does not create any nodes this way and always fails.
+     *        The basic routine does not create any nodes this way and always fails.
      */
     public int insert(int oType,String owner) {
         return -1;
@@ -412,7 +412,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             n=mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
-            if (alias!=null) createAlias(n,alias);	// add alias, if provided
+            if (alias!=null) createAlias(n,alias);    // add alias, if provided
             return n;
         } catch(RuntimeException e) {
             // do we really wanna catch our exceptions here?
@@ -427,12 +427,12 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     /**
      * Once a insert is done in the editor this method is called.
      * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *		'settings' and 'parameters' - value pairs that have been the during the edit process.
+     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
      * @param node The node thatw as inserted
      * @return An <code>int</code> value. It's meaning is undefined.
-     *		The basic routine returns -1.
+     *        The basic routine returns -1.
      * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *	endangering the separation between content and layout, and has an undefined return value.
+     *    endangering the separation between content and layout, and has an undefined return value.
      */
     public int insertDone(EditState ed, MMObjectNode node) {
         return -1;
@@ -443,12 +443,12 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * This method is called by the editor. This differs from {@link #preCommit}, which is called by the database system
      * <em>during</em> the call to commit or insert.
      * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *		'settings' and 'parameters' - value pairs that have been the during the edit process.
+     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
      * @param node The node that was inserted
      * @return An <code>int</code> value. It's meaning is undefined.
-     *		The basic routine returns -1.
+     *        The basic routine returns -1.
      * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *	endangering the separation between content and layout. It also has an undefined return value.
+     *    endangering the separation between content and layout. It also has an undefined return value.
      */
     public int preEdit(EditState ed, MMObjectNode node) {
         return -1;
@@ -1199,7 +1199,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
-     *		returning a set of object numbers.
+     *        returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      */
     public Vector searchVectorIn(String in) {
@@ -1322,7 +1322,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
+     *        Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
      */
     public Enumeration search(String where,String sort,boolean direction) {
@@ -1335,7 +1335,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param sorted order in which to return the objects
      * @param in lost of node numbers to filter on
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
+     *        Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
      */
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
@@ -1371,7 +1371,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
-     *		returning a set of object numbers.
+     *        returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      */
     public Vector searchVectorIn(String where,String sorted,String in) {
@@ -1387,7 +1387,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
-     *		returning a set of object numbers.
+     *        returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      */
     public Vector searchVectorIn(String where,String in) {
@@ -1429,7 +1429,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
+     *        Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
      */
     public Vector searchVector(String where,String sorted,boolean direction) {
@@ -1527,9 +1527,9 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
-     *		returning a set of object numbers.
+     *        returning a set of object numbers.
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
+     *        Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
      */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
@@ -1853,7 +1853,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @return a <code>Vector</code> with the tables field anmes (String)
      */
     public Vector getFieldNames() {
-        Vector	results=new Vector();
+        Vector    results=new Vector();
         FieldDefs node;
         for (Enumeration e=fields.elements();e.hasMoreElements();) {
             node=(FieldDefs)e.nextElement();
@@ -2344,40 +2344,40 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         
         // time functions
-        if(function.equals("date")) {					// date
+        if(function.equals("date")) {                    // date
             int v=node.getIntValue(field);
             return DateSupport.date2string(v);
-        } else if (function.equals("time")) {			// time hh:mm
+        } else if (function.equals("time")) {            // time hh:mm
             int v=node.getIntValue(field);
             return DateSupport.getTime(v);
-        } else if (function.equals("timesec")) {		// timesec hh:mm:ss
+        } else if (function.equals("timesec")) {        // timesec hh:mm:ss
             int v=node.getIntValue(field);
             return DateSupport.getTimeSec(v);
-        } else if (function.equals("longmonth")) {		// longmonth September
+        } else if (function.equals("longmonth")) {        // longmonth September
             int v=node.getIntValue(field);
             return DateStrings.longmonths[DateSupport.getMonthInt(v)];
         } else if (function.equals("monthnumber")) {
             int v=node.getIntValue(field);
             return ""+(DateSupport.getMonthInt(v)+1);
-        } else if (function.equals("month")) {			// month Sep
+        } else if (function.equals("month")) {            // month Sep
             int v=node.getIntValue(field);
             return DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
-        } else if (function.equals("weekday")) {		// weekday Sunday
+        } else if (function.equals("weekday")) {        // weekday Sunday
             int v=node.getIntValue(field);
             return DateStrings.Dutch_longdays[DateSupport.getWeekDayInt(v)];
-        } else if (function.equals("shortday")) {		// shortday Sun
+        } else if (function.equals("shortday")) {        // shortday Sun
             int v=node.getIntValue(field);
             return DateStrings.Dutch_days[DateSupport.getWeekDayInt(v)];
-        } else if (function.equals("day")) {			// day 4
+        } else if (function.equals("day")) {            // day 4
             int v=node.getIntValue(field);
             return ""+DateSupport.getDayInt(v);
-        } else if (function.equals("shortyear")) {			// year 01
+        } else if (function.equals("shortyear")) {            // year 01
             int v=node.getIntValue(field);
             return (DateSupport.getYear(v)).substring(2);
-        } else if (function.equals("year")) {			// year 2001
+        } else if (function.equals("year")) {            // year 2001
             int v=node.getIntValue(field);
             return DateSupport.getYear(v);
-        } else if (function.equals("thisdaycurtime")) {			//
+        } else if (function.equals("thisdaycurtime")) {            //
             int curtime=node.getIntValue(field);
             // gives us the next full day based on time (00:00)
             int days=curtime/(3600*24);
@@ -2949,7 +2949,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param fieldname the name of the field that was changed
      * @return always <code>true</code>
      */
-    public boolean	sendFieldChangeSignal(MMObjectNode node,String fieldname) {
+    public boolean    sendFieldChangeSignal(MMObjectNode node,String fieldname) {
         // we need to find out what the DBState is of this field so we know
         // who to notify of this change
         int state=getDBState(fieldname);
@@ -3123,7 +3123,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      *  @param fieldValue the value to assign
      *  @param originalValue the value which was original in the field
      *  @return <code>true</code> When an update is required(when changed),
-     *	<code>false</code> if original value was set back into the field.
+     *    <code>false</code> if original value was set back into the field.
      */
     public boolean setValue(MMObjectNode node,String fieldName, Object originalValue) {
         return setValue(node,fieldName);
@@ -3248,8 +3248,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Asside from the fields supplied by the caller, a field 'otype' is added.
      * This method calls {@link #setDBLayout_xml} to create a fieldnames list.
      * @param xmlfields A Vector with fields as they appear in the current table.
-     *		This data is retrieved from an outside source (such as an xml file), and thus
-     *		may be incorrect.
+     *        This data is retrieved from an outside source (such as an xml file), and thus
+     *        may be incorrect.
      */
     public void setXMLValues(Vector xmlfields) {
         fields=new Hashtable();
