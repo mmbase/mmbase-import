@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.111 2003-12-21 17:42:03 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.112 2003-12-21 17:52:59 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -440,17 +440,21 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     public Object getValue(String fieldName) {
-        int type = nodeManager.getField(fieldName).getType();
-        switch(type) {
-        case Field.TYPE_STRING:  return getStringValue(fieldName);
-        case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-        case Field.TYPE_BYTE:    return getByteValue(fieldName);
-        case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-        case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-        case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
-        case Field.TYPE_XML:     return getXMLValue(fieldName);
-        case Field.TYPE_NODE:    return getNodeValue(fieldName);
-        default:                 getNode().getValue(fieldName);
+        if (nodeManager.hasField(fieldName)) {
+            int type = nodeManager.getField(fieldName).getType();
+            switch(type) {
+            case Field.TYPE_STRING:  return getStringValue(fieldName);
+            case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+            case Field.TYPE_BYTE:    return getByteValue(fieldName);
+            case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+            case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+            case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+            case Field.TYPE_XML:     return getXMLValue(fieldName);
+            case Field.TYPE_NODE:    return getNodeValue(fieldName);
+            default:                 getNode().getValue(fieldName);
+            }
+        } else {
+            //log.warn("Requesting value of unknown field '" + fieldName + "')");
         }
 
         return getNode().getValue(fieldName);
