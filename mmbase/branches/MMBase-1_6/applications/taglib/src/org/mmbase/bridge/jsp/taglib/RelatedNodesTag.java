@@ -78,7 +78,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             NodeManager manager = getCloud().getNodeManager(type);
             NodeList initialnodes;
 
-            if (role == null) {
+            if (role == null && searchDir == null) {
                 initialnodes = parentNode.getRelatedNodes(type);
             } else {
                 if (searchDir == null && directions != null) {
@@ -112,7 +112,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 }
                 nodes = parentNode.getRelatedNodes();
             } else {
-                if (role == null) {
+                if (role == null && searchDir == null) {
                     nodes = parentNode.getRelatedNodes(type);
                 } else {
                     if (searchDir == null && directions != null) {
