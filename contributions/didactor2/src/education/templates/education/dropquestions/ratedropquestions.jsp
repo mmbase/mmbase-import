@@ -25,7 +25,6 @@
     <% boolean thisAnswer = false; %>
     <mm:import id="givenanswer" jspvar="givenAnswer" externid="<%= extId %>" reset="true" from="parameters"/>
 
-    <h1>Givenanswer: <%= givenAnswer %>, <mm:write referid="givenanswer"/></h1>
     
     <mm:isgreaterthan referid="givenanswer" value="0">
         <mm:import id="dragimage" reset="true"><mm:field name="images.number"/></mm:import>
@@ -35,7 +34,6 @@
         
         <%-- has been dragged - store title of destination image --%>
         <mm:list nodes="$question" path="dropquestions,dropimagerel,images" constraints="dropimagerel.pos=$givenanswer">
-            <h1><mm:write referid="givenanswer"/>. <mm:field name="images.title"/></h1>
             <mm:import id="droptitle" reset="true"><mm:write referid="givenanswer"/>. <mm:field name="images.title"/></mm:import>
         </mm:list>
         
