@@ -137,7 +137,7 @@
                     <%=otherNodeType.getGUIName()%></a>
                     (<a href="<%=response.encodeURL("change_node.jsp?node_number=" + relationDefinition.getNumber())%>">
                      <%=relationDefinition.getValue("gui(sname)")%></a>)
-                    <% if(relationDefinition.getIntValue("dir")==1) { %>(hidden)</small><% } %>
+                    <% if(relationDefinition.getIntValue("dir")==1) { %><%=m.getString("relations.hidden_relation")%></small><% } %>
                 </td>
                 <th colspan="3"><%=m.getString("relations.relations")%></th>
                 <th colspan="3"><%=m.getString("relations.related")%></th>

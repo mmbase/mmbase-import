@@ -22,7 +22,14 @@
   
      <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
      <tr><th><%=m.getString("new_relation.new")%></th></tr>
-     <tr><th><%=m.getString("new_relation.from")%>: <mm:field name="gui()" /></th></tr>
+     
+    <mm:compare referid="direction" value="create_child">     
+        <tr><th><%=m.getString("new_relation.from")%>: <mm:field name="gui()" /></th></tr>
+    </mm:compare>
+    <mm:compare referid="direction" value="create_parent">
+        <tr><th><%=m.getString("new_relation.to")%>: <mm:field name="gui()" /></th></tr>
+    </mm:compare>     
+     
      <tr><td>
      <%@ include file="search_node_with_type.jsp" %>   
      </td></tr>
