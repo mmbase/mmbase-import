@@ -14,14 +14,10 @@ import org.mmbase.module.core.*;
 
 import java.util.*;
 import java.io.*;
-import java.lang.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.traversal.*;
-import org.xml.sax.helpers.DefaultHandler;
 
 import org.mmbase.util.logging.*;
 

@@ -11,16 +11,14 @@ package org.mmbase.module.database.support;
 
 import java.sql.*;
 
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
-
 
 /**
  * MMMysql42Node implements the MMJdbc2NodeInterface for
  * mysql.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMMysql42Node.java,v 1.21 2002-11-10 21:15:52 michiel Exp $
+ * @version $Id: MMMysql42Node.java,v 1.22 2003-03-04 14:39:57 nico Exp $
  */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
     /**

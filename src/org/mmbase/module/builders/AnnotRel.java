@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.DateSupport;
 import org.mmbase.util.scanpage;
 import org.mmbase.util.RelativeTime;
 import org.mmbase.util.logging.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999
- * @$Revision: 1.14 $ $Date: 2003-03-04 14:12:20 $
+ * @$Revision: 1.15 $ $Date: 2003-03-04 14:39:58 $
  */
 public class AnnotRel extends InsRel {
 
