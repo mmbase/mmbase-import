@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.24 2003-06-18 08:21:26 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.25 2003-06-23 13:03:40 michiel Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -36,7 +36,7 @@
     </itemizedlist>
   </section>
   <section>
-    <title>Release Information</title>
+    <title>Release Information, Administration documentation</title>
     <itemizedlist>
       <listitem>
         <para><ulink url="releases/readme.txt" id="readthisfirst">Read This First (text)</ulink></para>
@@ -63,6 +63,16 @@
         <!-- old format (mmdocs) documentation -->
         <para><ulink url="install/orion-1.x.html" id="installationorion">Installation instructions for Orion</ulink></para>
       </listitem>
+      <listitem>
+        <para>
+          <ulink url="administrators/configuration.html" id="configuration">
+            MMBase configuration documentation
+          </ulink>
+          <ulink url="administrators/configuration.pdf" id="configuration.pdf">
+           (pdf)
+          </ulink>
+        </para>
+      </listitem>
     </itemizedlist>
   </section>
   <section>
@@ -77,31 +87,11 @@
           </ulink>
         </para>
       </listitem>
-      <listitem>
-        <para>
-          <ulink url="modules/images-and-attachments.html" id="imagesandattachments">
-            Images and Attachments
-          </ulink>
-          <ulink url="modules/images-and-attachments.pdf" id="imagesandattachments.pdf">
-           (pdf)
-          </ulink>
-	Everything (?)  about these kind of things in MMBase.</para>
-      </listitem>
     </itemizedlist>
   </section>
   <section>
-    <title>Administrators</title>
+    <title>Information analysts</title>
     <itemizedlist>
-      <listitem>
-        <para>
-          <ulink url="administrators/configuration.html" id="configuration">
-            MMBase configuration documentation
-          </ulink>
-          <ulink url="administrators/configuration.pdf" id="configuration.pdf">
-           (pdf)
-          </ulink>
-        </para>
-      </listitem>
       <listitem>
         <para><ulink url="informationanalysts/builders.html" id="builders">Builder configuration file</ulink></para>
       </listitem>
@@ -119,7 +109,7 @@
         </para>
       </listitem>
       <listitem>
-        <!-- old format (mmdocs) documentation -->
+        <!-- ol dformat (mmdocs) documentation -->
         <para><ulink url="administrators/remoteservices.html" id="remoteservices">MMBase Remote Services</ulink></para>
       </listitem>
       <listitem>
@@ -149,7 +139,7 @@
     </itemizedlist>
   </section>
   <section>
-    <title>Developers</title>
+    <title>Backend Developers</title>
     <itemizedlist>
       <listitem>
         <para>
@@ -182,16 +172,6 @@
         </para>
       </listitem>
       <listitem>
-        <para>
-          <ulink url="modules/i18n.html" id="i18n">
-            MMBase Internationalisation and Localisation
-          </ulink>
-          <ulink url="modules/i18n.pdf" id="i18n.pdf">
-           (pdf)
-          </ulink>
-        </para>
-      </listitem>
-      <listitem>
         <!-- old format (mmdocs) documentation -->
         <para><ulink url="developers/TCP2_4_8.html" id="tcp">TCP and the Transaction Handler</ulink></para>
       </listitem>
@@ -205,37 +185,10 @@
           </ulink>
         </para>
       </listitem>
-      <listitem>
-        <para>XML Importer (TCP 2.0)</para>
-        <para>
-          <ulink url="frontenddevelopers/xmlimporter/overview.html" id="xmlimporteroverview">
-            Overview
-          </ulink>
-          <ulink url="frontenddevelopers/xmlimporter/overview.pdf" id="xmlimporteroverview.pdf">
-           (pdf)
-          </ulink>
-        </para>
-        <para>
-          <ulink url="frontenddevelopers/xmlimporter/quickstart.html" id="xmlimporterquickstart">
-            Quick start
-          </ulink>
-          <ulink url="frontenddevelopers/xmlimporter/quickstart.pdf" id="xmlimporterquickstart.pdf">
-           (pdf)
-          </ulink>
-        </para>
-        <para>
-          <ulink url="frontenddevelopers/xmlimporter/cookbook.html" id="xmlimportercookbook">
-            Cook Book
-          </ulink>
-          <ulink url="frontenddevelopers/xmlimporter/cookbook.pdf" id="xmlimportercookbook.pdf">
-           (pdf)
-          </ulink>
-        </para>
-      </listitem>
     </itemizedlist>
   </section>
   <section>
-    <title>Templaters and Designers</title>
+    <title>Frontend developers</title>
     <itemizedlist>
       <listitem>
         <para>
@@ -285,6 +238,33 @@
         <!-- old format (mmdocs) documentation -->
         <para><ulink url="frontenddevelopers/SCAN1_0.html" id="veryoldanddeprecatedscan">SCAN</ulink></para>
       </listitem>
+      <listitem>
+        <para>XML Importer (TCP 2.0)</para>
+        <para>
+          <ulink url="frontenddevelopers/xmlimporter/overview.html" id="xmlimporteroverview">
+            Overview
+          </ulink>
+          <ulink url="frontenddevelopers/xmlimporter/overview.pdf" id="xmlimporteroverview.pdf">
+           (pdf)
+          </ulink>
+        </para>
+        <para>
+          <ulink url="frontenddevelopers/xmlimporter/quickstart.html" id="xmlimporterquickstart">
+            Quick start
+          </ulink>
+          <ulink url="frontenddevelopers/xmlimporter/quickstart.pdf" id="xmlimporterquickstart.pdf">
+           (pdf)
+          </ulink>
+        </para>
+        <para>
+          <ulink url="frontenddevelopers/xmlimporter/cookbook.html" id="xmlimportercookbook">
+            Cook Book
+          </ulink>
+          <ulink url="frontenddevelopers/xmlimporter/cookbook.pdf" id="xmlimportercookbook.pdf">
+           (pdf)
+          </ulink>
+        </para>
+      </listitem>
     </itemizedlist>
   </section>
   <section>
@@ -296,6 +276,31 @@
             Running MMBase in your organization
           </ulink>
           <ulink url="managers/mmbase4managers.pdf" id="mmbase4managers.pdf">
+           (pdf)
+          </ulink>
+        </para>
+      </listitem>
+    </itemizedlist>
+  </section>
+  <section>
+    <title>Modules</title>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <ulink url="modules/images-and-attachments.html" id="imagesandattachments">
+            Images and Attachments
+          </ulink>
+          <ulink url="modules/images-and-attachments.pdf" id="imagesandattachments.pdf">
+           (pdf)
+          </ulink>
+					Everything (?)  about these kind of things in MMBase.</para>
+      </listitem>
+      <listitem>
+        <para>
+          <ulink url="modules/i18n.html" id="i18n">
+            MMBase Internationalisation and Localisation
+          </ulink>
+          <ulink url="modules/i18n.pdf" id="i18n.pdf">
            (pdf)
           </ulink>
         </para>
