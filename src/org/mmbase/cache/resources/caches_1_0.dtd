@@ -2,7 +2,7 @@
 
 <!ELEMENT caches (cache*) >
 <!ELEMENT cache (status?, size?, maxEntrySize? ) >
-<!ATTLIST cache  name  ID  #REQUIRED >
+<!ATTLIST cache  name  CDATA  #REQUIRED >
 <!ELEMENT status (#PCDATA) >
 <!ELEMENT size (#PCDATA) >
 <!ELEMENT maxEntrySize (#PCDATA) >
