@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 import org.w3c.dom.*;
@@ -19,12 +28,12 @@ import org.mmbase.util.logging.*;
  * This class contains static utility methods used by the editwizard.
  * Most methods handle xml functions for you and are just to support ease and lazyness.
  *
+ * @javadoc
  * @author  Kars Veling
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
- *
  * @since   MMBase-1.6
- * @version $Id:
+ * @version $Id: Utils.java,v 1.4 2002-02-25 11:53:58 pierre Exp $
  */
 public class Utils {
 
@@ -116,6 +125,16 @@ public class Utils {
         }
     }
 
+    /**
+     * Serialize a node to a string, and return the result.
+     *
+     * @param        node    The node to serialize
+     */
+    public static String getSerializedXML(Node node)  {
+        StringWriter str=new StringWriter();
+        printXML(node, str);
+        return str.toString();
+    }
 
     /**
      * Serialize a node to the System.out

@@ -1,15 +1,23 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 import java.util.Vector;
 import org.w3c.dom.*;
 
 /**
- * Title:        VPRO EditWizard
- * Description:
- * Copyright:    Copyright (c) 1999
- * Company:      Q42
+ * EditWizard
+ * @javadoc
  * @author Kars Veling
- * @version
+ * @since   MMBase-1.6
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {

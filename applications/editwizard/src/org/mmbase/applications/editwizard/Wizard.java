@@ -9,24 +9,24 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
-import org.mmbase.bridge.Cloud;
-import org.w3c.dom.*;
-import java.io.*;
 import java.util.*;
-import javax.servlet.*;
+import java.io.Writer;
+import javax.servlet.ServletRequest;
+import org.w3c.dom.*;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 
 /**
- * Title:        EditWizard
- * Description:
+ * EditWizard
+ * @javadoc
  * @author Kars Veling
  * @author Michiel Meeuwissen
- *
  * @since   MMBase-1.6
- * @version $Id:
+ * @version $Id: Wizard.java,v 1.5 2002-02-25 11:53:58 pierre Exp $
  * 
  */
 public class Wizard {
+    // logging
     private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
 
     public final static short ERROR   = 1;
@@ -67,10 +67,10 @@ public class Wizard {
     private String wizardStylesheetFilename;
 
     /**
+     * public xmldom's: the schema, the data and the originaldata is stored.
      *
      * @scope private
      */
-    // public xmldom's: the schema, the data and the originaldata is stored.
     public Document schema;
     public Document data;
     public Document originaldata;
@@ -93,21 +93,19 @@ public class Wizard {
     private WizardDatabaseConnector dbconn;
 
     /**
+     * This boolean tells the jsp that the wizard may be closed, as far as he is concerned.
      *
      * @scope private
      */
-    // this boolean tells the jsp that the wizard may be closed, as far as he is concerned.
     public boolean mayBeClosed = false;
 
 
     /**
+     * This list stores all errors and warnings occured
      *
      * @scope private
      */
-    // this list stores all errors and warnings occured
     public Vector errors;
-
-
 
     /**
      * Constructor. Setup initial variables. No connection to mmbase is made yet.
@@ -141,40 +139,54 @@ public class Wizard {
     /**
      * This method initializes the Wizard instance. Always use one of these methods to start the wizard.
      *
-     * @param       wizardname      the wizardname which the wizard will use all the time. Eg.: samples/jumpers
-     * @param       dataid          the dataid (objectnumber) of the main object what is used by the editwizard
+     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
+     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
      */
     public void initialize(String wizardname, String dataid) throws WizardException, SecurityException{
         initialize(wizardname,dataid,null,null);
     }
 
     /**
-        - Loads the wizard schema
-        - Creates a connection to the database.
-        - Creates a work document (to contain all data)
-        - Loads data (new or existing)
-    */
+     * Loads the wizard schema, and creates a connection to MMBase using a {@link WizardDatabaseConnector}.
+     * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
+     *
+     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
+     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
+     */
     public void initialize(String wizardname, String dataid, String user, String pass) throws WizardException, SecurityException {
-        initialize(wizardname,dataid,user,pass,null);
+        // initialize database connector
+        dbconn = new WizardDatabaseConnector();
+        dbconn.setUserInfo(user,pass,null,null);
+        // add username to variables
+        variables.put("username", user);
+        // actually load the wizard
+        loadWizard(wizardname,dataid);
     }
 
     /**
-        - Loads the wizard schema
-        - Creates a connection to the database.
-        - Creates a work document (to contain all data)
-        - Loads data (new or existing)
-    */
+     * Creates a connection to MMBase using a {@link WizardDatabaseConnector}.
+     * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
+     *
+     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
+     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
+     */
     public void initialize(String wizardname, String dataid, Cloud cloud) throws WizardException, SecurityException {
-        initialize(wizardname,dataid,null,null,cloud);
+        // initialize database connector
+        dbconn = new WizardDatabaseConnector();
+        dbconn.setUserInfo(cloud);
+        // add username to variables
+        variables.put("username", cloud.getUser().getIdentifier());
+        // actually load the wizard
+        loadWizard(wizardname,dataid);
     }
 
     /**
-        - Loads the wizard schema
-        - Creates a connection to the database.
-        - Creates a work document (to contain all data)
-        - Loads data (new or existing)
-    */
-    public void initialize(String wizardname, String dataid, String user, String pass, Cloud cl) throws WizardException, SecurityException {
+     * Loads the wizard schema, and a work document, and fills it with initial data.
+     *
+     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
+     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
+     */
+    public void loadWizard(String wizardname, String dataid) throws WizardException, SecurityException {
         wizardName = wizardname;
         wizardDataid = dataid;
         wizardSchemaFilename = path + "/" + wizardName + ".xml";
@@ -186,21 +198,6 @@ public class Wizard {
 
         // load wizard schema
         loadSchema();
-
-        // initialize database connector
-        dbconn = new WizardDatabaseConnector();
-        dbconn.init(path);
-
-        cloud = cl;
-        if (cloud!=null) {
-            // add username + password to variables
-            dbconn.setUserInfo(cloud);
-            variables.put("username", cloud.getUser().getIdentifier());
-        } else if (user != null){
-            dbconn.setUserInfo(user,pass,null,null);
-            // add username to variables
-            variables.put("username", user);
-        }
 
         // setup original data
         originaldata = Utils.EmptyDocument();
@@ -236,12 +233,12 @@ public class Wizard {
                     }
                     // store original data, so that the put routines will know what to save/change/add/delete
                     originaldata.appendChild(originaldata.importNode(data.getDocumentElement().cloneNode(true), true));
-                }catch (SecurityException secure){
+                } catch (SecurityException secure){
                     log.warn("Wizard failed to login: " + secure.getMessage());
                     throw secure;
                 } catch (WizardException we) {
                     throw we;
-                }catch (Exception e){
+                } catch (Exception e){
                     throw new WizardException("Wizard could not be initialized.");
                 }
             }
@@ -1036,7 +1033,8 @@ public class Wizard {
         @param  value   The (String) value what should be stored in the data.
     */
     private void storeValue(String did, String fid, String value) {
-        if (log.isDebugEnabled()) Utils.printXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']"));
+        if (log.isDebugEnabled()) 
+            log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
         String ftype = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@ftype").getNodeValue();
         Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
         boolean ok = false;
@@ -1087,11 +1085,11 @@ public class Wizard {
                     processCommand(wc);
                 } catch (WizardException we) {
                     throw we;
-                }catch (RuntimeException e){
+                } catch (RuntimeException e){
                     // Have to accumulate the exceptions and report them at the end.
-                    java.io.StringWriter w= new StringWriter();
-                    e.printStackTrace(new PrintWriter(w));
-                    errors.add(new WizardException("* Could not process command:"+commandname + "="+commandvalue+"\n"+w));
+                    String errormsg=Logging.stackTrace(e);
+                    log.error(errormsg);                      
+                    errors.add(new WizardException("* Could not process command:"+commandname + "="+commandvalue+"\n"+errormsg));
                 }
             }
         }
@@ -1501,16 +1499,4 @@ public class Wizard {
         return fieldcon;
     }
 
-    public void addError(short type, String message) {
-        String errtype="ERROR";
-        switch (type) {
-            case WARNING:
-                errtype = "WARNING";
-                break;
-            case ERROR:
-                errtype = "ERROR";
-                break;
-        }
-        errors.add(errtype+":"+message);
-    }
 }
