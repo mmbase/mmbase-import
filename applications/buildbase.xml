@@ -33,7 +33,9 @@ Create a build.xml with a DOCTYPE like this:
   <property name="applications.dir"   location=".." />
   <property name="project.source.dir" location="." />
   <property name="project.templates.dir" value="${project.source.dir}/templates" />
+  <property name="project.templates.include" value="**" />
   <property name="project.examples.dir"  value="${project.source.dir}/examples" />
+  <property name="project.config.dir"  value="${project.source.dir}/config" />
   <property name="project.build.postfix" value="" />
   <property name="project.build.dir"  location="./build${project.build.postfix}" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
@@ -96,6 +98,9 @@ Create a build.xml with a DOCTYPE like this:
     <available property="documentation.available" file="${project.source.dir}/documentation" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
+    <available property="templates.available"      file="${project.templates.dir}"/>
+    <available property="config.available"      file="${project.config.dir}"/>
+
     <available property="templates.available"      file="${project.templates.dir}"/>
 
 
@@ -311,6 +316,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="install.templates" depends="init" if="templates.available">
     <copy todir="${templates.dir}/${project.target.templates.dir}">
       <fileset dir="${project.templates.dir}">
+        <include name="${project.templates.include}" />
       </fileset>      
     </copy>
   </target>
@@ -322,8 +328,21 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
   </target>
 
-  <target name="install" depends="jar,install.templates,install.examples">
-    <copy todir="${release.lib.dir}" file="${project.jar}" /> 
+
+
+  <target name="install.config" depends="init" if="config.available">
+    <copy todir="${mmbase.config}">
+      <fileset dir="${project.config.dir}">
+      </fileset>      
+    </copy>
+  </target>
+
+  <target name="install" depends="jar,install.templates,install.examples,install.config">
+    <copy todir="${release.lib.dir}">
+      <fileset dir="${project.jar.dir}">
+        <include name="**/*.jar" />
+      </fileset>      
+    </copy>
   </target>
 
 
