@@ -42,12 +42,6 @@ public class CommitTag extends CloudReferrerTag {
 
     public int doStartTag() throws JspTagException{
         // find the parent transaction:        
-        Class transactionClass;
-        try {
-            transactionClass = Class.forName("org.mmbase.bridge.jsp.taglib.edit.TransactionTag");
-        } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find TransactionTag class");  
-        }
         TransactionTag tt = (TransactionTag)  findParentTag("org.mmbase.bridge.jsp.taglib.edit.TransactionTag", transaction, true);
         Transaction trans = (Transaction) tt.getCloudVar();
         doAction(trans);
