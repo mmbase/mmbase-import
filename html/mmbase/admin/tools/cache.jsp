@@ -16,7 +16,7 @@
 <mm:import externid="active" from="parameters" />
 
 <mm:present referid="active">
-  <mm:import externid="cache" from="parameters" required="true" />  
+  <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="active" jspvar="active" vartype="String">
   <mm:write referid="cache" jspvar="cache" vartype="String">
   <%
@@ -34,7 +34,7 @@
 </tr>
 
 
-<% 
+<%
    java.util.Iterator i = org.mmbase.cache.Cache.getCaches().iterator();
    while (i.hasNext()) {
       org.mmbase.cache.Cache cache = org.mmbase.cache.Cache.getCache((String) i.next());
@@ -46,7 +46,7 @@
 </tr>
 <tr>
   <td class="data" colspan="2">
-  <% if(cache.isActive()) { %>  
+  <% if(cache.isActive()) { %>
     <a href="<mm:url>
         <mm:param name="cache"><%=cache.getName()%></mm:param>
         <mm:param name="active">off</mm:param>
@@ -92,7 +92,7 @@
   </td>
 </tr>
 
-<% } 
+<% }
 
  Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 
@@ -134,7 +134,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>

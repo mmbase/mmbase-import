@@ -91,7 +91,7 @@
 </mm:node>
 
 <tr>
-<td class="navigate"><a href="../email.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../email.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" >Return to Email Monitor</td>
 </tr>
 </table>
