@@ -49,7 +49,7 @@ public class EditStateNode {
 
     public boolean setSearchValue(String fieldname,Object value) {
         searchValues.put(fieldname,value);
-        return(true);
+        return true;
     }
 
     public String getSearchValue(String name) {
@@ -67,14 +67,14 @@ public class EditStateNode {
     }
 
     public Hashtable getSearchValues() {
-        return (searchValues);
+        return searchValues;
     }
 
     public boolean isChanged() {
         if (node.isChanged() || insSaveList.size()>0) {
-            return(true);
+            return true;
         } else {
-            return(false);
+            return false;
         }
     }
 
@@ -96,15 +96,15 @@ public class EditStateNode {
         else
             log.error("setHtmlValue("+fieldname+","+value+"): fieldname is null!");
 
-        return(true);
+        return true;
     }
 
     public String getHtmlValue(String name) {
-        return((String)htmlValues.get(name));
+        return (String)htmlValues.get(name);
     }
 
     public Hashtable getHtmlValues() {
-        return (htmlValues);
+        return htmlValues;
     }
 
     public void clearHtmlValues() {
@@ -135,16 +135,16 @@ public class EditStateNode {
     }
 
     public MMObjectNode getEditNode() {
-        return(node);
+        return node;
     }
 
     public MMObjectNode getEditSrcNode() {
         int snum=node.getIntValue("snumber");
         if (snum!=-1) {
             MMObjectNode rnode=mmObjectBuilder.getNode(snum);
-            return(rnode);
+            return rnode;
         } else {
-            return(null);
+            return null;
         }
     }
 
@@ -153,19 +153,19 @@ public class EditStateNode {
         int dnum=node.getIntValue("dnumber");
         if (dnum!=-1) {
             MMObjectNode rnode=mmObjectBuilder.getNode(dnum);
-            return(rnode);
+            return rnode;
         } else {
-            return(null);
+            return null;
         }
     }
 
     public int getEditNodeNumber() {
         try {
             int i=Integer.parseInt(editNode);
-            return(i);
+            return i;
         } catch(Exception e) {
         }
-        return(-1);
+        return -1;
     }
 
     public void setBuilder(String name) {
@@ -186,15 +186,15 @@ public class EditStateNode {
     }
 
     public String getBuilderName() {
-        return (editor);
+        return editor;
     }
 
     public String getDutchBuilderName() {
-        return (dutchEditor);
+        return dutchEditor;
     }
 
     public MMObjectBuilder getBuilder() {
-        return (mmObjectBuilder);
+        return mmObjectBuilder;
     }
 
     public void setSelectionQuery(String query) {
@@ -202,11 +202,11 @@ public class EditStateNode {
     }
 
     public String getSelectionQuery() {
-        return (selectionQuery);
+        return selectionQuery;
     }
 
     public boolean getInsSave() {
-        return (insSave);
+        return insSave;
     }
 
     public void setInsSave(boolean set) {
@@ -219,7 +219,7 @@ public class EditStateNode {
     }
 
     public Vector getInsSaveList() {
-        return(insSaveList);
+        return insSaveList;
     }
 
     public void delInsSaveList() {
@@ -294,6 +294,6 @@ public class EditStateNode {
         } else {
             log.debug("getRelation(): EditNodeNumber is -1");
         }
-        return (relationTable);
+        return relationTable;
     }
 }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Arjan Houtman
- * @version $Id: FieldEditor.java,v 1.11 2003-03-07 08:50:23 pierre Exp $
+ * @version $Id: FieldEditor.java,v 1.12 2003-07-03 13:15:10 pierre Exp $
  */
 public class FieldEditor implements CommandHandlerInterface {
     // Logger
@@ -169,7 +169,7 @@ public class FieldEditor implements CommandHandlerInterface {
           "augustus", "september", "oktober", "november", "december" };
 
      /**
-      *@deprecated use Locale
+      * @deprecated use Locale
       */
      static public String getMonthString (int m) {
          return monthNames[m - 1];
