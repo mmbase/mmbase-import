@@ -34,7 +34,8 @@ public class QueryConvertor {
 	if(!query.equals(""))
 		parsedQuery.sqlConversion(buffer);
 
-	// System.out.println("Converted to: "+buffer.toString());
+	//System.out.println("Converted to: "+buffer.toString());
+	
 	return buffer.toString();
   }
 
@@ -56,7 +57,7 @@ class DBQuery  extends ParseItem {
 	public Vector items = new Vector();
 
 	public DBQuery(String query) {
-		StringTokenizer parser = new StringTokenizer(query, "+-",true);
+		StringTokenizer parser = new StringTokenizer(query, "+-|",true);
 		ParseItem item;
 		String token;
 
@@ -272,13 +273,14 @@ class DBWildcardStringValue extends DBValue {
 }
 
 class DBLogicalOperator extends ParseItem {
-	public static final char AND = '+', NOT = '-';
+	public static final char AND = '+', NOT = '-', OR ='|';
 
 	char logOperator;
 
     public DBLogicalOperator(String operator) {
 		if      (operator.equals("+")) logOperator = '+';
 		else if (operator.equals("-")) logOperator = '-';
+		else if (operator.equals("|")) logOperator = '|';
 	}
 
 	public DBLogicalOperator(char operator) {
@@ -292,6 +294,8 @@ class DBLogicalOperator extends ParseItem {
 			break;
 		case NOT:
 			result.append(" AND NOT ");
+		case OR:
+			result.append(" OR ");
 		}
 	}
 }
