@@ -17,7 +17,7 @@
 </tr>
 <tr>
 	<td class="data">
-	    <a target="_new" href="http://www.mmbase.org">MMBase Home</a>
+	    <a target="_blank" href="http://www.mmbase.org">MMBase Home</a>
 	</td>
 	<td class="data">
 			 <p>Here you'll find all the documentation you'll need.</p>
@@ -32,7 +32,7 @@
 </tr>
 <tr>
 	<td class="data">
-	    <a target="_new" href="<mm:url page="/mmdocs/config/builders.html" />">Builder configuration</a>
+	    <a target="_blank" href="<mm:url page="/mmdocs/config/builders.html" />">Builder configuration</a>
 	</td>
 	<td class="data">
 			<p>Documentation on the builders.xml layout.</p>
