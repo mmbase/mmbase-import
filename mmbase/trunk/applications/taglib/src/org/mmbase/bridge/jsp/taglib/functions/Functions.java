@@ -32,7 +32,7 @@ import org.mmbase.util.Casting;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.2 2005-01-03 22:10:45 michiel Exp $
+ * @version $Id: Functions.java,v 1.3 2005-01-04 16:58:52 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -41,6 +41,7 @@ public class Functions {
      * MMBase specific 'contains' (for Collections). For strings use fn:contains.
      */
     public static boolean contains(Collection col, Object obj) {
+        if (col == null) return false;
         if (obj instanceof Node) {
             if (col instanceof NodeList) {
                 if (col.contains(obj)) return true;
