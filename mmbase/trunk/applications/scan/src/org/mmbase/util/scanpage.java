@@ -36,20 +36,12 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.26 2004-10-01 08:41:12 pierre Exp $
+ * @version $Id: scanpage.java,v 1.27 2004-10-11 11:17:06 pierre Exp $
  */
-public class scanpage {
+public class scanpage extends PageContext {
     // logger
     private static Logger log = Logging.getLoggerInstance(scanpage.class.getName());
 
-    /**
-     * The request object associated with the current page.
-     */
-    public HttpServletRequest req;
-    /**
-     * The response object associated with the current page.
-     */
-    public HttpServletResponse res;
     /**
      * The parameters of this page.
      * These are either set mnaually using {@link #setParamsVector}, or
@@ -101,8 +93,7 @@ public class scanpage {
      * Construct a scanpage for a servlet
      */
     public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
-        setReq(req);
-        setRes(res);
+        super(req,res);
         req_line = req.getServletPath();
         querystring = req.getQueryString();
 
@@ -157,7 +148,7 @@ public class scanpage {
      * This method is invoked either by the MMBase servlets, or through the MMCI.
      */
     public void setReq(HttpServletRequest req) {
-        this.req=req;
+        setRequest(req);
     }
 
     /**
@@ -165,7 +156,7 @@ public class scanpage {
      * This method is invoked either by the MMBase servlets, or through the MMCI.
      */
     public void setRes(HttpServletResponse res) {
-        this.res=res;
+        setResponse(res);
     }
 
     /**
