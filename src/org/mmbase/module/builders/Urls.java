@@ -22,7 +22,6 @@ import org.mmbase.util.*;
  */
 public class Urls extends MMObjectBuilder {
 
-
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("url");
 		if (str!=null) {
@@ -38,16 +37,6 @@ public class Urls extends MMObjectBuilder {
 			String url=node.getStringValue("url");
 			if (url!=null) return("<A HREF=\""+url+"\" TARGET=\"extern\">"+url+"</A>");
 			else return(null);
-		} else {
-			String t;
-			if (field.equals("number")) {
-				t = "" + node.getIntValue(field);
-			}
-			else
-			{
-				t=node.getStringValue(field);
-			}
-			return(t);
 		}
 	}
 
