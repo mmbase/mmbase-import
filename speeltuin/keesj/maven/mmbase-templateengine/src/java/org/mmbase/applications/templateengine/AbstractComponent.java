@@ -36,7 +36,7 @@ public abstract class AbstractComponent implements Component {
         return properties;
     }
     public void setProperties(Properties properties){
-    	this.properties = properties;
+    	this.properties = (Properties)properties.clone();
     }
     public void setParentComponent(Component component){
     	this.parent = component;
