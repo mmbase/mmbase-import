@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.65 2002-08-21 12:36:27 pierre Exp $
+ * @version $Id: Wizard.java,v 1.66 2002-08-21 16:39:35 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -129,6 +129,8 @@ public class Wizard implements org.mmbase.util.Sizeable {
      * 
      */
     private String popupId = "";  
+
+    private boolean debug = false;
 
 
     public int getByteSize() {
@@ -298,6 +300,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
         wizardName  = wizardConfig.wizard;
         popupId     = wizardConfig.popupId;
         dataId      = wizardConfig.objectNumber;
+        debug       = wizardConfig.debug;
 
         File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
         wizardStylesheetFile = uriResolver.resolveToFile("xsl/wizard.xsl");
@@ -398,6 +401,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
         params.put("language",   language);
         params.put("popupid",    popupId);
         params.put("cloud",      cloud);
+        params.put("debug",      "" + debug);
 
         if (templatesDir != null) params.put("templatedir",  templatesDir);
         try {
@@ -418,35 +422,41 @@ public class Wizard implements org.mmbase.util.Sizeable {
         log.debug("Synchronizing editor data, using the request");
         while (list.hasMoreElements()) {
             String name = (String)list.nextElement();
-            String[] ids = processFormName(name);
-            if (ids!=null) {
-                String formEncoding = req.getCharacterEncoding();
-                if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
-                String result;
-                if (formEncoding == null) {
-                   log.debug("request did not mention coding");
-                   // The form encoding was not known, so probable the local was used or ISO-8859-1
-                   // lets make sure it is right:
-                   try {
-                      if (cloud != null) {
-                         log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
-                         result = new String(req.getParameter(name).getBytes(),
-                                             cloud.getCloudContext().getDefaultCharacterEncoding());
-                         } else { // no cloud? I don't know how to get default char encoding then.
-                            // suppose it utf-8
-                            log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
-                            result = new String(req.getParameter(name).getBytes(), "UTF-8");
-                         }
-                   } catch (java.io.UnsupportedEncodingException e) {
-                       log.warn(e.toString());
-                       result = req.getParameter(name);
-                   }
-                } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
-                   result = req.getParameter(name);
+            if (name.startsWith("internal_")) {
+                if (log.isDebugEnabled()) log.debug("Ignoring parameter " + name);
+            } else {
+                if (log.isDebugEnabled()) log.debug("Processing parameter " + name);
+                String[] ids = processFormName(name);
+                if (log.isDebugEnabled()) log.debug("found ids: " + (ids == null ? "null" : " " + java.util.Arrays.asList(ids)));
+                if (ids != null) {
+                    String formEncoding = req.getCharacterEncoding();
+                    if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
+                    String result;
+                    if (formEncoding == null) {
+                        log.debug("request did not mention coding");
+                        // The form encoding was not known, so probable the local was used or ISO-8859-1
+                        // lets make sure it is right:
+                        try {
+                            if (cloud != null) {
+                                log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
+                                result = new String(req.getParameter(name).getBytes(),
+                                                    cloud.getCloudContext().getDefaultCharacterEncoding());
+                            } else { // no cloud? I don't know how to get default char encoding then.
+                                // suppose it utf-8
+                                log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
+                                result = new String(req.getParameter(name).getBytes(), "UTF-8");
+                            }
+                        } catch (java.io.UnsupportedEncodingException e) {
+                            log.warn(e.toString());
+                            result = req.getParameter(name);
+                        }
+                    } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
+                        result = req.getParameter(name);
+                    }
+                    storeValue(ids[0], ids[1], result);
                 }
-                storeValue(ids[0], ids[1], result);
             }
-        }
+        }                
     }
 
     /**
@@ -1274,7 +1284,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
     private void storeValue(String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled()) {
             log.debug("String value " + value + " in " + did + " for field " + fid);
-            log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
+            log.trace("Using data: " + Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
         }
         Node dttypeNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@dttype");
         if (dttypeNode == null) {
@@ -1287,17 +1297,20 @@ public class Wizard implements org.mmbase.util.Sizeable {
         if (datanode == null){
             log.debug("Node datanode found!");
             // Nothing.
+
         } else if (dttype.equals("binary")) {
             // binaries are stored differently
-            if (getBinary(did)!=null) {
+            if (getBinary(did) != null) {
                 Utils.setAttribute(datanode, "href", did);
                 Utils.storeText(datanode,getBinaryName(did));
             }
             ok = true;
+
         } else {  // default behavior: store content as text
             Utils.storeText(datanode, value);
             ok = true;
         }
+
         if (!ok) {
             log.warn("Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName);
         }
@@ -1309,7 +1322,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
      *
      * @param       req     The ServletRequest where the commands (name/value pairs) reside.
      */
-    public void processCommands(ServletRequest req) throws WizardException {
+    private void processCommands(ServletRequest req) throws WizardException {
 
         log.debug("processing commands");
         mayBeClosed = false;
@@ -1323,21 +1336,23 @@ public class Wizard implements org.mmbase.util.Sizeable {
         Enumeration list = req.getParameterNames();
         while (list.hasMoreElements()) {
             commandname = (String)list.nextElement();
-            if (log.isDebugEnabled()) log.debug("found a command " + commandname);
-            if (commandname.indexOf("cmd/")==0 && !commandname.endsWith(".y")) {
+            if (commandname.indexOf("cmd/") == 0 && !commandname.endsWith(".y")) {
+                if (log.isDebugEnabled()) log.debug("found a command " + commandname);
                 // this is a command.
-                String commandvalue = req.getParameter(commandname);
-                try{
-                    WizardCommand wc = new WizardCommand(commandname, commandvalue);
-                    processCommand(wc);
-                } catch (WizardException we) {
-                    throw we;
-                } catch (RuntimeException e){
-                    // Have to accumulate the exceptions and report them at the end.
-                    String errormsg=Logging.stackTrace(e);
-                    log.error(errormsg);
-                    errors.add(new WizardException("* Could not process command:"+commandname + "="+commandvalue+"\n"+errormsg));
-                }
+                    String commandvalue = req.getParameter(commandname);
+                    try{
+                        WizardCommand wc = new WizardCommand(commandname, commandvalue);
+                        processCommand(wc);
+                    } catch (WizardException we) {
+                        throw we;
+                    } catch (RuntimeException e){
+                        // Have to accumulate the exceptions and report them at the end.
+                        String errormsg=Logging.stackTrace(e);
+                        log.error(errormsg);
+                        errors.add(new WizardException("* Could not process command:"+commandname + "="+commandvalue+"\n"+errormsg));
+                    }                
+            } else {
+                if (log.isDebugEnabled()) log.trace("ignoring non-command " + commandname);
             }
         }
 
