@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.11 2004-10-09 09:37:31 nico Exp $
+ * @version $Id: DateFormat.java,v 1.12 2004-11-26 10:32:31 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -322,8 +322,7 @@ public class DateFormat {
             long seconds = Long.valueOf(fieldValue).longValue();
             cal.setTimeInMillis(seconds * factor);
             return cal.get(datePart);
-        }
-        else {
+        } else {
             return -1;
         }
     }
