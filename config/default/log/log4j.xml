@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j SYSTEM "http://jakarta.apache.org/log4j/javadoc/org/apache/log4j/xml/doc-files/log4j.dtd"[
+         <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
+         <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+]>
+
+
+<!-- 
+  MMBase logging configuration 
+
+  MMBase can use log4j for logging. See
+  http://jakarta.apache.org. This is a sample configuration file for
+  it. The name of this file is indicated in <CONFIGDIR>/log/log.xml
+
+  Quick introduction on how to configure log4j.
+
+  In the configuration you find two kind of things: Appenders, and
+  Categories. 
+
+  The Appenders are describing the logfiles, but are all pointing to
+  the same file now. The only difference is the PatternLayout (how the
+  contents looks), because some of them are very slow, you don't want
+  to use them always.
+
+  There is one special 'Category', namely 'root'. Other categories
+  inherit from this one, but can override for example the priority. 
+
+  Categories are simply the complete class-name.
+
+
+-->
+
+<configuration>
+
+<!-- appenders -->
+
+<!-- Its ussualy not very sensible to use a AsyncAppender, since it -->
+<!-- buffering is done by the operation system. I think it is only -->
+<!-- usefull if the log-file is on a very slow device (for example -->
+<!-- somewhere else on the network -->
+<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+    <appender-ref ref="fastfile" />
+</appender>
+
+<!-- This file is rather slow, because of code information, use it -->
+<!-- only during debugging, or in classes which are not performance -->
+<!-- critical -->
+<appender name="slowfile" class="org.apache.log4j.FileAppender" >
+    <param name="File"   value="/tmp/mmlog4j.log" />
+    <param name="Append" value="true" />
+    <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%d %-5p %c{2} %M.%L %x - %m%n" />
+    </layout>
+</appender>
+
+
+<appender name="fastfile" class="org.apache.log4j.FileAppender">
+    <param name="File"   value="/tmp/mmlog4j.log" />
+    <param name="Append" value="true" />
+    <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%d{ISO8601} %p - %m%n" />
+    </layout>
+
+    <!-- layout class="org.apache.log4j.xml.XMLLayout" / --> <!-- also possible -->
+</appender>
+
+
+<!-- categories -->
+
+<root>
+    <priority class='&priority;' value ="debug" />
+   	<appender-ref ref="fastfile" />
+</root>
+
+<!-- base category for all MMBase classes -->
+<category name="org.mmbase" class ='&logger;'>
+<!-- nothing special -->
+</category>
+
+
+
+<!-- STDERR is a special Category, to wich stderr will be written
+     (always with priority 'warn' or 'fatal' (uncaught
+     exceptions))  -->
+
+<category name="STDERR" class ='&logger;'>
+    <priority class='&priority;' value ="debug" />	
+</category>
+
+</configuration>
