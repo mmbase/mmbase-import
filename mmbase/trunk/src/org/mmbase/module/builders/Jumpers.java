@@ -45,6 +45,7 @@ public class Jumpers extends MMObjectBuilder {
 	}
 
 	public void delJumpCache(String key) {
+		if (debug) debug("Removing "+key+" from jumper cache");
 		jumpCache.remove(key);
 	}
 
