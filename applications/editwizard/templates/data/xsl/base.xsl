@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.30 2004-05-02 15:02:01 nico Exp $
+    @version $Id: base.xsl,v 1.31 2004-05-17 22:21:45 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -79,8 +79,20 @@
   </xsl:variable>
   <!-- relative to root -->
   <xsl:variable name="rootreferrer">
-    <xsl:value-of select="$ew_context" /><xsl:value-of select="$referrer" />
+    <xsl:choose>
+      <xsl:when test="substring($referrer, 1, 5) = 'https:'">
+        <xsl:value-of select="$referrer" />
+      </xsl:when>
+      <xsl:when test="substring($referrer, 1, 5) = 'http:'">
+        <xsl:value-of select="$referrer" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$ew_context" /><xsl:value-of select="$referrer" />
+      </xsl:otherwise>
+
+    </xsl:choose>
   </xsl:variable>
+
   <!-- the directory of that file, needed to refer to resources there (when you override), like e.g. images -->
   <xsl:variable name="referrerdir">
     <xsl:call-template name="getdirpart">
@@ -291,8 +303,9 @@
   <!-- utitily function. Takes a file and gets the directory part of it -->
   <xsl:template name="getdirpart">
     <xsl:param name="dir" />
-    <xsl:variable name="firstdir" select="substring-before($dir, &apos;/&apos;) " />
-    <xsl:variable name="restdir" select="substring-after($dir, &apos;/&apos;) " />
+    <xsl:variable name="filename" select="substring-before(concat($dir, &apos;?&apos;), &apos;?&apos;) " />
+    <xsl:variable name="firstdir" select="substring-before($filename, &apos;/&apos;) " />
+    <xsl:variable name="restdir" select="substring-after($filename, &apos;/&apos;) " />
     <!-- if still a rest then add firstdir to dir -->
     <xsl:if test="$restdir">
       <xsl:value-of select="$firstdir" />
