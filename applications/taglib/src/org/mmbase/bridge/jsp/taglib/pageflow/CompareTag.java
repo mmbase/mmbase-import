@@ -34,6 +34,9 @@ public class CompareTag extends PresentTag implements ConditionTag {
     }
 
     protected boolean doCompare(String compare) {
+        if (log.isDebugEnabled()) {
+            log.debug("comparing '" + value + "' to '" + compare + "'");
+        }
         return value.equals(compare);
     }
                
@@ -41,12 +44,14 @@ public class CompareTag extends PresentTag implements ConditionTag {
         String compare;
         if (getReferid() == null) {
             Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
-            compare =  (String) w.getValue();
+            Object o = w.getValue();
+            if (o == null) {
+                compare = "";
+            } else {
+                compare = o.toString();
+            }
         } else {
-            compare = getString(getReferid());            
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("comparing '" + value + "' to '" + compare + "'");
+            compare = getString(getReferid());
         }
         if (doCompare(compare) != inverse ) {
             return EVAL_BODY_TAG;
