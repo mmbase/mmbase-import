@@ -1390,6 +1390,58 @@
       </para>
     </section>
     <section>
+      <title>Another way to create taglib variables: import
+        tag</title>
+      <para>
+        We have seen the most natural way to put something in the
+        'context', which is using an 'id' on some tag. Putting
+        explicitely something in the context could therefore be done
+        like this:
+        <programlisting><![CDATA[
+<mm:write value="hello world" id="hello" write="false" />
+]]></programlisting>
+      </para>
+      <para>
+        There is a variant of the write-tag of which the only goal is
+        putting things in the context. This is the 'import' tag, which
+        you have seen before. It is in some way also the inverse of
+        the write tag; the write tag is to get things
+        <emphasis>out</emphasis> the context (but by chance can also
+        be used to put things in it), but the import tag is
+        <emphasis>meant</emphasis> to put things
+        <emphasis>in</emphasis> the context. Therefore the import-tag
+        is not a 'writer' itself. The function of the value attribute
+        of the write tag is taken by the body of the import tag.
+        <programlisting><![CDATA[
+<mm:import id="hello">hello world</mm:import>
+]]></programlisting>
+      </para>
+      <para>
+        The body of the import tag is only optional though. Normally
+        the import-tag will import from somewhere else in the context.
+        Very often, it will be used to 'import' a request parameter.
+        <programlisting><![CDATA[
+<mm:import externid="greeting" from="parameters" id="hello" />
+]]></programlisting>
+        This will put the value of the request parameter 'greeting'
+        into the taglib variable 'hello'.
+      </para>
+      <para>
+        Very often you will be content with a taglib variable with the
+        same name, so the 'id' attribute is optional if you use the
+        externid attribute:
+        <programlisting><![CDATA[
+<mm:import externid="greeting" from="parameters"/>
+]]></programlisting>
+        This will put the value of the request parameter 'greeting'
+        into the taglib variable 'greeting'.
+      </para>
+      <para>
+        These are the basics of the import tag. We refer to the taglib
+        reference documentation for a full description.
+      </para>
+    </section>
+    <section>
       <title>The parent-writer variable: $_</title>
       <para>
         In MMBase taglib there is one dollar sign variable with a
@@ -1400,8 +1452,8 @@
         Often it is a bit cumbersome to use an id attribute on some
         writer, because that will often also introduce a context tag
         (when you are in a list), and things get a bit messy. So, you
-        can also use the $_-variable which is the equivelant of
-        &lt;mm:write /&gt;, but then inside an attribute.
+        can also use the $_-variable which is the equivalent of
+        &lt;mm:write /&gt;, but then inside an ttribute.
         <programlisting><![CDATA[
 <mm:listnodes type="news">
   <mm:field name="title">
@@ -1411,8 +1463,60 @@
   </mm:field>
 </mm:listnodes>
 ]]></programlisting> 
-        This finds news article with the same title.
+        This finds news articles with the same title.
       </para>      
     </section>
+  </section>
+  <section>
+    <title>Jsp-variables</title>
+    <para>
+      Sometimes the MMBase taglib will not provide enough
+      functionality. Since a taglib is always used in a JSP page (this
+      is not so per definition, but practicly, this is always so), it
+      would be only logical to implement the more complicated things in
+      Java.
+    </para>
+    <para>
+      For this to be possible most MMBase tags (I think the exceptions
+      are only the 'condition' tags) have the 'jspvar'
+      attribute. With this, a java variable, of which the name is
+      defined by the the value of the jspvar attribute, will be
+      instantiated, and can be used in the body of the tag. There is
+      for example (in taglib 1.0.1) no taglib way to get user information:
+        <programlisting><![CDATA[
+<mm:cloud jspvar="cloud">
+  logged in as <%=  cloud.getUser().getIdentifier() %>
+</mm:cloud>
+]]></programlisting>
+    </para>
+    <para>
+      Sometimes the type of the variable which must be declared is not
+      defined well by the tag. Then a jspvar of type 'Object' will be
+      declared, which can be inconvenient because then normally you
+      will have to cast to the desired type.
+    </para>
+    <para>
+      Therefore the tags to which this applies (most noticably all
+      'writer' tags) also feature the 'vartype' attribute.
+      <programlisting><![CDATA[
+<mm:field name="size" jspvar="size" vartype="float">
+  Size of the object: <%= size.floatValue() * 1000 %> milimeters.
+</mm:field>
+]]></programlisting> 
+    </para>
+    <para>
+      The 'jspvar' and 'vartype' attributes are probably the only
+      mmbase taglib attribute which do not accept taglib dollar-sign
+      variables. This is fundamentally impossible, because the values
+      of those attributes need to be known at compile time.
+    </para>
+    <para>
+      The 'import' tag is the only tag which does not create the
+      jsp-variable in its body (because that is used already for
+      something else). The jspvar of an import tag is availabe
+      <emphasis>after</emphasis> the tag. So the import tag provides
+      you a way to create global jsp-variables on your page. Global
+      variables are considered bad practice.
+    </para>
   </section>
 </article>
