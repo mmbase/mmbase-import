@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.14 2003-02-11 17:05:08 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.15 2003-04-18 15:02:07 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -96,10 +96,10 @@ public class XSLTransformer {
      * @since MMBase-1.6
      **/
 
-    public void transform(DOMSource xml, File xslFile, StreamResult result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(DOMSource xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         transform(xml, xslFile, result, params, true);
     }
-    public void transform(DOMSource xml, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(DOMSource xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
 
         if (log.isDebugEnabled()) {
             Runtime rt = Runtime.getRuntime();
@@ -150,7 +150,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public void transform(File xmlFile, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -219,15 +219,22 @@ public class XSLTransformer {
                 fileName = fileName.substring(0, fileName.length() - 4);
                 if (params == null) params = new HashMap();                
                 params.put("filename", fileName);        
-             File resultFile = new File(resultDir, fileName  + ".html");
+                File resultFile = new File(resultDir, fileName  + ".html");
                 if (resultFile.lastModified() > files[i].lastModified()) {
                     log.info("Not transforming " + files[i] + " because " + resultFile + " is up to date");
                 } else {
                     log.info("Transforming file " + files[i] + " to " + resultFile);
                     try {
-                        transform(files[i], xslFile, new StreamResult(resultFile), params, considerDir);
+                        Result res;
+                        if ("true".equals(params.get("dontopenfile"))) {
+                            res = new StreamResult(System.out);
+                        } else {
+                            res = new StreamResult(resultFile);
+                        }
+                        transform(files[i], xslFile, res, params, considerDir);
                     } catch (Exception e) {
                         log.error(e.toString());
+                        log.error(Logging.stackTrace(e));
                     }
                 }
             }
