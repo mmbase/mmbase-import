@@ -188,13 +188,25 @@ public class InsRel extends MMObjectBuilder {
 	* @see getRelationsVector
 	**/
 	public Enumeration getRelations(int src) {
-		Vector re=getRelationsVector(src);
+	    return getRelations(src,-1);
+	}
+
+	/**
+	* Get relation(s) for a MMObjectNode, using a specified role (reldef) as a filter
+	* @param src Identifying number of the object to find the relations of.
+	* @param rnumber The number of the relation definition (role) to filter on
+	* @return If succesful, an <code>Enumeration</code> listing the relations.
+	*         If no relations exist, the method returns <code>null</code>.
+	* @see getRelationsVector
+	**/
+	public Enumeration getRelations(int src, int rnumber) {
+		Vector re=getRelationsVector(src,rnumber);
 		if (re!=null)
 		    return re.elements();
 		else
 		    return null;	
 	}
-
+	
 	/**
 	* Checks whether any relations exist for a MMObjectNode.
 	* This includes unidirection relations which would otherwise not be counted.
@@ -225,6 +237,27 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
+	* Get relation(s) for a MMObjectNode, using a specified role (reldef) as a filter
+	* This function returns all relations based on this role in which the node is either a source, or where the node is
+	* the destination, but the direction is bidirectional.
+	* @param src Identifying number of the object to find the relations of.
+	* @param rnumber The number of the relation definition (role) to filter on
+	* @return If succesful, a <code>Vector</code> containing the relations.
+	*       Each element in the vector's enumeration is a node object retrieved from the
+	*       associated table (i.e. 'insrel'), containing the node's fields.
+	*       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
+	**/
+	public Vector getRelationsVector(int src, int rnumber) {
+	    if (rnumber==-1) {
+	        return getRelationsVector(src);
+	    } else if (usesdir) {
+	        return searchVector("WHERE (snumber="+src+" OR (dnumber="+src+" and dir<>1)) AND rnumber="+rnumber);
+	    } else {
+	        return searchVector("WHERE (snumber="+src+" OR dnumber="+src+") AND rnumber="+rnumber);
+	    }
+	}
+	
+	/**
 	* Test whether a relation exists and returns the corresponding node.
 	* Note that this test is strict: it determines whether a relation exists from a source to a destination
 	* with a specific role. If only a role-relation exists where source and destination are reversed, this method
@@ -244,7 +277,7 @@ public class InsRel extends MMObjectBuilder {
 	
 	/**
 	* get MMObjectNodes related to a specified MMObjectNode
-	* @param sourceNode this is the source MMObjectNode 
+	* @param sourceNode this is the source MMObjectNode
 	* @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
 	*/
 	public Enumeration getRelated(String sourceNode,String wtype) {
@@ -286,6 +319,50 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
+	* get MMObjectNodes related to a specified MMObjectNode
+	* @param sourceNode this is the number of the source MMObjectNode (in string format)
+	* @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
+	* @param role the role of teh relation (name in reldef)
+	*/
+	public Enumeration getRelated(String sourceNode,String wtype, String role) {
+		try {
+			int src=Integer.parseInt(sourceNode);
+			int otype=mmb.getTypeDef().getIntValue(wtype);
+			int rnumber=mmb.getRelDef().getGuessedNumber(role);
+			return getRelated(src,otype,rnumber);
+		} catch(Exception e) {}
+		return null;
+	}
+
+	/**
+	* get MMObjectNodes related to a specified MMObjectNode
+	* @param src this is the number of the source MMObjectNode
+	* @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
+	* @param role the role of teh relation (name in reldef)
+	*/
+	public Enumeration getRelated(int src,String wtype, String role) {
+		try {
+			int otype=mmb.getTypeDef().getIntValue(wtype);
+			int rnumber=mmb.getRelDef().getGuessedNumber(role);
+			return getRelated(src,otype,rnumber);
+		} catch(Exception e) {}
+		return null;
+	}
+	
+	/**
+	* Get MMObjectNodes of a specified type related to a specified MMObjectNode
+	* @param src this is the number of the source MMObjectNode
+	* @param otype the object type of the nodes you want to have
+	* @param rnumber Identifying number of the role (reldef)
+	* @returns An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
+	*/
+	public Enumeration getRelated(int src,int otype, int rnumber) {
+		Vector se=getRelatedVector(src,otype,rnumber);
+		if (se!=null) return se.elements();
+		return null;
+	}
+	
+	/**
 	* Get MMObjectNodes related to a specified MMObjectNode
 	* @param src this is the number of the MMObjectNode requesting the relations
 	* @param otype the object type of the nodes you want to have. -1 means any node.
@@ -293,13 +370,27 @@ public class InsRel extends MMObjectBuilder {
 	*   according to the specified filter(s).
 	**/
 	public Vector getRelatedVector(int src,int otype) {
+	    return getRelatedVector(src,otype,-1);
+	}
 
-		Vector list=(Vector)relatedCache.get(new Integer(src));
+	/**
+	* Get MMObjectNodes related to a specified MMObjectNode
+	* @param src this is the number of the MMObjectNode requesting the relations
+	* @param otype the object type of the nodes you want to have. -1 means any node.
+	* @param rnumber Identifying number of the role (reldef)
+	* @returns A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+	*   according to the specified filter(s).
+	**/
+	public Vector getRelatedVector(int src,int otype, int rnumber) {
+	    Vector list=null;
+    	if (rnumber==-1) {
+		    list=(Vector)relatedCache.get(new Integer(src));
+	    }
 		if (list==null) {
 		    list=new Vector();
 		    MMObjectNode node,node2;
 		    int nodenr = -1;
-			for(Enumeration e=getRelations(src); e.hasMoreElements(); ) {
+			for(Enumeration e=getRelations(src,rnumber); e.hasMoreElements(); ) {
 					node=(MMObjectNode)e.nextElement();
 					nodenr=node.getIntValue("snumber");
 					if (nodenr==src) {
@@ -310,7 +401,9 @@ public class InsRel extends MMObjectBuilder {
 						list.addElement(node2);
 					}
 			}	
-			relatedCache.put(new Integer(src),list);
+			if (rnumber==-1) {
+    			relatedCache.put(new Integer(src),list);
+            }
 		}
 		// oke got the Vector now lets get the correct otypes
 		

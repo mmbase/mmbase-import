@@ -131,9 +131,17 @@ public class RelDef extends MMObjectBuilder {
     * Returns the builder of a relation definition.
     * @return the builder
     **/
-    public MMObjectBuilder getBuilder(MMObjectNode node) {
+    public InsRel getBuilder(int rnumber) {
+        return getBuilder(getNode(rnumber));
+    }
+
+    /**
+    * Returns the builder of a relation definition.
+    * @return the builder
+    **/
+    public InsRel getBuilder(MMObjectNode node) {
         String bulname=getBuilderName(node);
-  	    MMObjectBuilder bul=mmb.getMMObject(bulname);
+  	    InsRel bul=(InsRel)mmb.getMMObject(bulname);
   	    if (bul==null) {
   	        return mmb.getInsRel();
   	    } else {
