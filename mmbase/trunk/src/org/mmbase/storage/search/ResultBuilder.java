@@ -22,10 +22,9 @@ import org.mmbase.module.corebuilders.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
-// TODO: move to org.mmbase.module.core?
 public class ResultBuilder extends VirtualBuilder {
     
     /** Map, maps fields by field alias. */

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * and should not be called by new code.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -328,8 +328,6 @@ public class ConstraintParser {
             result = new BasicFieldValueConstraint(field, value)
                 .setOperator(FieldValueConstraint.LIKE)
                 .setCaseSensitive(caseSensitive);
-  
-            // TODO RvM: case insensitive depending on 'upper'
             
         } else if (token.equalsIgnoreCase("IS")) {
             // IS [NOT] NULL

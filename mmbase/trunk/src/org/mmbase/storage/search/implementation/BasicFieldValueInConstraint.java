@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -40,9 +40,8 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      * @param value The value.
      * @return This <code>BasicFieldValueInConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @see org.mmbase.storage.search.FieldValueInConstraint#getValues
      */
-    // TODO RvM: add javadoc to explain how the values are converted to strings
-    // in order to be added.
     public BasicFieldValueInConstraint addValue(Object value) {
         BasicStepField.testValue(value, getField());
         if (value instanceof Number) {
@@ -80,7 +79,6 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
                 && getField().getStep().getAlias().equals(
                     constraint.getField().getStep().getAlias())
-                // TODO: compare values based on numerical value, ignoring type.
                 && values.equals(constraint.values);
         } else {
             return false;
