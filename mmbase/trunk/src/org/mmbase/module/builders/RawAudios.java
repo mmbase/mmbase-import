@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.11 $ $Date: 2001-05-16 15:16:36 $
+ * @$Revision: 1.12 $ $Date: 2001-06-05 15:29:03 $
  *
  */
 public class RawAudios extends MMObjectBuilder {
@@ -45,7 +45,6 @@ public class RawAudios extends MMObjectBuilder {
 	public final static int PCM_FORMAT         = 4;
 	public final static int MP2_FORMAT         = 5;
 	public final static int SURESTREAM_FORMAT  = 6; 
-	public final static int EXCERPT_FORMAT     = 7; 
 	public final static int GEDAAN = 3;
 
 	public RawAudios() {
@@ -79,7 +78,6 @@ public class RawAudios extends MMObjectBuilder {
 				case 4: return("pcm");
 				case 5: return("mp2");
 				case 6: return("g2/sure");
-				case 7: return("excerpt");
 				default: return("Onbepaald");
 			}
 		} else if (field.equals("channels")) {
