@@ -15,13 +15,13 @@ import org.mmbase.bridge.Node;
 * Interface designed to make it possible for child tags
 * to access a node defined in a tag
 **/
-public interface NodeProvider extends TagIdentifier{
+public interface NodeProvider extends TagIdentifier {
     /**
      * @return the node contained in the tag
      * NOTE: we have decided to call this methid getNodeVar because
      * we use tag attributes with name "node" and type String 
      **/
     public Node getNodeVar() throws JspTagException;	
-
     public void setModified();
+    public void setJspvar(String jv);
 }
