@@ -54,9 +54,9 @@
   </mm:context>
   </mm:list>
   </table>
-  <p id="colofon">
+  <!-- p id="colofon">
     <img src="../images/mmbase.png" />
-  </p>
+  </p-->
 </body>
 </html>
 </mm:cloud>
