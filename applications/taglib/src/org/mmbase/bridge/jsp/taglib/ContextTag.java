@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.73 2005-03-16 18:36:01 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.74 2005-04-01 14:04:17 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -129,8 +129,17 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         searchedParent = false;
 
         if (referid != Attribute.NULL) {
-            Object o = getObject(referid.getString(this));
-            if ("".equals(o)) { // that means, lets ignore it.
+            Object o;
+            int s = getScope();
+            if (s == PageContext.PAGE_SCOPE) {
+                o = getObject(referid.getString(this));
+            } else {
+                o = pageContext.getAttribute(referid.getString(this), s);
+                if (o != null) {
+                    log.info("Found context in " + scope + " " + o);
+                }
+            }
+            if (o == null || "".equals(o)) { // that means, lets ignore it.
                 createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
@@ -284,6 +293,12 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public int doAfterBody() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
+        }
+        int s = getScope();
+        if (s != PageContext.PAGE_SCOPE) {
+            log.info("Setting to " + scope + " " + container);
+            pageContext.setAttribute(getId(), container, s);
+            
         }
         container.release(); // remove the vars from 'page-context' again if necessary.
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
