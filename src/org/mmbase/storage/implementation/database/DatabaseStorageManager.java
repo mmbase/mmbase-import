@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.89 2005-03-14 19:06:44 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.90 2005-03-29 14:49:16 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -857,7 +857,7 @@ public class DatabaseStorageManager implements StorageManager {
             String key = (String)f.next();
             // changing number is not allowed
             if (key.equals("number") || key.equals("otype")) {
-                throw new StorageException("trying to change the '" + key + "' field");
+                throw new StorageException("trying to change the '" + key + "' field of " + node + ". Changed fields " + fieldNames);
             }
             FieldDefs field = builder.getField(key);
             if ((field != null) && field.inStorage()) {
@@ -1349,7 +1349,7 @@ public class DatabaseStorageManager implements StorageManager {
 
 
     /**
-     * Reloads the data from a anode form teh adtabase.
+     * Reloads the data from a node from the adtabase.
      * Use this after a create or change action, so the data in memory is consistent with
      * any data stored in the database.
      * @param node the node to refresh
@@ -1413,7 +1413,7 @@ public class DatabaseStorageManager implements StorageManager {
                     FieldDefs field = (FieldDefs)i.next();
                     if (field.inStorage()) {
                         if (shorten(field)) {
-                            node.setValue(field.getDBName(), "$SHORTED");
+                            node.setValue(field.getDBName(), MMObjectNode.VALUE_SHORTED);
                         } else if (field.getDBType() == FieldDefs.TYPE_BYTE && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
                             node.setValue(field.getDBName(), readBinaryFromFile(node, field));
                         } else {
