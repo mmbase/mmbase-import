@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+ ]>
 <article>
   <articleinfo>
     <title>Documentation Overview</title>
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.41 2003-12-03 11:40:45 henk Exp $</edition>
+    <edition>$Id: index.xml,v 1.42 2003-12-04 13:32:12 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -235,13 +235,14 @@
         id="taglibreferencehtml" url="reference/mmbase-taglib.html">HTML</ulink>)</para>
       </listitem>
 
+      <!--
       <listitem>
         <para>MMBase community taglib reference (<ulink
         id="taglibcommunityjsp" url="reference/community-taglib/toc.html">JSP</ulink>
         <ulink id="taglibcommunityhtml"
         url="reference/mmcommunity-taglib.html">HTML</ulink>)</para>
       </listitem>
-
+      -->
       <listitem>
         <para>MMBase standard builders (<ulink id="standardbuilders"
         url="frontenddevelopers/builders/index.html">HTML</ulink>)</para>
