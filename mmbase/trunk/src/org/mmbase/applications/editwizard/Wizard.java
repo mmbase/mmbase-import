@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.28 2002-06-04 12:21:23 pierre Exp $
+ * @version $Id: Wizard.java,v 1.29 2002-06-11 22:29:46 michiel Exp $
  *
  */
 public class Wizard {
@@ -566,7 +566,7 @@ public class Wizard {
             Utils.appendNodeList(items, optionlist);
 
             // set selected=true for option which is currently selected
-            String selectedValue = Utils.selectSingleNode(optionlist, "../value/text()").getNodeValue();
+            String selectedValue = Utils.selectSingleNodeText(optionlist, "../value/text()", ""); //.getNodeValue();
             log.debug("Trying to preselect the list at value: "+ selectedValue);
             Node selectedoption = Utils.selectSingleNode(optionlist, "option[@id='" + selectedValue + "']");
             if (selectedoption!=null) {
@@ -1386,7 +1386,14 @@ public class Wizard {
         if (objectdef==null) {
             objectdef = Utils.selectSingleNode(listnode, "item[@displaymode='add']/action/relation");
         }
+
+        if (objectdef == null) { // still null?
+            throw new WizardException("Could not find action (add or create) to add a item to list with id " + listId);            
+        }
+         
+                             
         objectdef = objectdef.cloneNode(true);
+
         log.debug("Creating object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef,"type"));
         // Put the value from the command in that object-definition.
         if (destinationId != null){
