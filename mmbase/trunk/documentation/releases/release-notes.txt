@@ -23,17 +23,57 @@ NEW FEATURES:
 General New Features:
 --------------------
 
-- Query-object
+- Query-object, which allows for several new taglib and MMCI features.
+
+- New storage layer, which allows for real transactions!
+
+- Some 'applications' (like editwizards) have been split up to seperate jars. This will allow for
+  easiers partial upgrades of installations.
 
 
----------------------
-MMCI New Features:
----------------------
+--------------------------
+MMCI (bridge) New Features:
+-------------------------
 [1.7.0]
-  
+
+- All interfaces of the org.mmbase.storage.search package are part of the 'bridge' now.  There is
+  also a new 'Query' object in org.mmbase.bridge, which allows for query creation and modification
+  in a generic way.
+
+- The new Query framework allows for easy execution of 'aggregating queries' (e.g. counts) through the
+  bridge.
+
+- The bridge implementation now also lets security modify its queries to exclude read-protected
+  nodes. Depending on the security implementation and configuration this should speed up things.
+
+- Several small additions (like Cloud.getRelationManager(NodeManager, NodeManager, String));
+
 -------------------
 Taglib New Features:
 -------------------
+
+[1.7.0]
+
+- Content-Tag, which provides default escaping behaviour, postprocessing functionality, and
+  content-type information.
+
+- Container tags.
+
+  - Function Container tag. Allows for more complicated arguments to functions on e.g. Nodes.
+
+  - List Container Tags. Allow for easier generic queries (using new Query frame work). The Query
+    object can be changed with a 'constraint' tag, an 'ageconstraint' tag, a maxnumber tag and an
+    'offset' tag. The query can be executed by the already existing nodelist tags. Also the size
+    tag, can optionally be used outside a list tag now (but inside a list container tag), and will
+    then be calculated by the database (and not progamaticly).
+
+- 'previousbatches' and 'nextbatches' tags. A way to easily make a paging mechanism for big search
+  results. 
+
+- unrelatednodes tag. A tag to list all nodes (of a certain type) which are _not_ related to a node.
+
+- compare tag: valueSet attribute
+
     
 ==========================
 BUG FIXES AND IMPROVEMENTS:
@@ -54,7 +94,13 @@ Generic Bug Fixes:
 
 - Logging: The mmbase logger now uses a wrapper so that at startup it first caches the messages until the 
   logger is initialized
+
 - added java14patch target to patch mmbase to be able to compile under java 1.4
+
+- caching of Query results is done better. It is possible to cache everything. In 1.6 some queries
+  accidentely where not cached. This fix is based on the new Query framework.
+
+
 ------------------
 Security Bug Fixes:
 ------------------ 
@@ -64,6 +110,8 @@ Security Bug Fixes:
 Taglib Bug Fixes:
 ----------------
 [1.7.0] 
+- Not working in Resin.
+- ..
 
 ----------------- 
 Example Bug Fixes:
@@ -74,7 +122,7 @@ Example Bug Fixes:
 Upgrade:
 ========
 [1.7.0]
-- Replace mmbase.jar, and jsp's.
+- Replace mmbase.jar with the new jars. Replace all jsp's too.
 - Clean the working directory of your app-server (to recompile jsp's)
 
 
