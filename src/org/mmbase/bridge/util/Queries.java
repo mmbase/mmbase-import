@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.24 2004-02-17 09:07:51 michiel Exp $
+ * @version $Id: Queries.java,v 1.25 2004-02-17 12:41:16 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -646,20 +646,39 @@ public class Queries {
             count.addAggregatedField(nq.getNodeStep(), nq.getNodeManager().getField(resultName), type);
         } else {
             List fields = query.getFields();
-            if (query.isDistinct()) {
-                if (fields.size() > 1) {
-                    throw new UnsupportedOperationException("Cannot count distinct queries with more than one field");
-                }             
-            } 
             if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
                 throw new IllegalArgumentException("Cannot count queries with less than one field");
             }
-            // take a random field
-            StepField sf = (StepField) fields.get(0);
-            Step step = sf.getStep();
-            resultName = sf.getFieldName();
-            
-            count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
+
+            if (query.isDistinct() && fields.size() > 1) {
+                // aha hmm. Well, we also find it ok if all fields are of one step, and 'number' is present
+                resultName = null;
+                Step step = null;
+                Iterator i = fields.iterator();
+                while (i.hasNext()) {
+                    StepField sf = (StepField) i.next();
+                    if (step == null) {
+                        step = sf.getStep();
+                    } else {
+                        if (! step.equals(sf.getStep())) {
+                            throw new UnsupportedOperationException("Cannot count distinct queries with fields of more than one step. Current fields: " + fields);
+                        }
+                    }
+                    if (sf.getFieldName().equals("number")) {
+                        resultName = sf.getFieldName();
+                    }
+                }
+                if (resultName == null) {                   
+                    throw new UnsupportedOperationException("Cannot count distinct queries with more than one field if 'number' field is missing. Current fields: " + fields);
+                }
+                count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
+            } else {
+                // simply take this one field
+                StepField sf = (StepField) fields.get(0);
+                Step step = sf.getStep();
+                resultName = sf.getFieldName();                
+                count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
+            }
         }
         Node result = (Node) cloud.getList(count).get(0);
         return result.getIntValue(resultName); 
