@@ -29,7 +29,7 @@
 		return;
 	}
 
-	int maxsize = settings_maxupload;
+	int maxsize = ewconfig.maxupload;
 	try {
 		maxsize = Integer.parseInt(request.getParameter("maxsize"));
 	} catch (Exception e) {}
@@ -47,7 +47,7 @@
 		Files flist = mySmartUpload.getFiles();
 
 		for (int i=0; i<flist.getCount(); i++) {
-			File f = flist.getFile(i);
+			com.jspsmart.upload.File f = flist.getFile(i);
 			String fieldname = f.getFieldName();
 			if (!f.isMissing()) {
 				// is uploaded!
@@ -72,7 +72,6 @@
 				} catch (e) {}
 			</script>
 		<%
-
 	} catch (Exception e) { 
 		out.println(e.toString());
 	}
