@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.50 2002-06-17 13:12:01 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.51 2002-08-28 14:46:46 eduard Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -828,6 +828,8 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     boolean areBuildersLoaded(Vector neededbuilders, String applicationRoot) {
+	boolean succes = true;
+
         for (Enumeration h = neededbuilders.elements();h.hasMoreElements();) {
             Hashtable bh= (Hashtable) h.nextElement();
             String name = (String) bh.get("name");
@@ -837,32 +839,36 @@ public class MMAdmin extends ProcessorModule {
                 // if 'inactive' in the config/builder path, we dont know what to do (i dont like inactive builders)
                 String path = mmb.getBuilderPath(name, "");
                 if(path != null) {
-                    log.error("builder was already on our system, but inactive. To install this application, make the builder '" + path + java.io.File.separator + name +  ".xml" + "' active");
-                    return false;
+                    log.error("builder '" + name + "' was already on our system, but inactive. To install this application, make the builder '" + path + java.io.File.separator + name +  ".xml" + "' active");
+                    succes = false;
+		    continue;
                 }
                 // well we try to open the %application%/ from inside our application dir...
                 File appFile = new File(applicationRoot);
                 if(!appFile.exists()) {
-                    log.error("could not find application dir :  '" + appFile + "'");
+                    log.error("could not find application dir :  '" + appFile + "'(builder '" + name + "' )");
                     return false;
                 }
                 // well we try to open the %application%/builders/ from inside our application dir...
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + "builders");
                 if(!appFile.exists()) {
-                    log.error("could not find builder's dir inside the application :  '" + appFile + "'");
-                    return false;
+                    log.error("could not find builder's dir inside the application :  '" + appFile + "'(builder '" + name + "' )");
+                    succes = false;
+		    continue;
                 }
                 // well we will try to open the %application%/builders/%buildername%.xml from inside our application dir...
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + name + ".xml");
                 if(!appFile.exists()) {
-                    log.error("could not find the builderfile :  '" + appFile + "'");
-                    return false;
+                    log.error("could not find the builderfile :  '" + appFile + "'(builder '" + name + "')");
+		    succes = false;
+		    continue;
                 }
                 // we now have the location,.....
                 MMObjectBuilder objectTypes = getMMObject("typedef");
                 if(objectTypes == null) {
                     log.error("could not find builder typedef");
-                    return false;
+                    succes = false;
+		    continue;
                 }
                 // try to add a node to typedef, same as adding a builder...
                 MMObjectNode type = objectTypes.getNewNode("system");
@@ -875,14 +881,16 @@ public class MMAdmin extends ProcessorModule {
                     config =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(appFile);
                 }
                 catch(org.xml.sax.SAXException se) {
-                    String msg = se.toString() + "\n" + Logging.stackTrace(se);
+                    String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
-                    return false;
+                    succes = false;
+		    continue;
                 }
                 catch(java.io.IOException ioe) {
-                    String msg = ioe.toString() + "\n" + Logging.stackTrace(ioe);
+                    String msg = "builder '" + name + "':\n" + ioe.toString() + "\n" + Logging.stackTrace(ioe);
                     log.error(msg);
-                    return false;
+                    succes = false;
+		    continue;
                 }
                 type.setValue("config", config);
                 // insert into mmbase
@@ -890,7 +898,7 @@ public class MMAdmin extends ProcessorModule {
                 // we now made the builder active.. look for other builders...
             }
         }
-        return true;
+        return succes;
     }
 
 
