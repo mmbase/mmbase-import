@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.26 2004-10-03 11:01:26 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.27 2004-10-05 21:10:52 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -270,15 +270,15 @@ public class Jumpers extends MMObjectBuilder {
 
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
          if (function.equals("gui")) {
+             String rtn;
              if (arguments == null || arguments.size() == 0) {
-                 return getGUIIndicator(node);
+                 rtn = getGUIIndicator(node);
              } else {
-                 return getGUIIndicator(node, Parameters.get(GUI_PARAMETERS, arguments));
+                 rtn =  getGUIIndicator(node, Parameters.get(GUI_PARAMETERS, arguments));
              }
-         } else {
-             return super.executeFunction(node, function, arguments);
+             if (rtn != null) return rtn;
          }
-
+         return super.executeFunction(node, function, arguments);
     }
 
 }
