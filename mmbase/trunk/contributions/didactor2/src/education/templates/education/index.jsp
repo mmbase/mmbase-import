@@ -270,6 +270,13 @@
 	openContent('<mm:write referid="learnobjecttype"/>','<mm:write referid="learnobject"/>');
 	openOnly('div<mm:write referid="learnobject"/>','img<mm:write referid="learnobject"/>');
    </mm:present>
+   <mm:notpresent referid="learnobject">
+        if (contentnumber.length >= 1) {
+            openContent(contenttype[0],contentnumber[0]);
+            openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
+        }
+        
+   </mm:notpresent>
 </script>
 
 </mm:node>
