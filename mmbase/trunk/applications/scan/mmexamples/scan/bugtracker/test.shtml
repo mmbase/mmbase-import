@@ -1,0 +1,41 @@
+<PART login/updateUser.shtml>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+
+<FORM ACTION="test2.shtml" METHOD="POST">
+	<CENTER>
+	<TABLE>
+		<TR>
+			<TD>from </TD><TD> <INPUT NAME="SESSION-FROM" SIZE="20"></TD>
+		</TR>
+
+		<TR>
+			<TD>to </TD><TD> <INPUT NAME="SESSION-TO" SIZE="20"></TD>
+		</TR>
+
+
+		<TR>
+			<TD>replyto </TD><TD> <INPUT NAME="SESSION-REPLYTO" SIZE="20"></TD>
+		</TR>
+	
+		<TR>
+			<TD>Subject </TD><TD> <INPUT NAME="SESSION-SUBJECT" SIZE="40"></TD>
+		</TR>
+
+		<TR>
+			<TD>Url </TD><TD> <INPUT NAME="SESSION-URL" SIZE="40"></TD>
+		</TR>
+	
+		<TR>
+			<TD>body </TD><TD> <TEXTAREA NAME="SESSION-BODY" ROWS="15" COLS="40"></TEXTAREA></TD>
+		</TR>
+		<TR>
+			<TD COLSPAN="2"><CENTER><INPUT TYPE="SUBMIT" VALUE="Send this email using a message object"></TD>
+		</TR>
+	</TABLE>
+</FORM>
+</BODY>
+</HTML>
