@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.67 $ $Date: 2002-03-21 12:42:45 $
+ * @version $Revision: 1.68 $ $Date: 2002-03-30 00:11:12 $
  */
 
 public class MMObjectNode {
@@ -538,12 +538,17 @@ public class MMObjectNode {
     public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
         
+       
         if(getDBType(fieldName)!= FieldDefs.TYPE_XML) {
             throw new RuntimeException("field was not an xml-field, dont know how i need to convert this to and xml-document");
         }        
+        if (o == null) {
+            log.warn("Got null value in field " + fieldName);
+            return null;
+        }
         if (!(o instanceof Document)) {
-            // do conversion from string to Document thing...
-            // log.warn("Strange, i expected that the field would contain an xml object");                        
+            //do conversion from string to Document thing...
+            log.warn("Field " + fieldName + " did not contain a Document, but a " + o.getClass().getName());
             // o = convertStringToXml(fieldName,  getStringValue(fieldName));
             // if(o != null) {
             //    values.put(fieldName, o);
@@ -1258,11 +1263,17 @@ public class MMObjectNode {
         return relation_cache_miss;
     }
     
+
+    /**
+     * Convert a String value of a field to a Document
+     * @param fieldName The field to be used.
+     * @param value     The current value of the field, (can be null)
+     * @return A DOM Document.
+     */
     private Document convertStringToXml(String fieldName, String value) {
-        // when no bytes.. the this function will return null...
-        if(value==null || value.length() <= 0) {
+        if(value == null) {
             log.debug("field was empty");
-            return null;
+            value = "";
         }
                 
         // value = value.trim();
@@ -1281,9 +1292,8 @@ public class MMObjectNode {
                 else {
                     throw new RuntimeException("no ending ?> found in xml:\n" + value);
                 }
-            }
-            else {
-                log.debug("no <?xml thingie found");
+            } else {
+                log.debug("no <?xml header found");
             }
             
             // remove all the <!DOCTYPE stuff from beginning if there.... 
@@ -1294,13 +1304,11 @@ public class MMObjectNode {
                 if(stop > 0) {
                     value = value.substring(stop + 1).trim();
                     log.debug("removed <!DOCTYPE part");
-                }
-                else {
+                } else {
                     throw new RuntimeException("no ending > found in xml:\n" + value);
                 }                
-            }
-            else {
-                log.debug("no <!DOCTYPE thingie found");
+            } else {
+                log.debug("no <!DOCTYPE header found");
             }            
         }
         else {
