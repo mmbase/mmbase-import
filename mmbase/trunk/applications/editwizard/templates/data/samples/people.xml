@@ -9,19 +9,15 @@
   
   <action type="create">
     <object type="people">
-      <field name="firstname" ftype="string">John</field>
-      <field name="lastname" ftype="string">Doe</field>
+      <field name="firstname">John</field>
+      <field name="lastname">Doe</field>
     </object>
   </action>
   
   <form-schema id="step1">
     <title>test</title>
-    <field name="firstname" ftype="html" xdttype="html">
-      <prompt>First name</prompt>
-    </field>
-    <field name="lastname" ftype="html" xdttype="html">
-      <prompt>Last name</prompt>
-    </field>
+    <field name="firstname" />
+    <field name="lastname"  />
     
     <list role="related" destination="news" minoccurs="0" maxoccurs="*">
       <command name="search" nodepath="news" fields="title" age="-1"  >
@@ -34,9 +30,7 @@
       <title>Article</title>
 
       <item>
-        <field name="title" ftype="data">
-          <prompt>Article:</prompt>
-        </field>
+        <field name="title" ftype="data" />
         <list role="related" destination="images">
           <title>imagelist</title>
           <command name="search" nodepath="images" fields="name" age="-1"  >
