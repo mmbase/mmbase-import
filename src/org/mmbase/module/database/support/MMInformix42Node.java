@@ -26,12 +26,13 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.21 $ $Date: 2000-10-12 11:40:42 $
+* @$Revision: 1.22 $ $Date: 2000-10-18 17:15:11 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
+	private boolean keySupported = true;
 	private void debug( String msg ) { System.out.println( classname +": "+ msg ); }
 
 	private int currentdbkey=-1;
@@ -43,20 +44,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		name="informix";
 		if (debug) debug("MMInformix42Node: Processing ...");
 
-		/* removed new version
-		typesmap.put("int",new Integer(TYPE_INTEGER));
-		typesmap.put("varchar",new Integer(TYPE_STRING));
-		typesmap.put("lvarchar",new Integer(TYPE_STRING));
-		typesmap.put("nvarchar",new Integer(TYPE_STRING));
-		typesmap.put("varchar_ex",new Integer(TYPE_STRING));
-		typesmap.put("char",new Integer(TYPE_STRING));
-		typesmap.put("lchar",new Integer(TYPE_STRING));
-		typesmap.put("nchar",new Integer(TYPE_STRING));
-		typesmap.put("text",new Integer(TYPE_TEXT));
-		typesmap.put("clob",new Integer(TYPE_TEXT));
-		typesmap.put("byte",new Integer(TYPE_BLOB));
-		typesmap.put("blob",new Integer(TYPE_BLOB));
-		*/
 	}
 
 	/* 
@@ -69,10 +56,10 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			stmt.executeUpdate("create row type "+baseName+"_object_t (number integer not null, otype integer not null, owner nvarchar(12) not null);");
-			stmt.executeUpdate("create table "+baseName+"_object of type "+baseName+"_object_t");
+			stmt.executeUpdate("create table "+baseName+"_object of type "+baseName+"_object_t ( PRIMARY KEY (number) );");
 
-			if (debug) debug("create row type "+baseName+"_object_t (number integer not null, otype integer not null, owner nvarchar(12) not null);");
-			if (debug) debug("create table "+baseName+"_object of type "+baseName+"_object_t");
+			if (debug) debug("create row type "+baseName+"_object_t (number integer, otype integer not null, owner nvarchar(12) not null);");
+			if (debug) debug("create table "+baseName+"_object of type "+baseName+"_object_t ( PRIMARY KEY (number) );");
 
 			stmt.close();
 			con.close();
@@ -94,6 +81,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
 		String createtype=null;
 		String createtable=null;
+		String keyString=null;
 
 		// use the builder to get the fields are create a
                 // valid create SQL string
@@ -108,6 +96,16 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				String name=(String)e.nextElement();
 				FieldDefs def=bul.getField(name);
 				String part=convertXMLType(def);
+
+				// If this field is marked as key we add it to the keyString
+				// this is extremely informix-specific !
+				if (keySupported && def.isKey()) {
+					if (keyString==null) {
+						keyString=" ( UNIQUE ( "+def.getDBName();
+					} else {
+						keyString+=", "+def.getDBName();	
+					}
+				}
 
 				// Gather all the fields of this builder without the fields that allready are 
 				// inherited from the parent object.
@@ -131,6 +129,12 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 						createtype+=", "+part;
 					}
 				} 				
+			}
+
+			if (keyString!=null) {
+				keyString+=" ) )";
+			} else {
+ 				keyString=""; 
 			}
 		}
 
@@ -166,20 +170,56 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t;");
 				if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t;");
 			} else if (bul instanceof InsRel && !tableName.equals("insrel")) {
-				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t under "+mmb.baseName+"_insrel;");
-				if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t under "+mmb.baseName+"_insrel;");
+				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t"+ keyString +" under "+mmb.baseName+"_insrel;");
+				if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t"+ keyString +" under "+mmb.baseName+"_insrel;");
 			} else {
-				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t under "+mmb.baseName+"_object;");
-				if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t under "+mmb.baseName+"_object;");
+				stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t"+ keyString +" under "+mmb.baseName+"_object;");
+				if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t"+ keyString +" under "+mmb.baseName+"_object;");
 			}
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
+			if (tableName.equals("object")) {
+                                if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t;");
+                        } else if (bul instanceof InsRel && !tableName.equals("insrel")) {
+                                if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t"+ keyString +" under "+mmb.baseName+"_insrel;");
+                        } else {
+                                if (debug) debug("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t"+ keyString +" under "+mmb.baseName+"_object;");
+                        }
+
 			debug("create(): Can't create table "+tableName);
 			e.printStackTrace();
 		}
 		return(true);
 	}
+
+        public String convertXMLType(FieldDefs def) {
+
+                // get the wanted mmbase type
+                int type=def.getDBType();
+                // get the wanted mmbase type
+                String name=def.getDBName();
+
+                // get the wanted size
+                int size=def.getDBSize();
+
+                // get the wanted notnull
+                boolean notnull=def.getDBNotNull();
+
+                //get the wanted key
+                boolean iskey=def.isKey();
+
+                if (name.equals("otype")) {
+                        return("otype integer "+parser.getNotNullScheme());
+                } else {
+                        if (disallowed2allowed.containsKey(name)) {
+                                name=(String)disallowed2allowed.get(name);
+                        }
+                        String result=name+" "+matchType(type,size,notnull);
+                        if (notnull) result+=" "+parser.getNotNullScheme();
+                        return(result);
+                }
+        }      
 
 	/**
 	* Method: insert
@@ -445,15 +485,15 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 try {
                         inp=rs.getAsciiStream(idx);
                         if (inp==null) {
-                                debug("Informix42Node DBtext no ascii "+inp);
+                                if (debug) debug("Informix42Node DBtext no ascii "+inp);
                                  return("");
                         }
                         if (rs.wasNull()) {
-                                debug("Informix42Node DBtext wasNull "+inp);
+                                if (debug) debug("Informix42Node DBtext wasNull "+inp);
                                 return("");
                         }
                         siz=inp.available(); // DIRTY
-                        debug("Informix42Node DBtext SIZE="+siz);
+                        if (debug) debug("Informix42Node DBtext SIZE="+siz);
                         if (siz==0 || siz==-1) return("");
                         input=new DataInputStream(inp);
                         isochars=new byte[siz];
@@ -857,7 +897,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 currentdbkey=number; // zeg 10
                 currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
                 if (debug) debug("getDBKey(): got key("+currentdbkey+")");
-		System.out.println("DBKEY="+number);
                 return(number);
         }
 	*/
