@@ -14,6 +14,7 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.module.ParseException;
 
 /**
  * TypeDef, one of the meta stucture nodes it is used to define the
@@ -24,10 +25,11 @@ import org.mmbase.util.*;
  */
 public class TypeDef extends MMObjectBuilder {
 
-	Hashtable nameCache;
-	Hashtable numberCache=new Hashtable();
-	Hashtable descriptionCache;
+	Hashtable nameCache; 						// object number -> typedef name
+	Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
+	Hashtable descriptionCache; 				// object number -> typedef description
 	public boolean broadcastChanges=false;
+	public Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
 
 	public TypeDef() {
 	}
@@ -262,4 +264,35 @@ public class TypeDef extends MMObjectBuilder {
 		if (fieldName.equals("description")) return("varchar");
 		return(null);
 	}
+
+	public void loadTypeDef(String name) {
+		if(!typedefsLoaded.contains(name)) {
+			typedefsLoaded.add(name);
+		} else {
+			debug("Builder "+name+" is already loaded!");
+		}
+	}
+
+	public void unloadTypeDef(String name) {
+		if(typedefsLoaded.contains(name)) {
+			typedefsLoaded.remove(name);
+		} else {
+			debug("Builder "+name+" is not loaded!");
+		}
+	}
+
+	public Vector  getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+		System.out.println("Tataaaaa");
+        if (tok.hasMoreTokens()) {
+            String cmd=tok.nextToken();
+            //debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
+
+            if (cmd.equals("builders")) {
+				return typedefsLoaded;
+            }
+            //System.out.println("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
+        }
+		return null;
+    }
+
 }
