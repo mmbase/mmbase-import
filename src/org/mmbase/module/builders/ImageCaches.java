@@ -12,7 +12,7 @@ package org.mmbase.module.builders;
 import java.util.List;
 import java.util.Iterator;
 import org.mmbase.module.core.*;
-import org.mmbase.util.Arguments;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.33 2003-11-10 21:10:51 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.34 2003-12-17 20:59:37 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -58,7 +58,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
 
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters a) {
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) a.get("request");
         if (req != null) {            
@@ -72,7 +72,7 @@ public class ImageCaches extends AbstractImages {
         String imageThumb;
         HttpServletResponse res = (HttpServletResponse) a.get("response");
         if (origNode != null) {
-            List cacheArgs =  new Arguments(Images.CACHE_ARGUMENTS).set("template", GUI_IMAGETEMPLATE);
+            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
             imageThumb = servlet.toString() + origNode.getFunctionValue("cache", cacheArgs);
             if (res != null) imageThumb = res.encodeURL(imageThumb);
         } else {
@@ -84,7 +84,7 @@ public class ImageCaches extends AbstractImages {
     }
 
     // javadoc inherited
-    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters a) {
         MMObjectNode origNode = originalImage(node);
         return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), a);
     }
