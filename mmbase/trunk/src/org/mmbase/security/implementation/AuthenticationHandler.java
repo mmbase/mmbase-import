@@ -27,7 +27,7 @@ public class AuthenticationHandler extends Authentication {
     private HashMap moduleRanks = new HashMap();
 
     protected void load() {
-        log.debug("using: '" + configFile.getAbsolutePath() + "' as config file for authentication");
+        log.debug("using: '" +  configFile + "' as config file for authentication");
     	XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath());
 
     	log.debug("Trying to load all loginmodules:");
