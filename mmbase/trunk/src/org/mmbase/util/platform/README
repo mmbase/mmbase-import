@@ -13,5 +13,5 @@ Linux
 Testing on your platform can easily be done by using the provided Main.java
 
 Also set your shared library path to this directory before starting
-james if you use the code (SetUser in server.properties is yes)
+youre server if you use the code, by setting -Dmmbase.userlevel=<user>:<group> 
 Most likely : LD_LIBRARY_PATH=<ServerRoot>/mmbase/util/platform
