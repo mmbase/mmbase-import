@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.6 2002-02-27 16:54:23 pierre Exp $
+ * @version $Id: WizardCommand.java,v 1.7 2002-05-15 12:04:44 pierre Exp $
  */
 public class WizardCommand {
 
@@ -71,7 +71,7 @@ public class WizardCommand {
     public WizardCommand(String acommand, String avalue) {
         command = acommand.toLowerCase();
         value = avalue;
-        log.info("command: "+command + " : "+value);
+        log.debug("command: "+command + " : "+value);
 
         StringTokenizer st= new StringTokenizer(command,"/",true);
         // skip first token ('cmd') and delimiter
