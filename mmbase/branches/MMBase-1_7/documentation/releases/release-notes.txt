@@ -128,6 +128,11 @@ Taglib New Features:
   'remove' tags) will not be needed any more. 
 
 
+-------------------------
+Editwizards New Features:
+-------------------------
+- Multilevel queries can be used to fill optionlists
+
 ==========================
 BUG FIXES AND IMPROVEMENTS:
 ==========================
@@ -218,6 +223,31 @@ Taglib Bug Fixes:
    places. 
 
  - URL-tag not a Writer any more.
+
+
+---------------------
+Editwizard Bug Fixes:
+---------------------
+[1.7.1]
+- Better calculation of positioning of buttons in wizard in IE/Mac
+- ftype="enumdata" did not show the text label of the option
+- Font-size in some browsers was way to big in the EditWizard HTML
+  area. Fixed it on 12px. 
+- #6508 editwizard pass incorrect origin parameter to subwizard
+- #6501 If titles are 'null' the search of list.jsp does not work.
+- #6500 fieldtypes enum,double,long,float are not validated
+- #6487 Date-formats of lists don't consider set language.
+- #6473 It goes wrong if the referrer arguments contains / in its
+        argument 
+- #6465 Editwizard does not handle xml characters very well (< and >)
+        (html area AND text input) 
+- #6434 Public id not registerd
+- #6430 Edit-rights are not always checked
+- #6418 timezone problems, Now, The server is always used for date
+        formats. The timezone can be changed by a request parameter. 
+- #6414 Javascript error on save
+
+
 
 
 ========================
