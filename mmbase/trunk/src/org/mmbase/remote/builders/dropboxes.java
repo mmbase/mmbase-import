@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -17,19 +17,23 @@ import java.util.*;
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2001-01-05 14:12:33 $ 
+ * @version $Revision: 1.7 $ $Date: 2001-04-11 15:31:22 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder {
-	private boolean debug = true;
+
+    private static Logger log = Logging.getLoggerInstance(dropboxes.class.getName()); 
+
 	private dropboxInterface impl;
 	StringTagger tagger;
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
-		if( debug ) debug("init("+con+","+servicefile+")");
+		log.info("init("+con+","+servicefile+")");
 
 		// the node was loaded allready so check what the state was
 		// and put us in ready/waiting state
@@ -44,22 +48,30 @@ public class dropboxes extends RemoteBuilder {
 	}
 
 	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {
-		if(debug) debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
+        }
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
 	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {
-		if(debug) debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
+        }
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
 	public void nodeChanged(String nodenr,String buildername,String ctype) {
-		if(debug) debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
+        }
 		// get the node
 		getNode();
 				
 		String state=getStringValue("state");
-		if(debug) debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
+        }
 		if (state.equals("version")) {
 			doVersion();
 		} else if (state.equals("restart")) {
@@ -113,7 +125,9 @@ public class dropboxes extends RemoteBuilder {
 	 */
 	void getConfig() {
 		String implClassName=(String)props.get("implementation");
-		if( debug ) debug("getConfig(): impl("+implClassName+")");
+		if (log.isDebugEnabled()) {
+            log.debug("getConfig(): impl("+implClassName+")");
+        }
 		try {
 			Class newclass=Class.forName(implClassName);
 			impl = (dropboxInterface)newclass.newInstance();
@@ -124,7 +138,7 @@ public class dropboxes extends RemoteBuilder {
 			tmp=(String)props.get("wwwpath");
 			impl.setWWWPath(tmp);
 		} catch (Exception f) {
-			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
+			log.error("getConfig(): Can't load class("+implClassName+")");
 		}
 	}
 
