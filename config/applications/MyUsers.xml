@@ -2,6 +2,10 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="MyUsers" maintainer="mmbase.org" version="1" auto-deploy="false">
 
+	<requirements>
+		<requires name="MyCompany" maintainer="mmbase.org" version="1" />
+	</requirements>
+
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="0">users</builder>
 		<builder maintainer="mmbase.org" version="0">cookies</builder>
