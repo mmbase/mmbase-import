@@ -59,10 +59,22 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
     // Logger
     private static Logger log = Logging.getLoggerInstance(Vwms.class.getName());
 
+    /**
+     * Cache of VWMs, by name.
+     */
     Hashtable vwm_cache = new Hashtable ();
 
+    /**
+     * Parameter for determining the email domain of the 'sender' when sending error messages.
+     */
     private String emailFromDomain;
+    /**
+     * Parameter for determining the return email address when sending error messages.
+     */
     private String emailReturnPath;
+    /**
+     * Parameter for determining the email-addess of the recipient when sending error messages.
+     */
     private String emailTo;
 
     /**
