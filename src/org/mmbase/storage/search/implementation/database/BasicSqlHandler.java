@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.20 2003-11-27 17:58:42 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.21 2003-12-11 12:38:29 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -30,8 +30,7 @@ public class BasicSqlHandler implements SqlHandler {
     private static final StepField[] STEP_FIELD_ARRAY = new StepField[0];
 
     /** Logger instance. */
-    private static Logger log
-    = Logging.getLoggerInstance(SearchQueryHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
     /** MMBase instance. */
     private MMBase mmbase = null;
@@ -80,8 +79,7 @@ public class BasicSqlHandler implements SqlHandler {
      * @return true if the constraint is set to case insensitive
      *         and the field has string type, false otherwise.
      */
-    private static boolean isRelevantCaseInsensitive(
-    FieldConstraint constraint) {
+    private static boolean isRelevantCaseInsensitive(FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
         && (constraint.getField().getType() == FieldDefs.TYPE_STRING
         || constraint.getField().getType() == FieldDefs.TYPE_XML);
@@ -272,25 +270,24 @@ public class BasicSqlHandler implements SqlHandler {
 
                     // Aggregate function.
                     switch (aggregationType) {
-                        case AggregatedField.AGGREGATION_TYPE_COUNT:
-                            sb.append("COUNT(");
-                            break;
-
-                        case AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT:
-                            sb.append("COUNT(DISTINCT ");
-                            break;
-
-                        case AggregatedField.AGGREGATION_TYPE_MIN:
-                            sb.append("MIN(");
-                            break;
-
-                        case AggregatedField.AGGREGATION_TYPE_MAX:
-                            sb.append("MAX(");
-                            break;
-
-                        default:
-                            throw new IllegalStateException(
-                            "Invalid aggregationType value: " + aggregationType);
+                    case AggregatedField.AGGREGATION_TYPE_COUNT:
+                        sb.append("COUNT(");
+                        break;
+                        
+                    case AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT:
+                        sb.append("COUNT(DISTINCT ");
+                        break;
+                        
+                    case AggregatedField.AGGREGATION_TYPE_MIN:
+                        sb.append("MIN(");
+                        break;
+                        
+                    case AggregatedField.AGGREGATION_TYPE_MAX:
+                        sb.append("MAX(");
+                        break;
+                        
+                    default:
+                        throw new IllegalStateException("Invalid aggregationType value: " + aggregationType);
                     }
                     appendField(sb, step, fieldName, multipleSteps);
                     sb.append(")");
@@ -625,38 +622,37 @@ public class BasicSqlHandler implements SqlHandler {
                     appendField(sb, step, fieldName, multipleSteps);
                 }
                 switch (fieldCompareConstraint.getOperator()) {
-                    case FieldValueConstraint.LESS:
-                        sb.append("<");
-                        break;
-
-                    case FieldValueConstraint.LESS_EQUAL:
-                        sb.append("<=");
-                        break;
-
-                    case FieldValueConstraint.EQUAL:
-                        sb.append("=");
-                        break;
-
-                    case FieldValueConstraint.NOT_EQUAL:
-                        sb.append("<>");
-                        break;
-
-                    case FieldValueConstraint.GREATER:
-                        sb.append(">");
-                        break;
-
-                    case FieldValueConstraint.GREATER_EQUAL:
-                        sb.append(">=");
-                        break;
-
-                    case FieldValueConstraint.LIKE:
-                        sb.append(" LIKE ");
-                        break;
-
-                    default:
-                        throw new IllegalStateException(
-                        "Unknown operator value in constraint: "
-                        + fieldCompareConstraint.getOperator());
+                case FieldValueConstraint.LESS:
+                    sb.append("<");
+                    break;
+                    
+                case FieldValueConstraint.LESS_EQUAL:
+                    sb.append("<=");
+                    break;
+                    
+                case FieldValueConstraint.EQUAL:
+                    sb.append("=");
+                    break;
+                    
+                case FieldValueConstraint.NOT_EQUAL:
+                    sb.append("<>");
+                    break;
+                    
+                case FieldValueConstraint.GREATER:
+                    sb.append(">");
+                    break;
+                    
+                case FieldValueConstraint.GREATER_EQUAL:
+                    sb.append(">=");
+                    break;
+                    
+                case FieldValueConstraint.LIKE:
+                    sb.append(" LIKE ");
+                    break;
+                    
+                default:
+                    throw new IllegalStateException("Unknown operator value in constraint: "
+                                                    + fieldCompareConstraint.getOperator());
                 }
                 if (fieldCompareConstraint instanceof FieldValueConstraint) {
                     // FieldValueConstraint.
