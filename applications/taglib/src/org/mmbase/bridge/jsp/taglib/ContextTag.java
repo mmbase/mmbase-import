@@ -37,12 +37,17 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  */
 
-
 class ContextContainer extends HashMap {
 
     private static Logger log = Logging.getLoggerInstance(ContextContainer.class.getName());
     private String id;
     private ContextContainer parent;
+
+    /**
+     * Since a ContextContainer can contain other ContextContainer, it
+     * has to know which ContextContainer contains this. And it also
+     * has an id.
+     */
 
     ContextContainer(String _id, ContextContainer _parent) {
         super();
@@ -50,9 +55,18 @@ class ContextContainer extends HashMap {
         parent = _parent;
     }
 
+    /**
+     * Keys must be Strings, so put(Object, ..) is forbidden in this HashMap!
+     *
+     */
+       
     public Object put(Object key, Object value) {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
     }
+    /**
+     * Not all Strings can be allowed as keys. Keys are like variable names. 
+     *
+     */
 
     public Object put(String key, Object value) throws JspTagException {
         if (key.indexOf('.') != -1) {
@@ -67,7 +81,7 @@ class ContextContainer extends HashMap {
     /**
      * This function takes a key, which can contain dots. It returns
      * a structure with a new ContextContainer and the rest of the
-     * key. It also returns if it had to 'go done' to find this,
+     * key. It also returns if it had to 'go down' to find this,
      * because if it has done this, the next time you may not go up
      * again (check the parent).
      *
@@ -100,7 +114,9 @@ class ContextContainer extends HashMap {
         }
 
     }
-
+    /**
+     * Like containsKey but doesn't check for dots.
+     */
     private boolean simpleContainsKey(String key, boolean checkParent) {
         boolean result = super.containsKey(key);
         if (result == false && checkParent && parent != null) {
@@ -109,7 +125,14 @@ class ContextContainer extends HashMap {
         return result;
     }
 
-    public boolean containsKey(String key, boolean checkParent) throws JspTagException {
+    /**
+     * Like the containsKey of HashMap.
+     * 
+     * @param key          The key to search
+     * @param checkParent  If this is false, it will only look in the current Container (and below).
+     */
+
+    boolean containsKey(String key, boolean checkParent) throws JspTagException {
         Pair p = getPair(key, checkParent);
         if (p == null) {
             return simpleContainsKey(key, checkParent);
@@ -134,7 +157,7 @@ class ContextContainer extends HashMap {
     }
 
     /**
-     * Like get, but you can explicity indacte if to search 'parent' Contextes as well
+     * Like get, but you can explicity indicate if to search 'parent' Contextes as well
      */
 
     public Object get(String key, boolean checkParent) throws JspTagException {
@@ -150,6 +173,10 @@ class ContextContainer extends HashMap {
         return get(key, true);
     }
 
+    /**
+     * Container class, to store results of 'getPair' function.
+     *
+     */
 
     private class Pair {
         ContextContainer context;
@@ -164,22 +191,31 @@ class ContextContainer extends HashMap {
 
 
 /**
+ * <p>
+ * A ContextTag is like parentheses, and as such can act as 
+ * a 'namespace' (if it has an id) or as 'scope' (if it doesn't). 
+ * </p> 
+ * <p>
+ * The context can be seen as a container for variables and their values.
+ * </p><p>
+ * (ContextReferrer) Tags living under a context tag can 'register'
+ * themselves in the context (by use of the 'id' attribute') and in
+ * that way become a variable. Other tags can refer to such variables.
+ * </p><p>
+ * A ContextTag is a ContextReferrer itself too, and therefore it is
+ * possible to 'nest' contextes. And perhaps we will also make it
+ * possible to treat contextes as variables and e.g. pass them to
+ * another page as a whole.
+ * </p><p>
+ * It is also possible to put something into the Context by hand. For
+ * that you can use the `ImportTag'.
+ * </p><p>
+ * Writing out the value of a variable can be done with the `Write' Tag.
+ * </p>
  *
- * Groups tags. The tags can referrence each other, by use of the group
- * hash of this class. You can have several types, but they have a
- * certain order. The most complex Context is a Context of type
- * 'session'. If you try to get something from a session context, it
- * will first search in the session, if it cannot find it there, it
- * will try to find a multipart post with that key, if that is also not
- * there, it will try a parameter, and finally it will try to see if
- * the object was registered in this page.
- *
- * Inside a session context you will by the way not register anything
- * in the hashmap of the context, because the session is used for that
- * already.
- *
- *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
+ * @see    ImportTag
+ * @see    WriteTag
  */
 
 public class ContextTag extends ContextReferrerTag {
@@ -200,9 +236,9 @@ public class ContextTag extends ContextReferrerTag {
 
     //private HttpPost           poster = null;
     private MMultipartRequest    multipartRequest = null;
-    private boolean             multipartChecked;
-    private HttpServletRequest  httpRequest      = null;
-    private HttpSession         httpSession      = null;
+    private boolean              multipartChecked;
+    private HttpServletRequest   httpRequest      = null;
+    private HttpSession          httpSession      = null;
 
     public void release() {  
         // release is not called in Orion 1.5.2!!
@@ -213,6 +249,11 @@ public class ContextTag extends ContextReferrerTag {
         super.release();
     }
 
+    /** 
+     * Fills the private member variables for general use. They are
+     * gotten from the pageContexTag if this does exist already.
+     * 
+     */
 
     void fillVars() {
         ContextTag page = (ContextTag) pageContext.getAttribute("__context");
@@ -345,7 +386,7 @@ public class ContextTag extends ContextReferrerTag {
 
 
     /**
-     * Precisely like 'register', only
+     * Precisely like 'register', only it wants a Node.
      *
      * @param key the key (id) of the node to register
      * @param node the node to put in the hashmap
@@ -420,9 +461,10 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     /**
-     * Searches a key in request, postparameters, session, parent context and registers it in this one.
+     * Searches a key in request, postparameters, session, parent
+     * context and registers it in this one.
      *
-     * Returns null if it could not be found.
+     * Returns null if it could not be found.  
      */
 
     public Object findAndRegister(String externid, String newid) throws JspTagException {
@@ -510,21 +552,10 @@ public class ContextTag extends ContextReferrerTag {
         return container.get(key);
     }
 
+    /**
+     * hmm.. This kind of stuf must move to ImportTag, I think.
+     */
     
-
-
-    /*
-    public String getString(String key) throws JspTagException {
-        Object o = getObject(key);
-        if (o == null) return null;
-        if (o instanceof Node) {
-            Node n = (Node) o;
-            return "" + n.getNumber();
-        }
-        return o.toString();
-    }
-    */
-
     public byte[] getBytes(String key) throws JspTagException {
         return getMultipartRequest().getBytes(key);
 
