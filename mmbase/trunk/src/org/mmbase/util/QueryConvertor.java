@@ -10,12 +10,23 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import org.mmbase.module.database.support.*;
 
 
 public class QueryConvertor {
-  
+
+ 
+  public static MMJdbc2NodeInterface database;
+ 
+  public static String altaVista2SQL(String query,MMJdbc2NodeInterface db) {
+	database=db;
+	return(altaVista2SQL(query));	
+  }
   public static String altaVista2SQL(String query) {
-	if (query.indexOf("where")!=-1 || query.indexOf("WHERE")!=-1) return(query);
+	if (query.indexOf("where")!=-1 || query.indexOf("WHERE")!=-1) {
+		System.out.println("DIRECT="+query);
+		return(query);
+	}
 	StringBuffer buffer = new StringBuffer(64);
 	// query = query.toLowerCase();
 	DBQuery parsedQuery = new DBQuery(query);
@@ -54,7 +65,7 @@ class DBQuery  extends ParseItem {
 			item = new DBConditionItem(parser.nextToken());
 			items.addElement(item);
 
-			// System.out.println("Item :" + item);
+			//System.out.println("Item :" + item);
 			if (parser.hasMoreTokens()) {
 				item = new DBLogicalOperator(parser.nextToken());
 				items.addElement(item);
@@ -86,6 +97,10 @@ class DBConditionItem extends ParseItem {
 
 		conditionPos = item.indexOf('=');
 		identifier = item.substring(0,conditionPos);
+		if (QueryConvertor.database!=null) {
+			identifier=QueryConvertor.database.getAllowedField(identifier);
+		}
+
 		value = DBValue.abstractCreation(item.substring(conditionPos+2));
 		// System.out.println("Id="+identifier);
 		// System.out.println("val="+value);
