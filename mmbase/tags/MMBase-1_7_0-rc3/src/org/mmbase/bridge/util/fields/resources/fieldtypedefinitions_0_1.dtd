@@ -1,0 +1,16 @@
+<!ELEMENT fieldtypedefinitions (fieldtype*) >
+<!ELEMENT fieldtype  (setprocessor*, getprocessor*, specialization*) >
+<!ATTLIST fieldtype  id  NMTOKEN  #REQUIRED > 
+
+<!ELEMENT setprocessor (class*) >
+<!ELEMENT getprocessor (class*) >
+
+<!ATTLIST setprocessor  type  NMTOKEN  #IMPLIED > 
+<!ATTLIST getprocessor  type  NMTOKEN  #IMPLIED > 
+
+<!ELEMENT specialization (setprocessor*, getprocessor*) >
+<!ATTLIST specialization  id  NMTOKEN  #REQUIRED > 
+
+
+<!ELEMENT class      (#PCDATA) >
+<!ATTLIST class  config  NMTOKEN  #IMPLIED > 

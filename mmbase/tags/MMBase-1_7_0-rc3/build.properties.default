@@ -1,0 +1,103 @@
+# -----------------------------------------------------------------------------
+# build.properties.default
+#
+# This is the default build.properties file. 
+# It contains all required packages.
+# If you'd like to customize some of the settings, create a build.properties in
+# the root of this directory.
+#
+# $Id: build.properties.default,v 1.4 2004-02-18 23:15:58 michiel Exp $
+# -----------------------------------------------------------------------------
+
+
+# ----- Proxy setup -----
+#proxy.host=proxy.domain
+#proxy.port=8080
+#proxy.use=on
+
+# ----- Default Base Path for required Packages -----
+# download.dir=${documentation.build.dir}/download
+
+
+# --------------------------------------------------
+#                REQUIRED LIBRARIES
+# --------------------------------------------------
+
+# ---- Default Sourceforge Mirror ----
+sourceforge.loc=http://heanet.dl.sourceforge.net/sourceforge
+# ---- MMBase.org location ---
+mmbase.loc=http://www.mmbase.org/download/jars
+
+
+# ----- Servlet api ----
+servlet.version=jakarta-servletapi-4
+servlet.file=${servlet.version}.tar.gz
+servlet.dest=${download.dir}/${servlet.file}
+servlet.loc=${mmbase.loc}/jakarta-servletapi/${servlet.file}
+servlet.jar=${expand.dir}/${servlet.version}/lib/servlet.jar
+
+# ----- Hsqldb ----
+hsqldb.version=hsqldb_1_7_1
+hsqldb.file=${hsqldb.version}.zip
+hsqldb.dest=${download.dir}/${hsqldb.file}
+hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
+hsqldb.dir=${expand.dir}/${hsqldb.version}
+hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
+
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
+
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+jai.dest=${download.dir}/${jai.file}
+jai.dir=${expand.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/os/Linux/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai_codec.jar=${jai.dir}/jre/lib/ext/jai_codec.jar
+jai_core.jar=${jai.dir}/jre/lib/ext/jai_core.jar
+mlibwrapper_jai.jar=${jai.dir}/jre/lib/ext/mlibwrapper_jai.jar
+
+# ----- javamail ----
+javamail.version=javamail-1.3
+javamail.fileversion=javamail-1_3
+javamail.file=${javamail.fileversion}.zip
+javamail.dest=${download.dir}/${javamail.file}
+javamail.loc=${mmbase.loc}/javamail/${javamail.file}
+javamail.dir=${expand.dir}/${javamail.version}
+javamail.jar=${javamail.dir}/${javamail.version}/mail.jar
+
+# ----- javaactiovation ----
+javaactivation.version=jaf-1.0.2
+javaactivation.fileversion=jaf-1_0_2
+javaactivation.file=${javaactivation.fileversion}.zip
+javaactivation.dest=${download.dir}/${javaactivation.file}
+javaactivation.loc=${mmbase.loc}/jaf/${javaactivation.file}
+javaactivation.dir=${expand.dir}/${javaactivation.version}
+javaactivation.jar=${javaactivation.dir}/${javaactivation.version}/activation.jar
+
+# ----- Docbook stylesheets ----------
+docbook-xsl.version=docbook-xsl-1.62.4
+docbook-xsl.file=${docbook-xsl.version}.tar.gz
+docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
+docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
+docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
+
+
+# ----- Log4j ----------
+log4j.version=1.2.8
+log4j.fullversion=jakarta-log4j-${log4j.version}
+log4j.file=${log4j.fullversion}.tgz
+log4j.dest=${download.dir}/${log4j.file}
+log4j.loc=${mmbase.loc}/jakarta-log4j/${log4j.file}
+log4j.jar=${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar
+
+# ----- Xalan and Xerces ----------
+xalan.version=xalan-j_2_5_2
+xalan.fullversion=${xalan.version}
+xalan.file=${xalan.version}-bin.tar.gz
+xalan.dest=${download.dir}/${xalan.file}
+xalan.loc=${mmbase.loc}/xalan/${xalan.file}
+xalan.jar=${expand.dir}/${xalan.fullversion}/bin/xalan.jar
+xerces.jar=${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar
+xml-apis.jar=${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar
