@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.3 $ $Date: 2000-05-02 11:48:42 $
+ * @version $Revision: 1.4 $ $Date: 2000-05-19 15:09:22 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -136,7 +136,8 @@ debug("mods =" + mods.toString());
 						parser.parse(new InputSource(filename));
 						modprops = xmlReader.getProperties();
 					 } else {
-						filename = filename + ".properties";
+						// Warning this is rather blunt
+						filename = filename.toUpperCase() + ".properties";
 					    modprops = Reader.readProperties(filename);
 					 }
 					//debug("loadModulesFromDisk(): MOD "+key+" "+modprops);
