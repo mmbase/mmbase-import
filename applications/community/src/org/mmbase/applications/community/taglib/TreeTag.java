@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
 * TreeTag, provides functionality for listing messages in community.
 *
-* @author Pierre van Rodoen
+* @author Pierre van Rooden
 **/
 public class TreeTag extends AbstractNodeListTag {
     //this class is growing to big..
@@ -48,7 +48,6 @@ public class TreeTag extends AbstractNodeListTag {
     protected boolean changed = true;
 
     protected Module community = null;
-    private int listSize = 0;
     private int currentItemIndex= -1;
 
     public int getIndex() {
@@ -142,6 +141,7 @@ public class TreeTag extends AbstractNodeListTag {
         if (opentag!=null) params.put("OPENTAG",opentag);
         if (closetag!=null) params.put("CLOSETAG",closetag);
         NodeList nodes = community.getList("TREE",params,pageContext.getRequest(),pageContext.getResponse());
+        
         return setReturnValues(nodes,false);
     }
 
