@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.4 2002-08-21 17:25:52 michiel Exp $
+  @version $Id: prompts.xsl,v 1.5 2002-08-21 18:01:26 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -31,6 +31,7 @@
   <option value="11">novembro</option>
   <option value="12">decembro</option>
 </xsl:template>
+<xsl:variable name="time_daymonth">-a de</xsl:variable>
 <xsl:variable name="time_at">je</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">Sendu dosieron</xsl:template>
