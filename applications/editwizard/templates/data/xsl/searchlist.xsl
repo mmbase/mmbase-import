@@ -9,12 +9,10 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.13 2002-09-06 13:09:42 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.14 2003-05-28 11:45:39 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
-  <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
-  <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
   <xsl:template match="pages">
       <xsl:choose>
