@@ -46,18 +46,18 @@ public class XMLEntityResolver implements EntityResolver {
         Resource(Class c, String f) {
             clazz = c; file = f;
         }
-        
+
         String getResource() {
             return "resources/" + file;
         }
         String getFileName() {
             return file;
         }
-        InputStream getAsStream() {            
+        InputStream getAsStream() {
             if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + getResource() + " of " + clazz.getName());
             return clazz.getResourceAsStream(getResource());
         }
-        
+
     }
 
     static {
@@ -75,7 +75,7 @@ public class XMLEntityResolver implements EntityResolver {
 
     private boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
 
-    private boolean  validate;  
+    private boolean  validate;
     private Class    resolveBase;
 
 
@@ -109,7 +109,7 @@ public class XMLEntityResolver implements EntityResolver {
     private InputStream getFromConfigDir(String fileName) throws IOException {
         if (MMBaseContext.isInitialized()) {
             String configpath = MMBaseContext.getConfigPath();
-            if (configpath != null) {                    
+            if (configpath != null) {
                 File  dtdFile = new File(configpath + File.separator + "dtd" + File.separator + fileName);
                 if (dtdFile.canRead()) {
                     if (log.isDebugEnabled()) log.debug("dtdLocation = " + dtdFile);
@@ -138,7 +138,7 @@ public class XMLEntityResolver implements EntityResolver {
             if (res != null) {
                 dtdStream = getFromConfigDir(res.getFileName());
                 if (dtdStream == null) dtdStream = res.getAsStream();
-            }                        
+            }
         }
 
         if (dtdStream == null) { // not succeeded with publicid, go trying with systemId
@@ -154,7 +154,7 @@ public class XMLEntityResolver implements EntityResolver {
                 int i = systemId.indexOf("/dtd/");
                 String dtdName = systemId.substring(i + 5);
                 // first, try MMBase config directory (if initialized)
-                dtdStream = getFromConfigDir(dtdName);            
+                dtdStream = getFromConfigDir(dtdName);
                 if (dtdStream == null) {
                     Class base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
@@ -168,12 +168,12 @@ public class XMLEntityResolver implements EntityResolver {
                             base = null; // try it in org.mmbase.resources too.
                         }
                     }
-               
+
                     if (base == null) {
                         String resource = MMRESOURCES + "dtd/" + dtdName;
                         if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource);
                         dtdStream = getClass().getResourceAsStream(resource);
-                    } 
+                    }
                 }
                 if (dtdStream == null) {
                     log.error("Could not find MMBase dtd '" + dtdName + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
@@ -186,9 +186,10 @@ public class XMLEntityResolver implements EntityResolver {
             }
         }
 
+        hasDTD=true;
         InputStreamReader dtdInputStreamReader = new InputStreamReader(dtdStream);
         InputSource dtdInputSource = new InputSource();
-        dtdInputSource.setCharacterStream(dtdInputStreamReader);      
+        dtdInputSource.setCharacterStream(dtdInputStreamReader);
         return dtdInputSource;
     }
 
