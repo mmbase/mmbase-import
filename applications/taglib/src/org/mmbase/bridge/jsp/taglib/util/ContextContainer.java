@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.21 2004-03-24 00:59:02 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.22 2004-06-02 14:42:16 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -458,9 +458,10 @@ public class ContextContainer extends HashMap {
             break;
         case LOCATION_SESSION:
             if (((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
-                throw new JspTagException("Cannot use session if session is disabled");
+                log.debug("Cannot use session if session is disabled");
+            }  else {
+                result = ((HttpServletRequest) pageContext.getRequest()).getSession(false).getAttribute(referId);
             }
-            result = ((HttpServletRequest) pageContext.getRequest()).getSession(false).getAttribute(referId);
             break;
         case LOCATION_MULTIPART:
             if (MultiPart.isMultipart(pageContext)) {
@@ -649,15 +650,14 @@ public class ContextContainer extends HashMap {
 
     public String toString() {
         if (id == null) {
-            return "the context without id (root?)";
+            return "the context without id (root?)" + super.toString();
         } else {
-            return "context '" + id  + "'";
+            return "context '" + id  + "'" + super.toString();
         }
     }
 
     /**
      * Container class, to store results of 'getPair' function.
-     *
      */
 
     private class Pair {
