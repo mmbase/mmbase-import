@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Encode;
+
 /**
  * This struct contains configuration information for the jsps. This
  * thing is put in the session. A subclass 'Configurator' can be used
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.54 2004-08-26 14:11:00 michiel Exp $
+ * @version $Id: Config.java,v 1.55 2004-09-16 10:48:29 pierre Exp $
  */
 
 public class Config {
@@ -216,7 +218,7 @@ public class Config {
             }
             return complete.substring(0, end + 1);
         }
-        
+
         /**
          * Configure a list page. The configuration object passed is updated with information retrieved
          * from the request object with which the configurator was created. The following parameters are accepted:
@@ -314,7 +316,7 @@ public class Config {
             if (searchFields == null) {
                 constraints = baseConstraints;
             } else {
-                StringBuffer constraintsBuffer;                
+                StringBuffer constraintsBuffer;
                 // search type: default
                 String sType = searchType;
                 // get the actual field to search on.
@@ -327,11 +329,10 @@ public class Config {
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
                     sType = "equals";
                 }
-                String where = searchValue;
+                String where = Encode.encode("ESCAPE_SINGLE_QUOTE",searchValue);
                 constraintsBuffer = null;
                 if (sType.equals("like")) {
                     if (! "".equals(where)) {
-                        // actually we should unquote search...
                         where = " LIKE '%" + where.toLowerCase() + "%'";
                     }
                 } else if (sType.equals("string")) {
@@ -422,7 +423,7 @@ public class Config {
                         StringBuffer fieldsBuffer = new StringBuffer();
                         FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
-                        while (i.hasNext()) {                            
+                        while (i.hasNext()) {
                             fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
                             if (i.hasNext()) fieldsBuffer.append(',');
                         }
@@ -554,7 +555,7 @@ public class Config {
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
             }
-            
+
             if (config.timezone == null) {
                 config.timezone = getParam("timezone", "");
             }
@@ -610,12 +611,12 @@ public class Config {
                     // TODO: What if it happened to be not from the same server?
                 } else {
                     // Was given relatively, that's trickie, becaues cannot use URL object to take of query.
-                    String path = getRealPath(config.backPage);                    
+                    String path = getRealPath(config.backPage);
                     int questionPos = path.indexOf('?');
                     if (questionPos != -1) {
                         path = path.substring(0, questionPos);
                     }
-                    
+
                     refFile = new File(path).getParentFile();
                 }
                 if (refFile.exists()) {
