@@ -10,6 +10,14 @@
   </mm:param>
 </mm:treeinclude>
 <mm:import externid="action"/>
+<mm:import externid="back"/>
+<mm:import externid="referer" jspvar="referer"><%= request.getHeader("referer") %></mm:import>
+
+<mm:present referid="back">
+    <% response.sendRedirect(referer); %>
+</mm:present>
+
+
 <mm:present referid="action">
   <mm:import id="actiontext"><fmt:message key="SAVE" /></mm:import>
   <mm:compare referid="action" referid2="actiontext">
@@ -30,6 +38,7 @@
     </mm:node>
   </mm:compare>
 </mm:present>
+
 <div class="rows">
 <div class="navigationbar">
   <div class="titlebar">
@@ -49,6 +58,7 @@
   <div class="contentBodywit">
     <%-- Show the form --%>
     <form name="setting" class="formInput" method="post" action="<mm:treefile page="/admin/index.jsp" objectlist="$includePath" referids="$referids"/>">
+        <input type="hidden" name="referer" value="<mm:write referid="referer"/>"/>
       <mm:node referid="user">
         <table class="font">
         <mm:fieldlist fields="initials,firstname,lastname,email,username,address,zipcode,city,telephone,lastactivity">
@@ -92,6 +102,7 @@
       </mm:node>
 	  <br />
       <input class="formbutton" type="submit" name="action" value="<fmt:message key="SAVE" />"/>
+      <input class="formbutton" type="submit" name="back" value="<fmt:message key="BACK" />"/>
     </form>
   </div>
 </div>
