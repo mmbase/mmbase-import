@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <posrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="174" owner="default" snumber="122" dnumber="120" rtype="posrel" dir="bidirectional">
+	<node number="174" owner="media" snumber="122" dnumber="120" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node>
 
-	<node number="172" owner="default" snumber="122" dnumber="118" rtype="posrel" dir="bidirectional">
+	<node number="172" owner="media" snumber="122" dnumber="118" rtype="posrel" dir="bidirectional">
 		<pos>2</pos>
 	</node>
 
-	<node number="170" owner="default" snumber="99" dnumber="96" rtype="posrel" dir="bidirectional">
+	<node number="170" owner="media" snumber="99" dnumber="96" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node>
 
-	<node number="168" owner="default" snumber="94" dnumber="96" rtype="posrel" dir="bidirectional">
+	<node number="168" owner="media" snumber="94" dnumber="96" rtype="posrel" dir="bidirectional">
 		<pos>2</pos>
 	</node>
 
-	<node number="166" owner="default" snumber="114" dnumber="110" rtype="posrel" dir="bidirectional">
+	<node number="166" owner="media" snumber="114" dnumber="110" rtype="posrel" dir="bidirectional">
 		<pos>2</pos>
 	</node>
 
-	<node number="164" owner="default" snumber="114" dnumber="112" rtype="posrel" dir="bidirectional">
+	<node number="164" owner="media" snumber="114" dnumber="112" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node> 
 </posrel>

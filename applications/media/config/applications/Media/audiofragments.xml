@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <audiofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="108" owner="default">
+	<node number="108" owner="media">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
