@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.42 2003-06-06 10:03:05 pierre Exp $ 
+ * @version $Id: AbstractNodeListTag.java,v 1.43 2003-06-18 11:48:10 michiel Exp $ 
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -176,7 +176,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     // ContextProvider implementation
-    public ContextContainer getContainer() {
+    public ContextContainer getContainer() throws JspTagException {
+        if (container == null) return getContextProvider().getContainer(); // to make sure old-style implemntation work (which do not initialize container)
         return container;
     }
 
