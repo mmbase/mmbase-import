@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  * 
  * @author Nico Klasens
- * @version $Id: UnicastChangesReceiver.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: UnicastChangesReceiver.java,v 1.1.2.1 2004-10-09 10:51:43 nico Exp $
  */
 public class UnicastChangesReceiver implements Runnable {
 
