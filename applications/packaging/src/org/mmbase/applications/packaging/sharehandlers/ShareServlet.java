@@ -120,6 +120,7 @@ public class ShareServlet extends BridgeServlet {
     }
 
     public synchronized void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	/*
 	HttpPost post =  new HttpPost(req);
 
         String filename = post.getPostParameter("filename");
@@ -151,6 +152,7 @@ public class ShareServlet extends BridgeServlet {
 	} else {
 		log.info("publish upload with the user name '"+account+"', use not found");
 	}
+	*/
     }
 
 }
