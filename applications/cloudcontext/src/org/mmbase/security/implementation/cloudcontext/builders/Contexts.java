@@ -24,7 +24,6 @@ import org.mmbase.cache.Cache;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.cache.AggregatedResultCache;
 
@@ -36,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.36 2004-03-08 17:43:56 michiel Exp $
+ * @version $Id: Contexts.java,v 1.37 2004-07-30 17:10:36 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -516,9 +515,8 @@ public class Contexts extends MMObjectBuilder {
                     Iterator i = steps.iterator();
                     while (i.hasNext()) {
                         Step step = (Step) i.next();
-                        Constraint newConstraint = null;
                         StepField field = query.createStepField(step, "owner");
-                        newConstraint = query.createConstraint(field, ac.contexts);
+                        Constraint newConstraint = query.createConstraint(field, ac.contexts);
                         if (ac.inverse) query.setInverse(newConstraint, true);
 
                         if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
