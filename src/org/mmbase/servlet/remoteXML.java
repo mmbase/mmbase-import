@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.22 $ $Date: 2001-07-02 09:24:34 $
+ * @version $Revision: 1.23 $ $Date: 2001-07-02 16:41:04 $
  */
 public class remoteXML extends JamesServlet {
 	private static Logger log = Logging.getLoggerInstance(remoteXML.class.getName());
@@ -40,25 +40,25 @@ public class remoteXML extends JamesServlet {
 	private MMBaseCop mmbaseCop = null;
 
 	/**
-	 * Initializing mmbase root variable.
+	 * Initializing mmbase root variable and get mmbaseCop.
 	 */
 	public void init() {
 		log.debug("Initializing mmbase root variable.");
 		mmbase = (MMBase)getModule("MMBASEROOT");
+		log.debug("Getting mmbaseCop.");
 		mmbaseCop = mmbase.getMMBaseCop();
 	}
 
 	/**
- 	* service call will be called by the server when a request is done
-	* by a user.
-	* @param req the current HttpServletRequest
-	* @param res the current HttpServletResponse
- 	*/
+ 	 * Checks all incoming requests and validates it wich shared secret before handling.
+	 * @param req the current HttpServletRequest
+	 * @param res the current HttpServletResponse
+ 	 */
 	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
 		incRefCount(req);
 		try {
 			String sharedsecret = req.getHeader("sharedSecret");
-			//log.debug("Sharedsecret = "+sharedsecret);
+			// log.debug("Sharedsecret = "+sharedsecret);
 
 			// Check if the remote machine knows the same shared secret. 
 			if(!mmbaseCop.checkSharedSecret(sharedsecret)) {
