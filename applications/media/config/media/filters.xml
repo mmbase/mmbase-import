@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mainFilter SYSTEM "http://www.mmbase.org/dtd/mediafilter_1_0.dtd" [
- <!ENTITY % configSubTags "preferredSource , realAudio">
+ <!ENTITY % configSubTags "preferredSource | realAudio">
  <!ENTITY % format SYSTEM "http://www.mmbase.org/dtd/formatcomparator_1_0.dtd" >
  <!ENTITY % real   SYSTEM "http://www.mmbase.org/dtd/realcomparator_1_0.dtd" >
  %format;

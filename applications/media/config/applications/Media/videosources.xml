@@ -2,7 +2,7 @@
 <videosources exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
 
 	<node number="130" owner="default">
-		<state>-1</state>
+		<state>3</state>
 		<url>/tv/vpro/noorderlicht/sb.20020328.rm</url>
 		<width>-1</width>
 		<fps>-1</fps>
@@ -16,7 +16,7 @@
 
 
 	<node number="128" owner="default">
-		<state>-1</state>
+		<state>3</state>
 		<url>/tv/nos/journaal/maandag.2000.rm</url>
 		<width>-1</width>
 		<height>-1</height>
@@ -29,7 +29,7 @@
 	</node>
 
 	<node number="217" owner="default">
-		<state>1</state>
+		<state>3</state>
 		<url>/tv/nos/journaal/maandag.2000.asf</url>
 		<width></width>
 		<fps></fps>
@@ -43,7 +43,7 @@
 
 
 	<node number="5000" owner="default">
-		<state>1</state>
+		<state>3</state>
 		<url>/tv/nos/netwerk/sb.20030113.asf</url>
 		<width>-1</width>
 		<fps>-1</fps>
@@ -57,7 +57,7 @@
 
 
 	<node number="5001" owner="default">
-		<state>1</state>
+		<state>3</state>
 		<url>/tv/nos/netwerk/20030112.asf</url>
 		<width>-1</width>
 		<fps>-1</fps>
@@ -72,7 +72,7 @@
 
   <!-- journaal of tuesday is used as 'intro' because I couldn't find something real -->
 	<node number="5002" owner="default">
-		<state>-1</state>
+		<state>3</state>
 		<url>/tv/nos/journaal/dinsdag.2000.rm</url>
 		<width>-1</width>
 		<height>-1</height>
@@ -85,7 +85,7 @@
 	</node>
 
 	<node number="5003" owner="default">
-		<state>1</state>
+		<state>3</state>
 		<url>/tv/nos/journaal/dinsdag.2000.asf</url>
 		<width></width>
 		<fps></fps>

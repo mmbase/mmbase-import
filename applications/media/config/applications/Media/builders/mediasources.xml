@@ -37,7 +37,7 @@
       <gui>
         <guiname xml:lang="en">Format</guiname>
         <guiname xml:lang="nl">Formaat</guiname>
-        <guitype>org.mmbase.applications.media.builders.resources.formats</guitype>
+        <guitype>org.mmbase.applications.media.resources.formats</guitype>
       </gui>
       <editor>
         <positions>
