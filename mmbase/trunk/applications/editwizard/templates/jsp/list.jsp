@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.6 2002-05-14 19:22:36 michiel Exp $
+     * @version  $Id: list.jsp,v 1.7 2002-05-16 16:13:55 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -174,31 +174,23 @@ if (multilevel) {
     if (mainmanager.charAt(mainmanager.length()-1)<='9') mainmanager=mainmanager.substring(0,mainmanager.length()-1);
 }
 
-if (start >= end) {
-    // Michiel: I don't know what this if for. I commented it out, because it caused nullpointer exception.
-    // org.w3c.dom.Node obj = addObject(docel, null,null,cloud.getNodeManager(mainmanager).getName());
+for (int i=start; i< end; i++) {
+    Node item = results.getNode(i);
+    org.w3c.dom.Node obj = addObject(docel, item.getStringValue((String)fieldList.get(0)), (i+1)+"",
+                                     cloud.getNodeManager(mainmanager).getName());
+    for (int j=1; j < fieldList.size(); j++) {
+        String fieldname = (String)fieldList.get(j);
+        String fieldguiname=fieldname;
 
-} else {
-    for (int i=start; i< end; i++) {
-        Node item = results.getNode(i);
-        org.w3c.dom.Node obj = addObject(docel, item.getStringValue((String)fieldList.get(0)), (i+1)+"",
-                                         cloud.getNodeManager(mainmanager).getName());
-        for (int j=1; j < fieldList.size(); j++) {
-            String fieldname = (String)fieldList.get(j);
-            String fieldguiname=fieldname;
-
-
-            if (multilevel) {
-                int period=fieldname.indexOf('.');
-                String nmname=fieldname.substring(0,period);
-                if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
-                fieldguiname=cloud.getNodeManager(nmname).getField(fieldname.substring(period+1)).getGUIName();
-            } else {
-                fieldguiname=item.getNodeManager().getField(fieldname).getGUIName();
-            }
-            addField(obj, fieldguiname, item.getStringValue(fieldname));
-
+        if (multilevel) {
+            int period=fieldname.indexOf('.');
+            String nmname=fieldname.substring(0,period);
+            if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
+            fieldguiname=cloud.getNodeManager(nmname).getField(fieldname.substring(period+1)).getGUIName();
+        } else {
+            fieldguiname=item.getNodeManager().getField(fieldname).getGUIName();
         }
+        addField(obj, fieldguiname, item.getStringValue(fieldname));
     }
 }
 
