@@ -26,7 +26,7 @@ import java.io.IOException;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.3 2003-09-10 11:16:08 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.4 2003-11-19 16:57:42 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
 
@@ -76,7 +76,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         collector = new ContextCollector(getContextProvider().getContextContainer());
 
         helper.overrideWrite(false); // default behavior is not to write to page
-        helper.setTag(this);
+        
         currentItemIndex= -1;  // reset index
         
         returnList = (List) value;

@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.35 2003-10-15 14:14:00 pierre Exp $
+ * @version $Id: TimeTag.java,v 1.36 2003-11-19 16:57:42 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
 
@@ -166,7 +166,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     }
 
     public int doStartTag() throws JspTagException {
-        helper.setTag(this);
+        
         helper.setValue(evaluateTime());
 
         if (getId() != null) {
