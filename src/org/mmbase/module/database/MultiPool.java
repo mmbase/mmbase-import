@@ -22,18 +22,18 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.29 2003-05-01 17:10:33 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.30 2003-05-02 07:30:14 michiel Exp $
  */
 public class MultiPool {
     
     private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
     
-    private List   pool     = new Vector();
-    private List   busyPool = new Vector();
-    private int      conMax   = 4;
+    private List              pool     = new ArrayList();
+    private List              busyPool = new ArrayList();
+    private int               conMax   = 4;
     private DijkstraSemaphore semaphore;
     private int      totalConnections = 0;
-    private int      maxQuerys = 500;
+    private int      maxQueries = 500;
     private String   url;
     private String   name;
     private String   password;
@@ -59,7 +59,7 @@ public class MultiPool {
         this.url=url;
         this.name=name;
         this.password=password;
-        this.maxQuerys=maxQueries;
+        this.maxQueries=maxQueries;
         this.databasesupport=databasesupport;
         
         // put connections on the pool
@@ -148,6 +148,9 @@ public class MultiPool {
             //// Busypool is in this method not locked and can be modified in getFree and putBack.
             //// if the busypool is iterated and modified at the same time a
             //// ConcurrentModificationException is thrown.
+
+            // Michiel: but the getFree and putBack actions on the two pools are also synchronized on semaphore.
+            //          so nothing can edit them without having acquired the lock on sempahore.
             
             
             int nowTime = (int) (System.currentTimeMillis() / 1000);
@@ -264,7 +267,7 @@ public class MultiPool {
             con.release(); //Resets time connection is busy.
             MultiConnection oldcon = con;
             
-            if (DORECONNECT && (con.getUsage() > maxQuerys)) {
+            if (DORECONNECT && (con.getUsage() > maxQueries)) {
                 if (log.isDebugEnabled()) {
                     log.debug("Re-Opening connection");
                 }
@@ -299,23 +302,31 @@ public class MultiPool {
     public int getTotalConnectionsCreated() {
         return totalConnections;
     }
-    
+
     /**
-     * @javadoc
+     * For reporting purposes the connections in pool can be listed.
+     * An Iterator on a copy of the Pool is returned.
+     *
+     * @see JDBC.listConnections
      */
     public Iterator getPool() {
-        return pool.iterator();
+        synchronized(semaphore) {
+            return new ArrayList(pool).iterator();
+        }
     }
     
     
     /**
-     * @javadoc
+     * For reporting purposes the connections in busypool can be listed.
+     * An Iterator on a copy of the BusyPool is returned.
+     * @see JDBC.listConnections
      */
     
     public Iterator getBusyPool() {
-        return busyPool.iterator();
+        synchronized(semaphore) {
+            return new ArrayList(busyPool).iterator();
+        }
     }
-    
     
     /**
      * @javadoc
