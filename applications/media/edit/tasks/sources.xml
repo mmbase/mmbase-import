@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
-<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN"
+"http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+    <!ENTITY formats SYSTEM "parts/formats.xml">
+]
+>
 <wizard-schema id="media">
 	<title>Media editor</title>
 
@@ -14,19 +19,15 @@
 	<action type="load">
 	</action>
 	
- <list include="tasks/formats.xml" />
-
+  &formats;
 
 	<form-schema id="basics">
-		<title>MediaSource</title>
-		<field name="url" >
-			<prompt>url</prompt>
-		</field>
-    <field name="format" dtminlength="1" dtmaxlength="10" ftype="enum" dtrequired="true">
-	    <prompt>Format</prompt>
+		<title>Media Source</title>
+		<title xml:lang="nl">Mediabron</title>
+		<field name="url" />
+    <field name="format">
       <optionlist select="formats" />
    	</field>
-
 	</form-schema>
 
 </wizard-schema>
