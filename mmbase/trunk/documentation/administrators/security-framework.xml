@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>12 February 2003</date>
-    <edition>$Id: security-framework.xml,v 1.7 2003-04-08 09:55:43 pierre Exp $</edition>
+    <edition>$Id: security-framework.xml,v 1.8 2003-06-09 20:26:27 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -56,6 +56,7 @@
   <section id="introduction">
     <title>Introduction</title>
     <section id="requirements">
+      <title>Requirements</title>
       <para>MMBase uses a security framework in which different security implementations can be used. This means that is possible to developer various types of security systems, adapting MMBase to the needs of the environment in which it runs. A number of default implementations are available in MMBase (such as the context security, documented elsewhere), but new ones can be developed and easily substituted using the security configuration files.</para>
       <para>This document focuses on the security framework. It falls in four parts.</para>
       <para>The first part explains the general architecture, and the way security is used by MMBase. It explains what is possible in the approach we use and what isn't. It also comments on where security is used, and how it can be circumvented.</para>
@@ -85,10 +86,15 @@
     </section>
     <section>
       <title>Authentication and Authentication Modules</title>
-      <para>Forthcoming...</para>
+      <para>There are various ways to authenticate a user. Name/password logon is one of the most common, but other authentication methods might include certification, IP-filtering, or public keys. Another form of authentication is 'anonymous' access - which allows people to be identified as anonymous users. Advanced systems might use fingerprints or iris scans.</para>
+      <para>The security framework takes this into account by introducing the concept of authentication modules. Each module in a security implementation offers another way to authenticate a user.</para>
+      <para>There is currently no specific way to configure modules - the Authentication class deals with this, either by hardcoding the expected modules, or by using a configuration file specified with the <sgmltag class="attribute">url</sgmltag> attribute (such as in the context security system). Future versions of the security framework may include specifics on how to configure authentication modules.</para>
+      <note><para>Autentication systems and authorization systems are originally designed as seperate entities. Authentication systems produce User objects, where Authorisation systems use these objects. This would theoretically mean that authentication modules can be used with different authorization systems.</para>
+      <para>Most security systems however use their own implementation of the User object - often so specific information can be retrieved by the authorisation system. As such, in practrice, in most security systems authorisation classed depend on the authentication moduels that come with that system.</para></note>
     </section>
     <section>
       <title>Authorisation</title>
+      <para>Authorisation takes place on object level: for each object, the authorisation system determines the rights for a specified user. How these rights are determine dis not specified - a system can actually maintain(and store) rights per user/object, but it is also possible to determine access per object type, or (as is the case with the context security system), by granting user groups access to object groups (generally objects with the same 'context' or 'owner').</para>
       <para>Forthcoming...</para>
     </section>
     <section>
@@ -125,33 +131,33 @@
             <title><![CDATA[<security active="...">]]></title>
             <para>The <sgmltag class="attribute">active</sgmltag> attribute of the security tag determines whether security is active or not.
             Valid values are &#39;true&#39; and &#39;false&#39;. If the value is set to &#39;true&#39; the security system (authentication and authorization classes) will be loaded and activated as described in the rest of the configuration. If the value is &#39;false&#39; no security implementation well be loaded. In this case, the security configuration file will not be checked for changes (so no reloads will occur if the configuration is changed).</para>
-            <informalexample>In the example above, the security is turned on.</informalexample>
           </formalpara>
+          <para>In the example above, the security is turned on.</para>
         </listitem>
         <listitem>
           <formalpara>
             <title><![CDATA[<authentication class="..." url="..." />]]></title>
             <para>This tag defines what class to use for executing authentication requests.</para>
-            <para>The <sgmltag class="attribute">class</sgmltag> attribute defines the path of the java class that should be used. The class follows a certain interface, so various implementations can be accessed in a similar way. If you use an alternate securirty sustem., you specify the classname here. If you want to turn off authentication, you can set the attribute to <classname>org.mmbase.security.NoAuthentication</classname>.</para>
-            <para>The <sgmltag class="attribute">url</sgmltag> attribute (which is optional) specifies the path to a configuration file, which is passed to the Authentication class. The path is relative to the <filename>security.xml</filename> configuration file.</para>
-            <informalexample>In the example above, the class used for authentication is <classname>org.mmbase.security.implementation.context.ContextAuthentication</classname> (which is the classname of the MMBase context security authentication class). The url of the configuration file is <filename>context/config.xml</filename>, which defines (for the purpose of authentication) users and their passwords.</informalexample>
           </formalpara>
+          <para>The <sgmltag class="attribute">class</sgmltag> attribute defines the path of the java class that should be used. The class follows a certain interface, so various implementations can be accessed in a similar way. If you use an alternate securirty sustem., you specify the classname here. If you want to turn off authentication, you can set the attribute to <classname>org.mmbase.security.NoAuthentication</classname>.</para>
+          <para>The <sgmltag class="attribute">url</sgmltag> attribute (which is optional) specifies the path to a configuration file, which is passed to the Authentication class. The path is relative to the <filename>security.xml</filename> configuration file.</para>
+          <para>In the example above, the class used for authentication is <classname>org.mmbase.security.implementation.context.ContextAuthentication</classname> (which is the classname of the MMBase context security authentication class). The url of the configuration file is <filename>context/config.xml</filename>, which defines (for the purpose of authentication) users and their passwords.</para>
         </listitem>
         <listitem>
           <formalpara>
             <title><![CDATA[<authorization class="..." url="..." />]]></title>
             <para>This tag defines what class to use for executing authentication requests.</para>
-            <para>The <sgmltag class="attribute">class</sgmltag> attribute defines the path of the java class that should be used. The class follows a certain interface, so various implementations can be accessed in a similar way. If you use an alternate securirty system, you specify the classname here. If you want to turn off authentication, you can set the attribute to <classname>org.mmbase.security.NoAuthorization</classname>.</para>
-            <para>The <sgmltag class="attribute">url</sgmltag> attribute (which is optional) specifies the path to a configuration file, which is passed to the Authentication class. The path is relative to the <filename>security.xml</filename> configuration file.</para>
-            <informalexample>In the example above, the class used for authentication is <classname>org.mmbase.security.implementation.context.ContextAuthorization</classname> (which is the classname of the MMBase context security authorization class). The url of the configuration file is <filename>context/config.xml</filename>, which defines (for the purpose of authorization) the rights of users and user groups</informalexample>
           </formalpara>
+          <para>The <sgmltag class="attribute">class</sgmltag> attribute defines the path of the java class that should be used. The class follows a certain interface, so various implementations can be accessed in a similar way. If you use an alternate securirty system, you specify the classname here. If you want to turn off authentication, you can set the attribute to <classname>org.mmbase.security.NoAuthorization</classname>.</para>
+          <para>The <sgmltag class="attribute">url</sgmltag> attribute (which is optional) specifies the path to a configuration file, which is passed to the Authentication class. The path is relative to the <filename>security.xml</filename> configuration file.</para>
+          <para>In the example above, the class used for authentication is <classname>org.mmbase.security.implementation.context.ContextAuthorization</classname> (which is the classname of the MMBase context security authorization class). The url of the configuration file is <filename>context/config.xml</filename>, which defines (for the purpose of authorization) the rights of users and user groups</para>
         </listitem>
         <listitem>
           <formalpara>
             <title><![CDATA[<sharedsecret>...</sharedsecret>]]></title>
             <para>It is possible to run more than one MMBase on the same database. The <sgmltag class="starttag">sharedsecret</sgmltag> tag contains a password which is used to autenticate servers when they attempt to communicate with each other.</para>
-            <informalexample>In teh above example, the shared secret is 'my_secret_acces_code'. Other MMBase installations which have the same shared secret can commuinicate with this system.</informalexample>
           </formalpara>
+          <para>In teh above example, the shared secret is 'my_secret_acces_code'. Other MMBase installations which have the same shared secret can commuinicate with this system.</para>
         </listitem>
       </itemizedlist>
     </section>
