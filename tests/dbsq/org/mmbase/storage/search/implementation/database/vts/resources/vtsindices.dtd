@@ -1,0 +1,17 @@
+<?xml encoding="UTF-8" ?>
+
+<!-- Created by robmar on November 7, 2002, 12:37 PM -->
+<!-- TODO RvM: add documentation comments -->
+
+<!ELEMENT vtsindices (sbspace*)>
+<!ATTLIST vtsindices 
+    nolog (TRUE | FALSE) "TRUE"> 
+
+<!ELEMENT sbspace (vtsindex*)>
+<!ATTLIST sbspace 
+    name CDATA #REQUIRED>
+
+<!ELEMENT vtsindex (#PCDATA)>
+<!ATTLIST vtsindex 
+    table CDATA #REQUIRED
+    field CDATA #REQUIRED>
