@@ -1,7 +1,0 @@
-<FORM ACTION="/mmadmin/examples.shtml" METHOD="POST">
-	<INPUT TYPE="hidden" NAME="SESSION-INSTALLED" VALUE="OKE">
-	<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
-	<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMEXAMPLES">
-	<INPUT TYPE="hidden" NAME="PRC-CMD-INSTALL">
-The MyYahoo Example :    select to install <INPUT TYPE="checkbox" NAME="PRC-VAR-NAME-MyYahoo">  and  <INPUT TYPE="SUBMIT" VALUE="submit">
-<FORM>

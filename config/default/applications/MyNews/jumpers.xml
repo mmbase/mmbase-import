@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<jumpers exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20000602143030">
-	<node number="1085" owner="admin">
-		<url>/mmexamples/mynews/scan/start.shtml</url>
-		<id>null</id>
-		<name>mynews</name>
-	</node>
-
-</jumpers>

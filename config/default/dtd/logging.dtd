@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<!-- Author: Michiel Meeuwissen -->
-
-<!-- With logging describe which class to use for logging -->
-<!ELEMENT logging (class,configuration?)>
-<!ELEMENT class   (#PCDATA)>
-<!ELEMENT configuration (#PCDATA)>
