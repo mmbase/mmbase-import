@@ -539,6 +539,22 @@ See mmexamples/taglib for more elaborated examples.
         <value>false</value>
       </possiblevalue>
     </attribute>
+    <attribute>
+      <name>escape</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Override the default escape behaviour determined by the surrounding Content-tag.</info>
+      <examplevalue>
+        <value>text/html</value>
+      </examplevalue>
+      <examplevalue>
+        <value>text/xml</value>
+      </examplevalue>
+      <examplevalue>
+        <value>text/plain</value>
+        <info>This equals no escaping</info>
+      </examplevalue>
+    </attribute>
   </taginterface>
   <tag>
     <name>list</name>
