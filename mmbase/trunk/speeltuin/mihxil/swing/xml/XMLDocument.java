@@ -17,9 +17,8 @@ import java.util.*;
  * 
  * A document represent formatted text.  The test itself is in a
  * string (getText()), and the connection with the format is made my
- * offset numbers.  This is different from DOM Document, where the
+ * offset numbers.  This is different from a DOM Document, where the
  * real data is in the tree itself.
- * 
  *
  * @author Michiel Meeuwissen
  */
@@ -27,6 +26,10 @@ import java.util.*;
 
 abstract public class XMLDocument extends DefaultStyledDocument {
   
+    private void debug(String d) {
+        System.out.println("LOG XMLDocument " + d);
+    }
+
     public XMLDocument(StyleContext s) {
         super(s);
     }
@@ -42,7 +45,7 @@ abstract public class XMLDocument extends DefaultStyledDocument {
   
     protected AbstractElement createDefaultRoot() {      	
 	writeLock();
-        System.out.println("Creating default root");
+        debug("Creating default root");
 	BranchElement root      = (BranchElement) createBranchElement(null, getStyle("root"));
         //root style supplies the basic box view to contain everyting
 	BranchElement paragraph = (BranchElement) createBranchElement(root, getStyle("section"));
@@ -66,16 +69,16 @@ abstract public class XMLDocument extends DefaultStyledDocument {
         private String name;
         XMLBranchElement(Element parent, AttributeSet a) {
             super(parent, a);
-            System.out.println("creating branch. Children: " + this.children());
+            debug("creating branch. Children: " + this.children());
             name = "xmlbranch";
         }
         public String getName() {
             AttributeSet a = getAttributes();
             if (a instanceof StyleContext.NamedStyle) {
-                System.out.println("Creating branchelement in with "  + a);
+                debug("Creating branchelement in with "  + a);
                 return ((StyleContext.NamedStyle) getAttributes()).getName();
             } else {
-                System.out.println("Creating branchelement NOT NAMEDSTYLE ");
+                debug("Creating branchelement NOT NAMEDSTYLE ");
                 return super.getName();
             }
         }
@@ -109,6 +112,7 @@ abstract public class XMLDocument extends DefaultStyledDocument {
     abstract public Responder getResponder(Reader in, int pos);
 
     public void read(Reader in, int pos) throws IOException, BadLocationException {        
+        debug("Reading at " + pos);
         Parser parser = new Parser();
         Responder res = getResponder(in, pos);
         parser.parseXML(res );        

@@ -18,8 +18,8 @@ import org.mmbase.util.swing.xml.TagType;
 
 public class MMXFDocument extends XMLDocument {
 
-    public MMXFDocument() {
-        super(new MMXFStyle()); 
+     public MMXFDocument() { 
+          super(new MMXFStyle()); 
     }
     public Responder getResponder(Reader in, int pos) {
         return new MMXFResponder(in, pos, this);
@@ -28,10 +28,16 @@ public class MMXFDocument extends XMLDocument {
 
     /**
      * How to respond when reading in an mmxf XML document.
-     *
+     * 
+     * This in fact is a description of the MMXF format.
      **/
 
     private class MMXFResponder extends Responder {
+
+
+        private void debug(String d) {
+            System.out.println("LOG MMXFDocument.MMXFResponder " + d);
+        }
 
         private int         pos;
         private MMXFDocument doc;
@@ -56,10 +62,10 @@ public class MMXFDocument extends XMLDocument {
          */
         public void recordElementStart(String name, Hashtable attr) throws ParseException {
 
-            System.out.println("start " + name);
+            debug("start " + name);
             TagType tagType = MMXF.getTagType(name);
 
-            System.out.println("found tag " + tagType);            
+            debug("found tag " + tagType);            
 
 
             Tag p = parent();
@@ -68,7 +74,7 @@ public class MMXFDocument extends XMLDocument {
                 pe = p.getElement();
             }
 
-            System.out.println("parent " + p);
+            debug("parent " + p);
 
             Tag tag; // the tag that will be started.
             
@@ -78,7 +84,7 @@ public class MMXFDocument extends XMLDocument {
                     tag = new Tag(tagType, doc.createBranchElement(pe, getStyle("root")));
                     doc.writeUnlock();
                 }  else if (tagType == MMXF.SECTION) {            
-                    System.out.println("new section!!");
+                    debug("new section!!");
                     /*
                     String t = (String) attr.get("title");
                     doc.insertString(pos, t, getStyle("label"));
@@ -92,7 +98,7 @@ public class MMXFDocument extends XMLDocument {
                     */
                     tag = new Tag(tagType, null);
                 } else if (tagType == MMXF.P) {
-                    System.out.println("create the branch for p");
+                    debug("create the branch for p");
                     // create the branch..
                     doc.writeLock();
                     tag = new Tag(tagType, doc.createBranchElement(pe, getStyle("p")));
@@ -115,23 +121,23 @@ public class MMXFDocument extends XMLDocument {
         }
         
         public void recordElementEnd(String name) throws ParseException {
-            System.out.println("end " + name);
+            debug("end " + name);
             Tag top = (Tag) stack.peek();
             TagType tag = MMXF.getTagType(name);
             if (top.getType() != tag) {
                 throw new ParseException ("Nesting error at pos " + pos);
             } else {                
                 XMLDocument.BranchElement topElement = top.getElement();
-                System.out.println("hoii" + topElement);
+                debug("top element " + topElement);
                 Enumeration e = topElement.children();
                 if (e != null) {                    
                     while (e.hasMoreElements()) {
                         System.out.println(e.nextElement());
                     }
                 }
-                System.out.println("replacing in " + topElement);
+                debug("replacing in " + topElement);
                 int i = 0; // topElement.getStartOffset();
-                System.out.println("replacing at " + i);
+                debug("replacing at " + i);
                 topElement.replace(i, 0 , top.getSubElements());
                 stack.pop();
             }           
@@ -149,23 +155,23 @@ public class MMXFDocument extends XMLDocument {
         }
 
         public void recordCharData(String charData) throws ParseException {
-            System.out.println("chardata " + charData);
+            debug("chardata " + charData);
             Tag tag = (Tag) stack.peek();
             try {
                 if (tag.getType() == MMXF.EM) {
-                    System.out.println("chardata EM");
+                    debug("chardata EM");
                     doc.insertString(pos, charData, getStyle("emphasize"));
                     doc.writeLock();
                     doc.createLeafElement(parent().getElement(), getStyle("emphasize"), pos, charData.length());
                     doc.writeUnlock();
                 } else {
-                    System.out.println("chardata OTHER");
+                    debug("chardata OTHER");
                     doc.insertString(pos, charData, getStyle("label"));
                 }
             } catch (Exception e) {
                 throw new ParseException (e.toString());
             }
-            System.out.println("inserting " + charData + " at " + pos);
+            debug("inserting " + charData + " at " + pos);
             pos += charData.length();
 	}
         
