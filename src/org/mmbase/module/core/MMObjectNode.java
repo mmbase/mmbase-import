@@ -18,6 +18,7 @@ import org.mmbase.module.gui.html.EditState;
 import org.mmbase.module.gui.html.MMLanguage;
 
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
 
 import org.w3c.dom.Document;
 
@@ -31,13 +32,11 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.82 $ $Date: 2002-09-26 12:51:04 $
+ * @author Michiel Meeuwissen
+ * @version $Id: MMObjectNode.java,v 1.83 2002-09-27 20:07:13 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
-    /**
-     * Logger routine
-     */
     private static Logger log = Logging.getLoggerInstance(MMObjectNode.class.getName());
 
     /**
@@ -268,6 +267,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return virtual;
     }
 
+    /*
+     *
+     * @since MMBase-1.6
+    */
+
+    protected Document toXML(Object value, String fieldName) {
+        return Casting.toXML(value, parent.getField(fieldName).getDBDocType(), parent.getInitParameter(fieldName + ".xmlconversion"));
+    }
 
     /**
      *  Sets a key/value pair in the main values of this node.
@@ -285,7 +292,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // if we have an XML-dbtype field, we always have to store it inside an Element.
         if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
             log.debug("im called far too often");
-            Document doc = convertStringToXml(fieldName, (String) fieldValue);
+            if (fieldValue == null && parent.getField(fieldName).getDBNotNull()) {
+                throw new RuntimeException("field with name '"+fieldName+"' may not be null");
+            }
+            String value = Casting.toString(fieldValue);
+            value = value.trim();
+            if(value.length()==0 && parent.getField(fieldName).getDBNotNull()) {
+                throw new RuntimeException("field with name '"+fieldName+"' may not be empty");
+            }
+            Document doc = toXML(value, fieldName);
             if(doc != null) {
                 // store the document inside the field.. much faster...
                 fieldValue = doc;
@@ -365,7 +380,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
         switch (type) {
             case FieldDefs.TYPE_XML:
-                setValue(fieldName, convertStringToXml(fieldName, value));
+                setValue(fieldName, toXML(value, fieldName));
                 break;
             case FieldDefs.TYPE_STRING:
                 setValue( fieldName, value);
@@ -471,6 +486,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return o;
     }
 
+
     /**
      * Get a value of a certain field.  The value is returned as a
      * String. Non-string values are automatically converted to
@@ -479,23 +495,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as a <code>String</code>
      */
     public String getStringValue(String fieldName) {
-
-        // try to get the value from the values table
-        String tmp = "";
-        Object o = getValue(fieldName);
-        if (o!=null) {
-            if (o instanceof byte[]) {
-                tmp = new String((byte[])o);
-            } else if(o instanceof MMObjectNode) {
-                //
-                tmp = ""+((MMObjectNode)o).getNumber();
-            } else if(o instanceof Document) {
-                //
-                tmp = convertXmlToString(fieldName, (Document) o );
-            } else {
-                tmp=""+o;
-            }
-        }
+        String tmp =  Casting.toString(getValue(fieldName));
 
         // check if the object is shorted, shorted means that
         // because the value can be a large text/blob object its
@@ -505,14 +505,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // get mapped into a real value. this saves speed and memory
         // because every blob/text mapping is a extra request to the
         // database
-        if (tmp.indexOf("$SHORTED")==0) {
-            if (log.isDebugEnabled()) log.debug("getStringValue(): node="+this+" -- fieldName "+fieldName);
+        if (tmp.indexOf("$SHORTED") == 0) {            
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
             // multiple database support.
             int type=getDBType(fieldName);
-
-            log.debug("getStringValue(): fieldName "+fieldName+" has type "+type);
+            if (log.isDebugEnabled()) {
+                log.debug("getStringValue(): node="+this+" -- fieldName "+fieldName);
+                log.debug("getStringValue(): fieldName "+fieldName+" has type "+type);
+            }
             // check if for known mapped types
             if (type==FieldDefs.TYPE_STRING) {
                 MMObjectBuilder bul;
@@ -571,23 +572,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) {
-        Object o = getValue(fieldName);
-        if(getDBType(fieldName)!= FieldDefs.TYPE_XML) {
-            throw new IllegalArgumentException("Field was not an xml-field, dont know how I need to convert this to an xml-document");
+        Document o =  toXML(getValue(fieldName), fieldName);
+        if(o != null) {
+            values.put(fieldName, o);
         }
-        if (o == null) {
-            log.warn("Got null value in field " + fieldName);
-            return null;
-        }
-        if (!(o instanceof Document)) {
-            //do conversion from string to Document thing...
-            log.warn("Field " + fieldName + " did not contain a Document, but a " + o.getClass().getName());
-            o = convertStringToXml(fieldName,  getStringValue(fieldName));
-            if(o != null) {
-                values.put(fieldName, o);
-            }
-        }
-        return (Document) o;
+        return o;
     }
 
     /**
@@ -595,12 +584,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
-    public byte[] getByteValue(String fieldName) {
 
+    public byte[] getByteValue(String fieldName) {
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
         // nodes to work (if not duplicate can not be stored)
-
+        
         // call below also allows for byte[] type of
         // formatting functons.
         Object obj=getValue(fieldName);
@@ -638,6 +627,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
     }
 
+
+
     /**
      * Get a value of a certain field.
      * The value is returned as an MMObjectNode.
@@ -652,16 +643,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public MMObjectNode getNodeValue(String fieldName) {
         if (fieldName==null || fieldName.equals("number")) return this;
-        MMObjectNode res=null;
-        Object i=getValue(fieldName);
-        if (i instanceof MMObjectNode) {
-            res=(MMObjectNode)i;
-        } else if (i instanceof Number) {
-            res=parent.getNode(((Number)i).intValue());
-        } else if (i!=null) {
-            res=parent.getNode(i.toString());
-        }
-        return res;
+        return Casting.toNode(getValue(fieldName), parent);
     }
 
     /**
@@ -675,20 +657,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>int</code>
      */
     public int getIntValue(String fieldName) {
-        Object i=getValue(fieldName);
-        int res=-1;
-        if (i instanceof MMObjectNode) {
-            res=((MMObjectNode)i).getNumber();
-        } else if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
-        } else if (i instanceof Number) {
-            res=((Number)i).intValue();
-        } else if (i!=null) {
-            try {
-                res=Integer.parseInt(""+i);
-            } catch (NumberFormatException e) {}
-        }
-        return res;
+        return Casting.toInt(getValue(fieldName));
     }
 
     /**
@@ -708,30 +677,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>int</code>
      */
     public boolean getBooleanValue(String fieldName) {
-        Object b=getValue(fieldName);
-        boolean res=false;
-        if (b instanceof Boolean) {
-            res=((Boolean)b).booleanValue();
-        } else if (b instanceof Number) {
-            res=((Number)b).intValue()>0;
-        } else if (b instanceof String) {
-            // note: we don't use Boolean.valueOf() because that only captures
-            // the value "true"
-            res= ((String)b).equalsIgnoreCase("true") ||
-                 ((String)b).equalsIgnoreCase("yes");
-            // Call MMLanguage, and compare to
-            // the 'localized' values of true or yes.
-            if ((!res) && (parent!=null)) {
-                MMLanguage languages = (MMLanguage)Module.getModule("mmlanguage");
-                if (languages!=null) {
-                    res= ((String)b).equalsIgnoreCase(
-                                languages.getFromCoreEnglish("true")) ||
-                         ((String)b).equalsIgnoreCase(
-                                languages.getFromCoreEnglish("yes"));
-                }
-            }
-        }
-        return res;
+        return Casting.toBoolean(getValue(fieldName));
     }
 
     /**
@@ -744,42 +690,18 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>Integer</code>
      */
     public Integer getIntegerValue(String fieldName) {
-        Object i=getValue(fieldName);
-        int res=-1;
-        if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
-        } else if (i instanceof Number) {
-            res=((Number)i).intValue();
-        } else if (i!=null) {
-            try {
-              res=Integer.parseInt(""+i);
-            } catch (NumberFormatException e) {}
-        }
-        return new Integer(res);
+        return Casting.toInteger(getValue(fieldName));
     }
 
     /**
      * Get a value of a certain field.
-     * The value is returned as a long value. Values of non-long, numeric fields are converted if possible.
-     * Boolean fields return 0 for false, 1 for true.
-     * String fields are parsed to a number, if possible.
-     * All remaining field values return -1.
+     * @see getValue
+     * @see Casting.toLongValue
      * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>long</code>
      */
     public long getLongValue(String fieldName) {
-        Object i=getValue(fieldName);
-        long res =-1;
-        if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
-        } else if (i instanceof Number) {
-            res=((Number)i).longValue();
-        } else if (i!=null) {
-            try {
-              res=Long.parseLong(""+i);
-            } catch (NumberFormatException e) {}
-        }
-        return res;
+        return Casting.toLong(getValue(fieldName));
     }
 
 
@@ -793,18 +715,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as a <code>float</code>
      */
     public float getFloatValue(String fieldName) {
-        Object i=getValue(fieldName);
-        float res =-1;
-        if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
-        } else if (i instanceof Number) {
-            res=((Number)i).floatValue();
-        } else if (i!=null) {
-            try {
-                res=Float.parseFloat(""+i);
-            } catch (NumberFormatException e) {}
-        }
-        return res;
+        return Casting.toFloat(getValue(fieldName));
     }
 
 
@@ -818,20 +729,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as a <code>double</code>
      */
     public double getDoubleValue(String fieldName) {
-        Object i=getValue(fieldName);
-        double res =-1;
-        if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
-        } else if (i instanceof Number) {
-            res=((Number)i).doubleValue();
-        } else if (i!=null) {
-            try {
-                res=Double.parseDouble(""+i);
-            } catch (NumberFormatException e) {}
-        }
-        return res;
+        return Casting.toDouble(getValue(fieldName));
     }
-
     /**
      * Returns the DBType of a field.
      * @param fieldName the name of the field who's type to return
@@ -1040,7 +939,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         } else {
             relation_cache_hits++;
         }
-        if (relations!=null) {
+        if (relations != null) {
             return relations.elements();
         } else {
             return null;
@@ -1241,173 +1140,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return relation_cache_miss;
     }
 
-
-    /**
-     * Convert a String value of a field to a Document
-     * @param fieldName The field to be used.
-     * @param value     The current value of the field, (can be null)
-     * @return A DOM <code>Document</code> or <code>null</code> if there was no value and builder allowed  to be null
-     * @throws RuntimeException When value was null and not allowed by builer, and xml failures.
-     */
-    private Document convertStringToXml(String fieldName, String value) {
-        value = value.trim();
-        if(value == null || value.length()==0) {
-            log.debug("field was empty");
-            // may only happen, if the field may be null...
-            if(parent.getField(fieldName).getDBNotNull()) {
-                throw new RuntimeException("field with name '"+fieldName+"' may not be null");
-            }
-            return null;
-        }
-        if (value.startsWith("<")) {
-            // removing doc-headers if nessecary
-
-            // remove all the <?xml stuff from beginning if there....
-            //  <?xml version="1.0" encoding="utf-8"?>
-            if(value.startsWith("<?xml")) {
-                // strip till next ?>
-                int stop = value.indexOf("?>");
-                if(stop > 0) {
-                    value = value.substring(stop + 2).trim();
-                    log.debug("removed <?xml part");
-                }
-                else {
-                    throw new RuntimeException("no ending ?> found in xml:\n" + value);
-                }
-            } else {
-                log.debug("no <?xml header found");
-            }
-
-            // remove all the <!DOCTYPE stuff from beginning if there....
-            // <!DOCTYPE builder PUBLIC "-//MMBase/builder config 1.0 //EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-            if(value.startsWith("<!DOCTYPE")) {
-                // strip till next >
-                int stop = value.indexOf(">");
-                if(stop > 0) {
-                    value = value.substring(stop + 1).trim();
-                    log.debug("removed <!DOCTYPE part");
-                } else {
-                    throw new RuntimeException("no ending > found in xml:\n" + value);
-                }
-            } else {
-                log.debug("no <!DOCTYPE header found");
-            }
-        }
-        else {
-            // not XML, make it XML, when conversion specified, use it...
-            String propertyName = fieldName + ".xmlconversion";
-            String conversion = parent.getInitParameter(propertyName);
-            if(conversion == null) {
-                conversion = "MMXF_POOR";
-                log.warn("property: '"+propertyName+"' for builder: '"+parent.getTableName()+"' was not set, converting string to xml for field: '" + fieldName + "' using the default: '" + conversion + "'.");
-            }
-            log.debug("converting the string to something else using conversion: " + conversion);
-            value = org.mmbase.util.Encode.decode(conversion, (String) value);
-        }
-
-        if (log.isDebugEnabled()) {
-            log.trace("using xml string:\n"+value);
-        }
-        // add the header stuff...
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
-        String doctype = parent.getField(fieldName).getDBDocType();
-        if(doctype != null) {
-            xmlHeader += "\n" + doctype;
-        }
-        value = xmlHeader + "\n" + value;
-
-        /////////////////////////////////////////////
-        // TODO: RE-USE THE PARSER EVERY TIME !    //
-        try {
-            // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
-            // or ask it from BasicReader ?
-            javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            if(doctype != null) {
-                log.debug("validating the xmlfield for field with name:" + fieldName + " with doctype: " + doctype);
-                dfactory.setValidating(true);
-            }
-            javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-
-            // dont log errors, and try to process as much as possible...
-            org.mmbase.util.XMLErrorHandler errorHandler = new org.mmbase.util.XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
-            documentBuilder.setErrorHandler(errorHandler);
-            documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
-            // ByteArrayInputStream?
-            // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
-            Document doc = documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding())));
-            if(!errorHandler.foundNothing()) {
-                throw new RuntimeException("xml for field with name: '"+fieldName+"' invalid:\n"+errorHandler.getMessageBuffer()+"for xml:\n"+value);
-            }
-            return doc;
-        }
-        catch(javax.xml.parsers.ParserConfigurationException pce) {
-            String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
-            log.error(msg);
-            throw new RuntimeException(msg);
-        }
-        catch(org.xml.sax.SAXException se) {
-            String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(se);
-            log.error(msg);
-            throw new RuntimeException(msg);
-        }
-        catch(java.io.IOException ioe) {
-            String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(ioe);
-            log.error(msg);
-            throw new RuntimeException(msg);
-        }
-    }
-
-    private String convertXmlToString(String fieldName, Document xml) {
-        log.debug("converting from xml to string");
-
-        // check for null values
-        if(xml == null) {
-            log.debug("field was empty");
-            // string with null isnt allowed in mmbase...
-            return "";
-        }
-
-        // check if we are using the right DOC-type for this field....
-        String doctype = parent.getField(fieldName).getDBDocType();
-        if(doctype != null) {
-            // we have a doctype... the doctype of the document has to mach the doctype of the doctype which is needed..
-            org.w3c.dom.DocumentType type =  xml.getDoctype();
-            String publicId = type.getPublicId();
-            if(doctype.indexOf(publicId) == -1) {
-                throw new RuntimeException("doctype('"+doctype+"') required by field '"+fieldName+"' and public id was NOT in it : '"+publicId+"'");
-            }
-            log.warn("doctype check can not completely be trusted");
-        }
-        /////////////////////////////////////////////
-        // TODO: RE-USE THE PARSER EVERY TIME !    //
-        try {
-            // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
-            // or ask it from BasicReader ?
-
-            //make a string from the XML
-            javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
-            //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-            javax.xml.transform.Transformer serializer = tfactory.newTransformer();
-            // for now, we save everything in ident form, this since it makes debugging a little bit more handy
-            serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-            // store as less as possible, otherthings should be resolved from gui-type
-            serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
-            java.io.StringWriter str = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
-            if (log.isDebugEnabled()) {
-                log.debug("xml -> string:\n" + str.toString());
-            }
-            return str.toString();
-        } catch(javax.xml.transform.TransformerConfigurationException tce) {
-            String message = tce.toString() + " " + Logging.stackTrace(tce);
-            log.error(message);
-            throw new RuntimeException(message);
-        } catch(javax.xml.transform.TransformerException te) {
-            String message = te.toString() + " " + Logging.stackTrace(te);
-            log.error(message);
-            throw new RuntimeException(message);
-        }
-    }
 
     public int getByteSize() {
         return getByteSize(new org.mmbase.util.SizeOf());
