@@ -429,7 +429,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         Map params = new HashMap();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
-        params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
+        // params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context)); // use node function
+        
         // getting the language from the locale, this is perhaps not a very good idea,
         // but for the moment, I don't know a sensible other place to get it from.
         // --> should be get from bridge as soon as possible.
