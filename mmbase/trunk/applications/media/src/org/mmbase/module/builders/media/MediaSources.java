@@ -228,7 +228,7 @@ public class MediaSources extends MMObjectBuilder {
         source.insert(owner);
         
         // creating relation between media source and media fragment
-        MMObjectNode insrel = mmb.getInsRel().getNewNode("MediaSync");
+        MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
         insrel.setValue("snumber", source.getIntValue("number"));
         insrel.setValue("dnumber", mediafragment.getIntValue("number"));
         insrel.setValue("rnumber", mmb.getInsRel().oType);
@@ -240,6 +240,29 @@ public class MediaSources extends MMObjectBuilder {
         }
         
         return source;
+    }
+    
+    
+    /**
+     * adds a provider to a mediasource
+     * @param mediasource 
+     * @param providername the name of the provider to relate
+     * @param owner the creator of the relation
+     */
+    public void addProvider(MMObjectNode mediasource, String providername, String owner) {
+        MMObjectNode provider = mediaProviderBuilder.getProvider(providername);
+        
+        // creating relation between media source and media fragment
+        MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
+        insrel.setValue("snumber", provider.getIntValue("number"));
+        insrel.setValue("dnumber", mediasource.getIntValue("number"));
+        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        int ret = insrel.insert(owner);
+        if(ret<0) {
+            log.error("Cannot create relation between mediafragment and mediasource "+insrel);
+        } else {
+            log.debug("created "+insrel);
+        }
     }
 
 
