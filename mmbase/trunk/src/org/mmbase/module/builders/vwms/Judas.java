@@ -27,6 +27,7 @@ import org.mmbase.module.builders.Properties;
 public class Judas extends Vwm implements MMBaseObserver {
 	private JudasURLpusher pusher=null;
 	private boolean firstProbeCall = true;
+	boolean debug=false;
 
 	public Judas() {
 		System.out.println("Yo Judas and im alive");
@@ -511,7 +512,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("programs.number");
 		fields.addElement("episodes.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
-		debug("shows: portals,maps,programs,episodes result "+vec);
+		if (debug) debug("shows: portals,maps,programs,episodes result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -563,7 +564,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("programs.number");
 		fields.addElement("episodes.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.number>"+daymark75+"",ordervec,dirvec);
-		debug("audioparts: portals,maps,programs,episodes result "+vec);
+		if (debug) debug("audioparts: portals,maps,programs,episodes result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -625,7 +626,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("audioparts.number");
 		fields.addElement("audioparts.class");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.number>"+daymark75+" AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
-		debug("audioparts_tracks: portals,maps,programs,audioparts result "+vec);
+		if (debug) debug("audioparts_tracks: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -703,7 +704,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("audioparts.number");
 		fields.addElement("audioparts.class");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
-		debug("audioparts_month: portals,maps,programs,audioparts result "+vec);
+		if (debug) debug("audioparts_month: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -781,7 +782,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("audioparts.class");
 		fields.addElement("categories.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND groups1.number=groups2.number AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
-		debug("audioparts_categorie: portals,maps,programs,audioparts result "+vec);
+		if (debug) debug("audioparts_categorie: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -855,9 +856,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("mmevents");
 			fields=new Vector();
 			fields.addElement("portals.number");
-			debug("event check datesupport");
+			if (debug) debug("event check datesupport");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND episodes.number>"+daymark35+" AND mmevents.number>"+daymark35+" AND (mmevents.stop>"+(cur-10*60)+" AND mmevents.stop<"+(cur+10*60)+") OR (mmevents.start>"+(cur-10*60)+" AND mmevents.start<"+(cur+10*60)+")",ordervec,dirvec);
-			debug("result "+vec);
+			if (debug) debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 				addURL("/3voor12/shows/shows.shtml?2534202",PriorityURL.MAX_PRIORITY);
@@ -873,9 +874,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("mmevents");
 			fields=new Vector();
 			fields.addElement("maps.number");
-			debug("map news check");
+			if (debug) debug("map news check");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where maps.number=2584688 AND news.number>"+daymark10+"",ordervec,dirvec);
-			debug("result "+vec);
+			if (debug) debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 			}
@@ -889,9 +890,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("audioparts");
 			fields=new Vector();
 			fields.addElement("programs.number");
-			debug("group track check");
+			if (debug) debug("group track check");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where programs.number=2635958 AND audioparts.number>"+daymark10+"",ordervec,dirvec);
-			debug("result "+vec);
+			if (debug) debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 			}
@@ -906,9 +907,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("mmevents");
 			fields=new Vector();
 			fields.addElement("maps.number");
-			debug("map news check specials");
+			if (debug) debug("map news check specials");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where maps.number=2635958 AND news.number>"+daymark10+"",ordervec,dirvec);
-			debug("result "+vec);
+			if (debug) debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 			}
@@ -957,7 +958,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("groups.number");
 		fields.addElement("categories.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
-		debug("audioparts_groups: portals,maps,programs,groups result "+vec);
+		if (debug) debug("audioparts_groups: portals,maps,programs,groups result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -1016,7 +1017,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("news.number");
 		fields.addElement("news.type");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
-		debug("journalism: portals,maps,programs,news result "+vec);
+		if (debug) debug("journalism: portals,maps,programs,news result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
