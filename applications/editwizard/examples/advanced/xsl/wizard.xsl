@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.10 2004-02-27 14:03:22 gerard Exp $
+  @version   $Id: wizard.xsl,v 1.11 2004-03-19 11:10:58 nico Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -11,15 +11,15 @@
   <xsl:import href="ew:xsl/wizard.xsl" /> <!-- extend from standard  editwizard xslt -->
 
   <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/color/wizard.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/color/wizard.css" />
   </xsl:template>
 
   <xsl:template name="extrastyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/extra/wizard.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/extra/wizard.css" />
   </xsl:template>
 
   <xsl:template name="extrajavascript">
-    <script language="javascript" src="{$referrerdir}/{$javascriptdir}override.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$templatedir}/{$javascriptdir}override.js"><xsl:comment>help IE</xsl:comment></script>
   </xsl:template>
 
  <!-- The first row of the the body's table -->
