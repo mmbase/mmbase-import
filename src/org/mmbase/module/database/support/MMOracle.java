@@ -26,9 +26,11 @@ import org.mmbase.util.logging.*;
  * sql92 types of database this is the class used to abstact the query's
  * needed for mmbase for each database.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMOracle.java,v 1.17 2003-03-07 08:50:20 pierre Exp $
+ * @version $Id: MMOracle.java,v 1.18 2004-01-27 12:04:48 pierre Exp $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 

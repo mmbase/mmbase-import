@@ -34,9 +34,11 @@ import org.mmbase.util.logging.*;
  * using schemes. Finally, a number of abstract methods relating to teh constrcution of SQL statements
  * are defined, which a extending class should implement.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.15 2003-06-24 09:49:16 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.16 2004-01-27 12:04:45 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -106,7 +108,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         String path = reader.getBlobDataDir();
         setStoreBinaryAsFile(path != null && ! path.equals(""));
         if (getStoreBinaryAsFile()) {
-           
+
             File dir = new File(path); // relative paths must be possible.
             if (! dir.isAbsolute()) {
                 //"file:///..."
@@ -134,7 +136,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         setCreateScheme(reader.getCreateScheme());
         setCreateExtendedScheme(reader.getCreateExtendedScheme());
         setMaxDropSize(reader.getMaxDropSize());
-        
+
         // Instantiate and initialize sql handler.
         super.init(getFieldNameMap(), reader);
     }
@@ -901,7 +903,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
     /**
      * Gets a byte array from a resultset
-     * 
+     *
      */
     // public for Support2Storage
     public byte[] getDBByte(ResultSet rs, int idx) {

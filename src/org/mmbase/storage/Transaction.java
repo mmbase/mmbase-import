@@ -15,9 +15,11 @@ package org.mmbase.storage;
  * allowing rollback in complex transactions (if supported).
  * A transaction is obtained from a Storage object.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Transaction.java,v 1.1 2002-09-16 15:07:33 pierre Exp $
+ * @version $Id: Transaction.java,v 1.2 2004-01-27 12:04:45 pierre Exp $
  */
 public interface Transaction {
 

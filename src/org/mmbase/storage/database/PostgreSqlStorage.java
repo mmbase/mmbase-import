@@ -19,9 +19,11 @@ import org.mmbase.util.logging.*;
  * It overrides the methods for storing and retrieving huge texts and bytefields, and the methods for determining
  * database key (for the object 'number' field).
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: PostgreSqlStorage.java,v 1.4 2003-07-09 18:14:51 michiel Exp $
+ * @version $Id: PostgreSqlStorage.java,v 1.5 2004-01-27 12:04:46 pierre Exp $
  */
 public class PostgreSqlStorage extends OODatabaseStorage implements DatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(PostgreSqlStorage.class);

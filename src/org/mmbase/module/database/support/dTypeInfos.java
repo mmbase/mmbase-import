@@ -14,7 +14,9 @@ import java.util.Vector;
 
 /**
  * Class dTypeInfos
- * 
+ *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @javadoc
  * @rename DTypeInfos
   */
@@ -22,6 +24,6 @@ import java.util.Vector;
 public class dTypeInfos {
 public Vector maps=new Vector();
 
-	public dTypeInfos() {
-	}
+    public dTypeInfos() {
+    }
 }

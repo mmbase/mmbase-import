@@ -16,12 +16,14 @@ import org.mmbase.util.logging.*;
 
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
- * This is a seperated class, since the handling of the byte stream has some difficulties in the standard 
+ * This is a seperated class, since the handling of the byte stream has some difficulties in the standard
  * JDBC 7.1 drivers
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.28 2003-04-17 15:24:19 michiel Exp $
+ * @version $Id: PostgreSQL71.java,v 1.29 2004-01-27 12:04:49 pierre Exp $
  */
-public class PostgreSQL71 extends PostgreSQL {    
+public class PostgreSQL71 extends PostgreSQL {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
 
     protected boolean setValuePreparedStatement(PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
@@ -90,7 +92,7 @@ public class PostgreSQL71 extends PostgreSQL {
             java.io.DataInputStream is = null;
 
             byte[] data=null;
-            if(rs.next()) 
+            if(rs.next())
             {
                 log.debug("found a record, now trying to retieve the stream..with loid #" + rs.getInt(fieldname));
                 Blob b = rs.getBlob(1);
@@ -104,11 +106,11 @@ public class PostgreSQL71 extends PostgreSQL {
             con.setAutoCommit(true);
             con.close();
 
-            if (data != null) 
+            if (data != null)
             {
                 log.debug("retrieved "+data.length+" bytes of data");
-            } 
-            else 
+            }
+            else
             {
                 log.error("retrieved NO data for node #" + number + " it's field: " + fieldname + "\n" + sql);
             }
@@ -127,21 +129,21 @@ public class PostgreSQL71 extends PostgreSQL {
                 con.rollback();
                 con.setAutoCommit(true);
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             return null;
-        } 
+        }
         catch (Exception e) {
             log.error("could not retrieve the field :" + fieldname +" of object("+number+") of type : " + tableName +" (possible IOError)");
             log.error(e);
             log.error(Logging.stackTrace(e));
-            try 
+            try
             {
                 if(stmt!=null) stmt.close();
                 con.rollback();
                 con.setAutoCommit(true);
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             return null;
         }

@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.database.support;
 
@@ -30,19 +30,21 @@ import org.mmbase.util.logging.Logging;
  * mysql this is the class used to abstact the query's
  * needed for mmbase for each database.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Carlo E. Prelz
- * @version $Id: MMPostgres42Node.java,v 1.16 2003-03-25 19:47:27 robmaris Exp $
+ * @version $Id: MMPostgres42Node.java,v 1.17 2004-01-27 12:04:48 pierre Exp $
  */
 public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
-    
+
     private static Logger log = Logging.getLoggerInstance(MMPostgres42Node.class.getName());
-    
+
     // temp removed, private LargeObjectManager lobj=null;
     MMBase mmb;
-    
+
     public MMPostgres42Node() {
     }
-    
+
         /* temp removed
         public void init(MMBase mmb) {
                 Connection c=null;
@@ -62,19 +64,19 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 }
         }
          */
-    
+
     public boolean create(MMObjectBuilder bul,String tableName) {
         // Note that builder is null when tableName='object'
         // get us a propertie reader
         ExtendedProperties Reader=new ExtendedProperties();
-        
+
         // load the properties file of this server
-        
+
         String root = MMBaseContext.getConfigPath();
         Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
-        
+
         String createtable=(String)prop.get("CREATETABLE_PG");
-        
+
         if (createtable!=null && !createtable.equals("")) {
             createtable = Strip.DoubleQuote(createtable,Strip.BOTH);
             try {
@@ -95,11 +97,11 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(true);
     }
-    
+
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i) {
         return(decodeDBnodeField(node,fieldtype,fieldname,rs,i,""));
     }
-    
+
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
         /*KP.dbg("//// decodeDBnodeField: field is <"+fieldname+"/"+fieldtype+">"); */
         try {
@@ -142,7 +144,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(node);
     }
-    
+
     /**
      * Not to be confused with {@link #parseFieldPart(String,int,String)
      * parseFieldPart(String,int,String)}.
@@ -183,7 +185,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                     result+="etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))";
                     break;
             }
-            
+
         } else if (dbtype.equals("LONG") || dbtype.equals("int")) {
             switch (operatorChar) {
                 case '=':
@@ -215,7 +217,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(result);
     }
-    
+
     /**
      * get text from blob
      */
@@ -241,8 +243,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(null);
     }
-    
-    
+
+
     /**
      * get byte of a database blob
      */
@@ -268,8 +270,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(null);
     }
-    
-    
+
+
     /**
      * get byte of a database blob
      */
@@ -288,7 +290,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 return(bytes);
         }
          */
-    
+
     /**
      * get text of a database blob
      */
@@ -298,7 +300,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         DataInputStream input;
         byte[] isochars;
         int siz;
-        
+
         try {
             isochars=rs.getBytes(idx);
             str=new String(isochars,"ISO-8859-1");
@@ -309,7 +311,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(str);
     }
-    
+
     /**
      * Insert: This method inserts a new object, normally not used (only subtables are used)
      * Only fields with DBState value = DBSTATE_PERSISTENT or DBSTATE_SYSTEM are inserted.
@@ -324,10 +326,10 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 int number=node.getIntValue("number");
                 // did the user supply a number allready, ifnot try to obtain one
                 if (number==-1) number=getDBKey();
-         
+
                 // did it fail ? ifso exit
                 if (number==-1) return(-1);
-         
+
                 if (number==0) return(insertRootNode(bul));
                 String fieldAmounts="";
                 // String tmp="";
@@ -342,7 +344,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                         // Create a String that represents the amount of DB fields to be used in the insert.
                         // First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
                         fieldAmounts="?";
-         
+
                         // Append the DB elements to the fieldAmounts String.
                         for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
                                 String key = (String)e.nextElement();
@@ -361,7 +363,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                         }
                                 }
                         }
-         
+
                         try {
                                 stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+fieldAmounts+")");
                         } catch(Exception t2) {
@@ -371,7 +373,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 stmt.setEscapeProcessing(false);
                                 // First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
                                 stmt.setInt(1,number);
-         
+
                                 // Prepare the statement for the DB elements to the fieldAmounts String.
                                 // log.debug("Insert: Preparing statement using fieldamount String: "+fieldAmounts);
                                 int j=2;
@@ -409,7 +411,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 return(-1);
                         }
                 }
-         
+
                 if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
                         try {
                                 con=mmb.getConnection();
@@ -429,8 +431,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 return(-1);
                         }
                 }
-         
-         
+
+
                 try {
                         con=mmb.getConnection();
                         stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
@@ -445,8 +447,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                         log.error("Error on : "+number+" "+owner+" fake");
                         return(-1);
                 }
-         
-         
+
+
                 //bul.signalNewObject(bul.tableName,number);
                 if (bul.broadcastChanges) {
                         if (bul instanceof InsRel) {
@@ -467,8 +469,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 return(number);
         }
          */
-    
-    
+
+
     public int insertRootNode(MMObjectBuilder bul) {
         try {
             log.trace("P4");
@@ -489,7 +491,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             log.error(Logging.stackTrace(e));
             return(-1);
         }
-        
+
         try {
             MultiConnection con=mmb.getConnection();
             PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
@@ -506,8 +508,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(0);
     }
-    
-    
+
+
     /**
      * set text array in database
      */
@@ -527,8 +529,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             log.error(Logging.stackTrace(e));
         }
     }
-    
-    
+
+
     /**
      * set byte array in database
      */
@@ -545,7 +547,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 }
         }
          */
-    
+
     /**
      * commit this node to the database
      */
@@ -561,7 +563,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 key=(String)e.nextElement();
                                 // a extra check should be added to filter temp values
                                 // like properties
-         
+
                                 // check if its the first time for the ',';
                                 if (values.equals("")) {
                                         values+=" "+key+"=?";
@@ -597,7 +599,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 return(false);
                         }
                 }
-         
+
                 node.clearChanged();
                 if (bul.broadcastChanges) {
                         if (bul instanceof InsRel) {
@@ -614,8 +616,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 return(true);
         }
          */
-    
-    
+
+
     /**
      * removeNode
      */
@@ -650,7 +652,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                         log.error(Logging.stackTrace(e));
                     }
                 }
-                
+
                 try {
                     MultiConnection con=mmb.getConnection();
                     Statement stmt=con.createStatement();
@@ -671,9 +673,9 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 mmb.mmc.changedNode(n2.getIntValue("number"),n2.getName(),"r");
             }
         }
-        
+
     }
-    
+
     public synchronized int getDBKey() {
         // get a new key
         int number=-1;
@@ -697,8 +699,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(number);
     }
-    
-    
+
+
     /**
      * return the number of relation types in this mmbase and table
      */
@@ -711,8 +713,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             return(true);
         }
     }
-    
-    
+
+
     /**
      * return the number of relation types in this mmbase and table
      */
@@ -742,9 +744,9 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             return(-1);
         }
     }
-    
-    
-    
+
+
+
     /**
      * set prepared statement field i with value of key from node
      */
@@ -777,8 +779,8 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 }
         }
          */
-    
-    
+
+
     /**
      * insert a new object, normally not used (only subtables are used)
      */
@@ -792,7 +794,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         int guilist=node.getIntValue("guilist");
         int guisearch=node.getIntValue("guisearch");
         int dbstate=node.getIntValue("dbstate");
-        
+
         int number=getDBKey();
         try {
             MultiConnection con=mmb.getConnection();
@@ -817,7 +819,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             log.error("Error on : "+number+" "+owner+" fake");
             return(-1);
         }
-        
+
         try {
             MultiConnection con=mmb.getConnection();
             PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");

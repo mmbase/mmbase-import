@@ -16,9 +16,11 @@ import org.mmbase.storage.*;
  * This exception is thrown when the database support layer is unable to
  * perform an operation due to the limitations of the database used.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: UnsupportedDatabaseOperationException.java,v 1.2 2003-08-29 09:36:54 pierre Exp $
+ * @version $Id: UnsupportedDatabaseOperationException.java,v 1.3 2004-01-27 12:04:47 pierre Exp $
  */
 public class UnsupportedDatabaseOperationException extends StorageException {
 

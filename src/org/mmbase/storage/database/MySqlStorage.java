@@ -19,9 +19,11 @@ import java.io.*;
  * your MySQL database (depends on the 'encoding' option in
  * mmbaseroot.xml)
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: MySqlStorage.java,v 1.5 2003-05-12 14:36:16 kees Exp $
+ * @version $Id: MySqlStorage.java,v 1.6 2004-01-27 12:04:46 pierre Exp $
  */
 public class MySqlStorage extends RelationalDatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(MySqlStorage.class.getName());
@@ -32,7 +34,7 @@ public class MySqlStorage extends RelationalDatabaseStorage {
 
     // For mysql some tricks to make it UTF-8 compatible are implemented here.
 
-    
+
     // javadoc inherited
     public String getDBText(ResultSet rs, int idx) {
         InputStream inp;
@@ -46,7 +48,7 @@ public class MySqlStorage extends RelationalDatabaseStorage {
             log.error(Logging.stackTrace(e));
             return "";
         }
-                
+
         try {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             while (true) {
@@ -54,7 +56,7 @@ public class MySqlStorage extends RelationalDatabaseStorage {
                 if (c == -1) break;
                 bytes.write(c);
             }
-            inp.close(); 
+            inp.close();
             return  new String(bytes.toByteArray(), mmb.getEncoding());
         } catch (IOException e) {
             log.error("MySqlStorage exception "+ e.toString());
@@ -83,8 +85,8 @@ public class MySqlStorage extends RelationalDatabaseStorage {
             log.error(Logging.stackTrace(e));
         }
     }
-    
+
     public byte[] getDBByte(ResultSet rs, int idx) {
-		return getDBByteBinaryStream(rs,idx);
+        return getDBByteBinaryStream(rs,idx);
     }
 }

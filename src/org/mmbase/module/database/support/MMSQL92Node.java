@@ -25,10 +25,12 @@ import org.mmbase.util.logging.*;
  * sql92 types of database this is the class used to abstact the query's
  * needed for mmbase for each database.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.80 2004-01-08 16:37:21 robmaris Exp $
+ * @version $Id: MMSQL92Node.java,v 1.81 2004-01-27 12:04:48 pierre Exp $
  */
 public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
 
@@ -36,7 +38,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
-    
+
     //does the database support keys?
     private boolean keySupported=false;
 
@@ -47,7 +49,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     public String name="sql92";
     /**
      * @javadoc
-     * @scope private    
+     * @scope private
      */
     protected XMLDatabaseReader parser;
     /**
@@ -99,10 +101,10 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         allowed2disallowed = getReverseHash(disallowed2allowed);
         // map the default types
         mapDefaultFields(disallowed2allowed);
-        
+
         // Instantiate and initialize sql handler.
         super.init(disallowed2allowed, parser);
-        
+
         // Check if the numbertable exists, if not one will be created.
         checkNumberTable();
     }
@@ -179,7 +181,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
                     node.setValue(prefix + fieldname, tmp);
                 }
 
-                
+
                 break;
             }
             case FieldDefs.TYPE_NODE:
@@ -905,7 +907,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         if (!created(mmb.baseName + "_numberTable")) {
             // We want the current number of object, not next number (that's the -1)
             int number = getDBKeyOld() - 1;
-            
+
 
             if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
             String createStatement = getMatchCREATE("numberTable")+"( "+getNumberString()+" integer not null);";
@@ -955,7 +957,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     /**
      * Get a new object key without using numberTable, that is, by getting the max number of mm_object.
      * If object table does not exist (yet), it returns 1.
-     * This is only used when creating the numberTable. 
+     * This is only used when creating the numberTable.
      * @deprecated Can be replaced by '1'. Because new installations create the the numberTable when there are not objects yet.
      */
     protected synchronized int getDBKeyOld() {
@@ -1173,9 +1175,9 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         log.info("Starting a addField : "+bul.getTableName()+" field="+fieldname);
         String tableName=bul.getTableName();
 
-	if (created(mmb.baseName+"_"+tableName+"_tmp")) {
-        	drop_real(bul,tableName+"_tmp");
-	}
+    if (created(mmb.baseName+"_"+tableName+"_tmp")) {
+            drop_real(bul,tableName+"_tmp");
+    }
 
         if (create_real(bul,tableName+"_tmp")) {
             log.info("created tmp  table : "+tableName+"_tmp");
@@ -1813,5 +1815,5 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         }
         return false;
     }
-    
+
 }
