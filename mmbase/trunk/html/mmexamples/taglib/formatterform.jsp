@@ -7,7 +7,7 @@
  %><html>
 <head>
 <title>The formatter tag mm:formatter. Try-it-yourself page.</title>
-<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+<link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 <td>
 <pre><mm:formatter format="escapexml"><mm:include page="codesamples/form.jsp" /></mm:formatter></pre>
 <form enctype="multipart/form-data" action="<mm:url />">
-  <textarea wrap="off" name="xslt" class="huge"><mm:write referid="xslt" /></textarea><br />
+  <textarea wrap="off" name="xslt"><mm:write referid="xslt" /></textarea><br />
   <input type="submit" value="Submit XSLT" />
 </form>
 </td>

@@ -1,5 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html>
+<head>
+  <title>context 4</title>
+  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
+</head>
 <body>
 <h1>context 4</h1>
 <mm:import externid="alias" required="true" />
