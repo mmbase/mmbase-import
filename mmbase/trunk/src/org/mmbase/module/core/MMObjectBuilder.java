@@ -1109,12 +1109,14 @@ public class MMObjectBuilder extends MMTable {
                 node.clearChanged(); // huh ?
                 results.addElement(node);
 
-                // huge trick to fill the caches does it make sense ?
-                number=new Integer(node.getIntValue("number"));
-                if (!nodeCache.containsKey(number) || replaceCache) {
-                    nodeCache.put(number,node);
-                } else {
-                    node=(MMObjectNode)nodeCache.get(number);
+                if (oType==node.getIntValue("otype")) {
+                    // huge trick to fill the caches does it make sense ?
+                    number=new Integer(node.getIntValue("number"));
+                    if (!nodeCache.containsKey(number) || replaceCache) {
+                        nodeCache.put(number,node);
+                    } else {
+                        node=(MMObjectNode)nodeCache.get(number);
+                    }
                 }
             }
         } catch(Exception e) {
