@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.113 $ $Date: 2002-01-25 10:57:58 $
+ * @version $Revision: 1.114 $ $Date: 2002-01-28 13:05:25 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2667,6 +2667,10 @@ public class MMObjectBuilder extends MMTable {
         return null;
     }
 
+    // Default replacements for method getHTML()
+    private final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
+    private final static String DEFAULT_EOL = "<br />";
+    
     /**
      * Returns a HTML-version of a string.
      * This replaces a number of tokens with HTML sequences.
@@ -2686,6 +2690,7 @@ public class MMObjectBuilder extends MMTable {
      * @param body text to convert
      * @return the convert text
      */
+  
     protected String getHTML(String body) {
         String rtn="";
         if (body!=null) {
@@ -2701,16 +2706,16 @@ public class MMObjectBuilder extends MMTable {
                 obj.replace("\r\n\r\n",alinea);
                 obj.replace("\n\n",alinea);
             } else {
-                obj.replace("\r\n\r\n","<p> </p>");
-                obj.replace("\n\n","<p> </p>");
+                obj.replace("\r\n\r\n", DEFAULT_ALINEA);
+                obj.replace("\n\n", DEFAULT_ALINEA);
             }
 
             if (endofline!=null) {
                 obj.replace("\r\n",endofline);
                 obj.replace("\n",endofline);
             } else {
-                obj.replace("\r\n","<br />");
-                obj.replace("\n","<br />");
+                obj.replace("\r\n", DEFAULT_EOL);
+                obj.replace("\n", DEFAULT_EOL);
             }
 
             rtn=obj.toString();
