@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Context Security Configuration</title>
     <date>12 February 2003</date>
-    <edition>$Id: context-security.xml,v 1.5 2003-02-14 15:13:56 pierre Exp $</edition>
+    <edition>$Id: context-security.xml,v 1.6 2003-02-26 15:18:55 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -110,8 +110,8 @@
     <section>
       <title>Contexts, Groups and Users </title>
       <section>
-        <title>Reference field [to do: what does this mean?]</title>
-        <para>Within MMBase has each object a field called &#39;owner&#39;. The value of this field is used by the security system to select the rights of a user on this object. If the name of this context [todo: it is not clear where this contect refers to] does not exist a warning will be issued in the logs and the default context will be selected.</para>
+        <title>Reference field</title>
+        <para>Within MMBase has each object a field called &#39;owner&#39;. The value of this field is used by the security system to specify the context of an object. If an object is accessed and the name of its context does not exist a warning will be issued in the logs and the default context will be selected.</para>
       </section>
       <section>
         <title>Contexts</title>
@@ -131,7 +131,7 @@
         <screenshot>
           <graphic fileref="media/contextSecurity.png" />
         </screenshot>
-        <para>[todo: the element rank in the user box  is missing in this picture]</para>
+        <para>Note that the context to which a user belongs, is stored in the owner field of the user.</para>
       </section>
     </section>
     <section>
@@ -244,23 +244,23 @@
       <para>This are the accounts of the users which are know to the system. It is advised to also create a user called anonymous since it does not exists any ware else.</para>
     </section>
     <section>
-      <title>&lt;user&lt; &gt;identify /&gt; &lt;/user&gt;</title>
-      <para>The following values can be given to the elements.</para>
+      <title>&lt;user&gt; &lt;identify /&gt; &lt;/user&gt;</title>
+      <para>The following values can be given to the elements of user.</para>
       <itemizedlist>
         <listitem>
-          <para>user[@name] : The name of the user</para>
+          <para>name="..." : The name of the user</para>
         </listitem>
         <listitem>
-          <para>user[@context] : The context that object get when created through this user</para>
+          <para>context="..." : The context that object get when created through this user</para>
         </listitem>
         <listitem>
-          <para>user/identify[type] : The login type refers to /contextconfig/loginmodules/module[@name] , this shall always be "name/password"</para>
+          <para>&lt;identify type="..." &gt; : The login type refers to /contextconfig/loginmodules/module[@name] , this shall always be "name/password"</para>
         </listitem>
         <listitem>
-          <para>user/identify[rank] : This is the rank of the user after login. The default is &#39;basis user&#39; unless a person is administrator then the rank will be &#39;administrator&#39;. Anonymous users always get the rank &#39;anonymous&#39;</para>
+          <para>&lt;identify rank="..." &gt; : This is the rank of the user after login. The default is &#39;basis user&#39; unless a person is administrator then the rank will be &#39;administrator&#39;. Anonymous users always get the rank &#39;anonymous&#39;</para>
         </listitem>
         <listitem>
-          <para>user/identify : The password for this user</para>
+          <para>&lt;identify &gt; ... &lt;/identify &gt; : The password for this user</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -275,23 +275,30 @@
   <contains type="group" named="%groupname%" />
 </group>
       ]]></programlisting>
-      <para>The following values can be given to the elements:</para>
+      <para>The following values can be given to the elements of group:</para>
       <itemizedlist>
         <listitem>
-          <para>group[@name] : The name of the group.</para>
+          <para>name="..." : The name of the group.</para>
         </listitem>
         <listitem>
-          <para>group/contains[@type] : The type of of the element &#39;named&#39; valid values are &#39;user&#39; and &#39;group&#39;.</para>
+          <para>&lt;contains type="..." &gt; : The type of of the element &#39;named&#39; valid values are &#39;user&#39; and &#39;group&#39;.</para>
         </listitem>
         <listitem>
-          <para>group/contains[@named] : The group or user that is member of this group. The element &#39;type&#39; determines of this is a user or a group member. If you specify the wrong type then the correct entry cannot be found.</para>
+          <para>&lt;contains named="..." &gt; : The group or user that is member of this group. The element &#39;type&#39; determines of this is a user or a group member. If you specify the wrong type then the correct entry cannot be found.</para>
+        </listitem>
+		</itemizedlist>
+    </section>
+	<section>
+      <title>&lt;contexts&gt; &lt;context /&gt; &lt;/contexts&gt;</title>
+      <para>The following values can be given to the elements of contexts.</para>
+      <itemizedlist>	
+        <listitem>
+          <para>&lt;contexts&gt; ... &lt;/contexts&gt; : This is a list of contexts that can be used within the context system.</para>
         </listitem>
         <listitem>
-          <para>/contextconfig/contexts : This is a list of context that can be used within the context system.</para>
-        </listitem>
-        <listitem>
-          <para>/contextconfig/contexts[@default] : This field refers to a context that should be used when the owner field of an object refers to an context that cannot be found. So the value should be named in one of the /contextconfig/contexts/context[@name] elements.</para>
-          <para>Within these /contextconfig/contexts is it possible to create new contexts which use the following structure:</para>
+          <para>&lt;contexts default="..." &gt : This field refers to a context that should be used when the owner field of an object refers to an context that cannot be found. So the value should be named in one of the &lt;contexts&gt; 
+		  &lt;context name="..." &gt &lt;/contexts&gt; elements.</para>
+          <para>Within these &lt;contexts&gt; ... &lt;/contexts&gt; is it possible to create new contexts which use the following structure:</para>
           <programlisting><![CDATA[
 <context name="%contextname%">
   <operation type="%operation%" />
@@ -306,16 +313,16 @@
           <para>The following values can be given to the elements:</para>
           <itemizedlist>
             <listitem>
-              <para>context[@name] : The name of the context.</para>
+              <para>&lt;context name="..." &gt  : The name of the context.</para>
             </listitem>
             <listitem>
-              <para>context/operation[@type] : The type of operation where rights are granted to. Valid values are &#39;read&#39;, &#39;write&#39;, &#39;link&#39;, &#39;delete&#39; and &#39;change context&#39;</para>
+              <para>&lt;context&gt; &lt;operation type="..." /&gt; &lt;/context&gt; : The type of operation where rights are granted to. Valid values are &#39;read&#39;, &#39;write&#39;, &#39;link&#39;, &#39;delete&#39; and &#39;change context&#39;</para>
             </listitem>
             <listitem>
-              <para>context/operation/grant[@group] : The group which receives the rights within this context. Off course the group should be found in a /contextconfig/groups/group[@name=&#39;%groupname%&#39;] element.</para>
+              <para>&lt;context&gt; &lt;operation &gt; &lt;grant group="..." /&gt; &lt;operation /&gt; &lt;/context&gt;  : The group which receives the rights within this context. Off course the group should be found in a &lt;groups&gt; &lt;group name="..." /&gt; &lt;/groups&gt; element.</para>
             </listitem>
             <listitem>
-              <para>context/possible[@context] : When the context of object van be changed, it can only be changed into the values specified in this element. Which should be found in an element called /contextconfig/contexts/context[@name=%contextname%].</para>
+              <para>&lt;context&gt; &lt;possible context="..." /&gt; &lt;/context&gt; context/possible[@context] : When the context of object van be changed, it can only be changed into the values specified in this element. Which should be found in an element called &lt;contexts&gt; &lt;context name="..." /&gt; &lt;/contexts&gt;.</para>
             </listitem>
           </itemizedlist>
         </listitem>
