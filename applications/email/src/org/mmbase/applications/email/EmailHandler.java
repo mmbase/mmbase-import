@@ -237,7 +237,6 @@ public class EmailHandler {
 			if (absoluteUrl.indexOf("?")!=-1) {
 				prefix="&";
 			}
-            		log.info("debug="+absoluteUrl+prefix+params);
             		URL includeURL = new URL(absoluteUrl+prefix+params);
             		HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
