@@ -192,13 +192,13 @@
     }
 
     if (start>=end) {
-        org.w3c.dom.Node obj = addObject(docel, null,null,cloud.getNodeManager(mainmanager).getGUIName());
+        org.w3c.dom.Node obj = addObject(docel, null,null,cloud.getNodeManager(mainmanager).getName());
 
     } else
     for (int i=start; i<end; i++) {
         Node item = results.getNode(i);
         org.w3c.dom.Node obj = addObject(docel, item.getStringValue((String)fieldlist.elementAt(0)), (i+1)+"",
-                                         cloud.getNodeManager(mainmanager).getGUIName());
+                                         cloud.getNodeManager(mainmanager).getName());
         for (int j=1; j<fieldlist.size(); j++) {
             String fieldname = (String)fieldlist.elementAt(j);
             String fieldguiname=fieldname;
