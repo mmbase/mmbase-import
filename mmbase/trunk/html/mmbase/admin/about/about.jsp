@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
   </head>
 
-  <body class="basic" >
+  <body>
 
   <table summary="license information">
     <tr>
