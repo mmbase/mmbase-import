@@ -93,7 +93,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.jar.dir" value="${project.build.dir}" />
   <property name="project.zip.dir" value="${project.build.dir}" />
   <property name="project.jar" value="${project.jar.dir}/${project.jar.name}.jar"/>
-  <property name="project.zip" value="${project.zip.dir}/${project.jar.name}.zip"/>
+  <!-- see below -->
+  <!--<property name="project.zip" value="${project.zip.dir}/${project.jar.name}.zip"/>-->
 
 
   <target name="init" depends="">
@@ -131,6 +132,9 @@ Create a build.xml with a DOCTYPE like this:
     <property name="name" value="${project.name}"/>
     <property name="version" value="${DSTAMP}"/>
     <property name="distro"  value="1.7.0"/>
+    <property name="zip.prefix"
+              value="mmbase-1.7.0-${version}-${project.name}" />
+    <property name="project.zip" value="${project.zip.dir}/${zip.prefix}.zip" />
   </target>
 
 
@@ -220,11 +224,11 @@ web-app/*                All kind of templates. They problably can (need?) to be
 </echo>
 
   <zip zipfile="${project.zip}">
-    <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="web-app/WEB-INF/lib" />
-    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF" />
-    <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="documentation" />
+    <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="${zip.prefix}/web-app/WEB-INF/lib" />
+    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="${zip.prefix}/web-app/WEB-INF" />
+    <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="${zip.prefix}/documentation" />
     <zipfileset dir="${project.build.dir}"  includes="documentation/**" />
-    <zipfileset dir="${project.source.dir}" prefix="src">
+    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}/src">
       <include name="documentation/**"/>
       <exclude name="documentation/**.html" />
     </zipfileset>
@@ -240,7 +244,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </patternset>
     </fileset>
     <!-- the rest are templates -->
-    <zipfileset dir="${project.source.dir}" prefix="web-app">
+    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}/web-app">
       <patternset id="web-app.package.files" >
         <include name="**"/>
         <exclude name="*.xml" />
