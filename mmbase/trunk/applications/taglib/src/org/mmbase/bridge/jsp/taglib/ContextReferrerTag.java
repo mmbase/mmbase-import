@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.52 2003-11-19 16:57:41 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.53 2004-01-15 23:23:04 michiel Exp $
  * @see ContextTag
  */
 
@@ -33,8 +33,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static final Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
 
-    public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
-    private static final Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
+    private static final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
     protected ContextTag pageContextTag = null;
 
