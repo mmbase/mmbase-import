@@ -37,7 +37,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.48 2003-09-16 21:21:25 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.49 2003-11-10 18:03:38 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -652,13 +652,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return A <code>String</code> containing the table name
      */
     private String getTableName(String table) {
-        char ch;
-        ch= table.charAt(table.length() - 1);
-        if (Character.isDigit(ch)) {
-            return table.substring(0, table.length() - 1);
-        } else {
-            return table;
-        }
+        int end = table.length() - 1;
+        while (Character.isDigit(table.charAt(end))) --end;
+        return table.substring(0, end + 1);
     }
 
     /**
