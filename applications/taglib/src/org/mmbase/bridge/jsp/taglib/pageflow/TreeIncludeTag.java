@@ -39,17 +39,17 @@ public class TreeIncludeTag extends IncludeTag {
     protected String objectlist;
     private TreeHelper th = new TreeHelper();
     
-    public int doAfterBody() throws JspTagException {
-        // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-        TreeFileTag treefilehelper = new TreeFileTag();
-        
-        if (page == null) {
-            throw new JspTagException("Attribute 'page' was not specified");
-        }
+    public int doStartTag() throws JspTagException {        
         if (objectlist == null) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
-        
+        return super.doStartTag();
+    }
+
+    public void doAfterBodySetValue() throws JspTagException {
+        // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
+        TreeFileTag treefilehelper = new TreeFileTag();        
+                
         th.setCloud(getCloud());
         
         String orgpage = page;
@@ -58,7 +58,7 @@ public class TreeIncludeTag extends IncludeTag {
         log.debug("Retrieving page '" + page + "'");
         if (page == null) throw new JspTagException("Could not find page " + orgpage);
         // Let IncludeTag do the rest of the work
-        return includePage();
+        includePage();
     }
     
     public void setObjectlist(String p) throws JspTagException {

@@ -36,25 +36,26 @@ public class LeafIncludeTag extends IncludeTag {
     private static Logger log = Logging.getLoggerInstance(LeafIncludeTag.class.getName());
     protected String objectlist;
     private TreeHelper th = new TreeHelper();
-    
-    public int doAfterBody() throws JspTagException {
-        LeafFileTag leaffilehelper = new LeafFileTag();
-        
-        if (page == null) {
-            throw new JspTagException("Attribute 'page' was not specified");
-        }
+
+    public int doStartTag() throws JspTagException {        
         if (objectlist == null) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
-        
+        return super.doStartTag();
+    }
+    
+    public void doAfterBodySetValue() throws JspTagException {
+        LeafFileTag leaffilehelper = new LeafFileTag();
+                    
         th.setCloud(getCloud());
         
-        page = th.findLeafFile(page, objectlist, pageContext.getSession());
+        String orgpage = page;
+        page = th.findLeafFile(orgpage, objectlist, pageContext.getSession());
         log.debug("Retrieving page '" + page + "'");
-        
+        if (page == null) throw new JspTagException("Could not find page " + orgpage);
         
         // Let IncludeTag do the rest of the work
-        return includePage();
+        includePage();
     }
     
     public void setObjectlist(String p) throws JspTagException {

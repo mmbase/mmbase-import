@@ -1895,20 +1895,21 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>include</name>
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
       <p>
-	Does an include. This tag is rather similar to mm:url, but in
-	stead of returing the url, it returns the page itself. In that
-	respect it is also very similar to jsp:include. The advantage
-	above jsp:include is that this tag is aware of the context
-	parameters and knows the 'param' sub tag.
+		Does an include. This tag is rather similar to mm:url, but in
+		stead of returing the url, it returns the page itself. In that
+		respect it is also very similar to jsp:include. The advantage
+		above jsp:include is that this tag is aware of the context
+		parameters and knows the 'param' sub tag.
       </p>
       <p>
-	You can also consider using the jsp &lt;%@include file=""
-	%&gt;. This will include the code of that page in place and
-	compile it together with your page. So in that aspect it is
-	much different from this tag, which "includes" a stand-alone
-	page.
+		You can also consider using the jsp &lt;%@include file=""
+		%&gt;. This will include the code of that page in place and
+		compile it together with your page. So in that aspect it is
+		much different from this tag, which "includes" a stand-alone
+		page.
       </p>
     </info>
     <attribute>
@@ -1917,7 +1918,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-	For debugging you can print the used URL in the page as comments..
+		For debugging you can print the used URL in the page as comments..
       </info>
       <possiblevalue>
 	<value>none</value>
@@ -2264,6 +2265,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>treefile</name>
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeFileTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
           This tag does the same as TreeIncludeTag, but instead of including the
           page that was found, it returns the URL for that page.
@@ -2284,6 +2286,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>leaffile</name>
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafFileTag</tagclass>
+	<teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>                                                                
           This tag does the same as LeafIncludeTag, but instead of including the
           page that was found, it returns the URL for that page. This URL can be
@@ -2307,6 +2310,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>include</extends>
     <extends>treefile</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeIncludeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
           <p>
 		This tag is an implementation of the 'TREEPART' scan command.
@@ -2321,15 +2325,15 @@ like the parameter list or the session (whereever it is availabe) --&gt;
           </p>
 	  <p>
 		objectlist="1,2,3,4", page="doh.jsp"
- 		The treeinclude tag will first try to include '1/2/3/4/doh.jsp', if
-                that file is not available, it will try '1/2/3/doh.jsp', etc. etc.
-		Besides the directory '1/2/3/4', all directories starting with
+ 		The treeinclude tag will first try to include '/1/2/3/4/doh.jsp', if
+                that file is not available, it will try '/1/2/3/doh.jsp', etc. etc.
+		Besides the directory '/1/2/3/4', all directories starting with
 		the objectnumber will match. This means that the following paths
 		will all work with the given parameters:
 		<ul>
-			<li>1blaat/2random/3tekst/4kiekeboe/doh.jsp</li>
-			<li>1/2/3/4ditiseentest/doh.jsp</li>
-			<li>1/2/3/4alfabeta/doh.jsp</li>
+			<li>/1blaat/2random/3tekst/4kiekeboe/doh.jsp</li>
+			<li>/1/2/3/4ditiseentest/doh.jsp</li>
+			<li>/1/2/3/4alfabeta/doh.jsp</li>
 		</ul>
 		In case there are multiple paths that match for a given level
 		(compare the last two entries of the list above), the one that
@@ -2345,9 +2349,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 		as soon as one of the files exists this one will be taken) will be
 		included:
 		<ul>
-			<li>myportal/2random/3tekst/4kiekeboe/doh.jsp</li>
-                        <li>myportal/2/3/4ditiseentest/doh.jsp</li>
-                        <li>myportal/2/3/4alfabeta/doh.jsp</li>
+		  <li>/myportal/2random/3tekst/4kiekeboe/doh.jsp</li>
+		  <li>/myportal/2/3/4ditiseentest/doh.jsp</li>
+		  <li>/myportal/2/3/4alfabeta/doh.jsp</li>
 		</ul> 
 	  </p>
     </info>
@@ -2361,6 +2365,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>include</extends>
     <extends>leaffile</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafIncludeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
       This tag does almost exactly the same as TreeInclude. 
       The only difference is when Treeinclude cannot find a file to include. In that case,

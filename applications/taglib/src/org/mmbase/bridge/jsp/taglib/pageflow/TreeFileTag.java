@@ -38,19 +38,23 @@ public class TreeFileTag extends UrlTag {
     protected String objectlist;
     TreeHelper th = new TreeHelper();
     
-    public int doAfterBody() throws JspTagException {
+    public int doStartTag() throws JspTagException {
         if (page == null) {
             throw new JspTagException("Attribute 'page' was not specified");
         }
         if (objectlist == null) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
-        }
-        
+        }        
+        return super.doStartTag();
+    }
+
+    public int doAfterBody() throws JspTagException {
         th.setCloud(getCloud());
         
-        page = th.findTreeFile(page, objectlist, pageContext.getSession());
+        String orgpage = page;
+        page = th.findTreeFile(orgpage, objectlist, pageContext.getSession());
         log.debug("Retrieving page '" + page + "'");
-        
+        if (page == null) throw new JspTagException("Could not find page " + orgpage);
         // Let UrlTag do the rest
         return super.doAfterBody();
     }
