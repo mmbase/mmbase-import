@@ -23,10 +23,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.22 2003-07-21 15:55:15 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.23 2003-08-13 16:40:14 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
-    private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
+    private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
 
     public MMObjectNode relDefNode;
     private MMObjectNode typeRelNode;
