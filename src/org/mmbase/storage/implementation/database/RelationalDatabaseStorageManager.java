@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.3 2003-08-29 12:12:27 keesj Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.4 2003-09-18 12:20:27 pierre Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -35,6 +35,10 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
     // javadoc is inherited
     public double getVersion() {
         return 1.0;
+    }
+
+    protected boolean tablesInheritFields() {
+        return false;
     }
 
     /**

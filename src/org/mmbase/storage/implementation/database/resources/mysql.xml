@@ -11,22 +11,26 @@
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.MySqlSqlHandler" />
 
 	<attributes>
-	  <!-- MySQL does not default support transactions, but it's Metadata object claims that it does
-		     So set support to false. 
+		<!-- MySQL does not default support transactions, but it's Metadata object claims that it does
+				 So set support to false.
 		-->
-
 		<option name="database-supports-transactions" value="false" />
 
-	  <!-- Explictly encode text when storing it in the database	-->
+		<!-- Explictly encode text when storing it in the database	-->
 		<option name="database-force-encode-text" />
 
-	  <!-- Use Blobs	-->
+		<!-- Use Blobs	-->
 		<option name="database-supports-blob" />
 
-	  <!-- Older versions of teh MySQL support layer sis not support composite indices,
-		     so for backward compatibility, we turn this off.
-		-->
-		<option name="database-supports-composite-index" value="false" />
+		<!-- uses different syntax for creating constraints -->
+		<scheme name="create-unique-key-scheme" >UNIQUE INDEX {2} ({2})</scheme>
+		<scheme name="create-composite-key-scheme" >UNIQUE INDEX {1}_key ({2})</scheme>
+		<!-- MySQL does not properly support foreign keys -->
+		<scheme name="create-foreign-key-scheme" />
+
+		<!-- uses different syntax for deleting constraints -->
+		<scheme name="delete-constraint-scheme" >ALTER TABLE {1} DROP INDEX {2}</scheme>
+
 	</attributes>
 
 	<!-- MySQL type mappings 	-->

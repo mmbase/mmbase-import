@@ -22,6 +22,12 @@
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
 
+		<!-- Does not support composite (unique) indexes -->
+		<option name="database-supports-composite-index" value="false" />
+
+		<!-- Do not support data definition -->
+		<option name="database-supports-data-definition" value="false" />
+
 		<!-- Hypersonic wants to have index declarations at the end of a CREATE TABLE statement  -->
 		<scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
 		<scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>

@@ -25,14 +25,8 @@
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
 
-		<!-- Support composite (unique) indexes -->
-		<option name="database-supports-composite-index" value="true" />
-
-		<!-- Unique index declaration -->
-		<scheme name="create-unique-key-scheme">UNIQUE ({2})</scheme>
-
-		<!-- Unique index declaration -->
-		<scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {4} ({5})</scheme>
+		<!-- Does not support changing of fields -->
+		<scheme name="change-field-scheme" />
 
 		<!-- HSQLdb wants to have index declarations at the end of a CREATE TABLE statement  -->
 		<scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5})</scheme>
