@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.30 2002-08-12 09:25:26 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.31 2002-09-25 14:36:15 eduard Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.30 $ $Date: 2002-08-12 09:25:26 $
+ * @$Revision: 1.31 $ $Date: 2002-09-25 14:36:15 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -356,6 +356,22 @@ public class MMBaseContext {
                 System.err.println(message);
                 throw new RuntimeException(message);
             } else {
+		File configDir = new File(config);
+		if(!configDir.exists()) {
+		    String message = "Config directory could not be found, does it exist? (" + configDir.getAbsolutePath()  + ")";
+		    System.err.println(message);
+		    throw new RuntimeException(message);
+		}
+		if(!configDir.canRead()) {
+		    String message = "Config directory could not be read, is it readable? (" + configDir.getAbsolutePath()  + ")";
+		    System.err.println(message);
+		    throw new RuntimeException(message);
+		}
+		if(!configDir.isDirectory()) {
+		    String message = "Config directory is not a directory (" + configDir.getAbsolutePath()  + ")";
+		    System.err.println(message);
+		    throw new RuntimeException(message);
+		}		
                 return config;
             }
         }
