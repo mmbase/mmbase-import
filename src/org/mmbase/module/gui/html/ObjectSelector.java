@@ -66,7 +66,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 				args.setValue("ITEMS","4");
 				return getObjectRelations2(state);
 			} else if (token.equals("GETOBJECTRELATIONS3")) {	
-				args.setValue("ITEMS","7");
+				args.setValue("ITEMS","8");
 				return getObjectRelations3(state,args);
 			}
 		}
@@ -132,15 +132,15 @@ public class ObjectSelector implements CommandHandlerInterface {
 				// am i the source of the desitination of the relation ?
 				if (rel.getIntValue("snumber")==ed.getEditNodeNumber()) {
 					MMObjectNode other=obj.getNode(rel.getIntValue("dnumber"));
-					other=stateMngr.mmBase.castNode(other);
-					other=stateMngr.mmBase.castNode(other);
+//					other=stateMngr.mmBase.castNode(other);
+//					other=stateMngr.mmBase.castNode(other);
 					results.addElement(""+rel.getIntValue("number"));
 					results.addElement(stateMngr.mmBase.getTypeDef().getValue(rel.getIntValue("otype")));
 					results.addElement(stateMngr.mmBase.getTypeDef().getValue(other.getIntValue("otype")));
 					results.addElement(""+other.getGUIIndicator());
 				} else {
 					MMObjectNode other=obj.getNode(rel.getIntValue("snumber"));
-					other=stateMngr.mmBase.castNode(other);
+//					other=stateMngr.mmBase.castNode(other);
 					results.addElement(""+rel.getIntValue("number"));
 					results.addElement(stateMngr.mmBase.getTypeDef().getValue(rel.getIntValue("otype")));
 					results.addElement(stateMngr.mmBase.getTypeDef().getValue(other.getIntValue("otype")));
@@ -174,20 +174,35 @@ public class ObjectSelector implements CommandHandlerInterface {
 			String builder=node.getStringValue("typedef.name");
 			allowed.addElement(builder);
 		}
-		//System.out.println("TEST="+allowed);
 		}
 		return(allowed);
 	}	
 
 	/**
-	 */
+	* Retrieves a list of existing relations and allowed relation types to a specific node.
+	* Represented by a vector of strings, in which each set of 8 consequetive strings
+	* represets either an existing relation or a relationtype to be used for creating a new one.<br>
+	* The strings represent, in order:<br>
+	* 1 - The builder name of the type linked to (i.e. people) <br>
+	* 2 - The builder name of the relation (i.e. insrel) if an existing relation, otherwise the builder name of the typed linked to <br>
+	* 3 - The number of the relation node if an existing relation, otehrwise the number of the current (edited) node <br>
+	* 4 - Empty when an existing realtion. Otherwise it is either the name of the relation defintiton for a typed relation, or,
+	*     when more than one relationtype exists for this node type, the value "multiple" <br>
+	* 5 - GUI name for the node linked to. (empty when a relation type)<br>
+	* 6 - "insEditor" if this is an existing node, "addeditor" if this is a rel;ation type. <br>
+	* 7 - GUI name of the linked-to node's builder (language dependent) <br>
+	* 8 - The gui name of the relation definition for this relation (appropriate for direction, empty when a relation type). <br>
+	* @param ed the EditState object that governs this edit
+	* @args the arguments to this command. The only argument available is "USER". If set, a crude authorization is checked which allows
+	*       or disallows access to relations to specific node types.
+	* @return a <code>Vector</code> of <code>String</code>
+	*/
 	Vector getObjectRelations3(EditState ed,StringTagger args) {
 		Vector results=new Vector();
 		MMObjectBuilder obj=ed.getBuilder();
 		MMObjectNode node=ed.getEditNode();
 
 		String user=args.Value("USER");
-		//System.out.println("EDITOR USER="+user);
 		Vector allowed=null;
 		if (user!=null && !user.equals("")) {
 			allowed=getAllowedBuilders(user);	
@@ -204,39 +219,49 @@ public class ObjectSelector implements CommandHandlerInterface {
 			Vector qw;
 			for (;e.hasMoreElements();) {
 				name=(String)e.nextElement();	
-				//System.out.println("EDITOR="+name);
+				
 				if (allowed==null || allowed.contains(name)) {
 					qw=(Vector)res.get(name);
 					for (Enumeration h=qw.elements();h.hasMoreElements();) {
 						other=(MMObjectNode)h.nextElement();
 						rel=(MMObjectNode)h.nextElement();
-						results.addElement(name);
-						results.addElement(stateMngr.mmBase.getTypeDef().getValue(rel.getIntValue("otype")));
-						results.addElement(""+rel.getIntValue("number"));
-						results.addElement("");
-						results.addElement(other.getGUIIndicator());
-						results.addElement("insEditor");
-						results.addElement(other.getDutchSName());
+						results.add(name);
+						results.add(rel.parent.getTableName());
+						results.add(""+rel.getIntValue("number"));
+						results.add("");
+						results.add(other.getGUIIndicator());
+						results.add("insEditor");
+						results.add(other.getDutchSName());
+						MMObjectNode reldef = obj.getNode(rel.getIntValue("rnumber"));
+						if (reldef==null) {
+						    results.add("");
+						} else {
+    						if (rel.getIntValue("snumber")==node.getIntValue("number")) {
+	    						results.add(reldef.getStringValue("dguiname"));
+		    				} else {
+			    				results.add(reldef.getStringValue("sguiname"));
+				    		}						
+				        }
 					}
 					// the empty dummy
-					results.addElement(name);
-					results.addElement(name);
-					results.addElement(""+node.getIntValue("number"));
+					results.add(name);
+					results.add(name);
+					results.add(""+node.getIntValue("number"));
 
 					// startnewfix
-					int reltype=stateMngr.mmBase.getTypeRel().getAllowedRelationType(stateMngr.mmBase.getTypeDef().getIntValue(name),node.getIntValue("otype"));
+					int reltype=stateMngr.mmBase.getTypeRel().getAllowedRelationType(node.getIntValue("otype"),stateMngr.mmBase.getTypeDef().getIntValue(name));
 					if (reltype!=-1) {
 						MMObjectNode rdn=stateMngr.mmBase.getRelDef().getNode(reltype);
-						results.addElement(rdn.getStringValue("sname"));
+						results.add(rdn.getStringValue("sname"));
 					} else {
-						results.addElement("multiple");
+						results.add("multiple");
 					}
 					// end new fix
 
-
-					results.addElement("");
-					results.addElement("addEditor");
-					results.addElement(stateMngr.mmBase.getTypeDef().getDutchSName(name));
+					results.add("");
+					results.add("addEditor");
+					results.add(stateMngr.mmBase.getTypeDef().getDutchSName(name));
+					results.add("");
 				}
 			}
 		}
@@ -309,8 +334,6 @@ public class ObjectSelector implements CommandHandlerInterface {
 			
 			while (searchResult.hasMoreElements()) {
 				node = (MMObjectNode)searchResult.nextElement();	
-				//System.out.println("ObjectSelector node="+node);
-				//System.out.println("ObjectSelector node.getValue(number)="+node.getValue("number"));
 				result.addElement(node.getValue("number").toString());
 				HTMLString = "";
 		
@@ -318,17 +341,17 @@ public class ObjectSelector implements CommandHandlerInterface {
 					key = ((FieldDefs)enum.nextElement()).getDBName();
 					guival=builder.getGUIIndicator(key,node);
 					if (guival!=null) {
-					   	HTMLString += "<TD BGCOLOR=\"#FFFFFF\" WIDTH=\"500\"> "+guival+"&nbsp;</TD> ";
+					   	HTMLString += "<td bgcolor=\"#FFFFFF\" width=\"500\"> "+guival+"&nbsp;</td> ";
 					} else {
 					   		Object o=node.getValue(key);
 							if (o==null || o.toString().equals("null")) {
-					   			HTMLString += "<TD BGCOLOR=\"#FFFFFF\" WIDTH=\"500\">&nbsp;</TD> ";
+					   			HTMLString += "<td bgcolor=\"#FFFFFF\" width=\"500\">&nbsp;</td> ";
 							} else {
 								// should be replaced soon mapping is weird
 								if (o.toString().equals("$SHORTED")) {
 									o=node.getStringValue(key);
 								}			
-					   			HTMLString += "<TD BGCOLOR=\"#FFFFFF\" WIDTH=\"500\"> "+o.toString()+"&nbsp; </TD> ";
+					   			HTMLString += "<td bgcolor=\"#FFFFFF\" width=\"500\"> "+o.toString()+"&nbsp; </td> ";
 							}
 					}
 				}

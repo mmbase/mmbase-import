@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.module.ParseException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -27,6 +28,11 @@ import org.mmbase.module.gui.html.EditState;
  *
  */
 public class FieldEditor implements CommandHandlerInterface {
+	
+
+	// Logger
+	private static Logger log = Logging.getLoggerInstance(FieldEditor.class.getName());
+	
 	StateManager stateMngr;
 
 	/**
@@ -108,11 +114,11 @@ public class FieldEditor implements CommandHandlerInterface {
 			else if (token.equals ("SETFIELDDATE")) {
 				return (setEditDateField (state, command.nextToken (), cmds));
 			} else if (token.equals("SETFIELDFILE_IMG")) {	
-				System.out.println("FieldEditor -> FILE UPLOAD DETECTED");
+				log.info("FieldEditor -> FILE UPLOAD DETECTED");
 				setEditIMGField(state,command.nextToken(),cmds,sp);
 				return(true);
 			} else if (token.equals("SETFIELDFILE_DISK")) {	
-				System.out.println("FieldEditor -> FILE DISK DETECTED");
+				log.info"FieldEditor -> FILE DISK DETECTED");
 				setEditDISKField(state,command.nextToken(),cmds,sp);
 				return(true);
 			} else if (token.equals("DUMMY")) {	
@@ -232,7 +238,7 @@ public class FieldEditor implements CommandHandlerInterface {
                         int time = (int)(DateSupport.convertDateToLong (value) / 1000);
 
                         Date d = new Date ((long)time * 1000);
-                        System.out.println ("FieldEdit -> Storing: " + d.toString () + " in field " + fieldname);
+                        log.debug("FieldEdit -> Storing: " + d.toString () + " in field " + fieldname);
 
                         node.setValue (fieldname, new Integer (time));
                 }
@@ -271,7 +277,7 @@ public class FieldEditor implements CommandHandlerInterface {
 			String filename=(String)cmds.get("EDIT-SETFIELDFILE_DISK-"+fieldname);
 			byte[] bytes=getFile(filename);
 			if (bytes==null) {
-				System.out.println("FieldEditor-> Empty file !!");
+				log.warn("FieldEditor-> Empty file !!");
 			} else {
 				node.setValue(fieldname,bytes);
 			}
@@ -288,7 +294,7 @@ public class FieldEditor implements CommandHandlerInterface {
 		if (node!=null) {
 				int id=node.getIntValue("number");
 				if (id==-1) {
-				//	System.out.println("FieldEditor -> COMMIT ON A NEW OBJECT="+node);
+				//	log.debug("FieldEditor -> COMMIT ON A NEW OBJECT="+node);
 					node.preEdit(ed);
 					id=node.insert(userName);
 					node.insertDone(ed);
@@ -320,8 +326,7 @@ public class FieldEditor implements CommandHandlerInterface {
  			String userName=ed.getUser();
  			if (ow.equals("pop")) {
  				node.setValue("owner",userName);
- 
- 				System.out.println("FieldEditor -> replaceOwner("+node.getValue("number")+","+userName+"): Replaced owner 'pop' with owner '"+userName+"'");
+ 				log.debug("FieldEditor -> replaceOwner("+node.getValue("number")+","+userName+"): Replaced owner 'pop' with owner '"+userName+"'");
  			}	
  		}
  	}
