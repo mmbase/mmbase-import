@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: RawAudioDef.java,v 1.12 2002-02-20 11:45:19 pierre Exp $
+ * @version $Id: RawAudioDef.java,v 1.13 2002-07-23 14:03:52 vpro Exp $
  */
 public class RawAudioDef implements Comparable, CompareInterface, Sortable {
 
@@ -325,7 +325,11 @@ public class RawAudioDef implements Comparable, CompareInterface, Sortable {
 
         if( status == STATUS_DONE ) {
             if( format == FORMAT_R5 ) {
-                result = "pnm://" + AudioUtils.getBestMirrorUrl( sp, url );
+                // result = "pnm://" + AudioUtils.getBestMirrorUrl( sp, url );
+				// DONT use pnm for old ra streams anymore since annoying buffer probs occur.
+				// Especially when using start and end offsets.
+				// Instead use rtsp.
+                result = "rtsp://" + AudioUtils.getBestMirrorUrl( sp, url );
             } else if( format == FORMAT_G2 ) {
                 result = "rtsp://" + AudioUtils.getBestMirrorUrl( sp, url );
             } else {
