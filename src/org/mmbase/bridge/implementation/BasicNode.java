@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.48 2002-02-27 09:33:31 eduard Exp $
+ * @version $Id: BasicNode.java,v 1.49 2002-02-27 11:00:49 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -366,9 +366,14 @@ public class BasicNode implements Node {
         attr = tree.createAttribute("format");
         attr.setValue(((BasicField)field).field.getDBTypeDescription());
         fieldElem.setAttributeNode(attr);            
-
-        org.w3c.dom.Node subField = tree.importNode(getXMLValue(field.getName()).getDocumentElement(), true);
-
+        
+        org.w3c.dom.Node subField = null;
+        if(field.getType() == Field.TYPE_XML) {
+            subField = tree.importNode(getXMLValue(field.getName()).getDocumentElement(), true);
+        }
+        else {
+            subField = tree.createTextNode(getStringValue(field.getName()));
+        }
         fieldElem.appendChild(subField);
         
         // do some additional thingies...        
