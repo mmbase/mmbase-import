@@ -38,7 +38,7 @@ import org.mmbase.bridge.implementation.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: FunctionSets.java,v 1.2 2004-11-29 12:45:07 pierre Exp $ 
  */
 public class FunctionSets {
 
@@ -107,8 +107,20 @@ public class FunctionSets {
      * @todo It makes FunctionSet's now using a sub-XML. It would be possible to create a complete function-set by reflection.
      */
     private static void readSets() {
-        init = true;
-        XMLBasicReader reader = new XMLBasicReader("functions/functionsets.xml", FunctionSets.class);
+	init = true;
+        org.xml.sax.InputSource source;
+        try {
+            source = ResourceLoader.getConfigurationRoot().getInputSource("functions/functionsets.xml");
+        } catch (Exception e) {
+            log.warn(e);
+            return;
+        }
+        if (source == null) {
+            log.info("No resource functions/functionsets.xml");
+            return;
+        }
+        
+        XMLBasicReader reader = new XMLBasicReader(source, FunctionSets.class);
         functionSets.clear();
         for(Enumeration ns = reader.getChildElements("functionsets", "functionset"); ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();

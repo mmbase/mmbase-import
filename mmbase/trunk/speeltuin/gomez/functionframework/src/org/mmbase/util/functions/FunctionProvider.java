@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: FunctionProvider.java,v 1.2 2004-11-29 12:45:07 pierre Exp $
  */
 public class FunctionProvider {
 
@@ -46,9 +46,16 @@ public class FunctionProvider {
         Map parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap());
         for (Iterator i = parameterDefinitions.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();
-            addFunction(new ProviderFunction((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN, this));
+            addFunction(newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN));
         }
         addFunction(getFunctions);
+    }
+
+    /**
+     * @javadoc
+     */
+    protected Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
+        return new ProviderFunction(name, parameters, returnType, this);
     }
 
     /**
