@@ -248,18 +248,18 @@
              classpathref="fop.classpath"/>
     
     <!-- transform fo-xml into pdf --> 
-    <fop format="application/pdf" outdir="${documentation.dest.dir}"
-         messagelevel="error">
+    <fop format="application/pdf" outdir="${documentation.dest.dir}" messagelevel="error">
       <fileset dir="${documentation.temp.dir}">
         <include name="**/*.fo"/>
         <!-- fop runs crazy on this document -->
         <!-- have to check what's causing the problem -->
         <exclude name="**/editwizard-reference.fo" />
-        <exclude name="**/editwizard-reference.fo" />
         <!-- fop gives an error on these document -->
         <!-- have to check what's causing the problem -->
         <exclude name="**/taglib-tutorial.fo" />
         <exclude name="**/mmbase4managers.fo" />
+        <exclude name="**/context-security.fo" />
+        <exclude name="**/configuration.fo" />
       </fileset>
     </fop>
 
@@ -275,7 +275,7 @@
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation" depends="documentation.html,documentation.static.copy,documentation.pdf">
+  <target name="documentation" depends="documentation.html,documentation.static.copy"> <!-- ,documentation.pdf"-->
     <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
  
