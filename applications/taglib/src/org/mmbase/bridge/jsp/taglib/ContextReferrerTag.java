@@ -64,9 +64,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContexTag found in pagecontext, creating..");
-            thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
-            pageLog.service("Parsing JSP page: " + thisPage);
-
+            if (pageLog.isServiceEnabled()) {
+                thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
+                String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
+                pageLog.service("Parsing JSP page: " + thisPage + (queryString != null ? "?" + queryString : ""));
+            }
             pageContextTag = new ContextTag();
             pageContextTag.setId(null);
 
