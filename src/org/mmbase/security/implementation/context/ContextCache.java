@@ -11,6 +11,9 @@ package org.mmbase.security.implementation.context;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 
 import org.mmbase.security.Operation;
 import org.mmbase.security.SecurityException;
@@ -23,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextCache.java,v 1.5 2002-06-07 12:57:00 pierre Exp $
+ * @version $Id: ContextCache.java,v 1.6 2002-07-05 14:18:41 michiel Exp $
  */
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
@@ -38,13 +41,13 @@ public class ContextCache  {
     private long    rightSize = 0;
 
     public void rightAdd(String operation, String context, String user, boolean value) {
-        HashMap operationCache = (HashMap)globalRightCache.get(operation);
+        Map operationCache = (Map) globalRightCache.get(operation);
     // when operation not known, create
     if(operationCache == null) {
         operationCache = new HashMap();
         globalRightCache.put(operation, operationCache);
     }
-        HashMap contextCache = (HashMap)operationCache.get(context);
+    Map contextCache = (Map) operationCache.get(context);
     // when context not known, create
     if(contextCache == null) {
         contextCache = new HashMap();
@@ -90,7 +93,7 @@ public class ContextCache  {
     private long    contextSucces = 0;
     private long    contextSize = 0;
 
-    public void contextAdd(String context, HashSet possible) {
+    public void contextAdd(String context, Set possible) {
     // when context was already known....
         if(globalContextCache.containsKey(context)) {
         log.warn("context cache already contained this entry");
@@ -100,14 +103,14 @@ public class ContextCache  {
         contextSize++;
     }
 
-    public HashSet contextGet(String context) {
+    public Set contextGet(String context) {
         contextTries++;
 
         if(globalContextCache.containsKey(context)) {
         contextSucces++;
         log.debug("context found in cache ("+info(contextTries, contextSucces, contextSize)+")");
         }
-    return (HashSet)globalContextCache.get(context);
+    return (Set)globalContextCache.get(context);
     }
 
     private String info(long tries, long succes, long size) {
