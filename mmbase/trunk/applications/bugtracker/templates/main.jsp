@@ -6,15 +6,16 @@
 <mm:import externid="page"   jspvar="page2" />
 <mm:notpresent referid="page"><mm:remove referid="page" /></mm:notpresent>
 
-<mm:import externid="sbugid" jspvar="sbugid" />
-<mm:import externid="sissue" jspvar="sissue" />
-<mm:import externid="sstatus" jspvar="sstatus" />
-<mm:import externid="stype" jspvar="stype" />
-<mm:import externid="sarea" jspvar="sarea" />
-<mm:import externid="sversion" jspvar="sversion" />
-<mm:import externid="spriority" jspvar="spriority" />
-<mm:import externid="noffset" jspvar="noffset">0</mm:import>
-<mm:import externid="where" jspvar="where" />
+<mm:import externid="sbugid" />
+<mm:import externid="sissue" />
+<mm:import externid="sstatus" />
+<mm:import externid="stype" />
+<mm:import externid="sarea" />
+<mm:import externid="sversion" />
+<mm:import externid="sfixedin" />
+<mm:import externid="spriority" />
+<mm:import externid="noffset">0</mm:import>
+
 <mm:import externid="flap">search</mm:import>
 
 <mm:import externid="cw" from="cookie" />
