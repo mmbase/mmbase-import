@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.5 2003-05-05 13:29:50 michiel Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.6 2003-05-17 17:42:01 kees Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -36,11 +36,11 @@ public class DatabaseTransaction implements Transaction {
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(DatabaseTransaction.class.getName());
-    private Connection con=null;
-    private Statement stmt=null;
+    private Connection con = null;
+    private Statement stmt = null;
     private ResultSet res = null;
     private DatabaseStorage database = null;
-    private boolean supportsRollback=false;
+    private boolean supportsRollback = false;
     private Map changes = new HashMap();
 
     /**
@@ -53,11 +53,11 @@ public class DatabaseTransaction implements Transaction {
      * @throws StorageException when a connection could not be made
      */
     public DatabaseTransaction(DatabaseStorage database, boolean useRollback) throws StorageException {
-        this.database=database;
-        JDBCInterface jdbc=database.getJDBC();
-        supportsRollback=useRollback && database.supportsRollback();
+        this.database = database;
+        JDBCInterface jdbc = database.getJDBC();
+        supportsRollback = useRollback && database.supportsRollback();
         try {
-            con= jdbc.getConnection(jdbc.makeUrl());
+            con = jdbc.getConnection(jdbc.makeUrl());
             con.setAutoCommit(!supportsRollback);
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
@@ -72,10 +72,10 @@ public class DatabaseTransaction implements Transaction {
      * @return true if the database supports rollback
      */
     public boolean databaseSupportsRollback() throws StorageException {
-        boolean result=false;
+        boolean result = false;
         try {
-            DatabaseMetaData metaDeta=con.getMetaData();
-            result=metaDeta.supportsTransactions();
+            DatabaseMetaData metaDeta = con.getMetaData();
+            result = metaDeta.supportsTransactions();
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
         }
@@ -99,7 +99,7 @@ public class DatabaseTransaction implements Transaction {
      * @return true if the table exists
      */
     public boolean hasTable(String tableName) throws StorageException {
-        boolean result=false;
+        boolean result = false;
         try {
             DatabaseMetaData metaDeta = con.getMetaData();
             ResultSet res = metaDeta.getTables(null, null, tableName, null);
@@ -119,7 +119,7 @@ public class DatabaseTransaction implements Transaction {
     public Set getTables(String baseName) throws StorageException {
         Set result = new HashSet();
         try {
-            DatabaseMetaData metaDeta=con.getMetaData();
+            DatabaseMetaData metaDeta = con.getMetaData();
             ResultSet res = metaDeta.getTables(null, null, baseName + metaDeta.getSearchStringEscape() + "_%", null);
             while (res.next()) {
                 String tableName = res.getString("TABLE_NAME");
@@ -139,28 +139,28 @@ public class DatabaseTransaction implements Transaction {
      * @return true if committed and closed successfully
      */
     public boolean commit() {
-        boolean result=true;
-        if (con!=null) {
+        boolean result = true;
+        if (con != null) {
             if (supportsRollback()) {
                 try {
                     con.commit();
                     con.setAutoCommit(true);
                 } catch (SQLException e) {
                     log.error(e.toString());
-                    result=false;
+                    result = false;
                 }
             }
             try {
                 con.close();
             } catch (SQLException e) {
                 log.error(e.toString());
-                result=false;
+                result = false;
             }
             if (result) {
                 // register all changes...
-                for(Iterator i=changes.keySet().iterator(); i.hasNext(); ) {
-                    MMObjectNode changedNode=(MMObjectNode)i.next();
-                    database.registerChanged(changedNode,(String)changes.get(changedNode));
+                for (Iterator i = changes.keySet().iterator(); i.hasNext();) {
+                    MMObjectNode changedNode = (MMObjectNode) i.next();
+                    database.registerChanged(changedNode, (String) changes.get(changedNode));
                 }
                 changes.clear();
             }
@@ -173,9 +173,9 @@ public class DatabaseTransaction implements Transaction {
      * @param node the node to register
      * @param change the type of change: "n": new, "c": commit, "d": delete
      */
-    public void registerChanged(MMObjectNode node, String change)  {
-        String oldval=(String)changes.get(node);
-        if (oldval!=null) {
+    public void registerChanged(MMObjectNode node, String change) {
+        String oldval = (String) changes.get(node);
+        if (oldval != null) {
             // don't register extra changes
             if (change.equals("c")) {
                 return;
@@ -186,7 +186,7 @@ public class DatabaseTransaction implements Transaction {
                 return;
             }
         }
-        changes.put(node,change);
+        changes.put(node, change);
     }
 
     /**
@@ -196,13 +196,13 @@ public class DatabaseTransaction implements Transaction {
      * @return true if cancelled successfully
      */
     public boolean rollback() {
-        boolean result=false;
-        if (con!=null) {
+        boolean result = false;
+        if (con != null) {
             if (supportsRollback()) {
                 try {
                     con.rollback();
                     con.setAutoCommit(true);
-                    result=true;
+                    result = true;
                 } catch (SQLException e) {
                     log.error(e.toString());
                 }
@@ -225,15 +225,15 @@ public class DatabaseTransaction implements Transaction {
     public ResultSet executeQuery(String sql) throws StorageException {
         stmt = null;
         try {
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.trace("execute : " + sql);
             }
             // should we use preparedstatement???
             stmt = con.createStatement();
             res = stmt.executeQuery(sql);
             return res;
-        } catch (Exception e){
-            throw new StorageException(e.getMessage());            
+        } catch (Exception e) {
+            throw new StorageException(e.getMessage());
         }
     }
 
@@ -245,7 +245,18 @@ public class DatabaseTransaction implements Transaction {
      * @throws StorageException when the statement failed
      */
     public boolean executeUpdate(String sql) throws StorageException {
-        return executeUpdate(sql,null,null);
+        if (log.isDebugEnabled()) {
+            log.trace("executeUpdate  " + sql);
+        }
+        try {
+
+            Statement statement = con.createStatement();
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException sqle) {
+            throw new StorageException(Logging.stackTrace(sqle));
+        }
+
     }
 
     /**
@@ -257,25 +268,26 @@ public class DatabaseTransaction implements Transaction {
      * @return true if the execution was succesfull
      * @throws StorageException when the statement failed
      */
-    public boolean executeUpdate(String sql, List fields,MMObjectNode node) throws StorageException {
+    public boolean executeUpdate(String sql, List fields, MMObjectNode node) throws StorageException {
         try {
             stmt = null;
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.trace("Prepare statement : " + sql);
             }
             stmt = con.prepareStatement(sql);
             stmt.setEscapeProcessing(false); // useful?? not used by prepped statements.
-            if (fields!=null) {
-                int nroffields=0;
-                for (Iterator f=fields.iterator(); f.hasNext();) {
+            if (fields != null) {
+                int nroffields = 0;
+                for (Iterator f = fields.iterator(); f.hasNext();) {
                     FieldDefs field = (FieldDefs) f.next();
                     nroffields++;
-                    database.setValuePreparedStatement((PreparedStatement)stmt, node, field.getDBName(), nroffields);
+                    database.setValuePreparedStatement((PreparedStatement) stmt, node, field.getDBName(), nroffields);
                 }
             }
-            ((PreparedStatement)stmt).executeUpdate();
+            ((PreparedStatement) stmt).executeUpdate();
             return true;
         } catch (SQLException e) {
+            //TODO: add the root exeption
             throw new StorageException(Logging.stackTrace(e));
         }
     }
@@ -289,10 +301,10 @@ public class DatabaseTransaction implements Transaction {
      * @return the integer result
      */
     public int getIntegerResult() {
-        int result=1;
+        int result = 1;
         try {
-            if ((res!=null) && res.next()) {
-                result=res.getInt(1);
+            if ((res != null) && res.next()) {
+                result = res.getInt(1);
             }
         } catch (SQLException e) {
             log.error(e.toString());
@@ -310,26 +322,25 @@ public class DatabaseTransaction implements Transaction {
      * @return the node
      */
     public MMObjectNode getNodeResult(MMObjectBuilder builder) {
-        MMObjectNode result=null;
+        MMObjectNode result = null;
         try {
-            if ((res!=null) && res.next()) {
-                result=builder.getNewNode("system");
-                ResultSetMetaData rd=res.getMetaData();
+            if ((res != null) && res.next()) {
+                result = builder.getNewNode("system");
+                ResultSetMetaData rd = res.getMetaData();
                 String fieldname;
                 String fieldtype;
-                for (int i=1;i<=rd.getColumnCount();i++) {
-                    fieldname=database.mapToMMBaseFieldName(rd.getColumnName(i));
-                    database.loadFieldFromTable(result,fieldname,res,i);
+                for (int i = 1; i <= rd.getColumnCount(); i++) {
+                    fieldname = database.mapToMMBaseFieldName(rd.getColumnName(i));
+                    database.loadFieldFromTable(result, fieldname, res, i);
                 }
                 // clear the changed signal
                 result.clearChanged();
             }
         } catch (SQLException e) {
             log.error(e.toString());
-            result=null;
+            result = null;
         }
         return result;
     }
-
 
 }
