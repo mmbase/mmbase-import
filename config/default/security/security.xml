@@ -22,7 +22,7 @@
 
      -->
     <!-- the following one stores uses the builder mmbaseusers -->
-    <!--    <authentication class="org.mmbase.security.implementation.cloud.Authenticate" url="" /> --!>
+    <!--    <authentication class="org.mmbase.security.implementation.cloud.Authenticate" url="" /> -->
 
     <!-- the following one provides a user->group*->context->object structure -->
        <authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />
@@ -43,7 +43,7 @@
             class.
      -->
     <!-- the following one stores uses the builder mmbaseusers -->
-    <!--    <authorization class="org.mmbase.security.implementation.cloud.Verify" url="" /> --!>
+    <!--    <authorization class="org.mmbase.security.implementation.cloud.Verify" url="" /> -->
 
     <!-- the following one provides a user->group*->context->object structure -->
        <authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />
@@ -58,3 +58,12 @@
                 This shared secret is a private key that is used by systems to authenticate each other. MMBase needs this key to be able to communicate with remote builders. While installing remote builders, change this shared secret and make sure that you put the new shared secret in the configuration files of the remote builders. In this way we prevent other MMBase systems to fool around with your remote builders. -->
     <sharedsecret>appelmoes</sharedsecret>
 </security>
+
+
+
+
+
+
+
+
+
