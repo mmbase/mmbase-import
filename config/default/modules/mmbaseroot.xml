@@ -49,8 +49,12 @@
         
             MyQSL:          mysql
             PostgrSQL:      postgresql71
-	-->        
-	<property name="database">mysql</property>
+            HyperSonic:     hypersonic
+	-->
+        <!--
+            TODO: Why is this setting not in the jdbc.xml?
+        -->
+	<property name="database">hypersonic</property>
 
 	<!--
 	name="multicasthost" mmbase nodes in a cluster use multicast to talk to
