@@ -121,8 +121,11 @@ public class XMLRelationNodeReader  {
         n1=n1.getNextSibling();
     }
     while (n1!=null) {
-        MMObjectBuilder bul=mmbase.getMMObject(n1.getNodeName());
-        if (bul!=null) {
+        MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
+	if(bul == null) {
+            log.error("Can't get builder with name: '" + n1.getNodeName() + "'");
+	}
+        else {
             Node n2=n1.getFirstChild();
             while (n2!=null) {
                 if (n2.getNodeName().equals("node")) {
@@ -212,8 +215,6 @@ public class XMLRelationNodeReader  {
                 }
                 n2=n2.getNextSibling();
             }
-        } else {
-            log.error("XMLRelationNodeReader can't access builder : "+bul);
         }
         n1=n1.getNextSibling();
     }
