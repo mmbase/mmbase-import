@@ -26,10 +26,8 @@
   -->
   
   <escaper id="text/plain">
-    <class>org.mmbase.util.transformers.CopyCharTransformer</class>
   </escaper>
   <escaper id="none" type="text/html">
-    <class>org.mmbase.util.transformers.CopyCharTransformer</class>
   </escaper>
   <escaper id="text/html">
     <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
