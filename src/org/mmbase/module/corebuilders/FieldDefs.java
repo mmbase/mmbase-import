@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.40 2004-01-06 12:22:39 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.41 2004-09-17 10:00:24 michiel Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -42,7 +42,21 @@ public class FieldDefs implements Comparable, Storable {
     public final static int TYPE_LONG      = 7;
     public final static int TYPE_XML       = 8;
     public final static int TYPE_NODE      = 9;
-    public final static int TYPE_MAXVALUE  = 9;
+    /**
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_DATETIME  = 10;   
+    /**
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_BOOLEAN   = 11;
+    /**
+     * 
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_LIST      = 12;
+
+    public final static int TYPE_MAXVALUE  = 12;
     public final static int TYPE_UNKNOWN   = -1;
 
     public final static int ORDER_CREATE = 0;
@@ -57,7 +71,7 @@ public class FieldDefs implements Comparable, Storable {
     };
 
     private final static String[] DBTYPES = {
-        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE"
+        "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE", "DATETIME", "BOOLEAN", "LIST"
     };
 
     /**
@@ -72,6 +86,7 @@ public class FieldDefs implements Comparable, Storable {
 
     private String  name;
     private int     type    = TYPE_UNKNOWN;
+    private String  typeString;
     private int     state   = DBSTATE_UNKNOWN;
     private boolean notNull = false;
     private String  docType = null; // arch
@@ -134,6 +149,7 @@ public class FieldDefs implements Comparable, Storable {
        if (type < TYPE_MINVALUE || type > TYPE_MAXVALUE) {
             return DBTYPES[0];
        }
+       
        return DBTYPES[type - TYPE_MINVALUE + 1];
     }
 
@@ -168,6 +184,9 @@ public class FieldDefs implements Comparable, Storable {
         if (type.equals("DOUBLE"))  return TYPE_DOUBLE;
         if (type.equals("LONG"))    return TYPE_LONG;
         if (type.equals("NODE"))    return TYPE_NODE;
+        if (type.equals("DATETIME"))return TYPE_DATETIME;
+        if (type.equals("BOOLEAN")) return TYPE_BOOLEAN;
+        if (type.startsWith("LIST"))    return TYPE_LIST;
         return TYPE_UNKNOWN;
     }
 
@@ -189,8 +208,9 @@ public class FieldDefs implements Comparable, Storable {
      * Provide a description for the current type.
      * @return the description of the type.
      */
-    public String getDBTypeDescription() {
-        return FieldDefs.getDBTypeDescription(type);
+    public String getDBTypeDescription() {       
+        return typeString;
+        //return FieldDefs.getDBTypeDescription(type);
     }
 
     /**
@@ -453,6 +473,7 @@ public class FieldDefs implements Comparable, Storable {
      */
     public void setDBType(int value) {
         type = value;
+        typeString = getDBTypeDescription(type);
     }
 
     /**
@@ -460,7 +481,12 @@ public class FieldDefs implements Comparable, Storable {
      * @param value the name of the type
      */
     public void setDBType(String value) {
-        type = getDBTypeId(value);
+        type       = getDBTypeId(value);
+        if (type != TYPE_UNKNOWN) {
+            typeString = value.toUpperCase();
+        } else {
+            typeString = null;
+        }
     }
 
     /**
@@ -655,7 +681,7 @@ public class FieldDefs implements Comparable, Storable {
     }
 
     /**
-     * Comparator to sort Fielddefs bij creation order, or bij position
+     * Comparator to sort Fielddefs by creation order, or by position
      * specified in one of the GUIPos fields.
      */
     private static class FieldDefsComparator implements Comparator {
