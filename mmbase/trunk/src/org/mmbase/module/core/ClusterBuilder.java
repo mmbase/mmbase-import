@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.14 2002-10-08 14:14:08 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.15 2002-10-08 15:40:34 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -844,12 +844,14 @@ public class ClusterBuilder extends VirtualBuilder {
 
 
         for (int i = 0; i < siz; i += 2) {
-            boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
-            boolean srctodest = false; // And from 'destination' to 'source'.
 
+            String relChar    = idx2char(i + 1);
             if (result.length() > 0) result.append(" AND ");
 
-            {
+            boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
+            boolean srctodest = false; // And from 'destination' to 'source'.
+            { // determine desttosrc and srctodest 
+
                 // the typedef number of the source-type
                 int s        = typedef.getIntValue(getTableName((String) alltables.elementAt(i)));
                 // role ?
@@ -859,7 +861,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 
                 // check if  a definite rnumber was requested...
                 if (rnum != null) {
-                    result.append(idx2char(i + 1) + ".rnumber=" + rnum.intValue() + " AND ");
+                    result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
                     srctodest = (searchdir != SEARCH_SOURCE)      && typerel.reldefCorrect(s, d, rnum.intValue());
                     desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.reldefCorrect(d, s, rnum.intValue());
                 } else {
@@ -885,12 +887,11 @@ public class ClusterBuilder extends VirtualBuilder {
                 desttosrc = false;
             }
 
-            String relChar    = idx2char(i + 1);
             if (desttosrc) {
                 // check for directionality if supported
                 String dirstring;
                 if (InsRel.usesdir && (searchdir != SEARCH_ALL)) {
-                    dirstring = " AND " + idx2char(i + 1) + ".dir <> 1";
+                    dirstring = " AND " + relChar + ".dir <> 1";
                 } else {
                     dirstring = "";
                 }                
