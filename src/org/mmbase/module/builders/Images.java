@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.8 2000-03-30 13:11:32 wwwtech Exp $
+	$Id: Images.java,v 1.9 2000-03-30 14:15:04 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/03/30 13:11:32  wwwtech
+	Rico: added license
+	
 	Revision 1.7  2000/03/29 10:59:22  wwwtech
 	Rob: Licenses changed
 	
@@ -46,12 +49,16 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.8 2000-03-30 13:11:32 wwwtech Exp $
+ * @version $Id: Images.java,v 1.9 2000-03-30 14:15:04 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
+
+	// Currenctly only ImageMagick works
+	protected static String ConverterRoot = "/usr/local/";
+	protected static String ConverterCommand = "bin/convert";
 
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("number");
@@ -340,7 +347,7 @@ public class Images extends MMObjectBuilder {
 
 		byte[] result=new byte[1024*1024];
 		try {
-			command="/usr/local/bin/convert - "+cmd+" "+format+":-";
+			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
 			debug("getAllCalc(): "+command);
 			p = (Runtime.getRuntime()).exec(command);
         	PrintStream printStream = new PrintStream(p.getOutputStream()); // set the input stream for cgi
