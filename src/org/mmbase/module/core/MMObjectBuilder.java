@@ -1753,4 +1753,8 @@ public class MMObjectBuilder extends MMTable {
 	public String getMaintainer() {
 		return(maintainer);
 	}
+
+	public void setMaintainer(String m) {
+		maintainer=m;
+	}
 }
