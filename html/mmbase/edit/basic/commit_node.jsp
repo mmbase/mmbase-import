@@ -77,17 +77,10 @@
     <mm:node referid="node_number" notfound="skip">
         <!-- handle the form -->
         <mm:maywrite>
-            <mm:fieldlist id="my_form" type="edit">
+            <mm:fieldlist id="my_form" type="edit" fields="owner">
                 <mm:fieldinfo type="useinput" />
             </mm:fieldlist>
         </mm:maywrite>
-
-        <!-- if context of node changed, handle that too: -->
-        <mm:present referid="_my_form_change_context">
-            <mm:maychangecontext>
-               <mm:setcontext><mm:write referid="_my_form_context" /></mm:setcontext>
-            </mm:maychangecontext>
-        </mm:present>
 
     </mm:node>
     <mm:remove referid="redirectTo" />
