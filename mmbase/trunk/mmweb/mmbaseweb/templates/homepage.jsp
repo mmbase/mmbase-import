@@ -1,32 +1,36 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@ page language="java" contentType="text/html; charset=utf-8"
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
 %><mm:cloud>
-
-<%@include file="/includes/getids.jsp"
-%><%@include file="/includes/header.jsp"
-
-%><td class="white" colspan="2" valign="top">
-<mm:import externid="doc"   from="parameters">-1</mm:import
-><mm:import externid="news"  from="parameters">-1</mm:import
-><mm:compare referid="doc" value="-1" inverse="true"
-	><mm:node number="$doc"
-		><%@include file="/includes/backbutton.jsp"
-		%><%@include file="/includes/article.jsp"
-	%></mm:node
-><mm:import id="pageshown" 
-/></mm:compare
-><mm:notpresent referid="pageshown"
-><mm:compare referid="news" value="-1" inverse="true"
-	><mm:node number="$news"
-		><%@include file="/includes/backbutton.jsp"
-		%><%@include file="/includes/article.jsp"
-	%></mm:node
-><mm:import id="pageshown" 
-/></mm:compare
-></mm:notpresent
-><mm:notpresent referid="pageshown"
-><mm:node number="$page"
-><table cellspacing="0" cellpadding="0" class="layout">
+<mm:log>sjit</mm:log>
+<%@include file="/includes/getids.jsp"%>
+<mm:log>sjit1</mm:log>
+<%@include file="/includes/header.jsp"%>
+<mm:log>sjit2</mm:log>
+<td class="white" colspan="2" valign="top">
+<mm:import externid="doc"   from="parameters">-1</mm:import>
+<mm:import externid="news"  from="parameters">-1</mm:import>
+<mm:compare referid="doc" value="-1" inverse="true">
+<mm:log>x</mm:log>
+   <mm:node number="$doc">
+       <%@include file="/includes/backbutton.jsp"%>
+       <%@include file="/includes/article.jsp" %>
+  </mm:node>
+   <mm:import id="pageshown" />
+</mm:compare>
+<mm:notpresent referid="pageshown">
+<mm:log>a</mm:log>
+  <mm:compare referid="news" value="-1" inverse="true">
+     <mm:node number="$news" >
+	<%@include file="/includes/backbutton.jsp" %>
+        <%@include file="/includes/article.jsp" %>
+     </mm:node>
+    <mm:import id="pageshown" />
+  </mm:compare>
+</mm:notpresent>
+<mm:notpresent referid="pageshown">
+<mm:log>haai</mm:log>
+<mm:node number="$page">
+<table cellspacing="0" cellpadding="0" class="layout">
 <tr><td>
 <table class="layout">
 	<tr>
@@ -58,7 +62,7 @@
 			</script>
 			</mm:last>
 		</mm:related>
-		<mm:related path="posrel,news" orderby="posrel.pos" directions="UP" constraints="posrel.pos < 10">
+		<mm:related path="posrel,news" orderby="posrel.pos" directions="UP">
 		 	<mm:first
 				><h4>Latest websites build with MMBase</h4>
 				<form name="portofolioform" action="" method="post">
@@ -92,7 +96,7 @@
 	path="portals,category,news,mmevents"
 	fields="category.number,category.title,news.number,news.title,mmevents.start" 
 	orderby="mmevents.start" directions="DOWN"
-	max="5">
+	max="3">
 	<mm:first>
 		<h4>News</h4>		<!-- category : <mm:field name="category.title" /> -->
 		<mm:field name="category.number" id="cat_nr" write="false" />
@@ -103,20 +107,24 @@
 	<p><a href="<mm:url page="index.jsp" referids="portal"><mm:present referid="nws_page"><mm:param name="page"><mm:write referid="nws_page" /></mm:param></mm:present><mm:param name="newsnr"><mm:field name="news.number" /></mm:param></mm:url>"><mm:field name="news.title" /></a><br /> 
 	<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field>
 	<mm:field name="news.intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p> 
-	<mm:last><p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page"><mm:write referid="nws_page" /></mm:param></mm:url>">Newsarchive</a></p></mm:last>
+	<mm:last>
+	  <p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page"><mm:write referid="nws_page" /></mm:param></mm:url>">Newsarchive &raquo;</a></p>
+	  <p>&nbsp;</p>
+	</mm:last>
 	<mm:remove referid="cat_nr" />
 </mm:list>
 
 <mm:notpresent referid="nonewsyet">
 	<h4>News</h4>
-	<mm:listnodes type="news" max="3" orderby="number" directions="DOWN">
+	<mm:listnodes type="news" max="5" orderby="number" directions="DOWN">
 		<mm:field name="number" id="newsnr" write="false" />
 		<p><a href="<mm:url page="index.jsp" referids="portal,newsnr"><mm:param name="page">mmbase_news</mm:param></mm:url>"><mm:field name="title" /></a>
 		<br /><mm:related path="mmevents"><mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field></mm:related>
 		<mm:field name="intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p>
 		<mm:remove referid="newsnr" />
 	</mm:listnodes>
-	<p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page">mmbase_news</mm:param></mm:url>">Newsarchive</a></p>
+	<p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page">mmbase_news</mm:param></mm:url>">Newsarchive &raquo;</a></p>
+    <p>&nbsp;</p>
 </mm:notpresent>
 <%-- ### /news ### --%>
 	 </td>
@@ -136,7 +144,7 @@
 	  </td>
 	</tr><tr><td><img src="media/spacer.gif" width="140" height="4" alt="" /></td></tr><tr>
 	  <td>
-	<mm:time time="today" id="ttoday" write="false" />
+	<mm:time time="today" id="ttoday" jspvar="ttoday" write="false" />
 	<mm:list nodes="$portal" 
 		path="portals,category,posrel,event,mmevents"
 		fields="category.number,event.number,event.title,mmevents.start" 
@@ -154,20 +162,20 @@
 	  </td>
 	</tr><tr><td><img src="media/spacer.gif" width="140" height="4" alt="" /></td></tr><tr>
 	  <td>
-	  <b>Last bugfixes:</b><br />
-	  <mm:listnodes type="bugreports" orderby="time" directions="DOWN" max="5" constraints="bstatus > 4">
-		<mm:last><mm:index /></mm:last>
+	  <b>Bugs this week :</b><p />
+	  <mm:time time="today" id="lastweek" offset="-604800" write="false" />
+	  <mm:listnodes type="bugreports" orderby="time" directions="DOWN" constraints="bstatus > 4 and  [time] >= $lastweek">
+		<mm:last>
+		<a href="/index.jsp?portal=199&page=546&sstatus=6">Solved : <mm:size /><a>
+		</mm:last>
 	  </mm:listnodes>
-
-	  <b>Last new repported bugs:</b><br />
-	  <mm:listnodes type="bugreports"
-	  	orderby="time" directions="DOWN" max="5"
-	  	constraints="bstatus = 1">
-	  	status: <mm:field name="bstatus" />
-	  	issue: <mm:field name="issue" /><br />
+	  <br />
+	  <mm:listnodes type="bugreports" orderby="time" directions="DOWN" constraints="bstatus < 2 and  [time] >= $lastweek ">
+		<mm:last>
+		<a href="/index.jsp?portal=199&page=546&sstatus=1">New : <mm:size /><a>
+		</mm:last>
 	  </mm:listnodes>
-	  
-		<a href="http://www.elfling.nl/projects/mmbase/layout/index.html#">3 bugs fixed</a>
+	  <br />
 	  </td>
 	</tr>
 <%--	<tr><td><img src="media/spacer.gif" width="140" height="4" alt="" /></td></tr><tr>
@@ -214,10 +222,9 @@
 	</mm:last
 ></mm:node
 ></mm:related
-></mm:node
-></mm:notpresent
->
-
+></mm:node>
+</mm:notpresent>
+<mm:log>end</mm:log>
 </td>
 <%@include file="/includes/footer.jsp"
 %></mm:cloud>
