@@ -17,28 +17,22 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 /**
- * This cache handles multilevel query results from the bridge.  A
- * SearchQuery object serves as key, so ideally, this cache could
- * simply work for <em>all</em> select queries done by MMBase (because
- * the should all be performed via a SearchQuery object).
+ * This cache handles multilevel query results from the bridge.
  *
- * But currently it is only used for the 'getList' functions of BasicCloud
+ * This is only for the 'getList' functions of BasicCloud
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCache.java,v 1.2 2003-05-02 21:17:47 michiel Exp $
+ * @version $Id: MultilevelCache.java,v 1.3 2003-07-14 20:58:41 michiel Exp $
  * @see   org.mmbase.bridge.implementation.BasicCloud
+ * @rename  QueryCache. This cache can be more generally used now.
  */
 
 // This used to be implemented in MultilevelCacheHandler, MultilevelCacheEntry and MultilevelSubscribeNode. See CVS history for old implemention.
 
-public class MultilevelCache extends Cache {
+public class MultilevelCache extends QueryResultCache {
 
-    private static Logger log = Logging.getLoggerInstance(MultilevelCache.class.getName());
-
-    // Keep a map of the existing Observers, for each nodemanager one.
-    private Map observers = new HashMap();
-
+    private static Logger log = Logging.getLoggerInstance(MultilevelCache.class);
 
     // There will be only one multilevel cache, and here it is:
     private static MultilevelCache multiCache;
@@ -49,7 +43,7 @@ public class MultilevelCache extends Cache {
 
     static {
         multiCache = new MultilevelCache(300);
-        putCache(multiCache);
+        multiCache.putCache();
     }
 
     public String getName() {
@@ -64,142 +58,6 @@ public class MultilevelCache extends Cache {
      */
     private MultilevelCache(int size) {
         super(size);
-    }
-
-    /**
-     * Puts a multilevel search result in this cache.
-     */
-    public synchronized Object put(SearchQuery query, List queryResult) { 
-        if (! isActive()) return null;
-        
-        List n =  (List) super.get(query);
-        if (n == null) {
-            n = queryResult;
-            addObservers(query);
-        }
-        return super.put(query, queryResult);        
-    }
-    
-    /**
-     * Remove an object from the cache. It also remove the watch from
-     * the observers which are watching this entry.
-     * 
-     * @param key A SearchQuery object.
-     */
-    public synchronized Object remove(Object key) {
-        Object result = super.remove(key);
-        
-        if (result != null) { // remove the key also from the observers.
-            Iterator i = observers.values().iterator();
-            while (i.hasNext()) {
-                Observer o = (Observer) i.next();
-                o.stopObserving(key);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Adds observers on the entry
-     */
-    private synchronized void addObservers(SearchQuery query) {
-        Iterator i = query.getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = (Step) i.next();
-            String type = step.getTableName();
-            Observer o;
-            o = (Observer) observers.get(type);
-            if (o == null) {
-                o = new Observer(type);
-                observers.put(type, o);
-            }
-            o.observe(query);
-        }
-    }
-
-
-    /**
-     * This observer subscribes itself to builder changes, and
-     * invalidates the multilevel cache entries which are dependent on
-     * that specific builder.
-     */
-
-    private class Observer implements MMBaseObserver {        
-        /**
-         * This list contains the types (as a string) which are to be invalidated.
-         *
-         */
-        private Set cacheKeys = new HashSet(); // using java default for initial size. Someone tried 50.
-        
-        /**
-         * Creates a multilevel cache observer for the speficied type
-         * @param type Name of the builder which is to be observed.
-         */
-        private Observer(String type) {
-            MMBase mmb = MMBase.getMMBase();
-            // when the type is a role, we need to subscribe
-            // the builder it belongs to..
-            if(mmb.getMMObject(type) == null) {
-                int builderNumber  = mmb.getRelDef().getNumberByName(type);
-                String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
-                if (log.isDebugEnabled()) {
-                    log.debug("replaced the type: " + type + " with type:" + newType);
-                }
-                type = newType;            
-            }
-            mmb.addLocalObserver (type, this);
-            mmb.addRemoteObserver(type, this);
-        }
-
-        /**
-         * If something changes this function is called, and the observer multilevel cache entries are removed.
-         */
-        protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
-
-            List removedKeys = new ArrayList();
-            // clear the entries from the cache.
-            synchronized(this) {
-                for (Iterator i = cacheKeys.iterator(); i.hasNext(); ) {
-                    removedKeys.add(i.next());
-                }
-                cacheKeys.clear();
-            }
-            // remove now from Cache (and from other Observers)
-            Iterator i = removedKeys.iterator();
-            while (i.hasNext()) {
-                Object key = i.next();
-                MultilevelCache.this.remove(key);
-            }
-
-            return true;
-        }
-        
-
-        // javadoc inherited (from MMBaseObserver)
-        public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
-            return nodeChanged(machine, number, builder, ctype);
-        }
-
-        // javadoc inherited (from MMBaseObserver)
-        public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-            return nodeChanged(machine, number, builder, ctype);
-        }
-        
-        /**
-         * Start watching the entry with the specified key of this MultilevelCache (for this type).
-         * @return true if it already was observing this entry.
-         */
-        protected synchronized boolean observe(Object key) {   
-            // assert(MultilevelCache.this.containsKey(key));
-            return cacheKeys.add(key);
-        }
-
-        /**
-         * Stop observing this key of multilevelcache
-         */
-        protected synchronized boolean stopObserving(Object key) {            
-            return cacheKeys.remove(key);
-        }
     }
         
 }
