@@ -20,6 +20,7 @@ import javax.servlet.ServletContext;
 
 // used for resolving in MMBase database
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.builders.Resources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
@@ -33,7 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
 
-
+// used for Unicode Escaping when editing property files
 import org.mmbase.util.transformers.*;
 
 import org.mmbase.util.logging.Logger;
@@ -84,16 +85,17 @@ When you want to place a configuration file then you have several options, wich 
  * You can programmaticly place or change resources by the use of {@link #createResourceAsStream}.
  * Which will probably only work for one of the first three options.
  *
- * Impact: 
- *    URIResolver uses files, must depend on this too. --> FormatterTag, Editwizards!
- *    MMBase.java, MMBaseContext.java, security, logging
- *    IncludeTag#cite
- *    MMAdmin.java 
- *    Not yet implemented: use of getOutputStream, which may be possible
+<pre>
+  Impact: 
+     URIResolver uses files, must depend on this too. --> FormatterTag, Editwizards!
+     MMBase.java, MMBaseContext.java, security, logging
+     IncludeTag#cite
+     MMAdmin.java 
+</pre>
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.5 2004-10-01 08:25:44 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.6 2004-10-02 17:36:07 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -158,12 +160,7 @@ public class ResourceLoader extends ClassLoader {
 
     private static ServletContext servletContext = null;
 
-    private static MMObjectBuilder resourceBuilder = null;
-
-    // these should perhaps be configurable:
-    private static final String    URL_FIELD        = "url";
-    private static final String    HANDLE_FIELD     = "handle";
-    private static final String    DEFAULT_CONTEXT  = "admin";
+    static MMObjectBuilder resourceBuilder = null;
 
     // these could perhaps be made non-static to make more generic ResourceLoaders possible
 
@@ -237,14 +234,14 @@ public class ResourceLoader extends ClassLoader {
      */
     public static void setResourceBuilder(MMObjectBuilder b) {
         if (resourceBuilder != null) {
-            throw new RuntimeException("An resource builder was set already: " + resourceBuilder);
+            throw new RuntimeException("A resource builder was set already: " + resourceBuilder);
         }
         resourceBuilder = b;
     }
 
     
     /** 
-     * Utility method to return the name part of a resouce-name (removed directory and 'extension'). 
+     * Utility method to return the name part of a resource-name (removed directory and 'extension'). 
      * Used e.g. when loading builders in MMBase.
      */
     public static String getName(String path) {       
@@ -258,8 +255,8 @@ public class ResourceLoader extends ClassLoader {
         return path;        
     }
 
-    /*
-     * Utility method to returns the 'directory' part of a resouce-name.
+    /**
+     * Utility method to returns the 'directory' part of a resource-name.
      * Used e.g. when loading builders in MMBase.
      */
     public static String getDirectory(String path) {
@@ -433,7 +430,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Used by {@link #getResourcePaths(Pattern, boolean)}. This is the function which does the
-     * recursion.
+     * recursion for files.
      */
     protected Set getFileResourcePaths(FilenameFilter filter,  String recursive, Set results) {
         Iterator i = getFiles(recursive == null ? "" : recursive).iterator();
@@ -445,7 +442,7 @@ public class ResourceLoader extends ClassLoader {
                     if (recursive != null && files[j].isDirectory()) {
                         getFileResourcePaths(filter, recursive + files[j].getName() + "/", results);
                     } else {
-                        if (files[j].canRead()) { 
+                        if (files[j].canRead() && ! files[j].isDirectory()) { 
                             results.add(recursive + files[j].getName());
                         }
                     }
@@ -456,20 +453,23 @@ public class ResourceLoader extends ClassLoader {
         return results;
     }
 
+    /**
+     * Used by {@link #getResourcePaths(Pattern, boolean)}. This performs the database part of the job.
+     */
     protected Set getNodeResourcePaths(final Pattern pattern, boolean recursive, Set results) {
         if (resourceBuilder != null) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
                 BasicFieldValueConstraint constraint = 
-                    new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(URL_FIELD)), context.getPath().substring(1) + "%");
+                    new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)), context.getPath().substring(1) + "%");
                 constraint.setOperator(FieldCompareConstraint.LIKE);
                 query.setConstraint(constraint);
                 Iterator i = resourceBuilder.getNodes(query).iterator();
                 while (i.hasNext()) {
                     MMObjectNode node = (MMObjectNode) i.next();
-                    String url = node.getStringValue(URL_FIELD);
+                    String url = node.getStringValue(Resources.RESOURCENAME_FIELD);
                     String subUrl = url.substring(context.getPath().length());
-                    if (! recursive && subUrl.indexOf("/") >0) {
+                    if (! recursive && subUrl.indexOf("/") > 0) {
                         continue;
                     }
                     if (pattern != null && ! pattern.matcher(subUrl).matches()) {
@@ -505,14 +505,14 @@ public class ResourceLoader extends ClassLoader {
                                 // ignore
                             }
                         } else {
-                            if (pattern.matcher(newResourcePath).matches()) {
+                            if (pattern == null || pattern.matcher(newResourcePath).matches()) {
                                 results.add(newResourcePath);
                             }
                         }
                     }
                 }
             } catch (Throwable t) { //hopefully this catches errors from app-server which dont' or badly support servlet api 2.3's getResourcePaths
-                log.error(t);
+                log.error(Logging.stackTrace(t));
                 // ignore
             }
         }
@@ -524,6 +524,9 @@ public class ResourceLoader extends ClassLoader {
      * desired resource-name and you get an OutputStream back, to which you must write.
      * 
      * This is a shortcut to <code>findResource(name).openConnection().getOutputStream()</code>
+     *
+     * If the given resource already existed, it will be overwritten, or shadowed, if it was not
+     * writeable.
      *
      * @throws IOException If the Resource for some reason could not be created.
      */
@@ -554,7 +557,7 @@ public class ResourceLoader extends ClassLoader {
             log.info(mfue);
             return null;
         } catch (IOException ieo) {
-            log.error(ieo);
+            log.error(Logging.stackTrace(ieo));
             return null;
         }
     }
@@ -586,7 +589,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Give a StreamResult for resource with given name. This can be used to write XML to a resource.
-     *
+     * @see #createResourceAsStream(String)
      */
     protected StreamResult getStreamResult(String name)  throws IOException {
         OutputStream stream = createResourceAsStream(name);
@@ -597,8 +600,9 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Creates a resource with given name for given Source.
      *
+     * @see #createResourceAsStream(String)
      */
-    public void storeSource(Source source, String name) throws IOException {
+    public void storeSource(String name, Source source) throws IOException {
         try {
             StreamResult streamResult = getStreamResult(name);
             TransformerFactory tf = TransformerFactory.newInstance();
@@ -618,13 +622,19 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Creates a resource for a given Document.
+     * @param name Name of the resource.
+     * @param doc  The xml document which must be stored.
+     * @see #createResourceAsStream(String)
      */
-    public void  storeDocument(Document doc, String name) throws IOException {
-        storeSource(new DOMSource(doc), name);
+    public void  storeDocument(String name, Document doc) throws IOException {
+        storeSource(name, new DOMSource(doc));
     }
 
     /**
      * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
+     * Resource are actually InputStreams (byte arrays), but often they are quite text-oriented
+     * (like e.g. XML's), so this method may be useful.
+     * @see getResourceAsStream(String)
      */
     public Reader getReader(String name) throws IOException {
         try {
@@ -665,9 +675,11 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
+     * @see getReader(String)
+     * @see createResourceAsStream(String)
      */
     public Writer getWriter(String name) throws IOException {
-        final OutputStream os = createResourceAsStream(name);
+        OutputStream os = createResourceAsStream(name);
         try {
             if (os == null) return null;
             if (name.endsWith(".properties")) {
@@ -675,86 +687,23 @@ public class ResourceLoader extends ClassLoader {
                 return new TransformingWriter(new OutputStreamWriter(os, "UTF-8"), new UnicodeEscaper());
             }
         } catch (UnsupportedEncodingException uee) {
+            log.error("uee " + uee);
         }
-        return new Writer() { // perhaps anonymous is a bit too much for this..
-                // this buffers first 100 bytes, just to determine encoding for XML types.
-                private Writer wrapped = null;
-                private StringBuffer start = new StringBuffer(100);
-                private int wrote = 0;
-                private void wrap() throws IOException {
-                    if (wrapped == null) {
-                        String encoding = GenericResponseWrapper.getXMLEncoding(start.toString());
-                        if (encoding == null) {
-                            encoding = "UTF-8";
-                        }
-                        try {
-                            wrapped = new OutputStreamWriter(os, encoding);
-                        } catch (UnsupportedEncodingException uee) {
-                        }
-                        wrapped.write(start.toString());
-                        start = null;
-                    }
-                }
-                public void close() throws IOException {
-                    wrap();
-                    wrapped.close();                    
-                }
-                public void flush() throws IOException {
-                    wrap();
-                    wrapped.flush();
-                }
-                
-                public void write(char[] cbuf) throws IOException {
-                    if (wrapped != null) {
-                        wrapped.write(cbuf);
-                    } else {
-                        write(cbuf, 0, cbuf.length);
-                    } 
-                }
-                
-                public void write(int c) throws IOException {
-                    if (wrapped != null) { wrapped.write(c); } else { super.write(c); }
-                }
-                
-                public void write(String str) throws IOException {
-                    if (wrapped != null) { wrapped.write(str); } else { super.write(str); }
-                }
-
-                public void write(String str, int off, int len) throws IOException {
-                    if (wrapped != null) { wrapped.write(str, off, len); } else { super.write(str, off, len); }
-
-                }
-                public void write(char[] cbuf, int off, int len) throws IOException {
-                    if (wrapped != null) {
-                        wrapped.write(cbuf, off, len);
-                    } else {
-                        for (int i = off; i < len + off; i++) {
-                            start.append(cbuf[i]);
-                            wrote++;
-                            if (wrote == 100) {
-                                wrap();
-                                i++;
-                                if (i < len) {
-                                    wrapped.write(cbuf, i, len - (i - off));
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            };
+        return new EncodingDetectingOutputStreamWriter(os);        
     }
 
 
     /**
      * @return A List of all files associated with the resource.
-     *         Quick hack, until ResourceWatcher works.
+     *         Used by {@link ResourceWatcher}. And by some deprecated code that wants to produce File objects.
      */
     public List getFiles(String name) {
         URL url = findResource(name);
         if (url == null) return new ArrayList();
         return getRootFiles(url.getPath());
     }
+
+    
 
     protected List getClassLoaderResources(String name) {
         URL url = findResource(name);
@@ -765,7 +714,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     public String toString() {
-        return "" + context  + " fileroots:" + fileRoots + " resourceroots: " + resourceRoots + " classloaderroots: " + classLoaderRoots;
+        return "" + context.getPath()  + " fileroots:" + fileRoots + " resourceroots: " + resourceRoots + " classloaderroots: " + classLoaderRoots;
     }
 
 
@@ -795,7 +744,13 @@ public class ResourceLoader extends ClassLoader {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
-                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(URL_FIELD)), url.getPath().substring(1));
+                    StepField urlField = query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD));
+
+                    BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(urlField, url.getPath().substring(1));
+                    BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(urlField, url.getPath());
+                    BasicCompositeConstraint  constraint  = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
+                    constraint.addChild(constraint1);
+                    constraint.addChild(constraint2);
                     query.setConstraint(constraint);
                     Iterator i = resourceBuilder.getNodes(query).iterator();
                     if (i.hasNext()) {
@@ -976,7 +931,7 @@ public class ResourceLoader extends ClassLoader {
             {
                 MMObjectNode node = resolver.getResourceNode();
                 if (node != null) {
-                    return new ByteArrayInputStream(node.getByteValue(HANDLE_FIELD));
+                    return new ByteArrayInputStream(node.getByteValue(Resources.HANDLE_FIELD));
                 }
             }
             {
@@ -1016,7 +971,7 @@ public class ResourceLoader extends ClassLoader {
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     public void close() throws IOException {
                         byte[] b = bytes.toByteArray();
-                        node.setValue(HANDLE_FIELD, b);
+                        node.setValue(Resources.HANDLE_FIELD, b);
                         String type = guessContentTypeFromStream(new ByteArrayInputStream(b));
                         if (type == null) {
                             guessContentTypeFromName(url.getFile());
@@ -1112,9 +1067,9 @@ public class ResourceLoader extends ClassLoader {
             }
             // Could not create file, lets store it in the database then
             if (ResourceLoader.resourceBuilder != null) {
-                MMObjectNode node = ResourceLoader.resourceBuilder.getNewNode(DEFAULT_CONTEXT);
-                node.setValue(URL_FIELD, url.getPath().substring(1)); // minus the starting /
-                node.insert(DEFAULT_CONTEXT);
+                MMObjectNode node = ResourceLoader.resourceBuilder.getNewNode(Resources.DEFAULT_CONTEXT);
+                node.setValue(Resources.RESOURCENAME_FIELD, url.getPath().substring(1)); // minus the starting /
+                node.insert(Resources.DEFAULT_CONTEXT);
                 return getOutputStream(node);
             }
 
@@ -1164,3 +1119,89 @@ public class ResourceLoader extends ClassLoader {
     
 }
 
+/**
+ * Like {@link java.io.OutputStreamWriter} but it tries to autodetect the encoding of the
+ * OutputStream. This works at least if the OutputStream is XML, which is a very common thing to be for Resources.
+ *
+ * For this to work at least the first part (e.g. the first 100 bytes) need to be buffered. 
+ * 
+ * If determining the encoding did not succeed it is supposed to be 'UTF-8', which is (should be) an
+ * acceptable encoding, and also the default encoding for XML streams.
+ */
+class EncodingDetectingOutputStreamWriter extends Writer {
+    
+    private OutputStream outputStream;
+
+    // Either wrapped or buffer is null, and the other one is currenlty in use.
+    private Writer wrapped = null;
+    private StringBuffer buffer = new StringBuffer(100);
+
+    EncodingDetectingOutputStreamWriter(OutputStream os) {
+        outputStream = os;
+    }
+
+    /**
+     * Stop buffering, determine encoding, and start behaving as a normal OutputStreamWriter (by
+     * wrapping one). Unless, this happened already.
+     */
+    private void wrap() throws IOException {
+        if (wrapped == null) {
+            String encoding = GenericResponseWrapper.getXMLEncoding(buffer.toString());
+            if (encoding == null) {
+                encoding = "UTF-8";
+            }
+            try {
+                wrapped = new OutputStreamWriter(outputStream, encoding);
+            } catch (UnsupportedEncodingException uee) {
+            }
+            wrapped.write(buffer.toString());
+            buffer = null;
+        }
+    }
+    public void close() throws IOException {
+        wrap();
+        wrapped.close();                    
+    }
+    public void flush() throws IOException {
+        wrap();
+        wrapped.flush();
+    }
+    
+    public void write(char[] cbuf) throws IOException {
+        if (wrapped != null) {
+            wrapped.write(cbuf);
+        } else {
+            write(cbuf, 0, cbuf.length);
+        } 
+    }
+    
+    public void write(int c) throws IOException {
+        if (wrapped != null) { wrapped.write(c); } else { super.write(c); }
+    }
+    
+    public void write(String str) throws IOException {
+        if (wrapped != null) { wrapped.write(str); } else { super.write(str); }
+    }
+    
+    public void write(String str, int off, int len) throws IOException {
+        if (wrapped != null) { wrapped.write(str, off, len); } else { super.write(str, off, len); }
+        
+    }
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        if (wrapped != null) {
+            wrapped.write(cbuf, off, len);
+        } else {
+            for (int i = off; i < len + off; i++) {
+                buffer.append(cbuf[i]);
+                if (buffer.length() == 100) {
+                    wrap();
+                    i++;
+                    if (i < len) {
+                        wrapped.write(cbuf, i, len - (i - off));
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}

@@ -33,9 +33,9 @@
       <td colspan="2">
         <input type="text" name="search" value="<mm:write referid="search" />" />
         <select name="examples" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">         
-            <option value="" <mm:isempty referid="search"> selected="selected" </mm:isempty> >ALL</option>
-          <mm:write value=".*\.xml$$">
-            <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xml's</option>
+           <option value="" <mm:isempty referid="search"> selected="selected" </mm:isempty> >ALL</option>
+           <mm:write value=".*\.xml$$">
+              <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xml's</option>
            </mm:write>
            <mm:write value=".*\.dtd$$">
              <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >dtd's</option>
@@ -56,10 +56,10 @@
     Iterator i = resourceLoader.getResourcePaths(search == null || search.equals("") ? null : java.util.regex.Pattern.compile(search), true).iterator();
 
     while (i.hasNext()) {
-    String res = (String) i.next();
-    URL url = resourceLoader.findResource(res);
-    URLConnection con = url.openConnection();
-    boolean editable = con.getDoOutput();
+       String res = (String) i.next();
+       URL url = resourceLoader.findResource(res);
+       URLConnection con = url.openConnection();
+       boolean editable = con.getDoOutput();
 %>
 <tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="<%=res%>" /></mm:url>"><%= editable ? "Edit" : "View"%></a></td>
 <%
@@ -80,11 +80,11 @@
         Resource: 
         <input type="text" name="resource" style="width: 200px;" value="<%=resource%>" />
         <input type="submit" name="load" value="load" />
-	<% if (con.getDoOutput()) { %>
-          <input type="submit" name="save" value="save" />
-        <% } else { %>
-           READONLY
-        <% } %>
+         <% if (con.getDoOutput()) { %>
+            <input type="submit" name="save" value="save" />
+         <% } else { %>
+             READONLY
+         <% } %>
         <mm:compare referid="xml" value="XML">          
           <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
           <input type="submit" name="xml" value="TEXT" />
@@ -105,11 +105,7 @@
 %>
       <mm:present referid="save">
         <mm:import externid="text" jspvar="text" vartype="string" />
-        <%
-         {
-             resourceLoader.storeDocument(doc, resource);
-}
-%>
+        <% resourceLoader.storeDocument(resource, doc); %>
       </mm:present>
 <%
             NodeList list =  doc.getChildNodes();
@@ -122,37 +118,31 @@
           }
 %>
         </mm:compare>
-        <mm:compare referid="xml" value="XML" inverse="true">
-      <mm:present referid="save">
-        <mm:import externid="text" jspvar="text" vartype="string" />
-        <%
-         {
-         PrintWriter writer = new PrintWriter(resourceLoader.getWriter(resource));
-         writer.write(text);
-         writer.close();
-}
-%>
-      </mm:present>
-          <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
-          <input type="submit" name="xml" value="XML" />
-          <textarea name="text" style="width: 100%" rows="30"><%
-          {
-          if (url != null) {
-             Reader r = resourceLoader.getReader(resource);
-             if (r != null) {
-             BufferedReader reader = new BufferedReader(r);
-              while(true) {
-                String line = reader.readLine();
-                if (line == null) break;
-                out.println(line);
-            }
-          } else {
-                out.println("new resource");
-          }
-             
-          }
-}
-%></textarea>
+
+
+     <mm:compare referid="xml" value="XML" inverse="true">
+       <mm:present referid="save">
+         <mm:import externid="text" jspvar="text" vartype="string" />
+         <% { Writer writer = resourceLoader.getWriter(resource); writer.write(text); writer.close(); } %>
+       </mm:present>
+       <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
+       <input type="submit" name="xml" value="XML" />
+       <textarea name="text" style="width: 100%" rows="30"><%
+       {
+       Reader r = resourceLoader.getReader(resource);
+       if (r != null) {
+         BufferedReader reader = new BufferedReader(r);
+         while(true) {
+            String line = reader.readLine();
+            if (line == null) break;
+            out.println(line);
+         }
+       } else {
+          out.println("new resource");
+       }             
+
+       }
+       %></textarea>
         </mm:compare>
     </td>
   </tr>
