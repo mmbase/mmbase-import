@@ -88,7 +88,7 @@ public class MediaUrlComposer {
     /**
      * create the uri for a certain media source
      */
-    public String getURI(MMObjectNode mediafragment, MMObjectNode mediasource, Hashtable info) {
+    public String getURI(MMObjectNode mediafragment, MMObjectNode mediasource, Map info) {
         
         String url = null;
         int format = mediasource.getIntValue("format");
@@ -117,7 +117,7 @@ public class MediaUrlComposer {
      * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
      * @return the url of the media source
      */
-    public String getUrl(MMObjectNode mediasource, Hashtable info) {
+    public String getUrl(MMObjectNode mediasource, Map info) {
         return mediasource.getStringValue("url");
     }
     
@@ -154,14 +154,14 @@ public class MediaUrlComposer {
      * Just an implementation of a real url. Maybe we should make this configuratble in the config file.
      * but i don't know if that makes much sence.
      */
-    public String createRealURL(MMObjectNode mediafragment, MMObjectNode mediasource, Hashtable info) {
-        Vector params = new Vector();
+    public String createRealURL(MMObjectNode mediafragment, MMObjectNode mediasource, Map info) {
+        List params = new Vector();
         String urlpart = "";
         
         // Evaluate title
         String title = makeRealCompatible(mediafragment.getStringValue("title"));
         if(title!=null && !title.equals("")) {
-            params.addElement("title="+title);
+            params.add("title="+title);
         }
         
         // Evaluate author
@@ -177,7 +177,7 @@ public class MediaUrlComposer {
             MMObjectNode group = (MMObjectNode)e.nextElement();
             String name = makeRealCompatible(group.getStringValue("name"));
             if( name!=null && !name.equals("")) {
-                params.addElement("author="+name);
+                params.add("author="+name);
             }
         }
         
@@ -185,19 +185,19 @@ public class MediaUrlComposer {
         if(mediaFragmentBuilder.isSubFragment(mediafragment)) {
             String start = makeRealTime(mediafragment.getLongValue("start"));
             if(start!=null && !start.equals("")) {
-                params.addElement("start="+start);
+                params.add("start="+start);
             }
             String stop = makeRealTime(mediafragment.getLongValue("stop"));
             if(stop!=null && !stop.equals("")) {
-                params.addElement("end="+stop);
+                params.add("end="+stop);
             }
         }
         
         if(params.size()!=0) {
             urlpart+="?";
-            for (e = params.elements();e.hasMoreElements();) {
-                urlpart+=(String)e.nextElement();
-                if(e.hasMoreElements()) {
+            for (Iterator i = params.iterator(); i.hasNext();) {
+                urlpart+=(String) i.next();
+                if(i.hasNext()) {
                     urlpart+="&";
                 }
             }

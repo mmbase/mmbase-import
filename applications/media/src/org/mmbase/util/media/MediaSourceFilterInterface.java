@@ -32,6 +32,6 @@ public interface MediaSourceFilterInterface {
      *
      * @return A new set of filtered mediasources.
      */
-    public Vector filterMediaSource(Vector mediasources, MMObjectNode mediafragment, Hashtable info);
+    public List filterMediaSource(List mediasources, MMObjectNode mediafragment, Map info);
 }
 

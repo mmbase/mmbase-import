@@ -326,7 +326,7 @@ public class MediaSources extends MMObjectBuilder {
      * @param info     
      * @return the url
      */
-    public String getLongUrl(MMObjectNode mediafragment, MMObjectNode mediasource, Hashtable info) {
+    public String getLongUrl(MMObjectNode mediafragment, MMObjectNode mediasource, Map info) {
         
         // Find the provider for the url
         MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, info);
@@ -351,7 +351,7 @@ public class MediaSources extends MMObjectBuilder {
      * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
      * @return the url of the media source
      */
-    public String getUrl(MMObjectNode mediasource, Hashtable info) {
+    public String getUrl(MMObjectNode mediasource, Map info) {
         log.debug("Getting url");
         
         // Find the provider for the url
@@ -415,7 +415,7 @@ public class MediaSources extends MMObjectBuilder {
     }
     
     public static int convertFormatToNumber(String format) {
-        format=format.toLowerCase();
+        format = format.toLowerCase();
         if(format.equals("mp3")) return MP3_FORMAT;
         if(format.equals("ra")) return RA_FORMAT;
         if(format.equals("wav")) return WAV_FORMAT;
