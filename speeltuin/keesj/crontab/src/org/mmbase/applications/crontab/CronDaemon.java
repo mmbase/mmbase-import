@@ -11,7 +11,7 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * JCronDaemonn is a "crontab" clone written in java.
+ * CronDaemon is a "crontab" clone written in java.
  * The daemon starts a thread that wakes up every minute
  *(it keeps sync by calculating the time to sleep)
  *
@@ -30,7 +30,7 @@ public class CronDaemon implements Runnable {
     private Set addedCronEntries;
 
     /**
-     * JCronDaemon is a Singleton. This makes the one instance and starts the Thread.
+     * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
         cronEntries = Collections.synchronizedSet(new HashSet());
@@ -40,8 +40,8 @@ public class CronDaemon implements Runnable {
     }
 
     /**
-     * Finds in given set the JCronEntry with the given id.
-     * @return a JCronEntry if found, <code>null</code> otherwise.
+     * Finds in given set the CronEntry with the given id.
+     * @return a CronEntry if found, <code>null</code> otherwise.
      */
     protected static CronEntry getById(Set set, String id) {
         Iterator i = set.iterator();
@@ -54,7 +54,7 @@ public class CronDaemon implements Runnable {
     }
 
     /**
-     * Adds the given JCronEntry to this daemon. If a 
+     * Adds the given CronEntry to this daemon. 
      * @throws RuntimeException If an entry with the same id is present already (unless it is running and scheduled for removal already)
      */
 
@@ -74,6 +74,7 @@ public class CronDaemon implements Runnable {
         }
 
     }
+
     /**
      * Actually adds, no checks for 'removedEntries' and so on.
      */
@@ -83,8 +84,11 @@ public class CronDaemon implements Runnable {
         log.info("Added to JCronDaemon " + entry);
     }
 
+    public CronEntry getCronEntry(String id) {
+        return getById(cronEntries, id);
+    }
     /**
-     * Remove the given JCronEntry from this daemon. If the entry is currently running, it will be
+     * Remove the given CronEntry from this daemon. If the entry is currently running, it will be
      * postponed until this job is ready.
      */
     public void remove(CronEntry entry) {
@@ -111,7 +115,7 @@ public class CronDaemon implements Runnable {
      */
     public void start() {
         log.info("Starting JCronDaemon");
-        cronThread = new Thread(this, "JCronDaemon");
+        cronThread = new Thread(this, "CronDaemon");
         cronThread.setDaemon(true);
         cronThread.start();
     }
@@ -121,7 +125,7 @@ public class CronDaemon implements Runnable {
      */
 
     public void stop() {
-        log.info("Stopping JCronDaemon");
+        log.info("Stopping CronDaemon");
         cronThread.interrupt();
         cronThread = null;
         Iterator i = cronEntries.iterator();
@@ -206,17 +210,17 @@ public class CronDaemon implements Runnable {
     public static void main(String[] argv) throws Exception {
         CronDaemon d = CronDaemon.getInstance();
 
-        //entries.add(new JCronEntry("20 10 31 8 *","happy birthday"));
-        //entries.add(new JCronEntry("* * * * 1","monday"));
-        //entries.add(new JCronEntry("* * * * 2","tuesday"));
+        //d.add(new CronEntry("20 10 31 8 *","happy birthday",null));
+        //d.add(new CronEntry("* * * * 1","monday",null));
+        //d.add(new CronEntry("* * * * 2","tuesday",null));
 
-        //entries.add(new JCronEntry("* * 19 * *","the 19'st  day of the month"));
+        //d.add(new CronEntry("* * 19 * *","the 19'st  day of the month",null));
 
-        //entries.add(new JCronEntry("* * * 1 *","the first month of the year"));
-        //entries.add(new JCronEntry("*/2 * * * *","every 2 minutes stating from 0"));
-        //entries.add(new JCronEntry("1-59/2 * * * *","every 2 minutes stating from 1"));
-        d.add(new CronEntry("1", "*/2 5-23 * * *", "every 2 minute from 5 till 11 pm", "org.mmbase.applications.crontab.TestCronJob"));
-        //entries.add(new JCronEntry("40-45,50-59 * * * *","test 40-45,50-60","Dummy"));
+        //d.add(new CronEntry("* * * 1 *","the first month of the year",null));
+        //d.add(new CronEntry("*/2 * * * *","every 2 minutes stating from 0",null));
+        //d.add(new CronEntry("1-59/2 * * * *","every 2 minutes stating from 1",null));
+        d.add(new CronEntry("1", "*/2 5-23 * * *", "every 2 minute from 5 till 11 pm", "org.mmbase.applications.crontab.TestCronJob", null));
+        //d.add(new CronEntry("40-45,50-59 * * * *","test 40-45,50-60","Dummy",null));
 
         try {
             Thread.sleep(240 * 1000 * 60);
