@@ -9,13 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import java.io.File;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.mmbase.util.Arguments;
+import org.mmbase.util.UriParser;
+import org.mmbase.module.builders.AbstractServletBuilder;
+import org.mmbase.module.builders.Images;
+
+import org.mmbase.security.Rank;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -53,11 +58,10 @@ public class ImageTag extends FieldTag {
         String context = req.getContextPath();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
-         * EXPERIMENTAL
          */
         String sessionName = "";
 
-        if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
+        if(! getCloud().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
             sessionName = "cloud_mmbase";
             CloudTag ct = null;
             ct = (CloudTag) findParentTag(CloudTag.class, null, false);
@@ -73,32 +77,25 @@ public class ImageTag extends FieldTag {
             number = node.getStringValue("number");
         } else {
             // the cached image
-            List args = new ArrayList();
-            args.add(t);
-            number = node.getFunctionValue("cache", args).toString();
+            number = node.getFunctionValue("cache", new Arguments(Images.CACHE_ARGUMENTS).set("template", t)).toString();
         }
+
+
+        //String thisDir = 
+        //log.info("making relative " + thisDir + " to /");
+        String root    = UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/");
 
         String servletPath;
         {
-            List args = new ArrayList();
-            args.add(sessionName);
-            args.add("");
-            args.add(context);
+            Arguments args = new Arguments(AbstractServletBuilder.SERVLETPATH_ARGUMENTS)
+                .set("session",  sessionName)
+                .set("context",  root)
+                .set("argument", number)
+                ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
         }
-
-        String url;
-        String fileName = node.getStringValue("filename");
-        String thisDir = new java.io.File(req.getServletPath()).getParent();
-        log.info("making relative");
-        String root    = org.mmbase.util.UriParser.makeRelative(thisDir, "/");
-        if (servletPath.endsWith("?") ||  "".equals(fileName)) {
-            url = root + servletPath + number;
-        } else {
-            url = root + servletPath + fileName + "?" + number;
-        }
         helper.setTag(this);
-        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(url));
+        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
