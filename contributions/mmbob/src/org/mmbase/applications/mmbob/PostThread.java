@@ -248,15 +248,11 @@ public class PostThread {
 
 		// snap er niets van hoe moet dit nu Gerard ?
 		//if (body.indexOf("<")!=-1 && org.mmbase.Version.getMinor()==7) {
-	    	//	pnode.setStringValue("body","<poster>"+body+"</poster>");
+	    //	pnode.setStringValue("body","<poster>"+body+"</poster>");
 		//} else {
-	    	//	pnode.setStringValue("body",body);
+	    //	pnode.setStringValue("body",body);
 		//}
-
-                //pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
-		// gerard this is wrong again ?
-                pnode.setStringValue("body",body);
-
+        pnode.setStringValue("body","<poster>" + postingBody.transform(body) + "</poster>");
 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
                 pnode.commit();
