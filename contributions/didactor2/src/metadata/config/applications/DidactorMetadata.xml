@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorMetadata" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorMetadata" maintainer="didactor.nl" version="5" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
         <requires name="Resources" maintainer="didactor.nl" version="2" />
-    </requirements>  
+    </requirements>
 
     <neededbuilderlist>
         <builder maintainer="didactor.nl" version="1">metastandard</builder>
@@ -30,6 +30,7 @@
         <relation from="audiotapes" to="metadata" type="related" />
         <relation from="videotapes" to="metadata" type="related" />
         <relation from="images" to="metadata" type="related" />
+        <relation from="metastandard" to="metadata" type="related" />
         <relation from="urls" to="metadata" type="related" />
         <relation from="metadata" to="metadefinition" type="related" />
         <relation from="metadata" to="metavalue" type="posrel" />
