@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.53 2002-07-19 13:05:00 eduard Exp $
+ * @version $Id: Wizard.java,v 1.54 2002-07-19 20:14:48 michiel Exp $
  *
  */
 public class Wizard {
@@ -69,6 +69,7 @@ public class Wizard {
     private String sessionId;
     private String sessionKey="editwizard";
     private String referrer="";
+    private String templatesDir = null;
 
     /**
      * public xmldom's: the schema, the data and the originaldata is stored.
@@ -218,6 +219,10 @@ public class Wizard {
 
     public void setReferrer(String s) {
         referrer = s;
+    }
+
+    public void setTemplatesDir(String f) {
+        templatesDir = f;
     }
 
     public String getObjectNumber() {
@@ -400,9 +405,10 @@ public class Wizard {
         Map params = new HashMap(variables);
         params.put("ew_context", context);
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
-        params.put("sessionid", sessionId);
+        params.put("sessionid",  sessionId);
         params.put("sessionkey", sessionKey);
-        params.put("referrer", referrer);
+        params.put("referrer",   referrer);
+        if (templatesDir != null) params.put("templatedir",  templatesDir);
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
         } catch (javax.xml.transform.TransformerException e) {
