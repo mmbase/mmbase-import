@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.30 2004-10-08 11:51:14 pierre Exp $
+ * @version $Id: MMServers.java,v 1.31 2004-10-09 10:51:09 nico Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -34,6 +34,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private int serviceTimeout = 60 * 15; // 15 minutes
     private long intervalTime = 60 * 1000; // 1 minute
 
+    public static final int UNKNOWN = -1;
+    public static final int ACTIVE = 1;
+    public static final int INACTIVE = 2;
+    public static final int ERROR = 3;
+    
     private boolean checkedSystem = false;
     private String javastr;
     private String osstr;
@@ -83,17 +88,12 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     public String getGUIIndicator(String field, MMObjectNode node) {
         if (field.equals("state")) {
             int val = node.getIntValue("state");
-            switch (val) {
-                case -1 :
-                    return "Unknown";
-                case 1 :
-                    return "Active";
-                case 2 :
-                    return "Inactive";
-                case 3 :
-                    return "Error";
-                default :
-                    return "Unknown";
+            switch(val) {
+                case UNKNOWN: return "Unknown";
+                case ACTIVE: return "Active";
+                case INACTIVE: return "Inactive";
+                case ERROR: return "Error";
+                default: return "Unknown";
             }
         } else if (field.equals("atime")) {
             int now = (int) (System.currentTimeMillis() / 1000);
@@ -210,7 +210,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         }
         */
         log.debug("checkMySelf() updating timestamp");
-        node.setValue("state", 1);
+        node.setValue("state", ACTIVE);
         node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
         if (!checkedSystem) {
             node.setValue("os", osstr);
@@ -230,9 +230,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         int now = (int) (System.currentTimeMillis() / 1000);
         int then = node.getIntValue("atime");
         if ((now - then) > (serviceTimeout)) {
-            if (node.getIntValue("state") != 2) {
+            if (node.getIntValue("state") != INACTIVE) {
                 log.debug("checkOther() updating state for " + node.getStringValue("host"));
-                node.setValue("state", 2);
+                node.setValue("state", INACTIVE);
                 node.commit();
 
                 // now also signal all its services are down !
@@ -247,7 +247,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private void createMySelf(String machineName) {
         MMObjectNode node = getNewNode("system");
         node.setValue("name", machineName);
-        node.setValue("state", 1);
+        node.setValue("state", ACTIVE);
         node.setValue("atime", (int) (System.currentTimeMillis() / 1000));
         node.setValue("os", osstr);
         node.setValue("host", host);
@@ -385,5 +385,33 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             log.info("Can't find any mmserver node with name=" + name);
             return null;
         }
+    }
+    
+    /**
+     * @return Returns the intervalTime.
+     */
+    public long getIntervalTime() {
+        return intervalTime;
+    }
+
+    /**
+     * @return
+     */
+    public List getActiveServers() {
+        List activeServers = new ArrayList();
+        
+        String machineName = mmb.getMachineName();
+        log.debug("getActiveServers(): machine="+machineName);
+        Enumeration e=search("");
+        while (e.hasMoreElements()) {
+            MMObjectNode node = (MMObjectNode)e.nextElement();
+            String tmpname=node.getStringValue("name");
+            if (!tmpname.equals(machineName)) {
+                if (node.getIntValue("state") == ACTIVE) {
+                    activeServers.add(node);
+                }
+            }
+        }
+        return activeServers;
     }
 }
