@@ -58,6 +58,7 @@ public class Argument {
         public Wrapper(Argument[] arg) {
             key = "[ARRAYWRAPPER]";
             arguments = arg;
+            type = Argument[].class; // should not remain null, (equals of Argument depends on that)
         }
         
         public String toString() {
