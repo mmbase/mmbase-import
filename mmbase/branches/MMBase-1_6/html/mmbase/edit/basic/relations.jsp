@@ -1,5 +1,3 @@
-<%-- Listing relations is rather dirty.
-     We wait for new bridge features. --%>
 <mm:context id="relations">
   <%-- make sure the following variables are set --%>
   <mm:import externid="backpage_cancel" required="true" from="parent"/>
@@ -30,6 +28,8 @@
                     NodeManager otherNodeType =  relationManager.getSourceManager();
                     int rnumber = relationManager.getIntValue("rnumber");
                     String role = relationManager.getForwardRole();
+                    String insrelField1 = "dnumber";
+                    String insrelField2 = "snumber";
             %>
             <%@ include file="relation.jsp" %>
 
@@ -48,6 +48,8 @@
                     NodeManager otherNodeType =  relationManager.getDestinationManager();
                     int rnumber = relationManager.getIntValue("rnumber");
                     String role = relationManager.getReciprocalRole();
+                    String insrelField1 = "snumber";
+                    String insrelField2 = "dnumber";
             %>
              <%@ include file="relation.jsp" %>
 
