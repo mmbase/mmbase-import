@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.security.implementation.basic;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.mmbase.security.UserContext;
 
@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
 public class AnonymousLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(AnonymousLoginModule.class.getName());
 
-    public void load(HashMap properties) {
+    public void load(Map properties) {
         // nah do nothing..
     }
 
-    public boolean login(NameContext user, HashMap loginInfo,  Object[] parameters) {
+    public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
         log.info("anonymous login..");
 
         // set the identifier...

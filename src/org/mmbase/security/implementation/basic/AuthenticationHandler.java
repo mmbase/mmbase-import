@@ -18,6 +18,7 @@ import org.mmbase.security.Authentication;
 
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -95,7 +96,7 @@ public class AuthenticationHandler extends Authentication {
     }
 
 
-    public UserContext login(String moduleName, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+    public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
 	LoginModule module = (LoginModule) modules.get(moduleName);
 	if(module == null) {
 	    log.error("Login Module with name '" + moduleName + "' not found ! (available:"+listModules()+")");

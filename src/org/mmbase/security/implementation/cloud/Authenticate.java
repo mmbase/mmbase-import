@@ -17,7 +17,7 @@ import org.mmbase.security.Rank;
 import org.mmbase.security.UserContext;
 import org.mmbase.security.Authentication;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.io.FileInputStream;
 
 import org.mmbase.module.core.MMObjectNode;
@@ -66,7 +66,7 @@ public class Authenticate extends Authentication {
 	//log.debug("using: '" + configFile + "' as config file for authentication");
     } 
 
-    public UserContext login(String moduleName, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
+    public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
 	if(moduleName.equals("anonymous")) {
 	    log.debug("[anonymous login]");
 	    return new User("anonymous", Rank.ANONYMOUS, validKey);			

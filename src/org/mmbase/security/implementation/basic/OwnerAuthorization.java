@@ -172,7 +172,7 @@ public class OwnerAuthorization extends Authorization {
      */        
     public void setContext(UserContext user, int nodeNumber, String context) throws org.mmbase.security.SecurityException {
 	// check if is a valid context for us..
-	java.util.HashSet possible = getPossibleContexts(user, nodeNumber);
+	java.util.Set possible = getPossibleContexts(user, nodeNumber);
 	if(!possible.contains(context)) {
 	    String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user+"not a valid context";
 	    log.error(msg);
@@ -192,7 +192,7 @@ public class OwnerAuthorization extends Authorization {
     /** 
      * This method does nothing, except from returning a dummy value
      */        
-    public java.util.HashSet getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public java.util.Set getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
         ExtendedProperties reader = new ExtendedProperties();
 
         log.debug("reading accounts from " + configFile);

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.io.File;
 
 import org.mmbase.util.FileWatcher;
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *  authorization, you have to extend this class.
  */
 public abstract class Authentication {
-    private static Logger log=Logging.getLoggerInstance(Authentication.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(Authentication.class.getName()); 
 
     /** The SecurityManager, who created this instance */
     protected MMBaseCop manager;
@@ -65,13 +65,13 @@ public abstract class Authentication {
      *  was valid
      *	@param manager The class that created this instance.
      *	@param configPath The url which contains the config information for.     
-     *	    the authorization.
+     *	                  the authorization.
      *	@param parameters a list of optional parameters, may also be null
      *	@return <code>null</code When not valid
      *	    	a (maybe new) UserContext When valid
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */        
-    public abstract UserContext login(String application, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
+    public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
 
     /** 
      *	The method returns the Rank of a UserContext
