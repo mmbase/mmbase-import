@@ -45,7 +45,7 @@ public class ShareFileWriter {
 
         body += "</shared>\n";
 
-        String filename = MMBaseContext.getConfigPath() + File.separator + "packaging" + File.separator + "sharing.xml";
+        String filename = PackageManager.getConfigPath() + File.separator + "packaging" + File.separator + "sharing.xml";
         saveFile(filename, body);
         return true;
     }

@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.projects.*;
 
@@ -356,7 +357,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean decodeIntItem(Target target,String epath) {
-	XMLBasicReader reader=target.getReader();
+	ExtendedDocumentReader reader=target.getReader();
         String value=reader.getElementValue(prefix+"."+epath);
 	try {
 		target.setItem(epath,new Integer(Integer.parseInt(value)));
@@ -368,7 +369,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean decodeStringItem(Target target,String epath) {
-	XMLBasicReader reader=target.getReader();
+	ExtendedDocumentReader reader=target.getReader();
        	String value=reader.getElementValue(prefix+"."+epath);
 	if (value!=null) {
 		target.setItem(epath,value);
@@ -380,7 +381,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean decodeStringAttributeItem(Target target,String epath,String attribute) {
-	XMLBasicReader reader=target.getReader();
+	ExtendedDocumentReader reader=target.getReader();
        	org.w3c.dom.Node n=reader.getElementByPath(prefix+"."+epath);
         NamedNodeMap nm=n.getAttributes();
         if (nm!=null) {
@@ -793,7 +794,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
   }
 
   public boolean decodeRelatedPeople(Target target,String type,String subtype) {
-	XMLBasicReader reader=target.getReader();
+	ExtendedDocumentReader reader=target.getReader();
 	ArrayList list=new ArrayList();
         org.w3c.dom.Node n=reader.getElementByPath(prefix+"."+type);
        	org.w3c.dom.Node n2=n.getFirstChild();
@@ -821,7 +822,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
   public boolean decodePackageDepends(Target target,String itemname) {
-	XMLBasicReader reader=target.getReader();
+	ExtendedDocumentReader reader=target.getReader();
 	ArrayList list=new ArrayList();
         org.w3c.dom.Node n=reader.getElementByPath(prefix+".packagedepends");
 	if (n!=null) {
@@ -898,7 +899,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public String getBuildPath() {
-	String path=MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"build"+File.separator;
+	String path=PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"build"+File.separator;
 	File dir=new File(path);
 	if (!dir.exists()) {
 		dir.mkdir();
@@ -909,7 +910,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
   public boolean decodePublishProvider(Target target) {
-	XMLBasicReader reader=target.getReader();
+	ExtendedDocumentReader reader=target.getReader();
 	ArrayList list=new ArrayList();
         org.w3c.dom.Node n=reader.getElementByPath(prefix+".publishprovider");
 	if (n!=null) {

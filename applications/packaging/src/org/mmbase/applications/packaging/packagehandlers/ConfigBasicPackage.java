@@ -150,7 +150,7 @@ public class ConfigBasicPackage extends BasicPackage implements PackageInterface
             // this is just a demo version, the config package people should figure
             // out the real format.
             String name = zippy.getName();
-            String configdir = MMBaseContext.getConfigPath() + File.separator;
+            String configdir = PackageManager.getConfigPath() + File.separator;
 
             // only unpack all thats in the config dir
             if (name.indexOf("config/") == 0) {

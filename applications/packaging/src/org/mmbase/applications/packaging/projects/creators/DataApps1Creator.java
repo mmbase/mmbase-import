@@ -12,6 +12,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.projects.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.projects.creators.dataapptools.*;
@@ -217,7 +218,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
         substep.setUserFeedBack("reading data.xml : "+datafile);
         File file = new File(datafile);
         if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(datafile,DataApps1Package.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(datafile,DataApps1Package.class);
             if (reader != null) {
   		substep=step.getNextPackageStep();
         	substep.setUserFeedBack("reader : "+reader);
@@ -237,7 +238,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
 	return true;
     }
 
-    private boolean exportDataSetApps1(XMLBasicReader reader,org.w3c.dom.Node dc,packageStep step,Target target,String datafile,String datadir) {
+    private boolean exportDataSetApps1(ExtendedDocumentReader reader,org.w3c.dom.Node dc,packageStep step,Target target,String datafile,String datadir) {
         org.w3c.dom.Node n=reader.getElementByPath("dataset.selector.model");
         NamedNodeMap nm=n.getAttributes();
         if (nm!=null) {

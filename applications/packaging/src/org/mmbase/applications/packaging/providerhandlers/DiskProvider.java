@@ -13,6 +13,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.*;
 import org.xml.sax.*;
 
@@ -125,7 +126,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
             realpath = getImportPath();
         }
         if (realpath.indexOf("~build") == 0) {
-            realpath = MMBaseContext.getConfigPath() + "/packaging/build/";
+            realpath = PackageManager.getConfigPath() + "/packaging/build/";
         }
         File appDir = new File(realpath);
 
@@ -147,7 +148,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
                     JarEntry je = jarFile.getJarEntry("package.xml");
                     if (je != null) {
                         InputStream input = jarFile.getInputStream(je);
-                        XMLBasicReader reader = new XMLBasicReader(new InputSource(input), DiskProvider.class);
+                        ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), DiskProvider.class);
                         if (reader != null) {
                             String name = reader.getElementAttributeValue("package", "name");
                             String type = reader.getElementAttributeValue("package", "type");
@@ -169,7 +170,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
                     JarEntry je = jarFile.getJarEntry("bundle.xml");
                     if (je != null) {
                         InputStream input = jarFile.getInputStream(je);
-                        XMLBasicReader reader = new XMLBasicReader(new InputSource(input), DiskProvider.class);
+                        ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), DiskProvider.class);
                         if (reader != null) {
                             String name = reader.getElementAttributeValue("bundle", "name");
                             String type = reader.getElementAttributeValue("bundle", "type");
@@ -373,7 +374,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
      * @return    The importPath value
      */
     public String getImportPath() {
-        String path = MMBaseContext.getConfigPath() + File.separator + "packaging" + File.separator + "import" + File.separator;
+        String path = PackageManager.getConfigPath() + File.separator + "packaging" + File.separator + "import" + File.separator;
         File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdir();

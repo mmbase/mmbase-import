@@ -20,6 +20,7 @@ import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.sharehandlers.*;
 import org.mmbase.applications.packaging.projects.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.projects.creators.*;
 
 import java.io.*;
@@ -160,10 +161,10 @@ public class ProjectManager {
     * resources.
     */
     public static void readProjects() {
-        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
+        String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
         File file = new File(filename);
         if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,ProjectManager.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProjectManager.class);
             if(reader!=null) {
 
                 // decode projects
@@ -206,11 +207,11 @@ public class ProjectManager {
     */
     public static void readCreators() {
         creators = new HashMap();
-        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"creators.xml";
+        String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"creators.xml";
 
         File file = new File(filename);
         if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,ProjectManager.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProjectManager.class);
             if(reader != null) {
                 for(Enumeration ns = reader.getChildElements("creators","creator");ns.hasMoreElements(); ) {
                     Element n = (Element)ns.nextElement();
@@ -283,7 +284,7 @@ public class ProjectManager {
            body += "\t<project name=\""+pr.getName()+"\" path=\""+pr.getPath()+"\" />\n";
        }
        body += "</projects>\n";
-       String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
+       String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"projects.xml";
        File sfile = new File(filename);
        try {
             DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));

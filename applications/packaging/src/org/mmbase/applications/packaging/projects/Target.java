@@ -12,6 +12,7 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.projects.creators.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
@@ -43,7 +44,7 @@ public class Target {
     boolean publishstate;
     boolean isbundle;
     HashMap items = new HashMap();
-    XMLBasicReader reader;  
+    ExtendedDocumentReader reader;  
     Project parent;
 
     CreatorInterface creator;
@@ -68,7 +69,7 @@ public class Target {
      *
      * @return    The reader value
      */
-    public XMLBasicReader getReader() {
+    public ExtendedDocumentReader getReader() {
         return reader;
     }
 
@@ -151,7 +152,7 @@ public class Target {
         //log.info("BASEDIR="+basedir+path);
         File file = new File(basedir + path);
         if (file.exists()) {
-            reader = new XMLBasicReader(basedir + path, creator.getClass());
+            reader = new ExtendedDocumentReader(basedir + path, creator.getClass());
             cr.decodeItems(this);
         }
     }

@@ -19,6 +19,7 @@ import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.sharehandlers.*;
+import org.mmbase.applications.packaging.util.*;
 
 import java.io.File;
 import java.util.*;
@@ -202,10 +203,10 @@ public class ShareManager {
 
 
     public static void readShared() {
-        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"sharing.xml";
+        String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"sharing.xml";
         File file = new File(filename);
         if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,ShareManager.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ShareManager.class);
             if(reader != null) {
                 decodeSettings(reader);
                 decodeProvidingPaths(reader);
@@ -358,7 +359,7 @@ public class ShareManager {
     }
     
 
-    private static boolean decodeLogins(PackageContainer p,XMLBasicReader reader,Element e) {
+    private static boolean decodeLogins(PackageContainer p,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = p.getShareInfo();
         if (s != null) {
             Enumeration e2 = reader.getChildElements(e,"login");
@@ -385,7 +386,7 @@ public class ShareManager {
         return true;
     }
 
-    private static boolean decodeBundleLogins(BundleContainer b,XMLBasicReader reader,Element e) {
+    private static boolean decodeBundleLogins(BundleContainer b,ExtendedDocumentReader reader,Element e) {
         ShareInfo s = b.getShareInfo();
         if (s != null) {
             Enumeration e2 = reader.getChildElements(e,"login");
@@ -414,7 +415,7 @@ public class ShareManager {
 
 
 
-    private static boolean decodeUsers(XMLBasicReader reader) {
+    private static boolean decodeUsers(ExtendedDocumentReader reader) {
         for(Enumeration ns = reader.getChildElements("shared","users");ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();
             for(Enumeration ns2 = reader.getChildElements(n,"user");ns2.hasMoreElements(); ) {
@@ -461,7 +462,7 @@ public class ShareManager {
         return true;
     }
 
-    private static boolean decodeProvidingPaths(XMLBasicReader reader) {
+    private static boolean decodeProvidingPaths(ExtendedDocumentReader reader) {
         for(Enumeration ns = reader.getChildElements("shared","providingpaths");ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();
             for(Enumeration ns2 = reader.getChildElements(n,"providingpath");ns2.hasMoreElements(); ) {
@@ -493,7 +494,7 @@ public class ShareManager {
     }
 
 
-    private static boolean decodeSettings(XMLBasicReader reader) {
+    private static boolean decodeSettings(ExtendedDocumentReader reader) {
         for(Enumeration ns = reader.getChildElements("shared","settings");ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();
             org.w3c.dom.Node n2 = n.getFirstChild();
@@ -515,7 +516,7 @@ public class ShareManager {
     }
 
 
-    private static boolean decodeGroups(XMLBasicReader reader) {
+    private static boolean decodeGroups(ExtendedDocumentReader reader) {
         for(Enumeration ns = reader.getChildElements("shared","groups");ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();
 

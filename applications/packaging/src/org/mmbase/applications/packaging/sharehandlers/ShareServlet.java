@@ -25,8 +25,6 @@ import java.util.*;
 import java.util.jar.*;
 import java.util.zip.*;
 
-import org.mmbase.util.StringObject;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

@@ -13,6 +13,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.installhandlers.*;
@@ -92,7 +93,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
                     // step 5
                     step = getNextInstallStep();
                     step.setUserFeedBack("Opening model.xml file ..");
-                    XMLBasicReader reader = getModelReader(jf);
+                    ExtendedDocumentReader reader = getModelReader(jf);
                     if (reader != null) {
                         step.setUserFeedBack("Opening model.xml file ... done");
 
@@ -215,7 +216,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @param  step    Description of the Parameter
      * @return         Description of the Return Value
      */
-    private boolean installNeededRelDefs(JarFile jf, XMLBasicReader reader, installStep step) {
+    private boolean installNeededRelDefs(JarFile jf, ExtendedDocumentReader reader, installStep step) {
         MMBase mmb = MMBase.getMMBase();
         for (Enumeration ns = reader.getChildElements("cloudmodel.neededreldeflist", "reldef");
                 ns.hasMoreElements(); ) {
@@ -261,7 +262,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @param  step    Description of the Parameter
      * @return         Description of the Return Value
      */
-    private boolean installAllowedRelations(JarFile jf, XMLBasicReader reader, installStep step) {
+    private boolean installAllowedRelations(JarFile jf, ExtendedDocumentReader reader, installStep step) {
         MMBase mmb = MMBase.getMMBase();
         for (Enumeration ns = reader.getChildElements("cloudmodel.allowedrelationlist", "relation");
                 ns.hasMoreElements(); ) {
@@ -292,7 +293,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @param  step    Description of the Parameter
      * @return         Description of the Return Value
      */
-    private boolean installNeededBuilders(JarFile jf, XMLBasicReader reader, installStep step) {
+    private boolean installNeededBuilders(JarFile jf, ExtendedDocumentReader reader, installStep step) {
         for (Enumeration ns = reader.getChildElements("cloudmodel.neededbuilderlist", "builder");
                 ns.hasMoreElements(); ) {
             Element n3 = (Element) ns.nextElement();
@@ -336,7 +337,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
                     org.w3c.dom.Document config = null;
                     try {
-                        config = org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(new InputSource(input));
+                        config = ExtendedDocumentReader.getDocumentBuilder(ExtendedDocumentReader.class).parse(new InputSource(input));
                     } catch (org.xml.sax.SAXException se) {
                         substep.setUserFeedBack("checking builder " + name + " .. failed,A XML parsing error occurred (" + se.toString() + "). Check the log for details.");
                         substep.setType(installStep.TYPE_ERROR);
@@ -377,12 +378,12 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @param  jf  Description of the Parameter
      * @return     The modelReader value
      */
-    private XMLBasicReader getModelReader(JarFile jf) {
+    private ExtendedDocumentReader getModelReader(JarFile jf) {
         try {
             JarEntry je = jf.getJarEntry("model.xml");
             if (je != null) {
                 InputStream input = jf.getInputStream(je);
-                XMLBasicReader reader = new XMLBasicReader(new InputSource(input), CloudModelPackage.class);
+                ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), CloudModelPackage.class);
                 if (reader != null) {
                     return reader;
                 }
