@@ -128,7 +128,7 @@
   <tr>
     <th>Longer bug description</th>
 		<td colspan="3">
-      <mm:field name="description" escape="p" />
+      <mm:field name="description" escape="p,links" />
     </td>
   </tr>
 </table>

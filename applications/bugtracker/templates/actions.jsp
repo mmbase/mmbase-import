@@ -399,8 +399,8 @@ http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:fi
 	<mm:node referid="bugreport" id="bugreportnode" />
 	<mm:node referid="newuser" id="usernode" />
 	<mm:createnode id="commentnode" type="comments">
-		<mm:setfield name="title"><mm:write referid="newtitle" /></mm:setfield>
-		<mm:setfield name="body"><mm:write referid="newtext" /></mm:setfield>
+		<mm:setfield name="title"><mm:write referid="newtitle" escape="none" /></mm:setfield>
+		<mm:setfield name="body"><mm:write referid="newtext" escape="none" /></mm:setfield>
 	</mm:createnode>
    	<mm:createrelation role="rolerel" source="bugreportnode" destination="commentnode">
 		<mm:setfield name="role">regular</mm:setfield>
