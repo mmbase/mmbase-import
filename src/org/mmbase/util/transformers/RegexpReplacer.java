@@ -141,7 +141,7 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
             if (m.matches()) {
                 String result = (String) entry.getValue();
                 for (int j = m.groupCount(); j >= 0; j--) {
-                    result = result.replaceAll("\\$" + 0, m.group(j));
+                    result = result.replaceAll("\\$" + j, m.group(j));
                 }
                 writer.write(result);
                 if (postFix != null) {
