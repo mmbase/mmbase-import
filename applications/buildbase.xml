@@ -32,6 +32,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="optimize"       value="on" />
   <property name="debug"          value="off" />
   <property name="deprecation"    value="on" />
+  <property name="nowarn"         value="off" />
   
 
   <property name="applications.dir"   location=".." />
@@ -288,6 +289,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}"
+           nowarn="${nowarn}"
            excludes="${compile.excludes}"
 
       >
@@ -352,6 +354,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     doctitle="${project.name}"
     maxmemory="100M"
     source="1.4"
+    failonerror="false"
     bottom="${project.name} build ${version}">
       <classpath>
         <pathelement path="${mmbase.jar}" />
