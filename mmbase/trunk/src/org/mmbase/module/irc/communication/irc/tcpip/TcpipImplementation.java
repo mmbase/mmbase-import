@@ -13,18 +13,13 @@ package org.mmbase.module.irc.communication.irc.tcpip;
 import org.mmbase.module.irc.communication.*;
 import org.mmbase.module.irc.communication.irc.tcpip.*;
 
-public 	class 		TcpipImplementation
-		implements	CommunicationUserInterface
-{
-	private	String classname = getClass().getName();
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
-	public void receive( String msg )
-	{
-		debug("receive("+msg+")");
-	}
+public	class TcpipImplementation implements CommunicationUserInterface {
+    private static Logger log = Logging.getLoggerInstance(TcpipImplementation.class.getName());
 
-	private void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
+	public void receive( String msg ) {
+		log.info("receive("+msg+")");
 	}
 }
