@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.3 2004-02-11 20:00:09 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.4 2004-03-02 16:48:54 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -28,7 +28,7 @@
     </xsl:template>
 
     <xsl:template match ="section">
-      <xsl:apply-templates select = "section|h|p" />
+      <xsl:apply-templates select = "section|h|p|ul" />
     </xsl:template>
 
   <xsl:template match = "h" >
