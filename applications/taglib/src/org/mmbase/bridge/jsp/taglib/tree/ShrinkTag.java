@@ -10,18 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.tree;
 
 import java.io.IOException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-import org.mmbase.bridge.jsp.taglib.*;
-
 import java.util.Stack;
-import org.mmbase.util.logging.*;
+
+import javax.servlet.jsp.JspException;
+
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ShrinkTag.java,v 1.1 2003-12-24 00:31:38 michiel Exp $
+ * @version $Id: ShrinkTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
  */
 public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer { 
 

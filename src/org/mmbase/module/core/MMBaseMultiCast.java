@@ -11,10 +11,9 @@ package org.mmbase.module.core;
 
 import java.net.*;
 import java.util.*;
-import org.mmbase.util.*;
+
 import org.mmbase.util.Queue;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * Builds a MultiCast Thread to receive  and send
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: MMBaseMultiCast.java,v 1.15 2004-02-09 13:24:22 pierre Exp $
+ * @version $Id: MMBaseMultiCast.java,v 1.16 2004-02-11 20:43:22 keesj Exp $
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 

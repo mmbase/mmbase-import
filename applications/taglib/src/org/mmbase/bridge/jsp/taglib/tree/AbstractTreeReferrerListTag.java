@@ -8,15 +8,15 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.tree;
-import org.mmbase.bridge.jsp.taglib.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
+
+import org.mmbase.bridge.jsp.taglib.ListProvider;
 import org.mmbase.bridge.jsp.taglib.util.*;
 
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: AbstractTreeReferrerListTag.java,v 1.1 2003-12-24 00:31:37 michiel Exp $
+ * @version $Id: AbstractTreeReferrerListTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
  */
 abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements ListProvider, DepthProvider {
 

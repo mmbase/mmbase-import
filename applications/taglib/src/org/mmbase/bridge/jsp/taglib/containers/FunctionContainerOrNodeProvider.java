@@ -9,16 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import java.util.List;
-
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.util.functions.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerOrNodeProvider.java,v 1.1 2003-12-18 11:59:33 michiel Exp $
+ * @version $Id: FunctionContainerOrNodeProvider.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
  */
 public interface FunctionContainerOrNodeProvider {
 

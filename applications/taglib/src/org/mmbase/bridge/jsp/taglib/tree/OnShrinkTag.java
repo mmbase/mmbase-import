@@ -8,19 +8,15 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.tree;
-import java.util.*;
-import java.io.*;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.Writer;
-import org.mmbase.bridge.jsp.taglib.util.*;
+import java.util.Stack;
+
+import javax.servlet.jsp.*;
 
 import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: OnShrinkTag.java,v 1.1 2003-12-24 00:31:38 michiel Exp $
+ * @version $Id: OnShrinkTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
  */
 public class OnShrinkTag extends TreeReferrerTag implements DepthProvider { 
     private static final Logger log = Logging.getLoggerInstance(OnShrinkTag.class);

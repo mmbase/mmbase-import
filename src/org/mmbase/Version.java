@@ -10,10 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase;
 
 import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
-import java.util.*;
-import java.util.jar.*;
 
 /**
  * MMBase version reporter. The only goal of this class is providing the current version of
@@ -21,7 +17,7 @@ import java.util.jar.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.23 2004-02-04 19:00:55 michiel Exp $
+ * @version $Id: Version.java,v 1.24 2004-02-11 20:43:23 keesj Exp $
  */
 public class Version {
 

@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.util.Casting;
-import java.util.*;
-//import org.mmbase.util.logging.*;
 
 /**
  * If there is not Parameter definition array available you could try it with this specialization, which does not need one.
@@ -20,7 +17,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.1 2003-12-21 11:42:50 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.2 2004-02-11 20:43:21 keesj Exp $
  * @see Parameter
  */
 
