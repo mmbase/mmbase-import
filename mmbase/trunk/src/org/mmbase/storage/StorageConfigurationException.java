@@ -16,47 +16,26 @@ package org.mmbase.storage;
  * are missing.
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageConfigurationException.java,v 1.1 2003-08-21 09:59:27 pierre Exp $
+ * @version $Id: StorageConfigurationException.java,v 1.2 2003-08-29 09:36:54 pierre Exp $
  */
 public class StorageConfigurationException extends StorageException {
 
-    /**
-     * Constructs a <code>StorageConfigurationException</code> with <code>null</code> as its
-     * message.
-     */
+    //javadoc is inherited
     public StorageConfigurationException() {
         super();
     }
 
-    /**
-     * Constructs a <code>StorageConfigurationException</code> with the specified detail
-     * message.
-     *
-     * @param message a description of the error
-     */
+    //javadoc is inherited
     public StorageConfigurationException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a <code>StorageConfigurationException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public StorageConfigurationException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a <code>StorageConfigurationException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param message a description of the error
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public StorageConfigurationException(String message, Throwable cause) {
         super(message,cause);
     }

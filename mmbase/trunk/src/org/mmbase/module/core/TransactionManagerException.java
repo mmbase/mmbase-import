@@ -10,53 +10,29 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 /**
+ * This Exception is thrown when something goes wrong the MMBase transaction manager.
+ * 
  * @author John Balder, 3MPS
- * @version $Id: TransactionManagerException.java,v 1.4 2003-08-28 16:00:24 pierre Exp $
+ * @version $Id: TransactionManagerException.java,v 1.5 2003-08-29 09:36:53 pierre Exp $
  */
 public class TransactionManagerException extends Exception {
 
-	/**
-     * Constructs a <code>TransactionManagerException</code> with <code>null</code> as its
-     * message.
-	 * @param message a description of the exception
-     * @since  MMBase-1.7
- 	 */
+    //javadoc is inherited
 	public TransactionManagerException () {
 		super();
 	}
 	
-    
-    /**
-     * Constructs a <code>TransactionManagerException</code> with the specified detail
-     * message.
-     *
-     * @param message a description of the error
-     */
+    //javadoc is inherited
     public TransactionManagerException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a <code>TransactionManagerException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the error
-     * @since  MMBase-1.7
-     */
+    //javadoc is inherited
     public TransactionManagerException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a <code>TransactionManagerException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param message a description of the error
-     * @param Throwable the cause of the error
-     * @since  MMBase-1.7
-     */
+    //javadoc is inherited
     public TransactionManagerException(String message, Throwable cause) {
         super(message,cause);
     }

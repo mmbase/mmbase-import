@@ -12,48 +12,27 @@ package org.mmbase.bridge;
 /**
  * This exception gets thrown when an attempt is made to create a transaction with a name that already exists
  * @author Pierre van Rooden
- * @version $Id: AlreadyExistsException.java,v 1.2 2002-09-23 15:57:34 pierre Exp $
+ * @version $Id: AlreadyExistsException.java,v 1.3 2003-08-29 09:36:50 pierre Exp $
  * @since  MMBase-1.6
  */
 public class AlreadyExistsException extends BridgeException {
 
-    /**
-     * Constructs a <code>AlreadyExistsException</code> with <code>null</code> as its
-     * message.
-     */
+    //javadoc is inherited
     public AlreadyExistsException() {
         super();
     }
 
-    /**
-     * Constructs a <code>AlreadyExistsException</code> with the specified detail
-     * message.
-     *
-     * @param message a description of the error
-     */
+    //javadoc is inherited
     public AlreadyExistsException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a <code>AlreadyExistsException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public AlreadyExistsException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a <code>AlreadyExistsException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param message a description of the error
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public AlreadyExistsException(String message, Throwable cause) {
         super(message,cause);
     }

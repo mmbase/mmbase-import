@@ -14,47 +14,26 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.4 2003-08-28 16:00:24 pierre Exp $
+ * @version $Id: StorageException.java,v 1.5 2003-08-29 09:36:54 pierre Exp $
  */
 public class StorageException extends Exception {
 
-    /**
-     * Constructs a <code>StorageException</code> with <code>null</code> as its
-     * message.
-     */
+    //javadoc is inherited
     public StorageException() {
         super();
     }
 
-    /**
-     * Constructs a <code>StorageException</code> with the specified detail
-     * message.
-     *
-     * @param message a description of the error
-     */
+    //javadoc is inherited
     public StorageException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a <code>StorageException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public StorageException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a <code>StorageException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param message a description of the error
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public StorageException(String message, Throwable cause) {
         super(message,cause);
     }

@@ -16,10 +16,24 @@ import javax.servlet.ServletException;
  */
 public class AuthorizationException extends ServletException {
 
-    /**
-     * Create the exception
-     */
-    public AuthorizationException (String s) {
-      super(s);
+    //javadoc is inherited
+    public AuthorizationException() {
+        super();
     }
+
+    //javadoc is inherited
+    public AuthorizationException(String message) {
+        super(message);
+    }
+
+    //javadoc is inherited
+    public AuthorizationException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public AuthorizationException(String message, Throwable cause) {
+        super(message,cause);
+    }
+
 }
