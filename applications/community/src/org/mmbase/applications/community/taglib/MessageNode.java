@@ -147,6 +147,11 @@ public class MessageNode implements Node {
         invalidOperation();  // not implemented
         return null;
     }    
+    
+    public void setXMLValue(java.lang.String field, org.w3c.dom.Document value) {
+        invalidOperation();  // not implemented
+
+    }
 
     private void invalidOperation() {
         throw new BridgeException("Operation not available: temporary message node");

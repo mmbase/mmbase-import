@@ -232,9 +232,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (node != null) {
                 try {
                     // get the XML from this thing....
-                    javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-                    javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
-                    org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
+                    // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+                    // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
+                    // org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
+                    org.w3c.dom.Document xml = node.getXMLValue(field.getName());
                     
                     if(xml!=null) {
                         // make a string from the XML
@@ -246,14 +247,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                         java.io.StringWriter str = new java.io.StringWriter();
                         // there is a <field> tag placed around it,... we hate it :)
                         // change this in the bridge?                    
-                        serializer.transform(new javax.xml.transform.dom.DOMSource(xml.getElementsByTagName("*").item(0)),  new javax.xml.transform.stream.StreamResult(str));
+                        serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
 
                         // fill the field with it....
                         show += Encode.encode("ESCAPE_XML", str.toString());
                     }
-                }
-                catch(javax.xml.parsers.ParserConfigurationException pce) {
-                    throw new JspTagException(pce.toString() + " " + Logging.stackTrace(pce));
                 }
                 catch(javax.xml.transform.TransformerConfigurationException tce) {
                     throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
