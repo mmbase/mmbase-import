@@ -13,7 +13,6 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
-import org.mmbase.module.builders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
@@ -59,7 +58,7 @@ public class Attachments extends MMObjectBuilder {
                 if (size == -1 || num == -1) {
                     return "["+filename+"]";
                 } else {
-                    return "<a href=\"/attachment.db/"+filename+"?"+num+"\" target=\"extern\">["+filename+"]</a>";
+                    return "<a href=\"" + MMBaseContext.getHtmlRootUrlPath() + "attachment.db/"+filename+"?"+num+"\" target=\"extern\">["+filename+"]</a>";
                 }
             } else {
                 return "";
