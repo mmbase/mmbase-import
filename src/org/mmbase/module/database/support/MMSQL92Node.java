@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.23 2000-06-30 09:30:59 install Exp $
+$Id: MMSQL92Node.java,v 1.24 2000-07-06 10:19:58 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.23  2000/06/30 09:30:59  install
+Rob: select max(number) from [table].object returned 0 while using jdbc 1 but it returns null while using jdbc 2
+
 Revision 1.22  2000/06/28 10:24:18  daniel
 Daniel .. removed some methods
 
@@ -119,7 +122,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.23 $ $Date: 2000-06-30 09:30:59 $
+* @$Revision: 1.24 $ $Date: 2000-07-06 10:19:58 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -139,6 +142,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	final static int TYPE_INTEGER = 2;
 	final static int TYPE_TEXT = 3;
 	final static int TYPE_BLOB = 4;
+	final static int TYPE_REAL = 5;
+	final static int TYPE_DOUBLE = 6;
+	final static int TYPE_LONG = 7;
 
 	public MMSQL92Node() {
 		typesmap.put("VARCHAR",new Integer(TYPE_STRING));
@@ -151,6 +157,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("BLOB",new Integer(TYPE_BLOB));
 		typesmap.put("BYTE",new Integer(TYPE_BLOB));
 		typesmap.put("BINARY",new Integer(TYPE_BLOB));
+		typesmap.put("REAL",new Integer(TYPE_REAL));
+		typesmap.put("DOUBLE",new Integer(TYPE_DOUBLE));
+		typesmap.put("LONG",new Integer(TYPE_LONG));
 	}
 
 	public void init(MMBase mmb,XMLDatabaseReader parser) {
@@ -185,6 +194,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				return(node);
 			case TYPE_INTEGER:
 				node.setValue(prefix+fieldname,rs.getInt(i));
+				return(node);
+			case TYPE_LONG:
+				node.setValue(prefix+fieldname,rs.getLong(i));
+				return(node);
+			case TYPE_REAL:
+				node.setValue(prefix+fieldname,rs.getFloat(i));
+				return(node);
+			case TYPE_DOUBLE:
+				node.setValue(prefix+fieldname,rs.getDouble(i));
 				return(node);
 			case TYPE_BLOB:
 				node.setValue(prefix+fieldname,"$SHORTED");
@@ -942,11 +960,29 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		// get the wanted mmbase type
 		String name=def.getDBName();
 
-		// weird extra code to map to old types
-		if (type.equals("varchar")) type="VARCHAR";
-		if (type.equals("int")) type="INTEGER";
-		if (type.equals("blob")) type="BYTE";
-		if (type.equals("byte")) type="BYTE";
+		// weird extra code to map to old types, needs to be done
+		// better, will do that soon once all types are clear (daniel).
+		if (type.equals("varchar")) {
+			type="VARCHAR";
+		} else
+		if (type.equals("int")) {
+			type="INTEGER";
+		} else
+		if (type.equals("long")) {
+			type="LONG";
+		} else
+		if (type.equals("real")) {
+			type="REAL";
+		} else
+		if (type.equals("double")) {
+			type="DOUBLE";
+		} else
+		if (type.equals("blob")) {
+			type="BYTE";
+		} else
+		if (type.equals("byte")) {
+			type="BYTE";
+		}
 		// end of weird map
 	
 		// get the wanted size

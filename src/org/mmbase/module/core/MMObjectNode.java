@@ -236,6 +236,30 @@ public class MMObjectNode {
 		return(true);
 	}
 
+
+	/** 
+	*  sets a key, value pair in the main values of this node where value int
+	*/
+	public boolean setValue(String fieldname,double fieldvalue) {
+		// put the key/value in the value hashtable
+		values.put(fieldname,new Double(fieldvalue));
+
+		if (parent!=null) parent.setValue(this,fieldname);
+
+		// obtain the type of field this is 
+		int state=getDBState(fieldname);
+
+		// add it to the changed vector so we know that we have to update it
+		// on the next commit
+		if (!changed.contains(fieldname) && !fieldname.equals("CacheCount") && state==2) { 
+			changed.addElement(fieldname);
+		}
+
+		// is it a memory only field ? then send a fieldchange
+		if (state==0) sendFieldChangeSignal(fieldname);
+		return(true);
+	}
+
 	/** 
 	*  sets a key, value pair in the main values of this node where value Integer
 	*/
