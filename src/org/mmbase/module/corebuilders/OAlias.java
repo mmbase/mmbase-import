@@ -77,4 +77,14 @@ public class OAlias extends MMObjectBuilder {
 		}
 		return(node);
 	}
+	
+    /**
+    * Remove a node from the cloud and uopdate the cache
+    * @param node The node to remove.
+    */
+    public void removeNode(MMObjectNode node) {
+        String name=node.getStringValue("name");
+        super.removeNode(node);
+		numbercache.remove(name);
+    }
 }
