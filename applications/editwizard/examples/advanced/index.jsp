@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.2 2002-05-14 15:19:20 michiel Exp $
+    @version  $Id: index.jsp,v 1.3 2002-05-15 12:50:32 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -72,8 +72,8 @@
             </mm:url>">Create</a>)
   </td><td>
      This is a '2 step' example. You can create/change the date for a
-     person and related a picture in the first step. In the second
-   	 step then, you can related articles to the person. We also
+     person and relate a picture in the first step. In the second
+   	 step then, you can relate articles to the person. We also
  	   demonstrate here how you can jump directly to the wizard to create a
 	   new person (without having to go to the list first).
   </td></tr>
