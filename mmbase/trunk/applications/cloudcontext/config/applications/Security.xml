@@ -28,7 +28,7 @@
     <relation from="mmbasegroups"   to="mmbaseusers"    type="contains" />
     <relation from="mmbasegroups"   to="mmbasegroups"   type="contains" />
     <relation from="mmbasecontexts" to="mmbasegroups"   type="grants" />
-    <relation from="mmbasecontexts" to="mmbasecontexts" type="allowed" /><!-- not yet implemented -->
+    <relation from="mmbasecontexts" to="mmbasecontexts" type="allowed" />
     <relation from="mmbaseusers"    to="mmbaseranks"    type="rank" />
   </allowedrelationlist>
 
