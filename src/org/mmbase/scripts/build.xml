@@ -632,20 +632,16 @@ Distribution: ${distro}
 
     <!-- What for the war is so different?? -->
     <!-- This should depend on bindist!! -->
-    <target name="war.webroot" depends="init.compile,taglib.doc,documentation">
+    <target name="war.webroot" depends="init.compile,documentation">
 
-        <!-- copy the jsp editors to a reasonable place -->
+    <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${webroot.build.dir}/mmbase/edit">
             <fileset dir="${source-html.dir}/mmeditors/jsp"/>
         </copy>
                 
-        <!-- taglib docs -->
-        <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${mmdocs.dir}/mmbase-taglib.html" />
-        <copy todir="${webroot.build.dir}/mmbase/taglib">
-             <fileset dir="${mmdocs.dir}/taglib"/>
-        </copy>         
+        <!-- docs -->
         <copy todir="${webroot.build.dir}/mmbase/documentation">
-             <fileset dir="${mmdocs.dir}/html"/>
+            <fileset dir="${mmdocs.dir}"/>
         </copy>         
         
         <!-- javadocs -->
@@ -715,7 +711,7 @@ Distribution: ${distro}
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear in the web-servers html directory"
-         depends="init.compile,taglib.tld,taglib.doc,community.tld,community.doc">
+         depends="init.compile,taglib.tld,community.tld,documentation">
   </target>
 
   <target name="taglib.tld.check">    
@@ -1341,27 +1337,46 @@ Version: MMBase build ${version}
     <delete file="${source-src.dir}/MMCI.xml"/>
   </target>
 
-
  <!-- ================================================================================ -->
  <!-- Perform docbook2html conversion in the documentation module                      -->
  <!-- ================================================================================ -->
-  <target name="documentation" description="Make the MMBase documentation from docbook-sources"
-          depends="taglib.doc,community.doc,expand.docbook-xsl,lib.compile">
+
+
+  <target name="docbook.xslt.check">
+    <uptodate property="docbook.xslt.uptodate" targetfile="${build.dir}/docbook2xhtml.xslt" >
+      <srcfiles dir="${source-documentation.dir}" includes="style/docbook2xhtml.xslt" />
+    </uptodate>
+  </target>
+
+  <target name="docbook.xslt" depends="expand.docbook-xsl" unless="docbook.xslt.uptodate">
+    <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
+    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/html/docbook.xsl" />
+  </target>
+
+  <target name="docbookumentation" description="Make the MMBase documentation from docbook-sources"
+          depends="docbook.xslt,lib.compile">
     <mkdir dir="${mmdocs.dir}" />
+    <!-- copy also the images and resources -->
+    <copy todir="${mmdocs.dir}/" >
+      <fileset dir="${source-documentation.dir}" >
+        <exclude name="**/*.xml"/>
+        <exclude name="**/*.xslt"/>
+      </fileset>
+    </copy>
+
     <style 
       basedir="${source-documentation.dir}" 
       destdir="${mmdocs.dir}"      
-      style="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl"
+      style="${build.dir}/docbook2xhtml.xslt"
+      processor="xalan"
       >
+      <param name="html.stylesheet" expression="'style.css'"/>
       <include name="**/*.xml" />
     </style>
-    <!-- copy also the images and resources -->
-    <copy todir="${mmdocs.dir}/html" >
-      <fileset dir="${source-documentation.dir}" >
-        <exclude name="**/*.xml"/>
-      </fileset>
-    </copy>
+    
   </target>
+
+  <target name="documentation" depends="taglib.doc,community.doc,docbookumentation" />
 
   <!-- =================================================================== -->
   <!-- Clean the documentation directory                                   -->
