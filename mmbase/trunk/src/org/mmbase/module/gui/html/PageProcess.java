@@ -14,7 +14,12 @@ import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
-public class pageProcess implements Runnable {
+/**
+ * Support class for scanparser to calculate pages in the background.
+ * @author Rico Jansen
+ * @verison $Id: PageProcess.java,v 1.1 2001-11-26 12:55:30 vpro Exp $
+ */
+public class PageProcess implements Runnable {
 
     private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName());
 
@@ -24,7 +29,11 @@ public class pageProcess implements Runnable {
 
 	Thread kicker=null;
 
-	pageProcess(scanparser parser,scanpage sp,String uri) {
+	/**
+  	 * Create a thread and fire it up to calculate 1 page.
+	 * After that die.
+	 */
+	PageProcess(scanparser parser,scanpage sp,String uri) {
 		this.sp=sp;
 		this.uri=uri;
 		this.parser=parser;
@@ -66,6 +75,9 @@ public class pageProcess implements Runnable {
 		log.debug("Done calc "+uri);
     }
 
+	/**
+	 * Calculate a page using scanparser
+	 */
 	private void doWork() {
 		parser.calcPage(uri,sp,0);
 	}
