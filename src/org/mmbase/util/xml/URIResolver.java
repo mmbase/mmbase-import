@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.23 2005-03-13 18:57:55 nico Exp $
+ * @version $Id: URIResolver.java,v 1.24 2005-04-05 20:13:33 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
@@ -145,7 +145,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         if (extraDirs != null) {
             dirs.addAll(extraDirs);
         }
-        dirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource(".")));
+        dirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource("/")));
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
         if (extraDirs == null || extraDirs.size() == 0) { // only mmbase config, and root cannot change
