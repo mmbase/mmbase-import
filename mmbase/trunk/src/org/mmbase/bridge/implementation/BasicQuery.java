@@ -24,14 +24,14 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.18 2003-08-07 14:50:47 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.19 2003-08-13 16:40:14 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
 public class BasicQuery implements Query  {
     
 
-    private static Logger log = Logging.getLoggerInstance(BasicQuery.class);
+    private static final Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
     protected boolean used = false;
     protected boolean aggregating = false; // ugly ugly, this member is in BasicSearchQuery too (but private).

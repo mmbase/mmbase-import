@@ -20,10 +20,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.31 2003-07-02 06:20:43 keesj Exp $
+ * @version $Id: BasicRelation.java,v 1.32 2003-08-13 16:40:14 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
-    private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicRelation.class);
 
     private RelationManager relationManager = null;
     protected int snum;
