@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.32 $ $Date: 2001-05-31 09:30:01 $
+ * @version $Revision: 1.33 $ $Date: 2001-06-23 16:46:18 $
  */
 public abstract class Module {
 
@@ -433,7 +433,7 @@ public abstract class Module {
             }
             mmbaseconfig=curdir+"/config";
         } else {
-            mmbaseconfig=System.getProperty("mmbase.config");
+            mmbaseconfig=MMBaseContext.getConfigPath();
             if (mmbaseconfig == null) {
                 log.error("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
             } else {
@@ -457,6 +457,7 @@ public abstract class Module {
                 String bname=files[i];
                 if (bname.endsWith(".xml")) {
                     bname=bname.substring(0,bname.length()-4);
+                    System.out.println(dirname+bname+".xml");
                     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
                     if (parser!=null) {
                         if (parser.getStatus().equals("active")) {
