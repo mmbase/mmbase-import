@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.45 2004-02-04 09:04:55 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.46 2004-02-06 15:10:19 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -410,7 +410,18 @@ public class DatabaseStorageManager implements StorageManager {
         } else if (!basePath.startsWith("/")) {
             basePath = MMBaseContext.getServletContext().getRealPath("/") + File.separator + basePath;
         }
-        File dir = new File(basePath + File.separator + factory.getCatalog(), node.getBuilder().getFullTableName());
+        basePath = basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName();
+        int number = node.getNumber()/1000;
+        if (number > 0) {
+            String extraPath = "";
+            while (number > 0) {
+                String num = ""+(100+(number%100));
+                extraPath = num.substring(1) + File.separator + extraPath;
+                number = number / 100;
+            }
+            basePath = basePath + File.separator + extraPath;
+        }
+        File dir = new File(basePath);
         dir.mkdirs();
         return new File(dir, "" + node.getNumber() + "." + fieldName);
     }
