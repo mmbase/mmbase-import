@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.287 2004-12-17 15:32:32 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.288 2004-12-20 13:13:03 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -255,7 +255,8 @@ public class MMObjectBuilder extends MMTable {
     protected final static Parameter[] WRAP_PARAMETERS = {
         new Parameter("field", String.class),
         new Parameter("length", Number.class),
-        new Parameter("node", Object.class) };
+        new Parameter("node", Object.class) 
+    };
 
     /**
      * This function wraps the text of a node's field and returns the result as a String.
@@ -1105,7 +1106,9 @@ public class MMObjectBuilder extends MMTable {
      * @throws RuntimeException If the node does not exist (not always true!)
      */
     public  MMObjectNode getNode(int number, boolean useCache) {
-        log.debug("Getting node with number " + number);
+        if (log.isDebugEnabled()) {
+            log.trace("Getting node with number " + number);
+        }
         if (number ==- 1) {
             log.warn(" (" + tableName + ") nodenumber == -1");
             return null;
@@ -1117,7 +1120,7 @@ public class MMObjectBuilder extends MMTable {
         if (useCache) {
             node = (MMObjectNode) nodeCache.get(numberValue);
             if (node != null) {
-                log.debug("Found in cache!");
+                log.trace("Found in cache!");
                 return node;
             }
         }
@@ -1303,10 +1306,10 @@ public class MMObjectBuilder extends MMTable {
      * @param key  The (temporary) key to use under which the node is stored
      */
     public MMObjectNode getTmpNode(String key) {
-        MMObjectNode node=null;
-        node=(MMObjectNode)TemporaryNodes.get(key);
-        if (node==null) {
-            log.debug("getTmpNode(): node not found "+key);
+        MMObjectNode node = null;
+        node = (MMObjectNode)TemporaryNodes.get(key);
+        if (node == null && log.isDebugEnabled()) {
+            log.trace("getTmpNode(): node not found " + key);
         }
         return node;
     }
@@ -2768,9 +2771,9 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated use executeFunction(node, function, list)
      */
     protected Vector getFunctionParameters(String fields) {
-        int commapos=0;
-        int nested  =0;
-        Vector v= new Vector();
+        int commapos =  0;
+        int nested   =  0;
+        Vector v = new Vector();
         int i;
         if (log.isDebugEnabled()) log.debug("Fields=" + fields);
         for(i = 0; i<fields.length(); i++) {
@@ -2811,21 +2814,21 @@ public class MMObjectBuilder extends MMTable {
      */
     // package because called from MMObjectNode
     final Object getFunctionValue(MMObjectNode node, String functionName, List parameters) {
+        if (parameters == null) parameters = new ArrayList();
+        // for backwards compatibility (calling with string function with more than one argument)
+        if (parameters.size() == 1 && parameters.get(0) instanceof String) {
+            String arg = (String) parameters.get(0);
+            Object result =  executeFunction(node, functionName, arg);
+            if (result != null) {
+                return result;
+            }
+            parameters = getFunctionParameters(arg);
+        }
         Function function = getFunction(node, functionName);
         if (function != null) {
             return function.getFunctionValueWithList(parameters);
         } else {
             // fallback
-            if (parameters == null) parameters = new ArrayList();
-            // for backwards compatibility (calling with string function with more than one argument)
-            if (parameters.size() == 1 && parameters.get(0) instanceof String) {
-                String arg = (String) parameters.get(0);
-                Object result =  executeFunction(node, functionName, arg);
-                if (result != null) {
-                    return result;
-                }
-                parameters = getFunctionParameters(arg);
-            }
             return executeFunction(node, functionName, parameters);
         }
     }
@@ -4414,7 +4417,7 @@ public class MMObjectBuilder extends MMTable {
     public class NodeFunction extends ProviderFunction {
 
         public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
-            super(name,def,returnType, MMObjectBuilder.this);
+            super(name, def, returnType, MMObjectBuilder.this);
         }
 
         /**
@@ -4428,7 +4431,7 @@ public class MMObjectBuilder extends MMTable {
          * @javadoc
          */
         public Object getFunctionValue(MMObjectNode node, Parameters parameters) {
-            return executeFunction(node, name, parameters);
+            return MMObjectBuilder.this.executeFunction(node, name, parameters);
         }
 
         public final Object getFunctionValueWithList(MMObjectNode node, List parameters) {
@@ -4442,12 +4445,16 @@ public class MMObjectBuilder extends MMTable {
         /**
          * @javadoc
          */
-        public Object getFunctionValue(Parameters parameters) {
+        public Object getFunctionValue(Parameters parameters) {            
             MMObjectNode node = Casting.toNode(parameters.get("node"), MMObjectBuilder.this);
             if (node == null) {
                 throw new IllegalArgumentException("The function " + getName() + " requires a node argument");
             }
-            return getFunctionValue(node, parameters);
+            Object o = getFunctionValue(node, parameters);
+            if (log.isDebugEnabled()) {
+                log.debug("" + this + " " + parameters + " --> " + o);
+            }
+            return o;
         }
 
         /**
@@ -4467,6 +4474,7 @@ public class MMObjectBuilder extends MMTable {
              */
             public final Object getFunctionValue(Parameters parameters) {
                 return NodeFunction.this.getFunctionValue(node, parameters);
+
             }
         }
 
