@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.9 2002-08-12 16:15:12 michiel Exp $
+ * @version $Id: Cache.java,v 1.10 2002-08-21 07:54:57 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable implements Sizeable  {
 
@@ -227,6 +227,16 @@ abstract public class Cache extends LRUHashtable implements Sizeable  {
         return len;
     }
 
+    public static int getTotalByteSize() {
+        Iterator i = caches.entrySet().iterator();
+        int len = 0;
+        SizeOf sizeof = new SizeOf();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());            
+        }
+        return len;
+    }
        
 public static void main(String args[]) {
     Cache mycache = new Cache(20) {  
