@@ -428,7 +428,7 @@ public class PostArea {
             RelationStep step2 = query.addRelationStep(postthreadsmanager);
             StepField f1 = query.addField(step1, postareasmanager.getField("number"));
             StepField f2 = query.addField(step2.getNext(), postthreadsmanager.getField("number"));
-            StepField f3 = query.addField(step2.getNext(), postthreadsmanager.getField("lastposttime"));
+            StepField f3 = query.addField(step2.getNext(), postthreadsmanager.getField("c_lastposttime"));
             query.addSortOrder(f3, SortOrder.ORDER_DESCENDING);
 
             //query.setConstraint(query.createConstraint(f1,node)); // werkt niet meer
