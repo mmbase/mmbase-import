@@ -1,14 +1,20 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page language="java" contentType="text/html; charset=utf-8" %>
-<mm:cloud>
-<%@include file="/includes/getids.jsp" %>
-<%@include file="/includes/header.jsp" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ page language="java" contentType="text/html; charset=utf-8"
+%><mm:cloud
+><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp" %>
+<div id="pagecontent">
 
-<%@include file="last_builds.jsp" %>
-<td class="white" colspan="2" valign="top">
+<%@ include file="last_builds.jsp" %>
+
+<mm:node number="$page">
+  <h2><mm:field name="title" /></h2>
+  <mm:related path="posrel,articles" orderby="posrel.pos" directions="UP" searchdir="destination">
+	<mm:node element="articles"><%@include file="/includes/article.jsp"%></mm:node>
+  </mm:related>
+</mm:node>
 
 <%-- LAST RELEASE --%>
-<h2><mm:node number="$page"><mm:field name="title" /></mm:node></h2>
  <mm:list path="pages2,releases,mmevents"
  	fields="releases.number,mmevents.start" 
  	orderby="mmevents.start" directions="DOWN" max="1">
@@ -58,6 +64,6 @@
 </ul>
 
 
-</td>
-<%@include file="/includes/footer.jsp" %>
+</div>
+<%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
