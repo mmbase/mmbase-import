@@ -11,9 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.irc.communication;
 
 /**
- * @javadoc
+ * @obsolete
  * @author vpro
- * @version $Id: CommunicationInterface.java,v 1.3 2002-03-04 14:07:46 pierre Exp $
+ * @version $Id: CommunicationInterface.java,v 1.4 2003-01-07 11:49:31 kees Exp $
  */
 public interface CommunicationInterface{
     /**

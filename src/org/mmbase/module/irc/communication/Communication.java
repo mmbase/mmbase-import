@@ -16,10 +16,10 @@ import	org.mmbase.module.irc.communication.irc.*;
 /**
  * Class Communication
  *
- * @javadoc
+ * @obsolete
  * @deprecated use IrcConnection instead
  * @author vpro
- * @version $Id: Communication.java,v 1.4 2002-03-04 14:07:46 pierre Exp $
+ * @version $Id: Communication.java,v 1.5 2003-01-07 11:49:31 kees Exp $
  */
 
 public class Communication extends IrcConnection implements	CommunicationInterface {

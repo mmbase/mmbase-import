@@ -16,7 +16,7 @@ import	org.mmbase.module.irc.communication.irc.*;
 /**
  * Class IrcUser
  *
- * @javadoc
+ * @obsolete
  * @deprecated use IrcConnection instead
  * @author vpro
  */

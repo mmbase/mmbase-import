@@ -15,7 +15,7 @@ import java.util.Vector;
 /**
  * Class TcpipVector
  * 
- * @javadoc
+ * @obsolete
  */
 
 public class TcpipVector extends Vector
