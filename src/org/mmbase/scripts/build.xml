@@ -1251,7 +1251,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
   <target name="init.get">
-    <property name="servlet.version" value="jakarta-servletapi-4-20020201"/>
+    <property name="servlet.version" value="jakarta-servletapi-4-20020205"/>
     <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-servletapi-4/nightly/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
     <available property="servlet.present"
@@ -1319,11 +1319,11 @@ Change directory to ${build.dir}/orion and run:
     <available property="jai.expanded"
                file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
-    <!-- property name="log4j.version" value="1.2beta2" /-->
-	<property name="log4j.version" value="1.1.3"/> 
+    <!--property name="log4j.version" value="1.2beta2" /-->
+	<property name="log4j.version" value="1.1.3" /> 
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
-    <!-- property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar"/-->
+    <!--property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar" /-->
     <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/dist/lib/log4j.jar"/>
     <available property="log4j.present"
                file="${download.dir}/${log4j.fullversion}.tgz"/>
