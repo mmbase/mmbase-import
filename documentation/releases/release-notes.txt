@@ -22,6 +22,12 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+[1.6.2]
+ - getRelatedNodes speedup, avoiding databasequeries when casting to actual type
+ - Inheritance support in relations. It is possible to define object->object (related) now!
+ - %k (to log memory usage) in MMPatternLayout
+ 
+ 
 [1.6.1]
  This is a bugfix release, so no new features
 
@@ -59,6 +65,9 @@ General New Features:
 --------------------------
 Documentation New Features:
 --------------------------
+[1.6.2]
+- Chunked output
+
 [1.6.1]
 - Added first draft of a taglib tutorial.
 
@@ -66,6 +75,8 @@ Documentation New Features:
 ---------------------
 MMCI New Features:
 ---------------------
+[1.6.2]
+- Inheritance support in getAllowed relations
 
 [1.6.1]
 [1.6.0]
@@ -80,7 +91,7 @@ MMCI New Features:
 -------------------
 Taglib New Features:
 -------------------
-
+[1.6.2]
 [1.6.1]
 [1.6.0]
 - mm:formatter, mm:xslt : implement 'Richtext' features  (experimental)
@@ -92,7 +103,8 @@ Taglib New Features:
 ---------------------
 Examples New Features:
 ---------------------
-
+[1.6.2]
+- jsp editors use MMCI 1.2 features now (getAllowedRelations etc)
 [1.6.1]
 [1.6.0]
 - Alternative jsp-editors (aka my_editors) added as an example.
@@ -105,6 +117,10 @@ BUG FIXES AND IMPROVEMENTS:
 ------------------
 General Bug Fixes:
 ------------------
+
+[1.6.2]
+
+ - a lot
 
 [1.6.1]
 - Fixed bug causing connections to be closed prematurely: #5097
@@ -147,6 +163,10 @@ Application bug fixes:
 Security Bug Fixes:
 ------------------
 
+[1.6.2]
+- #5396  context-security. No sensible error if user does not exist. 
+- #5232  Can not add Ranks to security 
+
 [1.6.0]
 - Fixed a problem with checking whether relations can be added (bug #3602)
 - You can no longer delete relations you have no right to delete (bug
@@ -158,6 +178,13 @@ Security Bug Fixes:
 ----------------
 Taglib Bug Fixes:
 ----------------
+
+[1.6.2]
+- Behavior of mm:include / mm:import (mm:import hack)
+- #5286 ListRelations tag does not accept an id attribute 
+- #5242 mm:write cookie does not set 'path' explicitely. 
+- #5174 mm:include doesn't work in mozilla  
+
 
 [1.6.1]
 - Function-values can be something else then string now:  bug #4988
@@ -179,6 +206,10 @@ Example Bug Fixes:
 ========
 Upgrade:
 ========
+[1.6.2]
+- Replace mmbase.jar
+- upgrade jsp-editors
+
 [1.6.1]
 - On a deployment server upgrading from 1.6.0 to 1.6.1 can be done by
   replacing the mmbase.jar.
