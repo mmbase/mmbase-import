@@ -10,7 +10,7 @@
 <!--
 function jumpPage(form) {
 	i = form.SelectMenu.options[form.SelectMenu.selectedIndex];
-	location.href = "/mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3+"+i.value+"+"+i.text;
+	location.href = "$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3+"+i.value+"+"+i.text;
 }
 // -->
 </SCRIPT>

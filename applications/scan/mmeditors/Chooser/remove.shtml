@@ -2,4 +2,4 @@
 $MOD-MMEDIT-STATE-REMOVENODE
 $MOD-MMEDIT-STATE-SETHTMLVALUE-Chooser-select
 $MOD-MMEDIT-STATE-SETHTMLVALUE-Work-empty
-<GOTO /mmeditors/Editor.shtml>
+<GOTO $MOD-INFO-SERVERCONTEXT^/mmeditors/Editor.shtml>

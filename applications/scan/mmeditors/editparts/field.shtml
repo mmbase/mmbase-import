@@ -34,7 +34,7 @@ function SetFocus()
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
 
-<FORM NAME="myform" METHOD="POST" ACTION="/mmeditors/Content.shtml?$PARAM3" TARGET="Content" ECTYPE="multipart/form-data">
+<FORM NAME="myform" METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content" ECTYPE="multipart/form-data">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 				<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">

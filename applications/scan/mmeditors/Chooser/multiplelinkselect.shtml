@@ -19,7 +19,7 @@ $MOD-MMEDIT-STATE-SETHTMLVALUE-Chooser-multiplelinkselect
 	<TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$ITEM1</B></FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/addEditorMultiple.shtml?$MOD-MMEDIT-STATE-GETBUILDER^+$SESSION-INSNODE-L1^+$ITEM1" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/addEditorMultiple.shtml?$MOD-MMEDIT-STATE-GETBUILDER^+$SESSION-INSNODE-L1^+$ITEM1" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
    </TR>
    </LIST>
 </TABLE>
@@ -28,7 +28,7 @@ $MOD-MMEDIT-STATE-SETHTMLVALUE-Chooser-multiplelinkselect
 	  <TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica"><B>$MOD-MMLANGUAGE-GET-back</B></FONT></TD>
-      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="/mmeditors/Chooser/insrel/back.shtml" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
+      <TD BGCOLOR="#63DE31" WIDTH="10"><FONT SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/Chooser/insrel/back.shtml" TARGET="_top"><FONT COLOR="#63DE31">##</FONT></TD>
 	 </TR>
 	
 </TABLE>

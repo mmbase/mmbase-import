@@ -1,1 +1,1 @@
-<GOTO /mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3>
+<GOTO $MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/newimage.shtml?$PARAM1+$PARAM2+$PARAM3>
