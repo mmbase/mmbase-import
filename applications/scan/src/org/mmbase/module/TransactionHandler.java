@@ -36,7 +36,7 @@ import org.xml.sax.*;
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-	private static boolean _debug = true;
+	private static boolean _debug = false;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static String version="2.3.4";
@@ -426,9 +426,11 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						throw new TransactionHandlerException(oName + " no MMbase id: ");
 					}
 					// actually get presistent object
-					debug("#### "+userTransactionInfo.user.getName(),0);
-					debug("#### "+id,0);
-					debug("#### "+oMmbaseId,0);
+					if (_debug) {
+						debug("#### "+userTransactionInfo.user.getName(),0);
+						debug("#### "+id,0);
+						debug("#### "+oMmbaseId,0);
+					}
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
