@@ -209,7 +209,7 @@ public class Logging {
 
     /**
      * Most Logger categories in MMBase are based on class name.
-     * @since MMBase-1.7
+     * @since MMBase-1.6.4
      */
     public static Logger getLoggerInstance(Class cl) {
         return getLoggerInstance(cl.getName());
