@@ -100,8 +100,13 @@
     <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
   </taglib>
 
-  <!-- mmbase-community-taglibs, 
-       only works when community-application has been activated -->
+  <!-- mmbase-community-taglib, 
+
+  Only works when community-application has been activated, which can
+  be done after activating the needed builders (community, channel, chatter, message,
+  people). To use it you also need the communityprc module to be active.
+  
+  -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/mmcommunity-taglib.tld</taglib-location>
