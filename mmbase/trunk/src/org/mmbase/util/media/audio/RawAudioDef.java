@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 /**
  * (c) 2000 VPRO
- * @version $Id: RawAudioDef.java,v 1.7 2001-05-16 15:19:58 vpro Exp $
+ * @version $Id: RawAudioDef.java,v 1.8 2001-06-05 15:27:09 vpro Exp $
  */
 package org.mmbase.util.media.audio;
 
@@ -38,7 +38,6 @@ public class RawAudioDef
     public static final int FORMAT_WAV      = 3;
     public static final int FORMAT_PCM      = 5;
     public static final int FORMAT_G2       = 6;
-    public static final int FORMAT_EXCERPT  = 7;
 
     public static final int STORAGE_STEREO          = 1;
     public static final int STORAGE_STEREO_NOBACKUP = 2;
