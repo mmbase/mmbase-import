@@ -15,7 +15,7 @@ import java.util.*;
 
 public class startMMBase extends Object {
 
-	static String runnerVersion="0.3";
+	static String runnerVersion="0.6";
 	static String appserverVersion="Orion 1.4.5";
 	static String cmsVersion="MMBase 1.2.3";
 	static String databaseVersion="Hypersonic 1.4.3";
@@ -188,6 +188,7 @@ public class startMMBase extends Object {
 			}
 
 
+			/*
 			int mport=-1;
 			while (mport==-1) {	
 				String tmp=getConsoleQuestion(reader,"The multicast port used to talk to other mmbase nodes (10000 - 65535)","Port [42420]");
@@ -205,6 +206,7 @@ public class startMMBase extends Object {
 					}
 				}
 			}
+			*/
 
 
 			// first get new admin password
@@ -229,7 +231,7 @@ public class startMMBase extends Object {
 			// oke now set all these new setting in each of the files
 			String activeport=getSetting(curdir+"/orion/config/default-web-site.xml","port=\"","\"");
 			updateConfigFile(curdir+"/orion/config/default-web-site.xml","port=\""+activeport+"\"","port=\""+port+"\"");
-			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","42420",""+mport);
+			//updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","42420",""+mport);
 			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","mmbase1",machinename);
 			String activehost=getSetting(curdir+"/config/modules/mmbaseroot.xml","\"host\">","<");
 			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml",activehost,hostname);
