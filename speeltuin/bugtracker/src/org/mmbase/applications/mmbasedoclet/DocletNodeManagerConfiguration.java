@@ -18,7 +18,7 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
     String name;
     String maintainer = "mmbase.org";
     String version = "1";
-    String classFile = "Dummy";
+    String classFile = null;
     String searchAge = "360";
     String description ;
     
