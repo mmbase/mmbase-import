@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.2 2003-08-21 12:52:54 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.3 2003-08-22 12:34:48 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -105,6 +105,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
     protected void load() throws StorageException {
+        // default storagemanager class
+        storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
+
+        // default searchquery handler class
+        queryHandlerClass = DEFAULT_QUERY_HANDLER_CLASS;
+
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
@@ -150,6 +156,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             // alter table support options
             setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_ADD_COLUMN,metaData.supportsAlterTableWithAddColumn());
             setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_DROP_COLUMN,metaData.supportsAlterTableWithDropColumn());
+
             // create a default disallowedfields list:
             // get the standard sql keywords
             StringTokenizer tokens = new StringTokenizer(STANDARD_SQL_KEYWORDS,", ");
@@ -157,6 +164,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 String tok = tokens.nextToken();
                 disallowedFields.put(tok,null);
             }
+
             // get the extra reserved sql keywords (according to the JDBC driver)
             // not sure what case these are in ???
             String sqlKeywords = (""+metaData.getSQLKeywords()).toLowerCase();
@@ -165,20 +173,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 String tok = tokens.nextToken();
                 disallowedFields.put(tok,null);
             }
-            /* It would theoretically be possible to also create a default typemapping by
-               calling metaData.getTypeInfo()
-               Were not doing this yet, but maybe something to add for the future
-            */
+
             con.close();
         } catch (SQLException se) {
             throw new StorageInaccessibleException(se);
         }
-
-        // default storagemanager class
-        queryHandlerClass = DEFAULT_STORAGE_MANAGER_CLASS;
-
-        // default searchquery handler class
-        queryHandlerClass = DEFAULT_QUERY_HANDLER_CLASS;
 
         // load configuration data.
         super.load();

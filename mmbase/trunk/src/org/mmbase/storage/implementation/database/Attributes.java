@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.2 2003-08-21 12:52:54 pierre Exp $
+ * @version $Id: Attributes.java,v 1.3 2003-08-22 12:34:48 pierre Exp $
  */
 public final class Attributes {
 
@@ -60,6 +60,13 @@ public final class Attributes {
      */
     public static final String BINARY_FILE_PATH = "database-binary-file-path";
 
+    /**
+     * Option: <code>database-force-encode-text</code>.
+     * If true, the database layer will explicitly decode/encode strings using the MMBase encoding when
+     * storing and retrieving text from the database. 
+     * The default is <code>false</code>
+     */
+    public static final String FORCE_ENCODE_TEXT = "database-force-encode-text";
 
     /**
      * Option: <code>database-supports-blob</code>.

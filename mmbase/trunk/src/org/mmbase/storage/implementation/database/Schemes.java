@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.2 2003-08-21 16:16:32 pierre Exp $
+ * @version $Id: Schemes.java,v 1.3 2003-08-22 12:34:48 pierre Exp $
  */
 public final class Schemes {
 
@@ -306,5 +306,66 @@ public final class Schemes {
      *  The default scheme for updating a node type.
      */
     public static final String UPDATE_NODE_DEFAULT = "UPDATE {1} SET {2} WHERE {3} = {4,number,##########}";
+
+    /**
+     *  Name of the scheme for creating a sequence or number table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the (suggested) field definition of the primary key field ('number') </li>
+     *  </ul>
+     */
+    public static final String CREATE_SEQUENCE = "create-sequence-scheme";
+
+    /**
+     *  The default scheme for creating a sequence table.
+     */
+    public static final String CREATE_SEQUENCE_DEFAULT = "CREATE TABLE {0}_numberTable ({1})";
+    
+    /**
+     *  Name of the scheme for initializing a sequence or number table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the (suggested) name of the primary key field ('number') </li>
+     *    <li>{2} the value to init the sequence to </li>
+     *  </ul>
+     */
+    public static final String INIT_SEQUENCE = "init-sequence-scheme";
+
+    /**
+     *  The default scheme for initializing a sequence table.
+     */
+    public static final String INIT_SEQUENCE_DEFAULT = "INSERT INTO {0}_numberTable ({1}) VALUES ({2,number,##########})";
+
+    /**
+     *  Name of the scheme for updating a sequence or number table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the (suggested) name of the primary key field ('number') </li>
+     *  </ul>
+     */
+    public static final String UPDATE_SEQUENCE = "update-sequence-scheme";
+
+    /**
+     *  The default scheme for updating a sequence table.
+     */
+    public static final String UPDATE_SEQUENCE_DEFAULT = "UPDATE {0}_numberTable SET {1} = {1} + 1";
+
+    /**
+     *  Name of the scheme for retrieving the key from sequence or number table
+     *  The parameters accepted are:
+     *  <lu>
+     *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
+     *    <li>{1} the (suggested) name of the primary key field ('number') </li>
+     *  </ul>
+     */
+    public static final String READ_SEQUENCE = "read-sequence-scheme";
+
+    /**
+     *  The default scheme for retrieving the key from a sequence table.
+     */
+    public static final String READ_SEQUENCE_DEFAULT = "SELECT {1} FROM {0}_numberTable";
 
 }

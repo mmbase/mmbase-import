@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.1 2003-08-21 09:59:32 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.2 2003-08-22 12:34:49 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -201,7 +201,12 @@ public class StorageReader extends DocumentReader  {
                 // require a scheme name
                 // if not given, skip the option
                 if (schemeName != null) {
-                    attributes.put(schemeName, new Scheme(factory,getNodeTextValue(schemeTag)));
+                    String pattern = getNodeTextValue(schemeTag);
+                    if (pattern==null || pattern.equals("")) {
+                        attributes.put(schemeName, null);
+                    } else {
+                        attributes.put(schemeName, new Scheme(factory,getNodeTextValue(schemeTag)));
+                    }
                 }
             }
         }

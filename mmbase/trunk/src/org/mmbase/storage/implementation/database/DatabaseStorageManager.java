@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.3 2003-08-21 17:28:04 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.4 2003-08-22 12:34:48 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -210,24 +210,18 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     public int createKey() throws StorageException {
-        return createKeyFromNumberTable();
-    }
-
-    //  create key using number table
-    //  maybe we should use schemes ???
-    //
-    //  UPDATE_SEQUENCE  =  UPDATE {0}_{1} SET {1} = {1} +1
-    //  GET_SEQUENCE == SELECT {1} FROM {0}_{1}
-    private int createKeyFromNumberTable() throws StorageException {
         try {
-            Scheme scheme = new Scheme(factory, "UPDATE {0}_{1} SET {2} = {2} +1");
-            String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number") });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);
-            s.executeUpdate(query);
-            scheme = new Scheme(factory, "SELECT MAX({2}) FROM {0}_{1}");
-            query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number") });
+            String query;
+            Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE,Schemes.UPDATE_SEQUENCE_DEFAULT);
+            if (scheme !=null) {
+                query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number") });
+                debug("query:"+query);
+                s.executeUpdate(query);
+            }
+            scheme = factory.getScheme(Schemes.READ_SEQUENCE,Schemes.READ_SEQUENCE_DEFAULT);
+            query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number") });
             debug("query:"+query);
             ResultSet result = s.executeQuery(query);
             if (result.next()) {
@@ -276,7 +270,26 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected String getStringValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
-        return result.getString(index);
+        if (factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+            InputStream inStream = result.getBinaryStream(index);
+            if ((inStream == null) || result.wasNull()) {
+                return "";
+            }
+            try {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                int c = inStream.read();
+                while (c != -1) {
+                    bytes.write(c);
+                    c = inStream.read();
+                }
+                inStream.close(); 
+                return new String(bytes.toByteArray(), factory.getMMBase().getEncoding());
+            } catch (IOException ie) {
+                throw new StorageException(ie);
+            }
+        } else {
+            return result.getString(index);
+        }
     }
 
     /**
@@ -726,7 +739,19 @@ public class DatabaseStorageManager implements StorageManager {
                 return;
             }
         }
-        statement.setString(index, value);
+        if (factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+            byte[] rawchars = null;
+            try {
+                rawchars = value.getBytes(factory.getMMBase().getEncoding());
+                ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
+                statement.setBinaryStream(index, stream, rawchars.length);
+                stream.close();
+            } catch (IOException ie) {
+                throw new StorageException(ie);
+            }
+        } else {
+            statement.setString(index, value);
+        }
     }
 
     // javadoc is inherited
@@ -1101,20 +1126,11 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Creates a means for the database to pre-create keys with increasing numbers.
-     * A sequence can be a databse routine, a number table, or anything else that can be used to create unique numbers.
+     * A sequence can be a database routine, a number table, or anything else that can be used to create unique numbers.
      * Keys can be obtained from the sequence by calling {@link #createKey()}.
      * @throws StorageException when the sequence can not be created
      */
     protected void createSequence() throws StorageException  {
-        createSequenceFromNumberTable();
-    }
-
-    //  create sequence using a number table
-    //  maybe we should use schemes ???
-    //
-    //  CREATE_SEQUENCE = CREATE TABLE {0}_{1} {2}
-    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_{1} ({2}) VALUES ({3,number})
-    private void createSequenceFromNumberTable() throws StorageException {
         try {
             getActiveConnection();
             // create the type mapping to search for
@@ -1128,17 +1144,21 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException("Type " + typeName + " undefined.");
             }
             String fieldName = (String)factory.getStorageIdentifier("number");
-            String fieldDef = fieldName+" "+((TypeMapping)typeMappings.get(found)).type + " NOT NULL";
-            Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_{1} ({2}, PRIMARY KEY(number))");
-            String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), fieldDef });
+            String fieldDef = fieldName+" "+((TypeMapping)typeMappings.get(found)).type + " NOT NULL, PRIMARY KEY("+fieldName+")";
+            String query;
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);
-            s.executeUpdate(query);
-
-            scheme = new Scheme(factory, "INSERT INTO {0}_{1} ({2}) VALUES ({3,number})");
-            query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number"), new Integer(1) });
-            debug("query:"+query);
-            s.executeUpdate(query);
+            Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
+            if (scheme!=null) {
+                query = scheme.format(new Object[] { this, fieldDef });
+                debug("query:"+query);
+                s.executeUpdate(query);
+            }
+            scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
+            if (scheme!=null) {
+                query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1) });
+                debug("query:"+query);
+                s.executeUpdate(query);
+            }
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
