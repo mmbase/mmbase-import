@@ -51,8 +51,8 @@
       </gui>
       <editor>
         <positions>
-          <search>-1</search>
           <list>-1</list>
+          <search>-1</search>
         </positions>
       </editor>
       <db>
@@ -69,8 +69,8 @@
       </gui>
       <editor>
         <positions>
-          <search>-1</search>
           <list>-1</list>
+          <search>-1</search>
         </positions>
       </editor>
       <db>
