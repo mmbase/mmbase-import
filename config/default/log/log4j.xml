@@ -5,16 +5,19 @@
    You can give the full path to the dtd in the jar, like:
    SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
    or somewhere on the web:
-   SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
+   SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
    
-   What always works is simply not specifying the the location of the
-   dtd, since log4j does not seem to do any validating. So, that is
-   done here.   
+   What always will work (in version 1.1 of log4j, which cannot be
+   used with current CVS of mmbase) is simply not specifying the the
+   location of the dtd, since log4j does not seem to do any
+   validating.
+
 -->
-<!DOCTYPE configuration [
-         <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
-         <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
-         <!ENTITY logdir   "/tmp/" >
+<!DOCTYPE configuration SYSTEM "log4j.dtd" 
+   [
+    <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
+    <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+    <!ENTITY logdir   "/tmp/" >
 ]>
 
 <!-- 
@@ -64,19 +67,19 @@
 <!-- nothing special -->
 </category>
 
+<!-- examples: different priority for a few subtrees -->
+
 <category name="org.mmbase.bridge" class ="&logger;">
-  <priority class="&priority;" value ="debug" />
+    <priority class="&priority;" value ="debug" />
+</category>
+<category name="org.mmbase.security" class ="&logger;">
+    <priority class="&priority;" value ="debug" />
 </category>
 
+<!-- perhaps you use your own extensions to MMBase -->
 <category name="nl.omroep" class ="&logger;">
-  <priority class="&priority;" value ="trace" />
+    <priority class="&priority;" value ="trace" />
 </category>
-
-<!-- example: different priority for the classes in org.mmbase.module -->
-<category name="org.mmbase.module" class ="&logger;">
-  <priority class="&priority;" value ="info" />
-</category>
-
 
 <!-- STDERR is a special Category, to wich stderr will be written
      (always with priority 'warn' or 'fatal' (uncaught
