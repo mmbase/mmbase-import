@@ -31,6 +31,13 @@ public interface Writer {
      */
     public void setWrite(String t) throws JspTagException;
 
+
+    /**
+     * (Override) escape behaviour
+     *
+     */
+    public void setEscape(String e) throws JspTagException;
+
     /**
      * JspVar to Create, and write to
      */

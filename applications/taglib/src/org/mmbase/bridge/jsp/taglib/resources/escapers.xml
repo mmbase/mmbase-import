@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE escapers PUBLIC "-//MMBase//DTD escapers 1.0//EN" "http://www.mmbase.org/dtd/escapers_1_0.dtd">
+<escapers>
+  <escaper id="text/plain">
+    <class>org.mmbase.util.transformers.EmptyCharTransformer</class>
+  </escaper>
+  <escaper id="none" type="text/html">
+    <class>org.mmbase.util.transformers.EmptyCharTransformer</class>
+  </escaper>
+  <escaper id="text/html">
+    <class>org.mmbase.util.transformers.Xml</class>
+    <config>1</config>
+  </escaper>
+  <escaper id="text/html/attribute" type="text/html">
+    <class>org.mmbase.util.transformers.Xml</class>
+    <config>5</config>
+  </escaper>
+  <escaper id="text/xml">
+    <class>org.mmbase.util.transformers.Xml</class>
+    <config>1</config>
+  </escaper>
+  <escaper id="text/html/rich" type="text/html">
+    <class>org.mmbase.util.transformers.XmlField</class>
+    <config>2</config>
+    <backTransform>true</backTransform>
+  </escaper>
+</escapers>

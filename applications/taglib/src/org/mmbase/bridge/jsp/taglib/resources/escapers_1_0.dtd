@@ -1,0 +1,8 @@
+<!ELEMENT escapers (escaper*) >
+<!ELEMENT escaper  (class, config?, backTransform?) >
+<!ATTLIST escaper  id    CDATA  #REQUIRED > 
+<!ATTLIST escaper  type  CDATA  #IMPLIED > <!-- type equals id if not speficied -->
+<!ELEMENT class      (#PCDATA) >      <!-- class of type CharTransformer -->
+
+<!ELEMENT config     (#PCDATA) >
+<!ELEMENT backTransform  (#PCDATA) >  <!-- if 'transformBack' must be used of CharTransformer -->

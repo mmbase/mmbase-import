@@ -19,8 +19,8 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.Casting; // not used enough
-
 
 /**
  * Tags that are Writers can use the this class. It's a pitty that
@@ -92,6 +92,7 @@ public class WriterHelper extends BodyTagSupport {
 
     private   String  jspvar           = null;
     private   Attribute write          = Attribute.NULL;
+    private   Attribute escape         = Attribute.NULL;
     private   Boolean overridewrite    = null;
     private   int     vartype          = TYPE_UNSET;
 
@@ -111,6 +112,17 @@ public class WriterHelper extends BodyTagSupport {
             log.debug("Setting write to " + w);
         }
         write = w;
+    }
+
+    /**
+     * For implementation of the escape attribute.
+     */
+
+    public void setEscape(Attribute e) {
+        if (log.isDebugEnabled()) {
+            log.debug("Setting escape to " + e);
+        }
+        escape = e;
     }
 
     /**
@@ -334,7 +346,16 @@ public class WriterHelper extends BodyTagSupport {
             // this is an ondocumented feature...
             return org.mmbase.util.Encode.encode("BASE64", (byte[]) value); 
         }
-        return value.toString();
+        ContentTag.Escaper escaper;
+        if (escape != Attribute.NULL) {
+            escaper = ContentTag.getEscaper(escape.getString(thisTag));
+        } else {
+            escaper = thisTag.getContentTag().getEscaper();
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Using escaper " + escaper);
+        }
+        return  escaper.transform(value.toString());
     }
 
     /**
