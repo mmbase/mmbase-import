@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.21 2002-06-04 12:22:54 pierre Exp $
+  @version $Id: wizard.xsl,v 1.22 2002-06-10 12:37:44 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -550,15 +550,7 @@
   </xsl:template>
 
   <xsl:template name="cancelbutton">
-            <a href="javascript:doCancel(document.getElementById('bottombutton-cancel'));"><span id="bottombutton-cancel">
-            <xsl:if test="@allowcancel='true'">
-              <xsl:attribute name="class">bottombutton</xsl:attribute>
-              <xsl:attribute name="title"><xsl:value-of select="$tooltip_cancel" /></xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@allowcancel='false'">
-              <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
-              <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_cancel" /></xsl:attribute>
-            </xsl:if>
+            <a href="javascript:doCancel();"><span id="bottombutton-cancel" class="bottombutton" title="{$tooltip_cancel}">
             <xsl:call-template name="prompt_cancel" />
           </span></a>
   </xsl:template>
