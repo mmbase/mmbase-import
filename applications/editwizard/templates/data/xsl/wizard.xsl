@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.13 2002-05-17 12:45:40 pierre Exp $
+  @version $Id: wizard.xsl,v 1.14 2002-05-17 13:17:49 pierre Exp $
   -->
 
 
@@ -424,7 +424,7 @@
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
                   <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="" style="width:175;" />
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  <span class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}');"  >
+                  <span class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
                     <img src="{$mediadir}search.gif" width="20" height="20"/>
                   </span>
