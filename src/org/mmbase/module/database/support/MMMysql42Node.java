@@ -28,7 +28,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.14 $ $Date: 2000-06-20 08:49:56 $
+* @$Revision: 1.15 $ $Date: 2000-06-24 18:43:26 $
 */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -105,78 +105,6 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 		return(result);
 	}
-
-
-
-
-
-	/**
-	* commit this node to the database
-	*/
-	public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
-		//  precommit call, needed to convert or add things before a save
-		bul.preCommit(node);
-		// commit the object
-		String values="";
-		String key;
-		// create the prepared statement
-		for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
-				key=(String)e.nextElement();
-				// a extra check should be added to filter temp values
-				// like properties
-
-				// check if its the first time for the ',';
-				if (values.equals("")) {
-					values+=" "+key+"=?";
-				} else {
-					values+=", "+key+"=?";
-				}
-		}
-		if (values.length()>0) {
-			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE number="+node.getValue("number");
-			try {
-				MultiConnection con=mmb.getConnection();
-				PreparedStatement stmt=con.prepareStatement(values);
-				String type;int i=1;
-				for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
-						key=(String)e.nextElement();
-						type=node.getDBType(key);
-						if (type.equals("int") || type.equals("integer")) {
-							stmt.setInt(i,node.getIntValue(key));
-						} else if (type.equals("text")) {
-							setDBText(i,stmt,node.getStringValue(key));
-						} else if (type.equals("byte")) {
-							setDBByte(i,stmt,node.getByteValue(key));
-						} else {
-							stmt.setString(i,node.getStringValue(key));
-						}
-						i++;
-				}
-				stmt.executeUpdate();
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return(false);
-			}
-		}
-
-		node.clearChanged();
-		if (bul.broadcastChanges) {
-			if (bul instanceof InsRel) {
-				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
-				// figure out tables to send the changed relations
-				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
-				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
-			} else {
-				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
-			}
-		}
-		return(true);
-	}
-
 
 
 
