@@ -15,12 +15,18 @@ import java.io.*;
  */
 public class MMRemoteProbe implements Runnable {
 
+	private String 		classname = getClass().getName();
+	private boolean 	debug 	  = false;
+	private void		debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
 	Thread kicker = null;
 	MMProtocolDriver con=null;
 	String servicenr;
 	Vector runningServices;
 
 	public MMRemoteProbe(Vector runningServices,MMProtocolDriver con,String servicenr) {
+		if( debug ) debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+")"); 
+
 		this.con=con;
 		this.servicenr=servicenr;
 		this.runningServices=runningServices;
@@ -61,7 +67,7 @@ public class MMRemoteProbe implements Runnable {
 				kicker.setPriority(Thread.NORM_PRIORITY+1);  
 				doWork();
 			} catch(Exception e) {
-				System.out.println("MMRemoteProbe -> ");
+				debug("run(): ERROR: while doWork(): ");
 				e.printStackTrace();
 			}
 		}
@@ -74,6 +80,7 @@ public class MMRemoteProbe implements Runnable {
 			con.commitNode(servicenr,"mmservers",toXML());
 			Thread.sleep(60*1000);
 		} catch(Exception e) {
+			debug("doWork(): ERROR: while commitNode("+servicenr+",mmservers,toXML()) : ");
 			e.printStackTrace();
 		}
 		callMaintainances();
@@ -83,7 +90,7 @@ public class MMRemoteProbe implements Runnable {
 		String host="";
 		try {
 			host=InetAddress.getLocalHost().getHostName();
-		} catch(Exception e) {}
+		} catch(Exception e) { debug("toXML(): ERROR: Could not get localhost address!"); }
 		String body="<?xml version=\"1.0\"?>\n";
 		body+="<!DOCTYPE mmnode.mmservers SYSTEM \"http://openbox.vpro.nl/mmnode/mmservers.dtd\">\n";
 		body+="<mmservers>\n";

@@ -27,12 +27,18 @@ import java.util.*;
  */
 public class startRemoteBuilders {
 
+	private	String 	classname 	= getClass().getName();
+	private boolean	debug		= RemoteBuilder.debug;
+	private void	debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
 	static Vector runningServices=new Vector();
 
    /**
     * Main() called from OS with parameters defined above.
     */
     public static void main(String args[]) {
+
+		String classname = "org.remote.startRemoteBuilders"; //getClass().getName();
 
 	   /**
 		* misc vars.
@@ -49,7 +55,7 @@ public class startRemoteBuilders {
 		* start a server with the default config file and port. 
 		*/
 		if (args.length==0) {
-			System.out.println("no params !");
+			System.out.println( classname +":main(): no params !");
 			System.exit(0);
 		} else {
 			ExtendedProperties ServiceReader=new ExtendedProperties();
@@ -72,9 +78,9 @@ public class startRemoteBuilders {
 					port=Integer.parseInt(tmp.substring(pos+1));
 				} catch(Exception e) {}
 			}
-			System.out.println("Prot="+protocol);
-			System.out.println("Host="+host);
-			System.out.println("Port="+port);
+			System.out.println( classname +":main(): Prot="+protocol);
+			System.out.println( classname +":main(): Host="+host);
+			System.out.println( classname +":main(): Port="+port);
 			
 			String name=(String)servprops.get("name");
 			if (protocol.equals("ulticast")) {	
@@ -110,7 +116,7 @@ public class startRemoteBuilders {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Running");
+			System.out.println( classname+":main(): Running");
 		}
 
 
