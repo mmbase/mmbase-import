@@ -7,9 +7,10 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.functions;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
@@ -31,7 +32,7 @@ import javax.servlet.http.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.1 2004-01-15 14:45:52 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.1 2004-01-16 20:21:12 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
     //cannot extend AbstractNodeList because we extend AbstractFunctionTag alreeady. Sigh, stupid java.

@@ -7,8 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.functions;
 
+import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
@@ -21,7 +22,7 @@ import org.mmbase.util.functions.Function;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.9 2003-12-21 13:27:50 michiel Exp $
+ * @version $Id: FunctionTag.java,v 1.1 2004-01-16 20:21:11 michiel Exp $
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.232 2004-01-15 14:45:53 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.233 2004-01-16 20:21:10 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1746,7 +1746,7 @@ access the value of title:
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.FunctionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.FunctionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
       Gets the function value of function `name' from surrounding nodeprovider.  The function value is available as a writer.
@@ -1766,7 +1766,7 @@ access the value of title:
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.VoidFunctionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.VoidFunctionTag</tagclass>
     <info>
       If you want to use a function with 'void' result (or want to ignore the result), then you can use this tag for the function.
     </info>
@@ -1784,7 +1784,7 @@ access the value of title:
     <extends>contextreader</extends>
     <extends>functiontag</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.BooleanFunctionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.BooleanFunctionTag</tagclass>
     <info>
       Gets the function value of function `name' from surrounding nodeprovider.  The function value is supposed to be Boolean, and this tags acts as a 'condition' tag.
     </info>
@@ -1801,7 +1801,7 @@ access the value of title:
     <extends>contextreader</extends>
     <extends>functiontag</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ListFunctionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.ListFunctionTag</tagclass>
     <info>
       Gets the function value from surrounding functionprovider.  The function value is supposed to be Collection, and this tags acts as a 'listprovider' tag.
     </info>
@@ -1827,7 +1827,7 @@ access the value of title:
     <extends>functiontag</extends>
     <extends>nodeprovider</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.NodeListFunctionTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeListFunctionTag</tagclass>
     <info>
       Gets the function value of function `name' from surrounding nodeprovider.  The function value
       is supposed to be NodeList, and this tags acts as a 'listprovider' tag and 'nodeprovider'.
@@ -1856,6 +1856,27 @@ access the value of title:
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="offset" />
     </attribute>
+  </tag>
+
+
+  <tag>
+    <name>nodefunction</name>
+    <extends>nodeprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
+    <extends>functiontag</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeFunctionTag</tagclass>
+    <info>
+      Gets the function value of function `name' from surrounding nodeprovider.  The function value
+      is supposed to be a Node.
+    </info>
+    <since>MMBase-1.7</since>
+    <see tag="node" />
+    <see tag="booleanfunction" />
+    <see tag="function" />
+    <see tag="functioncontainer" />
+    <see tag="listfunction" />    
   </tag>
 
   <tag>
@@ -4131,7 +4152,8 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-        The time tag can be used for all kind of manipulations regarding to times.</info>
+      The time tag can be used for all kind of manipulations regarding times.
+    </info>
     <see tag="locale" />
     <attribute>
       <name>time</name>
@@ -4341,6 +4363,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>locale</name>
     <see tag="cloud" />
     <see tag="time" />
+    <see tag="content" />
     <tagclass>org.mmbase.bridge.jsp.taglib.LocaleTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
     <info>
@@ -4358,6 +4381,10 @@ The 0 is just counter, which starts at 0 on every page.
         for Locale class</a> (A little technical, but at least you'll
         find links to possible languages and countries, and another
         short description of what a Locale actually is).
+      </p>
+      <p>
+        Since 1.7 there is also a content tag, which is an extension of the locale tag. You could
+        probably just as well use only an mm:content.
       </p>
     </info>
     <attribute>
@@ -4404,6 +4431,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>content</name>
     <see tag="cloud" />
     <see tag="time" />
+    <see tag="locale" />
     <tagclass>org.mmbase.bridge.jsp.taglib.ContentTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
     <info>
