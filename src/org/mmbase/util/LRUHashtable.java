@@ -17,21 +17,24 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.16 2003-04-10 13:27:48 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.17 2003-05-02 20:57:18 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
+
+    private static final String ROOT = "root";
+    private static final String DANGLING = "dangling";
     /**
      * First (virtual) element of the table.
      * The element that follows root is the oldest element in the table
      * (and thus first to be removed if size maxes out).
      */
-    private LRUEntry root = new LRUEntry("root", "root");
+    private final LRUEntry root     = new LRUEntry(ROOT, ROOT);
     /**
      * Last (virtual) element of the table.
      * The element that precedes dangling is the latest element in the table
      */
-    private LRUEntry dangling = new LRUEntry("dangling", "dangling");
+    private final LRUEntry dangling = new LRUEntry(DANGLING, DANGLING);
 
     /**
      * Maximum size (capacity) of the table
@@ -305,7 +308,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * Returns an <code>Enumeration</code> on the table's element values.
      */
     public synchronized Enumeration elements() {
-        return new LRUHashtableEnumerator(this);
+        return new LRUHashtableEnumeration();
     }
 
 
@@ -418,11 +421,11 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Enumerator for the LRUHashtable.
      */
-    private static class LRUHashtableEnumerator implements Enumeration {
+    private class LRUHashtableEnumeration implements Enumeration {
         private Enumeration superior;
 
-        LRUHashtableEnumerator(Hashtable entries) {
-            superior = entries.elements();
+        LRUHashtableEnumeration() {
+            superior = LRUHashtable.this.elements();
         }
 
         public boolean hasMoreElements() {
@@ -430,9 +433,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         }
 
         public Object nextElement() {
-            LRUEntry entry;
-
-            entry=(LRUEntry) superior.nextElement();
+            LRUEntry entry = (LRUEntry) superior.nextElement();
             return entry.value;
         }
     }
