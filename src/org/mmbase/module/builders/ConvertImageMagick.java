@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.3 2000-07-06 08:54:41 install Exp $
+	$Id: ConvertImageMagick.java,v 1.4 2000-08-06 16:02:43 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/07/06 08:54:41  install
+	Rico: added debug to see paths
+	
 	Revision 1.2  2000/06/08 18:00:11  wwwtech
 	Rico: reduced/switched-off debug
 	
@@ -30,7 +33,7 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.3 2000-07-06 08:54:41 install Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.4 2000-08-06 16:02:43 daniel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
@@ -228,7 +231,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		byte[] result=new byte[1024*1024];
 		try {
 			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-			debug("ConvertImage(): "+command);
+			if (debug) debug("ConvertImage(): "+command);
 			p = (Runtime.getRuntime()).exec(command);
         	PrintStream printStream = new PrintStream(p.getOutputStream()); // set the input stream for cgi
 			printStream.write(pict,0,pict.length);
