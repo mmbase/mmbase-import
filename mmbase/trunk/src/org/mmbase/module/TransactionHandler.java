@@ -27,6 +27,7 @@ import org.xml.sax.*;
  * @author  John Balder: 3MPS 
  * @author 	Rob Vermeulen: VPRO
  * @version 1.2, 22/10/2000
+ * @version 2.3.1 24/11/2000
  *
  * This class parses the TML code and calls the appropriate methods
  * in TransactionManager TemporarayNodeManager org.mmabse.module.core
@@ -38,7 +39,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
-	private static String version="2.3.1";
+	private static String version="2.3.3";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -65,9 +66,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	public void init(){
 		if (_debug) debug(">> init TransactionHandler Module version " + version, 0);
 		mmbase=(MMBase)getModule("MMBASEROOT");
+ 		sessions = (sessionsInterface)getModule("SESSION");
 		tmpObjectManager = new TemporaryNodeManager(mmbase);
 		transactionManager = new TransactionManager(mmbase,tmpObjectManager);
- 		sessions = (sessionsInterface)getModule("SESSION");
 	}
 
 	/**	
@@ -105,24 +106,28 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			parse(null, is, uti);
 		} catch (TransactionHandlerException t) {
 			// Register the exception
-  			sessions.setValue (session, "TRANSACTIONOPERATOR",t.transactionException); 
-  			sessions.setValue (session, "TRANSACTIONID",t.transactionId); 
-  			sessions.setValue (session, "OBJECTOPERATOR",t.objectException); 
-  			sessions.setValue (session, "OBJECTID",t.objectId); 
-  			sessions.setValue (session, "FIELDOPERATOR",t.fieldException); 
-  			sessions.setValue (session, "FIELDNAME",t.fieldId); 
-  			sessions.setValue (session, "TRANSACTIONERROR",t.toString()); 
+			sessions.setValue (session, "TRANSACTIONCODE",uti.trace.getTrace()); 
+			sessions.setValue (session, "TRANSACTIONOPERATOR",t.transactionOperator); 
+			sessions.setValue (session, "TRANSACTIONID",t.transactionId); 
+			sessions.setValue (session, "OBJECTOPERATOR",t.objectOperator); 
+			sessions.setValue (session, "OBJECTID",t.objectId); 
+			sessions.setValue (session, "FIELDOPERATOR",t.fieldOperator); 
+			sessions.setValue (session, "FIELDNAME",t.fieldId); 
+			sessions.setValue (session, "TRANSACTIONERROR",t.getClass() + ": " + t.getMessage());
 			if(_debug) { 
-				t.printStackTrace();
-				debug(t.transactionException,0);
-				debug(t.transactionId,0);
-				debug(t.objectException,0);
-				debug(t.objectId,0);
-				debug(t.fieldException,0);
-				debug(t.fieldId,0);
-				debug(t.toString(),0);
-				debug(t.exceptionPage,0);
+				debug("TRANSACTION ERROR >>>>>>>>>>>>>>>>>>",0);
+				debug("TRANSACTIONTRACE " + uti.trace.getTrace(),1);
+				debug("TRANSACTIONOPERATOR " + t.transactionOperator,1);
+				debug("TRANSACTIONID " + t.transactionId,1);
+				debug("OBJECTOPERATOR " + t.objectOperator,2);
+				debug("OBJECTID " + t.objectId,2);
+				debug("FIELDOPERATOR " + t.fieldOperator,3);
+				debug("FIELDNAME " + t.fieldId,3);
+				debug("TRANSACTIONERROR " + t.toString(),1);
+				debug("EXCEPTIONPAGE " + t.exceptionPage,1);
+				debug("TRANSACTION ERROR >>>>>>>>>>>>>>>>>>",0);
 			}
+			// set jump to exception page
 			sp.res.setStatus(302,"OK");
 			sp.res.setHeader("Location",t.exceptionPage);
 		}
@@ -136,7 +141,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		Document document;
 		Element docRootElement;
 		NodeList transactionContextList = null;
-		String exceptionPage = null;
+		String exceptionPage = "exception.shtml";
 		
 		DOMParser parser = new DOMParser();
 		
@@ -154,7 +159,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
+			TransactionHandlerException te = new TransactionHandlerException(e.getMessage());
+			throw te;
 		}
 		
 		try {  
@@ -238,6 +244,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			if (time==null) time="60";
 
 			if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
+			userTransactionInfo.trace.addTrace(tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1, true);
 
 			try {			
 				// CREATE TRANSACTION
@@ -310,7 +317,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} else {
 					t = new TransactionHandlerException(""+e);
 				}
-				t.transactionException=tName;
+				t.transactionOperator=tName;
 				t.transactionId=id;
 				throw t; 
 			}
@@ -367,12 +374,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 			if (_debug) {
 				if(oName.equals("createRelation")) {
-					debug("-> " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
+					debug(oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
+					userTransactionInfo.trace.addTrace(oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2, true);
 				} else {
 					debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+					userTransactionInfo.trace.addTrace(oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2, true);
 				}
 			}
-			
 
 			try {
 				if (oName.equals("createObject")) {
@@ -440,7 +448,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					if (oMmbaseId==null) { 
 						throw new TransactionHandlerException(oName + " no mmbaseId specified");
 					}
-					// Mark persitent object deleted.
+					// Mark persistent object deleted.
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 					transactionManager.deleteObject(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					// destroy
@@ -452,7 +460,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} else {
 					throw new TransactionHandlerException("tag "+ oName + " doesn't exist");
 				} } } } } } 
-					
+			
 
 				// DO FIELDS
 				//do for all field contexts (setField)
@@ -483,7 +491,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} else {
 					t = new TransactionHandlerException(""+e);
 				}
-				t.objectException=oName;
+				t.objectOperator=oName;
 				t.objectId=id;
 				throw t; 
 			}
@@ -515,6 +523,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					fieldValue = setFieldValue.getNodeValue();
 				}
 				if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
+				userTransactionInfo.trace.addTrace("setField " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3, true);
 		
 				//check that we are inside object context
 				//if (currentObjectContext == null) {
@@ -525,7 +534,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} catch (Exception e) {
 					TransactionHandlerException the = new TransactionHandlerException("cannot set field '"+fieldName+"'");
 					the.fieldId=fieldName;
-					the.fieldException="WRITE";	
+					the.fieldOperator="SETFIELD";	
 					throw the;
 				}
 			}
@@ -584,11 +593,12 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * transactionHandler exception
 	 */
 	class TransactionHandlerException extends Exception {
-		String fieldException = "";
+		String code = "";
 		String fieldId = "";
-		String objectException = "";
+		String fieldOperator = "";
+		String objectOperator = "";
 		String objectId = "";
-		String transactionException = "";
+		String transactionOperator = "";
 		String transactionId = "";
 		String exceptionPage = "";
 
@@ -598,13 +608,15 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	}
 	
 	/** 
-	 * container class for transaction per user
+	 * container class for transactions per user
 	 */
 	class UserTransactionInfo {
 		// contains all known transactions of a user
 		public Hashtable knownTransactionContexts = new Hashtable(); 
 		// The user
-		public User user = null;		
+		public User user = null;
+		// the parse trace
+		public ParseTrace trace = new ParseTrace();
 	}
 
 	/**
@@ -672,6 +684,20 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 		public String toString() {
 			return "TransactionInfo => transactionContext="+transactionContext+" id="+id+" timeout="+timeout+".";	
+		}
+	}
+	
+	class ParseTrace {
+		private String trace = "";
+		
+		void addTrace(String s, int indent, boolean new_line) {
+			if (new_line) trace = trace + "\n";
+			for (int i = 0; i < indent; i++) trace = trace + "\t";
+			trace = trace + s;
+		}
+		
+		String getTrace() {
+			return trace;
 		}
 	}
 }
