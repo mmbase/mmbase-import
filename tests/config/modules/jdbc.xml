@@ -12,7 +12,7 @@
 
 
     <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
-    <property name="connections">2</property>
+    <property name="connections">1</property>
 
     <property name="host">localhost</property>
     <property name="queries">10000</property>
