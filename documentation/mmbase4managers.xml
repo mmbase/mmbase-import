@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet type="text/css"
+href="file:/C:/xxe/css/docbook.css"
+?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"file:/C:/xxe/dtd/docbook/docbookx.dtd">
+<article
+><title
+>Running MMBase in your organization (a.k.a. MMBase for managers)<revhistory
+><revision
+><revnumber
+>0</revnumber
+><date
+>1</date
+><revremark
+>first draft</revremark
+></revision
+></revhistory
+></title
+><abstract
+><para
+>This document offers to technical and non technical people, operating at management level, insights in the use of MMBase as a &#39;web publishing system&#39; or a &#39;web content management system&#39;. First a high level overview of the MMBase product is supplied, followed by a short overview of the underlying concepts and technologies. As MMBase is an open source product, this document also outlines the consequences that come with running open source software in your organization.</para
+><para
+>Derived from the open source philosphy, the community thrives certain version and release management principles. For potential users and dicision makers, a clear insight in this process is very important.</para
+><para
+>To support the product, a community has been setup. This document also covers the organzational structure of this community and its official spokesman and their specific roles within the community</para
+><para
+></para
+><para
+></para
+></abstract
+><sect1
+><title
+>Management summary</title
+><para
+>[todo: this section should provide a management summary of the overall document]</para
+></sect1
+><sect1
+><title
+>What is MMBase?</title
+><para
+>MMBase is a content management system that can be used for publishing websites. What is a content management system? What is content? Content is stuff that we use to construct websites. As technology advanced, websites evolved from simple &#39;text-like websites&#39; to complex multi-media products with streaming media like video and sound. All these pieces - text, pictures and video - are considered content and should be managed.</para
+><para
+>When working with content, eventually every site will feel the need for an automated system to manage all these pieces in an easy and user friendly way. A content management system offers its users (editors, publishers, designers) tailored functions to maintain a website and keep its contents alive.</para
+><para
+>MMBase ia such a system. It coveres the whole spectrum needed to: import, manage, maintain, export and publish content for your websites. To achieve this MMBase contains tools for editorial people to insert and maintain web content. To support web designers, MMBase offers an easy to learn language for publishing the content to the websites.</para
+><para
+>Another advantage of separating content and design is that all information is stored only once. If the band changes its name, you only have to change the name of the band once and all websites will change this information. This is a welcome contrast to &#34;hardcoded&#34; webpages, where you might have to review all the web pages to see if the new band name has been properly published there.</para
+><sect2
+><title
+>Features and benefits - the content cloud</title
+><para
+>MMBase models its information as objects. MMBase creates objects that are a representation of content items and MMBase maintains objects that specify the possible relations between these content items. This structure results in web of content pieces and its relations, also known in MMBase as &#34;the content cloud&#34;. A music band, for example, can have a relation called &#34;plays on&#34; the festival called &#34;Pinkpop&#34;, and this relation indicates that the band is displayed on the Pinkpop site. If you want to remove the band from the site, you can simply remove the relation and the band will not be published on the website anymore. If you want to publish the band on another site (with another design), you can simply add a relation that indicates that the band needs to be displayed on another website.</para
+></sect2
+><sect2
+><title
+>Features and benefits - reusing content</title
+><para
+>MMBase strictly separates content from design, which means that content can be reused in different designs. When creating a web page, for example, you can use HTML tags to create the appropriate design for that individual page. Showing the information on that page as XML or plain text is no longer possible. By strictly separating content from design, information can be reused in different websites (3voor12.vpro.nl, www.vpro.nl/pp98, www.vpro.nl/pp99), displayed on a WAP device, broadcast, sent as e-mail, published on an IRC channel, or exported as XML.</para
+></sect2
+><sect2
+><title
+>Features and benefits - media types and media sources</title
+><para
+>Another import aspect of MMBase is that it is able to communicate with various types of hardware and software products that are frequently used for publishing information like CD players and image scanners. If a song of a band has to be published, you can insert a CD into a CD player and use your editors to relate a specific track to the band, at which point the song will be published on your website. No saving of the CD, or converting of formats, or copying to a server is necessary. MMBase has automated these frequently recurring actions. Another example is a photo placed in a scanner. The editors can be used to tell MMBase which relations that image has, and you can give the image a title and a description. For other actions such as converting the image to a JPG, resizing the image is needed. Relating an image with a band will cause the website to show that image on the band page.</para
+><para
+>MMBase integrates a lot of external software. This means that you don&#39;t have to encode music file to different file formats, or convert image formats, etc. MMBase also contains internal software agents that are able to automatically broadcast audio, save audio from the radio, check information within MMBase, etc. MMBase has a great deal of functionality, and the MMBase community will create more and more of this in the future.</para
+></sect2
+><sect2
+><title
+>Adding content to MMBase</title
+><para
+>Information can be added to MMBase in a number of ways, the most important of which is the MMBase editors. The MMBase editors allow people to insert, manipulate, and delete information. The editors are based on a web interface, and can be run in a web browser such as Netscape or Internet Explorer. The advantage of a web-enabled editor is that you don&#39;t need to install additional programs to edit the information, and you can maintain the information from all over the world. Editors don&#39;t need to have any knowledge of website design. They are only involved in the process of managing information.</para
+></sect2
+><sect2
+><title
+>Publishing content with MMBase</title
+><para
+>Graphical designers can publish the information maintained within MMBase in any format they wish. They can publish the information at a website, in multiple websites, on a WAP device, in Flash, or can broadcast the information maintained by MMBase. MMBase provides a language that enable designers to retrieve the MMBase information. The information can also be retrieved with other languages, such as PHP, and JSP. MMBase can even give the information as XML.</para
+></sect2
+></sect1
+><sect1
+><title
+>MMBase organization</title
+><para
+>[todo: this section should give an organizational overview of the entities within the MMBase organization]</para
+><sect2
+><title
+>MMBase Managment Committee</title
+><para
+>[todo: this section should describe the MMBase Management Committee]</para
+></sect2
+><sect2
+><title
+>MMBase Developer Community</title
+><para
+>[todo: this section should describe the MMBase Community]</para
+></sect2
+><sect2
+><title
+>MMBase Committers</title
+><para
+>[todo: this section should describe the committers and their role throughout the development process]</para
+></sect2
+><sect2
+><title
+>MMBase Foundation</title
+><para
+>[todo: this section should describe the MMBase Foundation]</para
+></sect2
+></sect1
+><sect1
+><title
+>Configuration Management</title
+><para
+>[todo: this section should describe the version and release management principles that are adopted by the MMBase community]</para
+><sect2
+><title
+>Version and release management and planning</title
+><para
+>[todo: this section should describe the way we plan and deliver release. It should also address strategies regarding backward compatibility of releases.]</para
+></sect2
+><sect2
+><title
+>Maintaining backward compatibility</title
+><para
+>[todo: This section should provide insight on the level of backward compatibilty between versions.]</para
+></sect2
+></sect1
+><sect1
+><title
+>MMBase technologies</title
+><para
+>[this section should give a high level overview of the technologies used by MMBase]</para
+><sect2
+><title
+>MMBase Architecture</title
+><para
+>[todo: The MMBase architecture, preferably related to the known J2EE reference architectures.]</para
+></sect2
+><sect2
+><title
+>Java</title
+><para
+>[todo: This section should elaborate (on a fairly high level) the Java technology used to implement MMBase. Specifically, attention should be paid to J2EE features like scalability and platform independence of MMBase.]</para
+></sect2
+><sect2
+><title
+>Technologies for Page designers</title
+><para
+>[todo: This section should focus on the technology MMBase offers to layout pages using content from MMBase. By focusing on the availability of the JSP Tag Libraries, this section should communicate the ease-of-use of MMBase for non-programmers like page designers.]</para
+></sect2
+><sect2
+><title
+>Technologies for Editors</title
+><para
+>[todo: This section focusses on the availability of editors, edit wizards and the possibility of &#34;easy customization&#34; of these tools.]</para
+></sect2
+><sect2
+><title
+>Databases</title
+><para
+>[todo: Describe the datastores that are available to MMBase to store content. Also, briefly describe the pluggable structure of adding new, unsupported databases to the list of available database for MMBase.]</para
+></sect2
+></sect1
+><sect1
+><title
+>Running Open Source software in your organization</title
+><simpara
+></simpara
+><sect2
+><title
+>What is Open Source Software and how can you benefit from it?</title
+><para
+>[todo: Here we should elaborate on the principal business benefits of running Open Source software in a commercial environment.]</para
+></sect2
+><sect2
+><title
+>MMBase license</title
+><para
+>[todo: Add some specifics about the MMBase license and the do&#39;s and dont&#39;s that this accompanies.]</para
+></sect2
+><sect2
+><title
+>Getting support</title
+><para
+>[todo: Supply information on the companies that support MMBase. Maybe refer to an addendum where updated profiles of the supporting companies are available.]</para
+></sect2
+><sect2
+><title
+>Adding your own features to MMBase</title
+><para
+>[todo: Describe the possibility of adding features to MMBase or customize its working behaviour because the full source code is available through the OSS license model. Also describe that adding features to MMBase can be donated by the author to MMBase, thus contributing to the functional richness of the product.</para
+></sect2
+></sect1
+></article
+>
