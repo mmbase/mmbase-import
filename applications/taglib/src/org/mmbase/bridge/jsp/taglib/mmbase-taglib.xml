@@ -41,6 +41,7 @@ one or more examplevalue tags is you want to give some example values.
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>
+    <p>
     Tag library for MMBase. MMBase consists of a cloud of nodes (objects) wich
     can be related to each other. Relations can be seen as nodes with two arms
     wich they use to connect two other nodes. Nodes of a specific type (like a
@@ -50,6 +51,12 @@ one or more examplevalue tags is you want to give some example values.
     contain different type of relations. And just like specific type of nodes
     have their own nodemanager, relations of a specific type have their own
     relation manager.
+    </p>
+    <p>
+    Tags can exchange variables by use of a 'context', and 'variables'
+    in it. Please read the documenation for mm:context if you want to
+    know how this works.
+    </p>
   </info>
   <tag>
     <name>list</name>
@@ -709,14 +716,25 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>The authentication name to use (account).</info>
+      <info>The authentication name to use (account). When used together
+      e.g. the method="http" option, then validation only succeeds if
+      the username equals logon. In this case it also possible to
+      supply a list of usernames here (comma seperated)</info>
     </attribute>
     <attribute>
       <name>rank</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>The required rank</info>
+      <info>The required rank. This is another way to force a special
+      user when using method="http". 
+      </info>
+      <possiblevalue>
+        <value>administrator</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>basic user</value>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>pwd</name>
@@ -749,7 +767,7 @@ one or more examplevalue tags is you want to give some example values.
       <possiblevalue>
         <value>logout</value>
         <info>
-	  When used `http' to logon, the browser will store name and
+    	  When used `http' to logon, the browser will store name and
           password. If you want to logon again, then you can first
           `logout'. Then the `realm' of the http authenication will be
           changed, and you obtain a new possibility to logon after
@@ -1096,12 +1114,15 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <p>
       Tags inside a context tag supplying the `id' attribute
       register themselves in the context.  Other tags can refer to
-      this id. See for example how the createrelation tag works.
+      this id. See for example how the createrelation tag works. A
+      special case of a another tag referring to this id is a tag of
+      the same type. Normally with an attribute 'referid' you could
+      'repeat' the tag.
       </p>
       <p>
       With the import tag you can explicitily put things from outside
       this context into this context, e.g. from the parameter list or
-      from a parent context. It is also possible to put new string in
+      from a parent context. It is also possible to put new strings in
       the context with the import tag.
       </p>
       <p>
@@ -1120,12 +1141,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </p>
       <p>
       If some attribute wants to use the value of an object in the
-      context, and it is an attribute which can refer to the context,
-      then you can use something like
+      context, and it is an attribute which can refer to the context
+      (which most attributes are), then you can use something like
       ${&lt;context-id;&gt;.&lt;object-id&gt;}. The 'context-id' is
-      optional when you are in the same context. The value of a
-      context variable can be written to the page with the `write'
-      tag.
+      optional when you are in the same context, or sub-context. The
+      value of a context variable can be written to the page with the
+      `write' tag.
       </p>
       <p>
       And finally there are some attributes which can only refer. For
@@ -1133,18 +1154,15 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       you want it to refer not to its direct parent, then there should
       be an attribute with the name of the parent in which you can put
       the id of the parent which it has to refer to. For example the
-      field tag has an attribute `node'. Other tags, like the
-      createrelation tag have attributes like `source' and
-      `destination' attributes which also simply contain the node
-      id's. Please find the examples.
+      field tag has an attribute `node'. This kind of referring does
+      not function per the ContextTag, and is only good for finding
+      ancestor tags. Other tags, like the createrelation tag have
+      attributes like `source' and `destination' attributes which also
+      simply contain the node id's. Please find the examples.
       </p>
       <p>
       In TCP there is a `tag' called `create', which is comparable to
       `context'.
-      </p>
-      <p>
-      A Cloud (or a transaction) is a context too, so normally it will suffice to
-      use a cloud.
       </p>
     </info>
     <attribute>
@@ -1152,10 +1170,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	The default id for a context is `context'. If the context is a
-	cloud, then the default id is `cloud'. This id is used in
-	context referring attributes.
-        </info>
+	This id is used in context referring attributes. On default a
+	context has no id. The implicit 'page' context also doesn't
+	have. If a context has no id, there is no way of referring to
+	variables of it if you are not in the context itself (or one of
+	the subcontextes).
+    </info>
     </attribute>
   </tag>
   <tag>
@@ -1459,6 +1479,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
           editor.
         </info>
       </possiblevalue>
+      <possiblevalue>
+        <value>all</value>
+        <info>
+          Return all fields.
+        </info>
+      </possiblevalue>
     </attribute>
   </tag>
   <tag>
@@ -1655,7 +1681,10 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         </possiblevalue>
 	<possiblevalue>
           <value>Vector</value>
-        </possiblevalue>
+    </possiblevalue>
+	<possiblevalue>
+          <value>List</value>
+    </possiblevalue>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
@@ -1678,15 +1707,15 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <attribute>
         <name>id</name>
         <required>false</required>
-	<requirednote>Either `id' or `externid' or both must be supplied.</requirednote>
+        <requirednote>Either `id' or `externid' or both must be supplied.</requirednote>
         <rtexprvalue>false</rtexprvalue>
 	<info>
         This is the key by which the object will be registered in the
-	context. This key may not already exist. You must use the
-	remove tag first, if you need to change the value of the
-	registered object. If you do not supply this attribute, it is
-	supposed to have the same value as `externid' which should be
-	present then.
+   	    context. This key may not already exist. You must use the
+        remove tag first, if you need to change the value of the
+        registered object. If you do not supply this attribute, it is
+        supposed to have the same value as `externid' which should be
+	    present then.
 	</info>
     </attribute>
     <attribute>
@@ -1849,7 +1878,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>include</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <info>
-	  Does an include.
+	  Does an include. This tag is rather similar to mm:url, but in
+	  stead of returing the url, it returns the page itself. In that
+	  respect it is also very similar to jsp:include.
     </info>
     <attribute>
         <name>referids</name>
