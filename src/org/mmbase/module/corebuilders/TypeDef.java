@@ -242,7 +242,7 @@ public class TypeDef extends MMObjectBuilder {
      * Return the database type of the objecttype
      * @deprecated-now use default behavior
      */
-    public int getDBType(String fieldName) {
+/*    public int getDBType(String fieldName) {
         if (fieldName.equals("owner")) return FieldDefs.TYPE_STRING;
         if (fieldName.equals("otype")) return FieldDefs.TYPE_INTEGER;
         if (fieldName.equals("number")) return FieldDefs.TYPE_INTEGER;
@@ -250,7 +250,7 @@ public class TypeDef extends MMObjectBuilder {
         if (fieldName.equals("description")) return FieldDefs.TYPE_STRING;
         return -1;
     }
-
+*/
     public void loadTypeDef(String name) {
         if(!typedefsLoaded.contains(name)) {
             typedefsLoaded.add(name);

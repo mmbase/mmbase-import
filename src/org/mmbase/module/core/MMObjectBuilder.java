@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.129 2002-04-16 16:34:36 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.130 2002-04-17 13:17:39 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -439,7 +439,7 @@ public class MMObjectBuilder extends MMTable {
         if (mmb.getOAlias()!=null) {
             if (getNode(alias) != null ) {  // this alias already exists! Don't add a new one!
                 return false;
-            } 
+            }
             MMObjectNode node=mmb.getOAlias().getNewNode("system");
             node.setValue("name",alias);
             node.setValue("destination",number);
@@ -673,6 +673,8 @@ public class MMObjectBuilder extends MMTable {
                     if (otype!=0) {
                         if (obj2type!=null) obj2type.put(new Integer(number),new Integer(otype));
                     }
+                } else {
+                    throw new SQLException("can't find otype!");
                 }
                 stmt2.close();
                 con.close();
@@ -883,7 +885,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Defines a virtual field to use for temporary nodes
-     * @param field the anme of the temporary field
+     * @param field the name of the temporary field
      * @return true if the field was added, false if it already existed.
      */
     public boolean checkAddTmpField(String field) {
@@ -1509,6 +1511,7 @@ public class MMObjectBuilder extends MMTable {
      * TYPE_FLOAT,
      * TYPE_DOUBLE,
      * TYPE_LONG,
+     * TYPE_NODE,
      * TYPE_UNKNOWN
      * @param the requested field's name
      * @return the field's type.
@@ -1857,7 +1860,7 @@ public class MMObjectBuilder extends MMTable {
             if (field.equals("")) {
                 val=getGUIIndicator(node);
             } else {
-                val = getGUIIndicator(field,node);                
+                val = getGUIIndicator(field,node);
                 if (val == null) {
                     FieldDefs fdef = getField(field);
                     if ("eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
@@ -2503,7 +2506,7 @@ public class MMObjectBuilder extends MMTable {
 
         int type=getDBType(fieldname);
         String value="";
-        if (type==FieldDefs.TYPE_INTEGER) {
+        if ((type==FieldDefs.TYPE_INTEGER) || (type==FieldDefs.TYPE_NODE)) {
             value=""+node.getIntValue(fieldname);
         } else if (type==FieldDefs.TYPE_STRING) {
             value=node.getStringValue(fieldname);
@@ -2544,7 +2547,7 @@ public class MMObjectBuilder extends MMTable {
         for (Enumeration e=sortedDBLayout.elements();e.hasMoreElements();) {
             String key=(String)e.nextElement();
             int type=node.getDBType(key);
-            if (type==FieldDefs.TYPE_INTEGER) {
+            if ((type==FieldDefs.TYPE_INTEGER)|| (type==FieldDefs.TYPE_NODE)) {
                 body+="<"+key+">"+node.getIntValue(key)+"</"+key+">\n";
             } else if (type==FieldDefs.TYPE_STRING) {
                 body+="<"+key+">"+node.getStringValue(key)+"</"+key+">\n";
@@ -2858,6 +2861,7 @@ public class MMObjectBuilder extends MMTable {
             fields.put(name,def);
         }
 
+        // should be TYPE_NODE ???
         FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
         def.setParent(this);
         fields.put("otype",def);

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.27 2002-03-11 10:42:36 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.28 2002-04-17 13:17:42 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -188,6 +188,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                     case FieldDefs.TYPE_STRING:
                         node.setValue(field, stringValue);
                         break;
+                    case FieldDefs.TYPE_NODE:
                     case FieldDefs.TYPE_INTEGER:
                         try {
                             i=Integer.parseInt(stringValue);

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.57 2002-03-21 10:02:36 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.58 2002-04-17 13:17:47 pierre Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -172,6 +172,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 }
                 break;
             }
+            case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
                 node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
                 break;
@@ -261,7 +262,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 }
                 break;
             }
-        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER) {
+        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_NODE || dbtype==FieldDefs.TYPE_INTEGER) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -706,6 +707,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     // for the right type call the right method..
                     if (type==FieldDefs.TYPE_INTEGER) {
                         stmt.setInt(currentParameter,node.getIntValue(key));
+                    } else if (type==FieldDefs.TYPE_NODE) {
+                        stmt.setInt(currentParameter,node.getIntValue(key));
                     } else if (type==FieldDefs.TYPE_FLOAT) {
                         stmt.setFloat(currentParameter,node.getFloatValue(key));
                     } else if (type==FieldDefs.TYPE_DOUBLE) {
@@ -1010,6 +1013,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         throws SQLException {
         int type = node.getDBType(key);
         if (type==FieldDefs.TYPE_INTEGER) {
+            stmt.setInt(i, node.getIntValue(key));
+        } else if (type==FieldDefs.TYPE_NODE) {
             stmt.setInt(i, node.getIntValue(key));
         } else if (type==FieldDefs.TYPE_FLOAT) {
             stmt.setFloat(i, node.getFloatValue(key));
@@ -1717,6 +1722,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         case FieldDefs.TYPE_STRING:
                             setDBText(dbpos,stmt2,new String());
                             break;
+                        case FieldDefs.TYPE_NODE:
                         case FieldDefs.TYPE_INTEGER:
                             stmt2.setInt(dbpos,-1);
                             break;
@@ -1745,6 +1751,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                                 setDBText(dbpos,stmt2,o.toString());
                             }
                             break;
+                        case FieldDefs.TYPE_NODE:
                         case FieldDefs.TYPE_INTEGER:
                             stmt2.setInt(dbpos,((Number)o).intValue());
                             break;

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.4 2002-04-17 10:29:27 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.5 2002-04-17 13:17:49 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -260,6 +260,11 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             case FieldDefs.TYPE_INTEGER:
                 stmt.setInt(i, node.getIntValue(fieldname));
                 break;
+            case FieldDefs.TYPE_NODE:
+                // retrieve node as a numeric value
+                int nodeRef=node.getIntValue(fieldname);
+                stmt.setInt(i, nodeRef);
+                break;
             case FieldDefs.TYPE_FLOAT:
                 stmt.setFloat(i, node.getFloatValue(fieldname));
                 break;
@@ -329,6 +334,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                     break;
                 }
                 // Numeric fields (can be passed as-is: node evaluates it)
+                case FieldDefs.TYPE_NODE:;
                 case FieldDefs.TYPE_INTEGER:;
                 case FieldDefs.TYPE_LONG:;
                 case FieldDefs.TYPE_FLOAT:;
@@ -728,6 +734,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @throws StorageException if an error occurred during craete
      */
     public boolean createObjectStorage(Transaction trans) throws StorageException {
+        // should we use TYPE_NODE instead of TYPE_INTEGER here?
         String sqlcreate=
             createSQL(getFullTableName("object"),
             constructFieldDefinition("object", "number",FieldDefs.TYPE_INTEGER,-1,KEY_PRIMARY)+", "+

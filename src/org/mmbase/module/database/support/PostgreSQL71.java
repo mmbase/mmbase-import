@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.11 2002-04-17 08:22:38 pierre Exp $
+ * @version $Id: PostgreSQL71.java,v 1.12 2002-04-17 13:17:48 pierre Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -378,7 +378,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
     private boolean isReferenceField(FieldDefs def, MMObjectBuilder bul) {
         // only integer references the number table???
-        if(def.getDBType() == FieldDefs.TYPE_INTEGER) {
+        if((def.getDBType() == FieldDefs.TYPE_INTEGER) || (def.getDBType() == FieldDefs.TYPE_NODE)) {
             String fieldname = def.getDBName();
             if(fieldname.equals("otype")) return true;
             if(bul instanceof InsRel) {
@@ -670,6 +670,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
     protected boolean setValuePreparedStatement(PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
         switch(node.getDBType(key)) {
+            case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
                 stmt.setInt(i, node.getIntValue(key));
                 log.debug("added integer for field with name: " + key + " with value: " + node.getIntValue(key));
@@ -734,6 +735,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                         node.setValue(prefix+fieldname,tmp);
                     }
                     break;
+                case FieldDefs.TYPE_NODE:
                 case FieldDefs.TYPE_INTEGER:
                     // node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
                     node.setValue(prefix+fieldname, rs.getInt(i));
@@ -989,7 +991,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                     }
                     break;
             }
-        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER) {
+        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_NODE || dbtype==FieldDefs.TYPE_INTEGER) {
             switch (operatorChar) {
                 case '=':
                 case 'E':

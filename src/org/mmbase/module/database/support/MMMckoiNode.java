@@ -7,28 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-
-/*
-$Id: MMMckoiNode.java,v 1.3 2002-03-21 10:02:36 pierre Exp $
-
-MMBase database driver for the Open Source Java Database from
-http://www.mckoi.com/database
-
-Its a copy of the sql92 driver with a few adjustments, like
-queries should end with a ';'
-
-Author: original author of the sql92 driver,
- adjusted by Marcel Maatkamp, VPRO Digitaal (marmaa@vpro.nl)
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2001/10/03 10:29:03  vpro
-marcel - changed UPDATE, corrected the string to terminate with ;
-
-Revision 1.1  2001/10/02 14:19:23  vpro
-marcel: McKoi's database driver (see http://http://www.mckoi.com/database)
-
-
-*/
 package org.mmbase.module.database.support;
 
 import java.util.*;
@@ -45,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.3 2002-03-21 10:02:36 pierre Exp $
+ * @version $Id: MMMckoiNode.java,v 1.4 2002-04-17 13:17:46 pierre Exp $
  */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 
@@ -152,6 +130,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                 }
                 break;
 
+            case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
                 node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
                 break;
@@ -238,7 +217,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                 }
                 break;
             }
-        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER) {
+        } else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER || dbtype==FieldDefs.TYPE_NODE) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -680,12 +659,13 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
 
 
             // for the right type call the right method..
-                    if (type==FieldDefs.TYPE_INTEGER) stmt.setInt(currentParameter,node.getIntValue(key));
-                    else if (type==FieldDefs.TYPE_FLOAT) stmt.setFloat(currentParameter,node.getFloatValue(key));
-                    else if (type==FieldDefs.TYPE_DOUBLE) stmt.setDouble(currentParameter,node.getDoubleValue(key));
-                    else if (type==FieldDefs.TYPE_LONG) stmt.setLong(currentParameter,node.getLongValue(key));
-                    else if (type==FieldDefs.TYPE_STRING) setDBText(currentParameter,stmt,node.getStringValue(key));
-                    else if (type==FieldDefs.TYPE_BYTE) setDBByte(currentParameter,stmt,node.getByteValue(key));
+            if (type==FieldDefs.TYPE_INTEGER) stmt.setInt(currentParameter,node.getIntValue(key));
+            else if (type==FieldDefs.TYPE_NODE) stmt.setInt(currentParameter,node.getIntValue(key));
+            else if (type==FieldDefs.TYPE_FLOAT) stmt.setFloat(currentParameter,node.getFloatValue(key));
+            else if (type==FieldDefs.TYPE_DOUBLE) stmt.setDouble(currentParameter,node.getDoubleValue(key));
+            else if (type==FieldDefs.TYPE_LONG) stmt.setLong(currentParameter,node.getLongValue(key));
+            else if (type==FieldDefs.TYPE_STRING) setDBText(currentParameter,stmt,node.getStringValue(key));
+            else if (type==FieldDefs.TYPE_BYTE) setDBByte(currentParameter,stmt,node.getByteValue(key));
             else stmt.setString(currentParameter,node.getStringValue(key));
                     currentParameter++;
         }
@@ -955,6 +935,8 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                         key = key.substring(key.lastIndexOf(".")+1);
         int type = node.getDBType(key);
         if (type==FieldDefs.TYPE_INTEGER) {
+            stmt.setInt(i, node.getIntValue(key));
+        } if (type==FieldDefs.TYPE_NODE) {
             stmt.setInt(i, node.getIntValue(key));
         } else if (type==FieldDefs.TYPE_FLOAT) {
             stmt.setFloat(i, node.getFloatValue(key));
@@ -1609,6 +1591,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                         case FieldDefs.TYPE_STRING:
                             setDBText(dbpos,stmt2,new String());
                             break;
+                        case FieldDefs.TYPE_NODE:
                         case FieldDefs.TYPE_INTEGER:
                             stmt2.setInt(dbpos,-1);
                             break;
@@ -1636,6 +1619,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                                 setDBText(dbpos,stmt2,o.toString());
                             }
                             break;
+                        case FieldDefs.TYPE_NODE:
                         case FieldDefs.TYPE_INTEGER:
                             stmt2.setInt(dbpos,((Number)o).intValue());
                             break;
