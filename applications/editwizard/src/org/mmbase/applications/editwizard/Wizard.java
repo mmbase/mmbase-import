@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.23 2002-05-23 08:05:04 pierre Exp $
+ * @version $Id: Wizard.java,v 1.24 2002-05-23 12:22:23 michiel Exp $
  *
  */
 public class Wizard {
@@ -1071,10 +1071,14 @@ public class Wizard {
      * @param  fid     The wizarddefinition field id what applies to this data
      * @param  value   The (String) value what should be stored in the data.
      */
-    private void storeValue(String did, String fid, String value) {
+    private void storeValue(String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled())
             log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
-        String ftype = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@ftype").getNodeValue();
+        Node  ftypeNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@ftype");
+        if (ftypeNode == null) {
+            throw new WizardException("No node with fid=" + fid + " could be found");
+        }
+        String ftype = ftypeNode.getNodeValue();
         Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
         boolean ok = false;
 
