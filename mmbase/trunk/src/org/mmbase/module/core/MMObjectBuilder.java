@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.162 2002-10-08 18:53:35 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.163 2002-10-08 19:13:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1599,7 +1599,14 @@ public class MMObjectBuilder extends MMTable {
 	    msg += "(number of different types:"+ convert.size()  +")";
 	    log.warn(msg);
 	}
-	if(log.isServiceEnabled()) log.service("retrieved "+results.size()+" nodes, converted "+convertedCount+" of the "+convertCount +" invalid nodes("+convert.size()+" types, "+cacheGetCount+" from cache, "+cachePutCount+" to cache)");
+	if(log.isDebugEnabled()) {
+            log.debug("retrieved " + results.size() + 
+                        " nodes, converted " + convertedCount + 
+                        " of the " + convertCount + 
+                        " invalid nodes(" + convert.size() + 
+                        " types, " + cacheGetCount + 
+                        " from cache, " + cachePutCount + " to cache)");
+        }
 	return results;
     }
 
