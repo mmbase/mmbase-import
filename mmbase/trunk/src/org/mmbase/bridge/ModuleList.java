@@ -16,9 +16,9 @@ import java.util.List;
  * A list of modules
  *
  * @author Pierre van Rooden
- * @version $Id: ModuleList.java,v 1.3 2002-01-31 10:05:07 pierre Exp $
+ * @version $Id: ModuleList.java,v 1.4 2002-09-23 14:31:02 pierre Exp $
  */
-public interface ModuleList extends List {
+public interface ModuleList extends BridgeList {
 
     /**
      * Returns the Module at the indicated postion in the list
