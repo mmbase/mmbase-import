@@ -24,11 +24,11 @@ public class BuilderRect extends Object {
     private int x,y,dx,dy,h;
     private FontMetrics fm;
     private Font namefont;
-    private XMLBuilderReader bul;
+    private BuilderReader bul;
     private Vector fields;
     private String name;
     
-    public BuilderRect(AppCanvas parent,String name,XMLBuilderReader bul,int size,int x, int y) {
+    public BuilderRect(AppCanvas parent,String name,BuilderReader bul,int size,int x, int y) {
         this.parent=parent;
         this.name=name;
         this.bul=bul;

@@ -20,6 +20,7 @@ import java.util.Hashtable;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.xml.BuilderReader;
+import org.mmbase.util.xml.DatabaseReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.xml.sax.EntityResolver;
@@ -32,7 +33,7 @@ import org.xml.sax.SAXException;
  * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.36 2003-07-18 14:57:50 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.37 2003-07-21 12:19:06 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -73,7 +74,7 @@ public class XMLEntityResolver implements EntityResolver {
         XMLBasicReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
         XMLApplicationReader.registerPublicIDs();
-        XMLDatabaseReader.registerPublicIDs();
+        DatabaseReader.registerPublicIDs();
         XMLModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
