@@ -7,7 +7,7 @@
 <html>
 <head>
   <title>MMBase Demos</title>
-  <link rel="stylesheet" href="../mmbase/style/css/mmbase.css" type="text/css" />
+  <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
 </head>
 
 <body >      
@@ -24,6 +24,7 @@
         <p>
           <a href="<mm:url page="install.jsp" />">Demo-application installation page</a>
         </p>
+        <br />
       </td>
     </tr>
     
@@ -43,7 +44,7 @@
         Small example of a news/magazine system
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/mynews.jsp" />"><img alt="&gt;" src="../mmbase/style/images/next.gif" /></a>
+        <a href="<mm:url page="jsp/mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
@@ -53,7 +54,7 @@
         A lot of different examples for the MMBase taglib.
       </td>
       <td class="link" >
-        <a href="<mm:url page="taglib/" />"><img alt="&gt;" src="../mmbase/style/images/next.gif"  /></a>
+        <a href="<mm:url page="taglib/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />"  /></a>
       </td>
     </tr>
     
@@ -63,7 +64,7 @@
         Alternative generic editors
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/my_editors/" />"><img alt="&gt;" src="../mmbase/style/images/next.gif"/></a>
+        <a href="<mm:url page="jsp/my_editors/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
@@ -73,7 +74,7 @@
         Example of the community-features of MMBase (forum &amp; chat)
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/community.jsp" />"><img alt="&gt;" src="../mmbase/style/images/next.gif" /></a>
+        <a href="<mm:url page="jsp/community.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
@@ -95,7 +96,7 @@
         Different editwizard-examples.
       </td>
       <td class="link" >
-        <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="../mmbase/style/images/next.gif"  /></a>
+        <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
@@ -106,14 +107,16 @@
         Shows text in different encodings.
       </td>
       <td class="link" >
-        <a href="<mm:url page="codings/" />"><img alt="&gt;" src="../mmbase/style/images/next.gif" /></a>
+        <a href="<mm:url page="codings/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
     <tr><td colspan="3">&nbsp;</td></tr>
     
   </table>
-  <a href="<mm:url page=".." />"> back</a>
+  <div class="link">
+    <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
+  </div>
 </body>
 </html>
 </mm:cloud>
