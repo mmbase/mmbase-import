@@ -35,20 +35,20 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.109 2003-09-03 14:37:56 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.110 2003-09-10 11:11:20 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
-    
+
     /**
      * Holds the name - value pairs of this node (the node's fields).
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
      * This collection should not be directly queried or changed -
      * use the SetValue and getXXXValue methods instead.
-     * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values. 
-     * It should then be made private, and methods that change the map (storeValue) be made synchronized. 
-     * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private. 
+     * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values.
+     * It should then be made private, and methods that change the map (storeValue) be made synchronized.
+     * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
      * @scope private
      */
     public Hashtable values = new Hashtable();
@@ -62,6 +62,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             public String toString() { return "[FIELD VALUE NULL]"; }
         };
 
+    /**
+     * Determines whether the node is being initialized (typically when it is loaded from the database).
+     * Use {@link #start())} to start initializing, use {@link #finish())} to end.
+     */
+    protected boolean initializing = false;
 
     /**
      * Results of getRelatedNodes
@@ -102,7 +107,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * possible.
      * This is a 'default' value.
      * XXX: specifying the prefix in the fieldName SHOULD override this field.
-     * 
+     *
      * MM: The function of this variable is not very clear. I think a Node should either be
      *     not a clusternode, in which case it does not need prefixed fields, or it should be a clusternode
      *     and then fields might be prefixed, but anyway it should be implemented in ClusterNode itself.
@@ -159,7 +164,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             values = node.values;
         } else {
             // remove prefixed values (which appear in clusternodes with more then one step, but in a real node, they should not appear)
-            String prefix = stepAlias + '.'; 
+            String prefix = stepAlias + '.';
             int length    = prefix.length();
             Iterator i = node.values.entrySet().iterator();
             while (i.hasNext()) {
@@ -173,7 +178,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     } else {
                         log.debug("this cannot be  field is not a field of this builder");
                     }
-                           
+
                 }
             }
         }
@@ -182,7 +187,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         Integer otype  = (Integer) values.get("otype");
 
         if (otype != null && otype.intValue() ==  parent.getObjectType()) { // only if it also the right type
-            Integer number = (Integer) values.get("number");       
+            Integer number = (Integer) values.get("number");
             if (number != null) {
                 NodeCache cache = NodeCache.getCache();
                 cache.put(number, this);
@@ -212,6 +217,20 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
         }
         return builder;
+    }
+
+    /**
+     * Start the loading of a node
+     */
+    public void start() {
+        initializing = true;
+    }
+
+    /**
+     * Finish the loading of a node
+     */
+    public void finish() {
+        initializing = false;
     }
 
     /**
@@ -328,7 +347,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Stores a value in the values hashtable.
-     * @todo This should become a synchronized method, once values becomes a private HashMap instead of a 
+     * @todo This should become a synchronized method, once values becomes a private HashMap instead of a
      * public Hashtable.
      *
      * @param fieldName the name of the field to change
@@ -920,7 +939,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Hashtable getValues() {
         return values;
     }
-    
+
 
 
     /**
@@ -1206,7 +1225,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes() {
-        return getRelatedNodes("object", null, ClusterBuilder.SEARCH_EITHER);        
+        return getRelatedNodes("object", null, ClusterBuilder.SEARCH_EITHER);
     }
 
     /**
@@ -1297,9 +1316,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 
         if( builder != null ) {
-            
+
             ClusterBuilder clusterBuilder = parent.mmb.getClusterBuilder();
-            
+
 
             // multilevel from table this.parent.name -> type
             List tables = new ArrayList();
@@ -1328,7 +1347,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             SearchQuery query = clusterBuilder.getMultiLevelSearchQuery(snodes, fields, "NO", tables,  null, ordered, directions, search_type);
             List v = (List) relatedCache.get(query);
             if (v == null) {
-                try {                    
+                try {
                     v = clusterBuilder.getClusterNodes(query);
                     relatedCache.put(query, v);
                 } catch (SearchQueryException sqe) {
@@ -1349,7 +1368,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         if (log.isDebugEnabled()) {
             log.debug("related("+parent.getTableName()+"("+getNumber()+")) -> "+type+" = size("+result.size()+")");
         }
-        
+
         return result;
     }
 

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.45 2003-09-02 20:06:43 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.46 2003-09-10 11:11:20 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -361,7 +361,7 @@ public class ClusterBuilder extends VirtualBuilder {
             // If this fails, fall back to legacy code.
         } catch (Exception e) {
             if (log.isServiceEnabled()) {
-                log.service("Failed to create SearchQuery for multilevel search, " 
+                log.service("Failed to create SearchQuery for multilevel search, "
                             + "exception:\n" + Logging.stackTrace(e)
                             + "\nFalling back to legacy code in ClusterBuilder...");
             }
@@ -500,6 +500,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     while (rs.next()) {
                         // create a new VIRTUAL object and add it to the result vector
                         node= new ClusterNode(this, tables.size());
+                        node.start();
                         ResultSetMetaData rd= rs.getMetaData();
                         String fieldname;
                         for (int i= 1; i <= rd.getColumnCount(); i++) {
@@ -507,7 +508,7 @@ public class ClusterBuilder extends VirtualBuilder {
                             fieldname= rd.getColumnName(i);
                             mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i, prefix);
                         }
-                        node.initializing= false;
+                        node.finish();
                         results.addElement(node);
                     }
                     //  return the results
@@ -541,7 +542,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
-        
+
         return mmb.getDatabase().getNodes(query, this);
     }
 
@@ -1044,7 +1045,7 @@ public class ClusterBuilder extends VirtualBuilder {
                         "((" + sourceNumber + "=" + relChar + ".snumber AND " +
                              destNumber + "=" + relChar + ".dnumber ) OR (" +
                              sourceNumber + "=" + relChar + ".dnumber AND " +
-                             destNumber + "=" + relChar + ".snumber" + 
+                             destNumber + "=" + relChar + ".snumber" +
                              dirstring + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
@@ -1065,8 +1066,8 @@ public class ClusterBuilder extends VirtualBuilder {
                     log.warn(
                         "There are no relations possible (no typerel specified) between " +
                         getTableName((String)alltables.elementAt(i)) + " and " +
-                        getTableName((String)alltables.elementAt(i + 2)) + 
-                        " using " + alltables.elementAt(i + 1) + 
+                        getTableName((String)alltables.elementAt(i + 2)) +
+                        " using " + alltables.elementAt(i + 1) +
                         " in " + getSearchDirString(searchdir) + " direction(s)");
                     return null;
                 }
@@ -1252,7 +1253,7 @@ public class ClusterBuilder extends VirtualBuilder {
         // Add constraint for the where part.
         if (where != null && where.trim().length() != 0) {
             //is the query contained a constraint we need to parse that constrataint
-            //and add it to the query, the ConstraintParser takes a query as argument 
+            //and add it to the query, the ConstraintParser takes a query as argument
             //in order to be abble to resolve tablenames etc..
             query.setConstraint(new ConstraintParser(query).toConstraint(where));
        }
@@ -1609,7 +1610,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
             // Not found, then try again with parentbuilder.
             builder= builder.getParentBuilder();
-        } while (builder != null && result == null); 
+        } while (builder != null && result == null);
 
         return result;
     }
@@ -1653,7 +1654,7 @@ public class ClusterBuilder extends VirtualBuilder {
             } else {
                 roleInt = -1;
             }
-            
+
             if (!mmb.getTypeRel().optimizeRelationStep(relationStep, sourceType, destinationType, roleInt, searchDir)) {
                 if (searchDir != SEARCH_SOURCE && searchDir != SEARCH_DESTINATION) {
                     log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchDir) + ". Searching in 'destination' direction now, but perhaps the query should be fixed, because this should always result nothing.");
