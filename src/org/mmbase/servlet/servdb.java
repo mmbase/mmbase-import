@@ -105,7 +105,7 @@ public class servdb extends JamesServlet {
         incRefCount(req);
 		
         try {
-            scanpage sp = getscanpage( req, res );
+            scanpage sp = new scanpage(this, req, res, sessions );
 
             boolean isInternal = sp.isInternalVPROAddress();
 
@@ -588,24 +588,6 @@ public class servdb extends JamesServlet {
             return null;
         else
             return sessions.getSession(sp,sp.sname);
-    }
-
-    private scanpage getscanpage( HttpServletRequest req, HttpServletResponse res ) {
-        scanpage sp=new scanpage();
-        sp.req_line=req.getRequestURI();
-        sp.querystring=req.getQueryString();
-        sp.setReq(req);
-        String sname=getCookie(sp.req,res);
-        sp.sname=sname;
-        sessionInfo session=getSession(sp);
-        sp.session=session;
-        ServletConfig sc=getServletConfig();
-        ServletContext sx=sc.getServletContext();
-        String mimetype=sx.getMimeType(sp.req_line);
-        if (mimetype==null) mimetype="text/html";
-        sp.mimetype=mimetype;
-
-        return sp;
     }
 
     public Vector filterSessionMods(scanpage sp,Vector params,HttpServletResponse res) {
