@@ -33,9 +33,9 @@ import org.mmbase.util.logging.Logging;
  * hold all request related information, because we want to extend the model
  * of offline page generation.
  *
- * @rename Scanpage
-  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.22 2003-05-08 06:09:25 kees Exp $
+ * @rename ScanPage
+ * @author Daniel Ockeloen
+ * @version $Id: scanpage.java,v 1.23 2003-07-16 10:22:24 pierre Exp $
  */
 public class scanpage {
     // logger
@@ -90,69 +90,66 @@ public class scanpage {
      */
     public boolean reload=false;
 
-        /**
-         *  Empty constructor for code not yet fixed, constructing its own scanpage
-         *  Should use new constructor if possible.
-         */
-
-        public scanpage() {}
-
-        /**
-         * Construct a scanpage for a servlet
-         */
-        public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
-                setReq(req);
-                setRes(res);
-                req_line = req.getServletPath();
-                querystring = req.getQueryString();
-
-                // needs to be replaced (get the context ones)
-                ServletConfig sc = servlet.getServletConfig();
-                ServletContext sx = sc.getServletContext();
-                mimetype = sx.getMimeType(req_line);
-                if (mimetype==null) mimetype = "text/html";
-
-                sname = servlet.getCookie(req, res);
-                if (sessions!=null) session = sessions.getSession(this, sname);
-                CheckEditorReload();
-        }
-
-        /**
-         * Check whether the page, multilevels etc may be fetched from the caches
-         * or they should be (re-)calculated/retrieved. The session variable RELOAD
-         * will be checked, if it contains the value "R" and the sessionvariable
-         * RELOADTIME contains a time less than the const EXPIRE seconds ago, then
-         * the request for reload will be honoured.
-         * @return the method returns void and sets the field reload to true or false
+    /**
+     *  Empty constructor for code not yet fixed, constructing its own scanpage
+     *  Should use new constructor if possible.
      */
-        private final static int EXPIRE = 120;
+    public scanpage() {}
 
-        void CheckEditorReload() {
-                reload = false;
-                // try to obtain and set the reload mode.
-                if (session==null)
-                        return;
-                String s=session.getValue("RELOAD");
-                if ((s==null) || !s.equals("R"))
-                        return;
-                // check if it expired
-                s = session.getValue("RELOADTIME");
-                if (s!=null) {
-                        try {
-                                int then=Integer.parseInt(s);
-                                int now= (int)(System.currentTimeMillis()/1000);
-                                if ((now-then)<EXPIRE) {
-                                        reload = true;
-                                        if (log.isDebugEnabled()) {
-                                                log.debug("CheckEditorReload remote user:"+HttpAuth.getRemoteUser(req));
-                                        }
-                                } else {
-                                        if (log.isDebugEnabled()) log.debug("CheckEditorReload, reload expired for remote user:"+HttpAuth.getRemoteUser(req));
-                                }
-                        } catch(Exception e) {}
+    /**
+     * Construct a scanpage for a servlet
+     */
+    public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
+        setReq(req);
+        setRes(res);
+        req_line = req.getServletPath();
+        querystring = req.getQueryString();
+
+        // needs to be replaced (get the context ones)
+        ServletConfig sc = servlet.getServletConfig();
+        ServletContext sx = sc.getServletContext();
+        mimetype = sx.getMimeType(req_line);
+        if (mimetype==null) mimetype = "text/html";
+
+        sname = servlet.getCookie(req, res);
+        if (sessions!=null) session = sessions.getSession(this, sname);
+        CheckEditorReload();
+    }
+
+    /**
+     * Check whether the page, multilevels etc may be fetched from the caches
+     * or they should be (re-)calculated/retrieved. The session variable RELOAD
+     * will be checked, if it contains the value "R" and the sessionvariable
+     * RELOADTIME contains a time less than the const EXPIRE seconds ago, then
+     * the request for reload will be honoured.
+     * @return the method returns void and sets the field reload to true or false
+     */
+    private final static int EXPIRE = 120;
+
+    void CheckEditorReload() {
+        reload = false;
+        // try to obtain and set the reload mode.
+        if (session==null) return;
+        String s=session.getValue("RELOAD");
+        if ((s==null) || !s.equals("R")) return;
+        // check if it expired
+        s = session.getValue("RELOADTIME");
+        if (s!=null) {
+            try {
+                int then=Integer.parseInt(s);
+                int now= (int)(System.currentTimeMillis()/1000);
+                if ((now-then)<EXPIRE) {
+                    reload = true;
+                    if (log.isDebugEnabled()) {
+                        log.debug("CheckEditorReload remote user:"+HttpAuth.getRemoteUser(req));
+                    }
+                } else {
+                    if (log.isDebugEnabled()) log.debug("CheckEditorReload, reload expired for remote user:"+HttpAuth.getRemoteUser(req));
                 }
-                if (!reload) session.setValue("RELOAD","N");
+            } catch(Exception e) {}
         }
+        if (!reload) session.setValue("RELOAD","N");
+    }
 
     /**
      * Sets the HttpServletRequest.
@@ -300,38 +297,39 @@ public class scanpage {
     // -------
 
     /**
-    * Extract hostname from scanpage, get address and determine the proxies between it.
-    * <br />
-    * Needed to determine if user comes from internal or external host, because
-    * we use two streaming servers, one for external users and one for internal users.
-    * <br />
-    * input     : scanpage sp, contains hostname as ipaddress<br />
-    * output    : String "clientproxy.clientside.com->dialin07.clientside.com"<br />
-    * <br />
-    * uses      : VPROProxyName, VPROProxyAddress
-    */
+     * Extract hostname from scanpage, get address and determine the proxies between it.<br />
+     * Needed to determine if user comes from internal or external host, because
+     * we use two streaming servers, one for external users and one for internal users.
+     * <br />
+     * input     : scanpage sp, contains hostname as ipaddress<br />
+     * output    : String "clientproxy.clientside.com->dialin07.clientside.com"<br />
+     * <br />
+     * uses      : VPROProxyName, VPROProxyAddress
+     */
     public String getAddress() {
         String  result      = null;
         boolean fromProxy   = false;
         String  addr        = req.getRemoteHost();
 
-        if( addr != null && !addr.equals("") ) {
-            // from proxy ?
-            // ------------
-            if( addr.indexOf( VPROProxyName ) != -1 || addr.indexOf( VPROProxyAddress ) != -1 ) {
-                // get real address
-                fromProxy = true;
-                addr = req.getHeader("X-Forwarded-For");
-                if( addr != null && !addr.equals("") ) {
-                    result = addr;
-                }
-            } else {
-                result = addr;
-            }
+        // check whether the user came through a proxy
+        // This code tests for a specific vpro proxy server
+        // should probably be made generic
+        // Not sure how to do this, maybe just test for X-Forwarded-For header?
+        if( addr != null && (addr.indexOf( VPROProxyName ) != -1 || addr.indexOf( VPROProxyAddress ) != -1 )) {
+            // get real address
+            fromProxy = true;
+            addr = req.getHeader("X-Forwarded-For");
         }
-        result = getHostNames( addr );
-        if( fromProxy ) {
-            result = "zen.vpro.nl->" + result;
+        if (addr != null) {
+            // get hostnames for this user 
+            result = getHostNames( addr );
+            
+            // extend the path with a proxy (?) server
+            // vpro specific server, so should be made generic 
+            // (no idea how, maybe make configurable?)
+            if( fromProxy ) {
+                result = "zen.vpro.nl->" + result;
+            }
         }
         return result;
     }
@@ -400,24 +398,28 @@ public class scanpage {
         }
     }
 
-        public scanpage duplicate() {
-                scanpage dup=new scanpage();
-                dup.res=null;
-                dup.req=null;
-                dup.params=null;
-                dup.processor=this.processor;
+    /**
+     * Creates a duplicate of this scanpage
+     * @return the duplicate scanpage
+     */
+    public scanpage duplicate() {
+        scanpage dup=new scanpage();
+        dup.res=null;
+        dup.req=null;
+        dup.params=null;
+        dup.processor=this.processor;
         dup.session=this.session;
         dup.sname=this.sname;
         dup.name=this.name;
-                dup.rstatus=this.rstatus;
-                dup.body=this.body;
-                dup.req_line=this.req_line;
-                dup.wantCache=this.wantCache;
-                dup.mimetype=this.mimetype;
-                dup.querystring=this.querystring;
-                dup.partlevel=this.partlevel;
-                dup.loadmode=this.loadmode;
+        dup.rstatus=this.rstatus;
+        dup.body=this.body;
+        dup.req_line=this.req_line;
+        dup.wantCache=this.wantCache;
+        dup.mimetype=this.mimetype;
+        dup.querystring=this.querystring;
+        dup.partlevel=this.partlevel;
+        dup.loadmode=this.loadmode;
         dup.reload=this.reload;
-                return(dup);
-        }
+        return dup;
+    }
 }
