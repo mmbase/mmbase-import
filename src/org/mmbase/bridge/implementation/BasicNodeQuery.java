@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.17 2004-02-20 07:31:55 pierre Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.18 2004-02-24 12:23:37 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -116,6 +116,11 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return null; // hmm.
     }
 
+
+    public void removeFields() {
+        explicitFields.clear();
+        setNodeStep(step);
+    }
 
     /**
      * Adds all fields of the gives collection, unless it is a field of the 'step' itself
