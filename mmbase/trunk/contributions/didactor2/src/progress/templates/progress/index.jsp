@@ -34,137 +34,59 @@
 <%--    Some buttons working on this folder--%>
   </div>
   <div class="contentBodywit">
-
-<di:hasrole role="student">
-<mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"/></mm:import>
-Percentage doorlopen: <%= (int)(progress.doubleValue()*100.0)%>%
-<p/>
-</di:hasrole>
-
-<%-- Look-up workgroup --%>
-
-<mm:import id="workgroupno">0</mm:import>
-<mm:import id="workgroupname">Unknown</mm:import>
-
-<mm:node number="$user">
-<mm:relatedcontainer path="workgroups,classes">
-  <mm:related>
-    <mm:remove referid="classno"/>
-    <mm:field name="classes.number" id="classno" write="false"/>
-    
-    <mm:compare referid="classno" referid2="class">
-      <mm:remove referid="workgroupno"/>
-      <mm:remove referid="workgroupname"/>
-      <mm:field id="workgroupno" name="workgroups.number" write="false"/>
-      <mm:field id="workgroupname" name="workgroups.name" write="false"/>
-    </mm:compare>
-  </mm:related>
-</mm:relatedcontainer>
-</mm:node>
+<br/><br/><br/>
 
 
-<%--
-<mm:list nodes="$user" path="people,workgroups,classes" constraints="classes.number=$class">
-    <mm:remove referid="workgroupno"/>
-    <mm:remove referid="workgroupname"/>
-    <mm:field id="workgroupno" name="workgroups.number" write="false"/>
-    <mm:field id="workgroupname" name="workgroups.name" write="false"/>
-</mm:list>
---%>
-Werkgroep : <mm:write referid="workgroupname"/>
-<p/>
-
-	<mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number='${user}' and classes.number=${class}">
-		<mm:field name="classrel.number" id="classrel" write="false"/>
-	</mm:list>
-	<mm:node referid="classrel">
-		<di:translate>Aantal maal ingelogd</di:translate>: <mm:field name="logincount"/>
-		<p />
-		<di:translate>Duur inloggen</di:translate>: <mm:field name="onlinetime" jspvar="onlinetime" vartype="Integer" write="false">
-			<%
-				int hour = onlinetime.intValue() / 3600;
-				int min = (onlinetime.intValue() % 3600) / 60;
-			%>
-<%--			<mm:import id="time" ><%=onlinetime%></mm:import>
-			<mm:write referid="time">
-				<mm:time format="hh:mm:ss"/>
-			</mm:write>--%>
-			<%=hour%> uur en <%=min%> minuten.
-			<br />
-<%--			<%=onlinetime.intValue()/3600%> uur en <%=(onlinetime.intValue()%3600)/60%> minuten.--%>
-		</mm:field>
-		<p />
-	</mm:node>
-
+<mm:node number="$education">
+<b><mm:field name="name" write="true"/></b>
 <table class="font">
 <tr>
-<%-- print header: the names of the tests --%>
-<% int count=0; %>
-<mm:node number="$education" notfound="skip">
-  <th><mm:field name="name" write="true"/></th>
+<th></th>
+    <mm:node number="progresstextbackground">
+    <th>
+        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Voortgang')+rotate(90)"/>">
+    </th>
+     <th>
+        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Keer ingelogd')+rotate(90)"/>">
+    </th>
+      <th>
+        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Tijd ingelogd')+rotate(90)"/>">
+    </th>
+    </mm:node>
+    
   <mm:relatednodescontainer type="learnobjects" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
     <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
-
-      <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
+      <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
-        <% count ++; %>
-        <th>      <%=count%></th>
+         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<mm:field name="name"/>')+rotate(90)</mm:import>
+         <mm:node number="progresstextbackground">
+         <th><img src="<mm:image template="$template"/>"></th>
+         </mm:node>
       </mm:compare>
-      <mm:remove referid="nodetype"/>
     </mm:tree>
   </mm:relatednodescontainer>
-</mm:node> <!-- education node -->
 </tr>
-
-<%-- List progress of all students in the group --%>
-
-<di:hasrole role="teacher">
-  <mm:node number="$user">
-  <mm:relatednodescontainer type="workgroups">
-    <mm:constraint field="number" referid="workgroupno"/>
-    <mm:relatednodes>
-      <mm:relatednodes type="people">
-        <mm:field id="userNo" name="number" write="false"/>
-        <di:hasrole referid="userNo" role="student">
-          <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids">
-            <mm:param name="userNoX"><mm:write referid="userNo"/></mm:param>
-          </mm:treeinclude>
-        </di:hasrole>
-        <mm:remove referid="userNo"/>
-      </mm:relatednodes><%-- people --%>
-    </mm:relatednodes>
-  </mm:relatednodescontainer> <%-- workgroups --%>
-
-  </mm:node> <%-- user --%>
-
-</di:hasrole> <%-- teacher --%>
+</mm:node>
 <di:hasrole role="student">
-  <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="userNoX"><mm:write referid="user"/></mm:param>
-  </mm:treeinclude>
-</di:hasrole> <%-- student --%>
+ <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="student"><mm:write referid="user"/></mm:param>
+ </mm:treeinclude>
+</di:hasrole>
+<di:hasrole role="teacher">
+    <mm:node referid="class">
+        <mm:relatednodes type="people">
+            <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
+            <di:hasrole role="student" referid="studentnumber">
+                <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="student"><mm:field name="number"/></mm:param>
+                </mm:treeinclude>
+            </di:hasrole>
+        </mm:relatednodes>
+    </mm:node>
+</di:hasrole>
 
-</table>
-<br>
-<table class="font">
-<%-- print header: the names of the tests --%>
-<% count=0; %>
-<mm:node number="$education" notfound="skip">
-  <tr><th>No</th><th>Toetsnaam</th></tr>
-  <mm:relatednodescontainer type="learnobjects" role="posrel">
-    <mm:sortorder field="posrel.pos" direction="up"/>
-    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
 
-      <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
-      <mm:compare referid="nodetype" value="tests">
-        <% count++; %>
-        <tr><td><%=count%></td><td><mm:field name="name" write="true"/></td></tr>
-      </mm:compare>
-      <mm:remove referid="nodetype"/>
-    </mm:tree>
-  </mm:relatednodescontainer>
-</mm:node> <%-- education node --%>
 </table>
 
 
