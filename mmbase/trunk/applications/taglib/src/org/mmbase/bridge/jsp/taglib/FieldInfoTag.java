@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.76 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: FieldInfoTag.java,v 1.77 2005-03-14 19:02:35 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -383,7 +383,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Write the value of the fieldinfo.
      */
     public int doEndTag() throws JspTagException {
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 
     public int doAfterBody() throws JspException {

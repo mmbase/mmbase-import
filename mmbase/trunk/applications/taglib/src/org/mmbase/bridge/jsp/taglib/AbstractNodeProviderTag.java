@@ -28,7 +28,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.33 2005-03-02 23:06:48 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.34 2005-03-14 19:02:35 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -98,6 +98,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
     
     public int doEndTag() throws JspTagException {
+        super.doEndTag();
         return nodeHelper.doEndTag();
     }
 }

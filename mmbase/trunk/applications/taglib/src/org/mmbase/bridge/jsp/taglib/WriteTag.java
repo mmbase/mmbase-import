@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.44 2005-02-02 20:56:58 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.45 2005-03-14 19:02:35 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -147,8 +147,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             }
 
             // remove all cookies with given name
-            HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
-            HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
+            HttpServletRequest request   = ((HttpServletRequest)  pageContext.getRequest());
+            HttpServletResponse response = ((HttpServletResponse) pageContext.getResponse());
             
             if (log.isDebugEnabled()) {
                 log.debug("Writing cookie " + cookie + " / " + v);
