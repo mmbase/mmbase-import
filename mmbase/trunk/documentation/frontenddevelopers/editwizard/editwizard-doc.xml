@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
 <article>
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.10 2002-12-11 13:57:17 michiel Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.11 2002-12-20 13:35:32 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -121,8 +122,8 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 		<section>
 			<title>Step 1. Deciding what to do</title>
 			<para>First, you need to decide what your wizard should do. In our first example, we just want to let the user edit the plain fields of a very simple object. We use the builder: "people" to make our first wizard (this builder is present if you installed the MyNews application).</para>
-			<para>Users will be able to add, delete and change people-objects (persons in real-life) using this wizard. If you just want to see how it’s done, see the working example in the editwizard installation.</para>
-			<para>We also need to decide where to put our wizards; for the purpose of the current example, we suggest to place them in the directory ‘data’ inside the mmapps/editwizard directory. This will enable us to directly call the wizards and use the examples (we will later see how you can place your wizard files somewhere else).</para>
+			<para>Users will be able to add, delete and change people-objects (persons in real-life) using this wizard. If you just want to see how it's done, see the working example in the editwizard installation.</para>
+			<para>We also need to decide where to put our wizards; for the purpose of the current example, we suggest to place them in the directory 'data' inside the mmapps/editwizard directory. This will enable us to directly call the wizards and use the examples (we will later see how you can place your wizard files somewhere else).</para>
 			<para>Let's say we make a new directory, named "practice" in the "data" directory. So, the path from the web-root looks as follows: mmapps/editwizard/data/practice</para>
 		</section>
 		<section>
@@ -1985,17 +1986,17 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 		<section id="filelocation">
 			<title>Location of files</title>
 			<para>
-        The editwizards xml files have to be in a subdirectory of the
-        directory from where the list.jsp or wizard.jsp is referred
-        (where the 'entrance page' is). The directory from which
-        wizard.jsp and list.jsp are called is denoted the
-        "referrer"-directory.
-      </para>
-      <para>
-        To make sure the "referrer" directory can always be
-        determined, it is a good idea to supply the 'calling file' it
-        to the editwizard-jsp's as an argument (taglib example):
-        <programlisting format="referrer">
+				The editwizards xml files have to be in a subdirectory of the
+				directory from where the list.jsp or wizard.jsp is referred
+				(where the 'entrance page' is). The directory from which
+				wizard.jsp and list.jsp are called is denoted the
+				"referrer"-directory.
+			</para>
+			<para>
+				To make sure the "referrer" directory can always be
+				determined, it is a good idea to supply the 'calling file' it
+				to the editwizard-jsp's as an argument (taglib example):
+				<programlisting format="linespecific">
 			<![CDATA[
 <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
 <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
@@ -2003,27 +2004,27 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
  ..
  ..
 
-<a href="<mm:url referids="referrer,language" page="${jsps}list.jsp">           
-           <mm:param name="wizard">tasks/people</mm:param>
-           <mm:param name="nodepath">people</mm:param>
-           <mm:param name="fields">number,firstname,lastname</mm:param>
-           <mm:param name="orderby">number</mm:param>
-           <mm:param name="directions">down</mm:param>
-           </mm:url>">Person test</a>
+<a href="<mm:url referids="referrer,language" page="${jsps}list.jsp">
+					 <mm:param name="wizard">tasks/people</mm:param>
+					 <mm:param name="nodepath">people</mm:param>
+					 <mm:param name="fields">number,firstname,lastname</mm:param>
+					 <mm:param name="orderby">number</mm:param>
+					 <mm:param name="directions">down</mm:param>
+					 </mm:url>">Person test</a>
 
-]]>         
+]]>
 			</programlisting>
-        Without this parameter the HTTP-request header 'Referer' will
-        be consulted, but this header is for browsers only optional.
-      </para>
+				Without this parameter the HTTP-request header 'Referer' will
+				be consulted, but this header is for browsers only optional.
+			</para>
 		</section>
 		<section id="layout">
 			<title>Manipulating the editwizard layout</title>
 			<para>
-        The standard editwizard templates and stylesheets can be
-        overridden to adjust them to your own needs and wishes. See
-        the example below on what is possible.
-      </para>
+				The standard editwizard templates and stylesheets can be
+				overridden to adjust them to your own needs and wishes. See
+				the example below on what is possible.
+			</para>
 			<figure float="0">
 				<title>3 VOOR 12 version of the editwizards</title>
 				<screenshot>
@@ -2031,51 +2032,51 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 				</screenshot>
 			</figure>
 			<para>
-        To override classes of the default stylesheet in
-        "/mmapps/editwizard/style" place a file style.css in the
-        "referrer"-directory and add any classes you wish to override
-        to this file. This style sheet must be configured as
-        'extrastyle' to the XSL Transformations. You do that by
-        placing a file xsl/base.xsl in the "referrer"-directory with
-        the following content:
-        <programlisting format="base.xsl">
+				To override classes of the default stylesheet in
+				"/mmapps/editwizard/style" place a file style.css in the
+				"referrer"-directory and add any classes you wish to override
+				to this file. This style sheet must be configured as
+				'extrastyle' to the XSL Transformations. You do that by
+				placing a file xsl/base.xsl in the "referrer"-directory with
+				the following content:
+				<programlisting format="linespecific">
 			<![CDATA[
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
-  <xsl:import href="ew:xsl/base.xsl" /> <!-- extend from standard  editwizard xslt -->
-  
-  <xsl:template name="extrastyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}style.css" ></link>
-    <!-- the $referrerdir variable can be used to to construct the right path to the 'referrer' directory -->
-  </xsl:template>
-   
+	<xsl:import href="ew:xsl/base.xsl" /> <!-- extend from standard  editwizard xslt -->
+
+	<xsl:template name="extrastyle">
+		<link rel="stylesheet" type="text/css" href="{$referrerdir}style.css" ></link>
+		<!-- the $referrerdir variable can be used to to construct the right path to the 'referrer' directory -->
+	</xsl:template>
+
 </xsl:stylesheet>
 ]]>
 			</programlisting>
-      </para>      
-      <para>
-        So, this means that you can override any xsl templates in
-        /mmapps/editwizard/data/xsl.  Create files like wizard.xsl,
-        list.xsl and base.xsl and add the templates you wish to
-        override in these files. Create a directory "xsl " in the
-        "referrer"-directory and place your own *.xsl files in this
-        directory.
-      </para>
+			</para>
+			<para>
+				So, this means that you can override any xsl templates in
+				/mmapps/editwizard/data/xsl.  Create files like wizard.xsl,
+				list.xsl and base.xsl and add the templates you wish to
+				override in these files. Create a directory "xsl " in the
+				"referrer"-directory and place your own *.xsl files in this
+				directory.
+			</para>
 		</section>
 		<section id="internationalisation">
 			<title>Internationalisation</title>
 			<para>
-        The default (english) prompts of the editwizards are defined in
-        /mmapps/editwizard/data/xsl/prompts.xsl. If the language is not english
-        then the 'prompts.xsl' is first search for in the directory 
-        /mmapps/editwizard/data/i18n/&lt;language code&gt;/.
-      </para>
-      <para>
-        The language is determined by the mmbaseroot.xml setting, but
-        you can also specify it by supplying a "language" parameter to
-        the editwizard jsp's, then your pages are independent of this
-        setting.
-      </para>
+				The default (english) prompts of the editwizards are defined in
+				/mmapps/editwizard/data/xsl/prompts.xsl. If the language is not english
+				then the 'prompts.xsl' is first search for in the directory
+				/mmapps/editwizard/data/i18n/&lt;language code&gt;/.
+			</para>
+			<para>
+				The language is determined by the mmbaseroot.xml setting, but
+				you can also specify it by supplying a "language" parameter to
+				the editwizard jsp's, then your pages are independent of this
+				setting.
+			</para>
 		</section>
 	</section>
 </article>
