@@ -85,7 +85,6 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
             return value;
         }
 
-
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
             return getContextTag().getBytes(getReferid()); // a hack..            
         }
@@ -120,6 +119,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, WriterReferr
             }
             c.setMaxAge(MAX_COOKIE_AGE);
             ((HttpServletResponse)pageContext.getResponse()).addCookie(c); 
+            helper.overrideWrite(false);
         }
         return EVAL_BODY_TAG;
     }    
