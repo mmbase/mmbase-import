@@ -78,9 +78,8 @@ public class HttpAuth {
                 res.setStatus(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
                 res.setHeader("WWW-Authenticate","Basic realm=\""+server+"\"");
                 throw new AuthorizationException("User authorization failed");
-            } 
-            else {
-                log.service("User " + username + " succesfully logged in");
+            } else {
+                log.debug("User " + username + " succesfully logged in");
                 return username;
             }
         }
