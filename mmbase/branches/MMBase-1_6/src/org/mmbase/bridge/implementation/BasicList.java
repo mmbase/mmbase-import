@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.9.2.2 2003-02-26 11:16:08 pierre Exp $
+ * @version $Id: BasicList.java,v 1.9.2.3 2003-03-21 17:52:03 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
@@ -81,11 +81,27 @@ public class BasicList extends ArrayList implements BridgeList  {
         return super.add(validate(o));
     }
 
-    public Object[] toArray() { // needed when you e.g. want to sort the list.
-        // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
-        for (int i = 0; i < this.size(); i++) {
+
+    public boolean contains(Object o ) {
+        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
+        convertAll();
+        return super.contains(o);
+    }
+
+
+    /**
+     * @since MMBase-1.6.2
+     */
+    protected void convertAll() {
+        for (int i = 0; i < size(); i++) {
             convert(super.get(i), i);
         }
+    }
+
+
+    public Object[] toArray() { // needed when you e.g. want to sort the list.
+        // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
+        convertAll();
         return super.toArray();
     }
 
@@ -128,7 +144,7 @@ public class BasicList extends ArrayList implements BridgeList  {
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
-        public Object next() {
+        public Object next() {       
             return iterator.next();
         }
 
