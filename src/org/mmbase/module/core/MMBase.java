@@ -143,14 +143,6 @@ public class MMBase extends ProcessorModule  {
 		initBuilders(builderfile);
 
 
-		/*
-		Enumeration t = mmobjs.elements(); 
-		while (t.hasMoreElements()) {
-			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-			fbul.initFields(false);
-		}
-		*/
-
 		if (debug) debug("Objects started");
 
 
@@ -166,18 +158,19 @@ public class MMBase extends ProcessorModule  {
 			bul2.start();
 		}
 
-		// temp code to generate xml files
-		/*
-		t = mmobjs.elements(); 
-		while (t.hasMoreElements()) {
-			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-			String name=fbul.getTableName();
-			System.out.println("NAME="+name);
-			if (!name.equals("multirelations")) {
-				XMLBuilderWriter.writeXMLFile("/tmp/"+fbul.getTableName()+".xml",fbul);
+
+		String writerpath=getInitParameter("XMLBUILDERWRITERDIR");
+		if (writerpath!=null && !writerpath.equals("")) {
+			Enumeration t = mmobjs.elements(); 
+			while (t.hasMoreElements()) {
+				MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+				String name=fbul.getTableName();
+				System.out.println("WRITING BUILDER FILE ="+writerpath+"/"+name);
+				if (!name.equals("multirelations")) {
+					XMLBuilderWriter.writeXMLFile(writerpath+"/"+fbul.getTableName()+".xml",fbul);
+				}
 			}
 		}
-		*/
 	}
 
 	public void onload() {
@@ -528,8 +521,8 @@ public class MMBase extends ProcessorModule  {
 	boolean initBuilder(String builder,String path) {
 		if (!(new File(path+builder+".xml")).exists()) return(false);
 		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
-		Hashtable tmp=parser.getDescriptions();
-		String description=(String)tmp.get(language);
+		Hashtable descriptions=parser.getDescriptions();
+		String description=(String)descriptions.get(language);
 		String dutchsname="Default!";
 		String objectname=builder; // should this allow override in file ?
 		int searchage=parser.getSearchAge();
@@ -556,6 +549,7 @@ public class MMBase extends ProcessorModule  {
 				bul.setMMBase(this);
 				bul.setTableName(objectname);
 				bul.setDescription(description);
+				bul.setDescriptions(descriptions);
 				bul.setDutchSName(dutchsname);
 				bul.setSingularNames(parser.getSingularNames());
 				bul.setPluralNames(parser.getPluralNames());
