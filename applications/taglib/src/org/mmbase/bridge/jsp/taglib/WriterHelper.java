@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.63 2005-03-15 20:48:20 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.64 2005-03-16 13:37:18 michiel Exp $
  */
 
 public class WriterHelper {
@@ -261,11 +261,13 @@ public class WriterHelper {
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
         if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
-            // Take last of list if vartype defined not to be a list:
+            // Take one element of list if vartype defined not to be a list.
+            // this is usefull when using mm:includes and passing a var which also can be on the request
             if (v instanceof List) {
                 List l = (List) v;
                 if (l.size() > 0) {
-                    v = l.get(l.size() - 1);
+                    // v = l.get(l.size() - 1); // last element
+                    v = l.get(0);               // first element, allows for 'overriding'.
                 } else {
                     v = null;
                 }
