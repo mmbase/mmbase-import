@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.42 2004-09-17 09:59:47 michiel Exp $
+ * @version $Id: InsRel.java,v 1.43 2004-10-12 10:48:45 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -435,12 +435,14 @@ public class InsRel extends MMObjectBuilder {
     * @param sourceNode this is the source MMObjectNode
     * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
     */
-    public Enumeration getRelated(String sourceNode,String wtype) {
+    public Enumeration getRelated(String sourceNode, String wtype) {
         try {
-            int src=Integer.parseInt(sourceNode);
-            int otype=mmb.TypeDef.getIntValue(wtype);
-            return getRelated(src,otype);
-        } catch(Exception e) {}
+            int src = Integer.parseInt(sourceNode);
+            int otype = mmb.getTypeDef().getIntValue(wtype);
+            return getRelated(src, otype);
+        } catch(Exception e) {
+            // why is this silentely catched ?
+        }
         return null;
     }
 
@@ -450,14 +452,16 @@ public class InsRel extends MMObjectBuilder {
     * @param src this is the number of the source MMObjectNode
     * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
     */
-    public Enumeration getRelated(int src,String wtype) {
+    public Enumeration getRelated(int src, String wtype) {
         try {
-            int otype=-1;
-            if (wtype!=null) {
-                otype=mmb.TypeDef.getIntValue(wtype);
+            int otype = -1;
+            if (wtype != null) {
+                otype = mmb.getTypeDef().getIntValue(wtype);
             }
-            return getRelated(src,otype);
-        } catch(Exception e) {}
+            return getRelated(src, otype);
+        } catch(Exception e) {
+            // why is this silentely catched ?
+        }
         return null;
     }
 
