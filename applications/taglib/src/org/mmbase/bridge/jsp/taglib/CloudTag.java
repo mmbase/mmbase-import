@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.79 2003-11-06 16:17:57 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.80 2003-11-10 17:14:27 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -414,6 +414,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (log.isDebugEnabled()) {
                 log.debug("creating an anonymous cloud for cloud '" + getName() + "' (with " + logoutInfo + ")");
             }
+            removeCloud();
             cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo);
             cloud.setLocale(locale);
             return true;
@@ -427,7 +428,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     /**
      * Return the name of session variable in which the cloud is
      * stored. This is on default "cloud_mmbase" but this can be
-     * influenced with the sessionname attribute. If tho pages have
+     * influenced with the sessionname attribute. If two pages have
      * different sessionnames for the cloud, they can be logged in
      * simultaniously with different clouds, but in the same session.
      * If no sessionname is given or an empty sessionname, it returns the defaultvalue.
@@ -602,8 +603,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (cloud == null) {
                 setAnonymousCloud();
             }
-            if (cloud != null)
+            if (cloud != null) {
                 checkValid();
+            }
             checkCloud();
             return true;
         }
@@ -612,17 +614,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     /**
-     * Makes the cloud variable null (may not be null already) if it
-     * is 'expired'. This means normally that the security
-     * configuration has been changed, or MMBase restarted or
-     * something like that. This means that the cloud (probably gotten
-     * from the session), cannot be used anymore.
+
      */
 
     private final void checkValid() {
         if (!cloud.getUser().isValid()) {
             log.debug("found a cloud in the session, but is was expired, throwing it away");
             cloud = null;
+        }
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    private final void removeCloud() throws JspTagException {
+        cloud = null;
+        if (session != null) {
+            session.removeAttribute(getSessionName());
         }
     }
 
@@ -635,36 +643,50 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
         if (log.isDebugEnabled()) {
-            log.debug("found cloud in session m: " + method + " l: " + logon);
+            log.debug("found cloud in session m: " + method + " l: " + logon + ". Checking it");
         }
-        if (logon == Attribute.NULL
+
+        if (!cloud.getUser().isValid()) {            
+            // Makes the cloud variable null (may not be null already) if it
+            // is 'expired'. This means normally that the security
+            // configuration has been changed, or MMBase restarted or
+            // something like that. This means that the cloud (probably gotten
+            // from the session), cannot be used anymore.
+            log.debug("found a cloud in the session, but is was expired, throwing it away");
+            removeCloud();
+            return;
+        }
+        
+
+        int meth = getMethod();
+        if (logon == null
             && rank == Attribute.NULL
-            && method != Attribute.NULL
-            && getMethod() != METHOD_ASIS) {
+            && meth != METHOD_UNSET
+            && meth != METHOD_ASIS) {
             // authorisation was requested, but not indicated for whom
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Implicitily requested non-anonymous (by method) cloud. Current user: " + cloud.getUser().getIdentifier());
+            }
             if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                 log.debug("there was a cloud, but anonymous. log it on");
-                cloud = null;
-                if (session != null) {
-                    session.removeAttribute(getSessionName());
-                }
+                removeCloud();
+                return;
             }
-        } else if (logon != null) {
-            if (log.isDebugEnabled())
+            
+        }  else  if (logon != null && cloud != null) {
+            if (log.isDebugEnabled()) {
                 log.debug("Explicitily requested non-anonymous cloud (by logon). Current user: " + cloud.getUser().getIdentifier());
+            }
             // a logon name was given, check if logged on as the right one
-            if (!logon.contains(cloud.getUser().getIdentifier())) { // no!
+            if (! logon.contains(cloud.getUser().getIdentifier())) { // no!
                 log.debug("logged on, but as wrong user. log out first.");
-                cloud = null;
-                if (session != null) {
-                    session.removeAttribute(getSessionName());
-                }
+                removeCloud();
+                return;
             } else {
                 log.debug("Cloud is ok already");
             }
-        } else if (! rankAnonymous()) {
+        } 
+        if (! rankAnonymous()) {
             if (log.isDebugEnabled()) {
                 log.debug("Explicitily requested non-anonymous cloud (by rank). Current user: " + cloud.getUser().getIdentifier() + " rank: " + cloud.getUser().getRank());
             }
@@ -673,14 +695,19 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("logged on, but rank of user (" + curRank.toString() + ") is too low (must be " + getRank().toString() + "). log out first.");
                 }
-                cloud = null;
-                if (session != null) {
-                    session.removeAttribute(getSessionName());
-                }
+                removeCloud();
+                return;
             } else {
                 log.debug("Cloud is ok already");
             }
             
+        }
+        if (meth != METHOD_UNSET && meth != METHOD_ASIS && cloud != null && (! cloud.getUser().getAuthenticationType().equals(getAuthenticate()))) {
+            log.debug("Cloud was logged on with different authentication type ('" + cloud.getUser().getAuthenticationType() + "' in stead of the requested '"  + getAuthenticate() + "'. Should do procedure again.");
+            removeCloud();
+            return;
+        } else {
+            log.debug("Cloud was logged with same authentication type -> ok");
         }
 
     }
@@ -851,7 +878,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             default :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             }
-        } else if (loginpage != Attribute.NULL) {
+        } else if (getMethod() == METHOD_LOGINPAGE || (getMethod() == METHOD_UNSET && loginpage != Attribute.NULL)) {
             switch (reason) {
             case DENYREASON_FAIL :
                 return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
@@ -947,7 +974,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (doHTTPAuthentication(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
-        } else if (loginpage != Attribute.NULL) {
+        } else if (loginpage != Attribute.NULL && (method == METHOD_LOGINPAGE || method == METHOD_UNSET)) {
             user = new HashMap();
             if (doLoginPage(user) == SKIP_BODY) {
                 return SKIP_BODY;
@@ -1039,9 +1066,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
 
 
-        if (cloud != null) {
-            checkValid();
-        }
         if (cloud != null) {
             checkCloud();
         }
