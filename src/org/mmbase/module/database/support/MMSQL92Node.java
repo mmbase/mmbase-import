@@ -28,15 +28,15 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.75 2002-11-14 15:58:01 robmaris Exp $
+ * @version $Id: MMSQL92Node.java,v 1.76 2002-11-21 09:50:03 robmaris Exp $
  */
-public class MMSQL92Node implements MMJdbc2NodeInterface {
+public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
 
     /**
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
-
+    
     //does the database support keys?
     private boolean keySupported=false;
 
@@ -47,7 +47,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     public String name="sql92";
     /**
      * @javadoc
-     * @scope private
+     * @scope private    
      */
     protected XMLDatabaseReader parser;
     /**
@@ -80,8 +80,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      */
     protected MMBase mmb;
 
-    public MMSQL92Node() {
-    }
+    public MMSQL92Node() {}
 
     /**
      * @javadoc
@@ -100,6 +99,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         allowed2disallowed = getReverseHash(disallowed2allowed);
         // map the default types
         mapDefaultFields(disallowed2allowed);
+        
+        // Instantiate and initialize sql handler.
+        super.init(disallowed2allowed, parser);
+        
         // Check if the numbertable exists, if not one will be created.
         checkNumberTable();
     }
@@ -1806,4 +1809,5 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         }
         return false;
     }
+    
 }
