@@ -109,19 +109,46 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         }
         if (cookie != null) {
             Object v = helper.getValue();
-            Cookie c;
-            if (v instanceof String) {
-                c = new Cookie(cookie.getString(this), (String) v);
-            } else if (v instanceof Integer) {
-                c = new Cookie(cookie.getString(this), "" + v);
-            } else if (v instanceof Node) {
-                c = new Cookie(cookie.getString(this), "" + ((Node) v).getNumber());
+            String cookievalue;
+            if (v instanceof Node) {
+                cookievalue = "" + ((Node) v).getNumber();
+            } else if (v instanceof String || v instanceof Number) {
+                cookievalue =  "" + v;
             } else {
                 throw new JspTagException(v.toString() + " is not of the right type to write to cookie. It is a (" +  v.getClass().getName() + ")");
             }
-            c.setMaxAge(MAX_COOKIE_AGE);
-            c.setPath("/");
-            ((HttpServletResponse)pageContext.getResponse()).addCookie(c);
+
+            // remove all cookies with given name
+            HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+            HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
+            
+            if (log.isDebugEnabled()) {
+                log.debug("Writing cookie " + cookie + " / " + v);
+            }
+            // count present cookies of this name
+            int cookiecount = 0;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) { 
+                for (int i=0; i< cookies.length; i++) {
+                    Cookie c = cookies[i];
+                    if (c.getName().equals(cookie)) {
+                        cookiecount++;
+                    }
+                }
+            }
+
+
+            {  // on root (keep things simple)
+                Cookie c = new Cookie(cookie, cookievalue);
+                c.setPath(COOKIE_PATH);               
+                c.setMaxAge(MAX_COOKIE_AGE);
+                response.addCookie(c);
+            }
+            if (cookiecount > 1) { //also in current dir (in case it was there already)
+                Cookie c = new Cookie(cookie, cookievalue);
+                c.setMaxAge(MAX_COOKIE_AGE);
+                response.addCookie(c);
+            }
             helper.overrideWrite(false);
         }
         return EVAL_BODY_BUFFERED;
