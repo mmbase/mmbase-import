@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.21 2004-09-30 08:52:16 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.22 2004-10-12 10:54:52 michiel Exp $
  */
 public class NodeWriter{
 
@@ -122,11 +122,11 @@ public class NodeWriter{
             write(">\n");
         } else {
             // For a data node, store the alias if at all possible.
-            String tm=mmb.OAlias.getAlias(number);
-            if (tm==null) {
-                write("\t<node number=\""+number+"\" owner=\""+owner+"\">\n");
+            String tm = mmb.getOAlias().getAlias(number);
+            if (tm == null) {
+                write("\t<node number=\"" + number+"\" owner=\"" + owner + "\">\n");
             } else {
-                write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
+                write("\t<node number=\"" + number+"\" owner=\"" + owner + "\" alias=\"" + tm + "\">\n");
             }
         }
         MMObjectBuilder bul=node.parent;
