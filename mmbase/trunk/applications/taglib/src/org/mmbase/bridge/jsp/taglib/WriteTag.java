@@ -8,8 +8,10 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import org.mmbase.bridge.Node;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,6 +27,7 @@ import org.mmbase.util.logging.Logging;
 
 public class WriteTag extends ContextReferrerTag implements Writer {
 
+    public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
 
     protected WriterHelper helper = new WriterHelper(); 
@@ -44,11 +47,15 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
 
     private String sessionvar;
+    private String cookie;
 
     public void setSession(String s) throws JspTagException {
         sessionvar = getAttributeValue(s);
     }
 
+    public void setCookie(String s) throws JspTagException {
+        cookie = getAttributeValue(s);
+    }
     
     
     protected Object getObject() throws JspTagException {
@@ -75,6 +82,21 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         if (sessionvar != null) {
             pageContext.getSession().setAttribute(sessionvar, helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
+        }
+        if (cookie != null) {
+            Object v = helper.getValue();
+            Cookie c;
+            if (v instanceof String) {
+                c = new Cookie(cookie, (String) v); 
+            } else if (v instanceof Integer) {
+                c = new Cookie(cookie, "" + v); 
+            } else if (v instanceof Node) {
+                c = new Cookie(cookie, "" + ((Node) v).getNumber()); 
+            } else {
+                throw new JspTagException(v.toString() + " is not of the right type to write to cookie. It is a (" +  v.getClass().getName() + ")");
+            }
+            c.setMaxAge(MAX_COOKIE_AGE);
+            ((HttpServletResponse)pageContext.getResponse()).addCookie(c); 
         }
         return EVAL_BODY_TAG;
     }    
