@@ -36,6 +36,8 @@ public class scancache extends Module implements scancacheInterface {
 	Hashtable timepool = new Hashtable();
 	private String cachepath="";
 	MMBase mmbase;	
+	boolean status=false;
+
 	// org.mmbas StatisticsInterface stats;
 
 	public void onload() {
@@ -53,6 +55,7 @@ public class scancache extends Module implements scancacheInterface {
 	}
 
 	public String get(String poolName, String key) {
+		if (status==false) return(null);
 		if (debug) debug("poolName="+poolName+" key="+key);
 		if (poolName.equals("HENK")) {
 			String tmp=get(poolName,key,">");
@@ -66,6 +69,7 @@ public class scancache extends Module implements scancacheInterface {
 
 
 	public String getNew(String poolName, String key,String line) {
+		if (status==false) return(null);
 		line=line.substring(0,line.indexOf('>'));
 		StringTagger tagger=new StringTagger(line);
 		String counter=tagger.Value("COUNTER");
@@ -88,6 +92,7 @@ public class scancache extends Module implements scancacheInterface {
 	private static int defaultExpireTime = 21600; // in sec 6 uur
 	
 	public String get(String poolName, String key, String line) {
+		if (status==false) return(null);
 		// get the interval time
 		// ---------------------
 		String tmp=line.substring(0,line.indexOf('>')).trim();
@@ -143,6 +148,7 @@ public class scancache extends Module implements scancacheInterface {
 	}
 
 	public String getPage(String poolName, String key,String line) {
+		if (status==false) return(null);
 		fileInfo fileinfo=loadFile(poolName,key);
 		if (fileinfo!=null && fileinfo.value!=null) {
 			return(fileinfo.value);
@@ -176,6 +182,7 @@ public class scancache extends Module implements scancacheInterface {
 	* in all other cases returns null.
 	*/
 	public String newput(String poolName,HttpServletResponse res, String key,String value, String mimeType) {
+		if (status==false) return(null);
 		LRUHashtable pool=(LRUHashtable)pools.get(poolName);
 		if (pool==null) {
 
@@ -218,6 +225,7 @@ public class scancache extends Module implements scancacheInterface {
 
 	// temp hack for asis
 	public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
+		if (status==false) return(null);
 		LRUHashtable pool=(LRUHashtable)pools.get(poolName);
 		if (pool==null) {
 
@@ -267,6 +275,7 @@ public class scancache extends Module implements scancacheInterface {
 	* in all other cases returns null.
 	*/
 	public String put(String poolName, String key,String value) {
+		if (status==false) return(null);
 		LRUHashtable pool=(LRUHashtable)pools.get(poolName);
 		if (pool==null) {
 			// create a new pool
@@ -281,6 +290,10 @@ public class scancache extends Module implements scancacheInterface {
 
 	public void init() {
 		String statmode=getInitParameter("statmode");	
+
+		String tmp=getInitParameter("status");
+		if (tmp!=null && tmp.equals("active")) status=true;
+	
 		cachepath=getInitParameter("CacheRoot");	
 		if (cachepath==null) {
 			debug("SCANCACHE -> No CacheRoot set in SCANCACHE.properties");
@@ -428,5 +441,9 @@ public class scancache extends Module implements scancacheInterface {
 			LRUHashtable pool=(LRUHashtable)pools.get(poolName);
 			if (pool!=null) pool.remove(key);
 			timepool.remove(poolName + key);
+	}
+
+	public boolean getStatus() {
+		return(status);
 	}
 }
