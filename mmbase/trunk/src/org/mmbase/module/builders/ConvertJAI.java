@@ -8,13 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertJAI.java,v 1.1 2000-08-20 00:29:29 daniel Exp $
+	$Id: ConvertJAI.java,v 1.2 2000-08-20 21:36:01 daniel Exp $
 
 	$Log: not supported by cvs2svn $
 	
 */
 package org.mmbase.module.builders;
-
 
 import java.awt.image.renderable.ParameterBlock;
 import javax.media.jai.*;
@@ -29,7 +28,7 @@ import org.mmbase.util.*;
  * Converts Images using image Java Advanced Imaging
  *
  * @author Daniel Ockeloen
- * @version $Id: ConvertJAI.java,v 1.1 2000-08-20 00:29:29 daniel Exp $
+ * @version $Id: ConvertJAI.java,v 1.2 2000-08-20 21:36:01 daniel Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
 
@@ -38,16 +37,7 @@ public class ConvertJAI implements ImageConvertInterface {
 	private void debug(String msg) { System.out.println(classname+":"+msg); }
 
 	public void init(Hashtable params) {
-		/*
-		String tmp;
-		tmp=(String)params.get("ImageConvert.ConverterRoot");
-		if (tmp!=null) ConverterRoot=tmp;
-		tmp=(String)params.get("ImageConvert.ConverterCommand");
-		if (tmp!=null) ConverterCommand=tmp;
-		if (debug) debug("Root="+ConverterRoot);
-		if (debug) debug("Command="+ConverterCommand);
-		*/
-		System.out.println("INIT JAI convertor");
+		if (debug) System.out.println("Starting JAI convertor");
 	}
 
 	public byte[] ConvertImage(byte[] input,Vector commands) {	
@@ -144,6 +134,13 @@ public class ConvertJAI implements ImageConvertInterface {
 				} else if (type.equals("wave")) {
 				} else if (type.equals("t")) {
 				} else if (type.equals("part")) {
+					try {
+						int x1=Integer.parseInt(tok.nextToken());
+						int y1=Integer.parseInt(tok.nextToken());
+						int x2=Integer.parseInt(tok.nextToken());
+						int y2=Integer.parseInt(tok.nextToken());
+						img = crop(img,x1,y1,x2,y2);
+					} catch (Exception e) { e.printStackTrace(); }
 				} else if (type.equals("roll")) {
 				} else if (type.equals("i")) {
                 		} else if (type.equals("q")) {
@@ -156,8 +153,9 @@ public class ConvertJAI implements ImageConvertInterface {
 				} else if (key.equals("noise")) {
 				} else if (key.equals("emboss")) {
 				} else if (key.equals("flipx")) {
-				} else if (key.equals("flipx")) {
+						img = flipx(img);
 				} else if (key.equals("flipy")) {
+						img = flipy(img);
 				} else if (key.equals("dia")) {
 				} else if (key.equals("neg")) {
 				}
@@ -169,7 +167,6 @@ public class ConvertJAI implements ImageConvertInterface {
 
 
 	public static PlanarImage scale(PlanarImage inImg,float sx,float sy) {
-		//Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
 		Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
 		ParameterBlock params = new ParameterBlock();
 		params.addSource(inImg);
@@ -182,8 +179,21 @@ public class ConvertJAI implements ImageConvertInterface {
 		return(outImg);
 	}
 
+
+	public static PlanarImage crop(PlanarImage inImg,int x1,int y1, int x2,int y2) {
+		Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+		ParameterBlock params = new ParameterBlock();
+		params.addSource(inImg);
+		params.add((float)x1);         // x 
+		params.add((float)y2);         // y 
+		params.add((float)(x2-x1));    // width
+		params.add((float)(y2-y1));    // height
+		params.add(interp);       // interpolation method
+		PlanarImage outImg = JAI.create("crop", params);
+		return(outImg);
+	}
+
 	public static PlanarImage size(PlanarImage inImg,int x,int y) {
-		//Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
 		Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
 		int curx=inImg.getWidth();
 		int cury=inImg.getHeight();
@@ -203,7 +213,6 @@ public class ConvertJAI implements ImageConvertInterface {
 	}
 
 	public static PlanarImage rotate(PlanarImage inImg,int x,int y,int a) {
-		//Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
 		Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
 		ParameterBlock params = new ParameterBlock();
 		params.addSource(inImg);
@@ -212,6 +221,26 @@ public class ConvertJAI implements ImageConvertInterface {
 		params.add(getDeg2Rad((float)(a)));        // angle 
 		params.add(interp);       // interpolation method
 		PlanarImage outImg = JAI.create("rotate", params);
+		return(outImg);
+	}
+
+
+	public static PlanarImage flipx(PlanarImage inImg) {
+		Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+		ParameterBlock params = new ParameterBlock();
+		params.addSource(inImg);
+		params.add(1);         // flip over X
+		PlanarImage outImg = JAI.create("transpose", params);
+		return(outImg);
+	}
+
+
+	public static PlanarImage flipy(PlanarImage inImg) {
+		Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+		ParameterBlock params = new ParameterBlock();
+		params.addSource(inImg);
+		params.add(0);         // flip over X
+		PlanarImage outImg = JAI.create("transpose", params);
 		return(outImg);
 	}
 
