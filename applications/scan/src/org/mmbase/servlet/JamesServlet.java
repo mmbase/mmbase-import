@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.19 2000-07-22 21:25:23 daniel Exp $
+$Id: JamesServlet.java,v 1.20 2001-02-20 18:19:11 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.19  2000/07/22 21:25:23  daniel
+changes mmbase.mode
+
 Revision 1.18  2000/07/18 18:58:59  daniel
 add support for mmdemo
 
@@ -61,18 +64,27 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.builders.Properties;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.19 2000-07-22 21:25:23 daniel Exp $
+* @version $Id: JamesServlet.java,v 1.20 2001-02-20 18:19:11 michiel Exp $
 */
 
 class DebugServlet {
+
+	static Logger log = Logging.getLoggerInstance(DebugServlet.class.getName()); 
 	public String classname = getClass().getName();
 	public static boolean debug = false;
-	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	public void debug( String msg ) { 		
+
+		log.debug(msg + "<deprecated call to debug>");
+		//System.out.println( classname +":"+ msg ); 
+	}
 
 	JamesServlet servlet;
 	Vector URIs = new Vector();
@@ -90,13 +102,29 @@ class DebugServlet {
 }
 	
 public class JamesServlet extends HttpServlet {
-    protected String classname = getClass().getName();
-    protected void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    //protected String classname = getClass().getName();
 	// org.mmbase
 
 	static String outputfile=null;
 
+	static Logger log; 
+
+	protected void debug( String msg ) { log.debug(msg + " <deprecated call>"); } 
+	// mmbase logging.
+	// other logging can add the class name.
+                                                            
+
 	static {
+
+		/* Michiel: 
+		   This doesn't seem to be such a bad place to initialise our logging stuff.
+		*/        
+		
+		System.out.println("MMBase starts now");
+		Logging.configure(System.getProperty("mmbase.config") + "/log/log.xml");
+		log = Logging.getLoggerInstance(JamesServlet.class.getName()); 
+		System.out.println("Logging starts now");
+		log.info("\n====================\nStarting MMBase\n====================");
 
 		/*
 		String dtmp=System.getProperty("mmbase.mode");
@@ -108,6 +136,7 @@ public class JamesServlet extends HttpServlet {
 		}
 		*/
 
+		// Remaining output and error can still be redirected.
 		outputfile = System.getProperty("mmbase.outputfile");       
 		if (outputfile != null) {
 			try {
@@ -256,7 +285,7 @@ public class JamesServlet extends HttpServlet {
 					return cookie.replace('=','/');
 				}
 			}
-			debug("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
+			log.debug("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
 			return null;
 		} else {
 
@@ -270,7 +299,7 @@ public class JamesServlet extends HttpServlet {
 			// debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
 			MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
 			if (mmbase == null) {
-				debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
+				log.debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
 				return null;
 			}
 
@@ -292,7 +321,7 @@ public class JamesServlet extends HttpServlet {
 				Properties propBuilder = null;
 				propBuilder = (Properties) mmbase.getMMObject("properties");
 				if (propBuilder==null) {
-					debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
+					log.debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
 				}
 				StringTokenizer st = new StringTokenizer(cookies, ";");
 				while (st.hasMoreTokens()) {
@@ -300,7 +329,7 @@ public class JamesServlet extends HttpServlet {
 					if (cookie.startsWith(JAMES_COOKIENAME)) {
 
 						// Change the value field of the related property to the mmbaseIdent value.
-						debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
+						log.debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
 						Enumeration e = propBuilder.search("WHERE key='SID' AND value='"+cookie.replace('=','/')+"'");
 						if (e.hasMoreElements()) {
 							MMObjectNode propNode = (MMObjectNode)e.nextElement();
@@ -422,10 +451,17 @@ public class JamesServlet extends HttpServlet {
     }
 
     public void init() {
+		log.debug("init van JamesServlet");
 		ServletConfig sc=getServletConfig();
         ServletContext sx=sc.getServletContext();
         MMBaseContext.setServletContext(sx);
     }
+
+
+	protected void finalize() {
+		System.out.println("end");
+		log.info("end of MMBase \n\n");
+	}
 
 	
 
