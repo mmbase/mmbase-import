@@ -35,7 +35,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
     private static final int NO_TYPE = -100;
 
     private static Logger log = Logging.getLoggerInstance(FieldListTag.class.getName());
-    
+
     private FieldIterator returnValues;
     private Field currentField;
     private int currentItemIndex= -1;
@@ -55,13 +55,13 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
     public boolean isChanged() {
         return true;
     }
-        
+
     public Field getField() {
         return currentField;
     }
 
-    public void setNodemanager(String n) throws JspTagException {
-        nodeManagerString = getAttributeValue(n);
+    public void setNodetype(String t) throws JspTagException {
+        nodeManagerString = getAttributeValue(t);
     }
 
     public void setType(String t) throws JspTagException {
@@ -86,7 +86,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
         if (nodeManagerString != null) {
             return null;
         }
-        nodeProvider = findNodeProvider();        
+        nodeProvider = findNodeProvider();
         return nodeProvider.getNodeVar();
     }
 
@@ -96,7 +96,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
     public int doStartTag() throws JspTagException{
 
         NodeManager nodeManager;
-        
+
         if (nodeManagerString == null) { // living as NodeReferrer
             nodeManager = getNodeVar().getNodeManager();
         } else {
@@ -107,21 +107,21 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
         if (type != NO_TYPE) {
             fieldList = nodeManager.getFields(type);
         } else {
-            fieldList = nodeManager.getFields(); 
+            fieldList = nodeManager.getFields();
         }
         listSize = fieldList.size();
         returnValues = fieldList.fieldIterator();
 
-        //this is where we do the search       
+        //this is where we do the search
         currentItemIndex= -1;  // reset index
 
         // if we get a result from the query
         // evaluate the body , else skip the body
-        if (returnValues.hasNext())            
+        if (returnValues.hasNext())
             return EVAL_BODY_TAG;
         return SKIP_BODY;
     }
-        
+
     public int doAfterBody() throws JspTagException {
         if (returnValues.hasNext()){
             doInitBody();
@@ -133,11 +133,11 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
                 throw new JspTagException(ioe.toString());
             }
             return SKIP_BODY;
-        }    
+        }
     }
 
-    
-   
+
+
     public void doInitBody() throws JspTagException {
         if (returnValues.hasNext()){
             currentItemIndex ++;

@@ -31,37 +31,37 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 */
 public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
-    
+
     private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class.getName());
-    
+
     private String nodemanager = null;
-        
-    public void setNodemanager(String n) throws JspTagException {
-        nodemanager = getAttributeValue(n);;
+
+    public void setType(String t) throws JspTagException {
+        nodemanager = getAttributeValue(t);
     }
-    
-    
-    public int doStartTag() throws JspTagException{            
+
+
+    public int doStartTag() throws JspTagException{
         Node node;
         NodeManager nm;
         nm = getCloudProviderVar().getNodeManager(nodemanager);
         if (nm == null) {
             throw new JspTagException("Could not find nodemanager " + nodemanager);
-        }       
+        }
         node = nm.createNode();
         if (node == null) {
             throw new JspTagException("Could not create node of type " + nodemanager);
-        }       
-        setNodeVar(node);        
+        }
+        setNodeVar(node);
         log.debug("created node " + node.getValue("gui()"));
-        return EVAL_BODY_TAG; 
+        return EVAL_BODY_TAG;
     }
-    
-    public void doInitBody() throws JspTagException {       
-        fillVars();    
-    } 
-        
-    
+
+    public void doInitBody() throws JspTagException {
+        fillVars();
+    }
+
+
     /**
     * this method writes the content of the body back to the jsp page
     **/

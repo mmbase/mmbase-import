@@ -17,28 +17,30 @@ import org.mmbase.bridge.Node;
 
 /**
 * Lives under a nodeprovider. Can give information about the node,
-* like what its nodemanager is. 
+* like what its nodemanager is.
 *
-* @author Michiel Meeuwissen 
+* @author Michiel Meeuwissen
 */
 
-public class NodeInfoTag extends NodeReferrerTag {   
+public class NodeInfoTag extends NodeReferrerTag {
 
     private static final int TYPE_NODEMANAGER    = 0;
     private static final int TYPE_GUINODEMANAGER = 1;
 
-    private int type;   
-       
+    private int type;
+
     public void setType(String t) throws JspTagException {
-        if ("nodemanager".equals(t)) {
+        // note: 'nodemanager' and 'guinodemanager' values are deprecated
+        // use 'type' and 'guitype' instead
+        if ("nodemanager".equalsIgnoreCase(t) || "type".equalsIgnoreCase(t)) {
             type = TYPE_NODEMANAGER;
-        } else if ("guinodemanager".equals(t)) {
+        } else if ("guinodemanager".equalsIgnoreCase(t) || "guitype".equalsIgnoreCase(t)) {
             type = TYPE_GUINODEMANAGER;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
     }
-    
+
     public int doStartTag() throws JspTagException{
         return EVAL_BODY_TAG;
     }
@@ -48,7 +50,7 @@ public class NodeInfoTag extends NodeReferrerTag {
     * Write the value of the nodeinfo.
     */
     public int doAfterBody() throws JspTagException {
-        
+
         Node node = findNodeProvider().getNodeVar();
 
         String show = "";
@@ -61,15 +63,15 @@ public class NodeInfoTag extends NodeReferrerTag {
         case TYPE_GUINODEMANAGER:
             show = node.getNodeManager().getGUIName();
             break;
-        default:            
+        default:
         }
 
-        try {               
+        try {
             bodyContent.print(show);
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
-        }        
+            throw new JspTagException (e.toString());
+        }
         return SKIP_BODY;
     }
 }
