@@ -14,6 +14,9 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
 
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * A very simple tag to check if the value of a certain context
  * variable equals a certain String value. 
@@ -23,10 +26,15 @@ import javax.servlet.jsp.JspTagException;
 
 public class CompareTag extends PresentTag implements ConditionTag {
 
-    private String value;
+    private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
 
+    private String value;
     public void setValue(String v) throws JspTagException {
         value =  getAttributeValue(v);
+    }
+
+    protected boolean doCompare(String compare) {
+        return value.equals(compare);
     }
                
     public int doStartTag() throws JspTagException {
@@ -37,7 +45,10 @@ public class CompareTag extends PresentTag implements ConditionTag {
         } else {
             compare = getString(getReferid());            
         }
-        if (value.equals(compare) != inverse ) {
+        if (log.isDebugEnabled()) {
+            log.debug("comparing '" + value + "' to '" + compare + "'");
+        }
+        if (doCompare(compare) != inverse ) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
