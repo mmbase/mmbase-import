@@ -59,7 +59,7 @@
 			<BR>
 			<BR>
 			Commitor : 
-			<mm:relatednodes type="groups" constraints="name='BugTrackerInterested'">
+			<mm:relatednodes type="groups" constraints="name='BugTrackerCommitors'">
 			<font color="#ffffff">Yes</font>
 			<mm:import id="usercommitor">yes</mm:import>
 			</mm:relatednodes>

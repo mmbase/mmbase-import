@@ -29,18 +29,21 @@
 </TR>
 <!-- the real searchpart -->
 
-
-<mm:list path="bugreportupdates,bugreports" orderby="bugreports.time" directions="down">
+<mm:list path="bugreports" orderby="bugreports.time" directions="down">
 	<mm:last>
-    <mm:index id="total" />
+    <!--  <mm:index id="total" />  -->
 	</mm:last>
 </mm:list>
+
+
 <% String total="0"; %>
 <mm:present referid="total">
   <mm:write referid="total" jspvar="tmp2" vartype="string">
 	<% total=tmp2; %>
   </mm:write>
 </mm:present>
+
+
 
 <mm:listnodes type="bugreports" orderby="time" directions="down" max="15" offset="$offset">
 <TR>
@@ -71,7 +74,7 @@
 		</TD>
 </TR>
 <mm:last>
- <mm:index id="last" offset="$offset" />
+ <!-- <mm:index id="last" offset="$offset" /> --> 
 </mm:last>
 </mm:listnodes>
 <% int last2 = 0; %>

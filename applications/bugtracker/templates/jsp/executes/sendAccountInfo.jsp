@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud logon="wwwuser" pwd="buggie90">
+<mm:cloud logon="admin" pwd="admin2k">
 <mm:import externid="email" />
 
     <mm:listnodes type="users" constraints="email='$email'" max="1">
@@ -22,6 +22,6 @@
 		<%response.sendRedirect("/bugtracker/jsp/showMessage.jsp?message=email");%>
     </mm:present>
     <mm:present referid="emailnode" inverse="true">
-		<%response.sendRedirect("/bugtracker/jsp/showMessage.jsp?message=emailnotfound");%>
+		<%response.sendRedirect("../showMessage.jsp?message=emailnotfound");%>
     </mm:present>
 </mm:cloud>
