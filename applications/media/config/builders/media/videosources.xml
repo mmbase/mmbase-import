@@ -1,107 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="mediasources">
-<status>active</status>
+<builder name="videosources" extends="mediasources">
+  <status>active</status>
 
-<classfile>org.mmbase.module.builders.media.MediaSources</classfile>
+  <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
 
-<names>
-	<singular xml:lang="en">Video source</singular>
-	<singular xml:lang="nl">Videobron</singular>
+  <names>
+    <singular xml:lang="en">Video source</singular>
+    <singular xml:lang="nl">Videobron</singular>
 
-	<plural xml:lang="en">Video sources</plural>
-	<plural xml:lang="nl">Videobronnen</plural>
-</names>
+    <plural xml:lang="en">Video sources</plural>
+    <plural xml:lang="nl">Videobronnen</plural>
+  </names>
 
-<descriptions>
-	<description xml:lang="en">Descriptions of the physical video file</description>
-	<description xml:lang="nl">Beschrijving van het daadwerkelijke video bestand</description>
-</descriptions>
+  <descriptions>
+    <description xml:lang="en">Descriptions of the physical video file</description>
+    <description xml:lang="nl">Beschrijving van het daadwerkelijke video bestand</description>
+  </descriptions>
 
-<fieldlist>
-	<!-- POS 9 : <field> 'FPS'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="en">FPS</guiname>
-			<guiname xml:lang="nl">FPS</guiname>
-			<guitype>integer</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>10</input>
-				<!-- position in list area of the editor -->
-				<list>10</list>
-				<!-- position in search area of the editor -->
-				<search>10</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>fps</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
-		</db>
-	</field>
+  <fieldlist>
+    <field>
+      <descriptons>
+        <description xml:lang="en">Frames per second</description>
+        <description xml:lang="nl">Frames per seconde</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">FPS</guiname>
+        <guiname xml:lang="nl">FPS</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>10</input><list>10</list><search>10</search>
+        </positions>
+      </editor>
+      <db>
+        <name>fps</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
 
 
-	<!-- POS 10 : <field> 'height'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="en">Height</guiname>
-			<guiname xml:lang="nl">Hoogte</guiname>
-			<guitype>integer</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>11</input>
-				<!-- position in list area of the editor -->
-				<list>11</list>
-				<!-- position in search area of the editor -->
-				<search>11</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>height</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
-		</db>
-	</field>
+    <!-- <field> 'height'  -->
+    <field>
+      <descriptons>
+        <description xml:lang="en">Height in pixels</description>
+        <description xml:lang="nl">Hoogte in pixel</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>11</input><list>11</list><search>11</search>
+        </positions>
+      </editor>
+      <db>
+        <name>height</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
 
-	<!-- POS 11 : <field> 'width'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="en">Width</guiname>
-			<guiname xml:lang="nl">Breedte</guiname>
-			<guitype>integer</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>12</input>
-				<!-- position in list area of the editor -->
-				<list>12</list>
-				<!-- position in search area of the editor -->
-				<search>12</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>width</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
-		</db>
-	</field>
-</fieldlist>
+    <!-- <field> 'width'  -->
+    <field>
+      <descriptons>
+        <description xml:lang="en">Width in pixels</description>
+        <description xml:lang="nl">Breedte in pixel</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>12</input><list>12</list><search>12</search>
+        </positions>
+      </editor>
+      <db>
+        <name>width</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
+  </fieldlist>
 </builder>

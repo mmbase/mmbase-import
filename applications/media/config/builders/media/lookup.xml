@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
-
+<builder name="lookup" maintainer="mmbase.org" version="0" extends="object">
+  
   <status>active</status>
-
+  
   <searchage>200</searchage>
   
   <names>
@@ -38,34 +38,24 @@
       </db>
     </field>
     
-    <!-- POS 6 : <field> 'value'  -->
+    <!-- <field> 'value'  -->
     <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="en">Value</guiname>
-            <guiname xml:lang="nl">Waarde</guiname>
-            <guitype>text</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>2</input>
-                <!-- position in list area of the editor -->
-                <list>2</list>
-                <!-- position in search area of the editor -->
-                <search>2</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>value</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="255" notnull="true">STRING</type>
-        </db>
+      <gui>
+        <guiname xml:lang="en">Value</guiname>
+        <guiname xml:lang="nl">Waarde</guiname>
+        <guitype>text</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input><list>2</list><search>2</search>
+        </positions>
+      </editor>
+      <db>
+        <name>value</name>
+        <type state="persistent" size="255" notnull="true">STRING</type>
+      </db>
     </field>
-
-</fieldlist>
-
+    
+  </fieldlist>
+  
 </builder>
