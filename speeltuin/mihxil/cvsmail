@@ -4,7 +4,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.13 2002-11-08 20:13:18 michiel Exp $
+#  $Id: cvsmail,v 1.14 2002-11-08 20:13:55 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -51,8 +51,6 @@ if ($child = fork()) {
 
     # mail message           
     my $message = "From: $user <$cvsuser\@mmbase.org>\nSubject: $subject\n".join("", @message);
-    my $message = "From: $cvsuser <$user\@mmbase.org>\nSubject: $subject\n".join("", @message);
-
 
     # also log this message:
     my $logfile = new FileHandle(">>$log_filename");
