@@ -239,11 +239,10 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the lib directory                                            -->
   <!-- =================================================================== -->
   <target name="lib" description="Create the lib directory"
-          depends="init,expand.servlet,expand.tomcat,expand.xalan,expand.jai,
+          depends="init,expand.servlet,expand.xalan,expand.jai,
                    expand.log4j,expand.junit,get.postgresql">
     <mkdir dir="${build.dir}/mmbase/lib"/>
     <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${webserver.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
@@ -403,11 +402,9 @@ Change directory to ${build.dir}/orion and run:
     <!-- ConsoleAppender ensures that you have a version > 1.04 -->
     <available property="log4j2.in.classpath"
                classname="org.apache.log4j.Logger"/>
-	<!-- Logger ensures version > 1.2 -->
+    <!-- Logger ensures version > 1.2 -->
     <available property="junit.in.classpath"
                classname="junit.runner.BaseTestRunner"/>
-    <available property="tomcat.in.classpath" 
-               classname="org.apache.tomcat.startup.Tomcat"/>
     <available property="postgresql.in.classpath"
                classname="org.postgresql.jdbc2.Statement"/>
     <!-- check directory structure -->
@@ -501,26 +498,10 @@ Change directory to ${build.dir}/orion and run:
     <echo message=""/>
   </target>
 
-  <!-- =================================================================== -->
-  <!-- Check packages needed by a specific servlet-engine                  -->
-  <!-- =================================================================== -->
-  <target name="check.needed.for.tomcat" depends="init.compile.cust"
-          unless="tomcat.in.classpath">
-    <echo message=""/>
-    <echo message="Message: Missing package Tomcat."/>
-    <echo message="If you're running MMBase with Apache Tomcat, "/>
-    <echo message="you'll need this package for the Jumpers."/>
-    <echo message="Add the webserver.jar from tomcat/lib to your classpath "/>
-    <echo message="and compile again."/>
-    <echo message="MMBase will compile and run without this package."/>
-    <echo message=""/>
-  </target>
-
   <target name="check.package.all"
           depends="check.needed.xerces,check.needed.servlet,
                    check.optional.xalan,check.optional.jai,check.optional.log4j,
-                   check.optional.junit,check.needed.for.tomcat,
-                   check.optional.postgresql"/>
+                   check.optional.junit,check.optional.postgresql"/>
 
 
   <!-- =================================================================== -->
@@ -552,7 +533,6 @@ Change directory to ${build.dir}/orion and run:
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
       <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
       <exclude name="**/XSLTransformer.java" unless="xalan.in.classpath"/>
-      <exclude name="**/jumpersInterceptor.java" unless="tomcat.in.classpath"/>
       <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
       <exclude name="**/logging/log4j/**"  unless="log4j.in.classpath" />
       <exclude name="**/logging/log4j/**"  if="log4j2.in.classpath" />
@@ -615,7 +595,7 @@ Change directory to ${build.dir}/orion and run:
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-			 maxmemory="100M"
+             maxmemory="100M"
              bottom="MMBase 2001">
       <classpath>
         <fileset dir="${build.dir}/mmbase/lib">
@@ -1265,9 +1245,8 @@ Change directory to ${build.dir}/orion and run:
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
   <target name="init.get">
-    <!-- Servlet -->
-    <property name="servlet.version" value="jakarta-servletapi-3.2.3"/>
-    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.3/bin/${servlet.version}.tar.gz"/>
+    <property name="servlet.version" value="jakarta-servletapi-4-20020201"/>
+    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-servletapi-4/nightly/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
     <available property="servlet.present"
                file="${download.dir}/${servlet.version}.tar.gz"/>
@@ -1359,7 +1338,10 @@ Change directory to ${build.dir}/orion and run:
 
   <target name="expand.servlet" depends="get.servlet" unless="servlet.expanded">
     <gunzip src="${download.dir}/${servlet.version}.tar.gz" dest="${expand.dir}"/>
-    <untar src="${expand.dir}/${servlet.version}.tar" dest="${expand.dir}"/>
+    <untar src="${expand.dir}/${servlet.version}.tar" dest="${expand.dir}/${servlet.version}"/>
+    <move todir="${expand.dir}/${servlet.version}">
+      <fileset dir="${expand.dir}/${servlet.version}/jakarta-servletapi-4"/>
+    </move>
     <delete file="${expand.dir}/${servlet.version}.tar"/>
   </target>
 
