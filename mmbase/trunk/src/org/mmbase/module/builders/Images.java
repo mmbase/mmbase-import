@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.33 2000-07-22 11:44:21 daniel Exp $
+	$Id: Images.java,v 1.34 2000-08-04 08:59:54 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.33  2000/07/22 11:44:21  daniel
+	Removed some debug
+	
 	Revision 1.32  2000/07/20 14:30:32  daniel
 	Changed because of a missing call, rob did i delete somthing on the port ?
 	
@@ -110,7 +113,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.33 2000-07-22 11:44:21 daniel Exp $
+ * @version $Id: Images.java,v 1.34 2000-08-04 08:59:54 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -332,23 +335,6 @@ public class Images extends MMObjectBuilder {
 
 
             if (cmd.equals("devices")) {
-				// hi, rob don't should me was missing
-				//a method so changed it not sure if its
-				//valid, daniel.
-				/*
-				Vector activeBuilders = mmb.getTypeDef().activeBuilders();
-
-				// Get all images devices.
-				if(activeBuilders.contains("scanners")) {
-					getDevices("scanners",devices);
-				} 
-				if(activeBuilders.contains("cameras")) {
-					getDevices("cameras",devices);
-				} 
-				if(activeBuilders.contains("pccards")) {
-					getDevices("pccards",devices);
-				} 
-				*/
 				if(mmb.getMMObject("scanners")!=null) {
 					getDevices("scanners",devices);
 				} 
