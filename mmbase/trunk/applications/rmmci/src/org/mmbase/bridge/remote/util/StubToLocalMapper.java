@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.bridge.remote.util;
 
@@ -16,10 +16,9 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * StubToLocalMapper is a utitity class that helps
- * a Stub to find it's Local implementation
+ * StubToLocalMapper is a utitity class that helps a Stub to find it's Local implementation.
  * @author Kees Jongenburger
- * @version $Id: StubToLocalMapper.java,v 1.2 2003-07-22 12:55:14 keesj Exp $
+ * @version $Id: StubToLocalMapper.java,v 1.3 2004-11-17 09:29:38 pierre Exp $
  **/
 public class StubToLocalMapper {
     static private Logger log = Logging.getLoggerInstance(StubToLocalMapper.class.getName());
@@ -30,10 +29,9 @@ public class StubToLocalMapper {
     private static Hashtable refcount = new Hashtable();
 
     /**
-     * add an object to the mapper
+     * Add an object to the mapper.
      * @param object the object to add to the mapper
-     * @return a string that can later be used to find
-     * back the object or remove it (MapperCode)
+     * @return a string that can later be used to find back the object or remove it (MapperCode)
      **/
     public static String add(Object object) {
         if (object != null) {
@@ -92,9 +90,9 @@ public class StubToLocalMapper {
     }
 
     /**
-     * increase the counter of referance for a certain mapper code
-     * @param mapperCode the mapper to for wich we do ref counting
-     * @return the amount of referances known at this point
+     * Increase the counter of references to a certain mapper code.
+     * @param mapperCode the mapper to for wich we do reference counting
+     * @return the amount of references known at this point
      **/
     private static int increaseRefCount(String mapperCode) {
         Integer count = (Integer)refcount.get(mapperCode);
@@ -109,9 +107,9 @@ public class StubToLocalMapper {
     }
 
     /**
-     * decrease the counter of referances for a certain mapper code
-     * @param mapperCode the mapper code for with we do ref counting
-     * @return the number of referances we have for the mapper code
+     * Decrease the counter of references to a certain mapper code.
+     * @param mapperCode the mapper code for with we do reference counting
+     * @return the number of references we have for the mapper code
      **/
     private static int decreaseRefCount(String mapperCode) {
         Integer count = (Integer)refcount.get(mapperCode);
@@ -131,9 +129,9 @@ public class StubToLocalMapper {
     }
 
     /**
-     * get an object based on its MapperCode
+     * Get an object based on its mapper code.
      * @param mapperCode the Mappercode of the object
-     * @return the required object or null if there was no such object
+     * @return the required object or <code>null</code> if there was no such object
      **/
     public static Object get(String mapperCode) {
         log.debug("access=(" + mapperCode + ")");
@@ -142,10 +140,10 @@ public class StubToLocalMapper {
     }
 
     /**
-     * remove an entry in the StubToLocal mapper the entry is only removed if there
-     * are no other referances to the entry (ref counting)
+     * Remove an entry in the StubToLocal mapper.
+     * The entry is only removed if there are no other references to the entry.
      * @param mapperCode the MapperCode of the object to be removed
-     * @return true if the entry was removed because refcount was 0
+     * @return <code>true</code> if the entry was removed
      **/
     public static boolean remove(String mapperCode) {
         if (mapperCode != null && !mapperCode.equals("")) {
