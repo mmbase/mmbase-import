@@ -401,6 +401,14 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	</info>
     </attribute>
     <attribute>
+        <name>element</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+	<info>
+	  The nodenumber or alias identifying this node in MMBase.
+	</info>
+    </attribute>
+    <attribute>
         <name>parameter</name>
         <required>false</required>
         <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
@@ -585,6 +593,16 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       use a transaction.
       </p>
     </info>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>type</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>
   <tag>
     <name>createrelation</name>

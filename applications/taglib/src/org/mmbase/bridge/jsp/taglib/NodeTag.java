@@ -31,8 +31,9 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     private static Logger log = Logging.getLoggerInstance(NodeTag.class.getName());
     
-    private String number=null;
-    private String type=null;
+    private String number   = null;
+    private String type     = null;
+    private String element = null;
     
     public void setNumber(String number){
         this.number=number;    
@@ -44,6 +45,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             throw new JspTagException("No parameter "  + param);
         }
     }
+
+    public void setElement(String e) {
+        element = e;
+    }
     
     
     public int doStartTag() throws JspTagException{            
@@ -54,14 +59,23 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             node = getCloudProviderVar().getNode(number);
         } else { 
             // get the node from a parent element.           
+            NodeProvider nodeProvider;
             try {
-                NodeProvider nodeProvider = 
+                nodeProvider = 
                     (NodeProvider) findAncestorWithClass((Tag)this,
                                                          Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider"));
-                node = nodeProvider.getNodeVar();
             } catch (ClassNotFoundException e){
                 throw new JspTagException("Could not find NodeProvider class");
             }
+            if (nodeProvider == null) {
+                throw new JspTagException("Could not find parent NodeProvider");
+            }
+            if (element != null) {
+                node = nodeProvider.getNodeVar().getNodeValue(element);
+            } else {
+                node = nodeProvider.getNodeVar();
+            }
+
         }
         //keesj
         //FIXME does not make sence
