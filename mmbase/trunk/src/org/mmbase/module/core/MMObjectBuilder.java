@@ -1,5 +1,5 @@
 /*
-
+i
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.121 2002-03-21 09:54:02 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.122 2002-03-22 14:23:09 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -276,6 +276,10 @@ public class MMObjectBuilder extends MMTable {
         if (!created()) {
             log.info("init(): Create "+tableName);
             create();
+        }
+        // first make sure parent builder is initalized
+        if (parentBuilder!=null) {
+            parentBuilder.init();
         }
         if (// !tableName.equals("object") &&
             mmb.getTypeDef()!=null) {
