@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
 <builder maintainer="www.mmbase.org" version="1">
-    <status>inactive</status>
+    <status>active</status>
     <classfile>org.mmbase.security.implementation.cloud.UserBuilder</classfile>
         <searchage>1000</searchage>
 	
