@@ -12,6 +12,9 @@
  */
 package org.mmbase.applications.xmlimporter;
 
+import java.util.*;
+import java.io.*;
+
 import org.mmbase.module.Module;
 import org.mmbase.module.sessionInfo;
 import org.mmbase.module.sessionsInterface;
@@ -19,12 +22,8 @@ import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.TransactionHandlerInterface;
 import org.mmbase.module.Upload;
 
-import org.mmbase.util.*;
 import org.mmbase.module.core.*;
-
-import java.util.*;
-import java.io.*;
-import java.lang.*;
+import org.mmbase.util.scanpage;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.*;
@@ -43,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.2 2002-02-27 16:54:27 pierre Exp $
+ * @version $Id: TransactionHandler.java,v 1.3 2002-03-26 13:05:49 pierre Exp $
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
