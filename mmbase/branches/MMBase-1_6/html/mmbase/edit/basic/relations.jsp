@@ -18,42 +18,20 @@
         <tr>
             <th colspan="8"><%=m.getString("relations.from")%></th>
         </tr>
-        <mm:context>
 
             <%-- list all relation types, where we are the source --%>
-            <% RelationManagerIterator relIterator = node.getNodeManager().getAllowedRelations((NodeManager) null, null, "source").relationManagerIterator(); 
-               while(relIterator.hasNext()) {
-                    RelationManager relationManager = relIterator.nextRelationManager();
-                    // what is the nodemanager, on the otherside?
-                    NodeManager otherNodeType =  relationManager.getSourceManager();
-                    int rnumber = relationManager.getIntValue("rnumber");
-                    String role = relationManager.getForwardRole();
-                    String insrelField1 = "dnumber";
-                    String insrelField2 = "snumber";
-            %>
+           <% { boolean source = true; %>
             <%@ include file="relation.jsp" %>
-
-        <mm:context>
-        </mm:context>
+           <% } %>
 
         <tr>
             <th colspan="8"><%=m.getString("relations.to")%></th>
         </tr>
 
             <%-- list all relation types, where we are the source --%>
-            <% relIterator = node.getNodeManager().getAllowedRelations((NodeManager) null, null, "destination").relationManagerIterator(); 
-               while(relIterator.hasNext()) {
-                    RelationManager relationManager = relIterator.nextRelationManager();
-                    // what is the nodemanager, on the otherside?
-                    NodeManager otherNodeType =  relationManager.getDestinationManager();
-                    int rnumber = relationManager.getIntValue("rnumber");
-                    String role = relationManager.getReciprocalRole();
-                    String insrelField1 = "snumber";
-                    String insrelField2 = "dnumber";
-            %>
+           <% { boolean source = false; %>
              <%@ include file="relation.jsp" %>
-
-        </mm:context>
+           <% } %>
 
     </table>
   </mm:node>
