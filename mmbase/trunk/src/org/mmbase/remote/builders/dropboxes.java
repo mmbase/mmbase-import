@@ -16,19 +16,14 @@ import java.util.*;
 
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
-import org.mmbase.service.implementations.*;
 
 
 /**
- * @version $Revision: 1.4 $ $Date: 2000-03-30 13:11:49 $ 
+ * @version $Revision: 1.5 $ $Date: 2000-11-27 12:52:35 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder {
-
-	private String _classname = getClass().getName();
-	private boolean debug = RemoteBuilder.debug;
-	private void debug( String msg ) { System.out.println( _classname +":"+ msg ); }
-
+	private boolean debug = true;
 	private dropboxInterface impl;
 	private String classname;
 	StringTagger tagger;
