@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: CP1252Surrogator.java,v 1.2 2004-11-12 21:55:25 michiel Exp $
+ * @version $Id: CP1252Surrogator.java,v 1.3 2004-11-15 09:33:08 michiel Exp $
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
@@ -46,25 +46,29 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
+                int cp;
                 if (to == WELL_ENCODED) { // CP1252 chars appear all over the place in the unicode set, this makes a nice an clear int of it, with the ISO-8859-1 values (0-255)
-                    c = ("" + (char) c).getBytes("CP1252")[0] & 0xff; // should this really be done by a String?
-                }
-                switch (c) {
+                    cp = ("" + (char) c).getBytes("CP1252")[0] & 0xff; // should this really be done by a String?
+                } else {
+                    cp = c;
+                    
+                }                
+                switch (cp) {
                 case 128: w.write("EURO"); break; // EURO SIGN
                 case 129: w.write('?');    break; // 
                 case 130: w.write(',');    break; // SINGLE LOW-9 QUOTATION MARK
                 case 131: w.write('f');    break; // LATIN SMALL LETTER F WITH HOOK
                 case 132: w.write(",,");   break; // DOUBLE LOW-9 QUOTATION MARK
                 case 133: w.write("...");  break; // HORIZONTAL ELLIPSIS
-                case 134: w.write('*');    break; // DAGGER
-                case 135: w.write("**");    break; // DOUBLE DAGGER
+                case 134: w.write('+');    break; // DAGGER
+                case 135: w.write("++");   break; // DOUBLE DAGGER
                 case 136: w.write('^');    break; // MODIFIER LETTER CIRCUMFLEX ACCENT
                 case 137: w.write("0/00"); break; // PER MILLE SIGN
                 case 138: w.write('S');    break; // LATIN CAPITAL LETTER S WITH CARON
                 case 139: w.write('<');    break; // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
                 case 140: w.write("OE");   break; // LATIN CAPITAL LIGATURE OE
-                case 141: w.write('Z');    break; // LATIN CAPITAL LETTER Z WITH CARON
-                case 142: w.write('?');    break; // 
+                case 141: w.write('?');    break; // 
+                case 142: w.write('Z');    break; // LATIN CAPITAL LETTER Z WITH CARON
                 case 143: w.write('?');    break; // 
                 case 144: w.write('?');    break; // 
                 case 145: w.write('`');    break; // LEFT SINGLE QUOTATION MARK
@@ -75,7 +79,7 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
                 case 150: w.write('-');    break; // EN DASH
                 case 151: w.write('-');    break; // EM DASH
                 case 152: w.write('~');    break; // SMALL TILDE
-                case 153: w.write("TM");   break; // TRADE MARK SIGN
+                case 153: w.write("(TM)"); break; // TRADE MARK SIGN
                 case 154: w.write('s');    break; // LATIN SMALL LETTER S WITH CARON
                 case 155: w.write('>');    break; // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
                 case 156: w.write("oe");   break; // LATIN SMALL LIGATURE OE
@@ -145,10 +149,10 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
     public static void main(String[] args) {
 
         // construct a String with all specific CP1252 charachters.       
-        String testStringCP1252 = getTestString();
+        String testStringCP1252 = "bla bla " + getTestString();
         String testStringISO1 = "";
         try {
-            testStringISO1   = new String(getTestBytes(), "ISO-8859-1"); /// it's a lie, but try it anyway.
+            testStringISO1   = "bla bla " + new String(getTestBytes(), "ISO-8859-1"); /// it's a lie, but try it anyway.
         } catch (Exception e) {
             System.err.println("" + e);            
         }
