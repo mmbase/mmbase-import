@@ -1,9 +1,8 @@
-<!-- Author Rob Vermeulen (VPRO) -->
-<!ELEMENT urlcomposer (mimemapping?)>
+<!--
+   DTD for URLComposerFactory configuration file 
 
-<!ELEMENT mimemapping (map+)>
-<!ELEMENT map (#PCDATA)>
-<!ATTLIST map
-  format         CDATA   #REQUIRED
-  codec		 CDATA   #REQUIRED
->
+-->
+<!ELEMENT urlcomposers (default, urlcomposer*)>
+<!ELEMENT default (#PCDATA)>
+<!ELEMENT urlcomposer (#PCDATA)>
+<!ATTLIST urlcomposer format  NMTOKEN #REQUIRED >
