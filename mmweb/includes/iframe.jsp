@@ -11,5 +11,6 @@
 <h3>The <a href="<mm:field name="urls.url"/>">documentation</a> will be opened in a new window.</h3>
 </mm:list>
 </div>
+<div style="margin:320px 0 0 0;">&nbsp;</div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
