@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.13 2002-05-16 12:01:56 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.14 2002-05-22 13:44:34 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -213,19 +213,35 @@ public class WizardDatabaseConnector {
      */
     public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws Exception {
         // fires getData command and places result in targetNode
+        Node objectNode=getDataRaw(objectnumber, restrictions);
+        // place object in targetNode
+        objectNode = targetNode.getOwnerDocument().importNode(objectNode.cloneNode(true),true);
+        tagDataNode(objectNode);
+        targetNode.appendChild(objectNode);
+        return objectNode;
+    }
+
+    /**
+     * This method retrieves data (objectdata) from mmbase.
+     *
+     * @param     objectnumber    The number of the object to load.
+     * @param     restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
+     * @return   The resulting node with the objectdata.
+     */
+    public Node getDataRaw(String objectnumber, NodeList restrictions) throws Exception {
+        // fires getData command and places result in targetNode
         ConnectorCommandGetData cmd = new ConnectorCommandGetData(objectnumber, restrictions);
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
             // place object in targetNode
-            Node objectNode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
-            tagDataNode(objectNode);
-            targetNode.appendChild(objectNode);
-            return objectNode;
+            return Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
         } else {
             throw new Exception("Could not fire getData command for object " + objectnumber);
         }
     }
+
+
 
     public void getRelations(Node targetNode, String objectnumber) throws Exception {
         getRelations(targetNode, objectnumber, null);
