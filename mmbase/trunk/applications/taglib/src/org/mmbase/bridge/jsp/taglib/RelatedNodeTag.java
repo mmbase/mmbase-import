@@ -23,12 +23,12 @@ import org.mmbase.util.logging.Logging;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.13 2003-09-10 11:16:08 michiel Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.14 2004-02-26 22:11:49 michiel Exp $ 
  */
 
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static final Logger log = Logging.getLoggerInstance(RelatedNodeTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(RelatedNodeTag.class);
 
     private Attribute listRelationsId = Attribute.NULL;
 
@@ -41,21 +41,11 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
     }
 
     public int doStartTag() throws JspTagException{
-        Node node = null;
-
         // get the parent ListRelationsTag
         ListRelationsTag lr = (ListRelationsTag) findParentTag(ListRelationsTag.class, (String) listRelationsId.getValue(this));
-        Node otherNode    = lr.getRelatedfromNode();
-        Node relationNode = lr.getNodeVar();
 
-        int number;
-        // now look what node would have been.
-        if (otherNode.getNumber() == relationNode.getIntValue("dnumber")) {
-            number = relationNode.getIntValue("snumber");
-        } else {
-            number = relationNode.getIntValue("dnumber");
-        }
-        node = getCloud().getNode(number);
+
+        Node node = lr.getRelatedNode();
         setNodeVar(node);
         // if direct parent is a Formatter Tag, then communicate
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
