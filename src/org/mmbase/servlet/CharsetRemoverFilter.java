@@ -24,10 +24,11 @@ import org.mmbase.util.logging.*;
  * that. But it could be used for other content-types as well (There
  * are probably more lousy client programs out there).
  *
- * It can be configured by a file WEB-INF/config/charsetremover.list.
+ * It can be configured by a file WEB-INF/config/charsetremover.properties with
+ * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id $
+ * @version $Id: CharsetRemoverFilter.java,v 1.3 2005-03-09 16:32:25 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -35,7 +36,7 @@ public class CharsetRemoverFilter implements Filter {
     private static final Logger log = Logging.getLoggerInstance(CharsetRemoverFilter.class);
 
 
-    Set contentTypes = new HashSet();    
+    Properties contentTypes = new Properties();    
     FileWatcher watcher = new FileWatcher(true) {
             public void onChange(File file) {
                 load(file);
@@ -45,7 +46,7 @@ public class CharsetRemoverFilter implements Filter {
      * Initializes the filter
      */
     public void init(javax.servlet.FilterConfig filterConfig) throws ServletException {
-        File file = new File(filterConfig.getServletContext().getRealPath("WEB-INF/config/charsetremover.list"));
+        File file = new File(filterConfig.getServletContext().getRealPath("WEB-INF/config/charsetremover.properties"));
         log.info("Init of CharsetRemover Filter, using " + file);
         load(file);
         watcher.add(file);
@@ -59,41 +60,33 @@ public class CharsetRemoverFilter implements Filter {
         contentTypes.clear();
         if (file.canRead()) {
             try {
-                
-                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-                String ct = in.readLine();
-                while (ct != null) {
-                    ct.trim();
-                    if (! ct.startsWith("#") && 
-                        ! ct.equals("")) {
-                        contentTypes.add(ct);                        
-                    }
-                    ct = in.readLine();
-                }
+                contentTypes.load(new FileInputStream(file));
             } catch (IOException ioe) {
                 log.error(ioe);
             }
         } else {
-            log.warn("This file does not exist");
-            contentTypes.add("audio/x-pn-realaudio");
-            contentTypes.add("text/vnd.rn-realtext");
-            contentTypes.add("audio/x-pn-realaudio-plugin");
-            contentTypes.add("image/vnd.rn-realpix");
-            contentTypes.add("application/smil");
+            log.warn("This file does not exist, using defaults");
+            contentTypes.put("audio/x-pn-realaudio", "ISO-8859-1");
+            contentTypes.put("text/vnd.rn-realtext","ISO-8859-1");
+            contentTypes.put("audio/x-pn-realaudio-plugin", "ISO-8859-1");
+            contentTypes.put("image/vnd.rn-realpix", "ISO-8859-1");
+            contentTypes.put("application/smil", "ISO-8859-1");
         }
+        log.info("The following content-types will have no charset on the content-type: " + contenTypes);
     }
 
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) 
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, FilterChain filterChain) 
         throws java.io.IOException, ServletException {
 
         HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
                 private String contentType;
+                private PrintWriter writer = null;
+
+                
                 public void setContentType(String ct) {
                     contentType = ct;
-                    super.setContentType(ct);
                 }
-
                 /**
                  * This is the essence of this whole thing. The idea
                  * is to fake the use of getOutputStream(). Then you
@@ -102,21 +95,42 @@ public class CharsetRemoverFilter implements Filter {
                  */
                 
                 public PrintWriter getWriter() throws IOException {
-                    if (contentTypes.contains(contentType)) {
-                        log.debug("Wrapping outputstream to avoid charset");
-                        try {
-                            // ISO-8859-1 is default for HTTP
-                            return new PrintWriter(new BufferedWriter(new OutputStreamWriter(getOutputStream(), "ISO-8859-1")));
-                        } catch (UnsupportedEncodingException uee) {
-                            // could not happen
-                            return super.getWriter();
+                    if (writer == null) {                        
+                        String charSet = contentType == null ? null : (String) contentTypes.get(contentType);
+                        if (charSet != null) {
+                            if (contentType != null) {                                
+                                super.setContentType(contentType);                            
+                            }
+                            if (log.isDebugEnabled()) {
+                                log.debug("Wrapping outputstream to avoid charset " + charSet);
+                            }
+                            try {
+                                writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet), false) {
+                                        public void write(String s, int off, int len) {
+                                            super.write(s, off, len);
+                                            flush();
+                                        }
+
+                                    };
+                            } catch (UnsupportedEncodingException uee) {
+                                log.error(uee);
+                                writer = super.getWriter();
+                            }
+                        } else {
+                            if (contentType != null) {
+                                super.setContentType(contentType);
+                            }
+
+                            if (log.isDebugEnabled()) {
+                                log.debug(" " + contentType + " is not contained by " + contentTypes);
+                            }
+                            writer = super.getWriter();
                         }
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            log.debug(" " + contentType + " is not contained by " + contentTypes);
-                        }
-                        return super.getWriter();
                     }
+                    if (log.isDebugEnabled()) {
+                        log.debug("Returning " + writer.getClass());
+                    }
+                    return writer;                        
                 }
         };
         filterChain.doFilter(servletRequest, wrapper);
