@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.6 2002-02-27 16:54:23 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.7 2002-03-08 14:20:13 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -42,8 +42,6 @@ public class WizardDatabaseConnector {
 
     int didcounter=1;
     private Cloud userCloud = null;
-
-    public final static String RELATIONFIELDS_XPATH = "field[not(@name='dnumber') and not(@name='rnumber') and not(@name='snumber')]";
 
     /**
      * Constructor: Creates the connector. Call #init also.
@@ -109,7 +107,7 @@ public class WizardDatabaseConnector {
         for (int i=0; i<rels.getLength(); i++) {
             Node rel = rels.item(i);
             String parentobjnumber = Utils.getAttribute(rel.getParentNode(), "number");
-            String relatedobject = getOtherRelatedObject(rel, parentobjnumber);
+            String relatedobject = Utils.getAttribute(rel, "destination", "");
             Node loadedobj = getData(rel, relatedobject, loadactionrestrictionfields);
 
             // object loaded. Check to see if we need to follow more relations...
@@ -250,7 +248,6 @@ public class WizardDatabaseConnector {
             NodeList relations = Utils.selectNodeList(cmd.responsexml, "/*/object/relation");
             for (int i=0; i<relations.getLength(); i++) {
                 tagDataNode(relations.item(i));
-                processIncomingRelation(relations.item(i), objectnumber);
             }
             Utils.appendNodeList(relations, targetNode);
         } else {
@@ -283,8 +280,6 @@ public class WizardDatabaseConnector {
     /**
      * This method creates a new temporarily relation.
      *
-     * For now, Dove does not have a getNewRelation method. A dummy temporarily relation is created locally. Thus: NO communition is made with MMBase.
-     *
      * @param     targetNode      The place where the results should be appended.
      * @param     role            The name of the role the new relation should have.
      * @param     sourceobjectnumber      the number of the sourceobject
@@ -299,7 +294,6 @@ public class WizardDatabaseConnector {
         if (!cmd.hasError()) {
             Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/relation").cloneNode(true), true);
             tagDataNode(objectnode);
-            processIncomingRelation(objectnode, sourceobjectnumber);
             targetNode.appendChild(objectnode);
             return objectnode;
         } else {
@@ -703,7 +697,7 @@ public class WizardDatabaseConnector {
             Utils.setAttribute(newrel, "role", role);
 
             // copy inside fields also (except dnumber, snumber and rnumber fields)
-            NodeList flds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
+            NodeList flds = Utils.selectNodeList(rel, "field");
             Utils.appendNodeList(flds,rel);
 
             // store the new rel in the list also
@@ -726,48 +720,6 @@ public class WizardDatabaseConnector {
             }
         }
         return req.getDocumentElement();
-    }
-
-    /**
-     * This method returns the objectnumber of the related object, given the 'other' related object.
-     *
-     * @param     relationnode    The relation which to use.
-     * @param     objectnumber    The objectnumber we don't want to get. So, we want to get the OTHER related object.
-     * @return   The number of other related object.\
-     */
-    public String getOtherRelatedObject(Node relationnode, String objectnumber) {
-        String dnumber="";
-        String snumber="";
-        try {
-            dnumber = Utils.selectSingleNode(relationnode, "field[@name='dnumber']/text()").getNodeValue();
-            snumber = Utils.selectSingleNode(relationnode, "field[@name='snumber']/text()").getNodeValue();
-        } catch (Exception e) {
-            try {
-                // sometimes a destination="objnr" is given, sometimes dnumber/snumber is used.
-                // This is a workaround.
-                return Utils.getAttribute(relationnode, "destination", "");
-            } catch (RuntimeException e2) {
-                log.error("getOtherRelationObject err:"+e.getMessage());
-                return "";
-            }
-        }
-        if (dnumber.equals(objectnumber)) return snumber;
-        return dnumber;
-    }
-
-    /**
-     * If a new relation is made, it will be processed here. Attributes are set so that all other code can easily use the relations.
-     *
-     * @param     relationnode    the newly created or loaded relationnode.
-     * @param     objectnumber    the already known objectnumber.
-     */
-    public void processIncomingRelation(Node relationnode, String objectnumber) {
-        // calculate right destination objectnumber and place it in the relationnode
-        String othernumber = getOtherRelatedObject(relationnode, objectnumber);
-        if (othernumber.equals("")) return;
-
-        Utils.setAttribute(relationnode, "source", objectnumber);
-        Utils.setAttribute(relationnode, "destination", othernumber);
     }
 
     /**
@@ -843,8 +795,8 @@ public class WizardDatabaseConnector {
      * @return     True if the relations are different, false if they are the same.
      */
     private boolean checkRelationFieldsChanged(Node origrel, Node rel) {
-        NodeList origflds = Utils.selectNodeList(origrel, RELATIONFIELDS_XPATH);
-        NodeList newflds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
+        NodeList origflds = Utils.selectNodeList(origrel, "field");
+        NodeList newflds = Utils.selectNodeList(rel, "field");
         Document tmp = Utils.parseXML("<tmp><n1><r/></n1><n2><r/></n2></tmp>");
 
         Node n1 = Utils.selectSingleNode(tmp, "/tmp/n1/r");
@@ -875,7 +827,8 @@ public class WizardDatabaseConnector {
         Utils.copyAllAttributes(rel, obj, except);
 
         // copy fields, except... (uses RELATIONFIELDS_XPATH)
-        NodeList flds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
+        NodeList flds = Utils.selectNodeList(rel, "field");
+
         Utils.appendNodeList(flds, obj);
 
         // remove rel, place obj instead
