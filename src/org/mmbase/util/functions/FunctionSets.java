@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.10 2005-01-30 16:46:36 nico Exp $ 
+ * @version $Id: FunctionSets.java,v 1.11 2005-03-16 15:59:51 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -182,22 +182,22 @@ public class FunctionSets {
                 a = reader.getElementByPath(element, "function.return");
                	ReturnType returnType = ReturnType.UNKNOWN;
 		if (a != null) {
-
-                	String returnTypeClassName = reader.getElementAttributeValue(a, "type");
-                	if (returnTypeClassName != null) {
-                    		try {
-                       			 Class returnTypeClass = getClassFromName(returnTypeClassName);
-                       		 	returnType = new ReturnType(returnTypeClass, "");
-                    		} catch (Exception e) {
-                       		 	log.warn("Cannot determine return type : " + returnTypeClassName + ", using UNKNOWN");
-                    		}
-                	}
-
+                    
+                    String returnTypeClassName = reader.getElementAttributeValue(a, "type");
+                    if (returnTypeClassName != null) {
+                        try {
+                            Class returnTypeClass = getClassFromName(returnTypeClassName);
+                            returnType = new ReturnType(returnTypeClass, "");
+                        } catch (Exception e) {
+                            log.warn("Cannot determine return type : " + returnTypeClassName + ", using UNKNOWN");
+                        }
+                    }
+                    
 		} else {
-               		returnType = ReturnType.NONE;
+                    returnType = ReturnType.NONE;
 		}
-	
-
+                
+                
                 /* obtaining field definitions for a result Node... useful ??
 
                 for (Enumeration n2 = reader.getChildElements(a, "field"); n2.hasMoreElements();) {

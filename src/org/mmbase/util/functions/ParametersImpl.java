@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
+import org.mmbase.bridge.DataType;
 import org.mmbase.util.Casting;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.2 2005-03-01 17:14:31 michiel Exp $
+ * @version $Id: ParametersImpl.java,v 1.3 2005-03-16 15:59:51 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -84,7 +85,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
      */
     public ParametersImpl(DataType[] def, List values) {
         this(def);
-        if (values!=null) {
+        if (values != null) {
             if (log.isDebugEnabled()) {
                 if (values.size() > definition.length) {
                     log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
@@ -109,7 +110,7 @@ public class ParametersImpl extends AbstractList implements Parameters {
     public Class[] toClassArray() {
         Class[] array = new Class[definition.length];
         for (int i = 0; i < definition.length; i++) {
-            array[i] = definition[i].getType();
+            array[i] = definition[i].getTypeAsClass();
         }
         return array;
     }

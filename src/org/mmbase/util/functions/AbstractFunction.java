@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
+import org.mmbase.bridge.DataType;
 import java.util.*;
 
 /**
@@ -21,7 +22,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.3 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: AbstractFunction.java,v 1.4 2005-03-16 15:59:51 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters

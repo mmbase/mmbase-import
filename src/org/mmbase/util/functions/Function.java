@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
+import org.mmbase.bridge.DataType;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Function.java,v 1.5 2005-03-16 15:59:51 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
