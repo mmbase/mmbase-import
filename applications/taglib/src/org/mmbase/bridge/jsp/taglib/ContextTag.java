@@ -170,6 +170,9 @@ public class ContextTag extends ContextReferrerTag {
         case TYPE_SESSION:            
             getSession().removeAttribute(key);
             break;
+        case TYPE_PARAMETERS:
+            pageContext.getRequest().removeAttribute(key);
+            break;
         case TYPE_PARENT:
             if (getParentContext() != null) {
                 parent.unRegister(key);
@@ -222,6 +225,7 @@ public class ContextTag extends ContextReferrerTag {
 
     public String getObjectAsString(String key) throws JspTagException {
         Object o = getObject(key);
+        if (o == null) return null;
         if (o instanceof Node) {
             Node n = (Node) o;
             return "" + n.getNumber();
