@@ -15,30 +15,34 @@
 </tr>
 <tr>
   <td class="multidata" colspan="2">
-  <p>MMBase is based on the single idea of creating a object cloud that represents what you want to share with people.<br />
-  We create objects like images, newsitems, or urls and store them as objects in MMBase. We then create relations between them.<br />
-  This makes it possible for MMBase to generate basic (generic) editors, since they all have the same basic idea of how an object
-  is represented, as well as the relations to other objects.<br />
-  The Basic editors are ment primarily for site administrators. For your users you are encouraged to set up the task-based editwizards.<br />
-  In the urls given below we have setup an admin account so you can edit/change the objects within the installed cloud.<br />
-  Note that in order to use the SCAN editors you need to have installed the SCAN scripting language.
+  <p>
+    MMBase is based on the single idea of creating a object cloud that represents what you want to share with people.
+    We create objects like images, newsitems, or urls and store them as objects in MMBase. We then create relations between them.
+    This makes it possible for MMBase to generate basic (generic) editors, since they all have the same basic idea of how an object
+    is represented, as well as the relations to other objects.
+  </p>
+  <p>
+    Generic editors are meant primarily for site administrators. For your users you are encouraged
+    to set up the task-based (specific) editwizards. In the urls given below we have setup an admin
+    account so you can edit/change the objects within the installed cloud.
   </p>
 </tr>
-<tr><td>&nbsp;</td></tr>
 <tr>
-  <th class="header" colspan="2">URL</th>
+  <th class="header" colspan="2">URLs</th>
+</tr>
+<% String thisServer = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath(); %>
+<tr>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/" />">The MMBase Editors ('basic') : <%=thisServer%>/mmbase/edit/</a></td>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/" />">The MMBase Editors (jsp) : http://host:port/mmbase/edit/</a></td>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/my_editors/" />">Alternate generic Editors ('my editors') : <%=thisServer %>/mmbase/edit/my_editors/</a></td>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmexamples/jsp/my_editors/" />">Alternate Editors (jsp) : http://host:port/mmexamples/jsp/my_editors/</a></td>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/mmeditors/" />">Classic style generic editors ('mmeditors') : <%=thisServer %>/mmbase/edit/mmeditors/</a></td>
 </tr>
-<tr><td>&nbsp;</td></tr>
-
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
-<td class="data">Return to home page</td>
+  <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" /></td>
+  <td class="data">Return to home page</td>
 </tr>
 </table>
 </body></html>
