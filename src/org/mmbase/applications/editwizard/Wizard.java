@@ -17,6 +17,7 @@ import org.w3c.dom.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerException;
 import org.mmbase.util.xml.URIResolver;
 
 /**
@@ -26,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.69 2002-09-03 17:19:59 eduard Exp $
+ * @version $Id: Wizard.java,v 1.70 2002-10-04 22:29:25 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -329,6 +330,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Node parent = data.getDocumentElement();
                 // Ask the database to create that object, ultimately to get the new id.
                 Node newobject = databaseConnector.createObject(data, parent, objectdef, variables);
+                if (newobject == null) {
+                    throw new WizardException("Could not create new object. Did you forget to add an 'object' subtag?");
+                }
                 parent.appendChild(newobject);
                 databaseConnector.tagDataNodes(data);
                 dataId = Utils.getAttribute(newobject,"number");
@@ -365,7 +369,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param req the ServletRequest contains the name-value pairs received through the http connection
      */
-    public void processRequest(ServletRequest req) throws WizardException {
+    public void processRequest(ServletRequest req) throws WizardException, SecurityException {
         String curform = req.getParameter("curform");
         if (curform != null && !curform.equals("")) currentFormId = curform;
 
@@ -382,8 +386,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param out The writer where the output (html) should be written to.
      * @param instancename name of the current instance
      */
-    public void writeHtmlForm(Writer out, String instanceName) throws WizardException {
-        log.debug("writeHtmlForm for " + instanceName);
+    public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
+        if (log.isDebugEnabled()) log.debug("writeHtmlForm for " + instanceName);
         Node datastart = Utils.selectSingleNode(data, "/data/*");
         // Build the preHtml version of the form.
         preform = createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
@@ -398,13 +402,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("popupid",    popupId);
         params.put("cloud",      cloud);
         params.put("debug",      "" + debug);
-
         if (templatesDir != null) params.put("templatedir",  templatesDir);
-        try {
-            Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
-        } catch (javax.xml.transform.TransformerException e) {
-            throw new WizardException(e.toString() + ":" + Logging.stackTrace(e));
-        }
+        
+        Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
     }
 
     /**
@@ -556,7 +556,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // process all forms
         NodeList formlist = Utils.selectNodeList(schema, "/*/form-schema");
 
-        if (formlist.getLength()==0) {
+        if (formlist.getLength() == 0) { // this can be done by dtd-checking!
             throw new WizardException("No form-schema was found in the xml. Make sure at least one form-schema node is present.");
         }
         for (int f=0; f<formlist.getLength(); f++) {
@@ -703,7 +703,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             Node fieldDataNode = null;
             NodeList fieldinstances = null;
             if (xpath == null) {
-                if (! "startwizard".equals(Utils.getAttribute(field, "ftype", null))) {
+                String ftype = Utils.getAttribute(field, "ftype", null);
+                if (! ("startwizard".equals(ftype) || "wizard".equals(ftype))) {
                     throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
                 }
             } else {
@@ -727,7 +728,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         //set number attribute in field
                         Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
                         createFormField(form, field, fieldDataNode);
-                    } else if ("startwizard".equals(ftype)) {
+                    } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
                         log.debug("A startwizard!");
                         //set number attribute in field
                         Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
@@ -1174,7 +1175,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         // binary type needs special processing
-        if (dttype.equals("binary")) {
+        if ("binary".equals(dttype)) {
             addBinaryData(newfield);
         }
 
@@ -1188,8 +1189,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (ftype.equals("function")) {
                     theValue = Utils.getAttribute(field, "name");
                     log.debug("Found a function field " + theValue);
-                } else if (ftype.equals("startwizard")) {
-                    log.debug("found a startwizard field");
+                } else if (ftype.equals("startwizard") || ftype.equals("wizard")) {
+                    log.debug("found a wizard field");
                 } else {
                     log.debug("Probably a new node");
                     throw new WizardException("No datanode given for field " + theValue + " and ftype does not equal 'function' or 'startwizard'(but " + ftype + ")");
@@ -1324,7 +1325,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param       req     The ServletRequest where the commands (name/value pairs) reside.
      */
-    private void processCommands(ServletRequest req) throws WizardException {
+    private void processCommands(ServletRequest req) throws WizardException, SecurityException  {
 
         log.debug("processing commands");
         mayBeClosed = false;
@@ -1345,13 +1346,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     try{
                         WizardCommand wc = new WizardCommand(commandname, commandvalue);
                         processCommand(wc);
-                    } catch (WizardException we) {
-                        throw we;
                     } catch (RuntimeException e){
                         // Have to accumulate the exceptions and report them at the end.
-                        String errormsg=Logging.stackTrace(e);
+                        // Michiel XXX Why? What's the point? 
+                        // I think the code can be simplied by taking away all exception handlin in this function.
+
+                        String errormsg = Logging.stackTrace(e);
                         log.error(errormsg);
-                        errors.add(new WizardException("* Could not process command:"+commandname + "="+commandvalue+"\n"+errormsg));
+                        errors.add(new WizardException("* Could not process command:" + commandname + "=" + commandvalue + "\n" + errormsg));
                     }                
             } else {
                 if (log.isDebugEnabled()) log.trace("ignoring non-command " + commandname);
@@ -1380,7 +1382,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * - commit
      *
      */
-    public void processCommand(WizardCommand cmd) throws WizardException {
+    public void processCommand(WizardCommand cmd) throws WizardException, SecurityException {
         // processes the given command
         switch (cmd.getType()) {
         case WizardCommand.DELETE_ITEM : {
@@ -1556,41 +1558,44 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             mayBeClosed = true;
             break;
         }
+            /*
+        case WizardCommand.SAVE :
+            log.service("Wizard " + objectNumber + " will be saved but not closed");
+            */
         case WizardCommand.COMMIT : {
             log.service("Committing wizard " + objectNumber);
             // This command takes no parameters.
-            try {
-                if (log.isDebugEnabled()) {
-                    log.debug("orig: " +     Utils.stringFormatted(originalData));
-                    log.debug("new orig: " + Utils.stringFormatted(data));
-                }
+            if (log.isDebugEnabled()) {
+                log.debug("orig: " +     Utils.stringFormatted(originalData));
+                log.debug("new orig: " + Utils.stringFormatted(data));
+            }
+            
+            Element results = databaseConnector.put(originalData, data, binaries);
 
-                Element results = databaseConnector.put(originalData, data, binaries);
-                NodeList errors = Utils.selectNodeList(results,".//error");
-                if (errors.getLength() > 0){
-                    String errorMessage = "Errors received from MMBase :";
-                    for (int i=0; i<errors.getLength(); i++){
-                        errorMessage = errorMessage + "\n" + Utils.getText(errors.item(i));
-                    }
-                    throw new WizardException(errorMessage);
+            // find the (new) objectNumber and store it.
+            String oldnumber = Utils.selectSingleNodeText(data, ".//object/@number", null); // select the 'most outer' object.
+            if (log.isDebugEnabled()) {
+                log.trace("results : " + results);
+                log.debug("found old number " + oldnumber);
+            }
+            
+            // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this
+            // xpath
+            String newnumber = Utils.selectSingleNodeText(results,".//object[@oldnumber='" + oldnumber + "']/@number", null);
+            if (log.isDebugEnabled()) log.debug("found new wizard number " + newnumber);
+            if (newnumber != null)  objectNumber = newnumber;
+            committed = true;
+            mayBeClosed =  (cmd.getType() == WizardCommand.COMMIT);
+            if (! mayBeClosed) {
+                if (log.isDebugEnabled()) { 
+                    log.trace("Using data was " + Utils.getSerializedXML(originalData));
+                    log.trace("is " + Utils.getSerializedXML(data));
                 }
-                // find the (new) objectNumber and store it.
-                String oldnumber = Utils.selectSingleNodeText(data, ".//object/@number", null); // select the 'most outer' object.
-                if (log.isDebugEnabled()) {
-                    log.trace("results : " + results);
-                    log.debug("found old number " + oldnumber);
+                originalData = Utils.emptyDocument();
+                originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
+                if (newnumber != null) {
+                    Utils.setAttribute(originalData.getDocumentElement().getElementsByTagName("object").item(0), "number",  objectNumber);
                 }
-
-                // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this
-                // xpath
-                String newnumber = Utils.selectSingleNodeText(results,".//object[@oldnumber='" + oldnumber + "']/@number", null);
-                log.debug("found new wizard number " + newnumber);
-                if (newnumber != null) objectNumber = newnumber;
-                committed = true;
-                mayBeClosed = true;
-            } catch (WizardException e) {
-                log.error("could not send PUT command!. Wizardname:" + wizardName + "Exception occured: " + e.getMessage());
-                throw e;
             }
             break;
         }
@@ -1609,7 +1614,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param createorder ordernr under which this item is added ()i.e. when adding more than one item to a
      *                    list using one add-item command). The first ordernr in a list is 1
      */
-    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate, int createorder) throws WizardException{
+    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate, int createorder) throws WizardException, SecurityException {
 
         log.debug("Adding list item");
         // Determine which list issued the add-item command, so we can get the create code from there.
@@ -1762,7 +1767,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         String guitype = Utils.selectSingleNodeText(con, "guitype", "string/line");
         int pos=guitype.indexOf("/");
         if (pos!=-1) {
-            xmlSchemaType=guitype.substring(0,pos);
+            xmlSchemaType = guitype.substring(0,pos);
             guitype=guitype.substring(pos+1);
         }
         String required = Utils.selectSingleNodeText(con,  "required", "false");
@@ -1773,7 +1778,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         String ftype = Utils.getAttribute(fielddef, "ftype", null);
         String dttype = Utils.getAttribute(fielddef, "dttype", null);
         Node prompt = Utils.selectSingleNode(fielddef, "prompt");
-        if (dttype==null) {
+        if (dttype == null) {
             // import xmlSchemaType (dttype)
             // note :
             // Dove currently returns the following XML Schema base types (and their possible constraints):
@@ -1804,6 +1809,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // Finally, Dove may send other, non-standard, types, depending on the formation of guitype in the builder xml.
             //
             dttype = xmlSchemaType;
+            if (log.isDebugEnabled()) log.debug("dttype was null, setting to " + xmlSchemaType);
         }
 
         if (ftype == null) {
@@ -1842,14 +1848,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // in the old format, ftype was date, while dttype was date,datetime, or time
         // In the new format, this is reversed (dttype contains the base datatype,
         // ftype the format in which to enter it)
-        if (dttype.equals("date") || dttype.equals("time")) {
+        if ("date".equals(dttype) || "time".equals(dttype)) {
             ftype=dttype;
             dttype="datetime";
         }
 
         // in the old format, 'html' could also be assigned to dttype
         // in the new format this is an ftype (the dttype is string)
-        if (dttype.equals("html")){
+        if ("html".equals(dttype)){
             ftype="html";
             dttype="string";
         }
@@ -1868,8 +1874,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         // fix for old format type 'wizard'
-        if (ftype.equals("wizard")) {
-            ftype="startwizard";
+        if ("wizard".equals(ftype)) {
+            ftype = "startwizard";
         }
 
         // store new attributes in fielddef
@@ -1880,7 +1886,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         // process min/maxlength for strings
-        if (dttype.equals("string") || dttype.equals("html")) {
+        if ("string".equals(dttype) || "html".equals(dttype)) {
             String dtminlength = Utils.getAttribute(fielddef, "dtminlength", null);
             if (dtminlength==null) {
                 // manually set minlength if required is true
