@@ -39,7 +39,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.26 2002-10-25 13:15:32 michiel Exp $
+ * @version $Id: Utils.java,v 1.26.2.1 2003-05-26 11:32:20 vpro Exp $
  */
 public class Utils {
 
@@ -74,7 +74,7 @@ public class Utils {
      *
      * @param      file the file to be loaded.
      * @return     The loaded xml Document
-     * @throws     WizardException if someting wend wrong...
+     * @throws     WizardException if the document is invalid
      */
     public static Document loadXMLFile(File file) throws WizardException {
         try {
