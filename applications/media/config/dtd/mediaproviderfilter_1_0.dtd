@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
 <!-- Author Rob Vermeulen (VPRO) -->
 <!ELEMENT mediaproviderfilter (chain,filterOnHost?,sortProviders?)>
 
@@ -7,12 +5,14 @@
 <!ELEMENT filter (#PCDATA)>
 
 <!ELEMENT filterOnHost (hostfilter+)>
+<!ELEMENT hostfilter (#PCDATA)>
 <!ATTLIST hostfilter
   user           CDATA   #REQUIRED
   provider	 CDATA   #REQUIRED
 >
 
 <!ELEMENT sortProviders (provider+)>
+<!ELEMENT provider (#PCDATA)>
 <!ATTLIST provider
   host		 CDATA   #REQUIRED
 >
