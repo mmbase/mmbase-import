@@ -97,6 +97,10 @@ span.realpositionitem input.input {
    width: 15ex;
 }
 
+span.normal input.input {
+   width: 100%;
+}
+
 span.realpositionitem input.check {
   margin-left: 1ex;
 }

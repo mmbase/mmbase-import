@@ -46,7 +46,7 @@
       </action>
     </list>
 
-    <field name="title" />
+    <field ftype="realposition" name="title" />
     <field name="subtitle" />
     <field name="intro" />
     <field name="body" />
@@ -112,7 +112,7 @@
   </form-schema>
 
   <form-schema id="itemize">  
-    <field ftype="data" name="title">
+    <field ftype="realposition" name="title">
     </field>
     <title xml:lang="en">Itemization</title>
     <title xml:lang="nl">Opknippen</title>

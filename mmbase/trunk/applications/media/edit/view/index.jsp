@@ -14,13 +14,16 @@
 <mm:import externid="type">mediafragments</mm:import>
 <mm:import externid="owner"      />
 <mm:import externid="searchvalue"/>
+<mm:import externid="max">10</mm:import>
+<mm:import externid="offset">0</mm:import>
 
 <body  onload="init('search');">
   <table>
-    <tr><th colspan="3">Result of type <mm:write value="$type" /></th></tr> 
-    <tr><th>Titel</th><th>Items en URL's</th><th>Eigenaar</th></tr>
+    <tr><th colspan="3">Result of type <mm:nodeinfo nodetype="$type" type="guitype" /></th></tr> 
+    <tr><th>Titel</th><th>Items en URL's</th><th><%=m.getString("owner")%></th></tr>
     <mm:listnodescontainer path="pools,$type" element="$type">
-      <mm:maxnumber value="100" />
+      <mm:maxnumber value="$max" />
+      <mm:offset    value="$offset" />
       <mm:write referid="origin">
         <mm:isnotempty>
           <mm:constraint field="pools.number" value="$_" />
@@ -62,6 +65,25 @@
           </td>
         </tr>
       </mm:listnodes>
+      <tr class="view">
+        <td colspan="100">
+          <mm:context>
+            <mm:previousbatches>
+              <mm:write id="newoffset" write="false" />
+              <a href="<mm:url referids="origin,type,owner,searchvalue,max,newoffset@offset" />"><mm:index /></a>|
+            </mm:previousbatches>
+          </mm:context>
+          --
+          <mm:context>
+            <mm:nextbatches>
+              <mm:first>|</mm:first>
+              <mm:write id="newoffset" write="false" />
+              <a href="<mm:url referids="origin,type,owner,searchvalue,max,newoffset@offset" />"><mm:index  /></a>
+              <mm:last inverse="true">|</mm:last>
+            </mm:nextbatches>          
+          </mm:context>
+        </td>
+      </tr>
     </mm:listnodescontainer>
   </table>
   <!-- p id="colofon">
