@@ -17,7 +17,7 @@ package org.mmbase.storage.search;
  * Note that tables can also be joined using FieldCompareConstraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public interface RelationStep extends Step {
@@ -49,6 +49,15 @@ public interface RelationStep extends Step {
             "destination",
             "both"
     };
+    
+    /**
+     * Gets the value of the checkedDirectionality property.
+     * When this value is true, only bi-directional relations are followed
+     * from destination to source.
+     * Otherwise unidirectional relations are followed from destination to 
+     * source as well.
+     */
+    boolean getCheckedDirectionality();
 
     /**
      * Gets the directionality mode used with this relation. This is one of 
