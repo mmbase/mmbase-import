@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.93 2004-12-10 21:09:26 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.94 2004-12-20 12:14:53 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -726,7 +726,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      * @since MMBase-1.7
      */
-    protected boolean installDataSources(Vector ds, String appname, ApplicationResult result) {
+    protected boolean installDataSources(Vector ds, String appName, ApplicationResult result) {
         MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
 
         List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
@@ -734,17 +734,18 @@ public class MMAdmin extends ProcessorModule {
             for (Enumeration h = ds.elements(); h.hasMoreElements();) {
                 Hashtable bh = (Hashtable)h.nextElement();
                 String path = (String)bh.get("path");
-                String prepath = "applications/";
+
+                ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
                 InputSource is;
                 try {
-                    is = ResourceLoader.getConfigurationRoot().getInputSource("applications/" + path);
+                    is = applicationLoader.getInputSource(path);
                 } catch (Exception e) {
                     log.error(e);
                     continue;
                 }
 
                 if (is != null) {
-                    XMLNodeReader nodereader = new XMLNodeReader(is, prepath + appname + "/");
+                    XMLNodeReader nodereader = new XMLNodeReader(is, applicationLoader.getChildResourceLoader(appName));
                     String exportsource = nodereader.getExportSource();
                     int timestamp = nodereader.getTimeStamp();
 
