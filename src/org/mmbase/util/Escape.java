@@ -20,22 +20,19 @@ public class Escape {
      * Escaping is done by doubling any quotes encountered.
      * Strings that are rendered in such way can more easily be included
      * in a SQL query.
-     * @param str the string to escape
+     * @param in the string to escape
      * @return the escaped string
+     * @duplicate use {@link Encode} Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");<BR>encoder.encode("MMBase it's escaping quotes");
      */
-    static public String singlequote(String str) {
-        String line=null,obj;
-        int idx;
-        if (str!=null) {
-            /* Single ' protection */
-            line=new String("");
-            obj=new String(str);
-            while((idx=obj.indexOf('\''))!=-1) {
-                line+=obj.substring(0,idx)+"''";
-                obj=obj.substring(idx+1);
-            }
-            line=line+obj;
+    static public String singlequote(String in) {
+        if (in == null || in.indexOf('\'') == -1) return in;
+
+        StringBuffer sb = new StringBuffer();
+        char[] data = in.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] == '\'') sb.append("''");
+            else sb.append(data[i]);
         }
-        return line;
+        return sb.toString();
     }
 }
