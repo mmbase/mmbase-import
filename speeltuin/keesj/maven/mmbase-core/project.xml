@@ -106,15 +106,15 @@
     <report>maven-linkcheck-plugin</report>
     <!--
     <report>maven-jdiff-plugin</report>
+    -->
     <report>maven-checkstyle-plugin</report>
-	 -->
     <report>maven-pmd-plugin</report>
     <report>maven-tasklist-plugin</report>
   </reports>
   <build>
     <nagEmailAddress>maven@keesj.dds.nl</nagEmailAddress>
-    <sourceDirectory>src</sourceDirectory>
-    <unitTestSourceDirectory>tests</unitTestSourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/tests</unitTestSourceDirectory>
     <sourceModifications>
       <sourceModification>
         <className>com.informix.jdbc.IfxCblob</className>
@@ -284,5 +284,4 @@
     <jars/>
   </build>
 </project>
-<!--
-	      -->
+<!-- -->
