@@ -68,21 +68,15 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         Node node = null;
         if (referid != null) {
             // try to find if already in context.
-            log.debug("looking up Node with " + referid + " in context");
-            Object n = getContextTag().getObject(referid);
-            log.debug("found: " + n);
-            if (n instanceof Node) {
-                log.debug("found a Node in Context");
-                node = (Node) n;
-            } else if (n instanceof String) {
-                log.debug("found a Node Number in Context");
-                setNumber((String)n);
-                getContextTag().unRegister(referid); // it will  reregistered, as a real node
-                if (id == null) {
-                    id = referid; // must be reregistered as a node with same id as it had.
-                }                
-            } else {
-                throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
+            if (log.isDebugEnabled()) {
+                log.debug("looking up Node with " + referid + " in context");
+            }            
+            node = getNode(referid);
+            if(referid.equals(id)) {
+                getContextTag().unRegister(referid); 
+                // register it again, but as node
+                // (often referid would have been a string).
+                
             }
         }
 
