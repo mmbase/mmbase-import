@@ -1,25 +1,25 @@
+/*
+note: replaced 
+10px = 0.85em 
+11px = 0.9em
+12px = 1em
+*/
+
 body
 {
 	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-	font-size: 10px;
 	background-color: white;
 	display: float;
 	margin: 0px;
 	padding: 0px;
 }
 
-td
-{
-	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
-	font-size: 10px;
-}
-
 p
 {
-	font-size: 11px;
+	font-size: 0.9em;
 	text-align: left;
 	margin: 0px;
-	padding: 0 0 11pt 0;
+	padding: 0 0 1em 0;
 }
 
 ul
@@ -28,12 +28,14 @@ ul
 	margin-bottom: 10px;
 }
 
+td { font-size: 0.8em; }
+
 dt
 {
 	margin-left: 20px;
 	font-weight: bold;
 	color: #5D5D5D;
-	font-size: 14px;
+	font-size: 1em;
 	text-decoration: underline;
 }
 
@@ -41,31 +43,31 @@ dd
 {
 	margin-left: 20px;
 	margin-bottom: 5px;
-	font-size: 12px;
+	font-size: 1em;
 }
 
 blockquote
 {
-	font-size: 12px;
+	font-size: 0.9em;
 	text-align: left;
 	background: #EFEFEF;
 }
 
 ul
 {
-	font-size: 11px;
+	font-size: 0.9em;
 	text-align: left;
 }
 
 ol
 {
-	font-size: 11px;
+	font-size: 0.9em;
 	text-align: left;
 }
 
 h1
 {
-	font-size: 24px;
+	font-size: 1.8em;
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
@@ -74,7 +76,7 @@ h1
 
 h2
 {
-	font-size: 18px;
+	font-size: 1.6em;
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
@@ -82,7 +84,7 @@ h2
 
 h3
 {
-	font-size: 16px;
+	font-size: 1.4em;
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
@@ -90,7 +92,7 @@ h3
 
 h4
 {
-	font-size: 14px;
+	font-size: 1.2em;
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
@@ -98,7 +100,7 @@ h4
 
 h5
 {
-	font-size: 12px;
+	font-size: 1em;
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
@@ -106,7 +108,7 @@ h5
 
 h6
 {
-	font-size: 10px;
+	font-size: 0.9em;
 	font-weight: bold;
 	color: #003333;
 	text-align: left;
@@ -126,34 +128,12 @@ strong
 	color: #003333;
 }
 
-#pagecontent
-{
-	margin: 0 0 20px 150px;
-}
-
-.relatedpages
-{
-	margin: 4px 0 10px 150px;
-	font-weight: normal;
-	font-size: 1.1em;
-	border-color: #999;
-	border-width: 0 0 1px 0;
-	border-style: none none solid none;
-	padding: 0 0 4px 0;
-}
-
-.relatedpages a { font-weight: lighter; }
-
-.relatedpages strong a
-{
-	font-weight: bold;
-	text-decoration: underline;
-	text-transform: inherit;
-}
+#pagecontent { margin: 0 0 20px 150px; }
+.relatedpages { margin: 6px 0 6px 150px; }
 
 #footer
 {
-	font-size: 10px;
+	font-size: 0.85em;
 	padding: 4px 0 20px 0;
 	margin: 40px 0 0 0;
 	border-color: #033;
@@ -168,13 +148,13 @@ strong
 .layout, .layout th, .layout td
 {
 	border: 0px;
-/*
+	/*
 	padding: 0px;
 	margin: 0px;
-*/	background-color: white;
+*/
+	background-color: white;
 	text-align: left;
 	vertical-align: top;
-	font-size: 11px;
 }
 
 .list
@@ -190,7 +170,7 @@ strong
 	padding: 3px;
 	border-right: 1px solid #797868;
 	border-bottom: 1px solid #797868;
-	font-size: 12px;
+	font-size: 0.75em;
 	background-color: #CCEB6F;
 	color: #3B3B3B;
 }
@@ -198,7 +178,7 @@ strong
 .list td
 {
 	background-color: #f7faef;
-	font-size: 11px;
+	font-size: 0.7em;
 	color: black;
 	border-right: 1px solid #797868;
 	border-bottom: 1px solid #797868;
@@ -245,6 +225,10 @@ strong
 
 .relationcontainer p { padding: 4px 0 1px 0; }
 
+/* 
+    have noticed the following classes being used in the bugtracker 
+*/
+
 .subnav { height: 28px; }
 
 .subnav td
@@ -252,12 +236,12 @@ strong
 	border: 1px solid white;
 	background-color: #E7EBDE;
 	text-align: center;
-	padding-top: 5px;
+	font-size: 0.8em;
+	padding: 5px;
 }
 
 .subnav td a
 {
-	font-size: 10px;
 	color: black;
 	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
 }
@@ -270,7 +254,6 @@ strong
 {
 	background-color: #CCEB6F;
 	color: black;
-	font-size: 11px;
 	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
 }
 
@@ -281,7 +264,7 @@ strong
 .breadcrumbar
 {
 	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 0.9em;
 	background: #CCEB6F;
 	width: 100%;
 	height: 18px;
@@ -293,7 +276,7 @@ strong
 .breadcrumbar td
 {
 	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 0.9em;
 	background: #CCEB6F;
 	vertical-align: middle;
 	padding: 3px 0px 3px 5px;
@@ -319,11 +302,11 @@ a:visited
 a:hover
 {
 	color: #797868;
-	text-decoration: underline;
+	text-decoration: none;
 }
 
 /*
-	/ breadcrum and links
+	breadcrum and links
 */
 
 .content
@@ -335,13 +318,13 @@ a:hover
 
 .intro
 {
-	font-size: 11px;
+	font-size: 0.9em;
 	font-weight: bold;
 }
 
 .imgtitle
 {
-	font-size: 8pt;
+	font-size: 0.8em;
 	font-weight: normal;
 }
 
@@ -352,49 +335,50 @@ a:hover
 input
 {
 	text-align: left;
-	font-family: "Lucide Grande", Arial, sans-serif;
+	font-family: Monaco, Courier, monospaced;
 	background-color: #D9DDDE;
 	margin: 2px;
 	padding: 2px;
-	font-size: 1.2em;
+	font-size: 1.1em;
 }
 
 /* this is for the radiobuttons on the homepage
    MSIE shows a background color */
+
 input.ie
 {
 	text-align: left;
-	font-family: "Lucide Grande", Arial, sans-serif;
+	font-family: Monaco, Courier, monospaced;
 	background-color: #fff;
-	margin: 2px;
+	margin: 2px 4px 2px 2px;
 	padding: 2px;
-	font-size: 1.2em;
 }
 
 input.mmbase
 {
 	text-align: left;
-	font-family: "Lucide Grande", Arial, sans-serif;
+	font-family: Monaco, Courier, monospaced;
 	background-color: #D9DDDE;
 	margin: 2px;
 	padding: 2px;
-	font-size: 1.2em;
 }
 
 select
 {
 	font-family: "Lucide Grande", Arial, sans-serif;
-	font-size: 1.2em;
+	font-size: 1.1em;
 	background-color: #D9DDDE;
 	padding: 2px;
 	margin: 2px;
 }
 
-textarea { 
-	background-color: #D9DDDE; 
+textarea
+{
+	background-color: #D9DDDE;
 	border-color: #666;
 	border-width: 1px 0 0 1px;
-	font-size: 1.2em;
+	font-size: 1.1em;
+	font-family: Monaco, Courier, monospaced;
 }
 
 /* Stylesheet for news pages in dev portal */
@@ -407,7 +391,7 @@ textarea {
 .newstitle
 {
 	font-family: "Lucida Grande", Geneva, Helvetica, Arial, sans-serif;
-	font-size: 18px;
+	font-size: 1.4em;
 	font-weight: bold;
 	padding: 5px 0px 4px 0px;
 }
@@ -416,7 +400,7 @@ textarea {
 {
 	padding: 0px 5px 5px 0px;
 	font-family: "Lucida Grande", Geneva, Helvetica, Arial, sans-serif;
-	font-size: 12px;
+	font-size: 1em;
 	font-weight: bold;
 	color: #333;
 }
@@ -427,7 +411,6 @@ textarea {
 	float: left;
 	display: inline;
 	margin: 0;
-	font-size: 10px;
 }
 
 .newssubR
@@ -436,7 +419,6 @@ textarea {
 	float: right;
 	display: inline;
 	margin: 0;
-	font-size: 10px;
 }
 
 .newsintro
@@ -500,7 +482,7 @@ textarea {
 {
 	float: left;
 	background: #ddd;
-	font-size: 10px;
+	font-size: 0.9em;
 	line-height: 14px;
 	font-weight: bold;
 	padding: 2px 10px 2px 10px;
@@ -520,10 +502,8 @@ textarea {
 #tabnav a:hover { background: #f3f3f3; }
 
 /* search */
-#searchhome
-{
-	padding: 10px 0 0 0;
-}
+#searchhome { padding: 10px 0 0 0; }
+
 #searchform
 {
 	margin: 15px 10px 20px 0;
@@ -534,8 +514,10 @@ textarea {
 	background-color: #efefef;
 	border-width: 1px;
 }
+
 .documentXYZ { margin: 10pt 0 10pt 0; }
 #results { margin: 10px 10px 10px 0; }
+
 #results ul
 {
 	list-style: none;
@@ -573,9 +555,10 @@ textarea {
 	color: #CF0;
 	text-decoration: underline;
 }
-.resultcomment { color: #666; }
-/* end search*/
 
+.resultcomment { color: #666; }
+
+/* end search*/
 /* warning (bad) and message (good) trickered by user action */
 .warning
 {
