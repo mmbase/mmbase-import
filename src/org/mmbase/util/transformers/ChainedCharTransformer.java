@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.14 2003-05-12 22:22:50 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.15 2004-01-05 17:39:07 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -110,7 +110,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                     threads.add(thread);
 
                     w = new PipedWriter((PipedReader) r);  
-                    closeWriterAfterUse = true;
+                   closeWriterAfterUse = true;
 
                     thread.start();
                 } else {  // arrived at first in chain, start transforming
@@ -148,7 +148,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
      * writing to the 'final' writer, otherwise it is writing to another PipedWriter, connecting it
      * to the next transformer in the chain.
      */
-    private static class TransformerLink extends Thread {
+    static class TransformerLink extends Thread {
         CharTransformer charTransformer;
         Writer     writer;
         Reader     reader;
