@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.13 2003-05-26 10:57:17 michiel Exp $;
+ @version $Id: documentation.css,v 1.14 2003-12-19 11:45:38 mmweb Exp $;
 */
 
 
@@ -29,7 +29,7 @@ th {
 
 .title,
 .subtitle {
-   color: #00425A;
+   color: #046;
  }
 
 .programlisting,
@@ -48,7 +48,7 @@ a {
 } 
 
 a:link {
-  color: #44BDAD;
+  color: #CCEB6F;
   text-decoration: none;
 }
 
@@ -65,7 +65,7 @@ a:hover {
 */
 
 .navfooter, .navheader { 
-  background-color: #44BDAD;
+  background-color: #CCEB6F;
 }
 
 
@@ -73,15 +73,15 @@ a:hover {
 .navheader table { 
   padding: 1ex;
   border-spacing: 0;
-  color: #44BDAD;
+  color: #CCEB6F;
 }
 .navfooter table td, 
 .navfooter table th {  
-   background-color: #00425A;
+   background-color: #443;
 }
 .navheader table td, 
 .navheader table th { 
-   background-color: #00425A;
+   background-color: #443;
 } 
 
 .navfooter a:link, 
@@ -89,7 +89,7 @@ a:hover {
 .navfooter a:visited, 
 .navheader a:visited {
   font-weight: bold;
-  color: #44BDAD;
+  color: #CCEB6F;
 }
 
  .chapter, .refentry,

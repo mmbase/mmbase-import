@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.15 2003-10-04 12:15:21 keesj Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.16 2003-12-19 11:45:38 mmweb Exp $</edition>
 
     <authorgroup>
       <author>
@@ -212,9 +212,9 @@ node.commit();
       <para>The MMCI interface provides access to the MMBase cloud. The MMCI
       interface is defined in the package org.mmbase.bridge. Examples of such
       definitions are the <ulink
-      url="http://www.mmbase.org/api/builds/last/api/org/mmbase/bridge/Cloud.html">org.mmbase.bridge.Cloud</ulink>
+      url="http://www.mmbase.org/development/api/1.7/org/mmbase/bridge/Cloud.html">org.mmbase.bridge.Cloud</ulink>
       and the <ulink
-      url="http://www.mmbase.org/api/builds/last/api/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink>
+      url="http://www.mmbase.org/development/api/1.7/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink>
       interface. Depending on your configuration a security model is chosen.
       the MMCI implementation (LocalContext) interfaces with the core MMBase
       classes.</para>
