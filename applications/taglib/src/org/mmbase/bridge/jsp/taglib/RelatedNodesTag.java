@@ -77,21 +77,21 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 initialnodes = node.getRelatedNodes(type, role, directions);
             }
             
-            String where = null;
+            StringBuffer where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
                 Node n = i.nextNode();
                 if (where == null) {
-                    where = "" + n.getNumber();
+                    where = new StringBuffer( n.getNumber());
                 } else {
-                    where += "," + n.getNumber();
+                    where.append(",").append( n.getNumber());
                 }
             }
             if (where == null) { // empty list, so use that one.
                 nodes = initialnodes;
             } else {
-                where = "number in (" + where + ")";
-                if (constraints != null) where= "(" + constraints + ") AND " + where;
-                nodes = manager.getList(where, orderby, directions);
+                where = new StringBuffer("number in (" + where + ")");
+                if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
+                nodes = manager.getList(where.toString(), orderby, directions);
             }
         } else {
             if (type == null) {
