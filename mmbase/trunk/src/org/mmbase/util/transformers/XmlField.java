@@ -39,7 +39,7 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
 
     // for validation only.
     private final static String  XML_HEADER   = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n<!DOCTYPE mmxf PUBLIC \"//NL//OMROEP//MMBASE//DTD//MMXF 1.0//\" \"http://www.mmbase.org/dtd/mmxf.dtd\">\n";   
-    private final static String  XML_TAGSTART = "<mmxf version=\"1\">";
+    private final static String  XML_TAGSTART = "<mmxf>";
     private final static String  XML_TAGEND   = "</mmxf>";
 
 
