@@ -32,7 +32,7 @@ dt
 {
 	margin-left: 20px;
 	font-weight: bold;
-	color: #5D5D5D;
+	color: #66666;
 	font-size: 14px;
 	text-decoration: underline;
 }
@@ -141,7 +141,7 @@ strong
 
 .list
 {
-	border: 1px solid #797868;
+	border: 0px solid #797868;
 	padding: 0px;
 }
 
@@ -149,18 +149,18 @@ strong
 {
 	margin: 0px;
 	padding: 3px;
-	border: 1px solid #797868;
+	border: 1px solid #ffffff;
 	font-size: 12px;
-	background-color: #CCEB6F;
+	background-color: #cccccc;
 	color: #3B3B3B;
 }
 
 .list td
 {
-	background-color: #E7EBDE;
+	background-color: #eeeeee;
 	font-size: 11px;
 	color: black;
-	border: 1px solid #797868;
+	border: 1px solid #ffffff;
 	padding-left: 4px;
 }
 
@@ -172,7 +172,7 @@ strong
 
 .list tr .listpaging
 {
-	background-color: #E4E174;
+	background-color: #dddddd;
 	padding: 3px;
 }
 
@@ -185,7 +185,7 @@ strong
 
 .relationcontainer th
 {
-	background-color: #CCEB6F;
+	background-color: #dddddd;
 	border: 0px;
 	padding: 3px;
 	padding-left: 5px;
@@ -264,21 +264,21 @@ strong
 
 a:link
 {
-	color: #7A9B15;
+	color: #000000;
 	text-decoration: none;
 	font-weight: bold;
 }
 
 a:visited
 {
-	color: #5B7410;
+	color: #000000;
 	text-decoration: none;
 	font-weight: bold;
 }
 
 a:hover
 {
-	color: #797868;
+	color: #444444;
 	text-decoration: none;
 }
 
@@ -319,3 +319,86 @@ select
 }
 
 textarea { background-color: #D9DDDE; }
+
+.smilies { 
+  border-style: none;
+}
+
+
+/* special for profile, needs to be integrated further */
+
+
+body #profileb {
+  margin: 0px;
+  margin-top: 0.8em;
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+}
+
+#tabs { 
+  margin: 0px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#tabs ul {
+	margin-left: 0;
+	padding-left: 0;
+	display: inline;
+	} 
+
+#tabs ul li {
+	margin-left: 0;
+	margin-bottom: 0;
+	padding: 2px 15px 5px;
+	border: 1px solid #ffffff;
+	background-color: #cccccc;
+    color: #3B3B3B;
+	list-style: none;
+	display: inline;
+}
+	
+		
+#tabs ul li.selected {
+	border-bottom: 1px solid #ffffff;
+	list-style: none;
+	display: inline;
+	background-color: #eeeeee;
+	color: black;
+}
+
+#profile { 
+	border: 1px solid #ffffff;
+	background-color: #eeeeee;
+    width: 500px;
+    padding-top: 10px;
+    font-size: 11px;
+    color: black;
+}
+
+div.row {
+  clear: both;
+  padding-top: 5px;
+  paddin-bottom: 5px;
+}
+
+div.row span.label {
+  float: left;
+  width: 100px;
+  text-align: right;
+  color: black;
+  font-weight:bold;
+  display: block;
+  }
+
+div.row span.formw {
+  float: right;
+  width: 335px;
+  text-align: left;
+  display: block;
+  } 
+
+div.spacer {
+  clear: both;
+}
