@@ -7,6 +7,7 @@
      public int compare(Object o1, Object o2) {
            File f2 =(File) o2;
            File f1 = (File) o1;
+	   if (f2 == null || f1 == null) return -1;
            return f2.getName().compareTo(f1.getName());
      }
 }
@@ -66,15 +67,15 @@ List  showDirs(File thisDir, String prefix, int max) throws IOException {
 }
 
  List getHeadBuilds(int max) throws IOException{
-	return showDirs(new File("/home/nightlybuild/builds"), "head", max);
+	return showDirs(new File("/home/mmweb/nightly/builds"), "head", max);
  }
 
  List getStableBuilds(int max) throws IOException{
-	return showDirs(new File("/home/nightlybuild/builds/stable"),"stable", max);
+	return showDirs(new File("/home/mmweb/nightly/builds/stable"),"stable", max);
  }
 
  List getOccasionalBuilds(int max) throws IOException{
-	return showDirs(new File("/home/nightlybuild/builds/occasional"),"occasional", max);
+	return showDirs(new File("/home/mmweb/nightly/builds/occasional"),"occasional", max);
  }
 %>
 
