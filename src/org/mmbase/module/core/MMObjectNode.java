@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.122 2004-03-10 10:06:01 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.123 2004-04-19 14:15:53 marcel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1217,13 +1217,25 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             if (relations != null) {
                 for(Enumeration e= Collections.enumeration(relations); e.hasMoreElements();) {
                     MMObjectNode tnode=(MMObjectNode)e.nextElement();
-                    int snumber=tnode.getIntValue("snumber");
+                    int relation_number =tnode.getIntValue("snumber");
                     int nodetype =0;
-                    if (snumber==getNumber()) {
-                        nodetype=parent.getNodeType(tnode.getIntValue("dnumber"));
+
+                    // bugfix #6432: marcel: determine source of relation, get type, display
+                    // error when nodetype is determined to be -1, which is a possible wrongly inserted relation
+
+                    if (relation_number==getNumber()) {
+                        relation_number = tnode.getIntValue("dnumber");
+                        nodetype=parent.getNodeType(relation_number);
                     } else {
-                        nodetype=parent.getNodeType(snumber);
+                        nodetype=parent.getNodeType(relation_number);
                     }
+
+                    // Display situation where snumber or dnumber from a relation-node does not seem to 
+                    // exsist in the database. This can be fixed by mannually removing the node out of the insrel-table
+                    if(nodetype==-1) {
+                        log.warn("Warning: relation_node("+tnode.getNumber()+") has a possible removed relation_number("+relation_number+"), manually check its consistency!");
+                    }
+
                     MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
                     if (nodeType!=null && (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType))) {
                         count++;
