@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author   Robin van Meteren
-    @version $Id: wizard.xsl,v 1.135 2004-09-07 11:34:23 michiel Exp $
+    @version $Id: wizard.xsl,v 1.136 2004-09-14 18:18:03 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -882,7 +882,10 @@
           <div class="imageupload">
             <div>
               <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
-                <xsl:if test="@dtrequired=&apos;true&apos;">
+                  <!-- changed Martijn Houtman
+                       <xsl:if test="@dtrequired=&apos;true&apos;">
+                         -->
+                <xsl:if test="@dtrequired=&apos;true&apos; and starts-with(@number, &apos;n&apos;)">
                   <xsl:attribute name="dtrequired">true</xsl:attribute>
                 </xsl:if>
               </input>
