@@ -46,6 +46,7 @@ public class MMObjectBuilder extends MMTable {
 	private static Hashtable fieldDefCache=new Hashtable(40);
 	public int oType=0; // type of the object in database (overloaded).
 	public String description="Base Object"; // description of this type (overloaded)
+	public Hashtable descriptions;
 	private Hashtable fields;
 //	public Hashtable fields = new Hashtable();
 	Vector sortedEditFields = null;
@@ -1387,10 +1388,27 @@ public class MMObjectBuilder extends MMTable {
 	}
 
 	/**
+	* set descriptions of the builder
+	*/
+	public void setDescriptions(Hashtable e) {
+		this.descriptions=e;
+	}
+
+
+	/**
+
 	* get description of the builder
 	*/
 	public String getDescription() {
 		return(description);
+	}
+
+
+	/**
+	* get descriptions of the builder
+	*/
+	public Hashtable getDescriptions() {
+		return(descriptions);
 	}
 
 	/**
