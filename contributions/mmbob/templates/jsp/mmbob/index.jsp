@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
@@ -14,7 +15,7 @@
 <mm:compare referid="forumid" value="unknown">
 	<table align="center" cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="75%">
 		<tr><th>MMBob system error</th></tr>
-		<tr><td height="40"><b>ERROR : </b> No forum id is provided, if this is a new install try <a href="forums.jsp">forums.jsp</a> instead to create a new forum.</td></tr>
+		<tr><td height="40"><b>ERROR: </b> No forum id is provided, if this is a new install try <a href="forums.jsp">forums.jsp</a> instead to create a new forum.</td></tr>
 	</table>
 </mm:compare>
 
@@ -52,19 +53,19 @@
           <mm:present referid="loginfailed">
             <br />
             <center>
-              <h4>** fout loginnaam of wachtwoord, probeer opnieuw **</h4>
+              <h4><mm:write referid="mlg_login_failed" /></h4>
             </center>
             <center>
-              <a href="<mm:url page="remail.jsp" referids="forumid" />">Wachtwoord vergeten ?, Druk hier.</a>
+              <a href="<mm:url page="remail.jsp" referids="forumid" />"><mm:write referid="mlg_forgot_your_password" /></a>
             </center>
             <p />
           </mm:present>
           <mm:notpresent referid="loginfailed">
             <mm:field name="description" />
-            <p /><b>inloggen</b><p />
+            <p /><b><mm:write referid="mlg_login" /></b><p />
           </mm:notpresent>
-          account : <input size="12" name="account">
-          wachtwoord : <input size="12" type="password" name="password">
+          <mm:write referid="mlg_account" /> : <input size="12" name="account">
+          <mm:write referid="mlg_password" /> : <input size="12" type="password" name="password">
           <input type="submit" value="inloggen" />
         </form>
         <p />
@@ -81,7 +82,7 @@
               </mm:compare>
             </mm:field>
           </a>
-          <a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a>
+          <a href="logout.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="mlg_Logout" /></a>
         </th>
         <td align="left" valign="top">
           <mm:compare referid="image_logo" value="" inverse="true">
@@ -113,24 +114,25 @@
  
           <br />
           <mm:write referid="mlg_number_of_messages" /> : <mm:field name="active_postcount" /> 
-          Level : <mm:field name="active_level" />
+          <mm:write referid="mlg_Level" /> : <mm:field name="active_level" />
 
           <p>
             <br />
             <mm:import id="mailboxid">Inbox</mm:import>
             <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid,mailboxid">
-              <b>you have <mm:field name="messagecount" /> <a href="<mm:url page="privatemessages.jsp" referids="forumid" />">private messages</a> (<mm:field name="messagenewcount" /> new and <mm:field name="messageunreadcount" /> unread)</b>
+                <b><mm:write referid="mlg_you_have"/> <mm:field id="messagecount" name="messagecount" /> 
+                <a href="<mm:url page="privatemessages.jsp" referids="forumid" />"> <mm:compare referid="messagecount" value="1"> <mm:write referid="mlg_private_message"/> </mm:compare><mm:compare referid="messagecount" value="1" inverse="true"> <mm:write referid="mlg_private_messages"/> </mm:compare></a> (<mm:field name="messagenewcount" /> <mm:write referid="mlg_new"/> <mm:write referid="mlg_and"/> <mm:field name="messageunreadcount" /> <mm:write referid="mlg_unread"/>) </b>
             </mm:nodefunction>
 
-            <h4>At the moment : <mm:field name="postersonline" /> users online.</h4>
+            <h4><mm:write referid="mlg_At_the_moment" /> : <mm:field id="postersonline" name="postersonline" /> <mm:compare referid="postersonline" value="1"> <mm:write referid="mlg_member" /> </mm:compare> <mm:compare referid="postersonline" value="1" inverse="true"><mm:write referid="mlg_members" /> </mm:compare> <mm:write referid="mlg_online" />.</h4>
           </p>
         </mm:compare>
       </td>
       <th width="250" align="left" valign="top">
         <b><mm:write referid="mlg_Areas" /></b> : <mm:field name="postareacount" /> <b><mm:write referid="mlg_Topics" /></b> : <mm:field name="postthreadcount" /><br />
         <b><mm:write referid="mlg_Messages" /></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg_Views" /> </b> : <mm:field name="viewcount" /><br />
-        <b><mm:write referid="mlg_Members" /></b> : <mm:field name="posterstotal" /> <b>New</b> : <mm:field name="postersnew" /> <b>Online</b> : <mm:field name="postersonline" /><p />
-        <b>Last posting</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> door <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1">nog geen berichten</mm:compare></mm:field>
+        <b><mm:write referid="mlg_Members" /></b> : <mm:field name="posterstotal" /> <b><mm:write referid="mlg_New" /></b> : <mm:field name="postersnew" /> <b><mm:write referid="mlg_Online"/></b> : <mm:field name="postersonline" /><p />
+        <b><mm:write referid="mlg_Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg_by"/> <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages"/></mm:compare></mm:field>
       </th>
     </tr>
   </mm:nodefunction>
@@ -139,39 +141,39 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
   <tr>
    <td align="right">
-	<a href="<mm:url page="moderatorteam.jsp" referids="forumid" />">Het moderator team</a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />">Leden nu online | <a href="<mm:url page="allposters.jsp" referids="forumid" />">Alle Leden</a></a>
+	<a href="<mm:url page="moderatorteam.jsp" referids="forumid" />"><mm:write referid="mlg_The_moderator_team" /></a> | <a href="<mm:url page="onlineposters.jsp" referids="forumid" />"><mm:write referid="mlg_Members_online" /> | <a href="<mm:url page="allposters.jsp" referids="forumid" />"><mm:write referid="mlg_All_members" /></a></a>
    </td>
   </tr>
 </table>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="95%">
-   <tr><th>area name</th><th>topics</th><th>messages</th><th>views</th><th>last posting</th></tr>
+   <tr><th><mm:write referid="mlg_area_name" /></th><th><mm:write referid="mlg_topics" /></th><th><mm:write referid="mlg_messages" /></th><th><mm:write referid="mlg_views" /></th><th><mm:write referid="mlg_last_posting" /></th></tr>
   		  <mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
 			<tr><td align="left"><a href="postarea.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:field name="id" />"><mm:field name="name" /></a>
 			<p/>
 			<mm:field name="description" />
 			<p />
-			Moderators : <mm:field name="moderators" />
+			<mm:write referid="mlg_Moderators" /> : <mm:field name="moderators" />
 			<p />
 			 </td>
 				<td><mm:field name="postthreadcount" /></td>
 				<td><mm:field name="postcount" /></td>
 				<td><mm:field name="viewcount" /></td>
-				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> door <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a><p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1">nog geen berichten</mm:compare></mm:field></td>
+				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg_by" /> <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a><p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages" /></mm:compare></mm:field></td>
 			</tr>
 		  </mm:nodelistfunction>
 </table>
   <mm:compare referid="adminmode" value="true">
 	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-	<tr><th align="lef">Administratie Functies</th></tr>
+	<tr><th align="left"><mm:write referid="mlg_Admin_tasks" /></th></tr>
 	<td>
 	<p />
 	<a href="<mm:url page="changeforum.jsp">
                   <mm:param name="forumid" value="$forumid" />
-                 </mm:url>">Forum aanpassen</a><br />
+                 </mm:url>"><mm:write referid="mlg_change_forum" /></a><br />
 	<a href="<mm:url page="newpostarea.jsp">
                   <mm:param name="forumid" value="$forumid" />
-                 </mm:url>">Nieuw gebied toevoegen</a>
+                 </mm:url>"><mm:write referid="mlg_add_new_area" /></a>
 	<p />
 	</td>
 	</tr>
