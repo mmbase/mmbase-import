@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.43 2003-08-07 14:31:17 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.44 2003-08-27 14:15:10 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -241,6 +241,9 @@ public class ClusterBuilder extends VirtualBuilder {
         String builderName = getBuilderNameFromField(fieldName);
         if (builderName.length() > 0) {
             MMObjectBuilder bul = mmb.getMMObject(builderName);
+            if (bul == null) {
+                throw new RuntimeException("No builder with name '" + builderName + "' found");
+            }
             return bul.getField(getFieldNameFromField(fieldName));
         }
         return null;
