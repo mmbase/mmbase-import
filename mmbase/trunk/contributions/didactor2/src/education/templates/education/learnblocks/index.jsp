@@ -13,6 +13,7 @@
    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" />" />
 </head>
 <body>
+<a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="learnobject"/>" style="align: right">Bekijk als PDF</a>.
 
 <mm:node number="$learnobject">
   <h1><mm:field name="name"/></h1>
