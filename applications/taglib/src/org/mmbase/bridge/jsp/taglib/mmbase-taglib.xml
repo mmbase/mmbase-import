@@ -70,18 +70,18 @@ one or more examplevalue tags is you want to give some example values.
       has to be used to separate a nodemanager name from a field name.
     </info>
     <attribute>
-      <name>startnodes</name>
+      <name>nodes</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
         Comma-separated list of nodes that should be used as start nodes.
         The start nodes don't have to be a member of the first nodemanager in
         the path. For example, if the start nodes belong to the second
-        nodemanager in
-        a path with a length of three nodemanagers, traversals will go into two
-        directions at the same time. All traversals that make up a complete path
-        are returned. If a node belongs to the last nodemanager in a path
-        traversals will go from right to left starting at the last nodemanager.
+        nodemanager in a path with a length of three nodemanagers, traversals will
+        go into two directions at the same time. All traversals that make up a
+        complete path are returned.
+        If a node belongs to the last nodemanager in a path traversals will go
+        from right to left starting at the last nodemanager.
         All start nodes specified in this attribute have to belong to the same
         nodemanager. Nodes that belong to a different nodemanager than the first
         node are ignored
@@ -291,12 +291,12 @@ one or more examplevalue tags is you want to give some example values.
       </info>
     </attribute>
 
-<example>&lt;mm:list startnodes="123" path="mags,news" fields="mags.title,news.number"&gt;
+<example>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= mags_title %&gt;
 &lt;/mm:list&gt;</example>
 
-<example>&lt;mm:list startnodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
+<example>&lt;mm:list nodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
   &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
   &lt;%= news_title %&gt;
 &lt;/mm:list&gt;</example>
@@ -309,17 +309,36 @@ one or more examplevalue tags is you want to give some example values.
     <bodycontent>JSP</bodycontent>
     <info>
       The related tag is the same as the list tag except that it always needs
-      one or more start nodes from wich the nodemanager will be taken
+      one or more start nodes from which the nodemanager will be taken
       and prefixed to the path specified bij the path attribute.
+      By default, the node used is that of the parent node tag.
     </info>
     <attribute>
-      <name>startnodes</name>
+      <name>number</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        If no startnodes attribute is given the related tag will look for a
-        surrounding node provider tag and use the node provided by that tag as
-        his start node.
+        The number attribute overrides the default node for a related tag,
+        using instead retrieving the node from the cloud using the attribute.
+      </info>
+    </attribute>
+    <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The node attribute overrides the default node for a related tag,
+        using instead the node tag referenced by the attribute.
+      </info>
+    </attribute>
+    <attribute>
+      <name>nodes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        If the nodes attribute is given, the related tag will add these nodes
+        to the nodes used (in additon to the node identified by the parent node
+        tag).
       </info>
     </attribute>
     <attribute>
@@ -328,8 +347,8 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
       <info>
         This attribute is the same as the path attribute of the list tag except
-        that the first nodemanager should be left behind. The first nodemanager
-        is taken from the start nodes.
+        that the first nodemanager should be ommitted. The first nodemanager
+        is implied by the parent node.
       </info>
     </attribute>
     <attribute>
@@ -469,15 +488,24 @@ one or more examplevalue tags is you want to give some example values.
       related to a node of another type. The syntax of the attributes are the
       same as the syntax of the attributes of the list tag except that it is
       not needed to prefix the fieldnames with a nodemanager name.
+      By default, the node used is that of the parent node tag.
     </info>
+    <attribute>
+      <name>number</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The number attribute overrides the default node for a related tag,
+        using instead retrieving the node from the cloud using the attribute.
+      </info>
+    </attribute>
     <attribute>
       <name>node</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The node from wich the related nodes should be returned. If this
-        attribute is not set the relatednodes tag will look for a surrounding
-        node provider tag and use the node provided by that tag.
+        The node attribute overrides the default node for a related tag,
+        using instead the node tag referenced by the attribute.
       </info>
     </attribute>
     <attribute>
@@ -684,7 +712,7 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
 
     <example>
-&lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)  
+&lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)
 only to user kamer --&gt;
 &lt;mm:cloud logon="kamer" method="http"&gt;
 logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br /&gt;
@@ -755,8 +783,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	<info>
 	  With the 'id' attribute you define an unique identifier for
 	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name. 
-        </info>	
+	  variable with this name.
+        </info>
     </attribute>
     <attribute>
         <name>referid</name>
@@ -766,8 +794,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	<info>
 	  With the 'id' attribute you define an unique identifier for
 	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name. 
-        </info>	
+	  variable with this name.
+        </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
@@ -805,7 +833,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <info>
       Gets the field 'name' from node 'node' (can also be
       list).
-    </info>    
+    </info>
     <attribute>
         <name>node</name>
         <required>false</required>
@@ -820,7 +848,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	  The name of the field to get. 
+	  The name of the field to get.
 	</info>
     </attribute>
     <attribute>
@@ -963,13 +991,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </p>
       <p>If you are reusing the same object, for example you have put
       a node in the context, and are using it again then an attribute
-      'referid' is used. 
+      'referid' is used.
       </p>
       <p>
       If some attribute wants to refer to the value of an object in
       the context, and it is an attribute which can refer to the
       context, then you can make the attribute's value
-      &lt;context-id;&gt;.&lt;object-id&gt;. 
+      &lt;context-id;&gt;.&lt;object-id&gt;.
       </p>
       <p>
       And finally there are some attributes which can only refer. For
@@ -1013,7 +1041,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<refercontext>true</refercontext>
-	<info>       
+	<info>
 	The role for the new relation.
         </info>
     </attribute>
@@ -1022,7 +1050,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	The id of the node which is this relation. 
+	The id of the node which is this relation.
         </info>
     </attribute>
     <attribute>
@@ -1044,7 +1072,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <example>
 &lt;mm:cloud&gt;
 &lt;mm:transaction id="my_transaction"&gt;
-&lt;mm:createnode nodemanager="news" id="my_news"&gt;
+&lt;mm:createnode type="news" id="my_news"&gt;
    &lt;mm:setfield name="title"&gt;Todays news&lt;/mm:setfield&gt;
    &lt;mm:setfield name="subtitle"&gt;There happened a lot today&lt;/mm:setfield&gt;
 &lt;/mm:createnode&gt;
@@ -1062,11 +1090,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     Creates a new node.
     </info>
     <attribute>
-        <name>nodemanager</name>
+        <name>type</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<refercontext>true</refercontext>
-	<info>   
+	<info>
          The type (NodeManager name) of the new node.
         </info>
         <examplevalue>
@@ -1081,8 +1109,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        See the 'id' attribute of the Node tag. 
-      </info>    
+        See the 'id' attribute of the Node tag.
+      </info>
       <examplevalue>
         <value>a_new_node</value>
       </examplevalue>
@@ -1092,8 +1120,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        See the 'jspvar' attribute of the Node tag. 
-      </info>    
+        See the 'jspvar' attribute of the Node tag.
+      </info>
     </attribute>
   </tag>
   <tag>
@@ -1182,7 +1210,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CancelTag</tagclass>
     <bodycontent>none</bodycontent>
     <info>
-      Can cancel a transaction with this. 
+      Can cancel a transaction with this.
     </info>
     <attribute>
       <name>transaction</name>
@@ -1196,7 +1224,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CommitTag</tagclass>
     <bodycontent>none</bodycontent>
     <info>
-      Can commit a transaction with this. 
+      Can commit a transaction with this.
     </info>
     <attribute>
       <name>transaction</name>
@@ -1235,7 +1263,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-    </attribute>    
+    </attribute>
     <attribute>
         <name>deleterelations</name>
         <required>false</required>
@@ -1246,17 +1274,17 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <possiblevalue>
            <value>false</value>
         </possiblevalue>
-    </attribute>    
+    </attribute>
   </tag>
   <tag>
     <name>fieldlist</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>A list of fields. A field can list inside a NodeProvider in which case the NodeManager if found by means of 
-    the parent node. It can also be stand alone, then you have to supply the 'nodemanager' attribute.
+    <info>A list of fields. A field can list inside a NodeProvider in which case the NodeManager is found by means of
+    the parent node. It can also be stand alone, then you have to supply the type of the node (the name of the 'nodemanager').
     </info>
     <attribute>
-      <name>nodemanager</name>
+      <name>nodetype</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
@@ -1336,7 +1364,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         </info>
       </possiblevalue>
       <possiblevalue>
-        <value>useinput</value>         
+        <value>useinput</value>
         <info>
 	<p>
 	If you have create a form with type="input" and this form was
@@ -1351,28 +1379,28 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         </info>
       </possiblevalue>
       <possiblevalue>
-        <value>searchinput</value>         
+        <value>searchinput</value>
         <info>
 	A form entry for the field, fit for use for searching. That
-        means that not textareas will be used and such.  
+        means that not textareas will be used and such.
         </info>
       </possiblevalue>
       <possiblevalue>
-        <value>usesearchinput</value>         
+        <value>usesearchinput</value>
         <info>
 	If you have create a form with type="searchinput" and this
         form was submitted, then you can use this. It will produce a
         part of a where clause which you can use to construct a whole
         'where' for the list tag you are going to use.
         </info>
-      </possiblevalue>      
+      </possiblevalue>
       <possiblevalue>
-        <value>value</value>         
+        <value>value</value>
         <info>The value of this field. Can only be used if in a NodeProviderTag.
         </info>
       </possiblevalue>
       <possiblevalue>
-        <value>guivalue</value>         
+        <value>guivalue</value>
         <info>The guivalue of this field. Can only be used if in a NodeProviderTag.
         </info>
       </possiblevalue>
@@ -1389,25 +1417,26 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <name>nodeinfo</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
     <info>This thing can be used inside a NodeProvider tag, to get
-    certain information about the node.</info>
+    certain information about the node.
+    </info>
     <attribute>
       <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <possiblevalue>
-        <value>nodemanager</value>
-        <info>The name of the NodeManager of the node.</info>
+        <value>type</value>
+        <info>The type fo the node (the name of it's NodeManager).</info>
       </possiblevalue>
       <possiblevalue>
-        <value>guinodemanager</value>
-        <info>The GUI name of NodeManager of the node.</info>
+        <value>guitype</value>
+        <info>The GUI representation of the type (NodeManager) of the node.</info>
       </possiblevalue>
-    </attribute>  
+    </attribute>
     <example>&lt;mm:node number="1645"&gt;
-Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
+Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   &lt;mm:fieldlist type="edit"&gt;
     &lt;em&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/em&gt;:    &lt;mm:fieldinfo type="value" /&gt;&lt;br /&gt;
-  &lt;/mm:fieldlist&gt; 
+  &lt;/mm:fieldlist&gt;
 &lt;/mm:node&gt;
 </example>
 
@@ -1460,7 +1489,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	The key of the variable to get. 
+	The key of the variable to get.
 	</info>
     </attribute>
     <attribute>
@@ -1525,14 +1554,14 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	If there is no attribute 'externid' then the value of the new
 	object in the context is taken from the body of this import
 	tag.
-        </p>	
+        </p>
 	</info>
     </attribute>
     <attribute>
         <name>required</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
-	<info>	
+	<info>
 	If this object is required to be present. If it has to be
 	present, then the present tag will always evaluate. If there
 	can nothing be found by externid and a default value in the
@@ -1581,7 +1610,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>	
+	<info>
 	</info>
     </attribute>
   </tag>
@@ -1597,7 +1626,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<refercontext>true</refercontext>
-	<info>	
+	<info>
 	Specify which parameters, otherwise all parameters.
 	</info>
     </attribute>
@@ -1605,7 +1634,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <name>extraparameters</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>	
+	<info>
 	You can also add some new parameters like this. A list of
         key=value.
 	</info>
@@ -1626,9 +1655,9 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
-	<info>	
+	<info>
 	</info>
-    </attribute>   
+    </attribute>
   </tag>
   <tag>
     <name>param</name>
@@ -1641,7 +1670,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
         <refercontext>true</refercontext>
-	<info>	
+	<info>
 	The name of the parameter. The value is the body.
 	</info>
     </attribute>
