@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @see    FieldInfoTag
- * @version $Id: FieldReferrerTag.java,v 1.6 2003-08-27 21:33:32 michiel Exp $ 
+ * @version $Id: FieldReferrerTag.java,v 1.7 2004-07-19 15:26:40 michiel Exp $ 
  */
 
 public abstract class FieldReferrerTag extends NodeReferrerTag {	
 
-    private static final Logger log = Logging.getLoggerInstance(FieldReferrerTag.class.getName()); 
+    private static final Logger log = Logging.getLoggerInstance(FieldReferrerTag.class); 
 
     private Attribute parentFieldId = Attribute.NULL;
     //private NodeProvider nodeProvider = null;
