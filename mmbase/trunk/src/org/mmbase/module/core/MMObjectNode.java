@@ -860,4 +860,9 @@ public class MMObjectNode {
 		this.alias=alias;
 	}
 
+	public String getAlias() {
+		return(alias);
+	}
+
+
 }
