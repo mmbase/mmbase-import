@@ -5,7 +5,6 @@
 <version>4</version>
 <description>functions for the package builder</description>
 
-
 		<function name="getProjectBundleTargets">
 			<description>
 			</description>
@@ -566,6 +565,32 @@
 		</function>
 
 
+		<function name="getTypeInfo">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.creators.DataApps1Creator</class>
+			<method>getTypeInfo</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<return type="Node">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="setDataFileType">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.creators.DataApps1Creator</class>
+			<method>setDataFileType</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="newtype" type="String" description="" />
+		</function>
+
+
                 <function name="getTargetPackageDepends">
                         <description>
                         </description>
@@ -589,6 +614,20 @@
 			<param name="target" type="String" description="" />
 			<param name="type" type="String" description="" />
 			<param name="subtype" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+
+		<function name="getTargetScreenshots">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>getTargetScreenshots</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
 			<return type="NodeList">
 				<field name="name" type="String" description="" />
 			</return>
