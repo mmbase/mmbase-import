@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.12 2000-05-27 16:48:29 wwwtech Exp $
+	$Id: Images.java,v 1.13 2000-05-29 13:17:26 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2000/05/27 16:48:29  wwwtech
+	Wilbert: moved new conversion of image alias to method to share it with VWM ImageMaster
+	
 	Revision 1.11  2000/05/27 14:19:07  wwwtech
 	Wilbert: Fixed getImagesBytes5 to return the correct image when title used as alias for img.db?title. Now returns exact match if found instead of last match of fuzzy search
 	
@@ -58,7 +61,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.12 2000-05-27 16:48:29 wwwtech Exp $
+ * @version $Id: Images.java,v 1.13 2000-05-29 13:17:26 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -104,12 +107,11 @@ public class Images extends MMObjectBuilder {
 		catch(Exception e) {
 			String title = num;
 			if ((title!=null) && !title.equals("")) {
-				Enumeration g=search("MMNODE images.title==*"+num+"*");
+				Enumeration g=search("where title='"+num+"'");
 				while (g.hasMoreElements()) {
 					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
 					num=""+imgnode.getIntValue("number");
-					if (title.equalsIgnoreCase(imgnode.getStringValue("title")))
-						break;
+					//debug("Hit on: "+imgnode.getStringValue("title"));
 				}//while
 			}//if
 		}//catch
@@ -127,9 +129,9 @@ public class Images extends MMObjectBuilder {
 		String ckey="";
 
 		try {
-			MMObjectBuilder bul=mmb.getMMObject("images");
+			//MMObjectBuilder bul=mmb.getMMObject("images");
 			if (params==null || params.size()==0) {
-				MMObjectNode node=bul.getNode(7452);
+				MMObjectNode node=getNode(7452);
 				return(node.getByteValue("handle"));
 			}
 			String num=(String)params.elementAt(0);
@@ -304,7 +306,7 @@ public class Images extends MMObjectBuilder {
 						// aaa
 						byte[] pict=null;
 						if (num.indexOf('(')==-1 && !num.equals("-1")) {
-							MMObjectNode node=bul.getNode(num);
+							MMObjectNode node=getNode(num);
 							 pict=node.getByteValue("handle");
 						}
 						if (pict!=null) {
@@ -321,7 +323,7 @@ public class Images extends MMObjectBuilder {
 								pict2=getAllCalc(sp,pict,cmd,format);
 							}
 							if (pict2!=null) {
-								bul=mmb.getMMObject("icaches");
+								MMObjectBuilder bul=mmb.getMMObject("icaches");
 								try {
 									MMObjectNode newnode=bul.getNewNode("system");
 									newnode.setValue("ckey",ckey);
@@ -336,8 +338,7 @@ public class Images extends MMObjectBuilder {
 								return(null);
 							}
 						} else {
-							bul=mmb.getMMObject("images");
-							MMObjectNode node=bul.getNode(7452);
+							MMObjectNode node=getNode(7452);
 							return(node.getByteValue("handle"));
 						}
 					}
