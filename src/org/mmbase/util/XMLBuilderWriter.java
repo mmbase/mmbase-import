@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated-now use org.mmbase.xml.BuilderWriter instead
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.19 2002-04-18 07:11:12 pierre Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.20 2002-04-19 11:17:56 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -62,7 +62,7 @@ public class XMLBuilderWriter  {
         body.append("\t\tshort name : Urls will start class : org.mmbase.module.builders.Urls.class\n\n");
         body.append("\t\tlong name : nl.vpro.mmbase.module.builders.Urls will start that class\n");
         body.append("-->\n");
-        body.append("<classfile>"+bul.getClassName()+"</classfile>\n\n");
+        body.append("<classfile>"+bul.getClass().getName()+"</classfile>\n\n");
 
         // searchage
         body.append("<searchage>"+bul.getSearchAge()+"</searchage>\n\n");

@@ -201,7 +201,7 @@ public class TypeDef extends MMObjectBuilder {
         log.service("MMBASE -> Trying to reload builder : "+objectname);
         // first get all the info we need from the builder allready running
         MMObjectBuilder oldbul=mmb.getMMObject(objectname);
-        String classname=oldbul.getClassName();
+        String classname=oldbul.getClass().getName();
         String description=oldbul.getDescription();
 
         try {
