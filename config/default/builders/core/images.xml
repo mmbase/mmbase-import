@@ -48,8 +48,9 @@
 
 	 <!-- convert using ImageMagick -->
 	 <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
-	 <property name="ImageConvert.ConverterCommand">bin/convert</property>
-	 <property name="ImageConvert.ConverterRoot">/usr/local/</property>
+	 <property name="ImageConvert.ConverterCommand">convert</property>
+	 <!-- <property name="ImageConvert.ConverterRoot">/usr/local/bin</property> -->
+         <property name="ImageConvert.ConverterRoot"></property>
 
 	 <!-- generic property for all converters -->
 	 <property name="MaxConcurrentRequests">3</property>
