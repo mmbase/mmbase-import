@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.104 2004-02-02 18:25:39 michiel Exp $
+ * @version $Id: MMBase.java,v 1.105 2004-02-04 16:52:32 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1187,10 +1187,12 @@ public class MMBase extends ProcessorModule {
      * Loads either the storage manager factory or the appropriate support class using the configuration parameters.
      * @since MMBase-1.7
      */
-    public void initializeStorage() {
+    protected synchronized void initializeStorage() {
+        if (database != null) return; // initialized allready
+        log.service("Initializing storage");
         // check if there is a storagemanagerfactory specified
         String factoryClassName = getInitParameter("storagemanagerfactory");
-        if (factoryClassName!=null) {
+        if (factoryClassName != null) {
             try {
                 storageManagerFactory = StorageManagerFactory.newInstance(this);
                 // if so, instantiate the support class wrapper for the storage layer
