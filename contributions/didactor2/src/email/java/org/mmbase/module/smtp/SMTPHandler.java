@@ -147,6 +147,7 @@ public class SMTPHandler extends Thread {
         }
 
         if (line.toUpperCase().startsWith("RCPT TO:")) {
+            log.debug("RCPT TO:");
             if (state < STATE_RCPTTO) {
                 writer.write("503 You should say MAIL FROM first\r\n");
                 writer.flush();
@@ -157,6 +158,7 @@ public class SMTPHandler extends Thread {
                 String address = line.substring(8, line.length());
                 String recepient[] = parseAddress(address);
                 if (recepient.length != 2) {
+                    log.info("Can't parse address "+address);
                     writer.write("553 This user format is unknown here\r\n");
                     writer.flush();
                     return;
@@ -164,18 +166,22 @@ public class SMTPHandler extends Thread {
                 String username = recepient[0];
                 String domain = recepient[1];
                 String domains = (String)properties.get("domains");
+                log.info("Incoming mail for "+username+" @ "+domain);
                 for (StringTokenizer st = new StringTokenizer(domains, ","); st.hasMoreTokens();) {
                     if (domain.toLowerCase().endsWith(st.nextToken().toLowerCase())) {
                         if (!addMailbox(username)) {
+                            log.info("Mail for "+username+" rejected: no mailbox");
                             writer.write("550 User not found: " + username + "\r\n");
                             writer.flush();
                             return;
                         }
+                        log.info("Mail for "+username+" accepted");
                         writer.write("250 Yeah, that user lives here. Bring on the data!\r\n");
                         writer.flush();
                         return;
                     }
                 }
+                log.info("Mail for domain "+domain+" not accepted");
 
                 writer.write("553 We do not accept mail for domain '" + domain + "'\r\n");
                 writer.flush();
