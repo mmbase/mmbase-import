@@ -26,5 +26,5 @@
 mmbase /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 html /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 config /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
-nep /home/wwwtech/bin/updateVersions >/tmp/updateVersions.log 2>/tmp/updateVersions.log
+ALL /home/wwwtech/bin/updateVersions >/tmp/updateVersions.log 2>/tmp/updateVersions.log
 DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
