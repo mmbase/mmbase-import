@@ -31,6 +31,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="deprecation" value="on" />
 
   <property name="project.source.dir" location="." />
+  <property name="project.templates.dir" location="${project.source.dir}/templates" />
   <property name="project.build.postfix" value="" />
   <property name="project.build.dir"  location="./build${project.build.postfix}" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
@@ -38,14 +39,22 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
 
   <property name="project.package" value="org/mmbase" />
+  <property name="project.main.class"        value="${project.package}/Version" />
 
 
   <property name="source.dir"   location="../.." />
   <property name="build.dir"    value="${source.dir}/build" /><!-- mmbase build dir -->
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
-  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
-  <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+
+  <property name="webapp.dir"      value="${build.dir}/mmbase/mmbase-webapp"/>
+
+  <property name="templates.dir"   value="${webapp.dir}/mmbase" />
+
+  <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
+  <property name="release.lib.dir" value="${web.dir}/lib"/>
+  <property name="mmbase.jar"      value="${release.lib.dir}/lib/mmbase.jar"/>
+  <property name="mmbase.config"   value="${web.dir}/config"/>
   <property name="documentation.home" value="../../documentation" />
   <property name="build.documentation" value="true" />
 
@@ -55,6 +64,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
+  <property name="project.target.templates.dir" value="${project.name}" />
   <property name="mmbase.classes" value="no_extra_classes" />
   <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
 
@@ -110,15 +120,16 @@ Create a build.xml with a DOCTYPE like this:
   <target name="jar" description="Create the MMBase project jar file" 
     depends="jar.check" unless="jar.uptodate" if="src.available">
   
-  <antcall target="compile" />
-  <echo message="Copying ${mmbase.classes} to ${project.build.dir}/classes" />
-  <copy todir="${project.build.dir}/classes">
-    <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
-  </copy>
-  <mkdir dir="${project.metainf.dir}" />
-  
+    <antcall target="compile" />
+    <echo message="Copying ${mmbase.classes} to ${project.build.dir}/classes" />
+    <copy todir="${project.build.dir}/classes">
+      <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
+    </copy>
+    <mkdir dir="${project.metainf.dir}" />
+    
 
     <manifest file="${project.build.dir}/manifest.mf">
+      <attribute name="Main-Class" value="${project.main.class}" />
       <section name="${project.package}">
         <attribute name="Vendor" value="MMBase Community" />
         <attribute name="URL" value="http://${project.name}.mmbase.org" />
@@ -134,9 +145,9 @@ Create a build.xml with a DOCTYPE like this:
     <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          basedir="${project.build.dir}/classes"
-	     includes="**"
-    manifest="${project.build.dir}/manifest.mf" >
-    <metainf dir="${project.metainf.dir}" includes="**" />
+         includes="**"
+         manifest="${project.build.dir}/manifest.mf" >
+      <metainf dir="${project.metainf.dir}" includes="**" />
     </jar>
 
   </target>
@@ -285,6 +296,16 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${project.build.dir}/classes" />
       </classpath>
     </javadoc>
+  </target>
+
+  <target name="install" depends="jar">
+    <copy todir="${release.lib.dir}" file="${project.jar}" /> 
+    <copy todir="${templates.dir}/${project.target.templates.dir}">
+      <fileset dir="${project.templates.dir}">
+        <include name="**"/>
+      </fileset>      
+    </copy>
+    
   </target>
 
 

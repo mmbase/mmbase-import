@@ -34,7 +34,8 @@ Applications build file
 
   <target name="all16" depends="init,media,bugtracker,email" />
 
-  <target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" />
+  <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
+  <target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci,aselect" />
 
 
   <target name="jars" depends="all">
@@ -53,6 +54,10 @@ Applications build file
 
   <target name="media" depends="mmbase,editwizard">
      <ant dir="media"      target="package" />
+  </target>
+
+  <target name="aselect" depends="mmbase">
+     <ant dir="aselect"      target="package" />
   </target>
 
   <target name="bugtracker">
@@ -79,6 +84,13 @@ Applications build file
      <ant dir="community"  target="dependent.package" />
   </target>
 
+  <target name="install">
+    <ant dir="editwizard"    target="dependent.install" />
+    <ant dir="email"         target="install" />
+    <!-- ant dir="cloudcontext"  target="install" /-->
+    <!-- ant dir="rmmci"         target="install" /-->
+  </target>
+
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
@@ -87,6 +99,7 @@ Applications build file
      <ant dir="bugtracker"      target="clean" />
      <ant dir="community"      target="clean" />
      <ant dir="email"      target="clean" />
+     <!-- <ant dir="aselect"      target="clean" /> -->
     <delete dir="${applications.build.dir}" />
   </target>
 
