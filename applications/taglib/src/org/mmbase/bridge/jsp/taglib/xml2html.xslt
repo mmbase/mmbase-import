@@ -10,7 +10,7 @@
       <title>MMBase taglib documentation</title>
       <xsl:if test="@author"><meta name="Author" value="{@author}"/></xsl:if>
     </head>
-    <body marginwidth="0" marginheight="0" leftmargin="0" rightmargin="0" topmargin="0" bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+<body marginwidth="0" marginheight="0" leftmargin="0" rightmargin="0" topmargin="0" bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
       <table width="100%" cellpadding="5">
         <tr>
           <td width="30"></td>
@@ -71,7 +71,7 @@
 </xsl:template>
 
 <xsl:template match="tag" mode="toc">
-  <a href="#{generate-id()}"><xsl:value-of select="name" /></a>
+  <a href="#{name}"><xsl:value-of select="name" /></a>
   <xsl:if test="last()"> | </xsl:if>
 </xsl:template>
 
@@ -79,7 +79,7 @@
   <table bgcolor="#eeeeee" width="100%" cellpadding="5">
     <tr>
       <td colspan="2" bgcolor="white" align="right">
-        <a name="{generate-id()}"/>
+        <a name="{name}"/>
         <a href="#toc">toc</a>
       </td>
     </tr>
