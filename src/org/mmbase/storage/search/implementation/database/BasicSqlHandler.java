@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.41 2004-12-20 17:50:45 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.42 2004-12-23 17:31:05 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -137,6 +137,13 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append("'");
                 appendDateValue(sb, (Date) value);
                 sb.append("'");
+            }
+        } else if (fieldType == FieldDefs.TYPE_BOOLEAN) {
+            boolean isTrue = ((Boolean) value).booleanValue();
+            if (isTrue) {
+                sb.append("TRUE");
+            } else {
+                sb.append("FALSE");
             }
         } else {
             // Numerical field:

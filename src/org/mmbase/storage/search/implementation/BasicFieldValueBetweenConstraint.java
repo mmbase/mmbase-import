@@ -15,17 +15,17 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.6 2004-03-15 14:54:25 robmaris Exp $
+ * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.7 2004-12-23 17:31:05 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint
 implements FieldValueBetweenConstraint {
 
     /** The lower limit. */
-    private String lowerLimit = null;
+    private Object lowerLimit = null;
 
     /** The upper limit. */
-    private String upperLimit = null;
+    private Object upperLimit = null;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ implements FieldValueBetweenConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueBetweenConstraint setLowerLimit(Object lowerLimit) {
-        this.lowerLimit = convertValue(lowerLimit);
+        this.lowerLimit = lowerLimit;
         return this;
     }
 
@@ -72,17 +72,17 @@ implements FieldValueBetweenConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueBetweenConstraint setUpperLimit(Object upperLimit) {
-        this.upperLimit = convertValue(upperLimit);
+        this.upperLimit = upperLimit;
         return this;
     }
 
     // javadoc is inherited
-    public String getLowerLimit() {
+    public Object getLowerLimit() {
         return lowerLimit;
     }
 
     // javadoc is inherited
-    public String getUpperLimit() {
+    public Object getUpperLimit() {
         return upperLimit;
     }
 
@@ -127,36 +127,5 @@ implements FieldValueBetweenConstraint {
         append(getUpperLimit()).
         append(")");
         return sb.toString();
-    }
-
-    /**
-     * Tests type of value, and converts it to a string as required by {@link
-     * #getLowerLimit() getLowerLimit()} and {@link #getUpperLimit()
-     * getUpperLimit()}
-     *
-     * @param value The value.
-     * @return The resulting string.
-     * @throws IllegalArgumentException when an invalid argument is supplied.
-     * @see org.mmbase.storage.FieldValueBetweenConstraint#getLowerLimit()
-     * @see org.mmbase.storage.FieldValueBetweenConstraint#getUpperLimit()
-     */
-    private String convertValue(Object value) {
-        String result = null;
-        BasicStepField.testValue(value, getField());
-        if (value instanceof Number) {
-            // Add value as string. This facilitates comparison of
-            // numerical values of different type.
-            Number numberValue = (Number) value;
-            // Represent integral value as integer,
-            // other values as floating point.
-            if (numberValue.intValue() == numberValue.doubleValue()) {
-                result = Integer.toString(numberValue.intValue());
-            } else {
-                result = numberValue.toString();
-            }
-        } else {
-            result = value.toString();
-        }
-        return result;
     }
 }
