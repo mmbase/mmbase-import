@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.33 2002-07-08 15:23:36 pierre Exp $
+  @version $Id: wizard.xsl,v 1.34 2002-07-09 18:44:02 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -123,10 +123,18 @@
         <xsl:attribute name="style">border-width:0 1 0 0; border-style:solid; border-color:#000000; padding-right:3;</xsl:attribute>
       </xsl:if>
       <xsl:for-each select="field">
-       <xsl:call-template name="fieldintern" />
-       <xsl:text disable-output-escaping="yes"> </xsl:text>
+        <xsl:call-template name="fieldintern" />
+        <xsl:text disable-output-escaping="yes"> </xsl:text>
       </xsl:for-each>
     </td>
+  </xsl:template>
+
+
+  <!-- 
+       prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
+       -->
+  <xsl:template name="prefix|postfix">
+    <xsl:value-of select="name()" /><xsl:value-of select="." />
   </xsl:template>
 
   <xsl:template name="prompt">
@@ -138,7 +146,7 @@
         <xsl:choose>
           <xsl:when test="description">
             <xsl:attribute name="title"><xsl:value-of select="description" /></xsl:attribute>
-            <xsl:attribute name="descriptiion"><xsl:value-of select="description" /></xsl:attribute>
+            <xsl:attribute name="description"><xsl:value-of select="description" /></xsl:attribute>
           </xsl:when>
           <xsl:otherwise>
             <xsl:attribute name="title"><xsl:value-of select="prompt" /></xsl:attribute>
@@ -149,25 +157,49 @@
       </span>
    </xsl:template>
 
+   <xsl:template match="value" mode="line">
+     <xsl:param name="val" select="." />
+     <span>
+       <xsl:attribute name="style">width: 400;</xsl:attribute>
+       <xsl:apply-templates select="../prefix" />
+       <xsl:value-of select="$val" disable-output-escaping="yes" />
+       <xsl:apply-templates select="../postfix" />
+     </span>
+   </xsl:template>
+
+   <xsl:template match="value" mode="inputline">
+     <xsl:param name="val" select="." />
+       <xsl:apply-templates select="../prefix" />
+       <input type="text" size="80" name="{../@fieldname}" value="{$val}" class="width400" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
+         <xsl:apply-templates select="../@*" />
+        </input>
+        <xsl:apply-templates select="../postfix" />
+   </xsl:template>
+
+
+
+   <!-- ================================================================================
+        fieldintern is called from fields and fieldsets
+        
+        -->
    <xsl:template name="fieldintern">
       <xsl:choose>
         <xsl:when test="@ftype='function'">
-          <xsl:if test="@number != ''">
-            <span style="width:400;">
-              <xsl:value-of select="node:function(string(@number), string(value))" disable-output-escaping="yes" />
-              </span>
-            </xsl:if>
+          <xsl:if test="not(string(number(@number)) = 'NaN')">
+            <xsl:apply-templates select="value" mode="line">              
+              <xsl:with-param name="val"><xsl:value-of select="node:function(string(@number), string(value))" disable-output-escaping="yes" /></xsl:with-param>
+            </xsl:apply-templates>
+          </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='data'">
-          <span style="width:400;"><xsl:value-of select="value" /></span>
+          <xsl:apply-templates select="value" mode="line" />
         </xsl:when>
         <xsl:when test="@ftype='line'">
-          <input type="text" size="80" name="{@fieldname}" value="{value}" class="width400" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
-            <xsl:apply-templates select="@*" />
-          </input>
+          <xsl:apply-templates select="value" mode="inputline" />
         </xsl:when>
         <xsl:when test="@ftype='text' or @ftype='html'">
           <span>
+           <xsl:apply-templates select="prefix" />
           <xsl:text disable-output-escaping="yes">&lt;textarea
                 name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>"
                 dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>"
@@ -192,6 +224,7 @@
           <xsl:apply-templates select="@*" />
           <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of disable-output-escaping="yes" select="value" />
           <xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
+            <xsl:apply-templates select="postfix" />
           </span>
         </xsl:when>
         <xsl:when test="@ftype='relation' or @ftype='enum'">
@@ -215,7 +248,9 @@
         </xsl:when>
         <xsl:when test="@ftype='enumdata'">
           <xsl:if test="optionlist/option[@id=current()/value]">
-            <span style="width:400;"><xsl:value-of select="optionlist/option[@id=current()/value]" /></span>
+            <xsl:apply-templates select="value" mode="line">              
+               <xsl:with-param name="val"><xsl:value-of select="optionlist/option[@id=current()/value]" /></xsl:with-param>
+            </xsl:apply-templates>            
           </xsl:if>
         </xsl:when>
         <xsl:when test="(@ftype='datetime') or (@ftype='date') or (@ftype='time')">
@@ -318,13 +353,15 @@
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
-            <xsl:apply-templates select="@*" />
-          </input>
+          <xsl:apply-templates select="value" mode="inputline" />
         </xsl:otherwise>
       </xsl:choose>
   </xsl:template>
 
+
+  <!-- ================================================================================
+       item
+       -->
   <xsl:template match="item">
     <span class="listitem" style="display:inline; ">
       <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
