@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.12 2003-04-03 11:45:12 pierre Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.13 2003-04-04 07:49:52 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -15,7 +15,7 @@
 			</author>
 			<author>
 				<firstname>Henk</firstname>
-				<surname>Hangyi</surname>
+				<surname>Hangji</surname>
 				<affiliation>
 					<orgname>MMatch</orgname>
 				</affiliation>
