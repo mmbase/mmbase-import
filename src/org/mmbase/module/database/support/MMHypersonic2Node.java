@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHypersonic2Node.java,v 1.4 2000-07-15 15:33:38 daniel Exp $
+$Id: MMHypersonic2Node.java,v 1.4.6.1 2002-03-26 22:42:36 gerard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/07/15 15:33:38  daniel
+removed more to MMSQL92.node
+
 Revision 1.3  2000/06/25 13:12:09  wwwtech
 Daniel.. changed/added method for getConnection
 
@@ -105,8 +108,12 @@ import org.xml.sax.*;
 * sql92 types of database this is the class used to abstact the query's
 * needed for mmbase for each database.
 *
+* It is now deprecated and only kept for people using the old
+* hypersonic database instead of the new version Hsqldb.
+*
+* @deprecated use {@link MMHsqldb2Node}
 * @author Daniel Ockeloen
-* @$Revision: 1.4 $ $Date: 2000-07-15 15:33:38 $
+* @$Revision: 1.4.6.1 $ $Date: 2002-03-26 22:42:36 $
 */
 public class MMHypersonic2Node extends MMSQL92Node {
 
