@@ -17,7 +17,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.5 2002-01-31 10:05:11 pierre Exp $
+ * @version $Id: BasicField.java,v 1.6 2002-04-09 09:01:39 eduard Exp $
  */
 public class BasicField implements Field {
 
@@ -63,7 +63,7 @@ public class BasicField implements Field {
     */
     public boolean equals(Object o) {
         return (o instanceof Field) && (o.hashCode()==hashCode());
-    };
+    }
 
     /**
     * Returns the object's hashCode.
@@ -71,5 +71,5 @@ public class BasicField implements Field {
     */
     public int hashCode() {
         return ((getNodeManager().hashCode()) * 100) + field.getDBPos();
-    };
+    }
 }
