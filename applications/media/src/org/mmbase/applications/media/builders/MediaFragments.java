@@ -29,7 +29,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.5 2003-02-05 15:25:02 rob Exp $
+ * @version $Id: MediaFragments.java,v 1.6 2003-02-10 10:37:47 rob Exp $
  * @since MMBase-1.7
  */
 
@@ -271,7 +271,7 @@ public class MediaFragments extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    protected boolean isSubFragment(MMObjectNode mediafragment) {
+    public boolean isSubFragment(MMObjectNode mediafragment) {
         int mediacount = mediafragment.getRelationCount("mediasources");        
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
@@ -315,7 +315,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @return An MMObjectNode.
      */
 
-    protected MMObjectNode getRootFragment(MMObjectNode fragment) {
+    public MMObjectNode getRootFragment(MMObjectNode fragment) {
         MMObjectNode temp;
         log.debug("Finding root of " + fragment.getNumber());
         List path = new ArrayList(); // to avoid circular references (in case of wrong links)
