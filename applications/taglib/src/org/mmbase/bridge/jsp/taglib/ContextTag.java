@@ -748,13 +748,37 @@ class MMultipartRequest {
         }
 
         // get the info as String...
-        byte data[] = null;
-        data = getBytes(param);
+        byte[] data = getBytes(param);
         if(data == null) {
             throw new JspTagException("retrieved no data for parameter:" + param);
         }
+
+        String encoding=coding;
+        // determine encoding
+        // get first 40 bytes to determine if this is a xml type
+        byte[] xmlbytes = new byte[60];
+        int sz=data.length;
+        if (sz>60) sz=60;
+        System.arraycopy((byte[])data,0,xmlbytes,0,sz);
+        String xmltext=new String(xmlbytes);
+        if(xmltext.startsWith("<?xml")) {
+            int i= xmltext.indexOf("encoding");
+            log.info("i=*"+i+"*");
+            if (i>0) {
+                int j= xmltext.indexOf("?>",i);
+                log.info("j=*"+j+"*");
+                if (j>i) {
+                    // get trimmed attribute value
+                    encoding=xmltext.substring(i+8,j).trim();
+                    // trim '='
+                    encoding=encoding.substring(1).trim();
+                    // trim quotes
+                    encoding=encoding.substring(1,encoding.length()-1).trim();
+                }
+            }
+        }
         try {
-            return new String(data, coding);
+            return new String(data, encoding);
         } catch(java.io.UnsupportedEncodingException e) {
             log.warn(Logging.stackTrace(e));
             throw new JspTagException(Logging.stackTrace(e));
