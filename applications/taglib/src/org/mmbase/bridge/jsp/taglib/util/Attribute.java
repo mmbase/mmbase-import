@@ -24,14 +24,14 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.20 2004-07-19 15:28:49 michiel Exp $
+ * @version $Id: Attribute.java,v 1.21 2004-09-28 12:12:38 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public class Attribute {
     private static final Logger log = Logging.getLoggerInstance(Attribute.class);
 
-    private static AttributeCache cache = new AttributeCache();
+    private final static AttributeCache cache = new AttributeCache();
     // not sure the cache is actually useful for performance, perhaps it can as well be switched off.
 
     public final static Attribute NULL = new NullAttribute();
@@ -45,8 +45,7 @@ public class Attribute {
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
      */
-    public static Attribute getAttribute(Object at) throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("Getting attribute " + at);
+    public static final Attribute getAttribute(final Object at) throws JspTagException {
         if (at == null) return NULL;
         return cache.getAttribute(at);
     }
@@ -376,11 +375,12 @@ class AttributeCache extends Cache {
     }
     public String getName()        { return "TagAttributeCache"; }
     public String getDescription() { return "Cache for parsed Tag Attributes"; }
-    public Attribute getAttribute(Object att) throws JspTagException {
-        Attribute res;
-        res = (Attribute) super.get(att);
-        if (res == null) res = new Attribute(att);
-        super.put(att, res);
+    public final Attribute getAttribute(final Object att) throws JspTagException {
+        Attribute res = (Attribute) super.get(att);
+        if (res == null) {
+            res = new Attribute(att);
+            super.put(att, res);
+        }
         return res;
     }
 
