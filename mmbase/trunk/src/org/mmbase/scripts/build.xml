@@ -596,7 +596,7 @@ Change directory to ${build.dir}/orion and run:
     </copy>
     <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
              token="DOCTYPE configuration"
-             value="DOCTYPE log4j SYSTEM &quot;log4j.dtd&quot;"/>
+             value="DOCTYPE log4j"/>
     <!-- Prevent multiple replaces by multiple builds by allways copying the
          file. -->
     <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
@@ -713,7 +713,7 @@ Change directory to ${build.dir}/orion and run:
       </fileset>
     </copy>
     <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
-             token="DOCTYPE configuration"
+             token="DOCTYPE configuration SYSTEM &quot;log4j.dtd&quot;"
              value="DOCTYPE log4j SYSTEM &quot;jar:file:lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd&quot;"/>
     <copy file="${mmbase.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/orion/lib"/>
