@@ -1,0 +1,93 @@
+/**
+  Editwizard cascading style sheet.
+
+  This is the style specific to 'wizard' pages.
+
+  @version  $Id: wizard.css,v 1.1 2003-11-30 19:54:14 nico Exp $
+*/
+@import url("base.css"); cm,
+@import url("wysiwyg.css");
+
+td.stepcurrent {
+  border-color: #F0F0F0;
+}
+
+td.stepother {
+  background-color: #CCC;
+  border-color: #000000;
+}
+
+td.stepcurrent a.valid:link,
+td.stepcurrent a.valid:visited,
+td.stepcurrent a.valid:hover,
+td.stepcurrent a.valid:active,
+td.stepother a.valid:link,
+td.stepother a.valid:visited,
+td.stepother a.valid:hover,
+td.stepother a.valid:active {
+  color: #00046C;
+}
+
+
+td.stepcurrent a.notvalid:link,
+td.stepcurrent a.notvalid:visited,
+td.stepcurrent a.notvalid:hover,
+td.stepcurrent a.notvalid:active,
+td.stepother a.notvalid:link,
+td.stepother a.notvalid:visited,
+td.stepother a.notvalid:hover,
+td.stepother a.notvalid:active {
+  color: #FF0000;
+}
+
+span.notvalid {
+  color: #CC0000;
+}
+
+span.valid { 
+  color: #009900;
+}
+
+div.buttonscontent {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+table.buttonscontent  {
+	border-color: #000000;
+}
+
+tr.itemline  {
+	background-color: #CCC;
+}
+
+table.listcontent {
+	border-color: #CCC;
+	background-color: #FFF;
+	color: #000000;
+}
+
+td.listprompt {
+	color:#000000;
+}
+
+tr.itemcanvas {
+	background-color: #FFFFFF;
+}
+
+td.itemprefix  {
+	background-color: #CCC;
+}
+
+table.itemrow {
+	border-color: #000;
+}
+
+table.itemrow-hover {
+	border-color: #000;
+	background-color: #CCC;
+}
+
+table.fieldscontent  {
+	border-color: #000;
+}
