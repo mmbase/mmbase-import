@@ -1,3 +1,14 @@
+/*
+	$Id: CDTracks.java,v 1.8 2000-03-30 12:42:57 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
+
+/*************************************************************************
+ * NOTE This Builder needs significant changes to operate on NON-VPRO
+ * machines. Do NOT use before that, also ignore all errors stemming from
+ * this builder
+ *************************************************************************/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -9,13 +20,11 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.gui.html.*;
 
-// import org.mmbase.hardware.linux.cdrom.*;
-
 import nl.vpro.mmbase.util.media.audio.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: CDTracks.java,v 1.8 2000-03-30 12:42:57 wwwtech Exp $
  */
 public class CDTracks extends MMObjectBuilder {
 
