@@ -96,15 +96,41 @@ public class TestCache {
         show("Should 'f'");
 
 
-        System.out.println("Getting random values from cache, should follow now errors:");
+        cache.setSize(50);
+        System.out.println("Getting random values from cache, should follow no errors:");
         Random rnd = new Random();
-        for(int i = 0; i < 10000; i ++) {
+        for(int i = 0; i < 1000; i ++) {
             String test = "" + (char) rnd.nextInt(256);
             if (! test.toUpperCase().equals(cache.get(test))) {
                 System.out.println("ERROR");
             }
         }
-       
+        System.out.println("Remove random values from cache, should follow no errors:");
+        for(int i = 0; i < 256; i ++) {
+            String test = "" + (char) rnd.nextInt(256);
+            cache.remove(test);
+        }
+        show("Should be something in the cache now");
+        for(int i = 0; i < 1000; i ++) {
+            String test = "" + (char) rnd.nextInt(256);
+            if (! test.toUpperCase().equals(cache.get(test))) {
+                System.out.println("ERROR");
+            }
+        }
+        try {
+            cache.setSize(-1);
+        } catch (Throwable t) {
+            System.out.println("OK threw exception");
+        }
+
+        System.out.println("Testing with size = 0");
+        cache.setSize(0);
+        for(int i = 0; i < 1000; i ++) {
+            String test = "" + (char) rnd.nextInt(256);
+            if (! test.toUpperCase().equals(cache.get(test))) {
+                System.out.println("ERROR");
+            }
+        }
      
         
     } 
