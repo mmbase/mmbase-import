@@ -10,7 +10,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Forum</title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
 </head>
 <body class="basic">
 <mmcommunity:update message="${thread}">
@@ -37,7 +37,7 @@
 <tr><td>&nbsp;</td></tr>
 </mm:node>
 <tr>
-<td class="navigate"><a href="<mm:url page="forum.jsp" referids="channel" />" ><img src="../../images/back.gif" alt="back" border="0" align="left" /></a></td>
+<td class="navigate"><a href="<mm:url page="forum.jsp" referids="channel" />" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
 <td class="data">Return to forum</td>
 </tr>
 </table>

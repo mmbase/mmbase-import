@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Forum</title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
 </head>
 <body class="basic">
 <table summary="forum threads" width="93%" cellspacing="1" cellpadding="3" border="0">
@@ -24,12 +24,12 @@
 <IF $MOD-communityprc-$PARAM1-ISOPEN^=Nreadonly>
 <tr>
 <td class="data">Post reply</td>
-<td class="navigate" align="right"><a href="createmessage.shtml?$PARAM1+$PARAM2" ><img src="../../images/next.gif" alt="reply" border="0" align="left" /></a></td>
+<td class="navigate" align="right"><a href="createmessage.shtml?$PARAM1+$PARAM2" ><img src="../../../share/community/images/next.gif" alt="reply" border="0" align="left" /></a></td>
 </tr>
 </IF>
 <tr>
 <td class="data">ADMIN: Moderate message</td>
-<td class="navigate" align="right"><a href="editmessage.shtml?$PARAM1+$PARAM2" ><img src="../../images/change.gif" alt="change" border="0" align="left" /></a></td>
+<td class="navigate" align="right"><a href="editmessage.shtml?$PARAM1+$PARAM2" ><img src="../../../share/community/images/change.gif" alt="change" border="0" align="left" /></a></td>
 </tr>
 
 <LIST TREE PROCESSOR="communityprc" MAXCOUNT="50" NODE="$PARAM2" FIELDS="listhead,listtail,number,html(subject),getinfovalue(name),replycount,day(timestampsec),month(timestampsec),year(timestampsec),depth" VERSION="2.0">
@@ -50,7 +50,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="forum.shtml?$PARAM1" ><img src="../../images/back.gif" alt="back" border="0" align="left" /></a></td>
+<td class="navigate"><a href="forum.shtml?$PARAM1" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
 <td class="data">Return to forum</td>
 </tr>
 

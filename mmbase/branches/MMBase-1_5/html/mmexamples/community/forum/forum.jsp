@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Forum</title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
 </head>
 <% // code to determine offset... since we don't have a tag that does this.
    int pagesize=30;
@@ -24,7 +24,8 @@
 <mmcommunity:testchannel condition="readonly" reverse="true">
 <tr>
 <td class="data" colspan="3">Start new thread</td>
-<td class="navigate" align="right"><a href="<mm:url page="createnewthread.jsp" referids="channel" />" ><img src="../../images/next.gif" alt="post" border="0" align="right" /></a></td>
+<td class="navigate" align="right"><a href="<mm:url page="createnewthread.jsp" referids="channel" />" >
+<img src="../../../share/community/images/next.gif" alt="post" border="0" align="right" /></a></td>
 </tr>
 </mmcommunity:testchannel>
 <tr>
@@ -45,7 +46,8 @@
 </td></tr>
 <tr>
 <% if (thispage>0) { %>
- <td class="navigate" align="left"><a href="<mm:url page="forum.jsp" referids="channel" ><mm:param name="page"><%=thispage-1%></mm:param></mm:url>" ><img src="../../images/back.gif" alt="back" border="0" align="left" /></a></td>
+ <td class="navigate" align="left"><a href="<mm:url page="forum.jsp" referids="channel" ><mm:param name="page">
+<%=thispage-1%></mm:param></mm:url>" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
  <td class="data">Previous page</td>
 <% } else { %>
  <td class="data" colspan="2">(First page)</td>
@@ -53,7 +55,8 @@
    if (count==pagesize) {
 %>
 <td class="data">Next page</td>
-<td class="navigate" align="right"><a href="<mm:url page="forum.jsp"referids="channel" ><mm:param name="page"><%=thispage+1%></mm:param></mm:url>" ><img src="../../images/next.gif" alt="next" border="0" align="right" /></a></td>
+<td class="navigate" align="right"><a href="<mm:url page="forum.jsp"referids="channel" ><mm:param name="page">
+<%=thispage+1%></mm:param></mm:url>" ><img src="../../../share/community/images/next.gif" alt="next" border="0" align="right" /></a></td>
 <% } else { %>
  <td class="data" colspan="2" align="right">(Last page)</td>
 <% } %>
@@ -61,7 +64,8 @@
 
 <tr>
 <td class="data" colspan="3" >ADMIN: Administer Forum</td>
-<td class="navigate" align="right"><a href="<mm:url page="forumadmin.jsp" referids="channel" />" ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a></td>
+<td class="navigate" align="right"><a href="<mm:url page="forumadmin.jsp" referids="channel" />" >
+<img src="../../../share/community/images/change.gif" alt="change" border="0" align="right" /></a></td>
 </tr>
 </table>
 </mm:node>
