@@ -139,7 +139,11 @@ public class BasicNodeType implements NodeType {
      * @param direction true=UP false=DOWN
      */
     public List search(String where, String sorted, boolean direction) {
-        return builder.searchVector(where,sorted,direction);
+  		Vector retval = new Vector();
+		Enumeration nodeEnum = builder.searchVector(where,sorted,direction).elements();
+        while(nodeEnum.hasMoreElements()){ 
+			retval.addElement(new BasicNode((MMObjectNode)nodeEnum.nextElement(),this));
+		}
+  		return retval;
     }
-
 }
