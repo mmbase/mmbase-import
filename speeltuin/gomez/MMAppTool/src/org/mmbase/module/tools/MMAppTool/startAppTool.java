@@ -8,9 +8,6 @@ See http://www.MMBase.org/license
 
 */
 
-import java.lang.*;
-import java.io.*;
-import java.awt.*;
 
 /**
  * Class startAppTool

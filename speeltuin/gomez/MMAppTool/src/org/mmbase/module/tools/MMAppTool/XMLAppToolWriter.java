@@ -12,10 +12,7 @@ package org.mmbase.module.tools.MMAppTool;
 import java.io.*;
 import java.awt.*;
 import java.util.*;
-import org.mmbase.module.core.*;
 
-/**
-*/
 public class XMLAppToolWriter  {
 
     public static void writeXMLFile(AppCanvas can,String filename) {
