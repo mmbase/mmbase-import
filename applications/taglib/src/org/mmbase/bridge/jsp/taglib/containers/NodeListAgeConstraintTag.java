@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.5 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: NodeListAgeConstraintTag.java,v 1.6 2003-09-23 13:04:38 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
@@ -34,6 +34,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
     protected Attribute field      = Attribute.NULL;
     protected Attribute minAge     = Attribute.NULL;
     protected Attribute maxAge     = Attribute.NULL;
+    protected Attribute inverse    = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -51,7 +52,9 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
         maxAge = getAttribute(a);
     }
 
-
+    public void setInverse(String i) throws JspTagException {
+        inverse = getAttribute(i);
+    }
     
 
     protected Integer getDayMark(int age) throws JspTagException {
@@ -120,6 +123,9 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
         }
 
         if (newConstraint != null) {
+            if (inverse.getBoolean(this, false)) {
+                query.setInverse(newConstraint, true);
+            }
             Constraint constraint = query.getConstraint();
             if (constraint != null) {
                 log.debug("compositing constraint");
