@@ -16,6 +16,8 @@ import org.mmbase.util.*;
 /**
  * This object subscribes itself to builder changes
  * @author Daniel Ockeloen
+ * 
+ * @deprecated-now This is an _excact copy_ of org.mmbase.cache.MultilevelCacheEntry
  */
 public class MultilevelCacheEntry {
 	// callbacks to my 'parents' who 
