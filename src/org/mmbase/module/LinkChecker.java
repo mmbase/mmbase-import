@@ -25,12 +25,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.13 2003-12-11 15:24:31 pierre Exp $
+ * @version $Id: LinkChecker.java,v 1.14 2004-01-12 17:49:14 michiel Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
 
-    private static Logger log = Logging.getLoggerInstance(LinkChecker.class);
+    private static final Logger log = Logging.getLoggerInstance(LinkChecker.class);
     private MMBase mmbase;
     private MMObjectBuilder urls;
     private MMObjectBuilder jumpers;
@@ -38,9 +38,9 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
     public void init() {
         super.init();
-        mmbase = (MMBase) getModule("MMBASEROOT");
-        urls = (MMObjectBuilder) mmbase.getMMObject("urls");
-        jumpers = (MMObjectBuilder) mmbase.getMMObject("jumpers");
+        mmbase   = MMBase.getMMBase();
+        urls     = mmbase.getBuilder("urls");
+        jumpers  = mmbase.getBuilder("jumpers");
         sendmail = (SendMailInterface) getModule("sendmail");
         log.info("Module LinkChecker started");
         Thread thread = new Thread(this, "LinkChecker");
@@ -49,13 +49,13 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     }
 
     public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException {
-        return (null);
+        return null;
     }
 
     public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
         log.debug("CMDS=" + cmds);
         log.debug("VARS=" + vars);
-        return (false);
+        return  false;
     }
 
     public String replace(scanpage sp, String cmds) {
@@ -63,7 +63,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     }
 
     public String getModuleInfo() {
-        return ("This module checks all urls, Rob Vermeulen");
+        return "This module checks all urls, Rob Vermeulen";
     }
 
     public void maintainance() {}
@@ -80,16 +80,19 @@ public class LinkChecker extends ProcessorModule implements Runnable {
         String from = getInitParameter("from");
         String to = getInitParameter("to");
         String subject = getInitParameter("subject");
-        if (subject == null || subject.equals("")) subject = "List of incorrect urls and jumpers";
-        String data = "";
+        if (subject == null || subject.equals("")) { 
+            subject = "List of incorrect urls and jumpers";
+        }
+
+        StringBuffer data = new StringBuffer();
 
         try {
             // Get the urls builder,  Jumper builder, and sendmail module.
             if (urls == null) {
-                urls = (MMObjectBuilder) mmbase.getMMObject("urls");
+                urls = mmbase.getBuilder("urls");
             }
             if (jumpers == null) {
-                jumpers = (MMObjectBuilder) mmbase.getMMObject("jumpers");
+                jumpers = mmbase.getBuilder("jumpers");
             }
             if (sendmail == null) {
                 sendmail = (SendMailInterface) getModule("sendmail");
@@ -104,7 +107,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
                     String theUrl = "" + url.getValue("url");
                     // Check if an url is correct.
                     if (!checkUrl(theUrl)) {
-                        data += "Error in url " + theUrl + " (objectnumber=" + number + ")\n";
+                        data.append("Error in url " + theUrl + " (objectnumber=" + number + ")\n");
                     }
                     try {
                         Thread.sleep(5000);
@@ -122,7 +125,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
                     // only perform if the jumper contains http
                     // we can't check the other jumpers
                     if (theUrl.indexOf("http") != -1 && !checkUrl(theUrl)) {
-                        data += "Error in jumper " + theUrl + " (objectnumber=" + number + ")\n";
+                        data.append("Error in jumper " + theUrl + " (objectnumber=" + number + ")\n");
                     }
                     try {
                         Thread.sleep(5000);
@@ -131,14 +134,14 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             }
 
             // Send Email if needed.
-            if (!data.equals("")) {
+            if (!data.toString().equals("")) {
                 Mail mail = new Mail(to, from);
                 mail.setSubject(subject);
-                mail.setText(data);
+                mail.setText(data.toString());
                 if (sendmail != null) {
                     sendmail.sendMail(mail);
                 } else {
-                    log.warn("LinkChecker requires the sentmail modules to be active");
+                    log.warn("LinkChecker requires the sendmail module to be active");
                 }
             }
         } catch (Exception e) {
@@ -151,6 +154,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
      * @param the url to check
      * @return false if the url does not exist
      * @return true if the url exists
+     * @scope protected
      */
     public boolean checkUrl(String url) {
         URL urlToCheck;
@@ -161,9 +165,10 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             urlToCheck = new URL(url);
             uc = urlToCheck.openConnection();
             header = uc.getHeaderField(0);
-            if (header.indexOf("404") != -1)
+            if (header.indexOf("404") != -1) { // hmm
                 return false;
-        } catch (Exception e) {
+            }
+        } catch (Exception e) { 
             // The hostname is incorrect, or the url does not contain the prefix http://
             return false;
         }
