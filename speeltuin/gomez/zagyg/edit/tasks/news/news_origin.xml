@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="en">News article</title>
+  <title xml:lang="nl">Nieuwsitem</title>
+
+  <action type="create">
+    <object type="news">
+      <field name="title" />
+      <field name="visible">1</field>
+      <field name="end">4102441257</field>
+      <!--- origin is the template object -->
+      <relation destination="{$origin}" role="related" />
+    </object>
+  </action>
+
+  <action type="delete" />
+
+  <action type="load">
+    <relation destination="images" role="posrel" />
+  </action>
+
+  <lists include="tasks/sitestatlists.xml" />
+
+  <form-schema include="tasks/news/schema.xml" id="basics" />
+</wizard-schema>

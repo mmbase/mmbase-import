@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<posrel exportsource="mmbase://www.mmbase.org/zagyg" timestamp="20020516170724">
+  <node number="21000" owner="admin" snumber="10000" dnumber="10001" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+
+  <node number="21001" owner="admin" snumber="11000" dnumber="11001" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+</posrel>

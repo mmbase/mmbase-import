@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="mmbasecontexts" version="0">
+  <!-- Builder configuration for mmbasecontexts -->
+  <!-- Status of the builder: active or inactive -->
+  <status>active</status>
+  <!-- Classname of the builder.
+This is a optional tag, it names the classfile to use for this builder
+Providing an alternate buidler class allows you to add or change support routines. -->
+  <classfile>org.mmbase.security.implementation.cloudcontext.builders.Contexts</classfile>
+  <!-- Names defines the different names used in user visible parts
+Singular names are used when talking about one object (Url,Person) and plurar when talking about multiple objects (Urls, people).
+Names can be provided in various languages. -->
+  <names>
+    <!-- singular names per language as defined by ISO 639 -->
+    <singular xml:lang="nl">Security context</singular>
+    <singular xml:lang="eo">Sekureca konteksto</singular>
+    <singular xml:lang="en">Security Context</singular>
+    <!-- plural names per language as defined by ISO 639 -->
+    <plural xml:lang="nl">Security Contexten</plural>
+    <plural xml:lang="eo">Sekuracaj kontekstoj</plural>
+    <plural xml:lang="en">Security Contexts</plural>
+  </names>
+  <!-- Descriptions are ment to provide some additional clarification to an object.
+They are useful for GUI editors to provide helptexts.
+Descriptions can be provided in various languages. -->
+  <descriptions>
+    <description xml:lang="nl">MMBase contexten voor security</description>
+    <description xml:lang="en">MMBase security contexts</description>
+  </descriptions>
+  <!-- decsription per language as defined by ISO 639 -->
+  <!-- You can define properties to be used by the classfile.
+Properties are entered using name/value pairs.
+The actual properties available differ by class. -->
+  <properties>
+    <property name="readall">false</property>
+    <property name="allcontextspossible">true</property>
+  </properties>
+  <!-- defines the different fields in this object
+Depending on the database, the order of the fields may be important.
+Once defined, it is a good practice to keep the same order.
+This counts especially when you convert buidler configurations using builder inheritance. -->
+  <fieldlist>
+    <!-- field definition for field 4 : name -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="eo">Nomo</guiname>
+        <guiname xml:lang="en">Name</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>1</input>
+          <!-- position in the list area of the editor -->
+          <list>1</list>
+          <!-- position in the search area of the editor -->
+          <search>1</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>name</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
+    </field>
+    <!-- field definition for field 5 : description -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="eo">Priskribo</guiname>
+        <guiname xml:lang="en">Description</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>2</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>2</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>description</name>
+        <!-- MMBase datatype and demands on it -->
+        <type key="false" notnull="true" size="1024" state="persistent">STRING</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="subtopic">
+  <title xml:lang="en">Topics</title>
+  <title xml:lang="nl">Topics</title>
+
+  <action type="load">
+    <relation destination="categories" role="posrel" searchdir="destination" />
+    <relation destination="categorytypes" role="related" />
+    <relation destination="templates" role="related" />
+    <relation destination="templates" role="posrel" />
+  </action>
+
+  <lists include="tasks/sitestatlists.xml" />
+
+  <form-schema extends="tasks/categories/schema.xml" id="basics" >
+
+    <list include="tasks/categorytypes/list.xml" />
+
+    <!-- list include="tasks/categorytypes/list_readonly.xml" / -->
+
+    <list include="tasks/templates/list.xml" />
+
+    <list include="tasks/templates/list_posrel.xml" />
+  </form-schema>
+
+  <form-schema id="categories">
+    <title xml:lang="en">Details</title>
+    <title xml:lang="nl">Details</title>
+
+    <list role="posrel" destination="categories" ordertype="number" orderby="field[@name='pos']">
+      <title xml:lang="en">Details</title>
+      <title xml:lang="nl">Details</title>
+
+      <item>
+        <field ftype="data" name="title" />
+        <field ftype="startwizard" wizardname="tasks/categories/detail" inline="true" />
+      </item>
+
+      <command name="search" nodepath="categories" fields="title" orderby="title" age="-1">
+        <prompt xml:lang="nl">Zoek een detail</prompt>
+        <prompt xml:lang="en">Search a detail</prompt>
+        <search-filter>
+          <name xml:lang="en">Contains</name>
+          <name xml:lang="nl">Bevat</name>
+          <search-fields>title|body</search-fields>
+        </search-filter>
+      </command>
+
+      <command name="startwizard" inline="true" wizardname="tasks/categories/detail_create" objectnumber="new" >
+        <prompt xml:lang="en">New detail</prompt>
+        <prompt xml:lang="nl">Nieuw detail</prompt>
+      </command>
+
+      <action type="add">
+        <relation role="posrel">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+      </action>
+    </list>
+
+  </form-schema>
+</wizard-schema>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="related" destination="templates" maxoccurs="1" minoccurs="0">
+    <title xml:lang="en">Template</title>
+    <title xml:lang="nl">Sjabloon</title>
+
+    <item>
+        <field ftype="data" name="name" />
+    </item>
+
+    <command name="search" startnodes="{/data/object/@number}" nodepath="categories,categorytypes,related,templates" fields="templates.name" orderby="templates.name" age="-1">
+        <prompt xml:lang="en">Search a template</prompt>
+        <prompt xml:lang="nl">Zoek een sjabloon</prompt>
+        <search-filter>
+            <name xml:lang="en">Contains</name>
+            <name xml:lang="nl">Bevat</name>
+            <search-fields>templates.name</search-fields>
+        </search-filter>
+    </command>
+
+    <action type="add">
+        <relation role="related" />
+    </action>
+</list>
+
