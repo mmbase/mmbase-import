@@ -57,6 +57,9 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.jars.dir"      location=".." />
   <property name="project.jars.includes" value="NOTHING" />
 
+  <property name="project.classes.dir"      location=".." />
+  <property name="project.classes.includes" value="NOTHING" />
+
   <property name="project.package"      value="org/mmbase" />
   <property name="project.main.class"   value="org/mmbase/Version" />
   <property name="project.comment"      value="The ${project.name} package for the MBase Content Managment System" />
@@ -203,13 +206,13 @@ Create a build.xml with a DOCTYPE like this:
     </manifest>
 
     <echo message="creating jar" />
+
     
     <jar jarfile="${project.jar}"
-         basedir="${project.build.dir}/classes"
-         includes="**"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}" includes="**" />
-
+      <fileset     dir="${project.build.dir}/classes" includes="**" />
+      <fileset     dir="${project.classes.dir}" includes="${project.classes.includes}" />
     </jar>
 
   </target>
@@ -296,11 +299,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <fileset dir="${project.source.dir}/src">
         <include name="**/*.properties"/>
         <include name="**/*.dtd"/>
+        <include name="**/*.xsd"/>
         <include name="**/*.xml"/>
       </fileset>
     </copy>
 
-    <echo message="compiling.." />
+    <echo message="compiling" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
