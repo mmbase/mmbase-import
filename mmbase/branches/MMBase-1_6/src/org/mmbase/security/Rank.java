@@ -9,17 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.util.Map;
-import java.util.HashMap;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import java.util.*;
 
 /**
- * This class is somekinda enumeration of the ranks possible within
- * the security context
- * @javadoc
+ * This class defines Rank objects which are used in security implementation. Ranks can be
+ * associated with users. Every Rank has an unique integer 'height' (so every rank is higher or
+ * lower than any other rank) and a String which can be used to identify it.
+ *
+ * Possible Ranks are maintained by static methods in this class. Generally the 'anonymous', 'basic
+ * user' and 'adminstrator' ranks should always be available, and only be delete with good reason.
+ *
+ *
  * @author Eduard Witteveen
- * @version $Id: Rank.java,v 1.5.2.2 2003-01-31 16:06:06 pierre Exp $
+ * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
+ * @version $Id: Rank.java,v 1.5.2.3 2003-06-30 13:29:32 michiel Exp $
  */
-public class Rank {
+public final class Rank {
+    private static Logger log = Logging.getLoggerInstance(Rank.class);
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
 
@@ -40,16 +49,17 @@ public class Rank {
 
     private static Map ranks = new HashMap();
 
+
     static {
-        registerRank(ANONYMOUS,ANONYMOUS.toString());
-        registerRank(BASICUSER,BASICUSER.toString());
-        registerRank(ADMIN,ADMIN.toString());
+        registerRank(ANONYMOUS); 
+        registerRank(BASICUSER); 
+        registerRank(ADMIN); 
     }
 
     /**
      *	constructor
      */
-    public Rank(int rank, String description) {
+    protected Rank(int rank, String description) {
         this.rank = rank;
         this.description = description;
     }
@@ -66,7 +76,7 @@ public class Rank {
     /**
      *	@return a string containing the description of the rank
      */
-    public String toString(){
+    public String toString() {
         return description;
     }
 
@@ -77,16 +87,63 @@ public class Rank {
     private String description;
 
     public static Rank getRank(String rankDesc) {
-        return (Rank)ranks.get(rankDesc);
+        return (Rank) ranks.get(rankDesc);
     }
 
-    public static void registerRank(Rank rankObject, String rankDesc) {
-        ranks.put(rankDesc,rankObject);
+    /**
+     * @since MMBase-1.6.4
+     */
+    protected static Rank registerRank(Rank rank) {
+        Rank prev = (Rank) ranks.put(rank.toString(), rank);
+        if (prev == null) {
+            log.service("Registered rank " + rank);
+        } else {
+            log.service("Replaced rank " + rank);
+        }
+        return prev;
     }
 
-    public static Rank registerRank(int rank, String rankDesc) {
-        Rank rankObject=new Rank(rank,rankDesc);
-        registerRank(rankObject,rankDesc);
+    /**
+     * Creates and adds a new Rank for the security system.
+     *
+     * @since MMBase-1.6.4
+     */
+
+    public static Rank createRank(int rank, String rankDesc) {
+        Rank rankObject = new Rank(rank, rankDesc);
+        registerRank(rankObject);
         return rankObject;
+    }
+
+    /**
+     * Removes a rank from the security system.
+     * @since MMBase-1.6.4
+     */
+
+    public static Rank deleteRank(String rankDesc) {
+        return (Rank) ranks.remove(rankDesc);
+    }
+
+    /**
+     * Returns all ranks currently known by security implemetation.  Default and to start with there
+     * are three ranks available: 'anonymous', 'basic user' and 'administrator'.  You probably
+     * should never remove them.
+     * @since MMBase-1.6.4
+     */
+    public static Set getRanks() {
+        return new HashSet(ranks.values());
+    }
+
+    /**
+     * @since MMBase-1.6.4
+     */
+
+    public boolean equals(Object o) {
+        if (o instanceof Rank) {
+            Rank r = (Rank) o;
+            return r.rank == rank && r.description.equals(description);
+        } else {
+            return false;
+        }
     }
 }
