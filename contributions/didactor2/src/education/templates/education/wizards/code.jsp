@@ -199,7 +199,7 @@ menu.makeLastSubmenu(metatree, true);
 
 
 <mm:listnodes type="educations">
-menu.addItem("<mm:field name="name" />",
+menu.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:present>",
              "<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />",
              null,
              "<fmt:message key="editEducation"/>",
