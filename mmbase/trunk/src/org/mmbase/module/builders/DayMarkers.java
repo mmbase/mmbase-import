@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.14 2001-03-08 18:28:38 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.15 2001-03-09 13:02:33 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -229,7 +229,7 @@ public class DayMarkers extends MMObjectBuilder {
 					log.error("Could not find mark of day " + wday);
 					stmt.close();
 					con.close();					
-					return -1; // but it must be relativily new.
+					return 0; // but it must be relativily new.
 				}
 			} catch(Exception e) {
 				log.error("Could not find mark of day " + wday);
