@@ -214,6 +214,7 @@ public class VideoPartDef
 				//result += "?title=\""+title+"\"";
 				//result += "?title="+MediaUtils.plusToProcent20(URLEncoder.encode(title)); //URLEncode value.
 				//Our realserver can't handle URLEncoded strings, aargh.
+				title=MediaUtils.makeRealCompatible(title);
 				result += "?title="+title;
 			} else {
 				//result += "?title=\"\"";
