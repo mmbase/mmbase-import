@@ -24,7 +24,8 @@
     </contextsourcelist>
 
 	<description>
-		Install the basic things like /admin and /edit
+		Install the basic things like /admin and /edit, you need the jumpers-builder to be 
+        active before using this application. 
 	</description>
 
 	<install-notice>
