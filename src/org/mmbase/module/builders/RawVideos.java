@@ -26,6 +26,10 @@ import org.mmbase.util.*;
 public class RawVideos extends MMObjectBuilder {
  	public boolean replaceCache=true;
 
+	public RawVideos() {
+		// like rawaudios, has no contructor also
+	}
+/*
 	public RawVideos(MMBase m) {
 		this.mmb=m;
 		this.tableName="rawvideos";
@@ -40,10 +44,7 @@ public class RawVideos extends MMObjectBuilder {
 		}
 	}
 
-	
-	/**
-	* create a new object, normally not used (only subtables are used)
-	*/
+
 	public boolean create() {
 		// create the main object table
 		// informix
@@ -81,9 +82,6 @@ public class RawVideos extends MMObjectBuilder {
 	}
 
 
-	/**
-	* insert a new object, normally not used (only subtables are used)
-	*/
 	public int insert(String owner,MMObjectNode node) {
 		int id=node.getIntValue("id");
 		int status=node.getIntValue("status");
@@ -103,14 +101,14 @@ public class RawVideos extends MMObjectBuilder {
 						+cpu+"'");
 
 		// fast hack this should works because imports of wav are allways done
-		/*
 		if (status==1) {
 			CDTracks bul=(CDTracks)mmb.getMMObject("cdtracks");
 			bul.getTrack(id);
 		}	
-		*/
 		return(number);
 	}
+
+*/
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("number");
