@@ -241,7 +241,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	}
         //if all fields are inherited the field list can be empty
         if (fieldList == null){
-                fieldList="";
+            fieldList="";
         }
 	// create the sql statement...
 	String sql = "CREATE TABLE " + mmb.baseName+"_"+bul.getTableName() + "(" + fieldList + ") INHERITS ( " + mmb.baseName+"_"+getInheritTableName(bul)+" ) ;";	
@@ -297,41 +297,41 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	return false;
     }
 
-     private boolean isReferenceField(FieldDefs def, MMObjectBuilder bul) {
-         // only integer references the number table???
-         if(def.getDBType() == FieldDefs.TYPE_INTEGER) {
-             String fieldname = def.getDBName();
-             if(fieldname.equals("otype")) return true;
-             if(bul instanceof InsRel) {
-                 if(fieldname.equals("snumber")) return true;
-                 if(fieldname.equals("dnumber")) return true;
-                 if(fieldname.equals("rnumber")) return true;                
-             }
-             else if(bul instanceof org.mmbase.module.builders.ImageCaches) {
-                 if(fieldname.equals("id")) return true;
-             }
-             else if(bul instanceof OAlias) {
-                 if(fieldname.equals("destination")) return true;
-             }
-             else if(bul instanceof RelDef) {
-                 if(fieldname.equals("builder")) return true;
-             }
+    private boolean isReferenceField(FieldDefs def, MMObjectBuilder bul) {
+        // only integer references the number table???
+        if(def.getDBType() == FieldDefs.TYPE_INTEGER) {
+            String fieldname = def.getDBName();
+            if(fieldname.equals("otype")) return true;
+            if(bul instanceof InsRel) {
+                if(fieldname.equals("snumber")) return true;
+                if(fieldname.equals("dnumber")) return true;
+                if(fieldname.equals("rnumber")) return true;                
+            }
+            else if(bul instanceof org.mmbase.module.builders.ImageCaches) {
+                if(fieldname.equals("id")) return true;
+            }
+            else if(bul instanceof OAlias) {
+                if(fieldname.equals("destination")) return true;
+            }
+            else if(bul instanceof RelDef) {
+                if(fieldname.equals("builder")) return true;
+            }
             else if(bul.getTableName().equals("syncnodes")) {
-                 if(fieldname.equals("localnumber")) return true;
-             }
-             else if(bul instanceof TypeRel) {
-                 if(fieldname.equals("snumber")) return true;
-                 if(fieldname.equals("dnumber")) return true;
-                 if(fieldname.equals("rnumber")) return true;
-             }
-             // this are the core-builders from the NOS, maybe people 
-             // wanna add their builders. 
-             // THIS IS ONLY ALLOWED FOR CORE-BUIILDERS !!
-         }
-         return false;
+                if(fieldname.equals("localnumber")) return true;
+            }
+            else if(bul instanceof TypeRel) {
+                if(fieldname.equals("snumber")) return true;
+                if(fieldname.equals("dnumber")) return true;
+                if(fieldname.equals("rnumber")) return true;
+            }
+            // this are the core-builders from the NOS, maybe people 
+            // wanna add their builders. 
+            // THIS IS ONLY ALLOWED FOR CORE-BUIILDERS !!
+        }
+        return false;
     }
     
-     private String getDbFieldDef(FieldDefs def, MMObjectBuilder bul) {
+    private String getDbFieldDef(FieldDefs def, MMObjectBuilder bul) {
     	// create the creation line of one field...
     	// would be something like : fieldname FIELDTYPE NOT NULL KEY "
 	// first get our thingies...
@@ -351,31 +351,31 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	}
         if(fieldIsReferer) {
             /**
-             TODO: research if this code is better...
-             http://www.postgresql.org/idocs/index.php?inherit.html 
-             Jon Obuchowski <jon_obuchowski@terc.edu>
-             2001-11-05 15:03:25-05 Here's a manual method for implementing a foreign key constraint across inherited tables - instead of using the "references" syntax within the dependent table's "CREATE TABLE" statement, specify a custom "CHECK" constraint - this "CHECK" constraint can use the result of a stored procedure/function to verify the existence of a given value for a specific field of a specific table. 
-             note 1: I have performed no benchmarking on this approach, so YMMV. 
-             note 2: this does not implement the "cascade" aspect of foreign keys, but this may be done using triggers (this is more complex and not covered here). 
-             Here's the example (a table "foo" needs a foreign-key reference to the field "test_id" which is inherited across the tables "test", "test_1", "test_2", etc...) 
-             first, a simple function is needed to verify that a given value exists in a specific field "test_id" in a specific table "test" (or in any of this inherited tables). this function will return a boolean indicating that the value exists/does not exist in the table, as required by the "CHECK" constraint syntax. 
-             CREATE FUNCTION check_test_id (integer)
-             RETURNS boolean AS 'SELECT CASE WHEN (( SELECT COUNT(*) FROM test WHERE test.test_id = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean END;'
-             LANGUAGE 'sql'; 
-             now the dependent table can be created. it must include a constraint (in this case, "test_id_foreign_key") which will use the just-created function to verify the integrity of the field's new value.
-             CREATE TABLE foo
-             (
-             test_id INTEGER CONSTRAINT test_id_foreign_key CHECK (check_test_id(test_a.test_id)) ,
-             foo_val VARCHAR (255) NOT NULL
-             );
-             That's it!
-             A useful (if potentially slowly-performing) expansion of this approach would be to use a function able to dynamically perform an existence check for any value on any field in any table, using the field and table names, and the given value. This would ease maintenance by allowing any foreign-key using table to use a single function, instead of creating a custom function for each foreign key referenced.
-             */        
+               TODO: research if this code is better...
+               http://www.postgresql.org/idocs/index.php?inherit.html 
+               Jon Obuchowski <jon_obuchowski@terc.edu>
+               2001-11-05 15:03:25-05 Here's a manual method for implementing a foreign key constraint across inherited tables - instead of using the "references" syntax within the dependent table's "CREATE TABLE" statement, specify a custom "CHECK" constraint - this "CHECK" constraint can use the result of a stored procedure/function to verify the existence of a given value for a specific field of a specific table. 
+               note 1: I have performed no benchmarking on this approach, so YMMV. 
+               note 2: this does not implement the "cascade" aspect of foreign keys, but this may be done using triggers (this is more complex and not covered here). 
+               Here's the example (a table "foo" needs a foreign-key reference to the field "test_id" which is inherited across the tables "test", "test_1", "test_2", etc...) 
+               first, a simple function is needed to verify that a given value exists in a specific field "test_id" in a specific table "test" (or in any of this inherited tables). this function will return a boolean indicating that the value exists/does not exist in the table, as required by the "CHECK" constraint syntax. 
+               CREATE FUNCTION check_test_id (integer)
+               RETURNS boolean AS 'SELECT CASE WHEN (( SELECT COUNT(*) FROM test WHERE test.test_id = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean END;'
+               LANGUAGE 'sql'; 
+               now the dependent table can be created. it must include a constraint (in this case, "test_id_foreign_key") which will use the just-created function to verify the integrity of the field's new value.
+               CREATE TABLE foo
+               (
+               test_id INTEGER CONSTRAINT test_id_foreign_key CHECK (check_test_id(test_a.test_id)) ,
+               foo_val VARCHAR (255) NOT NULL
+               );
+               That's it!
+               A useful (if potentially slowly-performing) expansion of this approach would be to use a function able to dynamically perform an existence check for any value on any field in any table, using the field and table names, and the given value. This would ease maintenance by allowing any foreign-key using table to use a single function, instead of creating a custom function for each foreign key referenced.
+            */        
             // next line doesnt work due to ?bug? in postgresql with inhertitance
             // result += " REFERENCES " + mmb.baseName + "_object" + " ON DELETE CASCADE ";
         }
-         // add in comment the gui stuff... nicer when reviewing database..
-         result += "\t-- " + def.getGUIName("us")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.GUIType+"')\n";        
+        // add in comment the gui stuff... nicer when reviewing database..
+        result += "\t-- " + def.getGUIName("us")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.GUIType+"')\n";        
 	return result;
     }
     
@@ -510,9 +510,9 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) )  {
                     if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
-                    	setValuePreparedStatement( preStmt, node, key, j );
-		    	log.debug("we did set the value for field " + key + " with the number " + j );			
-                        j++;
+                    setValuePreparedStatement( preStmt, node, key, j );
+                    log.debug("we did set the value for field " + key + " with the number " + j );			
+                    j++;
                 } 
 		else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                     log.trace("insert(): DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
@@ -569,8 +569,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 		// add the values to our lists....
 		if(fieldNames == null) fieldNames = fieldName;
 		else fieldNames += ", " + fieldName;
-		    if(fieldValues == null) fieldValues = "?";
-		    else fieldValues += ", ?";				
+                if(fieldValues == null) fieldValues = "?";
+                else fieldValues += ", ?";				
             } 
 	    else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
             	log.trace("Insert: DBState = "+DBState+", skipping key: "+key);
@@ -595,46 +595,47 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     
     protected boolean setValuePreparedStatement(PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
     	switch(node.getDBType(key)) {
-	    case FieldDefs.TYPE_INTEGER:
-    	    	stmt.setInt(i, node.getIntValue(key));
-	    	log.debug("added integer for field with name: " + key + " with value: " + node.getIntValue(key));		    		    	
-		break;
-	    case FieldDefs.TYPE_FLOAT:
-		stmt.setFloat(i, node.getFloatValue(key));
-		log.debug("added float for field with name: " + key + " with value: " + node.getFloatValue(key));	    			
-		break;
-	    case FieldDefs.TYPE_DOUBLE:
-		stmt.setDouble(i, node.getDoubleValue(key));
-		log.debug("added double for field with name: " + key + " with value: " + node.getDoubleValue(key));
-		break;
-	    case FieldDefs.TYPE_LONG:
-		stmt.setLong(i, node.getLongValue(key));
-		log.debug("added long for field with name: " + key + " with value: " + node.getLongValue(key));		    
-		break;
-	    case FieldDefs.TYPE_STRING:
-		stmt.setString(i, node.getStringValue(key));
-		log.debug("added string for field with name: " + key + " with value: " + node.getStringValue(key));		    
-		break;		    
-	    case FieldDefs.TYPE_BYTE:
-		// arrg...
-                try {
-		    byte[] bytes = node.getByteValue(key);
-    	    	    java.io.InputStream stream=new java.io.ByteArrayInputStream(bytes);
-                    if (log.isDebugEnabled()) log.trace("in setDBByte ... before stmt");
-                    stmt.setBinaryStream(i, stream, bytes.length);
-                    if (log.isDebugEnabled()) log.trace("in setDBByte ... after stmt");
-    	    	    stream.close();
-		    log.debug("added bytes for field with name: " + key + " with with a length of #"+bytes.length+"bytes");
-                } catch (Exception e) {
-                    log.error("Can't set byte stream");
-                    log.error(Logging.stackTrace(e));
-                }
-		// was setDBByte(i, stmtstmt, node.getByteValue(key))
-		break;		
-	    default:
-		log.warn("unknown type for field with name : " + key);
-		log.debug("added string for field with name: " + key + " with value: " + node.getStringValue(key));		    
-		break;
+        case FieldDefs.TYPE_INTEGER:
+            stmt.setInt(i, node.getIntValue(key));
+            log.debug("added integer for field with name: " + key + " with value: " + node.getIntValue(key));		    		    	
+            break;
+        case FieldDefs.TYPE_FLOAT:
+            stmt.setFloat(i, node.getFloatValue(key));
+            log.debug("added float for field with name: " + key + " with value: " + node.getFloatValue(key));	    			
+            break;
+        case FieldDefs.TYPE_DOUBLE:
+            stmt.setDouble(i, node.getDoubleValue(key));
+            log.debug("added double for field with name: " + key + " with value: " + node.getDoubleValue(key));
+            break;
+        case FieldDefs.TYPE_LONG:
+            stmt.setLong(i, node.getLongValue(key));
+            log.debug("added long for field with name: " + key + " with value: " + node.getLongValue(key));		    
+            break;
+        case FieldDefs.TYPE_XML:
+        case FieldDefs.TYPE_STRING:
+            stmt.setString(i, node.getStringValue(key));
+            log.debug("added string for field with name: " + key + " with value: " + node.getStringValue(key));		    
+            break;		    
+        case FieldDefs.TYPE_BYTE:
+            // arrg...
+            try {
+                byte[] bytes = node.getByteValue(key);
+                java.io.InputStream stream=new java.io.ByteArrayInputStream(bytes);
+                if (log.isDebugEnabled()) log.trace("in setDBByte ... before stmt");
+                stmt.setBinaryStream(i, stream, bytes.length);
+                if (log.isDebugEnabled()) log.trace("in setDBByte ... after stmt");
+                stream.close();
+                log.debug("added bytes for field with name: " + key + " with with a length of #"+bytes.length+"bytes");
+            } catch (Exception e) {
+                log.error("Can't set byte stream");
+                log.error(Logging.stackTrace(e));
+            }
+            // was setDBByte(i, stmtstmt, node.getByteValue(key))
+            break;		
+        default:
+            log.warn("unknown type for field with name : " + key);
+            log.debug("added string for field with name: " + key + " with value: " + node.getStringValue(key));		    
+            break;
 	}
     	return true;
     }
@@ -649,35 +650,36 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	
 	try {
     	    switch (type) {
-    	    	case FieldDefs.TYPE_STRING:
-		    String tmp=rs.getString(i);
-    	    	    if (tmp==null) { 
-    	    	    	node.setValue(prefix+fieldname,"");
-    	    	    } 
-		    else {
-    	    	    	node.setValue(prefix+fieldname,tmp);
-    	    	    }
-    	    	    break;
-	    	case FieldDefs.TYPE_INTEGER:
-		    // node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
-		    node.setValue(prefix+fieldname, rs.getInt(i));
-    	    	    break;
-		case FieldDefs.TYPE_LONG:
-		    // node.setValue(prefix+fieldname,(Long)rs.getObject(i));		
-		    node.setValue(prefix+fieldname,rs.getLong(i));
-    	    	    break;
-		case FieldDefs.TYPE_FLOAT:
-		    // who does this now work ????
-    	    	    //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
-    	    	    node.setValue(prefix+fieldname, rs.getFloat(i));
-		    break;
-		case FieldDefs.TYPE_DOUBLE:
-    	    	    // node.setValue(prefix+fieldname,(Double)rs.getObject(i));
-		    node.setValue(prefix+fieldname, rs.getDouble(i));
-		    break;
-		case FieldDefs.TYPE_BYTE:
-		    node.setValue(prefix+fieldname,"$SHORTED");
-    	    	    break;
+            case FieldDefs.TYPE_XML:
+            case FieldDefs.TYPE_STRING:
+                String tmp=rs.getString(i);
+                if (tmp==null) { 
+                    node.setValue(prefix+fieldname,"");
+                } 
+                else {
+                    node.setValue(prefix+fieldname,tmp);
+                }
+                break;
+            case FieldDefs.TYPE_INTEGER:
+                // node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
+                node.setValue(prefix+fieldname, rs.getInt(i));
+                break;
+            case FieldDefs.TYPE_LONG:
+                // node.setValue(prefix+fieldname,(Long)rs.getObject(i));		
+                node.setValue(prefix+fieldname,rs.getLong(i));
+                break;
+            case FieldDefs.TYPE_FLOAT:
+                // who does this now work ????
+                //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
+                node.setValue(prefix+fieldname, rs.getFloat(i));
+                break;
+            case FieldDefs.TYPE_DOUBLE:
+                // node.setValue(prefix+fieldname,(Double)rs.getObject(i));
+                node.setValue(prefix+fieldname, rs.getDouble(i));
+                break;
+            case FieldDefs.TYPE_BYTE:
+                node.setValue(prefix+fieldname,"$SHORTED");
+                break;
 	    }
 	} 
 	catch(SQLException sqle) {
@@ -911,47 +913,47 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	    value=value.substring(pos+1,value.length()-1);
     	    like=true;
 	}
-    	if (dbtype==FieldDefs.TYPE_STRING) {
+    	if (dbtype==FieldDefs.TYPE_STRING || dbtype==FieldDefs.TYPE_XML) {
     	    switch (operatorChar) {
-    	    	case '=':
-		case 'E':
-		    // EQUAL
-    	    	    if (like) {	
-    	    	    	result+="lower("+fieldname+") LIKE '%"+value+"%'";
-		    } 
-		    else {
-    	    	    	result+="lower("+fieldname+") LIKE '%"+value+"%'";
-		    }
-		    break;
+            case '=':
+            case 'E':
+                // EQUAL
+                if (like) {	
+                    result+="lower("+fieldname+") LIKE '%"+value+"%'";
+                } 
+                else {
+                    result+="lower("+fieldname+") LIKE '%"+value+"%'";
+                }
+                break;
 	    }
 	} 
 	else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER) {
 	    switch (operatorChar) {
-    	    	case '=':
-		case 'E':
-		    // EQUAL
-    	    	    result+=fieldname+"="+value;
-		    break;
-		case 'N':
-		    // NOTEQUAL;
-    	    	    result+=fieldname+"<>"+value;
-		    break;
-		case 'G':
-		    // GREATER;
-    	    	    result+=fieldname+">"+value;
-		    break;
-		case 'g':
-		    // GREATEREQUAL;
-    	    	    result+=fieldname+">="+value;
-		    break;
-		case 'S':
-		    // SMALLER;
-    	    	    result+=fieldname+"<"+value;
-		    break;
-		case 's':
-		    // SMALLEREQUAL;
-    	    	    result+=fieldname+"<="+value;
-		    break;
+            case '=':
+            case 'E':
+                // EQUAL
+                result+=fieldname+"="+value;
+                break;
+            case 'N':
+                // NOTEQUAL;
+                result+=fieldname+"<>"+value;
+                break;
+            case 'G':
+                // GREATER;
+                result+=fieldname+">"+value;
+                break;
+            case 'g':
+                // GREATEREQUAL;
+                result+=fieldname+">="+value;
+                break;
+            case 'S':
+                // SMALLER;
+                result+=fieldname+"<"+value;
+                break;
+            case 's':
+                // SMALLEREQUAL;
+                result+=fieldname+"<="+value;
+                break;
 	    }
     	}
     	return result;
@@ -1120,7 +1122,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     /** 
      * Retrieves a new unique number, which can be used to inside _object table
      * @return a new unique number for new nodes or -1 on failure
-    */
+     */
     public int getDBKey() {        
     	MultiConnection con=null;
         Statement stmt=null;

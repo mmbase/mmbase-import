@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version $Id: MMSQL92Node.java,v 1.54 2002-02-19 19:39:00 michiel Exp $
+* @version $Id: MMSQL92Node.java,v 1.55 2002-02-22 12:26:24 michiel Exp $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -115,51 +115,51 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
         try {
 
-        // is this fieldname disallowed ? ifso map it back
-        if (allowed2disallowed.containsKey(fieldname)) {
-            fieldname=(String)allowed2disallowed.get(fieldname);
-        }
+            // is this fieldname disallowed ? ifso map it back
+            if (allowed2disallowed.containsKey(fieldname)) {
+                fieldname=(String)allowed2disallowed.get(fieldname);
+            }
 
 
-        int type=node.getDBType(prefix+fieldname);
-        switch (type) {
-            //case FieldDefs.TYPE_XML:
-        case FieldDefs.TYPE_STRING: {
-            // original:
-            //String tmp=rs.getString(i);
+            int type=node.getDBType(prefix+fieldname);
+            switch (type) {
+            case FieldDefs.TYPE_XML:
+            case FieldDefs.TYPE_STRING: {
+                // original:
+                //String tmp=rs.getString(i);
                                    
-            String tmp = null;
-            try {
-                tmp = new String(rs.getBytes(i), mmb.getEncoding());                
-            } catch (Exception e) {
-                log.error(e.toString());
+                String tmp = null;
+                try {
+                    tmp = new String(rs.getBytes(i), mmb.getEncoding());                
+                } catch (Exception e) {
+                    log.error(e.toString());
+                }
+                if (tmp==null) { 
+                    node.setValue(prefix+fieldname,"");
+                } else {
+                    node.setValue(prefix+fieldname,tmp);
+                }
+                break;
+            }            
+            case FieldDefs.TYPE_INTEGER:
+                node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
+                break;
+            case FieldDefs.TYPE_LONG:
+                node.setValue(prefix+fieldname,(Long)rs.getObject(i));
+                break;
+            case FieldDefs.TYPE_FLOAT:
+                // who does this now work ????
+                //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
+                node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
+                break;
+            case FieldDefs.TYPE_DOUBLE:
+                node.setValue(prefix+fieldname,(Double)rs.getObject(i));
+                break;
+            case FieldDefs.TYPE_BYTE:
+                node.setValue(prefix+fieldname,"$SHORTED");
+                break;
             }
-            if (tmp==null) { 
-                node.setValue(prefix+fieldname,"");
-            } else {
-                node.setValue(prefix+fieldname,tmp);
-            }
-            break;
-        }            
-        case FieldDefs.TYPE_INTEGER:
-            node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
-            break;
-        case FieldDefs.TYPE_LONG:
-            node.setValue(prefix+fieldname,(Long)rs.getObject(i));
-            break;
-        case FieldDefs.TYPE_FLOAT:
-            // who does this now work ????
-            //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
-            node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
-            break;
-        case FieldDefs.TYPE_DOUBLE:
-            node.setValue(prefix+fieldname,(Double)rs.getObject(i));
-            break;
-        case FieldDefs.TYPE_BYTE:
-            node.setValue(prefix+fieldname,"$SHORTED");
-            break;
-        }
-        return (node);
+            return (node);
         } catch(SQLException e) {
             log.error("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
             log.error(Logging.stackTrace(e));
@@ -218,7 +218,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             value=value.substring(pos+1,value.length()-1);
             like=true;
         }
-        if (dbtype==FieldDefs.TYPE_STRING/* || dbtype==FieldDefs.TYPE_XML*/) {
+        if (dbtype==FieldDefs.TYPE_STRING || dbtype==FieldDefs.TYPE_XML) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -310,7 +310,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         } else {
             MMObjectNode tn=mmb.getTypeDef().getNode(number);
             String stype=mmb.getTypeDef().getValue(tn.getIntValue("otype"));
-                byte[] result=readBytesFile(datapath+stype+"/"+number+"."+fieldname);
+            byte[] result=readBytesFile(datapath+stype+"/"+number+"."+fieldname);
             return result;
         }
         return null;
@@ -415,21 +415,21 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             String key = (String)e.nextElement();
             int DBState = node.getDBState(key);
             if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
-              || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+                 || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
                 if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", adding key: "+key);
 
-                    // hack for blobs to disk
-                    int dbtype=node.getDBType(key);
-                    if (!bdm || dbtype!=FieldDefs.TYPE_BYTE) {
-                        fieldAmounts+=",?";
-                    } else {
-                    }
+                // hack for blobs to disk
+                int dbtype=node.getDBType(key);
+                if (!bdm || dbtype!=FieldDefs.TYPE_BYTE) {
+                    fieldAmounts+=",?";
+                } else {
+                }
             } else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                 if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", skipping key: "+key);
             } else {
 
                 if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
-                        fieldAmounts+=",?";
+                    fieldAmounts+=",?";
                 } else {
                     log.error("Insert: DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
                 }
@@ -456,7 +456,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 String key = (String)e.nextElement();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
-                  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+                     || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
                     if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
                     if (setValuePreparedStatement( stmt, node, key, j )) j++;
 
@@ -478,8 +478,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         } catch (SQLException e) {
             log.error("Error on : "+number+" "+owner+" fake");
             try {
-            stmt.close();
-            con.close();
+                stmt.close();
+                con.close();
             } catch(Exception t2) {}
             log.error(Logging.stackTrace(e));
             return -1;
@@ -610,8 +610,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
         // create the prepared statement
         for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
-        String key=(String)e.nextElement();
-        // a extra check should be added to filter temp values
+            String key=(String)e.nextElement();
+            // a extra check should be added to filter temp values
             // like properties
 
             // is this key disallowed ? ifso map it back
@@ -688,8 +688,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         stmt.setLong(currentParameter,node.getLongValue(key));
                     } else if (type==FieldDefs.TYPE_STRING) {
                         setDBText(currentParameter,stmt,node.getStringValue(key));
-                        //} else if (type==FieldDefs.TYPE_XML) {
-                        //setDBText(currentParameter,stmt,node.getStringValue(key));
+                    } else if (type==FieldDefs.TYPE_XML) {
+                        setDBText(currentParameter,stmt,node.getStringValue(key));
                     } else if (type==FieldDefs.TYPE_BYTE) {
                         setDBByte(currentParameter,stmt,node.getByteValue(key));
                     } else {
@@ -867,7 +867,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.executeUpdate("update "+mmb.baseName+"_numberTable set "+getNumberString()+" = "+getNumberString()+"+1");
             ResultSet rs=stmt.executeQuery("select "+getNumberString()+" from "+mmb.baseName+"_numberTable;");
             while(rs.next()) {
-                        number=rs.getInt(1);
+                number=rs.getInt(1);
             }
             // not part of sql92, please find new trick (daniel)
             // stmt.executeUpdate("unlock tables;");
@@ -957,7 +957,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.setDouble(i, node.getDoubleValue(key));
         } else if (type==FieldDefs.TYPE_LONG) {
             stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING/* || type==FieldDefs.TYPE_XML*/) {
+        } else if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
                 setDBText(i, stmt,tmp);
@@ -965,20 +965,20 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 setDBText(i, stmt,"");
             }
         } else if (type==FieldDefs.TYPE_BYTE) {
-                if (!bdm) {
-                    setDBByte(i, stmt, node.getByteValue(key));
-                } else {
-                    String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
-                    File file = new File(datapath+stype);
-                    try {
-                        file.mkdirs();
-                    } catch(Exception e) {
-                        log.error("Can't create dir : "+datapath+stype);
-                    }
-                    byte[] value=node.getByteValue(key);
-                    saveFile(datapath+stype+"/"+node.getIntValue("number")+"."+key,value);
-                    return false;
+            if (!bdm) {
+                setDBByte(i, stmt, node.getByteValue(key));
+            } else {
+                String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));
+                File file = new File(datapath+stype);
+                try {
+                    file.mkdirs();
+                } catch(Exception e) {
+                    log.error("Can't create dir : "+datapath+stype);
                 }
+                byte[] value=node.getByteValue(key);
+                saveFile(datapath+stype+"/"+node.getIntValue("number")+"."+key,value);
+                return false;
+            }
         } else {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
@@ -1302,7 +1302,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             dTypeInfos  typs=(dTypeInfos)typeMapping.get(new Integer(type));
             if (typs!=null) {
                 for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
-                     dTypeInfo typ = (dTypeInfo)e.nextElement();
+                    dTypeInfo typ = (dTypeInfo)e.nextElement();
                     // needs smart mapping code
                     if (size==-1) {
                         result=typ.dbType;
@@ -1653,7 +1653,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         case FieldDefs.TYPE_BYTE:
                             setDBByte(dbpos,stmt2,new byte[0]);
                             break;
-                            //case FieldDefs.TYPE_XML:
+                        case FieldDefs.TYPE_XML:
                         case FieldDefs.TYPE_STRING:
                             setDBText(dbpos,stmt2,new String());
                             break;
@@ -1673,30 +1673,30 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     } else {
                         int type=def.getDBType();
                         switch (type) {
-                            case FieldDefs.TYPE_BYTE:
-                                setDBByte(dbpos,stmt2,(byte[])o);
-                                break;
-                                //case FieldDefs.TYPE_XML:
-                            case FieldDefs.TYPE_STRING:
-                                if (o instanceof byte[]) {
-                                    String s=new String((byte[])o);
-                                    setDBText(dbpos,stmt2,s);
-                                } else {
-                                    setDBText(dbpos,stmt2,o.toString());
-                                }
-                                break;
-                            case FieldDefs.TYPE_INTEGER:
-                                stmt2.setInt(dbpos,((Number)o).intValue());
-                                break;
-                            case FieldDefs.TYPE_DOUBLE:
-                                stmt2.setDouble(dbpos,((Number)o).doubleValue());
-                                break;
-                            case FieldDefs.TYPE_FLOAT:
-                                stmt2.setFloat(dbpos,((Number)o).floatValue());
-                                break;
-                            case FieldDefs.TYPE_LONG:
-                                stmt2.setLong(dbpos,((Number)o).longValue());
-                                break;
+                        case FieldDefs.TYPE_BYTE:
+                            setDBByte(dbpos,stmt2,(byte[])o);
+                            break;
+                        case FieldDefs.TYPE_XML:
+                        case FieldDefs.TYPE_STRING:
+                            if (o instanceof byte[]) {
+                                String s=new String((byte[])o);
+                                setDBText(dbpos,stmt2,s);
+                            } else {
+                                setDBText(dbpos,stmt2,o.toString());
+                            }
+                            break;
+                        case FieldDefs.TYPE_INTEGER:
+                            stmt2.setInt(dbpos,((Number)o).intValue());
+                            break;
+                        case FieldDefs.TYPE_DOUBLE:
+                            stmt2.setDouble(dbpos,((Number)o).doubleValue());
+                            break;
+                        case FieldDefs.TYPE_FLOAT:
+                            stmt2.setFloat(dbpos,((Number)o).floatValue());
+                            break;
+                        case FieldDefs.TYPE_LONG:
+                            stmt2.setLong(dbpos,((Number)o).longValue());
+                            break;
                         }
                     }
                 }
@@ -1725,5 +1725,5 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             return true;
         }
         return false;
-     }
+    }
 }
