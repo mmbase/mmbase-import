@@ -50,14 +50,20 @@
      <mm:import id="daycount_constraint1"> daycount <=  <mm:write referid="_search_form_minage" jspvar="min" vartype="integer"><%=(int)(System.currentTimeMillis()/(1000*60*60*24)) - min.intValue()%></mm:write></mm:import>
      <mm:listnodes type="daymarks" constraints="$daycount_constraint1" max="1" orderby="daycount" directions="DOWN">
         <mm:import id="minage_constraint"> number <= <mm:field name="mark" /></mm:import>
-     </mm:listnodes>  
+     </mm:listnodes>
+      <mm:notpresent referid="minage_constraint">
+       <mm:import id="minage_constraint">number < 0 </mm:import><!-- will not find a thing -->
+     </mm:notpresent>
   </mm:isnotempty>
   <mm:isnotempty referid="_search_form_maxage">
      <mm:remove referid="maxage_constraint" />
      <mm:import id="daycount_constraint2"> daycount <=  <mm:write referid="_search_form_maxage" jspvar="min" vartype="integer"><%=(int)(System.currentTimeMillis()/(1000*60*60*24)) - min.intValue()%></mm:write></mm:import>
      <mm:listnodes type="daymarks" constraints="$daycount_constraint2" max="1" orderby="daycount" directions="DOWN">
         <mm:import id="maxage_constraint"><mm:isnotempty referid="minage_constraint"> AND </mm:isnotempty> number >= <mm:field name="mark" /></mm:import>
-     </mm:listnodes>    
+     </mm:listnodes>
+     <mm:notpresent referid="maxage_constraint">
+       <mm:import id="maxage_constraint" /><!-- no contraint -->
+     </mm:notpresent>    
   </mm:isnotempty>
 
   <mm:import id="where"><mm:context><mm:fieldlist id="search_form" nodetype="$node_type" type="search"><mm:fieldinfo type="usesearchinput"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent><mm:write /></mm:isnotempty></mm:fieldinfo></mm:fieldlist><mm:write referid="minage_constraint"><mm:isnotempty><mm:present referid="notfirst"> AND <mm:import id="notfirst">yes</mm:import></mm:present><mm:write /></mm:isnotempty></mm:write><mm:write referid="maxage_constraint"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:write /></mm:isnotempty></mm:write></mm:context></mm:import>
