@@ -1,5 +1,5 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><%@page language="java" contentType="text/html; charset=UTF-8"
+<%@page language="java" contentType="text/html; charset=UTF-8"
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@include file="import.jsp"
 %><%@include file="settings.jsp"
 %><mm:content language="$language" postprocessor="reducespace">
@@ -10,35 +10,38 @@
 
 <mm:import id="fields">username,defaultcontext,status,owner</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
-<mm:import externid="search" />
-<mm:import id="nodetype">mmbaseusers</mm:import>
-
- <%@include file="you.div.jsp" %>
- <mm:import id="current">users</mm:import>
- <%@include file="navigate.div.jsp" %>
-
+  <mm:import externid="search" />
+  <mm:import id="nodetype">mmbaseusers</mm:import>
+  
+  <%@include file="you.div.jsp" %>
+  <mm:import id="current">users</mm:import>
+  <%@include file="navigate.div.jsp" %>
+  
    <p class="action">
-    <mm:maycreate type="mmbaseusers">
-     <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" title="create user"  /></a>
-    </mm:maycreate>
-    <mm:maycreate type="mmbaseusers" inverse="true">
-      You are not allowed to create new users.
-    </mm:maycreate>
+	 <mm:maycreate type="mmbaseusers">
+	   <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" title="create user"  /></a>
+	 </mm:maycreate>
+	 <mm:maycreate type="mmbaseusers" inverse="true">
+	   You are not allowed to create new users.
+	 </mm:maycreate>
    </p>
-
+   
    <%@include file="search.form.jsp" %>
 
    <table summary="Users">
-
+	 
    <mm:listnodescontainer type="$nodetype">
-
-    <mm:import externid="offset">0</mm:import>
-    <mm:offset value="$offset" />
-    <mm:maxnumber value="10" />
-    <%@include file="search.jsp" %>
-
-     <tr>
-       <th> </th>
+	 
+	 <mm:import externid="offset">0</mm:import>
+	 <mm:offset value="$offset" />
+	 <mm:maxnumber value="10" />
+	 <%@include file="search.jsp" %>
+	 
+	 <tr>
+       <th><mm:present referid="extrauserlink">
+          <mm:include  page="$extrauserlink" />
+         </mm:present>
+       </th>
        <th><%=m.getString("rank")%></th>
        <mm:fieldlist nodetype="$nodetype"  fields="$fields">
          <th>
@@ -51,10 +54,10 @@
                       </mm:compare>
                      <mm:compare value="DOWN">
                        <mm:param name="directions">UP</mm:param>
-                      </mm:compare>
-                   </mm:write>
+					 </mm:compare>
+				   </mm:write>
                  </mm:compare>
-               </mm:fieldinfo>                
+			   </mm:fieldinfo>                
                <mm:fieldlist  nodetype="mmbaseusers" fields="$fields"><mm:fieldinfo type="reusesearchinput" /></mm:fieldlist>
             </mm:url>' ><mm:fieldinfo type="guiname" /></a>
          </th>
