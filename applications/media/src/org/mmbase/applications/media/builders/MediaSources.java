@@ -19,9 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBaseContext;
 
-import org.mmbase.util.FileWatcher;
-import org.mmbase.util.StringObject;
-import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -45,11 +43,11 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.26 2004-02-24 09:28:07 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.27 2004-04-23 08:08:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(MediaSources.class);
+    private static final Logger log = Logging.getLoggerInstance(MediaSources.class);
     
     
     // typo check
@@ -62,12 +60,23 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_MIMETYPE       = "mimetype";
 
     
-    // Status
-    public final static int    STATE_DONE   = 3; // jikes
+    // Status (this should be helped by field-type project (resourcebundle/java-constants))
+    public final static int    STATE_DONE     = 3; // jikes
+    public final static int    STATE_SOURCE   = 4; // what does this mean?
+    public final static int    STATE_REMOVED = 10; // jikes
     public final static String STATES_RESOURCE = "org.mmbase.applications.media.builders.resources.states";
     
     public final static int MONO   = 1;
     public final static int STEREO = 2;
+
+    public static final String PUBLIC_ID_MIMEMAPPING_1_0 = "-//MMBase//DTD mimemapping config 1.0//EN";
+    public static final String DTD_MIMEMAPPING_1_0       = "mimemapping_1_0.dtd";
+    
+    
+    static {
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, MediaSources.class);
+    }
+
     
     
     private static Map mimeMapping = null;
@@ -475,7 +484,7 @@ public class MediaSources extends MMObjectBuilder {
             int dot = url.lastIndexOf('.');
             if (dot > 0) {
                 String extension = url.substring(dot + 1).toLowerCase();
-                log.service("format was unset, trying to autodetect by using 'url' field with extension '" + extension);
+                log.service("Format of was unset, trying to autodetect by using 'url' field '" + url + "' with extension '" + extension + "'");
                 node.setValue("format", Format.get(extension).toInt());
             }
         }
