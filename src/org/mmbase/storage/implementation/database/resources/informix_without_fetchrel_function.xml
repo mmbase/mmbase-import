@@ -68,6 +68,7 @@
 	<disallowed-fields >
 		<disallowed-field name="database" replacement="dtbs" />
 		<disallowed-field name="max" replacement="mmmax" />
+		<disallowed-field name="type" replacement="typ" />
 		<disallowed-field name="count" replacement="mmcount" />
 		<disallowed-field name="plus" replacement="mmplus" />
 		<disallowed-field name="minus" replacement="mmminus" />
