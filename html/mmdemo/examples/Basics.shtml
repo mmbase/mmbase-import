@@ -1,0 +1,19 @@
+<FORM ACTION="/mmadmin/examples.shtml" METHOD="POST">
+        <INPUT TYPE="hidden" NAME="SESSION-INSTALLED" VALUE="OKE">
+	<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+	<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMEXAMPLES">
+	<INPUT TYPE="hidden" NAME="PRC-CMD-INSTALL">
+This is not really a example of mmbase but installs some basic objects that are
+allmost allways needed and a few things to make live easy as jumpers to this page
+ and the editors.
+<BR>
+<BR>
+Objects added : 1 relation type : related, 2 jumpers (/edit and /admin)
+<BR>
+<BR>
+Select to install <INPUT TYPE="checkbox" NAME="PRC-VAR-NAME-Basics">  and  <INPUT TYPE="SUBMIT" VALUE="submit">
+<BR>
+<BR>
+Result / testing : The admin page : <A HREF="/admin" TARGET="admin">/admin</A> and the editors <A HREF="/edit" TARGET="edit">/edit</A>
+
+<FORM>
