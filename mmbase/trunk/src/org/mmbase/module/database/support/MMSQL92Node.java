@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.31 2000-07-18 12:27:49 install Exp $
+$Id: MMSQL92Node.java,v 1.32 2000-07-24 16:09:58 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.31  2000/07/18 12:27:49  install
+Rob:turned debug off
+
 Revision 1.30  2000/07/15 19:18:38  daniel
 Fixed a bug with new DBType
 
@@ -134,12 +137,12 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.31 $ $Date: 2000-07-18 12:27:49 $
+* @$Revision: 1.32 $ $Date: 2000-07-24 16:09:58 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	public String name="sql92";
 	XMLDatabaseReader parser;
@@ -442,10 +445,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			int DBState = node.getDBState(key);
 			if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 			  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-				// debug("Insert: DBState = "+DBState+", adding key: "+key);
+				if (debug) debug("Insert: DBState = "+DBState+", adding key: "+key);
 				fieldAmounts+=",?";
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-				// debug("Insert: DBState = "+DBState+", skipping key: "+key);
+				if (debug) debug("Insert: DBState = "+DBState+", skipping key: "+key);
 			} else {
 
                	if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
@@ -459,7 +462,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		MultiConnection con=null;
 		PreparedStatement stmt=null;
 		try {
-           // Create the DB statement with DBState values in mind.
+            // Prepare the statement using the amount of fields found.
+            debug("Insert: Preparing statement "+mmb.baseName+"_"+bul.tableName+" using fieldamount String: "+fieldAmounts);
 			con=bul.mmb.getConnection();
 			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+fieldAmounts+")");
 		} catch(Exception t) {
@@ -470,19 +474,17 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			// First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
 			stmt.setInt(1,number);
 
-            // Prepare the statement for the DB elements to the fieldAmounts String.
-            // debug("Insert: Preparing statement using fieldamount String: "+fieldAmounts);
 			int j=2;
 			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
 				String key = (String)e.nextElement();	
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 				  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-					// debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
+					debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
 					setValuePreparedStatement( stmt, node, key, j );
 					j++;
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+					debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
 				    if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						setValuePreparedStatement( stmt, node, key, j );
@@ -912,12 +914,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			for (Enumeration e=sfields.elements();e.hasMoreElements();) {
 				String name=(String)e.nextElement();
 				FieldDefs def=bul.getField(name);
-				String part=convertXMLType(def);
-				if (result==null) {
-					result=part;
-				} else {
-					result+=", "+part;
-				}	
+				if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
+					String part=convertXMLType(def);
+					if (result==null) {
+						result=part;
+					} else {
+						result+=", "+part;
+					}	
+				}
 			}
 		}
 		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
