@@ -23,12 +23,21 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.9 2002-09-05 10:51:41 eduard Exp $
+ * @version $Id: Verify.java,v 1.10 2002-09-06 07:39:34 eduard Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class.getName());
+    private java.util.Set adminBuilders = new java.util.HashSet();
 
     protected void load() {
+	adminBuilders.add("typedef");
+	adminBuilders.add("syncnodes");
+	adminBuilders.add("mmservers");
+	adminBuilders.add("icaches");
+	adminBuilders.add("versions");
+	adminBuilders.add("typerel");
+	adminBuilders.add("reldef");
+	adminBuilders.add("daymarks");
     }
 
     public void create(UserContext user, int nodeid) {
@@ -70,7 +79,7 @@ public class Verify extends Authorization {
 	String username = user.getIdentifier();
 	String builder = node.getName();
 	Rank rank = user.getRank();
-
+	
 	// which situation do we have? security or not security objects..
 	// onlything that we have to lookout for are:
 	//- we are creating a new user
@@ -84,15 +93,25 @@ public class Verify extends Authorization {
 	    // further nothing allowed, unless we are the admin..
 	    return rank == Rank.ADMIN;
 	}
+	else if(operation != Operation.CREATE && adminBuilders.contains(builder)) {
+	    // most core builders cant be used by basic users...
+	    return false;
+	}
 	else {
 	    // admin may do everything else..
 	    if(rank == Rank.ADMIN) return true;
 
-	    // if we want to create a new user, special rules apply..
 	    if(operation == Operation.CREATE) {
-		// only admin may create new users..
-		return !node.getStringValue("name").equals("mmbaseusers");
+		String buildername = node.getStringValue("name");
+		if(buildername.equals("mmbaseusers")) {
+		    return false;
+		}
+		else if (adminBuilders.contains(buildername)) {
+		    return false;
+		}
+		return true;
 	    }
+
 	    // change context and change node itselve only allowed for the owner...	    
 	    if(operation == Operation.WRITE || operation == Operation.CHANGECONTEXT || operation == Operation.DELETE) {
 		// look if this is a valid context...
