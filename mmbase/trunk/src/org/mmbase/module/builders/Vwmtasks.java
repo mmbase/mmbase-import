@@ -114,7 +114,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
 		Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
 		while(e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("VWMtasks -> Starting tasks "+node);
+			if (debug) System.out.println("VWMtasks -> Starting tasks "+node);
 			vwm=node.getStringValue("vwm");
 			task=node.getStringValue("task");
 			if (vwms!=null) vwms.putTask(vwm,node);
