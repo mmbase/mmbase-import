@@ -63,7 +63,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     public int doStartTag() throws JspTagException{
         if (getId() != null) { // look it up from session            
             log.debug("looking up transaction in session");
-            transaction = (Transaction) getObject(getId());
+            transaction = (Transaction) getContextTag().getObject(getId());
             log.debug("found " + transaction);
         }
         if (transaction == null) { // not found in context
@@ -73,7 +73,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             transaction = findCloudProvider().getCloudVar().getTransaction(name);
             if (getId() != null) { // put it in context
                 log.debug("putting transaction in context");
-                findContext().register(getId(), transaction);
+                getContextTag().register(getId(), transaction);
             }
         }
         pageContext.setAttribute(jspvar, transaction);
@@ -85,9 +85,10 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (commit) {
             ((Transaction) getCloudVar()).commit();
             if (getId() != null) {
-                findContext().unRegister(getId());
+                getContextTag().unRegister(getId());
             }
         }
+
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());            
             return SKIP_BODY;

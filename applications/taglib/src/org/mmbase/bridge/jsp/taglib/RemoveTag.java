@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
 public class RemoveTag extends ImportTag {
 
     public int doAfterBody() throws JspTagException{
-        findContext().unRegister(key);
+        getContextTag().unRegister(key);
         return SKIP_BODY;
     }
 
