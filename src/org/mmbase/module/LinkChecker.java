@@ -9,8 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+import java.io.IOException;
 import java.net.*;
-import java.util.*;
+import java.util.Enumeration;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -25,154 +26,154 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.14 2004-01-12 17:49:14 michiel Exp $
+ * @version $Id: LinkChecker.java,v 1.15 2004-02-13 13:36:43 pierre Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(LinkChecker.class);
+
+    private static long INITIAL_WAIT_TIME = 5 * 60 * 1000; // initial wait time after startup, default 5 minutes
+    private static long WAIT_TIME = 0; // wait time between runs, default 0 (don't wait but terminate)
+    private static long WAIT_TIME_BETWEEN_CHECKS = 5 * 1000; // wait time bewteen individual checks, default 5 seconds
+
     private MMBase mmbase;
-    private MMObjectBuilder urls;
-    private MMObjectBuilder jumpers;
-    private SendMailInterface sendmail;
 
     public void init() {
         super.init();
-        mmbase   = MMBase.getMMBase();
-        urls     = mmbase.getBuilder("urls");
-        jumpers  = mmbase.getBuilder("jumpers");
-        sendmail = (SendMailInterface) getModule("sendmail");
+        String value  = getInitParameter("waittime");
+        if (value!=null) {
+            try {
+                WAIT_TIME = Long.parseLong(value);
+            } catch (NumberFormatException nfe) {
+                log.warn("The value for property 'waittime'  (" + value + ") is not a valid number.");
+            }
+        }
+        value  = getInitParameter("initialwaittime");
+        if (value!=null) {
+            try {
+                INITIAL_WAIT_TIME = Long.parseLong(value);
+            } catch (NumberFormatException nfe) {
+                log.warn("The value for property 'initialwaittime'  (" + value + ") is not a valid number.");
+            }
+        }
+        value  = getInitParameter("waittimebetweenchecks");
+        if (value!=null) {
+            try {
+                WAIT_TIME_BETWEEN_CHECKS = Long.parseLong(value);
+            } catch (NumberFormatException nfe) {
+                log.warn("The value for property 'waittimebetweenchecks'  (" + value + ") is not a valid number.");
+            }
+        }
+
+        mmbase = MMBase.getMMBase();
         log.info("Module LinkChecker started");
         Thread thread = new Thread(this, "LinkChecker");
         thread.setDaemon(true);
         thread.start();
     }
 
-    public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException {
-        return null;
-    }
-
-    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
-        log.debug("CMDS=" + cmds);
-        log.debug("VARS=" + vars);
-        return  false;
-    }
-
-    public String replace(scanpage sp, String cmds) {
-        return "";
-    }
-
     public String getModuleInfo() {
-        return "This module checks all urls, Rob Vermeulen";
+        return "This module checks all urls in the urls and jumpers builders";
     }
-
-    public void maintainance() {}
 
     public void run() {
-        try {
-            Thread.sleep(300000);
-        } catch (Exception wait) {
-            return;
-        } //wait 5 minutes
-        log.service("LinkChecker starting to check all Jumpers and Urls");
-
-        // init variables for mail.
-        String from = getInitParameter("from");
-        String to = getInitParameter("to");
-        String subject = getInitParameter("subject");
-        if (subject == null || subject.equals("")) { 
-            subject = "List of incorrect urls and jumpers";
-        }
-
-        StringBuffer data = new StringBuffer();
-
-        try {
-            // Get the urls builder,  Jumper builder, and sendmail module.
-            if (urls == null) {
-                urls = mmbase.getBuilder("urls");
+        long waitTime = INITIAL_WAIT_TIME;  // wait a certain time after startup (default 5 minutes)
+        while (true) {
+            try {
+                Thread.sleep(waitTime);
+            } catch (InterruptedException ie) {
+                return;
             }
-            if (jumpers == null) {
-                jumpers = mmbase.getBuilder("jumpers");
-            }
-            if (sendmail == null) {
-                sendmail = (SendMailInterface) getModule("sendmail");
-            }
+            log.service("LinkChecker starting to check all Jumpers and Urls");
 
-            // Get all urls.
-            if (urls != null) {
-                Enumeration e = urls.search("");
-                while (e.hasMoreElements()) {
-                    MMObjectNode url = (MMObjectNode) e.nextElement();
-                    String number = "" + url.getValue("number");
-                    String theUrl = "" + url.getValue("url");
-                    // Check if an url is correct.
-                    if (!checkUrl(theUrl)) {
-                        data.append("Error in url " + theUrl + " (objectnumber=" + number + ")\n");
-                    }
-                    try {
-                        Thread.sleep(5000);
-                    } catch (Exception wait) {} //wait 5 seconds
-                }
-            }
-            // Get all jumpers.
-            if (jumpers != null) {
-                Enumeration e = jumpers.search("");
-                while (e.hasMoreElements()) {
-                    MMObjectNode jumper = (MMObjectNode) e.nextElement();
-                    String number = "" + jumper.getValue("number");
-                    String theUrl = "" + jumper.getValue("url");
-                    // Check if an jumper is correct.
-                    // only perform if the jumper contains http
-                    // we can't check the other jumpers
-                    if (theUrl.indexOf("http") != -1 && !checkUrl(theUrl)) {
-                        data.append("Error in jumper " + theUrl + " (objectnumber=" + number + ")\n");
-                    }
-                    try {
-                        Thread.sleep(5000);
-                    } catch (Exception wait) {} //wait 5 seconds
-                }
-            }
+            StringBuffer data = new StringBuffer();
+            checkUrls("urls", "url", data);
+            checkUrls("jumpers", "url", data);
 
-            // Send Email if needed.
-            if (!data.toString().equals("")) {
-                Mail mail = new Mail(to, from);
-                mail.setSubject(subject);
-                mail.setText(data.toString());
+            try {
+                SendMailInterface sendmail = (SendMailInterface) getModule("sendmail");
                 if (sendmail != null) {
-                    sendmail.sendMail(mail);
+                    // init variables for mail.
+                    String from = getInitParameter("from");
+                    String to = getInitParameter("to");
+                    String subject = getInitParameter("subject");
+                    if (subject == null || subject.equals("")) {
+                        subject = "List of incorrect urls and jumpers";
+                    }
+                    // Send Email if needed.
+                    if (!data.toString().equals("")) {
+                        Mail mail = new Mail(to, from);
+                        mail.setSubject(subject);
+                        mail.setText(data.toString());
+                        sendmail.sendMail(mail);
+                    }
                 } else {
                     log.warn("LinkChecker requires the sendmail module to be active");
                 }
+            } catch (RuntimeException re) {
+                log.error("LinkChecker -> Error in Run() " + re);
             }
-        } catch (Exception e) {
-            log.error("LinkChecker -> Error in Run() " + e);
+            // determine how log to wait next time 'round
+            // if 0, terminate
+            waitTime = WAIT_TIME;
+            if (waitTime == 0) {
+                log.debug("LinkChecker finished, thread terminated.");
+                return;
+            }
+       }
+    }
+
+    /**
+     * Checks if the urls in a specified builder exist.
+     * @param builderName the builder to check
+     * @param fieldName the fieldname of the url to check
+     * @param data the StringBuffer to append error information to
+     * @return false if the url does not exist
+     * @return true if the url exists
+     */
+    protected void checkUrls(String builderName, String fieldName, StringBuffer data) {
+        // Get all urls.
+        MMObjectBuilder urls = mmbase.getBuilder(builderName);
+        if (urls != null) {
+            Enumeration nodes = urls.search("");
+            while (nodes.hasMoreElements()) {
+                MMObjectNode node = (MMObjectNode) nodes.nextElement();
+                long number = node.getNumber();
+                String url = "" + node.getValue(fieldName);
+                // Check if an url is correct.
+                try {
+                    if (!checkUrl(url)) {
+                        data.append("Incorrect url: " + url + " (objectnumber: " + number + ")\n");
+                    }
+                } catch (MalformedURLException mue) {
+                    data.append("Error in url (malformed): " + url + " (objectnumber: " + number + ")\n");
+                } catch (IOException ioe) {
+                    data.append("Error in url (IO failure): " + url + " (objectnumber: " + number + ")\n");
+                } catch (RuntimeException re) {
+                    data.append("Error in url (unknown): " + url + " (objectnumber: " + number + ", error: "+re.getMessage()+")\n");
+                }
+                try {
+                    Thread.sleep(WAIT_TIME_BETWEEN_CHECKS);
+                } catch (InterruptedException ie) {} //wait 5 seconds
+            }
         }
     }
 
     /**
      * Checks if an url exists.
-     * @param the url to check
-     * @return false if the url does not exist
-     * @return true if the url exists
-     * @scope protected
+     * @param url the url to check
+     * @return <code>false</code> if the url does not exist, <code>true</code> if the url exists
      */
-    public boolean checkUrl(String url) {
-        URL urlToCheck;
-        URLConnection uc;
-        String header;
-
-        try {
-            urlToCheck = new URL(url);
-            uc = urlToCheck.openConnection();
-            header = uc.getHeaderField(0);
-            if (header.indexOf("404") != -1) { // hmm
-                return false;
-            }
-        } catch (Exception e) { 
-            // The hostname is incorrect, or the url does not contain the prefix http://
-            return false;
+    protected boolean checkUrl(String url) throws MalformedURLException, IOException {
+        if (url.indexOf("http") != -1 || url.indexOf("ftp") != -1) {
+            URL urlToCheck = new URL(url);
+            URLConnection uc = urlToCheck.openConnection();
+            String header = uc.getHeaderField(0);
+            return header.indexOf("404") == -1;
+        } else {
+            // I don't know if the url is wrong, so lets say it's correct.
+            return true;
         }
-        // I don't know if the url is wrong, so lets say it's correct.
-        return true;
     }
 }
