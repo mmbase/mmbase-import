@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.42 2004-11-11 16:46:02 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.43 2005-03-16 19:17:37 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -158,7 +158,6 @@ public class MMBaseContext {
         log.info("version           : " + org.mmbase.Version.get());
         Runtime rt = Runtime.getRuntime();
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
-        rt.gc();
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
         log.info("system locale     : " + Locale.getDefault());
         log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
