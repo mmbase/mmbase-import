@@ -33,16 +33,12 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.10 2003-05-06 22:48:14 kees Exp $
+ * @version $Id: DoveServlet.java,v 1.11 2004-03-16 14:37:28 michiel Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
     
-    //logger
-    private static Logger log;
-    
-    public void init() throws ServletException {
-        log = Logging.getLoggerInstance(DoveServlet.class.getName());
-    }
+    private static final Logger log =  Logging.getLoggerInstance(DoveServlet.class);
+
     /**
      * Handles a request using the GET method.
      * No communication is handled through GET - this method is for testing whether the servlet is online.
