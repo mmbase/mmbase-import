@@ -25,46 +25,6 @@ public class ImageCaches extends MMObjectBuilder {
 
 	
 
-	/**
-	* insert a new object, normally not used (only subtables are used)
-	*/
-	/*
-	public int insert(String owner,MMObjectNode node) {
-		String ckey=node.getStringValue("ckey");
-		int id=node.getIntValue("id");
-		byte[] handle=node.getByteValue("handle");
-		int filesize=node.getIntValue("filesize");
-
-		int number=getDBKey();
-		if (number==-1) return(-1);
-		MultiConnection con=mmb.getConnection();
-		try {
-			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values(?,?,?,?,?,?,?)");
-				stmt.setEscapeProcessing(false);
-				stmt.setInt(1,number);
-				stmt.setInt(2,oType);
-				stmt.setString(3,owner);
-				stmt.setString(4,ckey);
-				stmt.setInt(5,id);
-				mmb.getDatabase().setDBByte(6,stmt,handle);
-				stmt.setInt(7,filesize);
-				stmt.executeUpdate();
-				stmt.close();
-				con.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("ImageCaches -> Error on : "+number+" "+owner+" fake");
-			System.out.println("ImageCaches -> Forced database close");
-			try {
-			con.close();
-			
-			} catch(Exception f) {}
-			return(-1);
-		}
-		return(number);
-	}
-	*/
-
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("id");
 		if (num!=-1) {
@@ -88,21 +48,6 @@ public class ImageCaches extends MMObjectBuilder {
 			if (num!=-1) {
 				return("<IMG SRC=\"/img.db?"+num+"+s(100x60)\">");
 			}
-			/*
-			String val=node.getStringValue("handle");
-			if (val!=null) {
-				if (val.indexOf('I')==0) {
-					int num=node.getIntValue("number");
-					if (num!=-1) {
-						return("<IMG SRC=\"/img.db?"+node.getIntValue("number")+"+s(100x60)\">");
-					} else {
-						return("<IMG SRC=\"/img.db?"+val+"+s(100x60)\">");
-					}
-				} else {
-					return("<IMG SRC=\"/pictures.db?"+val+"+s(100x60)\">");
-				}	
-			}
-			*/
 		}
 		return(null);
 	}
@@ -122,9 +67,11 @@ public class ImageCaches extends MMObjectBuilder {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt2=con.createStatement();
-				ResultSet rs=stmt2.executeQuery("SELECT handle FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
+				ResultSet rs=stmt2.executeQuery("SELECT number FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
 				if (rs.next()) {
-					byte[] bytes=mmb.getDatabase().getDBByte(rs,1);
+					int number=rs.getInt(1);
+					MMObjectNode n2=getNode(number);
+					byte[] bytes=n2.getByteValue("handle");	
 					rtn=bytes;
 					if (rtn!=null && bytes.length<(100*1024)) handlecache.put(ckey,new ByteArray(rtn));
 				}
@@ -137,9 +84,7 @@ public class ImageCaches extends MMObjectBuilder {
 		} else {
 			rtn=b.getBytes();
 		}
-		if (rtn==null) {
-			if (debug) debug("getCkeyNode: empty array returned for ckey "+ckey);
-		}
+		if (debug && rtn==null) debug("getCkeyNode: empty array returned for ckey "+ckey);
 		return(rtn);
 	}
 
