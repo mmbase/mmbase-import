@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.15 2002-05-08 13:11:48 vpro Exp $
+ * @version $Id: MMFlash.java,v 1.16 2002-09-25 14:40:15 johannes Exp $
  */
 public class MMFlash extends Module {
 
@@ -63,22 +63,26 @@ public class MMFlash extends Module {
         // check if we may create a file on location of generatorTempPath
         File tempPath = new File(generatortemppath);
         if(!tempPath.isDirectory()) {
-            log.error("Generator Temp Path was not a direcory('"+generatorpath+generatorprogram+"'), please edit mmflash.xml, or create directory");                            
+            log.error("Generator Temp Path was not a direcory('" + generatortemppath + "'), please edit mmflash.xml, or create directory");
         }
         try {
             File test = File.createTempFile("flash", "test", tempPath);
-            test.deleteOnExit();
+            test.delete();
         } catch (Exception e) {
-            log.error("Could not create a temp file in directory:'"+generatortemppath+"' for flash, please edit mmflash.xml or change rights");                    
+            log.error("Could not create a temp file in directory:'" + generatortemppath + "' for flash, please edit mmflash.xml or change rights");
         }
+        if (!generatortemppath.endsWith(File.separator)) {
+            generatortemppath += File.separator;
+        }
+
         
         // check if there is a program on this location
         try {
-            (Runtime.getRuntime()).exec(generatorpath+generatorprogram);
+            (Runtime.getRuntime()).exec(generatorpath + generatorprogram);
         } catch (Exception e) {
-            log.error("Could not execute command:'"+generatorpath+generatorprogram+"' for flash, please edit mmflash.xml");                    
+            log.error("Could not execute command:'" + generatorpath+generatorprogram + "' for flash, please edit mmflash.xml");                    
         }
-        log.debug("Module MMFlash started (flash-generator='"+generatorpath+generatorprogram+"' and can be executed and tmpdir is checked)");                            
+        log.debug("Module MMFlash started (flash-generator='" + generatorpath + generatorprogram + "' and can be executed and tmpdir is checked)");
     }
 
     public void onload() {
@@ -87,7 +91,12 @@ public class MMFlash extends Module {
     public MMFlash() {
     }
 
-    public synchronized byte[] getDebugSwt(scanpage sp) {
+    /**
+    * Return the generated flash with debug information.<br>
+    * @param sp the scanpage that includes the parameters needed to generate the flash
+    * @return array of bytes containing the flash data
+    */
+    public byte[] getDebugSwt(scanpage sp) {
         String filename=htmlroot+sp.req.getRequestURI();
         byte[] bytes=generateSwtDebug(filename);
         return(bytes);
@@ -104,7 +113,7 @@ public class MMFlash extends Module {
     * @param sp scanpage
     * @return the dynamically generated flash or null when error occured
     */
-    public synchronized byte[] getScanParsedFlash(scanpage sp) {
+    public byte[] getScanParsedFlash(scanpage sp) {
 
         byte[] result = null;
 
@@ -155,6 +164,11 @@ public class MMFlash extends Module {
                 log.error("The scanparser cannot be found! Check scanparser.xml in config-directory!");
             }
 
+            File outputFile = createTemporaryFile("export", ".swf");
+            outputFile.delete();
+            Vector tempFiles = new Vector();
+            tempFiles.add(outputFile);
+
             // now feed it to the xml reader
             CharArrayReader         reader  = new CharArrayReader(sp.body.toCharArray());
             XMLDynamicFlashReader   script  = new XMLDynamicFlashReader(reader);
@@ -168,25 +182,59 @@ public class MMFlash extends Module {
                 src=purl+src;
                 body+="INPUT \""+htmlroot+src+"\"\n";
             }
-            body+="OUTPUT \""+generatortemppath+"export.swf\"\n";
+            body+="OUTPUT \"" + outputFile.getAbsolutePath() + "\"\n";
 
             String scriptpath=src;
             scriptpath=scriptpath.substring(0,scriptpath.lastIndexOf('/')+1);
 
-            body+=addDefines(script.getDefines(),scriptpath);
+            body+=addDefines(script.getDefines(),scriptpath,tempFiles);
             body+=addReplaces(script.getReplaces(),scriptpath);
 
-            saveFile(generatortemppath+"input.sws",body);    
-            generateFlash(scriptpath);
+            File inputFile = createTemporaryFile("input", ".sws");
+            inputFile.delete();
 
-            result =readBytesFile(generatortemppath+"export.swf");
+            tempFiles.add(inputFile);
+            saveFile(inputFile.getAbsolutePath(), body);
+
+            generateFlash(scriptpath, inputFile.getAbsolutePath());
+
+            result = readBytesFile(outputFile.getAbsolutePath());
             lru.put(url+query,result);
             saveDiskCache(filename,query,result);
+	    cleanup(tempFiles);
         } else { 
             // log.debug("cache hit"); 
         }   
-        /* WHAT ABOUT CLEANING UP THE MESS WE LEFT?? */
         return result;
+    }
+
+    /**
+     * This function cleans up the temporary files in the given vector
+     */
+    private void cleanup(Vector tempFiles) {
+        for (int i = 0; i < tempFiles.size(); i++) {
+            File tf = (File)tempFiles.get(i);
+            log.debug("Deleting temporary file " + tf.getAbsolutePath());
+            tf.delete();
+       }
+    }
+
+    /**
+     * Create a temporary file given the prefix and postfix
+     * @param postfix
+     * @param prefix
+     **/
+    private File createTemporaryFile(String prefix, String postfix) {
+       File tempFile = null;
+        try {
+           tempFile = File.createTempFile(prefix, postfix, new File(generatortemppath));
+       } catch (IOException e) {
+           log.warn("Cannot create temporary file using File.createTempFile(), falling back to Las-Vegas method");
+           while (tempFile == null || tempFile.exists()) {
+               tempFile = new File(generatortemppath + prefix + (new Random()).nextLong() + postfix);
+            }
+       }
+       return tempFile;
     }
 
     /**
@@ -199,7 +247,7 @@ public class MMFlash extends Module {
      *                        other things, like pictures.(THIS LOOKS BELOW THE mmbase.htmlroot !!)
      * @return              a byte thingie, which contains the newly generated flash file
      */
-    public synchronized byte[] getParsedFlash(String flashXML, String workingdir) {
+    public byte[] getParsedFlash(String flashXML, String workingdir) {
         CharArrayReader reader=new CharArrayReader(flashXML.toCharArray());
         XMLDynamicFlashReader script=new XMLDynamicFlashReader(reader);
         String body="";
@@ -239,24 +287,33 @@ public class MMFlash extends Module {
             }
         } 
 
-            // hey ho, generate our template..
+        File outputFile = createTemporaryFile("export", ".swf");
+        outputFile.delete();
+
+        Vector tempFiles = new Vector();
+        tempFiles.add(outputFile);
+
+        // hey ho, generate our template..
         body+="INPUT \""+inputFile.getAbsolutePath()+"\"\n";
-        body+="OUTPUT \""+generatortemppath+"export.swf\"\n";
+        body+="OUTPUT \""+outputFile.getAbsolutePath()+"\"\n";
 
         String scriptpath=src;
         scriptpath=scriptpath.substring(0,scriptpath.lastIndexOf('/')+1);
 
-        body+=addDefines(script.getDefines(),scriptpath);
+        body+=addDefines(script.getDefines(),scriptpath,tempFiles);
         body+=addReplaces(script.getReplaces(),scriptpath);
 
         // save the created input file for the generator
-        saveFile(generatortemppath+"input.sws",body);    
+        File genInputFile = createTemporaryFile("input", ".sws");
+        genInputFile.delete();
+        tempFiles.add(genInputFile);
+        saveFile(genInputFile.getAbsolutePath(), body); 
 
         // lets generate the file
-        generateFlash(scriptpath);
+        generateFlash(scriptpath, genInputFile.getAbsolutePath());
 
         // retrieve the result of the genererator..
-        byte[] bytes=readBytesFile(generatortemppath+"export.swf");
+        byte[] bytes=readBytesFile(outputFile.getAbsolutePath());
 
         // store the flash in cache, when needed...
         if (caching!=null && (caching.equals("lru")|| caching.equals("disk")) ) {
@@ -265,9 +322,15 @@ public class MMFlash extends Module {
                     saveDiskCache(src, flashXML, bytes);
             }
         }     
+        cleanup(tempFiles);
         return(bytes);
     }
 
+    /**
+     * Generate text to add to the swift-genertor input file. This text specifies
+     * how the flash should be manipulated. It allows replacements of colors, 
+     * fontsizes, etc.
+     */
     private String addReplaces(Vector replaces, String scriptpath) {
         String part="";
         for (Enumeration e=replaces.elements();e.hasMoreElements();) {
@@ -350,8 +413,16 @@ public class MMFlash extends Module {
         return(part);
     }
 
-
-    private String addDefines(Vector defines,String scriptpath) {
+    /**
+     * Add all defined media files (sound, images, etc.) to the text
+     * that is used for the swift-generator. Images that come from inside
+     * MMBase are saved to disk using temporary files that are deleted when
+     * generation is finished
+     * @param defines
+     * @param scriptpath
+     * @param tempFiles Vector where all the temporary files are put into.
+     */
+    private String addDefines(Vector defines,String scriptpath,Vector tempFiles) {
         String part="";
         int counter=1;
         for (Enumeration e=defines.elements();e.hasMoreElements();) {
@@ -368,7 +439,7 @@ public class MMFlash extends Module {
                 String src=(String)rep.get("src");
                 if (src!=null) {
                     if (src.startsWith("/img.db?")) {
-                        String result=mapImage(src.substring(8),counter++);
+                        String result=mapImage(src.substring(8),tempFiles);
                         part+=" \""+result+"\"";
                     } else if (src.startsWith("/")) {
                         part+=" \""+htmlroot+src+"\"";
@@ -480,7 +551,6 @@ public class MMFlash extends Module {
             s+=e.toString();
             out.print(s);
         }
-        log.debug("Executed command: "+command+" succesfull, now gonna parse");                                    
         log.info("Executed command: "+command+" succesfull, now gonna parse");                                    
         dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
         byte[] result=new byte[32000];
@@ -513,7 +583,12 @@ public class MMFlash extends Module {
         return(result);
     }
 
-    private void generateFlash(String scriptpath) {    
+    /**
+     * Generate a flash file for a given input filename
+     * @param scriptpath Unused parameter
+     * @param inputfile File to generate flash for
+     */
+    private void generateFlash(String scriptpath, String inputfile) {    
         Process p=null;
         String s="",tmp="";
         DataInputStream dip= null;
@@ -523,7 +598,7 @@ public class MMFlash extends Module {
         RandomAccessFile  dos=null;    
 
         try {
-            command=generatorpath+generatorprogram+" "+generatortemppath+"input.sws";
+            command=generatorpath+generatorprogram+" "+inputfile;
             p = (Runtime.getRuntime()).exec(command);
         } catch (Exception e) {
             log.error("could not execute command:'"+command+"'");                    
@@ -558,6 +633,12 @@ public class MMFlash extends Module {
         }
     }
 
+    /**
+     * Save a stringvalue to a file on the filesystem
+     * @param filename File to save the stringvalue to
+     * @param value Value to save to disk
+     * @return Boolean indicating succes
+     */
     static boolean saveFile(String filename,String value) {
         File sfile = new File(filename);
         try {
@@ -565,11 +646,12 @@ public class MMFlash extends Module {
             scan.writeBytes(value);
             scan.flush();
             scan.close();
+	    return true;
         } catch(Exception e) {
             log.error("Could not write values to file:" +filename+ " with value" + value);        
             e.printStackTrace();
+	    return false;
         }
-        return(true);
     }
 
     private boolean saveDiskCache(String filename,String query,byte[] value) {
@@ -580,9 +662,9 @@ public class MMFlash extends Module {
 
         if (subdir!=null && !subdir.equals("")) {
             int pos=filename.lastIndexOf('/');
-            filename=filename.substring(0,pos)+"/"+subdir+filename.substring(pos);
+            filename=filename.substring(0,pos)+File.separator+subdir+filename.substring(pos);
             // Create dir if it doesn't exist
-            File d=new File(filename.substring(0,pos)+"/"+subdir);
+            File d=new File(filename.substring(0,pos)+File.separator+subdir);
             if (!d.exists()) {
                 d.mkdir();
             }
@@ -604,7 +686,13 @@ public class MMFlash extends Module {
         return(true);
     }
     
-    String mapImage(String imageline,int counter) {
+    /**
+     * Get an image from MMBase given a list of parameters, and save it to disk
+     * @param imageline The image number with it's manipulations (eg: 34235+s(50))
+     * @param tempFiles The vector to put temporary files in
+     * @return The complete path to the image
+     */
+    private String mapImage(String imageline, Vector tempFiles) {
         Images bul=(Images)mmb.getMMObject("images");
         Vector params=new Vector();
         if (bul!=null) {
@@ -615,13 +703,23 @@ public class MMFlash extends Module {
                 params.addElement(tok.nextToken());
                 scanpage sp=new scanpage();
                 byte[] bytes=bul.getImageBytes(sp,params);
-                saveFile(generatortemppath+"/image"+counter+".jpg",bytes);
+                File tempFile = createTemporaryFile("image", ".jpg");
+                saveFile(tempFile.getAbsolutePath(), bytes);
+                tempFiles.add(tempFile);
+                return tempFile.getAbsolutePath();
             }
+        } else {
+            log.error("Cannot locate images builder, make sure you activated it!");
         }
-        return(generatortemppath+"/image"+counter+".jpg");
+	return "";
     }
 
-
+    /**
+     * Save a byte-array to disk
+     * @param filename The name of the file to save the data to
+     * @param value The byte-array containing the data for the file
+     * @return Boolean indicating the success of the operation
+     */
     static boolean saveFile(String filename,byte[] value) {
         File sfile = new File(filename);
         try {
@@ -629,21 +727,22 @@ public class MMFlash extends Module {
             scan.write(value);
             scan.flush();
             scan.close();
+            return true;
         } catch(Exception e) {
             log.error("Could not save to file:"+filename);                            
             log.error(Logging.stackTrace(e));
+            return false;
         }
-        return(true);
     }
 
     /**
      * Escape quotes in a string, because flash generator will fail otherwise
+     * @param unquoted The string with quotes (") in it
+     * @return The string where all quotes are escaped as \"
      */
     String replaceQuote(String unquoted) {
-        log.debug("Starting to replace a quote ... ");
         StringObject so = new StringObject(unquoted);
         so.replace("\"", "\\\"");
-        log.debug("Finished ...");
         return so.toString();
     }
 }
