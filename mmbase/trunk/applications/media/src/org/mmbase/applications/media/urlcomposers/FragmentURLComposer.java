@@ -28,6 +28,13 @@ abstract public class FragmentURLComposer extends URLComposer  {
 
     public FragmentURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
         super(provider, source, info, cacheExpireObjects);
+
+	 synchronized (cacheExpireObjects) {
+                if (!cacheExpireObjects.contains(fragment)) {
+                        cacheExpireObjects.add(fragment);
+                }
+        }
+
         this.fragment = fragment;
     }
 
