@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.45 2001-05-17 17:22:14 daniel Exp $
+$Id: scanparser.java,v 1.46 2001-06-23 16:18:57 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.45  2001/05/17 17:22:14  daniel
+fixed a bug in do_part to allow background generating
+
 Revision 1.44  2001/03/29 22:41:10  daniel
 added page crc support
 
@@ -158,7 +161,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.45 $ $Date: 2001-05-17 17:22:14 $
+ * @$Revision: 1.46 $ $Date: 2001-06-23 16:18:57 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -187,7 +190,7 @@ public class scanparser extends ProcessorModule {
 
 
 	public scanparser() {
-		documentRoot=System.getProperty("mmbase.htmlroot");
+		documentRoot=MMBaseContext.getHtmlRoot();
 		if (documentRoot==null) {
 			String dtmp=System.getProperty("mmbase.mode");
 			if (dtmp!=null && dtmp.equals("demo")) {
