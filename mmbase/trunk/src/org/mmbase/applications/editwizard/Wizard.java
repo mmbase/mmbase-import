@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.33 2002-06-26 12:08:22 pierre Exp $
+ * @version $Id: Wizard.java,v 1.34 2002-06-27 15:45:17 pierre Exp $
  *
  */
 public class Wizard {
@@ -693,7 +693,8 @@ public class Wizard {
      * This method resolves the includes (and extends) in a wizard. It searches for include="" attributes, and searches for extends="" attributes.
      * Include means: the file is loaded (uses the path and assumes it references from the basepath param, and the referenced node
      * is placed 'over' the existing node. Attributes are copied also. Any content in the original node is removed.
-     * Extends means: same as include, but now, the original content is not thrown away, and the nodes are placed after the included node.
+     * Extends means: same as include, but now, the original content is not thrown away, and the nodes are placed after the included node.<br />
+     * Note: this does not work with teh wizard-schema, and only ADDS objects when overriding (it does not replace them)
      *
      * This method is a recursive one. Included files are also scanned again for includes.
      *
@@ -761,6 +762,7 @@ public class Wizard {
                     // Remove the refering node.
                     parent.removeChild(referer);
                 } catch (RuntimeException e){
+                    log.error(Logging.stackTrace(e));
                     throw new WizardException("Error resolving external part '" + includeUrl + "'");
                 }
             }
