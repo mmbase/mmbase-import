@@ -21,19 +21,50 @@ public class InvalidDataException extends Exception {
     private String invalidField=null;
 	
 	/**
-	 * Create the exception.
- 	 */
-	public InvalidDataException() {
-	}
-	
-	/**
-	 * Create the exception.
+     * Constructs a <code>InvalidDataException</code> with <code>null</code> as its
+     * message.
 	 * @param message a description of the exception
  	 */
-	public InvalidDataException (String message) {
-		super(message);
+	public InvalidDataException () {
+		super();
 	}
 	
+    
+    /**
+     * Constructs a <code>InvalidDataException</code> with the specified detail
+     * message.
+     *
+     * @param message a description of the error
+     */
+    public InvalidDataException(String message) {
+        super(message);
+    }
+
+    /**
+     * Constructs a <code>InvalidDataException</code> with the detail
+     * message of the original exception.
+     * The cause can be retrieved with getCause().
+     *
+     * @param Throwable the cause of the error
+     * @since  MMBase-1.7
+     */
+    public InvalidDataException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a <code>InvalidDataException</code> with the detail
+     * message of the original exception.
+     * The cause can be retrieved with getCause().
+     *
+     * @param message a description of the error
+     * @param Throwable the cause of the error
+     * @since  MMBase-1.7
+     */
+    public InvalidDataException(String message, Throwable cause) {
+        super(message,cause);
+    }
+
 	/**
 	 * Create the exception.
 	 * @param message a description of the exception

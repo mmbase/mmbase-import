@@ -14,11 +14,9 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.3 2003-08-28 15:31:13 pierre Exp $
+ * @version $Id: StorageException.java,v 1.4 2003-08-28 16:00:24 pierre Exp $
  */
 public class StorageException extends Exception {
-
-    private Throwable cause=null;
 
     /**
      * Constructs a <code>StorageException</code> with <code>null</code> as its

@@ -13,11 +13,9 @@ package org.mmbase.bridge;
  * This exception gets thrown when something goes wrong on the MMCI.
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeException.java,v 1.12 2003-08-28 15:31:12 pierre Exp $
+ * @version $Id: BridgeException.java,v 1.13 2003-08-28 16:00:24 pierre Exp $
  */
 public class BridgeException extends RuntimeException {
-
-    private Throwable cause=null;
 
     /**
      * Constructs a <code>BridgeException</code> with <code>null</code> as its
