@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.36 2004-01-09 18:54:26 keesj Exp $
+ * @version $Id: MultiPool.java,v 1.37 2004-01-13 12:23:46 michiel Exp $
  */
 public class MultiPool {
 
@@ -185,10 +185,10 @@ public class MultiPool {
                 }
 
                 if (diff < 30) {
-
+                    // ok, just wait
                 } else if (diff < 120) {
                     // between 30 and 120 we putback 'zero' connections
-                    if (con.lastSql==null || con.lastSql.length()==0) {
+                    if (con.lastSql == null || con.lastSql.length() == 0) {
                         log.warn("null connection putBack");
                         pool.add(con);
                         releasecount++;
@@ -197,12 +197,10 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newcon = null;
-                    log.warn("KILLED SQL " + con.lastSql + " after " + diff + " seconds, because it took too long");
+                    log.warn("WILL KILL SQL " + con.lastSql + " after " + diff + " seconds, because it took too long");
                     try {
+                        // get a new connection to replace this one
                         newcon = getMultiConnection();
-                        if (log.isDebugEnabled()) {
-                            log.debug("WOW added JDBC connection now ("+pool.size()+")");
-                        }
                     } catch(SQLException e) {
                         log.error("ERROR Can't add connection to pool " + e.toString());
                     }
@@ -211,14 +209,15 @@ public class MultiPool {
                         releasecount++;
                     }
                     i.remove();
-                    // we close connections in a seperate thread, for those broken JDBC drivers out there
+                    // we close connections in a seperate thread, for those broken JDBC drivers out there                    
+                    con.markedClosed = true;
                     new ConnectionCloser(con);
                 }
             }
 
             if ((busyPool.size() + pool.size()) != conMax) {
                 // cannot happen, I hope...
-                log.error("Number of connections is not correct: "+ (busyPool.size()+pool.size()) + " != " + conMax);
+                log.error("Number of connections is not correct: " + busyPool.size() + " + " + pool.size () + " = " + (busyPool.size() + pool.size()) + " != " + conMax);
                 // Check if there are dups in the pools
                 for(Iterator i = busyPool.iterator(); i.hasNext();) {
                     MultiConnection bcon = (MultiConnection) i.next();
@@ -273,14 +272,16 @@ public class MultiPool {
     public void putBack(MultiConnection con) {
         // Don't put back bad connections;
         try {
-            if (con.isClosed()) return;
+            if (con.isClosed() || con.markedClosed) {
+                return;
+            }
         } catch (SQLException e) {
             return;
         }
         //see comment in method checkTime()
         synchronized (semaphore) {
             if (! busyPool.contains(con)) {
-                log.warn("Put back connection was not in busyPool!!");
+                log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
             }
 
             con.release(); //Resets time connection is busy.
@@ -368,12 +369,12 @@ public class MultiPool {
         Statement statement;
         boolean rtn;
         try {
-            statement=conn.createStatement();
+            statement = conn.createStatement();
             statement.executeQuery("select count(*) from systables");
             statement.close();
-            rtn=true;
+            rtn = true;
         } catch (Exception e) {
-            rtn=false;
+            rtn = false;
             log.error("checkConnection failed");
             log.error(Logging.stackTrace(e));
         }
@@ -385,40 +386,38 @@ public class MultiPool {
      * Support class to close connections in a seperate thread, as some JDBC drivers
      * have a tendency to hang themselves on a runing sql close.
      */
-    class ConnectionCloser implements Runnable {
+    static class ConnectionCloser implements Runnable {
+        private static final Logger log = Logging.getLoggerInstance(ConnectionCloser.class);
+
         private MultiConnection connection;
 
-        private Thread kicker = null;
-
         public ConnectionCloser(MultiConnection con) {
-            connection=con;
+            connection = con;
             start();
         }
 
         /**
-         * Starts the Thread.
+         * Starts a Thread and runs this Runnable
          */
-        public void start() {
-            /* Start up the main thread */
-            if (kicker == null) {
-                kicker = new Thread(this, "ConnectionCloser");
-                kicker.setDaemon(true);
-                kicker.start();
-            }
+        protected void start() {
+            // Start up the thread
+            Thread kicker = new Thread(this, "ConnectionCloser");
+            kicker.setDaemon(true);
+            // MM: why is is a daemon thread. Can run() actually hang? That would be bad!
+            kicker.start();
         }
 
         /**
          * Close the database connection.
          */
         public void run() {
-            log.warn("Closing "+connection);
+            log.warn("Closing " + connection);
             try {
                 connection.realclose();
             } catch(Exception re) {
-                log.error("Can't close a connection !!!");
-                log.error(re);
+                log.error("Can't close a connection !!!" + re);
             }
-            log.warn("Closed  "+connection);
+            log.warn("Closed  " + connection);
         }
     }
 }
