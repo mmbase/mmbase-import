@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.22 2003-07-18 14:54:42 michiel Exp $
+ * @version $Id: Logging.java,v 1.23 2003-09-10 14:57:31 michiel Exp $
  */
 
 
@@ -285,9 +285,21 @@ public class Logging {
      *
      **/
     public static String stackTrace(Throwable e) {
-        java.io.ByteArrayOutputStream stream =  new java.io.ByteArrayOutputStream();
-        e.printStackTrace(new java.io.PrintStream(stream));
-        return stream.toString();
+        return stackTrace(e, -1);
+    } 
+
+    /**
+     * Also returns a stringified stack trace to log, but no deeper than given max.
+     * @since MMBase-1.7
+     */
+    public static String stackTrace(Throwable e, int max) {
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < stackTrace.length; i++) {
+            if (i == max) break;
+            buf.append("\n        at ").append(stackTrace[i]);
+        }
+        return buf.toString();
     } 
 
 }
