@@ -9,24 +9,37 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
+import java.util.StringTokenizer;
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.Enumeration;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 
-import org.mmbase.module.corebuilders.*;
+import org.apache.xerces.parsers.DOMParser;
 
-import org.mmbase.util.logging.*; 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger; 
 
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: XMLBasicReader.java,v 1.8 2001-05-18 11:46:14 daniel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.9 2001-07-09 19:24:07 eduard Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2001/05/18 11:46:14  daniel
+ * Added printout of filename on error
+ *
  * Revision 1.7  2001/03/23 11:07:16  vpro
  * Enhanced error message
  * CV: ----------------------------------------------------------------------
@@ -43,35 +56,74 @@ import org.mmbase.util.logging.*;
  *
  */
 public class XMLBasicReader  {
-
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
 
+    /** for the document builder of javax.xml. */
+    private static DocumentBuilder documentBuilder = null;
+    /** set this one to true, and parser will be loaded...  */   
+    private static boolean useJavaxXML = false;    
+    /** set this one to true, when all document pars */
+    private static boolean validateJavaxXML = true;
+    
     Document document;
-    DOMParser parser;
+    Hashtable 	languageList; // Hashtable from languagecode to Hashtables with dictionaries
 
-    Hashtable languageList; // Hashtable from languagecode to Hashtables with dictionaries
-
-    String languagecode;  // code for language, e.g. 'nl'
-    Hashtable dictionary; // dictionary of mmbase term identifiers to translations in language
-    String loadedfile;
-
+    String  	languagecode;  // code for language, e.g. 'nl'
+    Hashtable 	dictionary; // dictionary of mmbase term identifiers to translations in language
+    String  	loadedfile;
 
     public XMLBasicReader(String path) {
         try {
-            parser = new DOMParser();
-            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-            EntityResolver resolver = new XMLEntityResolver();
-            parser.setEntityResolver(resolver);
-	    path="file:///"+path;
-	    loadedfile=path; // save for debug
-            parser.parse(path);
-            document = parser.getDocument();
-		
-        } catch(Exception e) {
+// SHOULD THIS CODE BE UNCOMMENTED? I DIDNT DARE TO DO IT
+// IF SOMEONE DOES, PLEASE DO SO...  
+//    	    if(useJavaxXML) {
+//            	document = getDocumentBuilder().parse(path);
+//	    }
+//    	    else {
+            	DOMParser parser = new DOMParser();
+            	parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
+            	parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+            	EntityResolver resolver = new XMLEntityResolver();
+            	parser.setEntityResolver(resolver);
+	    	path="file:///"+path;
+	    	loadedfile=path; // save for debug
+            	parser.parse(path);
+            	document = parser.getDocument();
+//	    }
+        } 
+	catch(Exception e) {
             e.printStackTrace();
         }
     }
+
+    public static javax.xml.parsers.DocumentBuilder getDocumentBuilder() {
+    	// if we already had one, return this one...
+    	if(documentBuilder!=null) return documentBuilder;
+	log.debug("gonna retrieve a new documentBuilder");
+    	try {	    	
+	    // get a new one...
+    	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+    	    // turn validating on..    	 
+    	    dfactory.setValidating(validateJavaxXML);
+	    
+	    documentBuilder = dfactory.newDocumentBuilder();
+	    
+            EntityResolver resolver = new XMLEntityResolver();
+            documentBuilder.setEntityResolver(resolver);
+	    ErrorHandler handler = new XMLErrorHandler();
+            documentBuilder.setErrorHandler(handler);
+	    String msg = "The dtd's will ";
+	    if(!documentBuilder.isValidating()) msg += "NOT ";
+	    msg += " validated";
+	    log.debug(msg);
+    	}
+	catch(ParserConfigurationException pce) {
+	    log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
+	    log.error(Logging.stackTrace(pce));
+	    return null;
+	}			
+	return documentBuilder;
+    }    
 
 
     /**
