@@ -32,9 +32,10 @@ Applications build file
   </target>
 
   <target name="all16" depends="init,media,bugtracker,email" />
+  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,scan" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,scan" />
+  <target name="all"   depends="init,all17" />
 
 
   <target name="jars" depends="all">
@@ -84,7 +85,7 @@ Applications build file
 
   <target name="editwizard" depends="dove,mmbase">
      <ant dir="editwizard" target="dependent.package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="project.zip.dir"        value="${applications.build.dir}" />       
      </ant>
   </target>
 
@@ -121,24 +122,24 @@ Applications build file
 
   <target name="install">
     <ant dir="taglib"        target="dependent.install" inheritAll="false">
-      <property name="destination.dir"        value="${destination.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="editwizard"    target="dependent.install" inheritAll="false">
-      <property name="destination.dir"        value="${destination.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="community"     target="dependent.install" inheritAll="false">
-      <property name="destination.dir"        value="${destination.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
     </ant>      
     <ant dir="dove"          target="install" inheritAll="false">
-      <property name="destination.dir"        value="${destination.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="xmlimporter"   target="install" inheritAll="false">
-      <property name="destination.dir"        value="${destination.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
     </ant>
     <!-- ant dir="cloudcontext"  target="install" /-->
     <!-- ant dir="email"         target="install" /-->
     <ant dir="rmmci"         target="install" inheritAll="false">
-      <property name="destination.dir"        value="${destination.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
 
