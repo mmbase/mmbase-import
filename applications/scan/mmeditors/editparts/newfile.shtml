@@ -1,3 +1,8 @@
+<!--
+$Id: newfile.shtml,v 1.2 2000-08-16 09:47:21 case Exp $
+
+$Log: not supported by cvs2svn $
+-->
 <HTML>
 <HEAD>
 </HEAD>
@@ -20,8 +25,9 @@
  		<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 		<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
  		<INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
-				<INPUT TYPE="hidden" NAME="PRC-CMD-EDIT-SETFIELDFILE_IMG-$PARAM1">
-				<INPUT TYPE="file" NAME="file"><BR>
+		<INPUT TYPE="hidden" NAME="XXXPRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1">
+		<INPUT TYPE="hidden" NAME="PRC-CMD-BUILDER-SETFIELD-$PARAM1">
+		<INPUT TYPE="file" NAME="file"><BR>
 		</B>
       </TD></TR>
    <TR>
