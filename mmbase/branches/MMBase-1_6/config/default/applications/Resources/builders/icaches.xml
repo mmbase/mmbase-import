@@ -84,8 +84,8 @@
      <field>
        <descriptions>
          <!-- descriptions per language as defined by ISO 639  -->
-         <description xml:lang="en">TODO</description>
-         <description xml:lang="nl">TODO</description>
+         <description xml:lang="en">Reference to the original image</description>
+         <description xml:lang="nl">Refrentie naar de originele afbeelding</description>
        </descriptions>
         <!-- gui related -->
         <gui>
