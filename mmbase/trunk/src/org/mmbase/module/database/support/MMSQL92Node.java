@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.25 2000-07-10 15:59:04 daniel Exp $
+$Id: MMSQL92Node.java,v 1.26 2000-07-12 13:16:24 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.25  2000/07/10 15:59:04  daniel
+Daniel.. removed invalid methods
+
 Revision 1.24  2000/07/06 10:19:58  daniel
 Daniel.. started to add more mmbase types (not done yet)
 
@@ -125,7 +128,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.25 $ $Date: 2000-07-10 15:59:04 $
+* @$Revision: 1.26 $ $Date: 2000-07-12 13:16:24 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -195,10 +198,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					node.setValue(prefix+fieldname,tmp);
 				}
 				return(node);
-			/*
 			case TYPE_INTEGER:
 				node.setValue(prefix+fieldname,rs.getInt(i));
 				return(node);
+			/*
 			case TYPE_LONG:
 				node.setValue(prefix+fieldname,rs.getLong(i));
 				return(node);
