@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.77 2003-09-10 11:16:07 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.78 2003-09-26 14:57:26 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -55,56 +55,62 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static final int METHOD_LOGOUT    = 3;
     private static final int METHOD_LOGINPAGE = 4;
 
+    private static final int METHOD_DELEGATE  = 5;
+
+
     /**
      * Constants needed for the loginpage attribute functionality
      */
-    private static final String LOGINPAGE_COMMAND_PARAMETER = "command";
-    private static final String LOGINPAGE_COMMAND_LOGIN = "login";
-    private static final String LOGINPAGE_COMMAND_LOGOUT = "logout";
+    private static final String LOGINPAGE_COMMAND_PARAMETER      = "command";
+    private static final String LOGINPAGE_COMMAND_LOGIN          = "login";
+    private static final String LOGINPAGE_COMMAND_LOGOUT         = "logout";
     private static final String LOGINPAGE_AUTHENTICATE_PARAMETER = "authenticate";
-    private static final String LOGINPAGE_CLOUD_PARAMETER = "cloud";
+    private static final String LOGINPAGE_CLOUD_PARAMETER        = "cloud";
 
     private static final String LOGINPAGE_DENYREASON_NEED        = "please";
-    private static final String LOGINPAGE_DENYREASON_FAIL = "failed";
-    private static final String LOGINPAGE_DENYREASON_RANKTOOLOW = "rank";
+    private static final String LOGINPAGE_DENYREASON_FAIL        = "failed";
+    private static final String LOGINPAGE_DENYREASON_RANKTOOLOW  = "rank";
 
-    private static final int DENYREASON_NEED = 0;
-    private static final int DENYREASON_FAIL = 1;
+    private static final int DENYREASON_NEED       = 0;
+    private static final int DENYREASON_FAIL       = 1;
     private static final int DENYREASON_RANKTOOLOW = 2;
 
-    private static final Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CloudTag.class);
 
-    private static String DEFAULT_CLOUD_NAME = "mmbase";
-    private static String DEFAULT_AUTHENTICATION = "name/password";
+    private static final String DEFAULT_CLOUD_NAME     = "mmbase";
+    private static final String DEFAULT_AUTHENTICATION = "name/password";
+
+    private static final String REALM                  = "realm_";
+
     private String jspvar;
 
-    private static final String REALM = "realm_";
+
 
     private Cookie[] cookies;
 
     private CloudContext cloudContext;
 
-    private Attribute cloudName = Attribute.NULL;
-    private Attribute cloudURI = Attribute.NULL;
-    private Cloud cloud;
+    private Attribute cloudName    = Attribute.NULL;
+    private Attribute cloudURI     = Attribute.NULL;
+    private Cloud     cloud;
 
     private Attribute authenticate = Attribute.NULL;
 
-    private Attribute loginpage = Attribute.NULL;
+    private Attribute loginpage    = Attribute.NULL;
     //private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
-    private Attribute method = Attribute.NULL;
-    private Attribute logonatt = Attribute.NULL;
+    private Attribute method       = Attribute.NULL;
+    private Attribute logonatt     = Attribute.NULL;
     private List logon;
-    private Attribute pwd = Attribute.NULL;
-    private Attribute rank = Attribute.NULL;
-    private Attribute sessionName = Attribute.NULL;
+    private Attribute pwd          = Attribute.NULL;
+    private Attribute rank         = Attribute.NULL;
+    private Attribute sessionName  = Attribute.NULL;
 
     private static String FAILMESSAGE = "<h1>CloudTag Error</h1>";
 
-    private HttpSession session;
-    private HttpServletRequest request;
+    private HttpSession         session;
+    private HttpServletRequest  request;
     private HttpServletResponse response;
-    private Locale locale;
+    private Locale              locale;
 
     /**
      * @return the default cloud context
@@ -207,7 +213,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     protected int getMethod() throws JspTagException {
-        String m = method.getString(this);
+        String m = method.getString(this).toLowerCase();
         if ("".equals(m)) {
             return METHOD_UNSET;
         } else if ("http".equals(m)) {
@@ -220,6 +226,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return METHOD_LOGOUT;
         } else if ("loginpage".equals(m)) {
             return METHOD_LOGINPAGE;
+        } else if ("delegate".equals(m)) {
+            return METHOD_DELEGATE;
         } else {
             throw new JspTagException("Unknown value for 'method'  attribute (" + m + ")");
         }
@@ -249,8 +257,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private Cookie searchCookie() throws JspTagException {
         String cookie = REALM + getSessionName();
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Searching cookie " + cookie);
+        }
         if (cookies != null) {
             for (int i = 0; i < cookies.length; i++) {
                 if (cookies[i].getName().equals(cookie) && (!"".equals(cookies[i].getValue()))) {
@@ -492,7 +501,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     /**
-     * Checks if the cloud of the session if requested to be 'logged out'.
+     * Checks if the cloud of the session is requested to be 'logged out'.
      */
     private final boolean checkLogoutLoginPage() throws JspTagException {
         if (loginpage != Attribute.NULL
@@ -537,7 +546,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (cookies == null) {
             cookies = new Cookie[0];
         }
-        log.debug("getting (thus creating) session now: " + session);
+        if (log.isDebugEnabled()) {
+            log.debug("getting (thus creating) session now: " + session);
+        }
         session = (HttpSession)pageContext.getSession();
         if (session != null) { // some people like to disable their session
             cloud = (Cloud)session.getAttribute(getSessionName());
@@ -895,6 +906,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return deny(DENYREASON_FAIL);
         }
     }
+
     /**
      * Makes a logged-in cloud.
      * @return SKIP_BODY if failed to do so. EVAL_BODY  otherwise.
@@ -903,15 +915,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private final int makeCloud() throws JspTagException {
         log.debug("logging on the cloud...");
         Map user = null;
+        int method = getMethod();
         // check how to log on:
-        if (getMethod() == METHOD_HTTP) {
+        if (method == METHOD_DELEGATE) {
             user = new HashMap();
-            if (doHTTPAuthentication(user) == SKIP_BODY)
+            user.put("request",  request);
+            user.put("response", response);
+            user.put("usernames", logon);
+        } else if (method == METHOD_HTTP) {
+            user = new HashMap();
+            if (doHTTPAuthentication(user) == SKIP_BODY) {
                 return SKIP_BODY;
+            }
         } else if (loginpage != Attribute.NULL) {
             user = new HashMap();
-            if (doLoginPage(user) == SKIP_BODY)
+            if (doLoginPage(user) == SKIP_BODY) {
                 return SKIP_BODY;
+            }
         } else if (logon != null && pwd != Attribute.NULL) {
             user = new HashMap();
             user.put("username", logon.get(0));
@@ -977,7 +997,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
         }
         setupSession();
-        if (log.isDebugEnabled()) log.debug("startTag " + cloud);
+        if (log.isDebugEnabled()) {
+            log.debug("startTag " + cloud);
+        }
         if (checkLogoutLoginPage()) {
             // TODO: find a better page to redirect to!
             try {
@@ -991,6 +1013,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (checkLogoutMethod()) {
             return evalBody();
         }
+
+
         if (cloud != null) {
             checkValid();
         }
