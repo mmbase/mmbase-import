@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implements the parsing and generating of dynamic flash files
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.6 2001-05-04 13:37:44 vpro Exp $
+ * @version $Id: MMFlash.java,v 1.7 2001-05-04 13:42:45 vpro Exp $
  */
 public class MMFlash extends Module {
 
@@ -359,11 +359,6 @@ public class MMFlash extends Module {
 		if (subdir!=null && !subdir.equals("")) {
 			int pos=filename.lastIndexOf('/');
 			filename=filename.substring(0,pos)+"/"+subdir+filename.substring(pos);
-			// Create dir if it doesn't exist
-			File d=new File(filename.substring(0,pos)+"/"+subdir);
-			if (!d.exists()) {
-				d.mkdir();
-			}
 		}
 
 		File bfile = new File(filename);
@@ -457,6 +452,11 @@ public class MMFlash extends Module {
 		if (subdir!=null && !subdir.equals("")) {
 			int pos=filename.lastIndexOf('/');
 			filename=filename.substring(0,pos)+"/"+subdir+filename.substring(pos);
+			// Create dir if it doesn't exist
+			File d=new File(filename.substring(0,pos)+"/"+subdir);
+			if (!d.exists()) {
+				d.mkdir();
+			}
 		}
 
 		log.debug("filename="+filename);		
