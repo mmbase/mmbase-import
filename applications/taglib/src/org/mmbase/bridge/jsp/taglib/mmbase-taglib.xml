@@ -1670,6 +1670,21 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 	is also possible to get different variables with the same name
 	from different sources.
 	</info>
+	<possiblevalue>
+          <value>parent</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>page</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>session</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>parameters</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>postparameters</value>
+        </possiblevalue>
     </attribute>
     <attribute>
         <name>jspvar</name>
