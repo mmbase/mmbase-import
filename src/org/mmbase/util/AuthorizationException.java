@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 /**
  * This exception gets thrown if the user has an invalid password
  * @deprecated only used by HttpAuth.
+ * @version $Id: AuthorizationException.java,v 1.8 2004-09-29 14:29:22 pierre Exp $
  */
 public class AuthorizationException extends ServletException {
 

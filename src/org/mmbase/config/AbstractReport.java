@@ -17,18 +17,19 @@ import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 
 /**
+ *
+ * $Id: AbstractReport.java,v 1.10 2004-09-29 14:26:49 pierre Exp $
+ *
+ * @application Config
  * @author Case Roole, cjr@dds.nl
- *
- * $Id: AbstractReport.java,v 1.9 2003-07-07 13:33:25 keesj Exp $
- *
- *
+ * @version $Id: AbstractReport.java,v 1.10 2004-09-29 14:26:49 pierre Exp $
  */
 public abstract class AbstractReport implements ReportInterface {
     protected String mode, encoding;
     protected Hashtable specialChars;
     protected String configpath;
 
-   
+
     //protected String classname = getClass().getName();
     //protected boolean debug = false;
 

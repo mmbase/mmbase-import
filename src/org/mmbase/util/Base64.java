@@ -18,8 +18,10 @@ package org.mmbase.util;
  * and adapted to replace the original MMBase code.
  * </p>
  *
+ * @deprecated-now use org.mmbase.util.transformers.BAse64 or sun.misc.BASE64Encoder
  * @author Robert Harder - rob@iharder.net
  * @author Rob van Maris
+ * @version $Id: Base64.java,v 1.8 2004-09-29 14:29:22 pierre Exp $
  */
 public class Base64 {
 

@@ -69,8 +69,9 @@ import org.mmbase.util.logging.Logging;
  *<P>
  *
  *
+ * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLFormGenerator.java,v 1.8 2003-03-07 11:49:26 pierre Exp $
+ * @version $Id: HTMLFormGenerator.java,v 1.9 2004-09-29 14:29:25 pierre Exp $
  */
 public class HTMLFormGenerator {
     // logger

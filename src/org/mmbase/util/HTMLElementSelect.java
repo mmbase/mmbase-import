@@ -34,8 +34,9 @@ import org.mmbase.util.logging.*;
  * <li>boolean empty      : if true an empty option value is added.</li>
  * </ul>
  *
+ * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementSelect.java,v 1.6 2003-03-07 11:49:25 pierre Exp $
+ * @version $Id: HTMLElementSelect.java,v 1.7 2004-09-29 14:29:24 pierre Exp $
  */
 
 public class HTMLElementSelect  extends HTMLElement  {

@@ -49,8 +49,9 @@ import org.w3c.dom.Document;
  *    which has no arguments.
  * </pre>
  *
+ * @application Config
  * @author Cees Roele
- * @version $Id: Config.java,v 1.24 2004-07-30 18:04:30 michiel Exp $
+ * @version $Id: Config.java,v 1.25 2004-09-29 14:28:07 pierre Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -62,7 +63,6 @@ public class Config extends ProcessorModule {
     private static Logger log = Logging.getLoggerInstance(Config.class.getName());
     private String classname = getClass().getName();
     // private String configpath;
-
 
     class ParseResult {
 
@@ -163,24 +163,13 @@ public class Config extends ProcessorModule {
         //        configpath = MMBaseContext.getConfigPath();
     }
 
-
     public void reload() {}
-
-
-
 
     public void onload() {}
 
-
-
-
     public void unload() {}
 
-
-
-
     public void shutdown() {}
-
 
     /**
      * Config, a support module for servscan
@@ -192,17 +181,13 @@ public class Config extends ProcessorModule {
      */
     public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         Vector v = new Vector();
-
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
-
         String[] argv = new String[tok.countTokens()];
         for (int i=0; i<tok.countTokens(); i++) {
             argv[i] = tok.nextToken();
         }
-
         String category = tagger.Value("category");
-
         try {
             if (argv[0].equalsIgnoreCase("show")) {
                 if (argv.length == 1) {
@@ -225,9 +210,6 @@ public class Config extends ProcessorModule {
                             } else if (category.equalsIgnoreCase("applications")) {
                                 // bla
                             }
-
-
-
                         }
                         int n = item1List.size();
                         int rescheck;
@@ -269,7 +251,6 @@ public class Config extends ProcessorModule {
             return null;
         }
     }
-
 
     /**
      * @param path Path to root of configuration files
@@ -318,13 +299,11 @@ public class Config extends ProcessorModule {
         return(false);
     }
 
-
     /**
      * Temporary overall wrapper for report information
      */
     public String report(String eol) {
         String res = "";
-
         String[] reportKeys = new String[]{
                                   "java",
                                   "database",
@@ -336,9 +315,6 @@ public class Config extends ProcessorModule {
         reportClasses.put("database","org.mmbase.config.DatabaseReport");
         reportClasses.put("builders","org.mmbase.config.BuilderReport");
         reportClasses.put("languages","org.mmbase.config.LanguagesReport");
-
-
-
         for (int i=0;i<reportKeys.length;i++) {
             try {
                 Class c = Class.forName((String)reportClasses.get(reportKeys[i]));
@@ -351,7 +327,6 @@ public class Config extends ProcessorModule {
         }
         return res;
     }
-
 
     /**
      * @return String of newline separated active builders
@@ -375,7 +350,6 @@ public class Config extends ProcessorModule {
         }
         return res;
     }
-
 
     /**
      *  Handle a $MOD command
@@ -431,7 +405,6 @@ public class Config extends ProcessorModule {
         }
     }
 
-
     /**
      * Do validity check on XML file
      *
@@ -462,14 +435,14 @@ public class Config extends ProcessorModule {
         for (int i=0;i<s.length();i++) {
             c = s.charAt(i);
             switch (c) {
-            case '>':
-                res.append("&gt;");
-                break;
-            case '<':
-                res.append("&lt;");
-                break;
-            default:
-                res.append(c);
+                case '>':
+                    res.append("&gt;");
+                    break;
+                case '<':
+                    res.append("&lt;");
+                    break;
+                default:
+                    res.append(c);
             }
         }
         return res.toString();
@@ -485,24 +458,17 @@ public class Config extends ProcessorModule {
             StringBuffer res = new StringBuffer();
             try {
                 String encoding = "UTF-8";
-                {
-                    BufferedReader firstLineReader = new BufferedReader(new FileReader(path));
-                    
-                    if (firstLineReader.ready()) {
-                        String lineOne = firstLineReader.readLine();
-                        encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(lineOne);
-                    }
-                    firstLineReader.close();
+                BufferedReader firstLineReader = new BufferedReader(new FileReader(path));
+                if (firstLineReader.ready()) {
+                    String lineOne = firstLineReader.readLine();
+                    encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(lineOne);
                 }
-
+                firstLineReader.close();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), encoding));
-                
-
                 String line;
                 int lineno = 0;
                 int j = 0;
                 ErrorStruct err = (ErrorStruct) pr.getResultList().get(j++);
-
                 int nextLine = err.getLineNumber();
                 StringBuffer marker;
                 res.append("<PRE>");
@@ -547,9 +513,7 @@ public class Config extends ProcessorModule {
             //}
     }
 
-
     protected String checkXML(String path) {
-
         ParseResult pr = new ParseResult(path);
         if (pr.getResultList().size() == 0) {
             return "Checked ok";
@@ -558,7 +522,6 @@ public class Config extends ProcessorModule {
             warnings = pr.getWarningList().size();
             errors   = pr.getErrorList().size();
             fatals   = pr.getFatalList().size();
-
             StringBuffer s = new StringBuffer();
             s.append("warnings = "+warnings+"  errors = "+errors+"   fatal errors = "+fatals+"<br />\n");
             if (warnings > 0) {
@@ -567,21 +530,18 @@ public class Config extends ProcessorModule {
                     s.append("warning at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
                 }
             }
-
             if (errors > 0) {
                 for (int i=0;i<errors;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getErrorList().get(i));
                     s.append("error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
                 }
             }
-
             if (fatals > 0) {
                 for (int i=0;i<fatals;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getFatalList().get(i));
                     s.append("fatal error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
                 }
             }
-
             return s.toString();
         }
     }

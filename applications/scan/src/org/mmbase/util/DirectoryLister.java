@@ -27,6 +27,9 @@ import org.mmbase.util.logging.Logging;
  * It also goes down the directory tree in search for file entries.
  * A wildcard can be used in searching for file entries.
  * It also contains sort methods to sort file entries.
+ * Used by a device buidlers (i.e. Cameras), and by SCAN
+ * @application SCAN or Devices
+ * @version $Id: DirectoryLister.java,v 1.12 2004-09-29 14:29:23 pierre Exp $
  */
 public class DirectoryLister {
 

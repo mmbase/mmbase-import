@@ -11,9 +11,13 @@ package org.mmbase.util;
 
 /**
  * Class for storing error information useful in parsing.
- * Information that can be stored inlcudes the error type, column and
+ * Information that can be stored includes the error type, column and
  * line number of the parsed text where the error occurred, and a message.
  * used by the {@link org.mmbase.module.Config} module when parsing XML files.
+ *
+ * @application Config
+ * @author vpro
+ * @version $Id: ErrorStruct.java,v 1.5 2004-09-29 14:29:23 pierre Exp $
  */
 public class ErrorStruct {
 
@@ -33,7 +37,7 @@ public class ErrorStruct {
      * @param msg the error message
      */
     public ErrorStruct(int line, int col, String msg) {
-	this("none",line,col,msg);
+    this("none",line,col,msg);
     }
 
     /**
@@ -44,10 +48,10 @@ public class ErrorStruct {
      * @param msg the error message
      */
     public ErrorStruct(String errorType, int line, int col, String msg) {
-	this.errorType = errorType;
-	this.line = line;
-	this.col = col;
-	this.msg = msg;
+    this.errorType = errorType;
+    this.line = line;
+    this.col = col;
+    this.msg = msg;
     }
 
     /**
@@ -55,7 +59,7 @@ public class ErrorStruct {
      * Values that might be expected are "warning", "error" and "fatal".
      */
     public String getErrorType() {
-	return errorType;
+    return errorType;
     }
 
     /**
@@ -63,7 +67,7 @@ public class ErrorStruct {
      * where the error occurred.
      */
     public int getLineNumber() {
-	return line;
+    return line;
     }
 
     /**
@@ -71,20 +75,20 @@ public class ErrorStruct {
      * where the error occurred.
      */
     public int getColumnNumber() {
-	return col;
+    return col;
     }
 
     /**
      * Returns a more detailed error message.
      */
     public String getMessage() {
-	return msg;
+    return msg;
     }
 
-	/**
- 	 * prints the ErrorStruct
-	 */
-	public String toString() {
-		return "ErrorStruct: type="+errorType+" line="+line+" position="+col+" message="+msg;
-	}
+    /**
+     * prints the ErrorStruct
+     */
+    public String toString() {
+        return "ErrorStruct: type="+errorType+" line="+line+" position="+col+" message="+msg;
+    }
 }

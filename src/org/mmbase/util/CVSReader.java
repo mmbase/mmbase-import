@@ -22,9 +22,10 @@ import org.mmbase.util.logging.*;
 /**
  * Class for reading and parsing the contents of a CVS (comma value seperated) file.
  *
+ * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.9 2003-03-10 11:51:05 pierre Exp $
+ * @version $Id: CVSReader.java,v 1.10 2004-09-29 14:29:22 pierre Exp $
  */
 public class CVSReader {
 
