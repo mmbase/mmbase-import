@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database query). It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.2 2003-07-21 20:51:34 michiel Exp $
+ * @version $Id: Query.java,v 1.3 2003-07-21 21:22:30 michiel Exp $
  * @todo Not sure this interface needed, perhaps everything should be done with a query-converter
  * @since MMBase-1.7
  */
@@ -47,6 +47,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @throws IllegalStateException when there is no previous step.
      */
     RelationStep addRelationStep(RelationManager relationManager);
+    RelationStep addRelationStep(RelationManager relationManager, int directionality);
 
     StepField addField(Step step, Field field);
 
