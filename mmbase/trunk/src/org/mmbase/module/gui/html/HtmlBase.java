@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.20 2000-06-06 20:54:08 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.21 2000-06-20 14:20:02 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.20  2000/06/06 20:54:08  wwwtech
+	small updates
+	
 	Revision 1.19  2000/04/14 12:12:15  wwwtech
 	- (marcel) Made nicer output when LIST RELATIONS fails in logfile
 	
@@ -89,12 +92,12 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.20 2000-06-06 20:54:08 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.21 2000-06-20 14:20:02 install Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 	private int multilevel_cachesize=150;
 	private LRUHashtable multilevel_cache;
