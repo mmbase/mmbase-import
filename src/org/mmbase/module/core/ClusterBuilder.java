@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18.2.4 2003-04-03 16:18:04 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.5 2003-04-03 17:18:15 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -909,8 +909,8 @@ public class ClusterBuilder extends VirtualBuilder {
                     result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
                     rnumber=rnum.intValue();
                 }
-                srctodest = (searchdir != SEARCH_SOURCE)      && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS);
-                desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS);
+                srctodest = (searchdir != SEARCH_SOURCE)      && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+                desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
             }
 
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old

@@ -12,7 +12,6 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.cache.Cache;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.18 2003-04-03 17:00:03 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.19 2003-04-03 17:18:15 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -51,11 +50,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * with a builder or its descendants
      */
     public static int INCLUDE_DESCENDANTS = 1;
+
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder or its parents
      */
     public static int INCLUDE_PARENTS = 2;
+
+    /**
+     * Constant for {@link #contains}: return typerels where source/destination match
+     * with a builder, its descendants, or its parents
+     */
+    public static int INCLUDE_PARENTS_AND_DESCENDANTS = 3;
 
     /**
      * TypeRel should contain only a limited amount of nodes, so we
@@ -107,7 +113,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Addes one typerel cache entries, plus inherited relations (if builder are initialized)
-     * @returns A Set with the added entries, which can be used for logging or so, or can be disregarded
+     * @return A Set with the added entries, which can be used for logging or so, or can be disregarded
      * @since  MMBase-1.6.2
      */
     protected TypeRelSet addCacheEntry(MMObjectNode typerel, boolean buildersInitialized) {
@@ -157,7 +163,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             }
 
             // seek all parents and store typerels for them
-            // this cache is used by contains(INCLUDE_PARENTS);
+            // this cache is used by contains(INCLUDE_PARENTS / INCLUDE_PARENTS_AND_DESCENDANTS);
             MMObjectBuilder sourceParent=sourceBuilder;
             while (sourceParent!=null) {
                 MMObjectBuilder destinationParent=destinationBuilder;
@@ -366,7 +372,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @deprecated use {@link #contains} instead
      * @param n1 The source type number.
      * @param n2 The destination type number.
-     * @param r The relation definition (role) number, or -1 if the role does not matter.
+     * @param r The relation definition (role) number, or -1 if the role does not matter
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      */
@@ -385,7 +391,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @param n1 The source type number.
      * @param n2 The destination type number.
-     * @param r The relation definition (role) number, or -1 if the role does not matter.
+     * @param r The relation definition (role) number, or -1 if the role does not matter
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      * @since MMBase-1.6.2
@@ -404,13 +410,15 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @param n1 The source type number.
      * @param n2 The destination type number.
-     * @param r The relation definition (role) number, or -1 if the role does not matter.
+     * @param r The relation definition (role) number, or -1 if the role does not matter
      *          r can only be -1 if virtual is <code>true</code>
      * @param restriction if {@link #STRICT}, contains only returns true if the typerel occurs as-is in the database.
      *                    if {@link #INCLUDE_DESCENDANTS}, contains returns true if the typerel occurs as a virtual
-     *                    (derived) node, wgher source or destination are descendants of the specified type.
+     *                    (derived) node, where source or destination may also be descendants of the specified type.
      *                    if {@link #INCLUDE_PARENTS}, contains returns true if the typerel occurs as a virtual
-     *                    (derived) node, wgher source or destination are parents of the specified type.
+     *                    (derived) node, where source or destination may also be parents of the specified type.
+     *                    if {@link #INCLUDE_PARENTS_AND_DESCENDANTS}, contains returns true if the typerel occurs as a virtual
+     *                    (derived) node, where source or destination may also be descendants or parents of the specified type.
      * @return <code>true</code> when the relation exists, false otherwise.
      *
      * @since MMBase-1.6.2
@@ -420,6 +428,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
         } else if (restriction==INCLUDE_PARENTS) {
             return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else if (restriction==INCLUDE_PARENTS_AND_DESCENDANTS) {
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) ||
+                   parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
         } else { // STRICT
             SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
             return (existingNodes.size()>0 && !((MMObjectNode)existingNodes.first()).isVirtual());
@@ -495,6 +506,29 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
+     * Of course, virtual typerel nodes need a virtual typerel
+     * builder. Well 'of course', the reason is not quite obvious to
+     * me, it has to do with the bridge/temporarynodemanager which
+     * sometimes need to know it.
+     */
+    static class VirtualTypeRel extends TypeRel {
+        static VirtualTypeRel virtualTypeRel = null;
+        VirtualTypeRel(TypeRel t) {
+            fields = new Hashtable();
+            addField(new FieldDefs("snumber","integer", -1,-1,"snumber",FieldDefs.TYPE_INTEGER));
+            addField(new FieldDefs("dnumber","integer", -1,-1,"dnumber",FieldDefs.TYPE_INTEGER));
+            addField(new FieldDefs("rnumber","integer", -1,-1,"rnumber",FieldDefs.TYPE_INTEGER));
+            mmb       = t.mmb;
+            tableName = "virtual_typerel";
+        }
+        public boolean isVirtual() { return true; }
+        static VirtualTypeRel getVirtualTypeRel(TypeRel t) {
+            if (virtualTypeRel == null) virtualTypeRel = new VirtualTypeRel(t);
+            return virtualTypeRel;
+        }
+    }
+
+    /**
      * A TypeRelSet is a Set of typerel nodes. The TypeRel builder
      * maintains such a Set of all typerel nodes for quick
      * reference. TypeRelSets are also instantiated when doing queries
@@ -559,7 +593,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
     }
 
-
+    /**
+     * An InverseTypeRelSet is a Set of typerel nodes. The TypeRel builder
+     * maintains such a Set of all typerel nodes for quick
+     * reference.
+     *
+     * @since MMBase-1.6.2
+     */
     protected class InverseTypeRelSet extends TreeSet {
         protected InverseTypeRelSet() {
             super(new Comparator() {
@@ -646,29 +686,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             setValue("snumber", snumber);
             setValue("dnumber", dnumber);
             setValue("rnumber", rnumber);
-        }
-    }
-
-    /**
-     * Of course, virtual typerel nodes need a virtual typerel
-     * builder. Well 'of course', the reason is not quite obvious to
-     * me, it has to do with the bridge/temporarynodemanager which
-     * sometimes need to know it.
-     */
-    static class VirtualTypeRel extends TypeRel {
-        static VirtualTypeRel virtualTypeRel = null;
-        VirtualTypeRel(TypeRel t) {
-            fields = new Hashtable();
-            addField(new FieldDefs("snumber","integer", -1,-1,"snumber",FieldDefs.TYPE_INTEGER));
-            addField(new FieldDefs("dnumber","integer", -1,-1,"dnumber",FieldDefs.TYPE_INTEGER));
-            addField(new FieldDefs("rnumber","integer", -1,-1,"rnumber",FieldDefs.TYPE_INTEGER));
-            mmb       = t.mmb;
-            tableName = "virtual_typerel";
-        }
-        public boolean isVirtual() { return true; }
-        static VirtualTypeRel getVirtualTypeRel(TypeRel t) {
-            if (virtualTypeRel == null) virtualTypeRel = new VirtualTypeRel(t);
-            return virtualTypeRel;
         }
     }
 
