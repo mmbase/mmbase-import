@@ -132,7 +132,7 @@ public class TypeDef extends MMObjectBuilder {
 		if (bul!=null) {
 			return(bul.getDutchSName());
 		} else {
-			return("probleem!");
+			return("inactive ("+name+".xml) !");
 		}
 	}
 
@@ -145,7 +145,7 @@ public class TypeDef extends MMObjectBuilder {
 				return(bul.tableName);
 			}
 		} 
-		return("probleem");
+		return("inactive ("+dutchname+".xml) !");
 	}
 
 	public boolean isRelationTable(String name) {
