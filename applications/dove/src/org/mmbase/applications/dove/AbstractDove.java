@@ -49,7 +49,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.11 2003-03-04 13:27:07 nico Exp $
+ * @version $Id: AbstractDove.java,v 1.12 2003-04-01 08:43:36 michiel Exp $
  */
 
 public abstract class AbstractDove {
@@ -106,6 +106,7 @@ public abstract class AbstractDove {
     public static final String ELM_DESTINATIONTYPE = "destinationtype";
     public static final String ELM_SOURCETYPE = "sourcetype";
     public static final String ELM_SEARCHDIR = "searchdir";
+    public static final String ELM_CREATEDIR = "createdir";
     public static final String ELM_LANG = "xml:lang";
     public static final String ELM_XPATH = "xpath";
     public static final String ELM_WHERE = "where";
