@@ -56,7 +56,7 @@ public class IncludeTag extends UrlTag {
                 nudeUrl = gotUrl;
                 params  = "";
             }
-
+	    if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
 
             if (nudeUrl.indexOf('/') == 0) { // absolute on server                             
@@ -64,14 +64,32 @@ public class IncludeTag extends UrlTag {
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                     +  request.getContextPath() + nudeUrl + params;
             } else if (nudeUrl.indexOf(':') == -1) { // relative
-                urlString = 
-                    request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + new java.io.File(new java.io.File(request.getRequestURI()).getParent().toString() + "/" + nudeUrl + params).getCanonicalPath();
+		log.debug("URL was relative");
+                urlString =
+		    // find the parent directory of the relativily given URL:
+		    // parent-file: the directory in which the current file is.
+		    // nude-Url   : is the relative path to this dir
+		    // canonicalPath: to get rid of /../../ etc
+		    // replace:  windows uses \ as path seperator..., but they may not be in URL's.. 
+		    new java.io.File(new java.io.File(request.getRequestURI()).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
+
+		// getCanonicalPath gives also gives c: in windows:
+		// take it off again if necessary:
+		int colIndex = urlString.indexOf(':');
+		if (colIndex == -1) {
+		    urlString += params;
+		} else {
+		    urlString = urlString.substring(colIndex+1) + params;
+		}
+		urlString =     // add basic absolute URL part
+                    request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
+		    urlString;	      
             } else { // really absolute
                 urlString = gotUrl;
             }
                            
             if (log.isDebugEnabled()) log.debug("found url: >" + urlString + "<");
+
     	    URL includeURL = new URL(urlString); 
             
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
