@@ -12,11 +12,11 @@ package org.mmbase.util.transformers;
  * An escaper based on the amusing 'figlet' tool, which is available on some system. (Make sure it
  * is in the 'PATH'.
  *
- * Figlet output is only fit for text/plain output, or perhaps for <pre> tags...
+ * Figlet output is only fit for text/plain output, or perhaps for &lt;pre&gt; tags...
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Figlet.java,v 1.2 2003-05-12 21:21:26 michiel Exp $
+ * @version $Id: Figlet.java,v 1.3 2003-06-05 09:32:29 michiel Exp $
  * @todo   no way to specify commandline arguments on the fly.
  */
 
