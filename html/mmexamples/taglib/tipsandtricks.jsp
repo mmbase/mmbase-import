@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page language="java" contentType="text/html; charset=UTF-8" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud>
 <html>
 <head>
@@ -12,6 +12,23 @@
 <h1>Tips and Tricks</h1>
 
 <ul>
+  <li><em>How can I iterate?</em>
+     <p>
+       Of course you can iterate over MMBase lists by use of the
+       several nodelists. For other iterations I'd like to refer to
+       external taglibs.
+     </p>
+     <p>
+       But there is a trick to do it with the MMBase taglib as
+       well. This example shows how:
+     </p>
+     <table>
+      <tr valign="top">
+      <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/iterate.jsp" /></mm:formatter></pre></td>
+      <td width="50%"><%@include file="codesamples/iterate.jsp" %></td>
+      </tr>
+      </table>
+  </li>
   <li><em>How do I find out if a list is empty?</em>
      <p>
       Define a variable in the mm:first tag. After the list you can put in the body of mm:notpresent 
