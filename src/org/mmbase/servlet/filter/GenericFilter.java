@@ -22,7 +22,7 @@ import javax.servlet.*;
  *  see http://www.orionserver.com/tutorials/filters
  *
  * @author Marcel Maatkamp, VPRO Netherlands (marmaa_at_vpro.nl)
- * @version %version%
+ * @version $Version$
  */
 
 public class GenericFilter implements javax.servlet.Filter {
