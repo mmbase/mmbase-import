@@ -10,10 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.RelationStep; // just for the search-constants.
 
 import org.mmbase.cache.Cache;
-
-import org.mmbase.module.core.ClusterBuilder; // just for the search-constants.
 
 import org.mmbase.applications.dove.*;
 
@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.116 2004-02-04 18:33:58 michiel Exp $
+ * @version $Id: Wizard.java,v 1.117 2004-02-23 18:59:35 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1278,19 +1278,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
 
             // determine searchdir
-            int searchDir = ClusterBuilder.SEARCH_BOTH;
+            int searchDir = RelationStep.DIRECTIONS_BOTH;
 
             if (searchString != null) {
-               searchDir = ClusterBuilder.getSearchDir(searchString);
+               searchDir = Queries.getRelationStepDirection(searchString);
             }
 
-            if (searchDir == ClusterBuilder.SEARCH_SOURCE) {
+            if (searchDir == RelationStep.DIRECTIONS_SOURCE) {
                if (fdatapath.length() != 0) {
                   fdatapath.append(" and ");
                }
 
                fdatapath.append("@source=object/@number");
-            } else if (searchDir == ClusterBuilder.SEARCH_DESTINATION) {
+            } else if (searchDir == RelationStep.DIRECTIONS_DESTINATION) {
                if (fdatapath.length() != 0) {
                   fdatapath.append(" and ");
                }

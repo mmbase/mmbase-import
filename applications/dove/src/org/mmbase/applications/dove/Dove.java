@@ -13,7 +13,8 @@ package org.mmbase.applications.dove;
 import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.ClusterBuilder;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.logging.*;
 
 /**
@@ -47,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.51 2004-02-02 12:19:20 pierre Exp $
+ * @version $Id: Dove.java,v 1.52 2004-02-23 18:59:35 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -417,7 +418,7 @@ public class Dove extends AbstractDove {
         String destinationType = in.getAttribute(ELM_DESTINATIONTYPE); // check destination type;
         String sourceType = in.getAttribute(ELM_SOURCETYPE); // check source type;
 
-        int createDir = ClusterBuilder.getSearchDir(in.getAttribute(ELM_CREATEDIR));
+        int createDir = Queries.getRelationStepDirection(in.getAttribute(ELM_CREATEDIR));
 
         if (rolename.equals("")) {
             Element err = addContentElement(ERROR,"role required for getrelations",out);
@@ -439,7 +440,7 @@ public class Dove extends AbstractDove {
                     Element data=doc.createElement(RELATION);
                     int number=java.lang.Math.abs(n.getNumber());
                     data.setAttribute(ELM_NUMBER, "n"+number);
-                    if (createDir == ClusterBuilder.SEARCH_SOURCE) {
+                    if (createDir == RelationStep.DIRECTIONS_SOURCE) {
                         log.debug("Creating relation in the INVERSE direction");
                         data.setAttribute(ELM_DESTINATION, source);
                         data.setAttribute(ELM_SOURCE, destination);

@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.118 2004-02-11 20:43:21 keesj Exp $
+ * @version $Id: MMObjectNode.java,v 1.119 2004-02-23 19:01:02 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1278,7 +1278,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes() {
-        return getRelatedNodes("object", null, ClusterBuilder.SEARCH_EITHER);
+        return getRelatedNodes("object", null, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
@@ -1310,12 +1310,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         }
 
         if(parent.mmb.InsRel.usesdir) {
-            return  getRelatedNodes(type, ClusterBuilder.SEARCH_BOTH);
+            return  getRelatedNodes(type, RelationStep.DIRECTIONS_BOTH);
         } else {
             //
             // determine related nodes
-            Map source = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_SOURCE));
-            Map destin = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_DESTINATION));
+            Map source = makeMap(getRelatedNodes(type, RelationStep.DIRECTIONS_SOURCE));
+            Map destin = makeMap(getRelatedNodes(type, RelationStep.DIRECTIONS_DESTINATION));
 
             if (log.isDebugEnabled()) {
                 log.debug("source("+source.size()+") - destin("+destin.size()+")");

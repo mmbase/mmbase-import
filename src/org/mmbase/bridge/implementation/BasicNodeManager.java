@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.73 2004-02-02 12:17:39 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.74 2004-02-23 19:01:01 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -418,11 +418,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             if ((requestedRole==-1) || (requestedRole==n.getIntValue("rnumber"))) {
                 if (n.getIntValue("snumber") != n.getIntValue("dnumber")) { // if types are equal, no need to check direction, it is always ok then..
                     if (thisOType== n.getIntValue("dnumber")) {
-                        if (dir == ClusterBuilder.SEARCH_DESTINATION) {
+                        if (dir == RelationStep.DIRECTIONS_DESTINATION) {
                             continue;
                         }
                     } else {
-                        if (dir == ClusterBuilder.SEARCH_SOURCE) {
+                        if (dir == RelationStep.DIRECTIONS_SOURCE) {
                             continue;
                         }
                     }

@@ -34,7 +34,7 @@ import org.mmbase.module.core.MMBase;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.6 2004-02-19 15:55:27 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.7 2004-02-23 19:01:04 pierre Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -453,6 +453,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         relationalConstraintInBothDirections = true;
                         // end of hacking
                         break;
+
+                    case RelationStep.DIRECTIONS_ALL:
+                        throw new UnsupportedOperationException("Directionality 'ALL' is not (yet) supported");
+
+                    case RelationStep.DIRECTIONS_EITHER:
+                        throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
 
                     default: // Invalid directionality value.
                         throw new IllegalStateException(

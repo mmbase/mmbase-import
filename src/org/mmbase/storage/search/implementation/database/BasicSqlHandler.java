@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.24 2004-01-30 12:25:49 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.25 2004-02-23 19:01:04 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -431,6 +431,37 @@ public class BasicSqlHandler implements SqlHandler {
                             sbRelations.append(")");
                         }
                         break;
+
+                    case RelationStep.DIRECTIONS_ALL:
+                        if (relationStep.getRole() != null) {
+                            sbRelations.append("(((");
+                        } else {
+                            sbRelations.append("((");
+                        }
+                        appendField(sbRelations, previousStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+                        sbRelations.append(" AND ");
+                        appendField(sbRelations, nextStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
+                        sbRelations.append(") OR (");
+                        appendField(sbRelations, previousStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
+                        sbRelations.append(" AND ");
+                        appendField(sbRelations, nextStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+                        if (relationStep.getRole() != null) {
+                            sbRelations.append("))");
+                        } else {
+                            sbRelations.append(")");
+                        }
+                        break;
+
+                    case RelationStep.DIRECTIONS_EITHER:
+                        throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
 
                     default: // Invalid directionality value.
                         throw new IllegalStateException(

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.43 2003-12-17 21:10:04 michiel Exp $ 
+ * @version $Id: ImageTag.java,v 1.44 2004-02-23 18:59:35 pierre Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -66,7 +66,7 @@ public class ImageTag extends FieldTag {
         if(! getCloud().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
             // the user is not anonymous!
             // Need to check if node is readable by anonymous.
-            // in that case URLs can be simpler     
+            // in that case URLs can be simpler
             CloudTag ct = null;
             ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
@@ -95,7 +95,6 @@ public class ImageTag extends FieldTag {
             number = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
         }
 
-
         String servletPath;
         {
             Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
@@ -105,7 +104,7 @@ public class ImageTag extends FieldTag {
                 ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
         }
-        
+
         helper.useEscaper(false);
         helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
         if (getId() != null) {
