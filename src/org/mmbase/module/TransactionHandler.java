@@ -36,7 +36,7 @@ import org.xml.sax.*;
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-	private static boolean _debug = true;
+	private static boolean _debug = false;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static Upload upload = null;

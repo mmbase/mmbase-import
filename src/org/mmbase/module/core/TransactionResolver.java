@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.7 2000-12-14 10:54:52 rico Exp $
+	$Id: TransactionResolver.java,v 1.8 2000-12-30 14:06:06 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.7  2000/12/14 10:54:52  rico
+	Rico: added John Balder's changes for exception handling
+	
 	Revision 1.6  2000/11/24 12:15:22  vpro
 	Rico: fixed exist testing
 	
@@ -39,11 +42,11 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.7 2000-12-14 10:54:52 rico Exp $
+ * @version $Id: TransactionResolver.java,v 1.8 2000-12-30 14:06:06 daniel Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
-	private boolean _debug=true;
+	private boolean _debug=false;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	MMBase mmbase;
