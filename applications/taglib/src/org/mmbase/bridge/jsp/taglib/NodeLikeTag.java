@@ -54,7 +54,7 @@ abstract public class NodeLikeTag extends MMTaglib {
      * @param fields a comma separated list of fields
      **/
     public void setFields(String f){
-	fields = f;
+    fields = f;
     }
 
 
@@ -66,43 +66,53 @@ abstract public class NodeLikeTag extends MMTaglib {
      * that ant gets called before every
      **/
     public VariableInfo[] getVariableInfo(TagData data){
-	VariableInfo[] variableInfo =    null;
-	//this method is called /before/ the values are set
-	//so we can not use the data members in this class
-	//but the TagData provides the necessary data
-	//in effect we have to parse the data twice
-	//once here and onces specific attributes are set
-	//maybe this can be done better I do not know
+        VariableInfo[] variableInfo =    null;
+        //this method is called /before/ the values are set
+        //so we can not use the data members in this class
+        //but the TagData provides the necessary data
+        //in effect we have to parse the data twice
+        //once here and onces specific attributes are set
+        //maybe this can be done better I do not know
+        
+        
+        //The tag parameter fields defines what variables should be available
+        //within the body of the tag. 
+        //If an 'id' is defined as well (eg 'mynode') then this will be prefixed to the
+        //fieldnames: mynode_title, and the node itself will be named 'mynode'.
+        //If the variable has dots in it they will be replaced by underscores.
+        //See getSimpleReturnValueName;
+        
 
+        Object fieldsAttribute  = data.getAttribute("fields"); 
+        Vector fields;
 
-	//the tag parameter fields defines what variables should be available
-	//within the body of the tag currently the only thing we do here
-	//is return the a Virtual node and some variables
-	//if the variable has dots in it they will be replaced by underscores
-	// <%= fieldName %> or <%= node.getValue("fieldName") %>
-
-        String fieldss = (String)data.getAttribute("fields");
-        log.debug("fields : " + fieldss);
-
-        if (fieldss == null) fieldss = "";
-
-        Vector fields  = stringSplitter(fieldss, ",");
-
+        if (TagData.REQUEST_TIME_VALUE == fieldsAttribute) {
+            log.debug("Cannot set field variables for request time value");
+            fields = new Vector();
+        } else {
+            String fieldsString = (String) fieldsAttribute;
+            if (fieldsString == null) {
+                fields = new Vector();
+            } else {
+                fields  = stringSplitter(fieldsString, ",");
+            }
+        }
 
         int nodeVariable = 0; 
-        // number of node-variable to be defined. 
+        // Number of node-variables to be defined. 
         // is 0 or 1 now, but will become more for multi-level lists (not yet ready)
 
-        // prefix is used when nesting tags to be able to make a difference
-	// between the variable declared in the root tag ant this tag
-	String id = "";
-	if (data.getAttribute("id") != null){
-            id = "" + data.getAttribute("id");
-            nodeVariable = 1;
-	}
-        log.debug("id : " + id);
-
-       
+     
+        String id = "";
+        Object idObject = data.getAttribute("id");
+        if (idObject != null){
+            if (idObject == TagData.REQUEST_TIME_VALUE) { // then of course we cannot set a variable with that name                             
+            } else {
+                id = "" + data.getAttribute("id");
+                nodeVariable = 1;
+            }
+        }
+        
         variableInfo =    new VariableInfo[(fields.size()) + nodeVariable];
         int j = 0;
         for (int i = 0 ; i < fields.size(); i++){
@@ -111,17 +121,17 @@ abstract public class NodeLikeTag extends MMTaglib {
 
             // michiel: I think we should deprecate also this.
 
-            log.debug("will set " + getSimpleReturnValueName(id, field));
+            // log.debug("will set " + getSimpleReturnValueName(id, field));
             variableInfo[j++] = new VariableInfo(getSimpleReturnValueName(id, field),
                                                  "java.lang.String",
                                                  true,
                                                  VariableInfo.NESTED);
             /* michiel: this does not make much sense. why would someone want to use 'item1', if you have 
                a name to use. It also clashes with a builder which has a fieldname 'item1'.
-            variableInfo[j++] = new VariableInfo(prefix + "item" + (i+1),
-                                                 "java.lang.String",
-                                                 true,
-                                                 VariableInfo.NESTED);            
+               variableInfo[j++] = new VariableInfo(prefix + "item" + (i+1),
+                                                   "java.lang.String",
+                                                    true,
+                                                    VariableInfo.NESTED);            
             */
         }
         if (nodeVariable == 1) {
@@ -130,7 +140,7 @@ abstract public class NodeLikeTag extends MMTaglib {
                                                true,
                                                VariableInfo.NESTED);
         }
-	return variableInfo;
+        return variableInfo;
     }
 
 
@@ -161,12 +171,12 @@ abstract public class NodeLikeTag extends MMTaglib {
      * @return a Vector containing the elements, the elements are also trimed
      **/
     protected Vector stringSplitter(String string,String delimiter){
-	Vector retval = new Vector();
-	StringTokenizer st = new StringTokenizer(string, delimiter);
-	while(st.hasMoreTokens()){
-	    retval.addElement(st.nextToken().trim());
-	}
-	return retval;
+        Vector retval = new Vector();
+        StringTokenizer st = new StringTokenizer(string, delimiter);
+        while(st.hasMoreTokens()){
+            retval.addElement(st.nextToken().trim());
+        }
+        return retval;
     }
     
     protected Vector stringSplitter(String string) {
