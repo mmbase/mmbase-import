@@ -142,7 +142,7 @@ public class UninstallManager {
 	return active;
     }
 
-    public static PackageInterface getUninstallingPackage() {
+    public static PackageInterface getUnInstallingPackage() {
 	return pkg;
     }
 
