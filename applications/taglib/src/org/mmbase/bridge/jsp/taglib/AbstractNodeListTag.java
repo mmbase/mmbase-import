@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.44 2003-06-18 12:15:00 michiel Exp $ 
+ * @version $Id: AbstractNodeListTag.java,v 1.45 2003-07-26 18:29:01 pierre Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -187,10 +187,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected int doStartTagHelper() throws JspTagException {
 
         log.debug("doStartTaghelper");
-        // make a (temporary) container 
+        // make a (temporary) container
         container = new ContextContainer(null, getContextProvider().getContainer());
         collector = new HashMap();
-        
+
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
@@ -284,6 +284,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
+        if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
+
+
         if (returnValues.hasNext()) {
             //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
             //return EVAL_BODY_INCLUDE;
@@ -323,7 +326,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     }
     public int doEndTag() throws JspTagException {
-        
+
         log.debug("registering all");
         getContextProvider().getContainer().registerAll(collector);
 
