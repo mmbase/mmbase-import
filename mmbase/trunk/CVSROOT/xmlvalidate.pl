@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-# Michiel: not yet used, but we propose to do it soon.
+# Michiel: not yet used, but we propose to do it soon (when xmllint is available)
 # 
 # <Gullie> commitinfo:^eo/docs   $CVSROOT/CVSROOT/xmlvalidate.xml
 
