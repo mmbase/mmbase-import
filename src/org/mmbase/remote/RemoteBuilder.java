@@ -58,7 +58,20 @@ public class RemoteBuilder {
 		}
 	}
 
-
+	/**
+	 * Called when a remote node changes.
+	 * The following notify node changed types are are possible:
+	 * d: node deleted
+	 * c: node changed
+	 * n: new node
+	 * f: node field changed
+	 * r: node relation changed
+	 * x: some xml notify?
+	 * 
+	 * @param nodename
+	 * @param buildername
+	 * @ctype the node changetype.
+	 */
 	public void nodeRemoteChanged(String nodename,String buildername,String ctype) {		
 		if( debug ) debug("nodeRemoteChanged("+nodename+","+buildername+","+ctype+")");
 	}
