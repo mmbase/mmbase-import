@@ -118,7 +118,8 @@ public class MediaUrlComposer {
      * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
      * @return the url of the media source
      */
-    public String getUrl(MMObjectNode mediasource, Map info) {
+    public String getURL(MMObjectNode mediasource, Map info) {
+        log.debug("Getting url with " + info);
         return mediasource.getStringValue("url");
     }
     
@@ -156,6 +157,7 @@ public class MediaUrlComposer {
      * but i don't know if that makes much sence.
      */
     public String createRealURL(MMObjectNode mediafragment, MMObjectNode mediasource, Map info) {
+        log.debug("createRealURL");
         List params = new Vector();
         String urlpart = "";
         

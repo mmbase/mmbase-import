@@ -15,6 +15,7 @@
 	<!-- define the sequence of preference. The first mentioned format will be given if found.
 	-->
 	<preferredSource>
+    <source format="RM" />
 		<source format="G2" />
 		<source format="RA" />
 	</preferredSource>
