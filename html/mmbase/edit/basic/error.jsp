@@ -25,20 +25,18 @@
         stack.push(e);
         e = e.getCause();
      }
-        String intro = "";
+     String intro = "" + stack;
      while (! stack.isEmpty()) { 
-  Throwable t = (Throwable) stack.pop();
-  %>
-  
+       Throwable t = (Throwable) stack.pop();
+       %>  
   <h2><%= intro + "" + t.getClass().getName() + " : " + t.getMessage() %></h2>
   <pre>
     <%= org.mmbase.util.logging.Logging.stackTrace(t) %>
   </pre>
   <% 
-
-     intro = "Wrapped in: ";   } %>
-
-  
+     intro = "Wrapped in: ";   
+     } 
+     %>
   <hr />
   Please contact your system administrator about this.
   

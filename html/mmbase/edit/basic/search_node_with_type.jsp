@@ -1,8 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><%@ include file="page_base_functionality.jsp"
-%><mm:import externid="username" from="parameters" />
+%><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
-<mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
 <mm:import externid="page" vartype="integer" from="parameters"><mm:write referid="config.indexoffset" /></mm:import>
@@ -110,7 +110,7 @@
     </td>
     <td class="navigate" colspan="1">
     <nobr style="width:100%;">
-    <mm:previousbatches maxtotal="30" indexoffset="$config.indexoffset">
+    <mm:previousbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
       <mm:first>
         <mm:index>
           <mm:compare value="$config.indexoffset" inverse="true">
@@ -131,7 +131,7 @@
      <mm:write write="false" id="maxpagenumber" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
    </mm:isgreaterthan>   
    <mm:context>
-      <mm:nextbatches maxtotal="30" indexoffset="$config.indexoffset">
+      <mm:nextbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
          <a href='<mm:url referid="purl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
          <mm:index />
        </a>
