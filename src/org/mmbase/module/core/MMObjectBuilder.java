@@ -274,6 +274,14 @@ public class MMObjectBuilder extends MMTable {
         return database.create(this);
     }
 
+    /*
+    * Tests whether the data in a node is valid (throws an exception if this is not the case).
+    * @param node The node whose data to check
+    */
+	public void testValidData(MMObjectNode node) throws InValidDataException {
+	  return;
+	};
+
     /**
     * Insert a new, empty, object of a certain type.
     * @param oType The type of object to create
@@ -287,7 +295,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
-    * This method indirectly calls {@link #precommit}.
+    * This method indirectly calls {@link #preCommit}.
     * @param owner The administrator creating the node
     * @param node The object to insert. The object need be of the same type as the current builder.
     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
@@ -327,7 +335,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Check and make last changes before calling {@link #commit} or {@link #insert}.
-    * This method is called by the editor. This differs from {@link #precommit}, which is called by the database system
+    * This method is called by the editor. This differs from {@link #preCommit}, which is called by the database system
     * <em>during</em> the call to commit or insert.
     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
     *		'settings' and 'parameters' - value pairs that have been the during the edit process.
@@ -353,11 +361,10 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Commit changes to this node to the database. This method indirectly calls {@link #precommit}.
-    * Use onyl to commit changes - for adding node, use {@link #insert}.
+    * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
+    * Use only to commit changes - for adding node, use {@link #insert}.
     * @param node The node to be committed
     * @return The committed node.
-	* @deprecated Use {@link #commit(java.lang.String)} in {@org.mmbase.module.core.MMObjectNode} instead.
     */
     public boolean commit(MMObjectNode node) {
         return database.commit(this,node);
@@ -647,10 +654,6 @@ public class MMObjectBuilder extends MMTable {
     }
 
 	/**
-	 * Temporary node code
-	 */
-
-	/**
 	 * Create a new temporary node and put it in the temporary _exist
 	 * node space
 	 */
@@ -691,17 +694,20 @@ public class MMObjectBuilder extends MMTable {
 		if (node==null) debug("removeTmpNode): node with "+key+" didn't exists");
 	}
 
-	/**************************************************************************/
-
     /**
     * Enumerate all the objects that match the searchkeys
+    * @param where scan expression that the objects need to fulfill
+    * @return an <code>Enumeration</code> containing all the objects that apply.
     */
     public Enumeration search(String where) {
         return searchVector(where).elements();
     }
 
     /**
-    * Enumerate all the objects that match the searchkeys
+    * Returns a vector containing all the objects that match the searchkeys
+    * @param where scan expression that the objects need to fulfill
+    * @return a vector containing all the objects that apply.
+    * @deprecated Use search() instead
     */
     public Vector searchVector(String where) {
         // do the query on the database
@@ -712,7 +718,7 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where;
+        String query="SELECT * FROM "+getFullTableName()+" "+where;
         return basicSearch(query);
     }
 
@@ -722,10 +728,17 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String in) {
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+        String query="SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
 
+    /**
+    * Executes a search (sql query) on the current database
+    * and returns the nodes that result from the search as a Vector.
+    * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
+    * @param query The SQL query
+    * @return A Vector which contains all nodes that were found
+    */
     private Vector basicSearch(String query) {
         //System.out.println(query);
         // test with counting
@@ -766,7 +779,7 @@ public class MMObjectBuilder extends MMTable {
         try {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database));
+            ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database));
             Vector results=new Vector();
             Integer number;
             String tmp;
@@ -839,7 +852,7 @@ public class MMObjectBuilder extends MMTable {
 	
 	// temp mapper hack only works in single order fields
 	sorted=mmb.getDatabase().getAllowedField(sorted);
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted;
+        String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
         return(basicSearch(query));
     }
 
@@ -852,7 +865,7 @@ public class MMObjectBuilder extends MMTable {
 	sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in!=null && in.equals("")) return(new Vector());
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
+        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
         return(basicSearch(query));
     }
 
@@ -862,7 +875,7 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return(basicSearch(query));
     }
 
@@ -883,10 +896,10 @@ public class MMObjectBuilder extends MMTable {
 	// temp mapper hack only works in single order fields
 	sorted=mmb.getDatabase().getAllowedField(sorted);
         if (direction) {
-            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted+" ASC";
+            String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
             return(basicSearch(query));
         } else {
-            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted+" DESC";
+            String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
             return(basicSearch(query));
         }
     }
@@ -900,10 +913,10 @@ public class MMObjectBuilder extends MMTable {
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
         if (direction) {
-            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
+            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
             return(basicSearch(query));
         } else {
-            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
+            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
             return(basicSearch(query));
         }
     }
@@ -913,7 +926,7 @@ public class MMObjectBuilder extends MMTable {
     */
     public Enumeration searchWithWhere(String where) {
         // do the query on the database
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" where "+where;
+        String query="SELECT * FROM "+getFullTableName()+" where "+where;
         Vector results=basicSearch(query);
         if (results!=null) {
             return results.elements();
@@ -924,7 +937,10 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * read the result into a vector
+    * Store the nodes in the resultset, obtained from a builder, in a vector.
+    * The nodes retrieved are added to the cache.
+    * @param rs The resultset containing the nodes
+    * @return The vector which is to hold the data
     */
     private Vector readSearchResults(ResultSet rs) {
         MMObjectNode node=null;
@@ -963,8 +979,11 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * read the result into a sorted vector
-    * (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult)
+    * Store the nodes in the resultset, obtained from a builder, in a sorted vector.
+    * (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult ?)
+    * The nodes retrieved are added to the cache.
+    * @param rs The resultset containing the nodes
+    * @return The SortedVector which holds the data
     */
     public SortedVector readSearchResults(ResultSet rs, SortedVector sv) {
         try {
@@ -1401,7 +1420,7 @@ public class MMObjectBuilder extends MMTable {
     */
 
     /**
-    * return the age in days of the node
+    * Return the age in days of the node
  	* @deprecated Use {@link #getAge(java.lang.String)} in MMObjectNode instead.
     */
     public int getAge(MMObjectNode node) {
@@ -1872,7 +1891,7 @@ public class MMObjectBuilder extends MMTable {
 
     public boolean created() {
         if (database!=null) {
-            return(database.created(mmb.getBaseName()+"_"+tableName));
+            return(database.created(getFullTableName()));
         } else {
             return(super.created());
         }
