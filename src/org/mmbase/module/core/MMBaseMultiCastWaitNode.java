@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
 * MMBaseMultiCastWaitNode is a wrapper class for MMObjectNode we want to
 * put into a 'waiting for a change' mode we don't block on the object
@@ -16,6 +19,8 @@ package org.mmbase.module.core;
 *
 */
 public class MMBaseMultiCastWaitNode {
+
+    private static Logger log = Logging.getLoggerInstance(MMBaseMultiCastWaitNode.class.getName()); 
 
 	MMObjectNode node;
 	int number;
@@ -29,7 +34,7 @@ public class MMBaseMultiCastWaitNode {
 		try {
 			wait(time);
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 		}
 	}
 

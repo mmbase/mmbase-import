@@ -23,6 +23,9 @@ import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * The module which provides access to the multimedia database
  * it creates, deletes and gives you methods to keep track of
@@ -33,6 +36,8 @@ import org.mmbase.util.*;
  * @author Hans Speijer
  */
 public class MMEdit extends ProcessorModule {
+
+    private static Logger log = Logging.getLoggerInstance(MMEdit.class.getName()); 
 
     Hashtable commandHandlers; // The objects that handle process, replace and
     // list commands
@@ -200,9 +205,9 @@ public class MMEdit extends ProcessorModule {
                 vars.put("EDITSTATE",state);
                 // XXX pity: I get a ClassCast Exception here
                 //handler = (CommandHandlerInterface)builder;
-                //if (debug) debug("process() calling BUILDER "+builder.getTableName());
+                //if (debug) log.debug("process() calling BUILDER "+builder.getTableName());
                 builder.process(sp,tok,cmds,vars);
-                //if (debug) debug("mark: builder.process() called");
+                //if (debug) log.debug("mark: builder.process() called");
             }
 
         }
@@ -220,7 +225,7 @@ public class MMEdit extends ProcessorModule {
 
         StringTokenizer tok = new StringTokenizer(command,"-\n\r");
         token = tok.nextToken();
-        // System.out.println("MMEDIT->"+token+" "+commandHandlers);
+        // log.error("MMEDIT->"+token+" "+commandHandlers);
         handler =  (CommandHandlerInterface)commandHandlers.get(token);
 
         if (handler != null) return handler.replace(sp, tok);

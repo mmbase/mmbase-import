@@ -24,11 +24,15 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
  */
 public class MMLanguage extends ProcessorModule {
+
+    private static Logger log = Logging.getLoggerInstance(MMLanguage.class.getName()); 
 
     MMBase mmb=null;
     String languagePrefix;
@@ -43,7 +47,7 @@ public class MMLanguage extends ProcessorModule {
         languagePrefix=mmb.getLanguage();
         */
         languagePrefix = null;
-        //System.out.println("MMLanguage: language prefix = "+languagePrefix);
+        //log.debug("MMLanguage: language prefix = "+languagePrefix);
     }
 
 
@@ -82,7 +86,7 @@ public class MMLanguage extends ProcessorModule {
 
         String translated=getInitParameter(languagePrefix+"_"+term);
         if (translated==null || translated.equals("")) {
-            System.out.println("MMLanguage -> could not convert : "+term+" into : "+languagePrefix);
+            log.warn("MMLanguage -> could not convert : "+term+" into : "+languagePrefix);
             return(term);
         } else {
             return(translated);
