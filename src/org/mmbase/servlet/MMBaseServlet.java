@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.10 2002-06-30 19:35:08 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.11 2002-06-30 19:58:18 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -188,8 +188,8 @@ public class MMBaseServlet extends  HttpServlet {
      * @return the list of servlet mappings associated with the topic, or null if there are none
      */
     public static List getServletMappingsByAssociation(String topic) {
-        String name=getServletByAssociation(topic);
-        if (name!=null) {
+        String name = getServletByAssociation(topic);
+        if (name != null) {
             return getServletMappings(name);
         } else {
             return null;
@@ -204,7 +204,12 @@ public class MMBaseServlet extends  HttpServlet {
      * @return the name of the servlet associated with the topic, or null if there is none
      */
     public static String getServletByAssociation(String topic) {
-        return ((ServletEntry) associatedServlets.get(topic)).name;
+        ServletEntry e = ((ServletEntry) associatedServlets.get(topic));
+        if (e != null) {
+            return e.name;
+        } else {
+            return null;
+        }
     }
 
 
