@@ -4,7 +4,7 @@
 
    @author Eduard Witteveen
    @author Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.3 2002-08-03 09:44:46 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.4 2002-08-05 22:01:36 michiel Exp $
    
 -->
 <project name="project naam" default="full" basedir=".">
@@ -97,6 +97,18 @@
   <!-- store / zip the current sources--> 
   <target name="storesource" depends="mirror">
     <mkdir dir="${destination.dir}"/>
+     <echo file="${destination.dir}/README">
+This is the nightly build ${version}.
+It contains the following:
+README         This file
+mmbase-src.zip The source from which this build was made
+mmbase-lib.zip The libraries against which the source were compiled
+mmbase.zip     Contains among others an mmbase.jar
+mmbase.war     A web-application archive, configured for an hsql database
+dtd            The dtd's unpacked from the source directory
+api            API-documentation
+</echo>
+
     <zip zipfile="${sourcepackage.path}"
       basedir="${buildlocation.dir}"
       />
@@ -119,7 +131,11 @@
   <property name="debug" value="on" /> <!-- for nightly builds it is more or less logical to compile with debug = on -->	
   
 
-  <target name="build" depends="mirror">
+  <target name="build.jar" depends="mirror">
+    <ant antfile="${buildlocation.buildfile.path}" dir="${buildlocation.buildscript.dir}" target="jar" />
+	</target>
+
+  <target name="build.war" depends="mirror">
     <ant antfile="${buildlocation.buildfile.path}" dir="${buildlocation.buildscript.dir}" target="war" />
 	</target>
 
@@ -132,7 +148,8 @@
   <!-- ================================================================================ 
         package / copy  all interesting stuff 
   -->
-  <property name="mmbase.lib.dir" value="${buildlocation.dir}/build/mmbase/mmbase-webapp/WEB-INF/lib"/> 
+  <property name="mmbase.compile.lib.dir" value="${buildlocation.dir}/build/lib"/> 
+  <property name="mmbase.release.lib.dir" value="${buildlocation.dir}/build/mmbase/mmbase-webapp/WEB-INF/lib"/> 
   <property name="mmbase.jar.file" value="mmbase.jar"/>
   <property name="mmbase.web.dir" value="${buildlocation.dir}/build/webroot"/> 
   
@@ -144,19 +161,21 @@
     </copy>
   </target>
 
-  <target name="storebuild" depends="build">
+  <target name="storebuild" depends="build.jar">
     <!-- our build thingies -->
-    <zip zipfile="${jarpackage.path}">              
-      <fileset dir="${mmbase.lib.dir}" includes="${mmbase.jar.file}" />
+    <zip zipfile="${jarpackage.path}">
+      <fileset dir="${mmbase.release.lib.dir}" includes="${mmbase.jar.file}" />
       <fileset dir="${mmbase.web.dir}" />
     </zip>
 
     <!-- the libs we used -->
-    <zip zipfile="${libpackage.path}" basedir="${mmbase.lib.dir}">
+    <zip zipfile="${libpackage.path}" basedir="${mmbase.compile.lib.dir}">
       <exclude name="${mmbase.jar.file}"/>
       <include name="*.jar"/>
-    </zip>         
-		
+    </zip>         		
+  </target>
+
+  <target name="storewar" depends="build.war">
 		<!-- the war... -->
     <copy file="${buildlocation.dir}/build/mmbase/mmbase.war" tofile="${warpackage.file}"/>
 
@@ -171,6 +190,6 @@
   <!-- ================================================================================
       The default target is 'full': do a nightly build.
      --> 
-  <target name="full" depends="clean,storesource,storejavadocs,storebuild">
+  <target name="full" depends="clean,storesource,storejavadocs,storebuild,storewar">
   </target>
 </project>
