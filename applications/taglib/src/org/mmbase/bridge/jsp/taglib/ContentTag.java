@@ -10,9 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.TransformingBodyContent;
 import org.mmbase.bridge.User;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
+import javax.servlet.jsp.tagext.BodyContent;
 import java.util.*;
 
 import org.mmbase.util.transformers.*;
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.21 2004-03-24 10:51:24 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.22 2004-06-14 12:52:08 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -186,7 +188,7 @@ public class ContentTag extends LocaleTag  {
     
 
     /**
-     * @return A CharTranformer or null if no postprocessing needed
+     * @return A CharTransformer or null if no postprocessing needed
      * @throws JspTagException can occur if taglibcontent.xml is misconfigured
      */
     protected CharTransformer getPostProcessor() throws JspTagException {
@@ -283,6 +285,7 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
+
     /** 
      * Sets a user. This is used by cloud-tag. It does not do it if the user is anonymous, so for
      * the moment it is only checked for 'null'.
@@ -307,9 +310,20 @@ public class ContentTag extends LocaleTag  {
                     // perhaps default cache behaviour should be no-cache if there is a session?
                     long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
                     if (exp == 0) { // means : cannot be cached!
-                        response.setHeader("Cache-Control", "no-cache");
-                        response.setHeader("Pragma","no-cache");
-                        response.setDateHeader("Expires",  0); //System.currentTimeMillis());
+
+
+                        response.setHeader("Pragma", "no-cache"); // not really defined what should do this on response. Cache-Control should actually do the work.
+
+                        response.setHeader("Cache-Control", "no-store");
+                        // according to rfc2616 sec 14 also 'no-cache' should have worked, but apache 2 seems to ignore it.
+
+                        // long now = System.currentTimeMillis();                        
+                        // according to  rfc2616 sec14 'already expires' means that date-header is expires header
+                        // sadly, this does not work:
+                        // perhaps because tomcat overrides the date header later, so a difference of a second can occur
+                        // response.setDateHeader("Date",     now);                         
+                        // response.setDateHeader("Expires",  now); 
+                       
                     } else {
                         String cacheControl = "public";
                         if (user != null) {
@@ -319,19 +333,18 @@ public class ContentTag extends LocaleTag  {
                         long later = System.currentTimeMillis() + exp * 1000;
                         response.setDateHeader("Expires", later);
                         response.setHeader("Cache-Control", cacheControl);
-                    }
-                    
+                    }                    
                 }
             }
             CharTransformer post = getPostProcessor();
             if (post != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("A postprocessor was defined " + post);
-                    log.trace("processing  " + bodyContent.getString());
+                    // log.trace("processing  " + bodyContent.getString());
                 }
-               
+                
                 post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
-
+                
             } else {
                 if (EVAL_BODY == EVAL_BODY_BUFFERED) {
                     // only needed for lousy app-servers
@@ -341,12 +354,14 @@ public class ContentTag extends LocaleTag  {
                         }
                     } catch (java.io.IOException ioe){
                         throw new TaglibException(ioe);
-                    } 
+                    }                     
                 }
             }
         }
         return SKIP_BODY;
     }
+
+
 
 }
 
