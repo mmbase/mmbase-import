@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.43 2002-06-28 21:01:57 michiel Exp $
+ * @version $Id: servdb.java,v 1.44 2002-06-28 21:17:02 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -83,10 +83,6 @@ public class servdb extends JamesServlet {
         if (sessions == null) {
             log.debug("Could not find session module, proceeding without sessions");
         }
-        // clear the status of images
-        // maybe this should be called elsewhere,
-        // and servlet-data depending classes should register?
-        AbstractImages.clear();
     }
 
 
