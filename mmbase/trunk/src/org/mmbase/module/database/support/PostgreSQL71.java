@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.16 2002-09-16 15:07:30 pierre Exp $
+ * @version $Id: PostgreSQL71.java,v 1.17 2002-10-03 09:12:23 eduard Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -613,9 +613,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         } catch (SQLException sqle) {
             log.error("error, could not create table for builder " + tableName);
             for(SQLException se = sqle;se != null; se = se.getNextException()){
+                log.error("\tSQL      : " + sql);
                 log.error("\tSQLState : " + se.getSQLState());
-                log.error("\tErrorCode : " + se.getErrorCode());
-                log.error("\tMessage : " + se.getMessage());
+                log.error("\tErrorCode: " + se.getErrorCode());
+                log.error("\tMessage  : " + se.getMessage());
             }
             try {
                 if(preStmt!=null) preStmt.close();
@@ -661,9 +662,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             log.error("error, could not insert record for builder " + bul.getTableName());
             // log.error(Logging.stackTrace(sqle));
             for(SQLException se = sqle;se != null; se = se.getNextException()){
+                log.error("\tSQL      : " + sql);
                 log.error("\tSQLState : " + se.getSQLState());
-                log.error("\tErrorCode : " + se.getErrorCode());
-                log.error("\tMessage : " + se.getMessage());
+                log.error("\tErrorCode: " + se.getErrorCode());
+                log.error("\tMessage  : " + se.getMessage());
             }
             try {
                 if(preStmt!=null) preStmt.close();
@@ -719,7 +721,9 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                 }
             }
         }
-        String sql = "INSERT INTO "+mmb.baseName+"_"+tableName+" ("+ getNumberString() +", "+ fieldNames+") VALUES ("+node.getIntValue("number")+", "+fieldValues+")";
+	// WHY DID THIS BEHAVIOUR CHANGE??
+	//        String sql = "INSERT INTO "+mmb.baseName+"_"+tableName+" ("+ getNumberString() +", "+ fieldNames+") VALUES ("+node.getIntValue("number")+", "+fieldValues+")";
+        String sql = "INSERT INTO "+mmb.baseName+"_"+tableName+" ("+ fieldNames+") VALUES ("+fieldValues+")";
         log.trace("created pre sql: " + sql);
         return sql;
     }
