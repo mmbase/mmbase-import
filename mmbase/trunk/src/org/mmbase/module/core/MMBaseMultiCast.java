@@ -135,7 +135,7 @@ public class MMBaseMultiCast implements Runnable {
 			return(false);
 		}
 		if (machine.equals(parent.machineName)) {
-			/* changed if for jikes
+			// changed if for jikes
 			if (bul!=null) {
 				new MMBaseMultiCastProbe(this,bul,id,tb,ctype,false);
 			}
