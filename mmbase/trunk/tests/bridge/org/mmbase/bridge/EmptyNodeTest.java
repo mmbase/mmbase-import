@@ -59,9 +59,15 @@ public class EmptyNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("xml")) {
-                // I don't know..
+                assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("node")) {
-                // undefined
+                assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("boolean")) {
+                assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("datetime")) {
+                assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("list")) {
+                assertTrue(bytes.length == 0);
             } else {
                 fail("Unknown fieldtype encountered " + fieldTypes[i]);
             }
