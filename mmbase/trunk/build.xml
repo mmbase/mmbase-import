@@ -1484,6 +1484,7 @@ Version: MMBase build ${version}
       <patternset>
         <include name="org/w3c/dom/Document.class"/>
         <include name="org/w3c/dom/Node.class"/>
+        <include name="org/w3c/dom/Element.class"/>
       </patternset>
     </unjar>
     <copy todir="${build.dir}/rmmcitmp">
