@@ -14,19 +14,12 @@ package org.mmbase.storage;
  * This includes database connection failures at startup, non-existing vital resources, etc.
  * In general, a StorageError should indicate that a storage layer is unuseable. 
  * This will normally mean MMBase will fail to start. 
- * @todo This exception implements a few constructors also found in java 1.4.
- * These implementations need be adjusted for java 1.4 to enable excpetion chaining.
- * To adjust, replace the constructor bodies with the 1.4 commented-out code (so that these
- * tasks are delegated to Exception), and remove the private field cause and the methods
- * initCause() and getCause();
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageError.java,v 1.1 2003-08-21 09:59:27 pierre Exp $
+ * @version $Id: StorageError.java,v 1.2 2003-08-28 16:00:24 pierre Exp $
  */
 public class StorageError extends Error {
-
-    private Throwable cause=null;
 
     /**
      * Constructs a <code>StorageException</code> with <code>null</code> as its
@@ -54,10 +47,7 @@ public class StorageError extends Error {
      * @param Throwable the cause of the error
      */
     public StorageError(Throwable cause) {
-        super(cause==null ? null : org.mmbase.util.logging.Logging.stackTrace(cause));
-        initCause(cause);
-        // 1.4 code:
-        // super(cause);
+        super(cause);
     }
 
     /**
@@ -69,36 +59,7 @@ public class StorageError extends Error {
      * @param Throwable the cause of the error
      */
     public StorageError(String message, Throwable cause) {
-        super(message);
-        initCause(cause);
-        // 1.4 code:
-        // super(message,cause);
+        super(message,cause);
     }
-
-    /**
-     * Sets the cause of the exception.
-     *
-     * @return the cause of the error
-     */
-    public Throwable initCause(Throwable cause) {
-        if (cause==this) {
-          throw new IllegalArgumentException("A throwable cannot be its own cause");
-        }
-        if (this.cause!=null) {
-          throw new IllegalStateException("A cause can be set at most once");
-        }
-        this.cause=cause;
-        return cause;
-    }
-
-    /**
-     * Returns the cause of the exception.
-     *
-     * @return the cause of the exception
-     */
-    public Throwable getCause() {
-        return cause;
-    }
-
 
 }
