@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version 28 May 2001
+ * @version $Id: Community.java,v 1.8 2003-03-10 11:50:17 pierre Exp $
  */
 
 public class Community extends MMObjectBuilder {

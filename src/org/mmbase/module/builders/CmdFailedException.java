@@ -11,7 +11,7 @@ package org.mmbase.module.builders;
 
 /**
  * @author David V van Zeventer
- * @version 25 Jan 1999
+ * @version $Id: CmdFailedException.java,v 1.4 2003-03-10 11:50:17 pierre Exp $
  */
 public class CmdFailedException extends Exception {
         public String errval;

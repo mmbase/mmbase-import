@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version 9 Apr 2001
+ * @version $Id: ImagePusher.java,v 1.7 2003-03-10 11:50:24 pierre Exp $
  */
 public class ImagePusher implements Runnable {
 

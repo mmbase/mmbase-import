@@ -27,8 +27,8 @@ import org.mmbase.util.logging.Logging;
 * needed for mmbase for each database.
 *
 * @author Daniel Ockeloen
-* @version 12 Mar 1997
-* @version $Id: MMOORel2Node.java,v 1.9 2003-03-07 08:50:20 pierre Exp $
+* @version $Id: MMOORel2Node.java,v 1.10 2003-03-10 11:50:38 pierre Exp $
+* @version $Id: MMOORel2Node.java,v 1.10 2003-03-10 11:50:38 pierre Exp $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version 27 Mar 1997
+ * @version $Id: StatisticsProbe.java,v 1.6 2003-03-10 11:50:12 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {

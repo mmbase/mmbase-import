@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @version 27 Mar 1997
+ * @version $Id: StatisticsProbe.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {

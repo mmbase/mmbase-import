@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @sql
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: Versions.java,v 1.8 2003-03-10 11:50:21 pierre Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 

@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Id: BasicSortOrder.java,v 1.4 2003-03-10 11:50:56 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {

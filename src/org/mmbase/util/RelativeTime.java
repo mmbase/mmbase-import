@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * or as a set of time attribute integers (hours,minutes,seconds and milliseconds).
  *
  * @author David V van Zeventer
- * @version 12 Nov 1999
+ * @version $Id: RelativeTime.java,v 1.5 2003-03-10 11:51:11 pierre Exp $
  */
 public class RelativeTime {
 

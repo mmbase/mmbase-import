@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version 28 Oct 1998
+ * @version $Id: MediaOutputs.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
  */
 public class MediaOutputs extends MMObjectBuilder {
 

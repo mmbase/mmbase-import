@@ -24,7 +24,7 @@ import org.w3c.dom.Node;
  * This class can be used to easily retrive these parameters.
  *
  * @author Daniel Ockeloen
- * @version 19 Apr 2001
+ * @version $Id: XMLContextDepthReader.java,v 1.6 2003-03-10 11:51:14 pierre Exp $
  */
 public class XMLContextDepthReader {
 

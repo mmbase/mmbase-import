@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Apr 2001
+ * @version $Id: VersionCacheWhenNode.java,v 1.3 2003-03-10 11:50:21 pierre Exp $
  */
 public class VersionCacheWhenNode extends Object {
 

@@ -14,7 +14,7 @@ import org.mmbase.module.core.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: Cassettes.java,v 1.7 2003-03-10 11:50:16 pierre Exp $
  */
 public class Cassettes extends MMObjectBuilder {
 

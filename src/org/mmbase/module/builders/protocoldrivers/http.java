@@ -22,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  * It can signal a specific remote builder node using HTTP GET.
  *
  * @rename Http
-  * @version $Revision: 1.14 $ $Date: 2003-03-07 08:50:11 $
+  * @version $Id: http.java,v 1.15 2003-03-10 11:50:23 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {

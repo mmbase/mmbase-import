@@ -18,8 +18,6 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @author Case Roole, cjr@dds.nl
- *
  * XSL conversion module
  *
  * Right now, only the replace() method is defined. It is called as:
@@ -27,31 +25,8 @@ import org.mmbase.util.logging.Logging;
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
- * $Id: XSLConvert.java,v 1.7 2003-03-04 15:26:34 nico Exp $
- *
- * $Log: not supported by cvs2svn $
- * Revision 1.6  2001/07/16 10:08:08  jaco
- * jaco: Moved all configuration stuff to MMBaseContext.
- * If needed params not found or incorrect a ServletException with a description isthrown.
- * It's now again possible to not redirect System.out and System.err to a file.
- * Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
- * If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
- *
- * Revision 1.5  2001/07/09 12:30:02  jaco
- * jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
- *
- * Revision 1.4  2001/04/11 10:06:55  michiel
- * michiel: new logging system
- *
- * Revision 1.3  2000/08/22 09:34:30  daniel
- * small fix for mmdemo
- *
- * Revision 1.2  2000/08/10 20:06:04  case
- * cjr: removed some debug and added description of module
- *
- * Revision 1.1  2000/08/10 15:08:17  case
- * cjr: XSL conversion module - call as $MOD-XSLCONVERT-xmlpath-xslfile
- *
+ * @author Case Roole, cjr@dds.nl
+ * @version $Id: XSLConvert.java,v 1.8 2003-03-10 11:50:13 pierre Exp $
  */
 public class XSLConvert extends ProcessorModule {
 

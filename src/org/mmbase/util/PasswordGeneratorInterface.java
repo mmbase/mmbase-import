@@ -20,7 +20,7 @@ package org.mmbase.util;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version 9 Jan 1997
+ * @version $Id: PasswordGeneratorInterface.java,v 1.5 2003-03-10 11:51:09 pierre Exp $
  */
 
 public interface PasswordGeneratorInterface {

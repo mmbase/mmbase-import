@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @rename Scancache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 10 Apr 2001
+ * @version $Id: scancache.java,v 1.38 2003-03-10 11:50:14 pierre Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 

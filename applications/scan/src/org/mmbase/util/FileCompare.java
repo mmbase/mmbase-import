@@ -16,7 +16,7 @@ import java.io.File;
  * @see CompareInterface
  *
  * @author David V van Zeventer
- * @version 12 November 1998
+ * @version $Id: FileCompare.java,v 1.6 2003-03-10 11:51:07 pierre Exp $
  */
 public class FileCompare implements CompareInterface {
 

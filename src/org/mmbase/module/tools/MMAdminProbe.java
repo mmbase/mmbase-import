@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * Bootstrap class that wait's in a thead for MMBase to have a running state. Once the state is running
  * it calls MMAdmin.probeCall() and finishes.
  * @author Daniel Ockeloen
- * @version  $Revision: 1.5 $ $Date: 2003-03-04 14:39:56 $ 
+ * @version $Id: MMAdminProbe.java,v 1.6 2003-03-10 11:50:40 pierre Exp $ 
  */
 public class MMAdminProbe implements Runnable {
 

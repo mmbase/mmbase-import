@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servjumpers
   * @author Daniel Ockeloen
- * @version 24 Apr 2001
+ * @version $Id: servjumpers.java,v 1.17 2003-03-10 11:50:42 pierre Exp $
  */
 public class servjumpers extends JamesServlet {
     private static Logger log;

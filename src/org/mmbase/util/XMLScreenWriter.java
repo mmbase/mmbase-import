@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
  * Writes XML as pretty printed HTML
  *
  * @author Cees Roele
- * @version 19 Apr 2001
+ * @version $Id: XMLScreenWriter.java,v 1.9 2003-03-10 11:51:15 pierre Exp $
  */
 public class XMLScreenWriter extends XMLBasicReader {
 
