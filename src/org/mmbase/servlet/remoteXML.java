@@ -7,6 +7,10 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Log: not supported by cvs2svn $
+$Id: remoteXML.java,v 1.12 2001-03-22 17:30:49 vpro Exp $
+*/
 package org.mmbase.servlet;
  
 import java.io.*;
@@ -19,16 +23,18 @@ import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 
 /**
- * The remoteXML Servlet serves GET and POST requests coming eg. remotebuilders
- * like a cdplayer that wants to know it's new state of itself or wants to send its 
- * own state change back to mmbase, inwhich mmbase merges and commits it. 
+ * The remoteXML Servlet serves GET requests coming from remotebuilders 
+ * and POST requests coming both remotebuilders and mmservers. 
+ * Remotebuilder requests can come from a cdplayer that wants to update itself or wants to send 
+ * itself (eg. after statechange) to mmbase, inwhich mmbase merges and commits it. 
+ * 
  * The servletname is called remoteXML.db
  * - An incoming GET request looks like: 
  * "/remoteXML.db?builderTypeName+serviceName+http+hostname+portnr GET"
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.11 $ $Date: 2001-03-15 14:38:20 $
+ * @version $Revision: 1.12 $ $Date: 2001-03-22 17:30:49 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
@@ -72,7 +78,8 @@ public class remoteXML extends JamesServlet {
 		try {
 			HttpPost poster=new HttpPost(req);
 			String xml=poster.getPostParameter("xmlnode");
-			commitXML(xml,req);
+			boolean commitOk = commitXML(xml,req);
+			if (!commitOk) debug("handlePost: ERROR: commitXML Failed for xml:"+xml); 
 		} catch(Exception e) {
 			debug("handlePost: ERROR POST failed from remoteXML");
 			e.printStackTrace();
@@ -80,87 +87,127 @@ public class remoteXML extends JamesServlet {
 	}
 
 	/**
-	 * Dit is rare code die ik misschien moet verbeteren of niet.
-	 * Any how , als de nodename niet gevonden wordt, wordt de host gecheckt.
-	 * Als deze hetzelfde is wordt ie niet gebruiokt, maar weeer de oude null
-	 * en dan wordt er een lege body gezend.
+	 * Checks what node is being requested and tries to find it in mmbase. If it can be found, 
+	 * it will be send back in xml. If it can't be found it will be inserted in mmbase but only if 
+	 * this node is of type ServiceBuilder, otherwise request & insertion will be canceled.
+	 * @param req the current HttpServletRequest
+	 * @param res the current HttpServletResponse
 	 */
 	private void handleGet(HttpServletRequest req,HttpServletResponse res) {
 		if (debug) debug("handleGet: Getting info from querystring");
-		String body="";
-		String buildername  = getParam(req,0);
-		String nodename		= getParam(req,1);
-		String proto		= getParam(req,2);
-		String host			= getParam(req,3);
-		String port			= getParam(req,4);
-		String servername	= proto+"://"+host+":"+port;
-		if (debug) debug("handleGet: Buildername:"+buildername+" Nodename:"+nodename+" Servername:"+servername);
+		String buildername =getParam(req,0);
+		String nodename = getParam(req,1);
+		String proto = getParam(req,2);
+		String host = getParam(req,3);
+		String port = getParam(req,4);
+		String remoteUrl= proto+"://"+host+":"+port;
+		if (debug) debug("handleGet: Buildername:"+buildername+" Nodename:"+nodename+" remoteUrl:"+remoteUrl);
 
 		if (debug) debug("handleGet: Getting node for reference:"+nodename);
 		MMObjectBuilder bul=mmbase.getMMObject(buildername);
-		String number=bul.getNumberFromName(nodename);
-		if (number!=null) {
-			if (debug) debug("handleGet: Found number "+number+" for nodename:"+nodename);
-		} else {
-			if (debug) debug("handleGet: NOTE: Can't find objnr for "+nodename+", maybe a new remotebuilder?");
-			ServiceBuilder sbul=(ServiceBuilder)bul;	
-			MMServers server=(MMServers)mmbase.getMMObject("mmservers");
-			// String snumber=server.getNumberFromName( servername );
-			if (debug) debug("handleGet: Searching mmserver where host=servername="+servername);
-			Enumeration e2 = server.search( "WHERE host='"+servername+"'" );
-			if (e2.hasMoreElements()) {
-				MMObjectNode snode = (MMObjectNode) e2.nextElement();
-				try {
-					sbul.addService(nodename,"org.test",snode);
-				} catch(Exception e) {
-					debug("handleGet: ERROR by addService, snode("+snode+"): got exception!");
-					debug("handleGet: ERROR by addService, Buildername:"+buildername+" Nodename:"+nodename+" Servername:"+servername);
-					e.printStackTrace();
+		if (bul!=null) {
+			int number=-1;
+			String numberStr=bul.getNumberFromName(nodename);
+			if (numberStr!=null) {
+				if (debug) debug("handleGet: Found number "+numberStr+" for nodename:"+nodename);
+				try { number = Integer.parseInt(numberStr);} catch (NumberFormatException nfe) {
+					debug("handleGet: ERROR: number:"+numberStr+" is not a number.");
+					nfe.printStackTrace();
 				}
 			} else {
-				debug("handleGet(): ERROR: Can't find mmservernode where host="+servername);
+				debug("handleGet: Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
+				if (bul instanceof ServiceBuilder) {
+					ServiceBuilder serviceBuilder=(ServiceBuilder)bul;	
+					number = insertRemoteBuilderNode(serviceBuilder,buildername,nodename,remoteUrl);
+					debug("handleGet: INSERTED "+buildername+" node:"+nodename+" object:"+number);
+				} else
+					debug("handleGet: INFO: Requested node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
 			}
-			
-			//number=bul.getNumberFromName(number); // ???????????????????????????????????????????????????????
-			number=bul.getNumberFromName(nodename);	
-		}
-		
-		MMObjectNode node=bul.getNode(number);
-		if (node!=null) {
-			body=node.toXML();	
-		}
-		try {
-			if (debug) debug("handleGet: Sending body back to client.");
-			// Open	a output stream so you can write to the client
-			PrintStream out = new PrintStream(res.getOutputStream());
-			// Set the content type of this request
-			res.setContentType("text/plain");
-			res.setContentLength(body.length());
-			out.print(body);
-			out.flush();
-			out.close();
-		} catch(Exception e) {
-			debug("handleGet(): ERROR: Sending requested data for GET failed.");
-			e.printStackTrace();
+			if (number!=-1) {
+				String body="";
+				MMObjectNode node=bul.getNode(number);
+				if (node!=null) {
+					if (debug) debug("handleGet: Filling body with xml version of "+buildername+" node:"+nodename);
+					body=node.toXML();	
+				} else 
+					debug("handleGet: ERROR: Can't get node for number:"+number+", node="+node);
+				try {
+					if (debug) debug("handleGet: Sending body back to client.");
+					// Open	a output stream so you can write to the client
+					PrintStream out = new PrintStream(res.getOutputStream());
+					res.setContentType("text/plain");
+					res.setContentLength(body.length());
+					out.print(body);
+					out.flush();
+					out.close();
+				} catch(Exception e) {
+					debug("handleGet: ERROR: Sending requested data for GET failed.");
+					e.printStackTrace();
+				}
+			} else
+				if (debug) debug("handleGet: ERROR: number="+number+" node insert failed or node is wrong type, cancelling request.");
+		} else
+			debug("handleGet: ERROR can't get builder: "+buildername+" from mmbase.");
+	}
+
+	/**
+	 * Searches mmserver object representing the remoteserver from which the GET/POST request comes, 
+	 * and adds the remotebuilder node as a servicebuilder node to mmbase.
+	 * MMServer search is done using remotebuilder serverUrl as host fieldname. 
+	 * @param serviceBuilder a serviceBuilder reference.
+	 * @param builderName the name of the remotebuilder type.
+	 * @param nodeName the name of the new node that needs to be added. 
+	 * @param remoteUrl the url of the remoteserver that sent the request.
+	 * @return true when insert succeeds; false otherwise.
+	 */	
+	public int insertRemoteBuilderNode(ServiceBuilder serviceBuilder,String builderName,String nodeName,String remoteUrl) {
+		MMServers mmserverBuilder=(MMServers)mmbase.getMMObject("mmservers");
+		if (debug) debug("insertRemoteBuilderNode: Searching mmserver where host=remoteUrl="+remoteUrl);
+		Enumeration mmsEnum = mmserverBuilder.search( "WHERE host='"+remoteUrl+"'");
+		if (mmsEnum.hasMoreElements()) {
+			MMObjectNode mmserverNode = (MMObjectNode) mmsEnum.nextElement();
+			try {
+				// ? dunno what this var does, but it's not used by remote system as far as I've found out.
+				String localclass = "org.test";
+				// Inserts a remotebuilder type node as a servicebuilder node and relates it to mmserverNode.
+				serviceBuilder.addService(nodeName,localclass,mmserverNode);
+			} catch(Exception e) {
+				debug("insertRemoteBuilderNode: ERROR in addService, mmserverNode:"+mmserverNode);
+				debug("insertRemoteBuilderNode: ERROR in addService, Buildername:"+builderName+" Nodename:"+nodeName+" remoteUrl:"+remoteUrl);
+				e.printStackTrace();
+				return -1;
+			}
+			// Search newly inserted servicenode and return number.
+			Enumeration e = serviceBuilder.search("WHERE name='"+nodeName+"'");
+			if (e.hasMoreElements()) {
+				MMObjectNode serviceNode = (MMObjectNode) e.nextElement();
+				return serviceNode.getIntValue("number");	
+			} else {
+				debug("insertRemoteBuilderNode: ERROR: Can't find just inserted! remotebuilder node where name="+nodeName);
+				return -1;
+			}
+		} else {
+			debug("insertRemoteBuilderNode: ERROR: Can't find mmservernode where host="+remoteUrl);
+			return -1;
 		}
 	}
-	
+
 	/**
-	 * Converts the node from an xml String to an MMObjectNode and commits it.
-	 * When number field can't be found in the xmlnode, a new service node is created
-	 * and inserted.
-	 * @param xml a String with the service in xml form.
+	 * Checks what node is being posted and tries to find it in mmbase. If it can be found, 
+	 * the posted node will be merged . If it can't be found it will be inserted in mmbase but only if 
+	 * this node is of type ServiceBuilder, otherwise post will be canceled.
+	 * @param xml posted node in xml.
 	 * @param req the HttpServletRequest.
-	 * @return true, always.
+	 * @return true when posted node is merged, false otherwise.
 	 */
 	public boolean commitXML(String xml,HttpServletRequest req) {
-		if (debug) debug("commitXML: Storing xml in db, xml:"+xml);
+		if (debug) debug("commitXML: Storing xmlnode in db, xml:"+xml);
 
 		Hashtable values=getXMLValues(xml);
-		String remhost=req.getRemoteAddr();
-		String givenhost=(String)values.get("host");
 
 		// hack for braindead psion jdk
+		String remhost=req.getRemoteAddr();
+		String givenhost=(String)values.get("host");
 		if (givenhost!=null && givenhost.indexOf("http://localhost")!=-1) {
 			debug("commitXML: HOST REPLACE=http://"+remhost+":8080");
 			values.put("host","http://"+remhost+":8080");	
@@ -169,33 +216,46 @@ public class remoteXML extends JamesServlet {
 		String buildername=(String)values.get("buildername");
 		MMObjectBuilder bul=mmbase.getMMObject(buildername);
 		if (bul!=null) {
-			if (debug) debug("commitXML: Getting name value from xml'ed node.");
-			String name=(String)values.get("name");
-			String number=bul.getNumberFromName(name);
-			if (number==null) {
-				if (debug) debug("commitXML: number is null! creating new "+buildername+" node");
-				ServiceBuilder sbul=(ServiceBuilder)bul;	
-				MMServers mmserverbul=(MMServers)mmbase.getMMObject("mmservers");
-				String snumber=mmserverbul.getNumberFromName("stationrunner");
-				try {
-					sbul.addService((String)values.get("name"),"cdplayerDummy",mmserverbul.getNode(snumber));
-				} catch(Exception e) {
-					debug("commitXML: ERROR: addService failed buildername("+buildername+"), snumber("+snumber+")");
-					e.printStackTrace();
+			String nodename=(String)values.get("name");
+			int number=-1;
+			String numberStr=bul.getNumberFromName(nodename);
+			if (numberStr!=null) {
+				if (debug) debug("commitXML: Found number "+numberStr+" for nodename:"+nodename);
+				try { number = Integer.parseInt(numberStr);} catch (NumberFormatException nfe) {
+					debug("commitXML: ERROR: number:"+numberStr+" is not a number.");
+					nfe.printStackTrace();
+					return false;
 				}
-				// What the hell, this doesn't work
-				number=bul.getNumberFromName(name);
-			}
-			if (debug) debug("commitXML: Getting node for "+buildername+" obj "+number);
-			MMObjectNode node=bul.getNode(number);
-			if (node!=null) {
-				mergeXMLNode(node,values);
-				node.commit();
 			} else {
-				debug("commitXML: ERROR can't get node for "+buildername+" obj "+number);
+				debug("commitXML: Can't find objnr for "+nodename+" -> inserting this new "+buildername+" node");
+				if (bul instanceof ServiceBuilder) {
+					ServiceBuilder serviceBuilder=(ServiceBuilder)bul;	
+					String remoteUrl=(String)values.get("host");
+					number = insertRemoteBuilderNode(serviceBuilder,buildername,nodename,remoteUrl);
+				} else {
+					debug("commitXML: INFO: Posted node is not of type ServiceBuilder but of type:"+buildername+", skipping insertion.");
+					return false;
+				}
 			}
-		} 
-		return(true);
+			if (number!=-1) {
+				if (debug) debug("commitXML: Getting node for "+buildername+" obj "+number);
+				MMObjectNode node=bul.getNode(number);
+				if (node!=null) {
+					mergeXMLNode(node,values); //merges related fields. in node.
+					node.commit();
+					return true;
+				} else {
+					debug("commitXML: ERROR: Can't get node for number:"+number+", node="+node);
+					return false;
+				}
+			} else {
+				if (debug) debug("handleGet: ERROR: number="+number+" node insert failed or node is wrong type, cancelling post.");
+				return false;
+			}
+		} else {
+			debug("commitXML: ERROR can't get builder: "+buildername+" from mmbase.");
+			return false;
+		}
 	}
 
 	/**
