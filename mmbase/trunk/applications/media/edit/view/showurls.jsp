@@ -25,6 +25,7 @@
 <mm:field name="filteredurls(smil,html,ram,wmp,rm)" jspvar="urls" vartype="list">
    <%
       Iterator i = urls.iterator();
+      int accesskey = 1;
       while(i.hasNext()) {
          URLComposer uc = (URLComposer) i.next();
          String url = uc.getURL();
@@ -38,7 +39,7 @@
          }
          String description = uc.getDescription(options);
          out.println("<h3>" + uc.getGUIIndicator(options) + "</h3>" + 
-                     "<p><a href='" + url + "'>" + url + "</a>" + completeIndication + "<//p>" + 
+                     "<p><a type='audio/x-pn-realaudio' accesskey='" + accesskey++ + "' href='" + url + "'>" + url + "</a>" + completeIndication + "<//p>" + 
                      (description != null ? "<p>" + description + "</p>" : "")
                       ); 
        

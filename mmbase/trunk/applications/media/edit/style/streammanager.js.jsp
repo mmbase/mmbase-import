@@ -21,6 +21,8 @@ function getPosition() {
   // real player
   if (getPlayer() == "real") {
      return parent.frames['left'].document.embeddedplayer.GetPosition();
+  } else if (getPlayer() == "qt") {
+    return parent.frames['left'].document.embeddedplayer.GetTime();
   } else {
      return parseInt(parent.frames['left'].document.embeddedplayer.CurrentPosition * 1000);
   }
@@ -29,6 +31,8 @@ function getPosition() {
 function setPosition(pos) {
   if (getPlayer() == "real") {
      parent.frames['left'].document.embeddedplayer.setPosition(pos);
+  } else if (getPlayer() == "qt") {
+   return parent.frames['left'].document.embeddedplayer.SetTime(pos);
   } else {
      parent.frames['left'].document.embeddedplayer.CurrentPosition = pos / 1000;
   }
