@@ -29,9 +29,6 @@ public class Urls extends MMObjectBuilder {
 			if (str.indexOf("http://")==0) {
 				str=str.substring(7);
 			}
-			if (str.length()>15) {
-				str=str.substring(0,12)+"...";
-			}
 		}
 		return(str);
 	}
