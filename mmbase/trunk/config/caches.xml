@@ -7,7 +7,7 @@
 	the changes are persistent then)
 
 	@since   MMBase-1.6
-	@version $Id: caches.xml,v 1.7 2003-09-10 19:12:44 michiel Exp $
+	@version $Id: caches.xml,v 1.8 2004-02-03 15:41:46 michiel Exp $
 	@author  Michiel Meeuwissen
 
 -->
@@ -112,4 +112,13 @@
 		<size>129</size>
 	</cache>
 
+  <!-- ================================================================================
+	Jumpers cache
+	================================================================================  -->
+  <!-- If you use jumpers, you might want to configure its cache
+  <cache name="JumpersCache">
+    <status>active</status>
+		<size>1000</size>
+	</cache>
+  -->
 </caches>
