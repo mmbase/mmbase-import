@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.25 2002-12-02 17:45:41 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.26 2002-12-04 19:13:35 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
@@ -204,7 +204,7 @@ public class ContextAuthorization extends Authorization {
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) throws SecurityException{
         if (log.isDebugEnabled()) {
-            log.info("check on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+            log.debug("check on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         }
 
         // is our usercontext still valid?
@@ -235,7 +235,7 @@ public class ContextAuthorization extends Authorization {
         synchronized(cache) {
             Boolean result = cache.rightGet(operation, context, user.getIdentifier());
             if(result != null) {
-                log.debug("cache hit");
+                log.trace("cache hit");
                 return result.booleanValue();
             }
         }
