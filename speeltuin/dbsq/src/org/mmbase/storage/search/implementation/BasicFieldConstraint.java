@@ -1,5 +1,6 @@
 package org.mmbase.storage.search.implementation;
 
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -7,7 +8,7 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
     
@@ -31,7 +32,6 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
             throw new IllegalArgumentException(
             "Invalid field value: " + field);
         }
-        
         this.field = field;
     }
     
@@ -63,8 +63,8 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
             return isInverse() == constraint.isInverse()
                 && caseSensitive == constraint.isCaseSensitive()
                 && field.getFieldName().equals(constraint.getField().getFieldName())
-                && field.getStep().getTableName().equals(
-                    constraint.getField().getStep().getTableName());
+                && field.getStep().getAlias().equals(
+                    constraint.getField().getStep().getAlias());
         } else {
             return false;
         }
@@ -72,9 +72,9 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107)
+        return super.hashCode()
         + (isCaseSensitive()? 0: 73)
         + 79 * field.getFieldName().hashCode()
-        + 83 * field.getStep().getTableName().hashCode();
+        + 83 * field.getStep().getAlias().hashCode();
     }
 }

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicSearchQuery implements SearchQuery {
     
@@ -34,10 +34,24 @@ public class BasicSearchQuery implements SearchQuery {
     /** Constraint.. */
     private Constraint constraint = null;
     
+    /** Aggragating property. */
+    private boolean aggregating = false;
+    
     /**
-     * Default costructor.
+     * Constructor.
+     *
+     * @param aggregating True for an aggregating query, false otherwise.
      */
-    public BasicSearchQuery() {}
+    public BasicSearchQuery(boolean aggregating) {
+        this.aggregating = aggregating;
+    }
+    
+    /**
+     * Constructor, constructs non-aggragating query.
+     */
+    public BasicSearchQuery() {
+        this(false);
+    }
     
     /**
      * Sets distinct.
@@ -124,9 +138,37 @@ public class BasicSearchQuery implements SearchQuery {
      * @param fieldDefs The associated fieldDefs.
      * @return The new field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @throws UnsupportedOperationException when called 
+     *         on an aggregating query.
      */
     public BasicStepField addField(Step step, FieldDefs fieldDefs) {
+        if (aggregating) {
+            throw new UnsupportedOperationException(
+            "Adding non-aggregated field to aggregating query.");
+        }
         BasicStepField field = new BasicStepField(step, fieldDefs);
+        fields.add(field);
+        return field;
+    }
+    
+    /**
+     * Adds new aggregated field to this SearchQuery.
+     *
+     * @param step The associated step.
+     * @param fieldDefs The associated fieldDefs.
+     * @param aggregatinType The aggregation type.
+     * @return The new field.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @throws UnsupportedOperationException when called 
+     *         on an non-aggregating query.
+     */
+    public BasicAggregatedField addAggregatedField(Step step, FieldDefs fielDefs,
+    int aggregationType) {
+        if (!aggregating) {
+            throw new UnsupportedOperationException(
+            "Adding aggregated field to non-aggregating query.");
+        }
+        BasicAggregatedField field = new BasicAggregatedField(step, fielDefs, aggregationType);
         fields.add(field);
         return field;
     }

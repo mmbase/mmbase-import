@@ -112,6 +112,7 @@ public interface SearchQuery {
      *
      * @return A string representation of this SearchQuery.
      */
+    public String toString();
     
     /** @link dependency 
      * @label constraint

@@ -4,11 +4,18 @@
  * Created on October 17, 2002, 4:46 PM
  */
 
-package org.mmbase.storage.search.implementation.database;
+package org.mmbase.storage.search.implementation.database.vts;
 
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.storage.search.*;
+import java.io.*;
 import java.util.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.database.support.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.database.*;
+import org.mmbase.util.logging.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 /**
  * The Vts query handler adds support for Verity Text Search constraints.
@@ -19,9 +26,20 @@ import java.util.*;
 // TODO: (later) add javadoc, elaborate on overwritten methods.
 public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     
+    /** Logger instance. */
+    private static Logger log
+    = Logging.getLoggerInstance(VtsSqlHandler.class.getName());
+    
+    /** 
+     * The indexed fields, stored as {@link #BuilderField BuilderField}
+     *  instances.
+     */
+    private Set indexedFields = new HashSet();
+    
     /** Creates a new instance of VtsQueryHandler */
-    public VtsSqlHandler(SqlHandler successor) {
+    public VtsSqlHandler(SqlHandler successor) throws IOException {
         super(successor);
+        init();
     }
     
     //    // javadoc is inherited
@@ -91,9 +109,14 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
      * @return true if a Verity Text Search index has been made for this field,
      *         false otherwise.
      */
-    protected boolean hasVtsIndex(StepField field) {
-        // TODO: implement based on configuration file.
-        return true; // n.i.y.!
+    public boolean hasVtsIndex(StepField field) {
+        boolean result = false;
+        if (field.getType() == FieldDefs.TYPE_STRING
+        || field.getType() == FieldDefs.TYPE_XML) {
+            result = indexedFields.contains(
+            field.getStep().getTableName() + "." + field.getFieldName());
+        }
+        return result;
     }
     
     /**
@@ -156,4 +179,78 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
             return false;
         }
     }
+    
+    /** 
+     * Initializes the handler by reading the vtsindices configuration file
+     * to determine which fields have a vts index.
+     */
+    // TODO: provide a way to configure the location vtsindices.xml config file.
+    private void init() throws IOException {
+        XmlVtsIndicesReader configReader = new XmlVtsIndicesReader(
+            new InputSource(
+            new BufferedReader(
+            new FileReader("C:/projects/konijn/testindices.xml"))));
+        Enumeration eSbspaces = configReader.getSbspaceElements();
+        while (eSbspaces.hasMoreElements()) {
+            Element sbspace = (Element) eSbspaces.nextElement();
+            Enumeration eVtsIndices = configReader.getVtsindexElements(sbspace);
+            while (eVtsIndices.hasMoreElements()) {
+                Element vtsIndex = (Element) eVtsIndices.nextElement();
+                String table = configReader.getVtsindexTable(vtsIndex);
+                String field = configReader.getVtsindexField(vtsIndex);
+                String index = configReader.getVtsindexValue(vtsIndex);
+                try {
+                    String builderField = toBuilderField(table, field);
+                    indexedFields.add(builderField);
+                    log.service("Registered vts index \"" + index + 
+                    "\" for builderfield " + builderField);
+                } catch (IllegalArgumentException e) {
+                    log.error("Failed to register vts index \"" + 
+                    index + "\": " + e);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Finds builderfield corresponding to the database table and field names.
+     *
+     * @param dbTable The tablename used in the database.
+     * @param dbField The fieldname used in the database.
+     * @return The corresponding builderfield represented by a string of the 
+     *         form &lt;buildername&gt;.&lt;fieldname&gt;.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     */
+    static String toBuilderField(String dbTable, String dbField) {
+        MMBase mmbase = MMBase.getMMBase();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();
+        String tablePrefix = mmbase.getBaseName() + "_";
+ 
+        if (!dbTable.startsWith(tablePrefix)) {
+            throw new IllegalArgumentException(
+            "Invalid tablename: \"" + dbTable + "\". " + 
+            "It should start with the prefix \"" + tablePrefix + "\".");
+        }
+        
+        String builderName = dbTable.substring(tablePrefix.length());
+        MMObjectBuilder builder = mmbase.getBuilder(builderName);
+
+        if (builder == null) {
+            throw new IllegalArgumentException(
+            "Unknown builder: \"" + builderName + "\".");
+        }
+
+        Iterator iFieldNames = builder.getFieldNames().iterator();
+        while (iFieldNames.hasNext()) {
+            String fieldName = (String) iFieldNames.next();
+            if (database.getAllowedField(fieldName).equals(dbField)) {
+                return builderName + "." + fieldName;
+            }
+        }
+        
+        throw new IllegalArgumentException(
+        "No field corresponding to database field \"" + dbField 
+        + "\" found in builder \"" + builderName + "\".");
+    }
+    
 }

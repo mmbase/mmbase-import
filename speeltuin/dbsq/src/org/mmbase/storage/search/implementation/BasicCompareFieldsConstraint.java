@@ -1,5 +1,6 @@
 package org.mmbase.storage.search.implementation;
 
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
 /**
@@ -7,7 +8,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint 
 implements CompareFieldsConstraint {
@@ -19,11 +20,11 @@ implements CompareFieldsConstraint {
      * Constructor.
      *
      * @param field The associated field.
-     * @param field The second associated field.
+     * @param field2 The second associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicCompareFieldsConstraint(StepField field, StepField field2) {
-        super(field);
+    public BasicCompareFieldsConstraint(StepField field1, StepField field2) {
+        super(field1);
         
         // Test for non-null value.
         if (field2 == null) {
@@ -32,9 +33,9 @@ implements CompareFieldsConstraint {
         }
         
         // Test for matching fieldtype.
-        if (field.getType() != field2.getType()) {
+        if (field1.getType() != field2.getType()) {
             throw new IllegalArgumentException(
-            "Fieldtypes do not match: " + field.getType() 
+            "Fieldtypes do not match: " + field1.getType() 
             + " and " + field2.getType());
         }
         this.field2 = field2;
@@ -58,8 +59,8 @@ implements CompareFieldsConstraint {
                     constraint.getField().getStep().getTableName())
                 && getOperator() == constraint.getOperator()
                 && field2.getFieldName().equals(constraint.getField2().getFieldName())
-                && field2.getStep().getTableName().equals(
-                    constraint.getField2().getStep().getTableName());
+                && field2.getStep().getAlias().equals(
+                    constraint.getField2().getStep().getAlias());
         } else {
             return false;
         }
@@ -67,13 +68,9 @@ implements CompareFieldsConstraint {
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107)
-        + (isCaseSensitive()? 0: 73)
-        + 79 * getField().getFieldName().hashCode()
-        + 83 * getField().getStep().getTableName().hashCode()
-        + 113 * getOperator()
+        return super.hashCode()
         + 93 * field2.getFieldName().hashCode()
-        + 97 * field2.getStep().getTableName().hashCode();
+        + 97 * field2.getStep().getAlias().hashCode();
     }
 
     // javadoc is inherited

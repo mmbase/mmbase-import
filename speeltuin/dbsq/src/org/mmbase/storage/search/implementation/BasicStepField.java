@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicStepField implements StepField {
     
@@ -82,8 +82,7 @@ public class BasicStepField implements StepField {
      * @param fieldDefs The associated fieldDefs.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    // package visibility!
-    BasicStepField(Step step, FieldDefs fieldDefs) {
+    public BasicStepField(Step step, FieldDefs fieldDefs) {
         if (step == null) {
             throw new IllegalArgumentException(
             "Invalid step value: " + step);
@@ -145,7 +144,7 @@ public class BasicStepField implements StepField {
     public boolean equals(Object obj) {
         if (obj instanceof StepField) {
             StepField field = (StepField) obj;
-            return getStep().getTableName().equals(field.getStep().getTableName())
+            return getStep().getAlias().equals(field.getStep().getAlias())
                 && getFieldName().equals(field.getFieldName())
                 && alias.equals(field.getAlias());
         } else {
@@ -155,7 +154,7 @@ public class BasicStepField implements StepField {
     
     // javadoc is inherited
     public int hashCode() {
-        return 51 * getStep().getTableName().hashCode()
+        return 51 * getStep().getAlias().hashCode()
         + 53 * getFieldName().hashCode() + 59 * alias.hashCode();
     }
 

@@ -14,8 +14,9 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
+// TODO: invalid tablenames should not be replaced like fieldnames, the must be left untouched.
 public class BasicSqlHandler implements SqlHandler {
     
     /** Empty StepField array. */
@@ -63,19 +64,19 @@ public class BasicSqlHandler implements SqlHandler {
     }
     
     /**
-     * Tests if a case sensitivity for a field constraint is false 
-     * and relevant, i.e. the constraint is set to case insensitive and 
+     * Tests if a case sensitivity for a field constraint is false
+     * and relevant, i.e. the constraint is set to case insensitive and
      * the field has string type.
      *
      * @param constraint The constraint.
-     * @return true if the constraint is set to case insensitive 
+     * @return true if the constraint is set to case insensitive
      *         and the field has string type, false otherwise.
      */
     private static boolean isRelevantCaseInsensitive(
     FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
-        && (constraint.getField().getType() == FieldDefs.TYPE_STRING 
-            || constraint.getField().getType() == FieldDefs.TYPE_XML);
+        && (constraint.getField().getType() == FieldDefs.TYPE_STRING
+        || constraint.getField().getType() == FieldDefs.TYPE_XML);
     }
     
     /**
@@ -110,14 +111,14 @@ public class BasicSqlHandler implements SqlHandler {
         // Test maxNumber set to default.
         if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
             throw new UnsupportedOperationException(
-            "Value of maxNumber other than " 
+            "Value of maxNumber other than "
             + SearchQuery.DEFAULT_MAX_NUMBER + " not supported.");
         }
         
         // Test offset set to default (= 0).
         if (query.getOffset() != SearchQuery.DEFAULT_OFFSET) {
             throw new UnsupportedOperationException(
-            "Value of offset other than " 
+            "Value of offset other than "
             + SearchQuery.DEFAULT_OFFSET + " not supported.");
         }
         
@@ -142,8 +143,18 @@ public class BasicSqlHandler implements SqlHandler {
     public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query,
     SqlHandler firstInChain)
     throws SearchQueryException {
+        
+        // Buffer expressions for included nodes, like
+        // "x.number in (...)".
         StringBuffer sbNodes = new StringBuffer();
+        
+        // Buffer expressions for relations, like
+        // "x.number = r.snumber AND y.number = r.dnumber".
         StringBuffer sbRelations = new StringBuffer();
+        
+        // Buffer fields to group by, like
+        // "alias1, alias2, ..."
+        StringBuffer sbGroups = new StringBuffer();
         
         // Fields expression
         Iterator iFields = query.getFields().iterator();
@@ -153,9 +164,59 @@ public class BasicSqlHandler implements SqlHandler {
             // Fieldname prefixed by table alias.
             String tableAlias = field.getStep().getAlias();
             String fieldName = field.getFieldName();
-            sb.append(getAllowedValue(tableAlias)).
-            append(".").
-            append(getAllowedValue(fieldName));
+            
+            if (field instanceof AggregatedField) {
+                int aggregationType
+                = ((AggregatedField) field).getAggregationType();
+                if (aggregationType == AggregatedField.AGGREGATION_TYPE_GROUP_BY) {
+                    
+                    // Group by.
+                    sb.append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName));
+                    
+                    // Append to "GROUP BY"-buffer.
+                    if (sbGroups.length() > 0) {
+                        sbGroups.append(",");
+                    }
+                    sbGroups.append(getAllowedValue(field.getAlias()));
+                } else {
+                    
+                    // Aggregate function.
+                    switch (aggregationType) {
+                        case AggregatedField.AGGREGATION_TYPE_COUNT:
+                            sb.append("COUNT(");
+                            break;
+                            
+                        case AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT:
+                            sb.append("COUNT(DISTINCT ");
+                            break;
+                            
+                        case AggregatedField.AGGREGATION_TYPE_MIN:
+                            sb.append("MIN(");
+                            break;
+                            
+                        case AggregatedField.AGGREGATION_TYPE_MAX:
+                            sb.append("MAX(");
+                            break;
+                            
+                        default:
+                            throw new IllegalStateException(
+                            "Invalid aggregationType value: " + aggregationType);
+                    }
+                    sb.append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName)).
+                    append(")");
+                }
+                
+            } else {
+                
+                // Non-aggregate field.
+                sb.append(getAllowedValue(tableAlias)).
+                append(".").
+                append(getAllowedValue(fieldName));
+            }
             
             // Field alias.
             String fieldAlias = field.getAlias();
@@ -335,10 +396,16 @@ public class BasicSqlHandler implements SqlHandler {
                     false, false);
                 }
             }
-       }
+        }
         if (sbConstraints.length() > 0) {
             sb.append(" WHERE ").
             append(sbConstraints.toString());
+        }
+        
+        // GROUP BY
+        if (sbGroups.length() > 0) {
+            sb.append(" GROUP BY ").
+            append(sbGroups.toString());
         }
         
         // ORDER BY
@@ -425,11 +492,11 @@ public class BasicSqlHandler implements SqlHandler {
                     || fieldType == FieldDefs.TYPE_XML) {
                         
                         // escape single quotes in string
-                        String stringValue = toSqlString((String) value); 
+                        String stringValue = toSqlString((String) value);
                         
                         // to lowercase when case insensitive
                         if (!fieldConstraint.isCaseSensitive()) {
-                             stringValue = stringValue.toLowerCase();
+                            stringValue = stringValue.toLowerCase();
                         }
                         sb.append("'").
                         append(stringValue).
@@ -470,7 +537,7 @@ public class BasicSqlHandler implements SqlHandler {
                     append(".").
                     append(getAllowedValue(fieldName));
                 }
-                 switch (fieldCompareConstraint.getOperator()) {
+                switch (fieldCompareConstraint.getOperator()) {
                     case FieldValueConstraint.LESS:
                         sb.append("<");
                         break;
@@ -501,11 +568,11 @@ public class BasicSqlHandler implements SqlHandler {
                     || fieldType == FieldDefs.TYPE_XML) {
                         
                         // escape single quotes in string
-                        String stringValue = toSqlString((String) value); 
+                        String stringValue = toSqlString((String) value);
                         
                         // to lowercase when case insensitive
                         if (!fieldConstraint.isCaseSensitive()) {
-                             stringValue = stringValue.toLowerCase();
+                            stringValue = stringValue.toLowerCase();
                         }
                         sb.append("'").
                         append(stringValue).
@@ -520,20 +587,20 @@ public class BasicSqlHandler implements SqlHandler {
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
                     String tableAlias2 = field2.getStep().getAlias();
-                if (isRelevantCaseInsensitive(fieldConstraint)) {
-                    // case insensitive
-                    sb.append("LOWER(").
-                    append(getAllowedValue(tableAlias2)).
-                    append(".").
-                    append(getAllowedValue(fieldName2)).
-                    append(")");
+                    if (isRelevantCaseInsensitive(fieldConstraint)) {
+                        // case insensitive
+                        sb.append("LOWER(").
+                        append(getAllowedValue(tableAlias2)).
+                        append(".").
+                        append(getAllowedValue(fieldName2)).
+                        append(")");
+                    } else {
+                        // case sensitive or case irrelevant
+                        sb.append(getAllowedValue(tableAlias2)).
+                        append(".").
+                        append(getAllowedValue(fieldName2));
+                    }
                 } else {
-                    // case sensitive or case irrelevant
-                    sb.append(getAllowedValue(tableAlias2)).
-                    append(".").
-                    append(getAllowedValue(fieldName2));
-                }
-                 } else {
                     throw new UnsupportedOperationException(
                     "Unknown constraint type: "
                     + constraint.getClass().getName());
@@ -615,11 +682,11 @@ public class BasicSqlHandler implements SqlHandler {
      *        a composite expression.
      * @param firstInChain The first element in the chain of handlers.
      *        At some point <code>appendConstraintToSql()</code> will have
-     *        to be called on this handler, to generate the constraints in 
+     *        to be called on this handler, to generate the constraints in
      *        the composite.
      */
     protected void appendCompositeConstraintToSql(
-    StringBuffer sb, CompositeConstraint compositeConstraint, SearchQuery query, 
+    StringBuffer sb, CompositeConstraint compositeConstraint, SearchQuery query,
     boolean inverse, boolean inComposite, SqlHandler firstInChain)
     throws SearchQueryException {
         
@@ -649,22 +716,22 @@ public class BasicSqlHandler implements SqlHandler {
             + CompositeConstraint.LOGICAL_OR);
         }
         List childs = compositeConstraint.getChilds();
-
+        
         // Test for at least 1 child.
         if (childs.isEmpty()) {
             throw new IllegalStateException(
             "Composite constraint has no child "
             + "(at least 1 child is required).");
         }
-
+        
         boolean hasMultipleChilds = childs.size() > 1;
-
+        
         // Opening parenthesis, when part of composite expression
         // and with multiple childs.
         if (inComposite && hasMultipleChilds) {
             sb.append("(");
         }
-
+        
         // Recursively append all childs.
         Iterator iChilds = childs.iterator();
         while (iChilds.hasNext()) {
@@ -675,7 +742,7 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append(strOperator);
             }
         }
-
+        
         // Closing parenthesis, when part of composite expression
         // and with multiple childs.
         if (inComposite && hasMultipleChilds) {

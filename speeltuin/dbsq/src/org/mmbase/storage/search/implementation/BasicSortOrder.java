@@ -8,7 +8,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicSortOrder implements SortOrder {
     
@@ -65,8 +65,8 @@ public class BasicSortOrder implements SortOrder {
         if (obj instanceof SortOrder) {
             SortOrder order = (SortOrder) obj;
             return field.getFieldName().equals(order.getField().getFieldName())
-                && field.getStep().getTableName().equals(
-                    order.getField().getStep().getTableName())
+                && field.getStep().getAlias().equals(
+                    order.getField().getStep().getAlias())
                 && direction == order.getDirection();
         } else {
             return false;
@@ -76,7 +76,7 @@ public class BasicSortOrder implements SortOrder {
     // javadoc is inherited
     public int hashCode() {
         return 61 * field.getFieldName().hashCode()
-        + 67 * field.getStep().getTableName().hashCode() + 103 * direction;
+        + 67 * field.getStep().getAlias().hashCode() + 103 * direction;
     }
 
     // javadoc is inherited

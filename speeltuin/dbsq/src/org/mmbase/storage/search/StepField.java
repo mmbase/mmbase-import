@@ -29,7 +29,8 @@ public interface StepField {
     Step getStep();
 
     /**
-     * Gets the type of the associated field. This is one of the values defined in {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}.
+     * Gets the type of the associated field. 
+     * This is one of the values defined in {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}.
      */
     int getType();
 
