@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.11 2002-05-28 09:22:10 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.12 2002-06-11 12:12:13 rob Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -193,8 +193,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                     time = "" + w.getWriterValue();
                 }
             }
-            if(time == null) { // still not found? Take current time.
-                date = new Date();
+            if(time == null) { // still not found
+                throw new JspTagException("Cannot evaluate time. No time attribute given, no referid attribute set, and no writer parent tag found.");
             }
         } 
 
