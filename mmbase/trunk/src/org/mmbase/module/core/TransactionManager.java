@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
+	$Id: TransactionManager.java,v 1.6 2000-11-24 12:07:30 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/11/22 13:11:25  vpro
+	Rico: added deleteObject support
+	
 	Revision 1.4  2000/11/08 16:24:13  vpro
 	Rico: fixed key bussiness
 	
@@ -34,7 +37,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.5 2000-11-22 13:11:25 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.6 2000-11-24 12:07:30 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -223,9 +226,15 @@ public class TransactionManager implements TransactionManagerInterface {
 		int i,tmpstate;
 		String username=findUserName(user),exists;
 
+		if (nodes==null || nodes.size()==0) {
+			debug("performCommits: Empty list of nodes");
+			return(false);
+		}
+
 		// Nodes are uncommited by default
 		for (i=0;i<nodes.size();i++) nodestate[i]=UNCOMMITED;
 
+		if (_debug) debug("performCommits: checking types");
 		// check for type (relation or normal node)
 		for (i=0;i<nodes.size();i++) {
 			node=(MMObjectNode)nodes.elementAt(i);
@@ -237,6 +246,7 @@ public class TransactionManager implements TransactionManagerInterface {
 			}
 		}
 
+		if (_debug) debug("performCommits: checking existence");
 		// check if they alreay exist (aka use update vs insert)
 		for (i=0;i<nodes.size();i++) {
 			node=(MMObjectNode)nodes.elementAt(i);
@@ -262,6 +272,7 @@ public class TransactionManager implements TransactionManagerInterface {
 			}
 		}
 
+		if (_debug) debug("performCommits: deleting relations");
 		// First commit all the RELATIONS that must be deleted
 		for (i=0;i<nodes.size();i++) {
 			if (nodetype[i]==RELATION) {
@@ -294,6 +305,7 @@ public class TransactionManager implements TransactionManagerInterface {
 			}
 		}
 
+		if (_debug) debug("performCommits: deleting nodes");
 		// Then commit all the NODES that must be deleted
 		for (i=0;i<nodes.size();i++) {
 			if (nodetype[i]==NODE) {
@@ -326,6 +338,7 @@ public class TransactionManager implements TransactionManagerInterface {
 			}
 		}
 
+		if (_debug) debug("performCommits: commiting nodes");
 		// Then commit all the NODES
 		for (i=0;i<nodes.size();i++) {
 			if (nodetype[i]==NODE) {
@@ -366,6 +379,7 @@ public class TransactionManager implements TransactionManagerInterface {
 			}
 		}
 
+		if (_debug) debug("performCommits: commiting relations");
 		// Then commit all the RELATIONS
 		for (i=0;i<nodes.size();i++) {
 			if (nodetype[i]==RELATION) {
@@ -408,6 +422,7 @@ public class TransactionManager implements TransactionManagerInterface {
 		}
 		// check for failures
 
+		if (_debug) debug("performCommits: removing tmpnodes");
 		// remove temporary nodes from temporary area
 		for (i=0;i<nodes.size();i++) {
 			if (nodestate[i]==COMMITED) {
