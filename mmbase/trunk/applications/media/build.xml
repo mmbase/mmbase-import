@@ -1,0 +1,96 @@
+<!-- ===========================================================================
+
+
+Media project build file
+
+============================================================================ -->
+
+<project name="MMBase media" default="jar" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties"/>
+  <property name="build.compiler" value="classic"/>
+  <property name="optimize" value="on"/>
+  <property name="debug" value="off"/>
+  <property name="deprecation" value="on"/>
+  <property name="media.source.dir" location="." />
+  <property name="media.build.dir"  location="./build" />
+  <property name="mmbase.jar" value="../all/build/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="mmmedia.jar" value="${media.build.dir}/mmmedia.jar"/>
+
+  <target name="init" depends="">
+    <tstamp/>
+    <mkdir dir="${media.build.dir}"/>
+    <property name="name" value="mmbasemedia"/>
+    <property name="version" value="${DSTAMP}"/>
+    <property name="distro"  value="1.6.0"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the MMBase jar file                                          -->
+  <!-- =================================================================== -->
+  <target name="jar" description="Create the MMBase media jar file"
+          depends="init,compile">
+
+    <echo file="${media.build.dir}/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase Community
+URL: http://www.mmbase.org
+Comment: The MMBase Content Managment System
+Version: ${distro}.${version}
+Distribution: ${distro}
+Build-by: ${ant.version}
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+
+    <jar jarfile="${mmmedia.jar}"
+         basedir="${media.build.dir}/classes"
+	     includes="org/mmbase/**"
+	     manifest="${media.build.dir}/manifest.mf" >
+    </jar>
+
+  </target>
+
+
+
+  <target name="compile" description="Compile the source directory"
+          depends="init">
+
+    <mkdir dir="${media.build.dir}/classes"/>
+
+    <echo message="java version: ${ant.java.version}" />
+
+    <copy todir="${media.build.dir}/classes">
+      <fileset dir="${media.source.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+
+    <javac srcdir="${media.source.dir}"
+           destdir="${media.build.dir}/classes"
+           classpath="${mmbase.jar}"
+           debug="$[debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+    </javac>
+  </target>
+
+
+  <target name="clean" description="Clean">
+    <delete dir="${media.build.dir}" />
+  </target>
+
+
+</project>
+
+
+
+
