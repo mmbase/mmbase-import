@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.77.2.7 2003-03-25 12:56:29 vpro Exp $
+ * @version $Id: BasicNode.java,v 1.77.2.8 2003-03-26 12:24:06 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -535,12 +535,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (noderef == null) {
             return "*deleted node*";
         }
+        // return noderef.toString();
+
         Object value = noderef.getFunctionValue("gui", null);
         if (value==null) {
             return "*unknown*";
         } else {
             return value.toString();
         }
+
     }
 
     /**
@@ -606,8 +609,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return an Enumeration with the relations
      */
     private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
-        log.debug("role("+role+"), otype("+otype+"), dir("+usedirectionality+")");
-
         InsRel relbuilder=mmb.getInsRel();
         Enumeration e=null;
         if ((role!=1) || (otype!=-1)) {
@@ -688,53 +689,44 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public NodeList getRelatedNodes() {
-        log.debug("");
         return getRelatedNodes((String)null,null,null);
     }
 
     public NodeList getRelatedNodes(String type) {
-        log.debug("type("+type+")");
         return getRelatedNodes(type,null,null);
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager) {
-        log.debug("nodemanager("+nodeManager+")");
         return getRelatedNodes(nodeManager,null,null);
     }
 
     /**
      * @since MMBase-1.6
      */
-    public NodeList getRelatedNodes(String type, String role, String direction) {
-        if(role==null) role = "insrel";
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
+        if(role == null) role = "insrel";
 
-        log.debug("type("+type+"), role("+role+"), dir("+direction+")");
-
-        NodeManager nodemanager     = cloud.getNodeManager(type);
-        int         dir             = ClusterBuilder.getSearchDir(direction);
-        Vector      mmnodes         = getNode().getRelatedNodes(type, role, dir);
-        Vector      basicnodes      = new Vector();
-
-        // convert MMObjectNodes to BasicNodes
-        Iterator i = mmnodes.iterator();
-        while(i.hasNext()) { 
-            basicnodes.add(new BasicNode((MMObjectNode)i.next(), nodemanager));
+        if (log.isDebugEnabled()) {
+            log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+direction+")");
         }
 
-        // convert results in Vector to BasicList
-        if (type != null) {
-            return new BasicNodeList(basicnodes, cloud.getNodeManager(type));
+        int    dir          = ClusterBuilder.getSearchDir(direction);
+        List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
+
+        // remove the elements which may not be read:
+        ListIterator li = mmnodes.listIterator();
+        while (li.hasNext()) {
+            MMObjectNode node = (MMObjectNode) li.next();
+            if (! cloud.check(Operation.READ, node.getNumber())) li.remove();
+        }
+        if (nodeManager != null) {
+            return new BasicNodeList(mmnodes, nodeManager);
         } else {
-            return new BasicNodeList(basicnodes, cloud);
+            return new BasicNodeList(mmnodes, cloud);
         }
     }
-
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
-        if (nodeManager==null) {
-            return getRelatedNodes((String)null, role, direction);
-        } else {
-            return getRelatedNodes(nodeManager.getName(), role, direction);
-        }
+    public NodeList getRelatedNodes(String type, String role, String direction) {
+        return getRelatedNodes(cloud.getNodeManager(type), role, direction);
     }
 
     public int countRelatedNodes(String type) {
