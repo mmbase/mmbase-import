@@ -16,7 +16,7 @@ package org.mmbase.util.logging;
  * @author Michiel Meeuwissen
  **/
 
-public final class Level {
+public final class Level implements java.io.Serializable {
 
     /** 
      * A possible result of {@link #toInt}
