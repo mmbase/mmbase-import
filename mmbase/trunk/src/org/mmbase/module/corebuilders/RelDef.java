@@ -44,10 +44,10 @@ import org.mmbase.module.core.*;
 
 public class RelDef extends MMObjectBuilder {
 
-    /*
-    * Indicates whether the relationdefinitions use the 'builder' field (that is, whether the
-    * field has been defined in the xml file). Used for backward compatibility.
-    */
+    /**
+     * Indicates whether the relationdefinitions use the 'builder' field (that is, whether the
+     * field has been defined in the xml file). Used for backward compatibility.
+     */
     public static boolean usesbuilder = false;
 
     // cache of relation definitions
@@ -57,16 +57,16 @@ public class RelDef extends MMObjectBuilder {
     private Hashtable relBuilderCache=null;
 
     /**
-    *  Contruct the builder
-    */
+     *  Contruct the builder
+     */
     public RelDef() {
     }
 
     /**
-    *  Initializes the builder by reading the cache. Also determines whether the 'builder' field is used.
-    *  @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
-    *         caught and logged.
-    **/
+     *  Initializes the builder by reading the cache. Also determines whether the 'builder' field is used.
+     *  @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
+     *         caught and logged.
+     */
     public boolean init() {
        super.init();
        usesbuilder = getField("builder")!=null;
@@ -74,30 +74,51 @@ public class RelDef extends MMObjectBuilder {
     }
 
     /**
-    * Reads all relation definition names in an internal cache.
-    * The cache is used by {@link #isRelationTable}
-    * @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
-    *         caught and logged.
-    **/
-    private boolean readCache() {
-        // add insrel (default behavior)
-	    relCache.put("insrel",new Integer(-1));
-	    // add relation definiation names
-	    for (Enumeration e=search(null);e.hasMoreElements();) {
-	        MMObjectNode n= (MMObjectNode)e.nextElement();
-	        relCache.put(n.getStringValue("sname"),new Integer(n.getNumber()));
-	     }
-	    return true;
+     * Puts a role in the reldef cache.
+     * The role is entered both with its sname (primary identifier) and
+     * it's sname/dname combination.
+     */
+    private void addToCache(MMObjectNode node) {
+        Integer rnumber=(Integer)node.getValue("number");
+        relCache.put(node.getStringValue("sname"),rnumber);
+        relCache.put(node.getStringValue("sname")+"/"+node.getStringValue("dname"),rnumber);
     }
 
     /**
-    * Returns a GUI description of a relation definition.
-    * The description is dependent on the direction (uni/bi) of the relation
-    * @param node Relation definition to describe
-    * @return A <code>String</code> of descriptive text
-    **/
+     * Removes a role from the reldef cache.
+     * The role is removed both with its sname (primary identifier) and
+     * it's sname/dname combination.
+     */
+    private void removeFromCache(MMObjectNode node) {
+        relCache.remove(node.getStringValue("sname"));
+        relCache.remove(node.getStringValue("sname")+"/"+node.getStringValue("dname"));
+    }
+
+    /**
+     * Reads all relation definition names in an internal cache.
+     * The cache is used by {@link #isRelationTable}
+     * @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
+     *         caught and logged.
+     */
+    private boolean readCache() {
+        // add insrel (default behavior)
+        relCache.put("insrel",new Integer(-1));
+        // add relation definiation names
+        for (Enumeration e=search(null);e.hasMoreElements();) {
+            MMObjectNode n= (MMObjectNode)e.nextElement();
+            addToCache(n);
+         }
+        return true;
+    }
+
+    /**
+     * Returns a GUI description of a relation definition.
+     * The description is dependent on the direction (uni/bi) of the relation
+     * @param node Relation definition to describe
+     * @return A <code>String</code> of descriptive text
+     */
     public String getGUIIndicator(MMObjectNode node) {
-    	int dir=node.getIntValue("dir");
+        int dir=node.getIntValue("dir");
         if (dir==1) {
             return node.getStringValue("sguiname");
         } else {
@@ -105,67 +126,67 @@ public class RelDef extends MMObjectBuilder {
             String st2=node.getStringValue("dguiname");
             return st1+"/"+st2;
         }
-    }	
+    }
 
 
     /**
-    * Returns the builder name of a relation definition.
-    * If the buildername cannot be accurately determined, the <code>sname</code> field will be returned instead.
-    * @return the builder name
-    **/
+     * Returns the builder name of a relation definition.
+     * If the buildername cannot be accurately determined, the <code>sname</code> field will be returned instead.
+     * @return the builder name
+     */
     public String getBuilderName(MMObjectNode node) {
         String bulname=null;
-  	    if (usesbuilder) {
-  	        int builder = node.getIntValue("builder");
-  	        if (builder<=0) {
-  	            bulname=node.getStringValue("sname");
-  	        } else {
-  	            bulname=mmb.getTypeDef().getValue(builder);
-  	        }
-  	    } else {
-  	        bulname=node.getStringValue("sname");
-  	    }
-  	    if (bulname==null) {
-  	        return "insrel";
-  	    } else {
-  	        return bulname;
-  	    }
+          if (usesbuilder) {
+              int builder = node.getIntValue("builder");
+              if (builder<=0) {
+                  bulname=node.getStringValue("sname");
+              } else {
+                  bulname=mmb.getTypeDef().getValue(builder);
+              }
+          } else {
+              bulname=node.getStringValue("sname");
+          }
+          if (bulname==null) {
+              return "insrel";
+          } else {
+              return bulname;
+          }
     }
 
     /**
-    * Returns the builder of a relation definition.
-    * @return the builder
-    **/
+     * Returns the builder of a relation definition.
+     * @return the builder
+     */
     public InsRel getBuilder(int rnumber) {
         return getBuilder(getNode(rnumber));
     }
 
     /**
-    * Returns the builder of a relation definition.
-    * @return the builder
-    **/
+     * Returns the builder of a relation definition.
+     * @return the builder
+     */
     public InsRel getBuilder(MMObjectNode node) {
         String bulname=getBuilderName(node);
-  	    InsRel bul=(InsRel)mmb.getMMObject(bulname);
-  	    if (bul==null) {
-  	        return mmb.getInsRel();
-  	    } else {
-  	        return bul;
-  	    }
+          InsRel bul=(InsRel)mmb.getMMObject(bulname);
+          if (bul==null) {
+              return mmb.getInsRel();
+          } else {
+              return bul;
+          }
     }
 
     /**
-    * Returns the first occurrence of a reldef node of a relation definition.
-    * used to set the default reldef for a specific builder.
-    * @returns the default reldef node, or <code>null</code> if not found.
-    **/
+     * Returns the first occurrence of a reldef node of a relation definition.
+     * used to set the default reldef for a specific builder.
+     * @returns the default reldef node, or <code>null</code> if not found.
+     */
     public MMObjectNode getDefaultForBuilder(InsRel relBuilder) {
         Enumeration e;
-  	    if (usesbuilder) {
+          if (usesbuilder) {
             e=search("WHERE builder="+relBuilder.oType+"");
-  	    } else {
+          } else {
             e=search("WHERE (sname='"+relBuilder.getTableName()+"') OR (dname='"+relBuilder.getTableName()+"')");
-  	    }
+          }
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
             return node;
@@ -174,11 +195,11 @@ public class RelDef extends MMObjectBuilder {
         }
     }
 
-    /*
-    * Tests whether the data in a node is valid (throws an exception if this is not the case).
-    * @param node The node whose data to check
-    */
-	public void testValidData(MMObjectNode node) throws InvalidDataException{
+    /**
+     * Tests whether the data in a node is valid (throws an exception if this is not the case).
+     * @param node The node whose data to check
+     */
+    public void testValidData(MMObjectNode node) throws InvalidDataException{
         int dir=node.getIntValue("dir");
         if ((dir!=1) && (dir!=2)) {
             throw new InvalidDataException("Invalid directionality ("+dir+") specified","dir");
@@ -195,67 +216,66 @@ public class RelDef extends MMObjectBuilder {
     };
 
     /**
-    * Insert a new object, and updated the cache after an insert.
-    * This method indirectly calls {@link #preCommit}.
-    * @param owner The administrator creating the node
-    * @param node The object to insert. The object need be of the same type as the current builder.
-    * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
-    */
+     * Insert a new object, and updated the cache after an insert.
+     * This method indirectly calls {@link #preCommit}.
+     * @param owner The administrator creating the node
+     * @param node The object to insert. The object need be of the same type as the current builder.
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+     */
     public int insert(String owner, MMObjectNode node) {
         int number=super.insert(owner,node);
         if (number!=-1) {
-    	    relCache.put(node.getStringValue("sname"),new Integer(number));
+            addToCache(node);
         }
         return number;
     };
 
-	
+
     /**
-    * Commit changes to this node and updated the cache. This method indirectly calls {@link #preCommit}.
-    * This method does not remove names from the cache, as currently, unique names are not enforced.
-    * @param node The node to be committed
-    * @return a <code>boolean</code> indicating success
-    */
+     * Commit changes to this node and updated the cache. This method indirectly calls {@link #preCommit}.
+     * This method does not remove names from the cache, as currently, unique names are not enforced.
+     * @param node The node to be committed
+     * @return a <code>boolean</code> indicating success
+     */
     public boolean commit(MMObjectNode node) {
         boolean success = super.commit(node);
         if (success) {
-            String newname=node.getStringValue("sname");
-            relCache.put(newname,new Integer(node.getNumber()));
+            addToCache(node);
         }
         return success;
    }
 
     /**
-    * Remove a node from the cloud.
-    * @param node The node to remove.
-    */
+     * Remove a node from the cloud.
+     * @param node The node to remove.
+     */
     public void removeNode(MMObjectNode node) {
         String name=node.getStringValue("sname");
         super.removeNode(node);
-        relCache.remove(name);
+        removeFromCache(node);
     }
 
     /**
-    * Sets defaults for a new relation definition.
-    * Initializes a relation to be bidirectional, and, if applicable, to use the 'insrel' builder.
-    *	@param node Node to be initialized
-    **/
+     * Sets defaults for a new relation definition.
+     * Initializes a relation to be bidirectional, and, if applicable, to use the 'insrel' builder.
+     *    @param node Node to be initialized
+     */
     public void setDefaults(MMObjectNode node) {
         node.setValue("dir",2);
         if (usesbuilder) {
             node.setValue("builder",mmb.getInsRel().oType);
         }
     }
-	
+
     /**
-    * Retrieve descriptors for a relation definition's fields,
-    * specifically a descriptive text for the relation's direction (dir)
-    * @param field Name of the field whose description should be returned.
-    *              valid values : 'dir'
-    * @param node Relation definition containing the field's information
-    * @return A descriptive text for the field's contents, or null if no description could be generated
-    **/
-	
+     * Retrieve descriptors for a relation definition's fields,
+     * specifically a descriptive text for the relation's direction (dir)
+     * @param field Name of the field whose description should be returned.
+     *              valid values : 'dir'
+     * @param node Relation definition containing the field's information
+     * @return A descriptive text for the field's contents, or null if no description could be generated
+     */
+
     public String getGUIIndicator(String field,MMObjectNode node) {
         try {
             if (field.equals("dir")) {
@@ -267,7 +287,7 @@ public class RelDef extends MMObjectBuilder {
                 } else {
                     return "unknown";
                 }
-	        } else if (field.equals("builder")) {
+            } else if (field.equals("builder")) {
                 int builder=node.getIntValue("builder");
                 if (builder<=0) {
                     return "insrel";
@@ -280,10 +300,10 @@ public class RelDef extends MMObjectBuilder {
     }
 
     /**
-    * Checks to see if a given relation definition is stored in the cache.
-    * @param name A <code>String</code> of the relation definitions' name
-    * @returns: a <code>boolean</code> indicating success if the relationname exists
-    **/
+     * Checks to see if a given relation definition is stored in the cache.
+     * @param name A <code>String</code> of the relation definitions' name
+     * @returns: a <code>boolean</code> indicating success if the relationname exists
+     */
 
     public boolean isRelationTable(String name) {
         Object ob;
@@ -297,50 +317,63 @@ public class RelDef extends MMObjectBuilder {
         if (relBuilderCache==null) {
             relBuilderCache=new Hashtable();
             // add all builders that descend from InsRel
-			Enumeration buls = mmb.mmobjs.elements();
-			while (buls.hasMoreElements()) {
-				MMObjectBuilder fbul=(MMObjectBuilder)buls.nextElement();
-				if (fbul instanceof InsRel) {
-					relBuilderCache.put(new Integer(fbul.oType),fbul);
-				}
-			}
+            Enumeration buls = mmb.mmobjs.elements();
+            while (buls.hasMoreElements()) {
+                MMObjectBuilder fbul=(MMObjectBuilder)buls.nextElement();
+                if (fbul instanceof InsRel) {
+                    relBuilderCache.put(new Integer(fbul.oType),fbul);
+                }
+            }
         }
         return relBuilderCache;
     }
 
     /**
-    * Checks to see if a given builder (otype) is known to be a relation builder.
-    * @param number The otype of the builder
-    * @returns: a <code>boolean</code> indicating success if the builder exists in the cache
-    **/
-	
+     * Checks to see if a given builder (otype) is known to be a relation builder.
+     * @param number The otype of the builder
+     * @returns: a <code>boolean</code> indicating success if the builder exists in the cache
+     */
+
     public boolean isRelationBuilder(int number) {
         Object ob;
         ob=getRelBuilderCache().get(new Integer(number));
         return ob!=null;
     }
-	
+
     /**
-    * Returns a list of builders currently implementing a relation node.
-    * @returns: an <code>Iteration</code> containing the builders (as otype)
-    **/
-	
+     * Returns a list of builders currently implementing a relation node.
+     * @returns: an <code>Iteration</code> containing the builders (as otype)
+     */
+
     public Enumeration getRelationBuilders() {
-	    return getRelBuilderCache().elements();
+        return getRelBuilderCache().elements();
     }
 
     /**
-    * Search the relation definition table for the identifying number of
-    * a relation, by name of the relation to use
-    * Similar to {@link #getGuessedByName} (but does not make use of dname)
-    * Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
-    * @ param name The builder name on which to search for the relation
-    * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
-    * 	indicated buildername, the first one found is returned.
-    **/
+     * Search the relation definition table for the identifying number of
+     * a relation, by name of the relation to use
+     * Similar to {@link #getGuessedByName} (but does not make use of dname)
+     * Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
+     * @ param name The builder name on which to search for the relation
+     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
+     *     indicated buildername, the first one found is returned.
+     * @deprecated renamed to {@link #getNumberByName} which better explains its use
+     */
     public int getGuessedNumber(String name) {
-	    Integer number;
-        number=(Integer)relCache.get(name);
+        return getNumberByName(name);
+    }
+
+    /**
+     * Search the relation definition table for the identifying number of
+     * a relationdefinition, by name of the role to use.
+     * The name should be either the primary identifying role name (sname),
+     * or a combination of sname and dname separated by a slash ("/").
+     * @ param role The role name on which to search
+     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found.
+     */
+    public int getNumberByName(String role) {
+        Integer number;
+        number=(Integer)relCache.get(role);
         if (number==null) {
             return -1;
         } else {
@@ -349,16 +382,15 @@ public class RelDef extends MMObjectBuilder {
      }
 
     /**
-    * Search the relation definition table for the identifying number of
-    * a relation, by name of the relation to use
-    * This function is used by descendants of Insrel to determine a default reference to a 'relation definition' (reldef entry).
-    * The 'default' is the relation with the same name as the builder. If no such relation exists, there is no default.
-    * @ param name The builder name on which to search for the relation
-    * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
-    * 	indicated buildername, the first one found is returned.
-    * @deprecated Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
-    *   For the InsRel derived builders, use {@link #getDefaultForBuilder} instead
-    **/
+     * Search the relation definition table for the identifying number of
+     * a relation, by name of the relation to use
+     * This function is used by descendants of Insrel to determine a default reference to a 'relation definition' (reldef entry).
+     * The 'default' is the relation with the same name as the builder. If no such relation exists, there is no default.
+     * @ param name The builder name on which to search for the relation
+     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
+     *     indicated buildername, the first one found is returned.
+     * @deprecated use {@link #getNumberByName} instead
+     */
 
     public int getGuessedByName(String name) {
         Enumeration e=search("WHERE (sname='"+name+"') OR (dname='"+name+"')");
@@ -368,23 +400,23 @@ public class RelDef extends MMObjectBuilder {
         } else {
             return -1;
         }
-    }                        	
-	
+    }
+
     /**
-    * Searches for the relation number on the combination of sname and dname.
-    * When there's no match found in this order a search with a swapped sname and dname will be done.
-    * Note that there is no real assurance that an sname/dname combinmation must be unique.
-    * @ param sname The first name on which to search for the relation (preferred as the source)
-    * @ param dname The second name on which to search for the relation (preferred as the destination)
-    * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
-    * 	indicated names, the first one found is returned.
-    */
+     * Searches for the relation number on the combination of sname and dname.
+     * When there's no match found in this order a search with a swapped sname and dname will be done.
+     * Note that there is no real assurance that an sname/dname combination must be unique.
+     * @ param sname The first name on which to search for the relation (preferred as the source)
+     * @ param dname The second name on which to search for the relation (preferred as the destination)
+     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
+     *     indicated names, the first one found is returned.
+     * @deprecated use {@link #getNumberByName} instead
+     */
     public int getRelNrByName(String sname, String dname) {
         Enumeration e = search("WHERE sname='" + sname + "' AND dname='" + dname + "'");
         if (!e.hasMoreElements()) {
             e = search("WHERE sname='" + dname + "' AND dname='" + sname + "'");
         }
-	
         if (e.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode)e.nextElement();
             return node.getNumber();
