@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.14 2002-07-17 11:28:07 pierre Exp $
+ * @version $Id: Config.java,v 1.15 2002-07-18 16:25:29 eduard Exp $
  */
 
 public class Config {
@@ -180,6 +180,8 @@ log.info("storing "+name+" :"+value);
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             config(wizard); // determine the objectnumber and assign the wizard name.
+            // wizard should now have a name!
+            if (wizard.wizard == null) throw new WizardException("Wizardname may not be null, conigurated by class with name: " + this.getClass().getName());
             wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
