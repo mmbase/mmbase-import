@@ -23,6 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: JMSendMail.java,v 1.3.2.2 2004-04-23 13:00:10 pierre Exp $
  */
 public class JMSendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(JMSendMail.class.getName());
