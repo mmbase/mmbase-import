@@ -13,7 +13,7 @@
     <description xml:lang="nl">MMBase contexten voor security</description>
   </descriptions>
   <properties>
-    <property name="readall">false</property>
+    <property name="readall">false</property><!-- if true, read rights never need a check -->
   </properties>
   <fieldlist>
     <!-- field definition for field 4 : name -->

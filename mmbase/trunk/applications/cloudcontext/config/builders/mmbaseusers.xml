@@ -85,7 +85,7 @@
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="en">Status</guiname>
         <guiname xml:lang="eo">Statuso</guiname>
-        <guitype>org.mmbase.security.states</guitype>
+        <guitype>org.mmbase.security.status</guitype>
       </gui>
       <editor>
         <positions>
