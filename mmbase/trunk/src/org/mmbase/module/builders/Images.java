@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.10 2000-04-05 11:52:16 wwwtech Exp $
+	$Id: Images.java,v 1.11 2000-05-27 14:19:07 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2000/04/05 11:52:16  wwwtech
+	Rico: added debug, so you can see you need to load icaches as well
+	
 	Revision 1.9  2000/03/30 14:15:04  wwwtech
 	Rico: added static string to reference the Path to the converter as per suggestion of Arjen de Vries, NOTE that this has to be configurable instead of static like this
 	
@@ -52,7 +55,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.10 2000-04-05 11:52:16 wwwtech Exp $
+ * @version $Id: Images.java,v 1.11 2000-05-27 14:19:07 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -113,11 +116,16 @@ public class Images extends MMObjectBuilder {
 				int numint=Integer.parseInt(num);
 			} catch(Exception e) {
 				Enumeration g=search("MMNODE images.title==*"+num+"*");
-				while (g.hasMoreElements()) {
-					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-					num=""+imgnode.getIntValue("number");
-				}
-			}	
+				String title = num;
+				if ((title!=null) && !title.equals("")) {
+					while (g.hasMoreElements()) {
+						MMObjectNode imgnode=(MMObjectNode)g.nextElement();
+						num=""+imgnode.getIntValue("number");
+						if (title.equalsIgnoreCase(imgnode.getStringValue("title")))
+							break;
+					}//while
+				}//if
+			}//catch	
 	
 			// is it a alias ? check in database and unmap
 			if (params.size()>1 && ((String)params.elementAt(1)).indexOf('(')==-1) {
