@@ -1067,16 +1067,6 @@ public class MMAdmin extends ProcessorModule {
                     results.addElement("0");
                     results.addElement("yes");
                     results.addElement("mmbase.org");
-                    /*
-                    results.addElement(""+app.getBuilderVersion());
-                    int installedversion=ver.getInstalledVersion(sname,"builder");
-                    if (installedversion==-1) {
-                        results.addElement("no");
-                    } else {
-                        results.addElement("yes");
-                    }
-                    results.addElement(app.getBuilderMaintainer());
-                    */
                 }
             }
         }
