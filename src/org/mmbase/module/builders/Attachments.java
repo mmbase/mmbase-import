@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.12 2002-06-28 22:36:11 michiel Exp $ 
+ * @version $Id: Attachments.java,v 1.13 2002-06-28 22:58:12 michiel Exp $ 
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -153,13 +153,14 @@ public class Attachments extends AbstractServletBuilder {
             if (mimetype != null && !mimetype.equals("")) {
                 log.debug("mimetype was set already");
             } else {
-                byte[] handle = (byte[])node.getValue("handle");
+                byte[] handle = node.getByteValue("handle");
                 log.debug("Attachment size of file = " + handle.length);
                 node.setValue("size", handle.length);
                 MagicFile magic = new MagicFile();
                 node.setValue("mimetype", magic.test(handle));
                 log.debug("ATTACHMENT mimetype of file = " + magic.test(handle));
             }
+            return true;
         }        		
         return super.setValue(node, field);	
     }	
