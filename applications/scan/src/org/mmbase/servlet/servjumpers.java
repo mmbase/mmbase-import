@@ -9,13 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-import java.io.*;
+import java.io.IOException;
 
-import org.mmbase.module.builders.*;
-import org.mmbase.module.core.*;
-
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
+
+import org.mmbase.module.builders.Jumpers;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servjumpers
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.18 2004-03-03 15:18:32 michiel Exp $
+ * @version $Id: servjumpers.java,v 1.19 2004-05-04 09:43:24 keesj Exp $
  * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
