@@ -39,30 +39,49 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         writerid = getAttributeValue(w);
         
     }
-
-
-    protected boolean doCompare(String compare) {
+    private String referid2 = null;
+    public void setReferid2(String r) throws JspTagException {
+        referid2 = getAttributeValue(r);
+    }
+    
+    protected boolean doCompare(Comparable v1, Comparable v2) {
         if (log.isDebugEnabled()) {
-            log.debug("comparing '" + value + "' to '" + compare + "'");
+            log.debug("comparing '" + v1 + "' to '" + v2 + "'");
         }
-        return value.equals(compare);
+        return v1.equals(v2);
     }
 
                
     public int doStartTag() throws JspTagException {
-        String compare;
+        Comparable compare1;
         if (getReferid() == null) {
             Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
-            Object o = w.getWriterValue();
-            if (o == null) {
-                compare = "";
-            } else {
-                compare = o.toString();
-            }
+            compare1 = (Comparable) w.getWriterValue();
         } else {
-            compare = getString(getReferid());
+            if (value != null) {
+                compare1 = getString(getReferid()); // value is aways a string
+            } else {
+                compare1 = (Comparable) getObject(getReferid());
+            }            
         }
-        if (doCompare(compare) != inverse ) {
+
+        Comparable compare2;
+        if (value != null) {            
+            compare2 = value;
+            if (referid2 != null) {
+                throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
+            }
+        } else {            
+            compare2 = (Comparable) getObject(referid2);
+        }
+        // if using 'BigDecimal' then avoid classcastexceptions
+        if (compare1 instanceof java.math.BigDecimal) {
+            if (! (compare2 instanceof java.math.BigDecimal)) {
+                compare2 = new java.math.BigDecimal(compare2.toString());
+            }
+        }
+        
+        if (doCompare(compare1, compare2) != inverse ) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
