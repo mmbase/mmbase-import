@@ -13,7 +13,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.105 2003-12-22 22:33:24 nico Exp $
+    @version $Id: wizard.xsl,v 1.106 2004-01-02 15:21:19 nico Exp $
     
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -92,7 +92,7 @@
     <script type="text/javascript" src="{$htmlareadir}htmlarea.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$htmlareadir}lang/en.js">
+    <script type="text/javascript" src="{$htmlareadir}lang/{$language}.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript" src="{$htmlareadir}dialog.js">
@@ -118,6 +118,7 @@
         <![CDATA[
 
           function startHtmlArea() {
+            if (HTMLArea.checkSupportedBrowser()) {
               // Start the htmlarea's.
               for (var i = 0; i < htmlAreas.length; i++) {
                 var editor = new HTMLArea(htmlAreas[i]);
@@ -125,6 +126,7 @@
                 editor.generate();
                 htmlAreas[i] = editor;
               }
+            }
           }
 
           -->
@@ -245,12 +247,26 @@
   </xsl:template>
 
   <xsl:template name="formcontent">
-		<xsl:apply-templates select="/*/steps-validator" />
-		<div id="edit_table" class="editform">
+    <div id="stepsbar" class="stepscontent">
+			<xsl:apply-templates select="/*/steps-validator" />
+		</div>
+		<div id="editform" class="editform">
+      <xsl:choose>
+        <xsl:when test="/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
+          <xsl:attribute name="otherforms">invalid</xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="otherforms">valid</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+
 			<table class="formcontent">
 				<xsl:apply-templates select="form[@id=/wizard/curform]" />
 			</table>
 		</div>
+    <div id="commandbuttonbar" class="buttonscontent">
+	    <xsl:call-template name="buttons" />
+    </div>
   </xsl:template>
 
 <!--
@@ -264,7 +280,6 @@
     <xsl:if test="count(step) > 1">
         <xsl:call-template name="steps" />
     </xsl:if>
-    <xsl:call-template name="buttons" />
   </xsl:template>
 
   <!-- The steps buttons are only created (in steps-validator) if there is more than one step -->
@@ -366,24 +381,22 @@
     </xsl:choose>
   </xsl:template>
 
-  <!-- Buttons are (always) called in the steps-validator -->
+  <!-- Buttons are (always) called -->
   <xsl:template name="buttons">
-    <div id="commandbuttonbar" class="buttonscontent">
-      <table class="buttonscontent">
-        <tr>
-          <td>
-						<!-- cancel -->
-						<xsl:call-template name="cancelbutton" />
-						-
-						<!-- commit  -->
-						<xsl:call-template name="savebutton" />
-						-
-						<!-- Saveonly  -->
-						<xsl:call-template name="saveonlybutton"/>
-          </td>
-        </tr>
-      </table>
-    </div>
+		<table class="buttonscontent">
+			<tr>
+				<td>
+					<!-- cancel -->
+					<xsl:call-template name="cancelbutton" />
+					-
+					<!-- commit  -->
+					<xsl:call-template name="savebutton" />
+					-
+					<!-- Saveonly  -->
+					<xsl:call-template name="saveonlybutton"/>
+				</td>
+			</tr>
+		</table>
   </xsl:template>
 
   <xsl:template name="savebutton">
@@ -400,14 +413,6 @@
           <xsl:value-of select="$tooltip_no_save"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:choose>
-        <xsl:when test="step[@valid='false'][not(@form-schema=/wizard/curform)]">
-          <xsl:attribute name="otherforms">invalid</xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="otherforms">valid</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
       <xsl:call-template name="prompt_save"/>
     </a>
   </xsl:template>
@@ -432,14 +437,6 @@
           <xsl:value-of select="$tooltip_no_save"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:choose>
-        <xsl:when test="step[@valid='false'][not(@form-schema=/wizard/curform)]">
-          <xsl:attribute name="otherforms">invalid</xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="otherforms">valid</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
       <xsl:call-template name="prompt_save_only"/>
     </a>
   </xsl:template>

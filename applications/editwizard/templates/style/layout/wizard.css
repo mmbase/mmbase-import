@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.2 2003-12-22 22:33:07 nico Exp $
+  @version  $Id: wizard.css,v 1.3 2004-01-02 15:21:17 nico Exp $
 
 body
 table.head
@@ -121,6 +121,7 @@ table.buttonscontent tr td {
 
 div.editform  {         
         overflow: auto;
+	    width: 100%;
 }
 
 table.formcontent  {
@@ -131,7 +132,7 @@ table.formcontent  {
 	border-width: 0px; 
 	border-style: solid;
 	border-collapse: collapse;
-	width: 100%;
+	width: 97%;
 }
 
 tr.fieldcanvas,

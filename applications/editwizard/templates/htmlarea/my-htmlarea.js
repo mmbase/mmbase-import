@@ -140,12 +140,14 @@ myValidateSaveAction = function(editor) {
 
 // overrides editwizard.jsp
 function doCheckHtml() {
-  for (var i = 0; i < htmlAreas.length; i++) {
-    var editor = htmlAreas[i];
-    updateValue(editor);
-    // editwizard validation
-    // It is possible to save a wizard when multiple htmlareas are not validated yet.
-    validator.validate(editor._textArea);
+  if (HTMLArea.checkSupportedBrowser()) {
+    for (var i = 0; i < htmlAreas.length; i++) {
+      var editor = htmlAreas[i];
+      updateValue(editor);
+      // editwizard validation
+      // It is possible to save a wizard when multiple htmlareas are not validated yet.
+      validator.validate(editor._textArea);
+    }
   }
 }
 

@@ -32,6 +32,21 @@ HTMLArea.I18N = {
 		popupeditor:    "Vergroot Editor",
 		about:          "Over deze editor",
 		help:           "Help",
-		textindicator:  "Huidige stijl"
+		textindicator:  "Huidige stijl",
+		undo:           "Ongedaan maken",
+		redo:           "Herhalen",
+		cut:            "Knippen",
+		copy:           "Kopieren",
+		paste:          "Plakken"
+	},
+
+	buttons: {
+		"ok":           "OK",
+		"cancel":       "Annuleren"
+	},
+
+	msg: {
+		"Path":         "Path",
+		"TEXT_MODE":    "U bent in TEXT MODE.  Gebruik de [<>] knop om terug te keren naar WYSIWIG."
 	}
 };

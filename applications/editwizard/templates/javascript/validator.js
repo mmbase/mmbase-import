@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.27 2003-12-23 21:46:27 nico Exp $
+ * @version  $Id: validator.js,v 1.28 2004-01-02 15:21:17 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -70,13 +70,28 @@ Validator.prototype.attach = function (element) {
 }
 
 addEvent = function(el, evname, func) {
-	if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
-		el.attachEvent("on" + evname, func);
-	} else {
-		el.addEventListener(evname, func, true);
-	}
+    if (navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
+        if (navigator.appVersion.indexOf('Mac') != -1) {
+            if (evname == 'blur') {
+                el.onblur = func;
+            }
+            if (evname == 'change') {
+                el.onchange = func;
+            }
+            if (evname == 'keyup') {
+                el.onkeyup = func;
+            }
+            if (evname == 'blur') {
+                el.onblur = func;
+            }
+        }
+        else {
+            el.attachEvent("on" + evname, func);
+        }
+    } else {
+        el.addEventListener(evname, func, true);
+    }
 }
-
 
 Validator.prototype.validateEvent = function (evt) {
     evt = (evt) ? evt : ((window.event) ? window.event : "")
@@ -114,8 +129,8 @@ Validator.prototype.validate = function (el) {
 }
 
 Validator.prototype.isValidWizard = function() {
-    var savebut = document.getElementById("bottombutton-save");
-    var otherforms = savebut.getAttribute("otherforms")  == 'valid';
+    var editform = document.getElementById("editform");
+    var otherforms = editform.getAttribute("otherforms")  == 'valid';
     return this.isValidForm() && otherforms;
 }
 
