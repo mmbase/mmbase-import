@@ -35,6 +35,11 @@ import org.mmbase.module.corebuilders.*;
 *      in writeContextSources :
 *      XMLContextDepthWriterII.writeContextXML(capp,targetpath+"/"+(String)bset.get("path"));
 *  </blockquote>
+*
+*  @author Daniel Ockeloen
+*  @author Jacco de Groot
+*  @author Pierre van Rooden
+*  @version 08-11-2000
 */
 public class XMLContextDepthWriterII  {
 
@@ -418,42 +423,5 @@ public class XMLContextDepthWriterII  {
 	saveFile(filename,body);
 	return(true);
     }
-
-
-    /* Writes the contents of a field to xml.
-     * The type of the field is checked. A binary field (i.e. image) is stored as a reference to a
-     * seperately saved binary file.
-     * A number of 'special purpose' fields (number, owner, otype, CacheCount) are skipped and not written.
-     * Other fields are added 'in line'.
-     * @param key the name of the  field to write
-     * @param node the object node whose field to write
-     * @param targetpath The path where any binary files need be stored.
-     * @param mmb MMbase object for retrieving node type information
-     * @returns A string describing the tag to add to a data or relation source file
-     */
-    private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
-	if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
-		// this is a bad way of doing it imho
-		int type=node.getDBType(key);
-		String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));	
-		if (type==FieldDefs.TYPE_BYTE) {
-			String body="\t\t<"+key+" file=\""+stype+"/"+node.getIntValue("number")+"."+key+"\" />\n";
-			File file = new File(targetpath+stype);
-			try {
-				file.mkdirs();
-			} catch(Exception e) {
-				System.out.println("Can't create dir : "+targetpath+stype);
-			}
-			byte[] value=node.getByteValue(key);
-			saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);
-			return(body);
-		} else {
-			String body="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
-			return(body);
-		}
-
-	}
-	return("");
-  }
 
 }

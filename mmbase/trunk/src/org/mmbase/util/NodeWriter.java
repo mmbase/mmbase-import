@@ -72,7 +72,7 @@ public class NodeWriter{
 
     /**
     *  Writes a node (object) to the datasource file.
-    *  Relationsources are stoired ina a slightly different format from data sources.
+    *  Relationsources are stored in a slightly different format from data sources.
     *  @param node The object to store.
     */
     public void write(MMObjectNode node) {
@@ -160,10 +160,12 @@ public class NodeWriter{
     *  Creates a description string of a field in a node for use in a datasource file.
     *  Binary data (such as images) are stored as seperate binary files, the string then contains
     *  a reference in lieu of the actual value.
+    *  A number of 'special purpose' fields (number, owner, otype, CacheCount) are skipped and not written.
+    *  Other fields are added 'in line'.
     *  @param key the fieldname to store
     *  @param node The node wose field to store
     *  @param targetpath the path where any binary files may be stored
-    *  @param mmb MMBase objhect for retrieving type info
+    *  @param mmb MMBase object for retrieving type info
     *  @return A <code>String</code> descriving in xml-format the field's content (or a reference to that content)
     */
     private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
