@@ -91,6 +91,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
     private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
     private String logon = null;  
     private String pwd = null;
+    private Rank   rank = null;
 
     private static String FAILMESSAGE = "<h1>CloudTag Error</h1>";
     
@@ -114,8 +115,18 @@ public class CloudTag extends ContextTag implements CloudProvider {
         cloudName = name;        
     }
     
-    public void setLogon(String logon){
-        this.logon = logon;
+    public void setLogon(String l){
+        logon = l;
+        if ("".equals(logon)) {
+            logon = null;   // that also means to ignore the logon name
+        }
+
+    }
+    public void setRank(String r) throws JspTagException {
+        rank = Rank.getRank(r);
+        if (rank == null) {
+            throw new JspTagException("Unknown rank " + r);
+        }
     }
     
     public void setPwd(String pwd){
@@ -230,7 +241,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
         // first check if we need an anonymous cloud,
         // in which case we don't want to use the session. Pages get
         // better chachable then.
-        if ( (method == METHOD_UNSET && logon == null) || 
+        if ( (method == METHOD_UNSET && logon == null && rank == null) || 
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
             setAnonymousCloud(cloudName);            
@@ -255,11 +266,10 @@ public class CloudTag extends ContextTag implements CloudProvider {
             // this is handy. 'logon' will be ignored, the cloud is as is was in the session
             log.debug("requested the cloud 'as is'");
             logon = null;   // that means in practice, to ignore the logon name.  
+            rank  = null;
         }              
         
-        if ("".equals(logon)) {
-            logon = null;   // that also means to ignore the logon name
-        }
+              
 
         if (cloud != null && (! cloud.getUser().isValid())) { 
             // cloud expired (security changed)
@@ -287,7 +297,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
                 }
             } else 
             */
-            if (logon == null && method != METHOD_UNSET) { 
+            if (logon == null && rank == null && method != METHOD_UNSET) { 
                 // authorisation was requested, but not indicated for whom 
                 log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());                
                 if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
@@ -300,6 +310,16 @@ public class CloudTag extends ContextTag implements CloudProvider {
                 // a logon name was given, check if logged on as the right one
                 if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
                     log.debug("logged on, but as wrong user. log out first.");
+                    cloud = null;
+                    session.removeAttribute("cloud_" + cloudName);
+                } else {
+                    log.debug("Cloud is ok already");
+                }
+            } else if (rank != null) {
+                log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
+                Rank curRank = Rank.getRank(cloud.getUser().getRank());
+                if (curRank.getInt() < rank.getInt()) {
+                    log.debug("logged on, but rank of user is to low. log out first.");
                     cloud = null;
                     session.removeAttribute("cloud_" + cloudName);
                 } else {
@@ -367,6 +387,17 @@ public class CloudTag extends ContextTag implements CloudProvider {
                 user.put("password", pwd);
                 try {
                     cloud = getDefaultCloudContext().getCloud(cloudName, authenticate, user);
+                    // ok, logging on work, now check rank if necessary
+                    if (rank != null) { 
+                        Rank curRank = Rank.getRank(cloud.getUser().getRank());
+                        if (curRank.getInt() < rank.getInt()) {
+                            log.debug("logged on, but rank of user is to low. log out first.");
+                            cloud = null;
+                            return deny("<h2>Rank to low for this page</h2>");
+                        }
+                        
+                    }
+
                 } catch (BridgeException e) {                     
                     // did not succeed, so problably the password was wrong.
                     if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
