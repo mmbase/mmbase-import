@@ -17,11 +17,11 @@ import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.util.logging.*;
 
 public class LinkChecker extends ProcessorModule implements Runnable {
 
-	private String classname = getClass().getName();
-
+	private static Logger log = Logging.getLoggerInstance(LinkChecker.class.getName());
     Thread kicker = null;
 	MMBase mmbase;
 	MMObjectBuilder urls;
@@ -34,16 +34,8 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 		urls=(MMObjectBuilder)mmbase.getMMObject("urls");
 		jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
 		sendmail=(SendMail)getModule("sendmail");
+		log.info("Module LinkChecker started");
 		start();
-	}
-
-	public void onload() {
-	}
-
-	public void unload() {
-	}
-
-	public void shutdown() {
 	}
 
 	public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
@@ -51,8 +43,8 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 	}
 
 	public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-		System.out.println("CMDS="+cmds);
-		System.out.println("VARS="+vars);
+		log.debug("CMDS="+cmds);
+		log.debug("VARS="+vars);
 		return(false);
 	}
 
@@ -85,6 +77,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
     public void run () {
 		try { Thread.sleep(300000); } catch (Exception wait) { } //wait 5 minutes
+		log.service("LinkChecker starting to check all Jumpers and Urls");
 
 		// init variables for mail.
         String from=getInitParameter("from");
@@ -136,8 +129,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 				sendmail.sendMail(mail);
 			}
         } catch (Exception e) {
-            System.out.println("LinkChecker -> Error in Run()");
-            e.printStackTrace();
+            log.error("LinkChecker -> Error in Run() "+e);
         }
     }
 
