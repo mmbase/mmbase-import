@@ -12,65 +12,63 @@
 <mm:import id="fields">name,description,owner</mm:import>
 
 <mm:import externid="search" />
- <mm:import id="current">groups</mm:import>
- <%@include file="navigate.div.jsp" %>
- <%@include file="you.div.jsp" %>
- 
-  <p class="action">
-    <mm:maycreate type="mmbasegroups">
-      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" tooltip="create group"  /></a>
-    </mm:maycreate>
-    <mm:maycreate type="mmbasegroups" inverse="true">
-      You are not allowed to create new groups.
-    </mm:maycreate>
-  </p>
- 
-   <mm:notpresent referid="group">
-     <%@include file="search.form.jsp" %>
-     
-     <table summary="Groups">
+<mm:import id="current">groups</mm:import>
+<%@include file="navigate.div.jsp" %>
+<%@include file="you.div.jsp" %>
 
-     <mm:listnodescontainer id="cc" type="$nodetype">
+<p class="action">
+  <mm:maycreate type="mmbasegroups">
+    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" tooltip="create group"  /></a>
+  </mm:maycreate>
+  <mm:maycreate type="mmbasegroups" inverse="true">
+    You are not allowed to create new groups.
+  </mm:maycreate>
+</p>
 
-     <%@include file="search.jsp" %>
-    
-     <mm:listnodes id="basegroups" orderby="name">
-       <%-- 
-       <mm:countrelations type="mmbasegroups" searchdir="source" role="contains">
-          <mm:isgreaterthan value="0">
-             <mm:removeitem />
-          </mm:isgreaterthan>
-      </mm:countrelations>
-       --%>
-     </mm:listnodes>
+<mm:notpresent referid="group">
+  <%@include file="search.form.jsp" %>
 
-     <tr><mm:fieldlist nodetype="$nodetype"  fields="$fields">
-        <th><mm:fieldinfo type="guiname" /></th>
-       </mm:fieldlist>
-       <th />
-     </tr>
-     
-     <mm:listnodes id="currentgroup" referid="basegroups">
-      <tr <mm:even>class="even"</mm:even> >
-      <mm:fieldlist fields="$fields">
-         <td><mm:fieldinfo type="guivalue" /></td>
-      </mm:fieldlist>
-      <td class="commands">
-         <a href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="Wijzigen" title="Wijzigen" /></a>
-      </td>
+  <table summary="Groups">   
+    <mm:listnodescontainer id="cc" type="$nodetype">     
+      <%@include file="search.jsp" %>      
+
+      <tr>
+        <mm:fieldlist nodetype="$nodetype"  fields="$fields">
+          <th><mm:fieldinfo type="guiname" /></th>
+        </mm:fieldlist>
+        <th />
       </tr>
-     </mm:listnodes>
-
-    </mm:listnodescontainer>
-    </table>
-   </mm:notpresent>
-   <mm:present referid="group">
-     <mm:stringlist referid="group">
-      <mm:node id="currentgroup"  number="$_">
-          <%@include file="group.div.jsp" %>
-      </mm:node>
-     </mm:stringlist>
-   </mm:present>
+     
+      <mm:listnodes id="currentgroup">
+        <tr <mm:even>class="even"</mm:even> >
+        <mm:fieldlist fields="$fields">
+          <td><mm:fieldinfo type="guivalue" /></td>
+        </mm:fieldlist>
+        <td class="commands">
+          <a href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="Wijzigen" title="Wijzigen" /></a>
+          <mm:maydelete>
+            <mm:relatednodescontainer type="object" role="contains" searchdirs="destination">
+              <mm:size>
+                <mm:compare value="0">
+                  <a href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="Verwijderen" title="Verwijderen" /></a>
+                </mm:compare>
+              </mm:size>
+            </mm:relatednodescontainer>
+          </mm:maydelete>
+        </td>
+      </tr>
+    </mm:listnodes>
+    
+  </mm:listnodescontainer>
+</table>
+</mm:notpresent>
+<mm:present referid="group">
+  <mm:stringlist referid="group">
+    <mm:node id="currentgroup"  number="$_">
+      <%@include file="group.div.jsp" %>
+    </mm:node>
+  </mm:stringlist>
+</mm:present>
 
 </mm:cloud>
 </mm:content>
