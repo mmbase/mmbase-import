@@ -5,7 +5,7 @@
     <articleinfo>
         <title>Media project documentation</title>
         <date>2002-12-17</date>
-        <edition>$Id: media.xml,v 1.6 2003-09-08 15:02:18 vpro Exp $</edition>
+        <edition>$Id: media.xml,v 1.7 2004-07-30 08:15:33 rob Exp $</edition>
         <authorgroup>
             <author>
                 <firstname>Michiel</firstname>
@@ -275,7 +275,7 @@
             At this point your MMBase installation is able to use the Media project. Make sure you read the complete Media project documentation so you are aware of how to use and configure Filters, and URL Composers.
         </para>
         <para>
-            If you have any questions/comments, regarding to the media project, please sent an email to media@mmbase.org.
+            If you have any questions/comments, regarding to the media project, please sent an email to the developers mailing list (www.mmbase.org/contact).
         </para>
     </section>
 </article>
