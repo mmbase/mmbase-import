@@ -48,4 +48,7 @@ public interface MMJdbc2NodeInterface {
  	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
 	public String getDisallowedField(String allowedfield);
 	public String getAllowedField(String disallowedfield);
+	public String getNumberString();
+	public String getOwnerString();
+	public String getOTypeString();
 }
