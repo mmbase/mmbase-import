@@ -13,6 +13,9 @@ Applications build file
   <!-- Default values for properties that can be customized -->
 
   <property name="source.dir"   location=".." />
+
+  <property file="${source.dir}/build.properties" />
+
   <property name="build.dir"    value="${source.dir}/build" />
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
@@ -41,11 +44,13 @@ Applications build file
 
   <target name="editwizard" depends="mmbase">
      <ant dir="editwizard" target="jar" />
+     <ant dir="editwizard" target="jspsmartupload" />
   </target>
 
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
+      <delete dir="${applications.build.dir}" />
   </target>
 
 </project>
