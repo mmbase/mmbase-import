@@ -3,7 +3,7 @@
   Editwizard cascading style sheet.
   
   @author Nico Klasens
-  @version  $Id: list.css,v 1.1 2003-12-19 11:09:36 nico Exp $
+  @version  $Id: list.css,v 1.2 2004-01-20 18:00:51 michiel Exp $
 */
 
 @import url("base.css");
@@ -31,6 +31,14 @@ tr.listheader {
 /*	background-color: #CCC;
 	color: #000000; */
 }
+
+tr.itemrow, 
+tr.itemrow-hover, 
+tr.itemrow td, 
+tr.itemrow-hover td { 
+   color:#18248C; 
+}
+
 		
 .itemrow-hover {
 /*	background-color: #CCC; */
@@ -40,3 +48,7 @@ tr.listheader {
 .itemrow-disabled {
   color: #CCCCCC; 
 }
+
+.itemrow field { 
+}
+
