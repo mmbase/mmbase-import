@@ -14,8 +14,6 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
-import org.mmbase.bridge.jsp.taglib.NodeProvider;
-
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,12 +27,7 @@ public class SetFieldTag extends NodeReferrerTag {
     
     private static Logger log = Logging.getLoggerInstance(SetFieldTag.class.getName()); 
     
-    private String parentNodeId = null;
     private String name;   
-    
-    public void setNode(String node){
-        parentNodeId = node;
-    }
     
     public void setName(String n) {
         name = n;
@@ -50,9 +43,7 @@ public class SetFieldTag extends NodeReferrerTag {
     public int doAfterBody() throws JspTagException {
         
         // firstly, search the node:
-        Node node;
-        NodeProvider nodeLikeTag = findNodeProvider(parentNodeId);
-        node = nodeLikeTag.getNodeVar();
+        Node node = findNodeProvider().getNodeVar();
         
         // new value is in the body:
         String newValue = bodyContent.getString();

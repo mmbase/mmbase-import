@@ -28,15 +28,10 @@ public class FieldTag extends NodeReferrerTag {
     
     private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName()); 
     
-    private String parentNodeId = null;
     protected Node node;
     private String name;   
     private String head;
-    
-    public void setNode(String node){
-        parentNodeId = node;
-    }
-    
+       
     public void setName(String n) {
         name = n;
     }
@@ -65,8 +60,7 @@ public class FieldTag extends NodeReferrerTag {
     public int doAfterBody() throws JspTagException {
         
         // firstly, search the node:
-        NodeProvider nodeLikeTag = findNodeProvider(parentNodeId);
-        node = nodeLikeTag.getNodeVar();
+        node = findNodeProvider().getNodeVar();
         
         // found the node now. Now we can decide what must be shown:
         String show;

@@ -46,15 +46,25 @@ public abstract class NodeReferrerTag extends BodyTagSupport {
 	
     private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
 
+    private String parentNodeId = null;
+
+    /**
+     * A NodeReferrer probably wants to supply the attribute 'node',
+     * to make it possible to refer to another node than the direct
+     * ancestor.
+     **/
+
+    public void setNode(String node){
+        parentNodeId = node;
+    }
+
     /**
     * This method tries to find an ancestor object of type NodeProvider
-    * @param id the id of the parent we are looking for , this id might be null or ""
-    * in that case the first node provider found will be taken
     * @return the NodeProvider if found else an exception.
     *
     */
 	
-    public NodeProvider findNodeProvider(String id) throws JspTagException {
+    public NodeProvider findNodeProvider() throws JspTagException {
 
         Class nodeProviderClass;
         try {
@@ -69,27 +79,18 @@ public abstract class NodeReferrerTag extends BodyTagSupport {
             throw new JspTagException ("Could not find parent nodeProvider");  
         }
 
-        if ("".equals(id)) id = null;
+        if ("".equals(parentNodeId)) parentNodeId = null;
 
-        if (id != null) { // search further, if necessary
-            while (nodeProvider.getId() != id) {
-                nodeProvider = (NodeProvider) findAncestorWithClass((Tag)nodeProvider, nodeProviderClass);            
+        if (parentNodeId != null) { // search further, if necessary
+            while (nodeProvider.getId() != parentNodeId) {
+                nodeProvider = (NodeProvider) findAncestorWithClass((Tag)nodeProvider, nodeProviderClass); 
                 if (nodeProvider == null) {
-                    throw new JspTagException ("Could not find parent with id " + id);  
+                    throw new JspTagException ("Could not find parent with id " + parentNodeId);  
                 }
             }
             
         }
         return nodeProvider;
-    }
-
-    /**
-     * Returns the closest ancestor which is a NodeProvider.
-     *
-     */
-
-    public NodeProvider findNodeProvider() throws JspTagException {
-        return findNodeProvider(null);
     }
 
 }
