@@ -47,25 +47,26 @@ import org.mmbase.util.logging.Logging;
 */
 public class ContextTag extends ContextReferrerTag {
 
-    public static final int TYPE_PARENT         = -10; // uses parent Contex, if there is one.
-    public static final int TYPE_HASHMAP        = 0;
+    public static final int TYPE_NOTSET         = -10;
+    public static final int TYPE_PAGE           = 0;
+    public static final int TYPE_PARENT         = 5; // uses parent Contex, if there is one.
     public static final int TYPE_PARAMETERS     = 10;
     public static final int TYPE_POSTPARAMETERS = 20;
     public static final int TYPE_SESSION        = 30;
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
-    private HashMap hashMap = new HashMap(); 
-    // this hashmap can always be useful, also if the context is not TYPE_HASHMAP
-
-    private int type = TYPE_PARENT;
-
     private ContextTag parent = null;
-    private boolean searchedParent = false;
+    private boolean    searchedParent = false;
 
-    private HttpPost poster = null;
+    private HttpPost           poster = null;
     private HttpServletRequest httpRequest = null;
     private HttpSession        httpSession = null;
+
+    public void release() {   
+        log.debug("releasing");
+        super.release();       
+    }
 
     // avoid casting
     private HttpServletRequest getHttpRequest() {
@@ -82,7 +83,21 @@ public class ContextTag extends ContextReferrerTag {
         }
         return httpSession;        
     }
-    
+
+    public void setId(String i) {
+        log.debug("setting id to " + i);
+        id = i;
+    }
+
+    /**
+     * Returns the id of the context. If there was no id-attibute in
+     * this tag, then the id is implicitily 'context'.  
+     */
+
+    public String getId() {
+        if (id == null) return "context"; // a context has a default id.
+        return id;
+    }
 
     private HttpPost getPoster() {
         if (poster == null) {
@@ -104,28 +119,6 @@ public class ContextTag extends ContextReferrerTag {
         }
         return parent;
     }
-
-    public void setType(String s) throws JspTagException {
-        if ("parent".equalsIgnoreCase(s)) {
-            type = TYPE_PARENT;
-        } else if ("hashmap".equalsIgnoreCase(s)) {
-            type = TYPE_HASHMAP;
-        } else if ("session".equalsIgnoreCase(s)) {
-            type = TYPE_SESSION;
-        } else if ("parameters".equalsIgnoreCase(s)) {
-            type = TYPE_PARAMETERS;
-        } else if ("postparameters".equalsIgnoreCase(s)) {
-            type = TYPE_POSTPARAMETERS;
-        } else {
-            throw new JspTagException("Unknown context-type " + s);
-        }        
-    }
-    
-    public int getTypeInt() { 
-        // for some reason simply 'getType'
-        // doesn't work (Bean property gets read only)
-        return type;
-    }
     
 
     /**
@@ -135,53 +128,93 @@ public class ContextTag extends ContextReferrerTag {
      * @param node the node to put in the hashmap
      */
       
-    public void  registerNode(String key, Node n) {
+    public void  registerNode(String key, Node n) throws JspTagException {
         register(key, n);
     }
+
+
+    //
+
+    public boolean findAndRegister(int from, String referid, String newid) throws JspTagException { 
+        if (newid == null) {
+            throw new JspTagException("Cannot register with id is null");
+        }
+        if (referid == null) {
+            throw new JspTagException("Cannot refer with id is null");
+        }
+        Object result = null;
+        switch (from) {
+        case TYPE_SESSION:
+            result = getSession().getAttribute(referid);
+            break;
+        case TYPE_POSTPARAMETERS:
+            result = getPoster().getPostParameter(referid);
+            break;
+        case TYPE_PARAMETERS:
+            result = pageContext.getRequest().getParameter(referid);
+            break;
+        case TYPE_PARENT:
+            if (getParentContext() != null) {
+                if (parent.isRegistered(referid)) {
+                    result = parent.getObject(referid);
+                }
+            }
+            break;
+        case TYPE_PAGE:
+            //result = pageContext.getAttribute(referid);            
+            break;
+        default:
+            result = null;
+        }
+        register(newid, result);
+        if (result == null) return false;
+        log.debug("found " + newid + " (" + result + ")");
+        return true;
+    }
+
+    /**
+     * Searches a key in request, postparameters, session, parent context and registers it in this one.
+     */
+
+    public boolean findAndRegister(String externid, String newid) throws JspTagException {
+        log.debug("finding externid " + externid + " with context " + getId());
+        // if (findAndRegister(TYPE_PAGE, referid, id)) return true;
+        log.debug("in parent");
+        if (findAndRegister(TYPE_PARENT, externid, newid)) return true;
+        unRegister(newid); // unregister the 'null' value
+        log.debug("in parameters");
+        if (findAndRegister(TYPE_PARAMETERS, externid, newid)) return true;
+        unRegister(newid);
+        log.debug("in postparameters");
+        if (findAndRegister(TYPE_POSTPARAMETERS, externid, newid)) return true;
+        unRegister(newid);
+        log.debug("in session");
+        if (findAndRegister(TYPE_SESSION, externid, newid)) return true;
+        // don't unregister now, it stays registered as a null value,t hat is registerd, but not found.
+        return false;               
+    }
+    
 
     /** 
      * Register an Object with a key in the context. If the Context is
      * a session context, then it will be put in the session, otherwise in the hashmap.
      */
 
-    public void register(String key, Object n) {
+    public void register(String newid, Object n) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.trace("registering " + n + " under " + key);
+            log.trace("registering " + n + " under " + newid + " with context " + getId());
         }
-        switch (type) {
-        case TYPE_SESSION:
-            getSession().setAttribute(key, n);
-            break;
-        case TYPE_PARAMETERS:
-        case TYPE_POSTPARAMETERS:
-        case TYPE_PARENT:
-            if (getParentContext() != null) {
-                parent.register(key, n);
-                break;
-            }
-        case TYPE_HASHMAP:
-            hashMap.put(key, n);
-            break;        
+        //pageContext.setAttribute(id, n);
+        if (isRegistered(newid)) {
+            throw new JspTagException("Object with id " + newid + " was already registered in Context '" + getId() + "'");
         }
+        getHashMap().put(newid, n);
     }
 
     public void unRegister(String key) {
-        switch(type) {
-        case TYPE_SESSION:            
-            getSession().removeAttribute(key);
-            break;
-        case TYPE_PARAMETERS:
-            pageContext.getRequest().removeAttribute(key);
-            break;
-        case TYPE_PARENT:
-            if (getParentContext() != null) {
-                parent.unRegister(key);
-                break;
-            }
-        case TYPE_HASHMAP:
-            hashMap.remove(key);
-            break;
-        }
+        //pageContext.removeAttribute(key);
+        log.debug("removing object " + key + " from Context " + getId());
+        getHashMap().remove(key);
     }
 
     /*
@@ -189,39 +222,49 @@ public class ContextTag extends ContextReferrerTag {
         return getCloudProviderVar();
     }
     */
+
+    public boolean isPresent(String key) throws JspTagException {
+        // return (pageContext.getAttribute(id) != null);
+        return (getObject(key) != null);
+    }
+
+    final private HashMap getHashMap() {             
+        String key = "CONTEXT:" + getId();
+        log.debug("using HashMap " + key);
+        if (pageContext.getAttribute(key) == null) {
+            pageContext.setAttribute(key, new HashMap());
+        }
+        return (HashMap) pageContext.getAttribute(key);
+    }
+
+    private boolean isRegistered(String key) {
+        return (getHashMap().containsKey(key));
+    }
     
     public Object getObject(String key) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.trace("getting object " + key);
+            log.trace("getting object " + key + " from Context " + getId());
         }
-        Object result = null;
-        Object tempresult;
-        switch (type) {
-        case TYPE_SESSION:
-            result = getSession().getAttribute(key);          
-        case TYPE_POSTPARAMETERS:
-            tempresult = getPoster().getPostParameter(key);
-            if (tempresult != null) result = tempresult;
-        case TYPE_PARAMETERS:
-            tempresult = pageContext.getRequest().getParameter(key);
-            if (tempresult != null) result = tempresult;
-        case TYPE_PARENT:
-            if (getParentContext() != null) {
-                tempresult = parent.getObject(key);
-                if (tempresult != null) result = tempresult;
-            }
-        case TYPE_HASHMAP:
-            tempresult = hashMap.get(key);
-            if (tempresult != null) result = tempresult;
-            break;
-        default:
-            result = null;
+        //Object result = pageContext.getAttribute(id);        
+        //if (result == null) {
+
+        if (! isRegistered(key)) {
+            throw new JspTagException("Object with id " + key + " was not registered in Context '" + getId() + "'");
         }
+        Object result = getHashMap().get(key);
+        log.debug("found object " + key + " in context " + getId() + " value: " + result);
         return result;
     }
     public String getString(String key) throws JspTagException {
         return (String) getObject(key);
+    }
 
+    public String getStringFindAndRegister(String id) throws JspTagException {
+        boolean found = findAndRegister(id, id);
+        if (! found) {
+            throw new JspTagException("No object with id " + id + " could be found in Context '" + getId() + "'");
+        }
+        return getString(id);
     }
 
     public String getObjectAsString(String key) throws JspTagException {
@@ -235,20 +278,10 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     public byte[] getBytes(String key) throws JspTagException {
-        switch (type) {
-        case TYPE_PARENT:
-            if (getParentContext() != null) {
-                return parent.getBytes(key);
-            }
-        case TYPE_SESSION:
-        case TYPE_POSTPARAMETERS:
-            try {
-                return getPoster().getPostParameterBytes(key);
-            } catch (org.mmbase.util.PostValueToLargeException e) {
-                throw new JspTagException("Post value to large (" + e.toString() + ")");
-            }
-        default:
-            throw new JspTagException("Can only get bytes from postparameters Context");
+        try {
+            return getPoster().getPostParameterBytes(key);
+        } catch (org.mmbase.util.PostValueToLargeException e) {
+            throw new JspTagException("Post value to large (" + e.toString() + ")");
         }
     }
 
@@ -256,48 +289,13 @@ public class ContextTag extends ContextReferrerTag {
         return (Node) getObject(key);
     }
 
-    /**
-     * Returns all keys which are known to this context.
-     */
-
-    public Vector getKeys(int t) {
-        int _t = t;
-        if (type < _t) _t = type; // can e.g. not treat hashmap as parameter context.
-        Vector result = new Vector();
-        switch (_t) {
-        case TYPE_SESSION: {
-            Enumeration e = getSession().getAttributeNames();
-            while (e.hasMoreElements()) {
-                result.add(e.nextElement());
-            }
-        }
-        case TYPE_POSTPARAMETERS: {
-            Enumeration e = getPoster().getPostParameters().keys();
-            while (e.hasMoreElements()) {
-                result.add(e.nextElement());
-            }
-        }
-        case TYPE_PARAMETERS: {
-            Enumeration e = pageContext.getRequest().getParameterNames();
-            while (e.hasMoreElements()) {
-                result.add(e.nextElement());
-            }
-        }
-        case TYPE_PARENT:
-            if (getParentContext() != null) {
-                result.addAll(parent.getKeys(t));
-            }
-        case TYPE_HASHMAP:
-            result.addAll(hashMap.keySet());
-            break;
-        default:
-        }
-        return result;        
-    }
-
-
     public Vector getKeys() {
-        return getKeys(type);
+        Vector result = new Vector();
+        Enumeration e = pageContext.getAttributeNamesInScope(pageContext.PAGE_SCOPE);
+        while (e.hasMoreElements()) {
+            result.add(e.nextElement());
+        }        
+        return result;        
     }
 
     public int doAfterBody() throws JspTagException {

@@ -35,17 +35,67 @@ import org.mmbase.util.logging.Logging;
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
-    private ContextTag contextTag;
-    private String contextId = null;
+
+    private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
+
+    /// private ContextTag contextTag;
+    private String     contextId = null;
+
+    protected String referid = null;
+
+    public void setReferid(String r) throws JspTagException {
+        referid = getReferIdValue(r);
+    }
+
+    protected String getReferid() throws JspTagException {
+        return referid;
+    }
+
+    /**
+     * Release all allocated resources.
+     */
+    public void release() {   
+        super.release();       
+        id = null;
+        referid = null;
+        contextId = null;
+        //contextTag = null;
+    }
+
 
     /**
      * Refer to a specific context.
      */
 
     public void setContext(String c) {
+        log.debug("setting contextid to " + c);
+        //contextTag = null;
         contextId = c;
     }
+
     
+
+    final private StringTokenizer parseAttribute(String attribute) {
+        // searches a dot in 'attribute'.
+        // dots can be escaped with a backslash
+        org.mmbase.util.StringObject s = new org.mmbase.util.StringObject(attribute);        
+        s.replace("\\.", "%%%%%%%%"); // temporary call escaped dots %%%%%%% (hoping that that does not occur by chance)
+        s.replace(".", "\r");         // will split by \r
+        s.replace("%%%%%%%%", ".");   // put the escaped dots back
+        return new StringTokenizer(s.toString(), "\r");
+    }
+
+    protected String getReferIdValue(String attribute) {
+        // also possible to indicate context in id:
+        StringTokenizer tk = parseAttribute(attribute);
+        attribute = tk.nextToken();
+        if (tk.hasMoreTokens()) {
+            setContext(attribute);
+            attribute = tk.nextToken();
+        }
+        return attribute;
+    }
+
     /**
      * Call this function in your set-attribute function. It makes it
      * possible for the user of the taglib to prefix the attribute
@@ -54,35 +104,42 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      */
 
-    protected String getAttributeValue(String attribute) throws JspTagException {
-        String attributeValue = attribute;
-        if (attribute.startsWith("param:")) {        // interpret as parameter
-            String param = attribute.substring(6);
-            attributeValue = pageContext.getRequest().getParameter(param);
-            if (attributeValue == null) {
-                throw new JspTagException("Parameter " + param + " could not be found");
-            }
-        } else if (attribute.startsWith("session:")){ // interpret as key from session
-            String param = attribute.substring(8);
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-            attributeValue = (String) req.getSession().getAttribute(param);
-            if (attributeValue == null) {
-                throw new JspTagException("Session attribute " + param + " could not be found");
-            }
-        } else if (attribute.startsWith("context:")) { // interpret as key from context
-            String param = attribute.substring(8);
-            attributeValue = getContextTag().getString(param);
-            if (attributeValue == null) {
-                throw new JspTagException("Context attribute " + param + " could not be found");
-            }
-        } else if (attribute.startsWith("key:")) {    // general, as a key, so from context.
-            String param = attribute.substring(4);
-            attributeValue = getContextTag().getString(param);
-            if (attributeValue == null) {
-                throw new JspTagException("Context attribute " + param + " could not be found");
-            }
-        }
+    
 
+    protected String getAttributeValue(String attribute) throws JspTagException {
+        StringTokenizer tk = parseAttribute(attribute);
+        String attributeValue = tk.nextToken();
+        if (tk.hasMoreTokens()) { 
+            String context;
+            if (attributeValue.equals("")) {
+                context = contextId;
+            } else {
+                context = attributeValue;
+            }
+            log.debug("Attribute " + attribute + " contains reference to context (id=" + context + "), searching context");
+            String param = tk.nextToken();            
+            ContextTag ct = getContextTag(context);        
+            attributeValue = ct.getString(param);                       
+            if (attributeValue == null) {
+                throw new JspTagException("Key " + param + " could not be found in context " + context);
+            }
+        } else {                
+            if (attribute.startsWith("param:")) {        // interpret as parameter
+                String param = attribute.substring(6);
+                attributeValue = pageContext.getRequest().getParameter(param);
+                if (attributeValue == null) {
+                    throw new JspTagException("Parameter " + param + " could not be found");
+                }
+            } else if (attribute.startsWith("session:")){ // interpret as key from session
+                String param = attribute.substring(8);
+                javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+                attributeValue = (String) req.getSession().getAttribute(param);
+                if (attributeValue == null) {
+                    throw new JspTagException("Session attribute " + param + " could not be found");
+                }
+            }             
+        }
+            
         return attributeValue;        
     }
 
@@ -94,7 +151,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
    
     protected TagSupport findParentTag(String classname, String id) throws JspTagException {
-        
+        log.debug("finding " + classname);
         Class clazz ;
         try {
             clazz = Class.forName(classname);
@@ -104,17 +161,17 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         TagSupport cTag = (TagSupport) findAncestorWithClass((Tag)this, clazz); 
         if (cTag == null) {
-            throw new JspTagException ("Could not find parent");  
+            throw new JspTagException ("Could not find parent of type " + classname);  
         }
         
-        if (id != null) { // search further, if necessary
-            while (cTag.getId() != id) {
+        if (id != null) { // search further, if necessary            
+            log.debug(" with id ("  + id + ")");
+            while (! id.equals(cTag.getId())) {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
-                    throw new JspTagException ("Could not find parent Tag with id " + id);  
+                    throw new JspTagException ("Could not find parent Tag of type " + classname + " with id " + id);  
                 }
-            }
-            
+            }            
         }
         return cTag;
 
@@ -125,9 +182,16 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     protected ContextTag getContextTag() throws JspTagException {
-        if (contextTag == null) {
-            contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextId);
-        }
+        return getContextTag(contextId);
+    }
+
+    protected ContextTag getContextTag(String contextid) throws JspTagException {
+        log.debug("searching in context " + contextid);
+        //if (contextTag == null) {
+        log.debug("searching context " + contextid);
+        ContextTag contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextid);
+        log.debug("found a context with ID= " + contextTag.getId());
+        //}
         return contextTag;
     }
 
