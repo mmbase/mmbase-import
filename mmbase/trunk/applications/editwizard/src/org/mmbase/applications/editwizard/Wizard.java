@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.113 2004-01-07 21:53:58 michiel Exp $
+ * @version $Id: Wizard.java,v 1.114 2004-01-07 21:59:30 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1801,7 +1801,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          String msg = "No node with fid=" + fid + " could be found";
 
          if (schema != null) {
-             msg += "\nxpath was:" + xpath + "on:\n" + schema.getDocumentElement();
+             msg += "\nxpath was:" + xpath + " on:\n" + schema.getDocumentElement();
          }
 
          throw new WizardException(msg);
@@ -1818,7 +1818,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             wizardName;
 
          if (data != null) {
-             msg += "\nxpath was:" + xpath + "on:\n" + data.getDocumentElement();
+             msg += "\nxpath was:" + xpath + " on:\n" + data.getDocumentElement();
          }
 
          log.warn(msg);
