@@ -14,9 +14,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.core.TemporaryNodeManager;
 import org.mmbase.module.ParseException;
 import org.mmbase.module.corebuilders.*;
-import nl.vpro.mmbase.module.builders.Message;
-import nl.vpro.mmbase.module.builders.Channel;
-import nl.vpro.mmbase.module.builders.Community;
+import org.mmbase.module.builders.Message;
+import org.mmbase.module.builders.Channel;
+import org.mmbase.module.builders.Community;
 
 /**
  * @author Dirk-Jan Hoekstra
