@@ -14,8 +14,8 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 
 /**
@@ -26,9 +26,14 @@ import org.mmbase.util.logging.Logging;
  * @version 27 Mar 1997
  * @author Daniel Ockeloen
  */
-public class MMRemoteMultiCastProbe implements Runnable {
+public class MMRemoteMultiCastProbe implements Runnable { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMRemoteMultiCastProbe.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCastProbe.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCastProbe.class.getName());
 
     Thread kicker = null;
     MMRemoteMultiCast parent=null;

@@ -17,16 +17,21 @@ import java.applet.*;
 
 import org.mmbase.remote.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
  * @version  3 Okt 1999
  * @author Daniel Ockeloen
  */
-public class MMCounter extends RemoteBuilder {
+public class MMCounter extends RemoteBuilder { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMCounter.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMCounter.class.getName()); 
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMCounter.class.getName()); 
 
 	AudioClip audioclip;
 
@@ -44,7 +49,7 @@ public class MMCounter extends RemoteBuilder {
 		try {
 		audioclip = Applet.newAudioClip(new URL("http://openbox.vpro.nl/1.aif"));
 		} catch(Exception e) {
-			log.error(Logging.stackTrace(e));
+			/*log.error*/e.printStackTrace();
 		}
 	}
 
@@ -80,7 +85,7 @@ public class MMCounter extends RemoteBuilder {
 			System.out.print(".");
 		}
         */
-        log.debug("in doUp");
+        /*log.debug*/__debug("in doUp");
 
 		// decode and add one to devdata 
 		int count=getIntValue("devdata");
@@ -105,7 +110,7 @@ public class MMCounter extends RemoteBuilder {
 			System.out.print("+");
 		}
         */
-        log.debug("in doDown");
+        /*log.debug*/__debug("in doDown");
 
 		// decode and add one to devdata 
 		int count=getIntValue("devdata");

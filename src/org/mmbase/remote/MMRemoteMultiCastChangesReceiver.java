@@ -14,8 +14,8 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
  * MultiCastChangesReceiver is a thread object that reads the receive queue
@@ -24,9 +24,14 @@ import org.mmbase.util.logging.Logging;
  * @version 12-May-1999
  * @author Rico Jansen
  */
-public class MMRemoteMultiCastChangesReceiver implements Runnable {
+public class MMRemoteMultiCastChangesReceiver implements Runnable { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMRemoteMultiCastChangesReceiver.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCastChangesReceiver.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCastChangesReceiver.class.getName());
 
     Thread 	       kicker = null;
     MMRemoteMultiCast  parent=null;
@@ -66,8 +71,8 @@ public class MMRemoteMultiCastChangesReceiver implements Runnable {
         try {
             doWork();
         } catch (Exception e) {
-            log.error("run():" + e.toString());
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("run():" + e.toString());
+            /*log.error*/e.printStackTrace();
         }
     }
 
@@ -95,13 +100,13 @@ public class MMRemoteMultiCastChangesReceiver implements Runnable {
                                     if( tok.hasMoreTokens() ) {
                                         String xml=tok.nextToken(""); 
                                         parent.handleXML(machine,vnr,id,tb,ctype,xml);
-                                    } else { log.warn("doWork("+chars+"): '' not defined!"); } 
+                                    } else { /*log.warn*/__debug("doWork("+chars+"): '' not defined!"); } 
                                 } 
-                            } else { log.warn("doWork("+chars+"): 'ctype' not defined!"); } 
-                        } else { log.warn("doWork("+chars+"): 'tb' not defined!"); } 
-                    } else { log.warn("doWork("+chars+"): 'id' not defined!"); } 
-                } else { log.warn("doWork("+chars+"): 'vnr' not defined!"); } 
-            } else { log.warn("doWork("+chars+"): 'machine' not defined!"); } 
+                            } else { /*log.warn*/__debug("doWork("+chars+"): 'ctype' not defined!"); } 
+                        } else { /*log.warn*/__debug("doWork("+chars+"): 'tb' not defined!"); } 
+                    } else { /*log.warn*/__debug("doWork("+chars+"): 'id' not defined!"); } 
+                } else { /*log.warn*/__debug("doWork("+chars+"): 'vnr' not defined!"); } 
+            } else { /*log.warn*/__debug("doWork("+chars+"): 'machine' not defined!"); } 
         } 
     }
 }

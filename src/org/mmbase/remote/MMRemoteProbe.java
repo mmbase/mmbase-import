@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMRemoteProbe.java,v 1.10 2001-04-13 13:47:05 michiel Exp $
+$Id: MMRemoteProbe.java,v 1.11 2001-04-20 14:15:49 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2001/04/13 13:47:05  michiel
+michiel: new logging system, indentation
+
 Revision 1.9  2001/03/15 14:40:39  vpro
 Davzev: Changed xml version of mmservers.number to adding a mmservers.name since remote mmservers objects are referenced by name instead of number
 
@@ -31,18 +34,23 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 
 /**
  * 
- * @version $Revision: 1.10 $ $Date: 2001-04-13 13:47:05 $
+ * @version $Revision: 1.11 $ $Date: 2001-04-20 14:15:49 $
  * @author Daniel Ockeloen
  */
-public class MMRemoteProbe implements Runnable {
+public class MMRemoteProbe implements Runnable { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMRemoteProbe.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMRemoteProbe.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMRemoteProbe.class.getName());
     
     private final static int SLEEPTIME = 60 * 1000;
     Thread kicker = null;
@@ -51,8 +59,8 @@ public class MMRemoteProbe implements Runnable {
     Vector runningServices;
 
     public MMRemoteProbe(Vector runningServices,MMProtocolDriver con,String servicenr) {
-        if (log.isDebugEnabled()) {
-            log.debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+") Initializing"); 
+        if (__debug) {
+            /*log.debug*/__debug("MMRemoteProbe(): "+runningServices+","+con+","+servicenr+") Initializing"); 
         }
         this.con=con;
         this.servicenr=servicenr;
@@ -73,8 +81,8 @@ public class MMRemoteProbe implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("start(): Creating & starting new MMRemoteProbe thread.");
+            if (__debug) {
+                /*log.debug*/__debug("start(): Creating & starting new MMRemoteProbe thread.");
             }
             kicker = new Thread(this,"MMRemoteProbe");
             kicker.start();
@@ -98,8 +106,8 @@ public class MMRemoteProbe implements Runnable {
                 kicker.setPriority(Thread.NORM_PRIORITY+1);  
                 doWork();
             } catch(Exception e) {
-                log.error("run(): while doWork(): ");
-                log.error(Logging.stackTrace(e));
+                /*log.error*/__debug("run(): while doWork(): ");
+                /*log.error*/e.printStackTrace();
             }
         }
     }
@@ -111,17 +119,17 @@ public class MMRemoteProbe implements Runnable {
      */
     public void doWork() {
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep.");
+            if (__debug) {
+                /*log.debug*/__debug("doWork(): "+SLEEPTIME+" ms are over, calling con.CommitNode and going to sleep.");
             }
             con.commitNode(servicenr,"mmservers",toXML());
             Thread.sleep(SLEEPTIME);
         } catch(Exception e) {
-            log.error("doWork(): while commitNode("+servicenr+",mmservers,toXML()) : ");
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("doWork(): while commitNode("+servicenr+",mmservers,toXML()) : ");
+            /*log.error*/e.printStackTrace();
         }
-        if (log.isDebugEnabled()) {
-            log.debug("doWork(): Just awoken...yawn... calling callMaintainances():");
+        if (__debug) {
+            /*log.debug*/__debug("doWork(): Just awoken...yawn... calling callMaintainances():");
         }
         callMaintainances();
     }
@@ -135,8 +143,8 @@ public class MMRemoteProbe implements Runnable {
         try {
             host=InetAddress.getLocalHost().getHostName();
         } catch(Exception e) { 
-            log.error("toXML(): Could not get localhost address!"); 
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("toXML(): Could not get localhost address!"); 
+            /*log.error*/e.printStackTrace();
         }
         String body="<?xml version=\"1.0\"?>\n";
         body+="<!DOCTYPE mmnode.mmservers SYSTEM \"http://openbox.vpro.nl/mmnode/mmservers.dtd\">\n";
@@ -153,8 +161,8 @@ public class MMRemoteProbe implements Runnable {
      * Goes through the list of running services and triggers their maintainance routine.
      */
     void callMaintainances() {
-        if (log.isDebugEnabled()) {
-            log.debug("callMaintainances(): Go through list of running services and trigger their maintainance routine");
+        if (__debug) {
+            /*log.debug*/__debug("callMaintainances(): Go through list of running services and trigger their maintainance routine");
         }
         Enumeration f=runningServices.elements();
         for (;f.hasMoreElements();) {

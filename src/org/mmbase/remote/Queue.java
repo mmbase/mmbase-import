@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: Queue.java,v 1.6 2001-04-13 13:47:05 michiel Exp $
+$Id: Queue.java,v 1.7 2001-04-20 14:15:49 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2001/04/13 13:47:05  michiel
+michiel: new logging system, indentation
+
 Revision 1.5  2000/12/19 13:33:38  vpro
 Davzev: Added cvs comments
 
@@ -20,16 +23,21 @@ package org.mmbase.remote;
 import java.util.*;
 import java.lang.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2001-04-13 13:47:05 $
+ * @version $Revision: 1.7 $ $Date: 2001-04-20 14:15:49 $
  * @author ?
  */
-public class Queue {
+public class Queue { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = Queue.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(Queue.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(Queue.class.getName());
 
     QueueElement head,tail;
     int flip=0;int len=0;
@@ -147,8 +155,8 @@ public class Queue {
      *
      * @param item The item to be appended to the queue */
     public synchronized void append(Object item) {
-        if (log.isDebugEnabled()) {
-            log.debug("Queue:put(): Appending item:"+item);
+        if (__debug) {
+            /*log.debug*/__debug("Queue:put(): Appending item:"+item);
         }
         // put a object in the vector and wait on it
         // it should be able to block if full
@@ -165,10 +173,10 @@ public class Queue {
         len++;
         flip++;
         if (flip>99) {
-            //log.debug("Qeueu len="+len+" ("+this+")");
+            ///*log.debug*/__debug("Qeueu len="+len+" ("+this+")");
             flip=0;
         }
-        //log.debug("Qeueu len="+len+" ("+this+")");
+        ///*log.debug*/__debug("Qeueu len="+len+" ("+this+")");
         notify(); // scream that a new one has reached us.
     }
 
@@ -181,8 +189,8 @@ public class Queue {
   */
 
     public synchronized Object get() {
-        if (log.isDebugEnabled()) {
-            log.debug("Queue:get(): Pulling item off of queue");
+        if (__debug) {
+            /*log.debug*/__debug("Queue:get(): Pulling item off of queue");
         }
         try {
             while(head==null) {
