@@ -16,17 +16,9 @@
 <mm:import externid="search" />
 <mm:import id="nodetype">mmbaseusers</mm:import>
 <body>
- <h1>Administrate users</h1>
-
  <%@include file="you.div.jsp" %>
-
- <div id="navigate">
-   <p class="current"><a href="<mm:url page="index.jsp" />">Users</a></p>
-   <p><a href="<mm:url page="index_groups.jsp" />">Groups</a></p>
-   <p><a href="<mm:url page="index_contexts.jsp" />">Contexts</a></p>
-   <p><a target="_new" href="<mm:url page="help.jsp" />">Help</a></p>
- </div>
- 
+ <mm:import id="current">users</mm:import>
+ <%@include file="navigate.div.jsp" %>
 
    <p class="action">
     <mm:maycreate type="mmbaseusers">

@@ -23,7 +23,7 @@
     <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
     <mm:listnodes id="thisgroup" type="mmbasegroups">
       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-      <tr><td><a href="<mm:url referids="thisgroup@group" page="index_groups.jsp" />"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
+      <tr><td class="text"><a href="<mm:url referids="thisgroup@group" page="index_groups.jsp" />"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
 
         <mm:stringlist referid="operations">
         <mm:param name="operation"><mm:write /></mm:param>
@@ -48,8 +48,8 @@
       </tr>
     </mm:listnodes>
     </mm:functioncontainer> 
-    <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
-    <tr><td><a href="index_contexts.jsp">back</a></td></tr>
+    <tr><td class="text"><input type="submit"  name="submit" value="submit" /></td></tr>
+    <tr><td class="text"><a href="index_contexts.jsp">back</a></td></tr>
    </table>
    </form>
 </div>
