@@ -58,4 +58,12 @@ public abstract class Authentication {
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */        
     public abstract UserContext login(String application, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
+
+    /** 
+     *	The method returns the Rank of a UserContext
+     *	@param usercontext The UserContext of which we want to know the rights
+     *	@return The rank of the userContext
+     *	@exception org.mmbase.security.SecurityException When something strang happend
+     */        
+    public abstract Rank getRank(UserContext usercontext) throws org.mmbase.security.SecurityException;   
 }
