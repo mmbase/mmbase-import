@@ -185,6 +185,7 @@
       <arg value="extension=fo" />
       <arg value="exclude=build" />
       <arg value="exclude=build.xml" />
+      <arg value="paper.type=A4" />
     </java>
 
 
