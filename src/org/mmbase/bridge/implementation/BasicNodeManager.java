@@ -33,7 +33,7 @@ import org.mmbase.storage.search.legacy.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.60 2003-08-05 19:08:27 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.61 2003-08-08 12:08:43 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
@@ -137,6 +137,16 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // set the owner to the owner field as indicated by the user
         node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
 
+        // if the node gets inserted like this, we do not want foreign key violations
+        FieldIterator fields = nodeManager.getFields().fieldIterator();
+        while (fields.hasNext()) {
+            Field field = fields.nextField();
+            if (field.getType() == Field.TYPE_NODE) { 
+                node.setValue(field.getName(), MMObjectNode.VALUE_NULL);
+            }
+        }
+
+
         if (getMMObjectBuilder() instanceof TypeDef) {
             return new BasicNodeManager(node, getCloud(), id);
         } else if (getMMObjectBuilder() instanceof RelDef || getMMObjectBuilder() instanceof TypeRel) {
@@ -232,9 +242,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         List resultList;
         try {
             resultList = builder.getNodes((NodeSearchQuery)((BasicNodeQuery) query).getQuery()); // result with all MMObjectNodes (without security)
+            // cached in MMObjectBuilder.
+
         } catch (SearchQueryException sqe) {
             throw new BridgeException(sqe);
         }
+        query.markUsed();
 
         BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
         if (! checked) {
@@ -261,7 +274,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @since MMBase-1.7
      */
     protected NodeList getLastStepList(Query query) {
-
+        
         // add all fields
         List resultList = cloud.getList(query);
 
@@ -284,7 +297,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public NodeList getList(NodeQuery query) {
         if (query instanceof BasicNodeQuery) {
-            query.markUsed();
             return getSecureList(query);
         } else {
             return getLastStepList(query);
