@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.75 2002-10-25 11:09:40 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.76 2002-10-29 15:27:32 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -56,10 +56,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     protected String description = null;
 
     // transactions
-    protected HashMap transactions = new HashMap();
+    protected Map transactions = new HashMap();
 
     // node managers cache
-    protected HashMap nodeManagerCache = new HashMap();
+    protected Map nodeManagerCache = new HashMap();
 
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud=null;
@@ -689,7 +689,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             search = ClusterBuilder.getSearchDir(searchDir);
         }
 
-        Vector snodes = tagger.Values("NODES");
+        Vector snodes  =  tagger.Values("NODES");
         Vector sfields = tagger.Values("FIELDS");
         Vector tables = tagger.Values("TYPES");
         Vector orderVec = tagger.Values("SORTED");
