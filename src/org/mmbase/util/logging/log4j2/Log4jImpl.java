@@ -154,7 +154,9 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
     public final boolean isServiceEnabled() {
-        return(! repository.isDisabled(Log4jLevel.SERVICE_INT));
+        if(repository.isDisabled( Log4jLevel.SERVICE_INT))
+            return false;   
+        return Log4jLevel.SERVICE.isGreaterOrEqual(this.getChainedLevel());
     }
 
     // **** SUBCLASSES ****
