@@ -331,33 +331,37 @@ input
 {
 	text-align: left;
 	font-family: "Lucide Grande", Arial, sans-serif;
-	font-size: 11px;
 	background-color: #D9DDDE;
-	padding-left: 2px;
-	padding-right: 2px;
 	margin: 2px;
+	padding: 2px;
+	font-size: 1.2em;
 }
 
 input.mmbase
 {
 	text-align: left;
 	font-family: "Lucide Grande", Arial, sans-serif;
-	font-size: 11px;
 	background-color: #D9DDDE;
-	padding-left: 2px;
-	padding-right: 2px;
 	margin: 2px;
+	padding: 2px;
+	font-size: 1.2em;
 }
 
 select
 {
 	font-family: "Lucide Grande", Arial, sans-serif;
-	font-size: 11px;
+	font-size: 1.2em;
 	background-color: #D9DDDE;
+	padding: 2px;
 	margin: 2px;
 }
 
-textarea { background-color: #D9DDDE; }
+textarea { 
+	background-color: #D9DDDE; 
+	border-color: #666;
+	border-width: 1px 0 0 1px;
+	font-size: 1.2em;
+}
 
 /* Stylesheet for news pages in dev portal */
 .newsinhoud
@@ -482,7 +486,20 @@ textarea { background-color: #D9DDDE; }
 #tabnav a:hover { background: #f3f3f3; }
 
 /* search */
-#searchform { margin: 20px 0 20px 0; }
+#searchhome
+{
+	padding: 15px 0 0 0;
+}
+#searchform
+{
+	margin: 20px 10px 20px 0;
+	padding: 10px;
+	width: 50%;
+	border-color: #666;
+	border-style: solid;
+	background-color: #efefef;
+	border-width: 1px;
+}
 #results { margin: 10px 10px 10px 0; }
 #results ul
 {
