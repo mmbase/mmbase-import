@@ -3,7 +3,7 @@
 <html>
 <head>
    <title>MMExamples - MyNews</title>
-   <link rel="stylesheet" type="text/css" href="../share/style.css" />
+   <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
 </head>
 <body>
   <br />
@@ -25,12 +25,10 @@
     </tr>
     <tr>
       <td colspan="2" ><br />
-            <!-- why not using mm:listnodes -->
-            <mm:list path="versions" fields="versions.name,versions.type" constraints="versions.name='MyNews' AND versions.type='application'">
+            <mm:listnodes type="versions" constraints="name='MyNews' AND type='application'">
               <mm:first>
-                <mm:import id="mynewsIsPresent">true</mm:import>
               </mm:first>
-            </mm:list>
+            </mm:listnodes>
             <mm:notpresent referid="mynewsIsPresent">
               The MyNews application is NOT installed. Please install before using it.<br />
               You can install the MyNews application by going to ADMIN -> APPLICATIONS
@@ -80,8 +78,3 @@
 </body>
 </html>
 </mm:cloud>
-
-
-
-
-
