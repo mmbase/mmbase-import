@@ -3,132 +3,19 @@
 %><%@page import="java.io.*,java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver,org.mmbase.applications.editwizard.*"
 %><%@ page import="org.mmbase.applications.editwizard.SecurityException,org.mmbase.applications.editwizard.Config"
-%><%!
-    /**
-     * settings.jsp
-     *
-     * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.33 2003-05-09 07:47:06 pierre Exp $
-     * @author   Kars Veling
-     * @author   Pierre van Rooden
-     * @author   Michiel Meeuwissen
-     */
-
-    /**
-     * @see org.mmbase.applications.editwizard.Config
-     */
-    class Configurator extends Config.Configurator {
-
-        Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
-            super(req, res, c);
-            c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 1 MByte max uploadsize
-        }
-
-
-
-        // which parameters to use to configure a list page
-        public void config(Config.ListConfig c) {
-            c.title       = getParam("title", c.title);
-            c.pagelength   = getParam("pagelength", new Integer(c.pagelength)).intValue();
-            c.maxpagecount   = getParam("maxpagecount", new Integer(c.maxpagecount)).intValue();
-            c.wizard      = getParam("wizard", c.wizard);
-            if (c.wizard != null && c.wizard.startsWith("/")) {
-                c.wizard = "file://" + getRequest().getRealPath(c.wizard);
-            }
-
-            c.setAttribute("origin",getParam("origin"));
-            c.startNodes  = getParam("startnodes", c.startNodes);
-            c.nodePath    = getParam("nodepath", c.nodePath);
-            c.fields      = getParam("fields", c.fields);
-            c.age         = getParam("age", new Integer(c.age)).intValue();
-            c.start       = getParam("start", new Integer(c.start)).intValue();
-            c.searchType=getParam("searchtype", c.searchType);
-            c.searchFields=getParam("searchfields", c.searchFields);
-            c.searchValue=getParam("searchvalue", c.searchValue);
-            c.searchDir=getParam("searchdir",c.searchDir);
-            c.baseConstraints=getParam("constraints", c.baseConstraints);
-            
-            if (c.searchFields==null) {
-                c.constraints = c.baseConstraints;
-            } else {
-                // search type: default
-                String sType=c.searchType;
-                // get the actual field to serach on.
-                // this can be 'owner' or 'number' instead of the original list of searchfields,
-                // in which case serachtype may change 
-                String sFields=getParam("realsearchfield", c.searchFields);
-                if (sFields.equals("owner") || sFields.endsWith(".owner")) {
-                    sType="string";
-                } else if (sFields.equals("number") || sFields.endsWith(".number")) {
-                    sType="equals";
-                }
-                String search=c.searchValue;
-                c.constraints=null;
-                if (sType.equals("like")) {
-                    // actually we should unquote search...
-                    search=" LIKE '%"+search.toLowerCase()+"%'";
-                } else if (sType.equals("string")) {
-                    search=" = '"+search+"'";
-                } else {
-                    if (search.equals("")) {
-                        search="0";
-                    }
-                    if (sType.equals("greaterthan")) {
-                        search=" > "+search;
-                    } else if (sType.equals("lessthan")) {
-                        search=" < "+search;
-                    } else if (sType.equals("notgreaterthan")) {
-                        search=" <= "+search;
-                    } else if (sType.equals("notlessthan")) {
-                        search=" >= "+search;
-                    } else if (sType.equals("notequals")) {
-                        search=" != "+search;
-                    } else { // equals
-                        search=" = "+search;
-                    }
-                }
-                StringTokenizer searchtokens= new StringTokenizer(sFields,",");
-                while (searchtokens.hasMoreTokens()) {
-                    String tok=searchtokens.nextToken();
-                    if (c.constraints!=null) {
-                        c.constraints+=" OR ";
-                    } else {
-                        c.constraints="";
-                    }
-                    if (sType.equals("like")) {
-                        c.constraints+="lower(["+tok+"])"+search;
-                    } else {
-                        c.constraints+="["+tok+"]"+search;
-                    }
-                }
-                if (c.baseConstraints!=null) {
-                    c.constraints="("+c.baseConstraints+") and ("+c.constraints+")";
-                }
-            }
-            c.searchDir  = getParam("searchdir", c.searchDir);
-            c.directions  = getParam("directions", c.directions);
-            c.orderBy     = getParam("orderby", c.orderBy);
-            c.distinct    = getParam("distinct", new Boolean(true)).booleanValue();
-        }
-
-        // which parameter to use to configure a wizard page
-        public void config(Config.WizardConfig c) {
-            c.wizard           = getParam("wizard", c.wizard);
-            c.popupId          = getParam("popupid",  "");
-            c.debug            = getParam("debug",  false);
-            if (c.wizard != null && c.wizard.startsWith("/")) {
-                c.wizard = "file://" + getRequest().getRealPath(c.wizard);
-            }
-
-            c.setAttribute("origin",getParam("origin"));
-            c.objectNumber = getParam("objectnumber");
-        }
-    };
-
 %><%
+/**
+ * settings.jsp
+ *
+ * @since    MMBase-1.6
+ * @version  $Id: settings.jsp,v 1.34 2003-05-26 11:36:19 pierre Exp $
+ * @author   Kars Veling
+ * @author   Pierre van Rooden
+ * @author   Michiel Meeuwissen
+ */
 
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
-Configurator configurator = null; // Fills the ewconfig if necessary.
+Config.Configurator configurator = null; // Fills the ewconfig if necessary.
 
 String popupId = "";  // default means: 'this is not a popup'
 boolean popup = false;  
@@ -225,7 +112,7 @@ if (request.getParameter("logout") != null) {
     return;
 }
 ewconfig.sessionKey = sessionKey;
-configurator = new Configurator(request, response, ewconfig);
+configurator = new Config.Configurator(request, response, ewconfig);
 
 // removing top page from the session
 if (request.getParameter("remove") != null) {
