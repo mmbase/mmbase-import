@@ -28,7 +28,7 @@ $MOD-MMEDIT-STATE-SETHTMLVALUE-Work-ListObjects
     <TR>
 	<TD BGCOLOR="#FFFFFF">&nbsp;</TD>
 	<TD BGCOLOR="#FFFFFF" COLSPAN="$ITEM3">
-    <CENTER><A HREF="ListObjects.shtml?$MOD-CALC-($PARAM1-1)^+$PARAM2"><IMG SRC="/mmeditors/beeld/vorige.gif" BORDER=0 WIDTH=30 HEIGHT=30></A></CENTER>
+    <CENTER><A HREF="ListObjects.shtml?$MOD-CALC-($PARAM1-1)^+$PARAM2"><IMG SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/vorige.gif" BORDER=0 WIDTH=30 HEIGHT=30></A></CENTER>
     </TD>
 	</TR>
    </IF>
@@ -38,7 +38,7 @@ $MOD-MMEDIT-STATE-SETHTMLVALUE-Work-ListObjects
          <!-- geneste knoptabel -->
          <TABLE CELLSPACING=0 CELLPADDING=0 BORDER=0>
          <TR>
-            <TD BGCOLOR="#FF0000"><A HREF="/mmeditors/Chooser/FieldEdit.shtml?$ITEM1" TARGET="Chooser"><FONT SIZE="4" FACE="arial,helvetica" COLOR="#FF0000">##</FONT></A></td>
+            <TD BGCOLOR="#FF0000"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/Chooser/FieldEdit.shtml?$ITEM1" TARGET="Chooser"><FONT SIZE="4" FACE="arial,helvetica" COLOR="#FF0000">##</FONT></A></td>
          </TR>
          </TABLE><!-- einde geneste knoptabel -->
 	</TD>
@@ -79,7 +79,7 @@ $MOD-MMEDIT-STATE-SETHTMLVALUE-Work-ListObjects
 		<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
          <TR>
 		 <TD BGCOLOR="#FFFFFF">
-           <CENTER><A HREF="ListObjects.shtml?$MOD-CALC-($PARAM1+1)^+$PARAM2"><IMG SRC="/mmeditors/beeld/volgende.gif" BORDER=0 WIDTH=30 HEIGHT=30></A></CENTER>
+           <CENTER><A HREF="ListObjects.shtml?$MOD-CALC-($PARAM1+1)^+$PARAM2"><IMG SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/volgende.gif" BORDER=0 WIDTH=30 HEIGHT=30></A></CENTER>
 		 </TD> 
 	     </TR>
    	     </TABLE>

@@ -5,7 +5,7 @@
 <PROCESSOR Artikelen>
 <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
 <SECURE>
-<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml" TARGET="Content" ENCTYPE="multipart/form-data">
+<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml" TARGET="Content" ENCTYPE="multipart/form-data">
 <BR><BR><BR>
 <BR><BR><BR>
 <BR>
