@@ -52,10 +52,8 @@ public abstract class Authentication {
     protected abstract void load();
 
     /** 
-     *	The method which sets the settings of this class. This method is 
-     *	shouldn't be overrided.
-     *	This class will set the member variables of this class and then
-     *	call the member function load();
+     *  This method will verify the login, and give a UserContext back if everything
+     *  was valid
      *	@param manager The class that created this instance.
      *	@param configPath The url which contains the config information for.     
      *	    the authorization.
