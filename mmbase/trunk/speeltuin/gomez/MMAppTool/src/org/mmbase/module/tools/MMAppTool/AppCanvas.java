@@ -27,11 +27,11 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
         private Dimension offScreenSize; 
 	private BuilderOval db;
 	private int textsize=15;
-	private Color bgcolor=new Color(0,0,255);
+	private Color bgcolor=new Color(66,189,173);
 	private Color activecolor=new Color(255,0,0);
 	private Color linecolor=new Color(0,0,0);
-	private Color textcolor=new Color(0,0,0);
-	private Color objectcolor=new Color(255,255,0);
+	private Color textcolor=new Color(255,255,255);
+	private Color objectcolor=new Color(0,77,100);
 	private long lastclicked=-1;
 	private BuilderRect openbuilder;
 	private XMLApplicationReader app;
