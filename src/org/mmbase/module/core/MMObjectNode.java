@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.55 $ $Date: 2002-02-25 14:57:44 $
+ * @version $Revision: 1.56 $ $Date: 2002-02-25 14:59:56 $
  */
 
 public class MMObjectNode {
@@ -271,7 +271,7 @@ public class MMObjectNode {
         // if number == -1 then we have a new node...
         if(parent != null) {
             // in case the field is of type XML, it can (must) be validated:
-            if(parent.getField(fieldName) != null && parent.getField(fieldName).getDBType() == FieldDefs.TYPE_XML) {
+            if(getDBType(fieldName) == FieldDefs.TYPE_XML) {
                 // this function does also conversion of old stuff to xml... 
                 // to keep it backwards compatible
                 fieldValue = validateXML(fieldName, fieldValue);
