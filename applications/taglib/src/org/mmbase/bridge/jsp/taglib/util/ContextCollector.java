@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.5 2003-08-27 21:33:42 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.6 2003-11-19 15:51:29 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
@@ -66,6 +66,12 @@ public class  ContextCollector  {
         public void unRegister(String key) throws JspTagException {
             super.unRegister(key);
             parent.unRegister(key);
+        }
+        protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
+            super.register(newid, n, check, checkParent);
+            if (! check) {
+                parent.unRegister(newid);
+            }
         }
     }
 
