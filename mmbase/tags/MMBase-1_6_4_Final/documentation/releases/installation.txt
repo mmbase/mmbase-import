@@ -1,0 +1,128 @@
+===================================================================
+                     MMBase 1.6 - Installation
+===================================================================  
+  
+MMBase is distributed as a webapplication, it's not packaged as a .war
+file, but the structure is the same. In order to install and get
+MMBase running, you must do the following:
+
+1. Download and install a Java Development Kit.
+
+2. Download and install a Servlet Engine or an Applicationserver
+   (check if the Servlet Engine is up and running and if you can use
+   the jsp-examples), see releasenotes for tested Servlet Engines.
+
+3. Download and install ImageMagick. See note below if you're having
+   problems with Imagemagick or don't want to use it.
+
+4. Copy (not in all cases symlinking would work) the subdir
+   mmbase-webapp into the servlet-engine's
+   webapp dir. Most 'SCAN' applications would require this webapp to
+   be the ROOT webapp (the SCAN editors of this version also work in
+   another contextes).
+
+   Some details can't autodetect the context in which MMBase is
+   running (like gui-functions of images), so it adviced to
+   explicitely inform MMBase with the mmbase.htmlrooturlpath context
+   parameter from web.xml (This is not necessary for modern
+   app-servers like Tomcat 4.1)
+
+5. Edit
+   <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+   for the location of ImageMagick's convert tool. If it is your PATH
+   it will perhaps also work with default settings.  
+
+6. The directory <mmbase-webapp/WEB-INF/config/builders/applications>
+   must be writable for the Servlet Engine if you want to auto-install
+   builders. 
+
+7. Start servlet-engine if you want to use the default MMBase-config
+   (uses a hsqldb-database), or goto step 10 for changing default
+   configuration. 
+
+8. Check if mmbase is running using the following url:
+   <http://localhost:port/version> 
+
+9. If this is running, goto <http://localhost:port> to see an infopage
+   about MMBase and links to editors, admin, examples, etc. Use
+   admin/admin2k when you're asked to login (see notes below how to
+   change this).
+
+10. Edit jdbc.xml and mmbaseroot.xml (both are in
+   <mmbase-webapp/WEB-INF/config/modules>) for using a different
+   database (see releasenotes for tested databases), or change other
+   settings (servername, multicast, etc). 
+   Other interesting settings can be found in
+   <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users,
+   groups, and contextes), and in
+   <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration
+   and so on)
+
+11. If you have any kind of problem goto:
+   website: <http://www.mmbase.org/>
+   irc: #mmbase at slashnet
+
+
+Some final notes:
+=================
+Scan: 
+Scan has been 'turned off' by default in this release because it has
+been deprecated. It can be used and this is what needs to be done to
+get it working:
+
+ - Make the following MMBase modules active:
+    * calc (math)
+    * info (system info commands)
+    * mmbase (basic SCAN commands)
+    * mmedit (for the SCAN editors)
+    * mmlanguage (prompts for the SCAN editors)
+    * scanparser (essential parser)
+    * session (maintain user info)
+ - Optionally, you can activate the modules:
+    * scancache (caching of SCAN pages)
+    * transactionhandler (transactions through xml)
+
+ - In the web.xml, add the SCAN servlet (scanserv). Also add the
+   mapping for SCAN pages (*.shtml).
+   The default web.xml of MMBase contains example code which you can
+   uncomment. 
+ - Restart your server.
+
+To make a module active, find the modulename.xml file in the modules
+directory of the MMBase configuration. In the file, change the
+'status' from inactive to active, and save the file.
+
+Jikes:
+If you'd like to develop jsp and taglib pages at a usable speed it is
+recommended to install jikes for compiling jsp. See your
+Servlet-engine's documentation about how to do this.
+
+Security:
+If your going to use the jsp-editors you need to check out the
+<mmbase-webapp/WEB-INF/config/security> dir, to customize the security
+settings. 
+
+If you're going to use the scan editors you need to deploy the
+BasicAuth-application (you can do this from the admin-pages). This
+will create some relations. You have to change the property authtype
+from mmbaseroot.xml into basic and after this restart MMBase. You can
+now create people and related editors to them. Every people you create
+needs to have an account and password in the
+<mmbase-webapp/WEB-INF/config/accounts.properties> file. These people
+can now use the editors.
+
+ImageMagick:
+Imagemagick does work with Windows 98/ME, but MMBase is not able to
+use it. You have to use Jai (Java Advanced Imaging API). You can do
+this by changing the properties in
+<mmbase-webapp/WEB-INF/config/builders/images.xml> into:
+
+<properties> 
+  <property name="ImageConvertClass">
+    org.mmbase.module.builders.ConvertJAI 
+  </property> 
+  <property name="MaxConcurrentRequests">20</property> 
+</properties>
+
+Please keep in mind that the image builder is less powerfull when
+using JAI instead of Imagemagick.

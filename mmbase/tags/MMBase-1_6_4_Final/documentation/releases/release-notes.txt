@@ -1,0 +1,606 @@
+===================================================================
+                     MMBase 1.6.4 - Release Notes
+===================================================================
+
+============
+INTRODUCTION:
+============
+
+This document describes the changes that have been made in the final
+release of MMBase 1.6, relative to the previous release of MMBase (1.5).
+
+Bug reports should be entered at the bug reporting system for MMBase
+at:
+
+<http://www.mmbase.org/bug>
+
+
+============
+NEW FEATURES:
+============
+
+--------------------
+General New Features:
+--------------------
+[1.6.4]
+- jsp editors: 
+  - you can now create an object as you add a relation.
+  - Added a shortlist option for the editors to make the pages a bit
+    more userfriendly (wish #6062).
+  - Fills in default age.
+- Security: Rank has been backported from cvs-head. You can create
+  your own ranks now.
+- A CharacterEncodingFilter has been added. This can be used to set
+  the character encoding of a request if the browser didn't set
+  one. To use it, uncomment the lines in the web.xml. 
+
+[1.6.3]
+- added ConvertDummy class, which can be used if ImageMagic or JAI are unavailable
+  ConvertDummy does not convert iamges, but does allow use of images and the image servlet.
+- org.mmbase.util.HttpPost has it's own configuration file. It can be
+  used to configure the maxfilesize property.
+
+[1.6.2]
+ - getRelatedNodes speedup, avoiding databasequeries when casting to actual type
+ - Inheritance support in relations. It is possible to define
+ object->object (related) now!
+ - %k (to log memory usage) in MMPatternLayout
+
+[1.6.1]
+ This is a bugfix release, so no new features
+
+[1.6.0]
+- Introduction of `MMBaseServlet' with specialisations like ImageServlet and
+  AttachmentServlet.
+  There's no need for servdb anymore. Note that ImageServlet does not accept a
+  'transformation'-template like the 'servdb' servlet of previous MMBase
+  versions did. This functionality can be accessed by the imagetag or the 'cache'
+  function of an image node.
+- Editwizards. A way to define `task oriented' editors in XML.
+- Improved support for Oracle
+- Added the 'storage' classes. The storage classes are a new (yet experimental)
+  interface for adding database support. Supported databases are mysql
+  and postgresql.
+  The database configuration classes for these implentations are
+  relational.xml and postgresql.xml.
+  These database layers automatically add indexes, and provide
+  database support for deep builder inheritance.
+- A lot of new documentation has been added to this release. This
+  documentation has been created using the docbook-format.
+- Character encoding is configurable
+- Scan has been turned off by default
+- Centralized caches configuration (caches.xml)
+- Automatic builder installation for applications
+- auto detection of some databases (see
+  <mmbase-webapp/WEB-INF/modules/mmbaseroot.xml> for more info)
+- Use of webapplication server resources (JNDI)
+- DTD's are available in the jar (and removed from the config dir)
+- Richtext 0.5
+- Security 1.0
+- Builder extension (not completely finished)
+
+
+------------------------
+Editwizard New Features:
+------------------------
+[1.6.4]
+- Added search facilities to the editwizard list page. 
+- Made the error page configurable. 
+- Added the searchdir attribute to list and relation creation
+  tags. 
+- Made optionlist sortable.
+- Added the forcesearch attribute (see wish #6079).
+- Added list attribute "destinationtype' to replace 'destination'
+  (destination still available for backward-compatiblity)
+- improved searchbox, so you can now search on owner and number
+- added search-type attribute to allow for more search posibilities
+- dtd version has been upgraded to 1.1
+
+
+--------------------------
+Documentation New Features:
+--------------------------
+[1.6.4]
+- Documentation has been improved a lot.
+
+[1.6.3]
+[1.6.2]
+- Chunked output. This takes very long. Put
+  docbook.stylesheet=xhtml/docbook.xsl in build.properties, for
+  old-style documentation
+
+[1.6.1]
+- Added first draft of a taglib tutorial.
+
+
+---------------------
+MMCI New Features:
+---------------------
+[1.6.4]
+- ContextProvider.getDefaultCloudContext() has been backported from
+  cvs-head to make it easier to port applications to MMBase-1.6.4
+
+[1.6.3]
+[1.6.2]
+- Inheritance support in getAllowed relations
+- (rmmci) improved support for casting (a nodemanager extends a node etc)
+- (rmmci) iterators work
+- (rmmci) rmmci target has been added to the build.xml
+
+[1.6.1]
+[1.6.0]
+- Updated to MMCI 1.2.
+- NodeManagers now extends Node, and can be retrieved by number
+- cloud.hasNode() and hasRelation() methods
+- New FieldValue interface
+- Users can now create their own MMCI lists (such as NodeList)
+- better exception handling (NotFoundException and AlreadyExistsException)
+- more filters to retrieve relations or related nodes
+
+
+-------------------
+Taglib New Features:
+-------------------
+[1.6.4]
+[1.6.3]
+[1.6.2]
+[1.6.1]
+[1.6.0]
+- mm:formatter, mm:xslt : implement 'Richtext' features  (experimental)
+- mm:attachment : for obtaining download links to mmbase attachment objects
+- mm:time : for formatting mmbase time and date values
+- mm:locale : for setting country locale and language
+- mm:cloud tag: new loginpage attribute
+
+
+---------------------
+Examples New Features:
+---------------------
+[1.6.4]
+- new version of my_editors. Most important changes:
+  - creating an object while creating a relation is possible
+  - updated look-and-feel (better useability)
+  - support for inheritance (bug #5998)
+- new editwizard example for overriding stylesheets (based on vpro's 3voor12
+  wizards)
+
+[1.6.3]
+[1.6.2]
+- jsp editors use MMCI 1.2 features now (getAllowedRelations etc), and use their error-page
+- new version of my_editors
+
+[1.6.1]
+[1.6.0]
+- Alternative jsp-editors (aka my_editors) added as an example.
+
+
+==========================
+BUG FIXES AND IMPROVEMENTS:
+==========================
+
+------------------
+General Bug Fixes:
+------------------
+[1.6.4]
+- #6073 Flash does not pass image parameters to servlet
+- #6071 html() field format function does not escape properly 
+- #6059 SCAN typerel editor isn't working 
+- #6055 JSP Editors forget search values after search 
+- #6052 Problems with setting start/stop times in audioparts.
+- #6034 Null in integer fields, leads to nullpointer exceptions
+- #6031 MMInformix42node's decodeDBNodeField throws nullpointer on MultiRelations-node
+- #6030/5933 ConvectImageMagick issues warnings.
+- #6024 Unable to search on fields with reserved word name in the JSP Editors.
+- #6007 Config files (modules) etc. still use bad public IDs 
+- #5993 Multilevel queries of parents are not invalidated
+- #6103 Cannot associate functionality with servdb
+- #6124 Reldef returns role instead of buildername in old
+        systems. Roles that are not themselves buildernames now return
+	'insrel' in older systems
+- #6106 Deleting relations with jsp-editors give error message
+- #6024 Unable to search on fields with reserved word name in
+        jsp-editors 
+- #6133 Servdb throws NUllpointerException when determining mirror
+        server
+- #6030 ImageMagick blocked when using jdk1.4
+- #6052 Problems with setting start/stop times in audioparts
+        (scaneditors) 
+- FileWatcher backported from cvs-head (uses only one thread, so likely better
+  performance)
+
+[1.6.3]
+- #5978 MMInformix42Node throws nullpointer as reading empty
+        database-field
+- #5969 MMInformix42Node ignores notnull-fields
+- #5960 search on 'object' in multilevel fails. This fix needs to be
+        tested.
+- #5994 TypeDef.getAllowedRelationType returned typerel number instead
+        of reldef number
+
+[1.6.2]
+ - Bytearray fields are not queried by default any more this was resulting in
+   OutOfMemory errors
+
+[1.6.1]
+- Fixed bug causing connections to be closed prematurely: #5097
+- XML importer handles binary values using Base64 decoding: #5087
+- More efficient Base64 encoding/decoding: #5073
+- attachment-tag attachment-servlet bugs: #4895, #4876
+- MMObjectNode.getRelationCount(String) does not consider builder
+  inheritance: #4864
+- Fixed a bug that could come up if the platform's default charset
+  isn't ISO-8859-1
+- TemplatesCaches didn't use its FileWatcher, and if it did, it would
+  fail to remove the watch on expired entries: #5028
+- MMInformix42Node uses deprecated SortedDBLayout: #5125
+- MMInformix42Node' decodeDBNodeField won't apply String/Clob from
+  clusternodes: #5129
+- MMInformix42Node is not UTF8 complient: #5133
+
+[1.6.0]
+- Fixed a problem with memory allocation in the bridge, which could cause
+  MMBase to claim disproportional parts of memory when using the Multilevel
+  cache. (bug #4282)
+- solved a possible deadlock situation regarding the use of database
+  connections (bug #3974).
+- Calling cloud.getList() with seachdir='source' now works. (bug #3000)
+- Multilevel cacheing issues solved (bug #2971)
+- When removing a builder from MMBase,referring nodes in
+  typerel/reldef are also removed.
+- MMBase works inside webapp contexts
+- Connection pool can run on a lower amount of connections
+- Nodes are always returned with the correct type of builder
+
+---------------------
+Editwizard bug fixes:
+---------------------
+[1.6.4]
+- #6072 Cannot list number in wizard list
+- #3563 pupup wizards cannot upload images
+- #6132 javascript validation makes editors a bit sluggish in browsers   	
+- #6129 multiple 'startwizard' commands fail  	
+- #6123 If title is emplty, then IE shows empty page.  	
+- #6122 command search attribute 'fields' does not work.  	
+- #6100 cannot properly override prompts.xsl  	
+- #6097 debug page does not show popupwizards  	
+- #6096 Editwizards do not recognize CDATA sections  	
+- #6093 It would be nice if the 'fields' parameter to list was not required.  	
+- #6089 In [action type=delete] the language setting doesn't work  	
+- #6081 No authority check on startwizard to related object 
+- #6080 Debug page doesn't work when sessionkey used 
+- #6041 Cannot search for number in editwizard relation search
+- #6040 Search LIKE in editwizards not case-insenstitive 
+- #6035 Wizards don't work if server=tomcat and client refuses cookies.  
+- #6021 Wizards do not check required fields 
+- #6020 Invalid lists are not checked outside the form they are in
+- #6019 Wizards do not validate string fields 
+- #5982 Wrong epoch-time when manipulating datetime in MSIE on the Mac 
+- Added caches for xsl-files, nodes and fields in Wizard-class for
+  better performance.
+
+
+---------------------
+Application bug fixes:
+---------------------
+[1.6.4]
+- #6076 community message does not use NODE type thread field. 
+- #5996 myyahoo/install.jsp shows messy installation notes 
+- #5984 Incomplete files generated by backup
+
+[1.6.3]
+[1.6.2]
+- Errors during installation of an application will be displayed in
+  the resultpage.
+
+[1.6.1]
+- Using comments in application files results in errors in the log:
+  #4952
+
+
+------------------
+Security Bug Fixes:
+------------------
+[1.6.4]
+[1.6.3]
+-  #5976  mm:relatednodes doesn't check read rights of destination node
+
+[1.6.2]
+- #5396  context-security. No sensible error if user does not exist.
+- #5232  Can not add Ranks to security
+
+[1.6.0]
+- Fixed a problem with checking whether relations can be added (bug #3602)
+- You can no longer delete relations you have no right to delete (bug
+  #1932)
+- Security can be set in no-read-check mode
+- Performance workaround for context/cloud security (possible to grant
+  read privilege to everyone)
+
+
+----------------
+MMCI Bug Fixes:
+----------------
+[1.6.4]
+- #6126 transaction.getName() does not return correct name   	
+- #6099 directions attribute permit nonsensical values.  	
+- #6083 cannot check rights on newly created node  	
+- #6001 Cannot call 'equals' on deleted node
+- #6126 Transaction.getName() does not return correct name
+- #6116 BasicNode.getRelatedNodes() always throws NullPointerException
+
+[1.6.3]
+- #5961 'contains' of NodeList work oddly
+
+[1.6.2]
+- #5568 getAllowedRelations(NodeManager nodeManager, String role,
+  String direction) fails to allow relation between two same types
+
+
+----------------
+RMMCI Bug Fixes:
+----------------
+[1.6.4]
+[1.6.2]
+- improved support for casting (a nodemanager extends a node etc)
+- iterators are working
+- rmmci target has been added to the build.xml
+
+
+----------------
+Taglib Bug Fixes:
+----------------
+[1.6.4]
+- #6131 Enumhandler does not order optionlists 
+- #6028 Cannot specify 'either' as searchdir value in mm:list tag
+- #6004 mm:related does no behave as expected 
+- #6002 country attribute does not work for mm:locale 
+
+[1.6.3]
+- #5979 FieldInfo's NodeHandler implements check for NodeManager wrong
+- #5992 No 'searchdir' attribute on 'relatednodes', confusion
+  with 'directions' 
+- #5977 Method=asis does cannot produce anonymous cloud
+- #5963 Simple getRelatedNodes brings down database
+- #5972 Direction is not honoured in getRelatedNodes
+
+[1.6.2]
+- #5587  TEI-class for Fieldinfo tag.
+- Behavior of mm:include / mm:import (mm:import hack)
+- #5286 ListRelations tag does not accept an id attribute
+- #5242 mm:write cookie does not set 'path' explicitely.
+- #5174 mm:include doesn't work in mozilla
+
+[1.6.1]
+- Function-values can be something else then string now:  bug #4988
+- Image-tag's attribute 'template' cannot be empty string any more:
+  #5059
+- list tag caches errors with orion tag reuse: #5082
+
+[1.6.0]
+- Taglib works with Tomcat 4.1.x (version 4.1.12 is the first version
+  it's working)
+
+
+-----------------
+Example Bug Fixes:
+-----------------
+- advanced editwizard example didn't make much sense, because original
+  list.xml changed.
+
+
+========
+Upgrade:
+========
+[1.6.4]
+- Replace mmbase.jar
+- Replace editwizard jsp and xsl files
+- Replace jsp editor files and/or replace my_editor files
+
+[1.6.3]
+- Replace mmbase.jar
+- Add httppost.xml configuration file to config/utils dir
+
+[1.6.2]
+- Replace mmbase.jar
+- upgrade jsp-editors
+
+[1.6.1]
+- On a deployment server upgrading from 1.6.0 to 1.6.1 can be done by
+  replacing the mmbase.jar.
+- On other systems: there has been one bugfix in the editwizards
+  examples and some documentation has been fixed/added.
+
+[1.6.0]
+When you're upgrading from a previous MMBase-version it's important to
+know there have been made a few changes in the xml configuration of
+the builders:
+- name parameter added to the builder tag
+- extends parameter added to the builder tag
+- descriptions/description tags added to the field tag
+
+
+========================
+Known Issues and Problems:
+========================
+[1.6.4]
+- RMMCI will fail on JDK-1.4.x when using an JDK-1.3.x compiled
+  mmbase.jar (ie the default distribution). You will need an
+  mmbase.jar compiled with JDK-1.4.x.
+- There has been a lot of confusion about the different databaselayers
+  (storage vs databasesupport) and their status. At this moment
+  there's no clear overview of all the different implementations. This
+  will be solved with the MMBase-1.7.0 release, which will contain a
+  completely rewritten databaselayer.
+- Builder inheritance is still a new feature and has not fully been
+  implemented in all database implementations (it has been implemented
+  in most of the 'storage' classes). 
+  If an implementation doesn't fully support inheritance, the
+  following is true if mynews extends news:
+  - new mynews nodes don't appear in news
+  - mynews allows the same relations as news
+- It's best to move all mmbase-webapp/WEB-INF/lib/x* jars to
+  tomcat/common/endorsed and remove the ones already in this
+  directory. 
+
+[1.6.2]
+- XXXX The jsp-editor update might also have solved the tomcat 4.0 issue?
+- Builder inheritance fails with
+  mysql-connector-java-3.0.6-stable-bin.jar, see bug #5968 for more information.
+- With ImageMagick 5.4.8 and jdk 1.4 uploading images can go wrong,
+  see bug #5877 for more information.
+- There is no decent way to become administrator with basicsecurity,
+  so the adminpages aren't working, see bug #5686 for more information
+
+[1.6.1]
+- No known issues solved
+- The following bugfix was mistakenly added to the 1.6.0 releasenotes:
+  "Performance issue resolved regarding MMObjectNode::getRelated() and
+  MMObjectNode::getRelated(type) where type is a builder". It will be
+  fixed in MMBase-1.6.2.
+
+[1.6.0]
+- There's a problem when using the scan-editors and the storageclasses
+  with mysql. See bug #4452 for more information and for a workaround.
+- Jsp-editors aren't working completly when using Tomcat 4.0.x, you'll
+  get an "Illegal target of jump or branch"-error when trying to add
+  relations. You could try the my_editors as an alternative or upgrade
+  to Tomcat 4.1.x.
+- Builder inheritance has been added in MMInformix42Node, this is an
+  experimental feature.
+- When using Tomcat 4.1.12 mmbase-logs are written into cataline.out
+  and localhost_log. This has been fixed in Tomcat 4.1.17.
+- Some versions of Orion doesn't support the final servlet api 2.3, because of this the
+  jumpersFilter will not work. This is true for Orion 1.5.2 and older
+  versions. You will need to remove the following lines from <WEB-INF/web.xml>:
+
+    <!-- Filter for jumpers -->
+    <filter>
+      <filter-name>Jumpers Filter</filter-name>
+      <display-name>Jumpers Filter</display-name>
+      <description>Filter used for jumpers</description>
+      <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>Jumpers Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+  And replace them with:
+
+    <servlet>
+      <servlet-name>servjumpers</servlet-name>
+      <display-name>servjumpers</display-name>
+      <servlet-class>org.mmbase.servlet.servjumpers</servlet-class>
+    </servlet>
+
+  You also need to add:
+    <servlet-filter url-pattern="/*" servlet-name="servjumpers" />
+
+  to orion-web.xml
+
+- MMBase doesn't compile when using J2SE 1.4, you have to change 2
+  files by hand: MultiConnection.java and MultiStatement.java (both in
+  the <org/mmbase/modules/database>-dir). Uncomment the methods for
+  J2SE 1.4, more information is provided in the javadocs in these files.
+
+  When using 1.4 the ant build will inform you about this.
+
+- Length of email field inside Users and People builder isn't
+  rfc-complient, but with 255 it stays beyond a limit some databases
+  use before switching to a bigger string-type (eg clob).
+
+- Html isn't html4 or xhtml valid
+
+- Sometimes a servlet-engine won't stop when running MMBase, if you're
+  using the shutdown script provided by the servlet-engine. This is
+  caused by the fact that the jvm won't quit if there are non-daemon
+  threads running. The only way to stop the servlet-engine is to kill
+  it.
+
+- Imagemagick does work with Windows 98/ME, but MMBase is not able to
+  use it. You have to use Jai (Java Advanced Imaging API). You can do
+  this by changing the properties in
+
+   <mmbase-webapp>/WEB-INF/config/builders/applications/images.xml (after installation of 'Resource')
+   or
+   <mmbase-webapp>/WEB-INF/config/applications/Resources/builders/images.xml (before installation of 'Resource')
+
+   into:
+
+  <properties>
+    <property name="ImageConvertClass">
+      org.mmbase.module.builders.ConvertJAI
+    </property>
+    <property name="MaxConcurrentRequests">20</property>
+  </properties>
+
+  Please keep in mind that the image builder is less powerfull when
+  using JAI instead of Imagemagick.
+
+- Jumpers don't jump to /index.html by default. It gives a 404 error
+  if a location can't be found, but you can changes this behaviour by
+  setting a property in jumpers.xml.
+
+- Hsqldb uses the current dir for writing the database-files. This can
+  be the bin dir from where you're starting the servlet-engine. You
+  can change this to a dir you want, by changing the database-property
+  in jdbc.xml.
+
+- In Resin the mmbase-taglib is not fully working, because extensive tag-instance reuse causes the
+  $-variable evalution in attributes to work always. This will be fixed in 1.6.1.
+  Because Resis provides its own XSL-transformation implementation, also on this area are some known
+  problems.
+
+- Some details can't autodetect the context in which MMBase is running
+  (like gui-functions of images), so it adviced to explicitely inform
+  MMBase with the mmbase.htmlrooturlpath context parameter from web.xml.
+
+
+============
+Requirements:
+============
+MMBase needs an servlet engine which supports the servlet api 2.3 and
+jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
+
+The 'bin' distro does include a hsqldb database and driver.
+
+
+=========
+Tested on:
+=========
+The applications listed here are known to be tested with MMBase, but
+the list is probably a lot bigger :-)
+
+-------------
+Java versions
+-------------
+- J2SE 1.3
+- J2SE 1.4.2 (see known problems about problem with RMMCI)
+
+
+------------------
+Servlet engines /
+Applicationservers
+------------------
+- Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
+  logfiles in this version, catalina.out and localhost_log), 4.1.17,
+  4.1.18, 4,1,21, 4.1.24, 4.1.27 
+- Tomcat 4.0.4 (although Tomcat 4.1.x is recommended because it's a lot faster than 4.0.x)
+- Orion 1.5.2, 1.5.4, 1.6.0 (experimental)
+- Jetty 4.0.0
+
+
+---------
+Databases
+---------
+- Hsqldb 1.7.1
+- Mysql Ver 11.12 Distrib 3.23.32,
+        Ver 11.16 Distrib 3.23.49,
+        Ver 11.15 Distrib 3.23.41
+  for pc-linux-gnu (i686)
+- Postgresql
+- Informix
+
+
+

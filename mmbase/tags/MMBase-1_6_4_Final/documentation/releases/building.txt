@@ -1,0 +1,70 @@
+===================================================================
+                     MMBase 1.6 - Building
+===================================================================  
+  
+This is the source distribution of the MMBase project. It includes the
+following contents:
+
+build.xml                   Ant build for, see top of this file for
+                            more information
+build.properties            default build properties for ant, you may
+                            add your own properties
+config/                     MMBase config dir
+  applications/             Applications that can be installed
+  builders/                    
+    core/                   Core builders that are needed to run MMBase 
+    applications/           When builders are being installed from an
+                            application they are copied to this
+                            directory. 
+  databases/                Databaseconfig for databases that can be used
+                            with MMBase
+  dtd/                      A few richtext dtds
+  log/                      Logging configuration
+  modules/                  All modules that can be used, including
+                            core modules and optional modules. Not all
+			                modules are activated by default 
+  security/                 Configuration for the security
+  xslt/                     Some xslt's for displaying config files in
+                            adminpages
+docs/                       
+  api/                      Apidocs for MMBase-sources
+mmdocs/                     Generated docs
+html/                       Html-directory
+  mmadmin/                  (scan) Admin pages (deprecated)
+    jsp/                    (jsp) Admin pages
+  mmapps/                   Directory for jsp's/html/etc for MMBase-applications
+    xmlimporter             Jsp's needed by xmlimporter
+  mmdocs/                   Some documentation about MMBase-features
+  mmeditors/                (scan) Editors (deprecated)
+    jsp/                    (jsp) Editors
+  mmexamples/               Examples directory
+    share/                  Directory for shared files between examples
+    jsp/                    Jsp-examples
+    scan/                   Scan-examples (deprecated)
+src/                        Src-dir
+  documentation/            Docbook sources for documentation
+  org/
+    mmbase/
+      LICENSE               MPL-1.0 license
+      ..                    Rest of the source dirs
+
+In order build MMBase into your own webapplication, you must do the following:
+
+1. Download and install a Java Development Kit
+
+2. Download and install the Ant Binary Distribution (Ant 1.4 is required)
+
+3. Choose one of the Ant-targets, eg bindist which will build a
+   complete binary distribution, and start ant with this target ('ant
+   bindist'). See 'ant -projecthelp' for more information about the
+   different targets.
+
+4. Ant will now download all needed packages, unpacks them and will
+   start building mmbase. All the output from the build proces
+   (downloaded packages, compiled classes, jars, etc) can be found in
+   <mmbase-src/build>.
+   
+   You can avoid downloading by putting mmbase-downloads.zip next to
+   build.xml. 
+
+5. Now you can install MMBase using the installation.txt
