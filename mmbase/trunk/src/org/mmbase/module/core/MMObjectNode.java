@@ -34,7 +34,7 @@ import org.mmbase.cache.RelatedNodesCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.105 2003-07-14 21:09:25 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.106 2003-08-13 08:58:16 vpro Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1089,7 +1089,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                         nodetype=parent.getNodeType(snumber);
                     }
                     MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
-                    if (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType)) {
+                    if (nodeType!=null && (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType))) {
                         count++;
                     }
                 }
