@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
-%><% response.setContentType("text/css"); %>
+%><mm:content type="text/css">
 
 <mm:import id="myeditors">/mmexamples/jsp/my_editors/img/</mm:import>
 @import url(base.css);
@@ -131,3 +131,4 @@ td.data:after {
      padding-top: 1em;
 }
 
+</mm:content>
