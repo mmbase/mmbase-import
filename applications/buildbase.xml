@@ -159,7 +159,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
   <zip zipfile="${project.zip}">
     <zipfileset dir="${project.jar.dir}" includes="*.jar"     prefix="web-app/WEB-INF/lib" />
-    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF/config" />
+    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF" />
     <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
     <fileset dir="${project.source.dir}">
       <patternset id="root.package.files" >
