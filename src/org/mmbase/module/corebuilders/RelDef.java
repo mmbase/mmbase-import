@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.32 2004-01-13 19:27:07 michiel Exp $
+ * @version $Id: RelDef.java,v 1.33 2004-01-14 13:23:20 michiel Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -62,10 +62,15 @@ public class RelDef extends MMObjectBuilder {
     public static boolean usesbuilder = false;
 
     // cache of relation definitions
+    // sname or sname/dname -> rnumber
     private Map relCache = new HashMap();
 
     // cache of valid relationbuilders
+    // otype of relations builder -> MMObjectBuilder
     private  Map relBuilderCache = null;
+
+    // rnumber -> MMObjectBuilder Name
+    private  Map rnumberCache = new HashMap();
 
     /**
      *  Contruct the builder
@@ -93,6 +98,8 @@ public class RelDef extends MMObjectBuilder {
         Integer rnumber = (Integer) node.getValue("number");
         relCache.put(node.getStringValue("sname"), rnumber);
         relCache.put(node.getStringValue("sname") + "/" + node.getStringValue("dname"), rnumber);
+
+        rnumberCache.put(rnumber, findBuilderName(node));
     }
 
     /**
@@ -103,6 +110,8 @@ public class RelDef extends MMObjectBuilder {
     private void removeFromCache(MMObjectNode node) {
         relCache.remove(node.getStringValue("sname"));
         relCache.remove(node.getStringValue("sname") + "/" + node.getStringValue("dname"));
+
+        rnumberCache.remove(new Integer(node.getNumber()));
     }
 
     /**
@@ -112,8 +121,8 @@ public class RelDef extends MMObjectBuilder {
      *         caught and logged.
      */
     private boolean readCache() {
-        relCache.clear();
-        // add insrel (default behavior)
+        rnumberCache.clear();
+        relCache.clear();        // add insrel (default behavior)
         relCache.put("insrel", new Integer(-1));
         // add relation definiation names
         try {
@@ -134,43 +143,62 @@ public class RelDef extends MMObjectBuilder {
      * @return A <code>String</code> of descriptive text
      */
     public String getGUIIndicator(MMObjectNode node) {
-        int dir=node.getIntValue("dir");
-        if (dir==DIR_UNIDIRECTIONAL) {
+        int dir = node.getIntValue("dir");
+        if (dir == DIR_UNIDIRECTIONAL) {
             return node.getStringValue("sguiname");
         } else {
-            String st1=node.getStringValue("sguiname");
-            String st2=node.getStringValue("dguiname");
-            return st1+"/"+st2;
+            String st1 = node.getStringValue("sguiname");
+            String st2 = node.getStringValue("dguiname");
+            return st1 + "/" + st2;
         }
     }
 
 
     /**
+     * @param reldefNodeNumber rnumber
+     * @since MMBase-1.7
+     */
+
+    public String getBuilderName(Integer reldefNodeNumber) {
+        return (String) rnumberCache.get(reldefNodeNumber);
+    }
+
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected String findBuilderName(MMObjectNode node) {
+        String bulname = null;
+        if (usesbuilder) {
+            int builder = node.getIntValue("builder");
+            if (builder <= 0) {
+                bulname = node.getStringValue("sname");
+            } else {
+                bulname = mmb.getTypeDef().getValue(builder);
+              }
+        } else {
+            // fix for old mmbases that have no builder field
+            bulname = node.getStringValue("sname");
+            if (mmb.getMMObject(bulname) == null) bulname=null;
+        }
+        if (bulname == null) {
+            return "insrel";
+        } else { 
+            return bulname;
+        }
+    }
+
+    /**
      * Returns the builder name of a relation definition.
      * If the buildername cannot be accurately determined, the <code>sname</code> field will be returned instead.
+     * @param  node The reldef Node
      * @return the builder name
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        String bulname = null;
-        if (usesbuilder) {
-            int builder = node.getIntValue("builder");
-            if (builder<=0) {
-                bulname=node.getStringValue("sname");
-            } else {
-                bulname=mmb.getTypeDef().getValue(builder);
-              }
-        } else {
-            // fix for old mmbases that have no builder field
-            bulname=node.getStringValue("sname");
-            if (mmb.getMMObject(bulname)==null) bulname=null;
-        }
-        if (bulname==null) {
-            return "insrel";
-        } else {
-            return bulname;
-        }
+        return (String) rnumberCache.get(new Integer(node.getNumber()));    
     }
+
 
     /**
      * Returns the builder of a relation definition.
@@ -185,7 +213,7 @@ public class RelDef extends MMObjectBuilder {
      * @return the builder
      */
     public InsRel getBuilder(MMObjectNode node) {
-        String bulname=getBuilderName(node);
+        String bulname = getBuilderName(node);
           InsRel bul=(InsRel)mmb.getMMObject(bulname);
           if (bul==null) {
               return mmb.getInsRel();
@@ -285,11 +313,11 @@ public class RelDef extends MMObjectBuilder {
             }
             throw new RuntimeException("Cannot delete reldef node, it is referenced by typerels: "+typerels);
         }
-        int i = mmb.getInsRel().count("WHERE rnumber="+node.getNumber());
+        int i = mmb.getInsRel().count("WHERE rnumber=" + node.getNumber());
         if (i>0) {
             throw new RuntimeException("Cannot delete reldef node, it is still used in relations");
         }
-        String name=node.getStringValue("sname");
+        String name = node.getStringValue("sname");
         super.removeNode(node);
         removeFromCache(node);
     }
@@ -319,14 +347,14 @@ public class RelDef extends MMObjectBuilder {
         try {
             if (field.equals("dir")) {
                 switch (node.getIntValue("dir")) {
-                    case DIR_BIDIRECTIONAL:
-                        return "bidirectional";
-
-                    case DIR_UNIDIRECTIONAL:
-                        return "unidirectional";
-
-                    default:
-                        return "unknown";
+                case DIR_BIDIRECTIONAL:
+                    return "bidirectional";
+                    
+                case DIR_UNIDIRECTIONAL:
+                    return "unidirectional";
+                    
+                default:
+                    return "unknown";
                 }
             } else if (field.equals("builder")) {
                 int builder=node.getIntValue("builder");
