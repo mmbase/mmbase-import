@@ -87,7 +87,7 @@
         </positions>
       </editor>
       <db>
-        <name>body</name>
+        <name>text</name>
         <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
       </db>
     </field>
