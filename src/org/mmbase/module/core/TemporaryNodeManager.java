@@ -13,14 +13,19 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManager.java,v 1.1 2000-08-14 19:19:06 rico Exp $
+	$Id: TemporaryNodeManager.java,v 1.2 2000-10-13 09:39:54 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/08/14 19:19:06  rico
+	Rico: added the temporary node and transaction support.
+	      note that this is rather untested but based on previously
+	      working code.
+	
 */
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.1 2000-08-14 19:19:06 rico Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.2 2000-10-13 09:39:54 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -62,6 +67,25 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			bul.getNode(key);
 		}
 		return(node);
+	}
+
+	/*
+	 * added JohnB, 3MPS, 11/10/2000
+	 *
+	 */
+	 public String getObject(String key) {
+		MMObjectBuilder bul=mmbase.getMMObject("typedef");
+		MMObjectNode node;
+		node=bul.getTmpNode(key);
+		// fallback to normal nodes
+		if (node==null) {
+			bul.getNode(key);
+		}
+		if (node != null) {
+			return(key);
+		} else {
+			return null;
+		}
 	}
 
 	public String setObjectField(String key,String field,Object value) {
