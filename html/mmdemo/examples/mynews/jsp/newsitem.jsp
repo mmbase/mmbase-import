@@ -5,7 +5,7 @@
 <%-- the page is called with a parameter newsid
 we can use the parameter attribute of node to create a context 
 for the MMBase node --%>
-<mm:node parameter="newsid">
+<mm:node number="param:newsid">
 <HTML>
  <HEAD>
   <%-- we are in the news node  we can ask 
