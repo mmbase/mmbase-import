@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to the use of "in (...)" in SQL SELECT-syntax. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public interface FieldValueInConstraint extends FieldConstraint {
@@ -27,7 +27,7 @@ public interface FieldValueInConstraint extends FieldConstraint {
      * <p>
      * Numerical values are represented by strings using the standard floating 
      * point format. 
-     * Integral numerical values, however, are by strings strings using the
+     * Integral numerical values, however, are represented by strings using the
      * standard <em>integer</em> format, i.e. without the decimal point
      * (e.g. "123" instead of "123.0").
      */
