@@ -28,6 +28,10 @@ import javax.servlet.http.*;
  
 
 public class HttpPost { 
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
 	/**
      * are the postparameters decoded yet?
      */
@@ -221,7 +225,7 @@ public class HttpPost {
                         v=(Vector)obj;
                         raf.write((byte[])v.elementAt(0));
 			if(raf.length()>=maxFileSize) {
-            		throw new FileToLargeException("WorkerPostHandler  (getPostParameterFile) -> "+filename);
+            		throw new FileToLargeException( classname +":"+"getPostParameterFile("+name+"): file too large("+filename+","+raf.length()+")");
 			}
                     } else {
                         raf.write((byte[])obj);
@@ -229,9 +233,9 @@ public class HttpPost {
                     raf.close();
 				} catch (FileToLargeException f) {
 					reset();
-                    System.out.println("WorkerPostHandler (getPostParameterFile) -> "+f);
+                    debug("getPostParameterFile("+name+"): ERROR: File is too large!: "+f);
                 } catch (Exception e) {
-                    System.out.println("WorkerPostHandler (getPostParameterFile) -> "+e);
+                    debug("getPostParameterFile("+name+"): ERROR: "+e);
                 } 
                 return(filename);
             }
@@ -266,7 +270,7 @@ public class HttpPost {
             // Catch the exception right here, it should be thrown but
             // that's against the Servlet-API Interface
             } catch (Exception e) {
-                System.out.println("WorkerPostHandler (getPostParameter) -> "+e);
+                debug("getPostParameter("+name+"): ERROR: "+e);
             }
             if (obj instanceof Vector) {
                 v=(Vector)obj;
@@ -299,7 +303,7 @@ public class HttpPost {
                     }
                 }
             } else {
-				System.out.println("HttpPost-> no content length in post");
+				debug("decodePost(): found no 'content-length' tag in post.");
 			}
     }
  
@@ -310,7 +314,7 @@ public class HttpPost {
     * read a block into a array of ContentLenght size from the users networksocket
     *
     * @param table the hashtable that is used as the source for the mapping process
-    * @returns byte[] buffer of length defined in the content-length mimeheader
+    * @return byte[] buffer of length defined in the content-length mimeheader
     */
     public byte[] readContentLength(HttpServletRequest req) {
         int len,len2,len3;
@@ -325,7 +329,7 @@ public class HttpPost {
         len=req.getContentLength();
         // Maximum postsize
         if (len<MaximumPostbufferSize) {
-            //System.out.println("WorkerPostHandler -> readContentLength writing to memory" );
+            if( debug ) debug("readContentLength(): writing to memory.");
             try {
                 buffer=new byte[len];
                 // can come back before done len !!!!
@@ -344,20 +348,20 @@ public class HttpPost {
                 len2=connect_in.read(buffer,0,len);
                 //len2=connect_in.read(buffer,0,64*1024);
                 while (len2<len) {
-                    //System.out.println("WorkerPostHandler -> readContentLength "+len2);
+                    if( debug ) debug("readContentLength(): found len2( "+len2+")");
                     len3=connect_in.read(buffer,len2,len-len2);
                     if (len3==-1) {
-                        //System.out.println("WorkerPostHandler (readContentLength) -> EOF while not Content Length");
+                        if( debug ) debug("readContentLength(): WARNING: EOF while not Content Length");
                         break;
                     } else {
                         len2+=len3;
                     }
                 }
             } catch (Exception e) {
-                System.out.println("WorkerPostHandler (readContentLength) -> can't read post msg from client");
+                debug("readContentLength(): ERROR: Can't read post msg from client");
             }
 		} else {
-            //System.out.println("WorkerPostHandler -> readContentLength writing to disk" );
+            if( debug ) debug("readContentLength(): writing to disk" );
             try {
                 postToDisk=true;
                 RandomAccessFile raf = new RandomAccessFile("/tmp/form_"+postid,"rw");
@@ -368,10 +372,10 @@ public class HttpPost {
                 index1=connect_in.read(buffer);
                 raf.write(buffer,0,index1);
 		if(raf.length()>=maxFileSize) {
-            		throw new FileToLargeException("WorkerPostHandler  (getPostParameterFile) -> "+postid);
+            		throw new FileToLargeException( classname+":"+"readContentLength(): ERROR: size too large("+raf.length()+") for file(/tmp/form_"+postid+")");
 		}
                 totallength+=index1;
-                //System.out.print("WorkerPostHandler -> writing to disk: +");
+                if( debug ) debug("readContentLength(): writing to disk: +");
  
                 while (totallength<len) {
                     index1=connect_in.read(buffer);
@@ -380,20 +384,20 @@ public class HttpPost {
             		throw new FileToLargeException("WorkerPostHandler  (getPostParameterFile) -> "+postid);
 		}
                     if (index1==-1) {
-                        System.out.println("WorkerPostHandler (readContentLength) -> EOF while not Content Length");
+                        debug("readContentLength(): ERROR: EOF while not Content Length");
                         break;
                     } else {
                         totallength+=index1;
                         System.out.print("+");
                     }
                 }
-                System.out.println(" "+totallength);
+                debug(" written("+totallength+")");
                 raf.close();
 			} catch (FileToLargeException f) {
 				reset();
-                System.out.println("WorkerPostHandler (readContentLength) -> "+f);
+                debug("readContentLength(): ERROR: "+f);
             } catch (Exception e) {
-                System.out.println("WorkerPostHandler (readContentLength) -> "+e);
+                debug("readContentLength(): ERROR: "+e);
             }
         }
         return(buffer);
@@ -421,7 +425,7 @@ public class HttpPost {
             marker4[0]=(byte)'\"';
             templine.getBytes(0,templine.length(),marker,0);
  
-//            System.out.println("WorkerPostHandler -> postFormDate");
+//          if( debug ) debug("readPostFormData(): entered");
             // find first magic cookie
             start2=indexOf(postbuffer,marker,0)+marker.length;
  
@@ -429,7 +433,7 @@ public class HttpPost {
                 // hunt second one
                 end2=indexOf(postbuffer,marker,start2);
 				if (end2<0) {
-					System.out.println("WorkerPostHandler -> postbuffer < 0 !!!! ");
+					debug("readPostFormData(): postbuffer < 0 !!!! ");
 					 break;
 				}
  
@@ -439,7 +443,7 @@ public class HttpPost {
                 i3=indexOf(postbuffer,marker3,start2+2)+2;
                 i4=indexOf(postbuffer,marker4,i3+2);
                 r=new String(postbuffer,0,i3,(i4-i3));
-                // System.out.println("readPostFormData r = "+r);
+                // if( debug ) debug("readPostFormData(): r="+r);
                 // copy it to a buffer
                 dest = new byte[(end2-i2)-6];
                 System.arraycopy(postbuffer, i2+4, dest, 0, (end2-i2)-6);
@@ -448,7 +452,7 @@ public class HttpPost {
                 addpostinfo(post_header,r,dest);
                 start2=end2+marker.length;
             } while (postbuffer[start2]!='-');
-            //System.out.println("post handled");
+            //if( debug ) debug("readPostFormData(): post handled.");
         return(false);
     }
 
@@ -463,7 +467,7 @@ public class HttpPost {
     * @param post_header hashtable to put the fromFile information in
     */
     public boolean readPostFormData(String formFile, Hashtable post_header, String line) {
-            //System.out.println("New readPostFormDate toDisk");
+            //if( debug ) debug("readPostFormData(): New readPostFormDate toDisk");
             FileInputStream fis=null;
             RandomAccessFile raf=null;
             try {
@@ -485,7 +489,7 @@ public class HttpPost {
             marker3[0]=(byte)'=';
             marker4[0]=(byte)'\"';
             templine.getBytes(0,templine.length(),marker,0);
-            System.out.println("WorkerPostHandler -> postFormDate");
+            debug("readPostFormData(): begin");
  
             int offset=0;
             int temp=0;
@@ -502,7 +506,7 @@ public class HttpPost {
                     i3=indexOf(postbuffer,marker3,start2+2)+2;
                     i4=indexOf(postbuffer,marker4,i3+2);
                     r=new String(postbuffer,0,i3,(i4-i3));
-                    //System.out.println("worker -> postName="+r);
+                    //if( debug ) debug("readPostFormData(): postName="+r);
  
                     // hunt second one
                     end2=indexOf(postbuffer,marker,start2);
@@ -510,20 +514,20 @@ public class HttpPost {
  
                     if(end2==-1) {
                         // Sjeetje dit moet het bestand zijn het is immers zoooo groot
-                            System.out.print("WorkerPostHandler -> writing to postValue: ");
+                            debug("readPostFormData(): writing to postValue: ");
                             raf = new RandomAccessFile("/tmp/form_"+postid+"_"+r,"rw");
                             addpostinfo(post_header,r,"/tmp/form_"+postid+"_"+r);
                             try {
                                 raf.write(postbuffer,i2+4,len-(i2+4));
                             } catch (Exception e) {
-                                System.out.println("WorkerPostHandler -> Cannot write into file(1)"+e);
+                                debug("readPostFormData(): ERROR: Cannot write into file(1)"+e);
                             }
                             offset=len-i2+4;
                         do {
                             try {
                                 temp = fis.read(postbuffer);
                             } catch (Exception e) {
-                                System.out.println("WorkerPostHandler -> reading fault "+e);
+                                debug("readPostFormData(): ERROR: while reading: "+e);
                             }
  
                             end2=indexOf(postbuffer,marker,0);
@@ -535,9 +539,9 @@ public class HttpPost {
                                 }
                             offset+=len;
                             } catch (Exception e) {
-                                System.out.println("WorkerPostHandler -> Cannot write into file (2)"+e);
+                                debug("readPostFormData(): ERROR: Cannot write into file (2)"+e);
                             }
-                            System.out.print("-");
+//                            System.out.print("-");
                             } while (end2==-1);
                         start2=end2+marker.length;
                         System.out.println();
@@ -555,20 +559,12 @@ public class HttpPost {
                 } while (postbuffer[start2]!='-');
 			} catch (FileToLargeException f) {
 				reset();
-                System.out.println("WorkerPostHandler (readPostFormData)->"+f);
+                debug("readPostFormData(): ERROR: "+f);
             } catch (Exception e) {
-                System.out.println("WorkerPostHandler -> Reached end of file "+e);
+                debug("readPostFormData(): Reached end of file: "+e);
             }
         return(false);
     }
- 
-
-
-        
-
-
-
-
  
 	private final void addpostinfo(Hashtable postinfo,String name,Object value) {
         Object obj;
@@ -585,7 +581,7 @@ public class HttpPost {
                 v=(Vector)obj;
                 v.addElement(value);
             } else {
-                System.out.println("WorkerPostHandler (addpostinfo) -> Who has been fiddling with my Vector ?");
+                debug("addpostinfo("+name+","+value+"): mirror mirror on the wall, who has been fiddling with my Vector?");
             }
         } else {
             postinfo.put(name,value);
@@ -611,7 +607,7 @@ public class HttpPost {
                 v=(Vector)obj;
                 v.addElement(value);
             } else {
-                System.out.println("WorkerPostHandler (addpostinfo2) -> Who has been fiddling with my Vector ?");
+                debug("addpostinfo2("+name+","+value+"): mirror mirror on the wall, who has been fiddling with my Vector?");
             }
         } else {
             postinfo.put(name,value);
