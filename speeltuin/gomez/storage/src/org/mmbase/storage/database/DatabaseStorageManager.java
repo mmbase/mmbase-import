@@ -14,7 +14,9 @@ import java.sql.*;
 import javax.sql.DataSource;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.*;
+import org.mmbase.storage.util.Scheme;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,9 +26,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.2 2003-07-24 12:29:05 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.3 2003-07-25 14:47:25 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
+
+    protected static final String SELECT_NODE_SCHEME = "select.node.scheme";
+    protected static final String SELECT_NODE_SCHEME_DFP = "SELECT * from {0} WHERE {1} = {2}";
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
@@ -248,7 +253,79 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return the MMObjectNode that was found, or null f it doesn't exist
      * @throws StorageException if an error occurred during the get
      */
-    abstract public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException;
+    public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
+        Scheme scheme = factory.getScheme(SELECT_NODE_SCHEME);
+        try {
+            getActiveConnection();
+            String query = scheme.format(new Object[] { builder, builder.getField("number"), new Integer(number)});
+            Statement s = activeConnection.createStatement();
+            return createNodeFromQuery(s.executeQuery(query), builder);
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
+    
+    /**
+     * Attempts to return a single Node from the resultset of a query.
+     * You can use this method to iterate through a query, creating multiple nodes, provided the resultset still contains
+     * members (that is, <code>res.isAfterLast</code> returns <code>false</code>)
+     * @param res the resultset
+     * @param builder the builder to use for creating the node
+     * @return the node
+     * @throws StorageException if the resultset is exhausted or a database error occurred
+     */
+    protected MMObjectNode createNodeFromQuery(ResultSet res, MMObjectBuilder builder) throws StorageException {
+        try {
+            if ((res != null) && res.next()) {
+                // create a new node
+                MMObjectNode result = builder.getNewNode("system");
+                ResultSetMetaData rd = res.getMetaData();
+                for (int i = 1; i <= rd.getColumnCount(); i++) {
+                    String fieldName = factory.unmapField(rd.getColumnName(i));
+                    result.setValue(fieldName, createFieldValueFromQuery(result.getDBType(fieldName), res, i));
+                }
+                // clear the changed signal on the node
+                result.clearChanged();
+                return result;
+            } else {
+                throw new StorageException("Node not found");
+            }
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        }
+    }
+
+    /**
+     * Attempts to return a single field value from the resultset of a query.
+     * @param fieldType the expected MMBase fieldType for this field
+     * @param res the resultset
+     * @param i the index of the field in the resultset
+     * @return the value
+     * @throws StorageException if the value cannot be retrieved from the resultset
+     */
+    protected Object createFieldValueFromQuery(int fieldType, ResultSet rs, int i) throws StorageException {
+        try {
+            switch (fieldType) {
+                // string-type fields
+                // should test for MMBase encoding
+                case FieldDefs.TYPE_XML:
+                case FieldDefs.TYPE_STRING: {
+                    return rs.getString(i);
+                }
+                // binary fields: mark as $shorted, retrieve later
+                case FieldDefs.TYPE_BYTE: {
+                    return "$SHORTED";
+                }
+                default : {
+                    return rs.getObject(i);
+                }
+            }
+        } catch(SQLException se) {
+            throw new StorageException(se);
+        }
+    }
 
     /**
      * Returns the nodetype for a specified nodereference
