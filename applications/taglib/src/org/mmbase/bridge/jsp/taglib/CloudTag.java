@@ -269,7 +269,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } catch (IOException ioe) {
             throw new JspTagException(ioe.toString());
         }
-        setAnonymousCloud(cloudName); // there must also be _some_ cloud, to avoid exception on u
+        setAnonymousCloud(cloudName, cloudURI); // there must also be _some_ cloud, to avoid exception on u
         evalBody(); //  register var
         return SKIP_BODY;
     }
@@ -278,20 +278,21 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         removeRealm();
     }
 
-    private void setAnonymousCloud(String name) {
+    private void setAnonymousCloud(String name, String uri) {
         log.debug("using a anonymous cloud");
-        cloud = (Cloud) anonymousClouds.get(cloudName);
+        String key = name + (uri != null ? "@" +  uri : "");
+        cloud = (Cloud) anonymousClouds.get(key);
         if (cloud == null) {
             log.debug("couldn't find one");
             cloud = getDefaultCloudContext().getCloud(cloudName);
-            anonymousClouds.put(cloudName, cloud);
+            anonymousClouds.put(key, cloud);
             log.debug("put in hashMap");
         }
         // check if cloud was expired:
         if (! cloud.getUser().isValid()) {
             log.debug("anonymous cloud was expired, creating a new one");
             cloud = getDefaultCloudContext().getCloud(cloudName);
-            anonymousClouds.put(cloudName, cloud);
+            anonymousClouds.put(key, cloud);
         }
     }
     private String getSessionName() {
@@ -341,7 +342,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if ( (method == METHOD_UNSET && logon == null && rank == null) ||
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
-            setAnonymousCloud(cloudName);
+            setAnonymousCloud(cloudName, cloudURI);
             return evalBody();
         }
 
@@ -369,7 +370,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("session is not null");
                 session.removeAttribute(getSessionName());       // remove cloud itself
             }
-            setAnonymousCloud(cloudName);
+            setAnonymousCloud(cloudName, cloudURI);
             // the available cloud in this case is a anonymous one
             return evalBody();
         }
@@ -522,7 +523,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             } else {
                 log.debug("no login given, creating anonymous cloud");
                 // no logon, create an anonymous cloud.
-                setAnonymousCloud(cloudName);
+                setAnonymousCloud(cloudName, cloudURI);
             }
 
             if (cloud == null) { // stil null, give it up then...
