@@ -28,9 +28,11 @@
     Define the sequence of preference of the servers.
     -->
     <preferredSource>    
-      <source format="asf" />
+      <source format="wmp" />
+      <source format="ram" />
       <source format="rm" />
       <source format="ra" />
+      <source format="asf" />
     </preferredSource>
     
 

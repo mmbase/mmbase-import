@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+
 	<node number="7000" owner="default">
 		<name>Default template</name>
 		<description>Produces simple urls, to be included with object</description>
-		<url>/rams?fragment=</url>
+		<url>/rams?</url>
+		<mimetype></mimetype>
+	</node>
+
+	<node number="7001" owner="default">
+		<name>Object template</name>
+		<description>Produces pieces of HTML to include in your page</description>
+		<url>/mediahtml?type=link&amp;</url>
+		<mimetype>text/html</mimetype>
+	</node>
+
+	<node number="7001" owner="default">
+		<name>Object template</name>
+		<description>Produces pieces of HTML to include in your page</description>
+		<url>/mediahtml?type=link_intro&amp;</url>
+		<mimetype>text/html</mimetype>
 	</node>
 </templates>
