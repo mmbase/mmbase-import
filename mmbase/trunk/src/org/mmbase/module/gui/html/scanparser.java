@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.56 $ $Date: 2002-05-10 10:59:40 $
+ * @$Revision: 1.57 $ $Date: 2002-05-14 09:05:10 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1206,6 +1206,7 @@ public class scanparser extends ProcessorModule {
         }
         if (wantedHost.length() < 1) return null; 
         
+        if (sp.req==null) return null;
         String requestHost = sp.req.getHeader("Host");
         if (requestHost==null) return null; // No such header
         requestHost = requestHost.trim();
@@ -2177,9 +2178,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.56 2002-05-10 10:59:40 vpro Exp $
+$Id: scanparser.java,v 1.57 2002-05-14 09:05:10 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.56  2002/05/10 10:59:40  vpro
+Wilbert: added <HOST [host[,backendhost]]> tag redirecting to host if not running on host or optional backend host
+
 Revision 1.55  2002/04/22 14:27:30  vpro
 Wilbert: added PARAMY returning for last param
 
