@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.13.2.3 2004-08-25 11:32:08 michiel Exp $
+ * @version $Id: MultiStatement.java,v 1.13.2.4 2004-08-26 12:40:14 michiel Exp $
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);
@@ -181,9 +181,10 @@ public class MultiStatement implements Statement {
      * @since MMBase-1.7.1
      */
     protected Statement checkAfterException() throws SQLException {
+        ResultSet rs = null;        
         // check wether connection is still functional
         try {
-            s.executeQuery("SELECT 1 FROM " + org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query); 
+            rs = s.executeQuery("SELECT 1 FROM " + org.mmbase.module.core.MMBase.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query); 
         } catch (SQLException isqe) {
              // so, connection must be broken.
             log.service("Found broken connection, will try to fix it.");
@@ -198,7 +199,12 @@ public class MultiStatement implements Statement {
             //  at org.postgresql.jdbc3.AbstractJdbc3Statement.getResultSetHoldability(AbstractJdbc3Statement.java:278)
             // It does not matter much because in all of MMBase only 'createStatement()' is used.
             return s;
+        } finally {
+            if (rs != null) {                
+                rs.close();
+            }
         }
+        
         return null;
     }
 
