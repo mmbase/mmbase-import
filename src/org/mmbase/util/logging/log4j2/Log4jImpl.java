@@ -13,9 +13,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Level;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.FileWatcher;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.DOMConfigurator;
+
+import org.xml.sax.InputSource;
+import java.io.FileInputStream;
 
 import java.io.PrintStream;
 import java.io.File;
@@ -42,17 +47,18 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     // class is final, perhaps then its methods can be inlined when compiled with -O?
 
     // It's enough to instantiate a factory once and for all.
-    private final static LoggerFactory factory = new LoggerFactory();
-
-    private final static String classname = Log4jImpl.class.getName();
-
+    private final static org.apache.log4j.spi.LoggerRepository repository = new LoggerRepository(getRootLogger());
+    private final static  DOMConfigurator domConfigurator = new DOMConfigurator();
+    private static Logger log;
     private static File configurationFile = null;
+
+    private static final String classname = Log4jImpl.class.getName();
 
     /** 
      * Constructor, like the constructor of {@link Category}.
      */
 
-    private Log4jImpl(String name) {
+    protected Log4jImpl(String name) {
         super(name);
         // not needed.
     }
@@ -65,7 +71,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      */
     public static Log4jImpl getLoggerInstance(String name) {
         try {
-            return (Log4jImpl) LogManager.getLogger(name, factory); 
+            return (Log4jImpl) repository.getLogger(name);
         } catch (ClassCastException e) {
             Log4jImpl root =  (Log4jImpl) getRootLogger(); // make it log on root, and log a huge error, that something is wrong.
             root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\""); 
@@ -82,33 +88,45 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      * absolute, or relative to the Logging configuration file.
      **/
 
-    public static void configure(String s) {
+    public static void configure(String s) {        
         configurationFile = new File(s); 
         if (! configurationFile.isAbsolute()) { // make it absolute
             configurationFile = new File(Logging.getConfigurationFile().getParent() + File.separator + s);
         }
         System.out.println("Parsing " + configurationFile.getAbsolutePath());
         try {
-            DOMConfigurator.configureAndWatch(configurationFile.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
+            domConfigurator.doConfigure(new FileInputStream(configurationFile), repository);
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("Could not find " + configurationFile  + " to reconfigure: " + e.toString());
         }
-        catch(java.lang.ClassCastException cce) {
-            // Tomcat 4.1.x and log4j2 have some strange problems together...
-            // give output of this error...
-            System.out.println("ERROR: COULD NOT CONFIGURE LOGGING!(are you using tomcat 4.1.x ?)");
-            System.out.println(Logging.stackTrace(cce));
-            // output of the javax.xml parser stuff!
-            javax.xml.parsers.DocumentBuilder docbuilder = org.mmbase.util.XMLBasicReader.getDocumentBuilder(false);                        
-            org.w3c.dom.DOMImplementation implementation = docbuilder.getDOMImplementation();
-            System.out.println("DocBuilder: " + docbuilder.getClass().getName() + " DOMImplementation: " +  implementation.getClass().getName());
-            // on my working Orion: docbuilder:class org.apache.crimson.jaxp.DocumentBuilderImpl implementation:class org.apache.crimson.tree.DOMImplementationImpl
-            return;
-        }
-        Log4jImpl err = (Log4jImpl) getInstance("STDERR");
+        configWatcher.add(configurationFile);
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
+        log = getLoggerInstance(Log4jImpl.class.getName());
+       
+        Log4jImpl err = getLoggerInstance("STDERR");
         // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
         if(err.getLevel() != Log4jLevel.FATAL) {
+            System.out.println("Redirecting stdout to MMBase logging");
             System.setErr(new LoggerStream(err));
         }
+       
     }
+
+    private static FileWatcher configWatcher = new FileWatcher (true) {
+            protected void onChange(File file) {
+                try {     
+                    System.out.println("Reading " + file);
+                    domConfigurator.doConfigure(new FileInputStream(file), repository);
+                } catch (java.io.FileNotFoundException e) {
+                    System.out.println("Could not find " + file + " to reconfigure");
+                }
+                //configReader = new XMLBasicReader(file.getAbsolutePath());
+                //configure(configReader);
+            }
+        };
+
+
 
     public static File getConfigurationFile() {
         return configurationFile;
@@ -142,7 +160,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         return getLogger(name); 
     }
     public static org.apache.log4j.Logger  getLogger(String name) {
-        return LogManager.getLogger(name, factory);
+        return repository.getLogger(name);
     }
 
     /**
@@ -177,21 +195,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         return Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
-    // **** SUBCLASSES ****
- 
-    /**
-     * Any sub-class of Category must also have its own implementation of 
-     * CategoryFactory.
-     */
-    private static class LoggerFactory implements org.apache.log4j.spi.LoggerFactory {
-
-        LoggerFactory() {
-        }
-
-        public org.apache.log4j.Logger makeNewLoggerInstance(String name) {
-            return new Log4jImpl(name);
-        }
-    }
 
     /**
      * Catches stderr and sends it also to the log file (with category `stderr').
