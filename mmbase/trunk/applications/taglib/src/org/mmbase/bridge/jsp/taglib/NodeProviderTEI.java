@@ -65,7 +65,7 @@ public class NodeProviderTEI extends TagExtraInfo {
             if (fieldsString == null) {
                 fields = new Vector();
             } else {
-                fields  = AbstractNodeProviderTag.stringSplitter(fieldsString, ",");
+                fields  = ContextReferrerTag.stringSplitter(fieldsString, ",");
             }
         }
         
@@ -77,9 +77,9 @@ public class NodeProviderTEI extends TagExtraInfo {
         String id = "";
         Object idObject = data.getAttribute("jspvar");
         if (idObject != null){
-            if (idObject == TagData.REQUEST_TIME_VALUE) { // then of course we cannot set a variable with that name                             
+            if (idObject == TagData.REQUEST_TIME_VALUE) { // then of course we cannot set a variable with that name 
             } else {
-                id = "" + data.getAttribute("jspvar");
+                id = "" + idObject;
                 nodeVariable = 1;
             }
         }
