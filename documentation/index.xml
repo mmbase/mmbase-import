@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.7 2003-01-10 10:45:29 pierre Exp $</edition>
+    <edition>$Id: index.xml,v 1.8 2003-01-30 09:08:40 michiel Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -59,7 +59,7 @@
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="security/context-security.html">Installing and using Context Security</ulink></para>
+        <para><ulink url="administrators/context-security.html">Installing and using Context Security</ulink></para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
