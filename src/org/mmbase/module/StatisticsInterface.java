@@ -1,6 +1,3 @@
-/*
-*/
-
 package org.mmbase.module;
 
 import java.util.*;

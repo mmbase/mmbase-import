@@ -1,19 +1,3 @@
-/*
-
-$Id: Module.java,v 1.3 2000-03-24 14:40:39 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2000/02/24 12:34:43  wwwtech
-- (marcel) Replaced System.out with debug
-
-*/
-
 package org.mmbase.module;
 
 import java.lang.*;
@@ -33,7 +17,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.3 $ $Date: 2000-03-24 14:40:39 $
+ * @version $Revision: 1.4 $ $Date: 2000-03-29 10:04:58 $
  */
 public abstract class Module {
 

@@ -1,6 +1,3 @@
-/**
-*	(c) 2000 VPRO
-*/
 package org.mmbase.module;
 
 import org.mmbase.module.CounterImplementationInterface;

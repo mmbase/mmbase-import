@@ -1,16 +1,3 @@
-/*
-
-$Id: SendMail.java,v 1.2 2000-02-24 13:29:52 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-$Log: not supported by cvs2svn $
-*/
-
 package org.mmbase.module;
 
 import java.io.*;
@@ -23,7 +10,7 @@ import org.mmbase.util.*;
  * This module gives mail functionality 
  *
  * @author Rob Vermeulen
- * @version $Revision: 1.2 $ $Date: 2000-02-24 13:29:52 $
+ * @version $Revision: 1.3 $ $Date: 2000-03-29 10:04:58 $
  */
 public class SendMail extends Module implements SendMailInterface {
 	private String 		 classname 	= getClass().getName();
