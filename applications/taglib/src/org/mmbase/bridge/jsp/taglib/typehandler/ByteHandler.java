@@ -18,7 +18,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.Arguments;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.PageContext;
 
@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.8 2003-12-03 11:24:14 keesj Exp $
+ * @version $Id: ByteHandler.java,v 1.9 2003-12-17 21:10:55 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -45,7 +45,7 @@ public class ByteHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
+        Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
         args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
         args.set("language", tag.getCloud().getLocale().getLanguage());
         args.set("session",  tag.getSessionName());
@@ -63,7 +63,7 @@ public class ByteHandler extends AbstractTypeHandler {
         String fieldName = field.getName();
         byte [] bytes  = tag.getContextTag().getBytes(prefix(fieldName));
         if (bytes == null){
-        	throw new BridgeException("getBytes("+ prefix(fieldName) +") returned null (node= " +  node +") field=(" + field+")");
+            throw new BridgeException("getBytes(" + prefix(fieldName) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
         if ( bytes.length > 0) {
             node.setByteValue(fieldName, bytes);
