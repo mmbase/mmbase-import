@@ -7,7 +7,7 @@ all:
 app:
 	mkdir -p docs
 	javadoc \
-		-classpath $(JAVA_HOME)/lib/tools.jar \
+		-classpath $(JAVA_HOME)/lib/tools.jar:lib/rmmci.jar \
 		-sourcepath src \
 		-docletpath classes \
 		-doclet org.mmbase.applications.mmbasedoclet.MMBaseDoclet \
