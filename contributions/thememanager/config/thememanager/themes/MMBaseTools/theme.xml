@@ -14,6 +14,7 @@
                 <image id="quotemsg" file="quotemsg.gif" />
                 <image id="editmsg" file="editmsg.gif" />
                 <image id="newmsg" file="newmsg.gif" />
+                <image id="deletemsg" file="deletemsg.gif" /> 
                 <image id="newreply" file="newreply.gif" />
                 <image id="medit" file="medit.gif" />
                 <image id="mdelete" file="mdelete.gif" />
@@ -36,6 +37,7 @@
                 <image id="mood_warning" file="mood_warning.gif" />
                 <image id="mood_idea" file="mood_idea.gif" />
                 <image id="mood_joke" file="mood_joke.gif" />
+                <image id="guest" file="guest.gif" />
 	</imageset>
 	<imageset id="blue" role="smilies">
 		<image id=":)"  file="smile.gif" />
