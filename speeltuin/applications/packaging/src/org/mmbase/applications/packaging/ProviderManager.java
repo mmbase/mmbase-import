@@ -206,8 +206,8 @@ public class ProviderManager {
     public static String addSubscribeProvider(String url) {
         XMLBasicReader reader = getAutoConfigReader(url);
         // lets hunt for the file, should be a little nicer
-        if (reader == null) reader = getAutoConfigReader(url+"/mmbase/mmpm/shareautoconfig.jsp");
-        if (reader == null) reader = getAutoConfigReader(url+"/mmbase-webapp/mmbase/mmpm/shareautoconfig.jsp");
+        if (reader == null) reader = getAutoConfigReader(url+"/mmbase/packagemanager/shareautoconfig.jsp");
+        if (reader == null) reader = getAutoConfigReader(url+"/mmbase-webapp/mmbase/packagemanager/shareautoconfig.jsp");
         if (reader == null) reader = getAutoConfigReader(url+"/shareautoconfig.jsp");
         if (reader == null) reader = getAutoConfigReader(url+"/mmbase-webapp/shareautoconfig.jsp");
         if (reader != null) {
