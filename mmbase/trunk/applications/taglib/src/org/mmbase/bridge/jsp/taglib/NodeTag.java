@@ -67,7 +67,7 @@ public class NodeTag extends NodeLikeTag implements BodyTag {
         if(node == null) {
             throw new JspException("number = " + number + ", Cannot find Node with number " + number);
         }         
-        setNode(node);        
+        setNodeVar(node);        
         log.debug("found node " + node.getValue("gui()"));
 
         //System.out.println("doStartTag");
