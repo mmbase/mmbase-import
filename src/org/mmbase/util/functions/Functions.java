@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Functions.java,v 1.2 2004-12-13 12:15:19 pierre Exp $
  */
 public class Functions {
 
@@ -40,10 +40,13 @@ public class Functions {
         ParametersImpl a;
         if (args instanceof ParametersImpl) {
             a = (ParametersImpl) args;
+            // checking whether two ParametersImpl instances match won't work in some cases
+            /*
             DataType[] resolvedDef = (DataType[]) define(def, new ArrayList()).toArray(new DataType[0]); // resolve the wrappers
             if ( ! Arrays.equals(a.definition, resolvedDef))  {
                 throw new IllegalArgumentException("Given parameters '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
             }
+            */
         } else {
             a = new ParametersImpl(def, args);
         }
@@ -142,7 +145,7 @@ public class Functions {
                         // Add the node parameter if it is not yet exists and the class is an ObjectBuilder.
                         // This code will be removed in the future
                         if (MMObjectBuilder.class.isAssignableFrom(clazz)) {
-                            Parameter nodeParameter = new Parameter("node", MMObjectNode.class);
+                            Parameter nodeParameter = new Parameter("node", Object.class);
                             boolean hasNodeParameter = false;
                             for (int j = 0; !hasNodeParameter && j<params.length; j++) {
                                 hasNodeParameter = params[j].equals(nodeParameter);
