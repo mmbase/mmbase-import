@@ -10,13 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.StringIterator;
-import org.mmbase.bridge.StringList;
+
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.implementation.BasicNodeList;
 
@@ -49,8 +50,8 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     }
     public void haveBody() { helper.haveBody(); }
 
-    private StringList     returnList;
-    private StringIterator returnValues;
+    private List     returnList;
+    private Iterator returnValues;
     //private String currentAlias;
     private int currentItemIndex= -1;
 
@@ -73,10 +74,19 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
      */
     public int doStartTag() throws JspTagException{       
         helper.overrideWrite(false); // default behavior is not to write to page
+        
         currentItemIndex= -1;  // reset index        
-        Node node = getNode();
-        returnList = node.getAliases();
-        returnValues = returnList.stringIterator();        
+        if (getReferid() != null) {
+            Object o =  getObject(getReferid());
+            if (! (o instanceof List)) {
+                throw new JspTagException("Context variable " + getReferid() + " is not a List");
+            }
+            returnList = (List) o;            
+        } else {
+            Node node = getNode();
+            returnList = node.getAliases();
+        }
+        returnValues = returnList.iterator();
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
@@ -111,7 +121,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     public void doInitBody() throws JspTagException {
         if (returnValues.hasNext()){
             currentItemIndex ++;
-            helper.setValue(returnValues.nextString());
+            helper.setValue(returnValues.next().toString());
             helper.setJspvar(pageContext);  
             if (getId() != null) {
                 getContextTag().register(getId(), helper.getValue());
