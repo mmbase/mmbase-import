@@ -18,15 +18,18 @@ import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
- * 
  * Writes XML as pretty printed HTML
  *
- * cjr@dds.nl 
+ * @author Cees Roele
+ * @version 19 Apr 2001
  */
 public class XMLScreenWriter  {
 
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XMLScreenWriter.class.getName());
     Document document;
     DOMParser parser;
 
@@ -47,7 +50,8 @@ public class XMLScreenWriter  {
             document = parser.getDocument();
 
 	} catch(Exception e) {
-	    e.printStackTrace();
+            log.error(e.getMessage());
+	    log.error(Logging.stackTrace(e));
 	}
     }
 
@@ -91,7 +95,7 @@ public class XMLScreenWriter  {
 		    out.write("<font color=\""+tag_color+"\">&lt;"+node.getNodeName()+"</font>");
 		    for (int i=0; i < nnm.getLength(); i++) {
 			Node attribute = nnm.item(i);
-			out.write(" <font color=\""+attribute_color+"\">"+attribute.getNodeName()+"=\""+attribute.getNodeValue()+"\"</font>");			
+			out.write(" <font color=\""+attribute_color+"\">"+attribute.getNodeName()+"=\""+attribute.getNodeValue()+"\"</font>");
 			if (i < nnm.getLength()-1) {
 			    out.write(" ");
 			}
@@ -110,7 +114,7 @@ public class XMLScreenWriter  {
 		}
 		out.write("<font color=\""+tag_color+"\">&lt;/"+node.getNodeName()+"&gt;</font><br>\n");
 	    }
-	}	
+	}
     }
 
     /**
@@ -124,9 +128,9 @@ public class XMLScreenWriter  {
 	}
 	return buf.toString();
     }
-    
+
     /**
-     * @param node 
+     * @param node
      * @return Whether the node contains only a text node, or possibly also an attribute node
      */
     protected boolean isEndNode(Node node) {
@@ -141,6 +145,6 @@ public class XMLScreenWriter  {
 		return false;
 	    }
 	}
-	return (countTextNodes >0);
+	return countTextNodes>0;
     }
 }
