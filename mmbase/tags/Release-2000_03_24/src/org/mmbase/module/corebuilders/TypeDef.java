@@ -1,0 +1,284 @@
+/*
+
+VPRO (C)
+
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
+
+*/
+package org.mmbase.module.corebuilders;
+
+import java.util.*;
+import java.sql.*;
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+
+/**
+ * TypeDef, one of the meta stucture nodes it is used to define the
+ * object types (builders)
+ *
+ * @author Daniel Ockeloen
+ * @version 12 Mar 1997
+ */
+public class TypeDef extends MMObjectBuilder {
+
+	Hashtable nameCache;
+	Hashtable numberCache;
+	Hashtable descriptionCache;
+	public boolean broadcastChanges=false;
+
+	public TypeDef(MMBase m) {
+		this.mmb=m;
+		this.tableName="typedef";
+		sortedDBLayout = new Vector();
+		sortedDBLayout.addElement("otype");
+		sortedDBLayout.addElement("owner");
+		sortedDBLayout.addElement("name");
+		sortedDBLayout.addElement("description");
+		init();
+		// check if we are in the database ourselfs !
+		if (!checkRootNode()) insertRootNode();
+		m.mmobjs.put(tableName,this);
+		readCache(); // read type info into the caches
+	}
+
+
+	public boolean readCache() {
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			//System.out.println("SELECT * FROM "+mmb.baseName+"_"+tableName);
+			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName);
+			nameCache=new Hashtable();
+			numberCache=new Hashtable();
+			descriptionCache=new Hashtable();
+			Integer number;String name,desc;
+			while(rs.next()) {
+				number=new Integer(rs.getInt(1));
+				name=rs.getString(4);
+				desc=rs.getString(5);
+				// System.out.println("NUMBER="+number+" NAME="+name+" DESC="+desc);
+				numberCache.put(name,number);
+				nameCache.put(number,name);
+				if (desc==null) desc="";
+				descriptionCache.put(number,desc);
+			}	
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return(true);
+	}
+
+
+	boolean checkRootNode() {
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_object where number=0");
+			if (rs.next()) {
+				stmt.close();
+				con.close();
+				return(true);			
+			} else {	
+				stmt.close();
+				con.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return(false);
+	}
+	
+	/**
+	* insert a new object, normally not used (only subtables are used)
+	*/
+	private void insertRootNode() {
+		//System.out.println("WANT TO INSERT ROOT NODE !");
+		int number=0;
+		MMObjectNode node=getNewNode("system");
+		node.setValue("number",0);
+		node.setValue("name","typedef");
+		node.setValue("description","The main type definition builder");
+		node.insert("system");
+		//System.out.println("INSERT ROOT NODE DONE");
+	}
+
+
+	/**
+	* obtain the type value of the requested type, returns -1 if not defined. 
+	*/
+	public int getIntValue(String value) {
+		Integer result=(Integer)numberCache.get(value);
+		if (result!=null) {
+			return(result.intValue());
+		} else {
+			readCache();
+			result=(Integer)numberCache.get(value);
+			if (result!=null) {
+				return(result.intValue());
+			}
+			return(-1);
+		}
+	}
+
+	/**
+	* obtain the type value of the requested type, returns -1 if not defined. 
+	*/
+	public String getValue(int type) {
+		return((String)nameCache.get(new Integer(type)));
+	}
+
+
+	/**
+	* obtain the type value of the requested type, returns -1 if not defined. 
+	*/
+	public String getValue(String type) {
+		try {
+			return((String)nameCache.get(new Integer(Integer.parseInt(type))));
+		} catch(Exception e) {
+			return("unknown");
+		}
+	}
+
+	public String getDutchSName(String name) {
+		MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(name);
+		if (bul!=null) {
+			return(bul.dutchSName);
+		} else {
+			return("probleem!");
+		}
+	}
+
+
+	public String getEnglishName(String dutchname) {
+		Enumeration enum = mmb.mmobjs.elements();
+		while (enum.hasMoreElements()){
+			MMObjectBuilder bul=(MMObjectBuilder)enum.nextElement();
+			if (bul.dutchSName.equals(dutchname)) {
+				return(bul.tableName);
+			}
+		} 
+		return("probleem");
+	}
+
+	public boolean isRelationTable(String name) {
+		return(mmb.getRelDef().isRelationTable(name));
+	}
+
+	public Object getValue(MMObjectNode node,String field) {
+		if (field.equals("state")) {
+			int val=node.getIntValue("state");
+
+			// is it set allready ? if not set it, this code should be 
+			// removed ones the autoreloader/state code is done.
+			if (val==-1) {
+				// state 1 is up and running
+				node.setValue("state",1);
+			} 
+			//System.out.println("STATE="+val+" "+node);
+			return(""+val);
+		} else if (field.equals("dutchs(name)")) {
+			String name=node.getStringValue("name");
+			return(getDutchSName(name));
+		}
+		return(null);
+	}
+
+
+	public boolean fieldLocalChanged(String number,String builder,String field,String value) {
+		if (field.equals("state")) {
+			if (value.equals("4")) {
+				// reload request
+				System.out.println("Reload wanted on : "+builder);
+				// perform reload
+				MMObjectNode node=getNode(number);	
+				String objectname=node.getStringValue("name");
+				reloadBuilder(objectname);
+				if (node!=null) {
+					node.setValue("state",1);
+				}
+			}
+		}
+		return(true);
+	}
+
+
+
+	public boolean reloadBuilder(String objectname) {
+		System.out.println("MMBASE -> Trying to reload builder : "+objectname);
+		// first get all the info we need from the builder allready running
+		MMObjectBuilder oldbul=mmb.getMMObject(objectname);
+		String classname=oldbul.getClassName();
+		String description=oldbul.getDescription();
+		String dutchsname=oldbul.getDutchSName();
+		
+		try {
+			Class newclass=Class.forName("org.mmbase.module.builders."+classname);
+				System.out.println("TypeDef -> Loaded load class : "+newclass);
+	
+			MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
+			System.out.println("TypeDef -> started : "+newclass);
+	
+			bul.setMMBase(mmb);
+			bul.setTableName(objectname);
+			bul.setDescription(description);
+			bul.setDutchSName(dutchsname);
+			bul.setClassName(classname);
+			bul.init();
+			mmb.mmobjs.put(objectname,bul);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return(false);
+			}
+			return(true);
+		}
+
+
+	public String getGUIIndicator(MMObjectNode node) {
+		if (node!=null) {
+			String name=node.getStringValue("name");
+			if (name==null) {
+				System.out.println("TypeDef-> problem node "+node);
+				return("problem");
+			} else {
+				return(name);
+			}
+		} else {
+			System.out.println("TypeDef-> problem node empty");
+			return("problem");
+		}
+	}
+
+
+	/**
+	*	Handle a $MOD command
+	*/
+	public String replace(scanpage sp, StringTokenizer tok) {
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();	
+			if (cmd.equals("D2E")) { 
+				if (tok.hasMoreTokens()) {
+					return(getEnglishName(tok.nextToken()));
+				}
+			}
+		}
+		return("");
+	}
+
+
+	/**
+	* return the database type of the objecttype
+	*/
+	public String getDBType(String fieldName) {
+		if (fieldName.equals("owner")) return("varchar");
+		if (fieldName.equals("otype")) return("int");
+		if (fieldName.equals("number")) return("int");
+		if (fieldName.equals("name")) return("varchar");
+		if (fieldName.equals("description")) return("varchar");
+		return(null);
+	}
+}

@@ -1,0 +1,8 @@
+starting services
+starting multicast sender/reciever
+starting services
+MMRemoteMultiCast started
+name=org.mmbase.remote.service.MMCounter
+startMMService -> Loaded load class : class org.mmbase.remote.service.MMCounter
+Starting servicefile : /tmp/test.properties
+Running
