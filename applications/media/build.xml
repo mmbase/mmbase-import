@@ -1,3 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [
+    <!ENTITY base     SYSTEM "buildbase.xml" >
+ ]
+>
 <!-- ===========================================================================
 
 
@@ -14,130 +20,8 @@ Copy or symlink this file to the root of your project's dir.
 
 ============================================================================ -->
 
-<project name="MMBase project" default="jar" basedir=".">
-
-  <!-- =================================================================== -->
-  <!-- Init                                                                -->
-  <!-- =================================================================== -->
-  <!-- Read customized values if available -->
-  <property file="build.properties"/>
-  <property name="build.compiler" value="classic"/>
-  <property name="optimize" value="on"/>
-  <property name="debug" value="off"/>
-  <property name="deprecation" value="on"/>
-  <property name="project.source.dir" location="." />
-  <property name="project.build.dir"  location="./build" />
-  <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
-  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
-  <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
-
-  <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
-  <property name="project.name" value="a-mmbase-project" />
-
-  <property name="test.class"   value="org.mmbase.Version" />
-  <property name="compile.excludes" value="" />
-
-  <property name="project.jar" value="${project.build.dir}/${project.name}.jar"/>
-
-  <target name="init" depends="">
-    <tstamp/>
-    <mkdir dir="${project.build.dir}"/>
-    <property name="name" value="${project.name}"/>
-    <property name="version" value="${DSTAMP}"/>
-    <property name="distro"  value="1.6.0"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Create the MMBase jar file                                          -->
-  <!-- =================================================================== -->
-  <target name="jar" description="Create the MMBase project jar file"
-          depends="init,compile">
-
-    <echo file="${project.build.dir}/manifest.mf">
-Name: org/mmbase
-Vendor: MMBase community
-URL: http://{$project.name}.mmbase.org
-Comment: The MMBase Content Managment System
-Version: ${distro}.${version}
-Distribution: ${distro}
-Build-by: ${ant.version}
-Build-java-version: ${ant.java.version}
-Build-compiler: ${build.compiler}
-</echo>
-
-    <jar jarfile="${project.jar}"
-         basedir="${project.build.dir}/classes"
-	     includes="org/**,nl/**"
-	     manifest="${project.build.dir}/manifest.mf" >
-    </jar>
-
-  </target>
-
-
-
-  <target name="compile" description="Compile the source directory"
-          depends="init">
-
-    <mkdir dir="${project.build.dir}/classes"/>
-    <echo message="java version: ${ant.java.version}" />
-
-    <echo message="copying" />
-
-    <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
-      <fileset dir="${project.source.dir}">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <exclude name="build/**"/>
-      </fileset>
-    </copy>
-
-    <echo message="compiling" />
-
-    <javac srcdir="${project.source.dir}"
-           destdir="${project.build.dir}/classes"
-           debug="${debug}"
-           optimize="${optimize}"
-           deprecation="${deprecation}"
-           excludes="${compile.excludes}"
-      >
-      <classpath>
-        <pathelement path="${mmbase.jar}" />
-        <pathelement path="${servlet.jar}" />
-      </classpath>
-         <include name="**/*.java"/>
-    </javac>
-  </target>
-
-
-  <target name="clean" description="Clean">
-    <delete dir="${project.build.dir}" />
-  </target>
-
-
-  <target name="test" depends="jar">   
-    <java classname="${test.class}"
-      classpathref="run.classpath"
-      fork="true"
-      failonerror="yes">
-      <jvmarg value="-Dmmbase.config=${mmbase.config}" />
-      <classpath id="run.classpath">
-        <fileset dir="${build.dir}/lib">
-          <include name="servlet.jar"/>
-        </fileset>
-        <fileset dir="${project.build.dir}">
-          <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
-          <include name="*.jar"/>
-          <include name="*.zip"/>
-        </fileset>
-      </classpath>
-    </java>
-  </target>
-
+<project name="MMBase media project" default="jar" basedir=".">
+  &base;
 </project>
 
 
