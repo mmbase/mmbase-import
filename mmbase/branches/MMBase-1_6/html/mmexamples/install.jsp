@@ -103,12 +103,12 @@ You can return to this installation script any time.<br />
 	<td class="link" >
                 <% if (installed) {%>
                      Installed,
-                     <a href="<mm:url page="<%="install.jsp?installstep="+step+"#step"+step%>" />">[review&nbsp;installation&nbsp;notes]</a>
+                     <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[review&nbsp;installation&nbsp;notes]</a>
 
                 <% } else { %>
                     <% if (first) {
                         first=false;%>
-        		<a href="<mm:url page="<%="install.jsp?installstep="+step+"#step"+step%>" />">[INSTALL&nbsp;NOW]</a>
+        		<a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[INSTALL&nbsp;NOW]</a>
                     <% } else { %>
                        Not&nbsp;yet&nbsp;installed
                     <% } %>
