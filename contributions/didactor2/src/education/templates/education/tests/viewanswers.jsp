@@ -13,9 +13,10 @@
 
 <di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
 
-<mm:node referid="madetestNo">
  
-  <mm:relatednodes type="givenanswers">
+<mm:list nodes="$madetestNo" path="madetests,related,givenanswers" orderby="related.number" directions="UP">
+  <mm:import id="givenanswersNo" reset="true"><mm:field name="givenanswers.number"/></mm:import>
+  <mm:node referid="givenanswersNo">
     <mm:relatednodes type="questions">
     <p>
       <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>
@@ -187,9 +188,9 @@
     <mm:remove referid="questionscore"/>
     <mm:remove referid="questiontype"/>
     <mm:remove referid="questionNo"/>
-  </mm:relatednodes>
+    </mm:node>
+  </mm:list>
 
-</mm:node>
 </di:may>
 
 </mm:cloud>

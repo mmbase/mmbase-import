@@ -1,4 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@page import="java.util.Iterator"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -77,15 +78,31 @@
     <mm:node number="$thismadetest" id="madetest"/>
   </mm:compare>
 
-  
+
+  <%-- build list of all shown questions until now --%>
+  <mm:import id="list" jspvar="list" vartype="List"><mm:write referid="questionsshowed"/></mm:import>
+ 
+  <%
+
+    //
+    // iterate over the shown questions in order, so we
+    // create the givenanswers objects in the given order too...
+    //
+    // this is needed because otherwise there is no way to determine
+    // the order in which the questions were answered after this point!
+    //
+    Iterator i = list.iterator();
+    while (i.hasNext()) {
+        String qNumber = ((String) i.next()).replaceAll("_","");
+        %>
   <%-- Examine different questions and save the given answers --%>
-  <mm:relatednodes type="questions">
+  <mm:node number="<%= qNumber %>">
 
     <%-- Which questions have been answered --%>
-    <mm:import id="question">shown<mm:field name="number"/></mm:import>
-    <mm:import externid="$question" id="shownquestion"/>
+    <mm:import id="question" reset="true">shown<mm:field name="number"/></mm:import>
+    <mm:import externid="$question" id="shownquestion" reset="true"/>
     
-    <mm:import id="possiblequestion"><mm:field name="number"/></mm:import>
+    <mm:import id="possiblequestion" reset="true"><mm:field name="number"/></mm:import>
     <%-- Only rate the answered question --%>
 
     <mm:compare referid="shownquestion" referid2="possiblequestion">
@@ -98,7 +115,7 @@
         </mm:relatednodes>
       </mm:relatednodescontainer>
 
-      <mm:import id="page">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
+      <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
       <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
         <mm:param name="question"><mm:field name="number"/></mm:param>
         <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
@@ -107,11 +124,10 @@
 
     <mm:remove referid="possiblequestion"/>    
     <mm:remove referid="page"/>
-  </mm:relatednodes>
+  </mm:node>
+  <% } %>
 
 
-  <%-- Make a list object from the comma seperated string with answered questions --%>
-  <mm:import id="list" jspvar="list" vartype="List"><mm:write referid="questionsshowed"/></mm:import>
 
   <%-- If all questions are answerd then show the feedback else show next question set --%>
   <% 
