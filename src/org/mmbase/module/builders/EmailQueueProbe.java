@@ -14,8 +14,10 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * @application Mail
+ * @deprecated use the Mail application code instead
  * @author Daniel Ockeloen
- * @version $Id: EmailQueueProbe.java,v 1.5 2003-05-07 21:06:47 kees Exp $
+ * @version $Id: EmailQueueProbe.java,v 1.6 2004-10-04 11:30:32 pierre Exp $
  */
 public class EmailQueueProbe implements Runnable {
 

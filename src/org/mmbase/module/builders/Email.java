@@ -24,8 +24,10 @@ import org.mmbase.util.logging.Logging;
  * that need to be send by the SendMail module.
  * It allows for emailing on time, repeat mail, stats
  * and using urls as input for subject and body.
+ * @application Mail
+ * @deprecated use the Mail application code instead
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.25 2004-02-09 13:50:39 pierre Exp $
+ * @version $Id: Email.java,v 1.26 2004-10-04 11:30:31 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 
