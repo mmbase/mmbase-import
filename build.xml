@@ -75,8 +75,8 @@ NetComponents can be found at:
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
   <property name="distro"      value="MMBase 1.6.0"/>
   <property name="documentation.builders.language" value="en" />
+  <property name="source-config.dir"         location="${source.dir}/config/default"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="source-config.dir"         location="${source.dir}/config"/>
   <property name="source-html.dir"           location="${source.dir}/html"/>
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
   <property name="source-src.dir"       location="${source.dir}/src"/>
@@ -168,26 +168,32 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
           depends="lib.release,jar,web,mmcidocs">
-    <!-- copy a readme from somewhere -->
-    <!-- not in cvs yet -->
+    <!-- copy a readme and other basic docs from documentation dir -->
+    <copy todir="${build.dir}/mmbase" >
+      <fileset dir="${source-documentation.dir}/releases"
+               defaultexcludes="yes">
+        <exclude name="legal"/>
+        <include name="*.txt"/>
+      </fileset>
+    </copy>
+   <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
+          tofile="${build.dir}/mmbase/LICENSE"/>
     <!-- copy the config -->
     <mkdir dir="${web.dir}/config"/>
     <copy todir="${web.dir}/config">
-      <fileset dir="${source-config.dir}/default">
-        <exclude name="**/CVS/*"/>
-      </fileset>
+      <fileset dir="${source-config.dir}"
+               defaultexcludes="yes"/>
     </copy>
     <!-- copy the html -->
     <copy todir="${webapp.dir}">
-      <fileset dir="${source-html.dir}">
-        <exclude name="**/CVS/*"/>
+      <fileset dir="${source-html.dir}"
+               defaultexcludes="yes">
       </fileset>
     </copy>
     <!-- copy the libraries -->
     <copy todir="${release.lib.dir}">
-      <fileset dir="${compile.lib.dir}">
-        <exclude name="**/CVS/*"/>
-      </fileset>
+      <fileset dir="${compile.lib.dir}"
+               defaultexcludes="yes"/>
     </copy>
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip"
@@ -543,7 +549,7 @@ Main-Class: org.mmbase.Version
   <target name="minimalistic.war.config" depends="init.compile">
         <!-- copy the jsp editors to a reasonable place -->
         <copy todir="${minconfig.build.dir}">
-            <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
+            <fileset dir="${source-config.dir}"  defaultexcludes="true">
                 <!-- the dirs/files we definitly need -->
                 <include name="databases/**"/>
                 <include name="xslt/**"/>
@@ -571,7 +577,7 @@ Main-Class: org.mmbase.Version
 
   <target name="war.config" depends="init.compile">
     <copy todir="${config.build.dir}">
-      <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
+      <fileset dir="${source-config.dir}"  defaultexcludes="true">
         <include name="**"/>
         <exclude name="dtd/**" />
       </fileset>
@@ -893,10 +899,10 @@ Build-compiler: ${build.compiler}
     <mkdir dir="${build.dir}/junit/config"/>
     <mkdir dir="${build.dir}/junit/lib"/>
     <copy todir="${build.dir}/junit/config">
-      <fileset dir="${source-config.dir}/default"/>
+      <fileset dir="${source-config.dir}"/>
     </copy>
     <copy todir="${build.dir}/junit/config/builders">
-      <fileset dir="${source-config.dir}/default/applications/BridgeTest/builders">
+      <fileset dir="${source-config.dir}/applications/BridgeTest/builders">
         <include name="**/*"/>
       </fileset>
     </copy>
@@ -1556,7 +1562,7 @@ Version: MMBase build ${version}
 
     <!-- convert this file into docbook -->
     <!-- <style
-      style="${source-config.dir}/default/xslt/builder2docbook.xsl"
+      style="${source-config.dir}/xslt/builder2docbook.xsl"
       extension=".xml"
       in="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
       out="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
@@ -1584,7 +1590,7 @@ Version: MMBase build ${version}
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
-      <arg value="${source-config.dir}/default/xslt/builder2docbook.xsl" />
+      <arg value="${source-config.dir}/xslt/builder2docbook.xsl" />
       <arg value="${mmdocs.dir}/templaters/builders/allbuilders-total.xml" />
       <arg value="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml" />
       <arg value="language=${documentation.builders.language}" />
