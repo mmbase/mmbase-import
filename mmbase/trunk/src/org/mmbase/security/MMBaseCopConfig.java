@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.12 2003-08-27 19:32:30 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.13 2003-11-16 14:06:44 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -60,6 +60,11 @@ public class MMBaseCopConfig {
             this.cop = cop;
         }
         
+
+        public void add(File file) {
+            //log.info(Logging.stackTrace() + "Adding: " + file);
+            super.add(file);
+        }
         public void onChange(File file) {
             try {
                 log.debug("Going to reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
@@ -138,21 +143,24 @@ public class MMBaseCopConfig {
                 log.error(msg);
                 throw new java.util.NoSuchElementException(msg);
             }
-            String authUrl = reader.getElementAttributeValue(entry,"url");
+            String authUrl = reader.getElementAttributeValue(entry, "url");
             if(authUrl == null) {
-                String msg = "attribute url could not be found in authentication("+configPath+")";
+                String msg = "attribute url could not be found in authentication(" + configPath + ")";
                 log.error(msg);
                 throw new java.util.NoSuchElementException(msg);
             }
             // make the url absolute in case it isn't:
-            File authFile = new File(authUrl);
-            if (! authFile.isAbsolute()) { // so relative to currently
+            File authFile = null;
+            if (! authUrl.equals("")) {
+                authFile = new File(authUrl);
+            }
+            if (authFile != null  && (! authFile.isAbsolute())) { // so relative to currently
                 // being parsed file. make it absolute,
                 log.debug("authentication file was not absolutely given (" + authUrl + ")");
                 authFile = new File(configFile.getParent() + File.separator + authUrl);
                 log.debug("will use: " + authFile.getAbsolutePath());
             }
-            authentication = getAuthentication(authClass, authFile.getAbsolutePath());
+            authentication = getAuthentication(authClass, authFile != null ? authFile.getAbsolutePath() : null);
             log.debug("Authentication retrieved");
 
             // load our authorization...
@@ -171,14 +179,18 @@ public class MMBaseCopConfig {
                 throw new java.util.NoSuchElementException(msg);
             }
             // make the url absolute in case it isn't:
-            File auteFile = new File(auteUrl);
-            if (! auteFile.isAbsolute()) { // so relative to currently
+            File auteFile = null;
+
+            if (! auteUrl.equals("")) {
+                auteFile = new File(auteUrl);
+            }
+            if (auteFile != null && (! auteFile.isAbsolute())) { // so relative to currently
                 // being parsed file. make it absolute,
                 log.debug("authorization file was not absolutely given (" + auteUrl + ")");
                 auteFile = new File(configFile.getParent() + File.separator + auteUrl);
                 log.debug("will use: " + auteFile.getAbsolutePath());
             }
-            authorization = getAuthorization(auteClass, auteFile.getAbsolutePath());
+            authorization = getAuthorization(auteClass, auteFile != null ? auteFile.getAbsolutePath() : null);
             log.debug("Authorization retrieved");
 
             // add our config file..
