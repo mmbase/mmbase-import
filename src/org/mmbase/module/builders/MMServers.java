@@ -13,26 +13,29 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.module.core.*;
-//import org.mmbase.module.builders.protocoldrivers.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @author  $Author: pierre $
- * @version $Id: MMServers.java,v 1.20 2003-03-10 11:50:20 pierre Exp $
+ * @author  $Author: daniel $
+ * @version $Id: MMServers.java,v 1.21 2004-01-28 23:44:06 daniel Exp $
  */
-public class MMServers extends MMObjectBuilder implements MMBaseObserver {
+public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
     private static Logger log = Logging.getLoggerInstance(MMServers.class.getName());
     private int serviceTimeout=60*15; // 15 minutes
+    private int intervaltime = 60 * 1000;
     private String javastr;
     private String osstr;
     private String host;
     private Vector possibleServices=new Vector();
 
-    //private Hashtable name2driver;
-    //private Hashtable url2driver;
     private int starttime;
+
+    /**
+     * Thread in which the 1min checkup runs
+     */
+    Thread kicker;
 
     /**
      * @javadoc
@@ -40,8 +43,37 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
     public MMServers() {
         javastr=System.getProperty("java.version")+"/"+System.getProperty("java.vm.name");
         osstr=System.getProperty("os.name")+"/"+System.getProperty("os.version");
-        new MMServersProbe(this);
         starttime=(int)(System.currentTimeMillis()/1000);
+
+        String tmp = getInitParameter("ProbeInterval");
+        if (tmp != null) {
+            if (log.isDebugEnabled()) log.debug("ProbeInterval was configured to be " + tmp + " seconds");
+            intervaltime = Integer.parseInt(tmp) * 1000;
+        }
+	start();
+    }
+
+
+    /**
+     * Starts the thread for the task scheduler
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            kicker = new Thread(this,"MMServers");
+            kicker.setDaemon(true);
+            kicker.start();
+        }
+    }
+
+    /**
+     * Stops the thread for the task scheduler
+     * Sets the kicker field to null, which causes the run method to terminate.
+     */
+    public void stop() {
+        /* Stop thread */
+        kicker.interrupt();
+        kicker = null;
     }
 
     /**
@@ -107,28 +139,57 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
         return result;
     }
 
+
+        /**
+         * run, checkup probe runs every intervaltime to
+	 * set the state of the server (used in clusters)
+         */
+        public void run() {
+                kicker.setPriority(Thread.MIN_PRIORITY+1);
+                while (kicker != null) {
+			int thistime=intervaltime;
+                	if (mmb!=null && mmb.getState()) {
+                        	doCheckUp();
+			} else {
+				// shorter wait, the server is starting
+				thistime=2*1000; // wait 2 second
+			}
+
+			// wait the defined time
+                        try { 
+				Thread.sleep(thistime);
+		        } catch (InterruptedException e) {
+               	 		log.debug(e.toString());
+            		}
+                }
+        }
+
     /**
      * @javadoc
      */
-    public void probeCall() {
-        boolean imoke=false;
-        String machineName=mmb.getMachineName();
-        host=mmb.getHost();
-        log.debug("probeCall(): machine="+machineName);
-        Enumeration e=search("");
-        while (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            String tmpname=node.getStringValue("name");
-            if (tmpname.equals(machineName)) {
-                imoke=checkMySelf(node);
-            } else {
-                checkOther(node);
+    private void doCheckUp() {
+	try {
+            boolean imoke=false;
+  	    String machineName=mmb.getMachineName();
+      	    host=mmb.getHost();
+            log.info("doCheckUp(): machine="+machineName);
+            Enumeration e=search("");
+            while (e.hasMoreElements()) {
+                MMObjectNode node=(MMObjectNode)e.nextElement();
+                String tmpname=node.getStringValue("name");
+                if (tmpname.equals(machineName)) {
+                    imoke=checkMySelf(node);
+                } else {
+                    checkOther(node);
+                }
             }
-        }
-        if (imoke==false) {
-            createMySelf(machineName);
-        }
-        //if (name2driver==null) startProtocolDrivers();
+            if (imoke==false) {
+                createMySelf(machineName);
+            }
+	} catch(Exception e) {
+		log.error("Something went wrong in MMServers Checkup Thread");
+		e.printStackTrace();
+	}
     }
 
     /**
