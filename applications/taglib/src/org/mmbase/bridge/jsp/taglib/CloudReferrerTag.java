@@ -97,17 +97,23 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
         return cloudContext;
     }
 
+    protected Node getNode(String key) throws JspTagException {
+        Node n = getNodeOrNull(key);
+        if (n == null) getCloud().getNode((String) getObject(key)); // cause exception
+        return n;
+    }
     /**
      * Gets a node from the context.
      */
 
-    public Node getNode(String key) throws JspTagException {        
+    protected Node getNodeOrNull(String key) throws JspTagException {        
         Object n = getObject(key);
         if (n instanceof Node) {
             log.debug("found a Node in Context");
             return (Node) n;
         } else if ((n instanceof String) || (n instanceof Number)) {
             log.debug("found a Node Number in Context");
+            if (! getCloud().hasNode(n.toString())) return null;
             return getCloud().getNode(n.toString());
         } else {
             throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
