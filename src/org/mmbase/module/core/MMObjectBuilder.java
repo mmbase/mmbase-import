@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.103 $ $Date: 2001-06-20 11:17:01 $
+ * @version $Revision: 1.104 $ $Date: 2001-07-02 11:08:41 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -217,7 +217,7 @@ public class MMObjectBuilder extends MMTable {
     String xmlPath = "";
 
     // contains the builder's field definitions
-    private Hashtable fields;
+    protected Hashtable fields;
 
     // actual classname
     private String classname = getClass().getName();
@@ -461,7 +461,8 @@ public class MMObjectBuilder extends MMTable {
     * Sets defaults for a node. Fields "number", "owner" and "otype" are not set by this method.
     * @param node The node to set the defaults of.
     */
-    public void setDefaults(MMObjectNode node) {}
+    public void setDefaults(MMObjectNode node) {
+    }
 
     /**
     * Remove a node from the cloud.
@@ -1427,8 +1428,8 @@ public class MMObjectBuilder extends MMTable {
         }
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         if (node==null) {
-            log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
-                        // try { throw new Exception("blah"); } catch (Exception e) { e.printStackTrace(); }
+            // log warning, except for virtual builders
+            if (!virtual) log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
             return FieldDefs.TYPE_UNKNOWN;
         }
         return node.getDBType();
@@ -1466,7 +1467,7 @@ public class MMObjectBuilder extends MMTable {
 
         if (sortedDBLayout.size()>0) {
             String fname=(String)sortedDBLayout.elementAt(2);
-            String str = node.getValueAsString( fname );
+            String str = node.getStringValue( fname );
             if (str.length()>128) {
                 return(str.substring(0,128)+"...");
             }
@@ -2303,7 +2304,7 @@ public class MMObjectBuilder extends MMTable {
     * Actually returns the builders short name in wither the 'current langauge', or default langauge 'us', whichever is available.
     * If this fails, the value set with {@link #SetDutchSName} is used instead.
     * @returns the 'dutch' short name
-    * @deprecated Will be removed soon
+    * @deprecated use {@link #getSingularName} instead.
     */
     public String getDutchSName() {
         if (singularNames!=null) {
@@ -2314,6 +2315,50 @@ public class MMObjectBuilder extends MMTable {
             return tmp;
         }
         return dutchSName;
+    }
+
+    /**
+     * Gets short name of the builder, using the specified language.
+     * @param lang The language requested
+     * @returns the short name in that language, or <code>null</code> if it is not avaialble
+     */
+    public String getSingularName(String lang) {
+        if (singularNames==null) return null;
+        return (String)singularNames.get(lang);
+    }
+
+    /**
+     * Gets short name of the builder in the current default language.
+     * If the current language is not available, the "us" version is returned instead.
+     * @returns the short name in either the default language or in "us"
+     */
+    public String getSingularName() {
+        if (singularNames==null) return null;
+        String tmp=getSingularName(mmb.getLanguage());
+        if (tmp==null) tmp=getSingularName("us");
+        return tmp;
+    }
+
+    /**
+     * Gets long name of the builder, using the specified language.
+     * @param lang The language requested
+     * @returns the long name in that language, or <code>null</code> if it is not avaialble
+     */
+    public String getPluralName(String lang) {
+        if (pluralNames==null) return null;
+        return (String)pluralNames.get(lang);
+    }
+
+    /**
+     * Gets long name of the builder in the current default language.
+     * If the current language is not available, the "us" version is returned instead.
+     * @returns the long name in either the default language or in "us"
+     */
+    public String getPluralName() {
+        if (pluralNames==null)  return null;
+        String tmp=getPluralName(mmb.getLanguage());
+        if (tmp==null) tmp=getPluralName("us");
+        return tmp;
     }
 
     /**
