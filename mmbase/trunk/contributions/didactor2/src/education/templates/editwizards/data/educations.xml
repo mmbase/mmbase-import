@@ -38,7 +38,7 @@
 
     <steps>
         <step form-schema="step1" />
-<!--        <step form-schema="step2" /> --> <!-- SEE BELOW -->
+        <step form-schema="step2" />
         <step form-schema="step3" />
     </steps>
 
@@ -61,21 +61,6 @@
 
     </form-schema>
 
-<!--
-
-    THIS HAS BEEN COMMENTED OUT BECAUSE IT BREAKS THE BUILD!
-    PLEASE CHECK THAT YOUR STUFF DOESN'T BREAK THE 
-    CVS HEAD, OR PUT THIS KIND OF THING IN A BRANCH.
-
-    Note that we currently do a release from CVS HEAD every friday!
-
-    If your updates need database changes, or any other manual
-    actions to make them work on an existing instance, please add
-    some documentation to "migratie.txt" (in the root directory)
-
-    Joost Diepenmaat - joost@zeekat.nl
--->
-<!--
     <form-schema id="step2">
         <title>Alineas invoeren</title>
         <field name="name" ftype="data"/>
@@ -86,7 +71,6 @@
         </field>
         <list extends="paragraphs/add_paragraphs_posrel.xml"/>
     </form-schema>
--->
 
     <form-schema id="step3">
         <title>Competenties invoeren</title>
