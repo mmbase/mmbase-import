@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import java.util.Date;
 import java.sql.*;
 import java.io.File;
 import java.text.NumberFormat;
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.178 2002-11-01 14:36:19 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.179 2002-11-05 23:23:05 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2198,7 +2199,14 @@ public class MMObjectBuilder extends MMTable {
                     FieldDefs fdef = getField(field);
                     if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
                         if (locale == null) locale = new Locale(mmb.getLanguage(), "");
-                        rtn = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, locale).format(new java.util.Date((long) node.getIntValue(field) * 1000));
+                        Date date = new Date(node.getLongValue(field) * 1000);
+                        rtn = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale).format(date);
+                        Calendar calendar = new GregorianCalendar(locale);
+                        calendar.setTime(date);
+                        if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
+                            java.text.DateFormat df = new java.text.SimpleDateFormat(" G", locale);
+                            rtn += df.format(date);
+                        }
                     } else {
                         rtn = node.getStringValue(field);
                     }
