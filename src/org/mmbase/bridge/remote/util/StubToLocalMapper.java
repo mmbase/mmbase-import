@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logger;
  * StubToLocalMapper is a utitity class that helps
  * a Stub to find it's Local implementation
  * @author Kees Jongenburger
- * @version $Id: StubToLocalMapper.java,v 1.3.2.2 2002-06-10 16:41:52 kees Exp $
+ * @version $Id: StubToLocalMapper.java,v 1.3.2.3 2002-06-11 14:13:22 kees Exp $
  */
 public class StubToLocalMapper{
     static private Logger log = Logging.getLoggerInstance(StubToLocalMapper.class.getName());
@@ -36,6 +36,7 @@ public class StubToLocalMapper{
      */
     public static String add(Object object){
         if (object != null){
+
             String mapperCode = null;
 	    if (object instanceof Node){
 	    	Node node = (Node)object;
@@ -55,6 +56,7 @@ public class StubToLocalMapper{
 	    } else {
 		mapperCode = "" + object;
 	    }
+
             //code neede to support transactions
             //the generated key (like node:nodemanagername->nodeNumber) is currently wrong
             //since multiple different instances of the node might exist
@@ -65,13 +67,16 @@ public class StubToLocalMapper{
             if (hash.get(mapperCode) != null){
 		//if there is a hash entry but the object are not equal
 		if (hash.get(mapperCode) != object){
-		    int counter=1;
-		    while(hash.get(mapperCode + counter) != null && hash.get(mapperCode + counter) != object){
-			counter++;
+		    for (int counter = 1; true; counter++) {
+			String newMapperCode = mapperCode + "{"+counter+"}";
+			if (! hash.containsKey(newMapperCode) || hash.get(newMapperCode) == object) {
+			    mapperCode = newMapperCode;
+			    break;
+			}
 		    }
-		    mapperCode += "{" + counter + "}";
 		}
             }
+	    
 	    
 	    log.debug("add=("+ mapperCode +")");
 	    int rcount = increaseRefCount(mapperCode);
