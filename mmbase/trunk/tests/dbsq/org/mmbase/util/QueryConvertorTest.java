@@ -14,7 +14,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class QueryConvertorTest extends TestCase {
     
@@ -134,6 +134,71 @@ public class QueryConvertorTest extends TestCase {
         // Where string.
         QueryConvertor.setConstraint(query, 
             "WHERE LOWER(news.title) LIKE 'test1' AND related.number=10"
+                + " AND images.number=10 AND LOWER(news0.title) LIKE 'test2'");
+        composite = (CompositeConstraint) query.getConstraint();
+        assertTrue(composite.getLogicalOperator() 
+            == CompositeConstraint.LOGICAL_AND);
+        constraints = composite.getChilds();
+        assertTrue(constraints.size() == 4);
+        constraint0 = (FieldValueConstraint) constraints.get(0);
+        assertTrue(constraint0.toString(), 
+            constraint0.getField().getStep().getTableName().equals("news"));
+        assertTrue(constraint0.toString(), 
+            constraint0.getField().getStep().getAlias().equals("news"));
+        assertTrue(constraint0.toString(), 
+            constraint0.getField().getFieldName().equals("title"));
+        assertTrue(constraint0.getField().toString(), 
+            constraint0.getField().getAlias() == null);
+        assertTrue(constraint0.toString(), 
+            constraint0.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(constraint0.toString(), 
+            !constraint0.isCaseSensitive());
+        assertTrue(constraint0.toString(), 
+            constraint0.getValue().equals("test1"));
+        constraint1 = (FieldValueConstraint) constraints.get(1);
+        assertTrue(constraint1.toString(), 
+            constraint1.getField().getStep().getTableName().equals("insrel"));
+        assertTrue(constraint1.toString(), 
+            constraint1.getField().getStep().getAlias().equals("related"));
+        assertTrue(constraint1.toString(), 
+            constraint1.getField().getFieldName().equals("number"));
+        assertTrue(constraint1.getField().toString(), 
+            constraint1.getField().getAlias() == null);
+        assertTrue(constraint1.toString(), 
+            constraint1.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(constraint1.toString(), 
+            constraint1.getValue().equals(new Double(10)));
+        constraint2 = (FieldValueConstraint) constraints.get(2);
+        assertTrue(constraint2.toString(), 
+            constraint2.getField().getStep().getTableName().equals("images"));
+        assertTrue(constraint2.toString(), 
+            constraint2.getField().getStep().getAlias().equals("images"));
+        assertTrue(constraint2.toString(), 
+            constraint2.getField().getFieldName().equals("number"));
+        assertTrue(constraint2.getField().toString(), 
+            constraint2.getField().getAlias() == null);
+        assertTrue(constraint2.toString(), 
+            constraint2.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(constraint2.toString(), 
+            constraint2.getValue().equals(new Double(10)));
+        constraint3 = (FieldValueConstraint) constraints.get(3);
+        assertTrue(constraint3.toString(), 
+            constraint3.getField().getStep().getTableName().equals("news"));
+        assertTrue(constraint3.toString(), 
+            constraint3.getField().getStep().getAlias().equals("news0"));
+        assertTrue(constraint3.toString(), 
+            constraint3.getField().getFieldName().equals("title"));
+        assertTrue(constraint3.getField().toString(), 
+            constraint3.getField().getAlias() == null);
+        assertTrue(constraint0.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(constraint3.toString(), 
+            !constraint3.isCaseSensitive());
+        assertTrue(constraint3.toString(), 
+            constraint3.getValue().equals("test2"));
+        
+        // "where(", without space following "where".
+        QueryConvertor.setConstraint(query, 
+            "WHERE(LOWER(news.title) LIKE 'test1' AND related.number=10"
                 + " AND images.number=10 AND LOWER(news0.title) LIKE 'test2'");
         composite = (CompositeConstraint) query.getConstraint();
         assertTrue(composite.getLogicalOperator() 
