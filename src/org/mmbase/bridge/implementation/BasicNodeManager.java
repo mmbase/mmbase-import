@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.77 2004-03-03 14:34:30 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.78 2004-06-18 11:56:44 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -47,11 +47,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     // field types
     protected Map fieldTypes = new HashMap();
-
-    /**
-     * @since MMBase-1.7
-     */
-    protected Set queryFields = new HashSet();
 
     private static NodeListCache nodeListCache = NodeListCache.getCache();
 
@@ -124,27 +119,18 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // clear the list of fields..
         // why is this needed?
         List fields = builder.getFields();
-        if (fields != null) {
+        if (fields != null) { // when is it null?
             fieldTypes.clear();
             for(Iterator i = fields.iterator(); i.hasNext();){
                 FieldDefs f = (FieldDefs) i.next();
-                Field ft = new BasicField(f,this);
-                if (f.getDBPos()>0) {
-                    fieldTypes.put(ft.getName(),ft);
-                    if (f.getDBType() != FieldDefs.TYPE_BYTE &&
-                       (f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
-                        queryFields.add(new BasicField(f, this));
-                    }
+                Field ft = new BasicField(f, this);
+                if (f.getDBPos() > 0) {
+                    fieldTypes.put(ft.getName(),ft);     
                 }
             }
         }
 
     }
-
-    protected Set getQueryFields() {
-        return queryFields;
-    }
-
 
 
     public Node createNode() {
@@ -244,12 +230,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public FieldList getFields() {
-        return new BasicFieldList(fieldTypes.values(),this);
+        return new BasicFieldList(fieldTypes.values(), this);
     }
 
     public FieldList getFields(int order) {
-        if (builder!=null) {
-            return new BasicFieldList(builder.getFields(order),this);
+        if (builder != null) {
+            return new BasicFieldList(builder.getFields(order), this);
         }
         return getFields();
     }
@@ -261,7 +247,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public boolean hasField(String fieldName) {
-        return fieldTypes.get(fieldName)!=null;
+        return fieldTypes.get(fieldName) != null;
     }
 
 
