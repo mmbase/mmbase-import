@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.25 2004-02-18 09:55:53 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.26 2004-02-25 23:13:39 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -140,6 +140,8 @@ public class StringHandler extends AbstractTypeHandler {
             if (fieldValue != null && ! fieldValue.equals(node.getContext())) {
                 node.setContext(fieldValue);
                 return true;
+            } else {
+                return false;
             }
         } else {
             String guiType = field.getGUIType();
