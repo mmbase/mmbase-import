@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.6 2003-11-25 12:13:53 robmaris Exp $
+   @version $Id: log4j.xml,v 1.7 2003-12-24 15:51:46 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -88,7 +88,7 @@
   'MultiConnection' (see below), to achieve logging of every SQL
   query, which is handy during debugging
   -->
-  
+  <!--  
   <appender name="sqllog" class="org.apache.log4j.FileAppender" >
     <param name="File" value="/tmp/mmbase-sql.log" />
     <param name="Encoding"   value="UTF-8" />    
@@ -96,7 +96,7 @@
       <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} %m%n" />
     </layout>
   </appender>
-  
+  -->
   <!-- categories -->
 
   <!-- 'page logging' goes to a different appender -->
