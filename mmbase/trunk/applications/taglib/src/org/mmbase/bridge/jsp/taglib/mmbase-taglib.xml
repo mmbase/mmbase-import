@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.201 2003-09-18 17:31:20 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.202 2003-09-22 11:50:14 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1779,7 +1779,7 @@ access the value of title:
     <tagclass>org.mmbase.bridge.jsp.taglib.FunctionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
-      Gets the function value of function `name' from node `node', the function value is available as a writer.
+      Gets the function value of function `name' from surrounding nodeprovider.  The function value is available as a writer.
     </info>
     <since>MMBase-1.7</since>
     <see tag="node" />
@@ -1796,7 +1796,7 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.BooleanFunctionTag</tagclass>
     <info>
-      Gets the function value of function `name' from node `node', the function value is available as a writer.
+      Gets the function value of function `name' from surrounding nodeprovider.  The function value is supposed to be Boolean, and this tags acts as a 'condition' tag.
     </info>
     <since>MMBase-1.7</since>
     <see tag="node" />
@@ -1813,7 +1813,7 @@ access the value of title:
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListFunctionTag</tagclass>
     <info>
-      Gets the function value of function `name' from node `node', the function value is available as a writer.
+      Gets the function value of function `name' from surrounding nodeprovider.  The function value is supposed to be Collection, and this tags acts as a 'listprovider' tag.
     </info>
     <since>MMBase-1.7</since>
     <see tag="node" />
@@ -1824,7 +1824,6 @@ access the value of title:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="comparator" />
-      <since>MMBase-1.7</since>
     </attribute>
   </tag>
 
@@ -1840,7 +1839,7 @@ access the value of title:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    In stead of giving it in the body, you can also indicate it with this parameter.
+        In stead of giving it in the body, you can also indicate it with this parameter.
       </info>
     </attribute>
     <example>
@@ -1854,21 +1853,26 @@ access the value of title:
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteAliasTag</tagclass>
     <info>
-      Lives in a NodeProvider. Deletes the bodycontent as an alias for the node.
+      <p>
+        Lives in a NodeProvider. Deletes the bodycontent as an alias for the node.
+      </p>
+      <p>
+        Why should deletealias live in a NodeProvider? That is because on the 'bridge', deleteAlias
+        is on Node too.
+      </p>
     </info>
     <attribute>
       <name>name</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    In stead of giving it in the body, you can also indicate it with this parameter.
+        In stead of giving it in the body, you can also indicate it with this parameter.
       </info>
     </attribute>
     <example>Delete the alias "my_news" from one of the news nodes:
 &lt;mm:listnodes type="news"&gt;
     &lt;mm:deletealias name="my_news" /&gt;
 &lt;/mm:listnodes&gt;
-Why should deletealias live in a NodeProvider ???
     </example>
   </tag>
   <tag>
@@ -1898,32 +1902,32 @@ Why should deletealias live in a NodeProvider ???
       <possiblevalue>
         <value>first</value>
         <info>
-            Show only in first row.
-          </info>
+          Show only in first row.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>last</value>
         <info>
-            Show only in last row.
-          </info>
+          Show only in last row.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>odd</value>
         <info>
-            Show only when row number is odd.
-          </info>
+          Show only when row number is odd.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>even</value>
         <info>
-            Show only when row number is even.
-          </info>
+          Show only when row number is even.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>changed</value>
         <info>
-            Show only when this row differs from the previous row (or when it is the first).
-          </info>
+          Show only when this row differs from the previous row (or when it is the first).
+        </info>
       </possiblevalue>
     </attribute>
     <example>&lt;mm:listcondition value="first"&gt;(first)&lt;/mm:listcondition&gt;
@@ -1939,7 +1943,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <info>
       <p>
         'Contextwriter' tags inside a context tag supplying the `id'
-      attribute register themselves in the context.  Other tags can
+        attribute register themselves in the context.  Other tags can
         refer to this id. See for example how the createrelation tag
         works. A special case of a another tag referring to this id is a
         tag of the same type. Normally with an attribute 'referid' you
@@ -2039,24 +2043,24 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    The role for the new relation.
-        </info>
+        The role for the new relation.
+      </info>
     </attribute>
     <attribute>
       <name>source</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-         The id of the node which will be on the source side of the relation.
-    </info>
+        The id of the node which will be on the source side of the relation.
+      </info>
     </attribute>
     <attribute>
       <name>destination</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-         The id of the node which will be on the destination side of the relation.
-    </info>
+        The id of the node which will be on the destination side of the relation.
+      </info>
     </attribute>
     <example>
 &lt;mm:cloud&gt;
@@ -2087,7 +2091,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    The type (NodeManager name) of the new node.
+        The type (NodeManager name) of the new node.
       </info>
       <examplevalue>
         <value>news</value>
@@ -2096,19 +2100,10 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         <value>people</value>
       </examplevalue>
     </attribute>
-    <attribute>
-      <name>makeuniques</name>     
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        Whether the unique keys must be filled on creation.
-      </info>
-      <since>MMBase-1.7</since>
-    </attribute>
     <example>
-    &lt;mm:createnode type="news" id="new_news"&gt;
-        &lt;mm:setfield name="title"&gt;Create node example&lt;/mm:setfield&gt;
-    &lt;/mm:createnode&gt;
+ &lt;mm:createnode type="news" id="new_news"&gt;
+   &lt;mm:setfield name="title"&gt;Create node example&lt;/mm:setfield&gt;
+&lt;/mm:createnode&gt;
     </example>
   </tag>
   <tag>
@@ -2126,8 +2121,8 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    The name of the field to set. If this field is not set this tag will
-    look for a surrounding fieldlist tag to retrieve name and node from.
+        The name of the field to set. If this field is not set this tag will
+        look for a surrounding fieldlist tag to retrieve name and node from.
       </info>
     </attribute>
     <see tag="createnode" />
@@ -2437,44 +2432,44 @@ transaction was commited, following should result anything:
       <possiblevalue>
         <value>input</value>
         <info>
-      A form entry for the field.  If the surrounding FieldList has an id, the names of the form
-      entries will be prefixed with it.
+          A form entry for the field.  If the surrounding FieldList has an id, the names of the form
+          entries will be prefixed with it.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>useinput</value>
         <info>
           <p>
-        If you have created a form with type="input" and this form was submitted, then you can
-        use type="useinput", and it will get the request/post parameter produced by "input" and
-        make the right changes to the parent field.
-      </p>
+            If you have created a form with type="input" and this form was submitted, then you can
+            use type="useinput", and it will get the request/post parameter produced by "input" and
+            make the right changes to the parent field.
+          </p>
           <p>
-        The necessary externid's for this will be implicitly imported in the context. You don't
-        have to worry about them.
-      </p>
+            The necessary externid's for this will be implicitly imported in the context. You don't
+            have to worry about them.
+          </p>
           <p>
-        'useinput' is exceptional because it doesn't really produce any 'info' about the field,
-        but rather changes it.
-      </p>
+            'useinput' is exceptional because it doesn't really produce any 'info' about the field,
+            but rather changes it.
+          </p>
           <p>
-        Can only be used if the parent FieldProvider also provides a Node.
-      </p>
+            Can only be used if the parent FieldProvider also provides a Node.
+          </p>
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>searchinput</value>
         <info>
-      A form entry for the field, fit for use for searching. That means that no textareas will
-      be used and such.
+          A form entry for the field, fit for use for searching. That means that no textareas will
+          be used and such.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>usesearchinput</value>
         <info>
-      If you have created a form with type="searchinput" and this form was submitted, then you
-      can use this. It will produce a part of a where clause which you can use to construct a
-      whole `where' for the list tag you are going to use.
+          If you have created a form with type="searchinput" and this form was submitted, then you
+          can use this. It will produce a part of a where clause which you can use to construct a
+          whole `where' for the list tag you are going to use.
         </info>
       </possiblevalue>
       <possiblevalue>

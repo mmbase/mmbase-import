@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.16 2003-08-27 21:33:40 michiel Exp $
+ * @version $Id: CreateNodeTag.java,v 1.17 2003-09-22 11:50:15 michiel Exp $
  */
 
 public class CreateNodeTag extends NodeTag {
@@ -55,51 +55,7 @@ public class CreateNodeTag extends NodeTag {
         if (node == null) {
             throw new JspTagException("Could not create node of type " + nm.getName());
         }
-        if (makeUniques.getBoolean(this, false)) {
-            // smart stuff to avoid unique key constraint violiations
-            FieldIterator fields = nm.getFields().fieldIterator();
-            while (fields.hasNext()) {
-                Field field = fields.nextField();
-                log.debug("checking field " + field); 
-                if (field.getType() == Field.TYPE_NODE) continue; // never mind, may be null
-                // TODO: there is NO field.isNullable(), but NODE fields should be nullable and also 'owner' is a NODE field (which should never be touched)
-                if (field.isUnique()) {
-                    Object baseValue = node.getValue(field.getName());
-                    int seq = 0;
-                    if (baseValue == null) {
-                        if (field.getType() == Field.TYPE_STRING) {
-                            baseValue = field.getGUIName();
-                        } else {
-                            baseValue = new Integer(seq);
-                        }
-                    }
-                    boolean found = false;
-                    while (! found) {
-                        NodeQuery query = nm.createQuery();
-                        Constraint cons;
-                        if (field.getType() == Field.TYPE_STRING) {
-                            cons = query.createConstraint(query.getStepField(field), (String) baseValue + seq);
-                        } else {
-                            cons = query.createConstraint(query.getStepField(field), new Integer(seq));
-                        }
-                        query.setConstraint(cons);
-                        if (cloud.getList(query).size() == 0) {
-                            found = true;
-                            break;
-                        }
-                        seq++;
-                    }
-                    if (log.isDebugEnabled()) {
-                        log.debug("Setting field " + field.getName() + " to unique value " + baseValue + seq);
-                    }
-                    if (field.getType() == Field.TYPE_STRING) {
-                        node.setValue(field.getName(), (String) baseValue + seq);
-                    } else {
-                        node.setIntValue(field.getName(), seq);
-                    }
-                }
-            }
-        }
+
         setNodeVar(node);
         setModified();
         if (log.isDebugEnabled()) {
