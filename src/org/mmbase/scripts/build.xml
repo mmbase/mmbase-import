@@ -590,6 +590,10 @@ Change directory to ${build.dir}/orion and run:
                 <include name="log/**"/>
                 <include name="security/**"/>
                 
+                <!-- the applications we definitly need -->                
+                <include name="applications/CloudSecurity.xml"/>
+                <include name="applications/CloudSecurity/**"/>
+                
                 <!-- the modules we definitly need -->
                 <include name="modules/jdbc.xml"/>
                 <include name="modules/mmbaseroot.xml"/>
@@ -606,6 +610,7 @@ Change directory to ${build.dir}/orion and run:
                 <include name="builders/images.xml"/>
                 <include name="builders/oalias.xml"/>
                 <include name="builders/typedef.xml"/>
+                <include name="builders/mmbaseusers.xml"/>
             </fileset>
         </copy>            
     </target>
