@@ -56,6 +56,7 @@ public class FunctionRel extends InsRel {
 			case 2: return "Maker";
 			case 3: return "Auteur";
 			case 4: return "Recensent";
+			case 5: return "Panellid";
 			default: return "Onbekend";
 			}
 		}
