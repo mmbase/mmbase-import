@@ -243,6 +243,10 @@ public class Forum {
         return true;
     }
 
+    public boolean saveConfig() {
+       ForumManager.saveConfig();
+       return true;
+    }
 
     /**
      * "Save direct" the forum
@@ -982,6 +986,19 @@ public class Forum {
         return ForumManager.getLogoutModeType();
    }
 
+   public void setLogoutModeType(String type) {
+	if (config != null) {
+		config.setLogoutModeType(type);
+	}
+   }
+
+
+   public void setLoginModeType(String type) {
+	if (config != null) {
+		config.setLoginModeType(type);
+	}
+   }
+
 
    public String getGuestReadModeType() {
 	if (config != null) {
@@ -993,6 +1010,23 @@ public class Forum {
         return ForumManager.getGuestReadModeType();
    }
 
+   public void setAvatarsUploadEnabled(String mode) {
+	if (config != null) {
+		config.setAvatarsUploadEnabled(mode);
+	}
+   }
+
+   public void setAvatarsGalleryEnabled(String mode) {
+	if (config != null) {
+		config.setAvatarsGalleryEnabled(mode);
+	}
+   }
+
+   public void setGuestReadModeType(String type) {
+	if (config != null) {
+		config.setGuestReadModeType(type);
+	}
+   }
 
    public String getGuestWriteModeType() {
 	if (config != null) {
@@ -1004,8 +1038,13 @@ public class Forum {
         return ForumManager.getGuestWriteModeType();
    }
 
+   public void setGuestWriteModeType(String type) {
+	if (config != null) {
+		config.setGuestWriteModeType(type);
+	}
+   }
+
     public String getAvatarsDisabled() {
-        log.debug("CHECKING");
         if (getAvatarsUploadEnabled().equals("true") || getAvatarsGalleryEnabled().equals("true")) {
             log.debug ("avatars are completly disabled");
             return "false";
@@ -1022,10 +1061,11 @@ public class Forum {
             if (tmp != null) {
                 log.debug("config.getAvatarsUploadEnabled() on "+getId()+ ": " + tmp);
                 return tmp;
-            }
+	    }
         }
-        return ForumManager.getAvatarsUploadEnabled();
-    }
+        return ForumManager.getAvatarsGalleryEnabled();
+   }
+
 
     public String getHeaderPath() {
         if (config != null) {
