@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.220 2003-03-12 20:12:28 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.221 2003-03-19 15:19:34 kees Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -982,7 +982,7 @@ public class MMObjectBuilder extends MMTable {
                     ResultSetMetaData rd=rs.getMetaData();
                     String fieldname;
                     for (int i=1;i<=rd.getColumnCount();i++) {
-                        fieldname=rd.getColumnName(i);
+                        fieldname=database.getDisallowedField( rd.getColumnName(i));
                         node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
                     }
                     // store in cache if indicated to do so
