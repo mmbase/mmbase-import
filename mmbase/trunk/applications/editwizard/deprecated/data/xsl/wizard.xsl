@@ -7,7 +7,7 @@
   @author Michiel Meeuwissen
   @author Pierre van Rooden
   @author Martijn Houtman
-  @version $Id: wizard.xsl,v 1.3 2004-01-14 14:12:47 pierre Exp $
+  @version $Id: wizard.xsl,v 1.4 2004-04-15 12:57:52 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -886,7 +886,7 @@
             <!-- two td's -->
           </xsl:for-each>
           <xsl:if test="not(field|fieldset)">
-            <td colspan="2">[]</td>
+            <td colspan="2"> </td>
           </xsl:if>
           <td align="right" valign="top">
             <nobr>
