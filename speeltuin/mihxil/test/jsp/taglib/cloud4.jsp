@@ -17,7 +17,20 @@
     </p>
   <hr />
   <a href="cloud3.jsp">Previous</a><br />
-  <a href="cloud5.jsp">Next</a><br />
+  <form name="test" enctype="multipart/form-data" action="cloud5.jsp">
+    <input type="hidden" name="from" value="4" />
+    <a href="#" onClick="document.forms['test'].submit();" >next</a>
+        <input type="hidden"                    name="searchfields" value="firstname,lastname" />
+          <input type="text"                      name="searchvalue" />
+          <!-- input type="submit" value="OK" -->
+          <input type="hidden" name="wizard"      value="tasks/people" />
+          <input type="hidden" name="nodepath"    value="people" />
+          <input type="hidden" name="fields"      value="number,firstname,middle,lastname" />
+          <input type="hidden" name="orderby"     value="lastname" />
+          <input type="hidden" name="constraints" value="owner = 'werkbank'" />
+          <input type="hidden" name="language"    value="nl" />
+  </form>
+  <br />
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>
