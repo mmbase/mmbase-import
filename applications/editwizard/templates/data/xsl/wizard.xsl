@@ -9,11 +9,10 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.18 2002-05-27 15:07:46 pierre Exp $
+  @version $Id: wizard.xsl,v 1.19 2002-05-27 21:34:50 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
-  <xsl:import href="xsl/prompts.xsl" />
 
   <xsl:variable name="defaultsearchage">7</xsl:variable>
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
