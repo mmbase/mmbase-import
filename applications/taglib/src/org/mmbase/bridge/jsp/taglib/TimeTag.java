@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.16.2.2 2003-02-21 20:23:21 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.16.2.3 2003-03-03 18:39:10 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -97,7 +97,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         }              
 
         // symbolic formats. Perhaps will be moved to another attribute or so.
-        if (format.charAt(0) == ':') {
+        if (format.length() > 0 && format.charAt(0) == ':') {
             log.debug("found symbolic format");
             if (format.charAt(1) == '.') {
                 dateFormat = DateFormat.getTimeInstance(getDateFormatStyle(format.substring(2)), locale);
