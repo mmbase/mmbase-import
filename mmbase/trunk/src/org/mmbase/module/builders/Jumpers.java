@@ -11,8 +11,11 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.Cache;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 
 /**
  * Maintains jumpers for redirecting urls.
@@ -33,19 +36,18 @@ import org.mmbase.cache.Cache;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.23 2003-03-10 11:50:19 pierre Exp $
+ * @version $Id: Jumpers.java,v 1.24 2004-02-03 15:39:16 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
     /**
      * Default Jump Cache Size.
-         * Customization can be done through the central caches.xml
-         * Make an entry under the name "JumpersCache" with the size you want.
+     * Customization can be done through the central caches.xml
+     * Make an entry under the name "JumpersCache" with the size you want.
      */
     private static final int DEFAULT_JUMP_CACHE_SIZE = 1000;
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(Jumpers.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Jumpers.class);
 
     /**
      * Cache for URL jumpers.
@@ -137,13 +139,26 @@ public class Jumpers extends MMObjectBuilder {
                     log.debug("Jumper - Cache miss on "+key);
                 }
             }
-            if (url==null) {
+            if (url == null) {
                 // Search jumpers with name;
-                log.debug("Search jumpers with name="+key);
-                Enumeration res=search("WHERE name='"+key+"'");
-                if (res.hasMoreElements()) {
-                    node=(MMObjectNode)res.nextElement();
-                    url=node.getStringValue("url");
+                NodeSearchQuery query = new NodeSearchQuery(this);
+                FieldDefs fieldDefs = getField("name");
+                StepField field = query.getField(fieldDefs);
+                FieldDefs numberFieldDefs = getField("number");
+                StepField numberField = query.getField(numberFieldDefs);
+                BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
+                BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
+                query.setConstraint(cons);
+                query.setMaxNumber(1);
+
+                try {
+                    List resultList = getNodes(query);
+                    if (resultList.size() > 0) {
+                        node = (MMObjectNode) resultList.get(0);
+                        url = node.getStringValue("url");                 
+                    }
+                } catch (SearchQueryException sqe) {
+                    log.error(sqe.getMessage());
                 }
             }
             if (url==null) {
