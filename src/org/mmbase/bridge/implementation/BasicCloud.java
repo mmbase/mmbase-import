@@ -494,6 +494,8 @@ public class BasicCloud implements Cloud, Cloneable {
      * XXX: todo: escape characters for '[' and ']'.
      */
     String convertClauseToDBS(String constraints) {
+        if (constraints.startsWith("MMNODE")) return constraints;
+        if (constraints.startsWith("ALTA")) return constraints.substring(5);
         String result="";
         int posa=constraints.indexOf('\'');
         while (posa>-1) {
@@ -507,7 +509,8 @@ public class BasicCloud implements Cloud, Cloneable {
                 posa=constraints.indexOf('\'');
             }
         }
-        result="WHERE "+result+convertClausePartToDBS(constraints);
+        result+=convertClausePartToDBS(constraints);
+        if (!constraints.startsWith("WHERE ")) result="WHERE "+result;
         return result;
     }
 
