@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.builders;
 
+import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.XMLBasicReader;
@@ -21,7 +22,7 @@ import java.util.*;
  * (or extensions) must be related to it. Those will perform the actual task of creating an URL.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.1 2003-02-03 17:50:19 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.2 2003-02-03 18:11:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -36,20 +37,8 @@ public class MediaProviders extends MMObjectBuilder {
      */
 
     public List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        List result = new ArrayList();
-        // todo: use URLComposerFactory
-        /*
-        Iterator composers =  provider.getRelatedNodes("mediaurlcomposers").iterator();
-
-        while (composers.hasNext()) {
-            MMObjectNode composer = (MMObjectNode) composers.next();
-            MediaURLComposers bul = (MediaURLComposers) composer.parent; // cast everytime, because it can be extended
-            List composerurls = bul.getURLs(composer, provider, source, fragment, info);
-            composerurls.removeAll(result); // remove duplicates
-            result.addAll(composerurls);
-        }
-
-        */
+        List result = URLComposerFactory.getInstance().createURLComposers(provider, source, fragment, info);
+        // todo: URLComposerFactory must be configurable
         return result;
 
     }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mediasourcefilter SYSTEM "http://www.mmbase.org/dtd/mediasourcefilter_1_0.dtd" [
- <!ENTITY % configs "preferredSource , realaudio">
+<!DOCTYPE mainFilter SYSTEM "http://www.mmbase.org/dtd/mediafilter_1_0.dtd" [
+ <!ENTITY % configSubTags "preferredSource , realAudio">
  <!ENTITY % format SYSTEM "http://www.mmbase.org/dtd/formatcomparator_1_0.dtd" >
  <!ENTITY % real   SYSTEM "http://www.mmbase.org/dtd/realcomparator_1_0.dtd" >
  %format;
  %real;
 ]>
-<mediasourcefilter>
+<mainFilter>
 	<!-- 
   Define the chain of filters, the filter that has to filter first
   has to be mentioned as first. A filter is specified or by the classname
@@ -14,38 +14,40 @@
 		-->
 	<chain>
 		<filter>org.mmbase.util.media.AvailableComparator</filter>
-		<filter>org.mmbase.util.media.ClientFormatComparator</filter>
-		<filter>org.mmbase.util.media.ServerFormatComparator</filter>
-		<filter>org.mmbase.util.media.RealComparator</filter>
+		<filter id="clienformat">org.mmbase.util.media.ClientFormatComparator</filter>
+		<filter id="format">org.mmbase.util.media.ServerFormatComparator</filter>
+		<filter id="real">org.mmbase.util.media.RealComparator</filter>
 	</chain>
 
   <filterConfigs>
+
+    <config filter="format">
     <!-- 
-    Configuration of FormatComparator 
-    // TODO: should we not use 'id'-att's-on-the chain-filters/'filter'-att-on-config-entry, to point to the right filterConfig?
-    //       This current setup makes it impossible to have 2 filters with same config-dtd main tag.
-    //       Also the impl. of the comparators can then be little simplified because finding the root config element then can be let to MediaSoureFilter itself.
+    Configuration of ServerFormatComparator 
     Define the sequence of preference of the servers.
     -->
-    <preferredSource>    
-      <source format="wmp" />
-      <source format="ram" />
-      <source format="rm" />
-      <source format="ra" />
-      <source format="asf" />
-    </preferredSource>
+      <preferredSource>    
+        <source format="wmp" />
+        <source format="ram" />
+        <source format="rm" />
+        <source format="ra" />
+        <source format="asf" />
+      </preferredSource>
+    </config>
     
-
     <!-- 
     Configuration of RealComparator
     Used to specify realaudio preferences.
     -->
-    <realaudio>
+    <config filter="real">
+     <realAudio>
       <minspeed>16000</minspeed>
       <maxspeed>96000</maxspeed>
       <minchannels>1</minchannels>
       <maxchannels>2</maxchannels>
-    </realaudio>
+     </realAudio>
+    </config>
 
   </filterConfigs>
-</mediasourcefilter>
+
+</mainFilter>
