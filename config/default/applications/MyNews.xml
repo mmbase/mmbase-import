@@ -10,11 +10,12 @@
     <builder maintainer="mmbase.org" version="1">attachments</builder>
     <builder maintainer="mmbase.org" version="1">images</builder>
     <builder maintainer="mmbase.org" version="1">posrel</builder>
+    <builder maintainer="mmbase.org" version="1">insrel</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
-    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
-    <reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
   </neededreldeflist>
 
   <allowedrelationlist>
@@ -47,10 +48,12 @@
    </contextsourcelist>
 
    <description>
-   The MyNews magazine is an example of a magazine with news articles.
+   The MyNews magazine is an example of a magazine with news
+   articles. It depends on the resources application, so please
+   install that one before installing this one.
    </description>
 
    <install-notice>
-   The MyNews application is installed. Look at yourhost/mynews for the magazine. 
+   The MyNews application is installed. Look at the mmexamples page for the magazine. 
    </install-notice>
 </application>
