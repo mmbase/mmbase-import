@@ -1423,7 +1423,6 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Return the age in days of the node
- 	* @deprecated Use {@link #getAge(java.lang.String)} in MMObjectNode instead.
     */
     public int getAge(MMObjectNode node) {
         return(((DayMarkers)mmb.getMMObject("daymarks")).getAge(node));
