@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.43 2002-10-16 12:00:12 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.44 2002-10-16 15:48:13 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -142,11 +142,20 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public String getGUIName() {
+        return getGUIName(1);
+    }
+
+    public String getGUIName(int plurality) {
         if (builder!=null) {
-            Hashtable singularNames=builder.getSingularNames();
-            if (singularNames!=null) {
+            Hashtable names;
+            if (plurality==1) {
+                names=builder.getSingularNames();
+            } else {
+                names=builder.getPluralNames();
+            }
+            if (names!=null) {
                 String lang=cloud.getLocale().getLanguage();
-                String tmp=(String)singularNames.get(lang);
+                String tmp=(String)names.get(lang);
                 if (tmp!=null) {
                     return tmp;
                 }
