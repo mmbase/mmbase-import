@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.13 2000-05-22 09:24:56 wwwtech Exp $
+$Id: JamesServlet.java,v 1.14 2000-05-25 10:46:32 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/05/22 09:24:56  wwwtech
+Rob: fixed debug methods and variables (Bug submitted by Gerard van Enk)
+
 Revision 1.12  2000/05/12 15:10:11  wwwtech
 - (marcel) set debg to false
 
@@ -48,7 +51,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.13 2000-05-22 09:24:56 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.14 2000-05-25 10:46:32 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -343,10 +346,10 @@ public class JamesServlet extends HttpServlet {
 	private static int printCount;
 	
 	public void decRefCount(HttpServletRequest req) {
-		String URL=req.getRequestURI();
-		if( req.getQueryString()!=null) 
-			URL +="?"+req.getQueryString();
-		URL+=" "+req.getMethod();
+		String URL = req.getRequestURI();
+		String queryString = req.getQueryString();
+		if( queryString!=null) URL += "?" + queryString;
+		URL += " " + req.getMethod();
 		synchronized (servletCountLock) {
 			servletCount--;
 			DebugServlet s = (DebugServlet) runningServlets.get(this);
@@ -362,10 +365,10 @@ public class JamesServlet extends HttpServlet {
 	}
 	
 	public void incRefCount(HttpServletRequest req) {
-		String URL=req.getRequestURI();
-		if(req.getQueryString()!=null)
-			URL+="?"+req.getQueryString();
-		URL+=" "+req.getMethod();
+		String URL = req.getRequestURI();
+		String queryString = req.getQueryString();
+		if(queryString!=null) URL += "?" + queryString;
+		URL += " " + req.getMethod();
 		int curCount;
 		synchronized (servletCountLock)	{
 			servletCount++; curCount=servletCount; printCount++;
