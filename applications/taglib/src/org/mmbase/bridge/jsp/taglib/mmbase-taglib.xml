@@ -1305,8 +1305,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-       The name of the Jsp variable to export. If not
-       specified, then a variable with name `trans' will exist.
+       The name of the jsp variable to create for this transaction.
       </info>
     </attribute>
 
