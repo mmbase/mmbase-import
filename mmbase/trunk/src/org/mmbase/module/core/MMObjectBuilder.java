@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.284 2004-11-12 22:34:00 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.285 2004-11-26 20:44:42 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -521,8 +521,6 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * This method is called before an actual write to the database is performed.
-     * It is called from within the database routines, unlike {@link #preEdit}, which is called by the editor.
-     * That is, preCommit is enforced, while preEdit is not (depending on the editor used).
      * @param node The node to be committed.
      * @return the node to be committed (possibly after changes have been made).
      */
@@ -962,7 +960,7 @@ public class MMObjectBuilder extends MMTable {
      * will only contain values which where specified in the field-vector.
      * This method will make real nodes of those virtual nodes.
      *
-     * @param List containing virtual nodes
+     * @param virtuals containing virtual nodes
      * @return List containing real nodes, directly from this Builders
      * @since MMBase-1.6.2
      */
@@ -1382,27 +1380,27 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
+     * @param sort  order in which to return the objects
      * @return an <code>Enumeration</code> containing all the objects that apply.
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration search(String where,String sort) {
+    public Enumeration search(String where, String sort) {
         return searchVector(where, sort).elements();
     }
 
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
+     * @param sort  order in which to return the objects
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *        Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration search(String where,String sort,boolean direction) {
-        return searchVector(where,sort,direction).elements();
+    public Enumeration search(String where, String sort, boolean direction) {
+        return searchVector(where, sort, direction).elements();
     }
 
     /**
@@ -1436,7 +1434,7 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Vector searchVector(String where,String sorted) {
+    public Vector searchVector(String where, String sorted) {
         return searchVector(where, sorted, true);
     }
 
@@ -1450,7 +1448,7 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Vector searchVector(String where,String sorted,boolean direction) {
+    public Vector searchVector(String where, String sorted, boolean direction) {
         String directions = (direction? "UP": "DOWN");
         return searchVector(where, sorted, directions);
     }
@@ -1846,8 +1844,8 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration searchIn(String where,String sort,String in) {
-        return searchVectorIn(where,sort,in).elements();
+    public Enumeration searchIn(String where, String sorted, String in) {
+        return searchVectorIn(where, sorted, in).elements();
     }
 
     /**
@@ -1858,14 +1856,14 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration searchIn(String where,String in) {
-        return searchVectorIn(where,in).elements();
+    public Enumeration searchIn(String where, String in) {
+        return searchVectorIn(where, in).elements();
     }
 
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
+     * @param sort  order in which to return the objects
      * @param in lost of node numbers to filter on
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *        Only applies if a sorted order is given.
@@ -1873,8 +1871,8 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Enumeration searchIn(String where,String sort,boolean direction,String in) {
-        return searchVectorIn(where,sort,direction,in).elements();
+    public Enumeration searchIn(String where, String sort, boolean direction, String in) {
+        return searchVectorIn(where, sort, direction, in).elements();
     }
 
 
@@ -1956,7 +1954,7 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
-    public Vector searchVectorIn(String where,String sorted,String in) {
+    public Vector searchVectorIn(String where, String  sorted, String in) {
         return searchVectorIn(where, sorted, true, in);
     }
 
@@ -1973,7 +1971,7 @@ public class MMObjectBuilder extends MMTable {
      *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
-    public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
+    public Vector searchVectorIn(String where, String sorted, boolean direction, String in) {
 
         if (in != null && in.length() > 5 && in.substring(0, 5).equalsIgnoreCase("SELECT")) {
             // Nodenumbers specified as query:
@@ -2274,7 +2272,8 @@ public class MMObjectBuilder extends MMTable {
      * The nodes retrieved are added to the cache.
      * @vpro replace with a way to sort nodes.
      * @param rs The resultset containing the nodes
-     * @return The SortedVector which holds the data
+     * @param sv Where the results must be added.
+     * @return The SortedVector (sv) which holds the data or <code>null</code> in case of an SQLException
      * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
@@ -2347,7 +2346,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return a field's definition
-     * @param the requested field's name
+     * @param fieldName the requested field's name
      * @return a <code>FieldDefs</code> belonging with the indicated field
      */
     public FieldDefs getField(String fieldName) {
@@ -2380,12 +2379,12 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Remove a field from this builder.
      * This does not affect the builder config file, nor the table used.
-     * @param fieldname the name of the field to remove
+     * @param fieldName the name of the field to remove
      */
-    public void removeField(String fieldname) {
-        FieldDefs def=getField(fieldname);
+    public void removeField(String fieldName) {
+        FieldDefs def=getField(fieldName);
         int dbpos=def.getDBPos();
-        fields.remove(fieldname);
+        fields.remove(fieldName);
         // move them all up one place
         for (Enumeration e=fields.elements();e.hasMoreElements();) {
             def=(FieldDefs)e.nextElement();
@@ -2407,7 +2406,7 @@ public class MMObjectBuilder extends MMTable {
      * TYPE_LONG,
      * TYPE_NODE,
      * TYPE_UNKNOWN
-     * @param the requested field's name
+     * @param fieldName the requested field's name
      * @return the field's type.
      */
     public int getDBType(String fieldName) {
@@ -2449,7 +2448,7 @@ public class MMObjectBuilder extends MMTable {
      * DBSTATE_PERSISTENT,
      * DBSTATE_SYSTEM,
      * DBSTATE_UNKNOWN
-     * @param the requested field's name
+     * @param fieldName the requested field's name
      * @return the field's type.
      */
     public int getDBState(String fieldName) {
@@ -3489,7 +3488,7 @@ public class MMObjectBuilder extends MMTable {
      * FieldCompareConstraint}, based on parts of a field expression in a
      * MMNODE expression.
      *
-     * @param fieldName The field name.
+     * @param field The field
      * @param comparison The second character of the comparison operator.
      * @param strValue The value to compare with, represented as
      *        <code>String<code>.
@@ -3497,8 +3496,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.7
      */
     // package visibility!
-    BasicFieldValueConstraint parseFieldPart(
-            StepField field, char comparison, String strValue) {
+    BasicFieldValueConstraint parseFieldPart(StepField field, char comparison, String strValue) {
 
         Object value = strValue;
 
@@ -3615,7 +3613,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Set tablename of the builder. Should be used to initialize a MMTable object before calling init().
-     * @param the name of the table
+     * @param tableName the name of the table
      */
     public void setTableName(String tableName) {
         this.tableName=tableName;
@@ -3623,7 +3621,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Set description of the builder
-     * @param the description text
+     * @param e the description text
      */
     public void setDescription(String e) {
         this.description=e;
@@ -3631,7 +3629,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Set descriptions of the builder
-     * @param a <code>Hashtable</code> containing the descriptions
+     * @param e a <code>Hashtable</code> containing the descriptions
      */
     public void setDescriptions(Hashtable e) {
         this.descriptions=e;
@@ -3747,30 +3745,30 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Send a signal to other servers that a field was changed.
      * @param node the node the field was changed in
-     * @param fieldname the name of the field that was changed
+     * @param fieldName the name of the field that was changed
      * @return always <code>true</code>
      */
-    public boolean    sendFieldChangeSignal(MMObjectNode node,String fieldname) {
+    public boolean    sendFieldChangeSignal(MMObjectNode node,String fieldName) {
         // we need to find out what the DBState is of this field so we know
         // who to notify of this change
-        int state=getDBState(fieldname);
-        log.debug("Changed field="+fieldname+" dbstate="+state);
+        int state=getDBState(fieldName);
+        log.debug("Changed field="+fieldName+" dbstate="+state);
 
         // still a large hack need to figure out remote changes
         if (state==0) {}
         // convert the field to a string
 
-        int type=getDBType(fieldname);
+        int type=getDBType(fieldName);
         String value="";
         if ((type==FieldDefs.TYPE_INTEGER) || (type==FieldDefs.TYPE_NODE)) {
-            value=""+node.getIntValue(fieldname);
+            value=""+node.getIntValue(fieldName);
         } else if (type==FieldDefs.TYPE_STRING) {
-            value=node.getStringValue(fieldname);
+            value=node.getStringValue(fieldName);
         } else {
             // should be mapped to the builder
         }
 
-        fieldLocalChanged(""+node.getNumber(),tableName,fieldname,value);
+        fieldLocalChanged("" + node.getNumber(), tableName, fieldName, value);
         //mmb.mmc.changedNode(node.getNumber(),tableName,"f");
         return true;
     }
@@ -3849,29 +3847,27 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Get text from a blob field.
      * The text is cut if it is to long.
-     * @param fieldname name of the field
+     * @param fieldName name of the field
      * @param number number of the object in the table
      * @return a <code>String</code> containing the contents of a field as text
      */
-    public String getShortedText(String fieldname,int number) {
-        return mmb.getDatabase().getShortedText(tableName,fieldname,number);
+    public String getShortedText(String fieldName,int number) {
+        return mmb.getDatabase().getShortedText(tableName, fieldName, number);
     }
 
     /**
      * Get binary data of a database blob field.
      * The data is cut if it is to long.
-     * @param fieldname name of the field
+     * @param fieldName name of the field
      * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
-    public byte[] getShortedByte(String fieldname, int number) {
-        return mmb.getDatabase().getShortedByte(tableName, fieldname, number);
+    public byte[] getShortedByte(String fieldName, int number) {
+        return mmb.getDatabase().getShortedByte(tableName, fieldName, number);
     }
 
     /**
      * Get binary data of a database blob field.
-     * @param fieldname name of the field
-     * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
     public byte[] getDBByte(ResultSet rs,int idx) {
@@ -3880,8 +3876,6 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Get text from a blob field.
-     * @param fieldname name of the field
-     * @param number number of the object in the table
      * @return a <code>String</code> containing the contents of a field as text
      */
     public String getDBText(ResultSet rs,int idx) {
@@ -3910,14 +3904,14 @@ public class MMObjectBuilder extends MMTable {
      *  Note that if this node is a node in cache, the changes are immediately visible to
      *  everyone, even if the changes are not committed.
      *  The fieldname is added to the (public) 'changed' vector to track changes.
-     *  @param fieldname the name of the field to change
-     *  @param fieldValue the value to assign
+     *  @param fieldName the name of the field to change
+     *  @param node      The node on which to change the field (the new value is in this node)
      *  @param originalValue the value which was original in the field
      *  @return <code>true</code> When an update is required(when changed),
      *    <code>false</code> if original value was set back into the field.
      */
-    public boolean setValue(MMObjectNode node,String fieldName, Object originalValue) {
-        return setValue(node,fieldName);
+    public boolean setValue(MMObjectNode node, String fieldName, Object originalValue) {
+        return setValue(node, fieldName);
     }
 
     /**
@@ -3926,10 +3920,10 @@ public class MMObjectBuilder extends MMTable {
      * It allows the system to add functionality such as checking valid data.
      * Derived builders should override this method if they want to add functionality.
      * @param node the node whose fields are changed
-     * @param field the fieldname that is changed
+     * @param fieldName the fieldname that is changed
      * @return <code>true</code> if the call was handled.
      */
-    public boolean setValue(MMObjectNode node,String fieldname) {
+    public boolean setValue(MMObjectNode node,String fieldName) {
         return true;
     }
 
