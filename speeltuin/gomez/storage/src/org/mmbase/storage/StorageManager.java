@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.3 2003-07-23 14:11:34 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.4 2003-07-24 10:11:03 pierre Exp $
  */
 public interface StorageManager {
 
@@ -47,19 +47,18 @@ public interface StorageManager {
     public void beginTransaction() throws StorageException;
 
     /**
-     * Closes any transaction that was started (and commits changes).
-     * @throws StorageException if committing fails
-     * @return true if closed successfully
+     * Closes any transaction that was started and commits all changes.
+     * @throws StorageException if a transaction is not currently active, or an error occurred while committing
      */
     public void commit() throws StorageException;
 
     /**
-     * Cancels any transaction that was started.
-     * Some implementations perform rollback.
-     * @throws StorageException if cancelling fails
-     * @return true if cancelled successfully
+     * Cancels any transaction that was started and rollback changes if possible.
+     * @return <code>true</code> if changes were rolled back, <code>false</code> if the transaction was 
+     * canceled but the storage does not support rollback
+     * @throws StorageException if a transaction is not currently active, or an error occurred during rollback
      */
-    public void cancel() throws StorageException;
+    public boolean rollback() throws StorageException;
 
     /**
      * Gives an unique number for a new node, to be inserted in the storage.
