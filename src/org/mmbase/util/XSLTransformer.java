@@ -10,7 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.File;
+import java.io.Writer;
 import java.io.StringWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 
 import java.util.*;
 
@@ -32,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.11 2002-10-07 16:42:30 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.12 2002-10-28 17:28:19 pierre Exp $
  *
  */
 public class XSLTransformer {
@@ -126,6 +129,7 @@ public class XSLTransformer {
         }
         Transformer transformer = cachedXslt.newTransformer();
 
+
         if (log.isDebugEnabled()) {
             log.debug("Size of transformer " + SizeOf.getByteSize(transformer) + " bytes");
         }
@@ -149,12 +153,12 @@ public class XSLTransformer {
     public void transform(File xmlFile, File xslFile, StreamResult result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        
+
         // turn validating on
         XMLEntityResolver resolver = new XMLEntityResolver(true);
-        dfactory.setValidating(true);
+        dfactory.setNamespaceAware(true);
         DocumentBuilder db = dfactory.newDocumentBuilder();
-        
+
         XMLErrorHandler handler = new XMLErrorHandler();
         db.setErrorHandler(handler);
         db.setEntityResolver(resolver);
@@ -177,15 +181,15 @@ public class XSLTransformer {
 
     public void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         if (! xmlDir.isDirectory()) {
-            throw  new TransformerException("" + xmlDir + " is not a directory");            
+            throw  new TransformerException("" + xmlDir + " is not a directory");
         }
         if (! resultDir.exists()) {
             resultDir.mkdir();
         }
-        if (! resultDir.isDirectory()) {            
-            throw  new TransformerException("" + resultDir + " is not a directory");            
+        if (! resultDir.isDirectory()) {
+            throw  new TransformerException("" + resultDir + " is not a directory");
         }
-        
+
         File[] files = xmlDir.listFiles();
         for (int i = 0; i < files.length; i++) {
             if (recurse && files[i].isDirectory()) {
@@ -201,7 +205,7 @@ public class XSLTransformer {
                 if (myParams.get("root") == null) {
                     myParams.put("root", "../");
                 } else {
-                    if ("./".equals(myParams.get("root"))) { 
+                    if ("./".equals(myParams.get("root"))) {
                         myParams.put("root", "../");
                     } else {
                         myParams.put("root", myParams.get("root") + "../");
@@ -219,7 +223,7 @@ public class XSLTransformer {
                 } else {
                     log.info("Transforming file " + files[i] + " to " + resultFile);
                     try {
-                        transform(files[i], xslFile, new StreamResult(resultFile), params, considerDir); 
+                        transform(files[i], xslFile, new StreamResult(resultFile), params, considerDir);
                     } catch (Exception e) {
                         log.error(e.toString());
                     }
@@ -235,23 +239,50 @@ public class XSLTransformer {
         XSLTransformer t = new XSLTransformer();
         /// log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
-            log.info("Use with two arguments: xslt-file xml-inputfile");
+            log.info("Use with two arguments: xslt-file xml-inputfile [xml-outputfile]");
             log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir");
         } else {
+            HashMap params=null;
+            if (argv.length > 3) {
+                params= new HashMap();
+                for (int i=3; i<argv.length; i++) {
+                    String key=argv[i];
+                    String value="";
+                    int p=key.indexOf("=");
+                    if (p>0) {
+                        if (p<key.length()-1) value=key.substring(p+1);
+                        key=key.substring(0,p);
+                    }
+                    params.put(key,value);
+                }
+            }
+
             File in = new File(argv[1]);
             if (in.isDirectory()) {
                 log.info("Transforming directory " + in);
                 long start = System.currentTimeMillis();
-                try {                    
-                    t.transform(in, new File(argv[0]), new File(argv[2]), true, null, true);
+                try {
+                    t.transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
                 } catch (Exception e) {
                     log.error("Error: " + e.toString());
                 }
                 log.info("Transforming took " + (System.currentTimeMillis() - start) / 1000.0 + " seconds");
-            } else {            
+            } else {
                 log.info("Transforming file " + argv[1]);
-                log.info(t.transform(argv[1], argv[0], false));
+                if (argv.length > 2) {
+                    try {
+                        FileOutputStream stream=new FileOutputStream(argv[2]);
+                        Writer f=new OutputStreamWriter(stream,"utf-8");
+                        t.transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
+                        f.close();
+                    } catch (Exception e) {
+                        log.error("Error: " + e.toString());
+                    }
+                } else {
+                    String s=t.transform(argv[1], argv[0], false);
+                    log.info(s);
+                }
             }
-        }         
+        }
     }
 }
