@@ -27,7 +27,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.18 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ImageServlet.java,v 1.19 2005-03-16 10:28:55 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -82,7 +82,7 @@ public class ImageServlet extends HandleServlet {
             int originalNode = node.getIntValue("id");
             Cloud c = node.getCloud();
 
-            if (! c.mayRead(originalNode) && c.getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
+            if (! c.mayRead(originalNode) && c.getUser().getRank().equals(Rank.ANONYMOUS)) {
                 // try (again?) cloud from session
                 c = getCloud(query);
             }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.17 2004-10-08 17:37:53 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.18 2005-03-16 10:30:00 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -101,7 +101,14 @@ public class HandleServlet extends BridgeServlet {
         // Why we don't set Content-Disposition:
         // - IE can't handle that. (IE sucks!)
 
-        query.getResponse().setHeader("Content-Disposition", "attachment; filename=\""  + fn + "\"");
+        String disposition;
+        String fileNamePart = query.getFileName();
+        if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
+            disposition = "inline";
+        } else {
+            disposition = "attachment";
+        }
+        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + fn + "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
@@ -132,7 +139,7 @@ public class HandleServlet extends BridgeServlet {
      * @since MMBase-1.7
      */
     protected boolean setCacheControl(HttpServletResponse res, Node node) {
-        if (!node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
+        if (!node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
             res.setHeader("Cache-Control", "private");
             // res.setHeader("Pragma", "no-cache"); // for http 1.0 : is frustrating IE when https
             // res.setHeader("Pragma", "no-store"); // no-cache not working in apache!
