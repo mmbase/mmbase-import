@@ -1,0 +1,8 @@
+<LIST OBJECTS TYPE="users" PROCESSOR="MMBASE" FIELDS="number" WHERE="account=='$SESSION-SEARCH^'+password=='$SESSION-PW^'" VERSION="2.0">
+	<LIF $ITEML==0>
+        	<GOTO invalidPassword.shtml>
+	</IF>
+	<LISTLOOP>
+        	<GOTO switchUser.shtml?$PARAM1+$ITEM1>
+	</LISTLOOP>	
+</LIST>

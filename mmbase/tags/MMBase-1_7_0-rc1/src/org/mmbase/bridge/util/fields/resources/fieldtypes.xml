@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE fieldtypes PUBLIC "-//MMBase//DTD fieldtypes 0.1//EN" "http://www.mmbase.org/dtd/fieldtypes_0_1.dtd">
+<fieldtypes>
+
+<!-- 
+  version 0.1 of fieldtypes will only add the possibility of set- and get-processor. 
+  I hope this can still be added to MMBase 1.7.0
+
+-->
+
+<!--
+  <fieldtype id="xml">
+    <setprocessor type="string">
+      <class>org.mmbase.core.processors.XMLValidate</class>
+    </setprocessor>
+
+  </fieldtype>
+-->
+
+  
+  <fieldtype id="string">
+    <specialization id="md5password">
+      <setprocessor>
+        <class>org.mmbase.util.transformers.MD5</class>
+      </setprocessor>
+    </specialization>
+    <specialization id="lowercaseuppercase"><!-- silly example to test -->
+      <setprocessor>
+        <class>org.mmbase.util.transformers.LowerCaser</class>
+      </setprocessor>
+      <getprocessor>
+        <class>org.mmbase.util.transformers.UpperCaser</class>
+      </getprocessor>
+    </specialization>
+  </fieldtype>
+
+  
+</fieldtypes>

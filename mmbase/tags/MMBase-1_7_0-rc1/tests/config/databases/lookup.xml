@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database-filters PUBLIC "-//MMBase/DTD database lookup 1.0//EN" "http://www.mmbase.org/dtd/database-lookup_1_0.dtd">
+<database-filters>
+  <!-- when no rules, then it will always be used when no previous rules apply -->
+  <filter database-config="hsqldb-storage" />
+</database-filters>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="videosources" extends="mediasources">
+  <status>active</status>
+
+  <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
+
+  <names>
+    <singular xml:lang="en">Video source</singular>
+    <singular xml:lang="nl">Videobron</singular>
+
+    <plural xml:lang="en">Video sources</plural>
+    <plural xml:lang="nl">Videobronnen</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Descriptions of the physical video file</description>
+    <description xml:lang="nl">Beschrijving van het daadwerkelijke video bestand</description>
+  </descriptions>
+
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Frames per second</description>
+        <description xml:lang="nl">Frames per seconde</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">FPS</guiname>
+        <guiname xml:lang="nl">FPS</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>10</input><list>10</list><search>10</search>
+        </positions>
+      </editor>
+      <db>
+        <name>fps</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
+
+
+    <!-- <field> 'height'  -->
+    <field>
+      <descriptions>
+        <description xml:lang="en">Height in pixels</description>
+        <description xml:lang="nl">Hoogte in pixel</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>11</input><list>11</list><search>11</search>
+        </positions>
+      </editor>
+      <db>
+        <name>height</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
+
+    <!-- <field> 'width'  -->
+    <field>
+      <descriptions>
+        <description xml:lang="en">Width in pixels</description>
+        <description xml:lang="nl">Breedte in pixel</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>12</input><list>12</list><search>12</search>
+        </positions>
+      </editor>
+      <db>
+        <name>width</name>
+        <type state="persistent" notnull="false">INTEGER</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

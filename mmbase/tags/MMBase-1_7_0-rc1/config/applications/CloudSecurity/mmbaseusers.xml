@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mmbaseusers exportsource="mmbase://security.mmbase.org/" timestamp="20020318000000">
+    <node number="1" owner="admin">
+        <username>admin</username>
+        <password>admin2k</password>
+    </node>
+</mmbaseusers>

@@ -1,0 +1,591 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>The basic concept behind MMbase is the idea of a Cloud of Persistent Objects (CPO)</TITLE>
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT FACE="Arial" SIZE=5><P>Creating, manipulating and deleting MMBase objects with the Transaction Handler</P>
+</FONT><FONT FACE="Courier,Courier New">
+<P>updated 11 july 2001</P>
+<I><P>John Balder</P>
+<P>Rob Vermeulen</P>
+</I>
+<P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>Introduction</P>
+</FONT><FONT FACE="Courier,Courier New"><P>The basic concept behind MMBase is the idea of a <I>Persistent Cloud of Objects</I> (PCO). These objects come in different flavors, often referred to as types. (The concept builders in MMBase terminology is used for the tools that maintain objects of a certain type. Also is it used for the xml definition files that define a certain type.) Standard types for a variety of (multi media) objects are provided as well as the possibility to define customized object types. Furthermore, binary relations between objects can be defined. </P>
+<P>Most interaction with an actual MMBase system is web (i.e. browser) based. The authoring is done with a default web interface that is hierarchically structured. Objects can be created with custom parameter values and parameterized queries allow for search. This interface is sufficient but not always efficient. Short cuts and bulk input are not possible. Also there is a need within the community for customized authoring interfaces.</P>
+
+<P>The main problem with such interfaces is to get a bulk of information from a web page (filled in by a human author) to the MMBase engine. It's essential to do this efficiently because handling this per item would be too costly. Things started because Rico Jansen of VPRO made an interesting building block that could be used. This is based on the idea to create a temporary MMBase structure consisting of one of more objects with relations. We will call this a <I>Temporary Cloud of Objects</I> (TCO). A TCO can be "committed", which means that all objects from the TCO are copied to the persistent MMBase cloud (PCO).  </P>
+<P>The TCO is created and manipulated by a user via input created through HTML forms. This approach allows for easier user interaction that also may span several HTML pages. </P>
+<P>It is imaginable to carry out all kinds of checks before committing this temporary structure. This may allow for semantic checking of the TCO.</P>
+<P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>The process</P>
+</FONT><FONT FACE="Courier,Courier New"><P>In order to use this mechanism the developer needs to design at least two (S)HTML pages. One or more pages contain HTML FORM elements to collect the necessary information from the user and store it in variables. (There are several mechanism one can use here, for example: MMbase SESSION-variables, posting variables, javascript etc.) Another page contains the "transaction code" that describes the creation of the TCO with its instantiated objects and relations. This code contains the variables that have been bound previously. After substitution of these variables a special module evaluates the code: the TransactionHandler. </P>
+</FONT><FONT FACE="Courier,Courier New" COLOR="#ff0000"><P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>The design</P>
+</FONT><FONT FACE="Courier,Courier New"><P>So far, we have introduced a static metaphor of clouds of (typed) objects. One cloud is persistent and generally accessible, other clouds are temporary and private (i.e. only accessible by one user). Furthermore temporary clouds can be "committed" to the permanent cloud, i.e. there content is copied into the persistent cloud. </P>
+<P>It will be clear that we will need a more precise model in order to be able to understand (and implement) this. First of all we need to define what operations we need to create and manipulate temporary clouds. Furthermore we need to specify what committing means formally. Borrowing from database theory and guided by the structure of the current MMBase system we came up with the following definition.</P>
+
+<P>All interaction with the permanent MMBase cloud is done through transactions. A transaction is a process context that allows for creation, manipulation and committing a temporary cloud of objects. More specific: one transaction is related to exactly one TCO. Below we define a minimal set of operations. Note that having done so we are able to define more application-oriented operations on top of theses, when needed. </P>
+</B></FONT><FONT FACE="Courier New">
+</FONT><B><FONT FACE="Courier,Courier New"><P>We will need the following basic operations to handle transactions:</P>
+
+
+<UL>
+<LI>a <U>create</U> transaction operator </LI>
+<LI>a <U>destroy</U> transaction operator</LI>
+<LI>a <U>commit</U> transaction operator</LI></UL>
+
+
+<P>Once we have a transaction, and thus a temporary cloud, we want to be able to manipulate objects (nodes in MMBase terminology). Thus we need the following basic operations:</P>
+
+
+<UL>
+<U><LI>create</U> object in the TCO</LI>
+<U><LI>delete</U> object from the TCO</LI></UL>
+
+
+<P>&nbsp;</P>
+<P>Note that we choose not to define the equivalent of the commit operator. The create operator implicitly adds the object to the TCO. </P>
+
+<P>Finally we will need an operator to manipulate (data)fields in these objects. We can do this with one operation:</P>
+
+
+<UL>
+<U><LI>set</U> field of object to value</LI></UL>
+
+</B></FONT><FONT FACE="Courier New">
+</FONT><B><FONT FACE="Courier,Courier New"><P>This basic set of operations allows us to use all functionality. </P>
+
+<P>So far, we did not yet discuss the lifetime of transactions. A transaction exists from the moment of its creation until it is committed (or destroyed). From practical experience we decided that one should be able to leave a transaction and enter it again at a later time, in order to do other things. The same should be possible for objects. Thus we will also need the following operators:</P>
+
+
+<UL>
+<U><LI>open</U> transaction</LI>
+<U><LI>open</U> object</LI></UL>
+
+
+<P>&nbsp;</P>
+<P>The proposed mechanism allows the developer to handle more then one transaction and to access transactions on different .shtml pages. </P>
+
+<P>For reasons of convenience we defined an operator to access objects from the persistent cloud. It copies an object from the permanent cloud to the current temporary cloud:</P>
+
+
+<UL>
+<U><LI>access</U> object</LI></UL>
+
+
+<P>Note, that this operator does not add any functionality as it can be defined in terms of the <I>create object</I> and <I>set object field</I> operators.</P>
+<P> </P>
+<P>Next we have to define which (minimal set of) parameters we need with each operator. This is largely a pragmatic process where we take into consideration the functional possibilities of the existing system and the requirements that follow from the chosen metaphor. We came up with the following (initial) set of parameters.</P>
+</B></FONT>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=4 WIDTH=614>
+<TR><TD VALIGN="TOP" COLSPAN=4>
+<B><FONT FACE="Arial Black" SIZE=2><P>transaction operators and their parameters</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="15%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="18%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>parameters</B></FONT></TD>
+<TD WIDTH="35%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>meaning</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>comment</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="15%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>create </B></FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+
+<P>&nbsp;</P>
+<P>commit</P>
+
+<P>timeOut</B></FONT></TD>
+<TD WIDTH="35%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of the transaction for later reference</P>
+
+<P>if true, commit at end of context</P>
+<P>time in sec. after which transaction is destroyed</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>may be omitted</P>
+<P>when no further reference is needed <FONT FACE="Symbol">&#120;</FONT>
+</P>
+<P>default: true</P>
+
+<P>default: 60 sec</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="15%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>delete </B></FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+</B></FONT></TD>
+<TD WIDTH="35%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of previously defined transaction</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="15%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>commit </B></FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</B></FONT></TD>
+<TD WIDTH="35%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of previously defined transaction</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="15%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>open </B></FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+
+<P>commit</P>
+</B></FONT></TD>
+<TD WIDTH="35%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of previously defined transaction</P>
+<P>if true, commit at end of context</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</P>
+
+<P>default: true</P>
+<P> </B></FONT></TD>
+</TR>
+</TABLE>
+
+<B><FONT FACE="Courier,Courier New" SIZE=2 COLOR="#ff0000">
+</FONT><FONT FACE="Courier,Courier New"><P>&nbsp;</P></B></FONT>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=4 WIDTH=614>
+<TR><TD VALIGN="TOP" COLSPAN=4>
+<B><FONT FACE="Arial Black" SIZE=2><P>object operators and their parameters</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>parameters</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>meaning</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>comment</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>createObject </B></FONT></TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+
+<P>&nbsp;</P>
+<P>type</P>
+</FONT><FONT FACE="Courier,Courier New" SIZE=2 COLOR="#ff0000"></B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of the object for later reference</P>
+
+<P>type of the object to be created</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>may be omitted </P>
+<P>when no further reference is needed <FONT FACE="Symbol">&#120;</FONT>
+</P>
+<P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>deleteObject </B></FONT></TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of previously defined object</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>openObject </B></FONT></TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of previously defined object</P>
+</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>accessObject</B></FONT></TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>id</P>
+
+<P>&nbsp;</P>
+<P>mmbaseId</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>ID of the object for later reference</P>
+
+<P>mmbaseId (number) of the object to be copied</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>may be omitted </P>
+<P>when no further reference is needed <FONT FACE="Symbol">&#120;</FONT>
+</P>
+<P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>markObject</P>
+<P>Delete </B></FONT></TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>mmbaseId</P>
+
+<P>&nbsp;</P>
+<P>remove</P>
+<P>Relations</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>mmbaseId (number) of the object to be permanently deleted</P>
+<P>if true: remove object with attached relations</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>createRelation</B></FONT></TD>
+<TD WIDTH="17%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>type</P>
+
+<P>source</P>
+<P>destination</B></FONT></TD>
+<TD WIDTH="32%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>type of the relation to be created</P>
+<P>ID of an object </P>
+<P>ID of an object</B></FONT></TD>
+<TD WIDTH="30%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>required</P>
+
+<P>required</P>
+<P>required</B></FONT></TD>
+</TR>
+</TABLE>
+
+<B><FONT FACE="Courier,Courier New">
+</FONT><FONT FACE="Courier,Courier New" SIZE=2 COLOR="#ff0000"><P>&nbsp;</P>
+</FONT><FONT FACE="Courier,Courier New" SIZE=2><P><FONT FACE="Symbol">&#120;</FONT>
+ <I>When the id of a transaction or object is omitted at creation (access), the system will create one. This id is not available outside this operation.</P>
+</I></FONT><FONT FACE="Courier,Courier New">
+<P>&nbsp;</P>
+<P>Note that we added two operations for objects not yet defined. </P>
+
+<P>1. As all operations work on the temporary cloud, the delete operator thus deletes temporary objects. If we want an operator for permanent deletion, we need another name for that operator. As this is an operation that will be effectuated later in time, which is after the commit of the transaction, we called it markForDelete. If the <I>removeRelations</I> parameter is not true an object that has relations attached to it will not be deleted. If the parameter is set to true the object and its attached relations will be deleted.</P>
+
+<P>2. As the position of relations within MMBase is being reconsidered we have not yet decided on the form in which the transaction manager will handle them. For the time being we defined one operation to easily create relations. Note that the designer is responsible that the objects to be related are of the right type. That means consistent with the definitions within MMbase.</P>
+<I><P>This operation is for testing only and subject to change depending on the development of relations</I>.</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>Integrity of Persistent Cloud of Objects</P>
+</FONT><FONT FACE="Courier,Courier New"><P>With the introduction of the accessObject and markObjectDelete operators we introduced a situation that needs consideration. One problem arises when we access (and thus copy) an object and later on commit the object to the PCO. Somebody else might have changed the object and then it is no longer clear what the next state of the object should be. </P>
+<P>One solution is to ignore this and to commit anyway. This may lead to losing information. Another way to solve this is locking an object whenever someone accesses it. This lock is removed when the object is committed again. Clearly we will want a timeout on this lock to avoid deadlock situations when no commit is done. Currently we implemented a timeout of 60 seconds.</P>
+<P>Note that this means that the designer will need to handle more cases where transactions fail. </P>
+<P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>Syntax</P>
+</FONT><FONT FACE="Courier,Courier New"><P>We will now present the complete syntax for our language. We choose an XML-compliant "dialect". Also, because this fits in nicely with our idea of contexts. Remember that our code is embedded in some other code, be it SCAN or some other language. So first we need some tag to indicate to we are going to work with transactions.</P>
+<DIR>
+<DIR>
+
+</B></FONT><U><FONT FACE="Courier New"><P>&lt;transactions [ exceptionPage="ex-page-def" ] [ key = "password"&gt;</P>
+<P>&lt;/transactions&gt;</P>
+</U></FONT><B><FONT FACE="Courier,Courier New"></DIR>
+</DIR>
+
+<P>Note, all symbols are part of the definition except "[" and "]" which denote optional elements.</P>
+<P>The parameter exceptionPage specifies a (s)html page that is shown whenever an error occurs handling the transactions. This can either be a syntax error or it can be an error resulting from an erroneous operation. Also several variables are set to provide information about the error. See Appendix C for a list of these variables.<BR>
+The key parameter is used to access servers that require a password for transactions. This facility gives extra security. See appendix D for an explanation of the parameters that need to be set in the TransactionManager module definition. </P>
+
+<P>Within this transactions context one can specify zero or more transaction contexts. A transaction context is one of the following.</P>
+<DIR>
+<DIR>
+
+</B></FONT><U><FONT FACE="Courier New"><P>&lt;create [ id ="id"] [ commit="trueFalse" ]</P>
+<P>[ timeout="number"] &gt;</P>
+<P>&lt;/create&gt;</P>
+
+<P>&lt;open id="id" [ commit="trueFalse" ] &gt;</P>
+<P>&lt;/open&gt;</P>
+</DIR>
+</DIR>
+
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>In these contexts one can define objects. Furthermore we have to other operators that define an empty context, i.e. where we cannot manipulate objects, which only affect the transaction proper.</P>
+<DIR>
+<DIR>
+
+</B></FONT><U><FONT FACE="Courier New"><P>&lt;commit id="id"/&gt;</P>
+
+<P>&lt;delete id="id"&gt;</P>
+</DIR>
+</DIR>
+
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>The object contexts have the following syntax.</P>
+<DIR>
+<DIR>
+
+</B></FONT><U><FONT FACE="Courier New"><P>&lt;createObject type="MMbase-type" [ id ="id"] &gt;</P>
+<P>&lt;/creatObject&gt;</P>
+
+<P>&lt;accessObject mmbaseId="mmbaseId"[ id ="id"] &gt;</P>
+<P>&lt;/accessObject&gt;  </P>
+
+<P>&lt;openObject id ="id" &gt;</P>
+<P>&lt;/openObject&gt;  </P>
+</DIR>
+</DIR>
+
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>Within the above object contexts one can set the fields of this objects. This has the following syntax.</P>
+<DIR>
+<DIR>
+
+</B></FONT><U><FONT FACE="Courier New"><P>&lt;setField name="name-of-field"&gt; field-value &lt;/setField&gt;</P>
+</DIR>
+</DIR>
+
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>Finally we have two object contexts that are empty and only used for there effect. </P>
+<DIR>
+<DIR>
+
+</B></FONT><U><FONT FACE="Courier New"><P>&lt;deleteObject id="id"\&gt;</P>
+
+<P>&lt;markObjectDelete mmbaseId="mmbaseId"\&gt;</P>
+</DIR>
+</DIR>
+
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>This is the complete syntax of the transaction language. In the next section we also provide the dtd definition.  </P>
+</B></FONT><U><FONT FACE="Courier New">
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>&nbsp;</P>
+</B></FONT><U><FONT FACE="Courier New"><P>&nbsp;</P>
+</U></FONT><B><FONT FACE="Courier,Courier New"><P>&nbsp;</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>Appendix A. dtd definition of the language</P>
+</FONT><FONT FACE="Courier,Courier New">
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+</B></FONT><FONT FACE="Courier New" SIZE=2><P>&lt;?xml encoding="UTF-8"?&gt;</P>
+<P>&lt;!ELEMENT transactions (create | open | commit | delete)* &gt;</P>
+<P>&lt;!ATTLIST transactions exceptionPage CDATA #IMPLIED&gt;</P>
+<P>&lt;!ATTLIST transactions key CDATA #IMPLIED&gt;</P>
+
+<P>&lt;!ELEMENT create (createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)* &gt;</P>
+<P>&lt;!ATTLIST create &#9;id CDATA #IMPLIED&gt;</P>
+<P>&lt;!ATTLIST create &#9;commit (true | false) "true"&gt;</P>
+<P>&lt;!ATTLIST create &#9;timeOut CDATA "60"&gt;</P>
+
+<P>&lt;!ELEMENT open (createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)* &gt;</P>
+<P>&lt;!ATTLIST open id CDATA #REQUIRED&gt;</P>
+<P>&lt;!ATTLIST open commit (true | false) "true"&gt;</P>
+
+<P>&lt;!ELEMENT commit (EMPTY) &gt;</P>
+<P>&lt;!ATTLIST commit id CDATA #REQUIRED&gt;</P>
+
+<P>&lt;!ELEMENT delete (EMPTY) &gt;</P>
+<P>&lt;!ATTLIST delete id CDATA #REQUIRED&gt;</P>
+
+<P>&nbsp;</P>
+<P>&lt;!ELEMENT createObject &#9;(setField*)&gt;</P>
+<P>&lt;!ATTLIST createObject &#9;id CDATA #IMPLIED&gt;</P>
+<P>&lt;!ATTLIST createObject &#9;type CDATA #REQUIRED&gt;</P>
+
+<P>&lt;!ELEMENT createRelation (setField*)&gt;</P>
+<P>&lt;!ATTLIST createRelation id CDATA #IMPLIED&gt;</P>
+<P>&lt;!ATTLIST createRelation type CDATA #REQUIRED&gt;</P>
+<P>&lt;!ATTLIST createRelation source CDATA #REQUIRED&gt;</P>
+<P>&lt;!ATTLIST createRelation destination CDATA #REQUIRED&gt;</P>
+
+<P>&lt;!ELEMENT openObject (setField*)&gt;</P>
+<P>&lt;!ATTLIST openObject id CDATA #REQUIRED&gt;</P>
+
+<P>&lt;!ELEMENT deleteObject (EMPTY) &gt;</P>
+<P>&lt;!ATTLIST deleteObject&#9;id CDATA #REQUIRED&gt;</P>
+
+<P>&lt;!ELEMENT accessObject (setField*)&gt;</P>
+<P>&lt;!ATTLIST accessObject&#9;mmbaseId CDATA #REQUIRED&gt;</P>
+<P>&lt;!ATTLIST accessObject&#9;id CDATA  #IMPLIED&gt;</P>
+
+<P>&lt;!ELEMENT markObjectDelete (EMPTY)&gt;</P>
+<P>&lt;!ATTLIST markObjectDelete mmbaseId CDATA #REQUIRED&gt;</P>
+<P>&lt;!ATTLIST markObjectDelete deleteRelations (true | false) "false"&gt;</P>
+
+<P>&lt;!ELEMENT setField #PCDATA &gt;</P>
+<P>&lt;!ATTLIST setField name CDATA #REQUIRED&gt;</P>
+<P>&lt;!ATTLIST setField url CDATA #IMPLIED&gt;</P>
+
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P>Appendix B: an Example</P>
+</FONT><FONT FACE="Courier,Courier New"><P>We describe a simple example here. It adds a person object to the MMBase (persistent) cloud of objects (PCO). First we need a page that collects information from the user. Aside from layout information this page contains a form that collects the input.</P>
+
+</B></FONT><FONT FACE="Courier New" SIZE=2><P>&lt;FORM ACTION="execute1.shtml" METHOD="POST" ENCTYPE="x-www-form-urlencoded"&gt;</P>
+<P>&lt;INPUT NAME="SESSION-FIRSTNAME" TYPE="text" SIZE="20"&gt;</P>
+<P>&lt;INPUT NAME="SESSION-NAME" TYPE="text" SIZE="20"&gt;</P>
+<P>&lt;INPUT NAME="SESSION-EMAIL" TYPE="text" SIZE="20"&gt;</P>
+<P>&lt;INPUT NAME="name" TYPE="submit" VALUE="Submit"&gt;</P>
+<P>&lt;INPUT NAME="name" TYPE="reset" VALUE="Reset"&gt;</P>
+<P>&lt;/FORM&gt;</P>
+
+</FONT><B><FONT FACE="Courier,Courier New"><P>Note that the target of the post operation is another shtml page. Also note that the names of the input fields all begin with SESSION-, thus marking them as special MMBase variables.</P>
+
+<P>The second page contains the following code.</P>
+
+</B></FONT><FONT FACE="Courier New" SIZE=2><P>&lt;transactions&gt;</P>
+<P>&#9;&lt;create&gt;</P>
+<P>&#9;&#9;&lt;createObject type="people"&gt;</P>
+<P>&#9;&#9;&#9;&lt;setField name="firstname"&gt;$SESSION-FIRSTNAME^&lt;/setField&gt;</P>
+<P>&#9;&#9;&#9;&lt;setField name="lastname"&gt;$SESSION-NAME^&lt;/setField&gt;</P>
+<P>&#9;&#9;&#9;&lt;setField name="email"&gt;$SESSION-EMAIL^&lt;/setField&gt;</P>
+<P>&#9;&#9;&lt;/createObject&gt;</P>
+<P>&#9;&lt;/create&gt;</P>
+<P>&lt;/transactions&gt;</P>
+</FONT><B><FONT FACE="Courier,Courier New">
+<P>The different contexts are clearly visible here. Note that, as a default, the transaction is committed when closed. Also note that no id was specified for the transaction or for the object. This was not necessary, as we don't refer to them later on.</P>
+</FONT><FONT FACE="Arial" SIZE=4><P>Appendix C. Variables set by error handling</P>
+<P> </P>
+</FONT><FONT FACE="Courier,Courier New"><P>SESSION-TRANSACTION-OPERATOR</P>
+<P>Value is: one of <U>create</U> | <U>open</U> | <U>commit</U> | <U>delete</P>
+</U><P> </P>
+<P>SESSION-TRANSACTION-ID</P>
+<P>Value is: transaction id</P>
+
+<P>SESSION-OBJECT-OPERATOR </P>
+<P>Value is: one of <U>createObject</U> | <U>openObject</U> | <U>accessObject</U>| <U>deleteObject</U> | <U>markObjectDelete</U> | <U>createRelation</P>
+</U><P> </P>
+<P>SESSION-OBJECT-ID</P>
+<P>Value is: object id</P>
+
+<P>SESSION-FIELD-OPERATOR </P>
+<P>Value is: <U>setField</P>
+</U><P> </P>
+<P>SESSION-FIELD-NAME</P>
+<P>Value is: specified name of field </P>
+
+<P>SESSION-TRANSACTION-ERROR</P>
+<P>Value is: description of actual error as defined in the following table.</P>
+</B></FONT>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=600>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>Transaction operator</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>SESSION-TRANSACTION-ERROR</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>create</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>id already exists</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>timeout parameter not numeric</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>delete</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no id or unknown id</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>commit</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no id or unknown id</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>open</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no id or unknown id</B></I></FONT></TD>
+</TR>
+</TABLE>
+
+<B><FONT FACE="Courier,Courier New"></B></FONT>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=600>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>Object operator</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>SESSION-TRANSACTION-ERROR</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>createObject</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>id already exists</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>type does not exist</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>deleteObject</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no id or unknown id</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>accessObject</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>id already exists</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no mmbaseId or unknown mmbaseId</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>object can not be accessed because of locking</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>object can not be committed accessed because of locking</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>markObjectDelete</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no mmbaseId or unknown mmbaseId</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>object can not be deleted because of connected relations</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>object can not be deleted because of locking</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New" SIZE=2><P>createRelation</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>type does not exist</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no, or unknown source id</B></I></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><I><FONT FACE="Courier,Courier New"><P>no, or unknown destination id</B></I></FONT></TD>
+</TR>
+</TABLE>
+
+<B><FONT FACE="Courier,Courier New"></B></FONT>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=600>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>Field operator</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>SESSION-TRANSACTION-ERROR</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>setField</B></FONT></TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>wrong field name</B></FONT></TD>
+</TR>
+<TR><TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="74%" VALIGN="TOP">
+<B><FONT FACE="Courier,Courier New"><P>wrong field value, eg. wrong type</B></FONT></TD>
+</TR>
+</TABLE>
+
+<B><FONT FACE="Arial" SIZE=4><P>Appendix D. Security Issues</P>
+</FONT><FONT FACE="Courier,Courier New">
+<P>One potential danger of transactions is that malicious users can input their own transactions into MMBase. For instance when they input transaction code into a FORM parameter that is later displayed in an HTML page. </P>
+
+<P>To circumvent this problem the installer of MMBase can define a transaction key for a particular server. Every transaction then also needs this key to be executed. If no server key is defined all transactions will be handled.</P>
+<P>Note that, although the secret key thus appears in many shmtl pages, it will not be visible. This is because all transaction code is "eaten" by the server.</P>
+
+<P>To facilitate the transition from free to keyed transactions the security mechanism has two modes. In "signal" mode all invalid transactions are reported in the log-file. In "secure" mode an invalid transaction is aborted and a transaction error is generated.</P>
+
+<P>Below is part of a transactionmanager.xml file. It sets a key and sets the mode to "signal".</P>
+
+</B></FONT><FONT FACE="Courier New" SIZE=2><P>  &lt;properties&gt;</P>
+<P> &#9;&#9;&lt;property name="keycode"&gt;3658s2P7&lt;/property&gt;</P>
+<P> &#9;&#9;&lt;property name="security"&gt;signal&lt;/property&gt;</P>
+<P>  &lt;/properties&gt;</P>
+
+</FONT><B><FONT FACE="Courier,Courier New"><P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></B></FONT></BODY>
+</HTML>
