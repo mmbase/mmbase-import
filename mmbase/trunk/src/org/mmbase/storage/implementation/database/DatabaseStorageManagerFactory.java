@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.14 2004-04-29 10:01:24 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.15 2004-07-29 19:43:55 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -132,14 +132,16 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 if (contextName == null) {
                     contextName = "java:comp/env";
                 }
+                log.service("Using configured datasource " + dataSourceURI);
                 Context initialContext = new InitialContext();
                 Context environmentContext = (Context) initialContext.lookup(contextName);
                 dataSource = (DataSource)environmentContext.lookup(dataSourceURI);
             } catch(NamingException ne) {
-                log.warn("Datasource '"+dataSourceURI+"' not available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
+                log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Attempt to use JDBC Module to access database.");
             }
         }
         if (dataSource == null) {
+            log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
             dataSource = new GenericDataSource(mmbase);
@@ -153,7 +155,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         try {
             Connection con = dataSource.getConnection();
             catalog = con.getCatalog();
-            log.debug("Connecting to catalog with name "+catalog);
+            log.service("Connecting to catalog with name " + catalog);
             DatabaseMetaData metaData = con.getMetaData();
 
             // set transaction options
@@ -268,8 +270,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
                 basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
-            } else if (!basePath.startsWith("/")) {
-                basePath = MMBaseContext.getServletContext().getRealPath("/") + java.io.File.separator + basePath;
+            } else {
+                java.io.File baseFile = new java.io.File(basePath);
+                if (! baseFile.isAbsolute()) {
+                    basePath = MMBaseContext.getServletContext().getRealPath("/") + java.io.File.separator + basePath;
+                }
             }
         }
         return basePath;
