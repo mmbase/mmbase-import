@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.226 2004-01-06 16:41:03 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.227 2004-01-06 18:10:15 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5168,6 +5168,15 @@ The 0 is just counter, which starts at 0 on every page.
          only want to implement a 'next page' button.
       </info>
     </attribute>
+    <attribute>
+      <name>indexoffset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The produced indexes can be used as page numbers. Default this page-numbering starts at 0,
+        with this you can change it, e.g. set it to 1.
+      </info>
+    </attribute>
   </tag>
 
   <tag>
@@ -5195,6 +5204,12 @@ The 0 is just counter, which starts at 0 on every page.
         Maximal number of batches to be produces. If more 'previous' batches are available than this
         number, the list is truncated from the beginning (of course).
       </info>
+    </attribute>
+    <attribute>
+      <name>indexoffset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="nextbatches" attribute="indexoffset" />
     </attribute>
   </tag>
 
