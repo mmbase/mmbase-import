@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VtsSuite extends TestCase {
     
@@ -16,6 +16,7 @@ public class VtsSuite extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
