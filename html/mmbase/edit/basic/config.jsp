@@ -6,7 +6,7 @@
  <mm:remove referid="config" /> <!-- remove configuration, and recreate -->
  <mm:context id="config">
     <mm:import externid="page_size" />
-    <mm:import externid="hide_search" />
+    <!-- mm:import externid="hide_search" /-->
     <mm:import externid="style_sheet" />
     <mm:import externid="method" />
     <mm:import externid="session" />
@@ -30,12 +30,14 @@
      <tr><td><%= m.getString("config.pagesize")%></td>  
          <td><input type="text" size="30" name="page_size" value="<mm:write referid="config.page_size" />" /></td>
      </tr>
+     <%--
      <tr><td><%= m.getString("config.hidesearch") %></td>
          <td><select name="hide_search">
              <option value="false" <mm:compare referid="config.hide_search" value="false">selected="selected"</mm:compare>><%= m.getString("false") %></option>
              <option value="true"  <mm:compare referid="config.hide_search" value="true">selected="selected"</mm:compare>><%= m.getString("true") %></option>
              </select></td>
      </tr>
+     --%>
      <tr><td><%= m.getString("config.stylesheet") %></td>
          <td><select name="style_sheet">
              <option value="base.css" <mm:compare referid="config.style_sheet" value="base.css">selected="selected"</mm:compare>>basic</option>
