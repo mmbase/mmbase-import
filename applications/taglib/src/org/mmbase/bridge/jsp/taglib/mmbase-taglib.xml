@@ -2046,28 +2046,52 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    Where to search the externid in. On default it is searched in
-    several sources, but you can limit it with this attribute. In this way it
-    is also possible to get different variables with the same name
-    from different sources.
+        Where to search the externid in. On default it is searched in
+        several sources, but you can limit it with this attribute. In this way it
+        is also possible to get different variables with the same name
+        from different sources.
     </info>
       <possiblevalue>
         <value>parent</value>
+        <info>
+          Imports the variable from a parent context.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>page</value>
+        <info>
+          Import the variable from the standard JSP 'page
+          context'.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>session</value>
+        <info>
+          Import the variable from the session.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>cookie</value>
+        <info>
+          Import the variable from a user cookie.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>parameters</value>
+        <info>
+          Import the variable from a POST (a simple form) or GET (the
+          URL) parameter.
+        </info>
       </possiblevalue>
       <possiblevalue>
-        <value>postparameters</value>
+        <value>multipart</value>
+        <info>
+          If the form is a 'multipart' form
+          (enctype="multipart/form-data"), which is necessary e.g. for
+          images, then you can read the results with
+          this. 'postparameters' is a synonym for this, but
+          'multipart' is probably a clearer description.
+        </info>
       </possiblevalue>
     </attribute>
     <attribute>
