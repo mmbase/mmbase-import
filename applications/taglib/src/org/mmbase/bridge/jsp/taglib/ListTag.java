@@ -85,6 +85,7 @@ public class ListTag extends AbstractNodeListTag {
      */
     public void setSearchdir(String search) throws JspTagException {
         searchString = getAttributeValue(search).toUpperCase().trim();
+        if (log.isDebugEnabled()) log.debug("Setting search dir to " + searchString);
         if (searchString.length()==0) {
             searchString="BOTH";
         } else if ( !searchString.equals("BOTH") &&
@@ -92,7 +93,7 @@ public class ListTag extends AbstractNodeListTag {
                     !searchString.equals("DESTINATION") &&
                     !searchString.equals("ALL"))  {
             throw new JspTagException("Search should be one of BOTH, SOURCE, "+
-                        "DESTINATION, or ALL (value found was "+search+")");
+                        "DESTINATION, or ALL (value found was "+searchString+")");
         }
     }
 
@@ -121,7 +122,11 @@ public class ListTag extends AbstractNodeListTag {
         if ("true".equals(distinctString) || "yes".equals(distinctString)) {
             searchDistinct = true;
         }
-        log.debug("pathstring " + pathString);
+        if (log.isDebugEnabled()) {
+            log.debug("pathstring " + pathString);
+            log.debug("directions " + directions);
+            log.debug("searchString " + searchString);
+        }
         NodeList nodes = getCloud().getList(searchNodes,
                                             pathString,
                                             fields,
