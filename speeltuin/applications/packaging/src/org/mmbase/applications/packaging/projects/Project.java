@@ -76,7 +76,6 @@ public class Project {
     }
 
     public boolean deleteTarget(String name) {
-	log.info("DEL="+name+" "+targets);
 	// bad bad bad
 	targets.remove(name);
 	packagetargets.remove(name);
@@ -347,6 +346,13 @@ public class Project {
 	}
        body+="</packaging>\n";
         File sfile = new File(path);
+
+        // check if the dirs are created, if not create them
+        String dirsp=path.substring(0,path.lastIndexOf(File.separator));
+        File dirs=new File(dirsp);
+        if (!dirs.exists()) {
+                dirs.mkdirs();
+        }
         try {
             DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
             scan.writeBytes(body);
