@@ -1,5 +1,5 @@
 <PROCESSOR MMBASE>
-<IF $PARAM1=N> 
+<IF $PARAM1=EinsEditor> 
 <LIST OBJECTS TYPE="reldef" FIELDS="sguiname" WHERE="number==$MOD-MMBASE-FIELD-$PARAM2-rnumber">
 ($ITEM1)
 </LIST>
