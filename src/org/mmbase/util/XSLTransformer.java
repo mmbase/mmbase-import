@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.13 2002-12-05 17:31:07 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.14 2003-02-11 17:05:08 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -219,7 +219,7 @@ public class XSLTransformer {
                 fileName = fileName.substring(0, fileName.length() - 4);
                 if (params == null) params = new HashMap();                
                 params.put("filename", fileName);        
-                File resultFile = new File(resultDir, fileName  + ".html");
+             File resultFile = new File(resultDir, fileName  + ".html");
                 if (resultFile.lastModified() > files[i].lastModified()) {
                     log.info("Not transforming " + files[i] + " because " + resultFile + " is up to date");
                 } else {
@@ -239,7 +239,7 @@ public class XSLTransformer {
      */
     public static void main(String[] argv) {
         XSLTransformer t = new XSLTransformer();
-        /// log.setLevel(org.mmbase.util.logging.Level.DEBUG);
+        // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
             log.info("Use with two arguments: xslt-file xml-inputfile [xml-outputfile]");
             log.info("Use with tree arguments: xslt-file xml-inputdir xml-outputdir");
@@ -247,15 +247,19 @@ public class XSLTransformer {
             HashMap params=null;
             if (argv.length > 3) {
                 params= new HashMap();
-                for (int i=3; i<argv.length; i++) {
-                    String key=argv[i];
-                    String value="";
-                    int p=key.indexOf("=");
-                    if (p>0) {
+                for (int i = 3; i<argv.length; i++) {
+                    String key = argv[i];
+                    String value = "";
+                    int p = key.indexOf("=");
+                    if (p > 0) {
                         if (p<key.length()-1) value=key.substring(p+1);
-                        key=key.substring(0,p);
+                        key = key.substring(0, p);
                     }
-                    params.put(key,value);
+                    if (key.equals("usecache")) {
+                        TemplateCache.getCache().setActive(value.equals("true"));
+                    } else {
+                        params.put(key,value);
+                    }
                 }
             }
 
