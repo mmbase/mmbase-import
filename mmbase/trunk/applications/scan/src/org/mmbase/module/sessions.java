@@ -7,65 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
- $Id: sessions.java,v 1.20 2001-01-16 13:16:12 install Exp $
-
- $Log: not supported by cvs2svn $
- Revision 1.19  2000/12/15 22:28:57  daniel
- added fallback/forward for new cookie/user system
-
- Revision 1.18  2000/12/13 11:18:31  install
- Rob: redirect keywords through database mapper
-
- Revision 1.17  2000/11/21 16:00:17  vpro
- Rico: fixed bug in which getSetString return a "null" istead of ""
-
- Revision 1.16  2000/11/19 00:23:04  daniel
- turned debug off
-
- Revision 1.15  2000/11/13 15:56:11  vpro
- Dirk-Jan: added CLEARSESSIONINFO This command clears the SessionInfo
-
- Revision 1.14  2000/10/15 22:37:23  gerard
- gerard: added some javadocs
- submitted by Jaco de Groot
-
- Revision 1.13  2000/10/09 12:12:46  vpro
- Rico: added comments
-
- Revision 1.12  2000/06/26 14:12:36  wwwtech
- Daniel.. fixed direct queries for properties
-
- Revision 1.11  2000/06/21 14:28:19  wwwtech
- rob
-
- Revision 1.10  2000/04/25 21:30:44  wwwtech
- daniel: fixed a bug that forgot to return sets with 1 value
-
- Revision 1.8  2000/04/21 11:14:55  wwwtech
- Rico: added command to get Set size
-
- Revision 1.7  2000/03/31 12:50:04  wwwtech
- Wilbert: Introduction of ParseException for method getList
-
- Revision 1.6  2000/03/30 13:11:26  wwwtech
- Rico: added license
-
- Revision 1.5  2000/03/29 10:05:00  wwwtech
- Rob: Licenses changed
-
- Revision 1.4  2000/03/24 11:16:15  wwwtech
- Rico: added test when saving the session values if the needed builders are loaded (properties,users)
-
- Revision 1.3  2000/03/09 16:21:29  wwwtech
- Rico: fixed bug in sessions, when it would try to get the hostname out of the request when used by calcPage when no request is available
-
- Revision 1.2  2000/02/24 13:28:54  wwwtech
- Rico: added addSetValue for adding of sets of values to a session set
- so you can post a set of values to a session variable, fixed several debug messages (added
- mostly)
-
-*/
 package org.mmbase.module;
 
 import java.lang.*;
@@ -92,7 +33,7 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.20 2001-01-16 13:16:12 install Exp $
+ * @version $Id: sessions.java,v 1.21 2001-03-29 14:56:03 install Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -167,7 +108,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		if(wanted.indexOf("-xmlescape")!=-1) {
 			wanted = wanted.substring(0,wanted.length()-10);
 			String ret = session.getValue(wanted);
-			return "<![CDATA["+ret+"]]>";
+			return xmlEscape(ret);
 		} else {
 			return(session.getValue(wanted));
 		}
@@ -823,9 +764,35 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		}
 	}
 
-	private void debug( String msg )
-	{
+	private void debug( String msg ) {
 		System.out.println( classname +":"+ msg );
 	}
-		
+
+	/**
+	 * the XML reader will correct the escaped characters again.
+	 * but scan will not evaluate the tags.
+	 * only &lt; has to be parsed to &amp;&lt; 
+	 */
+	public String xmlEscape (String s) {
+		StringBuffer out = new StringBuffer();
+		int l = s.length();
+		char c;
+		for (int i = 0; i < l; i++) {
+			c = s.charAt(i);
+			switch (c) {
+				case '<':
+					out.append("&lt;");
+					break;
+				case '>':
+					out.append("&gt;");
+					break;
+				case '&':
+					out.append("&amp;");
+					break;
+				default:
+					out.append(c);
+			}
+		}
+		return out.toString();
+	}
 }
