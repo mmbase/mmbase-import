@@ -36,7 +36,7 @@ import java.lang.reflect.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.2 2004-01-20 23:16:47 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.3 2004-02-02 10:42:22 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -183,6 +183,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         } else {
             params = function.getNewParameters();
         }
+        params.setAutoCasting(true);
 
         if (functionContainer != null) {
             Iterator i = functionContainer.getParameters().iterator();
