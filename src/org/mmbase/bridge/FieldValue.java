@@ -12,11 +12,11 @@ package org.mmbase.bridge;
 import org.mmbase.module.core.*;
 
 /**
- * This interface represents a node's field type information object.
+ * This interface represents a value stored in a node.
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: FieldValue.java,v 1.2 2002-09-26 15:28:12 pierre Exp $
+ * @version $Id: FieldValue.java,v 1.3 2002-09-26 16:12:04 pierre Exp $
  */
 public interface FieldValue {
 
@@ -198,7 +198,7 @@ public interface FieldValue {
      * Sets the value, passing a boolean value.
      * This value is converted to a Boolean object.
      *
-     * @see #getBoolean()
+     * @see #toBoolean()
      * @param value the field value as a boolean
      */
     public void setBoolean(boolean value);
@@ -207,7 +207,7 @@ public interface FieldValue {
      * Sets the value, passing a float value.
      * This value is converted to a Float object.
      *
-     * @see #getFloat()
+     * @see #toFloat()
      * @param value the field value as a float
      */
     public void setFLoat(float value);
@@ -216,7 +216,7 @@ public interface FieldValue {
      * Sets the value, passing a double value.
      * This value is converted to a Double object.
      *
-     * @see #getDouble()
+     * @see #toDouble()
      * @param value the field value as a double
      */
     public void setDouble(double value);
@@ -225,7 +225,7 @@ public interface FieldValue {
      * Sets the value, passing a long value.
      * This value is converted to a Long object.
      *
-     * @see #getLong()
+     * @see #toLong()
      * @param value the field value as a long
      */
     public void setLong(long value);
@@ -234,15 +234,15 @@ public interface FieldValue {
      * Sets the value, passing a int value.
      * This value is converted to a Integer object.
      *
-     * @see #getInteger()
+     * @see #toInt()
      * @param value the field value as a int
      */
-    public void setInteger(int value);
+    public void setInt(int value);
 
     /**
      * Sets the value, passing a byte array.
      *
-     * @see #getByte()
+     * @see #toByte()
      * @param value the field value as a byte array
      */
     public void setByte(byte[] value);
@@ -250,7 +250,7 @@ public interface FieldValue {
     /**
      * Sets the value, passing a String.
      *
-     * @see #getString()
+     * @see #toString()
      * @param value the field value as a String
      */
     public void setString(String value);
@@ -258,7 +258,7 @@ public interface FieldValue {
     /**
      * Sets the value, passing a Node.
      *
-     * @see #getNode()
+     * @see #toNode()
      * @param value the field value as a Node
      */
     public void setNode(Node value);
@@ -266,7 +266,7 @@ public interface FieldValue {
     /**
      * Sets the value, passing a org.w3c.dom.Document object.
      *
-     * @see #getXML()
+     * @see #toXML()
      * @param value the field value as a XML Document
      */
     public void setXML(org.w3c.dom.Document value);
