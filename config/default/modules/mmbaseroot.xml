@@ -71,7 +71,7 @@
     	used for communication between mmbase nodes and external devices
 	    (xml or jini based).
       	-->
-        <property name="host">10.10.10.45</property>
+        <property name="host">127.0.0.1</property>
 
         <!--
     	name="authtype" defines what authorisation type is used, This is a plugin
