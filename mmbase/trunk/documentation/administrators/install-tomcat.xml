@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase installation on Apache Tomcat</title>
     <date>5 December 2002</date>
-    <edition>$Id: install-tomcat.xml,v 1.6 2003-06-30 13:04:11 johannes Exp $</edition>
+    <edition>$Id: install-tomcat.xml,v 1.7 2003-07-07 11:13:02 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -37,7 +37,7 @@
     </para>
     <para>
       This installation procedure was tested on a Debian/GNU Linux system (with sun jdk in
-      /usr/local), other Unixes must be very similar, and for systems I have good hopes, but did not
+      /usr/local), other Unixes must be very similar, and for those systems I have good hopes, but did not
       test (yet).
     </para>
     <para>
@@ -123,7 +123,7 @@
           suffix=".log" 
           timestamp="false"
         />
-        <Context path="/mm" docBase="/home/mmbase/mmbase-app" debug="0">
+        <Context path="/mm" docBase="/home/michiel/mmbase/1.6/mmbase/build/mmbase/mmbase-webapp" debug="0">
           <Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" />
           <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
           <ResourceParams name="mail/Session">
