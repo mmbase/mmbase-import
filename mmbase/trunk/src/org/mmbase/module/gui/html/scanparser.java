@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.15 2000-07-12 08:19:41 install Exp $
+$Id: scanparser.java,v 1.16 2000-07-12 09:18:48 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2000/07/12 08:19:41  install
+Rob: added getMimeType methods
+
 Revision 1.14  2000/07/03 08:37:16  vpro
 Wilbert: Added (dollar)PARAMA to retrieve all params (querystring)
 
@@ -65,7 +68,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.15 $ $Date: 2000-07-12 08:19:41 $
+ * @$Revision: 1.16 $ $Date: 2000-07-12 09:18:48 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1356,7 +1359,6 @@ public class scanparser extends ProcessorModule {
 			sessions.setValue(session,key,""+offset);
 		}
 	
-	System.out.println("Scanparser -> ROB");	
 		String version=tagger.Value("VERSION");
 		if (version==null || version.equals("1.0")) {
 		// is there a proccesor defined ?

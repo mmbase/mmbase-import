@@ -29,7 +29,8 @@ public class TypeDef extends MMObjectBuilder {
 	Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
 	Hashtable descriptionCache; 				// object number -> typedef description
 	public boolean broadcastChanges=false;
-	public Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
+	// ROB -> There are different typedefs loaded!!!
+	static private Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
 
 	public TypeDef() {
 	}
@@ -289,15 +290,17 @@ public class TypeDef extends MMObjectBuilder {
 	}
 
 	public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
-		System.out.println("Tataaaaa");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            //debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
 
             if (cmd.equals("builders")) {
+		
+				Enumeration e = activeBuilders().elements();
+				while (e.hasMoreElements()) {
+					System.out.println("activeBuilder -> "+e.nextElement());	
+				}
 				return typedefsLoaded;
             }
-            //System.out.println("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
         }
 		return null;
     }
