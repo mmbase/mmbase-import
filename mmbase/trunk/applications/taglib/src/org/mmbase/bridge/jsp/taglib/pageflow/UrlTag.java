@@ -63,7 +63,7 @@ public class UrlTag extends ContextReferrerTag {
         if (keys == null) { // all keys not in session
             keys = getContextTag().getKeys(ContextTag.TYPE_POSTPARAMETERS);
         }
-        String connector = "?";
+        String connector = (show.indexOf('?') == -1 ? "?" : "&");
 
         Iterator i = keys.iterator();
         while (i.hasNext()) {
