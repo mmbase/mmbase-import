@@ -1502,7 +1502,7 @@ public class MMObjectBuilder extends MMTable {
     * Derived builders should override this method to provide additional functions.
 	*
 	* current functions are:<br />
-	* on dates: date, time, timesec, longmonth, month, weekday, shortday, day, year <br />
+	* on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
 	* on text:  wap, html, shorted, uppercase, lowercase <br />
 	* on node:  age() <br />
 	* on numbers: wrap_&lt;int&gt;, currency_euro <br />
@@ -1526,6 +1526,9 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("longmonth")) {		// longmonth September
             int v=node.getIntValue(field);
             rtn=DateStrings.longmonths[DateSupport.getMonthInt(v)];
+        } else if (function.equals("monthnumber")) {		
+            int v=node.getIntValue(field);
+            rtn=""+DateSupport.getWeekDayInt(v);
         } else if (function.equals("month")) {			// month Sep
             int v=node.getIntValue(field);
             rtn=DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
@@ -1538,6 +1541,9 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("day")) {			// day 4
             int v=node.getIntValue(field);
             rtn=""+DateSupport.getDayInt(v);
+        } else if (function.equals("shortyear")) {			// year 01
+            int v=node.getIntValue(field);
+            rtn=(DateSupport.getYear(v)).substring(2);
         } else if (function.equals("year")) {			// year 2001
             int v=node.getIntValue(field);
             rtn=DateSupport.getYear(v);
@@ -1585,8 +1591,8 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("wrap")) {
             Vector v=getFunctionParameters(field);
             try {
-                int wrappos=Integer.parseInt((String)v.get(0));
-                String val=node.getStringValue((String)v.get(1));
+                String val=node.getStringValue((String)v.get(0));
+                int wrappos=Integer.parseInt((String)v.get(1));
                 rtn=wrap(val,wrappos);
             } catch(Exception e) {}
         } else if (function.equals("substring")) {
