@@ -56,7 +56,7 @@
       'urls' builders.
     </td>
     <td>
-      <a href="share/images/myyahoo_cloud.jpg" target="img">
+      <a href="<mm:url page="share/images/myyahoo_cloud.jpg" />" target="img">
         <img src="share/images/myyahoo_cloud.jpg" width="300" />
       </a>
     </td>
@@ -69,7 +69,7 @@
     <td>
       With the object cloud design described above you can create webpages like the one you see on the right (By clicking the MyYahoo url you can see the MyYahoo site in real action). There is a small searchengine that allows you to search for URL's in all categories.
     </td>
-    <td><a href="share/images/myyahoo_manual.jpg" target="img"><img src="share/images/myyahoo_manual.jpg" width="300" /></a></td>
+    <td><a href="<mm:url page="share/images/myyahoo_manual.jpg" />" target="img"><img src="share/images/myyahoo_manual.jpg" width="300" /></a></td>
   </tr>
 </table>
 </body>
