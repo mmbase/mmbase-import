@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.23 2004-01-08 07:34:22 pierre Exp $
+ * @version $Id: Message.java,v 1.24 2004-08-23 14:26:01 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -132,7 +132,7 @@ public class Message extends MMObjectBuilder {
         // In future version, these virutal fields migth actually be used to set or get
         // this data directly from the message node
         checkAddTmpField("channel"); // node number of the channel object for this message
-        checkAddTmpField("user");  // node number of the user object for this message
+        checkAddTmpField("user");    // node number of the user object for this message
         checkAddTmpField("username"); // username of the person posting the message
 
         activate();
