@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.26 2004-03-11 23:40:25 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.27 2004-03-14 01:04:08 robmaris Exp $
  * @since MMBase-1.7
  */
 
@@ -659,10 +659,11 @@ public class BasicSqlHandler implements SqlHandler {
                 // Field compare constraint
                 FieldCompareConstraint fieldCompareConstraint = (FieldCompareConstraint) fieldConstraint;
 
-                // append NOT operator
-                // note that this may not be the most effecient way to add an inversde,
-                // i.e. 'NOT LIKE' may be faster than negating a 'LIKE'
-                if (overallInverse) sb.append("NOT (");
+                // Negate by leading NOT, unless it's a LIKE constraint, 
+                // in which case NOT LIKE is used.
+                if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
+                    sb.append(overallInverse? "NOT ": "");
+                }
 
                 if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
@@ -699,6 +700,9 @@ public class BasicSqlHandler implements SqlHandler {
                     break;
 
                 case FieldValueConstraint.LIKE:
+                    if (overallInverse) {
+                        sb.append(" NOT");
+                    }
                     appendLikeOperator(sb, fieldConstraint.isCaseSensitive());
                     break;
                     /*
@@ -736,7 +740,6 @@ public class BasicSqlHandler implements SqlHandler {
                     "Unknown constraint type: "
                     + constraint.getClass().getName());
                 }
-                if (overallInverse) sb.append(")");
 
             } else {
                 throw new UnsupportedOperationException(
