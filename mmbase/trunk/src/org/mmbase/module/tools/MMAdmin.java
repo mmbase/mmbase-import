@@ -9,30 +9,26 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module.tools;
 
-import java.util.*;
 import java.io.File;
+import java.util.*;
 
+import org.mmbase.cache.MultilevelCache;
+import org.mmbase.module.*;
+import org.mmbase.module.builders.Versions;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.tools.MMAppTool.MMAppTool;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.BuilderWriter;
-import org.mmbase.util.xml.ModuleWriter;
-import org.mmbase.module.*;
-import org.mmbase.cache.MultilevelCache;
-import org.mmbase.module.core.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.module.builders.Message; // dependency, needs to be removed
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.tools.MMAppTool.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.*;
 
 /**
  * @javadoc
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.72 2003-05-25 12:07:11 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.73 2003-06-03 11:01:33 kees Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
