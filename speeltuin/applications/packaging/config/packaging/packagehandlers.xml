@@ -16,7 +16,7 @@
 	<packagehandler type="java/jar" class="org.mmbase.applications.packaging.packagehandlers.JavaJarPackage">
 		<description>Installs/Uninstalls jars</description>
 	</packagehandler>
-	<packagehandler type="config/file" class="org.mmbase.applications.packaging.packagehandlers.ConfigFilePackage">
-		<description>Installs/Uninstalls basic config files</description>
-	</packagehandler>
+        <packagehandler type="config/basic" class="org.mmbase.applications.packaging.packagehandlers.ConfigBasicPackage">
+                <description>Installs/Uninstalls basic config files</description>
+        </packagehandler>
 </packagehandlers>
