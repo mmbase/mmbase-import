@@ -4,10 +4,9 @@
 <h1>context 2</h1>
 <p>
 Two parameters were passed to this page. We show how to use a context
-inside another context, and how to use the `present' and `notpresent'
-tags.
+inside another context (inside the default 'context'), and how to use
+the `present' and `notpresent' tags.
 </p>
-<mm:context>
 <mm:import id="a"     externid="hello"  />
 <mm:import id="b"     externid="hi"  />
 <mm:import id="alias" externid="hoi"    required ="true" />
@@ -41,7 +40,6 @@ tags.
 <mm:notpresent referid="b">
   param hi is not present
 </mm:notpresent>
-</mm:context>
 <hr />
 <a href='<mm:url page="context3\.jsp" />'>next page</a>
 </body>
