@@ -22,7 +22,6 @@ import org.mmbase.module.*;
  * JDBC Module the module that provides you access to the loaded JDBC interfaces
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @see org.mmbase.module.database.JDBCAccess
  * @see org.mmbase.module.servlets.JDBCServlet
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
