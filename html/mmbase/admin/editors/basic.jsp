@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Basic Editors</title>
-<link rel="stylesheet" type="text/css" href="../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body class="basic" >
 
@@ -29,7 +29,7 @@
   <th class="header" colspan="2">URL</th>
 </tr>
 <tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmeditors/jsp/" />">The MMBase Editors (jsp) : http://host:port/mmeditors/jsp/</a></td>
+  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/" />">The MMBase Editors (jsp) : http://host:port/mmbase/edit/</a></td>
 </tr>
 <tr>
   <td class="linkdata" colspan="2"><a href="<mm:url page="/mmexamples/jsp/my_editors/" />">Alternate Editors (jsp) : http://host:port/mmexamples/jsp/my_editors/</a></td>
@@ -37,7 +37,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>
