@@ -198,21 +198,25 @@ public class ClusterNode extends VirtualNode {
             // -> so return the MMObjectNode for that buidler
             return getRealNode(fieldname);
         }
-        Object o=super.getValue(fieldname);
-        if (o==null) {
+        Object o = super.getValue(fieldname);
+        if (o == null) {
             // the normal approach does not yield results.
             // get the value from the original builder
             String buildername=getBuilderName(fieldname);
             MMObjectNode n=getRealNode(buildername);
             if (n!=null) {
-                o=n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldname));
-            } else {
+                o = n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldname));
+            } else { 
                 // fall back to builder if this node doesn't contain a number to fetch te original
-                o=parent.mmb.getMMObject(buildername).getValue(this,fieldname);
+                MMObjectBuilder bul = parent.mmb.getMMObject(buildername);
+                if (bul != null) {                    
+                    o = bul.getValue(this,fieldname);
+                }
             }
         }
         return o;
     }
+
 
     /**
      * Get a value of a certain field.
@@ -295,6 +299,15 @@ public class ClusterNode extends VirtualNode {
         res=res || ((MMObjectNode)r.nextElement()).isChanged();
       }
       return res;
+    }
+    
+    /**
+     * Return the relations of this node.
+     * This is not allowed on a cluster node
+     * @throws <code>RuntimeException</code>
+     */
+    public Enumeration getRelations() {    
+        throw new RuntimeException("Cannot follow relations on a cluster node. ");
     }
 
 }
