@@ -10,6 +10,7 @@
 <h3>previousbatches/nextbatches</h3>
 <mm:import id="offset">50</mm:import>
 <mm:import id="max">5</mm:import>
+<mm:import externid="indexoffset">0</mm:import>
 <mm:import id="list" vartype="list">a,b,c,d,e,f</mm:import>
 <mm:listnodescontainer type="object">
   <p>
@@ -20,22 +21,25 @@
   </p>
   <mm:offset    value="$offset" />
   <mm:maxnumber value="$max" />
-  <mm:previousbatches> 
+  <mm:previousbatches indexoffset="$indexoffset"> 
     <mm:first>first page: <mm:index /> ----</mm:first> 
   </mm:previousbatches>
 
-  <mm:previousbatches max="5"> 
+  <mm:previousbatches max="5"  indexoffset="$indexoffset"> 
     <mm:index /><mm:last inverse="true">, </mm:last>
   </mm:previousbatches>
-  <font color="green"><mm:write value="${+$offset / $max}" vartype="integer" /></font><!-- current page -->
-  <mm:nextbatches max="5">
+  <font color="green"><mm:write value="${+$offset / $max + $indexoffset}" vartype="integer" /></font><!-- current page -->
+  <mm:nextbatches max="5" indexoffset="$indexoffset">
     <mm:index /><mm:last inverse="true">, </mm:last>
   </mm:nextbatches>
 
-  <mm:nextbatches> 
+  <mm:nextbatches indexoffset="$indexoffset"> 
     <mm:last>---last page: <mm:index /></mm:last> 
   </mm:nextbatches>
 
+  <p>
+    <a href="<mm:url><mm:param name="indexoffset"><mm:write id="newoffset" vartype="integer" value="${+1 - $indexoffset}" /></mm:param></mm:url>">With offset <mm:write referid="newoffset" /></a>
+</p>
   <hr />
   <p>
     paging with mm:write:
