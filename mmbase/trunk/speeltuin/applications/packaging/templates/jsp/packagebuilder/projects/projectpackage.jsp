@@ -29,11 +29,12 @@
 	</tr>
 	  <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
  	    <tr><th>Target</th><td><mm:field name="name" /></td>
- 	    <tr><th>Package</th><td><mm:field name="packagename"><mm:compare value=""><font color="red">missing name</font></mm:compare></mm:field><mm:field name="packagename" /></td>
+ 	    <tr><th>Package</th><td><mm:field name="packagename"><mm:compare value=""><A HREF="<mm:url page="index.jsp" referids="main,sub,name,package"><mm:param name="mode" value="packageinfo" /></mm:url>"><font color="red">missing name</font></a></mm:compare></mm:field><mm:field name="packagename" /></td>
  	    <tr><th>Type</th><td><mm:field name="type" /></td>
- 	    <tr><th>Maintainer</th><td><mm:field name="maintainer"><mm:compare value=""><font color="red">missing maintainer</font></mm:compare></mm:field><mm:field name="maintainer" /></td>
+ 	    <tr><th>Maintainer</th><td><mm:field name="maintainer"><mm:compare value=""><A HREF="<mm:url page="index.jsp" referids="main,sub,name,package"><mm:param name="mode" value="packageinfo" /></mm:url>"><font color="red">missing maintainer</font></a></mm:compare></mm:field><mm:field name="maintainer" /></td>
 	    <mm:import id="burl">projects/packageeditors/<mm:field name="type" />/button.jsp</mm:import>
 	    <mm:import id="surl">projects/packageeditors/<mm:field name="type" />/index.jsp</mm:import>
+	    <mm:import id="syntaxerrors"><mm:field name="syntaxerrors" /></mm:import>
 	  </mm:nodefunction>
 </table>
 </td>
@@ -70,7 +71,7 @@
 	   	<IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
 		</td></tr>
        </mm:compare>
-        <tr><th>Change Package Meta Info</th>
+        <tr><th><mm:compare referid="syntaxerrors" value="true"><font color="red">Change Package Meta Info</font></mm:compare><mm:compare referid="syntaxerrors" value="false">Change Package Meta Info</font></mm:compare></th>
          <td>
            <A HREF="<mm:url page="index.jsp" referids="main,sub,name,package">
 	    <mm:param name="mode" value="packageinfo" />
@@ -226,7 +227,7 @@
 <tr>
 	<td valign="top">
 		<br />
-		<b>Initiators</b><p />
+		<mm:field name="haveinitiators"><mm:compare value="false"><b><font color="red">Initiators</font></b></mm:compare><mm:compare value="true"><b>Initiators</b></mm:compare></mm:field><p />
 		<mm:import id="type" reset="true" >initiators</mm:import>
 		<mm:import id="subtype" reset="true" >initiator</mm:import>
 		Name / Company <br />
@@ -326,7 +327,7 @@
 	</td>
 	<td valign="top" width="50%">
 		<br />
-		<b>Contact info</b><p />
+		<mm:field name="havecontacts"><mm:compare value="false"><b><font color="red">Contact Info</font></b></mm:compare><mm:compare value="true"><b>Contact Info</b></mm:compare></mm:field><p />
 		<mm:import id="type" reset="true" >contacts</mm:import>
 		<mm:import id="subtype" reset="true" >contact</mm:import>
 		reason: name (email)<br />
@@ -378,7 +379,7 @@
 <tr>
 	<td colspan="2" valign="top">
 		<br />
-		<b>Developers who have worked on this release</b><p />
+		<mm:field name="havedevelopers"><mm:compare value="false"><b><font color="red">Developers who have worked on this release</font></b></mm:compare><mm:compare value="true"><b>Developers who have worked on this release</b></mm:compare></mm:field><p />
 		<mm:import id="type" reset="true" >developers</mm:import>
 		<mm:import id="subtype" reset="true" >developer</mm:import>
 		<table>

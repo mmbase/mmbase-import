@@ -32,6 +32,7 @@
  	    <tr><th>Bundle</th><td><mm:field name="bundlename"><mm:compare value=""><font color="red">missing name</font></mm:compare></mm:field><mm:field name="bundlename" /></td>
  	    <tr><th>Type</th><td><mm:field name="type" /></td>
  	    <tr><th>Maintainer</th><td><mm:field name="maintainer"><mm:compare value=""><font color="red">missing name</font></mm:compare></mm:field><mm:field name="maintainer" /></td>
+            <mm:import id="syntaxerrors"><mm:field name="syntaxerrors" /></mm:import>
 	  </mm:nodefunction>
 </table>
 </td>
@@ -68,7 +69,7 @@
 	   	<IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
 		</td></tr>
        </mm:compare>
-        <tr><th>Change Bundle Info</th>
+        <tr><th><mm:compare referid="syntaxerrors" value="true"><font color="red">Change Bundle Meta Info</font></mm:compare><mm:compare referid="syntaxerrors" value="false">Change Bundle Meta Info</font></mm:compare></th>
          <td>
            <A HREF="<mm:url page="index.jsp" referids="main,sub,name,bundle">
 	    <mm:param name="mode" value="bundleinfo" />
@@ -324,7 +325,7 @@
 <tr>
 	<td valign="top">
 		<br />
-		<b>Initiators</b><p />
+                <mm:field name="haveinitiators"><mm:compare value="false"><b><font color="red">Initiators</font></b></mm:compare><mm:compare value="true"><b>Initiators</b></mm:compare></mm:field><p />
 		<mm:import id="type" reset="true" >initiators</mm:import>
 		<mm:import id="subtype" reset="true" >initiator</mm:import>
 		Name / Company <br />
@@ -424,7 +425,7 @@
 	</td>
 	<td valign="top" width="50%">
 		<br />
-		<b>Contact info</b><p />
+                <mm:field name="havecontacts"><mm:compare value="false"><b><font color="red">Contact Info</font></b></mm:compare><mm:compare value="true"><b>Contact Info</b></mm:compare></mm:field><p />
 		<mm:import id="type" reset="true" >contacts</mm:import>
 		<mm:import id="subtype" reset="true" >contact</mm:import>
 		reason: name (email)<br />
@@ -476,7 +477,7 @@
 <tr>
 	<td colspan="2" valign="top">
 		<br />
-		<b>Developers who have worked on this release</b><p />
+                <mm:field name="havedevelopers"><mm:compare value="false"><b><font color="red">Developers who have worked on this release</font></b></mm:compare><mm:compare value="true"><b>Developers who have worked on this release</b></mm:compare></mm:field><p />
 		<mm:import id="type" reset="true" >developers</mm:import>
 		<mm:import id="subtype" reset="true" >developer</mm:import>
 		<table>
