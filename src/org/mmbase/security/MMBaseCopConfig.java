@@ -77,6 +77,8 @@ public class MMBaseCopConfig {
 	
     	watcher = new SecurityFileWatcher(mmbaseCop);
 
+        cop = mmbaseCop;
+
     	String configPath = configFile.getAbsolutePath();
     	XMLBasicReader reader = new XMLBasicReader(configPath);
 
