@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.36 2003-07-21 15:24:49 michiel Exp $
+ * @version $Id: Cloud.java,v 1.37 2003-07-21 20:51:34 michiel Exp $
  */
 public interface Cloud {
 
@@ -476,9 +476,8 @@ public interface Cloud {
      * 
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
-     * @todo should accept Query?
      */
-    public NodeList getList(SearchQuery query);
+    public NodeList getList(Query query);
 
 
     /**
