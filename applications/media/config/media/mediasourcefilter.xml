@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mediasourcefilter SYSTEM "http://www.mmbase.org/dtd/mediasourcefilter_1_0.dtd">
-
-<mediasourcefilter>
-
+<!DOCTYPE mediasourcefilter SYSTEM "http://www.mmbase.org/dtd/mediasourcefilter_1_0.dtd" [
+ <!ENTITY % configs "preferredSource , realaudio">
+ <!ENTITY % format SYSTEM "http://www.mmbase.org/dtd/formatcomparator_1_0.dtd" >
+ <!ENTITY % real   SYSTEM "http://www.mmbase.org/dtd/realcomparator_1_0.dtd" >
+ %format;
+ %real;
+]>
+<mediasourcefilter  xmlns:node ="http://www.mmbase.org/dtd/realcomparator_1_0.dtd">
 	<!-- 
   Define the chain of filters, the filter that has to filter first
   has to mentioned as first. A filter is specified or by the classname
@@ -10,25 +14,33 @@
   See for more information about the standard ones the rest of this file.
 		-->
 	<chain>
-		<filter>preferredSource</filter>
+		<filter>org.mmbase.util.media.AvailableComparator</filter>
+		<filter>org.mmbase.util.media.ClientFormatComparator</filter>
+		<filter>org.mmbase.util.media.ServerFormatComparator</filter>
+		<filter>org.mmbase.util.media.ServerRealComparator</filter>
+		<filter>org.mmbase.util.media.RealComparator</filter>
 	</chain>
 
-	<!-- 
-   define the sequence of preference. The first mentioned format will be given if found.
-	-->
-	<preferredSource>
-    <source format="RM" />
-		<source format="RA" />
-	</preferredSource>
+  <filterConfigs>
+    <!-- 
+    Define the sequence of preference of the servers.
+    -->
+    <preferredSource>
+      <source format="ASF" />
+      <source format="RM" />
+      <source format="RA" />
+    </preferredSource>
+    
 
- 	<!-- 
-  Used to specify realaudio preferences.
-	-->
-	<realaudio>
-		<minspeed>16000</minspeed>
-		<maxspeed>96000</maxspeed>
-		<minchannels>1</minchannels>
-		<maxchannels>2</maxchannels>
-	</realaudio>
+    <!-- 
+    Used to specify realaudio preferences.
+    -->
+    <realaudio>
+      <minspeed>16000</minspeed>
+      <maxspeed>96000</maxspeed>
+      <minchannels>1</minchannels>
+      <maxchannels>2</maxchannels>
+    </realaudio>
+  </filterConfigs>
 	
 </mediasourcefilter>
