@@ -7,6 +7,9 @@ package org.mmbase.security;
 public final class Rank {
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
+
+    /** int value for the basic user Rank*/
+    public final static int BASICUSER_INT = 100;
     
     /** int value for the anonymous Rank*/
     public final static int ADMIN_INT = 73059;
@@ -14,6 +17,8 @@ public final class Rank {
     /** Identifier for anonymous rank*/    
     public final static Rank ANONYMOUS = new Rank(ANONYMOUS_INT, "anonymous");
     
+    /** Identifier for basic user rank*/    
+    public final static Rank BASICUSER = new Rank(BASICUSER_INT, "basic user");
 
     /** Identifier for admin rank*/    
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
