@@ -29,6 +29,8 @@ public class SpaceReducer extends AbstractCharTransformer implements CharTransfo
     public Writer transform(Reader r, Writer w) {
         int space = 0;
         int nl = 0;
+        StringBuffer indent = new StringBuffer();
+        int l = 0;
         try {
             while (true) {
                 int c = r.read();
@@ -37,14 +39,21 @@ public class SpaceReducer extends AbstractCharTransformer implements CharTransfo
                     if (nl == 0) w.write(c);                    
                     space++;
                     nl++;
-                } else if (c == ' ' || c == '\t') {
-                    if (space == 0) w.write(c);
+                    l++;
+                } else if (Character.isWhitespace((char) c)) {
+                    if (space == 0 && l > 0) w.write(' ');
+                    if (l == 0) indent.append(c);
                     space ++;
                 } else {                
-                    space = 0; nl = 0;
+                    if (l == 0 && space > 0) {
+                        w.write(indent.toString());
+                        indent.setLength(0);
+                    }
+                    space = 0; nl = 0; l++;
+                    
                     w.write(c);
                 }
-            }
+            }            
         } catch (java.io.IOException e) {
             System.out.println("w" + e.toString());
         }
