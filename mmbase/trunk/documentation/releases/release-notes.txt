@@ -163,11 +163,13 @@ Upgrade:
 -  Replace all shipped jsps too (e.g. mmeditors, mmexamples, mmadmin)
    - The editwizard jsp and xsls are in mmbase-editwizard.zip now.
 
-- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead:
+- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead: 
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
+    <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
   </taglib>
+  Note that the taglib is not any more present in mmbase.jar itself. So if you	
+  wrote mmbase.jar here in web.xml you have to change it.
 
 - Clean the working directory of your app-server (to recompile jsp's)
 
