@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author 	Marcel Maatkamp, marmaa@vpro.nl
- * @version $Id: MediaUtils.java,v 1.10 2002-01-28 16:35:01 pierre Exp $
+ * @version $Id: MediaUtils.java,v 1.11 2002-02-20 10:43:26 pierre Exp $
  */
 
 public class MediaUtils {
@@ -32,7 +32,7 @@ public class MediaUtils {
     /**
      * @javadoc
      * @deprecation-used contains commented-out code
-     * @dependency scanpage (SCAN)
+     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
      * @vpro uses fixed urls/paths
      */
     public static String getBestMirrorUrl( scanpage sp, String url ) {
@@ -118,7 +118,7 @@ public class MediaUtils {
 
     /**
      * @javadoc
-     * @dependency scanpage (SCAN)
+     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
      * @vpro uses fixed urls/path (beep.vpro.nl)s
      */
     private static String filterBestUrl( scanpage sp, Hashtable urls) {

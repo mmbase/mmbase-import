@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author vpro
- * @version $Id: VideoUtils.java,v 1.8 2002-01-29 12:42:38 pierre Exp $
+ * @version $Id: VideoUtils.java,v 1.9 2002-02-20 10:43:29 pierre Exp $
  */
 public class VideoUtils extends MediaUtils {
 
@@ -38,7 +38,6 @@ public class VideoUtils extends MediaUtils {
      * Vector with MMObjectNodes (rawvideos), number can be cdtrack or videopart
      * @javadoc parameters
      */
-
     public static Vector getRawVideos(MMBase mm, int number) {
         Vector result            = null;
         MMObjectBuilder builder  = mm.getMMObject("rawvideos");
@@ -57,30 +56,29 @@ public class VideoUtils extends MediaUtils {
      *   - if a g2 file is found which is encoded (status=done), set this as preffered
      *   - else find r5 file with best match with respect to wanted speed/channels
      * @javadoc parameters
-     * @bad-literal wantedchannels
+     * @duplicate some code matched with AudioUtils.getBestRawAudio
      */
     public static RawVideoDef getBestRawVideo(Vector rawvideos, int wantedspeed, int wantedchannels) {
         RawVideoDef result    = null;
-
         Enumeration e         = null;
         RawVideoDef ra        = null;
         RawVideoDef rawvideo  = null;
 
         if (wantedspeed < RawVideoDef.MINSPEED) {
-            log.error("getBestRawVideo(" + wantedspeed + "," + wantedchannels + "): wantedspeed(" + wantedspeed + ") less than minspeed(" + RawVideoDef.MINSPEED + ")");
+            log.error("wantedspeed(" + wantedspeed + ") less than minspeed(" + RawVideoDef.MINSPEED + ")");
             wantedspeed = RawVideoDef.MINSPEED;
         }
         if (wantedspeed > RawVideoDef.MAXSPEED) {
-            log.error("getBestRawVideo(" + wantedspeed + "," + wantedchannels + "): wantedspeed(" + wantedspeed + ") greater than maxspeed(" + RawVideoDef.MAXSPEED + ")");
+            log.error("wantedspeed(" + wantedspeed + ") greater than maxspeed(" + RawVideoDef.MAXSPEED + ")");
             wantedspeed = RawVideoDef.MAXSPEED;
         }
-        if (wantedchannels < 1) {
-            log.error("getBestRawVideo(" + wantedspeed + "," + wantedchannels + "): wantedchannels(" + wantedchannels + ") less than 1!");
-            wantedchannels = 1;
+        if (wantedchannels < RawVideoDef.MINCHANNELS) {
+            log.error("wantedchannels(" + wantedchannels + ") less than minchannels("+RawVideoDef.MINCHANNELS+")");
+            wantedchannels = RawVideoDef.MINCHANNELS;
         }
-        if (wantedchannels > 2) {
-            log.error("getBestRawVideo(" + wantedspeed + "," + wantedchannels + "): wantedchannels(" + wantedchannels + ") greater than 2!");
-            wantedchannels = 2;
+        if (wantedchannels > RawVideoDef.MAXCHANNELS) {
+            log.error("wantedchannels(" + wantedchannels + ") greater than maxchannels("+RawVideoDef.MAXCHANNELS+")");
+            wantedchannels = RawVideoDef.MAXCHANNELS;
         }
 
         // if a g2 with status=done is found, set this as default
@@ -89,7 +87,7 @@ public class VideoUtils extends MediaUtils {
             if (e.hasMoreElements()) {
                 while (e.hasMoreElements() && result == null) {
                     ra = (RawVideoDef)e.nextElement();
-                    if (ra.status == RawVideoDef.STATUS_GEDAAN) {
+                    if (ra.status == RawVideoDef.STATUS_DONE) {
                         if (ra.format == RawVideoDef.FORMAT_G2) {
                             result = ra;
                         } else
@@ -124,16 +122,17 @@ public class VideoUtils extends MediaUtils {
                     result = rawvideo;
                 }
             } else {
-                log.error("getBestRawVideo(" + wantedspeed + "," + wantedchannels + "): no videoelements to search in vector (empty)!");
+                log.error("no videoelements to search in vector (empty)!");
             }
         } else {
-            log.error("getBestRawVideo(" + wantedspeed + "," + wantedchannels + "): no rawvideo-elements(" + rawvideos + ") to search (null)!");
+            log.error("no rawvideo-elements(" + rawvideos + ") to search (null)!");
         }
         return result;
     }
 
     /**
      * @javadoc
+     * @deprecation-used use Collections.sort() instead of local sort() method
      */
     public static Vector getRawVideos(MMBase mmbase, int tracknumber, boolean sort) {
         Vector result  = null;
@@ -181,6 +180,7 @@ public class VideoUtils extends MediaUtils {
     /**
      * @javadoc
      * @deprecation-used contains commented-out code
+     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
      */
     public static String getVideoUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels) {
         String url  = null;
@@ -247,10 +247,9 @@ public class VideoUtils extends MediaUtils {
         return url;
     }
 
-
     /**
      * @javadoc
-     * @duplicate use Sortedvector call directly
+     * @deprecated use Collections.sort()
      */
     private static Vector sort(Vector unsorted) {
         return SortedVector.SortVector(unsorted);

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioUtils.java,v 1.10 2002-01-28 16:35:01 pierre Exp $
+ * @version $Id: AudioUtils.java,v 1.11 2002-02-20 10:43:27 pierre Exp $
  */
 public class AudioUtils extends MediaUtils {
 
@@ -54,7 +54,7 @@ public class AudioUtils extends MediaUtils {
      *   - if a g2 file is found which is encoded (status=done), set this as preffered
      *   - else find r5 file with best match with respect to wanted speed/channels
      * @javadoc parameters
-     * @bad-literal wantedchannels
+     * @duplicate some code matched with VideoUtils.getBestRawVideo
      */
     public static RawAudioDef getBestRawAudio( Vector rawaudios, int wantedspeed, int wantedchannels ) {
         RawAudioDef result = null;
@@ -64,20 +64,20 @@ public class AudioUtils extends MediaUtils {
         RawAudioDef rawaudio = null;
 
         if( wantedspeed < RawAudioDef.MINSPEED ) {
-            log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedspeed("+wantedspeed+") less than minspeed("+RawAudioDef.MINSPEED+")");
+            log.error("wantedspeed("+wantedspeed+") less than minspeed("+RawAudioDef.MINSPEED+")");
             wantedspeed = RawAudioDef.MINSPEED;
         }
         if( wantedspeed > RawAudioDef.MAXSPEED ) {
-            log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedspeed("+wantedspeed+") greater than maxspeed("+RawAudioDef.MAXSPEED+")");
+            log.error("wantedspeed("+wantedspeed+") greater than maxspeed("+RawAudioDef.MAXSPEED+")");
             wantedspeed = RawAudioDef.MAXSPEED;
         }
-        if( wantedchannels < 1 ) {
-            log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedchannels("+wantedchannels+") less than 1!");
-            wantedchannels = 1;
+        if( wantedchannels < RawAudioDef.MINCHANNELS ) {
+            log.error("wantedchannels("+wantedchannels+") less than minchannels("+RawAudioDef.MINCHANNELS+")");
+            wantedchannels = RawAudioDef.MINCHANNELS;
         }
-        if( wantedchannels > 2 ) {
-            log.error("getBestRawAudio("+wantedspeed+","+wantedchannels+"): wantedchannels("+wantedchannels+") greater than 2!");
-            wantedchannels = 2;
+        if( wantedchannels > RawAudioDef.MAXCHANNELS ) {
+            log.error("wantedchannels("+wantedchannels+") greater than maxchannels("+RawAudioDef.MAXCHANNELS+")");
+            wantedchannels = RawAudioDef.MAXCHANNELS;
         }
 
         // if a g2 with status=done is found, set this as default
@@ -87,7 +87,7 @@ public class AudioUtils extends MediaUtils {
             if( e.hasMoreElements() ) {
                 while( e.hasMoreElements() && result==null ) {
                     ra = (RawAudioDef) e.nextElement();
-                    if( ra.status == RawAudioDef.STATUS_GEDAAN ) {
+                    if( ra.status == RawAudioDef.STATUS_DONE ) {
                         if( ra.format == RawAudioDef.FORMAT_WAV ) {
                             // do nothing with this original file
                         } else if( ra.format == RawAudioDef.FORMAT_G2 ) {
@@ -130,6 +130,7 @@ public class AudioUtils extends MediaUtils {
 
     /**
      * @javadoc
+     * @deprecation-used use Collections.sort() instead of local sort() method
      */
     public static Vector getRawAudios( MMBase mmbase, int tracknumber, boolean sort ) {
         Vector result = null;
@@ -167,6 +168,7 @@ public class AudioUtils extends MediaUtils {
 
     /**
      * @javadoc
+     * @deprecated use Collections.sort()
      */
     private static Vector sort( Vector unsorted ) {
         return SortedVector.SortVector(unsorted);
@@ -174,6 +176,7 @@ public class AudioUtils extends MediaUtils {
 
     /**
      * @javadoc
+     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
      */
     public static String getAudioUrl( MMBase mmbase, scanpage sp, int number, int speed, int channels ) {
         String url = null;
@@ -190,6 +193,7 @@ public class AudioUtils extends MediaUtils {
 
     /**
      * @javadoc
+     * @dependency scanpage (SCAN) - can be removed as it is not actually used except for debug code
      * @deprecation-used contains commented-out code
      */
     public static String getAudiopartUrl(MMBase mmbase, int number, scanpage sp, int speed, int channels) {
