@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.14 2003-12-17 21:16:51 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.15 2004-04-07 14:46:39 keesj Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -161,7 +161,6 @@ public class HandleServlet extends BridgeServlet {
          * In theory, these files are valid according to the JPEG specifications. 
          * However they break many applications, including Quark and, significantly, 
          * various versions of Internet Explorer on various platforms. 
-         * http://www.photo.net/bboard/q-and-a-fetch-msg?msg_id=003j8d
          */
         if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
             bytes = IECompatibleJpegInputStream.process(bytes);
