@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.26 2002-10-31 08:23:19 pierre Exp $
+ * @version $Id: Dove.java,v 1.27 2002-11-27 12:50:12 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -385,7 +385,7 @@ public class Dove extends AbstractDove {
                 org.mmbase.bridge.Node n = nm.createNode();
                 try {
                     Element data=doc.createElement(OBJECT);
-                    int number=n.getNumber();
+                    int number=java.lang.Math.abs(n.getNumber());
                     data.setAttribute(ELM_NUMBER, "n"+number);
                     out.appendChild(data);
                     getDataNode(null,data,n);
@@ -435,7 +435,7 @@ public class Dove extends AbstractDove {
                 org.mmbase.bridge.Node n = nm.createNode();
                 try {
                     Element data=doc.createElement(RELATION);
-                    int number=n.getNumber();
+                    int number=java.lang.Math.abs(n.getNumber());
                     data.setAttribute(ELM_NUMBER, "n"+number);
                     data.setAttribute(ELM_DESTINATION, destination);
                     data.setAttribute(ELM_SOURCE, source);
