@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeRel.java,v 1.24 2002-01-24 15:22:45 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.25 2002-04-09 07:02:43 kees Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -222,7 +222,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * This removes all relation types where the requesting node is actually the destination, and where
      * the directionality is unidirectional.
      * @param e the original list of relation types
-     * @param number the numbe rof the requesting node
+     * @param number the number of the requesting node
      * @return a 'clean' enumeration of relation types
      */
     private Enumeration clearDirectedRelations(Enumeration e, int number) {
@@ -255,20 +255,15 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *  @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
     public Enumeration getAllowedRelations(int number) {
-        Enumeration e,f;
-        long l1,l2;
+        Enumeration typerelEnum;
 
-        l1=System.currentTimeMillis();
         if (memTableActive && memTableDone) {
-            f = getAllowedRelationsTable(number);
+            typerelEnum = getAllowedRelationsTable(number);
         } else {
-            e = search("WHERE snumber="+number+" OR dnumber="+number);
-               f=clearDirectedRelations(e, number);
-            if (log.isDebugEnabled()) f=printEnum(f);
+            Enumeration e = search("WHERE snumber="+number+" OR dnumber="+number);
+            typerelEnum=clearDirectedRelations(e, number);
         }
-        l2=System.currentTimeMillis();
-        log.info("Time : "+(l2-l1));
-        return(f);
+        return typerelEnum;
     }
 
     /**
