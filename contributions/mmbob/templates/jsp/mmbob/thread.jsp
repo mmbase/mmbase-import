@@ -25,6 +25,22 @@
 </mm:present>
 <!-- end action check -->
 
+<mm:node number="$postthreadid">
+  <mm:import id="threadstate"><mm:field name="state" /></mm:import>
+  <mm:import id="threadmood"><mm:field name="mood" /></mm:import>
+  <mm:import id="threadtype"><mm:field name="type" /></mm:import>
+</mm:node>
+
+<%--Check if the poster is an moderator --%>
+<mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
+  <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
+</mm:nodefunction>
+
+<%-- reset the threadstate if the poster is a moderator --%>
+<mm:compare referid="ismoderator" value="true">
+  <mm:import reset="true" id="threadstate">normal</mm:import>
+</mm:compare>
+
 <center>
 <mm:include page="path.jsp?type=postthread" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
@@ -63,10 +79,13 @@
 			<mm:remove referid="toid" />
 			<mm:import id="toid"><mm:field name="posterid" /></mm:import>
 			<mm:import id="postingid"><mm:field name="id" /></mm:import>
-                                <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
-            <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                                
+                           <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
+                           <mm:compare referid="threadstate" value="closed" inverse="true">
+                              <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                           </mm:compare>
 		     
-			<mm:field name="ismoderator">
+			   <mm:field name="ismoderator">
 				<mm:compare value="true">
   				<a href="<mm:url page="editpost.jsp">
 				<mm:param name="forumid" value="$forumid" />
@@ -85,7 +104,8 @@
 				</mm:compare>
 			</mm:field>
 			&nbsp;
-			<mm:field name="isowner">
+                        <mm:compare referid="threadstate" value="closed" inverse="true">
+			  <mm:field name="isowner">
 				<mm:compare value="true">
 				<mm:remove referid="postingid" />
 				<mm:import id="postingid"><mm:field name="id" /></mm:import>
@@ -97,6 +117,7 @@
 				</mm:url>"><img src="<mm:write referid="image_editmsg" />"  border="0" /></a>
 				</mm:compare>
 			</mm:field>
+                        </mm:compare>
 
 			</td>
 			</tr>
@@ -172,6 +193,8 @@
 
 
 <mm:compare referid="lastpage" value="true">
+<mm:compare referid="threadstate" value="closed" inverse="true">
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3">snelle reactie</th></tr>
@@ -195,6 +218,7 @@
 	</td></tr>
   </form>
 </table>
+</mm:compare>
 </mm:compare>
 <p />
 <p />
