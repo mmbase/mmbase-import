@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The page context container stores variables directly in the page context, like JSTL does.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PageContextContainer.java,v 1.3 2005-01-03 20:16:32 michiel Exp $
+ * @version $Id: PageContextContainer.java,v 1.4 2005-01-04 13:44:43 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -42,8 +42,8 @@ public class PageContextContainer extends ContextContainer {
      * has an id.
      */
 
-    public PageContextContainer(final PageContext pageContext) {
-        super("PAGECONTEXT", null);
+    public PageContextContainer(final PageContext pc) {
+        super(pc, "PAGECONTEXT", null);
 
         // this Maps pageContext.
         // This code simply makes pageContext look like a Map (which also can contain null-values).
@@ -99,6 +99,7 @@ public class PageContextContainer extends ContextContainer {
                             }
                         };
                 }
+
                 public Object put(Object key, Object value) {
                     Object was = pageContext.getAttribute((String) key, SCOPE);
                     if (value == null) {
@@ -111,6 +112,9 @@ public class PageContextContainer extends ContextContainer {
             };
     }
 
+    public void release() {
+        // no  need to release anything
+    }
         
     protected Map getBacking() {
         return backing;
