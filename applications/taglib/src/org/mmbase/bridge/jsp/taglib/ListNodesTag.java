@@ -28,11 +28,11 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.11 2003-08-08 16:03:48 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.12 2003-08-27 21:33:05 michiel Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(ListNodesTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
     protected Attribute type      = Attribute.NULL;
     protected Attribute container = Attribute.NULL; 
@@ -64,6 +64,7 @@ public class ListNodesTag extends AbstractNodeListTag {
      */
     protected NodeList getNodes() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
+
 
         if (c == null) {
             if (type == Attribute.NULL) {
@@ -100,7 +101,7 @@ public class ListNodesTag extends AbstractNodeListTag {
                 query.addSortOrder(orderField, or);
             }
             
-            NodeList nodes = query.getNodeManager().getList(query);
+            NodeList nodes = getCloud().getList(query);
             return nodes;
         }        
     }
