@@ -42,14 +42,15 @@ public class IncludeTag extends UrlTag {
             // (how does one check something like that?)
             String urlString;
 
-            // Do some things to make the URL absolute.
+            // Do some things to make the URL absolute.            
+            String nudeUrl = gotUrl.substring(0, gotUrl.indexOf('?'));
 
-            if (gotUrl.indexOf('/') == 0) { // absolute on server
+            if (nudeUrl.indexOf('/') == 0) { // absolute on server
                 javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                 urlString = 
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                     +  request.getContextPath() + gotUrl;                
-            } else if (gotUrl.indexOf(':') == -1) { // relative
+            } else if (nudeUrl.indexOf(':') == -1) { // relative
                 javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                 urlString = 
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -58,13 +59,14 @@ public class IncludeTag extends UrlTag {
                 urlString = gotUrl;
             }                
                 
-            if (log.isDebugEnabled()) log.debug("found url: " + urlString);
+            if (log.isDebugEnabled()) log.debug("found url: >" + urlString + "<");
 	    URL includeURL = new URL(urlString); 
+            
 	    HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-	    connection.connect();
+	    //connection.connect();
 	    
-	    BufferedReader in = new BufferedReader(new InputStreamReader
-                (connection.getInputStream()));
+	    BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+
             String line = null;
             while ((line = in.readLine()) != null ) {
 		bodyContent.write(line);
