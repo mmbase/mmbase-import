@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleImpl.java,v 1.9 2003-03-11 20:22:58 michiel Exp $
+ * @version $Id: SimpleImpl.java,v 1.10 2003-03-12 20:02:03 michiel Exp $
  * @since   MMBase-1.4
  */
 
@@ -84,7 +84,7 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
-    public final void log (String s) {
+    protected final void log (String s) {
         ps.println(s);
     }
 
