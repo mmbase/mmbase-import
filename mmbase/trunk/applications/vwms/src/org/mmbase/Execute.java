@@ -16,9 +16,10 @@ import org.mmbase.util.logging.*;
  * Class for running programs and executing commands.
  * The methods in this class catch and return output from these commands (both info and error messages).
  *
+ * @application VWMS
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Execute.java,v 1.6 2003-03-10 11:51:06 pierre Exp $
+ * @version $Id: Execute.java,v 1.7 2004-09-29 14:29:23 pierre Exp $
  */
 public class Execute {
     // logger
@@ -68,8 +69,7 @@ public class Execute {
      * @param command the command to execute
      * @return the command output
      */
-    public String execute (String command)
-    {
+    public String execute (String command) {
         Process p=null;
         String s="",tmp="";
 

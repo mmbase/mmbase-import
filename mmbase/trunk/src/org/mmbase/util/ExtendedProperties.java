@@ -28,14 +28,12 @@ import java.util.Vector;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
-
 /**
-* This is a flexible Properties version, it can handle saving of Properties with
-* the comments that will stay in your file.
-* @author Jan van Oosterom
-* @version $Id: ExtendedProperties.java,v 1.6 2003-03-10 11:51:06 pierre Exp $
-*/
+ * This is a flexible Properties version, it can handle saving of Properties with
+ * the comments that will stay in your file.
+ * @author Jan van Oosterom
+ * @version $Id: ExtendedProperties.java,v 1.7 2004-09-29 14:29:24 pierre Exp $
+ */
 public class ExtendedProperties extends Properties {
     // logger
     private static Logger log = Logging.getLoggerInstance(ExtendedProperties.class.getName());

@@ -21,8 +21,9 @@ import java.util.*;
  * <li>String size        : if not null the HTML tag SIZE=size is added </li>
  * </ul>
  *
+ * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementText.java,v 1.5 2003-03-07 08:50:34 pierre Exp $
+ * @version $Id: HTMLElementText.java,v 1.6 2004-09-29 14:29:24 pierre Exp $
  */
 public class HTMLElementText  extends HTMLElement {
     /**

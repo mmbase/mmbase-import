@@ -30,8 +30,9 @@ import org.mmbase.util.logging.*;
  * <li>boolean vertical    : if true the various checkboxes are seperated with &lt;brk /&gt; tags.</li>
  * </ul>
  *
+ * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementCheckBox.java,v 1.5 2003-03-07 08:50:30 pierre Exp $
+ * @version $Id: HTMLElementCheckBox.java,v 1.6 2004-09-29 14:29:24 pierre Exp $
  */
 public class HTMLElementCheckBox  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementSelect

@@ -34,9 +34,10 @@ import org.mmbase.util.logging.Logging;
  * This means that some timezone conversions have to be made.
  * We assume nothing about timezones, we just read the value specified by the system (Timezone.getDefault() call).
  *
+ * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.22 2004-06-17 11:58:41 rob Exp $
+ * @version $Id: DateSupport.java,v 1.23 2004-09-29 14:29:23 pierre Exp $
  */
 public class DateSupport {
 

@@ -31,8 +31,9 @@ import org.mmbase.util.logging.*;
  * <li>boolean vertical    : if true the various checkboxes are seperated with &lt;brk /&gt; tags.</li>
  * </el>
  *
+ * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementRadio.java,v 1.6 2003-03-07 08:50:31 pierre Exp $
+ * @version $Id: HTMLElementRadio.java,v 1.7 2004-09-29 14:29:24 pierre Exp $
  */
 public class HTMLElementRadio  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementCheckbox
