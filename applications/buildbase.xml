@@ -109,7 +109,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <target name="init" depends="">
     <available property="src.available"           file="${project.source.dir}/src"/>
-    <available property="documentation.available" file="${project.documentation.dir}" />
+    <available property="documentation.available" file="${project.build.dir}/documentation" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
     <available property="templates.available"     file="${project.templates.dir}"/>
