@@ -91,7 +91,7 @@ import org.mmbase.util.logging.Logging;
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.2 2004-11-18 21:42:21 keesj Exp $
+ * @version $Id: ResourceLoader.java,v 1.3 2004-11-18 21:52:49 keesj Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -416,8 +416,7 @@ public class ResourceLoader extends ClassLoader {
 			try {
 				PathURLStreamHandler sh = (PathURLStreamHandler) i.next();
 				URLConnection uc = sh.openConnection(name);
-				if (uc.getDoInput()
-					|| uc.getDoOutput()) { // if not at least readable or writeable it is extremely uninteresting.
+				if (uc.getDoInput() || uc.getDoOutput()) { // if not at least readable or writeable it is extremely uninteresting.
 					list.add(uc.getURL());
 				}
 			} catch (Exception e) {
@@ -621,9 +620,7 @@ public class ResourceLoader extends ClassLoader {
 				return null;
 			if (name.endsWith(".properties")) {
 				// todo \ u escapes must be escaped to decent Character's.
-				return new TransformingReader(
-					new InputStreamReader(is, "UTF-8"),
-					new InverseCharTransformer(new UnicodeEscaper()));
+				return new TransformingReader(new InputStreamReader(is, "UTF-8"), new InverseCharTransformer(new UnicodeEscaper()));
 			}
 			byte b[] = new byte[100];
 			if (is.markSupported()) {
@@ -733,16 +730,7 @@ public class ResourceLoader extends ClassLoader {
 			if (con.getDoInput()) {
 				long lm = con.getLastModified();
 				if (lm > 0 && usedUrl != null && lastModified > 0 && lm > lastModified) {
-					log.warn(
-						"File "
-							+ con.getURL()
-							+ " is newer ("
-							+ new Date(lm)
-							+ " then "
-							+ usedUrl
-							+ "("
-							+ new Date(lastModified)
-							+ ") but shadowed by it");
+					log.warn("File " + con.getURL() + " is newer (" + new Date(lm) + " then " + usedUrl + "(" + new Date(lastModified) + ") but shadowed by it");
 				}
 				if (usedUrl == null && lm > 0) {
 					usedUrl = con.getURL();
@@ -840,12 +828,12 @@ public class ResourceLoader extends ClassLoader {
 	protected class FileURLStreamHandler extends PathURLStreamHandler {
 		private File fileRoot;
 		private boolean writeable;
-		
+
 		FileURLStreamHandler(File root, boolean w) {
 			fileRoot = root;
 			writeable = w;
 		}
-		
+
 		/**
 		 * copy constructor for a FileUrlStreamHandler
 		 * @param f the original stream handler
@@ -863,13 +851,13 @@ public class ResourceLoader extends ClassLoader {
 			}
 			return new File(fileName);
 		}
-		
+
 		public String getName(URL u) {
 			int l = (fileRoot + ResourceLoader.this.context.getPath()).length();
 			String path = u.getPath();
 			return l < path.length() ? path.substring(l) : path;
 		}
-		
+
 		public URLConnection openConnection(String name) {
 			URL u;
 			try {
@@ -879,19 +867,18 @@ public class ResourceLoader extends ClassLoader {
 			}
 			return new FileConnection(u, getFile(name), writeable);
 		}
-		
+
 		public Set getPaths(final Set results, final Pattern pattern, final boolean recursive, final boolean directories) {
 			return getPaths(results, pattern, recursive ? "" : null, directories);
 		}
-		
+
 		private Set getPaths(final Set results, final Pattern pattern, final String recursive, final boolean directories) {
 			FilenameFilter filter = new FilenameFilter() {
 				public boolean accept(File dir, String name) {
 					File f = new File(dir, name);
 					return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(f.toString()).matches();
 				}
-			}
-			;
+			};
 			File f = getFile(ResourceLoader.this.context.getPath());
 			if (recursive != null) {
 				f = new File(f, recursive);
@@ -919,14 +906,14 @@ public class ResourceLoader extends ClassLoader {
 		public String toString() {
 			return fileRoot.toString();
 		}
-		
+
 		/**
 		 * creates a new stream handler that points to a child directory of the current handler
 		 * @param path a path that is relative to the current StreamHandler
 		 * @return the new FileStreamHandler that contains the same writable attribue as the current FileURLStreamHandler
 		 */
-		public FileURLStreamHandler getChildStreamHandler(String path){
-			return new FileURLStreamHandler(new File(fileRoot,path), writeable);
+		public FileURLStreamHandler getChildStreamHandler(String path) {
+			return new FileURLStreamHandler(new File(fileRoot, path), writeable);
 		}
 	}
 
@@ -1025,10 +1012,7 @@ public class ResourceLoader extends ClassLoader {
 			if (ResourceLoader.resourceBuilder != null) {
 				try {
 					NodeSearchQuery query = new NodeSearchQuery(ResourceLoader.resourceBuilder);
-					BasicFieldValueConstraint typeConstraint =
-						new BasicFieldValueConstraint(
-							query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)),
-							new Integer(type));
+					BasicFieldValueConstraint typeConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)), new Integer(type));
 					BasicFieldValueConstraint nameConstraint =
 						new BasicFieldValueConstraint(
 							query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)),
@@ -1248,11 +1232,7 @@ public class ResourceLoader extends ClassLoader {
 						if (isDir) {
 							// subdirs
 							if (recursive != null) {
-								getPaths(
-									results,
-									pattern,
-									newResourcePath.substring(0, newResourcePath.length() - 1),
-									directories);
+								getPaths(results, pattern, newResourcePath.substring(0, newResourcePath.length() - 1), directories);
 							}
 							if (newResourcePath.equals("/"))
 								continue;
@@ -1544,8 +1524,7 @@ public class ResourceLoader extends ClassLoader {
 			OutputStream os = getOutputConnection().getOutputStream();
 			if (os == null) {
 				// Can find no place to store this resource. Giving up.
-				throw new IOException(
-					"Cannot create an OutputStream for " + url + " cannot be written, no resource-node could be created)");
+				throw new IOException("Cannot create an OutputStream for " + url + " cannot be written, no resource-node could be created)");
 			} else {
 				return os;
 			}
@@ -1577,9 +1556,7 @@ public class ResourceLoader extends ClassLoader {
 		try {
 			if (argv.length == 0) {
 				System.err.println(
-					"useage: java [-Dmmbase.config=<config dir>|-Dmmbase.htmlroot=<some other dir>] "
-						+ ResourceLoader.class.getName()
-						+ " [<sub directory>] <resource-name>");
+					"useage: java [-Dmmbase.config=<config dir>|-Dmmbase.htmlroot=<some other dir>] " + ResourceLoader.class.getName() + " [<sub directory>] <resource-name>");
 				return;
 			}
 			String arg = argv[0];
