@@ -13,7 +13,7 @@
 <body class="basic" >
 <table summary="database actions">
 <%
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 %>
 <tr>
  <th class="header" colspan="5"><!-- Description --><%=database%> database</th>
@@ -28,7 +28,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <%
-    Module mmconfig=LocalContext.getCloudContext().getModule("config");
+    Module mmconfig=ContextProvider.getDefaultCloudContext().getModule("config");
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-databases-"+database);
 %>

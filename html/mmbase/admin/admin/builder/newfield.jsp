@@ -13,7 +13,7 @@
 <body class="basic" >
 
 <% String value=null;
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 %>
 <table summary="new builder field properties">
 <tr>

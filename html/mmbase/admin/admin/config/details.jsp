@@ -14,7 +14,7 @@
 </head>
 <body class="basic" >
 <% String todo = request.getParameter("todo");
-   Module mmconfig=LocalContext.getCloudContext().getModule("config");
+   Module mmconfig=ContextProvider.getDefaultCloudContext().getModule("config");
 %>
 <%=mmconfig.getInfo(todo.toUpperCase()+"-"+targettype+"-"+target)%>
 </body></html>

@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.7 2003-02-20 12:45:24 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.8 2003-02-24 20:41:58 kees Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -91,7 +91,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         if (cloud == null) {
             // try anonymous
             try {
-                cloud = LocalContext.getCloudContext().getCloud(getCloudName());
+                cloud = ContextProvider.getDefaultCloudContext().getCloud(getCloudName());
             } catch (org.mmbase.security.SecurityException e) {
                 log.debug("could not generate anonymous cloud");
                 // give it up

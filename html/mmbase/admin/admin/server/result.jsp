@@ -13,7 +13,7 @@
 <body class="basic" >
 <%
     String cmd=request.getParameter("cmd");
-    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
     String msg="";
     try {
         mmAdmin.process(cmd,server,null,request,response);

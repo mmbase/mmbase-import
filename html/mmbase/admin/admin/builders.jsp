@@ -33,7 +33,7 @@
   <th class="navigate">Manage</th>
 </tr>
 <%
-    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
     NodeList builders=mmAdmin.getList("BUILDERS",params,request,response);

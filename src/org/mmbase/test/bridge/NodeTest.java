@@ -29,7 +29,7 @@ public abstract class NodeTest extends TestCase {
     }
 
     protected Cloud getCloud() {
-        return  LocalContext.getCloudContext().getCloud("mmbase");
+        return  ContextProvider.getDefaultCloudContext().getCloud("mmbase");
     }
 
     abstract public void testGetValue();

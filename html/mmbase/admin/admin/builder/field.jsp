@@ -15,7 +15,7 @@
 </head>
 <body class="basic" >
 <% String cmd = request.getParameter("cmd");
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    String value = request.getParameter("value");
    String country = request.getParameter("country");
    String msg="";
