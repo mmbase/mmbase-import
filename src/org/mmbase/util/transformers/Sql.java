@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Michiel Meeuwissen 
  */
 
-public class Sql extends ConfigurableCharTransformer implements CharTransformer {
+public class Sql extends ConfigurableReaderTransformer implements CharTransformer {
     private final static String ENCODING     = "ESCAPE_SINGLE_QUOTE";
     private final static int ESCAPE_QUOTES    = 1;     
 

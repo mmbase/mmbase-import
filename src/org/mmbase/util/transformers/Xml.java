@@ -18,10 +18,10 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.8 2003-05-07 21:25:44 michiel Exp $
+ * @version $Id: Xml.java,v 1.9 2003-05-10 22:23:52 michiel Exp $
  */
 
-public class Xml extends ConfigurableCharTransformer implements CharTransformer {
+public class Xml extends ConfigurableStringTransformer implements CharTransformer {
 
     public final static int ESCAPE           = 1;
     public final static int ESCAPE_ATTRIBUTE = 2;
@@ -176,10 +176,6 @@ public class Xml extends ConfigurableCharTransformer implements CharTransformer 
             }
         }
         return sb.toString();
-    }
-
-    public Writer transform(Reader r, Writer w) {
-        return transformUtil(r, w);
     }
 
 

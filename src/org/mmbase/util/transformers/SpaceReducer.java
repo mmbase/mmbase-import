@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public class SpaceReducer extends AbstractCharTransformer implements CharTransformer {
+public class SpaceReducer extends ReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class.getName());
 

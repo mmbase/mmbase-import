@@ -26,10 +26,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.9 2003-05-09 22:33:35 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.10 2003-05-10 22:23:50 michiel Exp $
  */
 
-public class ChainedCharTransformer extends AbstractCharTransformer implements CharTransformer {
+public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
 
     private List charTransformers = new ArrayList();

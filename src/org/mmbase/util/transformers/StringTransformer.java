@@ -10,30 +10,21 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mmbase.util.logging.*;
 
 /**
- * You need only to implement transform(Reader, Writer) you have the simplest
- * kind of tranformer. The name becoming your class name.
+ * You need only to implement transform(String) you have the simplest
+ * kind of tranformer (which is not 'streamable'). The name becoming your class name.
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  */
 
-public abstract class AbstractCharTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(AbstractCharTransformer.class.getName());
-
-
-    // javadoc inherited
-    public abstract Writer transform(Reader r, Writer w);
+public abstract class StringTransformer implements CharTransformer {
+    private static Logger log = Logging.getLoggerInstance(StringTransformer.class.getName());
 
     // javadoc inherited
-    public Writer transformBack(Reader r, Writer w) {
-        throw new UnsupportedOperationException("transformBack is not supported for this transformer");
-    }
+    public abstract String transform(String r);
         
     // javadoc inherited
     public final Writer transformBack(Reader r) {
@@ -46,24 +37,15 @@ public abstract class AbstractCharTransformer implements CharTransformer {
     }
 
     // javadoc inherited
-    public String transform(String r) {
-        Writer sw = transform(new StringReader(r));
-        return sw.toString();
-    }
-
-    // javadoc inherited
     public String transformBack(String r) {
-        Writer sw = transformBack(new StringReader(r));
-        return sw.toString();
+        throw new UnsupportedOperationException("transformBack is not supported for this transformer");
     }
-
 
     /**
      * An implemention for tranform(Reader, Writer) based on transform(String).
-     * Evil, evil, but convention sometimes. 
      * These functions can be used by extensions to implement transform and transformBack
      */
-    protected Writer transformUtil(Reader r, Writer w)  {
+    public Writer transform(Reader r, Writer w)  {
         try {
             StringWriter sw = new StringWriter();
             while (true) {
@@ -80,7 +62,7 @@ public abstract class AbstractCharTransformer implements CharTransformer {
         return w;
     }
 
-    protected Writer transformBackUtil(Reader r, Writer w)  {
+    public Writer transformBack(Reader r, Writer w)  {
         try {
             StringWriter sw = new StringWriter();
             while (true) {

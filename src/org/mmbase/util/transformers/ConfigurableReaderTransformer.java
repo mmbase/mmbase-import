@@ -21,16 +21,16 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public abstract class ConfigurableCharTransformer extends AbstractCharTransformer implements ConfigurableTransformer {
+public abstract class ConfigurableReaderTransformer extends ReaderTransformer implements ConfigurableTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(ConfigurableCharTransformer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ConfigurableReaderTransformer.class.getName());
     protected int to;
 
-    public ConfigurableCharTransformer() {
+    public ConfigurableReaderTransformer() {
         super();
     }
 
-    public ConfigurableCharTransformer(int conf) {
+    public ConfigurableReaderTransformer(int conf) {
         super();
         configure(conf);
     }

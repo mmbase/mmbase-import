@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
-public class XmlEntities extends AbstractCharTransformer implements CharTransformer {
+public class XmlEntities extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(XmlEntities.class.getName());
       
     public Writer transform(Reader r, Writer w) {
