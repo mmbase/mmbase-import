@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.6 2002-05-23 08:12:14 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.7 2002-05-28 11:23:44 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -18,7 +18,9 @@ if (ewconfig.subObjects.size() > 0) {
         Config.WizardConfig checkConfig = new Config.WizardConfig();
         log.trace("checkConfig" + configurator);
         configurator.config(checkConfig);
-        if (checkConfig.objectNumber != null && (!checkConfig.objectNumber.equals(wizardConfig.objectNumber))) {
+        if (checkConfig.objectNumber != null &&
+            (checkConfig.objectNumber.equals("new") ||
+             !checkConfig.objectNumber.equals(wizardConfig.objectNumber))) {
             log.debug("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
             wizardConfig = null;
         } else {
