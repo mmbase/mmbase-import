@@ -40,6 +40,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
 
     public void setNodemanager(String nm) throws JspTagException {
         nodeManager = getAttributeValue(nm);

@@ -39,6 +39,11 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     public Object getWriterValue() throws JspTagException {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
+
+    /**
+     * The transformation template
+     */
            
     public void setTemplate(String t) throws JspTagException {
         template = getAttributeValue(t);
