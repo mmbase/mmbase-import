@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.16 2000-11-19 00:23:04 daniel Exp $
+ $Id: sessions.java,v 1.17 2000-11-21 16:00:17 vpro Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.16  2000/11/19 00:23:04  daniel
+ turned debug off
+
  Revision 1.15  2000/11/13 15:56:11  vpro
  Dirk-Jan: added CLEARSESSIONINFO This command clears the SessionInfo
 
@@ -79,7 +82,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.16 2000-11-19 00:23:04 daniel Exp $
+ * @version $Id: sessions.java,v 1.17 2000-11-21 16:00:17 vpro Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -447,7 +450,6 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			if (cmd.equals("SETSTRING")) 		return(getSetString(sp,tok));
 			if (cmd.equals("SETCOUNT")) 		return(getSetCount(sp,tok));
 			if (cmd.equals("AVGSET")) 		return(getAvgSet(sp,tok));
-			if (cmd.equals("CLEARSESSIONINFO"))	return(doClearSessionInfo(sp,tok));
 			
 			debug("replace("+cmds+"): WARNING: Unknown command("+cmd+")!");
 		}
@@ -513,11 +515,6 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		return("");
 	} 
 
-	public String doClearSessionInfo(scanpage sp, StringTokenizer tok)
-	{	forgetSession(sp.sname);
-		return ("forgetSession " + sp.name);
-	}
-
 	public String doDelSet(scanpage sp, StringTokenizer tok) {
 		sessionInfo session=getSession(sp,sp.sname);
 		if (session!=null) {
@@ -577,7 +574,8 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				String key=tok.nextToken();
 				String tmp=session.getSetString(key);
 				if (tmp!=null) return(tmp);
-				return(session.getValue(key));
+				tmp=session.getValue(key);
+				if (tmp!=null) return(tmp);
 			}
 		} 
 		return("");
