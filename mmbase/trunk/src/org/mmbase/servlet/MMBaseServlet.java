@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.util.*;
 
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.33 2004-11-09 13:12:54 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.34 2004-11-11 16:49:31 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -121,6 +122,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         return new Hashtable();
     }
 
+    /**
+     * Used in association map 
+     */
     private static class ServletEntry {
         ServletEntry(String n) {
             this(n, null);
@@ -158,6 +162,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         mmbaseInited = true;
     }
 
+
     
     /**
      * Used in checkInited.
@@ -171,14 +176,12 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @since MMBase-1.7
      */
     public void setInitException(ServletException e) {
-        initException = e;        
-    }    
-
+        initException = e;
+    }
 
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
-
     public void init() throws ServletException {
 
         String retryAfterParameter = getInitParameter("retry-after");
@@ -208,28 +211,41 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                
                 MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
-                String path = MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
-                log.service("Reading servlet mappings from " + path);
-                XMLBasicReader webDotXml = new XMLBasicReader(path, false);
-                Enumeration mappings = webDotXml.getChildElements("web-app", "servlet-mapping");
-                while (mappings.hasMoreElements()) {
-                    Element mapping = (Element) mappings.nextElement();
-                    Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
-                    String name = webDotXml.getElementValue(servName);
-                    if (!(name.equals(""))) {
-                        Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
-                        String pattern=webDotXml.getElementValue(urlPattern);
-                        if (!(pattern.equals(""))) {
-                            List ls = (List) servletMappings.get(name);
-                            if (ls == null) {
-                                ls = new ArrayList(); 
-                                servletMappings.put(name, ls);
+                java.net.URL url;
+                try {
+                    url = getServletConfig().getServletContext().getResource("/WEB-INF/web.xml");
+                    log.info("yeaarh " + url);
+                } catch (NoSuchMethodError nsme) {
+                    // for old app-servers.
+                    log.error(nsme);
+                    url = (new java.io.File(getServletConfig().getServletContext().getRealPath("/WEB-INF/web.xml"))).toURL();
+                }
+                if (url == null) {
+                    log.warn("No web.xml found");
+                } else {
+                    InputSource path = new InputSource(url.openStream());
+                    log.service("Reading servlet mappings from " + url);
+                    XMLBasicReader webDotXml = new XMLBasicReader(path, false);
+                    Enumeration mappings = webDotXml.getChildElements("web-app", "servlet-mapping");
+                    while (mappings.hasMoreElements()) {
+                        Element mapping = (Element) mappings.nextElement();
+                        Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
+                        String name = webDotXml.getElementValue(servName);
+                        if (!(name.equals(""))) {
+                            Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
+                            String pattern=webDotXml.getElementValue(urlPattern);
+                            if (!(pattern.equals(""))) {
+                                List ls = (List) servletMappings.get(name);
+                                if (ls == null) {
+                                    ls = new ArrayList(); 
+                                    servletMappings.put(name, ls);
+                                }
+                                ls.add(pattern);
                             }
-                            ls.add(pattern);
                         }
                     }
+                    webDotXml = null;
                 }
-                webDotXml = null;
             } catch (Exception e) {
                 log.error(e.getMessage() + Logging.stackTrace(e));
             }
