@@ -25,16 +25,22 @@ public class NodeFieldTag extends FieldTag {
 
     private String number = null;
 
-    public void setField(String f) throws JspTagException {
+    /**
+     * @deprecated use setName
+     */
+    public void setField(String f) {
         // dammit, why is this attribute not named 'name' as in FieldTag?
-        
-        setName(f);
+        try {
+            setName(f);
+        } catch (JspTagException e) {
+            throw new RuntimeException(e.toString());
+        }
     }
     public void setNumber(String number) throws JspTagException {
         this.number = getAttributeValue(number);    
     }
     
-    protected Node getNode() throws JspTagException {
+    public Node getNodeVar() throws JspTagException {
         return getCloudProviderVar().getNode(number);
     }
 }

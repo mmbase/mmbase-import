@@ -17,68 +17,31 @@ import org.mmbase.util.logging.*;
 
 /**
  * The SetFieldTag can be used as a child of a 'NodeProvider' tag or inside a
- * FieldListTag.
+ * FieldProvider.
  * 
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  */
-public class SetFieldTag extends NodeReferrerTag {
+public class SetFieldTag extends FieldTag {
     private static Logger log = Logging.getLoggerInstance(SetFieldTag.class.getName()); 
-    protected Node node;
-    private String fieldname;   
-    
-    public void setName(String fieldname) {
-        this.fieldname = fieldname;
-    }
 
-    protected String getName() {
-        return fieldname;
-    }
-        
-    public int doStartTag() throws JspTagException{
-        return EVAL_BODY_TAG;
-    }
-
-    public void doInitBody() throws JspTagException {
-        if (fieldname == null) {
-            // Get node and fieldname from the fieldlist tag.
-            Class fieldClass;
-            try {
-                fieldClass = Class.forName("org.mmbase.bridge.jsp.taglib.FieldListTag");
-            } catch (java.lang.ClassNotFoundException e) {
-                throw new JspTagException ("Could not find FieldListTag class");  
-            }
-            FieldListTag fieldTag = (FieldListTag) findAncestorWithClass((Tag)this, fieldClass); 
-            if (fieldTag == null) {
-                throw new JspTagException ("Could not find parent FieldListTag");  
-            }
-            node = getNode();
-            fieldname = fieldTag.getField().getName();
-        } else {
-            // Find the node.
-            node = getNode();
-        }
-        findNodeProvider().setModified();
-        pageContext.setAttribute("fieldname", fieldname);
-    }
-    
     protected String convert (String s) throws JspTagException { 
         return s;
     }
             
-
     /**
      * Set the value of the field.
      */
     public int doAfterBody() throws JspTagException {
-        Field f = node.getNodeManager().getField(fieldname);
+        setFieldVar();
+
         // Get the new value from the body.
-        if ((f != null) && (f.getType() == Field.TYPE_BYTE)) {
+        if ((field != null) && (field.getType() == Field.TYPE_BYTE)) {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
-            node.setByteValue(fieldname, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
+            getNodeVar().setByteValue(fieldName, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
 	} else {           
             String newValue = bodyContent.getString();
-            node.setValue(fieldname, convert(newValue));
+            getNodeVar().setValue(fieldName, convert(newValue));
         }
         
         return SKIP_BODY;
