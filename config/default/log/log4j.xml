@@ -11,7 +11,7 @@
    the dtd, since log4j does not seem to do any validating.
 
 -->
-<!DOCTYPE configuration
+<!DOCTYPE log4j:configuration
    [
     <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
     <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
@@ -42,7 +42,7 @@
 
 -->
 
-<configuration>
+<log4j:configuration>
 
 <appender name="logfile" class="org.apache.log4j.FileAppender" >
     <param name="File"   value="&logdir;mmlog4j.log" />
@@ -87,4 +87,4 @@
     <priority class="&priority;" value ="debug" />	
 </category>
 
-</configuration>
+</log4j:configuration>
