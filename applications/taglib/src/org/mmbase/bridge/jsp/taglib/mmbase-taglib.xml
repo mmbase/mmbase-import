@@ -682,6 +682,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>setfield</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTEI</teiclass>
     <info>
       Changes the field 'name' from node 'node' (can also be
       list).
@@ -697,10 +698,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
     <attribute>
         <name>name</name>
-        <required>true</required>
+        <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	  The name of the field to set. 
+	  The name of the field to set. If this field is not set this tag will
+          look for a surrounding fieldlist tag to retrieve name and node from.
 	</info>
     </attribute>
   </tag>
@@ -860,7 +862,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
     <info>This thing can be used inside a FieldListTag</info>
     <attribute>
-      <name>name</name>
+      <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <possiblevalue>
