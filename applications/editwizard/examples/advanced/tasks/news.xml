@@ -24,12 +24,12 @@
 		<field name="subtitle" />
 		<field name="intro" />		
 		<field name="body" />
+		<field name="date" />
 
 
 		<list role="related" destination="people" minoccurs="0"  maxoccurs="3">
       <title>Authors (notice the search-filters)</title>       
-			<command name="search" nodepath="people"
-        fields="firstname,lastname" orderby="lastname" age="-1" filterrequired="true">
+			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname,firstname" age="-1" filterrequired="true">
 				<prompt>People</prompt>
 				<search-filter>
 					<name>firstname contains</name>
@@ -48,10 +48,10 @@
 
       <item>
         <fieldset>
+          <prompt>Name</prompt>
           <field ftype="data" name="firstname" />
           <field ftype="data" name="middle" />
           <field ftype="data" name="lastname" />
-          <prompt>Name</prompt>
         </fieldset>
       </item>
 			
