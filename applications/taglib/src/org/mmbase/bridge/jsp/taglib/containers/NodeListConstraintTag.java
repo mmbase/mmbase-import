@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.13 2003-09-23 13:04:38 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.14 2003-10-16 07:25:11 pierre Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -51,6 +51,10 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     public void setField(String f) throws JspTagException {
         field = getAttribute(f);
+    }
+
+    public void setField2(String f) throws JspTagException {
+        field2 = getAttribute(f);
     }
 
     public void setValue(String v) throws JspTagException {
@@ -107,29 +111,34 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
     }
 
 
-    public static FieldConstraint addConstraint(Query query, String field, int operator, String stringValue, String stringValue2) throws JspTagException {
+    public static FieldConstraint addConstraint(Query query, String field, String field2, int operator, String stringValue, String stringValue2) throws JspTagException {
         Object compareValue;
 
         StepField stepField = query.createStepField(field);
-        Cloud cloud = query.getCloud();        
-        int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
-
-        if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) {
-            compareValue = getNumberValue(stringValue);     
-        } else {
-            compareValue = stringValue;
-        }
-        FieldConstraint newConstraint;
-
+        if (stepField == null) throw new JspTagException("Could not create stepfield with '" + field + "'");
         log.debug(stepField);
-        if (stepField == null) log.warn("Could not create stepfield with '" + field + "'");
-        if (operator > 0) {
-            newConstraint = query.createConstraint(stepField, operator, compareValue);
+
+        Cloud cloud = query.getCloud();
+        FieldConstraint newConstraint;
+        if (field2!=null && !field2.equals("")) {
+            StepField stepField2 = query.createStepField(field2);
+            newConstraint = query.createConstraint(stepField, operator, stepField2);
         } else {
-            if (operator == BETWEEN) {
-                newConstraint = query.createConstraint(stepField, compareValue, getNumberValue(stringValue2));
+            int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
+
+            if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) {
+                compareValue = getNumberValue(stringValue);
             } else {
-                throw new RuntimeException("Unknown value for operation " + operator);
+                compareValue = stringValue;
+            }
+            if (operator > 0) {
+                newConstraint = query.createConstraint(stepField, operator, compareValue);
+            } else {
+                if (operator == BETWEEN) {
+                    newConstraint = query.createConstraint(stepField, compareValue, getNumberValue(stringValue2));
+                } else {
+                    throw new RuntimeException("Unknown value for operation " + operator);
+                }
             }
         }
         Constraint constraint = query.getConstraint();
@@ -144,11 +153,11 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     }
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
-        Constraint cons = addConstraint(query, field.getString(this), getOperator(), value.getString(this), value2.getString(this));
+        Constraint cons = addConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this));
         if (inverse.getBoolean(this, false)) {
             query.setInverse(cons, true);
         }
