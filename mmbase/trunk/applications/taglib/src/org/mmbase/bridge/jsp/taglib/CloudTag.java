@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.88 2004-02-24 17:51:11 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.89 2004-02-25 13:47:03 pierre Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -618,7 +618,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     /**
-    
+
      */
 
     private final void checkValid() {
@@ -816,7 +816,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return EVAL_BODY;
         } else {
             // no command give, send redirect to specified login page
-            return denyLoginPage(LOGINPAGE_DENYREASON_NEED);
+            return denyLoginPage(LOGINPAGE_DENYREASON_NEED, "");
         }
     }
 
@@ -825,8 +825,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * @param The reason for deny, can be LOGINPAGE_DENYREASON_NEED or LOGINPAGE_DENYREASON_FAIL.
      * @return SKIP_BODY
      */
-
-    private int denyLoginPage(String reason) throws JspTagException {
+    private int denyLoginPage(String reason, String exactReason) throws JspTagException {
         try {
 
             String toFile = loginpage.getString(this);
@@ -871,6 +870,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             request.setAttribute("referrerpage", referrerPage);
             request.setAttribute("referrer", referrer.toString());
             request.setAttribute("reason", reason);
+            request.setAttribute("exactreason", exactReason);
             rd.forward(request, response);
             return SKIP_BODY;
         } catch (javax.servlet.ServletException ioe) {
@@ -880,7 +880,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
     }
 
-    private final int deny(int reason) throws JspTagException {
+    private final int deny(int reason, String exactReason) throws JspTagException {
 
         int method = getMethod();
         // did not succeed, so problably the password was wrong.
@@ -895,10 +895,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } else if (method == METHOD_LOGINPAGE || (method == METHOD_UNSET && loginpage != Attribute.NULL)) {
             switch (reason) {
                 case DENYREASON_RANKTOOLOW :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW);
+                    return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW, exactReason);
                 case DENYREASON_FAIL :
                 default :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
+                    return denyLoginPage(LOGINPAGE_DENYREASON_FAIL, exactReason);
             }
         } else if (method == METHOD_DELEGATE) {
             switch (reason) {
@@ -955,7 +955,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                         session.removeAttribute(getSessionName());
                     }
                     log.debug("rank to low");
-                    return deny(DENYREASON_RANKTOOLOW);
+                    return deny(DENYREASON_RANKTOOLOW, "User rank is too low");
                 }
             }
             return EVAL_BODY;
@@ -963,7 +963,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to log in with " + user + " because " + e.toString());
             }
-            return deny(DENYREASON_FAIL);
+            return deny(DENYREASON_FAIL, e.getMessage());
         }
     }
 
