@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-	<title>Enter Wizard Title Here</title>
+	<title xml:lang="nl">Type hier de wizard titel</title>
+	<title xml:lang="en">Enter Wizard Title Here</title>
 
 	<action type="create">
 		<object type="news">
@@ -14,27 +16,30 @@
 		<relation destination="people" />
 		<relation destination="images" role="related" />
 	</action>
-	
-	<steps>
-		<step form-schema="step1" />
-	</steps>
 
 	<form-schema id="step1">
 		<title>Enter form title here</title>
+		<title xml:lang="nl">Type de formulier titel hier</title>
 		<field name="title" />
 		<field name="subtitle" />
 		<field name="intro" ftype="text" rows="4" />
 		<field name="body" ftype="text" rows="8" />
 
 		<list role="related" destination="people" minoccurs="0" maxoccurs="*">
+      <title xml:lang="nl">Auteurs</title>
+      <title xml:lang="en">Authors</title>
+
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
-				<prompt>People</prompt>
+				<prompt xml:lang="nl">Personen</prompt>
+				<prompt xml:lang="en">People</prompt>
 				<search-filter>
-					<name>firstname contains</name>
+					<name>first name contains</name>
+					<name xml:lang="nl">voornaamnaam bevat</name>
 					<search-fields>firstname</search-fields>
 				</search-filter>
 				<search-filter>
-					<name>lastname contains</name>
+					<name>last name contains</name>
+					<name xml:lang="nl">achternaam bevat</name>
 					<search-fields>lastname</search-fields>
 				</search-filter>
 			</command>
@@ -50,6 +55,9 @@
 		</list>
 
 		<list role="related" destination="images">
+      <title xml:lang="nl">Gerelateerde plaatjes</title>
+      <title xml:lang="en">Related images</title>
+
 			<command name="search" nodepath="images" fields="title" age="-1">
         <prompt>Images</prompt>
 			</command>

@@ -1,26 +1,22 @@
-<?xml version="1.0"?>
-<wizard-schema>
-	<title>Image Upload</title>
-
-	<action type="create">
-		<object type="images">
-		</object>
-	</action>
-	
-	<action type="load">
-		<field name="title" />
-		<field name="description" />
-		<field name="handle" />
-	</action>
-
-	<steps>
-		<step form-schema="step1" />
-	</steps>
-
-	<form-schema id="step1">
-		<title>Image upload</title>
-		<field fdatapath="field[@name='title']" ftype="line" dttype="string" dtminlength="1" dtmaxlength="255" />
-		<field fdatapath="field[@name='description']" ftype="text" rows="8" />
-		<field fdatapath="field[@name='handle']" ftype="upload" dttype="image" />
-	</form-schema>	
-</wizard-schema>
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema>
+	<title>Image Upload</title>
+	<title xml:lang="nl">Plaatjes uploaden</title>	
+  <title xml:lang="eo">Alŝuti bildojn</title>
+
+	<action type="create">
+		<object type="images">
+		</object>
+	</action>
+	
+
+	<form-schema id="step1">
+		<title>Image upload</title>
+		<title xml:lang="nl">Plaatjes uploaden</title>
+		<title xml:lang="eo">Aldonu bildonn</title>
+		<field name="title" />
+		<field name="description" />
+		<field name="handle" />
+	</form-schema>	
+</wizard-schema>
