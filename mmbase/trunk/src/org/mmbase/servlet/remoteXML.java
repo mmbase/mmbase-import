@@ -27,6 +27,10 @@ import org.mmbase.module.core.*;
  */
 public class remoteXML extends JamesServlet {
 
+	private String classname = getClass().getName();
+	private boolean debug = true;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
 	MMBase mmbase;
 	
 	public void init() {
@@ -63,21 +67,63 @@ public class remoteXML extends JamesServlet {
 
 	private void handleGet(HttpServletRequest req,HttpServletResponse res) {
 		String body="";
-		String buildername=getParam(req,0);
-		String nodename=getParam(req,1);
+
+		String buildername  = getParam(req,0);
+		String nodename		= getParam(req,1);
+		String proto		= getParam(req,2);
+		String host			= getParam(req,3);
+		String port			= getParam(req,4);
+
+		String servername		= proto+"://"+host+":"+port;
+
 		MMObjectBuilder bul=mmbase.getMMObject(buildername);
 		String number=bul.getNumberFromName(nodename);
-		//System.out.println("WWWWWWWWWWWWOOOO="+number);
 		if (number==null) {
 			ServiceBuilder sbul=(ServiceBuilder)bul;	
 			MMServers server=(MMServers)mmbase.getMMObject("mmservers");
-			String snumber=server.getNumberFromName("mmbaseorgrunner");
+
+			if( debug ) {
+				debug("handleGet(): buildername("+buildername+")");
+				debug("handleGet(): nodename("+nodename+")");
+				debug("handleGet(): number("+number+")");
+				debug("handleGet(): server("+servername+")");
+			}
+
+			// String snumber=server.getNumberFromName( servername );
+			MMObjectNode snode = null;
+			Enumeration e2 = server.search( "WHERE host='"+servername+"'" );
+			if( e2.hasMoreElements() ) 
+				snode = (MMObjectNode) e2.nextElement();
+
 			try {
-				sbul.addService(nodename,"org.test",server.getNode(snumber));
+				if( snode != null ) {
+					sbul.addService(nodename,"org.test",snode);
+				} else {
+					debug("handleGet(): ERROR: snode("+snode+") for server("+servername+"): not found!");
+					debug("handleGet(): buildername("+buildername+")");
+					debug("handleGet(): nodename("+nodename+")");
+					debug("handleGet(): number("+number+")");
+					debug("handleGet(): server("+servername+")");
+
+				}
 			} catch(Exception e) {
+				debug("handleGet(): ERROR: snode("+snode+"): got exception!");
+                debug("handleGet(): buildername("+buildername+")");
+                debug("handleGet(): nodename("+nodename+")");
+                debug("handleGet(): number("+number+")");
+				debug("handleGet(): server("+servername+")");
 				e.printStackTrace();
 			}
-			number=bul.getNumberFromName(number);
+			//number=bul.getNumberFromName(number); // ???????????????????????????????????????????????????????
+			number=bul.getNumberFromName(nodename);
+		} else {
+			if( debug ) {
+				debug("handleGet(): number("+number+") found in builder("+buildername+"), this is good...");
+                debug("handleGet(): buildername("+buildername+")");
+                debug("handleGet(): nodename("+nodename+")");
+                debug("handleGet(): number("+number+")");
+				debug("handleGet(): server("+servername+")");
+			}
 		}
 		MMObjectNode node=bul.getNode(number);
 		if (node!=null) {
