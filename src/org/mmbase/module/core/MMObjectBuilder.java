@@ -64,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.259 2004-02-09 13:50:38 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.260 2004-02-18 15:01:00 keesj Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2698,6 +2698,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.7
      */
     public Parameter[] getParameterDefinition(String function) {
+    	//keesj: why not this.getClass()?
         return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MMObjectBuilder.class, function);
     }
 
