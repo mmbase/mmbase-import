@@ -79,7 +79,7 @@
         %><mm:import id="filename" reset="true"><%= file.getName() %></mm:import>
         <tr>
         <td>
-            <a href="../files/<mm:write referid="filename"/>"><mm:write referid="filename"/></a> 
+            <a href="<%= baseUrl %>/<mm:write referid="filename"/>"><mm:write referid="filename"/></a> 
         </td>
         <td>
             <a href="index.jsp?deletefile=<mm:write referid="filename"/>" onclick="return confirm('Wis <mm:write referid="filename"/>?');">Wis</a>
