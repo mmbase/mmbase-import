@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.50 2004-08-24 09:24:52 michiel Exp $
+     * @version  $Id: list.jsp,v 1.51 2004-09-15 13:04:51 jaco Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -158,7 +158,7 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != n
 
 
 if (log.isDebugEnabled()) {
-log.trace("Got " + results.size() + " results");
+log.trace("Got " + results.size() + " of " + resultsSize + " results");
 }
 
 
@@ -170,7 +170,7 @@ int end = len + start;
 if (end > resultsSize) end = resultsSize;
 
 // place all objects
-String s = "<list count=\"" + results.size() + "\" />";
+String s = "<list offsetstart=\"" + (start + 1) + "\" offsetend=\"" + (start + results.size()) + "\" count=\"" + results.size() + "\" totalcount=\"" + resultsSize + "\" />";
 Document doc = Utils.parseXML(s);
 
 log.trace("Create document");
@@ -245,8 +245,22 @@ if (pagecount>maxpages) {
     Utils.setAttribute(pages, "showing", maxpages + "");
 }
 
-for (int i = 0; i<pagecount && i<maxpages; i++) {
+int pageOffset = 0;
+currentpage = start / len;
+pageOffset = currentpage - (maxpages / 2);
+if (pageOffset < 0) {
+  pageOffset = 0;
+}
+if (pageOffset + maxpages > pagecount) {
+    pageOffset = pagecount - maxpages;
+    if (pageOffset < 0) {
+      pageOffset = 0;
+    }
+}
+
+for (int i = pageOffset; i<pagecount && i - pageOffset <maxpages; i++) {
     org.w3c.dom.Node pagenode = doc.createElement("page");
+    Utils.setAttribute(pagenode, "number", (i+1)+"");
     Utils.setAttribute(pagenode, "start", (i*len)+"");
     Utils.setAttribute(pagenode, "current", (i==currentpage)+"");
     Utils.setAttribute(pagenode, "previous", (i==currentpage-1)+"");

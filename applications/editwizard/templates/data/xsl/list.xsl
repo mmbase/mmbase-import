@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.37 2004-04-07 12:36:00 pierre Exp $
+    @version $Id: list.xsl,v 1.38 2004-09-15 13:04:51 jaco Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -264,13 +264,13 @@
 
   <xsl:template match="page">
     <a class="pagenav" title="{$tooltip_goto}{position()}" href="{$listpage}&amp;start={@start}">
-      <xsl:value-of select="position()" />
+      <xsl:value-of select="@number" />
     </a>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
 
   <xsl:template match="page[@current=&apos;true&apos;]">
-    <xsl:value-of select="position()" />
+    <xsl:value-of select="@number" />
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
 
