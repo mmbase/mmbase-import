@@ -167,6 +167,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
         decodeStringItem(target, "datafile");
         decodeStringItem(target, "datadir");
         decodeStringItem(target, "dataexport");
+    	decodeDataFile(target,target.getBaseDir() + getItemStringValue(target, "datafile"));
         return true;
     }
 
@@ -210,6 +211,29 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
         target.setItem("datafile", "datasets/example/data.xml");
         //target.setItem("datadir", "datasets/example/data/");
         target.setItem("dataexport", "false");
+    }
+
+    private boolean decodeDataFile(Target target,String datafile) {
+	log.info("BLA="+datafile);
+        File file = new File(datafile);
+        if (file.exists()) {
+		/*
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(datafile,DataApps1Package.class);
+            if (reader != null) {
+                org.w3c.dom.Node dc=reader.getElementByPath("dataset.selection");
+                NamedNodeMap nm=dc.getAttributes();
+                if (nm!=null) {
+                       org.w3c.dom.Node n3=nm.getNamedItem("type");
+                       if (n3!=null) {
+				String type=n3.getNodeValue();
+				target.setItem("datatype",type);	
+				log.info("SETTING TYPE="+type);
+			}
+		}
+	    }
+	    */
+	}
+	return true;
     }
 
     private boolean exportDataSet(packageStep step,Target target,String datafile,String datadir) {
