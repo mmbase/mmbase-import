@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 
 /*
-$Id: ImageMaster.java,v 1.12 2000-06-05 15:36:39 wwwtech Exp $
+$Id: ImageMaster.java,v 1.13 2000-06-08 09:16:58 wwwtech Exp $
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/06/05 15:36:39  wwwtech
+Rico: added a dup eliminator
+
 Revision 1.11  2000/06/05 10:56:56  wwwtech
 Rico: added support for new 3voor12
 
@@ -38,7 +41,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 	Hashtable properties;
 	boolean first=true;
-	private boolean debug=true;
+	private boolean debug=false;
 	Object syncobj=new Object();
 	private int maxSweep=16;
 	Vector files=new Vector();
@@ -134,10 +137,13 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 			return true;
 		}
 		
+		if (debug) debug("Node "+filenode+" status "+status+" type "+ctype);
 		switch(status) {
 			case 1:  // Verzoek
+				if (debug) debug("status==1");
 				filenode.setValue("status",2);
 				filenode.commit();
+				if (debug) debug("Starting real work");
 				// do stuff
 				String filename=filenode.getStringValue("filename");
 				if ((filename==null) || filename.equals("")) {
@@ -180,6 +186,9 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 				debug("verzoek ckey "+ckey);
 				byte[] filebuf=bul.getCkeyNode(ckey);
+				if (filebuf==null) {
+					debug("handleMirror: no icaches entry yet");
+				}
 				debug("verzoek size "+filebuf.length);
 				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
 				// Pass mimetype.
@@ -333,7 +342,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	private String path2ckey(String path, Images imageBuilder) {
 		StringTokenizer tok = new StringTokenizer(path,"+\n\r");
 		String ckey=tok.nextToken();
-		ckey = ""+imageBuilder.convertAlias(ckey);
+		//ckey = ""+imageBuilder.convertAlias(ckey);
 		while (tok.hasMoreTokens()) {
 			String key=tok.nextToken();
 			ckey+=key;
