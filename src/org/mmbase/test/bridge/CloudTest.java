@@ -64,11 +64,11 @@ public class CloudTest extends TestCase {
 
     public void tearDown() {
         // Remove test nodes.
-        aaNode1.remove();
-        aaNode2.remove();
-        bbNode.remove();
+        aaNode1.delete();
+        aaNode2.delete();
+        bbNode.delete();
         for (int i = 0; i < nrOfBBNodes; i++) {
-            bbNodes[i].remove();
+            bbNodes[i].delete();
         }
     }
 
