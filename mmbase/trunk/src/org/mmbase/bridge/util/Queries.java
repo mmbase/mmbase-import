@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.19 2004-01-07 09:38:56 michiel Exp $
+ * @version $Id: Queries.java,v 1.20 2004-01-30 12:22:18 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -39,76 +39,64 @@ public class Queries {
      *
      * It can also be simply handy to specify things as Strings.
      */
-    public static Query createQuery(
-        Cloud cloud,
-        String startNodes,
-        String nodePath,
-        String fields,
-        String constraints,
-        String orderby,
-        String directions,
-        String searchDir,
-        boolean distinct) {
+    public static Query createQuery(Cloud cloud, String startNodes, String nodePath,
+            String fields, String constraints, String orderby, String directions,
+            String searchDir, boolean distinct) {
 
-        {
-            // the bridge test case say that you may also specifiy empty string (why?)
-            if ("".equals(startNodes)) {
-                startNodes = null;
-            }
-            if ("".equals(fields)) {
-                fields = null;
-            }
-            if ("".equals(constraints)) {
-                constraints = null;
-            }
-            if ("".equals(searchDir)) {
-                searchDir = null;
-            }
-            // check invalid search command
-            Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
-            // if(startNodes != null) startNodes = encoder.encode(startNodes);
-            // if(nodePath != null) nodePath = encoder.encode(nodePath);
-            // if(fields != null) fields = encoder.encode(fields);
-            if (orderby != null) {
-                orderby = encoder.encode(orderby);
-            }
-            if (directions != null) {
-                directions = encoder.encode(directions);
-            }
-            if (searchDir != null) {
-                searchDir = encoder.encode(searchDir);
-            }
-            if (constraints != null) {
-                constraints = convertClauseToDBS(constraints);
-                if (!validConstraints(constraints)) {
-                    throw new BridgeException("invalid constraints:" + constraints);
-                }
+        // the bridge test case say that you may also specifiy empty string (why?)
+        if ("".equals(startNodes)) {
+            startNodes = null;
+        }
+        if ("".equals(fields)) {
+            fields = null;
+        }
+        if ("".equals(constraints)) {
+            constraints = null;
+        }
+        if ("".equals(searchDir)) {
+            searchDir = null;
+        }
+        // check invalid search command
+        Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+        // if(startNodes != null) startNodes = encoder.encode(startNodes);
+        // if(nodePath != null) nodePath = encoder.encode(nodePath);
+        // if(fields != null) fields = encoder.encode(fields);
+        if (orderby != null) {
+            orderby = encoder.encode(orderby);
+        }
+        if (directions != null) {
+            directions = encoder.encode(directions);
+        }
+        if (searchDir != null) {
+            searchDir = encoder.encode(searchDir);
+        }
+        if (constraints != null) {
+            constraints = convertClauseToDBS(constraints);
+            if (!validConstraints(constraints)) {
+                throw new BridgeException("invalid constraints:" + constraints);
             }
         }
 
         // create query object
-        Query query;
-        {
-            ClusterBuilder clusterBuilder = MMBase.getMMBase().getClusterBuilder();
-            int search = -1;
-            if (searchDir != null) {
-                search = ClusterBuilder.getSearchDir(searchDir);
-            }
-
-            List snodes = StringSplitter.split(startNodes);
-            List tables = StringSplitter.split(nodePath);
-            List f = StringSplitter.split(fields);
-            List orderVec = StringSplitter.split(orderby);
-            List d = StringSplitter.split(directions);
-            try {
-                // pitty that we can't use cloud.createQuery for this.
-                // but all essential methods are on ClusterBuilder
-                query = new BasicQuery(cloud, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
-            } catch (IllegalArgumentException iae) {
-                throw new BridgeException(iae);
-            }
+        ClusterBuilder clusterBuilder = MMBase.getMMBase().getClusterBuilder();
+        int search = -1;
+        if (searchDir != null) {
+            search = ClusterBuilder.getSearchDir(searchDir);
         }
-        return query;
+
+        List snodes = StringSplitter.split(startNodes);
+        List tables = StringSplitter.split(nodePath);
+        List f = StringSplitter.split(fields);
+        List orderVec = StringSplitter.split(orderby);
+        List d = StringSplitter.split(directions);
+        try {
+            // pitty that we can't use cloud.createQuery for this.
+            // but all essential methods are on ClusterBuilder
+            Query query = new BasicQuery(cloud, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
+            return query;
+        } catch (IllegalArgumentException iae) {
+            throw new BridgeException(iae);
+        }
     }
 
     /**
@@ -230,26 +218,26 @@ public class Queries {
             // @todo check
             return constraints.substring(5);
         } else if (!constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
-            // Must start with "WHERE " 
+            // Must start with "WHERE "
             constraints = "WHERE " + constraints;
         }
 
         //keesj: what does this code do?
         StringBuffer result = new StringBuffer();
-        //if there is a quote in the constraints posa will not be equals -1 
+        //if there is a quote in the constraints posa will not be equals -1
         int posa = constraints.indexOf('\'');
         while (posa > -1) {
-        	//keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
+            //keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
             int posb = constraints.indexOf('\'', 1);
             if (posb == -1) {
                 posa = -1;
             } else {
-            	//keesj:part is now the first part of the constraints if there is a quote in the query
+                //keesj:part is now the first part of the constraints if there is a quote in the query
                 String part = constraints.substring(0, posa);
-                
-                //append to the string buffer "part" the first part 
+
+                //append to the string buffer "part" the first part
                 result.append(convertClausePartToDBS(part)).append(constraints.substring(posa, posb + 1));
-                
+
                 //keesj:obfucation contest?
                 constraints = constraints.substring(posb + 1);
                 posa = constraints.indexOf('\'');
@@ -271,7 +259,7 @@ public class Queries {
         if (!validConstraints(constraints)) {
             throw new BridgeException("invalid constraints:" + constraints);
         }
-        // Before converting to legacy constraint, 
+        // Before converting to legacy constraint,
         // the leading "WHERE" must be skipped when present.
         if (constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
             constraints = constraints.substring(5).trim();
@@ -353,9 +341,9 @@ public class Queries {
      * Used in implementation of createConstraint
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
-        
-        if (fieldType != Field.TYPE_STRING && 
-            fieldType != Field.TYPE_XML && 
+
+        if (fieldType != Field.TYPE_STRING &&
+            fieldType != Field.TYPE_XML &&
             operator < FieldCompareConstraint.LIKE) {  // numeric compare
             if (value instanceof Number) {
                 return value;
@@ -374,7 +362,7 @@ public class Queries {
                         Node node = i.nextNode();
                         set.add(new Integer(node.getNumber()));
                     }
-                } else if (value instanceof Collection) {                    
+                } else if (value instanceof Collection) {
                     set = new TreeSet();
                     Iterator i = ((Collection) value).iterator();
                     while (i.hasNext()) {
@@ -412,7 +400,7 @@ public class Queries {
      * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
-     */ 
+     */
 
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive) {
 
@@ -423,12 +411,12 @@ public class Queries {
 
         Cloud cloud = query.getCloud();
         FieldConstraint newConstraint;
-        
+
         if (value instanceof StepField) {
             newConstraint = query.createConstraint(stepField, operator, (StepField) value);
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
-            
+
             if (fieldName.equals("number")) {
                 if (value instanceof String) { // it might be an alias!
                     Node node = cloud.getNode((String) value);
@@ -457,7 +445,7 @@ public class Queries {
         query.setCaseSensitive(newConstraint, caseSensitive);
         return newConstraint;
 
-        
+
     }
 
     /**
@@ -636,15 +624,15 @@ public class Queries {
         if (startNodeSet.size() > 0) {
             Step firstStep = (Step) query.getSteps().get(0);
             StepField firstStepField = query.createStepField(firstStep, "number");
-            
-            Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);            
+
+            Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);
             addConstraint(query, newConstraint);
             return newConstraint;
         } else {
             return null;
         }
-        
-        
+
+
     }
 
     /**
