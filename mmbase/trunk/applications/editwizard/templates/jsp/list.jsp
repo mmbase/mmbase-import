@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.18 2002-07-10 11:54:51 pierre Exp $
+     * @version  $Id: list.jsp,v 1.19 2002-07-11 07:42:11 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -242,6 +242,7 @@ log.trace("Setting xsl parameters");
 java.util.Map params = new java.util.Hashtable();
 if (listConfig.wizard != null) params.put("wizard", listConfig.wizard);
 params.put("start",String.valueOf(start));
+params.put("referrer", ewconfig.backPage);
 params.put("len",String.valueOf(len));
 params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid", ewconfig.sessionId);
@@ -254,6 +255,7 @@ if (title != null) params.put("wizardtitle", title);
 if (listConfig.title != null) params.put("title", listConfig.title);
 params.put("username", cloud.getUser().getIdentifier());
 params.put("ew_context", request.getContextPath());
+params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
 
 log.trace("Doing the transformation for " + listConfig.template);
 Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
