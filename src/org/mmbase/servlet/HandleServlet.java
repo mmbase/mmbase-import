@@ -15,7 +15,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.16 2004-09-30 14:54:56 pierre Exp $
+ * @version $Id: HandleServlet.java,v 1.17 2004-10-08 17:37:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -46,6 +46,10 @@ public class HandleServlet extends BridgeServlet {
         return a;
     }
 
+    /**
+     * Takes care of the 'expire' init-parameter.
+     * {@inheritDoc}
+     */
     public void init() throws ServletException {
         super.init();
         log = Logging.getLoggerInstance(HandleServlet.class);
@@ -59,6 +63,15 @@ public class HandleServlet extends BridgeServlet {
         }
     }
 
+    // just to get HandleServlet in the stacktrace.
+    protected Cloud getClassCloud() {
+        return super.getClassCloud();
+    }
+
+    /**
+     * Forces download in browsers.
+     * This is overriden in several extensions.
+     */
     protected String getMimeType(Node node) {
         return "application/x-binary";
     }
@@ -67,7 +80,7 @@ public class HandleServlet extends BridgeServlet {
      * Sets the content disposition header.
      * @return true on success
      */
-    protected boolean setContent(HttpServletRequest req, HttpServletResponse res, Node node, String mimeType) throws IOException {
+    protected boolean setContent(QueryParts query, Node node, String mimeType) throws IOException {
         // Try to find a sensible filename to use in the content-disposition header.
         String fileName = node.getStringValue("filename");
         if (fileName == null || fileName.equals("")) {
@@ -78,9 +91,8 @@ public class HandleServlet extends BridgeServlet {
             // try to add an extension. 
             String format = node.getFunctionValue("format", null).toString();
             if (format != null && !format.equals("")) {
-                fileName = fileName + "." + format;
-            }
-            // could also use the mime type to guess an extension!
+                fileName += "." + format;
+            } 
         }
         StringObject fn = new StringObject(fileName);
         fn.replace(" ", "_");
@@ -89,7 +101,7 @@ public class HandleServlet extends BridgeServlet {
         // Why we don't set Content-Disposition:
         // - IE can't handle that. (IE sucks!)
 
-        res.setHeader("Content-Disposition", "attachment; filename=\""  + fn + "\"");
+        query.getResponse().setHeader("Content-Disposition", "attachment; filename=\""  + fn + "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
@@ -123,6 +135,7 @@ public class HandleServlet extends BridgeServlet {
         if (!node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
             res.setHeader("Cache-Control", "private");
             // res.setHeader("Pragma", "no-cache"); // for http 1.0 : is frustrating IE when https
+            // res.setHeader("Pragma", "no-store"); // no-cache not working in apache!
             // we really don't want this to remain in proxy caches, but the http 1.0 way is making IE not work.
             return true;
         } else {
@@ -131,12 +144,14 @@ public class HandleServlet extends BridgeServlet {
         }
     }
 
+
     /**
      * Serves a node with a byte[] handle field as an attachment.
      */
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        Node node = getNode(req, res);
+        QueryParts query = readQuery(req, res);
+        Node node = getServedNode(query, getNode(query));
         if (node == null) {
             log.debug("No node found, returning");
             return;
@@ -145,7 +160,6 @@ public class HandleServlet extends BridgeServlet {
             res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
             return;
         }
-        byte[] bytes = node.getByteValue("handle");
 
         // fill the headers
         res.setDateHeader("Date", System.currentTimeMillis());
@@ -153,6 +167,11 @@ public class HandleServlet extends BridgeServlet {
         String mimeType = getMimeType(node);
         res.setContentType(mimeType);
 
+        byte[] bytes = node.getByteValue("handle");
+
+        if (bytes == null) {
+            return;
+        }
         /*
          *  remove additional information left by PhotoShop 7 in jpegs
          * , this information may crash Internet Exploder. that's why you need to remove it.
@@ -167,7 +186,7 @@ public class HandleServlet extends BridgeServlet {
             // res.setHeader("X-MMBase-2", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
         }
 
-        if (!setContent(req, res, node, mimeType)) {
+        if (!setContent(query, node, mimeType)) {
             return;
         }
         setExpires(res, node);
