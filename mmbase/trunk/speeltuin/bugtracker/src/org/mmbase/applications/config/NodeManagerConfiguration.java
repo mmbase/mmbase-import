@@ -8,5 +8,6 @@ public interface NodeManagerConfiguration{
 	public String getClassFile();
 	public String getSearchAge();
 	public String getNodeManagerName();
+        public String getDescription();
 	public FieldConfigurations getFieldConfigurations();
 }

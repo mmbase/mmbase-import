@@ -2,6 +2,7 @@ package org.mmbase.applications.mmbasedoclet;
 
 import com.sun.javadoc.*;
 import java.util.*;
+import org.mmbase.applications.config.*;
 
 public class MMBaseDoclet{
     
@@ -47,6 +48,11 @@ public class MMBaseDoclet{
                 }
             }
         }
+        NodeManagerConfigurations nodeManagerConfigurations = appconfig.getNodeManagerConfigurations();
+        for (int x =0 ; x < nodeManagerConfigurations.size(); x++){
+            NodeManagerConfiguration nodeManagerConfiguration = nodeManagerConfigurations.getNodeManagerConfiguration(x);
+            System.err.println(ConfigurationXMLWriter.writeNodeManagerConfiguration(nodeManagerConfiguration));
+        }
         
     }
     
@@ -59,10 +65,14 @@ public class MMBaseDoclet{
             String text = tags[tagcount].text();
             if (name.equals("name")){
                 nodeManagerConfig.setName(text);
-	    } else if (name.equals("maintainer")){
+            } else if (name.equals("maintainer")){
                 nodeManagerConfig.setMaintainer(text);
-	    } else if (name.equals("version")){
+            } else if (name.equals("version")){
                 nodeManagerConfig.setVersion(text);
+            } else if (name.equals("classfile")){
+                nodeManagerConfig.setClassFile(text);
+            } else if (name.equals("searchage")){
+                nodeManagerConfig.setSearchAge(text);
             } else if (name.equals("field")){
                 nodeManagerConfig.addFieldConfiguration(createFieldConfiguration(text));
             } else {
@@ -70,7 +80,6 @@ public class MMBaseDoclet{
             }
         }
         return nodeManagerConfig;
-        
     }
     
     public static DocletRelationManagerConfiguration createRelationManagerConfiguration(Tag[] tags,int startIndex, int endIndex){

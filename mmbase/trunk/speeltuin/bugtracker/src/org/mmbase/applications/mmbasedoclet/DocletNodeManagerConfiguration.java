@@ -20,6 +20,7 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
     String version = "1";
     String classFile = "Dummy";
     String searchAge = "360";
+    String description ;
     
     /** Creates a new instance of DocletNodeManagerConfiguration */
     public DocletNodeManagerConfiguration() {
@@ -57,6 +58,17 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
 
     public String getSearchAge(){
 	    return searchAge;
+    }
+    
+    public void setDescription(String description){
+        this.description = description;
+    }
+    
+    public String getDescription() {
+        if (description == null){
+            return getNodeManagerName();
+        }
+        return description;
     }
 
     public void addFieldConfiguration(FieldConfiguration fieldConfiguration){

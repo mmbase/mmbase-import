@@ -7,7 +7,6 @@
 package org.mmbase.applications.bugtracker;
 
 /**
- *
  * @author  mmbase
  */
 public class BugCategories extends java.util.Vector {
