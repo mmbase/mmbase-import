@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.44 2001-10-03 19:32:38 eduard Exp $
+ * @version $Id: Images.java,v 1.45 2001-10-04 10:44:07 eduard Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -83,7 +83,7 @@ public class Images extends MMObjectBuilder {
             throw new RuntimeException("node not found");
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = "/img.db";
+        String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db";
         String image      = servlet + "?" + num;
         String imagethumb = servlet + "?" + num + "+s(100x60)";
         String title      = node.getStringValue("title");
@@ -103,7 +103,7 @@ public class Images extends MMObjectBuilder {
                 throw new RuntimeException("node not found");
             }
             // NOTE that this has to be configurable instead of static like this
-            String servlet    = "/img.db";
+            String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db";
             String image      = servlet + "?" + num;
             String imagethumb = servlet + "?" + num + "+s(100x60)";
 

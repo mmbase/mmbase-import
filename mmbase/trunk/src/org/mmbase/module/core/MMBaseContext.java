@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.18 2001-10-03 17:33:42 michiel Exp $
+$Id: MMBaseContext.java,v 1.19 2001-10-04 10:44:08 eduard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2001/10/03 17:33:42  michiel
+michiel: made some member variable private (in stead of package), added function 'init(configpath, initloggin)', private init functions now need a string
+
 Revision 1.17  2001/10/03 14:23:34  michiel
 michiel: Orion needs a slash there...
 
@@ -89,7 +92,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.18 $ $Date: 2001-10-03 17:33:42 $
+ * @$Revision: 1.19 $ $Date: 2001-10-04 10:44:08 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -99,6 +102,7 @@ public class MMBaseContext {
     private static String userDir;
     private static String configPath;
     private static String htmlRoot;
+    private static String htmlRootUrlPath ="/";
     private static String outputFile;
 
     /**
@@ -112,14 +116,14 @@ public class MMBaseContext {
      *
      */
     public synchronized static void init(ServletContext servletContext) throws ServletException {
-        if (!initialized) {
-
+        if (!initialized) {    	
+	    // store the current context    
+            sx = servletContext;
+	    
             // Get the current directory using the user.dir property.
             userDir = System.getProperty("user.dir");
-
-            sx = servletContext;
-
-            // Init outputfile.
+	    
+	    // Init outputfile.
             {
                 String outputfile = sx.getInitParameter("mmbase.outputfile");
                 if (outputfile == null) {
@@ -142,14 +146,59 @@ public class MMBaseContext {
                     initConfigpath(configpath);
                 } catch(Exception e) {
                     throw new ServletException(e.getMessage());
-                }
+		}
             }
             // Init logging.
             initLogging();
-            initialized = true;
+	    
+	    // init the htmlRootUrlPath
+	    {	    	    
+	    	// fetch resource path for the current serletcontext root...
+	    	String contextUrl = convertResourceUrl(servletContext, "/");
+				
+		// fetch resource path for the root serletcontext root...
+		ServletContext rootContext = servletContext.getContext("/");
+		String rootContextUrl = convertResourceUrl(rootContext, "/");
+		
+		if(contextUrl != null && rootContextUrl != null) {
+    	    	    // the beginning of contextUrl is the same as the string rootContextUrl, 
+    	    	    // the left part is the current urlPath on the server...
+		    if(contextUrl.startsWith(rootContextUrl)) {
+		    	// htmlUrl is gonna be filled
+		    	htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
+		    }
+		    else {
+		    	log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
+		    }
+		}
+	    }
+    	    initialized = true;
         }
     }
 
+    /**
+     * converts a url with a given context, to the resource url.
+     * @param servletContext 
+     * @param url A url to the resource, which must exist
+     * @return null on failure, otherwise a resource url.
+     */
+    private static String convertResourceUrl(ServletContext servletContext, String url) {
+    	// return null on failure
+    	if(servletContext == null) return null;
+	
+    	try {
+            java.net.URL transformed = servletContext.getResource(url);
+            if(transformed == null){
+            	servletContext.log("no resource is mapped to the pathname: '"+url+"'");
+                return null;
+            }
+            return transformed.toString();
+      	}
+        catch (java.net.MalformedURLException e) {
+            servletContext.log("could not convert the url: '" + e + "'(error converting)", e);
+        }
+        return null;
+    }
 
     /**
      * Initialize MMBase using a config path. Useful when testing
@@ -161,8 +210,6 @@ public class MMBaseContext {
      *                    config files.
      * 
      */
-
-
     public synchronized static void init(String configPath, boolean initlogging) throws Exception {
         if (!initialized) {
             // Get the current directory using the user.dir property.
@@ -443,5 +490,20 @@ public class MMBaseContext {
         }
         return outputFile;
     }
-
+    
+    /**
+     * Returns a string representing the HtmlRootUrlPath, this is the path under 
+     * the webserver, what is the root for this instance.
+     * this will return '/' or something like '/mmbase/' or so...
+     * @return  the HtmlRootUrlPath
+     * @deprecated  should not be needed, and this information should be requested from the ServletRequest
+     */
+    public synchronized static String getHtmlRootUrlPath() {
+        if (!initialized) {
+            String message = "The init method should be called first.";
+            System.err.println(message);
+            throw new RuntimeException(message);
+        }
+        return htmlRootUrlPath;
+    }
 }
