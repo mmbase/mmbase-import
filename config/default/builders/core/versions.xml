@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
-  <classfile>org.mmbase.module.builders.Versions</classfile>
 
+  <classfile>org.mmbase.module.builders.Versions</classfile>
   <searchage>1000</searchage>
 
-  <!-- <names>
-  names defines the different names used in user visible parts, singular for
-  for talking about 1 object (Url,Person) and plurar for talking about multiple
-  <Urls, people).
-  >-->
   <names>
 	 <!-- singles per language as defined by ISO 639 -->
 	 <singular xml:lang="nl">VersieBeheer</singular>
 	 <singular xml:lang="en">VersionControl</singular>
 	 <singular xml:lang="us">VersionControl</singular>
 	 <singular xml:lang="eo">Versiestrilo</singular>
+	 <singular xml:lang="fr">Version</singular>
 	 <!-- multiple per language as defined by ISO 639 -->
 	 <plural xml:lang="nl">VersieBeheer</plural>
 	 <plural xml:lang="en">VersionControl</plural>
 	 <plural xml:lang="us">VersionControl</plural>
-	 <plural xml:lang="us">Versiestrilo</plural>
+	 <plural xml:lang="eo">Versiestrilo</plural>
+	 <plural xml:lang="fr">Versions</plural>
   </names>
 
-  <!-- <descriptions>
-  small description of the builder for human reading
-  -->
   <descriptions>
 	 <!-- descriptions per language as defined by ISO 639  -->
 	 <description xml:lang="nl">Houd bij van applicaties/builders welke versie actief is</description>
