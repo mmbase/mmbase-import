@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.95 2003-07-15 17:41:16 michiel Exp $
+  @version $Id: wizard.xsl,v 1.96 2003-07-15 19:22:26 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -342,7 +342,7 @@
          value="{$val}" 
          class="input" 
          onkeyup="validate_validator(event);"
-         onchange="validate_validator(event);">
+         onblur="validate_validator(event);">
 
          <xsl:apply-templates select="../@*" />
         </input>
