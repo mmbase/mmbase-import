@@ -82,6 +82,9 @@
     <!-- Postgresql using the http://jxdbcon.sourceforge.net/ dirver
     <property name="url">jdbc:pgsql:net//$HOST:$PORT/$DBM</property>
     -->
+    <!-- MS Sql Server
+    <property name="url">jdbc:microsoft:sqlserver://$HOST:$PORT;DatabaseName=$DBM</property>
+    -->
 
     <!-- Default hsqldb driver -->
     <property name="url">jdbc:hsqldb:$DBM</property>
@@ -142,6 +145,7 @@
     HsqlDB:         org.hsqldb.jdbcDriver                   (http://hsqldb.sourceforge.net/)
     Oracle:         oracle.jdbc.driver.OracleDriver
     Informix:       com.informix.jdbc.IfxDriver
+    M$ SQL Server   com.microsoft.jdbc.sqlserver.SQLServerDriver    (http://search.microsoft.com/search/results.aspx?st=b&na=88&View=en-us&qu=jdbc+sql+server+download)
     -->
     <property name="driver">org.hsqldb.jdbcDriver</property>
 
@@ -153,6 +157,8 @@
     MySQL:          3306
     PostgreSQL      5432
     Informix        1527
+    M$ SQL Server   1433
+    Oracle          1521
     -->
     <property name="port">0</property>
 
