@@ -7,7 +7,7 @@
 </head>
 <body>
 <blockquote>
-<mm:cloud>
+<mm:cloud jspvar="cloud">
 <%
     Node channelnode = cloud.getNodeByAlias("Forum");
     int channelnr=channelnode.getNumber();        
