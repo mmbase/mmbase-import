@@ -4,6 +4,7 @@
 	<html>
 	  <head>
 		<title>Codings examples</title>
+		<link rel="stylesheet" href="../../css/mmbase.css" type="text/css">
 	  </head>
 	  <body>
 		<h1>Introduction</h1>
