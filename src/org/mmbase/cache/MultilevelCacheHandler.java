@@ -29,20 +29,18 @@ public class MultilevelCacheHandler extends LRUHashtable {
 	private Hashtable listeners = new Hashtable();
 
 	// reference to main MMBase class
-	private MMBase mmb;
+	private static MMBase mmb;
 
 	// reference to itself needed to give instance back in a static (weird)
-	private static MultilevelCacheHandler ins;
+	private static Hashtable caches=new Hashtable();
 
 	// the state, true is active
 	private static boolean state=false;
 	
 	// 
-	public MultilevelCacheHandler(MMBase mmb,int size) {
+	public MultilevelCacheHandler(String name,int size) {
 		super(size);
-		this.mmb=mmb;
-		this.ins=this;
-		
+		caches.put(name,this);
 	}
 
 	public Object put(Object hash,Object o,Vector types,StringTagger tagger) {
@@ -51,6 +49,20 @@ public class MultilevelCacheHandler extends LRUHashtable {
 		return(put(hash,n));
 	}
 
+	public static void setMMBase(MMBase m) {
+		mmb=m;
+	}
+
+	public static MultilevelCacheHandler getCache(String name) {
+		Object result=caches.get(name);
+		if (result==null) {
+			MultilevelCacheHandler nc=new MultilevelCacheHandler(name,300);
+			return(nc);
+		} else {
+			return((MultilevelCacheHandler)result);
+		}
+	}
+	
 
 	public synchronized Object get(Object key) {
 		// get the wrapper but return the
@@ -123,10 +135,6 @@ public class MultilevelCacheHandler extends LRUHashtable {
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
 
 		return(new Integer(hash));
-	}
-
-	public static MultilevelCacheHandler getMultilevelCacheHandler() {
-		return(ins);
 	}
 
 	public static void setState(boolean s) {
