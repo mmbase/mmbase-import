@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ImageRequestProcessor.java,v 1.1 2000-06-05 14:42:15 wwwtech Exp $
+	$Id: ImageRequestProcessor.java,v 1.2 2000-06-06 21:31:58 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/06/05 14:42:15  wwwtech
+	Rico: image queuing built in plus parallel converters
+	
 */
 package org.mmbase.module.builders;
 
@@ -21,7 +24,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.1 2000-06-05 14:42:15 wwwtech Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.2 2000-06-06 21:31:58 wwwtech Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 	private String classname = getClass().getName();
@@ -86,7 +89,10 @@ public class ImageRequestProcessor implements Runnable {
 			newnode.setValue("id",id);
 			newnode.setValue("handle",picture);
 			newnode.setValue("filesize",picture.length);
-			newnode.insert("imagesmodule");
+			int i=newnode.insert("imagesmodule");
+			if (i<0) {
+				debug("processRequest: Can't insert cache entry id="+id+" key="+ckey);
+			}
 		} else {
 			debug("processRequest(): Convert problem params : "+params);
 		}
