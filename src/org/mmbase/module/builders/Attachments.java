@@ -25,6 +25,8 @@ import org.mmbase.util.logging.*;
  * This builder can be used to maintain files
  *
  * @author cjr@dds.nl
+ * @author Michiel Meeuwissen
+ * @version $Id: Attachments.java,v 1.10 2002-06-27 22:10:21 michiel Exp $ 
  */
 public class Attachments extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -160,22 +162,22 @@ public class Attachments extends MMObjectBuilder {
     public boolean setValue(MMObjectNode node, String field) {
 
         // does not seem to work...
-        // Using the bridge (jsp), mimetype en size en filename are never filled.
-        // TODO
-       
-        try {
-            if(field.equals("handle") && node.getValue("mimetype")==null) {
+        // Using the bridge (jsp), mimetype is never filled automaticly
+        // TODO: fix MagicFile
+        log.service("Setting field " + field + " of node " + node);
+        if(field.equals("handle")) {            
+            String mimetype = node.getStringValue("mimetype");
+            if (mimetype != null && !mimetype.equals("")) {
+                log.debug("mimetype was set already");
+            } else {
                 byte[] handle = (byte[])node.getValue("handle");
-                node.setValue("size", handle.length);
                 log.debug("Attachment size of file = " + handle.length);
+                node.setValue("size", handle.length);
                 MagicFile magic = new MagicFile();
-                node.setValue("mimetype",magic.test(handle));
+                node.setValue("mimetype", magic.test(handle));
                 log.debug("ATTACHMENT mimetype of file = " + magic.test(handle));
             }
-        } catch (Exception e) {
-            log.error("Attachments, wasn't able to determine mime/type or size");
-        }
-		
-        return true;	
+        }        		
+        return super.setValue(node, field);	
     }	
 }
