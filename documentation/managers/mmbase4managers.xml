@@ -3,9 +3,9 @@
   <articleinfo>
     <title>Running MMBase in your organization</title>
 
-    <date>augustus 2002</date>
+    <date>August 2002</date>
 
-    <edition>$Id: mmbase4managers.xml,v 1.4 2003-06-26 11:50:57 gerard Exp $</edition>
+    <edition>$Id: mmbase4managers.xml,v 1.5 2003-06-30 13:29:13 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -37,12 +37,12 @@
     an open source product, this document also outlines the consequences that
     come with running open source software in your organization.</para>
 
-    <para>Derived from the open source philosphy, the community thrives
+    <para>Derived from the open source philosophy, the community thrives
     certain version and release management principles. For potential users and
-    dicision makers, a clear insight in this process is very important.</para>
+    decision makers, a clear insight in this process is very important.</para>
 
     <para>To support the product, a community has been setup. This document
-    also covers the organzational structure of this community and its official
+    also covers the organizational structure of this community and its official
     spokesman and their specific roles within the community</para>
   </abstract>
 
@@ -71,7 +71,7 @@
     publishers, designers) tailored functions to maintain a website and keep
     its contents alive.</para>
 
-    <para>MMBase ia such a system. It coveres the whole spectrum needed to:
+    <para>MMBase in such a system. It covers the whole spectrum needed to:
     import, manage, maintain, export and publish content for your websites. To
     achieve this MMBase contains tools for editorial people to insert and
     maintain web content. To support web designers, MMBase offers an easy to
@@ -85,7 +85,7 @@
     have to change the specs once and all websites that use this information
     will reflect the changes. This is a welcome contrast to
     &#34;hardcoded&#34; webpages, where you might have to review each
-    indivisual web pages to validate the specs.</para>
+    individual web pages to validate the specs.</para>
 
     <section>
       <title>Features and benefits - the content cloud</title>
@@ -197,18 +197,18 @@
       the MMBase project. Without these people there would be no MMBase
       project. The roles and responsibilities that people assume within the
       project are based on personal merit. Everyone can help regardless of
-      their role. However, in order to keep the project managable, the MMBase
+      their role. However, in order to keep the project manageable, the MMBase
       Developer Community is divided into three roles: the MMBase management
       committee (MMC), the Committers, and the Developers.</para>
     </section>
 
     <section>
-      <title>MMBase Managment Committee</title>
+      <title>MMBase Management Committee</title>
 
       <para>The MMBase Management Committee, short the MMC, consists of people
       who have done a lot for MMBase as a product and who have in depth
       knowledge of the product. The MMC coordinates the Open Source process,
-      coordinates the MMBase projects, and coordinates which code addtions and
+      coordinates the MMBase projects, and coordinates which code additions and
       changes will actually be added to the central MMBase code repository.</para>
     </section>
 
@@ -261,7 +261,7 @@
     <para>All relevant MMBase artifacts, such as program source, compiled
     code, documentation and samples are all maintained in a central
     repository. This repository is based on a common accepted standard (CVS,
-    Concurrent Versions Systems) and is readonly accessible for anyone through
+    Concurrent Versions Systems) and is read-only accessible for anyone through
     a documented procedure. This approach offers, within the available
     resources of the MMBase community, the best solution for easy spread of
     the MMBase source and object code.</para>
@@ -275,10 +275,10 @@
       (for example release 1.6). The latest minor release was release 1.7.</para>
 
       <para>Conforming to general software practices, the minor releases focus
-      primairily on bug fixing and backward compatibility. These issues are
+      primarily on bug fixing and backward compatibility. These issues are
       frequently discussed on the MMBase developer mailing list.</para>
 
-      <para>Planning of new (minor) releases is allways communicated through
+      <para>Planning of new (minor) releases is always communicated through
       the MMBase developer mailing list. Depending on the amount of work, the
       delivery of such a release can be anywhere between a couple of weeks to
       two to three months.</para>
@@ -298,7 +298,7 @@
     <title>MMBase technologies</title>
 
     <para>MMBase is founded on Java technologies, specifically the J2EE
-    flavour of MMBase. This part of Java focuses on delivering the features of
+    flavor of MMBase. This part of Java focuses on delivering the features of
     Java on a server oriented platform. By using Java/J2EE technologies,
     MMBase can run on any platform that supports the Java/J2EE platform.</para>
 
@@ -315,7 +315,7 @@
       <para>MMBase has a layered architecture. Each layer in this architecture
       has its own responsibilities. For example the core layer of MMBase is
       responsible for access to the database. Through this approach it&#39;s
-      fairly easy to add addtional support for new databases or extend support
+      fairly easy to add additional support for new databases or extend support
       for specific features in specific databases.</para>
 
       <para>To gain more insight in the actual layering of the architecture,
@@ -324,7 +324,7 @@
       <graphic fileref="media/architecture.png" />
 
       <para>In the above picture, the green components are plugin-like parts
-      of MMBase. By using a common set of access points and negociating the
+      of MMBase. By using a common set of access points and negotiating the
       security layer of MMBase, these plugins can actually communicate with
       the core components of MMBase. Samples of core components are for
       example the actual content elements (nodes) stored in MMBase.</para>
@@ -341,10 +341,10 @@
       software. An important benefit of this technology is that these
       components are scalable &#34;by design&#34;. What does this mean? This
       means that websites, implemented with MMBase as content management
-      system, can scale up without the need for additonal programming. Of
+      system, can scale up without the need for additional programming. Of
       course your machine running your MMBase website will eventually run out
       of CPU cycles as it processes more and more visitors. But, without
-      having to change a line of MMBase code, you can easily add additonal
+      having to change a line of MMBase code, you can easily add additional
       hardware to beef up your site&#39;s performance. This ability is
       inherent to the Java/J2EE technologies used by MMBase.</para>
 
@@ -366,7 +366,7 @@
       in.</para>
 
       <para>MMBase has a comprehensive set of tags (a.k.a. the MMBase Tag
-      LIbrary) that support page designers in retrieving content from MMBase.
+      Library) that support page designers in retrieving content from MMBase.
       These tags are comparable to the standard HTML used to build a static
       webpage. The major difference is that by using the MMBase tags, you can
       spice up your pages with content available in MMBase like images,
@@ -383,14 +383,14 @@
       environment.</para>
 
       <para>By offering this library, it&#39;s also possible to integrate the
-      development of websites with MMBase in populair page design tools like
+      development of websites with MMBase in popular page design tools like
       Dreamweaver by Macromedia.</para>
     </section>
 
     <section>
       <title>Technologies for Editors</title>
 
-      <para>[todo: This section focusses on the availability of editors, edit
+      <para>[todo: This section focuses on the availability of editors, edit
       wizards and the possibility of &#34;easy customization&#34; of these
       tools.]</para>
     </section>
