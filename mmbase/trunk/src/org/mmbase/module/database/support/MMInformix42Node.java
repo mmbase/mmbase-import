@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.9 2000-04-12 14:20:34 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.10 2000-04-15 20:40:03 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/04/12 14:20:34  wwwtech
+Rico: fixed insert of initial root Node
+
 Revision 1.8  2000/04/12 11:34:56  wwwtech
 Rico: built type of builder detection in create phase
 
@@ -48,12 +51,12 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.9 $ $Date: 2000-04-12 14:20:34 $
+* @$Revision: 1.10 $ $Date: 2000-04-15 20:40:03 $
 */
-public class MMInformix42Node implements MMJdbc2NodeInterface {
+public class MMInformix42Node extends MMOORel2Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	MMBase mmb;
@@ -78,7 +81,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 
 			String root=System.getProperty("mmbase.config");
 		
-			debug("create(): reading defines from '"+root+"/defines/"+tableName+".def'");
+			if (debug) debug("create(): reading defines from '"+root+"/defines/"+tableName+".def'");
 
 			Hashtable prop = Reader.readProperties(root+"/defines/"+tableName+".def");
 	
@@ -313,7 +316,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			case 'E':
 				// EQUAL
 				result+="etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))";
-				debug("etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))");
+				if (debug) debug("etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))");
 				break;
 			}
 
@@ -359,7 +362,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			byte[] result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			debug("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
+			if (debug) debug("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
 			if (rs.next()) {
 				result=getDBByte(rs,1);
@@ -501,7 +504,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		bul.signalNewObject(bul.tableName,number);
 
 		node.setValue("number",number);
-		debug("INSERTED="+node);
+		if (debug) debug("INSERTED="+node);
 		return(number);	
 	}
 
@@ -617,7 +620,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
 				int num = node.getIntValue("number");
-				debug("commit(): changed(insrel,"+bul.tableName+","+num+")");
+				if (debug) debug("commit(): changed(insrel,"+bul.tableName+","+num+")");
 				mmb.mmc.changedNode(num,bul.tableName,"c");
 
 				// figure out tables to send the changed relations
@@ -628,7 +631,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			} else {
 				int num = node.getIntValue("number");
-				debug("commit(): changed("+bul.tableName+","+num+")");
+				if (debug) debug("commit(): changed("+bul.tableName+","+num+")");
 				if (mmb!=null && mmb.mmc!=null) {
 					mmb.mmc.changedNode(num,bul.tableName,"c");
 				} else {
@@ -646,8 +649,8 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		java.util.Date d=new java.util.Date();
 		int number=node.getIntValue("number");
-		debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
-		debug("removeNode(): SAVECOPY "+node.toString());
+		if (debug) debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
+		if (debug) debug("removeNode(): SAVECOPY "+node.toString());
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
 			debug("removeNode("+bul.tableName+","+number+"): PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
@@ -687,7 +690,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		if (currentdbkey!=-1) {
 			currentdbkey++;
 			if (currentdbkey<=currentdbkeyhigh) {
-				debug("GETDBKEY="+currentdbkey);
+				if (debug) debug("GETDBKEY="+currentdbkey);
 				return(currentdbkey);
 			}
 		}
@@ -716,7 +719,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		}
 		currentdbkey=number; // zeg 10
 		currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
-		debug("getDBKey(): got key("+currentdbkey+")");
+		if (debug) debug("getDBKey(): got key("+currentdbkey+")");
 		return(number);
 	}
 
@@ -758,4 +761,47 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			return(results);
 		}
 	}
+
+
+ 	/**
+ 	* insert a new object, normally not used (only subtables are used)
+ 	*/
+ 	public int fielddefInsert(String baseName, int oType, String owner,MMObjectNode node) {
+ 		int dbtable=node.getIntValue("dbtable");
+ 		String dbname=node.getStringValue("dbname");
+ 		String dbtype=node.getStringValue("dbtype");
+ 		String guiname=node.getStringValue("guiname");
+ 		String guitype=node.getStringValue("guitype");
+ 		int guipos=node.getIntValue("guipos");
+ 		int guilist=node.getIntValue("guilist");
+ 		int guisearch=node.getIntValue("guisearch");
+ 		int dbstate=node.getIntValue("dbstate");
+ 
+ 		int number=getDBKey();
+ 		try {
+ 			MultiConnection con=mmb.getConnection();
+ 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_fielddef values(?,?,?,?,?,?,?,?,?,?,?,?)");
+ 			stmt.setInt(1,number);
+ 			stmt.setInt(2,oType);
+ 			stmt.setString(3,owner);
+ 			stmt.setInt(4,dbtable);
+ 			stmt.setString(5,dbname);
+ 			stmt.setString(6,dbtype);
+ 			stmt.setString(7,guiname);
+ 			stmt.setString(8,guitype);
+ 			stmt.setInt(9,guipos);
+ 			stmt.setInt(10,guilist);
+ 			stmt.setInt(11,guisearch);
+ 			stmt.setInt(12,dbstate);
+ 			stmt.executeUpdate();
+ 			stmt.close();
+ 			con.close();
+ 		} catch (SQLException e) {
+ 			e.printStackTrace();
+ 			System.out.println("Error on : "+number+" "+owner+" fake");
+ 			return(-1);
+ 		}
+ 			
+ 		return(number);
+ 	}
 }

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.7 2000-04-12 11:34:57 wwwtech Exp $
+$Id: MMPostgres42Node.java,v 1.8 2000-04-15 20:40:03 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/04/12 11:34:57  wwwtech
+Rico: built type of builder detection in create phase
+
 Revision 1.6  2000/03/31 16:02:08  wwwtech
 Davzev: Fixed insert() for when node builder is typedef
 
@@ -46,9 +49,9 @@ import org.mmbase.util.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.7 $ $Date: 2000-04-12 11:34:57 $
+* @$Revision: 1.8 $ $Date: 2000-04-15 20:40:03 $
 */
-public class MMPostgres42Node implements MMJdbc2NodeInterface {
+public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
@@ -813,4 +816,61 @@ catch(Exception e)
 				stmt.setString(i, "");
 		}
 	}
+
+
+ 	/**
+ 	* insert a new object, normally not used (only subtables are used)
+ 	*/
+	public int fielddefInsert(String baseName, int oType,String owner,MMObjectNode node) {
+ 		int dbtable=node.getIntValue("dbtable");
+ 		String dbname=node.getStringValue("dbname");
+ 		String dbtype=node.getStringValue("dbtype");
+ 		String guiname=node.getStringValue("guiname");
+ 		String guitype=node.getStringValue("guitype");
+ 		int guipos=node.getIntValue("guipos");
+ 		int guilist=node.getIntValue("guilist");
+ 		int guisearch=node.getIntValue("guisearch");
+ 		int dbstate=node.getIntValue("dbstate");
+ 
+ 		int number=getDBKey();
+ 		try {
+ 			MultiConnection con=mmb.getConnection();
+ 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_fielddef values(?,?,?,?,?,?,?,?,?,?,?,?)");
+ 			stmt.setInt(1,number);
+ 			stmt.setInt(2,oType);
+ 			stmt.setString(3,owner);
+ 			stmt.setInt(4,dbtable);
+ 			stmt.setString(5,dbname);
+ 			stmt.setString(6,dbtype);
+ 			stmt.setString(7,guiname);
+ 			stmt.setString(8,guitype);
+ 			stmt.setInt(9,guipos);
+ 			stmt.setInt(10,guilist);
+ 			stmt.setInt(11,guisearch);
+ 			stmt.setInt(12,dbstate);
+ 			stmt.executeUpdate();
+ 			stmt.close();
+ 			con.close();
+ 		} catch (SQLException e) {
+ 			e.printStackTrace();
+ 			System.out.println("Error on : "+number+" "+owner+" fake");
+ 			return(-1);
+ 		}
+ 			
+ 		try {
+ 			MultiConnection con=mmb.getConnection();
+ 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
+ 			stmt.setInt(1,number);
+ 			stmt.setInt(2,oType);
+ 			stmt.setString(3,owner);
+ 			stmt.executeUpdate();
+ 			stmt.close();
+ 			con.close();
+ 		} catch (SQLException e) {
+ 			e.printStackTrace();
+ 			System.out.println("Error on : "+number+" "+owner+" fake");
+ 			return(-1);
+ 		}
+ 		return(number);
+ 	}
 }
