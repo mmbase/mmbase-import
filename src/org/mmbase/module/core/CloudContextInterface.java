@@ -12,13 +12,15 @@ package org.mmbase.module.core;
 import java.util.Enumeration;
 
 /**
+ * The collection of clouds, and modules within a Java Virtual Machine.
  *
  * @author Rob Vermeulen
+ * @author Pierre van Rooden
  */
 public interface CloudContextInterface {
 
 	/**
-	 * gives the value of an InitParameter
+	 * Retrieves the value of an InitParameter
 	 * @param parameter the initparamter
 	 * @return the value of the initparameter
 	 */
@@ -26,35 +28,35 @@ public interface CloudContextInterface {
 
 
 	/**
-	 * gives all the modules
-	 * @return all module
+	 * Retrieves all the modules available in this context
+	 * @return all available modules
 	 */
-	public Enumeration getModules();
+	public Iterator getModules();
 
 	
 	/**
-	 * gives a Module
-	 * @param name of the module
+	 * Retrieves a Module
+	 * @param modulename name of the module
 	 * @return the requested module
 	 */
-	public CloudInterface getModules(String modulename);
+	public ModuleInterface getModules(String modulename);
 
 	/**
-	 * gives all clouds 
-	 * @return all Clouds
+	 * Retrieves all clouds within this context
+	 * @return all Clouds within this context
 	 */
-	public Enumeration getClouds();
+	public Iterator getClouds();
 
 	/**
-	 * gives a Cloud
-	 * @param name of the Cloud
+	 * Retrieves a Cloud
+	 * @param cloudname name of the Cloud
 	 * @return all Clouds
 	 */
 	public CloudInterface getCloud(String cloudname);
 
 	/** 
-	 * give remote CloudContext
-	 * @param place of remote CloudContext
+	 * Retrieve a remote CloudContext
+	 * @param cloudcontextUrl place of the remote CloudContext
 	 * @return remote CloudContext
 	 *
 	 * public CloudContext getCloudContext(String cloudcontextUrl);
