@@ -12,7 +12,11 @@ void push(Stack stack, String id, HttpServletRequest request) {
    push(stack, id, request.getServletPath() + "?" + request.getQueryString());
 }
 String peek(Stack stack) {
-  return ((String []) stack.peek())[1];
+    if (stack.size() > 0) {
+        return ((String []) stack.peek())[1];
+    } else {
+        return ".";
+    }
 }
 
 String toHtml(Stack stack, HttpServletRequest request) {
@@ -60,7 +64,7 @@ if (urlStack == null) {
 </mm:notpresent>
 <mm:present referid="pop">
   <mm:write referid="pop" jspvar="pop" vartype="integer">
-    <% for (int i = 0; i < pop.intValue(); i++) urlStack.pop(); %>
+    <% for (int i = 0; i < pop.intValue() && urlStack.size() > 0; i++) urlStack.pop(); %>
   </mm:write>
 </mm:present>
 
