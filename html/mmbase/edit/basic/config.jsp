@@ -21,17 +21,17 @@
       <tr>
         <td><%= m.getString("config.pagesize")%></td>  
         <td>
-            <select name="mmjspeditors_page_size">
-              <option value="5" <mm:compare referid="config.page_size" value="5">selected="selected"</mm:compare>>5</option>
-              <option value="10" <mm:compare referid="config.page_size" value="10">selected="selected"</mm:compare>>10</option>
-              <option value="20" <mm:compare referid="config.page_size" value="20">selected="selected"</mm:compare>>20</option>
-              <option value="30" <mm:compare referid="config.page_size" value="30">selected="selected"</mm:compare>>30</option>
-              <option value="40" <mm:compare referid="config.page_size" value="40">selected="selected"</mm:compare>>40</option>
-              <option value="100" <mm:compare referid="config.page_size" value="100">selected="selected"</mm:compare>>100</option>
+          <mm:import id="mmjspeditors_page_size_list" vartype="list">5,10,20,30,40,100</mm:import>
+          <select name="mmjspeditors_page_size">
+            <mm:stringlist referid="mmjspeditors_page_size_list">
+               <option value="<mm:write/>" <mm:compare referid2="config.page_size">selected="selected"</mm:compare>><mm:write/></option>
+            </mm:stringlist>
           </select>
-            <select name="mmjspeditors_indexoffset">
-              <option value="0" <mm:compare referid="config.indexoffset" value="0">selected="selected"</mm:compare>>0</option>
-              <option value="1" <mm:compare referid="config.indexoffset" value="1">selected="selected"</mm:compare>>1</option>
+          <mm:import id="mmjspeditors_indexoffset_list" vartype="list">0,1</mm:import>
+          <select name="mmjspeditors_indexoffset">
+            <mm:stringlist referid="mmjspeditors_indexoffset_list">
+              <option value="<mm:write/>" <mm:compare referid2="config.indexoffset">selected="selected"</mm:compare>><mm:write/></option>
+            </mm:stringlist>
           </select>
         </td>
       </tr>
