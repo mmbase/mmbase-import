@@ -44,11 +44,10 @@
 
       <h1>Image</h1>
       <p>				
-        If you have a recent version of ImageMagick
-        installed, then you can also use this text in an image
-        (well, that is, for me the chinese char where missing in the
-        font). You need Arial.ttf in &lt;mmbase config
-        dir&gt;/fonts/ for this example:
+        If you have a recent version of ImageMagick installed, then you can also use this text in an
+        image (well, that is, for me the chinese char where missing in the font). The LC_ALL setting
+        must contain UTF-8. You need Arial.ttf in &lt;mmbase config dir&gt;/fonts/ for this
+        example:
       </p>
       <%-- Simply search the last image, resize it and make it black/white, and write on it in red --%>
       <mm:listnodes type="images" orderby="number" directions="down" max="1">
