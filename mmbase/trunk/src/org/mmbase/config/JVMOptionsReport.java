@@ -10,16 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.config;
 
 import java.util.*;
-import java.io.*;
-import java.sql.*;
-
-import org.mmbase.util.*;
 
 /**
  * @author Case Roole, cjr@dds.nl
- * @version $Id: JVMOptionsReport.java,v 1.1 2000-10-07 17:06:07 case Exp $
+ * @version $Id: JVMOptionsReport.java,v 1.2 2003-03-04 13:50:53 nico Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/10/07 17:06:07  case
+ * cjr: Added checking of mmbase JVM options and some minor bugfixes
+ *
  *
  * Check JVM options, e.g. -Dmmbase.config=myconfigpath
  * 

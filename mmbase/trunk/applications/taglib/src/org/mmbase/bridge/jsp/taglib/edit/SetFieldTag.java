@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.edit;
 
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.util.logging.*;

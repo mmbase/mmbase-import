@@ -12,12 +12,8 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 import org.mmbase.util.logging.Logging;

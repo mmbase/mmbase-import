@@ -12,8 +12,6 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import org.mmbase.bridge.*;
-
 /**
  * Calls 'doInfo' from NodeManager or from Module.
  *

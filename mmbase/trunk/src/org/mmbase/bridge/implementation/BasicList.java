@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -19,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.11 2003-02-26 11:17:17 pierre Exp $
+ * @version $Id: BasicList.java,v 1.12 2003-03-04 13:44:36 nico Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 

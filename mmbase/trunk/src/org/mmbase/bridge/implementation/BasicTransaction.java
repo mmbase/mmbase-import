@@ -13,13 +13,12 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.11 2002-11-18 12:24:18 pierre Exp $
+ * @version $Id: BasicTransaction.java,v 1.12 2003-03-04 13:44:36 nico Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());

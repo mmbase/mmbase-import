@@ -12,15 +12,12 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.FieldIterator;
 import org.mmbase.bridge.FieldList;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.implementation.BasicNodeList;
-
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

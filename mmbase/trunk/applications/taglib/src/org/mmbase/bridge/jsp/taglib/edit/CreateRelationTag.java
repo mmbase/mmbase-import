@@ -15,8 +15,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Relation;
 
-import org.mmbase.bridge.jsp.taglib.CloudProvider;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.jsp.taglib.NodeTag;
 
 import org.mmbase.util.logging.Logger;

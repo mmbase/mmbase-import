@@ -10,21 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
-import java.io.*;
 
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.Iterator;
 import java.util.Enumeration;
-import java.util.Set;
-import java.util.HashSet;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.Node;
 
