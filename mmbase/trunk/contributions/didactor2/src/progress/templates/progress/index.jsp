@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@page import="java.util.*" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -46,6 +47,27 @@
 <mm:node number="$education">
 <b><mm:field name="name" write="true"/></b>
 <table class="font">
+
+<% List tests = new ArrayList(); %>
+<mm:relatednodescontainer type="learnobjects" role="posrel">
+    <mm:sortorder field="posrel.pos" direction="up"/>
+    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+      <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
+      <mm:compare referid="nodetype" value="tests">
+        <mm:field name="number" jspvar="testNum" vartype="String">
+            <% tests.add(testNum); %>
+        </mm:field>
+     </mm:compare>
+    </mm:tree>
+</mm:relatednodescontainer>
+<% int testCounter = 0;
+   int startAt = 0;
+   Iterator testIterator = tests.iterator();
+   while (testIterator.hasNext()) {
+       String testNum = (String) testIterator.next();
+        if (testCounter  % 20 == 0) { 
+            startAt = testCounter;
+            %>
 <tr>
 <th></th>
     <mm:node number="progresstextbackground">
@@ -58,13 +80,11 @@
       <th>
         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Tijd ingelogd')+rotate(90)"/>">
     </th>
-    </mm:node>
-    
-  <mm:relatednodescontainer type="learnobjects" role="posrel">
-    <mm:sortorder field="posrel.pos" direction="up"/>
-    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
-      <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
-      <mm:compare referid="nodetype" value="tests">
+    </mm:node>    
+<%
+        }
+        %>
+       <mm:node number="<%= testNum %>">
         <mm:field name="name" jspvar="name" vartype="String">
             <% name  = name.replaceAll("\\s+"," ").replaceAll("\"","''"); %>
          <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,"<%= name %>")+rotate(90)</mm:import>
@@ -72,35 +92,31 @@
          <mm:node number="progresstextbackground">
          <th><img src="<mm:image template="$template"/>"></th>
          </mm:node>
-      </mm:compare>
-    </mm:tree>
-  </mm:relatednodescontainer>
-</tr>
-</mm:node>
-<di:hasrole role="student">
- <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="student"><mm:write referid="user"/></mm:param>
- </mm:treeinclude>
-</di:hasrole>
-<di:hasrole role="teacher">
-    <mm:node referid="class">
+        </mm:node>
+     <% if (  ++testCounter  % 20 == 0 || !testIterator.hasNext()) { %>
+         </tr>
+        <mm:import id="startAt" reset="true"><%= startAt %></mm:import>
+   <mm:node referid="class">
         <mm:relatednodes type="people">
             <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
             <di:hasrole role="student" referid="studentnumber">
-                <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids">
+                <mm:treeinclude page="/progress/progress_row.jsp" objectlist="$includePath" referids="$referids,startAt">
                     <mm:param name="student"><mm:field name="number"/></mm:param>
                 </mm:treeinclude>
             </di:hasrole>
         </mm:relatednodes>
     </mm:node>
-</di:hasrole>
-
-
+<%
+        }
+    
+  }
+%>
 </table>
 
 
  </div>
 </div>
+</mm:node>
 </di:hasrole>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </mm:cloud>
