@@ -19,73 +19,10 @@
 <TD WIDTH="50">
 <img src="beeld/logo-green.gif" BORDER=0>
 </TD>
-<TD WIDTH="450" BORDER=0>
-	&nbsp;&nbsp;
-
-	<A HREF="/mmadmin/index.shtml?1+servers" TARGET="_top">
-	<IF $PARAM1==1>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>SERVERS</B></FONT>
-	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>SERVERS</B></FONT>
-	</IF>
-	</A>
-
-	&nbsp;&nbsp;
-
-	<A HREF="/mmadmin/index.shtml?2+builders" TARGET="_top">
-	<IF $PARAM1==2>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>BUILDERS</B></FONT>
-	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>BUILDERS</B></FONT>
-	</IF>
-	</A>
-	</IF>
-	
-	&nbsp;&nbsp;
-
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/index.shtml?4+applications" TARGET="_top">
-	<IF $PARAM1==4>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>APPLICATIONS</B></FONT>
-	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>APPLICATIONS</B></FONT>
-	</IF>
-	</A>
-
-	&nbsp;&nbsp;
-
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/index.shtml?5+modules" TARGET="_top">
-	<IF $PARAM1==5>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>MODULES</B></FONT>
-	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>MODULES</B></FONT>
-	</IF>
-	</A>
-
-	&nbsp;&nbsp;
-
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/index.shtml?6+databases" TARGET="_top">
-	<IF $PARAM1==6>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>DATABASES</B></FONT>
-	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>DATABASES</B></FONT>
-	</IF>
-	</A>
-
-
-	&nbsp;&nbsp;
-
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/index.shtml?7+docs" TARGET="_top">
-	<IF $PARAM1==7>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>DOCS</B></FONT>
-	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>DOCS</B></FONT>
-	</IF>
-	</A>
+<TD WIDTH="850" BORDER=0>
+	<PART nav/nav_top.shtml>
 	<IMG SRC="beeld/wit.gif" WIDTH="800" HEIGHT="1" ALIGN="top">
+	<PART nav/nav$PARAM1.shtml?$PARAM1+$PARAM2>
 </TD>
 </TR>
 </TABLE>
