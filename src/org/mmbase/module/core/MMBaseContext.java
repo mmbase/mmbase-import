@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.37 2003-07-18 17:43:02 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.38 2004-01-19 11:52:29 pierre Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -42,7 +42,7 @@ public class MMBaseContext {
      * check the servlet configuration for context parameters mmbase.outputfile
      * and mmbase.config. If not found it will look for system properties.
      *
-     * @throws ServletException  if mmbase.configpath is not set or is not a
+     * @throws ServletException  if mmbase.config is not set or is not a
      *                           directory or doesn't contain the expected
      *                           config files.
      *
@@ -51,38 +51,47 @@ public class MMBaseContext {
         if (!initialized) {
             // store the current context
             sx = servletContext;
-
-            // Get the current directory using the user.dir property.
-            userDir = System.getProperty("user.dir");
-
-            // Init outputfile.
-            {
-                String outputfile = sx.getInitParameter("mmbase.outputfile");
-                if (outputfile == null) {
-                    outputfile = System.getProperty("mmbase.outputfile");
-                }
-                initOutputfile(outputfile);
+            // Get the user directory using the user.dir property.
+            // default set to the startdir of the appserver
+            userDir = sx.getInitParameter("user.dir");
+            if (userDir == null) {
+                userDir = System.getProperty("user.dir");
             }
+            // take into account userdir can start at webrootdir
+            if (userDir != null && userDir.indexOf("$WEBROOT") == 0) {
+                userDir = servletContext.getRealPath(userDir.substring(8));
+            }
+            // Init outputfile.
+            String outputFile = sx.getInitParameter("mmbase.outputfile");
+            if (outputFile == null) {
+                outputFile = System.getProperty("mmbase.outputfile");
+            }
+            // take into account configpath can start at webrootdir
+            if (outputFile != null && outputFile.indexOf("$WEBROOT") == 0) {
+                outputFile = servletContext.getRealPath(outputFile.substring(8));
+            }
+            initOutputfile(outputFile);
             // Init configpath.
-            {
-                String configpath = sx.getInitParameter("mmbase.config");
-                if (configpath == null) {
-                    configpath = System.getProperty("mmbase.config");
-                }
-                if (configpath == null) {
+            String configPath = sx.getInitParameter("mmbase.config");
+            if (configPath == null) {
+                configPath = System.getProperty("mmbase.config");
+                if (configPath == null) {
                     // desperate looking for a location.. (say we are a war file..)
                     // keeping the value 'null' will always give a failure..
-                    configpath =  servletContext.getRealPath("/WEB-INF/config");
+                    configPath =  servletContext.getRealPath("/WEB-INF/config");
                 }
-                try {
-                    initConfigpath(configpath);
-                } catch(Exception e) {
-                    throw new ServletException(e.getMessage());
-                }
+            }
+            // take into account configpath can start at webrootdir
+            if (configPath.indexOf("$WEBROOT") == 0) {
+                configPath = servletContext.getRealPath(configPath.substring(8));
+            }
+            try {
+                initConfigpath(configPath);
+            } catch(Exception e) {
+                throw new ServletException(e.getMessage());
             }
             // Init logging.
             initLogging();
-
             initialized = true;
         }
     }
@@ -430,7 +439,7 @@ public class MMBaseContext {
     }
 
     private static String CONTEXT_URL_IDENTIFIER = "jndi:/";
-    
+
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under
      * the webserver, what is the root for this instance.
@@ -462,7 +471,7 @@ public class MMBaseContext {
                 ServletContext rootContext = null;
                 String rootContextUrl = null;
                 String contextUrl = null;
-            
+
 
                 if (! sx.getClass().getName().startsWith("com.evermind")) { // Orion horribly fails
                     contextUrl = convertResourceUrl(sx, "/");
