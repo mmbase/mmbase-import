@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import org.w3c.dom.Document;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -57,6 +58,8 @@ public class EmptyNodeTest extends NodeTest {
                 assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("xml")) {
+                // I don't know..
             } else {
                 fail("Unknown fieldtype encountered " + fieldTypes[i]);
             }
@@ -89,6 +92,12 @@ public class EmptyNodeTest extends NodeTest {
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             assertTrue("".equals(node.getStringValue(fieldTypes[i] + "field")));
+        }
+    }
+    public void testGetXMLValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Document value = node.getXMLValue(fieldTypes[i] + "field");
+            assertTrue("KNOWN bug. Empty XML Field not null (as javadoc sais it should) but '" + value + "'", value == null); 
         }
     }
 
