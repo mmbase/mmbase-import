@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.36 2004-02-23 19:01:01 pierre Exp $
+ * @version $Id: BasicQuery.java,v 1.37 2004-04-26 12:23:35 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -310,6 +310,9 @@ public class BasicQuery implements Query  {
     public StepField createStepField(String fieldIdentifier) {
         // code copied from addField, should be centralized
         int dot = fieldIdentifier.indexOf('.');
+        if (dot == -1) {
+            throw new BridgeException("No '.' found in '" + fieldIdentifier + "'");
+        }
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
@@ -378,6 +381,16 @@ public class BasicQuery implements Query  {
     }
 
     public FieldValueConstraint        createConstraint(StepField f, int op, Object v) {
+        /* 
+        if (f.getType() == Field.TYPE_NODE) {
+            if (v instanceof Node) {
+                v = new Integer(((Node) v).getNumber());
+            } else if (v instanceof String) {
+                v = new Integer(cloud.getNode((String)v).getNumber());
+            }
+        } 
+        */       
+
         BasicFieldValueConstraint c = new BasicFieldValueConstraint(f, v);
         c.setOperator(op);
         return c;
