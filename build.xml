@@ -1239,17 +1239,7 @@ Build-compiler: ${build.compiler}
               token="[BASESTYLESHEET]"
               value="${expand.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
 
-    <!-- copy also the images and resources -->
-    <copy todir="${mmdocs.dir}/" >
-      <fileset dir="${source-documentation.dir}" >
-        <exclude name="**/*.xml"/>
-        <exclude name="**/*.sgm"/>
-        <exclude name="**/*.xslt"/>
-      </fileset>
-    </copy>
-
   </target>
-
 
   <target name="documentation" 
           depends="jar,taglib.doc,documentation.builders,mmcidocs">
@@ -1257,11 +1247,8 @@ Build-compiler: ${build.compiler}
     <ant dir="${documentation.home}" target="documentation">
       <property name="mmbase.default.dir" value=".." />
       <property name="download.dir" value="${download.dir}" />
+      <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
     </ant>
-
-    <copy todir="${mmdocs.dir}/" >
-      <fileset dir="${source-html.dir}/mmdocs" />
-    </copy>
 
   </target>
 
@@ -1272,19 +1259,18 @@ Build-compiler: ${build.compiler}
           depends="doc.resources,xsltransformer"
           description="Generate builder-documentation from the builder config files">
 
+    <mkdir dir="${mmdocs.dir}/frontenddevelopers/builders"/>
 
-    <mkdir dir="${mmdocs.dir}/templaters/builders"/>
-
-    <copy todir="${mmdocs.dir}/templaters/builders"
+    <copy todir="${mmdocs.dir}/frontenddevelopers/builders"
           file="${source-documentation.dir}/style/docbook2xhtml.xslt"
           />
 
     <!-- not used at the moment
-    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
              token="[BASESTYLESHEET]"
              value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
     -->
-    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+    <replace file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
              token="[BASESTYLESHEET]"
              value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
 
@@ -1305,7 +1291,7 @@ Build-compiler: ${build.compiler}
           classpathref="compile.classpath"
           fork="yes"
           failonerror="no"
-          output="${mmdocs.dir}/templaters/builders/allbuilders-total.xml">
+          output="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml">
       <jvmarg value="-Dmmbase.config=${source.dir}/config" />
       <jvmarg value="-mx100m" />
       <classpath>
@@ -1318,8 +1304,8 @@ Build-compiler: ${build.compiler}
     <!-- <style
       style="${source-config.dir}/xslt/builder2docbook.xsl"
       extension=".xml"
-      in="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
-      out="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
+      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"
+      out="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
       >
         <param name="language" expression="${documentation.builders.language}"/>
     </style> -->
@@ -1327,10 +1313,10 @@ Build-compiler: ${build.compiler}
 
     <!-- generate xhtml -->
     <!-- <style
-      style="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+      style="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"
       extension=".html"
-      in="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
-      out="${mmdocs.dir}/templaters/builders/index.html"
+      in="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"
+      out="${mmdocs.dir}/frontenddevelopers/builders/index.html"
       >
         <param name="root" expression="../../"/>
     </style> -->
@@ -1346,8 +1332,8 @@ Build-compiler: ${build.compiler}
         <pathelement location="${build.dir}/classes" />
       </classpath>
       <arg value="${source-config.dir}/xslt/builder2docbook.xsl" />
-      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-total.xml" />
-      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
       <arg value="language=${documentation.builders.language}" />
     </java>
 
@@ -1361,23 +1347,27 @@ Build-compiler: ${build.compiler}
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
-      <arg value="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt" />
-      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml" />
-      <arg value="${mmdocs.dir}/templaters/builders/index.html" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml" />
+      <arg value="${mmdocs.dir}/frontenddevelopers/builders/index.html" />
       <arg value="root=../../" />
     </java>
 
     <!-- remove temp files -->
-    <!-- delete file="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"/>
-    <delete file="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"/>
-    <delete file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"/ -->
+    <!-- delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-total.xml"/>
+    <delete file="${mmdocs.dir}/frontenddevelopers/builders/allbuilders-docbook.xml"/>
+    <delete file="${mmdocs.dir}/frontenddevelopers/builders/docbook2xhtml.xslt"/ -->
   </target>
 
   <!-- =================================================================== -->
   <!-- Clean the documentation directory                                   -->
   <!-- =================================================================== -->
   <target name="clean.documentation" description="Clean the generated documentation">
-    <ant dir="${documentation.home}" target="clean" />
+    <ant dir="${documentation.home}" target="clean">
+      <property name="mmbase.default.dir" value=".." />
+      <property name="download.dir" value="${download.dir}" />
+      <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
+    </ant>
   </target>
 
   <!-- =================================================================== -->
