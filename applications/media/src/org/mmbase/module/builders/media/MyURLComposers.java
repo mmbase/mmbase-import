@@ -21,7 +21,7 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyURLComposers.java,v 1.1 2003-01-03 21:35:44 michiel Exp $
+ * @version $Id: MyURLComposers.java,v 1.2 2003-01-07 09:06:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class MyURLComposers extends MediaURLComposers {
@@ -33,7 +33,7 @@ public class MyURLComposers extends MediaURLComposers {
      * @throws MalformedURLException
      */
 
-    protected URL getURL(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map preferences) throws MalformedURLException {
+    protected URL getURL(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, List preferences) throws MalformedURLException {
         if (provider == null) throw new IllegalArgumentException("Cannot create URL without a provider");
         if (source   == null) throw new IllegalArgumentException("Cannot create URL without a source");
 
@@ -48,6 +48,13 @@ public class MyURLComposers extends MediaURLComposers {
             }
             if (end > -1) {            
                 appendTime(end, args.append(sep).append("end="));
+                sep = '&';
+            }
+            int format = source.getIntValue("format");
+            if (format ==2 || format == 6 || format == 17) { // blech! should use constants or somehting like that
+                // real...
+                String title = fragment.getStringValue("title");
+                args.append(sep).append("title=").append(title);
             }
         }
         return new URL(composer.getStringValue("protocol"), provider.getStringValue("host"), args.toString());
