@@ -7,48 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-
-$Id: Teasers.java,v 1.15 2000-11-24 10:30:58 vpro Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.14  2000/06/08 18:03:21  wwwtech
-Rico: switched of debug
-
-Revision 1.13  2000/04/18 13:06:42  wwwtech
-Wilbert: restricted scope of some methods and made fillTeaserSearchCache synchronized
-
-Revision 1.12  2000/04/11 14:20:30  wwwtech
-Wilbert: Fixed remove from jumpercache in method nodeLocalChanged
-
-Revision 1.11  2000/04/07 11:49:33  wwwtech
-Wilbert: Added remove teaser from jumpercache regardless of type of change
-
-Revision 1.10  2000/04/07 09:57:48  wwwtech
-Wilbert: aaded remove from jumpercache when relations changed
-
-Revision 1.9  2000/04/05 15:24:09  wwwtech
-Wilbert: commented out some currently dead code
-
-Revision 1.8  2000/03/31 13:27:52  wwwtech
-Wilbert: Introduction of ParseException for method getList
-
-Revision 1.7  2000/03/30 13:11:34  wwwtech
-Rico: added license
-
-Revision 1.6  2000/03/30 12:58:13  wwwtech
-Rico: added license file
-
-Revision 1.5  2000/03/29 10:59:25  wwwtech
-Rob: Licenses changed
-
-Revision 1.4  2000/03/21 15:45:46  wwwtech
-Removed private debug method and private field classname, using inherited instead
-
-Revision 1.3  2000/03/17 12:31:27  wwwtech
-- (marcel) added better support for functions in getValue
-
-*/
 
 package org.mmbase.module.builders;
 
@@ -62,16 +20,17 @@ import javax.servlet.http.*;
 import org.mmbase.util.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.15 $ $Date: 2000-11-24 10:30:58 $ 
+ * @version $Revision: 1.16 $ $Date: 2001-04-05 12:23:08 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
 
-	public boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(Teasers.class.getName());
 	
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("state")) {
@@ -128,7 +87,7 @@ public class Teasers extends MMObjectBuilder {
 
 	public String getDefaultUrl(int src) {
 
-		if (debug) debug("getDefaultUrl("+src+")");
+		log.debug("getDefaultUrl("+src+")");
 	
 		MMObjectNode node=getNode(src);
 		String url=getUrl(src); // returns the url related to this teaser or null if none
@@ -146,17 +105,17 @@ public class Teasers extends MMObjectBuilder {
 				other=node2.getIntValue("snumber");
 			}
 
-			if (debug) debug("getDefaultUrl("+src+"): other("+other+")");
+			log.debug("getDefaultUrl("+src+"): other("+other+")");
 
 			MMObjectNode node3=getNode(other);
 			int otype=node3.getIntValue("otype");
 
-			if (debug) debug("getDefaultUrl("+src+"): found otype("+otype+")");
+			log.debug("getDefaultUrl("+src+"): found otype("+otype+")");
 
 			MMObjectBuilder bul=mmb.getMMObject(mmb.getTypeDef().getValue(otype));
 
 			int numbie = node3.getIntValue("number");
-			if (debug) debug("getDefaultUrl("+src+"): number found("+numbie+"), getting defaultUrl");
+			log.debug("getDefaultUrl("+src+"): number found("+numbie+"), getting defaultUrl");
 
 			url=bul.getDefaultUrl(numbie);
 
@@ -217,7 +176,7 @@ public class Teasers extends MMObjectBuilder {
 			while (list.hasMoreElements()) {
 				number=((Integer)list.nextElement()).intValue();
 				delTeaserSearchElement(number);
-				debug("Adding teaser "+number+" to teaser search cache");
+				log.info("Adding teaser "+number+" to teaser search cache");
 				ttarget=-1;
 				sort=-1;
 				MMObjectNode node=getNode(number);
@@ -295,14 +254,14 @@ public class Teasers extends MMObjectBuilder {
 						} catch (Exception r) {
 						}
 					} else {
-						debug("fillTeaserSearchTable("+where+"): ERROR: Not Insert");
+						log.error("fillTeaserSearchTable("+where+"): ERROR: Not Insert");
 					}
 					
 				}
 			}	
 			return(true);
 		} catch (SQLException e) {
-			debug("fillTeaserSearchTable("+where+"): ERROR: ");
+			log.error("fillTeaserSearchTable("+where+"): ERROR: ");
 			e.printStackTrace();
 			return(false);
 		}
@@ -311,7 +270,7 @@ public class Teasers extends MMObjectBuilder {
 	private boolean addTeaserSearchElementInformix(int number,int ttarget,int ttype, int value, int image,String title,String tbody,String body) {
 		byte[] isochars=null;
 		PreparedStatement statement;
-		debug("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
+		log.info("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
 
 			if (body!=null && body.length()>29000) {
 				body=body.substring(0,28999);
@@ -336,8 +295,8 @@ public class Teasers extends MMObjectBuilder {
 				statement.close();
 				con.close();
 			} catch (SQLException e) {
-				debug("addTeaserSearchElementInformix("+number+","+ttarget+","+ttype+","+value+","+image+","+title+"): Exception: ");
-				debug("addTeaserSearchElementInformix(): ERROR: SQL processing error: " + e);
+				log.error("addTeaserSearchElementInformix("+number+","+ttarget+","+ttype+","+value+","+image+","+title+"): Exception: ");
+				log.error("addTeaserSearchElementInformix(): ERROR: SQL processing error: " + e);
 				e.printStackTrace();
 			}
 		return(true);
@@ -347,7 +306,7 @@ public class Teasers extends MMObjectBuilder {
 	* 
 	*/
 	private boolean delTeaserSearchElement(int number) {
-		debug("Removing teaser "+number+" from teaser search cache");
+		log.info("Removing teaser "+number+" from teaser search cache");
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -362,7 +321,7 @@ public class Teasers extends MMObjectBuilder {
 
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
         super.nodeLocalChanged(number,builder,ctype);
-		debug("Teasers -> change detected in "+number+" "+builder+" "+ctype);
+		log.info("Teasers -> change detected in "+number+" "+builder+" "+ctype);
 		if (builder.equals(tableName)) {
 			int nr = Integer.parseInt(number);
 			if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
@@ -370,10 +329,13 @@ public class Teasers extends MMObjectBuilder {
 				if (node!=null) fillTeaserSearchTable(nr);
 			}
 			else if (ctype.equals("d")) delTeaserSearchElement(nr);
-			debug("Removing "+number+" from jumper cache");
+			log.info("Removing "+number+" from jumper cache");
 			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
-			if (jumpers==null) debug("ERROR: Could not get Jumper builder");
-			else jumpers.delJumpCache(number);
+			if (jumpers==null) { 
+				log.error("ERROR: Could not get Jumper builder");
+			} else {
+				jumpers.delJumpCache(number);
+			}
 		}
 		return true;
 	}
@@ -469,7 +431,7 @@ public class Teasers extends MMObjectBuilder {
 			con.close();
 			return(true);
 		} catch (SQLException e) {
-			debug("createTeaserSearchTable(): ERROR: can't create teaser search table ");
+			log.error("createTeaserSearchTable(): ERROR: can't create teaser search table ");
 			//e.printStackTrace();
 		}
 		return(false);
@@ -489,7 +451,7 @@ public class Teasers extends MMObjectBuilder {
 			con.close();
 			return(true);
 		} catch (SQLException e) {
-			debug("createTeaserUrlTable(): can't create teaser url table ");
+			log.error("createTeaserUrlTable(): can't create teaser url table ");
 		}
 		return(false);
 	}
@@ -580,7 +542,7 @@ public class Teasers extends MMObjectBuilder {
 				oke=true;
 				} catch (SQLException f) {
 					f.printStackTrace();
-					debug("Teasers -> DATABASE ERROR DOING A WAIT");
+					log.error("Teasers -> Database error doing a wait");
 					try {Thread.sleep(1000);} catch (InterruptedException e){}
 					//return(false);
 				}
@@ -654,7 +616,7 @@ public class Teasers extends MMObjectBuilder {
 			int tid=tnode.insert("system");
 			if (tid!=-1) {
 				try {
-					debug("Teasers -> Adding relation between "+id+"  and "+tid);
+					log.debug("Teasers -> Adding relation between "+id+"  and "+tid);
 					int oit=Integer.parseInt(id);
 					mmb.getInsRel().insert("system",oit,tid,14);
 				} catch(Exception e) {}
@@ -662,7 +624,7 @@ public class Teasers extends MMObjectBuilder {
 			createTeaser(""+tid);
 			return(tid);
 		} else {
-			debug("Teasers -> Can't autogenerate teaser, unknown builder on "+id);
+			log.warning("Teasers -> Can't autogenerate teaser, unknown builder on "+id);
 		}
 		return(-1);
 	}
