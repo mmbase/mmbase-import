@@ -745,7 +745,9 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="javadocs"
           description="Create the API documentation"
-          depends="init,lib.compile">
+          depends="init,lib.compile"
+          unless="did.javadocs"
+    >
     <mkdir dir="${build.dir}/mmbase-src/docs"/>
     <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
@@ -765,6 +767,7 @@ Build-compiler: ${build.compiler}
         </fileset>
       </classpath>
     </javadoc>
+    <available property="did.javadocs" />
   </target>
 
 
