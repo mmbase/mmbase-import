@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: MultiRelations.java,v 1.6 2000-03-20 13:17:30 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.7 2000-03-21 15:46:13 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/03/20 13:17:30  wwwtech
+	Rico: added super.getValue for global function support
+	
 	Revision 1.5  2000/03/09 10:07:14  wwwtech
 	Rico: Fixed multirelations so where clauses can contain similar tablenames ie like program and subprogram. This would go wrong with the old version
 	
@@ -38,13 +41,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.6 2000-03-20 13:17:30 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.7 2000-03-21 15:46:13 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
 	final static boolean debug=false;
-	private String classname = getClass().getName();
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	public MultiRelations(MMBase m) {
 		this.mmb=m;
