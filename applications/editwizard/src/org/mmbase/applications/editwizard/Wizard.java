@@ -29,7 +29,7 @@ import org.mmbase.util.FileWatcher;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.88 2003-06-13 10:41:33 kees Exp $
+ * @version $Id: Wizard.java,v 1.89 2003-06-13 10:56:40 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -2307,8 +2307,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
              */
             FileWatcher fileWatcher = new FileWatcher(true) {
                 protected void onChange(File f) {
-                        // invalidate this cache entry
-    WizardSchemaCache.this.remove(WizardSchemaCache.Entry.this.file);
+                    // invalidate this cache entry
+                    WizardSchemaCache.this.remove(Entry.this.file);
                     // stop watching files
                 }
             };
