@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.38 2003-03-07 08:50:17 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.39 2003-03-18 14:25:26 vpro Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -98,7 +98,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // Start to add the actual definition, this is then afterwards again, except if one of the builders could not be found
         added.add(typerel);
 
-        boolean bidirectional = mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1;
+        boolean bidirectional;
+        if (InsRel.usesdir) {
+            bidirectional = mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1;
+        } else {
+            bidirectional = true;
+        }
 
         inheritance:
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
